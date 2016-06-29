@@ -1,0 +1,13 @@
+*.pyc
+.*swp
+*.sublime-*
+*.bak
+.pydevproject
+.project
+.settings
+/tourtodo/settings/site.py
+.idea/
+.tox/
+
+# rope
+.ropeproject/

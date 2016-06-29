@@ -1,0 +1,38 @@
+pep8:
+  image: python:3.4
+  before_script:
+    - export PIP_CACHE_DIR="pip-cache"
+    - pip install tox
+  script:
+    - tox -e flake8
+
+.djangotest: &djangotest
+  before_script:
+    - export PIP_CACHE_DIR="pip-cache"
+    - mkdir -p pip-cache
+    - git log -1
+    - pip install tox
+  script:
+    - tox -e $PYTHON_VERSION
+  services:
+    - mysql:latest
+    - mongo:latest
+
+python34:
+  <<: *djangotest
+  image: python:3.4
+  variables:
+    PYTHON_VERSION: py34
+
+python35:
+  <<: *djangotest
+  image: python:3.5
+  variables:
+    PYTHON_VERSION: py35
+
+cache:
+  key: "$CI_BUILD_REF_NAME"
+  paths:
+    - pip-cache
+
+# vim: set sw=2 ts=2 et :

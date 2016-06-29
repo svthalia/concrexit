@@ -1,0 +1,13 @@
+# Images should be treated as binary
+*.png     binary
+*.jpeg    binary
+*.jpg     binary
+*.ico     binary
+*.mo      binary
+
+*.py      text
+*.js      text
+*.css     text
+*.html    text
+*.sql     text
+*.po      text
