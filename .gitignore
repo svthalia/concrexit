@@ -8,6 +8,7 @@
 /tourtodo/settings/site.py
 .idea/
 .tox/
+db.sqlite3
 
 # rope
 .ropeproject/
