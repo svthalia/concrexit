@@ -3,5 +3,14 @@
 {% block title %}Hello World{% endblock %}
 
 {% block body %}
-  Hello world
+<h1>Hello world</h1>
+
+<p>These are the current members:
+  <ul>
+    {% for member in members %}
+    <li>{{ member }} - {{ member.type }}</li>
+    {% endfor %}
+  </ul>
+</p>
+
 {% endblock %}

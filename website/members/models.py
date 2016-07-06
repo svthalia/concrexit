@@ -237,5 +237,8 @@ class Member(models.Model):
             return "'{}' {}".format(self.nickname,
                                     self.user.last_name)
         else:
-            return self.user.full_name()
+            return self.user.get_full_name()
     display_name.short_description = _('Display name')
+
+    def __str__(self):
+        return self.display_name()
