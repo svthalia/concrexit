@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load staticfiles compress %}
+
+{% block css_head %}
+    {{ block.super }}
+    {% compress css %}
+    <link href="{% static "education/css/style.less" %}" rel="stylesheet" type="text/less">
+    {% endcompress %}
+{% endblock %}

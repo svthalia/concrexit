@@ -24,11 +24,14 @@ main = [
         {'title': _('Partners'), 'name': 'partners:index'},
         {'title': _('Vacancies'), 'name': 'partners:vacancies'},
     ]},
-    {'title': _('Education'), 'name': '#', 'submenu': [
-        {'title': _('Book Sale'), 'name': '#'},
-        {'title': _('Course Overview'), 'name': '#'},
-        {'title': _('Submit Exam'), 'name': '#'},
-        {'title': _('Submit Summary'), 'name': '#'},
+    {'title': _('Education'), 'name': 'education:index', 'submenu': [
+        {'title': _('Book Sale'), 'name': 'education:books'},
+        {'title': _('Course Overview'), 'name': 'education:courses',
+         'submenu': [
+             {'title': _('Submit Exam'), 'name': 'education:submit-exam'},
+             {'title': _('Submit Summary'),
+              'name': 'education:submit-summary'},
+         ]},
     ]},
     {'title': _('Contact'), 'name': 'contact'},
 ]
