@@ -1,2 +1,2 @@
 Django==1.10b1
-django-localflavor
+django-localflavor==1.3

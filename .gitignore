@@ -11,3 +11,6 @@ db.sqlite3
 
 # rope
 .ropeproject/
+
+# venv from source_me.sh
+venv/
