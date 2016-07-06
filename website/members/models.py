@@ -96,7 +96,7 @@ class Member(models.Model):
     )
 
     phone_number = models.CharField(
-        max_length=13,
+        max_length=20,
         verbose_name=_('Phone number'),
         help_text=_('Enter a phone number so Thalia may reach you'),
         validators=[validators.RegexValidator(
@@ -118,7 +118,7 @@ class Member(models.Model):
     )
 
     emergency_contact_phone_number = models.CharField(
-        max_length=13,
+        max_length=20,
         verbose_name=_('Emergency contact phone number'),
         help_text=_('The phone number for the emergency contact'),
         validators=[validators.RegexValidator(
@@ -218,7 +218,7 @@ class Member(models.Model):
 
         Tested by checking if the expiration date has passed.
         """
-        return self.membership_expiration < datetime.utcnow()
+        return self.membership_expiration > datetime.utcnow()
     # Special properties for admin site
     is_active.boolean = True
     is_active.short_description = _('Is this user currently active')

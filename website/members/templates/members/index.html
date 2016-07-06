@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Hello World{% endblock %}
+{% block title %}Hello World - {{ block.super }}{% endblock %}
 
 {% block body %}
 <h1>Hello world</h1>
@@ -9,7 +9,7 @@
   <ul>
     {% for member in members %}
     <li>{{ member }} - {{ member.type }}</li>
-    {% else %}
+    {% empty %}
     <li>Er zijn geen leden</li>
     {% endfor %}
   </ul>
