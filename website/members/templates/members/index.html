@@ -9,6 +9,8 @@
   <ul>
     {% for member in members %}
     <li>{{ member }} - {{ member.type }}</li>
+    {% else %}
+    <li>Er zijn geen leden</li>
     {% endfor %}
   </ul>
 </p>
