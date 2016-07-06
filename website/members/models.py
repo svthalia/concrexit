@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from django.db import models
 from django.core import validators
@@ -46,7 +46,7 @@ class Member(models.Model):
         null=True,
     )
 
-    membership_type = models.CharField(
+    type = models.CharField(
         max_length=40,
         choices=MEMBERSHIP_TYPES,
         verbose_name=_('Membership type'),
@@ -55,7 +55,6 @@ class Member(models.Model):
     registration_year = models.IntegerField(
         verbose_name=_('Registration year'),
         help_text=_('The year this member first became a part of Thalia'),
-        default=lambda: datetime.utcnow().year,
     )
 
     membership_expiration = models.DateField(
@@ -102,47 +101,26 @@ class Member(models.Model):
         help_text=_('Enter a phone number so Thalia may reach you'),
         validators=[validators.RegexValidator(
             regex=r'^\+?\d+$',
-            message=_('Voer een geldig telefoonnummer in.'),
+            message=_('Please enter a valid phone number'),
         )],
         null=True,
         blank=True,
     )
 
-    # ---- Parents' address ----
+    # ---- Emergency contact ----
 
-    parent_address_street = models.CharField(
-        max_length=100,
-        validators=[validators.RegexValidator(
-            regex=r'^.+ \d+.+',
-            message=_('Include the house number'),
-        )],
-        verbose_name=_('Street and house number'),
+    emergency_contact = models.CharField(
+        max_length=255,
+        verbose_name=_('Emergency contact name'),
+        help_text=_('Who should we contact in case of emergencies'),
         null=True,
-    )
-
-    parent_address_street2 = models.CharField(
-        max_length=100,
-        verbose_name=_('Second address line'),
         blank=True,
-        null=True,
     )
 
-    parent_address_postal_code = models.CharField(
-        max_length=10,
-        verbose_name=_('Postal code'),
-        null=True,
-    )
-
-    parent_address_city = models.CharField(
-        max_length=40,
-        verbose_name=_('City'),
-        null=True,
-    )
-
-    parent_phone_number = models.CharField(
+    emergency_contact_phone_number = models.CharField(
         max_length=13,
-        verbose_name=_('Phone number'),
-        help_text=_('Enter a phone number so Thalia may reach you'),
+        verbose_name=_('Emergency contact phone number'),
+        help_text=_('The phone number for the emergency contact'),
         validators=[validators.RegexValidator(
             regex=r'^\+?\d+$',
             message=_('Voer een geldig telefoonnummer in.'),
@@ -158,6 +136,14 @@ class Member(models.Model):
         null=True
     )
 
+    show_birthday = models.BooleanField(
+        verbose_name=_('Display birthday'),
+        help_text=_(
+            'Show the birthday on your profile page and '
+            'in the birthday calendar'),
+        default=True,
+    )
+
     website = models.URLField(
         max_length=200,
         verbose_name=_('Website'),
@@ -169,6 +155,7 @@ class Member(models.Model):
     profile_description = models.TextField(
         verbose_name=_('Profile text'),
         help_text=_('Text to display on your profile'),
+        blank=True,
     )
 
     nickname = models.CharField(
@@ -176,6 +163,17 @@ class Member(models.Model):
         verbose_name=_('Nickname'),
         blank=True,
         null=True,
+    )
+
+    display_name_preference = models.CharField(
+        max_length=10,
+        verbose_name=_('How to display name'),
+        choices=(('full', _('Show full name')),
+                 ('nickname', _('Show only nickname')),
+                 ('initials', _('Show initials and last name')),
+                 ('fullnick', _("Show name like \"John 'nickname' Doe\"")),
+                 ('nicklast', _("Show nickname and last name"))),
+        default='full',
     )
 
     # --- Communication preference ----
@@ -210,5 +208,34 @@ class Member(models.Model):
 
     bank_account = IBANField(
         verbose_name=_('Bank account'),
-        include_countries=IBAN_SEPA_COUNTRIES
+        help_text=_('Bank account for direct debit'),
+        include_countries=IBAN_SEPA_COUNTRIES,
+        blank=True,
     )
+
+    def is_active(self):
+        """Is this member currently active
+
+        Tested by checking if the expiration date has passed.
+        """
+        return self.membership_expiration < datetime.utcnow()
+    # Special properties for admin site
+    is_active.boolean = True
+    is_active.short_description = _('Is this user currently active')
+
+    def display_name(self):
+        pref = self.display_name_preference
+        if pref == 'nickname':
+            return self.nickname
+        elif pref == 'initials':
+            return '{} {}'.format(self.initials, self.user.last_name)
+        elif pref == 'fullnick':
+            return "{} '{}' {}".format(self.user.first_name,
+                                       self.nickname,
+                                       self.user.last_name)
+        elif pref == 'nicklast':
+            return "'{}' {}".format(self.nickname,
+                                    self.user.last_name)
+        else:
+            return self.user.full_name()
+    display_name.short_description = _('Display name')
