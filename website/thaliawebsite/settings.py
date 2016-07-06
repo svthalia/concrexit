@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
+    'documents',
 ]
 
 MIDDLEWARE = [
