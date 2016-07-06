@@ -16,7 +16,6 @@ pep8:
     - tox -e $PYTHON_VERSION
   services:
     - mysql:latest
-    - mongo:latest
 
 python34:
   <<: *djangotest
