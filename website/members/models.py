@@ -123,7 +123,7 @@ class Member(models.Model):
         help_text=_('The phone number for the emergency contact'),
         validators=[validators.RegexValidator(
             regex=r'^\+?\d+$',
-            message=_('Voer een geldig telefoonnummer in.'),
+            message=_('Please enter a valid phone number'),
         )],
         null=True,
         blank=True,

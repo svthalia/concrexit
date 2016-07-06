@@ -1,0 +1,239 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-07-06 20:46+0200\n"
+"PO-Revision-Date: 2016-07-06 20:47+0200\n"
+"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: members/models.py:17
+msgid "Benefactor"
+msgstr "Begunstiger"
+
+#: members/models.py:18
+msgid "Member"
+msgstr "Lid"
+
+#: members/models.py:19
+msgid "Honorary Member"
+msgstr "Erelid"
+
+#: members/models.py:22
+msgid "Computing Science"
+msgstr "Informatica"
+
+#: members/models.py:23
+msgid "Information Sciences"
+msgstr "Informatiekunde"
+
+#: members/models.py:35
+msgid "Study programme"
+msgstr "Studie"
+
+#: members/models.py:44
+msgid "Enter a valid student- of e/z/u-number."
+msgstr "Voer een geldig student- of e/z/u-nummer in."
+
+#: members/models.py:52
+msgid "Membership type"
+msgstr "Lidtype"
+
+#: members/models.py:56
+msgid "Registration year"
+msgstr "Eerste lidmaatschapsjaar"
+
+#: members/models.py:57
+msgid "The year this member first became a part of Thalia"
+msgstr "Het jaar waarin dit lid voor het eerst lid werd"
+
+#: members/models.py:61
+msgid "Expiration date of membership"
+msgstr "Verloopdatum van lidmaatschap"
+
+#: members/models.py:62
+msgid "Let the membership expire after this time"
+msgstr "Laat het lidmaatschap na deze datum verlopen"
+
+#: members/models.py:73
+msgid "Include the house number"
+msgstr "Inclusief huisnummer"
+
+#: members/models.py:75
+msgid "Street and house number"
+msgstr "Straat en huisnummer"
+
+#: members/models.py:81
+msgid "Second address line"
+msgstr "Tweede adresregel"
+
+#: members/models.py:88
+msgid "Postal code"
+msgstr "Postcode"
+
+#: members/models.py:94
+msgid "City"
+msgstr "Woonplaats"
+
+#: members/models.py:100
+msgid "Phone number"
+msgstr "Telefoonnummer"
+
+#: members/models.py:101
+msgid "Enter a phone number so Thalia may reach you"
+msgstr "Voer een telefoonnummer in zodat Thalia je kan bereiken"
+
+#: members/models.py:104 members/models.py:126
+msgid "Please enter a valid phone number"
+msgstr "Voer svp een geldig telefoonnummer in"
+
+#: members/models.py:114
+msgid "Emergency contact name"
+msgstr "Contact voor noodgevallen"
+
+#: members/models.py:115
+msgid "Who should we contact in case of emergencies"
+msgstr "Wie Thalia moet bereiken in bij noodgevallen"
+
+#: members/models.py:122
+msgid "Emergency contact phone number"
+msgstr "Telefoonnummer noodcontact"
+
+#: members/models.py:123
+msgid "The phone number for the emergency contact"
+msgstr "Het telefoonummer van de noodcontact"
+
+#: members/models.py:135
+msgid "Birthday"
+msgstr "Verjaardag"
+
+#: members/models.py:140
+msgid "Display birthday"
+msgstr "Laat verjaardag zien"
+
+#: members/models.py:142
+msgid "Show the birthday on your profile page and in the birthday calendar"
+msgstr ""
+"Laat de verjaardag op je profielpagina en in de verjaardagskalender zien"
+
+#: members/models.py:149
+msgid "Website"
+msgstr "Website"
+
+#: members/models.py:150
+msgid "Website to display on your profile page"
+msgstr "Website om op je profiel te linken"
+
+#: members/models.py:156
+msgid "Profile text"
+msgstr "Profieltekst"
+
+#: members/models.py:157
+msgid "Text to display on your profile"
+msgstr "Tekst om te laten zien op je profielpagina"
+
+#: members/models.py:163
+msgid "Nickname"
+msgstr "Bijnaam"
+
+#: members/models.py:170
+msgid "How to display name"
+msgstr "Weergave naam"
+
+#: members/models.py:171
+msgid "Show full name"
+msgstr "Volledige naam"
+
+#: members/models.py:172
+msgid "Show only nickname"
+msgstr "Alleen initialen"
+
+#: members/models.py:173
+msgid "Show initials and last name"
+msgstr "Alleen initialen en achternaam"
+
+#: members/models.py:174
+msgid "Show name like \"John 'nickname' Doe\""
+msgstr "Laat zien als \"John 'bijnaam' Doe\""
+
+#: members/models.py:175
+msgid "Show nickname and last name"
+msgstr "Laat bijnaam en achternaam zien"
+
+#: members/models.py:182
+msgid "Preferred language"
+msgstr "Voorkeurstaal"
+
+#: members/models.py:183
+msgid "Preferred language for e.g. news letters"
+msgstr "Voorkeurstaal voor b.v.b. nieuwsbrieven"
+
+#: members/models.py:190
+msgid "Receive opt-in mailings"
+msgstr "Ontvang opt-in mailings"
+
+#: members/models.py:191
+msgid "Receive mailings about vacancies and events from Thalia's sponsors."
+msgstr "Ontvang mailings over vacatures en evenmenten van Thalia's sponsoren"
+
+#: members/models.py:199
+msgid ""
+"Yes, I want Thalia to take the membership fees from my bank account through "
+"direct debit for each year."
+msgstr ""
+"Ja, ik wil dat Thalia verschuldigde lidmaatschapsgelden elk jaar van mijn "
+"bankrekening afschrijft."
+
+#: members/models.py:202
+msgid "No, I will pay the contribution myself"
+msgstr "Nee, ik zal de contributie zelf betalen"
+
+#: members/models.py:203
+msgid "Direct debit"
+msgstr "Automatische afschijving"
+
+#: members/models.py:204
+msgid "Each year, have Thalia take the membership fees from my bank account"
+msgstr ""
+"Laat Thalia elk jaar het lidmaatschapsgeld van mijn bankrekening afschrijven"
+
+#: members/models.py:210
+msgid "Bank account"
+msgstr "Bankrekening"
+
+#: members/models.py:211
+msgid "Bank account for direct debit"
+msgstr "Bankrekening voor automatische afschrijving"
+
+#: members/models.py:224
+msgid "Is this user currently active"
+msgstr "Is deze user op dit moment actief"
+
+#: members/models.py:241
+msgid "Display name"
+msgstr "Weergavenaam"
+
+#: members/templates/members/index.html:8
+msgid "These are the current members:"
+msgstr "Dit zijn de huidige leden:"
+
+#: members/templates/members/index.html:13
+msgid "Er zijn geen leden"
+msgstr "Er zijn geen leden"
+
+#~ msgid "English"
+#~ msgstr "Engels"
+
+#~ msgid "Dutch"
+#~ msgstr "Nederlands"

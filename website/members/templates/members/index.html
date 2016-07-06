@@ -5,12 +5,12 @@
 {% block body %}
 <h1>Hello world</h1>
 
-<p>These are the current members:
+<p>{% blocktrans %}These are the current members:{% endblocktrans %}
   <ul>
     {% for member in members %}
     <li>{{ member }} - {{ member.type }}</li>
     {% empty %}
-    <li>Er zijn geen leden</li>
+    <li>{% trans "Er zijn geen leden" %}</li>
     {% endfor %}
   </ul>
 </p>

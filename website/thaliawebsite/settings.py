@@ -127,7 +127,7 @@ LANGUAGES = [
     ('nl', _('Dutch'))
 ]
 
-LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+LOCALE_PATHS = ('locale',)
 
 
 # Static files (CSS, JavaScript, Images)
