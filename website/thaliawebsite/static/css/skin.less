@@ -1,0 +1,270 @@
+@import "presets/defaults.less";
+/* -------------------------------------------------------------------------------- /
+	[1]	SETUP - general settings, common classes
+/ -------------------------------------------------------------------------------- */
+
+	body { background: @background-color; color: @body-color; }
+.thimbus-page {
+	a { color:@primary-color; }
+	::-moz-selection { background:@primary-color; }
+	::selection { background:@primary-color; }
+
+/* -------------------------------------------------------------------------------- /
+	[2]	LAYOUT
+/ -------------------------------------------------------------------------------- */
+
+	#main { background:@background-color; }
+
+/* -------------------------------------------------------------------------------- /
+	[3] HEADER
+/ -------------------------------------------------------------------------------- */
+
+	#header { background:@background-color; }
+	#header-info { background:@primary-color; }
+	#logo {
+		padding: 55px 0 !important;
+		img {
+			content: url(@logo-image);
+		}
+	}
+
+/* -------------------------------------------------------------------------------- /
+	[4] NAVIGATION
+/ -------------------------------------------------------------------------------- */
+
+	#primary-navigation {
+		background:@background-color;
+		.nav {
+			&> li {
+				&:before { background:@background-color; }
+				&:hover > a { color:@primary-color; }
+				&.nav-path-selected > a { color:@primary-color; }
+			}
+
+			li {
+				a {
+					background-color:@background-color;
+					color:@inverted-color;
+					font-family: 'GillSansMT-Condensed';
+					font-weight: normal;
+					font-weight: normal;
+					font-size:24px;
+				}
+				&> ul { background:@background-color; }
+			}
+
+			ul li {
+				border-top:none;
+
+				a { color:@inverted-color; }
+				&:hover > a { background-color:@dark-primary-color; }
+				&.nav-path-selected > a { background-color:@primary-color; }
+
+			}
+			.menu-responsive {
+				background-color:@inverted-color;
+				.menu-title {
+					font-family: 'GillSansMT-Condensed';
+					font-weight: normal;
+					font-size:24px;
+					padding-left: 4px;
+				}
+			}
+		}
+	}
+
+/* -------------------------------------------------------------------------------- /
+	[5] FOOTER
+/ -------------------------------------------------------------------------------- */
+
+	#top-footer { background:@primary-color; }
+	#bottom { background:@background-color; }
+
+/* -------------------------------------------------------------------------------- /
+	[6] WIDGETS
+/ -------------------------------------------------------------------------------- */
+
+	.widget {
+		textarea,
+		input[type="text"],
+		input[type="password"],
+		input[type="datetime"],
+		input[type="datetime-local"],
+		input[type="date"],
+		input[type="month"],
+		input[type="time"],
+		input[type="week"],
+		input[type="number"],
+		input[type="email"],
+		input[type="url"],
+		input[type="search"],
+		input[type="tel"],
+		input[type="color"],
+		.uneditable-input { background:@faded-color; }
+	}
+
+/* -------------------------------------------------------------------------------- /
+	[7] FORM ELEMENTS
+/ -------------------------------------------------------------------------------- */
+
+	.btn-style1 {
+		background:@primary-color;
+		&:hover { background:@inverted-color !important; }
+	}
+
+/* -------------------------------------------------------------------------------- /
+	[8.1] CONTENT COMMON
+/ -------------------------------------------------------------------------------- */
+
+	h1, /*h2,*/ h3, h4, h5, h6, .slider-dark-h1, .slider-dark-h2, .slider-dark-h3 { color:@inverted-color; font-family: 'GillSansMT-Condensed'; text-transform: uppercase; }
+	h1:before { background:@primary-color; }
+	.tp-caption.slider-title-large:before, .tp-caption.slider-title:before { background: @inverted-color; }
+	.circle { background-color: @inverted-color; }
+	.circle-border { border-color: @inverted-color; }
+	div[class|="social-icon"] a { background-color: @inverted-color; }
+
+/* -------------------------------------------------------------------------------- /
+	[8.2] SHORTCODES
+/ -------------------------------------------------------------------------------- */
+
+	.link-tabs > li.current a,
+	.link-tabs > li:hover a,
+	.tabs > li.current a,
+	.tabs > li:hover a,
+	.tabs-content > li.current .tab-title a,
+	.tabs-content > li .tab-title a:hover { color:@primary-color; }
+	.toggles > li.current a,
+	.toggles > li:hover a { color:@primary-color; }
+	.progress-style1 .bar { background:@primary-color; }
+	.highlight1 {
+		border-bottom:dotted 1px @primary-color;
+		color:@primary-color;
+	}
+	.highlight2 { background:@primary-color; }
+
+/* -------------------------------------------------------------------------------- /
+	[8.4] BLOG
+/ -------------------------------------------------------------------------------- */
+
+	.post-body h2 a, .post-meta span { color:@inverted-color; }
+	.post-body h2 a:hover { color:@primary-color; }
+	.post-overlay { background:@primary-color; }
+	.post-overlay-icons a { background-color: @inverted-color; }
+	.post-overlay-icons li span { display: none; }
+
+/* -------------------------------------------------------------------------------- /
+	[8.8] COMMENTS
+/ -------------------------------------------------------------------------------- */
+
+	.comment-container:hover { border-color:@primary-color; }
+	#comment-list li .comment-container:hover h4 { color:@primary-color; }
+
+/* -------------------------------------------------------------------------------- /
+	[9] PRICING TABLE
+/ -------------------------------------------------------------------------------- */
+
+	.gw-go-col-wrap:hover .gw-go-col.gw-go-style1 .gw-go-header h3,
+	.gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style1 .gw-go-header h3,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style1 .gw-go-header h3 { color:@primary-color; }
+
+	.gw-go-col.gw-go-style1 .gw-go-coinf div,
+	.gw-go-col.gw-go-style1 .gw-go-coinb div { color:@primary-color; }
+
+	.gw-go-col.gw-go-style1 .gw-go-btn,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style1 .gw-go-btn { color:@faded-color; }
+
+	.gw-go-col-wrap:hover .gw-go-col.gw-go-style1 .gw-go-btn,
+	.gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style1 .gw-go-btn,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style1 .gw-go-btn { background:@primary-color; }
+
+	.gw-go-col-wrap:hover .gw-go-col.gw-go-style2,
+	.gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 { background:@primary-color; }
+
+	.gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-header-top,
+	.gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-header-top,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-header-top { background:@primary-color; }
+
+	.gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-header-bottom,
+	.gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-header-bottom,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-header-bottom {
+		background:@primary-color;
+		border-top:solid 1px @primary-color;
+	}
+	.gw-go-col.gw-go-style2 .gw-go-header h3,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-header h3 { color:@primary-color; }
+
+	.gw-go-col.gw-go-style2 .gw-go-coinf,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinf,
+	.gw-go-col.gw-go-style2 .gw-go-coinb,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinb { border:solid 2px @primary-color; }
+
+	.gw-go-col.gw-go-style2 .gw-go-coinf div,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinf div,
+	.gw-go-col.gw-go-style2 .gw-go-coinb div,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinb div { background:@primary-color; }
+
+	.gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-coinf div,
+	.gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinf div,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-coinf div,
+	.gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-coinb div,
+	.gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinb div,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-coinb div { color:@primary-color; }
+
+	.gw-go-col.gw-go-style2 .gw-go-btn,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-btn { background:@primary-color; }
+
+	.gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-btn,
+	.gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-btn,
+	.gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-btn { color:@primary-color; }
+
+/* -------------------------------------------------------------------------------- /
+	[10.1] LAVALAMP PLUGIN
+/ -------------------------------------------------------------------------------- */
+
+	li.backLava { background:@lavalamp-color; }
+}
+
+.page-number {
+	background-color: @background-color;
+}
+
+.page-number:hover, .current .page-number {
+	background-color: @primary-color;
+}
+
+.pagination a, .pagination-info {
+	color: @background-color;
+}
+
+// CONCRETE stuff
+	/* header account menu */
+	#thimbus-account-menu {
+		a.btn {
+			background-color: @inverted-color;
+			color: @background-color;
+
+			&:hover {
+				background-color: @primary-color;
+			}
+		}
+		button.btn {
+			background-color: @inverted-color;
+			color: @background-color;
+
+			&:hover {
+				background-color: @primary-color;
+			}
+		}
+		.dropdown-menu {
+			background-color: @inverted-color;
+
+			a {
+				color: @background-color;
+
+				&:hover {
+					background-color: @primary-color;
+				}
+			}
+		}
+	}
