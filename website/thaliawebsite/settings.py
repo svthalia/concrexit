@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
+    'committees',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +56,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'thaliawebsite.urls'
+
 
 TEMPLATES = [
     {
@@ -108,6 +110,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'committees.backends.CommitteeBackend',
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -134,3 +141,6 @@ LOCALE_PATHS = ('locale',)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Where to store uploaded files
+MEDIA_ROOT = './media/'

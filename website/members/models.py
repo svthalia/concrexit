@@ -1,4 +1,4 @@
-import datetime
+from django.utils import timezone
 
 from django.db import models
 from django.core import validators
@@ -69,7 +69,7 @@ class Member(models.Model):
     address_street = models.CharField(
         max_length=100,
         validators=[validators.RegexValidator(
-            regex=r'^.+ \d+.+',
+            regex=r'^.+ \d+.*',
             message=_('Include the house number'),
         )],
         verbose_name=_('Street and house number'),
@@ -218,7 +218,7 @@ class Member(models.Model):
 
         Tested by checking if the expiration date has passed.
         """
-        return self.membership_expiration > datetime.utcnow()
+        return self.membership_expiration > timezone.now()
     # Special properties for admin site
     is_active.boolean = True
     is_active.short_description = _('Is this user currently active')
