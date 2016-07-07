@@ -1,0 +1,26 @@
+[
+{
+    "model": "committees.committee",
+    "pk": 1,
+    "fields": {
+        "name": "testcie1",
+        "description": "Test",
+        "photo": "Thom_Wiggers.jpg",
+        "permissions": [
+            25,
+            26,
+            27
+        ]
+    }
+},
+{
+    "model": "committees.committee",
+    "pk": 2,
+    "fields": {
+        "name": "testcie2",
+        "description": "testdesc2",
+        "photo": "Thom_Wiggers_4YRoxV3.jpg",
+        "permissions": []
+    }
+}
+]

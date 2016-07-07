@@ -1,0 +1,143 @@
+[
+{
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$30000$HIt9lBUpgkYG$T2ofXIOlAhsqfMUqzl3Vl9vyaDq50d1JJJNEYeZ9/OM=",
+        "last_login": "2016-07-07T11:37:43Z",
+        "is_superuser": true,
+        "username": "thom",
+        "first_name": "Thom",
+        "last_name": "Wiggers",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2016-07-07T11:37:38Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$30000$80KR811he3aB$W11Exs1wY0tXw9kLsyunh1dzvRDcn1a+Hc9m1lTirFY=",
+        "last_login": "2016-07-07T12:01:02.638Z",
+        "is_superuser": false,
+        "username": "testuser",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2016-07-07T12:00:21Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+        "password": "",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "testuser2",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2016-07-07T14:50:26Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "members.member",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "programme": null,
+        "student_number": "",
+        "type": "member",
+        "registration_year": 2011,
+        "membership_expiration": null,
+        "address_street": "Heyendaalseweg 135",
+        "address_street2": "",
+        "address_postal_code": "1245 TG",
+        "address_city": "Nijmegen",
+        "phone_number": "",
+        "emergency_contact": "",
+        "emergency_contact_phone_number": "",
+        "birthday": "1993-03-02",
+        "show_birthday": true,
+        "website": "",
+        "profile_description": "",
+        "nickname": "",
+        "display_name_preference": "full",
+        "language": "nl",
+        "receive_optin": true,
+        "direct_debit_authorized": false,
+        "bank_account": ""
+    }
+},
+{
+    "model": "members.member",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "programme": null,
+        "student_number": "",
+        "type": "member",
+        "registration_year": 2011,
+        "membership_expiration": null,
+        "address_street": "testuserv 2",
+        "address_street2": "",
+        "address_postal_code": "2545 TG",
+        "address_city": "Nijmegen",
+        "phone_number": "",
+        "emergency_contact": "",
+        "emergency_contact_phone_number": "",
+        "birthday": "2016-07-07",
+        "show_birthday": true,
+        "website": "",
+        "profile_description": "",
+        "nickname": "",
+        "display_name_preference": "full",
+        "language": "nl",
+        "receive_optin": true,
+        "direct_debit_authorized": false,
+        "bank_account": ""
+    }
+},
+{
+    "model": "members.member",
+    "pk": 3,
+    "fields": {
+        "user": 3,
+        "programme": null,
+        "student_number": "",
+        "type": "member",
+        "registration_year": 1999,
+        "membership_expiration": null,
+        "address_street": "testuser 2",
+        "address_street2": "",
+        "address_postal_code": "6525 TE",
+        "address_city": "Nijmegen",
+        "phone_number": "",
+        "emergency_contact": "",
+        "emergency_contact_phone_number": "",
+        "birthday": "2016-07-07",
+        "show_birthday": true,
+        "website": "",
+        "profile_description": "",
+        "nickname": "",
+        "display_name_preference": "full",
+        "language": "nl",
+        "receive_optin": true,
+        "direct_debit_authorized": false,
+        "bank_account": ""
+    }
+}
+]
