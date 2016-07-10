@@ -9,6 +9,8 @@
 .tox/
 db.sqlite3
 
+website/media/
+
 # rope
 .ropeproject/
 
