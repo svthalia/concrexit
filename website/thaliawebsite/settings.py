@@ -143,4 +143,4 @@ LOCALE_PATHS = ('locale',)
 STATIC_URL = '/static/'
 
 # Where to store uploaded files
-MEDIA_ROOT = './media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
