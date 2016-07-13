@@ -11,15 +11,14 @@ from members.models import Member
 class CommitteeMembersTest(TestCase):
     fixtures = ['members.json', 'committees.json']
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.testcie = Committee.objects.get(name='testcie1')
-        cls.testuser = Member.objects.get(pk=1)
-
-        cls.m = CommitteeMembership(committee=cls.testcie,
-                                    member=cls.testuser,
-                                    chair=False)
-        cls.m.save()
+    def setUp(self):
+        # Don't use setUpTestData because delete() will cause problems
+        self.testcie = Committee.objects.get(name='testcie1')
+        self.testuser = Member.objects.get(pk=1)
+        self.m = CommitteeMembership(committee=self.testcie,
+                                     member=self.testuser,
+                                     chair=False)
+        self.m.save()
 
     def test_unique(self):
         with self.assertRaises(IntegrityError):
@@ -54,6 +53,13 @@ class CommitteeMembersTest(TestCase):
         self.assertTrue(self.m.is_active)
         self.m.until = timezone.now().date().replace(year=1900)
         self.assertFalse(self.m.is_active)
+
+    def test_delete(self):
+        self.m.delete()
+        self.assertIsNotNone(self.m.until)
+        self.assertIsNotNone(self.m.pk)
+        self.m.delete()
+        self.assertIsNone(self.m.pk)
 
 
 class CommitteeMembersChairTest(TestCase):

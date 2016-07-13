@@ -153,6 +153,14 @@ class CommitteeMembership(models.Model):
             self.until = None
         super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        """Deactivates active memberships, deletes inactive ones"""
+        if self.is_active:
+            self.until = timezone.now().date()
+            self.save()
+        else:
+            super().delete(*args, **kwargs)
+
     def __str__(self):
         return "{} membership of {} since {}".format(self.member,
                                                      self.committee,
