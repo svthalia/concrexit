@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
@@ -12,8 +13,17 @@ from members.models import Member
 logger = logging.getLogger(__name__)
 
 
+class ActiveCommitteesManager(models.Manager):
+    """Returns active committees only"""
+    def get_queryset(self):
+        return super().get_queryset().exclude(until__lt=timezone.now().date())
+
+
 class Committee(models.Model):
     """A committee"""
+
+    active_committees = ActiveCommitteesManager()
+    objects = models.Manager()
 
     name = models.CharField(
         max_length=40,
@@ -39,6 +49,20 @@ class Committee(models.Model):
         verbose_name=_('permissions'),
         blank=True,
     )
+
+    since = models.DateField(
+        _('founded in'),
+        null=True,
+        blank=True,
+    )
+
+    until = models.DateField(
+        _('existed until'),
+        null=True,
+        blank=True,
+    )
+
+    contact_email = models.EmailField(_('contact email address'))
 
     def __str__(self):
         return self.name
@@ -74,7 +98,7 @@ class CommitteeMembership(models.Model):
     since = models.DateField(
         verbose_name=_('Committee member since'),
         help_text=_('The date this member joined the committee in this role'),
-        auto_now_add=True,
+        default=datetime.date.today
     )
 
     until = models.DateField(
