@@ -14,7 +14,7 @@ class CommitteeAdmin(admin.ModelAdmin):
 
 @admin.register(models.Board)
 class BoardAdmin(admin.ModelAdmin):
-    pass
+    exclude = ('is_board',)
 
 
 @admin.register(models.CommitteeMembership)
