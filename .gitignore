@@ -11,6 +11,9 @@ db.sqlite3
 
 website/media/
 
+# Ignore local settings
+website/settings/localsettings.py
+
 # rope
 .ropeproject/
 
