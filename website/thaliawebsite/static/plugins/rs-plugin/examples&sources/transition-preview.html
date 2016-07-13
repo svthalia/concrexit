@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+
+
+<!--
+#######################################
+	- THE HEAD PART -
+######################################
+-->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<title>SLIDER REVOLUTION -  The Responsive Slider jQuery Plugin</title>
+	<link rel="icon" type="image/png" href="images/sitelogo.png" />
+
+
+
+    <!-- commented, remove this line to use IE & iOS favicons -->
+    <link rel="shortcut icon" href="images/favicon.ico" />
+
+
+
+    <!-- get jQuery from the google apis -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+
+
+
+    <!-- REVOLUTION BANNER CSS SETTINGS -->
+    <link rel="stylesheet" type="text/css" href="css/responsive.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="rs-plugin/css/settings.css" media="screen" />
+
+
+     <!-- REVOLUTION BANNER JS FILES  -->
+	<script type="text/javascript" src="rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
+    <script type="text/javascript" src="rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+
+
+
+
+
+
+</head>
+
+
+<style>
+	.switcher				{	cursor:pointer; float:left; margin:0px 20px 20px 0px}
+
+	.switcher p, .inputs	{	margin-top:0px; margin-bottom:0px; font-size:10px; font-family:Arial;text-align:center;}
+	.inputs					{   width:350px; float:left;padding-top:7px; text-align:left; clear:left; font-size:12px;}
+	.numberi				{	float:left;width:50px;margin-bottom:10px;}
+	.clear					{	clear:both;}
+	.title					{	margin-bottom:10px;font-size:14px;font-weight:bold;font-family:Arial;}
+</style>
+
+<!--
+#######################################
+	- THE BODY PART -
+######################################
+-->
+<body class="body-dark">
+
+
+
+
+		<!--
+		#################################
+			- THEMEPUNCH BANNER -
+		#################################
+		-->
+
+			<div class="bannercontainer" >
+					<div class="banner" >
+						<ul>
+
+							<!-- FADE -->
+									<li data-transition="fade" data-slotamount="0"  data-rotate="0" data-masterspeed="200" data-thumb="i" >
+										<img src="images/slides/image1.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Simple Fade</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!-- FLYIN -->
+									<li data-transition="flyin" data-slotamount="0"  data-rotate="0" data-masterspeed="400" data-thumb="i" >
+										<img src="images/slides/image2.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Flyin</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+
+							<!-- CUBIC -->
+									<li data-transition="cubic" data-slotamount="0"  data-rotate="0" data-masterspeed="400" data-thumb="i" >
+										<img src="images/slides/image3.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Cubic</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+
+							<!-- TURN OFF -->
+									<li data-transition="turnoff" data-slotamount="0"  data-rotate="0" data-masterspeed="400" data-thumb="i" >
+										<img src="images/slides/image4.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Turn Off</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+
+
+							<!-- 3D CURTAIN HORIZONTAL -->
+									<li data-transition="3dcurtain-horizontal" data-slotamount="0"  data-rotate="0" data-masterspeed="200" data-thumb="i" >
+										<img src="images/slides/image5.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">3D Curtain Horizontal</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+
+
+							<!-- 3D CURTAIN VERTICAL -->
+									<li data-transition="3dcurtain-vertical" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image6.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">3D Curtain Vertical</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+
+							<!-- PAPERCUT -->
+									<li data-transition="papercut" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image7.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">PaperCut</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+
+							<!-- BOX FADE -->
+									<li data-transition="boxfade" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image8.jpg">
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Box Fade</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+
+							<!-- BOX SLIDE -->
+									<li data-transition="boxslide" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image9.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Box Slide</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!-- CURTAIN 1 SLIDE -->
+									<li data-transition="curtain-1" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image10.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Curtain 1</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!-- CURTAIN 2 SLIDE -->
+									<li data-transition="curtain-2" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image11.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Curtain 2</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!-- CURTAIN 3 SLIDE -->
+									<li data-transition="curtain-3" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image12.jpg">
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Curtain 3</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLIDE DOWN-->
+									<li data-transition="slidedown" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image13.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slide Down</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLIDE UP-->
+									<li data-transition="slideup" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image14.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slide Up</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLIDE Left-->
+									<li data-transition="slideleft" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image15.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slide Left</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLIDE Right-->
+									<li data-transition="slideright" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image16.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slide Right</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLOT Fade Horizontal-->
+									<li data-transition="slotfade-horizontal" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image17.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Fade Horizontal</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLOT Fade Vertical-->
+									<li data-transition="slotfade-vertical" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image18.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Fade Vertical</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLOT Slide Horizontal-->
+									<li data-transition="slotslide-horizontal" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image21.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Slide Horizontal</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLOT Slide Vertical-->
+									<li data-transition="slotslide-vertical" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image22.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Slide Vertical</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLOT Zoom Horizontal-->
+									<li data-transition="slotzoom-horizontal" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image23.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Zoom Horizontal</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+							<!--  SLOT Zoom Vertical-->
+									<li data-transition="slotzoom-vertical" data-slotamount="0"  data-rotate="0" data-masterspeed="300" data-thumb="i" >
+										<img src="images/slides/image24.jpg">
+										<div class="caption randomrotate" data-x="0" data-y="10" data-speed="900" data-start="900" data-easing="easeOutExpo"><img src="images/slides/glare3.png"></div>
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Zoom Vertical</div>
+										<div class="caption randomrotate small_text numbers"  data-x="400" data-y="120" data-speed="900" data-start="700" data-easing="easeOutBack">Slot Amount Random</div>
+										<div class="caption randomrotate small_text rotatess"  data-x="400" data-y="140" data-speed="900" data-start="700" data-easing="easeOutBack">Rotate 0</div>
+									</li>
+
+
+							<!--  CUSTOM 1-->
+									<li  data-transition="3dcurtain-horizontal" data-slotamount="1"  data-rotate="0" data-masterspeed="500" data-thumb="i" class="custom">
+										<img src="images/slides/image37.jpg">
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Custom-1</div>
+									</li>
+
+							<!--  CUSTOM 2-->
+									<li  data-transition="3dcurtain-horizontal" data-slotamount="2"  data-rotate="0" data-masterspeed="600" data-thumb="i" class="custom">
+										<img src="images/slides/image38.jpg">
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Custom-2</div>
+									</li>
+
+
+
+							<!--  CUSTOM 3-->
+									<li  data-transition="flyin" data-slotamount="1"  data-rotate="0" data-masterspeed="300" data-thumb="i" class="custom">
+										<img src="images/slides/image39.jpg">
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Custom-4</div>
+									</li>
+
+							<!--  CUSTOM 4-->
+									<li  data-transition="flyin" data-slotamount="2"  data-rotate="0" data-masterspeed="300" data-thumb="i" class="custom">
+										<img src="images/slides/image40.jpg">
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Custom-5</div>
+									</li>
+
+
+							<!--  CUSTOM 5-->
+									<li  data-transition="turnoff" data-slotamount="1"  data-rotate="0" data-masterspeed="300" data-thumb="i" class="custom">
+										<img src="images/slides/image41.jpg">
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Custom-4</div>
+									</li>
+
+							<!--  CUSTOM 6-->
+									<li  data-transition="turnoff" data-slotamount="2"  data-rotate="0" data-masterspeed="300" data-thumb="i" class="custom">
+										<img src="images/slides/image42.jpg">
+										<div class="caption randomrotate big_white"  data-x="400" data-y="80" data-speed="900" data-start="700" data-easing="easeOutBack">Custom-5</div>
+									</li>
+
+
+
+
+
+						</ul>
+						<div class="tp-bannertimer"></div>
+					</div>
+				</div>
+
+
+			<div class="transitionscontainer" style="max-width:800px; min-width:300px; margin:50px auto;padding:0px 50px;">
+				<p class="title">Basic Transition Settings (multiply your possibilities !)</p>
+				<div class="inputs" style="">Slot Amounts (0 = random) <span style="font-size:10px">Some Transition has min-max limits</span></div><input class="numberi" type="number" id="slotamount" value="0">
+				<div class="inputs">Rotation (-720 -> 720, 999 = random) <span style="font-size:10px">Only for Simple Transitions</span></div><input class="numberi" type="number" step="10" id="rotation" value="0">
+
+				<div class="clear"></div>
+				<div style="width:100%;height:20px"></div>
+				<p class="title">Simple Transitions</p>
+				<div class="switcher" id="1"><img src="images/tiles/transition_fade.png"><p>Fade</p></div>
+				<div class="switcher" id="8"><img src="images/tiles/transition_boxes.png"><p>boxfade</p></div>
+				<div class="switcher" id="9"><img src="images/tiles/transition_boxes.png"><p>boxslide</p></div>
+				<div class="switcher" id="10"><img src="images/tiles/transition_curtainone.png"><p>curtain-1</p></div>
+				<div class="switcher" id="11"><img src="images/tiles/transition_curtaintwo.png"><p>curtain-2</p></div>
+				<div class="switcher" id="12"><img src="images/tiles/transition_curtainthree.png"><p>curtain-3</p></div>
+				<div class="switcher" id="13"><img src="images/tiles/transition_slidedown.png"><p>slidedown</p></div>
+				<div class="switcher" id="14"><img src="images/tiles/transition_slideup.png"><p>slideup</p></div>
+				<div class="switcher" id="15"><img src="images/tiles/transition_slideleft.png"><p>slideleft</p></div>
+				<div class="switcher" id="16"><img src="images/tiles/transition_slideright.png"><p>slideright</p></div>
+				<div class="switcher" id="17"><img src="images/tiles/transition_slotfadehorizontal.png"><p>slotfade-hor</p></div>
+				<div class="switcher" id="18"><img src="images/tiles/transition_slotfadevertical.png"><p>slotfade-ver</p></div>
+				<div class="switcher" id="19"><img src="images/tiles/transition_slotslidehorizontal.png"><p>Slotside-hor</p></div>
+				<div class="switcher" id="20"><img src="images/tiles/transition_slotslidevertical.png"><p>Slotside-ver</p></div>
+				<div class="switcher" id="21"><img src="images/tiles/transition_slotzoomhorizontal.png"><p>Slotzoom-hor</p></div>
+				<div class="switcher" id="22"><img src="images/tiles/transition_slotzoomvertical.png"><p>Slotzoom-ver</p></div>
+				<div class="clear"></div>
+				<div style="width:100%;height:10px"></div>
+				<p class="title premiumtitle">Premium Transitions</p>
+				<div class="switcher" id="7"><img src="images/tiles/transition_papercut.png"><p>PaperCut</p></div>
+				<div class="switcher premium" id="5"><img src="images/tiles/transition_3dch.png"><p>3D Curtain H</p></div>
+				<div class="switcher premium" id="6"><img src="images/tiles/transition_3dcv.png"><p>3D Curtain V</p></div>
+				<div class="switcher premium" id="3"><img src="images/tiles/transition_cubic.png"><p>Cubic</p></div>
+				<div class="switcher premium" id="2"><img src="images/tiles/transition_flyin.png"><p>Flyin</p></div>
+				<div class="switcher premium" id="4"><img src="images/tiles/transition_turnoff.png"><p>TurnOff</p></div>
+
+				<div class="clear"></div>
+				<div style="width:100%;height:10px"></div>
+				<p class="title">Custom Transitions</p>
+				<div class="switcher" id="23"><img src="images/tiles/transition_custom.png"><p>Custom</p></div>
+				<div class="switcher" id="24"><img src="images/tiles/transition_custom.png"><p>Custom 2</p></div>
+				<div class="switcher" id="25"><img src="images/tiles/transition_custom.png"><p>Custom 3</p></div>
+				<div class="switcher" id="26"><img src="images/tiles/transition_custom.png"><p>Custom 4n</p></div>
+				<div class="switcher" id="27"><img src="images/tiles/transition_custom.png"><p>Custom 5</p></div>
+				<div class="switcher" id="28"><img src="images/tiles/transition_custom.png"><p>Custom 6</p></div>
+
+			</div>
+
+			<!--
+			##############################
+			 - ACTIVATE THE BANNER HERE -
+			##############################
+			-->
+			<script type="text/javascript">
+
+				var tpj=jQuery;
+				tpj.noConflict();
+
+				tpj(document).ready(function() {
+
+				if (tpj.fn.cssOriginal!=undefined)
+					tpj.fn.css = tpj.fn.cssOriginal;
+
+					var api= tpj('.banner').revolution(
+						{
+							delay:9000,
+							startheight:500,
+							startwidth:960,
+
+							hideThumbs:200,
+
+							thumbWidth:100,							// Thumb With and Height and Amount (only if navigation Tyope set to thumb !)
+							thumbHeight:50,
+							thumbAmount:5,
+
+							navigationType:"none",					//bullet, thumb, none, both		(No Thumbs In FullWidth Version !)
+							navigationArrows:"verticalcentered",		//nexttobullets, verticalcentered, none
+							navigationStyle:"round",				//round,square,navbar
+
+							touchenabled:"on",						// Enable Swipe Function : on/off
+							onHoverStop:"on",						// Stop Banner Timet at Hover on Slide on/off
+
+							navOffsetHorizontal:0,
+							navOffsetVertical:20,
+
+							stopAtSlide:-1,							// Stop Timer if Slide "x" has been Reached. If stopAfterLoops set to 0, then it stops already in the first Loop at slide X which defined. -1 means do not stop at any slide. stopAfterLoops has no sinn in this case.
+							stopAfterLoops:-1,						// Stop Timer if All slides has been played "x" times. IT will stop at THe slide which is defined via stopAtSlide:x, if set to -1 slide never stop automatic
+
+							shadow:1,								//0 = no Shadow, 1,2,3 = 3 Different Art of Shadows  (No Shadow in Fullwidth Version !)
+							fullWidth:"off",							// Turns On or Off the Fullwidth Image Centering in FullWidth Modus
+
+
+						});
+
+
+
+						jQuery("#slotamount").change(function() {
+							var newv=jQuery(this).val();
+							jQuery('.banner ul li').each(function() {
+								if (!jQuery(this).hasClass('custom')) {
+									jQuery(this).find('.numbers').html('Slot Amounts '+newv);
+									jQuery(this).data('slotamount',newv);
+								}
+
+							});
+						});
+
+
+						jQuery("#rotation").change(function() {
+							var newv=jQuery(this).val();
+							jQuery('.banner ul li').each(function() {
+								if (!jQuery(this).hasClass('custom')) {
+									jQuery(this).find('.rotatess').html('Rotate '+newv);
+									jQuery(this).data('rotate',newv);
+								}
+
+							});
+						});
+
+
+
+						// bind to button click
+						jQuery(".switcher").click(apiHandler)
+
+						function apiHandler(e) {
+							api.revshowslide(e.currentTarget.id);
+							return false;
+						}
+
+						jQuery(".inputs input").each(function() {
+							var field=jQuery(this);
+							field.data('standard',field.val());
+						});
+
+
+						jQuery(".inputs input").focus(function(){
+							var $this = jQuery(this);
+							$this.val($this.val()== $this.data('standard') ? "" : $this.val());
+						});
+						jQuery(".inputs input").blur(function(){
+							var $this = jQuery(this);
+							$this.val($this.val()== "" ? $this.data('standard') : $this.val());
+						});
+
+						var ieold = jQuery.browser.msie && parseInt(jQuery.browser.version,0)<9;
+						var ie9 = jQuery.browser.msie && parseInt(jQuery.browser.version,0)==9;
+						if (ieold || ie9) {
+							jQuery(".premium").fadeTo(0,0.5);
+							jQuery('.premiumtitle').html('Premium Transitions<p style="font-weight:normal !important;font-size:12px !important;color:#ff0000;">(Only in Modern Browsers - in older browsers and IE9 simple (random) transition will be shown)</p>');
+						}
+					});
+			</script>
+
+
+
+
+	</body>
+</html>

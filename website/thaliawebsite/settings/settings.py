@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Dependencies
+    'static_precompiler',
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
@@ -141,7 +143,18 @@ LOCALE_PATHS = ('locale',)
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
-STATIC_URL = '/static/'
-
 # Where to store uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders
+    'static_precompiler.finders.StaticPrecompilerFinder',
+)
+
+# Precompiler settings
+STATIC_PRECOMPILER_LIST_FILES = True
