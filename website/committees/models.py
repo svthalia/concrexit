@@ -12,8 +12,17 @@ from members.models import Member
 logger = logging.getLogger(__name__)
 
 
+class ActiveCommitteesManager(models.Manager):
+    """Returns active committees only"""
+    def get_queryset(self):
+        return super().get_queryset().exclude(until__lt=timezone.now().date())
+
+
 class Committee(models.Model):
     """A committee"""
+
+    active_committees = ActiveCommitteesManager()
+    objects = models.Manager()
 
     name = models.CharField(
         max_length=40,
@@ -39,6 +48,12 @@ class Committee(models.Model):
         verbose_name=_('permissions'),
         blank=True,
     )
+
+    since = models.DateField(_('founded in'))
+
+    until = models.DateField(_('existed until'))
+
+    contact_email = models.EmailField(_('contact email address'))
 
     def __str__(self):
         return self.name
