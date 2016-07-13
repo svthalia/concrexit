@@ -11,15 +11,14 @@ from members.models import Member
 class CommitteeMembersTest(TestCase):
     fixtures = ['members.json', 'committees.json']
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.testcie = Committee.objects.get(name='testcie1')
-        cls.testuser = Member.objects.get(pk=1)
-
-        cls.m = CommitteeMembership(committee=cls.testcie,
-                                    member=cls.testuser,
-                                    chair=False)
-        cls.m.save()
+    def setUp(self):
+        # Don't use setUpTestData because delete() will cause problems
+        self.testcie = Committee.objects.get(name='testcie1')
+        self.testuser = Member.objects.get(pk=1)
+        self.m = CommitteeMembership(committee=self.testcie,
+                                     member=self.testuser,
+                                     chair=False)
+        self.m.save()
 
     def test_unique(self):
         with self.assertRaises(IntegrityError):
@@ -43,56 +42,80 @@ class CommitteeMembersTest(TestCase):
     def test_until_date(self):
         m = CommitteeMembership(committee=self.testcie,
                                 member=self.testuser,
-                                until=timezone.now().replace(year=2000),
+                                until=timezone.now().date().replace(year=2000),
                                 chair=False)
         with self.assertRaises(ValidationError):
             m.clean()
-        m.since = timezone.now().replace(year=1900)
+        m.since = timezone.now().date().replace(year=1900)
         m.clean()
 
     def test_inactive(self):
         self.assertTrue(self.m.is_active)
-        self.m.until = timezone.now().replace(year=1900)
+        self.m.until = timezone.now().date().replace(year=1900)
         self.assertFalse(self.m.is_active)
+
+    def test_delete(self):
+        self.m.delete()
+        self.assertIsNotNone(self.m.until)
+        self.assertIsNotNone(self.m.pk)
+        self.m.delete()
+        self.assertIsNone(self.m.pk)
 
 
 class CommitteeMembersChairTest(TestCase):
     fixtures = ['members.json', 'committees.json']
 
-    @classmethod
-    def setUpTestData(cls):
-        testcie = Committee.objects.get(name='testcie1')
-        testuser = Member.objects.get(pk=1)
-        cls.m1 = CommitteeMembership(committee=testcie,
-                                     member=testuser,
-                                     chair=True)
-        cls.m1.full_clean()
-        cls.m1.save()
-
     def setUp(self):
         self.testcie = Committee.objects.get(name='testcie1')
         self.testuser = Member.objects.get(pk=1)
+        self.testuser2 = Member.objects.get(pk=2)
+        self.m1 = CommitteeMembership(committee=self.testcie,
+                                      member=self.testuser,
+                                      chair=True)
+        self.m1.full_clean()
+        self.m1.save()
 
     def test_second_chair_fails(self):
-        testuser2 = Member.objects.get(pk=2)
-
         m = CommitteeMembership(committee=self.testcie,
-                                member=testuser2,
+                                member=self.testuser2,
                                 chair=True)
         with self.assertRaises(ValidationError):
             m.full_clean()
 
     def test_inactive_chair(self):
-        testuser2 = Member.objects.get(pk=2)
-        self.m1.until = timezone.now().replace(year=1900)
+        self.m1.until = timezone.now().date().replace(year=1900)
         self.m1.save()
+
         m = CommitteeMembership(committee=self.testcie,
-                                member=testuser2,
+                                member=self.testuser2,
                                 chair=True)
         m.full_clean()
 
+    def test_clean_self_chair(self):
+        self.m1.chair = True
+        self.m1.full_clean()
 
-class BackendTest(TestCase):
+    def test_change_chair(self):
+        pk = self.m1.pk
+        original_chair = self.m1.chair
+        self.m1.save()
+        self.assertEqual(self.m1.pk, pk, "new object created")
+        self.m1.chair = not original_chair
+        self.m1.save()
+        self.assertNotEqual(self.m1.pk, pk, "No new object created")
+
+    def test_change_chair_inactive(self):
+        pk = self.m1.pk
+        original_chair = self.m1.chair
+        self.m1.until = timezone.now().date()
+        self.m1.save()
+        self.assertEqual(self.m1.pk, pk, "new object created")
+        self.m1.chair = not original_chair
+        self.m1.save()
+        self.assertEqual(self.m1.pk, pk, "No new object created")
+
+
+class PermissionsBackendTest(TestCase):
     fixtures = ['members.json', 'committees.json']
 
     @classmethod
