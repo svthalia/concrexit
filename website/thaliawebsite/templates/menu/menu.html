@@ -1,0 +1,21 @@
+<div id="primary-navigation" class="container fullwidth">
+    <!-- .menu-responsive -->
+    <a class="menu-responsive"><span class="menu-icon-nav"></span><span class="menu-title">Home</span></a>
+    <!-- /.menu-responsive -->
+
+    <!-- menu -->
+    <ul class="nav">
+        {% for item in menu %}
+            {% url item.name as path %}
+            <li {% if request.path == path %}class="nav-path-selected"{% endif %}>
+                <a href="{{ path }}" target="_self" {% if request.path == path %}class="nav-path-selected"{% endif %}>
+                    {{ item.title }}
+                </a>
+                {% if 'submenu' in item %}
+                    {% include 'menu/submenu.html' with submenu=item.submenu %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <!-- /menu -->
+</div>
