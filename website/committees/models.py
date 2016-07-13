@@ -13,17 +13,25 @@ from members.models import Member
 logger = logging.getLogger(__name__)
 
 
-class ActiveCommitteesManager(models.Manager):
+class CommitteeManager(models.Manager):
+    """Returns committees only"""
+    def get_queryset(self):
+        return (super().get_queryset()
+                .exclude(board__is_board=True))
+
+
+class ActiveCommitteeManager(models.Manager):
     """Returns active committees only"""
     def get_queryset(self):
-        return super().get_queryset().exclude(until__lt=timezone.now().date())
+        return (super().get_queryset()
+                .exclude(until__lt=timezone.now().date()))
 
 
 class Committee(models.Model):
     """A committee"""
 
-    active_committees = ActiveCommitteesManager()
-    objects = models.Manager()
+    active_committees = ActiveCommitteeManager()
+    objects = CommitteeManager()
 
     name = models.CharField(
         max_length=40,
@@ -72,6 +80,20 @@ class Committee(models.Model):
         verbose_name_plural = _('committees')
 
 
+class BoardManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_board=True)
+
+
+class Board(Committee):
+    objects = BoardManager()
+
+    is_board = models.BooleanField(
+        verbose_name=_('Is this a board'),
+        default=True,
+    )
+
+
 class ActiveMembershipManager(models.Manager):
     """Get only active memberships"""
     def get_queryset(self):
@@ -113,6 +135,14 @@ class CommitteeMembership(models.Model):
         verbose_name=_('Chair of the committee'),
         help_text=_('There can only be one chair at a time!'),
         default=False,
+    )
+
+    role = models.CharField(
+        _('role'),
+        help_text=_('The role of this member'),
+        max_length=255,
+        blank=True,
+        null=True,
     )
 
     def __init__(self, *args, **kwargs):
