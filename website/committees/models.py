@@ -89,7 +89,7 @@ class CommitteeMembership(models.Model):
     since = models.DateField(
         verbose_name=_('Committee member since'),
         help_text=_('The date this member joined the committee in this role'),
-        auto_now_add=True,
+        default=lambda: timezone.now().date(),
     )
 
     until = models.DateField(
