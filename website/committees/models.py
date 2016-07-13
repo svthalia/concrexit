@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
@@ -49,9 +50,17 @@ class Committee(models.Model):
         blank=True,
     )
 
-    since = models.DateField(_('founded in'))
+    since = models.DateField(
+        _('founded in'),
+        null=True,
+        blank=True,
+    )
 
-    until = models.DateField(_('existed until'))
+    until = models.DateField(
+        _('existed until'),
+        null=True,
+        blank=True,
+    )
 
     contact_email = models.EmailField(_('contact email address'))
 
@@ -89,7 +98,7 @@ class CommitteeMembership(models.Model):
     since = models.DateField(
         verbose_name=_('Committee member since'),
         help_text=_('The date this member joined the committee in this role'),
-        default=lambda: timezone.now().date(),
+        default=datetime.date.today
     )
 
     until = models.DateField(
