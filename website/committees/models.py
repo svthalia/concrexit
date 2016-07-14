@@ -1,15 +1,37 @@
-from django.utils import timezone
+import datetime
+import logging
 
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.contrib.auth.models import Permission
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member
 
 
+logger = logging.getLogger(__name__)
+
+
+class CommitteeManager(models.Manager):
+    """Returns committees only"""
+    def get_queryset(self):
+        return (super().get_queryset()
+                .exclude(board__is_board=True))
+
+
+class ActiveCommitteeManager(models.Manager):
+    """Returns active committees only"""
+    def get_queryset(self):
+        return (super().get_queryset()
+                .exclude(until__lt=timezone.now().date()))
+
+
 class Committee(models.Model):
     """A committee"""
+
+    active_committees = ActiveCommitteeManager()
+    objects = CommitteeManager()
 
     name = models.CharField(
         max_length=40,
@@ -36,6 +58,20 @@ class Committee(models.Model):
         blank=True,
     )
 
+    since = models.DateField(
+        _('founded in'),
+        null=True,
+        blank=True,
+    )
+
+    until = models.DateField(
+        _('existed until'),
+        null=True,
+        blank=True,
+    )
+
+    contact_email = models.EmailField(_('contact email address'))
+
     def __str__(self):
         return self.name
 
@@ -44,11 +80,25 @@ class Committee(models.Model):
         verbose_name_plural = _('committees')
 
 
+class BoardManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_board=True)
+
+
+class Board(Committee):
+    objects = BoardManager()
+
+    is_board = models.BooleanField(
+        verbose_name=_('Is this a board'),
+        default=True,
+    )
+
+
 class ActiveMembershipManager(models.Manager):
     """Get only active memberships"""
     def get_queryset(self):
         """Get the currently active committee memberships"""
-        return super().get_queryset().exclude(until__lt=timezone.now())
+        return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
 class CommitteeMembership(models.Model):
@@ -70,7 +120,7 @@ class CommitteeMembership(models.Model):
     since = models.DateField(
         verbose_name=_('Committee member since'),
         help_text=_('The date this member joined the committee in this role'),
-        auto_now_add=True,
+        default=datetime.date.today
     )
 
     until = models.DateField(
@@ -87,14 +137,30 @@ class CommitteeMembership(models.Model):
         default=False,
     )
 
+    role = models.CharField(
+        _('role'),
+        help_text=_('The role of this member'),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.pk is None:
+            self._was_chair = bool(self.chair)
+        else:
+            self._was_chair = False
+
     @property
     def is_active(self):
         """Is this membership currently active"""
-        return self.until is None or self.until > timezone.now()
+        return self.until is None or self.until > timezone.now().date()
 
     def clean(self):
         """Validation"""
-        if self.until and self.until > timezone.now():
+        if self.until and self.until > timezone.now().date():
             raise ValidationError({
                 'until': _("Membership expiration date can't be in the future:"
                            " '{}'").format(self.until)
@@ -110,6 +176,7 @@ class CommitteeMembership(models.Model):
         # Check if a committee has more than one chair
         chairs = (CommitteeMembership.active_memberships
                   .filter(committee=self.committee)
+                  .exclude(member=self.member)
                   .filter(chair=True)
                   .count())
         if chairs >= 1 and self.chair:
@@ -118,12 +185,35 @@ class CommitteeMembership(models.Model):
                 _('This committee already has a chair')})
 
         # check if this member is already in the committee
-        members = (self.committee.members
-                   .filter(pk=self.member.pk)
-                   .count())
-        if members >= 1:
-            raise ValidationError({
-                'member': _('This member is already in the committee')})
+        if self.pk is None:
+            members = (self.committee.members
+                       .filter(pk=self.member.pk)
+                       .count())
+            if members >= 1:
+                raise ValidationError({
+                    'member': _('This member is already in the committee')})
+
+    def save(self, *args, **kwargs):
+        """Save the instance"""
+        # If the chair changed and we're still active, we create a new instance
+        # Inactive instances should be handled manually
+        if (self.pk is not None and self._was_chair != self.chair and
+                not self.until):
+            logger.info("Creating new membership instance")
+            self.until = timezone.now().date()
+            super().save(*args, **kwargs)
+            self.pk = None  # forces INSERT
+            self.since = self.until  # Set since date to older expiration
+            self.until = None
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """Deactivates active memberships, deletes inactive ones"""
+        if self.is_active:
+            self.until = timezone.now().date()
+            self.save()
+        else:
+            super().delete(*args, **kwargs)
 
     def __str__(self):
         return "{} membership of {} since {}".format(self.member,

@@ -1,6 +1,10 @@
 #!/bin/bash
+pathname=$_
 
-echo "run me as 'source ./source_me.sh', not as './source_me.sh'!"
+if [[ "$pathname" = "$0" ]]; then
+    echo "Remember: you need to run me as 'source ./source_me.sh', not execute it!"
+    return
+fi
 
 if [ -d venv ]; then
     source venv/bin/activate

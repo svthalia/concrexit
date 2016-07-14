@@ -1,0 +1,15 @@
+<ul>
+    {% for item in submenu %}
+        {% url item.name as path %}
+        <li {% if request.path == path %}class="nav-selected nav-path-selected"{% endif %}>
+            <a href="{{ path }}"
+               target="_self"
+               {% if request.path == path %}class="nav-selected nav-path-selected"{% endif %}>
+                {{ item.title }}
+            </a>
+            {% if 'submenu' in item %}
+                {% include 'menu/submenu.html' with submenu=item.submenu %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
