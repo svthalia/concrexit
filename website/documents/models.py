@@ -1,24 +1,32 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.core.validators import MinValueValidator
 
 from utils.validators import validate_file_extension
 
 
-class AssociationDocument(models.Model):
-    year = models.IntegerField()
-    file = models.FileField(
+class AssociationDocumentsYear(models.Model):
+    year = models.IntegerField(
+        unique=True,
+        validators=[MinValueValidator(1990)],
+    )
+    policy_document = models.FileField(
         upload_to='documents/association/',
         validators=[validate_file_extension],
+        blank=True,
     )
-    FILETYPES = (
-        ('policy-document', _("Policy document")),
-        ('annual-report', _("Annual report")),
-        ('financial-report', _("Financial report")),
+    annual_report = models.FileField(
+        upload_to='documents/association/',
+        validators=[validate_file_extension],
+        blank=True,
     )
-    filetype = models.CharField(
-        max_length=16,
-        choices=FILETYPES,
+    financial_report = models.FileField(
+        upload_to='documents/association/',
+        validators=[validate_file_extension],
+        blank=True,
     )
+
+    def __str__(self):
+        return "{}-{}".format(self.year, self.year + 1)
 
 
 class GenericDocument(models.Model):

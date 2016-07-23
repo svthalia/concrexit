@@ -1,0 +1,45 @@
+{% if documents %}
+<li class="post span3 has-overlay">
+    <div class="post-inner">
+        <div class="post-header">
+            <a href="portfolio-single-wide.html">
+                <!-- TODO create a more meaningful thumbnail -->
+                <img src="https://placehold.it/200x200" />
+            </a>
+        </div>
+        <div class="post-body">
+            <h2><a href="portfolio-single-wide.html">{{ name }} {{ year|stringformat:"d"|slice:"2:4" }}-'{{ year | add:1 | stringformat:"d" | slice:"2:4" }}</a></h2>
+        </div>
+        <div class="post-overlay">
+            <div class="post-overlay-meta">
+                <h2>{{ name }}</h2>
+                {{ year }} - {{ year | add:1 }}
+            </div>
+            <ul class="post-overlay-icons">
+                {% for document in documents %}
+                <li>
+                    <a target="_blank" href="/nyi"
+                    {% if forloop.first %}
+                        class="overlay-icon-link"
+                    {% else %}
+                        class="overlay-icon-euro"
+                    {% endif %}
+                    ></a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</li>
+{% else %}
+<li class="post span3">
+    <div class="post-inner unknowncontainer">
+        <div class="post-header">
+            ?
+        </div>
+        <div class="post-body">
+            <h2>{{ name }} '{{ year | stringformat:"d" | slice:"2:4" }}-'{{ year | add:1 | stringformat:"d" | slice:"2:4" }}</h2>
+        </div>
+    </div>
+</li>
+{% endif %}

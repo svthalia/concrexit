@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Documents" %}{% endblock %}
+
+{% block body %}
+{% comment %}TODO move this to a more appropriate block than 'body'{% endcomment %}
+<link href="{% static "documents/css/policydocuments.css" %}" rel="stylesheet" type="text/css">
+
+<h1 class="main-title">Algemeen</h1>
+
+<p class="text-center">7 november 1990 is Thalia officieel opgericht. De bijbehorende statuten en huisregels zijn hier opvraagbaar. De statuten zijn in september 2007 voor het laatst bijgewerkt; de huisregels zijn meerdere keren veranderd. Verder zijn hier diverse andere documenten te vinden, zoals het declaratieformulier en de kantinereglementen. Lees ze door zodat we allemaal op een fijne manier door kunnen borrelen in de kantine.</p>
+
+<div class="portfolio">
+    <ul class="portfolio-posts row generalcontainer">
+        {% for generic_document in generic_documents %}
+            {% include 'documents/generic.html' with document=generic_document %}
+        {% endfor %}
+    </ul>
+</div>
+
+<h1 class="main-title">Beleidsplannen &amp; Jaarverslagen</h1>
+
+<p class="text-center">
+Een aankomend bestuur van Thalia stelt voor installatie een beleidsplan op waarin wordt aangegeven wat voor koers het als bestuur wil gaan varen. Daarnaast wordt een globale planning gegeven van alle activiteiten en wordt natuurlijk een jaarbegroting opgesteld. Verder is een studievereniging verplicht een jaarverslag te maken en hierbij onder andere een financieel overzicht te verschaffen. Hierin kan je vinden hoe het jaar financieel verlopen is, welke contacten Thalia heeft onderhouden en welke activiteiten er zijn georganiseerd. In het onderstaande overzicht zijn de afgelopen beleidsplannen en jaarverslagen terug te vinden.
+</p>
+
+<div class='portfolio slider'>
+    <div class='policywrapper'>
+        <ul class="portfolio-posts row" style='width:{{ assocation_docs_width }}px'>
+            {% for year, docs in association_documents_years %}
+                {% include 'documents/policydocument.html' with documents=docs.policy name=_("Policy") year=year %}
+            {% endfor %}
+        </ul>
+        <ul class="portfolio-posts row" style='width:{{ assocation_docs_width }}px'>
+            {% for year, docs in association_documents_years %}
+                {% include 'documents/policydocument.html' with documents=docs.report name=_("Annual report") year=year %}
+            {% endfor %}
+        </ul>
+    </div>
+    <a class="slider-control-prev"></a>
+    <a class="slider-control-next"></a>
+</div>
+
+
+<h1 class="main-title">Algemene Ledenvergaderingen</h1>
+
+<p class="text-center">
+De Algemene Ledenvergaderingen (ALVs) kunnen door alle leden, ereleden en begunstigers worden bijgewoond. Binnen Thalia wordt tenminste twee maal per jaar een ALV georganiseerd. Naar aanleiding van deze vergaderingen worden notulen gemaakt die hieronder zijn in te zien. Zo kunnen ook de (ere)leden en begunstigers die niet aanwezig waren teruglezen wat er allemaal besproken is.
+</p>
+
+{% comment %}TODO move this to a more appropriate block than 'body'{% endcomment %}
+<script type="text/javascript" src="{% static "documents/js/policydocuments.js" %}"></script>
+
+{% endblock %}

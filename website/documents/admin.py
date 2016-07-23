@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from documents.models import AssociationDocument
+from documents.models import AssociationDocumentsYear
 from documents.models import GenericDocument
 from documents.models import GeneralMeeting, GeneralMeetingDocument
 
@@ -15,4 +15,4 @@ class GeneralMeetingAdmin(admin.ModelAdmin):
 
 
 admin.site.register(GenericDocument)
-admin.site.register(AssociationDocument)
+admin.site.register(AssociationDocumentsYear)
