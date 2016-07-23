@@ -46,4 +46,4 @@ For other operating systems, see the [Pillow Documentation][pillow-install].
 NodeJS dependencies
 -----------------------
 1. `lessc`:
-   * For Ubuntu  use: `apt-get install node-less`
+   * On Ubuntu or Debian, use: `apt-get install node-less node-mkdirp`
