@@ -4,10 +4,12 @@
 
 {% block page_title %}{% trans "Documents" %}{% endblock %}
 
-{% block body %}
-{% comment %}TODO move this to a more appropriate block than 'body'{% endcomment %}
+{% block css_head %}
+{{ block.super }}
 <link href="{% static "documents/css/policydocuments.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
 
+{% block body %}
 <h1 class="main-title">Algemeen</h1>
 
 <p class="text-center">7 november 1990 is Thalia officieel opgericht. De bijbehorende statuten en huisregels zijn hier opvraagbaar. De statuten zijn in september 2007 voor het laatst bijgewerkt; de huisregels zijn meerdere keren veranderd. Verder zijn hier diverse andere documenten te vinden, zoals het declaratieformulier en de kantinereglementen. Lees ze door zodat we allemaal op een fijne manier door kunnen borrelen in de kantine.</p>
@@ -49,8 +51,9 @@ Een aankomend bestuur van Thalia stelt voor installatie een beleidsplan op waari
 <p class="text-center">
 De Algemene Ledenvergaderingen (ALVs) kunnen door alle leden, ereleden en begunstigers worden bijgewoond. Binnen Thalia wordt tenminste twee maal per jaar een ALV georganiseerd. Naar aanleiding van deze vergaderingen worden notulen gemaakt die hieronder zijn in te zien. Zo kunnen ook de (ere)leden en begunstigers die niet aanwezig waren teruglezen wat er allemaal besproken is.
 </p>
+{% endblock %}
 
-{% comment %}TODO move this to a more appropriate block than 'body'{% endcomment %}
+{% block js_body %}
+{{ block.super }}
 <script type="text/javascript" src="{% static "documents/js/policydocuments.js" %}"></script>
-
 {% endblock %}
