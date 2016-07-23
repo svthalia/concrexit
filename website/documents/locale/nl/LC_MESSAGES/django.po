@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-07-23 14:13+0200\n"
+"PO-Revision-Date: 2016-07-23 14:20+0100\n"
+"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+
+#: templates/documents/index.html:5
+msgid "Documents"
+msgstr "Documenten"
+
+#: templates/documents/index.html:13
+msgid "Miscellaneous Documents"
+msgstr "Algemeen"
+
+#: templates/documents/index.html:15
+msgid ""
+"Thalia was officially founded on November 7th, 1990. The relevant statutes "
+"and internal rules can be accessed here. The statues have last been amended "
+"in September 2007; the internal rules have been changed on several "
+"occasions. Other miscellaneous documents can be found here as well, such as "
+"the declaration form and the canteen regulations. Please read these "
+"carefully, so that we can all have a pleasant time when having drinks in the "
+"canteen."
+msgstr ""
+"7 november 1990 is Thalia officieel opgericht. De bijbehorende statuten en "
+"huisregels zijn hier opvraagbaar. De statuten zijn in september 2007 voor "
+"het laatst bijgewerkt; de huisregels zijn meerdere keren veranderd. Verder "
+"zijn hier diverse andere documenten te vinden, zoals het declaratieformulier "
+"en de kantinereglementen. Lees ze door zodat we allemaal op een fijne manier "
+"door kunnen borrelen in de kantine."
+
+#: templates/documents/index.html:25
+msgid "Policy Documents &amp; Annual Reports"
+msgstr "Beleidsdocumenten &amp; Jaarverslagen"
+
+#: templates/documents/index.html:28
+msgid ""
+"Every candidate board of Thalia drafts a policy document before being "
+"installed, to detail their plans for the next year. This also includes a "
+"general planning of all activities, as well as the budget for that year. "
+"Furthermore, the association is obliged to deliver an annual report and "
+"provide a financial overview. These documents show the financial "
+"developments over the year, what contacts Thalia maintained and what "
+"activities were organized. All historical policy documents and reports are "
+"made available, below."
+msgstr ""
+"Een aankomend bestuur van Thalia stelt voor installatie een beleidsplan op "
+"waarin wordt aangegeven wat voor koers het als bestuur wil gaan varen. "
+"Daarnaast wordt een globale planning gegeven van alle activiteiten en wordt "
+"natuurlijk een jaarbegroting opgesteld. Verder is een studievereniging "
+"verplicht een jaarverslag te maken en hierbij onder andere een financieel "
+"overzicht te verschaffen. Hierin kan je vinden hoe het jaar financieel "
+"verlopen is, welke contacten Thalia heeft onderhouden en welke activiteiten "
+"er zijn georganiseerd. In het onderstaande overzicht zijn de afgelopen "
+"beleidsplannen en jaarverslagen terug te vinden."
+
+#: templates/documents/index.html:35
+msgid "Policy"
+msgstr "Beleidsdocument"
+
+#: templates/documents/index.html:40
+msgid "Annual report"
+msgstr "Jaarverslag"
+
+#: templates/documents/index.html:49
+msgid "General Meetings"
+msgstr "Algemene Ledenvergaderingen"
+
+#: templates/documents/index.html:52
+msgid ""
+"The General Meetings (ALVs) can be attended by all members, honorary members "
+"and donors. Thalia organizes at least two general meetings each year. "
+"Minutes of these meetings are made available below. This allows (honorary) "
+"members and donors that did not attend to get an insight in what was "
+"discussed as well."
+msgstr ""
+"De Algemene Ledenvergaderingen (ALVs) kunnen door alle leden, ereleden en "
+"begunstigers worden bijgewoond. Binnen Thalia wordt tenminste twee maal per "
+"jaar een ALV georganiseerd. Naar aanleiding van deze vergaderingen worden "
+"notulen gemaakt die hieronder zijn in te zien. Zo kunnen ook de (ere)leden "
+"en begunstigers die niet aanwezig waren teruglezen wat er allemaal besproken "
+"is."
