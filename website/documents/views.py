@@ -1,7 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
 
 from documents.models import AssociationDocumentsYear, MiscellaneousDocument
+from documents.models import GeneralMeeting, GeneralMeetingDocument
+
+from sendfile import sendfile
+import os
 
 
 def index(request):
@@ -27,3 +33,43 @@ def index(request):
                'assocation_docs_width': (220 + 20) * len(years),
                }
     return render(request, 'documents/index.html', context)
+
+
+def get_miscellaneous_document(request, pk):
+    document = get_object_or_404(MiscellaneousDocument, pk=int(pk))
+    # TODO verify if we need to check a permission instead.
+    # This depends on how we're dealing with ex-members.
+    if document.members_only and not request.user.is_authenticated():
+        raise PermissionDenied
+    return sendfile(request, document.file.path, attachment=True)
+
+
+# TODO verify if we need to check a permission instead.
+@login_required
+def get_association_document(request, document_type, year):
+    documents = get_object_or_404(AssociationDocumentsYear, year=int(year))
+    file = {'policy-document': documents.policy_document,
+            'annual-report': documents.annual_report,
+            'financial-report': documents.financial_report}[document_type]
+    _, ext = os.path.splitext(file.path)
+    filename = '{}-{}-{}{}'.format(year, int(year)+1, document_type, ext)
+    return sendfile(request, file.path,
+                    attachment=True, attachment_filename=filename)
+
+
+# TODO verify if we need to check a permission instead.
+@login_required
+def get_general_meeting_document(request, pk, document_pk):
+    document = get_object_or_404(GeneralMeetingDocument, pk=int(document_pk))
+    # TODO consider if we want to format the filename differently
+    return sendfile(request, document.file.path, attachment=True)
+
+
+# TODO verify if we need to check a permission instead.
+@login_required
+def get_general_meeting_minutes(request, pk):
+    meeting = get_object_or_404(GeneralMeeting, pk=int(pk))
+    _, ext = os.path.splitext(meeting.minutes.path)
+    filename = '{}-minutes{}'.format(meeting.datetime.date(), ext)
+    return sendfile(request, meeting.minutes.path,
+                    attachment=True, attachment_filename=filename)

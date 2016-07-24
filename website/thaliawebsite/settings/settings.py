@@ -147,6 +147,8 @@ LOCALE_PATHS = ('locale',)
 # Where to store uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+SENDFILE_BACKEND = 'sendfile.backends.development'
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
