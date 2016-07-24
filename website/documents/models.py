@@ -29,10 +29,10 @@ class AssociationDocumentsYear(models.Model):
         return "{}-{}".format(self.year, self.year + 1)
 
 
-class GenericDocument(models.Model):
+class MiscellaneousDocument(models.Model):
     name = models.CharField(max_length=200)
     file = models.FileField(
-        upload_to='documents/generic/',
+        upload_to='documents/miscellaneous/',
         validators=[validate_file_extension],
     )
     members_only = models.BooleanField(default=False)

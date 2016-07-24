@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.utils import timezone
 
-from documents.models import AssociationDocumentsYear, GenericDocument
+from documents.models import AssociationDocumentsYear, MiscellaneousDocument
 
 
 def index(request):
@@ -20,7 +20,7 @@ def index(request):
                     except ValueError:
                         docs.remove(doc)
 
-    context = {'generic_documents': GenericDocument.objects.all(),
+    context = {'miscellaneous_documents': MiscellaneousDocument.objects.all(),
                'association_documents_years': sorted(years.items(),
                                                      reverse=True),
                # TODO ideally we want to do this dynamically in CSS

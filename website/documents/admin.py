@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from documents.models import AssociationDocumentsYear
-from documents.models import GenericDocument
+from documents.models import MiscellaneousDocument
 from documents.models import GeneralMeeting, GeneralMeetingDocument
 
 
@@ -14,5 +14,5 @@ class GeneralMeetingAdmin(admin.ModelAdmin):
     inlines = (GeneralMeetingDocInline, )
 
 
-admin.site.register(GenericDocument)
+admin.site.register(MiscellaneousDocument)
 admin.site.register(AssociationDocumentsYear)
