@@ -18,10 +18,17 @@
             <ul class="post-overlay-icons">
                 {% for document in documents %}
                 <li>
-                    <a target="_blank" href="/nyi"
+                    {% comment %}It might be better to make this less hard-coded..{% endcomment %}
+                    <a target="_blank"
                     {% if forloop.first %}
+                        {% if forloop.last %}
+                            href="{% url 'association-document' 'policy-document' year %}"
+                        {% else %}
+                            href="{% url 'association-document' 'annual-report' year %}"
+                        {% endif %}
                         class="overlay-icon-link"
                     {% else %}
+                        href="{% url 'association-document' 'financial-report' year %}"
                         class="overlay-icon-euro"
                     {% endif %}
                     ></a>
