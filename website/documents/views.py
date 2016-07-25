@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from documents.models import AssociationDocumentsYear, MiscellaneousDocument
 from documents.models import GeneralMeeting, GeneralMeetingDocument
+from utils.snippets import datetime_to_lectureyear
 
 from sendfile import sendfile
 import os
@@ -26,11 +27,16 @@ def index(request):
                     except ValueError:
                         docs.remove(doc)
 
+    meeting_years = {x: [] for x in range(1990, timezone.now().year)}
+    for obj in GeneralMeeting.objects.all():
+        meeting_years[datetime_to_lectureyear(obj.datetime)].append(obj)
+
     context = {'miscellaneous_documents': MiscellaneousDocument.objects.all(),
                'association_documents_years': sorted(years.items(),
                                                      reverse=True),
                # TODO ideally we want to do this dynamically in CSS
                'assocation_docs_width': (220 + 20) * len(years),
+               'meeting_years': sorted(meeting_years.items(), reverse=True)
                }
     return render(request, 'documents/index.html', context)
 

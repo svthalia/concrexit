@@ -7,6 +7,7 @@
 {% block css_head %}
 {{ block.super }}
 <link href="{% static "documents/css/policydocuments.css" %}" rel="stylesheet" type="text/css">
+<link href="{% static "documents/css/generalmeetings.css" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block body %}
@@ -15,7 +16,7 @@
 <p class="text-center">{% trans "Thalia was officially founded on November 7th, 1990. The relevant statutes and internal rules can be accessed here. The statues have last been amended in September 2007; the internal rules have been changed on several occasions. Other miscellaneous documents can be found here as well, such as the declaration form and the canteen regulations. Please read these carefully, so that we can all have a pleasant time when having drinks in the canteen." %}</p>
 
 <div class="portfolio">
-    <ul class="portfolio-posts row generalcontainer">
+    <ul class="portfolio-posts row" style="padding-top:20px;">
         {% for miscellaneous_document in miscellaneous_documents %}
             {% include 'documents/miscellaneous.html' with document=miscellaneous_document %}
         {% endfor %}
@@ -51,6 +52,26 @@
 <p class="text-center">
 {% trans "The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well." %}
 </p>
+
+<div class="tcenter" style='margin-bottom:20px;'>
+{% for year, meetings in meeting_years|slice:"5" %}
+    <button class="btn-large btn-style2">{{ year }}-{{ year|add:1 }}</button>
+{% endfor %}
+    <select id='alvselect' name='alvselect' class="btn-large btn-style2" style='outline-width:0px !important;width:140px;padding:0px 15px;'>
+    {% for year, meetings in meeting_years|slice:"5:" %}
+        <option value='{{ year }}'>{{ year }}-{{ year|add:1 }}</option>
+    {% endfor %}
+    </select>
+</div>
+
+<h2>{% trans "General Meetings of" %} <span id='alvyearheader'>2015-2016:</span></h2>{% comment %}TODO{% endcomment %}
+
+<div id='alvcontainer' style='margin-top:-20px'>
+{% for year, meetings in meeting_years %}
+    {% include 'documents/meetingyear.html' with meetings=meetings year=year %}
+{% endfor %}
+</div>
+
 {% endblock %}
 
 {% block js_body %}
