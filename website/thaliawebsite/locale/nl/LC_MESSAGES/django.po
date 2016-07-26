@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-26 21:14+0200\n"
-"PO-Revision-Date: 2016-07-26 21:14+0100\n"
+"POT-Creation-Date: 2016-07-26 21:51+0200\n"
+"PO-Revision-Date: 2016-07-26 21:54+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -119,7 +119,8 @@ msgstr ""
 msgid "Add Summary"
 msgstr ""
 
-#: menus.py:32
+#: menus.py:32 templates/singlepages/contact.html:4
+#: templates/singlepages/contact.html:7
 msgid "Contact"
 msgstr ""
 
@@ -154,6 +155,54 @@ msgid ""
 "        <p>Please log in to see this page.</p>\n"
 "      "
 msgstr ""
+
+#: templates/singlepages/contact.html:11
+msgid "Faculty:"
+msgstr "Faculteit:"
+
+#: templates/singlepages/contact.html:12
+msgid "Faculty of Science"
+msgstr "Faculteit der Natuurwetenschappen, Wiskunde & Informatica"
+
+#: templates/singlepages/contact.html:15
+msgid "Room:"
+msgstr "Kamer:"
+
+#: templates/singlepages/contact.html:19
+msgid "Address:"
+msgstr "Adres:"
+
+#: templates/singlepages/contact.html:20
+msgid "Board room: HG00.150 (above the north-canteen)"
+msgstr "Bestuurskamer: HG00.150 (boven de noordkantine)"
+
+#: templates/singlepages/contact.html:23
+msgid "Postal address:"
+msgstr "Postadres:"
+
+#: templates/singlepages/contact.html:27
+msgid "Telephone:"
+msgstr "Telefoon:"
+
+#: templates/singlepages/contact.html:31
+msgid "Voicemailbox:"
+msgstr "Voicemailbox:"
+
+#: templates/singlepages/contact.html:35
+msgid "Email:"
+msgstr "E-mail:"
+
+#: templates/singlepages/contact.html:37
+msgid "general"
+msgstr "algemeen"
+
+#: templates/singlepages/contact.html:38
+msgid "communication w.r.t. promoting your company (activities)"
+msgstr "communicatie over het promoten van uw bedrijf(sactiviteiten)"
+
+#: templates/singlepages/contact.html:50
+msgid "VAT number:"
+msgstr "BTW-nummer:"
 
 #: templates/singlepages/sister_associations.html:7
 msgid "Associations of the Radboud University Science Faculty"

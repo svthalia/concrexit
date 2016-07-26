@@ -29,5 +29,5 @@ main = [
         {'title': _('Add Exam'), 'name': '#'},
         {'title': _('Add Summary'), 'name': '#'},
     ]},
-    {'title': _('Contact'), 'name': '#'},
+    {'title': _('Contact'), 'name': 'contact'},
 ]
