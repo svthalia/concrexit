@@ -22,13 +22,13 @@
                     <a target="_blank"
                     {% if forloop.first %}
                         {% if forloop.last %}
-                            href="{% url 'association-document' 'policy-document' year %}"
+                            href="{% url 'documents:association-document' 'policy-document' year %}"
                         {% else %}
-                            href="{% url 'association-document' 'annual-report' year %}"
+                            href="{% url 'documents:association-document' 'annual-report' year %}"
                         {% endif %}
                         class="overlay-icon-link"
                     {% else %}
-                        href="{% url 'association-document' 'financial-report' year %}"
+                        href="{% url 'documents:association-document' 'financial-report' year %}"
                         class="overlay-icon-euro"
                     {% endif %}
                     ></a>
