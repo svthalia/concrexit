@@ -55,7 +55,7 @@
 
 <div class="tcenter" style='margin-bottom:20px;'>
 {% for year, meetings in meeting_years|slice:"5" %}
-    <button class="btn-large btn-style2">{{ year }}-{{ year|add:1 }}</button>
+    <button class="meeting-btn btn-large btn-style2" data-year="{{ year }}">{{ year }}-{{ year|add:1 }}</button>
 {% endfor %}
     <select id='alvselect' name='alvselect' class="btn-large btn-style2" style='outline-width:0px !important;width:140px;padding:0px 15px;'>
     {% for year, meetings in meeting_years|slice:"5:" %}
@@ -64,11 +64,11 @@
     </select>
 </div>
 
-<h2>{% trans "General Meetings of" %} <span id='alvyearheader'>2015-2016:</span></h2>{% comment %}TODO{% endcomment %}
-
-<div id='alvcontainer' style='margin-top:-20px'>
+<div id='alvcontainer'>
 {% for year, meetings in meeting_years %}
+    <div id='meeting-{{ year }}'>
     {% include 'documents/meetingyear.html' with meetings=meetings year=year %}
+    </div>
 {% endfor %}
 </div>
 
@@ -77,4 +77,5 @@
 {% block js_body %}
 {{ block.super }}
 <script type="text/javascript" src="{% static "documents/js/policydocuments.js" %}"></script>
+<script type="text/javascript" src="{% static "documents/js/generalmeetings.js" %}"></script>
 {% endblock %}
