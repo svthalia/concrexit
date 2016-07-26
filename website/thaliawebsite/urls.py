@@ -27,6 +27,11 @@ urlpatterns = [
             TemplateView.as_view(template_name='singlepages/sister_associations.html'),
             name='sister-associations'),
     ])),
+    url(r'^for-members/', include([
+        url(r'become-active',
+            TemplateView.as_view(template_name='singlepages/become_active.html'),
+            name='become-active'),
+    ])),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
     # Default login helpers
     url(r'^', include('django.contrib.auth.urls')),
