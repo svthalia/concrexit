@@ -22,6 +22,11 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^members/', include('members.urls')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
+    url(r'^association/', include([
+        url(r'sister-associations',
+            TemplateView.as_view(template_name='singlepages/sister_associations.html'),
+            name='sister-associations'),
+    ])),
     # Default login helpers
     url(r'^', include('django.contrib.auth.urls')),
 ]
