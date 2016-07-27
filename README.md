@@ -47,3 +47,15 @@ NodeJS dependencies
 -----------------------
 1. `lessc`:
    * On Ubuntu or Debian, use: `apt-get install node-less node-mkdirp`
+
+Translating
+------------------
+
+Make sure to use British English.
+
+To create translations for your app:
+
+1. `./manage.py makemessages <appname>`
+2. Dit zou bestanden onder `<appnaam>/locale/` aangemaakt of bijgewerkt moeten hebben.
+3. Gebruik poedit (of je favoriete tool -- liever niet een simpele texteditor want die kan niet met alle subtiliteiten omgaan) om de vertaling te fixen.
+4. `./manage.py compilemessages`
