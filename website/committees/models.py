@@ -2,9 +2,9 @@ import datetime
 import logging
 
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
-from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
