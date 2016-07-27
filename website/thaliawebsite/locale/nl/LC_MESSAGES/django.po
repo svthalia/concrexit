@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-26 22:20+0200\n"
-"PO-Revision-Date: 2016-07-26 22:21+0100\n"
+"POT-Creation-Date: 2016-07-27 22:20+0200\n"
+"PO-Revision-Date: 2016-07-27 22:21+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -20,35 +20,35 @@ msgstr ""
 
 #: admin.py:5
 msgid "Thalia administration"
-msgstr ""
+msgstr "Administratie van Thalia"
 
 #: admin.py:6
 msgid "Thalia"
-msgstr ""
+msgstr "Thalia"
 
 #: menus.py:4
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: menus.py:5
 msgid "Association"
-msgstr ""
+msgstr "Vereniging"
 
 #: menus.py:6
 msgid "Board"
-msgstr ""
+msgstr "Bestuur"
 
 #: menus.py:7
 msgid "Committees"
-msgstr ""
+msgstr "Commissies"
 
 #: menus.py:8 menus.py:10
 msgid "Members"
-msgstr ""
+msgstr "Leden"
 
 #: menus.py:9
 msgid "Documents"
-msgstr ""
+msgstr "Documenten"
 
 #: menus.py:11 templates/singlepages/sister_associations.html:4
 #: templates/singlepages/sister_associations.html:17
@@ -56,91 +56,92 @@ msgid "Sister Associations"
 msgstr "Zusterverenigingen"
 
 #: menus.py:12
-msgid "Become Member"
-msgstr ""
+msgid "Become a Member"
+msgstr "Lid Worden"
 
 #: menus.py:13
 msgid "Thabloid"
-msgstr ""
+msgstr "Thabloid"
 
 #: menus.py:15
 msgid "For Members"
-msgstr ""
+msgstr "Voor Leden"
 
 #: menus.py:16
 msgid "Photos"
-msgstr ""
+msgstr "Foto's"
 
 #: menus.py:17
 msgid "Statistics"
-msgstr ""
+msgstr "Statistieken"
 
 #: menus.py:18
 msgid "Become Active"
-msgstr ""
+msgstr "Actief Worden"
 
 #: menus.py:19
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: menus.py:21
 msgid "Calendar"
-msgstr ""
+msgstr "Agenda"
 
 #: menus.py:22
 msgid "Career"
-msgstr ""
+msgstr "Carrière"
 
 #: menus.py:23
-msgid "Sponsor"
-msgstr ""
+msgid "Sponsors"
+msgstr "Sponsoren"
 
 #: menus.py:24
 msgid "Vacancies"
-msgstr ""
+msgstr "Vacatures"
 
 #: menus.py:26
 msgid "Education"
-msgstr ""
+msgstr "Onderwijs"
 
 #: menus.py:27
 msgid "Book Sale"
-msgstr ""
+msgstr "Boekverkoop"
 
 #: menus.py:28
 msgid "Course Overview"
-msgstr ""
+msgstr "Vakkenoverzicht"
 
 #: menus.py:29
-msgid "Add Exam"
-msgstr ""
+msgid "Submit Exam"
+msgstr "Tentamen Insturen"
 
 #: menus.py:30
-msgid "Add Summary"
-msgstr ""
+msgid "Submit Summary"
+msgstr "Samenvatting Insturen"
 
 #: menus.py:32 templates/singlepages/contact.html:4
 #: templates/singlepages/contact.html:7
 msgid "Contact"
-msgstr ""
-
-#: settings/settings.py:136
-msgid "English"
-msgstr ""
+msgstr "Contact"
 
 #: settings/settings.py:137
+msgid "English"
+msgstr "Engels"
+
+#: settings/settings.py:138
 msgid "Dutch"
-msgstr ""
+msgstr "Nederlands"
 
-#: templates/base.html:84 templates/base.html:121
+#: templates/base.html:86 templates/base.html:123
 msgid "Study Association Thalia"
-msgstr ""
+msgstr "Studievereniging Thalia"
 
-#: templates/registration/login.html:3 templates/registration/login.html:24
+#: templates/base.html:158 templates/registration/login.html:7
+#: templates/registration/login.html:28
 msgid "Login"
-msgstr ""
+msgstr "Inloggen"
 
-#: templates/registration/login.html:8
+#: templates/registration/login.html:12
 msgid ""
 "\n"
 "        <p>Your account does not have access to this page. To proceed, "
@@ -149,7 +150,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: templates/registration/login.html:13
+#: templates/registration/login.html:17
 msgid ""
 "\n"
 "        <p>Please log in to see this page.</p>\n"
@@ -322,3 +323,6 @@ msgstr "Universiteit van Amsterdam"
 #: templates/singlepages/sister_associations.html:29
 msgid "VU University Amsterdam"
 msgstr "Vrije Universiteit Amsterdam"
+
+#~ msgid "Add Exam"
+#~ msgstr "Tentamen Insturen"
