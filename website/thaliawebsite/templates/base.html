@@ -138,7 +138,6 @@
     <script type="text/javascript" src="{% static "plugins/magnific-popup/jquery.magnific-popup.min.js" %}"></script>
     {% endblock %}
 
-    {% if not user.is_authenticated %}
     <div class="thimbus-ui" id="thimbus-account-menu-container">
         <div class="btn-group open" id="language-selector-menu">
             <form action="{% url 'set_language' %}" id="set_language_form" method="post">
@@ -154,11 +153,12 @@
             </form>
         </div>
 
+    {% if not user.is_authenticated %}
         <div class="btn-group open" id="thimbus-account-menu">
             <a class="btn btn-default" href="/account"><i class="fa fa-user"></i>{% trans "Login" %}</a>
         </div>
-    </div>
     {% endif %}
+    </div>
 
     {% block footer_scripts %}
     <script type="text/javascript" src="{% static "js/footer.js" %}"></script>
