@@ -8,14 +8,14 @@ main = [
         {'title': _('Members'), 'name': '#'},
         {'title': _('Documents'), 'name': 'documents:index'},
         {'title': _('Members'), 'name': '#'},
-        {'title': _('Sister Associations'), 'name': '#'},
+        {'title': _('Sister Associations'), 'name': 'sister-associations'},
         {'title': _('Become Member'), 'name': 'become-a-member'},
         {'title': _('Thabloid'), 'name': '#'},
     ]},
     {'title': _('For Members'), 'name': '#', 'submenu': [
         {'title': _('Photos'), 'name': '#'},
         {'title': _('Statistics'), 'name': '#'},
-        {'title': _('Become Active'), 'name': '#'},
+        {'title': _('Become Active'), 'name': 'become-active'},
         {'title': _('Wiki'), 'name': '#'},
     ]},
     {'title': _('Calendar'), 'name': '#'},
@@ -29,5 +29,5 @@ main = [
         {'title': _('Add Exam'), 'name': '#'},
         {'title': _('Add Summary'), 'name': '#'},
     ]},
-    {'title': _('Contact'), 'name': '#'},
+    {'title': _('Contact'), 'name': 'contact'},
 ]
