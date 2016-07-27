@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
+    'documents',
     'committees',
 ]
 
@@ -122,7 +123,7 @@ AUTHENTICATION_BACKENDS = [
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
-LANGUAGE_CODE = 'en-gb'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'Europe/Amsterdam'
 
@@ -145,6 +146,8 @@ LOCALE_PATHS = ('locale',)
 
 # Where to store uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+SENDFILE_BACKEND = 'sendfile.backends.development'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')

@@ -23,14 +23,11 @@ urlpatterns = [
     url(r'^members/', include('members.urls')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
     url(r'^association/', include([
-        url(r'sister-associations',
-            TemplateView.as_view(template_name='singlepages/sister_associations.html'),
-            name='sister-associations'),
+        url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
+        url(r'^documents/', include('documents.urls', namespace='documents')),
     ])),
     url(r'^for-members/', include([
-        url(r'become-active',
-            TemplateView.as_view(template_name='singlepages/become_active.html'),
-            name='become-active'),
+        url(r'^become-active', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
     ])),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
     # Default login helpers
