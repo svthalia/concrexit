@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
+{% block page_title %}{% trans 'Committees' %}{% endblock %}
+
+{% block body %}
+<h1>{{ committee.name }}
+  <span class="title-meta clearfix">
+    <span>
+      <a class="back" href="{% url 'committees:index' %}" id="collectionButton"></a>
+    </span>
+  </span>
+</h1>
+<div class="portfolio"></div>
+<div class="clearfix portfolio">
+  <div id="committee-div">
+    <div class="row">
+      <img alt="{{ committee.name }}" class="span12" src="{{ MEDIA_URL }}{{ committee.photo }}">
+    </div>
+    <div>
+      <h1 class="midhead">{% blocktrans with name=committee.name %}About the {{ name }}{% endblocktrans %}</h1>
+      <p class="text-center">{{ committee.description }}</p>
+    </div>
+    <div class="clearfix member-directory">
+      <h1 class="midhead">{% trans 'Committee members' %}</h1>
+      <ul class="row" id="commissieleden">
+        {% for member in members %}
+        <li class="post member-item span3 has-overlay">
+          <a href="{{ member.get_absolute_url }}">
+            <div class="post-inner">
+              <div class="inner-img">
+                <img alt="{{ member.display_name }}" src="//www.gravatar.com/avatar/c36272792e1f9c7f9427c3a83f330b0e?s=620&d=mm&r=g">
+              </div>
+              {% if member.chair %}
+              <div class="ribbon-wrapper-basiskleur">
+                <div class="ribbon-basiskleur">
+                  {% trans "Voorzitter" %}
+                </div>
+              </div>
+              {% endif %}
+              <div class="post-overlay">
+                <div class="post-overlay-meta">
+                  <h2>{{ member.display_name }}</h2>
+                  <p>{% blocktrans with since=member.committee_since|date:"Y" %}Committee member since: {{ since }}{% endblocktrans %}</p>
+                </div>
+              </div>
+              <div class="post-body avatar-subtitle">
+                {{ member.display_name }}
+              </div>
+            </div>
+          </a>
+        </li>
+        {% empty %}
+        <li>{% trans "This committee doesn't have any members?" %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
