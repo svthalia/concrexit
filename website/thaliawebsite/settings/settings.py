@@ -147,7 +147,7 @@ LOCALE_PATHS = ('locale',)
 
 # Where to store uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/public/'
+MEDIA_URL = '/media/'  # Public is included by the db fields
 
 SENDFILE_BACKEND = 'sendfile.backends.development'
 

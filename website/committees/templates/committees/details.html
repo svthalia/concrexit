@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
 {% block page_title %}{% trans 'Committees' %}{% endblock %}
 
@@ -29,7 +29,11 @@
           <a href="{{ member.get_absolute_url }}">
             <div class="post-inner">
               <div class="inner-img">
-                <img alt="{{ member.display_name }}" src="//www.gravatar.com/avatar/c36272792e1f9c7f9427c3a83f330b0e?s=620&d=mm&r=g">
+                {% if not member.photo %}
+                <img alt="{% trans "Default avatar" %}" src="{% static 'members/images/default-avatar.jpg' %}" height="620" width="620" />
+                {% else %}
+                <img alt="{{ member.display_name }}" src="{{ MEDIA_URL }}{{ member.photo }}" width="620" height="620" />
+                {% endif %}
               </div>
               {% if member.chair %}
               <div class="ribbon-wrapper-basiskleur">
