@@ -50,5 +50,5 @@
     </div>
 </div>
 {% empty %}
-<div style="text-align:center;margin-top:10px;">There are no General Meetings available for {{ year }}-{{ year | add:1 }}</div>
+<div style="text-align:center;margin-top:10px;">{% blocktrans %}There are no General Meetings available for {{ year }}-{{ year | add:1 }}{% endblocktrans %}</div>
 {% endfor %}
