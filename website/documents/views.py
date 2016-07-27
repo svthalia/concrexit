@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 
 from documents.models import AssociationDocumentsYear, MiscellaneousDocument
 from documents.models import GeneralMeeting, GeneralMeetingDocument
@@ -43,11 +44,13 @@ def index(request):
 
 def get_miscellaneous_document(request, pk):
     document = get_object_or_404(MiscellaneousDocument, pk=int(pk))
+    _, ext = os.path.splitext(document.file.path)
     # TODO verify if we need to check a permission instead.
     # This depends on how we're dealing with ex-members.
     if document.members_only and not request.user.is_authenticated():
         raise PermissionDenied
-    return sendfile(request, document.file.path, attachment=True)
+    return sendfile(request, document.file.path, attachment=True,
+                    attachment_filename=slugify(document.name) + ext)
 
 
 # TODO verify if we need to check a permission instead.

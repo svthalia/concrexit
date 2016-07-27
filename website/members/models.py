@@ -1,5 +1,4 @@
 from django.utils import timezone
-
 from django.db import models
 from django.core import validators
 from django.conf import settings
@@ -7,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
+
+from utils.validators import validate_file_extension
 
 
 class Member(models.Model):
@@ -249,3 +250,14 @@ class Member(models.Model):
 
     def __str__(self):
         return self.display_name()
+
+
+class BecomeAMemberDocument(models.Model):
+    name = models.CharField(max_length=200)
+    file = models.FileField(
+        upload_to='members/',
+        validators=[validate_file_extension],
+    )
+
+    def __str__(self):
+        return self.name

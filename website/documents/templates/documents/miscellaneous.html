@@ -1,23 +1,2 @@
-<li class="post span3 has-overlay">
-    <div class="post-inner">
-        <div class="post-header">
-            <a href="portfolio-single-wide.html">
-                <!-- TODO create a more meaningful thumbnail -->
-                <img src="https://placehold.it/200x200" />
-            </a>
-        </div>
-        <div class="post-body">
-            <h2><a href="portfolio-single-wide.html">{{ document.name }}</a></h2>
-        </div>
-        <div class="post-overlay">
-            <div class="post-overlay-meta">
-                <h2>{{ document.name }}</h2>
-            </div>
-            <ul class="post-overlay-icons">
-                <li>
-                    <span></span><a href="{% url 'documents:miscellaneous-document' document.pk %}" class="overlay-icon-link" target="_blank"></a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</li>
+{% extends 'documents/generic.html' %}
+{% block "downloadlink" %}{% url 'documents:miscellaneous-document' document.pk %}{% endblock %}

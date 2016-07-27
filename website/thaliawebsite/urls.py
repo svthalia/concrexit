@@ -21,14 +21,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 
+import members
+
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^admin/', admin.site.urls),
-    url(r'^members/', include('members.urls')),
+    url(r'^members/', include('members.urls', namespace='members')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
     url(r'^association/', include([
         url(r'^committees/', include('committees.urls', namespace='committees')),
         url(r'^documents/', include('documents.urls', namespace='documents')),
+        url(r'^become-a-member/', members.views.become_a_member, name='become-a-member'),
         url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
     ])),
     url(r'^for-members/', include([
