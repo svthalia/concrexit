@@ -6,7 +6,7 @@ main = [
         {'title': _('Board'), 'name': '#'},
         {'title': _('Committees'), 'name': '#'},
         {'title': _('Members'), 'name': '#'},
-        {'title': _('Documents'), 'name': '#'},
+        {'title': _('Documents'), 'name': 'documents:index'},
         {'title': _('Members'), 'name': '#'},
         {'title': _('Sister Associations'), 'name': '#'},
         {'title': _('Become Member'), 'name': '#'},

@@ -1,0 +1,54 @@
+{% load i18n %}
+{% load filename %}
+
+<h2 style="margin-bottom: 0px;">{% trans "General Meetings of" %} {{ year }}-{{ year|add:1 }}:</span></h2>
+
+{% for meeting in meetings %}
+<div class="gw-go gw-go-clearfix gw-go-{% if meetings|length < 3 %}3{% else %}{{ meetings | length }}{% endif %}cols">
+    <div class="gw-go-col-wrap">
+        <div class="gw-go-col gw-go-style1">
+            <div class="gw-go-header">
+                <div class="gw-go-header-top">
+                    <h3>{% trans "Meeting" %} {{ forloop.counter }}</h3><span class="circle-icon-mail"></span>
+                    <div class="gw-go-coin-wrap">
+                        <div class="gw-go-coinf gw-go-coinb">
+                            <div>
+                                {% if meeting.datetime %}
+                                {{ meeting.datetime|date:'j' }}
+                                <small>{{ meeting.datetime|date:'M'|upper }}</small>
+                                {% else %}
+                                ?<small>?</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gw-go-header-bottom"></div>
+                <p>{{ meeting.location }}</p>
+            </div>
+            {% if user.is_authenticated %}
+            <ul class="gw-go-body">
+                {% for document in meeting.generalmeetingdocument_set.all %}
+                    <li class="wordbreak"><a href="{% url 'documents:general-meeting-document' meeting.pk document.pk %}" target="_blank">{{ document|filename }}</a></li>
+                {% endfor %}
+            </ul>
+            <div class="gw-go-footer">
+                {% if meeting.minutes %}
+                    <a href="{% url 'documents:minutes' meeting.pk %}" class="gw-go-btn gw-go-btn-medium" target="_blank">Notulen</a>
+                {% else %}
+                    <div style='padding-top:10px;'>{% trans "No minutes<br>available" %}</div>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="gw-go-body">
+                {% trans "Only signed-in users can view<br>General Meeting documents." %}
+            </div>
+            <div class="gw-go-footer">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% empty %}
+<div style="text-align:center;margin-top:10px;">There are no General Meetings available for {{ year }}-{{ year | add:1 }}</div>
+{% endfor %}
