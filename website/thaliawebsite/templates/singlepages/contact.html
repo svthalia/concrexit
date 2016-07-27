@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Contact" %}{% endblock %}
+
+{% block body %}
+<h1>{% trans "Contact" %}</h1>
+
+<table class="table">
+    <tr>
+        <td>{% trans "Faculty:" %}</td>
+        <td>{% trans "Faculty of Science" %}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Room:" %}</td>
+        <td>HG00.150</td>
+    </tr>
+    <tr>
+        <td valign="top">{% trans "Address:" %}</td>
+        <td>Heyendaalseweg 135<br>6525 AJ Nijmegen<br>{% trans "Board room: HG00.150 (above the north-canteen)" %}</td>
+    </tr>
+    <tr>
+        <td valign="top">{% trans "Postal address:" %}</td>
+        <td>Postbus 9010<br>6500 GL Nijmegen</td>
+    </tr>
+    <tr>
+        <td>{% trans "Telephone:" %}</td>
+        <td>024 - 3652079</td>
+    </tr>
+    <tr>
+        <td>{% trans "Voicemailbox:" %}</td>
+        <td>084 - 8339677</td>
+    </tr>
+    <tr>
+        <td valign="top">{% trans "Email:" %}</td>
+        <td>
+            <a href="mailto:info@thalia.nu">info@thalia.nu</a> {% trans "general" %}<br>
+            <a href="mailto:samenwerking@thalia.nu">samenwerking@thalia.nu</a> {% trans "communication w.r.t. promoting your company (activities)" %}
+        </td>
+    </tr>
+    <tr>
+        <td valign="top">Kamer van Koophandel:</td>
+        <td>40146464</td>
+    </tr>
+    <tr>
+        <td valign="top">IBAN:</td>
+        <td>NL23INGB0006234184</td>
+    </tr>
+    <tr>
+        <td valign="top">{% trans "VAT number:" %}</td>
+        <td>NL800232483B02</td>
+    </tr>
+</table>
+{% endblock %}

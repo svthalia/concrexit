@@ -1,0 +1,324 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-07-26 22:20+0200\n"
+"PO-Revision-Date: 2016-07-26 22:21+0100\n"
+"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#: admin.py:5
+msgid "Thalia administration"
+msgstr ""
+
+#: admin.py:6
+msgid "Thalia"
+msgstr ""
+
+#: menus.py:4
+msgid "Home"
+msgstr ""
+
+#: menus.py:5
+msgid "Association"
+msgstr ""
+
+#: menus.py:6
+msgid "Board"
+msgstr ""
+
+#: menus.py:7
+msgid "Committees"
+msgstr ""
+
+#: menus.py:8 menus.py:10
+msgid "Members"
+msgstr ""
+
+#: menus.py:9
+msgid "Documents"
+msgstr ""
+
+#: menus.py:11 templates/singlepages/sister_associations.html:4
+#: templates/singlepages/sister_associations.html:17
+msgid "Sister Associations"
+msgstr "Zusterverenigingen"
+
+#: menus.py:12
+msgid "Become Member"
+msgstr ""
+
+#: menus.py:13
+msgid "Thabloid"
+msgstr ""
+
+#: menus.py:15
+msgid "For Members"
+msgstr ""
+
+#: menus.py:16
+msgid "Photos"
+msgstr ""
+
+#: menus.py:17
+msgid "Statistics"
+msgstr ""
+
+#: menus.py:18
+msgid "Become Active"
+msgstr ""
+
+#: menus.py:19
+msgid "Wiki"
+msgstr ""
+
+#: menus.py:21
+msgid "Calendar"
+msgstr ""
+
+#: menus.py:22
+msgid "Career"
+msgstr ""
+
+#: menus.py:23
+msgid "Sponsor"
+msgstr ""
+
+#: menus.py:24
+msgid "Vacancies"
+msgstr ""
+
+#: menus.py:26
+msgid "Education"
+msgstr ""
+
+#: menus.py:27
+msgid "Book Sale"
+msgstr ""
+
+#: menus.py:28
+msgid "Course Overview"
+msgstr ""
+
+#: menus.py:29
+msgid "Add Exam"
+msgstr ""
+
+#: menus.py:30
+msgid "Add Summary"
+msgstr ""
+
+#: menus.py:32 templates/singlepages/contact.html:4
+#: templates/singlepages/contact.html:7
+msgid "Contact"
+msgstr ""
+
+#: settings/settings.py:136
+msgid "English"
+msgstr ""
+
+#: settings/settings.py:137
+msgid "Dutch"
+msgstr ""
+
+#: templates/base.html:84 templates/base.html:121
+msgid "Study Association Thalia"
+msgstr ""
+
+#: templates/registration/login.html:3 templates/registration/login.html:24
+msgid "Login"
+msgstr ""
+
+#: templates/registration/login.html:8
+msgid ""
+"\n"
+"        <p>Your account does not have access to this page. To proceed, "
+"please\n"
+"        log in with an account that has access.</p>\n"
+"    "
+msgstr ""
+
+#: templates/registration/login.html:13
+msgid ""
+"\n"
+"        <p>Please log in to see this page.</p>\n"
+"      "
+msgstr ""
+
+#: templates/singlepages/become_active.html:4
+#: templates/singlepages/become_active.html:7
+msgid "Become active"
+msgstr "Actief worden"
+
+#: templates/singlepages/become_active.html:9
+msgid ""
+"Throughout the year, Thalia organizes a wide variety of activities, both "
+"educational (such as symposiums and programming contests) as well as social "
+"(such as drinks, paintballing and LAN parties). All in all, this adds up to "
+"around 80 activities each year. The board and Thalia's committees organize "
+"these events. Furthermore, Thalia members are involved in e.g. writing the "
+"Thabloid, maintaining this website and our servers, and taking pictures "
+"during events. Altogether, a group of 50 to 60 members commits to making all "
+"these amazing activities happen every year."
+msgstr ""
+"Thalia organiseert door het hele jaar heen diverse activiteiten, van "
+"studiegerelateerde activiteiten zoals symposia en programeerwedstrijden tot "
+"sociale activiteiten als borrels, paintballen en LAN-party's. Bij elkaar "
+"zijn dit zo'n 80 activiteiten per jaar. Het bestuur en de commissies van "
+"Thalia organiseren deze activiteiten. Daarnaast zijn er nog de leden die "
+"bijvoorbeeld de Thabloid maken, deze website en de Thalia-servers "
+"onderhouden, of foto's maken op evenementen. Ongeveer 50 - 60 leden zetten "
+"zich ieder jaar in om geweldige activiteiten te organiseren voor alle leden."
+
+#: templates/singlepages/become_active.html:11
+msgid ""
+"Does it seem like fun to join a committee and do your bit to contribute to "
+"the association? Then become a member of one of the committees! You can do "
+"this by sending an e-mail to <a href=\"mailto:intern@thalia.nu"
+"\">intern@thalia.nu</a>, sending a Facebook message or speaking to a board "
+"or committee member in person."
+msgstr ""
+"Lijkt het jou ook leuk om in een commissie te gaan en een steentje bij te "
+"dragen aan de vereniging? Word dan lid van een commissie! Dit kun je doen "
+"door een mailtje te sturen naar <a href=\"mailto:intern@thalia.nu"
+"\">intern@thalia.nu</a>, een Facebookbericht te sturen of een bestuurs- of "
+"commissielid persoonlijk aan te spreken."
+
+#: templates/singlepages/become_active.html:13
+msgid ""
+"Are you not sure if being part of a committee is for you? You can always sit "
+"in on a meeting to see if you like it. Again, feel free to ask committee "
+"members or the board in person. The committees are always looking for "
+"enthusiastic new members!"
+msgstr ""
+"Weet je niet zeker of commissiewerk iets voor jou is? Je kunt altijd een "
+"vergadering bijwonen van een commissie om te kijken of het jou bevalt. Je "
+"kunt ook commissieleden of het bestuur persoonlijk aanspreken. De commissies "
+"zijn altijd op zoek naar nieuwe enthousiaste leden!"
+
+#: templates/singlepages/contact.html:11
+msgid "Faculty:"
+msgstr "Faculteit:"
+
+#: templates/singlepages/contact.html:12
+msgid "Faculty of Science"
+msgstr "Faculteit der Natuurwetenschappen, Wiskunde & Informatica"
+
+#: templates/singlepages/contact.html:15
+msgid "Room:"
+msgstr "Kamer:"
+
+#: templates/singlepages/contact.html:19
+msgid "Address:"
+msgstr "Adres:"
+
+#: templates/singlepages/contact.html:20
+msgid "Board room: HG00.150 (above the north-canteen)"
+msgstr "Bestuurskamer: HG00.150 (boven de noordkantine)"
+
+#: templates/singlepages/contact.html:23
+msgid "Postal address:"
+msgstr "Postadres:"
+
+#: templates/singlepages/contact.html:27
+msgid "Telephone:"
+msgstr "Telefoon:"
+
+#: templates/singlepages/contact.html:31
+msgid "Voicemailbox:"
+msgstr "Voicemailbox:"
+
+#: templates/singlepages/contact.html:35
+msgid "Email:"
+msgstr "E-mail:"
+
+#: templates/singlepages/contact.html:37
+msgid "general"
+msgstr "algemeen"
+
+#: templates/singlepages/contact.html:38
+msgid "communication w.r.t. promoting your company (activities)"
+msgstr "communicatie over het promoten van uw bedrijf(sactiviteiten)"
+
+#: templates/singlepages/contact.html:50
+msgid "VAT number:"
+msgstr "BTW-nummer:"
+
+#: templates/singlepages/sister_associations.html:7
+msgid "Associations of the Radboud University Science Faculty"
+msgstr "Bètaverenigingen van de Radboud Universiteit"
+
+#: templates/singlepages/sister_associations.html:9
+msgid "(Medical) Biology"
+msgstr "(Medische) Biologie"
+
+#: templates/singlepages/sister_associations.html:10
+msgid "Artificial Intelligence"
+msgstr "Kunstmatige Intelligentie"
+
+#: templates/singlepages/sister_associations.html:11
+msgid "Mathematics"
+msgstr "Wiskunde"
+
+#: templates/singlepages/sister_associations.html:12
+msgid "Science"
+msgstr "Science"
+
+#: templates/singlepages/sister_associations.html:13
+msgid "Physics and Astronomy"
+msgstr "Natuur- en Sterrekunde"
+
+#: templates/singlepages/sister_associations.html:14
+msgid "Science faculty umbrella association"
+msgstr "Overkoepelende bètavereniging"
+
+#: templates/singlepages/sister_associations.html:15
+msgid "Molecular Sciences"
+msgstr "Moleculaire Wetenschappen"
+
+#: templates/singlepages/sister_associations.html:19
+#: templates/singlepages/sister_associations.html:26
+msgid "University of Twente"
+msgstr "Universiteit Twente"
+
+#: templates/singlepages/sister_associations.html:20
+#: templates/singlepages/sister_associations.html:28
+msgid "Utrecht University"
+msgstr "Universiteit Utrecht"
+
+#: templates/singlepages/sister_associations.html:21
+msgid "Delft University of Technology"
+msgstr "Technische Universiteit Delft"
+
+#: templates/singlepages/sister_associations.html:22
+#: templates/singlepages/sister_associations.html:24
+msgid "University of Groningen"
+msgstr "Rijksuniversiteit Groningen"
+
+#: templates/singlepages/sister_associations.html:23
+msgid "Leiden University"
+msgstr "Universiteit Leiden"
+
+#: templates/singlepages/sister_associations.html:25
+msgid "Eindhoven University of Technology"
+msgstr "Technische Universiteit Eindhoven"
+
+#: templates/singlepages/sister_associations.html:27
+#: templates/singlepages/sister_associations.html:30
+msgid "University of Amsterdam"
+msgstr "Universiteit van Amsterdam"
+
+#: templates/singlepages/sister_associations.html:29
+msgid "VU University Amsterdam"
+msgstr "Vrije Universiteit Amsterdam"
