@@ -23,6 +23,7 @@ class UserAdmin(BaseUserAdmin):
     # FIXME use nicer form
     # form = forms.AdminForm (base on ModelForm, reorder elements, etc).
 
+admin.site.register(models.BecomeAMemberDocument)
 
 # re-register User admin
 admin.site.unregister(User)

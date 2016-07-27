@@ -9,7 +9,7 @@ main = [
         {'title': _('Documents'), 'name': 'documents:index'},
         {'title': _('Members'), 'name': '#'},
         {'title': _('Sister Associations'), 'name': '#'},
-        {'title': _('Become Member'), 'name': '#'},
+        {'title': _('Become Member'), 'name': 'become-a-member'},
         {'title': _('Thabloid'), 'name': '#'},
     ]},
     {'title': _('For Members'), 'name': '#', 'submenu': [
