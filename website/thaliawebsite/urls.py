@@ -13,7 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+import os.path
+
+from django.conf import settings
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 
@@ -25,9 +29,10 @@ urlpatterns = [
     url(r'^members/', include('members.urls', namespace='members')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
     url(r'^association/', include([
-        url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
+        url(r'^committees/', include('committees.urls', namespace='committees')),
         url(r'^documents/', include('documents.urls', namespace='documents')),
         url(r'^become-a-member/', members.views.become_a_member, name='become-a-member'),
+        url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
     ])),
     url(r'^for-members/', include([
         url(r'^become-active', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
@@ -36,4 +41,5 @@ urlpatterns = [
     # Default login helpers
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
-]
+] + static(settings.MEDIA_URL + 'public/',
+           document_root=os.path.join(settings.MEDIA_ROOT, 'public'))

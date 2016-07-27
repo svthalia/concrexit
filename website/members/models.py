@@ -177,6 +177,13 @@ class Member(models.Model):
         default='full',
     )
 
+    photo = models.ImageField(
+        verbose_name=_('Foto'),
+        upload_to='public/avatars/',
+        null=True,
+        blank=True,
+    )
+
     # --- Communication preference ----
 
     language = models.CharField(
