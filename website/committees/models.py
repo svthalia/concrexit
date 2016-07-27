@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 from django.db import models
 from django.utils import timezone
@@ -45,6 +46,7 @@ class Committee(models.Model):
 
     photo = models.ImageField(
         verbose_name=_('Image'),
+        upload_to='public/committeephotos/',
     )
 
     members = models.ManyToManyField(
@@ -74,6 +76,9 @@ class Committee(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('committees:details', args=[str(self.pk)])
 
     class Meta:
         verbose_name = _('committee')

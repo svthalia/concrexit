@@ -4,7 +4,7 @@ main = [
     {'title': _('Home'), 'name': 'index'},
     {'title': _('Association'), 'name': '#', 'submenu': [
         {'title': _('Board'), 'name': '#'},
-        {'title': _('Committees'), 'name': '#'},
+        {'title': _('Committees'), 'name': 'committees:index'},
         {'title': _('Members'), 'name': '#'},
         {'title': _('Documents'), 'name': 'documents:index'},
         {'title': _('Members'), 'name': '#'},
