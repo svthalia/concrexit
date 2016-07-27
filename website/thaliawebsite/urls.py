@@ -27,4 +27,5 @@ urlpatterns = [
     ])),
     # Default login helpers
     url(r'^', include('django.contrib.auth.urls')),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 ]
