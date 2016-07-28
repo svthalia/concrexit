@@ -17,6 +17,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
 
+from utils.views import private_thumbnails
+
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^admin/', admin.site.urls),
@@ -28,8 +30,10 @@ urlpatterns = [
     ])),
     url(r'^for-members/', include([
         url(r'^become-active', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
+        url(r'^photos/', include('photos.urls', namespace='photos')),
     ])),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
+    url(r'^private-thumbnails/(?P<path>.*)', private_thumbnails, name='private-thumbnails'),
     # Default login helpers
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),

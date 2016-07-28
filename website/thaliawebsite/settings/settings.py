@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'members',
     'documents',
     'committees',
+    'photos',
+    'utils',
 ]
 
 MIDDLEWARE = [
