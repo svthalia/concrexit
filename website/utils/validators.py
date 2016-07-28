@@ -4,6 +4,6 @@ import os
 
 
 def validate_file_extension(file, exts=['.txt', '.pdf', '.jpg', '.png']):
-    _, ext = os.path.splitext(file.name)
+    ext = os.path.splitext(file.name)[1]
     if not ext.lower() in exts:
         raise ValidationError("File extension not allowed.")
