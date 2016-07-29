@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-    url('^album/(?P<slug>[0-9a-z-_]*)', views.album, name='album'),
+    url('^(?P<slug>[0-9a-z-_]+)', views.album, name='album'),
     url('^download/(?P<slug>[0-9a-z-_]*)', views.download, name='download'),
-    url('^', views.index, name='index'),
+    url('^$', views.index, name='index'),
 ]
