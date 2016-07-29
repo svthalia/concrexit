@@ -10,7 +10,7 @@
     {% comment %}TODO figure out why whitespace is not rendered between tiles{% endcomment %}
     {% comment %}TODO download link{% endcomment %}
     <ul class="gallery-photos row">
-        {% for photo in photos %}
+        {% for photo in album.photos %}
         <li class="post gallery-photo span3 has-overlay first-child">
             <a class="gallery-box" rel="gallery" data-download="{% url 'photos:download' photo %}" href="{% thumbnail photo '1024x768' fit=True %}">
                 <span class="post-inner">
