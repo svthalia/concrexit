@@ -27,13 +27,15 @@ def thumbnail(path, size, fit=True):
 
     os.makedirs(os.path.dirname(full_thumbpath), exist_ok=True)
 
-    image = Image.open(full_path)
-    size = tuple(int(dim) for dim in size.split('x'))
-    if not fit:
-        ratio = min([a / b for a, b in zip(size, image.size)])
-        size = tuple(int(ratio * x) for x in image.size)
-    thumb = ImageOps.fit(image, size, Image.ANTIALIAS)
-    thumb.save(full_thumbpath)
+    if (not os.path.isfile(full_thumbpath) or
+        os.path.getmtime(full_path) > os.path.getmtime(full_thumbpath)):
+        image = Image.open(full_path)
+        size = tuple(int(dim) for dim in size.split('x'))
+        if not fit:
+            ratio = min([a / b for a, b in zip(size, image.size)])
+            size = tuple(int(ratio * x) for x in image.size)
+        thumb = ImageOps.fit(image, size, Image.ANTIALIAS)
+        thumb.save(full_thumbpath)
 
     if parts[0] == 'public':
         return '/'.join([settings.MEDIA_URL, thumbpath])
