@@ -8,8 +8,9 @@ from .snippets import sanitize_path
 
 
 @login_required
-def private_thumbnails(request, path):
+def private_thumbnails(request, size_fit, path):
     # TODO do a bit more error handling if the path does not exist?
     # 'path' is supplied as a URL parameter, so treat with care!
-    path = os.path.join(settings.MEDIA_ROOT, 'thumbnails', sanitize_path(path))
+    path = sanitize_path(path)
+    path = os.path.join(settings.MEDIA_ROOT, 'thumbnails', size_fit, path)
     return sendfile(request, path)
