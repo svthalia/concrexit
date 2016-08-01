@@ -28,7 +28,7 @@ def thumbnail(path, size, fit=True):
     os.makedirs(os.path.dirname(full_thumbpath), exist_ok=True)
 
     if (not os.path.isfile(full_thumbpath) or
-        os.path.getmtime(full_path) > os.path.getmtime(full_thumbpath)):
+            os.path.getmtime(full_path) > os.path.getmtime(full_thumbpath)):
         image = Image.open(full_path)
         size = tuple(int(dim) for dim in size.split('x'))
         if not fit:
