@@ -47,7 +47,7 @@ def get_miscellaneous_document(request, pk):
     ext = os.path.splitext(document.file.path)[1]
     # TODO verify if we need to check a permission instead.
     # This depends on how we're dealing with ex-members.
-    if document.members_only and not request.user.is_authenticated():
+    if document.members_only and not request.user.is_authenticated:
         raise PermissionDenied
     return sendfile(request, document.file.path, attachment=True,
                     attachment_filename=slugify(document.name) + ext)
