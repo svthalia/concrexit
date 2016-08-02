@@ -31,9 +31,9 @@
 <div class="pagination" style="float: none;text-align: center;">
     <span class="step-links">
         {% if albums.has_previous %}
-            <a href="?page={{ albums.previous_page_number }}">{% trans "&laquo;" %}</a>
+            <a href="?page={{ albums.previous_page_number }}">&laquo;</a>
         {% else %}
-            <a style='visibility: hidden;'>{% trans "&laquo;" %}</a>
+            <a style='visibility: hidden;'>&laquo;</a>
         {% endif %}
 
         <span class="current">
@@ -41,9 +41,9 @@
         </span>
 
         {% if albums.has_next %}
-            <a href="?page={{ albums.next_page_number }}">{% trans "&raquo;" %}</a>
+            <a href="?page={{ albums.next_page_number }}">&raquo;</a>
         {% else %}
-            <a style='visibility: hidden;'>{% trans "&raquo;" %}</a>
+            <a style='visibility: hidden;'>&raquo;</a>
         {% endif %}
     </span>
 </div>
