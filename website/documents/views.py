@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 
 from documents.models import AssociationDocumentsYear, MiscellaneousDocument
 from documents.models import GeneralMeeting, GeneralMeetingDocument
@@ -43,11 +44,13 @@ def index(request):
 
 def get_miscellaneous_document(request, pk):
     document = get_object_or_404(MiscellaneousDocument, pk=int(pk))
+    ext = os.path.splitext(document.file.path)[1]
     # TODO verify if we need to check a permission instead.
     # This depends on how we're dealing with ex-members.
-    if document.members_only and not request.user.is_authenticated():
+    if document.members_only and not request.user.is_authenticated:
         raise PermissionDenied
-    return sendfile(request, document.file.path, attachment=True)
+    return sendfile(request, document.file.path, attachment=True,
+                    attachment_filename=slugify(document.name) + ext)
 
 
 # TODO verify if we need to check a permission instead.
@@ -57,7 +60,7 @@ def get_association_document(request, document_type, year):
     file = {'policy-document': documents.policy_document,
             'annual-report': documents.annual_report,
             'financial-report': documents.financial_report}[document_type]
-    _, ext = os.path.splitext(file.path)
+    ext = os.path.splitext(file.path)[1]
     filename = '{}-{}-{}{}'.format(year, int(year)+1, document_type, ext)
     return sendfile(request, file.path,
                     attachment=True, attachment_filename=filename)
@@ -75,7 +78,7 @@ def get_general_meeting_document(request, pk, document_pk):
 @login_required
 def get_general_meeting_minutes(request, pk):
     meeting = get_object_or_404(GeneralMeeting, pk=int(pk))
-    _, ext = os.path.splitext(meeting.minutes.path)
+    ext = os.path.splitext(meeting.minutes.path)[1]
     filename = '{}-minutes{}'.format(meeting.datetime.date(), ext)
     return sendfile(request, meeting.minutes.path,
                     attachment=True, attachment_filename=filename)

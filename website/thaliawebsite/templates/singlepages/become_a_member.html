@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Become a Member" %}{% endblock %}
+
+{% block body %}
+<h1>{% trans "Become a Member" %}</h1>
+
+<p>{% trans "Thalia is the study association for Computing Science and Information Sciences students at the Radboud University in Nijmegen. Thalia organises a wide variety of activities, such as bowling events, go cart racing, lunch lectures, drinks and much more! Furthermore, members get access to our tests and summaries database, as well as discounts on books. There's no reason not to become a member!" %}</p>
+
+<h4>{% trans "How do I become a member?" %}</h4>
+
+<p>{% trans "You can become a member of Thalia at any time during the year. Membership costs € 7.50 per year, or € 30 for your entire study duration. To become a member, please fill out the membership form. You can get the form at the board room (HG00.150, above the north kanteen in the Huygens building), or download it below. After signing the form, return it to the board room. Note: Only Computing Science and Information Sciences students at the Radboud University can become a member." %}</p>
+
+<h4>{% trans "I'm not a Computing Science and Information Sciences student at the Radboud University, but I do want to attend your events. Now what?" %}</h4>
+
+<p>{% trans "It is still possible to be associated with Thalia, even if you do not study Computing Science or Information Sciences (anymore): You can become a supporter. For at least € 7.50 per year, you too can enjoy everything Thalia has to offer. If you are not a former Thalia member, ICIS staff member or alumni, you must submit a written along with two signatures of current Thalia members. You can fill all of this in on the supporter form, which you can get at the board room (HG00.150, above the north kanteen in the Huygens building), or download below." %}</p>
+
+<p>{% blocktrans %}Payment for membership or sponsorship can be made both in cash or by authorised direct debit. To authorise direct debit, use the form that is also available below. If you have any other questions about Thalia and/or your membership, feel free to email <a href="mailto:info@thalia.nu" target="_blank">info@thalia.nu</a>!{% endblocktrans %}</p>
+
+<div class="portfolio">
+    <ul class="portfolio-posts row" style="padding-top:20px;">
+        {% for document in documents %}
+            {% include 'members/become_a_member_document.html' %}
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans 'Committees' %} — {{ block.super }}{% endblock %}
+{% block page_title %}{% trans 'Committees' %}{% endblock %}
+
+{% block body %}
+<h1>{% trans 'Committees' %}</h1>
+
+<div class="clearfix portfolio">
+  <div id="committees">
+    <ul class="row committees">
+      {% for committee in committees %}
+      <li class="post member-item span3 has-overlay first-child">
+        <a href="{{ committee.get_absolute_url }}">
+
+          <div class="post-inner">
+            <div class="inner-img">
+              <img src="{{ MEDIA_URL }}{{ committee.photo }}" alt="{{ committee.name }}">
+            </div>
+
+            <div class="post-overlay">
+              <div class="post-overlay-meta">
+                <h2>{{ committee.name }}</h2>
+              </div>
+            </div>
+
+            <div class="post-body avatar-subtitle">
+              {{ committee.name }}
+            </div>
+          </div>
+        </a>
+      </li>
+
+
+      {% empty %}
+      {% trans 'There are no committees!' %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
