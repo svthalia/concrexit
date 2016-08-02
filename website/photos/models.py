@@ -6,10 +6,12 @@ import os
 import re
 from datetime import datetime
 import random
+from functools import total_ordering
 
 COVER_FILENAME = 'cover.jpg'
 
 
+@total_ordering
 class Album(object):
 
     photosdir = 'photos'
@@ -44,3 +46,9 @@ class Album(object):
     @classmethod
     def all(cls):
         return [cls(dirname) for dirname in os.listdir(Album.photospath)]
+
+    def __eq__(self, other):
+        return self.date == other.date
+
+    def __lt__(self, other):
+        return self.date < other.date

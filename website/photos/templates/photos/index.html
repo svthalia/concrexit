@@ -26,6 +26,25 @@
         </li>
         {% endfor %}
     </ul>
-    {% comment %}TODO pagination{% endcomment %}
+</div>
+<div class='clearfix'></div>
+<div class="pagination" style="float: none;text-align: center;">
+    <span class="step-links">
+        {% if albums.has_previous %}
+            <a href="?page={{ albums.previous_page_number }}">{% trans "&laquo;" %}</a>
+        {% else %}
+            <a style='visibility: hidden;'>{% trans "&laquo;" %}</a>
+        {% endif %}
+
+        <span class="current">
+            {{ albums.number }} / {{ albums.paginator.num_pages }}
+        </span>
+
+        {% if albums.has_next %}
+            <a href="?page={{ albums.next_page_number }}">{% trans "&raquo;" %}</a>
+        {% else %}
+            <a style='visibility: hidden;'>{% trans "&raquo;" %}</a>
+        {% endif %}
+    </span>
 </div>
 {% endblock %}
