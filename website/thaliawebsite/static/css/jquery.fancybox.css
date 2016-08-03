@@ -85,11 +85,11 @@
 #fancybox-loading div {
 	width: 44px;
 	height: 44px;
-	background: url('../assets/images/fancybox/fancybox_loading.gif') center center no-repeat;
+	background: url('../images/fancybox/fancybox_loading.gif') center center no-repeat;
 }
 
 .fancybox-close {
-	background:url('../assets/images/misc/icon_close.png') 0 0 no-repeat;
+	background:url('../images/misc/icon_close.png') 0 0 no-repeat;
 	background-size: 32px 64px;
 	position: absolute;
 	top: 20px;
@@ -101,7 +101,7 @@
 }
 
 .fancybox-download {
-	background:url('../assets/images/misc/icon_download.png') 0 0 no-repeat;
+	background:url('../images/misc/icon_download.png') 0 0 no-repeat;
 	background-size: 32px 64px;
 	position: absolute;
 	top: 20px;
@@ -123,7 +123,7 @@
 	height: 100%;
 	cursor: pointer;
 	text-decoration: none;
-	background: transparent url('../assets/images/fancybox/blank.gif'); /* helps IE */
+	background: transparent url('../images/fancybox/blank.gif'); /* helps IE */
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 	z-index: 8040;
 }
@@ -137,7 +137,7 @@
 }
 
 .fancybox-nav span {
-	background: url('../assets/images/misc/slider_large_next_prev.png') 0 0 no-repeat;
+	background: url('../images/misc/slider_large_next_prev.png') 0 0 no-repeat;
 	background-size: 64px 64px;
 	position: absolute;
 	top: 50%;

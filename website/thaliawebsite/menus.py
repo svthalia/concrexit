@@ -13,7 +13,7 @@ main = [
         {'title': _('Thabloid'), 'name': '#'},
     ]},
     {'title': _('For Members'), 'name': '#', 'submenu': [
-        {'title': _('Photos'), 'name': '#'},
+        {'title': _('Photos'), 'name': 'photos:index'},
         {'title': _('Statistics'), 'name': '#'},
         {'title': _('Become Active'), 'name': 'become-active'},
         {'title': _('Wiki'), 'name': '#'},
