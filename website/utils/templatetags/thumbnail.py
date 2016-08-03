@@ -1,6 +1,7 @@
 from django import template
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db.models.fields.files import ImageFieldFile
 
 from PIL import Image, ImageOps
 import os
@@ -10,6 +11,9 @@ register = template.Library()
 
 @register.simple_tag
 def thumbnail(path, size, fit=True):
+    if isinstance(path, ImageFieldFile):
+        path = path.name
+
     size_fit = '{}_{}'.format(size, int(fit))
 
     parts = path.split('/')
@@ -38,6 +42,6 @@ def thumbnail(path, size, fit=True):
         thumb.save(full_thumbpath)
 
     if parts[0] == 'public':
-        return '/'.join([settings.MEDIA_URL, thumbpath])
+        return settings.MEDIA_URL + thumbpath
     else:
         return reverse('private-thumbnails', args=[size_fit, path])
