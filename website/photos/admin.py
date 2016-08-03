@@ -1,3 +1,5 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# TODO figure out a nice way to make an admin interface
+from .models import Album
+
+admin.site.register(Album)
