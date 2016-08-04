@@ -48,9 +48,10 @@ class Album(models.Model):
         return '{} {}'.format(self.date.strftime('%Y-%m-%d'), self.title)
 
     def get_absolute_url(self):
-        return reverse('photos:album', args=[str(self.pk)])
+        return reverse('photos:album', args=[str(self.slug)])
 
     def save(self, *args, **kwargs):
-        self.dirname = slug
-        # TODO actually store the photos at the right place
-        super(Model, self).save(*args, **kwargs)
+        # dirname is only set for new objects, to avoid ever changing it
+        if self.pk is None:
+            self.dirname = self.slug
+        super(Album, self).save(*args, **kwargs)
