@@ -4,8 +4,6 @@ from django.utils.functional import cached_property
 from django.db import models
 
 import os
-import re
-from datetime import datetime
 import random
 from functools import total_ordering
 
@@ -17,6 +15,7 @@ class Album(models.Model):
     title = models.CharField(max_length=200)
     dirname = models.CharField(max_length=200)
     date = models.DateField()
+    slug = models.SlugField()
 
     photosdir = 'photos'
     photospath = os.path.join(settings.MEDIA_ROOT, photosdir)
@@ -50,3 +49,8 @@ class Album(models.Model):
 
     def get_absolute_url(self):
         return reverse('photos:album', args=[str(self.pk)])
+
+    def save(self, *args, **kwargs):
+        self.dirname = slug
+        # TODO actually store the photos at the right place
+        super(Model, self).save(*args, **kwargs)

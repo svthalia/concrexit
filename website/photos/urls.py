@@ -5,6 +5,6 @@ from . import views
 
 urlpatterns = [
     url(r'^download/(?P<path>.*)', views.download, name='download'),
-    url(r'^(?P<pk>[0-9]+)', views.album, name='album'),
+    url(r'^(?P<slug>[-\w]+)/$', views.album, name='album'),
     url(r'^$', views.index, name='index'),
 ]

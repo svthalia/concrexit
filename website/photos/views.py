@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Album
@@ -32,8 +31,8 @@ def index(request):
 
 
 @login_required
-def album(request, pk):
-    album = get_object_or_404(Album, pk=int(pk))
+def album(request, slug):
+    album = get_object_or_404(Album, slug=slug)
     return render(request, 'photos/album.html', {'album': album})
 
 
