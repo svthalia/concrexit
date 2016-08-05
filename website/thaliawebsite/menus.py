@@ -22,7 +22,7 @@ main = [
     ]},
     {'title': _('Calendar'), 'name': '#'},
     {'title': _('Career'), 'name': '#', 'submenu': [
-        {'title': _('Sponsors'), 'name': '#'},
+        {'title': _('Partners'), 'name': '#'},
         {'title': _('Vacancies'), 'name': '#'},
     ]},
     {'title': _('Education'), 'name': '#', 'submenu': [
