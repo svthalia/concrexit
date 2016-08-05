@@ -1,0 +1,68 @@
+{% extends 'admin/index.html' %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}{{ event.title }}{{ block.super }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'home'|capfirst %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label='events' %}">{% trans 'events'|capfirst %}</a>
+    &rsaquo; <a href="/admin/events/event/">{% trans 'events'|capfirst %}</a>
+    &rsaquo; {{ event.title }}
+</div>
+{% endblock %}
+
+{% block content_title %}<h1>{% blocktrans with event=event.title %}Event overview: {{ event }}{% endblocktrans %}</h1>{% endblock %}
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        {% with event.registrationinformationfield_set.all as fields %}
+        <h2>{% trans "registrations"|capfirst %}</h2>
+        {% include 'events/admin/registrations_table.html' with registrations=registrations %}
+        <br>
+        {% if waiting %}
+        <h2>{% trans "waiting"|capfirst %}</h2>
+        {% include 'events/admin/registrations_table.html' with registrations=waiting verb='queued' addlink=False %}
+        <br>
+        {% endif %}
+        <h2>{% trans "cancellations"|capfirst %}</h2>
+        {% include 'events/admin/registrations_table.html' with registrations=cancellations verb='cancelled' addlink=False %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+    <div class="module">
+        <h2>{% trans "Event properties" %} —
+            <a class="changelink"
+                href="{% url 'admin:events_event_change' event.pk %}?next={{ request.get_full_path|urlencode }}">
+                {% trans "change"|capfirst %}
+            </a>
+        </h2>
+        <dl class="actionlist">
+            <dt>{% trans "title"|capfirst %}</dt>
+            <dd>{{ event.title }}</dd>
+            <dt>{% trans "date"|capfirst %}</dt>
+            <dd>{{ event.start }} <br>— {{ event.end }}</dt>
+            <dt>{% trans "organiser"|capfirst %}</dt>
+            <dd>{{ event.organiser }}</dd>
+            <dt>{% trans "registration period"|capfirst %}</dt>
+            <dd>{{ event.registration_start }} <br>— {{ event.registration_end }}</dd>
+            <dt>{% trans "location"|capfirst %}</dt>
+            <dd>{{ event.location }} ({{ event.map_location }})</dd>
+            <dt>{% trans "price"|capfirst %}</dt>
+            <dd>{{ event.price }}</dd>
+            <dt>{% trans "cost"|capfirst %}</dt>
+            <dd>{{ event.cost }}</dd>
+            <dt>{% trans "registration required"|capfirst %}</dt>
+            <dd>{{ event.registration_required|yesno }}</dd>
+            {% if not event.registration_required %}
+            <dt>{% trans "registration message"|capfirst %}</dt>
+            <dd>{{ event.registration_message|default:event.DEFAULT_NO_REGISTRATION_MESSAGE }}</dd>
+            {% endif %}
+        </dl>
+    </div>
+</div>
+{% endblock %}

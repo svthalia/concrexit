@@ -1,0 +1,55 @@
+{% load i18n %}
+<div class="results">
+    <table id="result_list">
+        <thead>
+            <tr>
+                <th scope="col">{% trans "name"|capfirst %}</th>
+                <th scope="col">{% trans "date"|capfirst %}</th>
+                {% for field in fields %}
+                <th scope="col">{{ field.name }}</th>
+                {% endfor %}
+                <th>{% trans "present"|capfirst %}</th>
+                <th>{% trans "paid"|capfirst %}</th>
+                <th>
+                {% if addlink != 0 %}
+                    <a class="addlink" href="{% url 'admin:events_registration_add' %}?event_pk={{ event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans "add"|capfirst %}</a></th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for registration in registrations %}
+            <tr class="{% if forloop.first %}row1 {% endif %}">
+                {% if registration.member %}
+                <td><a href="{{ registration.member.get_absolute_url }}">{{ registration.member.get_full_name }}</a></td>
+                {% else %}
+                <td>{{ registration.name }}</td>
+                {% endif %}
+                <td>{{ registration.date }}</td>
+                {% for field in registration.registration_information %}
+                    {% if not field.value %}
+                    <td></td>
+                    {% elif field.field.type == 'checkbox' %}
+                    <td>{{ field.value|yesno }}</td>
+                    {% else %}
+                    <td>{{ field.value }}</td>
+                    {% endif %}
+                {% endfor %}
+                <td>{{ registration.present|yesno }}</td>
+                <td>{{ registration.paid|yesno }}</td>
+                <td><a class="changelink" href="{% url 'admin:events_registration_change' registration.pk %}?next={{ request.get_full_path|urlencode }}">{% trans "change" %}</a></td>
+            </tr>
+            {% empty %}
+            <tr class="model-events">
+                <td scope="row">{% blocktrans with verb=verb|default:'registered' %}Nobody {{ verb }} yet{% endblocktrans %}</td>
+                {% for field in fields %}
+                <td>&nbsp;</td>
+                {% endfor %}
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
