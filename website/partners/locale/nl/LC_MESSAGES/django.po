@@ -1,0 +1,59 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-03 21:28+0200\n"
+"PO-Revision-Date: 2016-08-03 21:28+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: templates/partners/index.html:6
+msgid "Our partners"
+msgstr "Onze partners"
+
+#: templates/partners/index.html:8
+msgid ""
+"Als studievereniging doen we ontzettend ons best om leuke evenementen en "
+"activiteiten te organiseren voor de studenten die lid zijn van Thalia. "
+"Voorbeelden van deze evenementen en activiteiten zijn symposia, borrels en "
+"programmeerwedstrijden. Verder organiseren wij ook lunchlezingen, workshops "
+"en brengen we vijf keer per jaar de Thabloid uit (het studieblad van "
+"Thalia). Voor financiering van deze activiteiten zijn wij afhankelijk van "
+"het bedrijfsleven. Wij staat dan ook ten alle tijden open voor nieuwe "
+"samenwerkingsmogelijkheden. Mocht u concrete interesse hebben om deze "
+"bruisende studievereniging financieel te ondersteunen of bent u benieuwd "
+"naar samenwerkingsmogelijkheden, dan kunt u een e-mail versturen naar de "
+"commissaris externe betrekkingen, die te bereiken is via <a href=\"mailto:"
+"samenwerking@thalia.nu\">samenwerking@thalia.nu</a>."
+msgstr ""
+"Als studievereniging doen we ontzettend ons best om leuke evenementen en "
+"activiteiten te organiseren voor de studenten die lid zijn van Thalia. "
+"Voorbeelden van deze evenementen en activiteiten zijn symposia, borrels en "
+"programmeerwedstrijden. Verder organiseren wij ook lunchlezingen, workshops "
+"en brengen we vijf keer per jaar de Thabloid uit (het studieblad van "
+"Thalia). Voor financiering van deze activiteiten zijn wij afhankelijk van "
+"het bedrijfsleven. Wij staat dan ook ten alle tijden open voor nieuwe "
+"samenwerkingsmogelijkheden. Mocht u concrete interesse hebben om deze "
+"bruisende studievereniging financieel te ondersteunen of bent u benieuwd "
+"naar samenwerkingsmogelijkheden, dan kunt u een e-mail versturen naar de "
+"commissaris externe betrekkingen, die te bereiken is via <a href=\"mailto:"
+"samenwerking@thalia.nu\">samenwerking@thalia.nu</a>."
+
+#: templates/partners/index.html:25
+msgid "Main Partner"
+msgstr "Hoofdsponsor"
+
+#: templates/partners/index.html:35 templates/partners/index.html:60
+msgid "Learn more"
+msgstr "Lees meer"

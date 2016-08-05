@@ -42,6 +42,7 @@ urlpatterns = [
         url(r'^become-active', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
         url(r'^photos/', include('photos.urls', namespace='photos')),
     ])),
+    url(r'^career/', include('partners.urls', namespace='partners')),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
     url(r'^private-thumbnails/(?P<size_fit>\d+x\d+_[01])/(?P<path>.*)', private_thumbnails, name='private-thumbnails'),
     # Default login helpers

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'merchandise',
     'django_template_check',  # This is only necessary in development
     'thabloid',
+    'partners',
 ]
 
 MIDDLEWARE = [
