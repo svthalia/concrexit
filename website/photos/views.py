@@ -15,7 +15,7 @@ COVER_FILENAME = 'cover.jpg'
 
 @login_required
 def index(request):
-    albums = sorted(Album.objects.all(), reverse=True)
+    albums = Album.objects.all().order_by('-date')
 
     paginator = Paginator(albums, 12)
     page = request.GET.get('page')
