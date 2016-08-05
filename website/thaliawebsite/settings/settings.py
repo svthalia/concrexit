@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'committees',
     'photos',
     'utils',
+    'merchandise',
 ]
 
 MIDDLEWARE = [
