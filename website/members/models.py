@@ -14,11 +14,6 @@ class Member(models.Model):
     """This class describes a member"""
 
     # No longer yearly membership as a type, use expiration date instead.
-    MEMBERSHIP_TYPES = (
-        ('benefactor', _('Benefactor')),
-        ('member', _('Member')),
-        ('honorary', _('Honorary Member')))
-
     PROGRAMME_CHOICES = (
         ('computingscience', _('Computing Science')),
         ('informationscience', _('Information Sciences')))
@@ -47,23 +42,39 @@ class Member(models.Model):
         null=True,
     )
 
-    type = models.CharField(
-        max_length=40,
-        choices=MEMBERSHIP_TYPES,
-        verbose_name=_('Membership type'),
-    )
-
-    registration_year = models.IntegerField(
-        verbose_name=_('Registration year'),
-        help_text=_('The year this member first became a part of Thalia'),
-    )
-
-    membership_expiration = models.DateField(
-        verbose_name=_('Expiration date of membership'),
-        help_text=_('Let the membership expire after this time'),
-        null=True,
+    starting_year = models.IntegerField(
+        verbose_name=_('Starting year'),
+        help_text=_('The year this member started studying.'),
         blank=True,
+        null=True,
     )
+
+    @property
+    def current_membership(self):
+        membership = self.latest_membership
+        if membership and not membership.is_active():
+            return None
+        return membership
+
+    @property
+    def latest_membership(self):
+        if not self.membership_set.exists():
+            return None
+        return self.membership_set.latest('since')
+
+    @property
+    def membership_set(self):
+        return self.user.membership_set
+
+    def is_active(self):
+        """Is this member currently active
+
+        Tested by checking if the expiration date has passed.
+        """
+        return self.current_membership is not None
+    # Special properties for admin site
+    is_active.boolean = True
+    is_active.short_description = _('Is this user currently active')
 
     # ---- Address information -----
 
@@ -221,16 +232,6 @@ class Member(models.Model):
         blank=True,
     )
 
-    def is_active(self):
-        """Is this member currently active
-
-        Tested by checking if the expiration date has passed.
-        """
-        return self.membership_expiration > timezone.now()
-    # Special properties for admin site
-    is_active.boolean = True
-    is_active.short_description = _('Is this user currently active')
-
     def display_name(self):
         pref = self.display_name_preference
         if pref == 'nickname':
@@ -250,6 +251,49 @@ class Member(models.Model):
 
     def __str__(self):
         return self.display_name()
+
+
+class Membership(models.Model):
+
+    MEMBERSHIP_TYPES = (
+        ('member', _('Member')),
+        ('supporter', _('Supporter')),
+        ('honorary', _('Honorary Member')))
+
+    type = models.CharField(
+        max_length=40,
+        choices=MEMBERSHIP_TYPES,
+        verbose_name=_('Membership type'),
+    )
+
+    # Preferably this would have been a foreign key to Member instead,
+    # but Django currently does not support nested inlines in the Admin UI.
+    # This is necessary to create an inline in the User form.
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_('User'),
+    )
+
+    since = models.DateField(
+        verbose_name=_("Membership since"),
+        help_text=_("The date the member started holding this membership."),
+        default=timezone.now
+    )
+
+    until = models.DateField(
+        verbose_name=_("Membership until"),
+        help_text=_("The date the member stops holding this membership."),
+        blank=True,
+        null=True,
+    )
+
+    @property
+    def member(self):
+        return self.user.member
+
+    def is_active(self):
+        return not self.until or self.until > timezone.now()
 
 
 class BecomeAMemberDocument(models.Model):
