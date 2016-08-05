@@ -36,7 +36,9 @@ class MailingList(models.Model):
 
 class VerbatimAddress(models.Model):
     address = models.EmailField()
-    mailinglist = models.ForeignKey(MailingList, related_name='addresses')
+    mailinglist = models.ForeignKey(MailingList,
+                                    on_delete=models.CASCADE,
+                                    related_name='addresses')
 
     def __str__(self):
         return self.address
@@ -49,4 +51,6 @@ class ListAlias(models.Model):
                                          message=_('Enter a simpler name'))
                                          ],
                              )
-    mailinglist = models.ForeignKey(MailingList, related_name='aliasses')
+    mailinglist = models.ForeignKey(MailingList,
+                                    on_delete=models.CASCADE,
+                                    related_name='aliasses')
