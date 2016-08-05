@@ -1,0 +1,3 @@
+START
+{% for member in members %}{{ member.user.email }}
+{% endfor %}END

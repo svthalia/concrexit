@@ -27,6 +27,7 @@ import members
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^admin/', admin.site.urls),
+    url(r'^mailinglists/', include('mailinglists.urls', namespace='mailinglists')),
     url(r'^members/', include('members.urls', namespace='members')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
     url(r'^association/', include([

@@ -76,6 +76,12 @@ class Member(models.Model):
     is_active.boolean = True
     is_active.short_description = _('Is this user currently active')
 
+    @classmethod
+    def all_with_membership(cls, membership_type, prefetch=None):
+        return [x for x in cls.objects.all().prefetch_related(prefetch)
+                if x.current_membership
+                and x.current_membership.type == membership_type]
+
     # ---- Address information -----
 
     address_street = models.CharField(
