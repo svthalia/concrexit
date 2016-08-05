@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Merchandise" %}{% endblock %}
+
+{% block body %}
+<h1>Merchandise</h1><p>Hieronder kun je vast zien welke merchandise er te koop is bij Thalia. Elke pauze zijn de spullen te koop bij de bestuurskamer (HG00.150), daarbuiten zijn ze op afspraak te verkrijgen of tijdens borrels bij het bestuur.</p>
+
+{% for item in items %}
+
+<hr class="separator">
+
+<div class="post" id="item">
+        <div class="row">
+                <div class="span3" id="merchandise-image">
+                    <img src="{{ item.image.url }}" alt="" id="image">
+                </div>
+                <div class="span9" id="merchandise-text">
+                    <h1 id="merchandise-title">{{ item.name }}</h1>
+                    <p id="merchandise-desc">{{ item.description }}</p>
+                    <div id="merchandise-price">Prijs: € {{ item.price }}</div>
+                </div>
+        </div>
+</div>
+
+{% endfor %}
+{% endblock %}

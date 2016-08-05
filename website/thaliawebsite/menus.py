@@ -7,6 +7,7 @@ main = [
         {'title': _('Committees'), 'name': 'committees:index'},
         {'title': _('Members'), 'name': '#'},
         {'title': _('Documents'), 'name': 'documents:index'},
+        {'title': _('Merchandise'), 'name': 'merchandise:index'},
         {'title': _('Members'), 'name': '#'},
         {'title': _('Sister Associations'), 'name': 'sister-associations'},
         {'title': _('Become a Member'), 'name': 'become-a-member'},
