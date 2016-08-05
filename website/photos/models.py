@@ -5,7 +5,6 @@ from django.db import models
 
 import os
 import random
-from functools import total_ordering
 
 COVER_FILENAME = 'cover.jpg'
 
