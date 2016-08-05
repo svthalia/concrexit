@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'photos',
     'utils',
     'mailinglists',
+    'merchandise',
 ]
 
 MIDDLEWARE = [
