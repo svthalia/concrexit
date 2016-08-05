@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load staticfiles i18n thumbnail %}
+
+{% block page_title %}{% trans "Photos" %}{% endblock %}
+
+{% block body %}
+<h1>{{ album.title }}</h1>
+<h2>{{ album.date|date:"d-m-Y" }}</h2>
+<div class="gallery">
+    <ul class="gallery-photos row">
+        {% for photo in album.photos %}
+        <li class="post gallery-photo span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
+            <a class="gallery-box" rel="gallery" data-download="{% url 'photos:download' photo %}" href="{% thumbnail photo '1024x768' fit=False %}">
+                <span class="post-inner">
+                    <span class="inner-img">
+                        <img src="{% thumbnail photo '220x220' %}" alt="" />
+                    </span>
+                    <span class="post-overlay">
+                    </span>
+                </span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

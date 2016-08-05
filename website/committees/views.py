@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 
-from .models import Committee, CommitteeMembership
+from .models import Committee, CommitteeMembership, Board
 
 
 def index(request):
@@ -29,3 +29,27 @@ def details(request, committee_id):
     return render(request, 'committees/details.html',
                   {'committee': committee,
                    'members': members})
+
+
+def boards(request, year=None):
+    """View the board pages"""
+    boards = Board.objects.all()
+
+    boardmembers = dict()
+    for board in boards:
+        members = []
+        memberships = (CommitteeMembership
+                       .objects
+                       .filter(committee=board))
+        for membership in memberships:
+            member = membership.member
+            member.role = membership.role
+            member.chair = membership.chair
+            members.append(member)
+        boardmembers[board.name] = members
+
+    return render(request,
+                  'committees/boards.html',
+                  {'boards': boards,
+                   'boardmembers': boardmembers,
+                   'first_board': boards[0]})
