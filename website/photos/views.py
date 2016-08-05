@@ -1,8 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Album
@@ -16,7 +15,7 @@ COVER_FILENAME = 'cover.jpg'
 
 @login_required
 def index(request):
-    albums = sorted(Album.all(), reverse=True)
+    albums = Album.objects.all().order_by('-date')
 
     paginator = Paginator(albums, 12)
     page = request.GET.get('page')
@@ -33,11 +32,7 @@ def index(request):
 
 @login_required
 def album(request, slug):
-    for album in Album.all():
-        if album.slug == slug:
-            break
-    else:
-        raise Http404(_("Album not found."))
+    album = get_object_or_404(Album, slug=slug)
     return render(request, 'photos/album.html', {'album': album})
 
 
