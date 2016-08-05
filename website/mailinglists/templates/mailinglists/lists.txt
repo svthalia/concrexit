@@ -1,0 +1,3 @@
+START
+{% for list in lists %}{{ list.pk }}
+{% endfor %}END
