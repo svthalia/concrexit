@@ -5,7 +5,7 @@
 {% block page_title %}{% trans "Merchandise" %}{% endblock %}
 
 {% block body %}
-<h1>{% trans "Merchandise" %}</h1><p>{% trans "Hieronder kun je vast zien welke merchandise er te koop is bij Thalia. Elke pauze zijn de spullen te koop bij de bestuurskamer (HG00.150), daarbuiten zijn ze op afspraak te verkrijgen of tijdens borrels bij het bestuur." %}</p
+<h1>{% trans "Merchandise" %}</h1><p>{% trans "Below you can find all the merchandise Thalia has available. During every lunch break, the merchandise is for sale in the board room (HG00.150). Outside those hours, please make an appointment or approach the board over drinks." %}</p
 
 {% for item in items %}
 
@@ -19,7 +19,7 @@
                 <div class="span9" id="merchandise-text">
                     <h1 id="merchandise-title">{{ item.name }}</h1>
                     <p id="merchandise-desc">{{ item.description }}</p>
-                    <div id="merchandise-price">{% blocktrans %}Prijs: € {{ item.price }}{% endblocktrans %}</div>
+                    <div id="merchandise-price">{% blocktrans %}Price: € {{ item.price }}{% endblocktrans %}</div>
                 </div>
         </div>
 </div>
