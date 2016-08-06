@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.fields.related import RelatedField
 from django.conf import settings
 from django.utils.translation import get_language
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, FieldError
 
 """This module makes it easy to define translatable model fields.
 
@@ -70,6 +70,9 @@ class ModelTranslateMeta(models.base.ModelBase):
                             field.args = (verbose_name,) + field.args[1:]
                         else:
                             field.kwargs['verbose_name'] = verbose_name
+                    if attr_i18n in dct:
+                        raise FieldError("Explicit field {} is shadowed "
+                                         "by TranslateMeta.".format(attr_i18n))
                     dct[attr_i18n] = field.cls(*field.args, **field.kwargs)
                 dct[attr] = property(_i18n_attr_accessor(attr))
         return super(ModelTranslateMeta, cls).__new__(cls, name, bases, dct)
