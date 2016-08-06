@@ -53,11 +53,11 @@ class TestTranslateMeta(TestCase):
         self.assertEqual(TestItem4._meta.get_field('text_nl').max_length, 100)
 
     def test_related_fields(self):
-        with self.assertRaises(NotImplementedError):
-            class TestItem5(models.Model, metaclass=ModelTranslateMeta):
-                foreign = MultilingualField(models.ForeignKey, 'TestItem5')
-                one = MultilingualField(models.OneToOneField, 'TestItem5')
-                many = MultilingualField(models.ManyToManyField, 'TestItem5')
+        for field_type in (models.ForeignKey, models.OneToOneField,
+                           models.ManyToManyField):
+            with self.assertRaises(NotImplementedError):
+                class TestItem5(models.Model, metaclass=ModelTranslateMeta):
+                    foreign = MultilingualField(field_type, 'TestItem5')
 
     def test_setter(self):
         class TestItem6(models.Model, metaclass=ModelTranslateMeta):
