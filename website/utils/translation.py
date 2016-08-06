@@ -4,6 +4,24 @@ from django.conf import settings
 from django.utils.translation import get_language
 from django.core.exceptions import ImproperlyConfigured
 
+"""This module makes it easy to define translatable model fields.
+
+To use it in a models.py, make sure you;
+  - set the metaclass of your model to ModelTranslateMeta
+  - replace any translatable model fields by MultilingualField instances
+  - make and apply database migrations
+
+See the following usage example;
+
+    from django.db import models
+    from utils.translation import MultilingualField, ModelTranslateMeta
+
+    class SomeItem(models.Model, metaclass=ModelTranslateMeta):
+
+        name = MultilingualField(models.CharField, max_length=100)
+        description = MultilingualField(models.TextField)
+"""
+
 
 I18N_FIELD_FORMAT = '{}_{}'
 
