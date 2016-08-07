@@ -60,7 +60,7 @@ class PartnerImage(models.Model):
         on_delete=models.CASCADE,
         related_name="images"
     )
-    image = models.ImageField(upload_to='partners/images/')
+    image = models.ImageField(upload_to='public/partners/images/')
 
     def __str__(self):
         return 'image of {}'.format(self.partner.name)

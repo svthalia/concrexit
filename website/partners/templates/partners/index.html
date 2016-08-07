@@ -33,7 +33,11 @@
 
                 <p>{{ main_partner.company_profile|truncatechars:425 }}</p>
 
-                <p><a href="{% url "#" %}" class="link-style3">{% trans "Learn more" %} &raquo;</a></p>
+                <p>
+                    <a href="{% url "partners:partner" main_partner.slug %}" class="link-style3">
+                        {% trans "Learn more" %} &raquo;
+                    </a>
+                </p>
             </div>
             {% endif %}
         </div>
@@ -54,7 +58,7 @@
                             </div>
                             <div class="post-body"></div>
                             <div class="post-overlay">
-                                <a href="{% url "#" %}">
+                                <a href="{% url 'partners:partner' partner.slug %}">
                                     <div class="post-overlay-meta">
                                         <h2>{{ partner.name }}</h2>
                                         <p>{{ partner.company_profile|truncatechars:180 }}</p>

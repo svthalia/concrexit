@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-03 21:28+0200\n"
-"PO-Revision-Date: 2016-08-03 21:28+0200\n"
+"POT-Creation-Date: 2016-08-13 11:58+0200\n"
+"PO-Revision-Date: 2016-08-13 12:00+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -50,10 +50,35 @@ msgstr ""
 "commissaris externe betrekkingen, die te bereiken is via <a href=\"mailto:"
 "samenwerking@thalia.nu\">samenwerking@thalia.nu</a>."
 
-#: templates/partners/index.html:25
+#: templates/partners/index.html:25 templates/partners/partner.html:22
 msgid "Main Partner"
 msgstr "Hoofdsponsor"
 
-#: templates/partners/index.html:35 templates/partners/index.html:60
+#: templates/partners/index.html:38 templates/partners/index.html:65
 msgid "Learn more"
 msgstr "Lees meer"
+
+#: templates/partners/partner.html:8
+#, python-format
+msgid "About %(name)s"
+msgstr "Over %(name)s"
+
+#: templates/partners/partner.html:45
+msgid "Information"
+msgstr "Informatie"
+
+#: templates/partners/partner.html:46
+msgid "Street"
+msgstr "Straatnaam"
+
+#: templates/partners/partner.html:48
+msgid "Zip Code"
+msgstr "Postcode"
+
+#: templates/partners/partner.html:50
+msgid "City"
+msgstr "Plaatsnaam"
+
+#: templates/partners/partner.html:55
+msgid "Website"
+msgstr "Website"
