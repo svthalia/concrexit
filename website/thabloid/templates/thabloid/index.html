@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load i18n thumbnail %}
+
+{% block page_title %}{% trans "Thabloid" %}{% endblock %}
+
+{% block body %}
+<div class="portfolio portfolio-isotope">
+    <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
+        <ul class="tabs">
+            <li class="current"><a href="#">{% trans "All Thabloids" %}</a></li>
+            <li data-filter="{{ year|add:0 }}"><a href="#">{{ year|add:0 }}-{{ year|add:1 }}</a></li>
+            <li data-filter="{{ year|add:-1 }}"><a href="#">{{ year|add:-1 }}-{{ year|add:0 }}</a></li>
+            <li data-filter="{{ year|add:-2 }}"><a href="#">{{ year|add:-2 }}-{{ year|add:-1 }}</a></li>
+            <li data-filter="{{ year|add:-3 }}"><a href="#">{{ year|add:-3 }}-{{ year|add:-2 }}</a></li>
+            <li data-filter="older"><a href="#">{% trans "Older" %}</a></li>
+        </ul>
+    </div>
+
+    <ul class="portfolio-posts row isotope" style="position: relative; overflow: hidden; height: 1195px;">
+    {% for thabloid in thabloids %}
+        <li data-filter="{% if thabloid.year < year|add:-3 %}older{% else %}{{ thabloid.year }}{% endif %}" class="post span3 has-overlay isotope-item" style="position: absolute; left: 0px; top: 0px;">
+            <div class="post-inner  ">
+                <div class="post-header">
+                    <img alt="{{ thabloid.year }}-{{ thabloid.year|add:1 }}, #{{ thabloid.issue }}" src="{% thumbnail thabloid.cover '220x310' %}">
+                </div>
+                <div class="post-overlay">
+                    <div class="post-overlay-meta">
+                        <h2>{{ thabloid.year }}-{{ thabloid.year|add:1 }}, #{{ thabloid.issue }}</h2>
+                    </div>
+                    <ul class="post-overlay-icons">
+                        <li><span></span><a class="gallery-box overlay-icon-open" data-fancybox-type='iframe' href="{% url 'thabloid:viewer' thabloid.year thabloid.issue %}"></a></li>
+                        <li><span></span><a class="overlay-icon-link" href="{{ thabloid.file.url }}" target="_blank"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
