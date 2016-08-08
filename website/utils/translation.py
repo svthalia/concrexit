@@ -21,6 +21,15 @@ See the following usage example;
 
         name = MultilingualField(models.CharField, max_length=100)
         description = MultilingualField(models.TextField)
+
+In order to use the fields in ModelAdmin configuration (such as in the
+fields, fieldsets or prepopulated_fields attributes), subclass the Admin object
+from TranslatedModelAdmin instead;
+
+    from utils.translation import TranslatedModelAdmin
+
+    class SomeItemAdmin(TranslatedModelAdmin):
+        fields = (name, description)
 """
 
 
