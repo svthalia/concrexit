@@ -60,16 +60,15 @@ class ModelTranslateMeta(models.base.ModelBase):
                     verbose_base = ('args', field.args[0])
                 else:
                     verbose_base = ('kwargs', field.kwargs.get('verbose_name',
-                                                               None))
+                                                               attr))
                 for lang in settings.LANGUAGES:
                     attr_i18n = I18N_FIELD_FORMAT.format(attr, lang[0])
-                    if verbose_base is not None:
-                        verbose_name = '{} ({})'.format(verbose_base[1],
-                                                        lang[0].upper())
-                        if verbose_base[0] == 'args':
-                            field.args = (verbose_name,) + field.args[1:]
-                        else:
-                            field.kwargs['verbose_name'] = verbose_name
+                    verbose_name = '{} ({})'.format(verbose_base[1],
+                                                    lang[0].upper())
+                    if verbose_base[0] == 'args':
+                        field.args = (verbose_name,) + field.args[1:]
+                    else:
+                        field.kwargs['verbose_name'] = verbose_name
                     if attr_i18n in dct:
                         raise FieldError("Explicit field {} is shadowed "
                                          "by TranslateMeta.".format(attr_i18n))
