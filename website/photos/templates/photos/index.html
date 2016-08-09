@@ -13,7 +13,7 @@
             <a href="{% url 'photos:album' album.slug %}">
                 <span class="post-inner">
                     <span class="inner-img">
-                        <img src="{% thumbnail album.cover '220x220' %}" alt="" />
+                        <img src="{% thumbnail album.cover.file '220x220' %}" alt="" />
                     </span>
                     <span class="post-overlay">
                         <span class="post-overlay-meta">

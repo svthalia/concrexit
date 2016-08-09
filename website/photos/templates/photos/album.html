@@ -8,12 +8,12 @@
 <h2>{{ album.date|date:"d-m-Y" }}</h2>
 <div class="gallery">
     <ul class="gallery-photos row">
-        {% for photo in album.photos %}
+        {% for photo in album.photo_set.all %}
         <li class="post gallery-photo span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
-            <a class="gallery-box" rel="gallery" data-download="{% url 'photos:download' photo %}" href="{% thumbnail photo '1024x768' fit=False %}">
+            <a class="gallery-box" rel="gallery" data-download="{% url 'photos:download' photo.file %}" href="{% thumbnail photo.file '1024x768' fit=False %}">
                 <span class="post-inner">
                     <span class="inner-img">
-                        <img src="{% thumbnail photo '220x220' %}" alt="" />
+                        <img src="{% thumbnail photo.file '220x220' %}" alt="" />
                     </span>
                     <span class="post-overlay">
                     </span>
