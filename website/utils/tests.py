@@ -47,6 +47,18 @@ class TestTranslateMeta(TestCase):
         self.assertIn('Text', fr)
         self.assertEqual(len({nl, en, fr}), 3)
 
+    def test_no_verbose_name(self):
+        class TestItem3b(models.Model, metaclass=ModelTranslateMeta):
+            text = MultilingualField(models.TextField)
+
+        nl = TestItem3b._meta.get_field('text_nl').verbose_name
+        en = TestItem3b._meta.get_field('text_en').verbose_name
+        fr = TestItem3b._meta.get_field('text_fr').verbose_name
+        self.assertEqual('text (NL)', nl)
+        self.assertEqual('text (EN)', en)
+        self.assertEqual('text (FR)', fr)
+        self.assertEqual(len({nl, en, fr}), 3)
+
     def test_other_kwargs(self):
         class TestItem4(models.Model, metaclass=ModelTranslateMeta):
             text = MultilingualField(models.CharField, 'Text', max_length=100)
