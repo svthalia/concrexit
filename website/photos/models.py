@@ -16,7 +16,11 @@ def photo_uploadto(instance, filename):
 class Photo(models.Model):
     album = models.ForeignKey('Album', on_delete=models.CASCADE)
     file = models.ImageField(upload_to=photo_uploadto)
-    rotation = models.IntegerField(default=0)
+    rotation = models.IntegerField(
+        default=0,
+        choices=((x, x) for x in (0, 90, 180, 270)),
+        help_text="This does not modify the original image file.",
+    )
 
     def __str__(self):
         return self.file.name

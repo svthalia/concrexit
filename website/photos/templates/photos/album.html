@@ -3,6 +3,11 @@
 
 {% block page_title %}{% trans "Photos" %}{% endblock %}
 
+{% block css_head %}
+{{ block.super }}
+<link href="{% static "photos/css/style.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block body %}
 <h1>{{ album.title }}</h1>
 <h2>{{ album.date|date:"d-m-Y" }}</h2>
@@ -10,10 +15,10 @@
     <ul class="gallery-photos row">
         {% for photo in album.photo_set.all %}
         <li class="post gallery-photo span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
-            <a class="gallery-box" rel="gallery" data-download="{% url 'photos:download' photo.file %}" href="{% thumbnail photo.file '1024x768' fit=False %}">
+            <a data-fancybox-rotation="{{ photo.rotation }}" class="gallery-box" rel="gallery" data-download="{% url 'photos:download' photo.file %}" href="{% thumbnail photo.file '1024x768' fit=False %}">
                 <span class="post-inner">
                     <span class="inner-img">
-                        <img src="{% thumbnail photo.file '220x220' %}" alt="" />
+                        <img class="rotate{{ photo.rotation }}" src="{% thumbnail photo.file '220x220' %}" alt="" />
                     </span>
                     <span class="post-overlay">
                     </span>

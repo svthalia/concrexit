@@ -132,13 +132,14 @@
             index   : 0,
             type    : null,
             href    : null,
+            rotation : 0,
             content : null,
             title   : null,
 
             // HTML templates
             tpl: {
                 wrap     : '<div class="fancybox-wrap" tabIndex="-1"><div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div></div></div></div>',
-                image    : '<img class="fancybox-image" src="{href}" alt="" />',
+                image    : '<img class="fancybox-image" src="{href}" data-rotation="{rotation}" alt="" />',
                 iframe   : '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen' + (IE ? ' allowtransparency="true"' : '') + '></iframe>',
                 error    : '<p class="fancybox-error">The requested content cannot be loaded.<br/>Please try again later.</p>',
                 closeBtn : '<a title="Close" class="fancybox-item fancybox-close" href="javascript:;"></a>',
@@ -262,6 +263,7 @@
                         obj = {
                             href    : element.data('fancybox-href') || element.attr('href'),
                             title   : element.data('fancybox-title') || element.attr('title'),
+                            rotation   : element.data('fancybox-rotation') || element.attr('rotation'),
                             isDom   : true,
                             element : element
                         };
@@ -777,6 +779,7 @@
                 obj,
                 href,
                 type,
+                rotation,
                 margin,
                 padding;
 
@@ -942,9 +945,14 @@
             img.onload = function () {
                 this.onload = this.onerror = null;
 
-                F.coming.width  = this.width / F.opts.pixelRatio;
-                F.coming.height = this.height / F.opts.pixelRatio;
-
+                if (F.coming.rotation == '90' || F.coming.rotation == '270') {
+                    F.coming.width  = this.height / F.opts.pixelRatio;
+                    F.coming.height = this.width / F.opts.pixelRatio;
+                }
+                else {
+                    F.coming.width  = this.width / F.opts.pixelRatio;
+                    F.coming.height = this.height / F.opts.pixelRatio;
+                }
                 F._afterLoad();
             };
 
@@ -1052,6 +1060,7 @@
                 type,
                 scrolling,
                 href,
+                rotation,
                 embed;
 
             F.hideLoading();
@@ -1093,6 +1102,7 @@
             });
 
             href = current.href;
+            rotation = current.rotation;
 
             switch (type) {
                 case 'inline':
@@ -1117,7 +1127,7 @@
                 break;
 
                 case 'image':
-                    content = current.tpl.image.replace('{href}', href);
+                    content = current.tpl.image.replace('{href}', href).replace('{rotation}', rotation);
                 break;
 
                 case 'swf':
@@ -1362,6 +1372,16 @@
             }
 
             inner.width( width ).height( height );
+
+            if (current.type == 'image') {
+                var img = inner.find('img')
+                var transform = 'rotate(' + img.data('rotation') + 'deg)';
+                if (img.data('rotation') == '90' || img.data('rotation') == '270') {
+                    var ratio = height / width;
+                    transform += ' scale(' + ratio + ', ' + (1/ratio) + ')';
+                }
+                img.css('transform', transform);
+            }
 
             wrap.width( width + wPadding );
 
