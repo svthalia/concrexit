@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n thumbnail %}
 {% block title %}{% trans 'Committees' %} — {{ block.super }}{% endblock %}
 {% block page_title %}{% trans 'Committees' %}{% endblock %}
 
@@ -15,7 +15,7 @@
 
           <div class="post-inner">
             <div class="inner-img">
-              <img src="{{ thumbnail committee.photo '1024x600' fit=False }}" alt="{{ committee.name }}">
+              <img src="{% thumbnail committee.photo '1024x600' fit=False %}" alt="{{ committee.name }}">
             </div>
 
             <div class="post-overlay">
