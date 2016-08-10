@@ -15,7 +15,7 @@ COVER_FILENAME = 'cover.jpg'
 
 @login_required
 def index(request):
-    albums = Album.objects.all().order_by('-date')
+    albums = Album.objects.filter(hidden=False).order_by('-date')
 
     paginator = Paginator(albums, 12)
     page = request.GET.get('page')
@@ -33,7 +33,8 @@ def index(request):
 @login_required
 def album(request, slug):
     album = get_object_or_404(Album, slug=slug)
-    return render(request, 'photos/album.html', {'album': album})
+    context = {'album': album, 'photos': album.photo_set.filter(hidden=False)}
+    return render(request, 'photos/album.html', context)
 
 
 @login_required

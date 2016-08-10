@@ -21,6 +21,7 @@ class Photo(models.Model):
         choices=((x, x) for x in (0, 90, 180, 270)),
         help_text="This does not modify the original image file.",
     )
+    hidden = models.BooleanField(default=False)
 
     def __str__(self):
         return self.file.name
@@ -31,6 +32,7 @@ class Album(models.Model):
     dirname = models.CharField(max_length=200)
     date = models.DateField()
     slug = models.SlugField()
+    hidden = models.BooleanField(default=False)
     _cover = models.OneToOneField(Photo, on_delete=models.SET_NULL, blank=True,
                                   null=True, related_name='covered_album')
 

@@ -13,7 +13,7 @@
 <h2>{{ album.date|date:"d-m-Y" }}</h2>
 <div class="gallery">
     <ul class="gallery-photos row">
-        {% for photo in album.photo_set.all %}
+        {% for photo in photos %}
         <li class="post gallery-photo span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
             <a data-fancybox-rotation="{{ photo.rotation }}" class="gallery-box" rel="gallery" data-download="{% url 'photos:download' photo.file %}" href="{% thumbnail photo.file '1024x768' fit=False %}">
                 <span class="post-inner">
