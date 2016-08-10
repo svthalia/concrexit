@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from partners.models import Partner, PartnerImage
+from utils.translation import TranslatedModelAdmin
+
+from partners.models import (
+    Partner,
+    PartnerImage,
+    VacancyCategory,
+)
 
 
 class PartnerImageInline(admin.StackedInline):
@@ -25,3 +31,9 @@ class PartnerAdmin(admin.ModelAdmin):
     )
 
     inlines = (PartnerImageInline,)
+
+
+@admin.register(VacancyCategory)
+class VacancyCategoryAdmin(TranslatedModelAdmin):
+    prepopulated_fields = {"slug": ("name_en",)}
+    fields = ['name', 'slug']

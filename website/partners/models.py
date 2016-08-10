@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import RegexValidator, URLValidator
 
+from utils.translation import MultilingualField, ModelTranslateMeta
+
 
 class Partner(models.Model):
     is_active = models.BooleanField(default=False)
@@ -64,3 +66,14 @@ class PartnerImage(models.Model):
 
     def __str__(self):
         return 'image of {}'.format(self.partner.name)
+
+
+class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
+    name = MultilingualField(models.CharField, max_length=30)
+    slug = models.SlugField()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Vanancy Categories'
