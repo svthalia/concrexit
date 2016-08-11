@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'utils',
     'mailinglists',
     'merchandise',
+    'django_template_check',  # This is only necessary in development
 ]
 
 MIDDLEWARE = [

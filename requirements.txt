@@ -3,3 +3,4 @@ django-localflavor==1.3
 Pillow
 django-static-precompiler>=1.4,<2
 django-sendfile==0.3.10
+django-template-check  # This should be in dev-requirements somehow
