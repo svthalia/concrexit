@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.functional import cached_property
 from django.db import models
 
+import hashlib
 import os
 import random
 
@@ -35,6 +36,7 @@ class Album(models.Model):
     hidden = models.BooleanField(default=False)
     _cover = models.OneToOneField(Photo, on_delete=models.SET_NULL, blank=True,
                                   null=True, related_name='covered_album')
+    shareable = models.BooleanField(default=False)
 
     photosdir = 'photos'
     photospath = os.path.join(settings.MEDIA_ROOT, photosdir)
@@ -59,3 +61,8 @@ class Album(models.Model):
         if self.pk is None:
             self.dirname = self.slug
         super(Album, self).save(*args, **kwargs)
+
+    @property
+    def access_token(self):
+        return hashlib.sha256('{}album{}'.format(settings.SECRET_KEY, self.pk)
+                              .encode('utf-8')).hexdigest()

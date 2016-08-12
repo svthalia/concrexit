@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load staticfiles i18n thumbnail %}
+{% load staticfiles i18n thumbnail shared_thumbnail %}
 
 {% block page_title %}{% trans "Photos" %}{% endblock %}
 
@@ -11,14 +11,31 @@
 {% block body %}
 <h1>{{ album.title }}</h1>
 <h2>{{ album.date|date:"d-m-Y" }}</h2>
+{% if album.shareable %}
+<p class="tcenter">
+    {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>
+    <small><a href="{% url 'photos:shared_album' album.slug album.access_token %}">
+        {{ request.get_host }}{% url 'photos:shared_album' album.slug album.access_token %}
+    </a></small>
+</p>
+{% endif %}
 <div class="gallery">
     <ul class="gallery-photos row">
         {% for photo in photos %}
         <li class="post gallery-photo span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
-            <a data-fancybox-rotation="{{ photo.rotation }}" class="gallery-box" rel="gallery" data-download="{% url 'photos:download' photo.file %}" href="{% thumbnail photo.file '1024x768' fit=False %}">
+            <a data-fancybox-rotation="{{ photo.rotation }}" class="gallery-box" rel="gallery"
+            {% if album.shareable %}
+            data-download="{% url 'photos:shared-download' album.slug album.access_token photo %}" href="{% shared_thumbnail album.slug album.access_token photo '1024x768' fit=False %}"
+            {% else %}
+            data-download="{% url 'photos:download' photo %}" href="{% thumbnail photo '1024x768' fit=False %}"
+            {% endif %}>
                 <span class="post-inner">
                     <span class="inner-img">
-                        <img class="rotate{{ photo.rotation }}" src="{% thumbnail photo.file '220x220' %}" alt="" />
+                        {% if album.shareable %}
+                        <img class="rotate{{ photo.rotation }}" src="{% shared_thumbnail album.slug album.access_token photo '220x220' %}" alt="" />
+                        {% else %}
+                        <img class="rotate{{ photo.rotation }}" src="{% thumbnail photo '220x220' %}" alt="" />
+                        {% endif %}
                     </span>
                     <span class="post-overlay">
                     </span>

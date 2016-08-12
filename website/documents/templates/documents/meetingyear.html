@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load filename %}
 
-<h2 style="margin-bottom: 0px;">{% trans "General Meetings of" %} {{ year }}-{{ year|add:1 }}:</span></h2>
+<h2 style="margin-bottom: 0px;">{% blocktrans with year|add:1 as nextyear %}General Meetings of {{ year }}-{{ nextyear }}:{% endblocktrans %}</span></h2>
 
 {% for meeting in meetings %}
 <div class="gw-go gw-go-clearfix gw-go-{% if meetings|length < 3 %}3{% else %}{{ meetings | length }}{% endif %}cols">
@@ -50,5 +50,5 @@
     </div>
 </div>
 {% empty %}
-<div style="text-align:center;margin-top:10px;">{% blocktrans %}There are no General Meetings available for {{ year }}-{{ year | add:1 }}{% endblocktrans %}</div>
+<div style="text-align:center;margin-top:10px;">{% blocktrans with year|add:1 as nextyear %}There are no General Meetings available for {{ year }}-{{ nextyear }}{% endblocktrans %}</div>
 {% endfor %}
