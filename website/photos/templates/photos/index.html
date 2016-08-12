@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
-{% load i18n thumbnail %}
+{% load i18n thumbnail staticfiles %}
 
 {% block page_title %}{% trans "Photos" %}{% endblock %}
+
+{% block css_head %}
+{{ block.super }}
+<link href="{% static "photos/css/style.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
 
 {% block body %}
 <h1>{% trans "Photos" %}</h1>
@@ -13,7 +18,7 @@
             <a href="{% url 'photos:album' album.slug %}">
                 <span class="post-inner">
                     <span class="inner-img">
-                        <img src="{% thumbnail album.cover '220x220' %}" alt="" />
+                        <img class="rotate{{ album.cover.rotation }}" src="{% thumbnail album.cover.file '220x220' %}" alt="" />
                     </span>
                     <span class="post-overlay">
                         <span class="post-overlay-meta">

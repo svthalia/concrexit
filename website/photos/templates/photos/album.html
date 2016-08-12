@@ -3,6 +3,11 @@
 
 {% block page_title %}{% trans "Photos" %}{% endblock %}
 
+{% block css_head %}
+{{ block.super }}
+<link href="{% static "photos/css/style.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block body %}
 <h1>{{ album.title }}</h1>
 <h2>{{ album.date|date:"d-m-Y" }}</h2>
@@ -16,9 +21,9 @@
 {% endif %}
 <div class="gallery">
     <ul class="gallery-photos row">
-        {% for photo in album.photos %}
+        {% for photo in photos %}
         <li class="post gallery-photo span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
-            <a class="gallery-box" rel="gallery"
+            <a data-fancybox-rotation="{{ photo.rotation }}" class="gallery-box" rel="gallery"
             {% if album.shareable %}
             data-download="{% url 'photos:shared-download' album.slug album.access_token photo %}" href="{% shared_thumbnail album.slug album.access_token photo '1024x768' fit=False %}"
             {% else %}
@@ -27,9 +32,9 @@
                 <span class="post-inner">
                     <span class="inner-img">
                         {% if album.shareable %}
-                        <img src="{% shared_thumbnail album.slug album.access_token photo '220x220' %}" alt="" />
+                        <img class="rotate{{ photo.rotation }}" src="{% shared_thumbnail album.slug album.access_token photo '220x220' %}" alt="" />
                         {% else %}
-                        <img src="{% thumbnail photo '220x220' %}" alt="" />
+                        <img class="rotate{{ photo.rotation }}" src="{% thumbnail photo '220x220' %}" alt="" />
                         {% endif %}
                     </span>
                     <span class="post-overlay">

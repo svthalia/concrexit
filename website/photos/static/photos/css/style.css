@@ -1,0 +1,13 @@
+
+/* Solving this with dynamic a data attribute (i.e. attr(data-rotation)) does not work, as that's a string. */
+img.rotate90 {
+  transform: rotate(90deg);
+}
+
+img.rotate180 {
+  transform: rotate(180deg);
+}
+
+img.rotate270 {
+  transform: rotate(270deg);
+}
