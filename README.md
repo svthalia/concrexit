@@ -48,6 +48,13 @@ NodeJS dependencies
 1. `lessc`:
    * On Ubuntu or Debian, use: `apt-get install node-less node-mkdirp`
 
+Thabloid dependencies
+---------------------
+
+To be able to generate JPGs from PDFs, we need ghostscript:
+
+    apt-get install ghostscript
+
 Translating
 ------------------
 

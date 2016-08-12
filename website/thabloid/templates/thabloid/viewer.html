@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    TODO: embed a viewer that displays the page files;
+    <ul>
+        {% for page in thabloid.pages %}
+            <li>{{ MEDIA_URL }}{{ page }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -36,6 +36,7 @@ urlpatterns = [
         url(r'^documents/', include('documents.urls', namespace='documents')),
         url(r'^become-a-member/', members.views.become_a_member, name='become-a-member'),
         url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
+        url(r'^thabloid/', include('thabloid.urls', namespace='thabloid')),
     ])),
     url(r'^for-members/', include([
         url(r'^become-active', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
