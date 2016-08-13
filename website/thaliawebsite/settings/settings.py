@@ -53,11 +53,8 @@ INSTALLED_APPS = [
     'mailinglists',
     'merchandise',
     'thabloid',
-<<<<<<< HEAD
     'partners',
-=======
     'events',
->>>>>>> Initial events app
 ]
 
 MIDDLEWARE = [
