@@ -38,6 +38,10 @@ For Ubuntu 16.04, use:
 
     apt-get install python-dev gettext gcc build-essential libtiff5-dev libjpeg62-turbo-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
 
+Or try:
+
+    apt-get build-dep python3-pil
+
 For other operating systems, see the [Pillow Documentation][pillow-install].
 
 
