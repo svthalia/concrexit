@@ -58,15 +58,15 @@
                 <!-- /#logo -->
 
                 <!-- #partner-left -->
-                <div id="partner-left" class="partner-header">
-                    {% block partner_header_left %}{% endblock partner_header_left %}
-                </div>
+                {% if showcased_partners|length > 0 %}
+                    {% include "partners/showcased_partner.html" with partner=showcased_partners.0 position="left" %}
+                {% endif %}
                 <!-- /#partner-left -->
 
                 <!-- #partner-right -->
-                <div id="partner-right" class="partner-header">
-                    {% block partner_header_right %}{% endblock partner_header_right %}
-                </div>
+                {% if showcased_partners|length > 1 %}
+                    {% include "partners/showcased_partner.html" with partner=showcased_partners.1 position="right" %}
+                {% endif %}
                 <!-- /#partner-right -->
             </div>
             <!-- /#logo-header -->
