@@ -12,6 +12,6 @@
     hyphens: auto;
 }
 
-#alvcontainer > div:not(:first-child) {
+#meetingcontainer > div:not(:first-child) {
     display: none;
 }

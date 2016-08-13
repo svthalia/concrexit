@@ -3,8 +3,9 @@
 
 <h2 style="margin-bottom: 0px;">{% blocktrans with year|add:1 as nextyear %}General Meetings of {{ year }}-{{ nextyear }}:{% endblocktrans %}</span></h2>
 
-{% for meeting in meetings %}
+{% if meetings %}
 <div class="gw-go gw-go-clearfix gw-go-{% if meetings|length < 3 %}3{% else %}{{ meetings | length }}{% endif %}cols">
+    {% for meeting in meetings %}
     <div class="gw-go-col-wrap">
         <div class="gw-go-col gw-go-style1">
             <div class="gw-go-header">
@@ -48,7 +49,8 @@
             {% endif %}
         </div>
     </div>
+    {% endfor %}
 </div>
-{% empty %}
+{% else %}
 <div style="text-align:center;margin-top:10px;">{% blocktrans with year|add:1 as nextyear %}There are no General Meetings available for {{ year }}-{{ nextyear }}{% endblocktrans %}</div>
-{% endfor %}
+{% endif %}
