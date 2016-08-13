@@ -25,6 +25,7 @@ class ActiveCommitteeManager(models.Manager):
     """Returns active committees only"""
     def get_queryset(self):
         return (super().get_queryset()
+                .exclude(board__is_board=True)
                 .exclude(until__lt=timezone.now().date()))
 
 
