@@ -48,6 +48,8 @@ class Committee(models.Model):
     photo = models.ImageField(
         verbose_name=_('Image'),
         upload_to='public/committeephotos/',
+        null=True,
+        blank=True,
     )
 
     members = models.ManyToManyField(

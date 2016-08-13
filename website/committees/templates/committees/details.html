@@ -15,7 +15,9 @@
 <div class="clearfix portfolio">
   <div id="committee-div">
     <div class="row">
-      <img alt="{{ committee.name }}" class="span12" src="{{ MEDIA_URL }}{{ committee.photo }}">
+      {% if committee.photo %} 
+      <img alt="{{ committee.name }}" class="span12" src="{{ committee.photo.url }}">
+      {% endif %}
     </div>
     <div>
       <h1 class="midhead">{% blocktrans with name=committee.name %}About the {{ name }}{% endblocktrans %}</h1>
@@ -32,7 +34,7 @@
                 {% if not member.photo %}
                 <img alt="{% trans "Default avatar" %}" src="{% static 'members/images/default-avatar.jpg' %}" height="620" width="620" />
                 {% else %}
-                <img alt="{{ member.display_name }}" src="{{ MEDIA_URL }}{{ member.photo }}" width="620" height="620" />
+                <img alt="{{ member.display_name }}" src="{{ member.photo.url }}" width="620" height="620" />
                 {% endif %}
               </div>
               {% if member.chair %}
