@@ -17,6 +17,8 @@ class PartnerImageInline(admin.StackedInline):
 @admin.register(Partner)
 class PartnerAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
+    list_display = ('name', 'is_active', 'is_main_partner',)
+    inlines = (PartnerImageInline,)
 
     fieldsets = (
         (None, {
@@ -31,8 +33,6 @@ class PartnerAdmin(admin.ModelAdmin):
         }),
     )
 
-    inlines = (PartnerImageInline,)
-
 
 @admin.register(VacancyCategory)
 class VacancyCategoryAdmin(TranslatedModelAdmin):
@@ -42,6 +42,8 @@ class VacancyCategoryAdmin(TranslatedModelAdmin):
 
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
+    list_display = ('title', 'partner', 'company_name',)
+
     fieldsets = (
         (None, {
             'fields': ('title', 'description', 'link')
