@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.utils import timezone

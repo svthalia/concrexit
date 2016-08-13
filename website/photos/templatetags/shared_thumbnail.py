@@ -1,5 +1,5 @@
 from django import template
-from django.core.urlresolvers import resolve, reverse
+from django.urls import resolve, reverse
 
 from utils.templatetags.thumbnail import thumbnail
 
