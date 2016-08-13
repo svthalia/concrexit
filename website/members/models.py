@@ -299,7 +299,7 @@ class Membership(models.Model):
         return self.user.member
 
     def is_active(self):
-        return not self.until or self.until > timezone.now()
+        return not self.until or self.until > timezone.now().date()
 
 
 class BecomeAMemberDocument(models.Model):
