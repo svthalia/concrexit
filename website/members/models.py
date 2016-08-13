@@ -271,7 +271,7 @@ class Member(models.Model):
         return self.user.get_full_name()
 
     def __str__(self):
-        return '{} ({})'.format(self.get_full_name(), self.username)
+        return '{} ({})'.format(self.get_full_name(), self.user.username)
 
 
 class Membership(models.Model):
