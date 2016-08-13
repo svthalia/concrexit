@@ -91,8 +91,8 @@ class Member(models.Model):
     @classmethod
     def all_with_membership(cls, membership_type, prefetch=None):
         return [x for x in cls.objects.all().prefetch_related(prefetch)
-                if x.current_membership
-                and x.current_membership.type == membership_type]
+                if x.current_membership and
+                x.current_membership.type == membership_type]
 
     # ---- Address information -----
 
@@ -271,7 +271,7 @@ class Member(models.Model):
         return self.user.get_full_name()
 
     def __str__(self):
-        return self.display_name()
+        return '{} ({})'.format(self.get_full_name(), self.username)
 
 
 class Membership(models.Model):
