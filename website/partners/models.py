@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator, URLValidator
 
 from utils.translation import MultilingualField, ModelTranslateMeta
+from tinymce.models import HTMLField
 
 
 class Partner(models.Model):
@@ -14,7 +15,7 @@ class Partner(models.Model):
         blank=True,
         validators=[URLValidator()]
     )
-    company_profile = models.TextField(max_length=3072, blank=True)
+    company_profile = HTMLField(blank=True)
     logo = models.ImageField(upload_to='public/partners/logos/')
     site_header = models.ImageField(
         upload_to='public/partners/headers/',
@@ -81,7 +82,7 @@ class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
 
 class Vacancy(models.Model):
     title = models.CharField(max_length=255)
-    description = models.TextField(max_length=3072)
+    description = HTMLField(blank=True)
     link = models.CharField(
         max_length=255,
         blank=True,

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n bleach_tags %}
 
 {% block body %}
 <h1>{% trans "Vacancies" %}</h1>
@@ -46,7 +46,7 @@
                         {{ vacancy.get_company_name }}
                         <small>{{ vacancy.title }}</small>
                     </h5>
-                    <p>{{ vacancy.description|truncatechars:150 }}</p>
+                    <p>{{ vacancy.description|striptags|truncatechars:150 }}</p>
                     <div class="team-readmore">
                         {% if vacancy.partner %}
                              <a href="{% url 'partners:partner' slug=vacancy.partner.slug %}#vacancy-{{ vacancy.id }}">
@@ -80,7 +80,7 @@
                                      </a>
                                  </div>
                                  <div class="toggle-content">
-                                     {{ vacancy.description }}
+                                     {{ vacancy.description|bleach }}
 
                                      {% if vacancy.link %}
                                          <br /><br />

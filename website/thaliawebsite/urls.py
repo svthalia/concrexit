@@ -48,5 +48,7 @@ urlpatterns = [
     # Default login helpers
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    # Dependencies
+    url(r'^tinymce/', include('tinymce.urls')),
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))

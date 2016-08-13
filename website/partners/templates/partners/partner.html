@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n bleach_tags %}
 
 {% block header_image %}{% spaceless %}
     {% if partner.site_header %}
@@ -18,7 +18,7 @@
     <div class="row">
         <div class="span8">
             <div id="bedrijfsomschrijving">
-                {{ partner.company_profile }}
+                {{ partner.company_profile|bleach }}
             </div>
         </div>
         <div class="span4">
@@ -81,7 +81,7 @@
                             <li id="vacancy-{{ vacancy.id }}">
                                 <div class="toggle-title"><a href="#"><span></span>{{ vacancy.title }}</a></div>
                                 <div class="toggle-content">
-                                    {{ vacancy.description }}
+                                    {{ vacancy.description|bleach }}
 
                                     {% if vacancy.link %}
                                         <br /><br />

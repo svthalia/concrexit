@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Dependencies
     'static_precompiler',
+    'tinymce',
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',

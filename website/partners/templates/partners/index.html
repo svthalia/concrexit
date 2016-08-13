@@ -31,7 +31,7 @@
                 </div>
                 <h4>{{ main_partner.name }}</h4>
 
-                <p>{{ main_partner.company_profile|truncatechars:425 }}</p>
+                <p>{{ main_partner.company_profile|striptags|truncatechars:425 }}</p>
 
                 <p>
                     <a href="{% url "partners:partner" main_partner.slug %}" class="link-style3">
@@ -61,7 +61,7 @@
                                 <a href="{% url 'partners:partner' partner.slug %}">
                                     <div class="post-overlay-meta">
                                         <h2>{{ partner.name }}</h2>
-                                        <p>{{ partner.company_profile|truncatechars:180 }}</p>
+                                        <p>{{ partner.company_profile|striptags|truncatechars:180 }}</p>
                                         <span class="partner-logo-overlay-readmore">{% trans "Learn more" %} &raquo; </span>
                                     </div>
                                     <div class="klikbaar"></div>
