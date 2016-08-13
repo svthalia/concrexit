@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Dependencies
     'static_precompiler',
     'tinymce',
+    'django_template_check',  # This is only necessary in development
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
@@ -51,9 +52,9 @@ INSTALLED_APPS = [
     'utils',
     'mailinglists',
     'merchandise',
-    'django_template_check',  # This is only necessary in development
     'thabloid',
     'partners',
+    'events',
 ]
 
 MIDDLEWARE = [
