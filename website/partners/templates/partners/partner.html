@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block header_image %}{% spaceless %}
+    {% if partner.site_header %}
+        {{ partner.site_header.url }}
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endspaceless %}{% endblock header_image %}
+
 {% block body %}
 
     <h1>{{ partner.name }}</h1>
