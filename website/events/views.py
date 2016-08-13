@@ -1,6 +1,12 @@
+import csv
+from datetime import timedelta
+
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
+from django.utils import timezone
+from django.utils.text import slugify
 
 from .models import Event
 
@@ -18,3 +24,64 @@ def admin_details(request, event_id):
         'waiting': registrations[n:] if n else [],
         'cancellations': cancellations,
     })
+
+
+@staff_member_required
+@permission_required('events.change_event')
+def export(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    extra_fields = event.registrationinformationfield_set.all()
+    registrations = event.registration_set.all()
+
+    header_fields = (
+        ['name', 'date', 'email'] + [field.name for field in extra_fields] +
+        ['present', 'paid', 'status', 'date_cancelled'])
+
+    rows = []
+    capacity = event.max_participants
+    for i, registration in enumerate(registrations):
+        if registration.member:
+            name = registration.member.get_full_name()
+        else:
+            name = registration.name
+        status = 'registered'
+        cancelled = None
+        if registration.date_cancelled:
+            if capacity is not None:
+                capacity += 1
+            status = 'cancelled'
+            cancelled = timezone.localtime(registration.date_cancelled)
+        elif capacity and i >= capacity:
+            status = 'waiting'
+        data = {
+            'name': name,
+            'date': timezone.localtime(registration.date),
+            'paid': registration.paid,
+            'present': registration.present,
+            'email': (registration.member.user.email
+                      if registration.member
+                      else ''),
+            'status': status,
+            'date_cancelled': cancelled,
+        }
+        data.update({field['field'].name: field['value'] for field in
+                     registration.registration_information()})
+        rows.append(data)
+
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.DictWriter(response, header_fields)
+    writer.writeheader()
+
+    def order(item):
+        if item['status'] == 'cancelled':
+            return item['date'] + timedelta(days=10000)
+        elif item['status'] == 'registered':
+            return item['date'] - timedelta(days=10000)
+        else:
+            return item['date']
+    for row in sorted(rows, key=order):
+        writer.writerow(row)
+
+    response['Content-Disposition'] = (
+        'attachment; filename="{}.csv"'.format(slugify(event.title)))
+    return response

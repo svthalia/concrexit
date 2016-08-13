@@ -28,6 +28,8 @@
         <h2>{% trans "cancellations"|capfirst %}</h2>
         {% include 'events/admin/registrations_table.html' with registrations=cancellations verb='cancelled' addlink=False %}
         {% endwith %}
+        <br>
+        <a href="{% url 'events:export' event_id=event.pk %}" class="button">{% trans "Export registrations" %}</a>
     </div>
 </div>
 {% endblock %}
