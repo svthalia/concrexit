@@ -25,11 +25,6 @@ class Event(models.Model):
         null=True,
     )
 
-    registration_required = models.BooleanField(
-        _('registration required'),
-        default=False
-    )
-
     registration_start = models.DateTimeField(
         _("registration start"),
         null=True,
@@ -84,13 +79,16 @@ class Event(models.Model):
 
     published = models.BooleanField(_("published"), default=False)
 
+    def registration_required(self):
+        return bool(self.registration_start) or bool(self.registration_end)
+
     def clean(self):
         super().clean()
         errors = {}
         if self.end < self.start:
             errors.update({
                     'end': _("Can't have an event travel back in time")})
-        if self.registration_required:
+        if self.registration_required():
             if self.no_registration_message:
                 errors.update(
                     {'no_registration_message': _(
