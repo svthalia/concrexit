@@ -179,7 +179,7 @@ class Registration(models.Model):
         blank=True,
         null=True,
         limit_choices_to=(Q(user__membership__until__isnull=True) |
-                          Q(user__membership__until__gt=timezone.now()))
+                          Q(user__membership__until__gt=timezone.now().date()))
     )
 
     name = models.CharField(
