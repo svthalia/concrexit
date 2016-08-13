@@ -1,0 +1,6 @@
+{% extends "error.html" %}
+{% load i18n %}
+
+{% block error_message %}{% trans "404: page not found." %}<br>
+<!-- {{ exception }} -->
+{% endblock %}
