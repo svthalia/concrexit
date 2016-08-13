@@ -5,9 +5,9 @@ import os
 
 
 def datetime_to_lectureyear(date):
-    sept_1 = timezone.make_aware(timezone.datetime(2016, 9, 1))
     if isinstance(date, timezone.datetime):
-        date = date.date()
+        date = timezone.localtime(date).date()
+    sept_1 = timezone.make_aware(timezone.datetime(date.year, 9, 1))
     if date < sept_1.date():
         return date.year - 1
     return date.year
