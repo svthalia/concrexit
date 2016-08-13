@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.core.validators import MinValueValidator
 
 from utils.validators import validate_file_extension
@@ -48,6 +49,10 @@ class GeneralMeeting(models.Model):
     )
     datetime = models.DateTimeField()
     location = models.CharField(max_length=200)
+
+    def __str__(self):
+        return '{}'.format(timezone.localtime(self.datetime)
+                                   .strftime('%Y-%m-%d'))
 
     class Meta:
         ordering = ['datetime']
