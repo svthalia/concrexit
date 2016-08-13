@@ -26,6 +26,11 @@ class Event(models.Model):
         blank=True,
     )
 
+    registration_required = models.BooleanField(
+        _('registration required'),
+        default=False
+    )
+
     registration_start = models.DateTimeField(
         _("registration start"),
         null=True,
@@ -70,11 +75,6 @@ class Event(models.Model):
         null=True,
     )
 
-    registration_required = models.BooleanField(
-        _('registration required'),
-        default=False
-    )
-
     no_registration_message = models.CharField(
         _('message when there is no registration'),
         max_length=200,
@@ -87,14 +87,35 @@ class Event(models.Model):
 
     def clean(self):
         super().clean()
+        errors = {}
         if self.end < self.start:
-            raise ValidationError(
-                {'end': _("Can't have an event travel back in time")})
-        if self.registration_required and self.no_registration_message:
-            raise ValidationError(
-                {'no_registration_message': _(
-                    "Doesn't make sense to have this if you require "
-                    "registrations.")})
+            errors.update({
+                    'end': _("Can't have an event travel back in time")})
+        if self.registration_required:
+            if self.no_registration_message:
+                errors.update(
+                    {'no_registration_message': _(
+                        "Doesn't make sense to have this if you require "
+                        "registrations.")})
+            if not self.registration_start:
+                errors.update(
+                    {'registration_start': _(
+                        "If registration is required, you need a start of "
+                        "registration")})
+            if not self.registration_end:
+                errors.update(
+                    {'registration_end': _(
+                        "If registration is required, you need an end of "
+                        "registration")})
+            if self.registration_start and self.registration_end and (
+                    self.registration_start >= self.registration_end):
+                message = _('Registration start should be before '
+                            'registration end')
+                errors.update({
+                    'registration_start': message,
+                    'registration_end': message})
+        if errors:
+            raise ValidationError(errors)
 
     def get_absolute_url(self):
         return ''
