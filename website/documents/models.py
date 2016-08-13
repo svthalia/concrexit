@@ -53,10 +53,15 @@ class GeneralMeeting(models.Model):
         ordering = ['datetime']
 
 
+def meetingdocument_upload_to(instance, filename):
+    return 'documents/meetings/{}/files/{}'.format(instance.meeting.pk,
+                                                   filename)
+
+
 class GeneralMeetingDocument(models.Model):
     meeting = models.ForeignKey(GeneralMeeting, on_delete=models.CASCADE)
     file = models.FileField(
-        upload_to='documents/meetings/files/',
+        upload_to=meetingdocument_upload_to,
         validators=[validate_file_extension],
     )
 
