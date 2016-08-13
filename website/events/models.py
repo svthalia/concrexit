@@ -23,7 +23,6 @@ class Event(models.Model):
         'committees.Committee',
         models.SET_NULL,
         null=True,
-        blank=True,
     )
 
     registration_required = models.BooleanField(
