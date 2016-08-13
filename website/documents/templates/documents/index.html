@@ -38,7 +38,7 @@
         </ul>
         <ul class="portfolio-posts row" style='width:{{ assocation_docs_width }}px'>
             {% for year, docs in association_documents_years %}
-                {% include 'documents/policydocument.html' with documents=docs.report name=_("Annual report") %}
+                {% include 'documents/report.html' with documents=docs.report name=_("Annual report") %}
             {% endfor %}
         </ul>
     </div>
