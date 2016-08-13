@@ -6,6 +6,7 @@ from partners.models import (
     Partner,
     PartnerImage,
     VacancyCategory,
+    Vacancy,
 )
 
 
@@ -37,3 +38,21 @@ class PartnerAdmin(admin.ModelAdmin):
 class VacancyCategoryAdmin(TranslatedModelAdmin):
     prepopulated_fields = {"slug": ("name_en",)}
     fields = ['name', 'slug']
+
+
+@admin.register(Vacancy)
+class VacancyAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'description', 'link')
+        }),
+        ('Existing Partner', {
+            'fields': ('partner',)
+        }),
+        ('Other Partner', {
+            'fields': ('company_name', 'company_logo',)
+        }),
+        ('Categories', {
+            'fields': ('categories', )
+        }),
+    )

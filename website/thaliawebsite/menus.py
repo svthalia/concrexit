@@ -23,7 +23,7 @@ main = [
     {'title': _('Calendar'), 'name': '#'},
     {'title': _('Career'), 'name': 'partners:index', 'submenu': [
         {'title': _('Partners'), 'name': 'partners:index'},
-        {'title': _('Vacancies'), 'name': '#'},
+        {'title': _('Vacancies'), 'name': 'partners:vacancies'},
     ]},
     {'title': _('Education'), 'name': '#', 'submenu': [
         {'title': _('Book Sale'), 'name': '#'},

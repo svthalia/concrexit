@@ -62,45 +62,38 @@
         </div>
     </div>
 
-    {# todo vacancies #}
-    {% if partner.vacancies.all|length > 0 %}
-    <div id="partner_vacatures">
-        <h3>Vacatures</h3>
+    {% if vacancies.all|length > 0 %}
+        <div id="partner_vacatures">
+            <h3>{% trans "Vacancies" %}</h3>
 
-        <div class="row">
-            <div class="span12">
-                <ul class="toggles">
-                    <?php foreach($partner->getVacancies() as $vacancy): ?>
-                    <li id="vacancy-<?php echo $vacancy->id; ?>">
-                        <div class="toggle-title"><a href="#"><span></span><?php echo $vacancy->title ?></a></div>
-                        <div class="toggle-content">
-                            <?php echo $vacancy->description ?>
+            <div class="row">
+                <div class="span12">
+                    <ul class="toggles">
+                        {% for vacancy in vacancies %}
+                            <li id="vacancy-{{ vacancy.id }}">
+                                <div class="toggle-title"><a href="#"><span></span>{{ vacancy.title }}</a></div>
+                                <div class="toggle-content">
+                                    {{ vacancy.description }}
 
-                            <?php if ($vacancy->link !== ''): ?>
-                            <?php if (preg_match('/http(s?)/', $vacancy->link)): ?>
-                            <?php $link = $vacancy->link; ?>
-                            <?php else: ?>
-                            <?php $link = sprintf("http://%s", $vacancy->link); ?>
-                            <?php endif; ?>
-                            <br /><br />
-                            <a href="<?php echo $link; ?>" target="_blank" rel="noopener">
-                                <button type="button" class="btn-large btn-style2">Ontdek meer</button>
-                            </a>
-                            <?php endif; ?>
-                        </div>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
+                                    {% if vacancy.link %}
+                                        <br /><br />
+                                        <a href="{{ vacancy.link }}" target="_blank" rel="noopener">
+                                            <button type="button" class="btn-large btn-style2">{% trans "Learn more" %}</button>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var windowhash = window.location.hash;
-            $(windowhash).children('.toggle-title').click();
-        });
-    </script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                var windowhash = window.location.hash;
+                $(windowhash).children('.toggle-title').click();
+            });
+        </script>
     {% endif %}
-    {# todo vacancies #}
 {% endblock body %}

@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 
-from partners.models import Partner
+from partners.models import Partner, Vacancy, VacancyCategory
 from random import random
 
 
@@ -19,8 +19,17 @@ def index(request):
 
 def partner(request, slug):
     partner = get_object_or_404(Partner, slug=slug)
-    return render(
-        request,
-        'partners/partner.html',
-        {'partner': partner}
-    )
+    context = {
+        'partner': partner,
+        'vacancies': Vacancy.objects.filter(partner=partner),
+    }
+    return render(request, 'partners/partner.html', context)
+
+
+def vacancies(request):
+    context = {
+        'vacancies': Vacancy.objects.all(),
+        'categories': VacancyCategory.objects.all(),
+    }
+
+    return render(request, 'partners/vacancies.html', context)

@@ -77,3 +77,47 @@ class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
 
     class Meta:
         verbose_name_plural = 'Vanancy Categories'
+
+
+class Vacancy(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(max_length=3072)
+    link = models.CharField(
+        max_length=255,
+        blank=True,
+        validators=[URLValidator()]
+    )
+
+    partner = models.ForeignKey(
+        Partner,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        help_text="When you use a partner, the company name and logo " +
+                  "below will not be used."
+    )
+
+    company_name = models.CharField(max_length=255, blank=True)
+    company_logo = models.ImageField(
+        upload_to='public/partners/vacancy-logos/',
+        null=True,
+        blank=True
+    )
+
+    categories = models.ManyToManyField(VacancyCategory, blank=True)
+
+    def get_company_name(self):
+        if self.partner:
+            return self.partner.name
+        return self.company_name
+
+    def get_company_logo(self):
+        if self.partner:
+            return self.partner.logo
+        return self.company_logo
+
+    def __str__(self):
+        return self.get_company_name() + ' - ' + self.title
+
+    class Meta:
+        verbose_name_plural = 'Vacancies'
