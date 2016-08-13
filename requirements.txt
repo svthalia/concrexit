@@ -4,3 +4,5 @@ Pillow
 django-static-precompiler>=1.4,<2
 django-sendfile==0.3.10
 django-template-check  # This should be in dev-requirements somehow
+bleach==1.4.3
+django-tinymce==2.3.0

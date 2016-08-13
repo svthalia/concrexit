@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block body %}
+
+    <h1>{% trans "Our partners" %}</h1>
+    <p class="tcenter">
+        {% blocktrans trimmed %}
+            Als studievereniging doen we ontzettend ons best om leuke evenementen en activiteiten te organiseren
+            voor de studenten die lid zijn van Thalia.
+            Voorbeelden van deze evenementen en activiteiten zijn symposia, borrels en programmeerwedstrijden.
+            Verder organiseren wij ook lunchlezingen, workshops en brengen we vijf keer per jaar de Thabloid
+            uit (het studieblad van Thalia).
+            Voor financiering van deze activiteiten zijn wij afhankelijk van het bedrijfsleven.
+            Wij staat dan ook ten alle tijden open voor nieuwe samenwerkingsmogelijkheden.
+            Mocht u concrete interesse hebben om deze bruisende studievereniging financieel te ondersteunen of
+            bent u benieuwd naar samenwerkingsmogelijkheden, dan kunt u een e-mail versturen naar de commissaris
+            externe betrekkingen, die te bereiken is via
+            <a href="mailto:samenwerking@thalia.nu">samenwerking@thalia.nu</a>.
+        {% endblocktrans %}
+    </p>
+
+    <div id="careerpage">
+        <div>
+            <h3>{% trans "Main Partner" %}</h3>
+
+            {% if main_partner %}
+            <div class="th_hoofdpartner_wrapper">
+                <div class="th_hoofdpartner_logo alignleft">
+                    <img src="{{ main_partner.logo.url }}" />
+                </div>
+                <h4>{{ main_partner.name }}</h4>
+
+                <p>{{ main_partner.company_profile|striptags|truncatechars:425 }}</p>
+
+                <p>
+                    <a href="{% url "partners:partner" main_partner.slug %}" class="link-style3">
+                        {% trans "Learn more" %} &raquo;
+                    </a>
+                </p>
+            </div>
+            {% endif %}
+        </div>
+        <?php endif; ?>
+
+        <!-- .portfolio-posts -->
+        <div class="portfolio portfolio-isotope">
+            <ul class="portfolio-posts row">
+                {% for partner in partners %}
+                    <li class="post span4 has-overlay">
+                        <div class="post-inner">
+                            <div class="th_partner_logo">
+                                {% if partner.logo %}
+                                    <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name }}"/>
+                                {% else %}
+                                    <h2>{{ partner.name }}</h2>
+                                {% endif %}
+                            </div>
+                            <div class="post-body"></div>
+                            <div class="post-overlay">
+                                <a href="{% url 'partners:partner' partner.slug %}">
+                                    <div class="post-overlay-meta">
+                                        <h2>{{ partner.name }}</h2>
+                                        <p>{{ partner.company_profile|striptags|truncatechars:180 }}</p>
+                                        <span class="partner-logo-overlay-readmore">{% trans "Learn more" %} &raquo; </span>
+                                    </div>
+                                    <div class="klikbaar"></div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+{% endblock body %}

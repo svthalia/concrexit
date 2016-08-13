@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Dependencies
     'static_precompiler',
+    'tinymce',
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'merchandise',
     'django_template_check',  # This is only necessary in development
     'thabloid',
+    'partners',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +82,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'partners.context_processors.showcased_partners',
             ],
         },
     },

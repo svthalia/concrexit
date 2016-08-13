@@ -57,17 +57,17 @@
                 </div>
                 <!-- /#logo -->
 
-                <!-- #sponsor-left -->
-                <div id="sponsor-left" class="sponsor-header">
-                    {% block sponsor_header_left %}{% endblock sponsor_header_left %}
-                </div>
-                <!-- /#sponsor-left -->
+                <!-- #partner-left -->
+                {% if showcased_partners|length > 0 %}
+                    {% include "partners/showcased_partner.html" with partner=showcased_partners.0 position="left" %}
+                {% endif %}
+                <!-- /#partner-left -->
 
-                <!-- #sponsor-right -->
-                <div id="sponsor-right" class="sponsor-header">
-                    {% block sponsor_header_right %}{% endblock sponsor_header_right %}
-                </div>
-                <!-- /#sponsor-right -->
+                <!-- #partner-right -->
+                {% if showcased_partners|length > 1 %}
+                    {% include "partners/showcased_partner.html" with partner=showcased_partners.1 position="right" %}
+                {% endif %}
+                <!-- /#partner-right -->
             </div>
             <!-- /#logo-header -->
 
@@ -83,7 +83,10 @@
         <div id="header-panel" class="wrapper header-parallax">
 
             {# todo header image #}
-            <div class="header-image container" style="background-image: url('{% static "images/header_default.jpg" %}')"></div>
+            <div
+                class="header-image container"
+                style="background-image: url('{% block header_image %}{% static "images/header_default.jpg" %}{% endblock header_image%}')">
+            </div>
             <div class="page-title">
                 <h1>{% block page_title %}{% trans "Study Association Thalia" %}{% endblock %}</h1>
             </div>

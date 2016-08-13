@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load i18n bleach_tags %}
+
+{% block body %}
+<h1>{% trans "Vacancies" %}</h1>
+<p class="tcenter">
+    {% blocktrans trimmed %}
+        Je bent student en je hebt het maar krap. De politiek wil de studenten ook al niet een handje toesteken. Gelukkig
+        hebben we bedrijven die bij ons vacatures aanbieden. Dus zit je krap en wil je wat bijverdienen, of ben je (bijna)
+        afgestudeerd en wil je eens wat rondkijken, op deze pagina staan al onze openstaande vacatures.
+
+        Wil je als bedrijf een vacature plaatsen op onze website, dan kun je contact opnemen met de voorzitter van onze
+        sponsorcommissie via <a href="mailto:sponsor@thalia.nu" target="_blank">sponsor@thalia.nu</a>.
+    {% endblocktrans %}
+</p>
+
+<div class="isotope" id="vacanciespage">
+    <!-- .portfolio-filter -->
+    <div class="isotope-filter tabs-wrapper tabs-centered clearfix">
+        <ul class="tabs">
+            <li class="{% if not preselected_category %}current{% endif %}">
+                <a href="#">{% trans "Everything" %}</a>
+            </li>
+            {% for category in categories %}
+                <li
+                        data-filter="category-{{ category.id }}"
+                        class="{% if preselected_category and preselected_category.id == category.id %}current{% endif %}">
+                    <a href="#">{{ category.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- /.portfolio-filter -->
+    <div class="row isotope-items">
+        {% for vacancy in vacancies %}
+            <div class="team span4 clearfix isotope-item"
+                 data-filter="{% for cat in vacancy.categories.all %}category-{{ cat.id }} {% endfor %}">
+                <div class="team-header">
+                    {% if vacancy.get_company_logo %}
+                        <img src="{{ vacancy.get_company_logo.url }}" alt="">
+                    {% endif %}
+                </div>
+                <div class="team-content">
+                    <h5 class="tcenter">
+                        {{ vacancy.get_company_name }}
+                        <small>{{ vacancy.title }}</small>
+                    </h5>
+                    <p>{{ vacancy.description|striptags|truncatechars:150 }}</p>
+                    <div class="team-readmore">
+                        {% if vacancy.partner %}
+                             <a href="{% url 'partners:partner' slug=vacancy.partner.slug %}#vacancy-{{ vacancy.id }}">
+                                 {% trans "Learn more" %}
+                             </a>
+                        {% else %}
+                            <a href="#vacancy-{{ vacancy.id }}"
+                               class="vacancy-external" data-vacancy="{{ vacancy.id }}">
+                                {% trans "Learn more" %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if vacancies|length > 0 %}
+        <div id="sponsor_vacatures">
+            <h3>{% trans "All vacancies" %}</h3>
+
+            <div class="row">
+                <div class="span12">
+                    <ul class="toggles">
+                        {% for vacancy in vacancies %}
+                             <li id="vacancy-{{ vacancy.id }}">
+                                 <div class="toggle-title">
+                                     <a href="#">
+                                         <span></span>
+                                         {{ vacancy.get_company_name }} | {{ vacancy.title }}
+                                     </a>
+                                 </div>
+                                 <div class="toggle-content">
+                                     {{ vacancy.description|bleach }}
+
+                                     {% if vacancy.link %}
+                                         <br /><br />
+                                         <a href="{{ vacancy.link }}" target="_blank" rel="noopener">
+                                             <button type="button" class="btn-large btn-style2">
+                                                 {% trans "Learn more" %}
+                                             </button>
+                                         </a>
+                                     {% endif %}
+                                 </div>
+                             </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var body = $('body');
+
+            var isotope = body.find('.isotope'),
+                    isotopeFilter = isotope.find('.isotope-filter'),
+                    isotopePosts = isotope.find('.isotope-items');
+
+            if (jQuery().isotope) {
+                isotopeFilter.delegate('li', 'click', function(e) {
+                    var filter;
+
+                    if ($(this).data('filter')==undefined) {
+                        filter='*';
+                    } else {
+                        filter='[data-filter*="' + $(this).data('filter') + '"]';
+                    }
+                    setTimeout(function() {
+                        isotopePosts.isotope({ filter: filter });
+                    }, 100);
+                });
+            }
+
+            $(window).resize(function() {
+                if (isotopeFilter.find('li.current').length) {
+                    isotopeFilter.find('li.current').trigger('click');
+                } else {
+                    isotopeFilter.find('li:first').trigger('click');
+                }
+            });
+
+            $('.vacancy-external').click(function() {
+                var id = $(this).attr('data-vacancy');
+                $('#vacancy-' + id).children('.toggle-title').click();
+            });
+        });
+    </script>
+{% endblock body %}

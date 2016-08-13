@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-13 12:02+0200\n"
+"PO-Revision-Date: 2016-08-13 12:03+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: templates/partners/index.html:6
+msgid "Our partners"
+msgstr "Onze partners"
+
+#: templates/partners/index.html:8
+msgid ""
+"Als studievereniging doen we ontzettend ons best om leuke evenementen en "
+"activiteiten te organiseren voor de studenten die lid zijn van Thalia. "
+"Voorbeelden van deze evenementen en activiteiten zijn symposia, borrels en "
+"programmeerwedstrijden. Verder organiseren wij ook lunchlezingen, workshops "
+"en brengen we vijf keer per jaar de Thabloid uit (het studieblad van "
+"Thalia). Voor financiering van deze activiteiten zijn wij afhankelijk van "
+"het bedrijfsleven. Wij staat dan ook ten alle tijden open voor nieuwe "
+"samenwerkingsmogelijkheden. Mocht u concrete interesse hebben om deze "
+"bruisende studievereniging financieel te ondersteunen of bent u benieuwd "
+"naar samenwerkingsmogelijkheden, dan kunt u een e-mail versturen naar de "
+"commissaris externe betrekkingen, die te bereiken is via <a href=\"mailto:"
+"samenwerking@thalia.nu\">samenwerking@thalia.nu</a>."
+msgstr ""
+"Als studievereniging doen we ontzettend ons best om leuke evenementen en "
+"activiteiten te organiseren voor de studenten die lid zijn van Thalia. "
+"Voorbeelden van deze evenementen en activiteiten zijn symposia, borrels en "
+"programmeerwedstrijden. Verder organiseren wij ook lunchlezingen, workshops "
+"en brengen we vijf keer per jaar de Thabloid uit (het studieblad van "
+"Thalia). Voor financiering van deze activiteiten zijn wij afhankelijk van "
+"het bedrijfsleven. Wij staat dan ook ten alle tijden open voor nieuwe "
+"samenwerkingsmogelijkheden. Mocht u concrete interesse hebben om deze "
+"bruisende studievereniging financieel te ondersteunen of bent u benieuwd "
+"naar samenwerkingsmogelijkheden, dan kunt u een e-mail versturen naar de "
+"commissaris externe betrekkingen, die te bereiken is via <a href=\"mailto:"
+"samenwerking@thalia.nu\">samenwerking@thalia.nu</a>."
+
+#: templates/partners/index.html:25 templates/partners/partner.html:22
+msgid "Main Partner"
+msgstr "Hoofdsponsor"
+
+#: templates/partners/index.html:38 templates/partners/index.html:65
+#: templates/partners/partner.html:81 templates/partners/vacancies.html:53
+#: templates/partners/vacancies.html:58 templates/partners/vacancies.html:89
+msgid "Learn more"
+msgstr "Lees meer"
+
+#: templates/partners/partner.html:8
+#, python-format
+msgid "About %(name)s"
+msgstr "Over %(name)s"
+
+#: templates/partners/partner.html:45
+msgid "Information"
+msgstr "Informatie"
+
+#: templates/partners/partner.html:46
+msgid "Street"
+msgstr "Straatnaam"
+
+#: templates/partners/partner.html:48
+msgid "Zip Code"
+msgstr "Postcode"
+
+#: templates/partners/partner.html:50
+msgid "City"
+msgstr "Plaatsnaam"
+
+#: templates/partners/partner.html:55
+msgid "Website"
+msgstr "Website"
+
+#: templates/partners/partner.html:67 templates/partners/vacancies.html:5
+msgid "Vacancies"
+msgstr "Vacatures"
+
+#: templates/partners/vacancies.html:7
+msgid ""
+"Je bent student en je hebt het maar krap. De politiek wil de studenten ook "
+"al niet een handje toesteken. Gelukkig hebben we bedrijven die bij ons "
+"vacatures aanbieden. Dus zit je krap en wil je wat bijverdienen, of ben je "
+"(bijna) afgestudeerd en wil je eens wat rondkijken, op deze pagina staan al "
+"onze openstaande vacatures. Wil je als bedrijf een vacature plaatsen op onze "
+"website, dan kun je contact opnemen met de voorzitter van onze "
+"sponsorcommissie via <a href=\"mailto:sponsor@thalia.nu\" target=\"_blank"
+"\">sponsor@thalia.nu</a>."
+msgstr ""
+"Je bent student en je hebt het maar krap. De politiek wil de studenten ook "
+"al niet een handje toesteken. Gelukkig hebben we bedrijven die bij ons "
+"vacatures aanbieden. Dus zit je krap en wil je wat bijverdienen, of ben je "
+"(bijna) afgestudeerd en wil je eens wat rondkijken, op deze pagina staan al "
+"onze openstaande vacatures. Wil je als bedrijf een vacature plaatsen op onze "
+"website, dan kun je contact opnemen met de voorzitter van onze "
+"sponsorcommissie via <a href=\"mailto:sponsor@thalia.nu\" target=\"_blank"
+"\">sponsor@thalia.nu</a>."
+
+#: templates/partners/vacancies.html:22
+msgid "Everything"
+msgstr "Alles"
+
+#: templates/partners/vacancies.html:69
+msgid "All vacancies"
+msgstr "Alle vacatures"
