@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django.db import models
+from django.db.models import Q
 from django.core import validators
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -10,8 +11,19 @@ from localflavor.generic.models import IBANField
 from utils.validators import validate_file_extension
 
 
+class ActiveMemberManager(models.Manager):
+    """Get all active members"""
+    def get_queryset(self):
+        return (super().get_queryset()
+                .filter(Q(user__membership__until__isnull=True) |
+                        Q(user__membership__until__gt=timezone.now().date())))
+
+
 class Member(models.Model):
     """This class describes a member"""
+
+    objects = models.Manager()
+    active_members = ActiveMemberManager()
 
     # No longer yearly membership as a type, use expiration date instead.
     PROGRAMME_CHOICES = (
