@@ -15,7 +15,7 @@ main = [
     {'title': _('For Members'), 'name': 'for-members', 'authenticated': True,
         'submenu': [
         {'title': _('Photos'), 'name': 'photos:index'},
-        {'title': _('Statistics'), 'name': '#'},
+        {'title': _('Statistics'), 'name': 'statistics'},
         {'title': _('Become Active'), 'name': 'become-active'},
         {'title': _('Wiki'), 'url': '/wiki/'},
     ]},

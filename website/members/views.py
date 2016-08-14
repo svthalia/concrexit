@@ -1,14 +1,13 @@
 import os
 from datetime import date
+from sendfile import sendfile
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
-from sendfile import sendfile
 
-from .models import BecomeAMemberDocument
-from .models import Member
+from .models import BecomeAMemberDocument, Member
 from .forms import MemberForm
 
 
@@ -160,3 +159,60 @@ def get_become_a_member_document(request, pk):
     ext = os.path.splitext(document.file.path)[1]
     return sendfile(request, document.file.path, attachment=True,
                     attachment_filename=slugify(document.name) + ext)
+
+
+def statistics(request):
+    member_types = ["member", "supporter", "honorary"]
+
+    # The numbers
+    total = Member.active_members.count()
+
+    context = {
+            "total_members": total,
+            "total_stats_year": gen_stats_year(member_types),
+            "total_stats_member_type": gen_stats_member_type(member_types)
+    }
+
+    return render(request, 'members/statistics.html', context)
+
+
+def gen_stats_member_type(member_types):
+    total = dict()
+    for member_type in member_types:
+        total[member_type] = (Member
+                              .active_members
+                              .filter(user__membership__type=member_type)
+                              .count())
+    return total
+
+
+def gen_stats_year(member_types):
+    """
+    Generate list with 6 entries, where each entry represents the total amount
+    of Thalia members in a year. The sixth element contains all the multi-year
+    students.
+    """
+    stats_year = []
+    current_year = date.today().year
+
+    for i in range(5):
+        new = dict()
+        for member_type in member_types:
+            new[member_type] = (Member
+                                .active_members
+                                .filter(starting_year=current_year - i)
+                                .filter(user__membership__type=member_type)
+                                .count())
+        stats_year.append(new)
+
+    # Add multi year members
+    new = dict()
+    for member_type in member_types:
+        new[member_type] = (Member
+                            .active_members
+                            .filter(starting_year__lt=current_year - 4)
+                            .filter(user__membership__type=member_type)
+                            .count())
+    stats_year.append(new)
+
+    return stats_year
