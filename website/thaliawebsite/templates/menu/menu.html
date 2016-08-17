@@ -9,7 +9,8 @@
             {% if not item.authenticated or request.user.is_authenticated %}
             {% url item.name as path %}
             <li {% if request.path == path %}class="nav-path-selected"{% endif %}>
-                <a href="{{ path }}" target="_self" {% if request.path == path %}class="nav-path-selected"{% endif %}>
+                <a href="{% if path %}{{ path }}{% else %}{{ item.url }}{% endif %}"
+                    target="_self" {% if request.path == path %}class="nav-path-selected"{% endif %}>
                     {{ item.title }}
                 </a>
                 {% if 'submenu' in item %}

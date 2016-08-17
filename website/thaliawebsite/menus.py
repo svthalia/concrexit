@@ -18,7 +18,7 @@ main = [
         {'title': _('Photos'), 'name': 'photos:index'},
         {'title': _('Statistics'), 'name': '#'},
         {'title': _('Become Active'), 'name': 'become-active'},
-        {'title': _('Wiki'), 'name': '#'},
+        {'title': _('Wiki'), 'url': '/wiki/'},
     ]},
     {'title': _('Calendar'), 'name': '#'},
     {'title': _('Career'), 'name': 'partners:index', 'submenu': [
