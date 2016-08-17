@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator
+from django.urls import reverse
 
 from utils.validators import validate_file_extension
 
@@ -40,6 +41,9 @@ class MiscellaneousDocument(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('documents:miscellaneous-document', args=(self.pk,))
 
 
 class GeneralMeeting(models.Model):

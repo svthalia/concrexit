@@ -101,6 +101,9 @@ class Board(Committee):
         default=True,
     )
 
+    def get_absolute_url(self):
+        return '/committee/boards/{}'.format(self.name.lower())
+
 
 class ActiveMembershipManager(models.Manager):
     """Get only active memberships"""
@@ -110,8 +113,8 @@ class ActiveMembershipManager(models.Manager):
 
 
 class CommitteeMembership(models.Model):
-    active_memberships = ActiveMembershipManager()
     objects = models.Manager()
+    active_memberships = ActiveMembershipManager()
 
     member = models.ForeignKey(
         Member,
