@@ -30,6 +30,7 @@ from committees.sitemaps import sitemap as committees_sitemap
 from members.sitemaps import sitemap as members_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
+from partners.sitemaps import sitemap as partners_sitemap
 
 thalia_sitemap = {
     'main-static': StaticViewSitemap,
@@ -38,6 +39,7 @@ thalia_sitemap.update(committees_sitemap)
 thalia_sitemap.update(members_sitemap)
 thalia_sitemap.update(documents_sitemap)
 thalia_sitemap.update(thabloid_sitemap)
+thalia_sitemap.update(partners_sitemap)
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
