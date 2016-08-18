@@ -2,7 +2,7 @@
     {% for item in submenu %}
         {% url item.name as path %}
         <li {% if request.path == path %}class="nav-selected nav-path-selected"{% endif %}>
-            <a href="{{ path }}"
+            <a href="{% if path %}{{ path }}{% else %}{{ item.url }}{% endif %}"
                target="_self"
                {% if request.path == path %}class="nav-selected nav-path-selected"{% endif %}>
                 {{ item.title }}
