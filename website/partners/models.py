@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator, URLValidator
+from django.urls import reverse
 
 from utils.translation import MultilingualField, ModelTranslateMeta
 from tinymce.models import HTMLField
@@ -55,6 +56,9 @@ class Partner(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('partner', args=(self.slug,))
 
 
 class PartnerImage(models.Model):

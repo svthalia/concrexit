@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.utils.text import slugify
+from django.urls import reverse
 
 from utils.validators import validate_file_extension
 
@@ -47,6 +48,10 @@ class Thabloid(models.Model):
         pages = os.listdir(os.path.join(settings.MEDIA_ROOT,
                            os.path.dirname(self.page_url())))
         return [self.page_url(i+1) for i in range(len(pages))]
+
+    def get_absolute_url(self):
+        return reverse('viewer', kwargs={'year': self.year,
+                                         'issue': self.issue})
 
     def save(self, *args, **kwargs):
         super(Thabloid, self).save(*args, **kwargs)
