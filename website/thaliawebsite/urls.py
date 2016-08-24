@@ -63,6 +63,9 @@ urlpatterns = [
     url(r'^career/', include('partners.urls', namespace='partners')),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
     url(r'^private-thumbnails/(?P<size_fit>\d+x\d+_[01])/(?P<path>.*)', private_thumbnails, name='private-thumbnails'),
+    url(r'^api/', include([
+        url(r'^', include('events.api.urls')),
+    ])),
     # Default login helpers
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
