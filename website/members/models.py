@@ -15,6 +15,7 @@ class ActiveMemberManager(models.Manager):
     """Get all active members"""
     def get_queryset(self):
         return (super().get_queryset()
+                .exclude(user__membership=None)
                 .filter(Q(user__membership__until__isnull=True) |
                         Q(user__membership__until__gt=timezone.now().date())))
 
