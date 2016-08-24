@@ -7,3 +7,4 @@ django-template-check  # This should be in dev-requirements somehow
 bleach==1.4.3
 django-tinymce==2.3.0
 pytz
+djangorestframework==3.4.4

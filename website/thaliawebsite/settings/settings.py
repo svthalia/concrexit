@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'static_precompiler',
     'tinymce',
     'django_template_check',  # This is only necessary in development
+    'rest_framework',
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
