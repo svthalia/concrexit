@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-13 17:41+0200\n"
+"PO-Revision-Date: 2016-08-13 17:56+0100\n"
+"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#: models.py:10
+msgid "Order from"
+msgstr "Bestel vanaf"
+
+#: models.py:11
+msgid "Order until"
+msgstr "Bestel tot"
+
+#: models.py:39 models.py:40 models.py:81 models.py:82
+msgid "Either specify a member or a name"
+msgstr "Specificeer een lid of vul een naam in"
+
+#: models.py:70
+msgid "Use this for non-members"
+msgstr "Vul dit in voor niet-leden"
+
+#: templates/pizzas/index.html:5
+msgid "Pizzas"
+msgstr "Pizza's"
+
+#: templates/pizzas/index.html:11
+#, python-format
+msgid "Order food for %(event.title)s"
+msgstr "Bestel eten voor %(event.title)s"
+
+#: templates/pizzas/index.html:15
+#, python-format
+msgid "It will be possible to order from %(start)s."
+msgstr "Je kan bestellen vanaf %(start)s."
+
+#: templates/pizzas/index.html:20
+#, python-format
+msgid "It was possible to order until %(end)s."
+msgstr "Je kon bestellen tot %(end)s."
+
+#: templates/pizzas/index.html:24
+#, python-format
+msgid "It is possible to order until %(end)s."
+msgstr "Je kan bestellen tot %(end)s."
+
+#: templates/pizzas/index.html:29
+msgid "The order has not yet been paid for."
+msgstr "De bestelling is nog niet betaald."
+
+#: templates/pizzas/index.html:31
+msgid "The order has been paid for."
+msgstr "De bestelling is betaald."
+
+#: templates/pizzas/index.html:33
+msgid "Current order"
+msgstr "Huidige bestelling"
+
+#: templates/pizzas/index.html:37 templates/pizzas/index.html:82
+msgid "Name"
+msgstr "Naam"
+
+#: templates/pizzas/index.html:38 templates/pizzas/index.html:83
+msgid "Description"
+msgstr "Omschrijving"
+
+#: templates/pizzas/index.html:39 templates/pizzas/index.html:84
+msgid "Price"
+msgstr "Prijs"
+
+#: templates/pizzas/index.html:40
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: templates/pizzas/index.html:73
+msgid "Changing your order"
+msgstr "Bestelling bewerken"
+
+#: templates/pizzas/index.html:76
+msgid "You did not place an order."
+msgstr "Je hebt geen bestelling geplaatst."
+
+#: templates/pizzas/index.html:85
+msgid "Modify"
+msgstr "Bewerken"
+
+#: templates/pizzas/index.html:85
+msgid "Order"
+msgstr "Bestellen"
+
+#: templates/pizzas/index.html:107
+msgid "There is no current event for which you can order food"
+msgstr "Er is nu geen evenement waar je eten voor kunt bestellen"

@@ -1,0 +1,33 @@
+.pizza-order-form, .activity-form, .paid-form, .collected-form, .delete-form {
+    margin-bottom: 0px;
+}
+
+#button-container {
+    clear: both;
+    overflow: auto;
+}
+
+#button-container a {
+    float: right;
+}
+
+.paid {
+    background-color: #8FCC74;
+}
+
+.unpaid {
+    background-color: #E05C50;
+}
+
+@media (max-width: 767px) {
+    #main .main-content {
+        padding-right: 16px !important;
+        padding-left: 16px !important;
+        max-width: none;
+    }
+
+    .main-content .btn, .main-content .btn:hover {
+        clear: right;
+        margin-bottom: 4px;
+    }
+}

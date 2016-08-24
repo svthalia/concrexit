@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% load i18n staticfiles %}
+
+{% block page_title %}{% trans "Pizzas" %}{% endblock %}
+
+{% block css_head %}
+{{ block.super }}
+<link href="{% static "pizzas/css/style.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+<style>
+    .form-group {
+        margin-bottom: 15px;
+    }
+</style>
+
+<h3>{% blocktrans with title=event.title %}Add order for {{ title }}{% endblocktrans %}</h3>
+
+<form class="form-horizontal" method="post" action="{% url 'pizzas:add-order' event.pk %}">
+    {% csrf_token %}
+    <div class="form-group {% if form.name.errors %}has-error{% endif %}">
+        <label for="{{ form.name.auto_id }}" class="control-label">{{ form.name.label }}</label>
+        <div class="controls">
+            {{ form.name }}
+            {% for error in form.name.errors %}
+                <span class="help-block">{{ error }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-group {% if form.product.errors %}has-error{% endif %}">
+        <label for="{{ form.product.auto_id }}" class="control-label">{{ form.product.label }}</label>
+        <div class="controls">
+            {{ form.product }}
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn btn-style1" value="{% trans 'Add' %}">
+    </div>
+</form>
+
+<div class="text-right">
+    {% url 'admin:pizzas_order_add' as url_pizzas_order_add %}
+    {% blocktrans%}A more generic version of this form is<br>also available in the <a href="{{ url_pizzas_order_add }}">administration back-end</a>.{% endblocktrans %}
+</div>
+{% endblock %}
