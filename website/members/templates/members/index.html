@@ -1,19 +1,91 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}Hello World - {{ block.super }}{% endblock %}
+{% block title %}{% trans "Members" %} - {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>Hello world</h1>
+<h1>{% trans "Members" %}</h1>
 
-<p>{% blocktrans %}These are the current members:{% endblocktrans %}
-  <ul>
-    {% for member in members %}
-    <li>{{ member }} - {{ member.type }}</li>
-    {% empty %}
-    <li>{% trans "Er zijn geen leden" %}</li>
-    {% endfor %}
-  </ul>
-</p>
+<h2>{% blocktrans %}Ever wondered what the name of that person in the back row of the lecture room is? Or maybe you're
+    just looking for a group member's email address? There is a high probability that this person is a member of Thalia,
+    and thus you can use this directory to find him or her.{% endblocktrans %}</h2>
+<div class="portfolio member-directory">
+
+    <form method="get" action="{% url 'members:index' %}">
+        <input type="hidden" name="filter" value="{{ filter }}"/>
+        <div class="row">
+            <div class="span6 offset3 member-search">
+                <span class="span4"><input name="keywords" type="text" value="{{ keywords }}"
+                                           placeholder="{% trans "Who are you looking for?" %}"/></span>
+                <span class="span2"><input class="btn-large btn-style1" name="submit" type="submit"
+                                           value="{% trans "Search" %}"/></span>
+            </div>
+
+        </div>
+
+    </form>
+    <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
+        <ul class="link-tabs">
+            <li {% if not filter %} class="current"{% endif %}><a href="{% url 'members:index' %}">{% trans "All members" %}</a></li>
+            {% for year in year_range %}
+                <li {% if filter == year|stringformat:"i" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter={{ year }}">{{ year }}</a></li>
+            {% endfor %}
+            <li {% if filter == "old" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=old">{% trans "Older" %}</a></li>
+            <li {% if filter == "honor" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=honor">{% trans "Honorary Members" %}</a></li>
+            <li {% if filter == "ex" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=ex">{% trans "Former Members" %}</a></li>
+        </ul>
+    </div>
+
+    {% if not members %}
+    <div class="alert alert-info1">
+	    {% trans "There are no members" %}
+	    <button class="close" type="button"><span class="alert-icon-close"></span></button>
+    </div>
+    {% endif %}
+
+    <ul class="member-directory portfolio-posts row">
+		{% for member in members %}
+		<li class="post member-item span3 has-overlay">
+			<a href="{% url 'members:detail' id=member.id %}">
+				<div class="post-inner">
+					<div class="inner-img">
+                        <img src="{{ member.photo.image.url }}" />
+                    </div>
+					<div class="post-overlay">
+						<div class="post-overlay-meta">
+							<h2>{{ member.display_name }}</h2>
+							<p>Lid sinds: {{ member.starting_year }}</p>
+						</div>
+					</div>
+					<div class="post-body avatar-subtitle">
+					    {{ member.display_name }}
+					</div>
+				</div>
+			</a>
+		</li>
+        {% endfor %}
+	</ul>
+</div>
+
+<div class='clearfix'></div>
+<div class="pagination" style="float: none;text-align: center;">
+    <span class="step-links">
+        {% if members.has_previous %}
+            <a href="{% url 'members:index' %}?filter={{ filter }}&keywords={{ keywords }}&page={{ members.previous_page_number }}">&laquo;</a>
+        {% else %}
+            <a style='visibility: hidden;'>&laquo;</a>
+        {% endif %}
+
+        <span class="current">
+            {{ members.number }} / {{ members.paginator.num_pages }}
+        </span>
+
+        {% if members.has_next %}
+            <a href="{% url 'members:index' %}?filter={{ filter }}&keywords={{ keywords }}&page={{ members.next_page_number }}">&raquo;</a>
+        {% else %}
+            <a style='visibility: hidden;'>&raquo;</a>
+        {% endif %}
+    </span>
+</div>
 
 {% endblock %}

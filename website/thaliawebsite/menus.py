@@ -5,7 +5,7 @@ main = [
     {'title': _('Association'), 'name': '#', 'submenu': [
         {'title': _('Board'), 'name': '#'},
         {'title': _('Committees'), 'name': 'committees:index'},
-        {'title': _('Members'), 'name': '#'},
+        {'title': _('Members'), 'name': 'members:index'},
         {'title': _('Documents'), 'name': 'documents:index'},
         {'title': _('Merchandise'), 'name': 'merchandise:index'},
         {'title': _('Members'), 'name': '#'},

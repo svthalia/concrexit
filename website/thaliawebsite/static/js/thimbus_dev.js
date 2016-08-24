@@ -828,7 +828,7 @@ jQuery(document).ready(function() {
 jQuery(document).ready(function() {
     $('.member-item img').on('error', function(e) {
         if (e.target.src.indexOf('gravatarmissing.png') == -1) {
-            e.target.src = '/packages/theme_thimbus/themes/thimbus/assets/images/gravatarmissing.png';
+            e.target.src = '/static/images/gravatarmissing.png';
         }
     });
 });
