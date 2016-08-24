@@ -207,7 +207,7 @@ class Member(models.Model):
     )
 
     photo = models.ImageField(
-        verbose_name=_('Foto'),
+        verbose_name=_('Photo'),
         upload_to='public/avatars/',
         null=True,
         blank=True,

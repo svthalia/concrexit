@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-24 20:35+0200\n"
-"PO-Revision-Date: 2016-08-24 20:35+0200\n"
+"POT-Creation-Date: 2016-08-24 20:42+0200\n"
+"PO-Revision-Date: 2016-08-24 20:42+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -156,7 +156,7 @@ msgid "Show nickname and last name"
 msgstr "Laat bijnaam en achternaam zien"
 
 #: models.py:210
-msgid "Foto"
+msgid "Photo"
 msgstr "Foto"
 
 #: models.py:219
@@ -251,6 +251,9 @@ msgstr "Dit zijn de huidige leden:"
 #: templates/members/index.html:14
 msgid "Er zijn geen leden"
 msgstr "Er zijn geen leden"
+
+#~ msgid "Foto"
+#~ msgstr "Foto"
 
 #~ msgid "Benefactor"
 #~ msgstr "Begunstiger"
