@@ -49,7 +49,7 @@ class Member(models.Model):
         max_length=8,
         validators=[validators.RegexValidator(
             regex=r'(s\d{7}|[ezu]\d{6,7})',
-            message=_('Enter a valid student- of e/z/u-number.'))],
+            message=_('Enter a valid student- or e/z/u-number.'))],
         blank=True,
         null=True,
     )
