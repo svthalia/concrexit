@@ -21,12 +21,12 @@ class MemberBirthdayTest(TestCase):
 
     def _assert_none(self, start, end):
         members = self._get_members(start, end)
-        self.assertEquals(len(members), 0)
+        self.assertEqual(len(members), 0)
 
     def _assert_thom(self, start, end):
         members = self._get_members(start, end)
-        self.assertEquals(len(members), 1)
-        self.assertEquals(members[0].get_full_name(), 'Thom Wiggers')
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0].get_full_name(), 'Thom Wiggers')
 
     def test_one_year_contains_birthday(self):
         self._assert_thom('2016-03-02', '2016-08-08')
