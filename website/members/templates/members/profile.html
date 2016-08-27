@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Profile" %} - {% trans "Members" %} - {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>
+    {{ member.display_name }}
+
+    <span class="title-meta clearfix">
+        <span><a href="{% url 'members:index' %}" class="back"></a></span>
+    </span>
+</h1>
+
+<div class="clearfix"></div>
+
+<div class="type-portfolio type-portfolio-half clearfix user-page">
+    <div class="row">
+        <div class="span8">
+            <img src="{% if not member.photo %}/static/images/gravatarmissing.png{% else %}{{ member.photo.url }}{% endif %}" alt="{{ member.username }}" />
+        </div>
+        <div class="span4 row">
+            <h4>{% trans "About" %} {{ member.short_display_name }}</h4>
+
+            {% if not member.profile_description %}
+            <i>{% trans "This member has not written a description yet." %}</i>
+            {% else %}
+            {{ member.profile_description }}
+            {% endif %}
+
+            <hr class="separator">
+            <h4>{% trans "Personal information" %}</h4>
+            <ul class="post-meta">
+                <li><span>{% trans "Starting year" %}: </span> {{ member.starting_year }}<br></li>
+
+                {% if member.is_active %}
+                <li><span>{% trans "Member since" %}: </span> {{ member.earliest_membership.since.year }}</li>
+                <li><span>{% trans "Membership type" %}: </span> {{ member.current_membership.get_type_display }}</li>
+                {% else %}
+                <li><span>{% trans "Member till" %}: </span> {{ member.latest_membership.since.year }}</li>
+                {% endif %}
+
+                <li><span>{% trans "Study programme" %}: </span> {{ member.get_programme_display }}<br></li>
+
+                {% if member.website %}
+                <li><span>{% trans "Website" %}: </span> {{ member.website }}</li>
+                {% endif %}
+
+                {% if member.show_birthday %}
+                <li><span>{% trans "Birthday" %}: </span> {{ member.birthday }}</li>
+                {% endif %}
+            </ul>
+
+            {% comment "This below is for achievements, there are examples for different types of achievements from the old site and an assumption on how it can work" %}
+            <hr class="separator">
+
+            <h4>{% trans "Achievements for Thalia" %}</h4>
+            <ul class="post-meta">
+                {% for achievement in member.achievements %}
+                <li style="margin-bottom:10px;">
+                    <span>{{ achievement.name }}</span>
+                    <br>
+                    <i>{{ achievement.from }} - {{ achievement.till }}</i>
+                    <br>
+                </li>
+                {% endfor %}
+
+                <li style="margin-bottom:10px;">
+                    <span>Huisstijlcommissie</span>
+                    <br>
+                    <i>2014-10-01 - 2016-02-01</i>
+                    <ul>
+                        <li><span style="text-transform:inherit;">Voorzitter: </span><i>2015-06-18 - 2016-02-10</i>
+                        </li>
+                    </ul>
+                </li>
+                <li style="margin-bottom:10px;">
+                    <span>Mediacommissie</span>
+                    <br>
+                    <i>2014-09-17 - heden</i>
+                    <ul>
+                        <li><span style="text-transform:inherit;">Voorzitter: </span><i>2015-09-14 - 2015-09-14</i>
+                        </li>
+                    </ul>
+                </li>
+                <li style="margin-bottom:10px;">
+                    <span>Mentor introductie 2016</span>
+                </li>
+            </ul>
+            {% endcomment %}
+        </div>
+    </div>
+    <!-- /portfolio single content -->
+</div>
+{% endblock %}

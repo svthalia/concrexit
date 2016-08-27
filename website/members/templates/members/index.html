@@ -9,6 +9,7 @@
 <h2>{% blocktrans %}Ever wondered what the name of that person in the back row of the lecture room is? Or maybe you're
     just looking for a group member's email address? There is a high probability that this person is a member of Thalia,
     and thus you can use this directory to find him or her.{% endblocktrans %}</h2>
+
 <div class="portfolio member-directory">
 
     <form method="get" action="{% url 'members:index' %}">
@@ -26,19 +27,19 @@
     </form>
     <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
         <ul class="link-tabs">
-            <li {% if not filter %} class="current"{% endif %}><a href="{% url 'members:index' %}">{% trans "All members" %}</a></li>
+            <li {% if not filter or filter == "all" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=all{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "All members" %}</a></li>
             {% for year in year_range %}
-                <li {% if filter == year|stringformat:"i" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter={{ year }}">{{ year }}</a></li>
+                <li {% if filter == year|stringformat:"i" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter={{ year }}{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{{ year }}</a></li>
             {% endfor %}
-            <li {% if filter == "old" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=old">{% trans "Older" %}</a></li>
-            <li {% if filter == "honor" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=honor">{% trans "Honorary Members" %}</a></li>
-            <li {% if filter == "ex" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=ex">{% trans "Former Members" %}</a></li>
+            <li {% if filter == "old" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=old{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Older" %}</a></li>
+            <li {% if filter == "honor" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=honor{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Honorary Members" %}</a></li>
+            <li {% if filter == "ex" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=ex{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Former Members" %}</a></li>
         </ul>
     </div>
 
     {% if not members %}
-    <div class="alert alert-info1">
-	    {% trans "There are no members" %}
+    <div class="alert alert-success2">
+	    {% trans "No members found" %}
 	    <button class="close" type="button"><span class="alert-icon-close"></span></button>
     </div>
     {% endif %}
@@ -46,15 +47,19 @@
     <ul class="member-directory portfolio-posts row">
 		{% for member in members %}
 		<li class="post member-item span3 has-overlay">
-			<a href="{% url 'members:detail' id=member.id %}">
+			<a href="{% url 'members:profile' pk=member.pk %}">
 				<div class="post-inner">
 					<div class="inner-img">
-                        <img src="{{ member.photo.image.url }}" />
+                        <img src="{% if not member.photo %}/static/images/gravatarmissing.png{% else %}{{ member.photo.url }}{% endif %}" />
                     </div>
 					<div class="post-overlay">
 						<div class="post-overlay-meta">
 							<h2>{{ member.display_name }}</h2>
-							<p>Lid sinds: {{ member.starting_year }}</p>
+                            {% if member.current_membership %}
+                            <p>{% trans "Member since" %}: {{ member.earliest_membership.since.year }}</p>
+                            {% else %}
+                            <p>{% trans "Member till" %}: {{ member.latest_membership.since.year }}</p>
+							{% endif %}
 						</div>
 					</div>
 					<div class="post-body avatar-subtitle">
@@ -68,24 +73,33 @@
 </div>
 
 <div class='clearfix'></div>
-<div class="pagination" style="float: none;text-align: center;">
-    <span class="step-links">
+
+<div class="pagination-wrapper row">
+    <ul class="pagination">
         {% if members.has_previous %}
-            <a href="{% url 'members:index' %}?filter={{ filter }}&keywords={{ keywords }}&page={{ members.previous_page_number }}">&laquo;</a>
-        {% else %}
-            <a style='visibility: hidden;'>&laquo;</a>
+        <li>
+            <a class="page-prev" href="{% url 'members:index' %}?page={{ members.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keywords }}{% endif %}">Previous</a>
+        </li>
         {% endif %}
 
-        <span class="current">
-            {{ members.number }} / {{ members.paginator.num_pages }}
-        </span>
+        {% for page in page_range %}
+            {% if page == members.number %}
+            <li class="current">
+                <span class="page-number">
+                    {{ page }}
+                </span>
+            </li>
+            {% else %}
+            <li><a href="{% url 'members:index' %}?page={{ page }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keywords }}{% endif %}" class="page-number button">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
 
         {% if members.has_next %}
-            <a href="{% url 'members:index' %}?filter={{ filter }}&keywords={{ keywords }}&page={{ members.next_page_number }}">&raquo;</a>
-        {% else %}
-            <a style='visibility: hidden;'>&raquo;</a>
+        <li>
+            <a class="page-next" href="{% url 'members:index' %}?page={{ members.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keywords }}{% endif %}">{% trans "Next" %}</a>
+        </li>
         {% endif %}
-    </span>
+    </ul>
 </div>
 
 {% endblock %}

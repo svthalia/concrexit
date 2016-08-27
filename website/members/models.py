@@ -75,6 +75,12 @@ class Member(models.Model):
         return self.membership_set.latest('since')
 
     @property
+    def earliest_membership(self):
+        if not self.membership_set.exists():
+            return None
+        return self.membership_set.earliest('since')
+
+    @property
     def membership_set(self):
         return self.user.membership_set
 
@@ -266,6 +272,16 @@ class Member(models.Model):
         else:
             return self.get_full_name() or self.user.username
     display_name.short_description = _('Display name')
+
+    def short_display_name(self):
+        pref = self.display_name_preference
+        if pref == 'nickname' or pref == 'nicklast':
+            return self.nickname
+        elif pref == 'initials':
+            return '{} {}'.format(self.initials, self.user.last_name)
+        else:
+            return self.user.first_name
+        return
 
     def get_full_name(self):
         return self.user.get_full_name()
