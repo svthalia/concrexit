@@ -3,7 +3,11 @@ from django.db import models
 from django.db.models import Q
 from django.core import validators
 from django.conf import settings
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from datetime import timedelta
+import operator
+from functools import reduce
 
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
@@ -15,8 +19,28 @@ class ActiveMemberManager(models.Manager):
     """Get all active members"""
     def get_queryset(self):
         return (super().get_queryset()
+                .exclude(user__membership=None)
                 .filter(Q(user__membership__until__isnull=True) |
                         Q(user__membership__until__gt=timezone.now().date())))
+
+    def with_birthdays_in_range(self, from_date, to_date):
+        queryset = self.get_queryset().filter(birthday__lte=to_date)
+
+        if (to_date - from_date).days >= 366:
+            # 366 is important to also account for leap years
+            # Everyone that's born before to_date has a birthday
+            return queryset
+
+        delta = to_date - from_date
+        dates = [from_date + timedelta(days=i) for i in range(delta.days + 1)]
+        monthdays = [
+            {"birthday__month": d.month, "birthday__day": d.day}
+            for d in dates
+        ]
+        # Don't get me started (basically, we are making a giant OR query with
+        # all days and months that are in the range)
+        query = reduce(operator.or_, [Q(**d) for d in monthdays])
+        return queryset.filter(query)
 
 
 class Member(models.Model):
@@ -49,7 +73,7 @@ class Member(models.Model):
         max_length=8,
         validators=[validators.RegexValidator(
             regex=r'(s\d{7}|[ezu]\d{6,7})',
-            message=_('Enter a valid student- of e/z/u-number.'))],
+            message=_('Enter a valid student- or e/z/u-number.'))],
         blank=True,
         null=True,
     )
@@ -213,7 +237,7 @@ class Member(models.Model):
     )
 
     photo = models.ImageField(
-        verbose_name=_('Foto'),
+        verbose_name=_('Photo'),
         upload_to='public/avatars/',
         null=True,
         blank=True,
@@ -285,6 +309,9 @@ class Member(models.Model):
 
     def get_full_name(self):
         return self.user.get_full_name()
+
+    def get_absolute_url(self):
+        return reverse('members:profile', args=[str(self.pk)])
 
     def __str__(self):
         return '{} ({})'.format(self.get_full_name(), self.user.username)
