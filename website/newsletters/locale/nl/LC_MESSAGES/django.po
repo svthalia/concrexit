@@ -1,0 +1,196 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-04 22:38+0200\n"
+"PO-Revision-Date: 2016-09-05 14:18+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#: models.py:13 models.py:49
+msgid "Title"
+msgstr "Titel\t"
+
+#: models.py:14
+msgid "The title is used for the email subject."
+msgstr "De titel wordt gebruikt als onderwerp van de e-mail."
+
+#: models.py:19
+msgid "Date"
+msgstr "Datum"
+
+#: models.py:20
+msgid ""
+"This date is used to extract the week of this newsletter, best scenario:"
+"always use the monday of the week the newsletter is for. If you leave it "
+"empty no week is shown."
+msgstr ""
+"Deze datum wordt gebruikt om de week van de nieuwsbrief te bepalen, het "
+"makkelijkste is dus om gewoon de maandag van de week in te vullen waar deze "
+"nieuwsbrief voor is."
+
+#: models.py:30
+msgid "Introduction"
+msgstr "Introductie"
+
+#: models.py:31
+msgid ""
+"This is the text that starts the newsletter. It always begins with \"Dear "
+"members\" and you can append whatever you want."
+msgstr ""
+"Dit is de tekst waarmee de nieuwsbrief start. Er wordt altijd begonnen met "
+"“Beste Thalianen” en je kunt daarna alles schrijven wat je wilt."
+
+#: models.py:56
+msgid "Description"
+msgstr "Beschrijving"
+
+#: models.py:75 templates/newsletters/email.html:127
+#: templates/newsletters/email.txt:20
+msgid "What"
+msgstr "Wat"
+
+#: models.py:83 templates/newsletters/email.html:137
+#: templates/newsletters/email.txt:21
+msgid "Where"
+msgstr "Waar"
+
+#: models.py:89
+msgid "Start date and time"
+msgstr "Startdatum en -tijd"
+
+#: models.py:95
+msgid "End date and time"
+msgstr "Einddatum en -tijd"
+
+#: models.py:101
+msgid "Price (in Euro)"
+msgstr "Prijs (in Euro)"
+
+#: models.py:108
+msgid "Costs (in Euro)"
+msgstr "Kosten (in Euro)"
+
+#: models.py:112
+msgid "This is the price that a member has to pay when he/she did not show up."
+msgstr ""
+"Dit is de prijs die een lid moet betalen als hij/zij niet aanwezig was."
+
+#: models.py:120
+msgid "Can't have an event travel back in time"
+msgstr "Een evenement kan niet terug in de tijd reizen"
+
+#: templates/admin/newsletters/change_form.html:14
+msgid "Send newsletter to members"
+msgstr "Verstuur nieuwsbrief naar leden"
+
+#: templates/admin/newsletters/change_form.html:15
+msgid "Show preview"
+msgstr "Toon voorbeeld"
+
+#: templates/newsletters/admin/send_confirm.html:4
+msgid "Thalia site admin"
+msgstr ""
+
+#: templates/newsletters/admin/send_confirm.html:7
+msgid "Thalia administration"
+msgstr ""
+
+#: templates/newsletters/admin/send_confirm.html:12
+msgid "home"
+msgstr "home"
+
+#: templates/newsletters/admin/send_confirm.html:13
+msgid "newsletters"
+msgstr "nieuwsbrieven"
+
+#: templates/newsletters/admin/send_confirm.html:15
+msgid "Send newsletter"
+msgstr "Verstuur nieuwsbrief"
+
+#: templates/newsletters/admin/send_confirm.html:19
+#, python-format
+msgid "Send newsletter: %(newsletter)s"
+msgstr "Verstuur nieuwsbrief: %(newsletter)s"
+
+#: templates/newsletters/admin/send_confirm.html:22
+#, python-format
+msgid "Are you sure you want to send the newsletter '%(newsletter)s'?"
+msgstr "Weet je zeker dat je de nieuwsbrief '%(newsletter)s' wilt verzenden?"
+
+#: templates/newsletters/admin/send_confirm.html:30
+msgid "No, take me back"
+msgstr "Nee, ga terug"
+
+#: templates/newsletters/email.html:26 templates/newsletters/email.txt:32
+msgid "view this email in your browser"
+msgstr "bekijk deze e-mail in je browser"
+
+#: templates/newsletters/email.html:55 templates/newsletters/email.txt:3
+msgid "dear members"
+msgstr "beste thalianen"
+
+#: templates/newsletters/email.html:66 templates/newsletters/email.txt:8
+msgid "agenda"
+msgstr "agenda"
+
+#: templates/newsletters/email.html:113 templates/newsletters/email.txt:18
+msgid "Attention"
+msgstr "Let op"
+
+#: templates/newsletters/email.html:113 templates/newsletters/email.txt:18
+msgid "Registration deadline = unregistration deadline"
+msgstr "Aanmelddeadline = Afmelddeadline"
+
+#: templates/newsletters/email.html:114 templates/newsletters/email.txt:18
+msgid "Thalia will recover the costs on you if you do not unregister on time"
+msgstr ""
+"Niet of niet op tijd afmelden betekent de door Thalia per persoon gemaakte "
+"kosten betalen"
+
+#: templates/newsletters/email.html:116 templates/newsletters/email.txt:18
+msgid "These costs are"
+msgstr "Deze bedragen"
+
+#: templates/newsletters/email.html:147 templates/newsletters/email.txt:22
+msgid "When"
+msgstr "Wanneer"
+
+#: templates/newsletters/email.html:163 templates/newsletters/email.txt:23
+msgid "Price"
+msgstr "Prijs\t"
+
+#: templates/newsletters/email.html:168 templates/newsletters/email.txt:23
+msgid "Free"
+msgstr "Gratis"
+
+#: templates/newsletters/email.html:206 templates/newsletters/email.txt:30
+msgid "our main partner"
+msgstr "onze hoofdpartner"
+
+#: templates/newsletters/email.txt:1
+msgid "newsletter"
+msgstr "nieuwsbrief"
+
+#: templates/newsletters/email.txt:26
+msgid "room"
+msgstr "kamer"
+
+#: templates/newsletters/email.txt:27
+msgid "website"
+msgstr "website"
+
+#: templates/newsletters/email.txt:28
+msgid "email"
+msgstr "e-mailadres"

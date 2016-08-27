@@ -1,0 +1,35 @@
+{% extends "admin/delete_selected_confirmation.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}{{ newsletter.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Thalia administration') }}</a></h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'home'|capfirst %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label='newsletters' %}">{% trans 'newsletters'|capfirst %}</a>
+    &rsaquo; <a href="{% url 'admin:newsletters_newsletter_change' newsletter.pk %}">{{ newsletter.title }}</a>
+    &rsaquo; {% trans 'Send newsletter' %}
+</div>
+{% endblock %}
+
+{% block content_title %}<h1>{% blocktrans with newsletter=newsletter.title %}Send newsletter: {{ newsletter }}{% endblocktrans %}</h1>{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with newsletter=newsletter.title %}Are you sure you want to send the newsletter '{{ newsletter }}'?{% endblocktrans %}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <input type="hidden" name="post" value="yes">
+
+        <input type="submit" value="Yes, I'm sure">
+        <a href="{% url 'admin:newsletters_newsletter_change' newsletter.pk %}" class="button cancel-link">{% trans "No, take me back" %}</a>
+    </div>
+</form>
+
+<br class="clear">
+{% endblock %}
