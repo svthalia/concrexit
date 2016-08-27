@@ -130,5 +130,15 @@
         "direct_debit_authorized": false,
         "bank_account": ""
     }
+},
+{
+    "model": "members.membership",
+    "pk": 1,
+    "fields": {
+        "type": "member",
+        "user": 1,
+        "since": "1980-01-01",
+        "until": null
+    }
 }
 ]

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-06 20:46+0200\n"
-"PO-Revision-Date: 2016-07-06 20:47+0200\n"
+"POT-Creation-Date: 2016-08-24 20:42+0200\n"
+"PO-Revision-Date: 2016-08-24 20:42+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,178 +16,166 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.8\n"
 
-#: members/models.py:17
-msgid "Benefactor"
-msgstr "Begunstiger"
+#: admin.py:24
+msgid "membership type"
+msgstr "lidtype"
 
-#: members/models.py:18
-msgid "Member"
-msgstr "Lid"
-
-#: members/models.py:19
-msgid "Honorary Member"
-msgstr "Erelid"
-
-#: members/models.py:22
+#: models.py:30
 msgid "Computing Science"
 msgstr "Informatica"
 
-#: members/models.py:23
+#: models.py:31
 msgid "Information Sciences"
 msgstr "Informatiekunde"
 
-#: members/models.py:35
+#: models.py:43
 msgid "Study programme"
 msgstr "Studie"
 
-#: members/models.py:44
-msgid "Enter a valid student- of e/z/u-number."
+#: models.py:52
+msgid "Enter a valid student- or e/z/u-number."
 msgstr "Voer een geldig student- of e/z/u-nummer in."
 
-#: members/models.py:52
-msgid "Membership type"
-msgstr "Lidtype"
-
-#: members/models.py:56
-msgid "Registration year"
+#: models.py:58
+msgid "Starting year"
 msgstr "Eerste lidmaatschapsjaar"
 
-#: members/models.py:57
-msgid "The year this member first became a part of Thalia"
-msgstr "Het jaar waarin dit lid voor het eerst lid werd"
+#: models.py:59
+msgid "The year this member started studying."
+msgstr "Het jaar waarop dit lid begon met studeren."
 
-#: members/models.py:61
-msgid "Expiration date of membership"
-msgstr "Verloopdatum van lidmaatschap"
+#: models.py:89
+msgid "Is this user currently active"
+msgstr "Is deze user op dit moment actief"
 
-#: members/models.py:62
-msgid "Let the membership expire after this time"
-msgstr "Laat het lidmaatschap na deze datum verlopen"
-
-#: members/models.py:73
+#: models.py:103
 msgid "Include the house number"
 msgstr "Inclusief huisnummer"
 
-#: members/models.py:75
+#: models.py:105
 msgid "Street and house number"
 msgstr "Straat en huisnummer"
 
-#: members/models.py:81
+#: models.py:111
 msgid "Second address line"
 msgstr "Tweede adresregel"
 
-#: members/models.py:88
+#: models.py:118
 msgid "Postal code"
 msgstr "Postcode"
 
-#: members/models.py:94
+#: models.py:124
 msgid "City"
 msgstr "Woonplaats"
 
-#: members/models.py:100
+#: models.py:130
 msgid "Phone number"
 msgstr "Telefoonnummer"
 
-#: members/models.py:101
+#: models.py:131
 msgid "Enter a phone number so Thalia may reach you"
 msgstr "Voer een telefoonnummer in zodat Thalia je kan bereiken"
 
-#: members/models.py:104 members/models.py:126
+#: models.py:134 models.py:156
 msgid "Please enter a valid phone number"
 msgstr "Voer svp een geldig telefoonnummer in"
 
-#: members/models.py:114
+#: models.py:144
 msgid "Emergency contact name"
 msgstr "Contact voor noodgevallen"
 
-#: members/models.py:115
+#: models.py:145
 msgid "Who should we contact in case of emergencies"
 msgstr "Wie Thalia moet bereiken in bij noodgevallen"
 
-#: members/models.py:122
+#: models.py:152
 msgid "Emergency contact phone number"
 msgstr "Telefoonnummer noodcontact"
 
-#: members/models.py:123
+#: models.py:153
 msgid "The phone number for the emergency contact"
 msgstr "Het telefoonummer van de noodcontact"
 
-#: members/models.py:135
+#: models.py:165
 msgid "Birthday"
 msgstr "Verjaardag"
 
-#: members/models.py:140
+#: models.py:170
 msgid "Display birthday"
 msgstr "Laat verjaardag zien"
 
-#: members/models.py:142
+#: models.py:172
 msgid "Show the birthday on your profile page and in the birthday calendar"
 msgstr ""
 "Laat de verjaardag op je profielpagina en in de verjaardagskalender zien"
 
-#: members/models.py:149
+#: models.py:179
 msgid "Website"
 msgstr "Website"
 
-#: members/models.py:150
+#: models.py:180
 msgid "Website to display on your profile page"
 msgstr "Website om op je profiel te linken"
 
-#: members/models.py:156
+#: models.py:186
 msgid "Profile text"
 msgstr "Profieltekst"
 
-#: members/models.py:157
+#: models.py:187
 msgid "Text to display on your profile"
 msgstr "Tekst om te laten zien op je profielpagina"
 
-#: members/models.py:163
+#: models.py:193
 msgid "Nickname"
 msgstr "Bijnaam"
 
-#: members/models.py:170
+#: models.py:200
 msgid "How to display name"
 msgstr "Weergave naam"
 
-#: members/models.py:171
+#: models.py:201
 msgid "Show full name"
 msgstr "Volledige naam"
 
-#: members/models.py:172
+#: models.py:202
 msgid "Show only nickname"
 msgstr "Alleen initialen"
 
-#: members/models.py:173
+#: models.py:203
 msgid "Show initials and last name"
 msgstr "Alleen initialen en achternaam"
 
-#: members/models.py:174
+#: models.py:204
 msgid "Show name like \"John 'nickname' Doe\""
 msgstr "Laat zien als \"John 'bijnaam' Doe\""
 
-#: members/models.py:175
+#: models.py:205
 msgid "Show nickname and last name"
 msgstr "Laat bijnaam en achternaam zien"
 
-#: members/models.py:182
+#: models.py:210
+msgid "Photo"
+msgstr "Foto"
+
+#: models.py:219
 msgid "Preferred language"
 msgstr "Voorkeurstaal"
 
-#: members/models.py:183
+#: models.py:220
 msgid "Preferred language for e.g. news letters"
 msgstr "Voorkeurstaal voor b.v.b. nieuwsbrieven"
 
-#: members/models.py:190
+#: models.py:227
 msgid "Receive opt-in mailings"
 msgstr "Ontvang opt-in mailings"
 
-#: members/models.py:191
+#: models.py:228
 msgid "Receive mailings about vacancies and events from Thalia's sponsors."
 msgstr "Ontvang mailings over vacatures en evenmenten van Thalia's sponsoren"
 
-#: members/models.py:199
+#: models.py:236
 msgid ""
 "Yes, I want Thalia to take the membership fees from my bank account through "
 "direct debit for each year."
@@ -195,42 +183,86 @@ msgstr ""
 "Ja, ik wil dat Thalia verschuldigde lidmaatschapsgelden elk jaar van mijn "
 "bankrekening afschrijft."
 
-#: members/models.py:202
+#: models.py:239
 msgid "No, I will pay the contribution myself"
 msgstr "Nee, ik zal de contributie zelf betalen"
 
-#: members/models.py:203
+#: models.py:240
 msgid "Direct debit"
 msgstr "Automatische afschijving"
 
-#: members/models.py:204
+#: models.py:241
 msgid "Each year, have Thalia take the membership fees from my bank account"
 msgstr ""
 "Laat Thalia elk jaar het lidmaatschapsgeld van mijn bankrekening afschrijven"
 
-#: members/models.py:210
+#: models.py:247
 msgid "Bank account"
 msgstr "Bankrekening"
 
-#: members/models.py:211
+#: models.py:248
 msgid "Bank account for direct debit"
 msgstr "Bankrekening voor automatische afschrijving"
 
-#: members/models.py:224
-msgid "Is this user currently active"
-msgstr "Is deze user op dit moment actief"
-
-#: members/models.py:241
+#: models.py:268
 msgid "Display name"
 msgstr "Weergavenaam"
 
-#: members/templates/members/index.html:8
+#: models.py:280
+msgid "Member"
+msgstr "Lid"
+
+#: models.py:281
+msgid "Supporter"
+msgstr "Begunstiger"
+
+#: models.py:282
+msgid "Honorary Member"
+msgstr "Erelid"
+
+#: models.py:287
+msgid "Membership type"
+msgstr "Lidtype"
+
+#: models.py:296
+msgid "User"
+msgstr "Gebruiker"
+
+#: models.py:300
+msgid "Membership since"
+msgstr "Lid sinds"
+
+#: models.py:301
+msgid "The date the member started holding this membership."
+msgstr "De datum waarop het lid dit lidmaatschap is begonnen."
+
+#: models.py:306
+msgid "Membership until"
+msgstr "Lid tot"
+
+#: models.py:307
+msgid "The date the member stops holding this membership."
+msgstr "De datum waarop het lid dit lidmaatschap beëindigd."
+
+#: templates/members/index.html:9
 msgid "These are the current members:"
 msgstr "Dit zijn de huidige leden:"
 
-#: members/templates/members/index.html:13
+#: templates/members/index.html:14
 msgid "Er zijn geen leden"
 msgstr "Er zijn geen leden"
+
+#~ msgid "Foto"
+#~ msgstr "Foto"
+
+#~ msgid "Benefactor"
+#~ msgstr "Begunstiger"
+
+#~ msgid "Expiration date of membership"
+#~ msgstr "Verloopdatum van lidmaatschap"
+
+#~ msgid "Let the membership expire after this time"
+#~ msgstr "Laat het lidmaatschap na deze datum verlopen"
 
 #~ msgid "English"
 #~ msgstr "Engels"
