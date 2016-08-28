@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n thumbnail staticfiles %}
 
-{% block page_title %}{% trans "Photos" %}{% endblock %}
-
 {% block css_head %}
 {{ block.super }}
 <link href="{% static "photos/css/style.css" %}" rel="stylesheet" type="text/css">
