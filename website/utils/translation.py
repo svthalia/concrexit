@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.db.models.fields.related import RelatedField
 from django.conf import settings
-from django.utils.translation import get_language
+from django.utils.translation import get_language, string_concat
 from django.core.exceptions import ImproperlyConfigured, FieldError
 
 """This module makes it easy to define translatable model fields.
@@ -76,8 +76,8 @@ class ModelTranslateMeta(models.base.ModelBase):
             fields = []
             for lang in settings.LANGUAGES:
                 attr_i18n = I18N_FIELD_FORMAT.format(attr, lang[0])
-                verbose_name = '{} ({})'.format(verbose_base[1],
-                                                lang[0].upper())
+                verbose_name = string_concat(
+                    verbose_base[1], ' (', lang[0].upper(), ')')
                 if verbose_base[0] == 'args':
                     field.args = (verbose_name,) + field.args[1:]
                 else:
