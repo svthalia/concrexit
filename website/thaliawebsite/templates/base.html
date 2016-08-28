@@ -1,4 +1,4 @@
-{% load i18n static compile_static menu %}
+{% load i18n static compile_static menu compress %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <!--[if IE 9]><html dir="ltr" lang="{{ LANGUAGE_CODE }}"  class="lt-ie10"> <![endif]-->
@@ -17,6 +17,7 @@
 <!-- css stylesheets -->
 {% block css_head %}
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700" rel="stylesheet" type="text/css">
+{% compress css %}
 <link href="{% static "fonts/gillsans.css" %}" rel="stylesheet" type="text/css">
 <link href="{% static "plugins/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
 
@@ -26,16 +27,16 @@
 
 <link href="{% static "css/style.less"|compile %}" rel="stylesheet" type="text/css">
 <link href="{% static "css/skin.less"|compile %}" rel="stylesheet" type="text/css">
-{% endblock %}
+{% endcompress %}{% endblock %}
 
 <!-- js head -->
-{% block js_head %}
+{% block js_head %}{% compress js %}
 <script type="text/javascript" src="{% static "plugins/jquery-1.8.3.min.js" %}"></script>
 <script type="text/javascript" src="{% static "js/jquery.jscroll.min.js" %}"></script>
 <script type="text/javascript" src="{% static "js/jquery.fancybox.js" %}"></script>
 <script type="text/javascript" src="{% static "js/thimbus.js" %}"></script>
 <script type="text/javascript" src="{% static "js/scripts.js" %}"></script>
-{% endblock %}
+{% endcompress %}{% endblock %}
 
 </head>
 

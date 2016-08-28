@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'tinymce',
     'django_template_check',  # This is only necessary in development
     'rest_framework',
+    'compressor',
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
@@ -173,7 +174,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # other finders
     'static_precompiler.finders.StaticPrecompilerFinder',
+    'compressor.finders.CompressorFinder',
 )
+
+# Compressor settings
+COMPRESS_ENABLED = True
 
 # Precompiler settings
 STATIC_PRECOMPILER_LIST_FILES = True
