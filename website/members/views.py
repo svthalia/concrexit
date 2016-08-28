@@ -1,16 +1,13 @@
+import os
 from datetime import date
 
-from django.db.models.query import QuerySet
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, render
 from django.utils.text import slugify
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-from .models import Member
-from .models import BecomeAMemberDocument
-from committees.models import CommitteeMembership
-
-import os
 from sendfile import sendfile
+
+from .models import BecomeAMemberDocument
+from .models import Member
 
 
 def index(request):
