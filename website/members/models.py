@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.core import validators
 from django.conf import settings
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from datetime import timedelta
 import operator
@@ -96,6 +97,12 @@ class Member(models.Model):
         if not self.membership_set.exists():
             return None
         return self.membership_set.latest('since')
+
+    @property
+    def earliest_membership(self):
+        if not self.membership_set.exists():
+            return None
+        return self.membership_set.earliest('since')
 
     @property
     def membership_set(self):
@@ -290,8 +297,21 @@ class Member(models.Model):
             return self.get_full_name() or self.user.username
     display_name.short_description = _('Display name')
 
+    def short_display_name(self):
+        pref = self.display_name_preference
+        if pref == 'nickname' or pref == 'nicklast':
+            return self.nickname
+        elif pref == 'initials':
+            return '{} {}'.format(self.initials, self.user.last_name)
+        else:
+            return self.user.first_name
+        return
+
     def get_full_name(self):
         return self.user.get_full_name()
+
+    def get_absolute_url(self):
+        return reverse('members:profile', args=[str(self.pk)])
 
     def __str__(self):
         return '{} ({})'.format(self.get_full_name(), self.user.username)
