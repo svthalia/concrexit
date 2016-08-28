@@ -6,25 +6,27 @@
 {% block body %}
 <h1>{% trans "Members" %}</h1>
 
-<h2>{% blocktrans %}Ever wondered what the name of that person in the back row of the lecture room is? Or maybe you're
+<h2>
+    {% blocktrans trimmed %}
+    Ever wondered what the name of that person in the back row of the lecture room is? Or maybe you're
     just looking for a group member's email address? There is a high probability that this person is a member of Thalia,
-    and thus you can use this directory to find him or her.{% endblocktrans %}</h2>
+    and thus you can use this directory to find him or her.
+    {% endblocktrans %}
+</h2>
 
 <div class="portfolio member-directory">
 
     <form method="get" action="{% url 'members:index' %}">
         <input type="hidden" name="filter" value="{{ filter }}"/>
         <div class="row">
-            <div class="span6 offset3 member-search">
-                <span class="span4"><input name="keywords" type="text" value="{{ keywords }}"
-                                           placeholder="{% trans "Who are you looking for?" %}"/></span>
-                <span class="span2"><input class="btn-large btn-style1" name="submit" type="submit"
-                                           value="{% trans "Search" %}"/></span>
+            <div class="member-search">
+                <input name="keywords" type="text" value="{{ keywords }}" placeholder="{% trans "Who are you looking for?" %}"/>
+                <input class="btn-large btn-style1" name="submit" type="submit" value="{% trans "Search" %}"/>
             </div>
 
         </div>
-
     </form>
+
     <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
         <ul class="link-tabs">
             <li {% if not filter or filter == "all" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=all{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "All members" %}</a></li>
