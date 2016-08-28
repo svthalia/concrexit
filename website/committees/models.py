@@ -197,12 +197,24 @@ class CommitteeMembership(models.Model):
 
         # check if this member is already in the committee
         if self.pk is None:
-            members = (self.committee.members
-                       .filter(pk=self.member.pk)
+            until = self.until if self.until else timezone.now().date()
+            members = (CommitteeMembership.active_memberships
+                       .filter(committee=self.committee, member=self.member)
                        .count())
-            if members >= 1:
+            memberships = (CommitteeMembership.objects.filter(
+                           committee=self.committee,
+                           member=self.member,
+                           since__lte=until,
+                           until__gte=self.since)
+                           .count())
+
+            if members >= 1 and until >= timezone.now().date():
                 raise ValidationError({
                     'member': _('This member is already in the committee')})
+            elif memberships > 0:
+                raise ValidationError({
+                    'member': _('This member is already in the committee for '
+                                'this period')})
 
     def save(self, *args, **kwargs):
         """Save the instance"""
