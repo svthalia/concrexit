@@ -1,10 +1,13 @@
 from datetime import date
+
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, render
 from django.utils.text import slugify
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Member
 from .models import BecomeAMemberDocument
+from committees.models import CommitteeMembership
 
 import os
 from sendfile import sendfile
@@ -86,7 +89,30 @@ def index(request):
 def profile(request, pk):
     member = get_object_or_404(Member, pk=int(pk))
 
-    return render(request, 'members/profile.html', {'member': member})
+    # Group the memberships under the committees for easier template rendering
+    memberships = member.committeemembership_set.all()
+    achievements = {}
+    for membership in memberships:
+        name = membership.committee.name
+        if achievements.get(name):
+            achievements[name]['periods'].append({
+                'since': membership.since,
+                'until': membership.until,
+                'chair': membership.chair
+            })
+        else:
+            achievements[name] = {
+                'name': name,
+                'periods': [{
+                    'since': membership.since,
+                    'until': membership.until,
+                    'chair': membership.chair
+                }]
+            }
+        achievements[name]['periods'].sort(key=lambda period: period['since'])
+
+    return render(request, 'members/profile.html',
+                  {'member': member, 'achievements': achievements.values()})
 
 
 def become_a_member(request):

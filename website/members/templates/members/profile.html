@@ -51,20 +51,25 @@
                 {% endif %}
             </ul>
 
-            {% comment "This below is for achievements, there are examples for different types of achievements from the old site and an assumption on how it can work" %}
             <hr class="separator">
 
             <h4>{% trans "Achievements for Thalia" %}</h4>
             <ul class="post-meta">
-                {% for achievement in member.achievements %}
+                {% for achievement in achievements %}
                 <li style="margin-bottom:10px;">
                     <span>{{ achievement.name }}</span>
                     <br>
-                    <i>{{ achievement.from }} - {{ achievement.till }}</i>
+                    {% for period in achievement.periods %}
+                        {% if period.chair %}
+                        <span style="text-transform:inherit;">Voorzitter: </span>
+                        {% endif %}
+                        <i>{{ period.since }} - {% if period.until %}{{ period.until }}{% else %}{% trans "today" %}{% endif %}</i>
                     <br>
+                    {% endfor %}
                 </li>
                 {% endfor %}
 
+                {% comment "As example for future possible types of achievements" %}
                 <li style="margin-bottom:10px;">
                     <span>Huisstijlcommissie</span>
                     <br>
@@ -86,8 +91,8 @@
                 <li style="margin-bottom:10px;">
                     <span>Mentor introductie 2016</span>
                 </li>
+                {% endcomment %}
             </ul>
-            {% endcomment %}
         </div>
     </div>
     <!-- /portfolio single content -->
