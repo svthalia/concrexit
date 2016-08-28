@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+
+{% load static %}
 {% load i18n %}
 
 {% block title %}{% trans "Members" %} - {{ block.super }}{% endblock %}
@@ -52,16 +54,12 @@
 			<a href="{% url 'members:profile' pk=member.pk %}">
 				<div class="post-inner">
 					<div class="inner-img">
-                        <img src="{% if not member.photo %}/static/images/gravatarmissing.png{% else %}{{ member.photo.url }}{% endif %}" />
+                        <img src="{% if not member.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ member.photo.url }}{% endif %}" alt="{{ member.username }}" />
                     </div>
 					<div class="post-overlay">
 						<div class="post-overlay-meta">
 							<h2>{{ member.display_name }}</h2>
-                            {% if member.current_membership %}
-                            <p>{% trans "Member since" %}: {{ member.earliest_membership.since.year }}</p>
-                            {% else %}
-                            <p>{% trans "Member till" %}: {{ member.latest_membership.since.year }}</p>
-							{% endif %}
+                            <p>{% trans "Cohort" %}: {{ member.starting_year }}</p>
 						</div>
 					</div>
 					<div class="post-body avatar-subtitle">

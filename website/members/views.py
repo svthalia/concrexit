@@ -71,9 +71,10 @@ def index(request):
     page_range = range(1, paginator.num_pages + 1)
     if paginator.num_pages > 7:
         if page > 3:
-            page_range_end = paginator.num_pages if page + 3 > \
-                                                    paginator.num_pages else\
-                                                    page + 3
+            page_range_end = paginator.num_pages
+            if page + 3 <= paginator.num_pages:
+                page_range_end = page + 3
+
             page_range = range(page - 2, page_range_end)
             while page_range.stop - page_range.start < 5:
                 page_range = range(page_range.start - 1, page_range.stop)
