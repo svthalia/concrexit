@@ -39,6 +39,32 @@ class CommitteeMembersTest(TestCase):
         with self.assertRaises(ValidationError):
             m.full_clean()
 
+    def test_join_unique2(self):
+        m = CommitteeMembership(committee=self.testcie,
+                                member=self.testuser,
+                                since=timezone.now().date().replace(
+                                     year=2014, month=1))
+        with self.assertRaises(ValidationError):
+            m.full_clean()
+
+    def test_join_unique_period(self):
+        m1 = CommitteeMembership(committee=self.testcie,
+                                 member=self.testuser,
+                                 since=timezone.now().date().replace(
+                                     year=2014, month=1),
+                                 until=timezone.now().date().replace(
+                                     year=2014, month=3))
+        m1.save()
+
+        m2 = CommitteeMembership(committee=self.testcie,
+                                 member=self.testuser,
+                                 since=timezone.now().date().replace(
+                                     year=2014, month=1),
+                                 until=timezone.now().date().replace(
+                                     year=2014, month=2))
+        with self.assertRaises(ValidationError):
+            m2.full_clean()
+
     def test_until_date(self):
         m = CommitteeMembership(committee=self.testcie,
                                 member=self.testuser,

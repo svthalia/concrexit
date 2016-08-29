@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Profile" %} - {% trans "Members" %} - {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>
+    {{ member.display_name }}
+
+    <span class="title-meta clearfix">
+        <span><a href="{% url 'members:index' %}" class="back"></a></span>
+    </span>
+</h1>
+
+<div class="clearfix"></div>
+
+<div class="type-portfolio type-portfolio-half clearfix user-page">
+    <div class="row">
+        <div class="span8">
+            <img src="{% if not member.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ member.photo.url }}{% endif %}" alt="{{ member.username }}" />
+        </div>
+        <div class="span4 row">
+            <h4>{% trans "About" %} {{ member.short_display_name }}</h4>
+
+            {% if not member.profile_description %}
+            <i>{% trans "This member has not written a description yet." %}</i>
+            {% else %}
+            {{ member.profile_description }}
+            {% endif %}
+
+            <hr class="separator">
+            <h4>{% trans "Personal information" %}</h4>
+            <ul class="post-meta">
+                <li><span>{% trans "Cohort" %}: </span> {{ member.starting_year }}<br></li>
+
+                <li><span>{% trans "Study programme" %}: </span> {{ member.get_programme_display }}<br></li>
+
+                {% if member.website %}
+                <li><span>{% trans "Website" %}: </span> {{ member.website }}</li>
+                {% endif %}
+
+                {% if member.show_birthday %}
+                <li><span>{% trans "Birthday" %}: </span> {{ member.birthday }}</li>
+                {% endif %}
+            </ul>
+
+            <hr class="separator">
+
+            <h4>{% trans "Achievements for Thalia" %}</h4>
+            <ul class="post-meta">
+                {% for achievement in achievements %}
+                <li style="margin-bottom:10px;">
+                    <span>{{ achievement.name }}</span>
+                    <br>
+                    {% for period in achievement.periods %}
+                        {% if period.chair %}
+                        <span style="text-transform:inherit;">Voorzitter: </span>
+                        {% endif %}
+                        <i>{{ period.since }} - {% if period.until %}{{ period.until }}{% else %}{% trans "today" %}{% endif %}</i>
+                    <br>
+                    {% endfor %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <!-- /portfolio single content -->
+</div>
+{% endblock %}
