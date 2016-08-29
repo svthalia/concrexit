@@ -51,17 +51,17 @@ class CommitteeMembersTest(TestCase):
         m1 = CommitteeMembership(committee=self.testcie,
                                  member=self.testuser,
                                  since=timezone.now().date().replace(
-                                     year=2014, month=1),
+                                     year=2014, month=1, day=1),
                                  until=timezone.now().date().replace(
-                                     year=2014, month=3))
+                                     year=2014, month=3, day=1))
         m1.save()
 
         m2 = CommitteeMembership(committee=self.testcie,
                                  member=self.testuser,
                                  since=timezone.now().date().replace(
-                                     year=2014, month=1),
+                                     year=2014, month=1, day=1),
                                  until=timezone.now().date().replace(
-                                     year=2014, month=2))
+                                     year=2014, month=2, day=1))
         with self.assertRaises(ValidationError):
             m2.full_clean()
 
