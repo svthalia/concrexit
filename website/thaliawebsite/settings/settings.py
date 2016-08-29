@@ -43,10 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     # Dependencies
-    'static_precompiler',
     'tinymce',
     'django_template_check',  # This is only necessary in development
     'rest_framework',
+    'compressor',
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
@@ -74,7 +74,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'thaliawebsite.urls'
 
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -95,7 +94,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'thaliawebsite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
@@ -105,7 +103,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
@@ -134,7 +131,6 @@ AUTHENTICATION_BACKENDS = [
     'committees.backends.CommitteeBackend',
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
@@ -155,7 +151,6 @@ LANGUAGES = [
 
 LOCALE_PATHS = ('locale',)
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
@@ -172,8 +167,18 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # other finders
-    'static_precompiler.finders.StaticPrecompilerFinder',
+    'compressor.finders.CompressorFinder',
 )
+
+# Compressor settings
+COMPRESS_ENABLED = True
+
+COMPRESS_PRECOMPILERS = (
+    ('text/less', 'lessc {infile} {outfile}'),
+)
+
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
+                        'compressor.filters.cssmin.rCSSMinFilter']
 
 # Precompiler settings
 STATIC_PRECOMPILER_LIST_FILES = True
