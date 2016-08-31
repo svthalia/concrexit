@@ -6,24 +6,28 @@
 {% block title %}{% trans "Login" %}{% endblock %}
 
 {% block body %}
+  <h1>{% trans "Log in" %}</h1>
   {% if next %}
-    {% if user.is_authenticated %}
-      {% blocktrans %}
-        <p>Your account does not have access to this page. To proceed, please
-        log in with an account that has access.</p>
-    {% endblocktrans %}
-    {% else %}
-      {% blocktrans %}
-        <p>Please log in to see this page.</p>
-      {% endblocktrans %}
-    {% endif %}
+  {% if user.is_authenticated %}
+  {% blocktrans %}
+  <p>Your account does not have access to this page. To proceed, please
+    log in with an account that has access.</p>
+  {% endblocktrans %}
+  {% else %}
+  {% blocktrans %}
+  <p>Please log in to see this page.</p>
+  {% endblocktrans %}
   {% endif %}
-  <form method="POST" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      {{ form }}
-    </table>
-    <input type="hidden" name="next" value="{{ next }}">
-    <input type="submit" value="{% trans "Login" %}">
+  {% endif %}
+  <div class="loginForm">
+    <form method="POST" action="{% url 'login' %}">
+      {% csrf_token %}
+      <table>
+        {{ form }}
+      </table>
+      <input type="hidden" name="next" value="{{ next }}">
+      <input type="submit" value="{% trans "Login" %}">
+    </form>
   </form>
+  </div>
 {% endblock %}
