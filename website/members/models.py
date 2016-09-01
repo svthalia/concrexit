@@ -238,6 +238,7 @@ class Member(models.Model):
         verbose_name=_('How to display name'),
         choices=(('full', _('Show full name')),
                  ('nickname', _('Show only nickname')),
+                 ('firstname', _('Show only first name')),
                  ('initials', _('Show initials and last name')),
                  ('fullnick', _("Show name like \"John 'nickname' Doe\"")),
                  ('nicklast', _("Show nickname and last name"))),
@@ -292,6 +293,8 @@ class Member(models.Model):
         pref = self.display_name_preference
         if pref == 'nickname':
             return self.nickname
+        if pref == 'firstname':
+            return self.user.first_name
         elif pref == 'initials':
             return '{} {}'.format(self.initials, self.user.last_name)
         elif pref == 'fullnick':

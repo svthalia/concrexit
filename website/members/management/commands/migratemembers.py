@@ -105,7 +105,7 @@ class Command(BaseCommand):
             user.member.display_name_preference = {
                 'Full name': 'full',
                 'Initials and last name': 'initials',
-                'First name': 'full',
+                'First name': 'firstname',
                 'Nickname': 'nickname',
                 'First name + nickname + last name': 'fullnick',
                 'Nickname + last name': 'nicklast',
