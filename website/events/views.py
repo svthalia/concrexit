@@ -85,3 +85,14 @@ def export(request, event_id):
     response['Content-Disposition'] = (
         'attachment; filename="{}.csv"'.format(slugify(event.title)))
     return response
+
+
+def index(request):
+    upcoming_activity = Event.objects.filter(
+        published=True,
+        end__gte=timezone.now()
+    ).order_by('end').first()
+
+    return render(request, 'events/index.html', {
+        'upcoming_activity': upcoming_activity
+    })

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-14 21:48+0200\n"
-"PO-Revision-Date: 2016-09-14 21:45+0200\n"
+"POT-Creation-Date: 2016-09-16 08:38+0200\n"
+"PO-Revision-Date: 2016-09-16 08:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,178 +16,178 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
-#: admin.py:36
+#: admin.py:37
 msgid "order"
 msgstr "volgorde"
 
-#: admin.py:71
+#: admin.py:72
 msgid "Edit"
 msgstr "Aanpassen"
 
-#: admin.py:81
+#: admin.py:82
 msgid "Number of participants"
 msgstr "Aantal deelnemers"
 
-#: admin.py:85
+#: admin.py:86
 msgid "Publish selected events"
 msgstr "Publiceer geselecteerde evenementen"
 
-#: admin.py:89
+#: admin.py:90
 msgid "Unpublish selected events"
 msgstr "Publicatie van geselecteerde evenementen ongedaan maken"
 
-#: models.py:12
+#: models.py:13
 msgid "No registration required"
 msgstr "Geen registratie vereist"
 
-#: models.py:14 templates/events/admin/details.html:47
+#: models.py:17 templates/events/admin/details.html:47
 msgid "title"
 msgstr "titel"
 
-#: models.py:16 models.py:157
+#: models.py:21 models.py:167
 msgid "description"
 msgstr "beschrijving"
 
-#: models.py:18
+#: models.py:23
 msgid "start time"
 msgstr "starttijd"
 
-#: models.py:20
+#: models.py:25
 msgid "end time"
 msgstr "eindtijd"
 
-#: models.py:26 templates/events/admin/details.html:51
+#: models.py:31 templates/events/admin/details.html:51
 msgid "organiser"
 msgstr "organisator"
 
-#: models.py:30
+#: models.py:35
 msgid "registration start"
 msgstr "start registratie"
 
-#: models.py:36
+#: models.py:41
 msgid "registration end"
 msgstr "einde registratie"
 
-#: models.py:42
+#: models.py:47
 msgid "cancel deadline"
 msgstr "afmelddeadline"
 
-#: models.py:47 templates/events/admin/details.html:55
+#: models.py:54 templates/events/admin/details.html:55
 msgid "location"
 msgstr "locatie"
 
-#: models.py:50
+#: models.py:59
 msgid "location for minimap"
 msgstr "locatie voor minimap"
 
-#: models.py:52
+#: models.py:61
 msgid "Location of Huygens: Heyendaalseweg 135, Nijmegen. Not shown as text!!"
 msgstr ""
 "Locatie van ’t Huygens: Heyendaalseweg 135, Nijmegen. Dit veld wordt niet "
 "getoond als tekst!!"
 
-#: models.py:57 templates/events/admin/details.html:57
+#: models.py:66 templates/events/admin/details.html:57
 msgid "price"
 msgstr "prijs"
 
-#: models.py:65 templates/events/admin/details.html:59
+#: models.py:74 templates/events/admin/details.html:59
 msgid "cost"
 msgstr "kosten"
 
-#: models.py:69
+#: models.py:78
 msgid "Actual cost of event."
 msgstr "werkelijke kosten van het evenement"
 
-#: models.py:74
+#: models.py:83
 msgid "maximum number of participants"
 msgstr "maximum aantal deelnemers"
 
-#: models.py:80
+#: models.py:90
 msgid "message when there is no registration"
 msgstr "bericht dat getoond wordt wanneer er geen registratie nodig is"
 
-#: models.py:84
+#: models.py:94
 msgid "Default: "
 msgstr "Standaard: "
 
-#: models.py:88
+#: models.py:98
 msgid "published"
 msgstr "gepubliceerd"
 
-#: models.py:98
+#: models.py:108
 msgid "Can't have an event travel back in time"
 msgstr "Een evenement kan niet terugreizen in de tijd"
 
-#: models.py:103
+#: models.py:113
 msgid "Doesn't make sense to have this if you require registrations."
 msgstr "Het is niet logisch om dit te hebben als je registratie vereist."
 
-#: models.py:108
+#: models.py:118
 msgid "If registration is required, you need a start of registration"
 msgstr ""
 "Als registratie vereist is, dan heb je een starttijd voor de registratie "
 "nodig"
 
-#: models.py:113
+#: models.py:123
 msgid "If registration is required, you need an end of registration"
 msgstr ""
 "Als registratie vereist is, dan heb je een eindtijd voor de registratie nodig"
 
-#: models.py:117
+#: models.py:127
 msgid "Registration start should be before registration end"
 msgstr "De starttijd voor de registratie moet voor de eindtijd liggen"
 
-#: models.py:139
+#: models.py:149
 msgid "checkbox"
 msgstr "checkbox"
 
-#: models.py:140
+#: models.py:150
 msgid "text field"
 msgstr "tekstveld"
 
-#: models.py:141
+#: models.py:151
 msgid "integer field"
 msgstr "integerveld"
 
-#: models.py:146
+#: models.py:156
 msgid "field type"
 msgstr "veldtype"
 
-#: models.py:152
+#: models.py:162
 msgid "field name"
 msgstr "veldnaam"
 
-#: models.py:194 templates/events/admin/registrations_table.html:6
+#: models.py:204 templates/events/admin/registrations_table.html:6
 msgid "name"
 msgstr "naam"
 
-#: models.py:196
+#: models.py:206
 msgid "Use this for non-members"
 msgstr "Gebruikt dit voor niet-leden"
 
-#: models.py:201
+#: models.py:211
 msgid "registration date"
 msgstr "registratiedatum"
 
-#: models.py:202
+#: models.py:212
 msgid "cancellation date"
 msgstr "afmelddatum"
 
-#: models.py:207 templates/events/admin/registrations_table.html:11
+#: models.py:217 templates/events/admin/registrations_table.html:11
 msgid "present"
 msgstr "aanwezig"
 
-#: models.py:211 templates/events/admin/registrations_table.html:12
+#: models.py:221 templates/events/admin/registrations_table.html:12
 msgid "paid"
 msgstr "betaald"
 
-#: models.py:224 models.py:225
+#: models.py:234 models.py:235
 msgid "Either specify a member or a name"
 msgstr "Geef een lid of een naam op"
 
-#: models.py:247
+#: models.py:257
 msgid "last changed"
 msgstr "laatst aangepast"
 
@@ -254,6 +254,23 @@ msgstr "toevoegen"
 #, python-format
 msgid "Nobody %(verb)s yet"
 msgstr "Niemand heeft zich %(verb)s"
+
+#: templates/events/index.html:13
+msgid "Calendar"
+msgstr "Agenda"
+
+#: templates/events/index.html:44 templates/events/index.html:46
+#: templates/events/index.html:52
+msgid "hide birthdays"
+msgstr "Verberg verjaardagen"
+
+#: templates/events/index.html:44 templates/events/index.html:47
+msgid "show birthdays"
+msgstr "Toon  verjaardagen"
+
+#: templates/events/index.html:64
+msgid "list"
+msgstr "Lijst"
 
 #~ msgid "Present"
 #~ msgstr "Aanwezig"

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load i18n static %}}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block css_head %}
+    {{ block.super }}
+    <link href="{% static "events/css/fullcalendar.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "events/css/override_fullcalendar.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+    <h1>
+        {% trans "Calendar" %}
+        <span class="title-meta clearfix">
+            <span>
+                <a href="{% url '#' %}" id="collectionButton" target="_blank" class="calendar">
+                    <i class="fa fa-calendar"></i>
+                </a>
+            </span>
+        </span>
+    </h1>
+
+    <div id="calendar"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sources = {
+                events:     "/api/events",
+                birthdays:  "/api/members/birthdays",
+{#                extern:     ".nu/api/ext-events"#} {# TODO IMPLEMENT THIS #}
+            };
+
+            $('#calendar').fullCalendar({
+                defaultDate:
+                {% spaceless %}
+                    {% if upcoming_activity %}
+                        "{{ upcoming_activity.start|date:'Y-m-d' }}"
+                    {% else %}
+                        "{% now 'Y-m-d' %}"
+                    {% endif %}
+                {% endspaceless %},
+                customButtons: {
+                    showBirthdays: {
+                        text: Cookies.get('showbirthdays') ? '{% trans "hide birthdays" %}' : '{% trans "show birthdays" %}',
+                        click: function(e) {
+                            if(e.target.innerHTML == '{% trans "hide birthdays" %}') {
+                                e.target.innerHTML = '{% trans 'show birthdays' %}';
+                                Cookies.remove('showbirthdays');
+                                $('#calendar').fullCalendar('removeEventSource', sources.birthdays);
+                            }
+                            else {
+                                e.target.innerHTML = '{% trans "hide birthdays" %}';
+                                Cookies.set('showbirthdays', 1);
+                                $('#calendar').fullCalendar('addEventSource', sources.birthdays);
+                            }
+                        }
+                    }
+                },
+                header: {
+                    right: 'showBirthdays, list,agendaWeek,month prev,next today'
+                },
+                views: {
+                    list: {
+                        buttonText: '{% trans "list" %}'
+                    }
+                },
+                firstDay: 1,
+                scrollTime: '14:00:00',
+                defaultView: ($(window).width() < 979) ? 'list' : 'agendaWeek',
+                editable: false,
+                lang: '{{ LANGUAGE_CODE }}',
+                titleRangeSeparator: ' - ',
+                timeFormat: 'H:mm',
+                eventLimit: true, // allow "more" link when too many events
+                eventSources: Cookies.get('showbirthdays') ? [sources.events, sources.birthdays, sources.extern] : [sources.events, sources.extern],
+                eventClick: function(event) {
+                    if(event.url && event.blank) {
+                        window.open(event.url, '_blank');
+                        return false;
+                    } else if (event.url) {
+                        window.replace(event.url);
+                        return false;
+                    }
+                },
+                eventRender: function(event, element) {
+                    element.attr('title', event.description);
+                }
+            });
+        });
+    </script>
+{% endblock body %}
+
+{% block js_body %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static "events/js/moment.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/fullcalendar.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/fullcalendar-nl.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/js.cookie.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/calendarlistview.js" %}"></script>
+{% endblock js_body %}

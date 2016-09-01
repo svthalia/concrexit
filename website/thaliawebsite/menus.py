@@ -19,7 +19,7 @@ main = [
         {'title': _('Become Active'), 'name': 'become-active'},
         {'title': _('Wiki'), 'url': '/wiki/'},
     ]},
-    {'title': _('Calendar'), 'name': '#'},
+    {'title': _('Calendar'), 'name': 'events:index'},
     {'title': _('Career'), 'name': 'partners:index', 'submenu': [
         {'title': _('Partners'), 'name': 'partners:index'},
         {'title': _('Vacancies'), 'name': 'partners:vacancies'},
