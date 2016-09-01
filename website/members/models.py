@@ -216,6 +216,14 @@ class Member(models.Model):
         verbose_name=_('Profile text'),
         help_text=_('Text to display on your profile'),
         blank=True,
+        null=True,
+    )
+
+    initials = models.CharField(
+        max_length=20,
+        verbose_name=_('Initials'),
+        blank=True,
+        null=True,
     )
 
     nickname = models.CharField(
