@@ -48,6 +48,8 @@ urlpatterns = [
     url(r'^members/', include('members.urls', namespace='members')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
     url(r'^events/', include('events.urls', namespace='events')),
+    url(r'^newsletters/', include('newsletters.urls',
+                                  namespace='newsletters')),
     url(r'^association/', include([
         url(r'^committees/', include('committees.urls', namespace='committees')),
         url(r'^merchandise/', include('merchandise.urls', namespace='merchandise')),
