@@ -246,3 +246,11 @@ class CommitteeMembership(models.Model):
     class Meta:
         verbose_name = _('committee membership')
         verbose_name_plural = _('committee memberships')
+
+
+class Mentors(models.Model):
+    members = models.ManyToManyField(Member)
+    year = models.IntegerField(unique=True)
+
+    def __str__(self):
+        return _("Mentor introduction {year}".format(self.year))
