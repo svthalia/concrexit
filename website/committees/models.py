@@ -160,7 +160,7 @@ class CommitteeMembership(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.pk is None:
+        if self.pk is not None:
             self._was_chair = bool(self.chair)
         else:
             self._was_chair = False
@@ -224,10 +224,10 @@ class CommitteeMembership(models.Model):
         if (self.pk is not None and self._was_chair != self.chair and
                 not self.until):
             logger.info("Creating new membership instance")
-            self.until = timezone.now().date()
+            self.until = timezone.now().date() - datetime.timedelta(days=1)
             super().save(*args, **kwargs)
             self.pk = None  # forces INSERT
-            self.since = self.until  # Set since date to older expiration
+            self.since = timezone.now().date()  # Set since date to older expiration
             self.until = None
         super().save(*args, **kwargs)
 
