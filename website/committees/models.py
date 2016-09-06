@@ -222,7 +222,7 @@ class CommitteeMembership(models.Model):
         # If the chair changed and we're still active, we create a new instance
         # Inactive instances should be handled manually
         if (self.pk is not None and self._was_chair != self.chair and
-                not self.until):
+                not self.until and self.since != timezone.now().date()):
             logger.info("Creating new membership instance")
             self.until = timezone.now().date() - datetime.timedelta(days=1)
             super().save(*args, **kwargs)
@@ -230,6 +230,8 @@ class CommitteeMembership(models.Model):
             # Set since date to older expiration:
             self.since = timezone.now().date()
             self.until = None
+
+        self._was_chair = self.chair
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

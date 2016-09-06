@@ -96,6 +96,8 @@ class CommitteeMembersChairTest(TestCase):
         self.testuser = Member.objects.get(pk=1)
         self.testuser2 = Member.objects.get(pk=2)
         self.m1 = CommitteeMembership(committee=self.testcie,
+                                      since=timezone.now().date().replace(
+                                          year=1900),
                                       member=self.testuser,
                                       chair=True)
         self.m1.full_clean()
