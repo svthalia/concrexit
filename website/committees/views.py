@@ -19,7 +19,8 @@ def details(request, committee_id):
     members = []
     memberships = (CommitteeMembership
                    .active_memberships
-                   .filter(committee=committee))
+                   .filter(committee=committee)
+                   .prefetch_related('member'))
     for membership in memberships:
         member = membership.member
         member.chair = membership.chair
@@ -40,7 +41,8 @@ def boards(request, year=None):
         members = []
         memberships = (CommitteeMembership
                        .objects
-                       .filter(committee=board))
+                       .filter(committee=board)
+                       .prefetch_related('member'))
         for membership in memberships:
             member = membership.member
             member.role = membership.role
