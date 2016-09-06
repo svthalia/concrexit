@@ -227,7 +227,8 @@ class CommitteeMembership(models.Model):
             self.until = timezone.now().date() - datetime.timedelta(days=1)
             super().save(*args, **kwargs)
             self.pk = None  # forces INSERT
-            self.since = timezone.now().date()  # Set since date to older expiration
+            # Set since date to older expiration:
+            self.since = timezone.now().date()
             self.until = None
         super().save(*args, **kwargs)
 
