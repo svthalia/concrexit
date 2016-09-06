@@ -248,9 +248,9 @@ class CommitteeMembership(models.Model):
         verbose_name_plural = _('committee memberships')
 
 
-class Mentors(models.Model):
+class Mentorship(models.Model):
     members = models.ManyToManyField(Member)
     year = models.IntegerField(unique=True)
 
     def __str__(self):
-        return _("Mentor introduction {year}".format(self.year))
+        return _("Mentor introduction {year}").format(year=self.year)

@@ -20,3 +20,8 @@ class BoardAdmin(admin.ModelAdmin):
 @admin.register(models.CommitteeMembership)
 class CommitteeMembershipAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(models.Mentorship)
+class MentorsAdmin(admin.ModelAdmin):
+    pass
