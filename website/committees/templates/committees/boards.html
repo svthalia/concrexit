@@ -17,13 +17,13 @@
 <div class="portfolio"></div>
 <script>
 var boardPositions = [
-        {% for board in boards %}"{{ board.name|slugify }}"{% if not forloop.last %}, {% endif %}{% endfor %}
+        {% for board in boards %}"{{ board.pk }}"{% if not forloop.last %}, {% endif %}{% endfor %}
 ];
 var boardTitles = {
-    {% for board in boards %}'{{ board.name|slugify }}': '{{ board.name|escapejs }}' {% if not forloop.last %}, {% endif %}{% endfor %}
+    {% for board in boards %}'{{ board.pk }}': '{{ board.name|escapejs }}' {% if not forloop.last %}, {% endif %}{% endfor %}
 };
 
-var boardNr = '{{ first_board.name|slugify }}';
+var boardNr = '{{ first_board.pk }}';
 var boardMax = {{ boards|length }};
 </script>
 <div class="type-portfolio clearfix">
@@ -52,8 +52,8 @@ var boardMax = {{ boards|length }};
         <h1 class="midhead">
             {% trans "Board members" %}
         </h1>
-        {% for board, members in boardmembers.items %}
-        <ul class="row bestuur-list" id="{{ board|slugify }}" style="display:none;">
+        {% for boardid, members in boardmembers.items %}
+        <ul class="row bestuur-list" id="board{{ boardid }}" style="display:none;">
             {% for member in members%}
             <li class="post member-item span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
                 <a href="{{ member.get_absolute_url }}">
