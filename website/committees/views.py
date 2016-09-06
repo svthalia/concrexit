@@ -32,8 +32,12 @@ def details(request, committee_id):
                    'members': members})
 
 
-def boards(request, year=None):
-    """View the board pages"""
+def boards(request, id=None):
+    """
+    View the board pages
+
+    The id is for javascript, and ignored
+    """
     boards = Board.objects.all()
 
     boardmembers = dict()
@@ -48,7 +52,7 @@ def boards(request, year=None):
             member.role = membership.role
             member.chair = membership.chair
             members.append(member)
-        boardmembers[board.name] = members
+        boardmembers[board.pk] = members
 
     return render(request,
                   'committees/boards.html',
