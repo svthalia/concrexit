@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load i18n thumbnail static %}
+
+{% block title %}{% trans "Boards" %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>
+  {% trans "Board" %} {{ board.since.year }}-{{ board.until.year }}
+  <span class="title-meta clearfix">
+    <span>
+      <a class="back" href="{% url 'committees:boards' %}" id="collectionButton"></a>
+    </span>
+  </span>
+</h1>
+<div class="portfolio"></div>
+<div class="clearfix portfolio">
+  <div id="committee-div">
+    <div class="row">
+      {% if board.photo %}
+      <img alt="{{ board.name }}" class="span12" src="{% thumbnail board.photo '1024x683' fit=False %}">
+      {% else %}
+      <img alt="{{ board.name }}" class="span12" src="{% static 'committees/images/placeholder.png' %}">
+      {% endif %}
+    </div>
+    <div class="clearfix member-directory">
+      <h1 class="midhead">{% trans 'Board members' %}</h1>
+      <ul class="row" id="commissieleden">
+        {% for member in members %}
+        <li class="post member-item span3 has-overlay">
+          <a href="{{ member.get_absolute_url }}">
+            <div class="post-inner">
+              <div class="inner-img">
+                {% if not member.photo %}
+                <img alt="{{ member.display_name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
+                {% else %}
+                <img alt="{{ member.display_name }}" src="{% thumbnail member.photo '220x220' %}" width="220" height="220" />
+                {% endif %}
+              </div>
+              {% if member.chair %}
+              <div class="ribbon-wrapper-basiskleur">
+                <div class="ribbon-basiskleur">
+                  {% trans "Chair" %}
+                </div>
+              </div>
+              {% endif %}
+              <div class="post-overlay">
+                <div class="post-overlay-meta">
+                  <h2>{{ member.display_name }}</h2>
+                  <p>{{ member.role }}</p>
+                </div>
+              </div>
+              <div class="post-body avatar-subtitle">
+                {{ member.display_name }}
+              </div>
+            </div>
+          </a>
+        </li>
+        {% empty %}
+        <li>{% trans "This board doesn't have any members?" %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

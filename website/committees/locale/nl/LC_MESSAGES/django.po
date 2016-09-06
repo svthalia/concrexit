@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-05 10:26+0200\n"
-"PO-Revision-Date: 2016-09-05 10:26+0100\n"
+"POT-Creation-Date: 2016-09-06 19:22+0200\n"
+"PO-Revision-Date: 2016-09-06 19:21+0200\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,177 +16,217 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.8\n"
 
-#: models.py:40
+#: models.py:41
 msgid "Committee name"
-msgstr ""
+msgstr "Commissienaam"
 
-#: models.py:45
+#: models.py:46
 msgid "Description"
-msgstr ""
+msgstr "Beschrijving"
 
-#: models.py:49
+#: models.py:50
 msgid "Image"
-msgstr ""
+msgstr "Afbeelding"
 
-#: models.py:62
+#: models.py:63
 msgid "permissions"
-msgstr ""
+msgstr "permissies"
 
-#: models.py:67
+#: models.py:68
 msgid "founded in"
-msgstr ""
+msgstr "opgericht in"
 
-#: models.py:73
+#: models.py:74
 msgid "existed until"
-msgstr ""
+msgstr "bestond tot"
 
-#: models.py:78
+#: models.py:79
 msgid "contact email address"
-msgstr ""
-
-#: models.py:87
-msgid "committee"
-msgstr ""
+msgstr "contact e-mailadres"
 
 #: models.py:88
+msgid "committee"
+msgstr "commissie"
+
+#: models.py:89 templates/committees/committee_index.html:6
 msgid "committees"
-msgstr ""
+msgstr "commissies"
 
-#: models.py:100
+#: models.py:101
 msgid "Is this a board"
-msgstr ""
+msgstr "Is dit een bestuur"
 
-#: models.py:122
+#: models.py:123
 msgid "Member"
-msgstr ""
+msgstr "Lid"
 
-#: models.py:128
+#: models.py:129
 msgid "Committee"
-msgstr ""
-
-#: models.py:132
-msgid "Committee member since"
-msgstr ""
+msgstr "Commissie"
 
 #: models.py:133
-msgid "The date this member joined the committee in this role"
-msgstr ""
+msgid "Committee member since"
+msgstr "Commissielid sinds"
 
-#: models.py:138
-msgid "Committee member until"
-msgstr ""
+#: models.py:134
+msgid "The date this member joined the committee in this role"
+msgstr "De datum waarop deze persoon lid werd deze commissie in deze rol"
 
 #: models.py:139
+msgid "Committee member until"
+msgstr "Commissielid tot"
+
+#: models.py:140
 msgid "A member of this committee until this time (can't be in the future)."
 msgstr ""
-
-#: models.py:146
-msgid "Chair of the committee"
-msgstr ""
+"De datum waarop deze persoon de commissie verliet (kan niet in de toekomst "
+"liggen)"
 
 #: models.py:147
-msgid "There can only be one chair at a time!"
-msgstr ""
+msgid "Chair of the committee"
+msgstr "Voorzitter van de commissie"
 
-#: models.py:152
-msgid "role"
-msgstr ""
+#: models.py:148
+msgid "There can only be one chair at a time!"
+msgstr "Er kan maar één voorzitter tegelijkertijd zijn!"
 
 #: models.py:153
+msgid "role"
+msgstr "rol"
+
+#: models.py:154
 msgid "The role of this member"
-msgstr ""
+msgstr "De rol van dit lid binnen de commissie"
 
-#: models.py:176
+#: models.py:177
 msgid "Membership expiration date can't be in the future: '{}'"
-msgstr ""
+msgstr "Een lidmaatschap kan niet verlopen in de toekomst: ‘{]’"
 
-#: models.py:182
+#: models.py:183
 msgid "End date can't be before start date"
-msgstr ""
+msgstr "De einddatum kan niet voor de startdatum liggen"
 
-#: models.py:196
+#: models.py:197
 msgid "This committee already has a chair"
-msgstr ""
+msgstr "Deze commissie heeft al een voorzitter"
 
 #: models.py:213
 msgid "This member is already in the committee"
-msgstr ""
+msgstr "Deze persoon is al lid van deze commissie"
 
 #: models.py:216
 msgid "This member is already in the committee for this period"
-msgstr ""
+msgstr "Deze persoon is al lid van deze commissie in de aangegeven periode"
 
 #: models.py:247
 msgid "committee membership"
-msgstr ""
+msgstr "commissielidmaatschap"
 
 #: models.py:248
 msgid "committee memberships"
-msgstr ""
+msgstr "commissielidmaatschappen"
 
 #: models.py:256
 #, python-brace-format
 msgid "Mentor introduction {year}"
 msgstr "Mentor introductie {year}"
 
-#: templates/committees/boards.html:4 templates/committees/boards.html:8
+#: templates/committees/board_detail.html:4
+#: templates/committees/board_index.html:3
+#: templates/committees/board_index.html:6
+#: templates/committees/board_old.html:3
 msgid "Boards"
-msgstr ""
+msgstr "Besturen"
 
-#: templates/committees/boards.html:14
+#: templates/committees/board_detail.html:8
+#: templates/committees/board_index.html:33
+#: templates/committees/board_index.html:38
+#: templates/committees/board_old.html:7 templates/committees/board_old.html:16
+#: templates/committees/board_old.html:25
+#: templates/committees/board_old.html:34
+#: templates/committees/board_old.html:43
+#: templates/committees/board_old.html:52
+#: templates/committees/board_old.html:61
+#: templates/committees/board_old.html:72
+#: templates/committees/board_old.html:84
+#: templates/committees/board_old.html:96
+#: templates/committees/board_old.html:107
+msgid "Board"
+msgstr "Besturen"
+
+#: templates/committees/board_detail.html:26
+msgid "Board members"
+msgstr "Bestuursleden"
+
+#: templates/committees/board_detail.html:42
+#: templates/committees/committee_detail.html:44
+msgid "Chair"
+msgstr "Voorzitter"
+
+#: templates/committees/board_detail.html:59
+msgid "This board doesn't have any members?"
+msgstr "Dit bestuur heeft geen leden?"
+
+#: templates/committees/board_index.html:10
+#, python-format
 msgid ""
+"Thalia's board makes sure all operations during the academic year are taken "
+"care of, in front or behind the scenes. If you have any questions then you "
+"can address them during the day or, if you're not always on the campus, "
+"you're always welcome to <a href=\"mailto:info@thalia.nu\">send them an "
+"email</a>. The boards of the years before 2001 can be found on <a href="
+"\"%(old_boards_url)s\">this page</a>."
+msgstr ""
 "Het gehele Thaliabestuur zet zich gedurende een collegejaar in om alle "
 "activiteiten van Thalia in goede banen te leiden, voor of achter de "
 "schermen. Bij vragen en opmerkingen kun je ze altijd persoonlijk aanspreken "
 "of <a href=\"mailto:info@thalia.nu\">mailen</a>. Besturen van langer geleden "
-"(eerder dan 2001), zijn op <a href=\"/board/oud-besturen\">deze pagina</a> "
-"te vinden."
-msgstr ""
+"(eerder dan 2001), zijn op <a href=\"%(old_boards_url)s\">deze pagina</a> te "
+"vinden."
 
-#: templates/committees/boards.html:53
-msgid "Board members"
-msgstr ""
+#: templates/committees/board_index.html:25
+#: templates/committees/committee_detail.html:18
+#: templates/committees/committee_detail.html:20
+#, python-format
+msgid "Photo of %(name)s"
+msgstr "Foto van %(name)s"
 
-#: templates/committees/boards.html:73
-msgid "Chair"
-msgstr ""
+#: templates/committees/board_index.html:45
+msgid "There are no boards!"
+msgstr "Er zijn geen besturen!"
 
-#: templates/committees/details.html:3 templates/committees/index.html:3
-#: templates/committees/index.html:6
+#: templates/committees/board_old.html:6
+msgid "Boards (continued)"
+msgstr "Besturenoverzicht a.k.a. Besturen van weleer (vervolg)"
+
+#: templates/committees/committee_detail.html:3
+#: templates/committees/committee_index.html:3
 msgid "Committees"
-msgstr ""
+msgstr "Commissies"
 
-#: templates/committees/details.html:22
+#: templates/committees/committee_detail.html:24
 #, python-format
 msgid "About the %(name)s"
-msgstr ""
+msgstr "Over de %(name)s"
 
-#: templates/committees/details.html:26
+#: templates/committees/committee_detail.html:28
 msgid "Committee members"
-msgstr ""
+msgstr "Commissieleden"
 
-#: templates/committees/details.html:34
-msgid "Default avatar"
-msgstr ""
-
-#: templates/committees/details.html:42
-msgid "Voorzitter"
-msgstr ""
-
-#: templates/committees/details.html:49
+#: templates/committees/committee_detail.html:51
 #, python-format
 msgid "Committee member since: %(since)s"
-msgstr ""
+msgstr "Commissielid sinds: %(since)s"
 
-#: templates/committees/details.html:59
+#: templates/committees/committee_detail.html:61
 msgid "This committee doesn't have any members?"
-msgstr ""
+msgstr "Deze commissie heeft geen leden?"
 
-#: templates/committees/index.html:39
+#: templates/committees/committee_index.html:39
 msgid "There are no committees!"
-msgstr ""
+msgstr "Er zijn geen commissies!"
 
 #~ msgid "Mentors {year}-{year_to}"
 #~ msgstr "Mentoren {year}-{year_to}"

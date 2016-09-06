@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n thumbnail static %}
+{% block title %}{% trans 'Boards' %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>{% trans 'Boards' %}</h1>
+
+<p style="text-align: center;">
+{% url 'committees:board_old' as old_boards_url %}
+{% blocktrans trimmed %}
+  Thalia's board makes sure all operations during the academic year are taken care of, in front or behind the scenes. If you have any questions then you can address them during the day or, if you're not always on the campus, you're always welcome to <a href="mailto:info@thalia.nu">send them an email</a>. The boards of the years before 2001 can be found on <a href="{{ old_boards_url }}">this page</a>.
+{% endblocktrans %}
+</p>
+
+<div class="clearfix portfolio">
+  <div id="committees">
+    <ul class="row committees">
+      {% for board in boards %}
+      <li class="post member-item span3 has-overlay first-child">
+        <a href="{{ board.get_absolute_url }}">
+
+          <div class="post-inner">
+            <div class="inner-img">
+              {% if board.photo %}
+              <img src="{% thumbnail board.photo '220x220' fit=False %}" alt="{% blocktrans with name=board.name %}Photo of {{ name }}{% endblocktrans %}">
+              {% else %}
+              <img height="220" width="220" src="{% static 'committees/images/placeholder.png' %}">
+              {% endif %}
+            </div>
+
+            <div class="post-overlay">
+              <div class="post-overlay-meta">
+                <h2>{% trans "Board" %} {{ board.since.year }}-{{ board.until.year }}</h2>
+              </div>
+            </div>
+
+            <div class="post-body avatar-subtitle">
+              {% trans "Board" %} {{ board.since.year }}-{{ board.until.year }}
+            </div>
+          </div>
+        </a>
+      </li>
+
+      {% empty %}
+      {% trans 'There are no boards!' %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

@@ -32,8 +32,9 @@ class ActiveCommitteeManager(models.Manager):
 class Committee(models.Model):
     """A committee"""
 
-    active_committees = ActiveCommitteeManager()
+    unfiltered_objects = models.Manager()
     objects = CommitteeManager()
+    active_committees = ActiveCommitteeManager()
 
     name = models.CharField(
         max_length=40,
@@ -81,7 +82,7 @@ class Committee(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('committees:details', args=[str(self.pk)])
+        return reverse('committees:committee', args=[str(self.pk)])
 
     class Meta:
         verbose_name = _('committee')
@@ -102,7 +103,7 @@ class Board(Committee):
     )
 
     def get_absolute_url(self):
-        return '/committee/boards/{}'.format(self.name.lower())
+        return reverse('committees:board', args=[str(self.pk)])
 
 
 class ActiveMembershipManager(models.Manager):
