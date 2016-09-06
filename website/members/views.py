@@ -109,6 +109,14 @@ def profile(request, pk):
             }
         achievements[name]['periods'].sort(key=lambda period: period['since'])
 
+    mentor_years = member.mentor_set.all()
+    for mentor_year in mentor_years:
+        name = str(mentor_year)
+        if not achievements.get(name):
+            achievements[name] = {
+                'name': name
+            }
+
     return render(request, 'members/profile.html',
                   {'member': member, 'achievements': achievements.values()})
 
