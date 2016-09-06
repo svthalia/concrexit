@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.contrib.auth.models import User
+from django.template import loader
+from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Member
@@ -40,7 +42,10 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         if self.cleaned_data['send_welcome_email']:
-            email_body = "new password: {}".format(password)
+            with translation.override(user.member.language):
+                email_body = loader.render_to_string(
+                    'members/email/welcome.html',
+                    {'user': user, 'password': password})
             user.email_user(
                 _('Welkom bij Studievereniging Thalia'),
                 email_body)
