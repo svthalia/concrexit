@@ -8,7 +8,7 @@ def committees(request):
     committees = Committee.objects.all()
 
     return render(request,
-                  'committees/index.html',
+                  'activemembers/index.html',
                   {'committees': committees})
 
 
@@ -19,20 +19,25 @@ def details(request, committee_id):
     members = []
     memberships = (CommitteeMembership
                    .active_memberships
-                   .filter(committee=committee))
+                   .filter(committee=committee)
+                   .prefetch_related('member'))
     for membership in memberships:
         member = membership.member
         member.chair = membership.chair
         member.committee_since = membership.since
         members.append(member)  # list comprehension would be more pythonic?
 
-    return render(request, 'committees/details.html',
+    return render(request, 'activemembers/details.html',
                   {'committee': committee,
                    'members': members})
 
 
-def boards(request, year=None):
-    """View the board pages"""
+def boards(request, id=None):
+    """
+    View the board pages
+
+    The id is for javascript, and ignored
+    """
     boards = Board.objects.all()
 
     boardmembers = dict()
@@ -40,16 +45,17 @@ def boards(request, year=None):
         members = []
         memberships = (CommitteeMembership
                        .objects
-                       .filter(committee=board))
+                       .filter(committee=board)
+                       .prefetch_related('member'))
         for membership in memberships:
             member = membership.member
             member.role = membership.role
             member.chair = membership.chair
             members.append(member)
-        boardmembers[board.name] = members
+        boardmembers[board.pk] = members
 
     return render(request,
-                  'committees/boards.html',
+                  'activemembers/boards.html',
                   {'boards': boards,
                    'boardmembers': boardmembers,
                    'first_board': boards[0]})

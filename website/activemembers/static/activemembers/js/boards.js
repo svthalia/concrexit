@@ -5,7 +5,7 @@ $(document).ready(function(){
     $("#collection-div").hide();
     $(".post-slider .slides").trigger("slideTo", boardPositions.indexOf(boardNr));
     $(".bestuur-list").hide();
-    $("#" + boardNr).show();
+    $("#board" + boardNr).show();
     $("#title").html(boardTitles[boardNr]);
     window.history.pushState(boardNr, 'Title', '/association/activemembers/boards/' + boardNr);
 });
@@ -22,7 +22,7 @@ $("#carousel-prev").click(function(){
     }
     boardNr = boardPositions[number];
     $(".bestuur-list").hide();
-    $("#" + boardNr).show();
+    $("#board" + boardNr).show();
     $("#title").html(boardTitles[boardNr]);
     window.history.pushState(boardNr, 'Title', '/association/activemembers/boards/' + boardNr);
     setTimeout(function(){blocked=false}, 500);
@@ -42,7 +42,7 @@ $("#carousel-next").click(function(){
     
     boardNr = boardPositions[number];
     $(".bestuur-list").hide();
-    $("#" + boardNr).show();
+    $("#board" + boardNr).show();
     $("#title").html(boardTitles[boardNr]);
     window.history.pushState(boardNr, 'Title', '/association/activemembers/boards/' + boardNr);
     setTimeout(function(){blocked=false}, 500);
