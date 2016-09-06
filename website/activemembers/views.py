@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Committee, CommitteeMembership, Board
 
 
-def index(request):
+def committees(request):
     """Overview of committees"""
     committees = Committee.objects.all()
 

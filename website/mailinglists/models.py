@@ -3,7 +3,7 @@ from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member
-from committees.models import Committee
+from activemembers.models import Committee
 
 
 class MailingList(models.Model):

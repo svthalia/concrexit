@@ -4,7 +4,7 @@ from django.http import Http404
 
 from .models import MailingList
 from members.models import Member
-from committees.models import CommitteeMembership
+from activemembers.models import CommitteeMembership
 
 import hashlib
 

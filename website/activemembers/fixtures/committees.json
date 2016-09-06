@@ -1,6 +1,6 @@
 [
 {
-    "model": "committees.committee",
+    "model": "activemembers.committee",
     "pk": 1,
     "fields": {
         "name": "testcie1",
@@ -14,7 +14,7 @@
     }
 },
 {
-    "model": "committees.committee",
+    "model": "activemembers.committee",
     "pk": 2,
     "fields": {
         "name": "testcie2",

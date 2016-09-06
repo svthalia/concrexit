@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('committees', '0007_mentors'),
+        ('activemembers', '0007_mentors'),
     ]
 
     operations = [

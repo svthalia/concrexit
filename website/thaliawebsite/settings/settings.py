@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'thaliawebsite',  # include for admin settings
     'members',
     'documents',
-    'committees',
+    'activemembers',
     'photos',
     'utils',
     'mailinglists',
@@ -129,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'committees.backends.CommitteeBackend',
+    'activemembers.backends.CommitteeBackend',
 ]
 
 # Internationalization

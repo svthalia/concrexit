@@ -7,7 +7,7 @@ $(document).ready(function(){
     $(".bestuur-list").hide();
     $("#" + boardNr).show();
     $("#title").html(boardTitles[boardNr]);
-    window.history.pushState(boardNr, 'Title', '/association/committees/boards/' + boardNr);
+    window.history.pushState(boardNr, 'Title', '/association/activemembers/boards/' + boardNr);
 });
 
 $("#carousel-prev").click(function(){
@@ -24,7 +24,7 @@ $("#carousel-prev").click(function(){
     $(".bestuur-list").hide();
     $("#" + boardNr).show();
     $("#title").html(boardTitles[boardNr]);
-    window.history.pushState(boardNr, 'Title', '/association/committees/boards/' + boardNr);
+    window.history.pushState(boardNr, 'Title', '/association/activemembers/boards/' + boardNr);
     setTimeout(function(){blocked=false}, 500);
 });
 
@@ -44,7 +44,7 @@ $("#carousel-next").click(function(){
     $(".bestuur-list").hide();
     $("#" + boardNr).show();
     $("#title").html(boardTitles[boardNr]);
-    window.history.pushState(boardNr, 'Title', '/association/committees/boards/' + boardNr);
+    window.history.pushState(boardNr, 'Title', '/association/activemembers/boards/' + boardNr);
     setTimeout(function(){blocked=false}, 500);
 });
 
@@ -59,5 +59,5 @@ $(document).on('click', '#collectionButton', function(event) {
     $("#bestuurCarousel").hide();
     $("#ledenTitle").hide();
     $(".board-directory").hide();
-    window.history.pushState("board", "Title", "/association/committees/boards/");
+    window.history.pushState("board", "Title", "/association/activemembers/boards/");
 });
