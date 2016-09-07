@@ -196,11 +196,6 @@ class Member(models.Model):
         null=True
     )
 
-    AGE_TYPES = (
-            ('18+', _('18+')),
-            ('18-', _('Not yet 18')),
-        )
-
     show_birthday = models.BooleanField(
         verbose_name=_('Display birthday'),
         help_text=_(
