@@ -37,6 +37,12 @@ class Event(models.Model):
         blank=True
     )
 
+    cancel_deadline = models.DateTimeField(
+        _("cancel deadline"),
+        null=True,
+        blank=True
+    )
+
     location = models.CharField(_("location"), max_length=255)
 
     map_location = models.CharField(
