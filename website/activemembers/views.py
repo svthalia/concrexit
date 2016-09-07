@@ -3,12 +3,12 @@ from django.shortcuts import render, get_object_or_404
 from .models import Committee, CommitteeMembership, Board
 
 
-def index(request):
+def committees(request):
     """Overview of committees"""
     committees = Committee.objects.all()
 
     return render(request,
-                  'committees/index.html',
+                  'activemembers/index.html',
                   {'committees': committees})
 
 
@@ -27,7 +27,7 @@ def details(request, committee_id):
         member.committee_since = membership.since
         members.append(member)  # list comprehension would be more pythonic?
 
-    return render(request, 'committees/details.html',
+    return render(request, 'activemembers/details.html',
                   {'committee': committee,
                    'members': members})
 
@@ -55,7 +55,7 @@ def boards(request, id=None):
         boardmembers[board.pk] = members
 
     return render(request,
-                  'committees/boards.html',
+                  'activemembers/boards.html',
                   {'boards': boards,
                    'boardmembers': boardmembers,
                    'first_board': boards[0]})
