@@ -1,0 +1,1 @@
+Django[bcrypt, argon2]==1.10

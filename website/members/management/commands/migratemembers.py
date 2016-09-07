@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 
-from committees.models import Board, Committee
+from activemembers.models import Board, Committee
 from members.models import Member
 
 from bs4 import BeautifulSoup
@@ -64,14 +64,17 @@ class Command(BaseCommand):
             # Concrete5 uses bcrypt passwords, which django can rehash
             user.password = 'bcrypt$' + member['password']
             user.first_name = member['first_name']
-            user.last_name = ' '.join(member['infix'], member['surname'])
+            user.last_name = ' '.join([member['infix'], member['surname']])
             user.save()
-            if not user.member:
+            try:
+                user.member
+            except Member.DoesNotExist:
                 user.member = Member()
             user.member.programme = {
                 'Computer Science': 'computingsience',
                 'Information Science': 'informationscience',
                 'Other': None,
+                '': None,
             }[member['study']]
             if member['student_number']:
                 user.member.student_number = member['student_number']
@@ -93,6 +96,11 @@ class Command(BaseCommand):
                     member['phone_number_parents'])
             if member['birthday']:
                 user.member.birthday = member['birthday'].split(' ')[0]
+                if user.member.birthday == "0000-00-00":
+                    user.member.birthday = None
+                elif user.member.birthday[:3] == "201":  # Likely incorrect!
+                    user.member.birthday = None
+
             user.member.show_birthday = bool(member['show_birthday'])
             if member['website']:
                 user.member.website = member['website']
@@ -109,16 +117,18 @@ class Command(BaseCommand):
                 'Nickname': 'nickname',
                 'First name + nickname + last name': 'fullnick',
                 'Nickname + last name': 'nicklast',
+                '': 'full',
             }[member['display_name']]
             if member['avatar']:
                 imagefield_from_url(user.member.photo, member['avatar'])
             if member['language']:
                 user.member.language = member['language']
-            user.member.receive_optin = member['receive_optin_mail']
+            user.member.receive_optin = bool(member['receive_optin_mail'])
             user.member.direct_debit_authorized = (
                 member['payment_authorised'] == 'Authorised')
             if member['payment_iban']:
                 user.member.bank_account = member['payment_iban']
+            user.member.save()
 
             # TODO link member to committees through memberships
             # TODO administrate roles / presidencies
