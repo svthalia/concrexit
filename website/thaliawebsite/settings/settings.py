@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'thaliawebsite',  # include for admin settings
     'members',
     'documents',
-    'committees',
+    'activemembers',
     'photos',
     'utils',
     'mailinglists',
@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'thabloid',
     'partners',
     'events',
+    'newsletters',
 ]
 
 MIDDLEWARE = [
@@ -136,7 +137,7 @@ PASSWORD_HASHERS = [
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'committees.backends.CommitteeBackend',
+    'activemembers.backends.CommitteeBackend',
 ]
 
 # Internationalization
@@ -190,3 +191,6 @@ COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
 
 # Precompiler settings
 STATIC_PRECOMPILER_LIST_FILES = True
+
+# Newsletter settings
+NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'

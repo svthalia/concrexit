@@ -26,7 +26,7 @@ from utils.views import private_thumbnails
 import members
 
 from .sitemaps import StaticViewSitemap
-from committees.sitemaps import sitemap as committees_sitemap
+from activemembers.sitemaps import sitemap as activemembers_sitemap
 from members.sitemaps import sitemap as members_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
@@ -35,7 +35,7 @@ from partners.sitemaps import sitemap as partners_sitemap
 thalia_sitemap = {
     'main-static': StaticViewSitemap,
 }
-thalia_sitemap.update(committees_sitemap)
+thalia_sitemap.update(activemembers_sitemap)
 thalia_sitemap.update(members_sitemap)
 thalia_sitemap.update(documents_sitemap)
 thalia_sitemap.update(thabloid_sitemap)
@@ -48,8 +48,10 @@ urlpatterns = [
     url(r'^members/', include('members.urls', namespace='members')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
     url(r'^events/', include('events.urls', namespace='events')),
+    url(r'^newsletters/', include('newsletters.urls',
+                                  namespace='newsletters')),
     url(r'^association/', include([
-        url(r'^committees/', include('committees.urls', namespace='committees')),
+        url(r'^activemembers/', include('activemembers.urls', namespace='activemembers')),
         url(r'^merchandise/', include('merchandise.urls', namespace='merchandise')),
         url(r'^documents/', include('documents.urls', namespace='documents')),
         url(r'^become-a-member/', members.views.become_a_member, name='become-a-member'),

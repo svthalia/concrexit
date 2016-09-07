@@ -196,6 +196,11 @@ class Member(models.Model):
         null=True
     )
 
+    AGE_TYPES = (
+            ('18+', _('18+')),
+            ('18-', _('Not yet 18')),
+        )
+
     show_birthday = models.BooleanField(
         verbose_name=_('Display birthday'),
         help_text=_(
@@ -266,6 +271,12 @@ class Member(models.Model):
         verbose_name=_('Receive opt-in mailings'),
         help_text=_("Receive mailings about vacancies and events from Thalia's"
                     " sponsors."),
+        default=True,
+    )
+
+    receive_newsletter = models.BooleanField(
+        verbose_name=_('Receive newsletter'),
+        help_text=_("Receive the Thalia Newsletter"),
         default=True,
     )
 

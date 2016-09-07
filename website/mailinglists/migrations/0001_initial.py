@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('committees', '0004_auto_20160727_2253'),
+        ('activemembers', '0004_auto_20160727_2253'),
         ('members', '0003_merge_20160727_2333'),
     ]
 
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('prefix', models.CharField(max_length=200)),
                 ('archived', models.BooleanField(default=True)),
                 ('moderated', models.BooleanField(default=False)),
-                ('committees', models.ManyToManyField(blank=True, to='committees.Committee')),
+                ('committees', models.ManyToManyField(blank=True, to='activemembers.Committee')),
                 ('members', models.ManyToManyField(blank=True, to='members.Member')),
             ],
         ),

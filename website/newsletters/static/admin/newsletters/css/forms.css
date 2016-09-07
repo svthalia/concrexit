@@ -1,0 +1,26 @@
+.submit-row a.default {
+    text-transform: uppercase;
+}
+
+.submit-row a.button {
+    float: right;
+    padding: 10px 15px;
+    line-height: 15px;
+    margin: 0 0 0 8px;
+}
+
+.newsletters-row a.button.default {
+    background-color: #e62272;
+}
+
+.newsletters-row a.button.default:hover, .newsletters-row a.button.default:active {
+    background-color: #cd2167;
+}
+
+.newsletters-row a.button {
+    background-color: #e65c95;
+}
+
+.newsletters-row a.button:hover, .newsletters-row a.button:active {
+    background-color: #d25389;
+}
