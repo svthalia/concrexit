@@ -50,10 +50,13 @@ class AgeListFilter(admin.SimpleListFilter):
     parameter_name = 'birthday'
 
     def lookups(self, request, model_admin):
-        return models.Member.AGE_TYPES
+        return (
+            ('18+', _('≥ 18')),
+            ('18-', _('< 18')),
+            ('unknown', _('Unknown')),
+        )
 
     def queryset(self, request, queryset):
-        print(self.value())
         if not self.value():
             return queryset
         users = set()
@@ -61,10 +64,14 @@ class AgeListFilter(admin.SimpleListFilter):
             try:
                 today = datetime.date.today()
                 eightteen_years_ago = today.replace(year=today.year - 18)
-                if (user.member.birthday <= eightteen_years_ago
+                if user.member.birthday is None:
+                    if self.value() == 'unknown':
+                        users.add(user.pk)
+                    continue
+                elif (user.member.birthday <= eightteen_years_ago
                         and self.value() == '18+'):
                     users.add(user.pk)
-                if (user.member.birthday > eightteen_years_ago
+                elif (user.member.birthday > eightteen_years_ago
                         and self.value() == '18-'):
                     users.add(user.pk)
             except models.Member.DoesNotExist:
