@@ -41,15 +41,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='committee',
             name='description_en',
-            field=models.CharField(default='', max_length=40, unique=True,
-                                   verbose_name='Description (EN)'),
+            field=models.TextField(default='', verbose_name='Description (EN)'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='committee',
             name='description_nl',
-            field=models.CharField(max_length=40, unique=True,
-                                   verbose_name='Description (NL)'),
+            field=models.TextField(verbose_name='Description (NL)'),
             preserve_default=True,
         ),
         migrations.RunPython(forwards_func, reverse_func),

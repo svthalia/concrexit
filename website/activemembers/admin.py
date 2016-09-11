@@ -1,6 +1,5 @@
 from django.contrib import admin
 from utils.translation import TranslatedModelAdmin
-from django.conf import settings
 
 from . import models
 
