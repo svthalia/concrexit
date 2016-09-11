@@ -39,10 +39,6 @@ def board_index(request):
                   {'boards': boards})
 
 
-def board_old(request):
-    return render(request, 'committees/board_old.html')
-
-
 def board_detail(request, id):
     """View the details of a committee"""
     board = get_object_or_404(Board, pk=id)

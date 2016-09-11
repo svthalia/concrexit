@@ -1,11 +1,20 @@
 from django.contrib import admin
+from utils.translation import TranslatedModelAdmin
 
 from . import models
 
-
 @admin.register(models.Committee)
-class CommitteeAdmin(admin.ModelAdmin):
+class CommitteeAdmin(TranslatedModelAdmin):
     list_filter = ('until',)
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'name', 'description', 'photo', 'permissions',
+                'since', 'until'
+            )
+        }),
+    )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -13,7 +22,7 @@ class CommitteeAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Board)
-class BoardAdmin(admin.ModelAdmin):
+class BoardAdmin(TranslatedModelAdmin):
     exclude = ('is_board',)
 
 

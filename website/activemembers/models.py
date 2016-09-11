@@ -7,6 +7,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from utils.translation import MultilingualField, ModelTranslateMeta
 
 from members.models import Member
 
@@ -29,14 +30,15 @@ class ActiveCommitteeManager(models.Manager):
                 .exclude(until__lt=timezone.now().date()))
 
 
-class Committee(models.Model):
+class Committee(models.Model, metaclass=ModelTranslateMeta):
     """A committee"""
 
     unfiltered_objects = models.Manager()
     objects = CommitteeManager()
     active_committees = ActiveCommitteeManager()
 
-    name = models.CharField(
+    name = MultilingualField(
+        models.CharField,
         max_length=40,
         verbose_name=_('Committee name'),
         unique=True,
