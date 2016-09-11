@@ -1,5 +1,6 @@
 from django.contrib import admin
 from utils.translation import TranslatedModelAdmin
+from django.conf import settings
 
 from . import models
 
@@ -8,14 +9,8 @@ from . import models
 class CommitteeAdmin(TranslatedModelAdmin):
     list_filter = ('until',)
 
-    fieldsets = (
-        (None, {
-            'fields': (
-                'name', 'description', 'photo', 'permissions',
-                'since', 'until'
-            )
-        }),
-    )
+    fields = ('name', 'description', 'photo', 'permissions',
+              'since', 'until',)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -26,14 +21,8 @@ class CommitteeAdmin(TranslatedModelAdmin):
 class BoardAdmin(TranslatedModelAdmin):
     exclude = ('is_board',)
 
-    fieldsets = (
-        (None, {
-            'fields': (
-                'description', 'photo', 'permissions',
-                'since', 'until'
-            )
-        }),
-    )
+    fields = ('name', 'description', 'photo', 'permissions',
+              'since', 'until',)
 
 
 @admin.register(models.CommitteeMembership)

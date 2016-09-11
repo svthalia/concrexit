@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
         db_alias = schema_editor.connection.alias
         for committee in Committee.unfiltered_objects.using(db_alias).all():
             committee.name_en = committee.name_nl
+            committee.description_en = committee.description_nl
             committee.save()
 
     def reverse_func(apps, schema_editor):
@@ -22,6 +23,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField('committee', 'name', 'name_nl'),
+        migrations.RenameField('committee', 'description', 'description_nl'),
         migrations.AddField(
             model_name='committee',
             name='name_en',
@@ -34,6 +36,20 @@ class Migration(migrations.Migration):
             name='name_nl',
             field=models.CharField(max_length=40, unique=True,
                                    verbose_name='Committee name (NL)'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='committee',
+            name='description_en',
+            field=models.CharField(default='', max_length=40, unique=True,
+                                   verbose_name='Description (EN)'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='committee',
+            name='description_nl',
+            field=models.CharField(max_length=40, unique=True,
+                                   verbose_name='Description (NL)'),
             preserve_default=True,
         ),
         migrations.RunPython(forwards_func, reverse_func),

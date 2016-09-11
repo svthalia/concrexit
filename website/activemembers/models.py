@@ -1,17 +1,14 @@
 import datetime
 import logging
 
-from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.contrib.auth.models import Permission
-from django.conf import settings
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from utils.translation import MultilingualField, ModelTranslateMeta
-
 from members.models import Member
-
+from utils.translation import MultilingualField, ModelTranslateMeta
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +42,8 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
         unique=True,
     )
 
-    description = models.TextField(
+    description = MultilingualField(
+        models.TextField,
         verbose_name=_('Description'),
     )
 
@@ -104,12 +102,6 @@ class Board(Committee):
         verbose_name=_('Is this a board'),
         default=True,
     )
-
-    def clean(self):
-        for lang in settings.LANGUAGES:
-            field_name = '{}_{}'.format('name', lang[0])
-            setattr(self, field_name, '{} {} - {}'
-                    .format('Board', self.since, self.until))
 
     def get_absolute_url(self):
         return reverse('committees:board', args=[str(self.pk)])
