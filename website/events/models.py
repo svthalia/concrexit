@@ -20,7 +20,7 @@ class Event(models.Model):
     end = models.DateTimeField(_("end time"))
 
     organiser = models.ForeignKey(
-        'committees.Committee',
+        'activemembers.Committee',
         models.SET_NULL,
         null=True,
     )

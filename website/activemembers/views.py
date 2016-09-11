@@ -7,8 +7,7 @@ def committee_index(request):
     """Overview of committees"""
     committees = Committee.objects.all()
 
-    return render(request,
-                  'committees/committee_index.html',
+    return render(request, 'activemembers/committee_index.html',
                   {'committees': committees})
 
 
@@ -27,7 +26,7 @@ def committee_detail(request, id):
         member.committee_since = membership.since
         members.append(member)  # list comprehension would be more pythonic?
 
-    return render(request, 'committees/committee_detail.html',
+    return render(request, 'activemembers/committee_detail.html',
                   {'committee': committee,
                    'members': members})
 
@@ -36,7 +35,7 @@ def board_index(request):
     boards = Board.objects.all()
 
     return render(request,
-                  'committees/board_index.html',
+                  'activemembers/board_index.html',
                   {'boards': boards})
 
 

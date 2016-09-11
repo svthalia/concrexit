@@ -10,7 +10,7 @@ import django.db.models.manager
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('committees', '0001_squashed_0006_auto_20160707_1700'),
+        ('activemembers', '0001_squashed_0006_auto_20160707_1700'),
     ]
 
     operations = [

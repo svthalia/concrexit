@@ -1,0 +1,19 @@
+version: '2'
+services:
+    postgres:
+        image: postgres
+        environment: &postgresvars
+            POSTGRES_DB: thalia
+    web:
+        build: .
+        command: runserver 0.0.0.0:8000
+        ports:
+            - 8000:8000
+        depends_on:
+            - postgres
+        volumes:
+            - ./website:/usr/src/app
+        environment:
+            <<: *postgresvars
+            DJANGO_DEBUG: 'True'
+            DJANGO_POSTGRES_HOST: postgres

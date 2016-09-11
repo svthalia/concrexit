@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('members', '0004_auto_20160805_1435'),
-        ('committees', '0004_auto_20160727_2253'),
+        ('activemembers', '0004_auto_20160727_2253'),
     ]
 
     operations = [
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('registration_required', models.BooleanField(default=False, verbose_name='registration required')),
                 ('no_registration_message', models.CharField(blank=True, help_text='Default: No registration required', max_length=200, null=True, verbose_name='message when there is no registration')),
                 ('published', models.BooleanField(default=False, verbose_name='published')),
-                ('organiser', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='committees.Committee')),
+                ('organiser', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='activemembers.Committee')),
             ],
             options={
                 'ordering': ('-start',),

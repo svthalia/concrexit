@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
-from committees.models import Committee, CommitteeMembership
+from activemembers.models import Committee, CommitteeMembership
 from members.models import Member
 
 

@@ -82,7 +82,7 @@ class Committee(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('committees:committee', args=[str(self.pk)])
+        return reverse('activemembers:committee', args=[str(self.pk)])
 
     class Meta:
         verbose_name = _('committee')

@@ -9,7 +9,7 @@ import django.db.models.manager
 
 class Migration(migrations.Migration):
 
-    replaces = [('committees', '0001_initial'), ('committees', '0002_committee_permissions'), ('committees', '0003_auto_20160707_1356'), ('committees', '0004_auto_20160707_1357'), ('committees', '0005_auto_20160707_1512'), ('committees', '0006_auto_20160707_1700')]
+    replaces = [('activemembers', '0001_initial'), ('activemembers', '0002_committee_permissions'), ('activemembers', '0003_auto_20160707_1356'), ('activemembers', '0004_auto_20160707_1357'), ('activemembers', '0005_auto_20160707_1512'), ('activemembers', '0006_auto_20160707_1700')]
 
     initial = True
 
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('since', models.DateField(auto_now_add=True)),
                 ('until', models.DateField()),
                 ('chair', models.BooleanField()),
-                ('committee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='committees.Committee')),
+                ('committee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='activemembers.Committee')),
                 ('member', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='members.Member')),
             ],
             managers=[
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='committee',
             name='members',
-            field=models.ManyToManyField(through='committees.CommitteeMembership', to='members.Member'),
+            field=models.ManyToManyField(through='activemembers.CommitteeMembership', to='members.Member'),
         ),
         migrations.AddField(
             model_name='committee',
@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='committeemembership',
             name='committee',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='committees.Committee', verbose_name='Committee'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='activemembers.Committee', verbose_name='Committee'),
         ),
         migrations.AlterField(
             model_name='committeemembership',

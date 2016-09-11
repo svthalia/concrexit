@@ -9,17 +9,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('committees', '0002_auto_20160713_1558'),
+        ('activemembers', '0002_auto_20160713_1558'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Board',
             fields=[
-                ('committee_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='committees.Committee')),
+                ('committee_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='activemembers.Committee')),
                 ('is_board', models.BooleanField(default=True, verbose_name='Is this a board')),
             ],
-            bases=('committees.committee',),
+            bases=('activemembers.committee',),
         ),
         migrations.AddField(
             model_name='committeemembership',

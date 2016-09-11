@@ -8,7 +8,7 @@ from django.utils.http import is_safe_url
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from committees.models import Committee
+from activemembers.models import Committee
 from members.models import Member
 from . import models
 
