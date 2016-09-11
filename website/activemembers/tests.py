@@ -13,7 +13,7 @@ class CommitteeMembersTest(TestCase):
 
     def setUp(self):
         # Don't use setUpTestData because delete() will cause problems
-        self.testcie = Committee.objects.get(name='testcie1')
+        self.testcie = Committee.objects.get(pk=1)
         self.testuser = Member.objects.get(pk=1)
         self.m = CommitteeMembership(committee=self.testcie,
                                      member=self.testuser,
@@ -22,8 +22,10 @@ class CommitteeMembersTest(TestCase):
 
     def test_unique(self):
         with self.assertRaises(IntegrityError):
-            Committee.objects.create(name="testcie1",
-                                     description="desc3",
+            Committee.objects.create(name_nl="testcie1",
+                                     name_en="testcie1",
+                                     description_nl="desc3",
+                                     description_en="desc3",
                                      photo="")
 
     def test_join(self):
@@ -92,7 +94,7 @@ class CommitteeMembersChairTest(TestCase):
     fixtures = ['members.json', 'committees.json']
 
     def setUp(self):
-        self.testcie = Committee.objects.get(name='testcie1')
+        self.testcie = Committee.objects.get(pk=1)
         self.testuser = Member.objects.get(pk=1)
         self.testuser2 = Member.objects.get(pk=2)
         self.m1 = CommitteeMembership(committee=self.testcie,
