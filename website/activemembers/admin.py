@@ -3,6 +3,7 @@ from utils.translation import TranslatedModelAdmin
 
 from . import models
 
+
 @admin.register(models.Committee)
 class CommitteeAdmin(TranslatedModelAdmin):
     list_filter = ('until',)
@@ -24,6 +25,15 @@ class CommitteeAdmin(TranslatedModelAdmin):
 @admin.register(models.Board)
 class BoardAdmin(TranslatedModelAdmin):
     exclude = ('is_board',)
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'description', 'photo', 'permissions',
+                'since', 'until'
+            )
+        }),
+    )
 
 
 @admin.register(models.CommitteeMembership)
