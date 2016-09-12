@@ -25,7 +25,7 @@ class BoardAdmin(TranslatedModelAdmin):
 
 
 @admin.register(models.CommitteeMembership)
-class CommitteeMembershipAdmin(admin.ModelAdmin):
+class CommitteeMembershipAdmin(TranslatedModelAdmin):
     pass
 
 

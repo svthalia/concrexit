@@ -114,7 +114,7 @@ class ActiveMembershipManager(models.Manager):
         return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
-class CommitteeMembership(models.Model):
+class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
     objects = models.Manager()
     active_memberships = ActiveMembershipManager()
 
@@ -150,7 +150,8 @@ class CommitteeMembership(models.Model):
         default=False,
     )
 
-    role = models.CharField(
+    role = MultilingualField(
+        models.CharField,
         _('role'),
         help_text=_('The role of this member'),
         max_length=255,

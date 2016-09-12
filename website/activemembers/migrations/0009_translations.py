@@ -58,5 +58,16 @@ class Migration(migrations.Migration):
             field=models.TextField(verbose_name='Description (NL)'),
             preserve_default=True,
         ),
+        migrations.RenameField('committeemembership', 'role', 'role_nl'),
+        migrations.AddField(
+            model_name='committeemembership',
+            name='role_en',
+            field=models.CharField(blank=True, help_text='The role of this member', max_length=255, null=True, verbose_name='role (EN)'),
+        ),
+        migrations.AlterField(
+            model_name='committeemembership',
+            name='role_nl',
+            field=models.CharField(blank=True, help_text='The role of this member', max_length=255, null=True, verbose_name='role (NL)'),
+        ),
         migrations.RunPython(forwards_func, reverse_func),
     ]
