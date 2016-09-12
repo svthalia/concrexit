@@ -3,11 +3,11 @@ from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
+from django.conf import settings
 
 from documents.models import AssociationDocumentsYear, MiscellaneousDocument
 from documents.models import GeneralMeeting, GeneralMeetingDocument
 from utils.snippets import datetime_to_lectureyear
-
 from sendfile import sendfile
 import os
 
