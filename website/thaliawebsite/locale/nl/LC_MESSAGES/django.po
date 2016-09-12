@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-05 21:17+0200\n"
-"PO-Revision-Date: 2016-08-05 21:18+0200\n"
+"POT-Creation-Date: 2016-09-12 17:08+0200\n"
+"PO-Revision-Date: 2016-09-12 17:08+0200\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.8\n"
 
 #: admin.py:5
 msgid "Thalia administration"
@@ -42,7 +42,7 @@ msgstr "Bestuur"
 msgid "Committees"
 msgstr "Commissies"
 
-#: menus.py:8 menus.py:10
+#: menus.py:8 menus.py:11
 msgid "Members"
 msgstr "Leden"
 
@@ -50,115 +50,169 @@ msgstr "Leden"
 msgid "Documents"
 msgstr "Documenten"
 
-#: menus.py:11 templates/singlepages/sister_associations.html:4
-#: templates/singlepages/sister_associations.html:17
+#: menus.py:10
+msgid "Merchandise"
+msgstr "Merchandise"
+
+#: menus.py:12 templates/singlepages/sister_associations.html:15
 msgid "Sister Associations"
 msgstr "Zusterverenigingen"
 
-#: menus.py:12 templates/singlepages/become_a_member.html:4
-#: templates/singlepages/become_a_member.html:7
+#: menus.py:13 templates/singlepages/become_a_member.html:5
 msgid "Become a Member"
 msgstr "Lid Worden"
 
-#: menus.py:13
+#: menus.py:14
 msgid "Thabloid"
 msgstr "Thabloid"
 
-#: menus.py:15
+#: menus.py:16
 msgid "For Members"
 msgstr "Voor Leden"
 
-#: menus.py:16
+#: menus.py:18
 msgid "Photos"
 msgstr "Foto's"
 
-#: menus.py:17
+#: menus.py:19
 msgid "Statistics"
 msgstr "Statistieken"
 
-#: menus.py:18
+#: menus.py:20
 msgid "Become Active"
 msgstr "Actief Worden"
 
-#: menus.py:19
+#: menus.py:21
 msgid "Wiki"
 msgstr "Wiki"
 
-#: menus.py:21
+#: menus.py:23
 msgid "Calendar"
 msgstr "Agenda"
 
-#: menus.py:22
+#: menus.py:24
 msgid "Career"
 msgstr "Carrière"
 
-#: menus.py:23
+#: menus.py:25
 msgid "Partners"
 msgstr "Sponsoren"
 
-#: menus.py:24
+#: menus.py:26
 msgid "Vacancies"
 msgstr "Vacatures"
 
-#: menus.py:26
+#: menus.py:28
 msgid "Education"
 msgstr "Onderwijs"
 
-#: menus.py:27
+#: menus.py:29
 msgid "Book Sale"
 msgstr "Boekverkoop"
 
-#: menus.py:28
+#: menus.py:30
 msgid "Course Overview"
 msgstr "Vakkenoverzicht"
 
-#: menus.py:29
+#: menus.py:31
 msgid "Submit Exam"
 msgstr "Tentamen Insturen"
 
-#: menus.py:30
+#: menus.py:32
 msgid "Submit Summary"
 msgstr "Samenvatting Insturen"
 
-#: menus.py:32 templates/singlepages/contact.html:4
-#: templates/singlepages/contact.html:7
+#: menus.py:34 templates/singlepages/contact.html:5
 msgid "Contact"
 msgstr "Contact"
 
-#: settings/settings.py:138
+#: settings/settings.py:149
 msgid "English"
 msgstr "Engels"
 
-#: settings/settings.py:139
+#: settings/settings.py:150
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: templates/base.html:9 templates/base.html:88 templates/base.html:125
+#: templates/400.html:4
+msgid "400: Bad request"
+msgstr ""
+
+#: templates/403.html:4
+msgid "403: Permission denied."
+msgstr ""
+
+#: templates/404.html:4
+msgid "404: Page not found."
+msgstr ""
+
+#: templates/500.html:4
+msgid ""
+"500: Internal server error. Thalia's website committee has been notified."
+msgstr ""
+
+#: templates/base.html:9 templates/base.html:161
 msgid "Study Association Thalia"
 msgstr "Studievereniging Thalia"
 
-#: templates/base.html:160 templates/registration/login.html:7
-#: templates/registration/login.html:28
+#: templates/base.html:68 templates/registration/login.html:7
+#: templates/registration/login.html:46
 msgid "Login"
 msgstr "Inloggen"
 
-#: templates/registration/login.html:12
-msgid ""
-"\n"
-"        <p>Your account does not have access to this page. To proceed, "
-"please\n"
-"        log in with an account that has access.</p>\n"
-"    "
-msgstr ""
+#: templates/base.html:77
+msgid "Edit Profile"
+msgstr "Bewerk profiel"
 
-#: templates/registration/login.html:17
-msgid ""
-"\n"
-"        <p>Please log in to see this page.</p>\n"
-"      "
-msgstr ""
+#: templates/base.html:78
+msgid "Profile Picture"
+msgstr "Profielafbeelding"
 
-#: templates/singlepages/become_a_member.html:9
+#: templates/base.html:80
+msgid "Log Out"
+msgstr "Uitloggen"
+
+#: templates/error.html:7
+msgid "Error"
+msgstr "Fout"
+
+#: templates/error.html:10
+msgid "An error occurred."
+msgstr "Er is een fout opgetreden."
+
+#: templates/registration/login.html:10
+msgid "Log in"
+msgstr "Inloggen"
+
+#: templates/registration/login.html:14
+msgid ""
+"Your account does not have access to this page. To proceed, please log in "
+"with an account that has access."
+msgstr ""
+"Je hebt geen toegang tot deze pagina. Om verder te gaan moet je inloggen met "
+"een account dat de juiste permissies heeft."
+
+#: templates/registration/login.html:18
+msgid "Please log in to see this page."
+msgstr "Log in om deze pagina te bekijken."
+
+#: templates/registration/login.html:27
+msgid "Invalid username or password."
+msgstr "Ongeldige gebruikersnaam of wachtwoord."
+
+#: templates/registration/login.html:38
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: templates/registration/login.html:42
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: templates/registration/login.html:47
+msgid "Forgot password"
+msgstr "Wachtwoord vergeten"
+
+#: templates/singlepages/become_a_member.html:7
 msgid ""
 "Thalia is the study association for Computing Science and Information "
 "Sciences students at the Radboud University in Nijmegen. Thalia organises a "
@@ -174,11 +228,11 @@ msgstr ""
 "en kun je met korting je studieboeken bestellen. Kortom, geen reden om niet "
 "lid te worden!"
 
-#: templates/singlepages/become_a_member.html:11
+#: templates/singlepages/become_a_member.html:9
 msgid "How do I become a member?"
 msgstr "Hoe kan ik lid worden?"
 
-#: templates/singlepages/become_a_member.html:13
+#: templates/singlepages/become_a_member.html:11
 msgid ""
 "You can become a member of Thalia at any time during the year. Membership "
 "costs € 7.50 per year, or € 30 for your entire study duration. To become a "
@@ -196,7 +250,7 @@ msgstr ""
 "bij bestuurskamer Let wel op: Je kunt alleen lid worden wanneer je "
 "informatica of informatiekunde studeert aan de Radboud Universiteit."
 
-#: templates/singlepages/become_a_member.html:15
+#: templates/singlepages/become_a_member.html:13
 msgid ""
 "I'm not a Computing Science and Information Sciences student at the Radboud "
 "University, but I do want to attend your events. Now what?"
@@ -204,7 +258,7 @@ msgstr ""
 "Ik studeer geen Informatica of Informatiekunde (aan de Radboud "
 "Universiteit), maar ik wil wel naar jullie activiteiten gaan. Wat nu?"
 
-#: templates/singlepages/become_a_member.html:17
+#: templates/singlepages/become_a_member.html:15
 msgid ""
 "It is still possible to be associated with Thalia, even if you do not study "
 "Computing Science or Information Sciences (anymore): You can become a "
@@ -224,7 +278,7 @@ msgstr ""
 "kun je allemaal invullen op het begunstigerformulier, dat af te halen is in "
 "de bestuurskamer of hieronder te downloaden is."
 
-#: templates/singlepages/become_a_member.html:19
+#: templates/singlepages/become_a_member.html:17
 msgid ""
 "Payment for membership or sponsorship can be made both in cash or by "
 "authorised direct debit. To authorise direct debit, use the form that is "
@@ -238,12 +292,11 @@ msgstr ""
 "en/of je lidmaatschap dan kun je altijd mailen naar <a href=\"mailto:"
 "info@thalia.nu\" target=\"_blank\">info@thalia.nu</a>!"
 
-#: templates/singlepages/become_active.html:4
-#: templates/singlepages/become_active.html:7
+#: templates/singlepages/become_active.html:5
 msgid "Become active"
 msgstr "Actief worden"
 
-#: templates/singlepages/become_active.html:9
+#: templates/singlepages/become_active.html:7
 msgid ""
 "Throughout the year, Thalia organizes a wide variety of activities, both "
 "educational (such as symposiums and programming contests) as well as social "
@@ -263,7 +316,7 @@ msgstr ""
 "onderhouden, of foto's maken op evenementen. Ongeveer 50 - 60 leden zetten "
 "zich ieder jaar in om geweldige activiteiten te organiseren voor alle leden."
 
-#: templates/singlepages/become_active.html:11
+#: templates/singlepages/become_active.html:9
 msgid ""
 "Does it seem like fun to join a committee and do your bit to contribute to "
 "the association? Then become a member of one of the committees! You can do "
@@ -277,7 +330,7 @@ msgstr ""
 "\">intern@thalia.nu</a>, een Facebookbericht te sturen of een bestuurs- of "
 "commissielid persoonlijk aan te spreken."
 
-#: templates/singlepages/become_active.html:13
+#: templates/singlepages/become_active.html:11
 msgid ""
 "Are you not sure if being part of a committee is for you? You can always sit "
 "in on a meeting to see if you like it. Again, feel free to ask committee "
@@ -289,119 +342,123 @@ msgstr ""
 "kunt ook commissieleden of het bestuur persoonlijk aanspreken. De commissies "
 "zijn altijd op zoek naar nieuwe enthousiaste leden!"
 
-#: templates/singlepages/contact.html:11
+#: templates/singlepages/contact.html:9
 msgid "Faculty:"
 msgstr "Faculteit:"
 
-#: templates/singlepages/contact.html:12
+#: templates/singlepages/contact.html:10
 msgid "Faculty of Science"
 msgstr "Faculteit der Natuurwetenschappen, Wiskunde & Informatica"
 
-#: templates/singlepages/contact.html:15
+#: templates/singlepages/contact.html:13
 msgid "Room:"
 msgstr "Kamer:"
 
-#: templates/singlepages/contact.html:19
+#: templates/singlepages/contact.html:17
 msgid "Address:"
 msgstr "Adres:"
 
-#: templates/singlepages/contact.html:20
+#: templates/singlepages/contact.html:18
 msgid "Board room: HG00.150 (above the north-canteen)"
 msgstr "Bestuurskamer: HG00.150 (boven de noordkantine)"
 
-#: templates/singlepages/contact.html:23
+#: templates/singlepages/contact.html:21
 msgid "Postal address:"
 msgstr "Postadres:"
 
-#: templates/singlepages/contact.html:27
+#: templates/singlepages/contact.html:25
 msgid "Telephone:"
 msgstr "Telefoon:"
 
-#: templates/singlepages/contact.html:31
+#: templates/singlepages/contact.html:29
 msgid "Voicemailbox:"
 msgstr "Voicemailbox:"
 
-#: templates/singlepages/contact.html:35
+#: templates/singlepages/contact.html:33
 msgid "Email:"
 msgstr "E-mail:"
 
-#: templates/singlepages/contact.html:37
+#: templates/singlepages/contact.html:35
 msgid "general"
 msgstr "algemeen"
 
-#: templates/singlepages/contact.html:38
+#: templates/singlepages/contact.html:36
 msgid "communication w.r.t. promoting your company (activities)"
 msgstr "communicatie over het promoten van uw bedrijf(sactiviteiten)"
 
-#: templates/singlepages/contact.html:50
+#: templates/singlepages/contact.html:40
+msgid "Kamer van Koophandel"
+msgstr "Chamber of Commerce"
+
+#: templates/singlepages/contact.html:48
 msgid "VAT number:"
 msgstr "BTW-nummer:"
 
-#: templates/singlepages/sister_associations.html:7
+#: templates/singlepages/sister_associations.html:5
 msgid "Associations of the Radboud University Science Faculty"
 msgstr "Bètaverenigingen van de Radboud Universiteit"
 
-#: templates/singlepages/sister_associations.html:9
+#: templates/singlepages/sister_associations.html:7
 msgid "(Medical) Biology"
 msgstr "(Medische) Biologie"
 
-#: templates/singlepages/sister_associations.html:10
+#: templates/singlepages/sister_associations.html:8
 msgid "Artificial Intelligence"
 msgstr "Kunstmatige Intelligentie"
 
-#: templates/singlepages/sister_associations.html:11
+#: templates/singlepages/sister_associations.html:9
 msgid "Mathematics"
 msgstr "Wiskunde"
 
-#: templates/singlepages/sister_associations.html:12
+#: templates/singlepages/sister_associations.html:10
 msgid "Science"
 msgstr "Science"
 
-#: templates/singlepages/sister_associations.html:13
+#: templates/singlepages/sister_associations.html:11
 msgid "Physics and Astronomy"
 msgstr "Natuur- en Sterrekunde"
 
-#: templates/singlepages/sister_associations.html:14
+#: templates/singlepages/sister_associations.html:12
 msgid "Science faculty umbrella association"
 msgstr "Overkoepelende bètavereniging"
 
-#: templates/singlepages/sister_associations.html:15
+#: templates/singlepages/sister_associations.html:13
 msgid "Molecular Sciences"
 msgstr "Moleculaire Wetenschappen"
 
-#: templates/singlepages/sister_associations.html:19
-#: templates/singlepages/sister_associations.html:26
+#: templates/singlepages/sister_associations.html:17
+#: templates/singlepages/sister_associations.html:24
 msgid "University of Twente"
 msgstr "Universiteit Twente"
 
-#: templates/singlepages/sister_associations.html:20
-#: templates/singlepages/sister_associations.html:28
+#: templates/singlepages/sister_associations.html:18
+#: templates/singlepages/sister_associations.html:26
 msgid "Utrecht University"
 msgstr "Universiteit Utrecht"
 
-#: templates/singlepages/sister_associations.html:21
+#: templates/singlepages/sister_associations.html:19
 msgid "Delft University of Technology"
 msgstr "Technische Universiteit Delft"
 
+#: templates/singlepages/sister_associations.html:20
 #: templates/singlepages/sister_associations.html:22
-#: templates/singlepages/sister_associations.html:24
 msgid "University of Groningen"
 msgstr "Rijksuniversiteit Groningen"
 
-#: templates/singlepages/sister_associations.html:23
+#: templates/singlepages/sister_associations.html:21
 msgid "Leiden University"
 msgstr "Universiteit Leiden"
 
-#: templates/singlepages/sister_associations.html:25
+#: templates/singlepages/sister_associations.html:23
 msgid "Eindhoven University of Technology"
 msgstr "Technische Universiteit Eindhoven"
 
-#: templates/singlepages/sister_associations.html:27
-#: templates/singlepages/sister_associations.html:30
+#: templates/singlepages/sister_associations.html:25
+#: templates/singlepages/sister_associations.html:28
 msgid "University of Amsterdam"
 msgstr "Universiteit van Amsterdam"
 
-#: templates/singlepages/sister_associations.html:29
+#: templates/singlepages/sister_associations.html:27
 msgid "VU University Amsterdam"
 msgstr "Vrije Universiteit Amsterdam"
 
