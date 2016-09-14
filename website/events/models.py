@@ -37,6 +37,12 @@ class Event(models.Model):
         blank=True
     )
 
+    cancel_deadline = models.DateTimeField(
+        _("cancel deadline"),
+        null=True,
+        blank=True
+    )
+
     location = models.CharField(_("location"), max_length=255)
 
     map_location = models.CharField(
@@ -156,7 +162,7 @@ class RegistrationInformationField(models.Model):
             value_set = self.textregistrationinformation_set
         elif self.type == 'checkbox':
             value_set = self.booleanregistrationinformation_set
-        elif value_set == 'intfield':
+        elif self.type == 'intfield':
             value_set = self.integerregistrationinformation_set
         try:
             return value_set.get(registration=registration).value
