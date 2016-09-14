@@ -48,6 +48,41 @@
         <!-- #header -->
         <div id="header" class="wrapper">
 
+            <div id="top-menu-container">
+                <div id="language-selector">
+                    <form action="{% url 'set_language' %}" id="set_language_form" method="post">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}" />
+                        {% if LANGUAGE_CODE == 'nl' %}
+                            <input type="hidden" name="language" value="en" />
+                            <a class="btn btn-style1" id="language_submit_btn"><i class="fa fa-flag"></i>English</a>
+                        {% else %}
+                            <input type="hidden" name="language" value="nl" />
+                            <a class="btn btn-style1" id="language_submit_btn"><i class="fa fa-flag"></i>Nederlands</a>
+                        {% endif %}
+                    </form>
+                </div>
+
+            {% if not user.is_authenticated %}
+                <div class="btn-group open" id="account-menu">
+                    <a class="btn btn-default" href="{% url 'login' %}"><i class="fa fa-user"></i>{% trans "Login" %}</a>
+                </div>
+            {% else %}
+                <div class="btn-group" id="account-menu">
+                    <a class="btn btn-default" href="/nyi"><i class="fa fa-user"></i> My Account</a>
+                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="/nyi">{% trans "Edit Profile" %}</a></li>
+                        <li><a href="/nyi">{% trans "Profile Picture" %}</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i>{% trans "Log Out" %}</a></li>
+                    </ul>
+                </div>
+            {% endif %}
+            </div>
+
             <!-- #logo-header -->
             <div id="logo-header">
                 <!-- #logo -->
@@ -141,45 +176,10 @@
     <script type="text/javascript" src="{% static "plugins/magnific-popup/jquery.magnific-popup.min.js" %}"></script>
     {% endblock %}
 
-    <div class="thimbus-ui" id="thimbus-account-menu-container">
-        <div class="btn-group open" id="language-selector-menu">
-            <form action="{% url 'set_language' %}" id="set_language_form" method="post">
-                {% csrf_token %}
-                <input name="next" type="hidden" value="{{ redirect_to }}" />
-                {% if LANGUAGE_CODE == 'nl' %}
-                    <input type="hidden" name="language" value="en" />
-                    <a class="btn btn-default" id="language_submit_btn"><i class="fa fa-flag"></i>English</a>
-                {% else %}
-                    <input type="hidden" name="language" value="nl" />
-                    <a class="btn btn-default" id="language_submit_btn"><i class="fa fa-flag"></i>Nederlands</a>
-                {% endif %}
-            </form>
-        </div>
-
-    {% if not user.is_authenticated %}
-        <div class="btn-group open" id="thimbus-account-menu">
-            <a class="btn btn-default" href="{% url 'login' %}"><i class="fa fa-user"></i>{% trans "Login" %}</a>
-        </div>
-    {% else %}
-    <div class="btn-group" id="thimbus-account-menu">
-        <a class="btn btn-default" href="/nyi"><i class="fa fa-user"></i> My Account</a>
-        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu pull-right" role="menu">
-            <li><a href="/nyi">{% trans "Edit Profile" %}</a></li>
-            <li><a href="/nyi">{% trans "Profile Picture" %}</a></li>
-            <li class="divider"></li>
-            <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i>{% trans "Log Out" %}</a></li>
-        </ul>
-    </div>
-    {% endif %}
-</div>
-
-{% block js_footer %}
-<script type="text/javascript" src="{% static "js/footer.js" %}"></script>
-<script type="text/javascript" src="{% static "js/bootstrap-dropdown.js" %}"></script>
-{% endblock %}
+    {% block js_footer %}
+    <script type="text/javascript" src="{% static "js/footer.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap-dropdown.js" %}"></script>
+    {% endblock %}
 </body>
 <!-- /body -->
 

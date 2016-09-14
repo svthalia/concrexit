@@ -34,10 +34,80 @@ body {
 
     #header {
         background: @background-color;
+
+        #top-menu-container {
+            top: 10px;
+            right: 10px;
+            position: absolute;
+            z-index: 9999;
+
+            #language-selector, #account-menu {
+                display: inline-block;
+                vertical-align: top;
+            }
+
+            #language-selector {
+                margin-right: 10px;
+            }
+
+            .btn {
+                background: @inverted-color;
+                color: @background-color;
+                margin: 0;
+
+                &:hover {
+                    background-color: @primary-color !important;
+                }
+
+                &:active, &:focus {
+                    background-color: @inverted-color !important;
+                }
+
+                i {
+                    margin-right: 5px;
+                }
+
+                &.dropdown-toggle {
+
+                    .caret {
+                        margin-top: 13px;
+                        border-top-color: #FFFFFF;
+                    }
+                }
+            }
+
+            .dropdown-menu {
+                background-color: @inverted-color;
+                border: 0;
+                box-shadow: none;
+                border-radius: 0;
+                min-width: 150px;
+
+                li {
+                    padding: 0;
+                    background: none;
+                }
+
+                a {
+                    color: @background-color;
+
+                    i {
+                        margin-right: 5px;
+                    }
+
+                    &:hover {
+                        background-image: none;
+                        background-color: @primary-color !important;
+                    }
+                }
+            }
+        }
     }
+
     #header-info {
         background: @primary-color;
     }
+
     #logo {
         padding: 55px 0 !important;
         img {
@@ -148,6 +218,12 @@ body {
         background: @primary-color;
         &:hover {
             background: @inverted-color !important;
+        }
+    }
+
+    .btn {
+        &.login {
+            margin-right: 0px;
         }
     }
 
@@ -339,41 +415,7 @@ body {
     color: @background-color;
 }
 
-// CONCRETE stuff
-/* header account menu */
-#thimbus-account-menu-container {
-    top: 10px;
-    right: 10px;
-    position: absolute;
-}
+/* -------------------------------------------------------------------------------- /
+    DJANGO LOGIN FORM
+/ -------------------------------------------------------------------------------- */
 
-#language-selector-menu,
-#thimbus-account-menu {
-    a.btn {
-        background: @inverted-color;
-        color: @background-color;
-
-        &:hover {
-            background-color: @primary-color;
-        }
-    }
-    button.btn {
-        background-color: @inverted-color;
-        color: @background-color;
-
-        &:hover {
-            background-color: @primary-color;
-        }
-    }
-    .dropdown-menu {
-        background-color: @inverted-color;
-
-        a {
-            color: @background-color;
-
-            &:hover {
-                background-color: @primary-color;
-            }
-        }
-    }
-}
