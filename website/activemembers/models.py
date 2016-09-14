@@ -1,15 +1,14 @@
 import datetime
 import logging
 
-from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.contrib.auth.models import Permission
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
 from members.models import Member
-
+from utils.translation import MultilingualField, ModelTranslateMeta
 
 logger = logging.getLogger(__name__)
 
@@ -29,19 +28,22 @@ class ActiveCommitteeManager(models.Manager):
                 .exclude(until__lt=timezone.now().date()))
 
 
-class Committee(models.Model):
+class Committee(models.Model, metaclass=ModelTranslateMeta):
     """A committee"""
 
-    active_committees = ActiveCommitteeManager()
+    unfiltered_objects = models.Manager()
     objects = CommitteeManager()
+    active_committees = ActiveCommitteeManager()
 
-    name = models.CharField(
+    name = MultilingualField(
+        models.CharField,
         max_length=40,
         verbose_name=_('Committee name'),
         unique=True,
     )
 
-    description = models.TextField(
+    description = MultilingualField(
+        models.TextField,
         verbose_name=_('Description'),
     )
 
@@ -81,7 +83,7 @@ class Committee(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('activemembers:details', args=[str(self.pk)])
+        return reverse('activemembers:committee', args=[str(self.pk)])
 
     class Meta:
         verbose_name = _('committee')
@@ -102,7 +104,7 @@ class Board(Committee):
     )
 
     def get_absolute_url(self):
-        return '/committee/boards/{}'.format(self.name.lower())
+        return reverse('committees:board', args=[str(self.pk)])
 
 
 class ActiveMembershipManager(models.Manager):
@@ -112,7 +114,7 @@ class ActiveMembershipManager(models.Manager):
         return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
-class CommitteeMembership(models.Model):
+class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
     objects = models.Manager()
     active_memberships = ActiveMembershipManager()
 
@@ -148,7 +150,8 @@ class CommitteeMembership(models.Model):
         default=False,
     )
 
-    role = models.CharField(
+    role = MultilingualField(
+        models.CharField,
         _('role'),
         help_text=_('The role of this member'),
         max_length=255,
@@ -159,7 +162,7 @@ class CommitteeMembership(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.pk is None:
+        if self.pk is not None:
             self._was_chair = bool(self.chair)
         else:
             self._was_chair = False
@@ -221,13 +224,16 @@ class CommitteeMembership(models.Model):
         # If the chair changed and we're still active, we create a new instance
         # Inactive instances should be handled manually
         if (self.pk is not None and self._was_chair != self.chair and
-                not self.until):
+                not self.until and self.since != timezone.now().date()):
             logger.info("Creating new membership instance")
-            self.until = timezone.now().date()
+            self.until = timezone.now().date() - datetime.timedelta(days=1)
             super().save(*args, **kwargs)
             self.pk = None  # forces INSERT
-            self.since = self.until  # Set since date to older expiration
+            # Set since date to older expiration:
+            self.since = timezone.now().date()
             self.until = None
+
+        self._was_chair = self.chair
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

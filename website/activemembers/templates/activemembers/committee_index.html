@@ -3,7 +3,7 @@
 {% block title %}{% trans 'Committees' %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>{% trans 'Committees' %}</h1>
+<h1>{% trans 'committees'|capfirst %}</h1>
 
 <div class="clearfix portfolio">
   <div id="committees">
@@ -17,7 +17,7 @@
               {% if committee.photo %}
               <img src="{% thumbnail committee.photo '220x220' fit=False %}" alt="Photo of {{ committee.name }}">
               {% else %}
-              <img height="220" width="220" src="{% static 'committees/images/logo-black-bg.png' %}">
+              <img height="220" width="220" src="{% static 'committees/images/placeholder.png' %}">
               {% endif %}
             </div>
 

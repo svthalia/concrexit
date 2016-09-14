@@ -3,8 +3,10 @@
     "model": "activemembers.committee",
     "pk": 1,
     "fields": {
-        "name": "testcie1",
-        "description": "Test",
+        "name_nl": "testcie1",
+        "name_en": "testcie1",
+        "description_nl": "Test",
+        "description_en": "Test",
         "photo": "Thom_Wiggers.jpg",
         "permissions": [
             25,
@@ -17,8 +19,10 @@
     "model": "activemembers.committee",
     "pk": 2,
     "fields": {
-        "name": "testcie2",
-        "description": "testdesc2",
+        "name_nl": "testcie2",
+        "name_en": "testcie2",
+        "description_nl": "testdesc2",
+        "description_en": "testdesc2",
         "photo": "Thom_Wiggers_4YRoxV3.jpg",
         "permissions": []
     }
