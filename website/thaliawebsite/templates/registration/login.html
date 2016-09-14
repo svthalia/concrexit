@@ -6,24 +6,45 @@
 {% block title %}{% trans "Login" %}{% endblock %}
 
 {% block body %}
-  {% if next %}
-    {% if user.is_authenticated %}
-      {% blocktrans %}
-        <p>Your account does not have access to this page. To proceed, please
-        log in with an account that has access.</p>
-    {% endblocktrans %}
-    {% else %}
-      {% blocktrans %}
-        <p>Please log in to see this page.</p>
-      {% endblocktrans %}
-    {% endif %}
-  {% endif %}
-  <form method="POST" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      {{ form }}
-    </table>
-    <input type="hidden" name="next" value="{{ next }}">
-    <input type="submit" value="{% trans "Login" %}">
-  </form>
+<h1>{% trans "Log in" %}</h1>
+{% if next %}
+<p>
+{% if user.is_authenticated %}
+{% blocktrans trimmed %}
+Your account does not have access to this page. To proceed, please log in with an account that has access.
+{% endblocktrans %}
+{% else %}
+{% blocktrans trimmed %}
+Please log in to see this page.
+{% endblocktrans %}
+{% endif %}
+</p>
+{% endif %}
+
+{% if form.errors %}
+<div class="alert alert-error">
+    {% trans "Invalid username or password." %}
+    <button type="button" class="close"><span class="alert-icon-close"></span></button>
+</div>
+{% endif %}
+
+<div class="row">
+        <form method="post" action="{% url 'login' %}" class="span6 offset3 form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="control-group">
+                <input name="{{ form.username.name }}" autofocus class="form-control" placeholder="{% trans "Username" %}">
+            </div>
+
+            <div class="control-group">
+                <input name="{{ form.password.name }}" class="form-control" type="password" placeholder="{% trans "Password" %}">
+            </div>
+
+            <div class="control-group">
+                <input type="submit" value="{% trans "Login" %}" class="btn btn-primary btn-style1 pull-right login">
+                <a href="{% url 'password_reset' %}" class="forgot btn pull-left btn-style2">{% trans "Forgot password" %}</a>
+            </div>
+        </form>
+    </div>
 {% endblock %}

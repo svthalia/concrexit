@@ -62,6 +62,14 @@ class ModelTranslateMeta(models.base.ModelBase):
 
     def __new__(cls, name, bases, dct):
         field_i18n = {'default': {}, 'fields': {}}
+        try:
+            # Inherit i18n fields from superclass
+            field_i18n = bases[0]._meta._field_i18n
+        except IndexError:
+            pass
+        except AttributeError:
+            pass
+
         for attr, field in list(dct.items()):
             if not isinstance(field, MultilingualField):
                 continue

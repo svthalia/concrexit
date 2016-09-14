@@ -9,10 +9,9 @@ from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 from utils.translation import TranslatedModelAdmin
-from committees.models import Committee
+from activemembers.models import Committee
 from members.models import Member
 from . import models
-
 
 def _do_next(request, response):
     if 'next' in request.GET and is_safe_url(request.GET['next']):

@@ -25,7 +25,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     end = models.DateTimeField(_("end time"))
 
     organiser = models.ForeignKey(
-        'committees.Committee',
+        'activemembers.Committee',
         models.SET_NULL,
         null=True,
         verbose_name=_("organiser")

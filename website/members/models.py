@@ -260,6 +260,12 @@ class Member(models.Model):
         default=True,
     )
 
+    receive_newsletter = models.BooleanField(
+        verbose_name=_('Receive newsletter'),
+        help_text=_("Receive the Thalia Newsletter"),
+        default=True,
+    )
+
     # --- Direct debit information ----
 
     direct_debit_authorized = models.BooleanField(
