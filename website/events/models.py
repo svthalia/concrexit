@@ -162,7 +162,7 @@ class RegistrationInformationField(models.Model):
             value_set = self.textregistrationinformation_set
         elif self.type == 'checkbox':
             value_set = self.booleanregistrationinformation_set
-        elif value_set == 'intfield':
+        elif self.type == 'intfield':
             value_set = self.integerregistrationinformation_set
         try:
             return value_set.get(registration=registration).value
