@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% comment %}This page is automatically used by django.contrib.auth.views{% endcomment %}
+
+{% block title %}{% trans "Logout" %}{% endblock %}
+
+{% block body %}
+
+<h1>{% trans "Logout" %}</h1>
+
+<p class="text-center">{% trans "You've been logged out successfully." %}</p>
+
+<p class="text-center"><a href="{% url 'login' %}">{% trans 'Log in again' %}</a></p>
+
+{% endblock %}
