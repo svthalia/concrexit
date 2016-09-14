@@ -40,7 +40,7 @@ class PizzaEvent(models.Model):
             if self.start <= other.end and other.start >= self.end:
                 raise ValidationError({
                     'start': _('This event cannot overlap with ') + str(other),
-                    'end': _('This event  cannot overlap with ') + str(other),
+                    'end': _('This event cannot overlap with ') + str(other),
                 })
 
     def __str__(self):

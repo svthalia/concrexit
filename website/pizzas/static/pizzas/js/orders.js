@@ -12,7 +12,7 @@ $(function() {
             if(data.success === 1) {
                 button.addClass('btn-style' + (4 - data.paid));
                 button.removeClass('btn-style' + (3 + data.paid));
-                button.val(data.paid ? 'Yes' : 'No');
+                button.val(data.paid ? trans.yes : trans.no);
                 button.blur();
             }
             else {

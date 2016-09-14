@@ -24,7 +24,7 @@
     </center>
     {% endif %}
     <h1>
-        {% blocktrans %}Order food for {{ event.title }}{% endblocktrans %}
+        {% blocktrans with title=event.title %}Order food for {{ title }}{% endblocktrans %}
     </h1>
 {% else %}
     <h1>
@@ -43,16 +43,16 @@
 {% if event %}
     {% if event.in_the_future %}
         <h2>
-            {% blocktrans with start=event.start|date:"Y-m-d H:m:s" %}It will be possible to order from {{ start }}.{% endblocktrans %}
+            {% blocktrans with start=event.start|date:"Y-m-d H:i:s" %}It will be possible to order from {{ start }}.{% endblocktrans %}
         </h2>
     {% else %}
         {% if event.just_ended %}
         <h2>
-            {% blocktrans with end=event.end|date:"Y-m-d H:m:s" %}It was possible to order until {{ end }}.{% endblocktrans %}
+            {% blocktrans with end=event.end|date:"Y-m-d H:i:s" %}It was possible to order until {{ end }}.{% endblocktrans %}
         </h2>
         {% else %}
         <h2>
-            {% blocktrans with end=event.end|date:"Y-m-d H:m:s" %}It is possible to order until {{ end }}.{% endblocktrans %}
+            {% blocktrans with end=event.end|date:"Y-m-d H:i:s" %}It is possible to order until {{ end }}.{% endblocktrans %}
         </h2>
         {% endif %}
         {% if order %}
@@ -113,6 +113,7 @@
                         <th>{% trans "Name" %}</th>
                         <th>{% trans "Description" %}</th>
                         <th>{% trans "Price" %}</th>
+                        
                         <th>{% if order %}{% trans "Modify" %}{% else %}{% trans "Order" %}{% endif %}</th>
                     </tr>
                     {% for product in products %}
@@ -123,8 +124,8 @@
                             <td>
                                 <form class="form-horizontal pizza-order-form" method="post" action="{% url 'pizzas:order' %}">
                                     {% csrf_token %}
-                                    <input type='hidden' name='product' value='{{ product.pk }}' />
-                                    <input type='submit' class='btn btn-style1' {% if order %}value='{% trans "Modify" %}' onclick="return confirm('{% trans "Are you sure you want to modify your order?" %}')"{% else %}value='{% trans "Order" %}'{% endif %} />
+                                    <input type="hidden" name="product" value="{{ product.pk }}" />
+                                    <input type="submit" class="btn btn-style1" {% if order %}value='{% trans "Modify" %}' onclick="return confirm('{% trans "Are you sure you want to modify your order?" %}')"{% else %}value='{% trans "Order" %}'{% endif %} />
                                 </form>
                             </td>
                         </tr>

@@ -21,7 +21,7 @@
 <form class="form-horizontal" method="post" action="{% url 'pizzas:add-order' event.pk %}">
     {% csrf_token %}
     <div class="form-group {% if form.name.errors %}has-error{% endif %}">
-        <label for="{{ form.name.auto_id }}" class="control-label">{{ form.name.label }}</label>
+        <label for="{{ form.name.auto_id }}" class="control-label">{% trans 'Name' %}</label>
         <div class="controls">
             {{ form.name }}
             {% for error in form.name.errors %}
@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="form-group {% if form.product.errors %}has-error{% endif %}">
-        <label for="{{ form.product.auto_id }}" class="control-label">{{ form.product.label }}</label>
+        <label for="{{ form.product.auto_id }}" class="control-label">{% trans 'Product' %}</label>
         <div class="controls">
             {{ form.product }}
         </div>
