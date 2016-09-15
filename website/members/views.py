@@ -9,6 +9,7 @@ from sendfile import sendfile
 
 from .models import BecomeAMemberDocument
 from .models import Member
+from .forms import MemberForm
 
 
 def index(request):
@@ -31,7 +32,7 @@ def index(request):
     if query_filter and query_filter.isdigit() and not (
                         query_filter == 'ex' or
                         query_filter == 'honor' or
-                        query_filter == 'old'):
+                    query_filter == 'old'):
         members = [obj for obj in members if
                    obj.current_membership and
                    obj.current_membership.since.year == int(query_filter)]
@@ -125,13 +126,25 @@ def profile(request, pk=None):
     return render(request, 'members/profile.html',
                   {'member': member, 'achievements': achievements.values()})
 
+
 @login_required
 def account(request):
     return render(request, 'members/account.html')
 
+
 @login_required
 def edit_profile(request):
-    return render(request, 'members/account.html')
+    member = get_object_or_404(Member, user=request.user)
+
+    if request.POST:
+        form = MemberForm(request.POST)
+        if form.is_valid():
+            member = form.save()
+    else:
+        form = MemberForm(instance=member)
+
+    return render(request, 'members/edit_profile.html',
+                  {'form': form})
 
 
 def become_a_member(request):
