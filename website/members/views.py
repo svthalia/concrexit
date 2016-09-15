@@ -40,8 +40,7 @@ def index(request):
                    obj.current_membership.since.year < start_year]
     elif query_filter == 'ex':
         members = [obj for obj in members if not obj.current_membership and
-                   len([ship for ship in obj.membership_set.all().filter(
-                       type='member')]) > 0]
+                   obj.membership_set.all().filter(type='member').count() > 0]
     elif query_filter == 'honor':
         members = [obj for obj in members if
                    obj.current_membership and
