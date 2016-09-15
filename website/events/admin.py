@@ -13,6 +13,7 @@ from activemembers.models import Committee
 from members.models import Member
 from . import models
 
+
 def _do_next(request, response):
     if 'next' in request.GET and is_safe_url(request.GET['next']):
         return HttpResponseRedirect(request.GET['next'])
