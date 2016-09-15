@@ -3,6 +3,7 @@ from datetime import date
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from sendfile import sendfile
 
@@ -85,8 +86,11 @@ def index(request):
                    'keywords': keywords})
 
 
-def profile(request, pk):
-    member = get_object_or_404(Member, pk=int(pk))
+def profile(request, pk=None):
+    if pk:
+        member = get_object_or_404(Member, pk=int(pk))
+    elif request.user.is_authenticated():
+        member = get_object_or_404(Member, user=request.user)
 
     # Group the memberships under the committees for easier template rendering
     memberships = member.committeemembership_set.all()
@@ -110,7 +114,7 @@ def profile(request, pk):
             }
         achievements[name]['periods'].sort(key=lambda period: period['since'])
 
-    mentor_years = member.mentor_set.all()
+    mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
         name = str(mentor_year)
         if not achievements.get(name):
@@ -120,6 +124,14 @@ def profile(request, pk):
 
     return render(request, 'members/profile.html',
                   {'member': member, 'achievements': achievements.values()})
+
+@login_required
+def account(request):
+    return render(request, 'members/account.html')
+
+@login_required
+def edit_profile(request):
+    return render(request, 'members/account.html')
 
 
 def become_a_member(request):

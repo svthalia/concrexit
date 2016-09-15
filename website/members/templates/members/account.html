@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Members" %} - {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>{% trans 'Account' %}</h1>
+
+<div class="row">
+    <div class="span6 offset3">
+
+        <p class="text-center">U bent momenteel ingelogd als <strong>{{ request.user.username }}</strong>.</p>
+
+        <hr>
+
+        <div>
+            <a href="{% url 'members:edit-profile' %}">{% trans "edit profile"|capfirst %}</a>
+            <p>{% blocktrans %}Edit your profile and avatar.{% endblocktrans %}</p>
+        </div>
+
+        <hr>
+
+        <div>
+            <a href="{% url 'password_change' %}">{% trans "change password"|capfirst %}</a>
+            <p>{% blocktrans %}Change your accounts' password.{% endblocktrans %}</p>
+        </div>
+
+        <hr>
+
+        <div>
+            <a href="{% url 'logout' %}">{% trans "logout"|capfirst %}</a>
+            <p>{% blocktrans %}Leave the authenticated area of the website.{% endblocktrans %}</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}}
