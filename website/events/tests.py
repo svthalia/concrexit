@@ -16,11 +16,13 @@ class RegistrationTest(TestCase):
 
     def setUp(self):
         self.event = Event.objects.create(
-            title='testevent',
+            title_nl='testevene',
+            title_en='testevent',
             description='desc',
             start=timezone.now(),
             end=(timezone.now() + datetime.timedelta(hours=1)),
-            location='test location',
+            location_en='test location',
+            location_nl='test locatie',
             map_location='test map location',
             price=0.00,
             cost=0.00)
