@@ -32,7 +32,7 @@ def index(request):
     if query_filter and query_filter.isdigit() and not (
                         query_filter == 'ex' or
                         query_filter == 'honor' or
-                    query_filter == 'old'):
+                        query_filter == 'old'):
         members = [obj for obj in members if
                    obj.current_membership and
                    obj.current_membership.since.year == int(query_filter)]

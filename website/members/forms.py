@@ -1,13 +1,7 @@
 from __future__ import unicode_literals
 
-import unicodedata
-
 from django.forms import ModelForm
 from .models import Member
-from django.contrib.auth.hashers import (
-    UNUSABLE_PASSWORD_PREFIX, identify_hasher,
-)
-from django.utils.translation import ugettext, ugettext_lazy as _
 
 
 class MemberForm(ModelForm):
