@@ -8,6 +8,7 @@ from django.utils.http import is_safe_url
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
+from utils.translation import TranslatedModelAdmin
 from activemembers.models import Committee
 from members.models import Member
 from . import models
@@ -20,7 +21,7 @@ def _do_next(request, response):
         return response
 
 
-class DoNextModelAdmin(admin.ModelAdmin):
+class DoNextModelAdmin(TranslatedModelAdmin):
 
     def response_add(self, request, obj):
         res = super().response_add(request, obj)
