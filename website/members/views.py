@@ -135,16 +135,18 @@ def account(request):
 @login_required
 def edit_profile(request):
     member = get_object_or_404(Member, user=request.user)
+    saved = False
 
     if request.POST:
-        form = MemberForm(request.POST)
+        form = MemberForm(request.POST, instance=member)
         if form.is_valid():
+            saved = True
             member = form.save()
-    else:
-        form = MemberForm(instance=member)
+
+    form = MemberForm(instance=member)
 
     return render(request, 'members/edit_profile.html',
-                  {'form': form})
+                  {'form': form, 'saved': saved})
 
 
 def become_a_member(request):

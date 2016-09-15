@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-15 21:50+0200\n"
-"PO-Revision-Date: 2016-09-15 21:50+0200\n"
+"POT-Creation-Date: 2016-09-15 21:55+0200\n"
+"PO-Revision-Date: 2016-09-15 21:55+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -311,7 +311,11 @@ msgstr "uitloggen"
 msgid "Leave the restricted area of the website."
 msgstr "Verlaat het beveiligde gedeelte van de website."
 
-#: templates/members/edit_profile.html:31
+#: templates/members/edit_profile.html:14
+msgid "You're profile has been updated successfully."
+msgstr "Je profiel is succesvol opgeslagen."
+
+#: templates/members/edit_profile.html:36
 msgid "save"
 msgstr "opslaan"
 
