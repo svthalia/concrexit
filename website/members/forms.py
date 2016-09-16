@@ -9,7 +9,7 @@ class MemberForm(ModelForm):
         fields = ['address_street', 'address_street2',
                   'address_postal_code', 'address_city', 'phone_number',
                   'emergency_contact', 'emergency_contact_phone_number',
-                  'birthday', 'show_birthday', 'website',
+                  'show_birthday', 'website',
                   'profile_description', 'nickname',
                   'display_name_preference', 'photo', 'language',
                   'receive_optin', 'receive_newsletter']
