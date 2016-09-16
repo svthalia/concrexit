@@ -60,4 +60,4 @@ class EventSerializer(CalenderJSSerializer):
         model = Event
 
     def _url(self, instance):
-        return reverse('#')
+        return reverse('events:event', kwargs={'event_id': instance.id})

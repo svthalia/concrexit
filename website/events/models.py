@@ -230,6 +230,9 @@ class Registration(models.Model):
         return [{'field': field, 'value': field.get_value_for(self)}
                 for field in fields]
 
+    def is_external(self):
+        return bool(self.name)
+
     def clean(self):
         if ((self.member is None and not self.name) or
                 (self.member and self.name)):

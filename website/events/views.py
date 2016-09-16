@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import permission_required
 from django.utils import timezone
 from django.utils.text import slugify
 
-from .models import Event
+from .models import Event, Registration
 
 
 @staff_member_required
@@ -96,3 +96,32 @@ def index(request):
     return render(request, 'events/index.html', {
         'upcoming_activity': upcoming_activity
     })
+
+
+def event(request, event_id):
+    event = get_object_or_404(
+        Event.objects.filter(published=True),
+        pk=event_id
+    )
+    registrations = event.registration_set.all()
+
+    context = {
+        'event': event,
+        'registrations': registrations,
+        'user': request.user,
+    }
+
+    if event.max_participants:
+        perc = 100.0*len(registrations)/event.max_participants
+        context['registration_percentage'] = perc
+
+    try:
+        registration = Registration.objects.get(
+            event=event,
+            member=request.user.member
+        )
+        context['registration'] = registration
+    except:
+        pass
+
+    return render(request, 'events/event.html', context)

@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block body %}
+    <h1>{{ event.title }}</h1>
+    <p class="tcenter">{{ event.description }}</p>
+
+    <div class="clearfix row">
+        <div class="span6">
+            <table class="table borderless">
+                <tbody>
+                <tr>
+                    <th>{% trans "from"|capfirst %}</th>
+                    <td>{{ event.start }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "until"|capfirst %}</th>
+                    <td>{{ event.end }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "location"|capfirst %}</th>
+                    <td>{{ event.location }}</td>
+                </tr>
+                {% if event.price > 0 %}
+                    <tr>
+                        <th>{% trans "price"|capfirst %}</th>
+                        <td> &euro;{{ event.price }}</td>
+                    </tr>
+                {% endif %}
+                {% if event.registration_required %}
+                    <tr>
+                        <th>{% trans "registration deadline"|capfirst %}</th>
+                        <td>{{ event.registration_end }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "cancellation deadline"|capfirst %}</th>
+                        <td>{{ event.cancel_deadline }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "number of registrations"|capfirst %}</th>
+                        <td>
+                            {% blocktrans count counter=registrations|length trimmed %}
+                                {{ counter }} registration
+                            {% plural %}
+                                {{ counter }} registrations
+                            {% endblocktrans %}
+                            {% if event.max_participants > 0 %}
+                                <i>({{ event.max_participants }} {% trans "max"|capfirst %})</i>
+                                {% with prc=registration_percentage %}
+                                    <div class="progress progress-style1">
+                                        <div class="bar trans-enabled" style="width: {{ prc }}%;" data-width="{{ prc }}%"></div>
+                                    </div>
+                                {% endwith %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <?php if ($registration !== null): ?>
+                    {% if registration %}
+                        <tr>
+                            <th>{% trans "registration status"|capfirst %}</th>
+                            <td>
+                                <b>TODO TODO TODO</b>
+                                {# TODO implement registration status #}
+                                {#                            <?php#}
+                                {#                                /** @var RegistrationModel $registration */#}
+                                {#                                if ($registration->isRegisteredExcludeCoolDown()) {#}
+                                {#                            $queuePos = $activity->getQueuePosition($registration);#}
+                                {#                            if ($queuePos === 0) {#}
+                                {#                            echo "Aangemeld";#}
+                                {#                            } else {#}
+                                {#                            echo "Op wachtlijst positie " . $queuePos;#}
+                                {#                            }#}
+                                {#                            } else if($registration->isLateCancellation()) {#}
+                                {#                            echo "Te laat afgemeld";#}
+                                {#                            } else {#}
+                                {#                            echo "Afgemeld";#}
+                                {#                            }#}
+                                {#                            ?>#}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+
+                {# Todo implement aanmeldmechanisme #}
+{#                <?php#}
+{##}
+{#                /*#}
+{#                 * Preparation for button#}
+{#                 */#}
+{#                // Get registration status#}
+{#                $registration_status = $activity->getRegistrationStatus();#}
+{#                $afterDeadline = false;#}
+{##}
+{#                // Determine link and text for button#}
+{#                if(!$user->isLoggedIn() || $registration_status === ActivityModel::REGISTRATION_NOT_NEEDED) {#}
+{#                    $show_button = false;#}
+{#                } elseif(!($registered && $registration->isRegisteredExcludeCoolDown())) {#}
+{#                    // Not yet registered#}
+{#                    if ($registration_count >= $activity->registration_limit) {#}
+{#                        $button_text = "Op reservelijst";#}
+{#                    } else {#}
+{#                        $button_text = "Aanmelden";#}
+{#                    }#}
+{#                    if($registration !== null && $registration->isInCoolDown()) {#}
+{#                        $button_text = "Afmelding annuleren";#}
+{#                    }#}
+{#                    $show_button = $registration_status === ActivityModel::REGISTRATION_OPEN || $registration_status === ActivityModel::REGISTRATION_CLOSED_REGISTER_ONLY;#}
+{#                    $intent = "register";#}
+{#                } else {#}
+{#                    // Already registered#}
+{#                    $button_text = "Afmelden";#}
+{#                    $show_button = true;#}
+{#                    if(!$activity->canCancel())#}
+{#                    {#}
+{#                        $afterDeadline = true;#}
+{#                        $costText = empty($activity->thalia_costs) ? '' : ' van ongeveer € ' . number_format($activity->thalia_costs, 2, ',', '.');#}
+{#                        $confirmText = 'De deadline is verstreken, weet je zeker dat je je wilt afmelden en daarmee een boete krijgt' . $costText . '? Je kunt dit niet ongedaan maken.';#}
+{##}
+{#                    }#}
+{#                    $intent = "cancel";#}
+{#                }#}
+{#                ?>#}
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+{#                    <?php if($show_button): ?>#}
+{##}
+{#                        <form class="form-inline pull-left" method="post" action="<?php echo $this->action('/register'); ?>">#}
+{#                            <?php echo $form->hidden('activity_id', $activity->id); ?>#}
+{#                            <?php echo $form->hidden('intent', $intent); ?>#}
+{#                            <?php if($afterDeadline): ?>#}
+{#                                <?php echo $form->submit('submit', $button_text, ['class' => 'btn btn-style1', 'onclick' => 'return confirm(\'' . $confirmText . '\');']); ?>#}
+{#                            <?php else: ?>#}
+{#                                <?php echo $form->submit('submit', $button_text, ['class' => 'btn btn-style1']); ?>#}
+{#                            <?php endif; ?>#}
+{#                            <?php echo $csrf_token; ?>#}
+{#                        </form>#}
+{##}
+{#                    <?php endif; ?>#}
+{#					<?php if($registered && ($registration_status === ActivityModel::REGISTRATION_OPEN || $registration_status === ActivityModel::REGISTRATION_CLOSED_REGISTER_ONLY) && $registration->isRegisteredExcludeCoolDown() && count($activity->getExtraFields()) > 0):?>#}
+{#                        <form class="form-inline pull-left" method="post" action="<?php echo $this->action('/register'); ?>">#}
+{#                            <?php echo $form->hidden('activity_id', $activity->id);?>#}
+{#                            <?php echo $form->hidden('intent', 'prompt_update_screen');?>#}
+{#                            <?php echo $form->submit('submit', 'Bijwerken', ['class' => 'btn btn-style1']); ?>#}
+{#                            <?php echo $csrf_token; ?>#}
+{#                        </form>#}
+{#                    <?php endif; ?>#}
+					</td>
+                </tr>
+                <tr>
+	                <td>
+	                </td>
+                    <td>
+                        <em>
+                            {% if not request.user.is_authenticated %}
+                            {% trans "You have to log in before you can register for this event." %}
+                            {% endif %}
+
+
+                        {# Todo implement aanmeldtekst #}
+{#						<?php if (!$user->isLoggedIn()):?>#}
+{#                        <?php elseif($registered && $registration->isInCoolDown()): ?>#}
+{#                            <script>#}
+{#                            window.onload = function () {#}
+{#                                startTimer("<?= (new \DateTime($registration->canceled))->format("Y/m/d H:i:s");?>", document.querySelector('#events_cool_down_timer'));#}
+{#                            };#}
+{#                            </script>#}
+{#                            <span id="events_cool_down_text" title="Binnen de aangegeven hoeveelheid tijd kun je je afmelding annuleren door je opnieuw aan te melden. In dat geval raak je je oude plek niet kwijt.">Je hebt nog <span id="events_cool_down_timer" >een onbekende hoeveelheid tijd</span> om je afmelding ongedaan te maken.</span>#}
+{#                        <?php elseif($registration_status === ActivityModel::REGISTRATION_NOT_NEEDED): ?>#}
+{#                            <?php if($activity->registration_not_needed_message !== null) : ?>#}
+{#                                <?php echo $activity->registration_not_needed_message; ?>#}
+{#                            <?php else: ?>#}
+{#                                Aanmelden hoeft niet#}
+{#                            <?php endif; ?>#}
+{#                        <?php elseif($registration_status === ActivityModel::REGISTRATION_NOT_YET_OPEN): ?>#}
+{#                            Aanmelden kan vanaf <?php echo $activity->formatDate('begin_registration'); ?>#}
+{#                        <?php elseif($registration && $registration->isRegisteredExcludeCoolDown() && ($registration_status === ActivityModel::REGISTRATION_CLOSED  || $registration_status === ActivityModel::REGISTRATION_CLOSED_REGISTER_ONLY)): ?>#}
+{#                        <?php // You are registered, but you can either: do nothing, or only register, so no cancelling ?>#}
+{#                            Afmelden kan niet meer, tenzij je de boete betaalt <?php echo $costText; ?>.#}
+{#                        <?php elseif(!($registered  && $registration->isRegisteredExcludeCoolDown()) && ($registration_status === ActivityModel::REGISTRATION_CLOSED  || $registration_status === ActivityModel::REGISTRATION_CLOSED_CANCEL_ONLY)): ?>#}
+{#                        <?php // You are not registered, but you can either: do nothing, or only cancel, so no registering ?>#}
+{#                            Aanmelden kan niet meer#}
+{#                        <?php endif; ?>#}
+                        </em>
+                    </td>
+                </tr>
+                {# TODO IMPLEMENT PIZZA BUTTON #}
+{#                <tr>#}
+{#                    <th>#}
+{#                        Pizza#}
+{#                    </th>#}
+{#                    <td>#}
+{#                        <a href="<?php echo $pizzaActivity->getUrl(); ?>" class="btn btn-style1">#}
+{#                            Bestellen#}
+{#                        </a>#}
+{#                    </td>#}
+{#                </tr>#}
+{#                <?php endif; ?>#}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="span6">
+        <div class="location-map">
+            <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ event.map_location|urlencode }}&zoom=13&size=450x250&markers={{ event.map_location|urlencode }}"/>
+        </div>
+    </div>
+</div>
+
+    {% if user.is_authenticated and registrations|length > 0 %}
+        <div class="member-directory">
+            <h1 class="midhead">Aanmeldingen</h1>
+            <ul class="member-directory row">
+                {% for registration in registrations %}
+                    <li class="post member-item span3 has-overlay{% if forloop.counter0|divisibleby:4 %} first-child{% endif %}">
+                    {% if registration.is_external %}
+                        <a href="#">
+                            <div class="post-inner">
+                                <div class="inner-img">{% static "members/images/default-avatar.jpg" %}</div>
+                                <div class="post-overlay">
+                                    <div class="post-overlay-meta">
+                                        <h2>{{ registration.name }}</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                                <div class="post-body avatar-subtitle">
+                                    {{ registration.name }}
+                                </div>
+                            </div>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'members:profile' pk=registration.member.pk %}">
+                            <div class="post-inner">
+                                <div class="inner-img">
+                                    <img src="{% if not registration.member.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ registration.member.photo.url }}{% endif %}" alt="{{ registration.member.display_name }}" />
+                                </div>
+                                <div class="post-overlay">
+                                    <div class="post-overlay-meta">
+                                        <h2>{{ registration.member.display_name }}</h2>
+                                        <p>{% trans "cohort"|capfirst %}: {{ registration.member.starting_year }}</p>
+                                    </div>
+                                </div>
+                                <div class="post-body avatar-subtitle">
+                                    {{ registration.member.display_name }}
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock body %}

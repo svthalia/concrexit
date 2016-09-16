@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-16 08:38+0200\n"
-"PO-Revision-Date: 2016-09-16 08:40+0200\n"
+"POT-Creation-Date: 2016-09-16 08:49+0200\n"
+"PO-Revision-Date: 2016-09-16 12:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -75,6 +75,7 @@ msgid "cancel deadline"
 msgstr "afmelddeadline"
 
 #: models.py:54 templates/events/admin/details.html:55
+#: templates/events/event.html:21
 msgid "location"
 msgstr "locatie"
 
@@ -89,6 +90,7 @@ msgstr ""
 "getoond als tekst!!"
 
 #: models.py:66 templates/events/admin/details.html:57
+#: templates/events/event.html:26
 msgid "price"
 msgstr "prijs"
 
@@ -183,11 +185,11 @@ msgstr "aanwezig"
 msgid "paid"
 msgstr "betaald"
 
-#: models.py:234 models.py:235
+#: models.py:237 models.py:238
 msgid "Either specify a member or a name"
 msgstr "Geef een lid of een naam op"
 
-#: models.py:257
+#: models.py:260
 msgid "last changed"
 msgstr "laatst aangepast"
 
@@ -255,6 +257,49 @@ msgstr "toevoegen"
 msgid "Nobody %(verb)s yet"
 msgstr "Niemand heeft zich %(verb)s"
 
+#: templates/events/event.html:13
+msgid "from"
+msgstr "van"
+
+#: templates/events/event.html:17
+msgid "until"
+msgstr "tot"
+
+#: templates/events/event.html:32
+msgid "registration deadline"
+msgstr "aanmelddeadline"
+
+#: templates/events/event.html:36
+msgid "cancellation deadline"
+msgstr "afmelddeadline"
+
+#: templates/events/event.html:40
+msgid "number of registrations"
+msgstr "aantal aanmeldingen"
+
+#: templates/events/event.html:42
+#, python-format
+msgid "%(counter)s registration"
+msgid_plural "%(counter)s registrations"
+msgstr[0] "%(counter)s aanmelding"
+msgstr[1] "%(counter)s aanmeldingen"
+
+#: templates/events/event.html:48
+msgid "max"
+msgstr "max"
+
+#: templates/events/event.html:60
+msgid "registration status"
+msgstr "aanmeldstatus"
+
+#: templates/events/event.html:157
+msgid "You have to log in before you can register for this event."
+msgstr "Je moet inloggen voordat je jezelf kunt aanmelden."
+
+#: templates/events/event.html:241
+msgid "cohort"
+msgstr "jaarlaag"
+
 #: templates/events/index.html:13
 msgid "Calendar"
 msgstr "Agenda"
@@ -271,6 +316,19 @@ msgstr "Toon  verjaardagen"
 #: templates/events/index.html:64
 msgid "list"
 msgstr "Lijst"
+
+#~ msgid "From"
+#~ msgstr "Vanaf"
+
+#, fuzzy
+#~| msgid "location"
+#~ msgid "Location"
+#~ msgstr "locatie"
+
+#, fuzzy
+#~| msgid "price"
+#~ msgid "Price"
+#~ msgstr "prijs"
 
 #~ msgid "Present"
 #~ msgstr "Aanwezig"
