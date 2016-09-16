@@ -22,7 +22,6 @@ class Command(BaseCommand):
             "Do you want to delete all existing objects? (type yes or no) ")
         if input_val == 'yes':
             MerchandiseItem.objects.all().delete()
-            return
 
         session = requests.Session()
         url = "https://thalia.nu/index.php/association/merchandise"
@@ -34,6 +33,8 @@ class Command(BaseCommand):
             desc = item.find("p", {"id": "merchandise-desc"}).text
             price = Decimal(item.find("div", {"id": "merchandise-price"})
                             .text[9:].replace(',', '.'))
+
+            print("Importing {}".format(title))
 
             merch = MerchandiseItem()
             merch.name_nl = title
