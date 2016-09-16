@@ -87,10 +87,11 @@ def index(request):
                    'keywords': keywords})
 
 
+@login_required
 def profile(request, pk=None):
     if pk:
         member = get_object_or_404(Member, pk=int(pk))
-    elif request.user.is_authenticated():
+    else:
         member = get_object_or_404(Member, user=request.user)
 
     # Group the memberships under the committees for easier template rendering
