@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-16 08:48+0200\n"
-"PO-Revision-Date: 2016-09-16 08:48+0200\n"
+"POT-Creation-Date: 2016-09-16 21:37+0200\n"
+"PO-Revision-Date: 2016-09-16 21:38+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -277,6 +277,11 @@ msgstr "leden"
 #: templates/members/account.html:9
 msgid "Account"
 msgstr "Bankrekening"
+
+#: templates/members/account.html:14
+#, python-format
+msgid "You’re currently logged in as <strong>%(user)s</strong>"
+msgstr "U bent momenteel ingelogd als <strong>%(user)s</strong>"
 
 #: templates/members/account.html:19
 msgid "show public profile"
