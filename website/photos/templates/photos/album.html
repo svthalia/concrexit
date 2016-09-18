@@ -25,14 +25,14 @@
             {% if album.shareable %}
             data-download="{% url 'photos:shared-download' album.slug album.access_token photo %}" href="{% shared_thumbnail album.slug album.access_token photo '1024x768' fit=False %}"
             {% else %}
-            data-download="{% url 'photos:download' photo %}" href="{% thumbnail photo '1024x768' fit=False %}"
+            data-download="{% url 'photos:download' photo %}" href="{% thumbnail photo.file '1024x768' fit=False %}"
             {% endif %}>
                 <span class="post-inner">
                     <span class="inner-img">
                         {% if album.shareable %}
                         <img class="rotate{{ photo.rotation }}" src="{% shared_thumbnail album.slug album.access_token photo '220x220' %}" alt="" />
                         {% else %}
-                        <img class="rotate{{ photo.rotation }}" src="{% thumbnail photo '220x220' %}" alt="" />
+                        <img class="rotate{{ photo.rotation }}" src="{% thumbnail photo.file '220x220' %}" alt="" />
                         {% endif %}
                     </span>
                     <span class="post-overlay">
