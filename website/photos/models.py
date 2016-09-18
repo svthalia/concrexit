@@ -3,6 +3,8 @@ from django.conf import settings
 from django.utils.functional import cached_property
 from django.db import models
 
+from PIL import Image
+
 import hashlib
 import os
 import random
@@ -26,6 +28,14 @@ class Photo(models.Model):
 
     def __str__(self):
         return self.file.name
+
+    def save(self, *args, **kwargs):
+        super(Photo, self).save(*args, **kwargs)
+
+        image_path = str(self.file.path)
+        image = Image.open(image_path)
+        image.thumbnail((1920, 1080), Image.ANTIALIAS)
+        image.save(image_path, "JPEG")
 
 
 class Album(models.Model):
