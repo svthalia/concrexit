@@ -13,7 +13,12 @@
         {% trans "Calendar" %}
         <span class="title-meta clearfix">
             <span>
-                <a href="{% url '#' %}" id="collectionButton" target="_blank" class="calendar">
+                <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}"
+                   id="collectionButton"
+                   target="_blank"
+                   class="calendar"
+                   title="iCal feed"
+                >
                     <i class="fa fa-calendar"></i>
                 </a>
             </span>

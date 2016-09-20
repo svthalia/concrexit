@@ -9,3 +9,4 @@ django-tinymce==2.3.0
 pytz
 rcssmin
 djangorestframework==3.4.4
+django-ical==1.4

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-16 08:49+0200\n"
-"PO-Revision-Date: 2016-09-16 12:52+0200\n"
+"POT-Creation-Date: 2016-09-20 21:26+0200\n"
+"PO-Revision-Date: 2016-09-20 21:27+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -37,6 +37,10 @@ msgstr "Publiceer geselecteerde evenementen"
 #: admin.py:90
 msgid "Unpublish selected events"
 msgstr "Publicatie van geselecteerde evenementen ongedaan maken"
+
+#: feeds.py:23
+msgid "Study Association Thalia event calendar"
+msgstr "Studievereniginig Thalia evenementenkalender"
 
 #: models.py:13
 msgid "No registration required"
