@@ -18,7 +18,8 @@ class RegistrationTest(TestCase):
         self.event = Event.objects.create(
             title_nl='testevene',
             title_en='testevent',
-            description='desc',
+            description_en='desc',
+            description_nl='besch',
             start=timezone.now(),
             end=(timezone.now() + datetime.timedelta(hours=1)),
             location_en='test location',
