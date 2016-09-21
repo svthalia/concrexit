@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-28 22:03+0200\n"
-"PO-Revision-Date: 2016-08-28 22:05+0200\n"
+"POT-Creation-Date: 2016-09-16 21:37+0200\n"
+"PO-Revision-Date: 2016-09-16 21:38+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -18,9 +18,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.8\n"
 
-#: admin.py:24
+#: admin.py:26
 msgid "membership type"
 msgstr "lidtype"
+
+#: admin.py:49
+msgid "Age"
+msgstr "Leeftijd"
+
+#: admin.py:54
+msgid "≥ 18"
+msgstr "≥ 18"
+
+#: admin.py:55
+msgid "< 18"
+msgstr "< 18"
+
+#: admin.py:56
+msgid "Unknown"
+msgstr "Onbekend"
 
 #: models.py:54
 msgid "Computing Science"
@@ -175,7 +191,15 @@ msgstr "Ontvang opt-in mailings"
 msgid "Receive mailings about vacancies and events from Thalia's sponsors."
 msgstr "Ontvang mailings over vacatures en evenmenten van Thalia's sponsoren"
 
-#: models.py:266
+#: models.py:264
+msgid "Receive newsletter"
+msgstr "Ontvang nieuwsbrief"
+
+#: models.py:265
+msgid "Receive the Thalia Newsletter"
+msgstr "Ontvang de Thalia nieuwsbrief"
+
+#: models.py:272
 msgid ""
 "Yes, I want Thalia to take the membership fees from my bank account through "
 "direct debit for each year."
@@ -183,71 +207,122 @@ msgstr ""
 "Ja, ik wil dat Thalia verschuldigde lidmaatschapsgelden elk jaar van mijn "
 "bankrekening afschrijft."
 
-#: models.py:269
+#: models.py:275
 msgid "No, I will pay the contribution myself"
 msgstr "Nee, ik zal de contributie zelf betalen"
 
-#: models.py:270
+#: models.py:276
 msgid "Direct debit"
 msgstr "Automatische afschijving"
 
-#: models.py:271
+#: models.py:277
 msgid "Each year, have Thalia take the membership fees from my bank account"
 msgstr ""
 "Laat Thalia elk jaar het lidmaatschapsgeld van mijn bankrekening afschrijven"
 
-#: models.py:277
+#: models.py:283
 msgid "Bank account"
 msgstr "Bankrekening"
 
-#: models.py:278
+#: models.py:284
 msgid "Bank account for direct debit"
 msgstr "Bankrekening voor automatische afschrijving"
 
-#: models.py:298
+#: models.py:304
 msgid "Display name"
 msgstr "Weergavenaam"
 
-#: models.py:323
+#: models.py:329
 msgid "Member"
 msgstr "Lid"
 
-#: models.py:324
+#: models.py:330
 msgid "Supporter"
 msgstr "Begunstiger"
 
-#: models.py:325
+#: models.py:331
 msgid "Honorary Member"
 msgstr "Erelid"
 
-#: models.py:330
+#: models.py:336
 msgid "Membership type"
 msgstr "Lidtype"
 
-#: models.py:339
+#: models.py:345
 msgid "User"
 msgstr "Gebruiker"
 
-#: models.py:343
+#: models.py:349
 msgid "Membership since"
 msgstr "Lid sinds"
 
-#: models.py:344
+#: models.py:350
 msgid "The date the member started holding this membership."
 msgstr "De datum waarop het lid dit lidmaatschap is begonnen."
 
-#: models.py:349
+#: models.py:355
 msgid "Membership until"
 msgstr "Lid tot"
 
-#: models.py:350
+#: models.py:356
 msgid "The date the member stops holding this membership."
 msgstr "De datum waarop het lid dit lidmaatschap beëindigd."
 
+#: templates/members/account.html:6 templates/members/edit_profile.html:5
 #: templates/members/index.html:6 templates/members/index.html:9
 #: templates/members/profile.html:6
-msgid "Members"
-msgstr "Leden"
+msgid "members"
+msgstr "leden"
+
+#: templates/members/account.html:9
+msgid "Account"
+msgstr "Bankrekening"
+
+#: templates/members/account.html:14
+#, python-format
+msgid "You’re currently logged in as <strong>%(user)s</strong>"
+msgstr "U bent momenteel ingelogd als <strong>%(user)s</strong>"
+
+#: templates/members/account.html:19
+msgid "show public profile"
+msgstr "bekijk publieke profielpagina"
+
+#: templates/members/account.html:20
+msgid "Take a look at your own profile."
+msgstr "Bekijk je eigen profielpagina."
+
+#: templates/members/account.html:26 templates/members/edit_profile.html:5
+#: templates/members/edit_profile.html:8
+msgid "edit profile"
+msgstr "profiel bewerken"
+
+#: templates/members/account.html:27
+msgid "Edit your profile and avatar."
+msgstr "Bewerk je profiel en profielafbeelding."
+
+#: templates/members/account.html:33
+msgid "change password"
+msgstr "wachtwoord wijzigen"
+
+#: templates/members/account.html:34
+msgid "Change your accounts' password."
+msgstr "Wijzig het wachtwoord van je account."
+
+#: templates/members/account.html:40
+msgid "logout"
+msgstr "uitloggen"
+
+#: templates/members/account.html:41
+msgid "Leave the restricted area of the website."
+msgstr "Verlaat het beveiligde gedeelte van de website."
+
+#: templates/members/edit_profile.html:12
+msgid "Your profile has been updated successfully."
+msgstr "Je profiel is succesvol opgeslagen."
+
+#: templates/members/edit_profile.html:38
+msgid "save"
+msgstr "opslaan"
 
 #: templates/members/index.html:12
 msgid ""
@@ -299,8 +374,8 @@ msgid "Next"
 msgstr "Volgende"
 
 #: templates/members/profile.html:6
-msgid "Profile"
-msgstr "Profiel"
+msgid "profile"
+msgstr "profiel"
 
 #: templates/members/profile.html:25
 msgid "About"

@@ -50,6 +50,8 @@ urlpatterns = [
     url(r'^events/', include('events.urls', namespace='events')),
     url(r'^newsletters/', include('newsletters.urls',
                                   namespace='newsletters')),
+    url(r'^association$', TemplateView.as_view(
+        template_name='singlepages/association.html'), name='association'),
     url(r'^association/', include([
         url(r'^activemembers/', include('activemembers.urls', namespace='activemembers')),
         url(r'^merchandise/', include('merchandise.urls', namespace='merchandise')),
@@ -58,6 +60,8 @@ urlpatterns = [
         url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
         url(r'^thabloid/', include('thabloid.urls', namespace='thabloid')),
     ])),
+    url(r'^for-members$', TemplateView.as_view(
+        template_name='singlepages/for_members.html'), name='for-members'),
     url(r'^for-members/', include([
         url(r'^become-active', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
         url(r'^photos/', include('photos.urls', namespace='photos')),

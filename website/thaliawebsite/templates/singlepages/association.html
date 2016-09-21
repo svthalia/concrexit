@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block body %}
+<h1>{% trans "Thalia, the study association of Computer Science and Information Science"|upper %}</h1>
+
+<p class="text-center">{% blocktrans %}Thalia is the study association for the Computer Science and Information Science students at Radboud University in Nijmegen. Thalia provides you the necessary distractions during your studies, as we've been doing for the past 25 years. And via Thalia students can easily connect with teachers and students from other years.{% endblocktrans %}</p>
+
+<p class="text-center">{% blocktrans %}Do you want to do something for Thalia? The association can't exist without active members. The things you can do to help the association are very diverse. It doesn't require a lot of effort and provides a great way to connect! Interested? Don't be shy and send Thalia an <a href="mailto:info@thalia.nu">email</a>.{% endblocktrans %}</p>
+{% endblock %}
