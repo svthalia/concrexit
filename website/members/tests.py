@@ -4,8 +4,8 @@ from django.test import TestCase
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-from members.models import Member, Membership
-from members.views import gen_stats_year, gen_stats_member_type
+from members.models import (Member, Membership,
+                            gen_stats_year, gen_stats_member_type)
 
 
 class MemberBirthdayTest(TestCase):

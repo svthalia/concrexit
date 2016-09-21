@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 
-from .models import BecomeAMemberDocument, Member
+from . import models
 from .forms import MemberForm
 
 
@@ -27,7 +27,7 @@ def index(request):
         start_year += 1
     year_range = reversed(range(start_year, date.today().year + 1))
 
-    members = Member.objects.all()
+    members = models.Member.objects.all()
     if query_filter and query_filter.isdigit() and not (
                         query_filter == 'ex' or
                         query_filter == 'honor' or
@@ -89,9 +89,9 @@ def index(request):
 @login_required
 def profile(request, pk=None):
     if pk:
-        member = get_object_or_404(Member, pk=int(pk))
+        member = get_object_or_404(models.Member, pk=int(pk))
     else:
-        member = get_object_or_404(Member, user=request.user)
+        member = get_object_or_404(models.Member, user=request.user)
 
     # Group the memberships under the committees for easier template rendering
     memberships = member.committeemembership_set.all()
@@ -113,7 +113,8 @@ def profile(request, pk=None):
                     'chair': membership.chair
                 }]
             }
-        achievements[name]['periods'].sort(key=lambda period: period['since'])
+            achievements[name]['periods'].sort(
+                key=lambda period: period['since'])
 
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
@@ -134,7 +135,7 @@ def account(request):
 
 @login_required
 def edit_profile(request):
-    member = get_object_or_404(Member, user=request.user)
+    member = get_object_or_404(models.Member, user=request.user)
     saved = False
 
     if request.POST:
@@ -150,14 +151,16 @@ def edit_profile(request):
 
 
 def become_a_member(request):
-    context = {'documents': BecomeAMemberDocument.objects.all()}
+    context = {'documents': models.BecomeAMemberDocument.objects.all()}
     return render(request, 'singlepages/become_a_member.html', context)
 
 
 def get_become_a_member_document(request, pk):
-    document = get_object_or_404(BecomeAMemberDocument, pk=int(pk))
+    document = get_object_or_404(models.BecomeAMemberDocument, pk=int(pk))
     ext = os.path.splitext(document.file.path)[1]
-    return sendfile(request, document.file.path, attachment=True,
+    return sendfile(request,
+                    document.file.path,
+                    attachment=True,
                     attachment_filename=slugify(document.name) + ext)
 
 
@@ -165,54 +168,12 @@ def statistics(request):
     member_types = ["member", "supporter", "honorary"]
 
     # The numbers
-    total = Member.active_members.count()
+    total = models.Member.active_members.count()
 
     context = {
-            "total_members": total,
-            "total_stats_year": gen_stats_year(member_types),
-            "total_stats_member_type": gen_stats_member_type(member_types)
+        "total_members": total,
+        "total_stats_year": models.gen_stats_year(member_types),
+        "total_stats_member_type": models.gen_stats_member_type(member_types)
     }
 
     return render(request, 'members/statistics.html', context)
-
-
-def gen_stats_member_type(member_types):
-    total = dict()
-    for member_type in member_types:
-        total[member_type] = (Member
-                              .active_members
-                              .filter(user__membership__type=member_type)
-                              .count())
-    return total
-
-
-def gen_stats_year(member_types):
-    """
-    Generate list with 6 entries, where each entry represents the total amount
-    of Thalia members in a year. The sixth element contains all the multi-year
-    students.
-    """
-    stats_year = []
-    current_year = date.today().year
-
-    for i in range(5):
-        new = dict()
-        for member_type in member_types:
-            new[member_type] = (Member
-                                .active_members
-                                .filter(starting_year=current_year - i)
-                                .filter(user__membership__type=member_type)
-                                .count())
-        stats_year.append(new)
-
-    # Add multi year members
-    new = dict()
-    for member_type in member_types:
-        new[member_type] = (Member
-                            .active_members
-                            .filter(starting_year__lt=current_year - 4)
-                            .filter(user__membership__type=member_type)
-                            .count())
-    stats_year.append(new)
-
-    return stats_year
