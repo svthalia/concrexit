@@ -26,16 +26,24 @@ class Photo(models.Model):
     )
     hidden = models.BooleanField(default=False)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.file:
+            self._orig_file = self.file.path
+        else:
+            self._orig_file = ""
+
     def __str__(self):
         return self.file.name
 
     def save(self, *args, **kwargs):
         super(Photo, self).save(*args, **kwargs)
 
-        image_path = str(self.file.path)
-        image = Image.open(image_path)
-        image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-        image.save(image_path, "JPEG")
+        if self._orig_file != self.file.path:
+            image_path = str(self.file.path)
+            image = Image.open(image_path)
+            image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
+            image.save(image_path, "JPEG")
 
 
 class Album(models.Model):
