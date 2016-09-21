@@ -34,7 +34,7 @@ class Photo(models.Model):
 
         image_path = str(self.file.path)
         image = Image.open(image_path)
-        image.thumbnail((1920, 1080), Image.ANTIALIAS)
+        image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
         image.save(image_path, "JPEG")
 
 
