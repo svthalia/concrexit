@@ -1,5 +1,10 @@
 from django.contrib import admin
+from utils.translation import TranslatedModelAdmin
 
 from .models import MerchandiseItem
 
-admin.site.register(MerchandiseItem)
+
+@admin.register(MerchandiseItem)
+class MerchandiseItemAdmin(TranslatedModelAdmin):
+    fields = ('name', 'price',
+              'description', 'image',)
