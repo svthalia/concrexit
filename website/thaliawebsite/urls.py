@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
+from django.views.i18n import JavaScriptCatalog
 
 from utils.views import private_thumbnails
 import members
@@ -82,5 +83,7 @@ urlpatterns = [
         name='django.contrib.sitemaps.views.sitemap'),
     # Dependencies
     url(r'^tinymce/', include('tinymce.urls')),
+    # Javascript translation catalog
+    url(r'jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))

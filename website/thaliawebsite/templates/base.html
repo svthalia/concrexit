@@ -30,7 +30,9 @@
 {% endcompress %}{% endblock %}
 
 <!-- js head -->
-{% block js_head %}{% compress js %}
+{% block js_head %}
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+{% compress js %}
 <script type="text/javascript" src="{% static "plugins/jquery-1.8.3.min.js" %}"></script>
 <script type="text/javascript" src="{% static "js/jquery.jscroll.min.js" %}"></script>
 <script type="text/javascript" src="{% static "js/jquery.fancybox.js" %}"></script>

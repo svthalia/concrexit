@@ -9,188 +9,27 @@
 
 <h2>{% trans "Total amount of Thalia members" %}: {{ total_members }}</h2>
 
-<script src="{% static 'members/js/highcharts.js' %}"></script>
-<script>
-var pieOptions = {
-            allowPointSlect: true,
-            cursor: 'pointer',
-            dataLabels : {
-                enabled: true,
-                formatter:function() { // Omit zero values
-                    if(this.y != 0) {
-                        return this.point.name + ": " + this.y; // TODO: add newline <br /> ?
-                    }
-                },
-                distance: -50
-            }
-          };
-    $(function () {
-        Highcharts.theme = {
-            colors: ['#AE0046', '#E62272', '#E6478A', '#CC2482', '#8E1056', '#DC3472'],
-            title: {
-                style: {
-                    color: '#000',
-                    font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
-                }
-            },
-            subtitle: {
-                style: {
-                    color: '#666666',
-                    font: 'bold 12px "Trebuchet MS", Verdana, sans-serif'
-                }
-            },
-            credits: false, // TODO: are we allowed to remove credits without a license?
-            legend: {
-                itemStyle: {
-                    font: '9pt Trebuchet MS, Verdana, sans-serif',
-                    color: 'black'
-                },
-                itemHoverStyle: {
-                    color: 'gray'
-                }
-            }
-        };
-
-        // Apply the theme
-        Highcharts.setOptions(Highcharts.theme);
-
-        $('#membersTypeChart').highcharts({
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: '{% trans "Members per member type" %}'
-            },
-            plotOptions: {
-                pie: pieOptions
-            },
-            series: [{
-                name: 'Thalianen',
-                colorByPoint: true,
-                data : [{
-                    name: '{% trans "Members" %}',
-                    y: {{ total_stats_member_type.member }}
-                },{
-                    name: '{% trans "Supporters" %}',
-                    y: {{ total_stats_member_type.supporter }}
-                },{
-                    name: '{% trans "Honorary members" %}',
-                    y: {{ total_stats_member_type.honorary }}
-                }]
-            }]
-        });
-
-        $('#totalYearChart').highcharts({
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: '{% trans "Total members per year" %}'
-            },
-            plotOptions: {
-                pie: pieOptions
-            },
-            series: [{
-                name: 'Thalianen',
-                colorByPoint: true,
-                data : [{
-                    name: '{% trans "1st year" %}',
-                    y: {{ total_stats_year.0.member|add:total_stats_year.0.supporter|add:total_stats_year.0.honorary }}
-                },{
-                    name: '{% trans "2nd year" %}',
-                    y: {{ total_stats_year.1.member|add:total_stats_year.1.supporter|add:total_stats_year.1.honorary }}
-                },{
-                    name: '{% trans "3rd year" %}',
-                    y: {{ total_stats_year.2.member|add:total_stats_year.2.supporter|add:total_stats_year.2.honorary }}
-                },{
-                    name: '{% trans "4th year" %}',
-                    y: {{ total_stats_year.3.member|add:total_stats_year.3.supporter|add:total_stats_year.3.honorary }}
-                },{
-                    name: '{% trans "5th year" %}',
-                    y: {{ total_stats_year.4.member|add:total_stats_year.4.supporter|add:total_stats_year.4.honorary }}
-                },{
-                    name: '{% trans ">5th year" %}',
-                    y: {{ total_stats_year.5.member|add:total_stats_year.5.supporter|add:total_stats_year.5.honorary }}
-                }]
-            }]
-        });
-
-        $('#membersYearChart').highcharts({
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: '{% trans "Members per year" %}'
-            },
-            plotOptions: {
-                pie: pieOptions
-            },
-            series: [{
-                name: 'Thalianen',
-                colorByPoint: true,
-                data : [{
-                    name: '{% trans "1st year" %}',
-                    y: {{ total_stats_year.0.member }}
-                },{
-                    name: '{% trans "2nd year" %}',
-                    y: {{ total_stats_year.1.member }}
-                },{
-                    name: '{% trans "3rd year" %}',
-                    y: {{ total_stats_year.2.member }}
-                },{
-                    name: '{% trans "4th year" %}',
-                    y: {{ total_stats_year.3.member }}
-                },{
-                    name: '{% trans "5th year" %}',
-                    y: {{ total_stats_year.4.member }}
-                },{
-                    name: '{% trans ">5th year" %}',
-                    y: {{ total_stats_year.5.member }}
-                }]
-            }]
-        });
-
-
-        $('#supportersYearChart').highcharts({
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: '{% trans "Supporters per year" %}'
-            },
-            plotOptions: {
-                pie: pieOptions
-            },
-            series: [{
-                name: 'Thalianen',
-                colorByPoint: true,
-                data : [{
-                    name: '{% trans "1st year" %}',
-                    y: {{ total_stats_year.0.supporter }}
-                },{
-                    name: '{% trans "2nd year" %}',
-                    y: {{ total_stats_year.1.supporter }}
-                },{
-                    name: '{% trans "3rd year" %}',
-                    y: {{ total_stats_year.2.supporter }}
-                },{
-                    name: '{% trans "4th year" %}',
-                    y: {{ total_stats_year.3.supporter }}
-                },{
-                    name: '{% trans "5th year" %}',
-                    y: {{ total_stats_year.4.supporter }}
-                },{
-                    name: '{% trans ">5th year" %}',
-                    y: {{ total_stats_year.5.supporter }}
-                }]
-            }]
-        });
-    });
-</script>
 <div id="membersTypeChart" style="width:100%; height:400px;"></div>
 <div id="totalYearChart" style="width:100%; height:400px;"></div>
 <div id="membersYearChart" style="width:100%; height:400px;"></div>
 <div id="supportersYearChart" style="width:100%; height:400px;"></div>
 <br/><br/>
 
+{% endblock %}
+
+{% block js_head %}
+{{ block.super }}
+<script src="{% static 'members/js/highcharts.js' %}"></script>
+{% endblock %}
+
+{% block js_footer %}
+{{ block.super }}
+<script>
+    {% autoescape off %}
+    var total_stats_year = {{ total_stats_year }};
+    var total_stats_member_type = {{ total_stats_member_type }};
+    {% endautoescape %}
+</script>
+
+<script src="{% static 'members/js/statistics.js' %}"></script>
 {% endblock %}

@@ -1,6 +1,7 @@
 import os
 from datetime import date
 from sendfile import sendfile
+import json
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, render
@@ -165,15 +166,16 @@ def get_become_a_member_document(request, pk):
 
 
 def statistics(request):
-    member_types = ["member", "supporter", "honorary"]
+    member_types = ("member", "supporter", "honorary")
 
     # The numbers
     total = models.Member.active_members.count()
 
     context = {
         "total_members": total,
-        "total_stats_year": models.gen_stats_year(member_types),
-        "total_stats_member_type": models.gen_stats_member_type(member_types)
+        "total_stats_year": json.dumps(models.gen_stats_year(member_types)),
+        "total_stats_member_type": json.dumps(
+            models.gen_stats_member_type(member_types)),
     }
 
     return render(request, 'members/statistics.html', context)
