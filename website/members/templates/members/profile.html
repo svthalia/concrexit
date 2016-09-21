@@ -3,7 +3,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Profile" %} - {% trans "Members" %} - {{ block.super }}{% endblock %}
+{% block title %}{% trans "profile"|capfirst %} - {% trans "members"|capfirst %} - {{ block.super }}{% endblock %}
 
 {% block body %}
 <h1>
