@@ -23,6 +23,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
 
+from events.feeds import DeprecationFeed
 from utils.views import private_thumbnails
 import members
 
@@ -49,6 +50,7 @@ urlpatterns = [
     url(r'^members/', include('members.urls', namespace='members')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
     url(r'^events/', include('events.urls', namespace='events')),
+    url(r'^index\.php/events/ical/feed\.ics', DeprecationFeed()),
     url(r'^newsletters/', include('newsletters.urls',
                                   namespace='newsletters')),
     url(r'^association$', TemplateView.as_view(

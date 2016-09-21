@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.urls import reverse
 from django.utils.translation import activate
 from django_ical.views import ICalFeed
@@ -40,3 +42,30 @@ class EventFeed(ICalFeed):
 
     def item_location(self, item):
         return "{} - {}".format(item.location, item.map_location)
+
+
+class DeprecationFeed(ICalFeed):
+    def product_id(self):
+        return '-//thalia.nu//DEPRECATED'
+
+    def items(self):
+        return range(7)
+
+    def item_start_datetime(self, item):
+        today = datetime.now().replace(hour=13, minute=37, second=0)
+        delta = timedelta(days=item)
+        return today + delta
+
+    def item_end_datetime(self, item):
+        today = datetime.now().replace(hour=15, minute=37, second=0)
+        delta = timedelta(days=item)
+        return today + delta
+
+    def item_title(self, item):
+        return (
+            'Oude Thalia Feed, gebruik https://thalia.nu/' +
+            reverse('events:ical-nl')
+        )
+
+    def item_link(self, item):
+        return reverse('events:ical-nl') + '?item={}'.format(item)
