@@ -7,9 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-16 21:29+0200\n"
+"PO-Revision-Date: 2016-09-21 11:08+0200\n"
 "POT-Creation-Date: 2016-09-16 21:34+0200\n"
 "PO-Revision-Date: 2016-09-16 21:34+0200\n"
-"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -394,6 +396,18 @@ msgstr "Chamber of Commerce"
 #: templates/singlepages/contact.html:48
 msgid "VAT number:"
 msgstr "BTW-nummer:"
+
+#: templates/singlepages/for_members.html:5
+msgid "for members"
+msgstr "voor leden"
+
+#: templates/singlepages/for_members.html:7
+msgid ""
+"In this menu you can find all pages that are exclusively available to you as "
+"a member of Thalia."
+msgstr ""
+"Onder dit menu vind je alle pagina's die exclusief voor jou, Thalia-lid, "
+"toegankelijk zijn."
 
 #: templates/singlepages/sister_associations.html:5
 msgid "Associations of the Radboud University Science Faculty"
