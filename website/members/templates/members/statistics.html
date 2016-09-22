@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{%trans "Statistics" %} - {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>{% trans "Statistics" %}</h1>
+
+<h2>{% trans "Total amount of Thalia members" %}: {{ total_members }}</h2>
+
+<div id="membersTypeChart" style="width:100%; height:400px;"></div>
+<div id="totalYearChart" style="width:100%; height:400px;"></div>
+<div id="membersYearChart" style="width:100%; height:400px;"></div>
+<div id="supportersYearChart" style="width:100%; height:400px;"></div>
+<br/><br/>
+
+{% endblock %}
+
+{% block js_head %}
+{{ block.super }}
+<script src="{% static 'members/js/highcharts.js' %}"></script>
+{% endblock %}
+
+{% block js_footer %}
+{{ block.super }}
+<script>
+    {% autoescape off %}
+    var total_stats_year = {{ total_stats_year }};
+    var total_stats_member_type = {{ total_stats_member_type }};
+    {% endautoescape %}
+</script>
+
+<script src="{% static 'members/js/statistics.js' %}"></script>
+{% endblock %}
