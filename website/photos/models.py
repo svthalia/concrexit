@@ -3,6 +3,8 @@ from django.conf import settings
 from django.utils.functional import cached_property
 from django.db import models
 
+from PIL import Image
+
 import hashlib
 import os
 import random
@@ -24,8 +26,26 @@ class Photo(models.Model):
     )
     hidden = models.BooleanField(default=False)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.file:
+            self._orig_file = self.file.path
+        else:
+            self._orig_file = ""
+
     def __str__(self):
         return self.file.name
+
+    def save(self, *args, **kwargs):
+        super(Photo, self).save(*args, **kwargs)
+
+        if self._orig_file != self.file.path:
+            image_path = self.file.path
+            image = Image.open(image_path)
+            # Image.thumbnail does not upscale an image that is smaller
+            image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
+            image.save(image_path, "JPEG")
+            self._orig_file = self.file.path
 
 
 class Album(models.Model):

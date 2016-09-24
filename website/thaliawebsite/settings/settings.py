@@ -192,3 +192,6 @@ STATIC_PRECOMPILER_LIST_FILES = True
 
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
+
+# Photos settings
+PHOTO_UPLOAD_SIZE = 1920, 1080
