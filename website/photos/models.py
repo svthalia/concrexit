@@ -40,8 +40,9 @@ class Photo(models.Model):
         super(Photo, self).save(*args, **kwargs)
 
         if self._orig_file != self.file.path:
-            image_path = str(self.file.path)
+            image_path = self.file.path
             image = Image.open(image_path)
+            # Image.thumbnail does not upscale an image that is smaller
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
             image.save(image_path, "JPEG")
             self._orig_file = self.file.path
