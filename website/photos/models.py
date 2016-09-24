@@ -44,6 +44,7 @@ class Photo(models.Model):
             image = Image.open(image_path)
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
             image.save(image_path, "JPEG")
+            self._orig_file = self.file.path
 
 
 class Album(models.Model):
