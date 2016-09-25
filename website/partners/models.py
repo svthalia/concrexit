@@ -1,11 +1,9 @@
-from django.db import models
 from django.core.validators import RegexValidator, URLValidator
+from django.db import models
 from django.urls import reverse
-from django.utils.translation import ugettext, ugettext_lazy as _, \
-    string_concat
-
-from utils.translation import MultilingualField, ModelTranslateMeta
+from django.utils.translation import ugettext_lazy as _
 from tinymce.models import HTMLField
+from utils.translation import MultilingualField, ModelTranslateMeta
 
 
 class Partner(models.Model):

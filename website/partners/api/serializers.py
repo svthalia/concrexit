@@ -1,7 +1,3 @@
-from django.utils import timezone
-from django.urls import reverse
-from rest_framework import serializers
-
 from events.api.serializers import CalenderJSSerializer
 from partners.models import PartnerEvent
 
