@@ -105,6 +105,12 @@ DATABASES = {
     }
 }
 
+# Login pages
+
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = '/'
+
 # Password validation
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
@@ -186,3 +192,6 @@ STATIC_PRECOMPILER_LIST_FILES = True
 
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
+
+# Photos settings
+PHOTO_UPLOAD_SIZE = 1920, 1080

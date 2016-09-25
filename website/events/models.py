@@ -3,15 +3,20 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, string_concat
+from utils.translation import MultilingualField, ModelTranslateMeta
 
 
-class Event(models.Model):
+class Event(models.Model, metaclass=ModelTranslateMeta):
     """Represents events"""
 
     DEFAULT_NO_REGISTRATION_MESSAGE = _('No registration required')
 
-    title = models.CharField(_("title"), max_length=100)
+    title = MultilingualField(
+        models.CharField,
+        _("title"),
+        max_length=100
+    )
 
     description = models.TextField(_("description"))
 
@@ -23,6 +28,7 @@ class Event(models.Model):
         'activemembers.Committee',
         models.SET_NULL,
         null=True,
+        verbose_name=_("organiser")
     )
 
     registration_start = models.DateTimeField(
@@ -37,7 +43,17 @@ class Event(models.Model):
         blank=True
     )
 
-    location = models.CharField(_("location"), max_length=255)
+    cancel_deadline = models.DateTimeField(
+        _("cancel deadline"),
+        null=True,
+        blank=True
+    )
+
+    location = MultilingualField(
+        models.CharField,
+        _("location"),
+        max_length=255,
+    )
 
     map_location = models.CharField(
         _("location for minimap"),
@@ -69,12 +85,14 @@ class Event(models.Model):
         null=True,
     )
 
-    no_registration_message = models.CharField(
+    no_registration_message = MultilingualField(
+        models.CharField,
         _('message when there is no registration'),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(_("Default: {}").format(DEFAULT_NO_REGISTRATION_MESSAGE)),
+        help_text=(string_concat(_("Default: "),
+                                 DEFAULT_NO_REGISTRATION_MESSAGE)),
     )
 
     published = models.BooleanField(_("published"), default=False)
@@ -156,7 +174,7 @@ class RegistrationInformationField(models.Model):
             value_set = self.textregistrationinformation_set
         elif self.type == 'checkbox':
             value_set = self.booleanregistrationinformation_set
-        elif value_set == 'intfield':
+        elif self.type == 'intfield':
             value_set = self.integerregistrationinformation_set
         try:
             return value_set.get(registration=registration).value
@@ -196,11 +214,11 @@ class Registration(models.Model):
                                           blank=True)
 
     present = models.BooleanField(
-        _('Present'),
+        _('present'),
         default=False,
     )
     paid = models.BooleanField(
-        _('Paid'),
+        _('paid'),
         default=False,
     )
 

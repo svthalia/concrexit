@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% load static i18n fieldtype %}
+
+{% block title %}{% trans "edit profile"|capfirst %} - {% trans "members"|capfirst %} - {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>{% trans "edit profile"|capfirst %}</h1>
+
+{% if saved %}
+<div class="alert alert-success">
+    {% trans "Your profile has been updated successfully." %}
+    <button class="close" type="button"><span class="alert-icon-close"></span></button>
+</div>
+{% endif %}
+
+<form method="post" class="form-horizontal span8 offset2">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="control-group row {% if field.errors %}error{% endif %}">
+            <label class="control-label" for="{{ field.name }}">{{ field.label_tag }}</label>
+            <div class="controls">
+                {{ field }}
+
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error|escape }}</span>
+                {% endfor %}
+
+                {% if field.help_text and field|fieldtype != 'CheckboxInput' %}
+                <span class="help-block">{{ field.help_text|safe }}</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+
+    <input type="submit" value="{% trans 'save'|capfirst %}" class="btn btn-style1 pull-right login" />
+</form>
+{% endblock %}

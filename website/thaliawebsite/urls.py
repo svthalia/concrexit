@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
+from django.views.i18n import JavaScriptCatalog
 
 from utils.views import private_thumbnails
 import members
@@ -50,6 +51,8 @@ urlpatterns = [
     url(r'^events/', include('events.urls', namespace='events')),
     url(r'^newsletters/', include('newsletters.urls',
                                   namespace='newsletters')),
+    url(r'^association$', TemplateView.as_view(
+        template_name='singlepages/association.html'), name='association'),
     url(r'^association/', include([
         url(r'^activemembers/', include('activemembers.urls', namespace='activemembers')),
         url(r'^merchandise/', include('merchandise.urls', namespace='merchandise')),
@@ -58,9 +61,12 @@ urlpatterns = [
         url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
         url(r'^thabloid/', include('thabloid.urls', namespace='thabloid')),
     ])),
+    url(r'^for-members$', TemplateView.as_view(
+        template_name='singlepages/for_members.html'), name='for-members'),
     url(r'^for-members/', include([
         url(r'^become-active', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
         url(r'^photos/', include('photos.urls', namespace='photos')),
+        url(r'^statistics/', members.views.statistics, name='statistics'),
     ])),
     url(r'^career/', include('partners.urls', namespace='partners')),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
@@ -77,5 +83,7 @@ urlpatterns = [
         name='django.contrib.sitemaps.views.sitemap'),
     # Dependencies
     url(r'^tinymce/', include('tinymce.urls')),
+    # Javascript translation catalog
+    url(r'jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))
