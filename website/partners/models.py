@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import RegexValidator, URLValidator
 from django.urls import reverse
+from django.utils.translation import ugettext, ugettext_lazy as _, \
+    string_concat
 
 from utils.translation import MultilingualField, ModelTranslateMeta
 from tinymce.models import HTMLField
@@ -126,3 +128,39 @@ class Vacancy(models.Model):
 
     class Meta:
         verbose_name_plural = 'Vacancies'
+
+
+class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
+    partner = models.ForeignKey(
+        Partner,
+        on_delete=models.CASCADE,
+        related_name="events"
+    )
+
+    title = MultilingualField(
+        models.CharField,
+        _("title"),
+        max_length=100
+    )
+
+    description = MultilingualField(
+        models.TextField,
+        _("description")
+    )
+
+    location = MultilingualField(
+        models.CharField,
+        _("location"),
+        max_length=255,
+    )
+
+    start = models.DateTimeField(_("start time"))
+
+    end = models.DateTimeField(_("end time"))
+
+    url = models.URLField(_("website"))
+
+    published = models.BooleanField(_("published"), default=False)
+
+    def __str__(self):
+        return self.title

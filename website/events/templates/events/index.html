@@ -32,7 +32,7 @@
             var sources = {
                 events:     "/api/events",
                 birthdays:  "/api/members/birthdays",
-{#                extern:     ".nu/api/ext-events"#} {# TODO IMPLEMENT THIS #}
+                partners:     "/api/partners/events"
             };
 
             $('#calendar').fullCalendar({
@@ -77,7 +77,7 @@
                 titleRangeSeparator: ' - ',
                 timeFormat: 'H:mm',
                 eventLimit: true, // allow "more" link when too many events
-                eventSources: Cookies.get('showbirthdays') ? [sources.events, sources.birthdays, sources.extern] : [sources.events, sources.extern],
+                eventSources: Cookies.get('showbirthdays') ? [sources.events, sources.birthdays, sources.partners] : [sources.events, sources.partners],
                 eventClick: function(event) {
                     if(event.url && event.blank) {
                         window.open(event.url, '_blank');

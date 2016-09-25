@@ -76,6 +76,7 @@ urlpatterns = [
     url(r'^api/', include([
         url(r'^', include('events.api.urls')),
         url(r'^', include('members.api.urls')),
+        url(r'^', include('partners.api.urls')),
     ])),
     url(r'^education/', include('education.urls', namespace='education')),
     # Default login helpers
