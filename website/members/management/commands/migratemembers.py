@@ -30,30 +30,40 @@ class Command(BaseCommand):
         )
         data = json.loads(requests.get(url).text)
 
+        groups = {}
+
         board_url = "https://thalia.nu/board/2015-2016"
         soup = BeautifulSoup(requests.get(board_url).text, 'lxml')
         default_board_photo = ("https://thalia.nu/application/files/"
                                "6614/3560/3446/site_logo_board.png")
         for board in data['boards']:
-            obj, cr = Board.objects.get_or_create(name=board['name'])
+            obj, cr = Board.objects.get_or_create(name_nl=board['name'])
+            obj.name_en = board['name']
+            groups[board['gID']] = obj
             img = soup.find("img", {"alt": board['name'][8:]})
             if img:
                 imagefield_from_url(obj.photo, img['src'])
             else:
                 imagefield_from_url(obj.photo, default_board_photo)
+            obj.save()
 
         committee_url = "https://thalia.nu/committees"
         soup = BeautifulSoup(requests.get(committee_url).text, 'lxml')
         anchors = soup.find('ul', {'class': 'row committees'}).find_all('a')
         links = {anchor.find('h2').text: anchor['href'] for anchor in anchors}
         for committee in data['committees']:
-            obj, cr = Committee.objects.get_or_create(name=committee['name'])
+            obj, cr = Committee.objects.get_or_create(
+                name_nl=committee['name'])
+            obj.name_en = committee['name']
+            groups[committee['gID']] = obj
+            obj.save()
             if committee['name'] not in links:
                 continue
             src = requests.get(links[committee['name']]).text
             soup = BeautifulSoup(src, 'lxml')
             div = soup.find('div', {'id': 'committee-div'})
-            obj.description = div.find('p').text
+            obj.description_en = div.find('p').text
+            obj.description_nl = div.find('p').text
             img = div.find('img')
             imagefield_from_url(obj.photo, "https://thalia.nu" + img['src'])
 
@@ -129,6 +139,12 @@ class Command(BaseCommand):
             if member['payment_iban']:
                 user.member.bank_account = member['payment_iban']
             user.member.save()
+
+            for membership in member['memberships']:
+                mdata = membership['membership']
+                if mdata['gID'] in groups:
+                    group = groups[mdata['gID']]
+                    print(group.name_nl, mdata['begindate'], mdata['enddate'])
 
             # TODO link member to committees through memberships
             # TODO administrate roles / presidencies
