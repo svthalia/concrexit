@@ -9,6 +9,7 @@ from django.core.management.base import BaseCommand
 from django.core.files import File
 
 from members.models import Member, Membership
+from partners.models import Partner
 from utils import identicon
 
 import factory
@@ -38,6 +39,24 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "-u", "--user", type=int, help="The amount of fake users to add")
+        parser.add_argument(
+            "-p", "--partner", type=int, help="The amount of fake partners to add")
+
+    def create_partner(self, partner):
+        partner.name = faker.company() + ' ' + faker.company_suffix()
+        partner.slug = faker.slug()
+        partner.link = faker.uri()
+
+        code = sum([ord(x) for x in partner.name])
+        icon = identicon.render_identicon(code, 50)
+        with tempfile.TemporaryFile() as tfile:
+            icon.save(tfile, 'PNG')
+            partner.logo.save(partner.name + '.png',
+                              File(tfile))
+
+        partner.address = faker.street_address()
+        partner.zip_code = faker.postcode()
+        partner.city = faker.city()
 
     def handle(self, **options):
         if options['user']:
@@ -82,3 +101,23 @@ class Command(BaseCommand):
                     member.save()
                     membership.save()
                     print("Created user with username", user.username)
+        if options['partner']:
+            print("Creating fake profiles for", options['partner'], "partners")
+
+            try:
+                Partner.objects.get(is_main_partner=True)
+            except Partner.DoesNotExist:
+                partner = Partner()
+                partner.is_active = True
+                partner.is_main_partner = True
+                
+                self.create_partner(partner)
+
+            for __ in range(options['partner']):
+                try:
+                    partner = Partner()
+                    self.create_partner(partner)
+                except Exception as e:
+                    raise e
+                else:
+                    partner.save()
