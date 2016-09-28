@@ -51,6 +51,7 @@ class GeneralMeeting(models.Model):
         upload_to='documents/meetings/minutes/',
         validators=[validate_file_extension],
         blank=True,
+        null=True,
     )
     datetime = models.DateTimeField()
     location = models.CharField(max_length=200)
