@@ -54,28 +54,21 @@
                             {% endif %}
                         </td>
                     </tr>
-                    <?php if ($registration !== null): ?>
                     {% if registration %}
                         <tr>
                             <th>{% trans "registration status"|capfirst %}</th>
                             <td>
-                                <b>TODO TODO TODO</b>
-                                {# TODO implement registration status #}
-                                {#                            <?php#}
-                                {#                                /** @var RegistrationModel $registration */#}
-                                {#                                if ($registration->isRegisteredExcludeCoolDown()) {#}
-                                {#                            $queuePos = $activity->getQueuePosition($registration);#}
-                                {#                            if ($queuePos === 0) {#}
-                                {#                            echo "Aangemeld";#}
-                                {#                            } else {#}
-                                {#                            echo "Op wachtlijst positie " . $queuePos;#}
-                                {#                            }#}
-                                {#                            } else if($registration->isLateCancellation()) {#}
-                                {#                            echo "Te laat afgemeld";#}
-                                {#                            } else {#}
-                                {#                            echo "Afgemeld";#}
-                                {#                            }#}
-                                {#                            ?>#}
+                                {% if registration.is_registered and registration.queue_position == 0 %}
+                                    {% trans "You are registered" %}
+                                {% elif registration.is_registered and registration.queue_position > 0 %}
+                                    {% blocktrans with pos=registration.queue_position trimmed %}
+                                        Waiting list position {{ pos }}
+                                    {% endblocktrans  %}
+                                {% elif not registration.is_registered and registration.is_late_cancellation %}
+                                    {% trans "Your registration is cancelled after the cancellation deadline" %}
+                                {% else %}
+                                    {% trans "Your registration is cancelled" %}
+                                {% endif %}
                             </td>
                         </tr>
                     {% endif %}
@@ -121,6 +114,7 @@
 {#                }#}
 {#                ?>#}
                 <tr>
+                    <td></td>
                     <td>
                     </td>
                     <td>

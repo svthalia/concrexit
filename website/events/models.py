@@ -233,6 +233,22 @@ class Registration(models.Model):
     def is_external(self):
         return bool(self.name)
 
+    def is_late_cancellation(self):
+        return (self.date_cancelled and
+                self.date_cancelled > self.event.cancel_deadline)
+
+    def is_registered(self):
+        return self.date_cancelled is None
+
+    def queue_position(self):
+        if self.event.max_participants is None:
+            return 0
+
+        return max(self.event.registration_set.filter(
+            date_cancelled=None,
+            id__lte=self.id
+        ).count() - self.event.max_participants, 0)
+
     def clean(self):
         if ((self.member is None and not self.name) or
                 (self.member and self.name)):
