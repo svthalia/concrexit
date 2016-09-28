@@ -7,4 +7,4 @@ register = template.Library()
 
 @register.inclusion_tag('menu/menu.html', takes_context=True)
 def render_main_menu(context):
-    return {'menu': main, 'request': context['request']}
+    return {'menu': main, 'request': context.get('request')}

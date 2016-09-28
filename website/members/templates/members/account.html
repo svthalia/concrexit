@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "members"|capfirst %} - {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>{% trans 'Account' %}</h1>
+
+<div class="row">
+    <div class="span6 offset3">
+
+        <p class="text-center">{% blocktrans with user=request.user.username %}You’re currently logged in as <strong>{{ user }}</strong>{% endblocktrans %}.</p>
+
+        <hr>
+
+        <div>
+            <a href="{% url 'members:profile' %}">{% trans "show public profile"|capfirst %}</a>
+            <p>{% blocktrans %}Take a look at your own profile.{% endblocktrans %}</p>
+        </div>
+
+        <hr>
+
+        <div>
+            <a href="{% url 'members:edit-profile' %}">{% trans "edit profile"|capfirst %}</a>
+            <p>{% blocktrans %}Edit your profile and avatar.{% endblocktrans %}</p>
+        </div>
+
+        <hr>
+
+        <div>
+            <a href="{% url 'password_change' %}">{% trans "change password"|capfirst %}</a>
+            <p>{% blocktrans %}Change your accounts' password.{% endblocktrans %}</p>
+        </div>
+
+        <hr>
+
+        <div>
+            <a href="{% url 'logout' %}">{% trans "logout"|capfirst %}</a>
+            <p>{% blocktrans %}Leave the restricted area of the website.{% endblocktrans %}</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}}

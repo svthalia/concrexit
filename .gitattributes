@@ -1,3 +1,5 @@
+* text=auto eol=lf
+
 # Images should be treated as binary
 *.png     binary
 *.jpeg    binary

@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'thaliawebsite',  # include for admin settings
     'members',
     'documents',
-    'committees',
+    'activemembers',
     'photos',
     'utils',
     'mailinglists',
@@ -105,6 +105,12 @@ DATABASES = {
     }
 }
 
+# Login pages
+
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = '/'
+
 # Password validation
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
@@ -129,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'committees.backends.CommitteeBackend',
+    'activemembers.backends.CommitteeBackend',
 ]
 
 # Internationalization
@@ -186,3 +192,6 @@ STATIC_PRECOMPILER_LIST_FILES = True
 
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
+
+# Photos settings
+PHOTO_UPLOAD_SIZE = 1920, 1080

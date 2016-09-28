@@ -5,7 +5,7 @@ from django.core import validators
 from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from datetime import timedelta
+from datetime import timedelta, date
 import operator
 from functools import reduce
 
@@ -375,3 +375,45 @@ class BecomeAMemberDocument(models.Model):
 
     def __str__(self):
         return self.name
+
+
+def gen_stats_member_type(member_types):
+    total = dict()
+    for member_type in member_types:
+        total[member_type] = (Member
+                              .active_members
+                              .filter(user__membership__type=member_type)
+                              .count())
+    return total
+
+
+def gen_stats_year(member_types):
+    """
+    Generate list with 6 entries, where each entry represents the total amount
+    of Thalia members in a year. The sixth element contains all the multi-year
+    students.
+    """
+    stats_year = []
+    current_year = date.today().year
+
+    for i in range(5):
+        new = dict()
+        for member_type in member_types:
+            new[member_type] = (Member
+                                .active_members
+                                .filter(starting_year=current_year - i)
+                                .filter(user__membership__type=member_type)
+                                .count())
+        stats_year.append(new)
+
+    # Add multi year members
+    new = dict()
+    for member_type in member_types:
+        new[member_type] = (Member
+                            .active_members
+                            .filter(starting_year__lt=current_year - 4)
+                            .filter(user__membership__type=member_type)
+                            .count())
+    stats_year.append(new)
+
+    return stats_year

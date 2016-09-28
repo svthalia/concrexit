@@ -1,0 +1,214 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-11 14:27+0200\n"
+"PO-Revision-Date: 2016-09-11 14:29+0200\n"
+"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#: models.py:41
+msgid "Committee name"
+msgstr "Commissienaam"
+
+#: models.py:46
+msgid "Description"
+msgstr "Beschrijving"
+
+#: models.py:50
+msgid "Image"
+msgstr "Afbeelding"
+
+#: models.py:63
+msgid "permissions"
+msgstr "permissies"
+
+#: models.py:68
+msgid "founded in"
+msgstr "opgericht in"
+
+#: models.py:74
+msgid "existed until"
+msgstr "bestond tot"
+
+#: models.py:79
+msgid "contact email address"
+msgstr "contact e-mailadres"
+
+#: models.py:88
+msgid "committee"
+msgstr "commissie"
+
+#: models.py:89 templates/activemembers/committee_index.html:6
+msgid "committees"
+msgstr "commissies"
+
+#: models.py:101
+msgid "Is this a board"
+msgstr "Is dit een bestuur"
+
+#: models.py:123
+msgid "Member"
+msgstr "Lid"
+
+#: models.py:129
+msgid "Committee"
+msgstr "Commissie"
+
+#: models.py:133
+msgid "Committee member since"
+msgstr "Commissielid sinds"
+
+#: models.py:134
+msgid "The date this member joined the committee in this role"
+msgstr "De datum waarop deze persoon lid werd deze commissie in deze rol"
+
+#: models.py:139
+msgid "Committee member until"
+msgstr "Commissielid tot"
+
+#: models.py:140
+msgid "A member of this committee until this time (can't be in the future)."
+msgstr ""
+"De datum waarop deze persoon de commissie verliet (kan niet in de toekomst "
+"liggen)"
+
+#: models.py:147
+msgid "Chair of the committee"
+msgstr "Voorzitter van de commissie"
+
+#: models.py:148
+msgid "There can only be one chair at a time!"
+msgstr "Er kan maar één voorzitter tegelijkertijd zijn!"
+
+#: models.py:153
+msgid "role"
+msgstr "rol"
+
+#: models.py:154
+msgid "The role of this member"
+msgstr "De rol van dit lid binnen de commissie"
+
+#: models.py:177
+msgid "Membership expiration date can't be in the future: '{}'"
+msgstr "Een lidmaatschap kan niet verlopen in de toekomst: ‘{]’"
+
+#: models.py:183
+msgid "End date can't be before start date"
+msgstr "De einddatum kan niet voor de startdatum liggen"
+
+#: models.py:197
+msgid "This committee already has a chair"
+msgstr "Deze commissie heeft al een voorzitter"
+
+#: models.py:214
+msgid "This member is already in the committee"
+msgstr "Deze persoon is al lid van deze commissie"
+
+#: models.py:217
+msgid "This member is already in the committee for this period"
+msgstr "Deze persoon is al lid van deze commissie in de aangegeven periode"
+
+#: models.py:251
+msgid "committee membership"
+msgstr "commissielidmaatschap"
+
+#: models.py:252
+msgid "committee memberships"
+msgstr "commissielidmaatschappen"
+
+#: models.py:260
+#, python-brace-format
+msgid "Mentor introduction {year}"
+msgstr "Mentor introductie {year}"
+
+#: templates/activemembers/board_detail.html:4
+#: templates/activemembers/board_index.html:3
+#: templates/activemembers/board_index.html:6
+msgid "Boards"
+msgstr "Besturen"
+
+#: templates/activemembers/board_detail.html:8
+#: templates/activemembers/board_index.html:33
+#: templates/activemembers/board_index.html:38
+msgid "Board"
+msgstr "Besturen"
+
+#: templates/activemembers/board_detail.html:26
+msgid "Board members"
+msgstr "Bestuursleden"
+
+#: templates/activemembers/board_detail.html:42
+#: templates/activemembers/committee_detail.html:44
+msgid "Chair"
+msgstr "Voorzitter"
+
+#: templates/activemembers/board_detail.html:59
+msgid "This board doesn't have any members?"
+msgstr "Dit bestuur heeft geen leden?"
+
+#: templates/activemembers/board_index.html:10
+#, python-format
+msgid ""
+"Thalia's board makes sure all operations during the academic year are taken "
+"care of, in front or behind the scenes. If you have any questions then you "
+"can address them during the day or, if you're not always on the campus, "
+"you're always welcome to <a href=\"mailto:info@thalia.nu\">send them an "
+"email</a>."
+msgstr ""
+"Het gehele Thaliabestuur zet zich gedurende een collegejaar in om alle "
+"activiteiten van Thalia in goede banen te leiden, voor of achter de "
+"schermen. Bij vragen en opmerkingen kun je ze altijd persoonlijk aanspreken "
+"of <a href=\"mailto:info@thalia.nu\">mailen</a>."
+
+#: templates/activemembers/board_index.html:25
+#: templates/activemembers/committee_detail.html:18
+#: templates/activemembers/committee_detail.html:20
+#, python-format
+msgid "Photo of %(name)s"
+msgstr "Foto van %(name)s"
+
+#: templates/activemembers/board_index.html:45
+msgid "There are no boards!"
+msgstr "Er zijn geen besturen!"
+
+#: templates/activemembers/committee_detail.html:3
+#: templates/activemembers/committee_index.html:3
+msgid "Committees"
+msgstr "Commissies"
+
+#: templates/activemembers/committee_detail.html:24
+#, python-format
+msgid "About the %(name)s"
+msgstr "Over de %(name)s"
+
+#: templates/activemembers/committee_detail.html:28
+msgid "Committee members"
+msgstr "Commissieleden"
+
+#: templates/activemembers/committee_detail.html:51
+#, python-format
+msgid "Committee member since: %(since)s"
+msgstr "Commissielid sinds: %(since)s"
+
+#: templates/activemembers/committee_detail.html:61
+msgid "This committee doesn't have any members?"
+msgstr "Deze commissie heeft geen leden?"
+
+#: templates/activemembers/committee_index.html:39
+msgid "There are no committees!"
+msgstr "Er zijn geen commissies!"
+
+#~ msgid "Mentors {year}-{year_to}"
+#~ msgstr "Mentoren {year}-{year_to}"

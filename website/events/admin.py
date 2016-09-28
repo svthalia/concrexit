@@ -8,7 +8,8 @@ from django.utils.http import is_safe_url
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from committees.models import Committee
+from utils.translation import TranslatedModelAdmin
+from activemembers.models import Committee
 from members.models import Member
 from . import models
 
@@ -20,7 +21,7 @@ def _do_next(request, response):
         return response
 
 
-class DoNextModelAdmin(admin.ModelAdmin):
+class DoNextModelAdmin(TranslatedModelAdmin):
 
     def response_add(self, request, obj):
         res = super().response_add(request, obj)
@@ -52,6 +53,10 @@ class RegistrationInformationFieldInline(admin.StackedInline):
 @admin.register(models.Event)
 class EventAdmin(DoNextModelAdmin):
     inlines = (RegistrationInformationFieldInline,)
+    fields = ('title', 'description', 'start', 'end', 'organiser',
+              'registration_start', 'registration_end', 'cancel_deadline',
+              'location', 'map_location', 'price', 'cost',
+              'max_participants', 'no_registration_message', 'published')
     list_display = ('overview_link', 'start', 'registration_start',
                     'num_participants', 'organiser', 'published', 'edit_link')
     list_display_links = ('edit_link',)

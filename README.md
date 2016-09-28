@@ -36,7 +36,7 @@ Pillow dependencies
 
 For Ubuntu 16.04, use:
 
-    apt-get install python-dev gettext gcc build-essential libtiff5-dev libjpeg62-turbo-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+    apt-get install python3-dev gettext gcc build-essential libtiff5-dev libjpeg62-turbo-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
 
 Or try:
 

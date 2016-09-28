@@ -1,0 +1,262 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-14 21:48+0200\n"
+"PO-Revision-Date: 2016-09-14 21:45+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#: admin.py:36
+msgid "order"
+msgstr "volgorde"
+
+#: admin.py:71
+msgid "Edit"
+msgstr "Aanpassen"
+
+#: admin.py:81
+msgid "Number of participants"
+msgstr "Aantal deelnemers"
+
+#: admin.py:85
+msgid "Publish selected events"
+msgstr "Publiceer geselecteerde evenementen"
+
+#: admin.py:89
+msgid "Unpublish selected events"
+msgstr "Publicatie van geselecteerde evenementen ongedaan maken"
+
+#: models.py:12
+msgid "No registration required"
+msgstr "Geen registratie vereist"
+
+#: models.py:14 templates/events/admin/details.html:47
+msgid "title"
+msgstr "titel"
+
+#: models.py:16 models.py:157
+msgid "description"
+msgstr "beschrijving"
+
+#: models.py:18
+msgid "start time"
+msgstr "starttijd"
+
+#: models.py:20
+msgid "end time"
+msgstr "eindtijd"
+
+#: models.py:26 templates/events/admin/details.html:51
+msgid "organiser"
+msgstr "organisator"
+
+#: models.py:30
+msgid "registration start"
+msgstr "start registratie"
+
+#: models.py:36
+msgid "registration end"
+msgstr "einde registratie"
+
+#: models.py:42
+msgid "cancel deadline"
+msgstr "afmelddeadline"
+
+#: models.py:47 templates/events/admin/details.html:55
+msgid "location"
+msgstr "locatie"
+
+#: models.py:50
+msgid "location for minimap"
+msgstr "locatie voor minimap"
+
+#: models.py:52
+msgid "Location of Huygens: Heyendaalseweg 135, Nijmegen. Not shown as text!!"
+msgstr ""
+"Locatie van ’t Huygens: Heyendaalseweg 135, Nijmegen. Dit veld wordt niet "
+"getoond als tekst!!"
+
+#: models.py:57 templates/events/admin/details.html:57
+msgid "price"
+msgstr "prijs"
+
+#: models.py:65 templates/events/admin/details.html:59
+msgid "cost"
+msgstr "kosten"
+
+#: models.py:69
+msgid "Actual cost of event."
+msgstr "werkelijke kosten van het evenement"
+
+#: models.py:74
+msgid "maximum number of participants"
+msgstr "maximum aantal deelnemers"
+
+#: models.py:80
+msgid "message when there is no registration"
+msgstr "bericht dat getoond wordt wanneer er geen registratie nodig is"
+
+#: models.py:84
+msgid "Default: "
+msgstr "Standaard: "
+
+#: models.py:88
+msgid "published"
+msgstr "gepubliceerd"
+
+#: models.py:98
+msgid "Can't have an event travel back in time"
+msgstr "Een evenement kan niet terugreizen in de tijd"
+
+#: models.py:103
+msgid "Doesn't make sense to have this if you require registrations."
+msgstr "Het is niet logisch om dit te hebben als je registratie vereist."
+
+#: models.py:108
+msgid "If registration is required, you need a start of registration"
+msgstr ""
+"Als registratie vereist is, dan heb je een starttijd voor de registratie "
+"nodig"
+
+#: models.py:113
+msgid "If registration is required, you need an end of registration"
+msgstr ""
+"Als registratie vereist is, dan heb je een eindtijd voor de registratie nodig"
+
+#: models.py:117
+msgid "Registration start should be before registration end"
+msgstr "De starttijd voor de registratie moet voor de eindtijd liggen"
+
+#: models.py:139
+msgid "checkbox"
+msgstr "checkbox"
+
+#: models.py:140
+msgid "text field"
+msgstr "tekstveld"
+
+#: models.py:141
+msgid "integer field"
+msgstr "integerveld"
+
+#: models.py:146
+msgid "field type"
+msgstr "veldtype"
+
+#: models.py:152
+msgid "field name"
+msgstr "veldnaam"
+
+#: models.py:194 templates/events/admin/registrations_table.html:6
+msgid "name"
+msgstr "naam"
+
+#: models.py:196
+msgid "Use this for non-members"
+msgstr "Gebruikt dit voor niet-leden"
+
+#: models.py:201
+msgid "registration date"
+msgstr "registratiedatum"
+
+#: models.py:202
+msgid "cancellation date"
+msgstr "afmelddatum"
+
+#: models.py:207 templates/events/admin/registrations_table.html:11
+msgid "present"
+msgstr "aanwezig"
+
+#: models.py:211 templates/events/admin/registrations_table.html:12
+msgid "paid"
+msgstr "betaald"
+
+#: models.py:224 models.py:225
+msgid "Either specify a member or a name"
+msgstr "Geef een lid of een naam op"
+
+#: models.py:247
+msgid "last changed"
+msgstr "laatst aangepast"
+
+#: templates/events/admin/details.html:8
+msgid "home"
+msgstr "home"
+
+#: templates/events/admin/details.html:9 templates/events/admin/details.html:10
+msgid "events"
+msgstr "evenementen"
+
+#: templates/events/admin/details.html:15
+#, python-format
+msgid "Event overview: %(event)s"
+msgstr "Overzicht evenement: %(event)s"
+
+#: templates/events/admin/details.html:20
+msgid "registrations"
+msgstr "registraties"
+
+#: templates/events/admin/details.html:24
+msgid "waiting"
+msgstr "wachtend"
+
+#: templates/events/admin/details.html:28
+msgid "cancellations"
+msgstr "afmeldingen"
+
+#: templates/events/admin/details.html:32
+msgid "Export registrations"
+msgstr "Exporteer registraties"
+
+#: templates/events/admin/details.html:40
+msgid "Event properties"
+msgstr "Eigenschappen van evenement"
+
+#: templates/events/admin/details.html:43
+#: templates/events/admin/registrations_table.html:39
+msgid "change"
+msgstr "verander"
+
+#: templates/events/admin/details.html:49
+#: templates/events/admin/registrations_table.html:7
+msgid "date"
+msgstr "datum"
+
+#: templates/events/admin/details.html:53
+msgid "registration period"
+msgstr "registratieperiode"
+
+#: templates/events/admin/details.html:61
+msgid "registration required"
+msgstr "registratie vereist"
+
+#: templates/events/admin/details.html:64
+msgid "registration message"
+msgstr "registratiebericht"
+
+#: templates/events/admin/registrations_table.html:15
+msgid "add"
+msgstr "toevoegen"
+
+#: templates/events/admin/registrations_table.html:43
+#, python-format
+msgid "Nobody %(verb)s yet"
+msgstr "Niemand heeft zich %(verb)s"
+
+#~ msgid "Present"
+#~ msgstr "Aanwezig"
+
+#~ msgid "Paid"
+#~ msgstr "Betaald"

@@ -1,9 +1,11 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from django.test import TestCase
 from django.utils import timezone
+from django.contrib.auth.models import User
 
-from members.models import Member
+from members.models import (Member, Membership,
+                            gen_stats_year, gen_stats_member_type)
 
 
 class MemberBirthdayTest(TestCase):
@@ -54,3 +56,155 @@ class MemberBirthdayTest(TestCase):
 
     def test_person_born_in_range_spanning_multiple_years(self):
         self._assert_thom('1992-12-31', '1995-01-01')
+
+
+class StatisticsTest(TestCase):
+    def setUp(self):
+
+        # Add 10 members with default membership
+        for i in range(10):
+            u = User(username=i)
+            u.save()
+            membership = Membership(user=u, type="member")
+            membership.save()
+            m = Member(user=u)
+            m.save()
+
+    def sum_members(self, members, type=None):
+        s = 0
+        for i in members:
+            if type is None:
+                for j in i.values():
+                    s = s + j
+            else:
+                s = s + i[type]
+        return s
+
+    def sum_member_types(self, members):
+        s = 0
+        for i in members.values():
+            s = s + i
+        return s
+
+    def test_gen_stats_year_no_members(self):
+        member_types = ["member", "supporter", "honorary"]
+        result = gen_stats_year(member_types)
+        self.assertEqual(0, self.sum_members(result))
+
+    def test_gen_stats_active(self):
+        """
+        Testing if active and non-active objects are counted correctly
+        """
+        member_types = ["member", "supporter", "honorary"]
+        current_year = date.today().year
+
+        # Set start date to current year - 1:
+        for m in Member.objects.all():
+            m.starting_year = current_year - 1
+            m.save()
+        result = gen_stats_year(member_types)
+        self.assertEqual(10, self.sum_members(result))
+        self.assertEqual(10, self.sum_members(result, "member"))
+
+        result = gen_stats_member_type(member_types)
+        self.assertEqual(10, self.sum_member_types(result))
+
+        # Change one membership to supporter should decrease amount of members
+        m = Membership.objects.all()[0]
+        m.type = "supporter"
+        m.save()
+
+        result = gen_stats_year(member_types)
+        self.assertEqual(10, self.sum_members(result))
+        self.assertEqual(9, self.sum_members(result, "member"))
+        self.assertEqual(1, self.sum_members(result, "supporter"))
+
+        result = gen_stats_member_type(member_types)
+        self.assertEqual(10, self.sum_member_types(result))
+        self.assertEqual(9, result["member"])
+        self.assertEqual(1, result["supporter"])
+
+        # Same for honorary members
+        m = Membership.objects.all()[1]
+        m.type = "honorary"
+        m.save()
+
+        result = gen_stats_year(member_types)
+        self.assertEqual(10, self.sum_members(result))
+        self.assertEqual(8, self.sum_members(result, "member"))
+        self.assertEqual(1, self.sum_members(result, "supporter"))
+        self.assertEqual(1, self.sum_members(result, "honorary"))
+
+        result = gen_stats_member_type(member_types)
+        self.assertEqual(10, self.sum_member_types(result))
+        self.assertEqual(8, result["member"])
+        self.assertEqual(1, result["supporter"])
+        self.assertEqual(1, result["honorary"])
+
+        # Terminate one membership by setting end date to current_year -1,
+        # should decrease total amount and total members
+        m = Membership.objects.all()[2]
+        m.until = timezone.now() - timedelta(days=365)
+        m.save()
+        result = gen_stats_year(member_types)
+        self.assertEqual(9, self.sum_members(result))
+        self.assertEqual(7, self.sum_members(result, "member"))
+        self.assertEqual(1, self.sum_members(result, "supporter"))
+        self.assertEqual(1, self.sum_members(result, "honorary"))
+
+        result = gen_stats_member_type(member_types)
+        self.assertEqual(9, self.sum_member_types(result))
+        self.assertEqual(7, result["member"])
+        self.assertEqual(1, result["supporter"])
+        self.assertEqual(1, result["honorary"])
+
+    def test_gen_stats_different_years(self):
+        member_types = ["member", "supporter", "honorary"]
+        current_year = date.today().year
+
+        # one first year student
+        m = Member.objects.all()[0]
+        m.starting_year = current_year
+        m.save()
+
+        # one second year student
+        m = Member.objects.all()[1]
+        m.starting_year = current_year - 1
+        m.save()
+
+        # no third year students
+
+        # one fourth year student
+        m = Member.objects.all()[2]
+        m.starting_year = current_year - 3
+        m.save()
+
+        # no fifth year students
+
+        # one >5 year student
+        m = Member.objects.all()[3]
+        m.starting_year = current_year - 5
+        m.save()
+
+        # 4 active members
+        result = gen_stats_year(member_types)
+        self.assertEqual(4, self.sum_members(result))
+        self.assertEqual(4, self.sum_members(result, "member"))
+
+        # one first year student
+        self.assertEqual(1, result[0]['member'])
+
+        # one second year student
+        self.assertEqual(1, result[1]['member'])
+
+        # no third year students
+        self.assertEqual(0, result[2]['member'])
+
+        # one fourth year student
+        self.assertEqual(1, result[3]['member'])
+
+        # no fifth year students
+        self.assertEqual(0, result[4]['member'])
+
+        # one >5 year student
+        self.assertEqual(1, result[5]['member'])
