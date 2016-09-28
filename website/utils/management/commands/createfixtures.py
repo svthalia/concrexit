@@ -22,7 +22,7 @@ class MemberFactory(factory.Factory):
 
     programme = random.choice(['computingscience', 'informationscience'])
     student_number = factory.LazyAttribute(
-        lambda x: faker.bothify(text="s#######"))
+        lambda x: faker.numerify(text="s#######"))
     starting_year = 2016
 
     address_street = factory.LazyAttribute(lambda x: faker.street_address())
