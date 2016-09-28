@@ -103,7 +103,7 @@ def event(request, event_id):
         Event.objects.filter(published=True),
         pk=event_id
     )
-    registrations = event.registration_set.all()
+    registrations = event.registration_set.filter(date_cancelled=None)
 
     context = {
         'event': event,

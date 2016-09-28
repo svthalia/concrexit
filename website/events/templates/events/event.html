@@ -217,7 +217,9 @@
                     {% if registration.is_external %}
                         <a href="#">
                             <div class="post-inner">
-                                <div class="inner-img">{% static "members/images/default-avatar.jpg" %}</div>
+                                <div class="inner-img">
+                                    <img src="{% static "members/images/default-avatar.jpg" %}">
+                                </div>
                                 <div class="post-overlay">
                                     <div class="post-overlay-meta">
                                         <h2>{{ registration.name }}</h2>
