@@ -33,6 +33,39 @@ def orders(request, event_pk):
     return render(request, 'pizzas/orders.html', context)
 
 
+@permission_required('pizzas.change_order')
+def overview(request, event_pk):
+    event = get_object_or_404(PizzaEvent, pk=event_pk)
+
+    product_list = {}
+    total_money = 0
+    total_products = 0
+    orders = Order.objects.filter(pizza_event=event)\
+                          .prefetch_related('product')
+
+    for order in orders:
+        if order.product.id not in product_list:
+            product_list[order.product.id] = {
+                'name': order.product.name,
+                'price': order.product.price,
+                'amount': 0,
+                'total': 0
+            }
+        product_list[order.product.id]['amount'] += 1
+        product_list[order.product.id]['total'] += order.product.price
+        total_products += 1
+        total_money += order.product.price
+
+    context = {
+        'event': event,
+        'product_list': product_list,
+        'total_money': total_money,
+        'total_products': total_products
+    }
+
+    return render(request, 'pizzas/overview.html', context)
+
+
 @require_http_methods(["POST"])
 @permission_required('pizzas.change_order')
 def toggle_orderpayment(request):

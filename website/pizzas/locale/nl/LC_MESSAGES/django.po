@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-14 22:10+0200\n"
+"POT-Creation-Date: 2016-09-28 21:00+0200\n"
 "PO-Revision-Date: 2016-08-13 17:56+0100\n"
 "Last-Translator: Jim Driessen <jim@driessen.li>\n"
 "Language-Team: \n"
@@ -45,6 +45,7 @@ msgstr "Specificeer een lid of vul een naam in"
 
 #: pizzas/templates/pizzas/add_order.html:5
 #: pizzas/templates/pizzas/index.html:5 pizzas/templates/pizzas/orders.html:5
+#: pizzas/templates/pizzas/overview.html:5
 msgid "Pizzas"
 msgstr "Pizza's"
 
@@ -55,12 +56,13 @@ msgstr "Bestelling toevoegen voor %(title)s"
 
 #: pizzas/templates/pizzas/add_order.html:24
 #: pizzas/templates/pizzas/index.html:68 pizzas/templates/pizzas/index.html:113
-#: pizzas/templates/pizzas/orders.html:26
+#: pizzas/templates/pizzas/orders.html:27
 msgid "Name"
 msgstr "Naam"
 
 #: pizzas/templates/pizzas/add_order.html:33
-#: pizzas/templates/pizzas/orders.html:27
+#: pizzas/templates/pizzas/orders.html:28
+#: pizzas/templates/pizzas/overview.html:25
 msgid "Product"
 msgstr "Product"
 
@@ -74,8 +76,8 @@ msgid ""
 "A more generic version of this form is<br>also available in the <a href="
 "\"%(url_pizzas_order_add)s\">administration back-end</a>."
 msgstr ""
-"Een meer generieke versie van dit formulier<br>is ook beschikbaar in de <a href="
-"\"%(url_pizzas_order_add)s\">back-end</a>."
+"Een meer generieke versie van dit formulier<br>is ook beschikbaar in de <a "
+"href=\"%(url_pizzas_order_add)s\">back-end</a>."
 
 #: pizzas/templates/pizzas/index.html:27
 #, python-format
@@ -126,6 +128,7 @@ msgid "Description"
 msgstr "Omschrijving"
 
 #: pizzas/templates/pizzas/index.html:70 pizzas/templates/pizzas/index.html:115
+#: pizzas/templates/pizzas/overview.html:26
 msgid "Price"
 msgstr "Prijs"
 
@@ -164,6 +167,7 @@ msgid "Are you sure you want to modify your order?"
 msgstr "Weet je zeker dat je de bestelling aan wilt passen?"
 
 #: pizzas/templates/pizzas/orders.html:14
+#: pizzas/templates/pizzas/overview.html:14
 #, python-format
 msgid "Orders for %(title)s"
 msgstr "Bestellingen voor %(title)s"
@@ -172,32 +176,51 @@ msgstr "Bestellingen voor %(title)s"
 msgid "Add a new order"
 msgstr "Nieuwe bestelling toevoegen"
 
-#: pizzas/templates/pizzas/orders.html:28
+#: pizzas/templates/pizzas/orders.html:20
+msgid "Overview"
+msgstr "Overzicht"
+
+#: pizzas/templates/pizzas/orders.html:29
 msgid "Paid"
 msgstr "Betaald"
 
-#: pizzas/templates/pizzas/orders.html:42
-#: pizzas/templates/pizzas/orders.html:75
+#: pizzas/templates/pizzas/orders.html:43
+#: pizzas/templates/pizzas/orders.html:76
+#: pizzas/templates/pizzas/overview.html:76
 msgid "Yes"
 msgstr "Ja"
 
-#: pizzas/templates/pizzas/orders.html:42
-#: pizzas/templates/pizzas/orders.html:75
+#: pizzas/templates/pizzas/orders.html:43
+#: pizzas/templates/pizzas/orders.html:76
+#: pizzas/templates/pizzas/overview.html:76
 msgid "No"
 msgstr "Nee"
 
-#: pizzas/templates/pizzas/orders.html:48
+#: pizzas/templates/pizzas/orders.html:49
 msgid "Are you sure you want to delete this order?"
 msgstr "Weet je zeker dat je de bestelling wilt verwijderen?"
 
-#: pizzas/templates/pizzas/orders.html:56
+#: pizzas/templates/pizzas/orders.html:57
+#: pizzas/templates/pizzas/overview.html:49
 msgid "Nobody ordered yet"
 msgstr "Nog geen bestellingen"
 
-#: pizzas/views.py:40
+#: pizzas/templates/pizzas/overview.html:18
+msgid "Back"
+msgstr "Terug"
+
+#: pizzas/templates/pizzas/overview.html:27
+msgid "Amount"
+msgstr "Aantal"
+
+#: pizzas/templates/pizzas/overview.html:28
+msgid "Total"
+msgstr "Totaal"
+
+#: pizzas/views.py:72
 msgid "You must supply an order pk."
 msgstr "Je moet een bestelling pk meegeven."
 
-#: pizzas/views.py:44
+#: pizzas/views.py:76
 msgid "Order not found!"
 msgstr "Bestelling niet gevonden!"

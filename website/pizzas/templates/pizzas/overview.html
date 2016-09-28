@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% load i18n staticfiles %}
+
+{% block page_title %}{% trans "Pizzas" %}{% endblock %}
+
+{% block css_head %}
+{{ block.super }}
+<link href="{% static "pizzas/css/style.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+<h1>
+    {% blocktrans with title=event.title %}Orders for {{ title }}{% endblocktrans %}
+</h1>
+
+<div id="button-container">
+    <a href="{% url 'pizzas:orders' event.pk %}" class="btn btn-primary pull-right">{% trans "Back" %}</a>
+    <br><br>
+</div>
+<div style="overflow-x: auto;">
+    <table class="category table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th scope="col">{% trans "Product" %}</th>
+                <th scope="col">{% trans "Price" %}</th>
+                <th class="paid-title" scope="col">{% trans "Amount" %}</th>
+                <th class="paid-title" scope="col">{% trans "Total" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in product_list.values %}
+                <tr>
+                    <td>
+                        {{ product.name }}
+                    </td>
+                    <td>
+                        &euro; {{ product.price }}
+                    </td>
+                    <td>
+                        {{ product.amount }}
+                    </td>
+                    <td>
+                        &euro; {{ product.total }}
+                    </td>
+                </tr>
+            {% empty %}
+            <tr class="model-events">
+                <th scope="row" colspan="4">{% trans "Nobody ordered yet" %}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2"></td>
+                <td>
+                    {{ total_products }}
+                </td>
+                <td>
+                    &euro; {{ total_money }}
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock %}
+
+{% block js_body %}
+{{ block.super }}
+<script type="text/javascript" src="{% static "pizzas/js/jquery.tablesort.min.js" %}"></script>
+<script type="text/javascript" src="{% static "pizzas/js/orders.js" %}"></script>
+
+<script type="text/javascript">
+var csrf_token = '{{ csrf_token }}';
+var paid_url = '{% url 'pizzas:toggle-orderpayment' %}';
+var trans = { 'yes': '{% trans 'Yes' %}', 'no': '{% trans 'No' %}' };
+</script>
+{% endblock %}

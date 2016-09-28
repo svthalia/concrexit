@@ -17,6 +17,7 @@
 <div id="button-container">
     <a href="{% url 'pizzas:add-order' event.pk %}" class="btn btn-primary pull-right">{% trans "Add a new order" %}</a>
     <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}" class="btn btn-primary pull-right">{% trans "All events" %}</a>
+    <a href="{% url 'pizzas:overview' event.pk %}" class="btn btn-primary pull-right">{% trans "Overview" %}</a>
     <br><br>
 </div>
 <div style="overflow-x: auto;">
