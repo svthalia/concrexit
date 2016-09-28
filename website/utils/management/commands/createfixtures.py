@@ -29,7 +29,7 @@ class MemberFactory(factory.Factory):
     address_postal_code = factory.LazyAttribute(lambda x: faker.postcode())
     address_city = factory.LazyAttribute(lambda x: faker.city())
 
-    phone_number = factory.LazyAttribute(lambda x: faker.phone_number())
+    phone_number = '+31' + faker.numerify(text="##########")
 
 
 class Command(BaseCommand):
@@ -69,7 +69,12 @@ class Command(BaseCommand):
 
                     membership = Membership()
                     membership.user_id = user.id
-                    membership.type = 'member'
+                    membership.since = faker.date_time_between(
+                        start_date='-4y', end_date='now', tzinfo=None)
+                    membership.until = random.choice([faker.date_time_between(
+                        start_date='-2y', end_date='2y', tzinfo=None), None])
+                    membership.type = random.choice(
+                        ['member', 'supporter', 'honorary'])
                 except Exception as e:
                     raise e
                 else:

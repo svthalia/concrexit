@@ -6,6 +6,8 @@ identicon python implementation.
 by Shin Adachi <shn AT glucose DOT jp>
 maintained by Joseph Kern <joseph DOT a DOT kern AT gmail DOT com>
 
+Licenced under FreeBSD licence, more information in LICENCE file
+
 = usage =
 
 == commandline ==
