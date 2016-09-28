@@ -1,2 +1,4 @@
 tox
 flake8
+factory_boy==2.7.0
+Faker==0.7.2
