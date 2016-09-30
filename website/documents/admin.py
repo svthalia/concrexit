@@ -7,6 +7,7 @@ from documents.models import GeneralMeeting, GeneralMeetingDocument
 
 class GeneralMeetingDocInline(admin.StackedInline):
     model = GeneralMeetingDocument
+    classes = ('collapse',)
 
 
 @admin.register(GeneralMeeting)
