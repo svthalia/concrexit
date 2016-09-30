@@ -10,8 +10,8 @@ from django.core.files import File
 
 from members.models import Member, Membership
 from partners.models import Partner
-from utils import identicon
 
+from pydenticon import Generator as IconGenerator
 import factory
 from faker import Factory as FakerFactory
 faker = FakerFactory.create('nl_NL')
@@ -40,18 +40,19 @@ class Command(BaseCommand):
         parser.add_argument(
             "-u", "--user", type=int, help="The amount of fake users to add")
         parser.add_argument(
-            "-p", "--partner", type=int, help="The amount of fake partners to add")
+            "-p", "--partner", type=int, 
+            help="The amount of fake partners to add")
 
     def create_partner(self, partner):
         partner.name = faker.company() + ' ' + faker.company_suffix()
         partner.slug = faker.slug()
         partner.link = faker.uri()
 
-        code = sum([ord(x) for x in partner.name])
-        icon = identicon.render_identicon(code, 50)
+        igen = IconGenerator(5, 5) # 5x5 blocks
+        icon = igen.generate(user.username, 480, 480, (10,10,10,10)) # 620x620 pixels, with 10 pixels padding on each side
         with tempfile.TemporaryFile() as tfile:
-            icon.save(tfile, 'PNG')
-            partner.logo.save(partner.name + '.png',
+            tfile.write(icon)
+            partner.photo.save(partner.name + '.png',
                               File(tfile))
 
         partner.address = faker.street_address()
@@ -79,10 +80,10 @@ class Command(BaseCommand):
                     member.birthday = fakeprofile['birthdate']
                     member.website = fakeprofile['website'][0]
 
-                    code = sum([ord(x) for x in fakeprofile['username']])
-                    icon = identicon.render_identicon(code, 50)
+                    igen = IconGenerator(5, 5) # 5x5 blocks
+                    icon = igen.generate(user.username, 480, 480, (10,10,10,10)) # 620x620 pixels, with 10 pixels padding on each side
                     with tempfile.TemporaryFile() as tfile:
-                        icon.save(tfile, 'PNG')
+                        tfile.write(icon)
                         member.photo.save(fakeprofile['username'] + '.png',
                                           File(tfile))
 
@@ -110,7 +111,7 @@ class Command(BaseCommand):
                 partner = Partner()
                 partner.is_active = True
                 partner.is_main_partner = True
-                
+
                 self.create_partner(partner)
 
             for __ in range(options['partner']):

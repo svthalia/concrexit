@@ -1,4 +1,5 @@
 tox
 flake8
 factory_boy==2.7.0
-Faker==0.7.2
+Faker==0.7.3
+git+https://github.com/azaghal/pydenticon
