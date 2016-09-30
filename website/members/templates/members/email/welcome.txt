@@ -8,9 +8,7 @@ your profile.
 Your username is:   {{ user.username }}
 Your password is:   {{ password }}
 
-Please also check the following information, if relevant:
-
-Student number:     {{ user.member.student_number }}
+Please also check the information on your profile.
 
 Cheers,
 

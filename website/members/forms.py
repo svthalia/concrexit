@@ -44,7 +44,7 @@ class UserCreationForm(forms.ModelForm):
         if self.cleaned_data['send_welcome_email']:
             with translation.override(user.member.language):
                 email_body = loader.render_to_string(
-                    'members/email/welcome.html',
+                    'members/email/welcome.txt',
                     {'user': user, 'password': password})
             user.email_user(
                 _('Welkom bij Studievereniging Thalia'),
