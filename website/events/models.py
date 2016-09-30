@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, string_concat
+from django.urls import reverse
 from utils.translation import MultilingualField, ModelTranslateMeta
 
 
@@ -136,7 +137,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             raise ValidationError(errors)
 
     def get_absolute_url(self):
-        return ''
+        return reverse('events:event', args=[str(self.pk)])
 
     def __str__(self):
         return '{}: {}'.format(
