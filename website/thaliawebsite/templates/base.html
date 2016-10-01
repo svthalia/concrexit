@@ -79,6 +79,10 @@
                         <li><a href="{% url 'members:edit-profile' %}">{% trans "edit profile"|capfirst %}</a></li>
                         <li><a href="{% url 'password_change' %}">{% trans "change password"|capfirst %}</a></li>
                         <li class="divider"></li>
+                        {% if user.is_staff %}
+                        <li><a href="{% url 'admin:index' %}">{% trans "Site administration" %}</a></li>
+                        <li class="divider"></li>
+                        {% endif %}
                         <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i>{% trans "Log Out" %}</a></li>
                     </ul>
                 </div>
