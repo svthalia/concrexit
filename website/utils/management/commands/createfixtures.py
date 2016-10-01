@@ -40,7 +40,9 @@ class Command(BaseCommand):
         parser.add_argument(
             "-u", "--user", type=int, help="The amount of fake users to add")
         parser.add_argument(
-            "-p", "--partner", type=int, 
+            "-p",
+            "--partner",
+            type=int,
             help="The amount of fake partners to add")
 
     def create_partner(self, partner):
@@ -48,12 +50,13 @@ class Command(BaseCommand):
         partner.slug = faker.slug()
         partner.link = faker.uri()
 
-        igen = IconGenerator(5, 5) # 5x5 blocks
-        icon = igen.generate(user.username, 480, 480, (10,10,10,10)) # 620x620 pixels, with 10 pixels padding on each side
+        igen = IconGenerator(5, 5)  # 5x5 blocks
+        icon = igen.generate(partner.name, 480, 480, (
+            10, 10, 10,
+            10))  # 620x620 pixels, with 10 pixels padding on each side
         with tempfile.TemporaryFile() as tfile:
             tfile.write(icon)
-            partner.photo.save(partner.name + '.png',
-                              File(tfile))
+            partner.logo.save(partner.name + '.png', File(tfile))
 
         partner.address = faker.street_address()
         partner.zip_code = faker.postcode()
@@ -80,8 +83,10 @@ class Command(BaseCommand):
                     member.birthday = fakeprofile['birthdate']
                     member.website = fakeprofile['website'][0]
 
-                    igen = IconGenerator(5, 5) # 5x5 blocks
-                    icon = igen.generate(user.username, 480, 480, (10,10,10,10)) # 620x620 pixels, with 10 pixels padding on each side
+                    igen = IconGenerator(5, 5)  # 5x5 blocks
+                    icon = igen.generate(user.username, 480, 480, (
+                        10, 10, 10, 10
+                    ))  # 620x620 pixels, with 10 pixels padding on each side
                     with tempfile.TemporaryFile() as tfile:
                         tfile.write(icon)
                         member.photo.save(fakeprofile['username'] + '.png',
