@@ -7,10 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-16 21:29+0200\n"
-"PO-Revision-Date: 2016-09-21 11:08+0200\n"
-"POT-Creation-Date: 2016-09-16 21:34+0200\n"
-"PO-Revision-Date: 2016-09-16 21:34+0200\n"
+"POT-Creation-Date: 2016-10-01 17:44+0200\n"
+"PO-Revision-Date: 2016-10-01 17:47+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -128,11 +126,11 @@ msgstr "Samenvatting Insturen"
 msgid "Contact"
 msgstr "Contact"
 
-#: settings/settings.py:149
+#: settings/settings.py:155
 msgid "English"
 msgstr "Engels"
 
-#: settings/settings.py:150
+#: settings/settings.py:156
 msgid "Dutch"
 msgstr "Nederlands"
 
@@ -153,23 +151,31 @@ msgid ""
 "500: Internal server error. Thalia's website committee has been notified."
 msgstr ""
 
-#: templates/base.html:9 templates/base.html:161
+#: templates/base.html:9 templates/base.html:167
 msgid "Study Association Thalia"
 msgstr "Studievereniging Thalia"
 
-#: templates/base.html:68
+#: templates/base.html:70
 msgid "Login"
 msgstr "Inloggen"
 
-#: templates/base.html:77
-msgid "Edit Profile"
-msgstr "Bewerk profiel"
+#: templates/base.html:74
+msgid "My Account"
+msgstr "Mijn Account"
 
-#: templates/base.html:78
-msgid "Profile Picture"
-msgstr "Profielafbeelding"
+#: templates/base.html:79
+msgid "edit profile"
+msgstr "bewerk profiel"
 
 #: templates/base.html:80
+msgid "change password"
+msgstr "wijzig mijn wachtwoord"
+
+#: templates/base.html:83
+msgid "Site administration"
+msgstr "Sitebeheer"
+
+#: templates/base.html:86
 msgid "Log Out"
 msgstr "Uitloggen"
 
@@ -477,6 +483,9 @@ msgstr "Universiteit van Amsterdam"
 msgid "VU University Amsterdam"
 msgstr "Vrije Universiteit Amsterdam"
 
+#~ msgid "Profile Picture"
+#~ msgstr "Profielafbeelding"
+
 #~ msgid "Logout"
 #~ msgstr "Uitloggen"
 
@@ -525,9 +534,6 @@ msgstr "Vrije Universiteit Amsterdam"
 
 #~ msgid "Confirm new password"
 #~ msgstr "Bevestig nieuw wachtwoord"
-
-#~ msgid "Change my password"
-#~ msgstr "Wijzig mijn wachtwoord"
 
 #~ msgid "Confirm password"
 #~ msgstr "Bevestig wachtwoord"
