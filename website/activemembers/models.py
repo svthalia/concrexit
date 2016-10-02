@@ -159,14 +159,6 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         null=True,
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if self.pk is not None:
-            self._was_chair = bool(self.chair)
-        else:
-            self._was_chair = False
-
     @property
     def is_active(self):
         """Is this membership currently active"""
@@ -218,23 +210,6 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
                 raise ValidationError({
                     'member': _('This member is already in the committee for '
                                 'this period')})
-
-    def save(self, *args, **kwargs):
-        """Save the instance"""
-        # If the chair changed and we're still active, we create a new instance
-        # Inactive instances should be handled manually
-        if (self.pk is not None and self._was_chair != self.chair and
-                not self.until and self.since != timezone.now().date()):
-            logger.info("Creating new membership instance")
-            self.until = timezone.now().date() - datetime.timedelta(days=1)
-            super().save(*args, **kwargs)
-            self.pk = None  # forces INSERT
-            # Set since date to older expiration:
-            self.since = timezone.now().date()
-            self.until = None
-
-        self._was_chair = self.chair
-        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         """Deactivates active memberships, deletes inactive ones"""
