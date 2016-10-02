@@ -1,11 +1,12 @@
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-
+from django.utils.dateparse import parse_date
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from django.utils.translation import activate
 
-from activemembers.models import Board, Committee
+from activemembers.models import Board, Committee, CommitteeMembership
 from members.models import Member
 
 from bs4 import BeautifulSoup
@@ -23,6 +24,7 @@ class Command(BaseCommand):
     help = "Migrates members and related committees / memberships"
 
     def handle(self, *args, **options):
+        activate('en')
         if not settings.MIGRATION_KEY:
             raise ImproperlyConfigured("MIGRATION_KEY not specified")
         url = "https://thalia.nu/api/members_export.php?apikey={}".format(
@@ -142,9 +144,51 @@ class Command(BaseCommand):
 
             for membership in member['memberships']:
                 mdata = membership['membership']
-                if mdata['gID'] in groups:
-                    group = groups[mdata['gID']]
-                    print(group.name_nl, mdata['begindate'], mdata['enddate'])
+                if not mdata['begindate'] or mdata['begindate'][:4] == '0000':
+                    mdata['begindate'] = '1970-01-01'  # Manually fix this
+                for p in membership['presidencies'] + membership['roles']:
+                    if not p['begindate'] or p['begindate'][:4] == '0000':
+                        p['begindate'] = '1970-01-01'
 
-            # TODO link member to committees through memberships
-            # TODO administrate roles / presidencies
+                if mdata['gID'] not in groups:
+                    continue  # These are concrete5 groups (Admin, etc..)
+                group = groups[mdata['gID']]
+                dates = ([p['begindate'] for p in membership['presidencies']] +
+                         [p['enddate'] for p in membership['presidencies']] +
+                         [r['begindate'] for r in membership['roles']] +
+                         [r['enddate'] for r in membership['roles']] +
+                         [mdata['begindate']])
+                dates = set(dates)
+                try:
+                    dates.remove(mdata['enddate'])
+                    dates.remove(None)
+                except KeyError:
+                    pass  # Silence if enddate or None do not appear
+                if not dates:
+                    dates = {'1970-01-01'}  # Manually fix where this appears
+                newmship = None
+                for date in sorted(dates):
+                    if newmship:
+                        newmship.until = parse_date(date)
+                        newmship.save()
+                    newmship = CommitteeMembership()
+                    newmship.member = user.member
+                    newmship.committee = group
+                    newmship.since = parse_date(date)
+                    presidencies = [p for p in membership['presidencies']
+                                    if p['begindate'] >= date and
+                                    (not p['enddate'] or date < p['enddate'])]
+                    if len(presidencies) >= 1:
+                        newmship.chair = True
+                    roles = [r['role'] for r in membership['roles']
+                             if r['begindate'] >= date and
+                             (not r['enddate'] or date < r['enddate'])]
+                    if len(roles) >= 1:
+                        newmship.role_nl = ' / '.join(roles)
+                        newmship.role_en = ' / '.join(roles)
+                if mdata['enddate'] is not None:
+                    if newmship.since != parse_date(mdata['enddate']):
+                        newmship.until = parse_date(mdata['enddate'])
+                        newmship.save()
+                else:
+                    newmship.save()

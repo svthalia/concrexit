@@ -220,9 +220,10 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
             super().delete(*args, **kwargs)
 
     def __str__(self):
-        return "{} membership of {} since {}".format(self.member,
-                                                     self.committee,
-                                                     self.since)
+        return "{} membership of {} since {}, until {}".format(self.member,
+                                                               self.committee,
+                                                               self.since,
+                                                               self.until)
 
     class Meta:
         verbose_name = _('committee membership')
