@@ -50,9 +50,10 @@ def index(request):
     else:
         members = [obj for obj in members if obj.current_membership]
 
-    if keywords:
-        members = [obj for obj in members if
-                   keywords in obj.nickname.lower() or
+    if keywords is not None:
+        keywords = keywords.lower()
+        members = [obj for obj in members if (obj.nickname is not None and
+                   keywords in obj.nickname.lower()) or
                    keywords in obj.user.first_name.lower() or
                    keywords in obj.user.last_name.lower() or
                    keywords in obj.user.username.lower()]
