@@ -3,6 +3,8 @@
 {% load i18n %}
 {% load compress %}
 
+{% block title %}{% trans 'Documents' %} — {{ block.super }}{% endblock %}
+
 {% block css_head %}
     {{ block.super }}
     {% compress css %}
