@@ -1,0 +1,273 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-03 10:12+0200\n"
+"PO-Revision-Date: 2016-10-03 10:12+0200\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#: admin.py:29
+msgid "Mark exams as accepted"
+msgstr "Markeer tentamens als geaccepteerd"
+
+#: admin.py:34
+msgid "Mark exams as rejected"
+msgstr "Markeer tentamens als afgekeurd"
+
+#: admin.py:46
+msgid "Mark summaries as accepted"
+msgstr "Markeer samenvattingen als geaccepteerd"
+
+#: admin.py:51
+msgid "Mark summaries as rejected"
+msgstr "Markeer samenvattingen als afgekeurd"
+
+#: models.py:23
+msgid "category"
+msgstr "categorie"
+
+#: models.py:24 models.py:35
+msgid "categories"
+msgstr "categorieën"
+
+#: models.py:42
+msgid "old courses"
+msgstr "oude vakken"
+
+#: models.py:56 templates/education/course.html:72
+msgid "EC"
+msgstr "EC"
+
+#: models.py:66
+msgid "period"
+msgstr "periode"
+
+#: models.py:76 models.py:124 models.py:170
+msgid "course"
+msgstr "vak"
+
+#: models.py:77
+msgid "courses"
+msgstr "vakken"
+
+#: models.py:82
+msgid "Document"
+msgstr "Document"
+
+#: models.py:83
+msgid "Exam"
+msgstr "Tentamen"
+
+#: models.py:84
+msgid "Partial Exam"
+msgstr "Deeltentamen"
+
+#: models.py:85
+msgid "Resit"
+msgstr "Hertentamen"
+
+#: models.py:86
+msgid "Practice Exam"
+msgstr "Oefententamen"
+
+#: models.py:91
+msgid "exam type"
+msgstr "type tentamen"
+
+#: models.py:96
+msgid "exam name"
+msgstr "naam tentamen"
+
+#: models.py:102 models.py:154
+msgid "uploader"
+msgstr "uploader"
+
+#: models.py:110 models.py:174
+msgid "accepted"
+msgstr "geaccepteerd"
+
+#: models.py:115
+msgid "exam date"
+msgstr "tentamendatum"
+
+#: models.py:142
+msgid "exam"
+msgstr "tentamen"
+
+#: models.py:143
+msgid "exams"
+msgstr "tentamens"
+
+#: models.py:149
+msgid "summary name"
+msgstr "naam samenvatting"
+
+#: models.py:165
+msgid "author"
+msgstr "auteur"
+
+#: models.py:190
+msgid "summary"
+msgstr "samenvatting"
+
+#: models.py:191
+msgid "summaries"
+msgstr "samenvattingen"
+
+#: templates/education/add_exam.html:4 templates/education/add_exam.html:7
+#: templates/education/course.html:78
+msgid "Submit Exam"
+msgstr "Tentamen Insturen"
+
+#: templates/education/add_exam.html:11
+msgid "Exam submitted successfully."
+msgstr "Tentamen succesvol ingestuurd."
+
+#: templates/education/add_exam.html:37 templates/education/add_summary.html:37
+msgid "submit"
+msgstr "insturen"
+
+#: templates/education/add_summary.html:4
+#: templates/education/add_summary.html:7 templates/education/course.html:81
+msgid "Submit Summary"
+msgstr "Samenvatting Insturen"
+
+#: templates/education/add_summary.html:11
+msgid "Summary submitted successfully."
+msgstr "Samenvatting succesvol ingestuurd."
+
+#: templates/education/books.html:11 templates/education/books.html:14
+msgid "Book Sale"
+msgstr "Boekverkoop"
+
+#: templates/education/books.html:16
+#, python-format
+msgid ""
+"Thalia's book sale goes through bookstore Roelants. As a member of Thalia "
+"you get 10%% discount on your order. So how does the ordering work? Simple: "
+"visit the Roelants webstore using <a href=\"https://www.roelants.nl/"
+"studenten/products/alle-producten/3543/p.product_price/asc.html?"
+"r=sawqllhrjzy4dq3ui8pf\">this link</a>. Then choose the books you need and "
+"use the code 'THALIAkorting' to activate the discount."
+msgstr ""
+"De boekenverkoop van Thalia gaat via boekhandel Roelants. Via deze "
+"boekhandel krijg je als Thaliaan 10%% korting op je bestelling. Hoe gaat dat "
+"bestellen nou in zijn werk? Simpel: ga naar de Roelants webwinkel via <a "
+"href=\"https://www.roelants.nl/studenten/products/alle-producten/3543/p."
+"product_price/asc.html?r=sawqllhrjzy4dq3ui8pf\">deze link</a. Vervolgens "
+"kies je de boeken uit die jij voor je vakken nodig hebt. Als je klaar bent "
+"gebruik je tijdens het afrekenen de code \"THALIAkorting\" om de korting op "
+"je bestelling te krijgen."
+
+#: templates/education/books.html:23
+msgid ""
+"It's also possible to order your books at the physical shops, but the "
+"discount is only eligible when using the website. It is useful to order your "
+"books at least two weeks before you need them, because they are not always "
+"easy to get. In case books are missing from the catalog, or if you discover "
+"any other problems with the books, send an email to <a href=\"mailto:"
+"onderwijs@thalia.nu\">onderwijs@thalia.nu</a>."
+msgstr ""
+"Het is ook mogelijk om bij de boekhandel op de campus of in de stad je "
+"boeken te bestellen maar alleen bij webbestellingen heb je recht op de "
+"lidmaatschaps-korting. Bij het bestellen van je boeken is het handig om "
+"minstens 2 weken voor dat je de boeken nodig hebt je bestelling rond te "
+"hebben, aangezien de boeken niet altijd even makkelijk te leveren zijn. "
+"Mocht er een boek ontbreken of er een ander probleem met de boeken zijn, "
+"stuur gerust een e-mail naar onderwijs@thalia.nu."
+
+#: templates/education/course.html:4
+msgid "Course"
+msgstr "Vak"
+
+#: templates/education/course.html:14
+msgid ""
+"Thalia does not have any documents for this course, unfortunately. Are you "
+"in possession of exams or summaries for this course? Then let us know or add "
+"them to the catalog using the submission page!"
+msgstr ""
+"Er zijn bij Thalia helaas geen documenten bekend over dit vak. Ben jij in "
+"het bezit van tentamens of samenvattingen over dit vak? Laat het ons weten!"
+
+#: templates/education/course.html:29
+msgid "Exams"
+msgstr "Tentamens"
+
+#: templates/education/course.html:29
+msgid "Summaries"
+msgstr "Samenvattingen"
+
+#: templates/education/course.html:45
+#, python-format
+msgid ""
+"These documents were collected for <a href=\"%(course_url)s\">"
+"%(course_name)s</a>, a predecessor of this course."
+msgstr ""
+"Deze documenten zijn van de cursus <a href=\"%(course_url)s\">"
+"%(course_name)s</a>, een voorloper van dit vak."
+
+#: templates/education/course.html:59
+#, python-format
+msgid ""
+"This is the overview for <b>%(name)s</b>. You can find all the exams and "
+"summaries that Thalia has here."
+msgstr ""
+"Dit is de overzichtspagina voor <b>%(name)s</b>. Hier kun je per jaar alle "
+"bij Thalia bekende tentamens en samenvattingen terugvinden."
+
+#: templates/education/course.html:64
+msgid ""
+"Keep in mind that old exams and summaries may not always test the same "
+"material as this year."
+msgstr ""
+"Houd er rekening mee dat oude tentamens en samenvattingen niet altijd "
+"representatief zijn voor wat er dit jaar wordt getoetst."
+
+#: templates/education/course.html:71
+msgid "Course code"
+msgstr "Cursus code"
+
+#: templates/education/course.html:73
+msgid "Period"
+msgstr "Periode"
+
+#: templates/education/courses.html:4 templates/education/courses.html:7
+msgid "Course overview"
+msgstr "Vakkenoverzicht"
+
+#: templates/education/courses.html:9
+msgid ""
+"This overview contains all courses for which Thalia has exams, summaries or "
+"other documents. Select a course to find out more.<br/> Can't find a course? "
+"Let the <a href=\"mailto:educacie@thalia.nu\">education committee</a> know."
+msgstr ""
+"Overzicht van alle vakken waar Thalia tentamens, samenvatting of andere "
+"documenten voor heeft. Selecteer een vak om er naar te navigeren.<br />Staat "
+"er een vak niet tussen? Laat dat dan weten aan de <a href=\"mailto:"
+"educacie@thalia.nu\">educatiecommissie</a>."
+
+#: templates/education/courses.html:21
+msgid "all courses"
+msgstr "alle vakken"
+
+#: views.py:30
+msgid "Summary"
+msgstr "Samenvatting"
+
+#~ msgid "Mark exams as unaccepted"
+#~ msgstr "Mark tentamens als niet geaccepteerd"
+
+#~ msgid "Mark summaries as unaccepted"
+#~ msgstr "Mark samenvattingen als niet geaccepteerd"

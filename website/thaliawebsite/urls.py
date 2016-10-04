@@ -75,6 +75,7 @@ urlpatterns = [
         url(r'^', include('events.api.urls')),
         url(r'^', include('members.api.urls')),
     ])),
+    url(r'^education/', include('education.urls', namespace='education')),
     # Default login helpers
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
