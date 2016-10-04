@@ -1,13 +1,10 @@
-from django.core.files.base import ContentFile
-from django.utils import timezone
-from django.utils.timezone import datetime
-
-from utils.management.commands import legacylogin
-from documents.models import MiscellaneousDocument
-
-from bs4 import BeautifulSoup
-import requests
 import os
+
+import requests
+from bs4 import BeautifulSoup
+from django.core.files.base import ContentFile
+from documents.models import MiscellaneousDocument
+from utils.management.commands import legacylogin
 
 
 def filefield_from_url(filefield, url):

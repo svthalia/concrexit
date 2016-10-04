@@ -1,0 +1,125 @@
+.thimbus-page {
+    .policy-wrapper {
+        overflow-x: hidden;
+        padding-top: 20px;
+    }
+
+    .policy-wrapper, .misc-wrapper {
+        .portfolio-posts {
+            margin-bottom: 0;
+
+            .slider-control-prev,
+            .slider-control-next {
+                cursor: pointer;
+            }
+
+            .slider-control-prev {
+                display: none;
+            }
+
+            .post {
+                width: 220px;
+                float: left;
+                min-height: 1px;
+                margin-left: 20px;
+
+                .document-thumb {
+                    position: relative;
+
+                    > span {
+                        width: 100%;
+                        position: absolute;
+                        bottom: 40px;
+                        text-align: center;
+                        font-family: 'GillSansMT-Condensed', 'Open Sans', Helvetica, sans-serif;
+                        font-size: 20px;
+                    }
+                }
+
+                .unknowncontainer {
+                    background: none !important;
+                    border: 2px dashed #9C9C9C;
+                    color: #9C9C9C;
+                    height: 310px;
+
+                    .post-header {
+                        text-align: center;
+                        height: 176px; /* 176 - padding */
+                        width: 220px;
+                        font-size: 64px;
+                        line-height: 176px;
+                        cursor: default;
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -khtml-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                    }
+                }
+            }
+        }
+    }
+
+    /* https://kenneth.io/blog/2012/03/04/word-wrapping-hypernation-using-css/ */
+    .wordbreak {
+        -ms-word-break: break-all;
+        word-break: break-all;
+
+        /* Non standard for webkit */
+        word-break: break-word;
+
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+    }
+
+    #meetingcontainer > div:not(:first-child) {
+        display: none;
+    }
+
+    #alvselect {
+        outline-width: 0px !important;
+        width: 140px;
+        padding: 0px 15px;
+    }
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+    .thimbus-page {
+        .policy-wrapper, .misc-wrapper {
+            width: 700px;
+            margin: 0 auto;
+            .portfolio-posts {
+                .post {
+                    min-width: 220px;
+                    width: 220px;
+                }
+            }
+        }
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+    .thimbus-page {
+        .policy-wrapper, .misc-wrapper {
+            .portfolio-posts {
+                .post {
+                    min-width: 190px;
+                    width: 190px;
+
+                    .unknowncontainer {
+                        height: 268px;
+
+                        .post-header {
+                            width: 190px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

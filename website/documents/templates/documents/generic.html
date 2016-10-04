@@ -1,13 +1,12 @@
-<li class="post span3 has-overlay">
+{% load staticfiles %}
+
+<li class="post has-overlay">
     <div class="post-inner">
         <div class="post-header">
-            <a href="portfolio-single-wide.html">
-                <!-- TODO create a more meaningful thumbnail -->
-                <img src="https://placehold.it/200x200" />
-            </a>
-        </div>
-        <div class="post-body">
-            <h2><a href="portfolio-single-wide.html">{{ document.name }}</a></h2>
+            <div class="document-thumb">
+                <img src="{% static "documents/images/thumb.png" %}" />
+                <span>{{ document.name | upper }}</span>
+            </div>
         </div>
         <div class="post-overlay">
             <div class="post-overlay-meta">
