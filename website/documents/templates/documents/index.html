@@ -77,7 +77,9 @@
 {% endblock %}
 
 {% block js_body %}
-{{ block.super }}
-<script type="text/javascript" src="{% static "documents/js/policydocuments.js" %}"></script>
-<script type="text/javascript" src="{% static "documents/js/generalmeetings.js" %}"></script>
+    {{ block.super }}
+    {% compress js %}
+    <script type="text/javascript" src="{% static "documents/js/policydocuments.js" %}"></script>
+    <script type="text/javascript" src="{% static "documents/js/generalmeetings.js" %}"></script>
+    {% endcompress %}
 {% endblock %}
