@@ -6,6 +6,7 @@ import datetime
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.utils.translation import ugettext_lazy as _
 
 from . import models, forms
@@ -67,11 +68,11 @@ class AgeListFilter(admin.SimpleListFilter):
                     if self.value() == 'unknown':
                         users.add(user.pk)
                     continue
-                elif (user.member.birthday <= eightteen_years_ago
-                        and self.value() == '18+'):
+                elif (user.member.birthday <= eightteen_years_ago and
+                      self.value() == '18+'):
                     users.add(user.pk)
-                elif (user.member.birthday > eightteen_years_ago
-                        and self.value() == '18-'):
+                elif (user.member.birthday > eightteen_years_ago and
+                      self.value() == '18-'):
                     users.add(user.pk)
             except models.Member.DoesNotExist:
                 # The superuser does not have a .member object attached.

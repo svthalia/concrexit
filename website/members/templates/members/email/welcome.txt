@@ -1,5 +1,5 @@
 {% load i18n %}
-{% begin blocktrans %}Dear {{ user.get_full_name }},
+{% blocktrans %}Dear {{ user.get_full_name }},
 
 Welcome to Study Association Thalia! You now have an account and can
 log in at https://thalia.nu/. Make sure to check the information in
