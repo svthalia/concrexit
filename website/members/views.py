@@ -1,5 +1,5 @@
 import os
-from datetime import date
+from datetime import date, datetime
 from sendfile import sendfile
 import json
 
@@ -29,36 +29,33 @@ def index(request):
         start_year += 1
     year_range = reversed(range(start_year, date.today().year + 1))
 
-    q = ~Q(user=None)
-    if keywords is not None:
-        keywords = keywords.lower()
-        q &= (Q(nickname__icontains=keywords) | Q(
-            user__first_name__icontains=keywords) | Q(
-            user__last_name__icontains=keywords) | Q(
-            user__username__icontains=keywords))
-
-    members = models.Member.objects.filter(q)
+    memberships_query = Q(until__gt=datetime.now()) | Q(until=None)
+    members_query = ~Q(id=None)
 
     if query_filter and query_filter.isdigit() and not (
                         query_filter == 'ex' or
                         query_filter == 'honor' or
                         query_filter == 'old'):
-        members = [obj for obj in members if
-                   obj.current_membership and
-                   obj.current_membership.since.year == int(query_filter)]
+        members_query &= Q(starting_year=int(query_filter))
     elif query_filter == 'old':
-        members = [obj for obj in members if
-                   obj.current_membership and
-                   obj.current_membership.since.year < start_year]
+        memberships_query &= Q(starting_year__lt=start_year)
     elif query_filter == 'ex':
-        members = [obj for obj in members if not obj.current_membership and
-                   obj.membership_set.filter(type='member').count() > 0]
+        memberships = models.Membership.objects.filter(memberships_query)
+        members_query &= ~Q(user__in=memberships.values('user'))
+        memberships_query = Q(type='member') & Q(until__lte=datetime.now())
     elif query_filter == 'honor':
-        members = [obj for obj in members if
-                   obj.current_membership and
-                   obj.current_membership.type == 'honorary']
-    else:
-        members = [obj for obj in members if obj.current_membership]
+        memberships_query = Q(until__gt=datetime.now().date()) | Q(until=None)
+        memberships_query &= Q(type='honorary')
+
+    if keywords is not None:
+        memberships_query &= (Q(user__member__nickname__icontains=keywords) |
+                              Q(user__first_name__icontains=keywords) |
+                              Q(user__last_name__icontains=keywords) |
+                              Q(user__username__icontains=keywords))
+
+    memberships = models.Membership.objects.filter(memberships_query)
+    members_query &= Q(user__in=memberships.values('user'))
+    members = models.Member.objects.filter(members_query)
 
     paginator = Paginator(members, 24)
 
