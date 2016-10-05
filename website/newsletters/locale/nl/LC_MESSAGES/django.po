@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Thaliawebsite: nieuwsbrieven\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-05 14:27+0200\n"
+"POT-Creation-Date: 2016-10-26 20:26+0200\n"
 "PO-Revision-Date: 2016-09-05 14:30+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: Technicie <www@thalia.nu>\n"
@@ -15,19 +15,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: newsletters/models.py:13 newsletters/models.py:49
+#: newsletters/models.py:14 newsletters/models.py:50
 msgid "Title"
 msgstr "Titel"
 
-#: newsletters/models.py:14
+#: newsletters/models.py:15
 msgid "The title is used for the email subject."
 msgstr "De titel wordt gebruikt als onderwerp van de e-mail."
 
-#: newsletters/models.py:19
+#: newsletters/models.py:20
 msgid "Date"
 msgstr "Datum"
 
-#: newsletters/models.py:20
+#: newsletters/models.py:21
 msgid ""
 "This date is used to extract the week of this newsletter, best scenario:"
 "always use the monday of the week the newsletter is for. If you leave it "
@@ -37,11 +37,11 @@ msgstr ""
 "makkelijkste is dus om gewoon de maandag van de week in te vullen waar deze "
 "nieuwsbrief voor is."
 
-#: newsletters/models.py:30
+#: newsletters/models.py:31
 msgid "Introduction"
 msgstr "Introductie"
 
-#: newsletters/models.py:31
+#: newsletters/models.py:32
 msgid ""
 "This is the text that starts the newsletter. It always begins with \"Dear "
 "members\" and you can append whatever you want."
@@ -49,42 +49,42 @@ msgstr ""
 "Dit is de tekst waarmee de nieuwsbrief start. Er wordt altijd begonnen met "
 "\"Beste Thalianen\" en je kunt daarna alles schrijven wat je wilt."
 
-#: newsletters/models.py:56
+#: newsletters/models.py:57
 msgid "Description"
 msgstr "Beschrijving"
 
-#: newsletters/models.py:75 newsletters/templates/newsletters/email.html:127
+#: newsletters/models.py:76 newsletters/templates/newsletters/email.html:127
 #: newsletters/templates/newsletters/email.txt:20
 msgid "What"
 msgstr "Wat"
 
-#: newsletters/models.py:83 newsletters/templates/newsletters/email.html:137
+#: newsletters/models.py:84 newsletters/templates/newsletters/email.html:137
 #: newsletters/templates/newsletters/email.txt:21
 msgid "Where"
 msgstr "Waar"
 
-#: newsletters/models.py:89
+#: newsletters/models.py:90
 msgid "Start date and time"
 msgstr "Startdatum en -tijd"
 
-#: newsletters/models.py:95
+#: newsletters/models.py:96
 msgid "End date and time"
 msgstr "Einddatum en -tijd"
 
-#: newsletters/models.py:101
+#: newsletters/models.py:102
 msgid "Price (in Euro)"
 msgstr "Prijs (in Euro)"
 
-#: newsletters/models.py:108
+#: newsletters/models.py:109
 msgid "Costs (in Euro)"
 msgstr "Kosten (in Euro)"
 
-#: newsletters/models.py:112
+#: newsletters/models.py:113
 msgid "This is the price that a member has to pay when he/she did not show up."
 msgstr ""
 "Dit is de prijs die een lid moet betalen als hij/zij niet aanwezig was."
 
-#: newsletters/models.py:120
+#: newsletters/models.py:121
 msgid "Can't have an event travel back in time"
 msgstr "Een evenement kan niet terug in de tijd reizen"
 

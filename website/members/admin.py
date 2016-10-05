@@ -7,7 +7,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext as t
 from django.utils.translation import ugettext_lazy as _
+from django.http import HttpResponse
+import csv
 
 from . import forms, models
 
@@ -88,6 +91,8 @@ class UserCreationForm(BaseUserCreationForm):
 class UserAdmin(BaseUserAdmin):
     add_form = forms.UserCreationForm
 
+    actions = ['address_csv_export']
+
     inlines = (MemberInline, MembershipInline)
     # FIXME include proper filter for expiration
     # https://docs.djangoproject.com/en/1.9/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
@@ -102,6 +107,25 @@ class UserAdmin(BaseUserAdmin):
                        'send_welcome_email')
         }),
     )
+
+    def address_csv_export(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment;\
+                                           filename="addresses.csv"'
+        writer = csv.writer(response)
+        writer.writerow([t('First name'), t('Last name'), t('Address'),
+                         t('Address line 2'), t('Postal code'), t('City')])
+        for user in queryset.exclude(member=None):
+            writer.writerow([user.first_name,
+                             user.last_name,
+                             user.member.address_street,
+                             user.member.address_street2,
+                             user.member.address_postal_code,
+                             user.member.address_city,
+                             ])
+        return response
+    address_csv_export.short_description = _('Download address label for '
+                                             'selected users')
 
 admin.site.register(models.BecomeAMemberDocument)
 
