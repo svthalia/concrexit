@@ -236,6 +236,10 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         self._was_chair = self.chair
         super().save(*args, **kwargs)
 
+        self.member.user.is_staff = self.member.membership_set.exclude(
+            until__lt=timezone.now().date()).count() >= 1
+        self.member.user.save()
+
     def delete(self, *args, **kwargs):
         """Deactivates active memberships, deletes inactive ones"""
         if self.is_active:
