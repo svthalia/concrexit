@@ -18,7 +18,10 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         max_length=100
     )
 
-    description = models.TextField(_("description"))
+    description = MultilingualField(
+        models.TextField,
+        _("description")
+    )
 
     start = models.DateTimeField(_("start time"))
 

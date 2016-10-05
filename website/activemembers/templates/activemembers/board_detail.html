@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n thumbnail static %}
 
-{% block title %}{% trans "Boards" %} — {{ block.super }}{% endblock %}
+{% block title %}{% trans "Board" %} {{ board.since.year }}-{{ board.until.year }} — {% trans "Boards" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
 <h1>
   {% trans "Board" %} {{ board.since.year }}-{{ board.until.year }}
   <span class="title-meta clearfix">
     <span>
-      <a class="back" href="{% url 'committees:boards' %}" id="collectionButton"></a>
+      <a class="back" href="{% url 'activemembers:boards' %}" id="collectionButton"></a>
     </span>
   </span>
 </h1>

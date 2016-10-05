@@ -14,8 +14,6 @@ pep8:
     - pip install tox
   script:
     - tox -e $PYTHON_VERSION
-  services:
-    - mysql:latest
 
 python34:
   <<: *djangotest

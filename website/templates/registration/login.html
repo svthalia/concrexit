@@ -3,12 +3,12 @@
 
 {% comment %}This page is automatically used by django.contrib.auth.views{% endcomment %}
 
-{% block title %}{% trans "Login" %}{% endblock %}
+{% block title %}{% trans "Login" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
 <h1>{% trans "Log in" %}</h1>
 {% if next %}
-<p>
+<p class="text-center">
 {% if user.is_authenticated %}
 {% blocktrans trimmed %}
 Your account does not have access to this page. To proceed, please log in with an account that has access.

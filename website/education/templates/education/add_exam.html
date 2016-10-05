@@ -1,0 +1,39 @@
+{% extends 'education/base.html' %}
+{% load i18n fieldtype %}
+
+{% block title %}{% trans "Submit Exam" %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>{% trans "Submit Exam" %}</h1>
+
+{% if saved %}
+<div class="alert alert-success">
+    {% trans "Exam submitted successfully." %}
+    <button class="close" type="button"><span class="alert-icon-close"></span></button>
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" class="form-horizontal span8 offset2">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="control-group row {% if field.errors %}error{% endif %}">
+            <label class="control-label" for="{{ field.name }}">{{ field.label_tag }}</label>
+            <div class="controls">
+                {{ field }}
+
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error|escape }}</span>
+                {% endfor %}
+
+                {% if field.help_text and field|fieldtype != 'CheckboxInput' %}
+                <span class="help-block">{{ field.help_text|safe }}</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+
+    <input type="submit" value="{% trans 'submit'|capfirst %}" class="btn btn-style1 pull-right login" />
+</form>
+{% endblock %}

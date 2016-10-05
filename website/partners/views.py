@@ -6,12 +6,16 @@ from random import random
 
 def index(request):
     partners = Partner.objects.filter(is_active=True, is_main_partner=False)
-
-    context = {
-        'main_partner': Partner.objects.get(
+    try:
+        main_partner = Partner.objects.get(
             is_active=True,
             is_main_partner=True
-        ),
+        )
+    except Partner.DoesNotExist:
+        main_partner = None
+
+    context = {
+        'main_partner': main_partner,
         'partners': sorted(partners, key=lambda x: random()),
     }
     return render(request, 'partners/index.html', context)

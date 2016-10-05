@@ -1,0 +1,28 @@
+{% extends 'education/base.html' %}
+{% load staticfiles i18n compress %}
+
+{% block css_head %}
+    {{ block.super }}
+    {% compress css %}
+    <link href="{% static "education/css/style.less" %}" rel="stylesheet" type="text/less">
+    {% endcompress %}
+{% endblock %}
+
+{% block title %}{% trans "Book Sale" %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "Book Sale" %}</h1>
+    <p class="text-center">
+    {% blocktrans trimmed %}
+    Thalia's book sale goes through bookstore Roelants. As a member of Thalia you get 10% discount on your order.
+    So how does the ordering work? Simple: visit the Roelants webstore using <a href="https://www.roelants.nl/studenten/products/alle-producten/3543/p.product_price/asc.html?r=sawqllhrjzy4dq3ui8pf">this link</a>.
+    Then choose the books you need and use the code 'THALIAkorting' to activate the discount.
+    {% endblocktrans %}
+    </p>
+    <p class="text-center">
+    {% blocktrans trimmed %}
+    It's also possible to order your books at the physical shops, but the discount is only eligible when using the website. It is useful to order your books at least two weeks before you need them, because they are not always easy to get.
+    In case books are missing from the catalog, or if you discover any other problems with the books, send an email to <a href="mailto:onderwijs@thalia.nu">onderwijs@thalia.nu</a>.
+    {% endblocktrans %}
+    </p>
+{% endblock %}}

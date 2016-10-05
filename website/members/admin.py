@@ -1,20 +1,20 @@
 """
 This module registers admin pages for the models
 """
+import datetime
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.utils.translation import ugettext_lazy as _
 
-import datetime
-
-from . import models
+from . import models, forms
 
 
 class MembershipInline(admin.StackedInline):
     model = models.Membership
-    extra = 0
+    extra = 1
 
 
 class MemberInline(admin.StackedInline):
@@ -68,11 +68,11 @@ class AgeListFilter(admin.SimpleListFilter):
                     if self.value() == 'unknown':
                         users.add(user.pk)
                     continue
-                elif (user.member.birthday <= eightteen_years_ago
-                        and self.value() == '18+'):
+                elif (user.member.birthday <= eightteen_years_ago and
+                      self.value() == '18+'):
                     users.add(user.pk)
-                elif (user.member.birthday > eightteen_years_ago
-                        and self.value() == '18-'):
+                elif (user.member.birthday > eightteen_years_ago and
+                      self.value() == '18-'):
                     users.add(user.pk)
             except models.Member.DoesNotExist:
                 # The superuser does not have a .member object attached.
@@ -86,7 +86,7 @@ class UserCreationForm(BaseUserCreationForm):
 
 
 class UserAdmin(BaseUserAdmin):
-    add_form = UserCreationForm
+    add_form = forms.UserCreationForm
 
     inlines = (MemberInline, MembershipInline)
     # FIXME include proper filter for expiration
@@ -99,7 +99,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('first_name', 'last_name', 'username', 'email',
-                       'password1', 'password2'),
+                       'send_welcome_email')
         }),
     )
 

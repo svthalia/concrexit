@@ -105,7 +105,7 @@ class Board(Committee):
     )
 
     def get_absolute_url(self):
-        return reverse('committees:board', args=[str(self.pk)])
+        return reverse('activemembers:board', args=[str(self.pk)])
 
 
 class ActiveMembershipManager(models.Manager):
@@ -211,6 +211,12 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
                 raise ValidationError({
                     'member': _('This member is already in the committee for '
                                 'this period')})
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.member.user.is_staff = self.member.membership_set.exclude(
+            until__lt=timezone.now().date()).count() >= 1
+        self.member.user.save()
 
     def __str__(self):
         return "{} membership of {} since {}, until {}".format(self.member,
