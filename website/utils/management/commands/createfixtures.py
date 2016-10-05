@@ -76,7 +76,7 @@ class Command(BaseCommand):
                                                     fakeprofile['mail'],
                                                     fakeprofile['password'])
                     user.first_name = fakeprofile['name'].split()[0]
-                    user.last_name = fakeprofile['name'].split()[1]
+                    user.last_name = ' '.join(fakeprofile['name'].split()[1:])
 
                     member = MemberFactory()
                     member.user_id = user.id
