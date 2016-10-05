@@ -42,7 +42,11 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         if self.cleaned_data['send_welcome_email']:
-            with translation.override(user.member.language):
+            # Ugly way to get the language since member isn't available
+            language = str(self.data.get('member-0-language', 'en'))
+            if language not in ('nl', 'en'):
+                language = 'en'
+            with translation.override(language):
                 email_body = loader.render_to_string(
                     'members/email/welcome.txt',
                     {'user': user, 'password': password})
