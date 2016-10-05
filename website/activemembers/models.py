@@ -104,7 +104,7 @@ class Board(Committee):
     )
 
     def get_absolute_url(self):
-        return reverse('committees:board', args=[str(self.pk)])
+        return reverse('activemembers:board', args=[str(self.pk)])
 
 
 class ActiveMembershipManager(models.Manager):
