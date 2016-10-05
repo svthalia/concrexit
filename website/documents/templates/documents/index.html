@@ -1,34 +1,40 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load i18n %}
+{% load compress %}
+
+{% block title %}{% trans 'Documents' %} — {{ block.super }}{% endblock %}
 
 {% block css_head %}
-{{ block.super }}
-<link href="{% static "documents/css/policydocuments.css" %}" rel="stylesheet" type="text/css">
-<link href="{% static "documents/css/generalmeetings.css" %}" rel="stylesheet" type="text/css">
+    {{ block.super }}
+    {% compress css %}
+    <link href="{% static "documents/css/style.less" %}" rel="stylesheet" type="text/less">
+    {% endcompress %}
 {% endblock %}
 
 {% block body %}
-<h1 class="main-title">{% trans "Miscellaneous Documents" %}</h1>
+<h1>{% trans "Miscellaneous Documents" %}</h1>
 
 <p class="text-center">{% trans "Thalia was officially founded on November 7th, 1990. The relevant statutes and internal rules can be accessed here. The statues have last been amended in September 2007; the internal rules have been changed on several occasions. Other miscellaneous documents can be found here as well, such as the declaration form and the canteen regulations. Please read these carefully, so that we can all have a pleasant time when having drinks in the canteen." %}</p>
 
 <div class="portfolio">
-    <ul class="portfolio-posts row" style="padding-top:20px;">
-        {% for miscellaneous_document in miscellaneous_documents %}
-            {% include 'documents/miscellaneous.html' with document=miscellaneous_document %}
-        {% endfor %}
-    </ul>
+    <div class="misc-wrapper">
+        <ul class="portfolio-posts row" style="padding-top:20px;">
+            {% for miscellaneous_document in miscellaneous_documents %}
+                {% include 'documents/miscellaneous.html' with document=miscellaneous_document %}
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 
-<h1 class="main-title">{% trans "Policy Documents &amp; Annual Reports" %}</h1>
+<h1>{% trans "Policy Documents &amp; Annual Reports" %}</h1>
 
 <p class="text-center">
 {% trans "Every candidate board of Thalia drafts a policy document before being installed, to detail their plans for the next year. This also includes a general planning of all activities, as well as the budget for that year. Furthermore, the association is obliged to deliver an annual report and provide a financial overview. These documents show the financial developments over the year, what contacts Thalia maintained and what activities were organized. All historical policy documents and reports are made available, below." %}
 </p>
 
-<div class='portfolio slider'>
-    <div class='policywrapper'>
+<div class="portfolio slider">
+    <div class="policy-wrapper">
         <ul class="portfolio-posts row" style='width:{{ assocation_docs_width }}px'>
             {% for year, docs in association_documents_years %}
                 {% include 'documents/policydocument.html' with documents=docs.policy name=_("Policy") %}
@@ -45,19 +51,19 @@
 </div>
 
 
-<h1 class="main-title">{% trans "General Meetings" %}</h1>
+<h1>{% trans "General Meetings" %}</h1>
 
 <p class="text-center">
 {% trans "The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well." %}
 </p>
 
-<div class="tcenter" style='margin-bottom:20px;'>
+<div class="tcenter" style="margin-bottom:20px;"">
 {% for year, meetings in meeting_years|slice:"5" %}
     <button class="meeting-btn btn-large btn-style2" data-year="{{ year }}">{{ year }}-{{ year|add:1 }}</button>
 {% endfor %}
-    <select id='alvselect' name='alvselect' class="btn-large btn-style2" style='outline-width:0px !important;width:140px;padding:0px 15px;'>
+    <select id="alvselect" name="alvselect" class="btn-large btn-style2">
     {% for year, meetings in meeting_years|slice:"5:" %}
-        <option value='{{ year }}'>{{ year }}-{{ year|add:1 }}</option>
+        <option value=""{{ year }}">{{ year }}-{{ year|add:1 }}</option>
     {% endfor %}
     </select>
 </div>
@@ -73,7 +79,9 @@
 {% endblock %}
 
 {% block js_body %}
-{{ block.super }}
-<script type="text/javascript" src="{% static "documents/js/policydocuments.js" %}"></script>
-<script type="text/javascript" src="{% static "documents/js/generalmeetings.js" %}"></script>
+    {{ block.super }}
+    {% compress js %}
+    <script type="text/javascript" src="{% static "documents/js/policydocuments.js" %}"></script>
+    <script type="text/javascript" src="{% static "documents/js/generalmeetings.js" %}"></script>
+    {% endcompress %}
 {% endblock %}
