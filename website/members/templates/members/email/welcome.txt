@@ -1,8 +1,7 @@
 {% load i18n %}{% blocktrans trimmed %}Dear {{ user.get_full_name }},
 
 Welcome to Study Association Thalia! You now have an account and can
-log in at https://thalia.nu/. Make sure to check the information in
-your profile.
+log in at https://thalia.nu/. This is your username and password:
 
 Your username is:   {{ user.username }}
 Your password is:   {{ password }}
