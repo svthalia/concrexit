@@ -2,6 +2,8 @@ import random
 import string
 import tempfile
 
+from datetime import date
+
 from django.contrib.auth.models import User
 
 from django.core.management.base import BaseCommand
@@ -24,7 +26,7 @@ class MemberFactory(factory.Factory):
     programme = random.choice(['computingscience', 'informationscience'])
     student_number = factory.LazyAttribute(
         lambda x: faker.numerify(text="s#######"))
-    starting_year = 2016
+    starting_year = random.randint(1990, date.today().year)
 
     address_street = factory.LazyAttribute(lambda x: faker.street_address())
     address_postal_code = factory.LazyAttribute(lambda x: faker.postcode())
