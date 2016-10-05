@@ -107,9 +107,10 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def clean(self):
         super().clean()
         errors = {}
-        if self.end < self.start:
+        if self.end is not None and self.start is not None and (
+                    self.end < self.start):
             errors.update({
-                    'end': _("Can't have an event travel back in time")})
+                'end': _("Can't have an event travel back in time")})
         if self.registration_required():
             if self.no_registration_message:
                 errors.update(
@@ -127,7 +128,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                         "If registration is required, you need an end of "
                         "registration")})
             if self.registration_start and self.registration_end and (
-                    self.registration_start >= self.registration_end):
+                        self.registration_start >= self.registration_end):
                 message = _('Registration start should be before '
                             'registration end')
                 errors.update({
