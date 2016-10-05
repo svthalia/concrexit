@@ -6,7 +6,8 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.utils.translation import activate
 
-from activemembers.models import Board, Committee, CommitteeMembership
+from activemembers.models import (Board, Committee, CommitteeMembership,
+                                  Mentorship)
 from members.models import Member
 
 from bs4 import BeautifulSoup
@@ -33,11 +34,13 @@ class Command(BaseCommand):
         data = json.loads(requests.get(url).text)
 
         groups = {}
+        mentorgroups = {}
 
         board_url = "https://thalia.nu/board/2015-2016"
         soup = BeautifulSoup(requests.get(board_url).text, 'lxml')
         default_board_photo = ("https://thalia.nu/application/files/"
                                "6614/3560/3446/site_logo_board.png")
+        print("Migrating boards..")
         for board in data['boards']:
             obj, cr = Board.objects.get_or_create(name_nl=board['name'])
             obj.name_en = board['name']
@@ -49,6 +52,10 @@ class Command(BaseCommand):
                 imagefield_from_url(obj.photo, default_board_photo)
             obj.save()
 
+        for mentorgroup in data['mentors']:
+            mentorgroups[mentorgroup['gID']] = int(mentorgroup['name'][-4:])
+
+        print("Migrating committees..")
         committee_url = "https://thalia.nu/committees"
         soup = BeautifulSoup(requests.get(committee_url).text, 'lxml')
         anchors = soup.find('ul', {'class': 'row committees'}).find_all('a')
@@ -71,6 +78,7 @@ class Command(BaseCommand):
 
         for member in data['members']:
             user, cr = User.objects.get_or_create(username=member['username'])
+            print("Migrating {}".format(member['username']))
             user.username = member['username']
             user.email = member['email']
             # Concrete5 uses bcrypt passwords, which django can rehash
@@ -150,6 +158,11 @@ class Command(BaseCommand):
                     if not p['begindate'] or p['begindate'][:4] == '0000':
                         p['begindate'] = '1970-01-01'
 
+                if mdata['gID'] in mentorgroups:
+                    m, cr = Mentorship.objects.get_or_create(
+                                year=mentorgroups[mdata['gID']],
+                                member=user.member)
+                    m.save()
                 if mdata['gID'] not in groups:
                     continue  # These are concrete5 groups (Admin, etc..)
                 group = groups[mdata['gID']]
@@ -192,3 +205,45 @@ class Command(BaseCommand):
                         newmship.save()
                 else:
                     newmship.save()
+
+            for m in CommitteeMembership.objects.filter(member=user.member):
+                ms = (CommitteeMembership.objects
+                                         .filter(committee_id=m.committee_id,
+                                                 member_id=m.member_id,
+                                                 since=m.until,
+                                                 chair=m.chair,
+                                                 role_en=m.role_en,
+                                                 role_nl=m.role_nl,
+                                                 ))
+                if not ms:
+                    continue
+                if len(ms) > 1:
+                    raise Exception("Could not merge more than one membership")
+                m.until = ms[0].until
+                m.save()
+                ms[0].delete()
+
+        print("Sanitizing board memberships")
+        for m in CommitteeMembership.objects.all():
+            try:
+                if m.committee.board:
+                    m.since = parse_date(
+                        '{}-09-01'.format(m.committee.name_nl[8:12]))
+                    m.until = parse_date(
+                        '{}-09-01'.format(m.committee.name_nl[13:17]))
+                    m.save()
+            except Board.DoesNotExist:
+                pass
+
+        # remove duplicates to be sure
+        print("Cleaning up duplicates")
+        for m in CommitteeMembership.objects.all():
+            if (CommitteeMembership.objects
+                                   .filter(committee_id=m.committee_id,
+                                           member_id=m.member_id,
+                                           since=m.since,
+                                           chair=m.chair,
+                                           role_en=m.role_en,
+                                           role_nl=m.role_nl)
+                                   .count()) > 1:
+                m.delete()

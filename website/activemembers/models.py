@@ -3,6 +3,7 @@ import logging
 
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -211,14 +212,6 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
                     'member': _('This member is already in the committee for '
                                 'this period')})
 
-    def delete(self, *args, **kwargs):
-        """Deactivates active memberships, deletes inactive ones"""
-        if self.is_active:
-            self.until = timezone.now().date()
-            self.save()
-        else:
-            super().delete(*args, **kwargs)
-
     def __str__(self):
         return "{} membership of {} since {}, until {}".format(self.member,
                                                                self.committee,
@@ -231,8 +224,16 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Mentorship(models.Model):
-    members = models.ManyToManyField(Member)
-    year = models.IntegerField(unique=True)
+    member = models.ForeignKey(
+        Member,
+        on_delete=models.CASCADE,
+        verbose_name=_('Member'),
+    )
+    year = models.IntegerField(validators=MinValueValidator(1990))
 
     def __str__(self):
-        return _("Mentor introduction {year}").format(year=self.year)
+        return _("{name} mentor in {year}").format(name=self.member,
+                                                   year=self.year)
+
+    class Meta:
+        unique_together = ('member', 'year')

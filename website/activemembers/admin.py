@@ -26,7 +26,7 @@ class BoardAdmin(TranslatedModelAdmin):
 
 @admin.register(models.CommitteeMembership)
 class CommitteeMembershipAdmin(TranslatedModelAdmin):
-    pass
+    list_display = ('member', 'committee', 'since', 'until', 'chair', 'role')
 
 
 @admin.register(models.Mentorship)
