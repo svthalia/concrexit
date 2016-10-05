@@ -63,7 +63,7 @@ class DeprecationFeed(ICalFeed):
 
     def item_title(self, item):
         return (
-            'Oude Thalia Feed, gebruik https://thalia.nu/' +
+            'Oude Thalia Feed, gebruik https://thalia.nu' +
             reverse('events:ical-nl')
         )
 
