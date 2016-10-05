@@ -4,6 +4,7 @@ from sendfile import sendfile
 import json
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
@@ -28,7 +29,16 @@ def index(request):
         start_year += 1
     year_range = reversed(range(start_year, date.today().year + 1))
 
-    members = models.Member.objects.all()
+    q = ~Q(user=None)
+    if keywords is not None:
+        keywords = keywords.lower()
+        q &= (Q(nickname__icontains=keywords) | Q(
+            user__first_name__icontains=keywords) | Q(
+            user__last_name__icontains=keywords) | Q(
+            user__username__icontains=keywords))
+
+    members = models.Member.objects.filter(q)
+
     if query_filter and query_filter.isdigit() and not (
                         query_filter == 'ex' or
                         query_filter == 'honor' or
@@ -49,14 +59,6 @@ def index(request):
                    obj.current_membership.type == 'honorary']
     else:
         members = [obj for obj in members if obj.current_membership]
-
-    if keywords is not None:
-        keywords = keywords.lower()
-        members = [obj for obj in members if (obj.nickname is not None and
-                   keywords in obj.nickname.lower()) or
-                   keywords in obj.user.first_name.lower() or
-                   keywords in obj.user.last_name.lower() or
-                   keywords in obj.user.username.lower()]
 
     paginator = Paginator(members, 24)
 
