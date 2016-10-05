@@ -1,7 +1,7 @@
 {% extends 'education/base.html' %}
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {% trans "Course" %} - {{ course.name }}{% endblock %}
+{% block title %}{{ course.name }} — {% trans "Course" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
     <h1>{{ course.name }}</h1>
