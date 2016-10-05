@@ -82,13 +82,6 @@ class CommitteeMembersTest(TestCase):
         self.m.until = timezone.now().date().replace(year=1900)
         self.assertFalse(self.m.is_active)
 
-    def test_delete(self):
-        self.m.delete()
-        self.assertIsNotNone(self.m.until)
-        self.assertIsNotNone(self.m.pk)
-        self.m.delete()
-        self.assertIsNone(self.m.pk)
-
 
 class CommitteeMembersChairTest(TestCase):
     fixtures = ['members.json', 'committees.json']
@@ -124,25 +117,6 @@ class CommitteeMembersChairTest(TestCase):
     def test_clean_self_chair(self):
         self.m1.chair = True
         self.m1.full_clean()
-
-    def test_change_chair(self):
-        pk = self.m1.pk
-        original_chair = self.m1.chair
-        self.m1.save()
-        self.assertEqual(self.m1.pk, pk, "new object created")
-        self.m1.chair = not original_chair
-        self.m1.save()
-        self.assertNotEqual(self.m1.pk, pk, "No new object created")
-
-    def test_change_chair_inactive(self):
-        pk = self.m1.pk
-        original_chair = self.m1.chair
-        self.m1.until = timezone.now().date()
-        self.m1.save()
-        self.assertEqual(self.m1.pk, pk, "new object created")
-        self.m1.chair = not original_chair
-        self.m1.save()
-        self.assertEqual(self.m1.pk, pk, "No new object created")
 
 
 class PermissionsBackendTest(TestCase):

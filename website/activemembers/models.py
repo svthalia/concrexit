@@ -3,6 +3,7 @@ import logging
 
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -159,14 +160,6 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         null=True,
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if self.pk is not None:
-            self._was_chair = bool(self.chair)
-        else:
-            self._was_chair = False
-
     @property
     def is_active(self):
         """Is this membership currently active"""
@@ -220,38 +213,16 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
                                 'this period')})
 
     def save(self, *args, **kwargs):
-        """Save the instance"""
-        # If the chair changed and we're still active, we create a new instance
-        # Inactive instances should be handled manually
-        if (self.pk is not None and self._was_chair != self.chair and
-                not self.until and self.since != timezone.now().date()):
-            logger.info("Creating new membership instance")
-            self.until = timezone.now().date() - datetime.timedelta(days=1)
-            super().save(*args, **kwargs)
-            self.pk = None  # forces INSERT
-            # Set since date to older expiration:
-            self.since = timezone.now().date()
-            self.until = None
-
-        self._was_chair = self.chair
         super().save(*args, **kwargs)
-
         self.member.user.is_staff = self.member.membership_set.exclude(
             until__lt=timezone.now().date()).count() >= 1
         self.member.user.save()
 
-    def delete(self, *args, **kwargs):
-        """Deactivates active memberships, deletes inactive ones"""
-        if self.is_active:
-            self.until = timezone.now().date()
-            self.save()
-        else:
-            super().delete(*args, **kwargs)
-
     def __str__(self):
-        return "{} membership of {} since {}".format(self.member,
-                                                     self.committee,
-                                                     self.since)
+        return "{} membership of {} since {}, until {}".format(self.member,
+                                                               self.committee,
+                                                               self.since,
+                                                               self.until)
 
     class Meta:
         verbose_name = _('committee membership')
@@ -259,8 +230,16 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Mentorship(models.Model):
-    members = models.ManyToManyField(Member)
-    year = models.IntegerField(unique=True)
+    member = models.ForeignKey(
+        Member,
+        on_delete=models.CASCADE,
+        verbose_name=_('Member'),
+    )
+    year = models.IntegerField(validators=MinValueValidator(1990))
 
     def __str__(self):
-        return _("Mentor introduction {year}").format(year=self.year)
+        return _("{name} mentor in {year}").format(name=self.member,
+                                                   year=self.year)
+
+    class Meta:
+        unique_together = ('member', 'year')
