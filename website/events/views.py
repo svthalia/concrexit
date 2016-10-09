@@ -139,8 +139,8 @@ def registration(request, event_id, action=None):
         pk=event_id
     )
 
-    if (event.registration_required() and
-            event.status != Event.REGISTRATION_NOT_NEEDED):
+    if (event.status != Event.REGISTRATION_NOT_NEEDED and
+            request.user.member.current_membership is not None):
         try:
             obj = Registration.objects.get(
                 event=event,
@@ -174,18 +174,15 @@ def registration(request, event_id, action=None):
                 error_message = _("You were already registered.")
 
             if error_message is None:
-                success_message = _("Registration successful")
+                success_message = _("Registration successful.")
         elif (action == 'update'
               and event.has_fields()
-              and obj is not None and
-              event.status == Event.REGISTRATION_OPEN or
-              event.status == Event.REGISTRATION_OPEN_NO_CANCEL):
+              and obj is not None
+              and (event.status == Event.REGISTRATION_OPEN or
+                   event.status == Event.REGISTRATION_OPEN_NO_CANCEL)):
             show_fields = True
-            success_message = _("Registration successfully updated")
-        elif action == 'cancel' and (
-            event.status == Event.REGISTRATION_OPEN or
-            event.status == Event.REGISTRATION_CLOSED_CANCEL_ONLY
-        ):
+            success_message = _("Registration successfully updated.")
+        elif action == 'cancel':
             if (obj is not None and
                     obj.date_cancelled is None):
                 # Note that this doesn't remove the values for the
@@ -193,7 +190,7 @@ def registration(request, event_id, action=None):
                 # But this is regarded as a feature, not a bug. Especially
                 # since the values will still appear in the backend.
                 obj.date_cancelled = timezone.now()
-                success_message = _("Registration successfully cancelled")
+                success_message = _("Registration successfully cancelled.")
             else:
                 error_message = _("You were not registered for this event.")
 
@@ -201,11 +198,11 @@ def registration(request, event_id, action=None):
             if request.POST:
                 form = FieldsForm(request.POST, registration=obj)
                 if form.is_valid():
+                    obj.save()
                     form_field_values = form.field_values()
                     for field in form_field_values:
                         field['field'].set_value_for(obj,
                                                      field['value'])
-                    obj.save()
             else:
                 form = FieldsForm(registration=obj)
                 context = {'event': event, 'form': form, 'action': action}

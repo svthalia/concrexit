@@ -108,8 +108,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     published = models.BooleanField(_("published"), default=False)
 
-    def after_deadline(self):
-        return self.registration_end < timezone.now()
+    def after_cancel_deadline(self):
+        return self.cancel_deadline <= timezone.now()
 
     def registration_required(self):
         return bool(self.registration_start) or bool(self.registration_end)
