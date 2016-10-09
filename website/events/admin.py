@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-from django import forms
-from django.urls import reverse
+from activemembers.models import Committee
 from django.contrib import admin
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.utils import timezone
-from django.utils.http import is_safe_url
 from django.utils.html import format_html
+from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
-
-from utils.translation import TranslatedModelAdmin
-from activemembers.models import Committee
 from members.models import Member
+from utils.translation import TranslatedModelAdmin
+
+from . import forms
 from . import models
 
 
@@ -32,17 +32,8 @@ class DoNextModelAdmin(TranslatedModelAdmin):
         return _do_next(request, res)
 
 
-class RegistrationInformationFieldForm(forms.ModelForm):
-
-    order = forms.IntegerField(label=_('order'), initial=0)
-
-    class Meta:
-        fields = '__all__'
-        model = models.RegistrationInformationField
-
-
 class RegistrationInformationFieldInline(admin.StackedInline):
-    form = RegistrationInformationFieldForm
+    form = forms.RegistrationInformationFieldForm
     extra = 0
     model = models.RegistrationInformationField
     ordering = ('_order',)

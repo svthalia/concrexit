@@ -11,6 +11,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Event, Registration
+from .forms import FieldsForm
 
 
 @staff_member_required
@@ -106,7 +107,8 @@ def event(request, event_id):
         Event.objects.filter(published=True),
         pk=event_id
     )
-    registrations = event.registration_set.filter(date_cancelled=None)
+    registrations = event.registration_set.filter(
+        date_cancelled=None)[:event.max_participants]
 
     context = {
         'event': event,
@@ -137,73 +139,82 @@ def registration(request, event_id, action=None):
         pk=event_id
     )
 
-    if event.registration_required():
+    if (event.registration_required() and
+            event.status != Event.REGISTRATION_NOT_NEEDED):
         try:
-            registration = Registration.objects.get(
+            obj = Registration.objects.get(
                 event=event,
                 member=request.user.member
             )
         except Registration.DoesNotExist:
-            registration = None
+            obj = None
 
         success_message = None
         error_message = None
         show_fields = False
-        if action == 'register':
+        if action == 'register' and (
+            event.status == Event.REGISTRATION_OPEN or
+            event.status == Event.REGISTRATION_OPEN_NO_CANCEL
+        ):
             if event.has_fields():
                 show_fields = True
 
-            if registration is None:
-                registration = Registration()
-                registration.event = event
-                registration.member = request.user.member
-            elif registration.date_cancelled is not None:
-                registration.date = timezone.now()
-                registration.date_cancelled = None
+            if obj is None:
+                obj = Registration()
+                obj.event = event
+                obj.member = request.user.member
+            elif obj.date_cancelled is not None:
+                if obj.is_late_cancellation():
+                    error_message = _("You cannot re-register anymore since "
+                                      "you've cancelled after the deadline.")
+                else:
+                    obj.date = timezone.now()
+                    obj.date_cancelled = None
             else:
                 error_message = _("You were already registered.")
 
             if error_message is None:
                 success_message = _("Registration successful")
-        elif (action == 'update' and event.has_fields() and
-                registration is not None):
+        elif (action == 'update'
+              and event.has_fields()
+              and obj is not None and
+              event.status == Event.REGISTRATION_OPEN or
+              event.status == Event.REGISTRATION_OPEN_NO_CANCEL):
             show_fields = True
-        elif action == 'cancel':
-            if (registration is not None and
-                    registration.date_cancelled is None):
-                registration.date_cancelled = timezone.now()
+            success_message = _("Registration successfully updated")
+        elif action == 'cancel' and (
+            event.status == Event.REGISTRATION_OPEN or
+            event.status == Event.REGISTRATION_CLOSED_CANCEL_ONLY
+        ):
+            if (obj is not None and
+                    obj.date_cancelled is None):
+                # Note that this doesn't remove the values for the
+                # information fields that the user entered upon registering.
+                # But this is regarded as a feature, not a bug. Especially
+                # since the values will still appear in the backend.
+                obj.date_cancelled = timezone.now()
                 success_message = _("Registration successfully cancelled")
             else:
                 error_message = _("You were not registered for this event.")
 
         if show_fields:
-            # saved = False
-            #
-            # if request.POST:
-            #     form = AddExamForm(request.POST, request.FILES)
-            #     if form.is_valid():
-            #         saved = True
-            #         obj = form.save(commit=False)
-            #         obj.uploader = request.user
-            #         obj.uploader_date = datetime.now()
-            #         obj.save()
-            #
-            #         form = AddExamForm()
-            #         form.exam_date = datetime.now()
-            # else:
-            #     obj = Exam()
-            #     if id is not None:
-            #         obj.course = Course.objects.get(id=id)
-            #     form = AddExamForm(instance=obj)
-            #     form.exam_date = datetime.now()
+            if request.POST:
+                form = FieldsForm(request.POST, registration=obj)
+                if form.is_valid():
+                    form_field_values = form.field_values()
+                    for field in form_field_values:
+                        field['field'].set_value_for(obj,
+                                                     field['value'])
+                    obj.save()
+            else:
+                form = FieldsForm(registration=obj)
+                context = {'event': event, 'form': form, 'action': action}
+                return render(request, 'events/event_fields.html', context)
 
-            context = {'event': event}
-            return render(request, 'events/event_fields.html', context)
-        else:
-            if success_message is not None:
-                messages.success(request, success_message)
-            elif error_message is not None:
-                messages.error(request, error_message)
-            registration.save()
+        if success_message is not None:
+            messages.success(request, success_message)
+        elif error_message is not None:
+            messages.error(request, error_message)
+        obj.save()
 
     return redirect(event)

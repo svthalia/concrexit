@@ -128,9 +128,15 @@
                     <td></td>
                     <td>
                         {% if request.user.is_authenticated %}
-                            {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY %}
+                            {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
+                                {% if registration is not None and registration.date_cancelled is None and event.has_fields %}
+                                <a class="btn btn-style1" href="{% url 'events:registration' event.id 'update' %}">{% trans "Update registration" %}</a>
+                                <br /><br />
+                                {% endif %}
+                            {% endif %}
+                            {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
                                 {% if registration is None or registration.date_cancelled is not None %}
-                                    {% if event.status == event.REGISTRATION_OPEN %}
+                                    {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
                                     <a class="btn btn-style1" href="{% url 'events:registration' event.id 'register' %}">
                                         {% if event.reached_participants_limit %}
                                             {% trans "Put me on the waiting list" %}
@@ -142,11 +148,6 @@
                                 {% elif registration is not None and registration.date_cancelled is None %}
                                     {# TODO: Specific message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
                                     <a class="btn btn-style1" href="{% url 'events:registration' event.id 'cancel' %}" onclick="return confirm('{% trans "Are you sure you want to cancel your registration?" %}');">{% trans "Cancel registration" %}</a>
-                                {% endif %}
-                            {% endif %}
-                            {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
-                                {% if registration is not None and registration.date_cancelled is None and event.has_fields %}
-                                <a class="btn btn-style1" href="{% url 'events:registration' event.id 'update' %}">{% trans "Update information" %}</a>
                                 {% endif %}
                             {% endif %}
                         {% else %}
@@ -163,8 +164,10 @@
                             {% trans "You have to log in before you can register for this event." %}
                         {% elif event.status == event.REGISTRATION_NOT_YET_OPEN %}
                             {% blocktrans with datetime=event.registration_start %}Registration will open {{ datetime }}{% endblocktrans %}
-                        {% elif event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
-                            {% blocktrans with costs=event.costs %}Cancellation isn't possible anymore without having to pay the full costs of {{ costs }}{% endblocktrans %}
+                        {% elif event.status == event.REGISTRATION_OPEN_NO_CANCEL and registration.date_cancelled is None %}
+                            {% if event.costs > 0 %}
+                                {% blocktrans with costs=event.costs %}Cancellation isn't possible anymore without having to pay the full costs of {{ costs }}{% endblocktrans %}
+                            {% endif %}
                         {% elif event.status == event.REGISTRATION_CLOSED or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY %}
                             {% blocktrans %}Registration is not possible anymore.{% endblocktrans %}
                         {% elif status == event.REGISTRATION_NOT_NEEDED %}

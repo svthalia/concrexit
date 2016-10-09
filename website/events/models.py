@@ -2,9 +2,9 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, string_concat
-from django.urls import reverse
 from utils.translation import MultilingualField, ModelTranslateMeta
 
 
@@ -120,6 +120,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def reached_participants_limit(self):
         return self.max_participants <= self.registration_set.count()
 
+    @property
     def status(self):
         now = timezone.now()
         if bool(self.registration_start) or bool(self.registration_end):
@@ -188,9 +189,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
 class RegistrationInformationField(models.Model):
     """Field description to ask for when registering"""
-    FIELD_TYPES = (('checkbox', _('checkbox')),
-                   ('charfield', _('text field')),
-                   ('intfield', _('integer field')))
+    BOOLEAN_FIELD = 'boolean'
+    INTEGER_FIELD = 'integer'
+    TEXT_FIELD = 'text'
+
+    FIELD_TYPES = ((BOOLEAN_FIELD, _('Checkbox')),
+                   (TEXT_FIELD, _('Text')),
+                   (INTEGER_FIELD, _('Integer')),)
 
     event = models.ForeignKey(Event, models.CASCADE)
 
@@ -211,19 +216,49 @@ class RegistrationInformationField(models.Model):
         blank=True,
     )
 
+    required = models.BooleanField(
+        _('required'),
+    )
+
     def get_value_for(self, registration):
-        if self.type == 'charfield':
+        if self.type == self.TEXT_FIELD:
             value_set = self.textregistrationinformation_set
-        elif self.type == 'checkbox':
+        elif self.type == self.BOOLEAN_FIELD:
             value_set = self.booleanregistrationinformation_set
-        elif self.type == 'intfield':
+        elif self.type == self.INTEGER_FIELD:
             value_set = self.integerregistrationinformation_set
+
         try:
             return value_set.get(registration=registration).value
         except (TextRegistrationInformation.DoesNotExist,
                 BooleanRegistrationInformation.DoesNotExist,
                 IntegerRegistrationInformation.DoesNotExist):
             return None
+
+    def set_value_for(self, registration, value):
+        if self.type == self.TEXT_FIELD:
+            value_set = self.textregistrationinformation_set
+        elif self.type == self.BOOLEAN_FIELD:
+            value_set = self.booleanregistrationinformation_set
+        elif self.type == self.INTEGER_FIELD:
+            value_set = self.integerregistrationinformation_set
+
+        try:
+            field_value = value_set.get(registration=registration)
+        except BooleanRegistrationInformation.DoesNotExist:
+            field_value = BooleanRegistrationInformation()
+        except TextRegistrationInformation.DoesNotExist:
+            field_value = TextRegistrationInformation()
+        except IntegerRegistrationInformation.DoesNotExist:
+            field_value = IntegerRegistrationInformation()
+
+        field_value.registration = registration
+        field_value.field = self
+        field_value.value = value
+        field_value.save()
+
+    def __str__(self):
+        return "{} ({})".format(self.name, dict(self.FIELD_TYPES)[self.type])
 
     class Meta:
         order_with_respect_to = 'event'
@@ -278,8 +313,8 @@ class Registration(models.Model):
                 self.event.registration_set.filter(
                     (Q(date_cancelled__gte=self.date_cancelled) |
                      Q(date_cancelled=None)) &
-                    Q(date_lte=self.date)
-                ) < self.event.max_participants)
+                    Q(date__lte=self.date)
+                ).count() < self.event.max_participants)
 
     def is_registered(self):
         return self.date_cancelled is None
