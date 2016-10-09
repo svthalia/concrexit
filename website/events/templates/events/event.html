@@ -1,9 +1,20 @@
 {% extends "base.html" %}
 {% load i18n static %}
 
+{% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
+
 {% block body %}
     <h1>{{ event.title }}</h1>
     <p class="tcenter">{{ event.description }}</p>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            <button type="button" class="close"><span class="alert-icon-close"></span></button>
+        </div>
+        {% endfor %}
+    {% endif %}
 
     <div class="clearfix row">
         <div class="span6">
@@ -45,7 +56,7 @@
                                 {{ counter }} registrations
                             {% endblocktrans %}
                             {% if event.max_participants > 0 %}
-                                <i>({{ event.max_participants }} {% trans "max"|capfirst %})</i>
+                                <i>({{ event.max_participants }} {% trans "max" %})</i>
                                 {% with prc=registration_percentage %}
                                     <div class="progress progress-style1">
                                         <div class="bar trans-enabled" style="width: {{ prc }}%;" data-width="{{ prc }}%"></div>
@@ -116,30 +127,31 @@
                 <tr>
                     <td></td>
                     <td>
-                    </td>
-                    <td>
-{#                    <?php if($show_button): ?>#}
-{##}
-{#                        <form class="form-inline pull-left" method="post" action="<?php echo $this->action('/register'); ?>">#}
-{#                            <?php echo $form->hidden('activity_id', $activity->id); ?>#}
-{#                            <?php echo $form->hidden('intent', $intent); ?>#}
-{#                            <?php if($afterDeadline): ?>#}
-{#                                <?php echo $form->submit('submit', $button_text, ['class' => 'btn btn-style1', 'onclick' => 'return confirm(\'' . $confirmText . '\');']); ?>#}
-{#                            <?php else: ?>#}
-{#                                <?php echo $form->submit('submit', $button_text, ['class' => 'btn btn-style1']); ?>#}
-{#                            <?php endif; ?>#}
-{#                            <?php echo $csrf_token; ?>#}
-{#                        </form>#}
-{##}
-{#                    <?php endif; ?>#}
-{#					<?php if($registered && ($registration_status === ActivityModel::REGISTRATION_OPEN || $registration_status === ActivityModel::REGISTRATION_CLOSED_REGISTER_ONLY) && $registration->isRegisteredExcludeCoolDown() && count($activity->getExtraFields()) > 0):?>#}
-{#                        <form class="form-inline pull-left" method="post" action="<?php echo $this->action('/register'); ?>">#}
-{#                            <?php echo $form->hidden('activity_id', $activity->id);?>#}
-{#                            <?php echo $form->hidden('intent', 'prompt_update_screen');?>#}
-{#                            <?php echo $form->submit('submit', 'Bijwerken', ['class' => 'btn btn-style1']); ?>#}
-{#                            <?php echo $csrf_token; ?>#}
-{#                        </form>#}
-{#                    <?php endif; ?>#}
+                        {% if request.user.is_authenticated %}
+                            {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY %}
+                                {% if registration is None or registration.date_cancelled is not None %}
+                                    {% if event.status == event.REGISTRATION_OPEN %}
+                                    <a class="btn btn-style1" href="{% url 'events:registration' event.id 'register' %}">
+                                        {% if event.reached_participants_limit %}
+                                            {% trans "Put me on the waiting list" %}
+                                        {% else %}
+                                            {% trans "Register" %}
+                                        {% endif %}
+                                    </a>
+                                    {% endif %}
+                                {% elif registration is not None and registration.date_cancelled is None %}
+                                    {# TODO: Specific message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
+                                    <a class="btn btn-style1" href="{% url 'events:registration' event.id 'cancel' %}" onclick="return confirm('{% trans "Are you sure you want to cancel your registration?" %}');">{% trans "Cancel registration" %}</a>
+                                {% endif %}
+                            {% endif %}
+                            {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
+                                {% if registration is not None and registration.date_cancelled is None and event.has_fields %}
+                                <a class="btn btn-style1" href="{% url 'events:registration' event.id 'update' %}">{% trans "Update information" %}</a>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                        <a class="btn btn-style1" href="{% url 'login' %}?next={{ request.path }}">{% trans "Login" %}</a>
+                        {% endif %}
 					</td>
                 </tr>
                 <tr>
@@ -147,35 +159,21 @@
 	                </td>
                     <td>
                         <em>
-                            {% if not request.user.is_authenticated %}
+                        {% if not request.user.is_authenticated %}
                             {% trans "You have to log in before you can register for this event." %}
+                        {% elif event.status == event.REGISTRATION_NOT_YET_OPEN %}
+                            {% blocktrans with datetime=event.registration_start %}Registration will open {{ datetime }}{% endblocktrans %}
+                        {% elif event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
+                            {% blocktrans with costs=event.costs %}Cancellation isn't possible anymore without having to pay the full costs of {{ costs }}{% endblocktrans %}
+                        {% elif event.status == event.REGISTRATION_CLOSED or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY %}
+                            {% blocktrans %}Registration is not possible anymore.{% endblocktrans %}
+                        {% elif status == event.REGISTRATION_NOT_NEEDED %}
+                            {% if event.no_registration_message %}
+                                {{ event.no_registration_message }}
+                            {% else %}
+                                {% trans "No registration required" %}
                             {% endif %}
-
-
-                        {# Todo implement aanmeldtekst #}
-{#						<?php if (!$user->isLoggedIn()):?>#}
-{#                        <?php elseif($registered && $registration->isInCoolDown()): ?>#}
-{#                            <script>#}
-{#                            window.onload = function () {#}
-{#                                startTimer("<?= (new \DateTime($registration->canceled))->format("Y/m/d H:i:s");?>", document.querySelector('#events_cool_down_timer'));#}
-{#                            };#}
-{#                            </script>#}
-{#                            <span id="events_cool_down_text" title="Binnen de aangegeven hoeveelheid tijd kun je je afmelding annuleren door je opnieuw aan te melden. In dat geval raak je je oude plek niet kwijt.">Je hebt nog <span id="events_cool_down_timer" >een onbekende hoeveelheid tijd</span> om je afmelding ongedaan te maken.</span>#}
-{#                        <?php elseif($registration_status === ActivityModel::REGISTRATION_NOT_NEEDED): ?>#}
-{#                            <?php if($activity->registration_not_needed_message !== null) : ?>#}
-{#                                <?php echo $activity->registration_not_needed_message; ?>#}
-{#                            <?php else: ?>#}
-{#                                Aanmelden hoeft niet#}
-{#                            <?php endif; ?>#}
-{#                        <?php elseif($registration_status === ActivityModel::REGISTRATION_NOT_YET_OPEN): ?>#}
-{#                            Aanmelden kan vanaf <?php echo $activity->formatDate('begin_registration'); ?>#}
-{#                        <?php elseif($registration && $registration->isRegisteredExcludeCoolDown() && ($registration_status === ActivityModel::REGISTRATION_CLOSED  || $registration_status === ActivityModel::REGISTRATION_CLOSED_REGISTER_ONLY)): ?>#}
-{#                        <?php // You are registered, but you can either: do nothing, or only register, so no cancelling ?>#}
-{#                            Afmelden kan niet meer, tenzij je de boete betaalt <?php echo $costText; ?>.#}
-{#                        <?php elseif(!($registered  && $registration->isRegisteredExcludeCoolDown()) && ($registration_status === ActivityModel::REGISTRATION_CLOSED  || $registration_status === ActivityModel::REGISTRATION_CLOSED_CANCEL_ONLY)): ?>#}
-{#                        <?php // You are not registered, but you can either: do nothing, or only cancel, so no registering ?>#}
-{#                            Aanmelden kan niet meer#}
-{#                        <?php endif; ?>#}
+                        {% endif %}
                         </em>
                     </td>
                 </tr>
@@ -204,7 +202,7 @@
 
     {% if user.is_authenticated and registrations|length > 0 %}
         <div class="member-directory">
-            <h1 class="midhead">Aanmeldingen</h1>
+            <h1 class="midhead">{% trans "Registrations" %}</h1>
             <ul class="member-directory row">
                 {% for registration in registrations %}
                     <li class="post member-item span3 has-overlay{% if forloop.counter0|divisibleby:4 %} first-child{% endif %}">

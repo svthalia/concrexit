@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <h1>{{ event.title }}</h1>
+
+{% endblock %}

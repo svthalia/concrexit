@@ -2,11 +2,13 @@ import csv
 from datetime import timedelta
 
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Event, Registration
 
@@ -79,6 +81,7 @@ def export(request, event_id):
             return item['date'] - timedelta(days=10000)
         else:
             return item['date']
+
     for row in sorted(rows, key=order):
         writer.writerow(row)
 
@@ -112,7 +115,7 @@ def event(request, event_id):
     }
 
     if event.max_participants:
-        perc = 100.0*len(registrations)/event.max_participants
+        perc = 100.0 * len(registrations) / event.max_participants
         context['registration_percentage'] = perc
 
     try:
@@ -121,7 +124,86 @@ def event(request, event_id):
             member=request.user.member
         )
         context['registration'] = registration
-    except:
+    except Registration.DoesNotExist:
         pass
 
     return render(request, 'events/event.html', context)
+
+
+@login_required
+def registration(request, event_id, action=None):
+    event = get_object_or_404(
+        Event.objects.filter(published=True),
+        pk=event_id
+    )
+
+    if event.registration_required():
+        try:
+            registration = Registration.objects.get(
+                event=event,
+                member=request.user.member
+            )
+        except Registration.DoesNotExist:
+            registration = None
+
+        success_message = None
+        error_message = None
+        show_fields = False
+        if action == 'register':
+            if event.has_fields():
+                show_fields = True
+
+            if registration is None:
+                registration = Registration()
+                registration.event = event
+                registration.member = request.user.member
+            elif registration.date_cancelled is not None:
+                registration.date = timezone.now()
+                registration.date_cancelled = None
+            else:
+                error_message = _("You were already registered.")
+
+            if error_message is None:
+                success_message = _("Registration successful")
+        elif (action == 'update' and event.has_fields() and
+                registration is not None):
+            show_fields = True
+        elif action == 'cancel':
+            if (registration is not None and
+                    registration.date_cancelled is None):
+                registration.date_cancelled = timezone.now()
+                success_message = _("Registration successfully cancelled")
+            else:
+                error_message = _("You were not registered for this event.")
+
+        if show_fields:
+            # saved = False
+            #
+            # if request.POST:
+            #     form = AddExamForm(request.POST, request.FILES)
+            #     if form.is_valid():
+            #         saved = True
+            #         obj = form.save(commit=False)
+            #         obj.uploader = request.user
+            #         obj.uploader_date = datetime.now()
+            #         obj.save()
+            #
+            #         form = AddExamForm()
+            #         form.exam_date = datetime.now()
+            # else:
+            #     obj = Exam()
+            #     if id is not None:
+            #         obj.course = Course.objects.get(id=id)
+            #     form = AddExamForm(instance=obj)
+            #     form.exam_date = datetime.now()
+
+            context = {'event': event}
+            return render(request, 'events/event_fields.html', context)
+        else:
+            if success_message is not None:
+                messages.success(request, success_message)
+            elif error_message is not None:
+                messages.error(request, error_message)
+            registration.save()
+
+    return redirect(event)

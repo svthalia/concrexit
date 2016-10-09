@@ -11,6 +11,13 @@ from utils.translation import MultilingualField, ModelTranslateMeta
 class Event(models.Model, metaclass=ModelTranslateMeta):
     """Represents events"""
 
+    REGISTRATION_NOT_NEEDED = -1
+    REGISTRATION_NOT_YET_OPEN = 0
+    REGISTRATION_OPEN = 1
+    REGISTRATION_OPEN_NO_CANCEL = 2
+    REGISTRATION_CLOSED = 3
+    REGISTRATION_CLOSED_CANCEL_ONLY = 4
+
     DEFAULT_NO_REGISTRATION_MESSAGE = _('No registration required')
 
     title = MultilingualField(
@@ -101,8 +108,33 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     published = models.BooleanField(_("published"), default=False)
 
+    def after_deadline(self):
+        return self.registration_end < timezone.now()
+
     def registration_required(self):
         return bool(self.registration_start) or bool(self.registration_end)
+
+    def has_fields(self):
+        return self.registrationinformationfield_set.count() > 0
+
+    def reached_participants_limit(self):
+        return self.max_participants <= self.registration_set.count()
+
+    def status(self):
+        now = timezone.now()
+        if bool(self.registration_start) or bool(self.registration_end):
+            if now <= self.registration_start:
+                return Event.REGISTRATION_NOT_YET_OPEN
+            elif self.registration_end <= now < self.cancel_deadline:
+                return Event.REGISTRATION_CLOSED_CANCEL_ONLY
+            elif self.cancel_deadline <= now < self.registration_end:
+                return Event.REGISTRATION_OPEN_NO_CANCEL
+            elif now >= self.registration_end and now >= self.cancel_deadline:
+                return Event.REGISTRATION_CLOSED
+            else:
+                return Event.REGISTRATION_OPEN
+        else:
+            return Event.REGISTRATION_NOT_NEEDED
 
     def clean(self):
         super().clean()
@@ -127,6 +159,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     {'registration_end': _(
                         "If registration is required, you need an end of "
                         "registration")})
+            if not self.cancel_deadline:
+                errors.update(
+                    {'cancel_deadline': _(
+                        "If registration is required, you need a deadline for "
+                        "the cancellation")})
             if self.registration_start and self.registration_end and (
                         self.registration_start >= self.registration_end):
                 message = _('Registration start should be before '
@@ -237,7 +274,12 @@ class Registration(models.Model):
 
     def is_late_cancellation(self):
         return (self.date_cancelled and
-                self.date_cancelled > self.event.cancel_deadline)
+                self.date_cancelled > self.event.cancel_deadline and
+                self.event.registration_set.filter(
+                    (Q(date_cancelled__gte=self.date_cancelled) |
+                     Q(date_cancelled=None)) &
+                    Q(date_lte=self.date)
+                ) < self.event.max_participants)
 
     def is_registered(self):
         return self.date_cancelled is None
@@ -248,7 +290,7 @@ class Registration(models.Model):
 
         return max(self.event.registration_set.filter(
             date_cancelled=None,
-            id__lte=self.id
+            date__lte=self.date
         ).count() - self.event.max_participants, 0)
 
     def clean(self):
