@@ -14,7 +14,7 @@ from . import models, forms
 
 class MembershipInline(admin.StackedInline):
     model = models.Membership
-    extra = 1
+    extra = 0
 
 
 class MemberInline(admin.StackedInline):
