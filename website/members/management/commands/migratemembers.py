@@ -31,6 +31,7 @@ class Command(BaseCommand):
         url = "https://thalia.nu/api/members_export.php?apikey={}".format(
             settings.MIGRATION_KEY
         )
+        print("Querying concrete5.. this may take a while")
         data = json.loads(requests.get(url).text)
 
         groups = {}
@@ -44,6 +45,7 @@ class Command(BaseCommand):
         for board in data['boards']:
             obj, cr = Board.objects.get_or_create(name_nl=board['name'])
             obj.name_en = board['name']
+            print(obj.name_en)
             groups[board['gID']] = obj
             img = soup.find("img", {"alt": board['name'][8:]})
             if img:
@@ -64,6 +66,7 @@ class Command(BaseCommand):
             obj, cr = Committee.objects.get_or_create(
                 name_nl=committee['name'])
             obj.name_en = committee['name']
+            print(obj.name_en)
             groups[committee['gID']] = obj
             obj.save()
             if committee['name'] not in links:
