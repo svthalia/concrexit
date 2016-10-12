@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 
 SITE_ID = 1
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000  # Useful for managing members
+
 # Application definition
 
 INSTALLED_APPS = [
