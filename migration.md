@@ -17,6 +17,11 @@ This is taken care of during member migration.
 
 ## Mailing lists
 
+Make sure that the API key is available as `MIGRATION_KEY` in settings.py.
+
+To migrate the mailinglists, make sure that members, committees and boards
+have been migrated. Then simply execute `python manage.py migratelists`.
+
 ## Members
 
 To migrate members, committees, boards, memberships of committees and boards,
