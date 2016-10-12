@@ -38,7 +38,18 @@ class Command(BaseCommand):
                 mlist.archived = bool(arch)
                 mlist.moderated = bool(mod)
 
-                groups = lines[:lines.index('-')]
+                group_it = iter(lines[:lines.index('-')])
+                groups = []
+                while True:
+                    try:
+                        groups.append((next(group_it), []))
+                        while True:
+                            x = next(group_it)
+                            if x == '=':
+                                break
+                            groups[-1][1].append(x)
+                    except StopIteration:
+                        break
                 lines = lines[lines.index('-')+1:]
                 users = lines[:lines.index('-')]
                 verbatims = lines[lines.index('-')+1:]
@@ -47,7 +58,7 @@ class Command(BaseCommand):
 
                 for user in users:
                     mlist.members.add(Member.objects.get(user__username=user))
-                for g in groups:
+                for g, users in groups:
                     try:
                         mlist.committees.add(Committee.objects.get(name_nl=g))
                     except Committee.DoesNotExist:
@@ -56,6 +67,12 @@ class Command(BaseCommand):
                         except Committee.DoesNotExist:
                             print("[{}] Did not find group '{}'".format(name,
                                                                         g))
+                            print("    Adding individual users: {}".format(
+                                ', '.join(users))
+                            )
+                            for user in users:
+                                mlist.members.add(
+                                    Member.objects.get(user__username=user))
                 for v in verbatims:
                     obj = VerbatimAddress(address=v, mailinglist=mlist)
                     obj.save()
