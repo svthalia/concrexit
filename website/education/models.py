@@ -100,6 +100,7 @@ class Exam(models.Model):
     uploader = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_('uploader'),
+        on_delete=models.CASCADE,
     )
 
     uploader_date = models.DateField(
@@ -122,6 +123,7 @@ class Exam(models.Model):
     course = models.ForeignKey(
         Course,
         verbose_name=_("course"),
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):
@@ -152,6 +154,7 @@ class Summary(models.Model):
     uploader = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_('uploader'),
+        on_delete=models.CASCADE,
     )
 
     uploader_date = models.DateField(
@@ -168,6 +171,7 @@ class Summary(models.Model):
     course = models.ForeignKey(
         Course,
         verbose_name=_("course"),
+        on_delete=models.CASCADE,
     )
 
     accepted = models.BooleanField(
