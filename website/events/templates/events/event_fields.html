@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n static fieldtype %}
+
+{% block title %}{% if action == 'update' %}{% trans "Update registration" %}{% else %}{% trans "Complete registration" %}{% endif %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    {% if action == 'update' %}
+        <h1>{% blocktrans with title=event.title %}Update registration for {{ title }}{% endblocktrans %}</h1>
+    {% else %}
+        <h1>{% blocktrans with title=event.title %}Completing registration for {{ title }}{% endblocktrans %}</h1>
+    {% endif %}
+
+    <form method="post" class="form-horizontal span8 offset2">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="control-group row {% if field.errors %}error{% endif %}">
+                <label class="control-label" for="{{ field.name }}">{{ field.label_tag }}</label>
+                <div class="controls">
+                    {{ field }}
+
+                    {% for error in field.errors %}
+                        <span class="help-block">{{ error|escape }}</span>
+                    {% endfor %}
+
+                    <span class="help-block">{{ field.help_text|safe }}</span>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if action == 'update' %}
+            <input type="submit" value="{% trans "Update registration" %}" class="btn btn-style1 pull-right login" />
+        {% else %}
+            <input type="submit" value="{% trans "Complete registration" %}" class="btn btn-style1 pull-right login" />
+        {% endif %}
+        <a href="{% url "events:event" event.id %}" class="forgot btn pull-right btn-style2">{% trans 'Cancel' %}</a>
+    </form>
+
+{% endblock %}

@@ -10,7 +10,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
         fields = (
             'start', 'end', 'all_day', 'is_birthday',
             'url', 'title', 'description',
-            'background_color', 'text_color', 'target_blank'
+            'backgroundColor', 'textColor', 'blank'
         )
 
     start = serializers.SerializerMethodField('_start')
@@ -20,9 +20,9 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField('_url')
     title = serializers.SerializerMethodField('_title')
     description = serializers.SerializerMethodField('_description')
-    background_color = serializers.SerializerMethodField('_background_color')
-    text_color = serializers.SerializerMethodField('_text_color')
-    target_blank = serializers.SerializerMethodField('_target_blank')
+    backgroundColor = serializers.SerializerMethodField('_background_color')
+    textColor = serializers.SerializerMethodField('_text_color')
+    blank = serializers.SerializerMethodField('_target_blank')
 
     def _start(self, instance):
         return timezone.localtime(instance.start)
@@ -60,4 +60,4 @@ class EventSerializer(CalenderJSSerializer):
         model = Event
 
     def _url(self, instance):
-        return reverse('#')
+        return reverse('events:event', kwargs={'event_id': instance.id})

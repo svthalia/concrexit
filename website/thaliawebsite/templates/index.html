@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Thaliawebsite{% endblock %}
+{% load i18n event_cards %}
 
 {% block body %}
-<h1>Hello world</h1>
+<h1>{% trans "Thalia, the study association of Computer Science and Information Science" %}</h1>
 
-<p>Dit is een statische placeholder. Dit werkt op dit moment:
-  <ul>
-    <li><a href="/admin/">Ga naar de admin</a></li>
-    <li><a href="/members/">Zie een voorbeeld met de ledenlijst</a></li>
-  </ul>
+<p class="text-center">
+{% blocktrans %}Thalia is the study association for the Computer Science and Information Science students at Radboud University in Nijmegen. Thalia provides you the necessary distractions during your studies, as we've been doing for the past 25 years. And via Thalia students can easily connect with teachers and students from other years.{% endblocktrans %}
 </p>
+
+<h1>{% trans "Upcoming events" %}</h1>
+
+{% show_cards %}
+
+<p class="text-center">{% trans "Searching for another event?" %} <a href="{% url "events:index" %}">{% trans "Take a look at the entire agenda" %}</a>.  </p>
 {% endblock %}

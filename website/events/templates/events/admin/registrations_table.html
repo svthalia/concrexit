@@ -10,10 +10,14 @@
                 {% endfor %}
                 <th>{% trans "present"|capfirst %}</th>
                 <th>{% trans "paid"|capfirst %}</th>
+                {% if registrations|length > 0 and registrations.0.date_cancelled is not None %}
+                    <th>{% trans "late"|capfirst %}</th>
+                {% endif %}
                 <th>
                 {% if addlink != 0 %}
-                    <a class="addlink" href="{% url 'admin:events_registration_add' %}?event_pk={{ event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans "add"|capfirst %}</a></th>
+                    <a class="addlink" href="{% url 'admin:events_registration_add' %}?event_pk={{ event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans "add"|capfirst %}</a>
                 {% endif %}
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +40,9 @@
                 {% endfor %}
                 <td>{{ registration.present|yesno }}</td>
                 <td>{{ registration.paid|yesno }}</td>
+                {% if registration.date_cancelled is not None %}
+                    <td>{{ registration.is_late_cancellation|yesno }}</td>
+                {% endif %}
                 <td><a class="changelink" href="{% url 'admin:events_registration_change' registration.pk %}?next={{ request.get_full_path|urlencode }}">{% trans "change" %}</a></td>
             </tr>
             {% empty %}

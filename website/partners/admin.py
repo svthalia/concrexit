@@ -7,6 +7,7 @@ from partners.models import (
     PartnerImage,
     VacancyCategory,
     Vacancy,
+    PartnerEvent
 )
 
 
@@ -58,3 +59,12 @@ class VacancyAdmin(admin.ModelAdmin):
             'fields': ('categories', )
         }),
     )
+
+
+@admin.register(PartnerEvent)
+class PartnerEventAdmin(TranslatedModelAdmin):
+    fields = ['partner', 'title', 'description', 'location', 'start', 'end',
+              'url', 'published']
+    list_display = ('title', 'start', 'end',
+                    'partner', 'published')
+    list_filter = ('start', 'published')

@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <h1>{{ event.title }}</h1>
+    <p class="tcenter">{{ event.description }}</p>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            <button type="button" class="close"><span class="alert-icon-close"></span></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="clearfix row">
+        <div class="span6">
+            <table class="table borderless">
+                <tbody>
+                <tr>
+                    <th>{% trans "from"|capfirst %}</th>
+                    <td>{{ event.start }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "until"|capfirst %}</th>
+                    <td>{{ event.end }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "location"|capfirst %}</th>
+                    <td>{{ event.location }}</td>
+                </tr>
+                {% if event.price > 0 %}
+                    <tr>
+                        <th>{% trans "price"|capfirst %}</th>
+                        <td> &euro;{{ event.price }}</td>
+                    </tr>
+                {% endif %}
+                {% if event.registration_required %}
+                    <tr>
+                        <th>{% trans "registration deadline"|capfirst %}</th>
+                        <td>{{ event.registration_end }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "cancellation deadline"|capfirst %}</th>
+                        <td>{{ event.cancel_deadline }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "number of registrations"|capfirst %}</th>
+                        <td>
+                            {% blocktrans count counter=registrations|length trimmed %}
+                                {{ counter }} registration
+                            {% plural %}
+                                {{ counter }} registrations
+                            {% endblocktrans %}
+                            {% if event.max_participants > 0 %}
+                                <i>({{ event.max_participants }} {% trans "max" %})</i>
+                                {% with prc=registration_percentage %}
+                                    <div class="progress progress-style1">
+                                        <div class="bar trans-enabled" style="width: {{ prc }}%;" data-width="{{ prc }}%"></div>
+                                    </div>
+                                {% endwith %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if registration %}
+                        <tr>
+                            <th>{% trans "registration status"|capfirst %}</th>
+                            <td>
+                                {% if registration.is_registered and registration.queue_position == 0 %}
+                                    {% trans "You are registered" %}
+                                {% elif registration.is_registered and registration.queue_position > 0 %}
+                                    {% blocktrans with pos=registration.queue_position trimmed %}
+                                        Waiting list position {{ pos }}
+                                    {% endblocktrans  %}
+                                {% elif not registration.is_registered and registration.is_late_cancellation %}
+                                    {% trans "Your registration is cancelled after the cancellation deadline" %}
+                                {% else %}
+                                    {% trans "Your registration is cancelled" %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+                <tr>
+                    <td></td>
+                    <td>
+                        {% if request.user.is_authenticated and request.user.member is not None and request.user.member.current_membership is not None %}
+                            {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
+                                {% if registration is not None and registration.date_cancelled is None and event.has_fields %}
+                                <a class="btn btn-style1" href="{% url 'events:registration' event.id 'update' %}">{% trans "Update registration" %}</a>
+                                <br /><br />
+                                {% endif %}
+                            {% endif %}
+                            {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
+                                {% if registration is None or registration.date_cancelled is not None %}
+                                    {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
+                                    <a class="btn btn-style1" href="{% url 'events:registration' event.id 'register' %}">
+                                        {% if event.reached_participants_limit %}
+                                            {% trans "Put me on the waiting list" %}
+                                        {% else %}
+                                            {% trans "Register" %}
+                                        {% endif %}
+                                    </a>
+                                    {% endif %}
+                                {% elif registration is not None and registration.date_cancelled is None %}
+                                    {# Special message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
+                                    {% if registration.queue_position == 0 and event.after_cancel_deadline %}
+                                        <a class="btn btn-style1" href="{% url 'events:registration' event.id 'cancel' %}" onclick="return confirm('{% blocktrans with costs=event.cost %}The deadline has passed, are you sure you want to cancel your registration and pay the full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');">{% trans "Cancel registration" %}</a>
+                                    {% else %}
+                                        <a class="btn btn-style1" href="{% url 'events:registration' event.id 'cancel' %}" onclick="return confirm('{% trans "Are you sure you want to cancel your registration?" %}');">{% trans "Cancel registration" %}</a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% elif request.user.is_authenticated is False %}
+                        <a class="btn btn-style1" href="{% url 'login' %}?next={{ request.path }}">{% trans "Login" %}</a>
+                        {% endif %}
+					</td>
+                </tr>
+                <tr>
+	                <td>
+	                </td>
+                    <td>
+                        <em>
+                        {% if not request.user.is_authenticated %}
+                            {% trans "You have to log in before you can register for this event." %}
+                        {% elif event.status == event.REGISTRATION_NOT_YET_OPEN %}
+                            {% blocktrans with datetime=event.registration_start %}Registration will open {{ datetime }}{% endblocktrans %}
+                        {% elif event.status == event.REGISTRATION_CLOSED or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY %}
+                            {% blocktrans %}Registration is not possible anymore.{% endblocktrans %}
+                        {% elif status == event.REGISTRATION_NOT_NEEDED %}
+                            {% if event.no_registration_message %}
+                                {{ event.no_registration_message }}
+                            {% else %}
+                                {% trans "No registration required" %}
+                            {% endif %}
+                        {% endif %}
+                        {% if event.status == event.REGISTRATION_OPEN_NO_CANCEL or event.status == event.REGISTRATION_CLOSED  %}
+                            {% if registration.date_cancelled is None and event.cost > 0 %}
+                                {% blocktrans with costs=event.cost %}Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}. Also note that you will be unable to re-register.{% endblocktrans %}
+                            {% endif %}
+                        {% endif %}
+                        </em>
+                    </td>
+                </tr>
+
+                {#{% if event.pizzaevent %}#}
+                {#<tr>#}
+                    {#<th>#}
+                        {#Pizza#}
+                    {#</th>#}
+                    {#<td>#}
+                        {#<a href="{{ url "pizzas:index" }}" class="btn btn-style1">#}
+                            {#{% trans "Order" %}#}
+                        {#</a>#}
+                    {#</td>#}
+                {#</tr>#}
+                {#{% endif %}#}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="span6">
+        <div class="location-map">
+            <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ event.map_location|urlencode }}&zoom=13&size=450x250&markers={{ event.map_location|urlencode }}"/>
+        </div>
+    </div>
+</div>
+
+    {% if user.is_authenticated and registrations|length > 0 %}
+        <div class="member-directory">
+            <h1 class="midhead">{% trans "Registrations" %}</h1>
+            <ul class="member-directory row">
+                {% for registration in registrations %}
+                    <li class="post member-item span3 has-overlay{% if forloop.counter0|divisibleby:4 %} first-child{% endif %}">
+                    {% if registration.is_external %}
+                        <a href="#">
+                            <div class="post-inner">
+                                <div class="inner-img">
+                                    <img src="{% static "members/images/default-avatar.jpg" %}">
+                                </div>
+                                <div class="post-overlay">
+                                    <div class="post-overlay-meta">
+                                        <h2>{{ registration.name }}</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                                <div class="post-body avatar-subtitle">
+                                    {{ registration.name }}
+                                </div>
+                            </div>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'members:profile' pk=registration.member.pk %}">
+                            <div class="post-inner">
+                                <div class="inner-img">
+                                    <img src="{% if not registration.member.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ registration.member.photo.url }}{% endif %}" alt="{{ registration.member.display_name }}" />
+                                </div>
+                                <div class="post-overlay">
+                                    <div class="post-overlay-meta">
+                                        <h2>{{ registration.member.display_name }}</h2>
+                                        <p>{% trans "cohort"|capfirst %}: {{ registration.member.starting_year }}</p>
+                                    </div>
+                                </div>
+                                <div class="post-body avatar-subtitle">
+                                    {{ registration.member.display_name }}
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock body %}

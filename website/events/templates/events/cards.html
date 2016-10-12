@@ -1,0 +1,21 @@
+<div class="blog">
+    <ul class="row">
+        {% for event in events %}
+        <li class="post span6 has-overlay event">
+            <a href="{{ event.get_absolute_url }}">
+                <div class="post-inner">
+                    <div class="post-body"><h2>{{ event.title }}</h2>
+                        <div class="post-date circle">
+                            <div class="circle-border"></div>
+                            <div class="circle-inner">{{ event.start.day }}<span>{{ event.start|date:"M" }}</span></div>
+                        </div>
+                        <div class="post-excerpt">
+                            <p>{{ event.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
