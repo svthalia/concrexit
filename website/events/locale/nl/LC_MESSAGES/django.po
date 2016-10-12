@@ -337,22 +337,3 @@ msgstr "Toon  verjaardagen"
 #: templates/events/index.html:69
 msgid "list"
 msgstr "Lijst"
-
-#~ msgid "From"
-#~ msgstr "Vanaf"
-
-#, fuzzy
-#~| msgid "location"
-#~ msgid "Location"
-#~ msgstr "locatie"
-
-#, fuzzy
-#~| msgid "price"
-#~ msgid "Price"
-#~ msgstr "prijs"
-
-#~ msgid "Present"
-#~ msgstr "Aanwezig"
-
-#~ msgid "Paid"
-#~ msgstr "Betaald"
