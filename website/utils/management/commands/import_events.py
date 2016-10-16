@@ -54,7 +54,6 @@ class Command(BaseCommand):
         event_fields_translations = {
 
             # name in data : name in model
-            'id': 'id',
             'title': 'title',
             'description': 'description',
             'location': 'location',
