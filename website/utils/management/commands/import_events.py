@@ -61,23 +61,16 @@ class Command(BaseCommand):
             'end_date': 'end',
             'member_price': 'price',
             'thalia_costs': 'cost',
-            'registration_limit': 'max_participants',
-            'public': 'published',
             'begin_registration': 'registration_start',
             'end_registration': 'registration_end',
             'end_cancel': 'cancel_deadline',
             'registration_not_needed_message': 'no_registration_message',
         }
 
-        # Not in data: map_location, organiser
-        # In data but not Model: needs_registration
-
         print('[*]Removing all test data')
         events_models.Event.objects.all().delete()
         events_models.RegistrationInformationField.objects.all().delete()
         events_models.Registration.objects.all().delete()
-
-        print('[*]Parsing API data.')
 
         print('[*]Parsing event data.')
         # Event
@@ -85,7 +78,11 @@ class Command(BaseCommand):
         for event_data in data['events']:
 
             # TODO: Is this the right way?
-            new_event = events_models.Event(pk=event_data['id'])
+            new_event = events_models.Event(
+                pk=event_data['id'],
+                published=bool(int(event_data['public'])),
+                max_participants=int(event_data['registration_limit']),
+            )
 
             for concrete_field in event_fields_translations:
 
@@ -110,10 +107,11 @@ class Command(BaseCommand):
                                 concrete_data)
 
                 # DateTimeField
-                elif django_field in (
-                        'start', 'end', 'begin_registration',
-                        'end_registration',
-                        'end_cancel'):
+                elif concrete_data and django_field in (
+                        'start', 'end', 'registration_start',
+                        'registration_end',
+                        'cancel_deadline'):
+
                     setattr(new_event, django_field,
                             naive_to_aware(concrete_data))
 
@@ -126,13 +124,6 @@ class Command(BaseCommand):
                         # TODO: is 0 the right value?
                         setattr(new_event, django_field, 0)
 
-                # PositiveSmallIntegerField
-                elif django_field == 'registration_limit':
-                    setattr(new_event, django_field, int(concrete_data))
-
-                elif django_field == 'published':
-                    setattr(new_event, django_field, bool(int(concrete_data)))
-
             new_events.append(new_event)
 
         print('Creating the events')
@@ -141,21 +132,19 @@ class Command(BaseCommand):
         print('[*]Parsing registration field data.')
         # RegistrationInformationField
         # TODO: RegistrationInformationField and MultiLingualField
-
-        new_registration_information_fields = []
-        for field_data in data['extra_fields']:
-            new_registration_information_field = events_models.RegistrationInformationField(
+        new_registration_information_fields = [
+            events_models.RegistrationInformationField(
                 pk=int(field_data['field_id']),
                 name=field_data['field_name'],
-                description=field_data['field_explanation'])
+                description=field_data['field_explanation'],
+                type=FIELD_DATA_TYPES[field_data['data_type']],
 
-            new_registration_information_field.event = events_models.Event.objects.get(
-                pk=int(field_data['activity_id']))
-            new_registration_information_field.type = FIELD_DATA_TYPES[
-                field_data['data_type']]
-
-            new_registration_information_fields.append(
-                new_registration_information_field)
+                event=events_models.Event.objects.get(
+                    pk=int(field_data['activity_id'])
+                ),
+            )
+            for field_data in data['extra_fields']
+        ]
 
         print('Creating the registration information fields')
         events_models.RegistrationInformationField.objects.bulk_create(
@@ -166,11 +155,16 @@ class Command(BaseCommand):
         new_registrations = []
         for registration_data in data['registrations']:
 
-            new_registration = events_models.Registration()
+            new_registration = events_models.Registration(
 
-            event_id = int(registration_data['activity_id'])
-            new_registration.event = events_models.Event.objects.get(
-                pk=event_id)
+                name=registration_data['name'],
+                date=naive_to_aware(registration_data['date']),
+                paid=bool(registration_data['paid']),
+
+                event=events_models.Event.objects.get(
+                    pk=int(registration_data['activity_id'])
+                ),
+            )
 
             username = registration_data['username']
             if registration_data['username'] and not User.objects.filter(
@@ -180,15 +174,11 @@ class Command(BaseCommand):
                 new_registration.member = members_models.Member.objects.get(
                     user=registration_user)
 
-            new_registration.name = registration_data['name']
-            new_registration.date = naive_to_aware(registration_data['date'])
-
             cancelled_date = registration_data['canceled']
             if cancelled_date:
                 new_registration.cancelled_date = naive_to_aware(
                     cancelled_date)
 
-            new_registration.paid = bool(registration_data['paid'])
             new_registrations.append(new_registration)
 
         print('Creating the registrations')
