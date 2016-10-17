@@ -3,6 +3,10 @@
 
 {% block title %}{{ event.title }}{{ block.super }}{% endblock %}
 
+{% block extrastyle %}
+    {{ block.super }}
+    <link href="{% static "events/css/admin.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'home'|capfirst %}</a>
