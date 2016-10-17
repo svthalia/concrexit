@@ -136,6 +136,8 @@ class TranslatedModelAdmin(admin.ModelAdmin):
         # In fields, we replace a translated field by all resulting fields.
         type(self).fields = trans_fields(type(self).fields)
         type(self).exclude = trans_fields(type(self).exclude)
+        type(self).search_fields = trans_fields(type(self).search_fields)
+
         if type(self).fieldsets is not None:
             for fieldset in type(self).fieldsets:
                 fieldset[1]['fields'] = trans_fields(fieldset[1]['fields'])
