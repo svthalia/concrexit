@@ -7,6 +7,11 @@
     {{ block.super }}
     <link href="{% static "events/css/admin.css" %}" rel="stylesheet" type="text/css">
 {% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Thalia administration') }}</a></h1>
+{% endblock %}
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'home'|capfirst %}</a>
@@ -26,11 +31,13 @@
         <br>
         {% if waiting %}
         <h2>{% trans "waiting"|capfirst %}</h2>
-        {% include 'events/admin/registrations_table.html' with registrations=waiting verb='queued' addlink=False %}
+        {% trans "queued" as queued %}
+        {% include 'events/admin/registrations_table.html' with registrations=waiting verb=queued addlink=False %}
         <br>
         {% endif %}
         <h2>{% trans "cancellations"|capfirst %}</h2>
-        {% include 'events/admin/registrations_table.html' with registrations=cancellations verb='cancelled' addlink=False %}
+        {% trans "cancelled" as cancelled %}
+        {% include 'events/admin/registrations_table.html' with registrations=cancellations verb=cancelled addlink=False %}
         {% endwith %}
         <br>
         <a href="{% url 'events:export' event_id=event.pk %}" class="button">{% trans "Export registrations" %}</a>

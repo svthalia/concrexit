@@ -47,7 +47,8 @@
             </tr>
             {% empty %}
             <tr class="model-events">
-                <td scope="row">{% blocktrans with verb=verb|default:'registered' %}Nobody {{ verb }} yet{% endblocktrans %}</td>
+                {% trans "registered" as registered %}
+                <td scope="row">{% blocktrans with verb=verb|default:registered %}Nobody {{ verb }} yet{% endblocktrans %}</td>
                 {% for field in fields %}
                 <td>&nbsp;</td>
                 {% endfor %}
