@@ -214,8 +214,12 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.member.user.is_staff = self.member.membership_set.exclude(
-            until__lt=timezone.now().date()).count() >= 1
+        self.member.user.is_staff = (
+            self.member
+            .committeemembership_set
+            .exclude(
+                until__lt=timezone.now().date())
+            .count()) >= 1
         self.member.user.save()
 
     def __str__(self):
