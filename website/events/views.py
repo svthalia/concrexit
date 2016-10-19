@@ -8,7 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils import timezone
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
 from .models import Event, Registration
 from .forms import FieldsForm
@@ -37,36 +37,47 @@ def export(request, event_id):
     registrations = event.registration_set.all()
 
     header_fields = (
-        ['name', 'date', 'email'] + [field.name for field in extra_fields] +
-        ['present', 'paid', 'status', 'date_cancelled'])
+        ['name', 'paid', 'present', 'email',
+         'phone number'] +
+        [field.name for field in extra_fields] +
+        ['status', 'date', 'date cancelled'])
 
     rows = []
     capacity = event.max_participants
+    if event.price == 0:
+        header_fields.remove('paid')
     for i, registration in enumerate(registrations):
         if registration.member:
             name = registration.member.get_full_name()
         else:
             name = registration.name
-        status = 'registered'
+        status = pgettext_lazy('registration status', 'registered')
         cancelled = None
         if registration.date_cancelled:
             if capacity is not None:
                 capacity += 1
-            status = 'cancelled'
+            status = pgettext_lazy('registration status', 'cancelled')
             cancelled = timezone.localtime(registration.date_cancelled)
         elif capacity and i >= capacity:
-            status = 'waiting'
+            status = pgettext_lazy('registration status', 'waiting')
         data = {
             'name': name,
-            'date': timezone.localtime(registration.date),
-            'paid': registration.paid,
-            'present': registration.present,
+            'date': timezone.localtime(registration.date
+                                       ).strftime("%Y-%m-%d %H:%m"),
+            'dateobj': registration.date,
+            'present': _('Yes') if registration.present else '',
+            'phone number': (registration.member.phone_number
+                             if registration.member
+                             else ''),
             'email': (registration.member.user.email
                       if registration.member
                       else ''),
             'status': status,
-            'date_cancelled': cancelled,
+            'date cancelled': cancelled,
         }
+        if event.price > 0:
+            data['paid'] = _('Yes') if registration.paid else ''
+
         data.update({field['field'].name: field['value'] for field in
                      registration.registration_information()})
         rows.append(data)
@@ -77,14 +88,16 @@ def export(request, event_id):
 
     def order(item):
         if item['status'] == 'cancelled':
-            return item['date'] + timedelta(days=10000)
+            return item['dateobj'] + timedelta(days=10000)
         elif item['status'] == 'registered':
-            return item['date'] - timedelta(days=10000)
+            return item['dateobj'] - timedelta(days=10000)
         else:
-            return item['date']
+            return item['dateobj']
 
     for row in sorted(rows, key=order):
-        writer.writerow(row)
+        r = row.copy()
+        del r['dateobj']
+        writer.writerow(r)
 
     response['Content-Disposition'] = (
         'attachment; filename="{}.csv"'.format(slugify(event.title)))
@@ -175,11 +188,11 @@ def registration(request, event_id, action=None):
 
             if error_message is None:
                 success_message = _("Registration successful.")
-        elif (action == 'update'
-              and event.has_fields()
-              and obj is not None
-              and (event.status == Event.REGISTRATION_OPEN or
-                   event.status == Event.REGISTRATION_OPEN_NO_CANCEL)):
+        elif (action == 'update' and
+              event.has_fields() and
+              obj is not None and
+              (event.status == Event.REGISTRATION_OPEN or
+               event.status == Event.REGISTRATION_OPEN_NO_CANCEL)):
             show_fields = True
             success_message = _("Registration successfully updated.")
         elif action == 'cancel':
