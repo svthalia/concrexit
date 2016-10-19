@@ -1,26 +1,14 @@
-{% extends "base.html" %}
-
+{% extends "pizzas/base.html" %}
 {% load i18n staticfiles %}
 
-{% block page_title %}{% trans "Pizzas" %}{% endblock %}
-
-{% block css_head %}
-{{ block.super }}
-<link href="{% static "pizzas/css/style.css" %}" rel="stylesheet" type="text/css">
-{% endblock %}
+{% block title %}{% trans "Add order" %} — {{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-<style>
-    .form-group {
-        margin-bottom: 15px;
-    }
-</style>
-
-<h3>{% blocktrans with title=event.title %}Add order for {{ title }}{% endblocktrans %}</h3>
+<h1>{% blocktrans with title=event.title %}Add order for {{ title }}{% endblocktrans %}</h1>
 
 <form class="form-horizontal" method="post" action="{% url 'pizzas:add-order' event.pk %}">
     {% csrf_token %}
-    <div class="form-group {% if form.name.errors %}has-error{% endif %}">
+    <div class="control-group {% if form.name.errors %}has-error{% endif %}">
         <label for="{{ form.name.auto_id }}" class="control-label">{% trans 'Name' %}</label>
         <div class="controls">
             {{ form.name }}
@@ -29,14 +17,14 @@
             {% endfor %}
         </div>
     </div>
-    <div class="form-group {% if form.product.errors %}has-error{% endif %}">
+    <div class="control-group {% if form.product.errors %}has-error{% endif %}">
         <label for="{{ form.product.auto_id }}" class="control-label">{% trans 'Product' %}</label>
         <div class="controls">
             {{ form.product }}
         </div>
     </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-style1" value="{% trans 'Add' %}">
+    <div class="control-group">
+        <input type="submit" class="btn btn-style1 pull-right login" value="{% trans 'Add' %}">
     </div>
 </form>
 

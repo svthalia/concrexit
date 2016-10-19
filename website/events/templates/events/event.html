@@ -146,18 +146,18 @@
                     </td>
                 </tr>
 
-                {#{% if event.pizzaevent %}#}
-                {#<tr>#}
-                    {#<th>#}
-                        {#Pizza#}
-                    {#</th>#}
-                    {#<td>#}
-                        {#<a href="{{ url "pizzas:index" }}" class="btn btn-style1">#}
-                            {#{% trans "Order" %}#}
-                        {#</a>#}
-                    {#</td>#}
-                {#</tr>#}
-                {#{% endif %}#}
+                {% if event.pizzaevent %}
+                <tr>
+                    <th>
+                        Pizza
+                    </th>
+                    <td>
+                        <a href="{% url "pizzas:index" %}" class="btn btn-style1">
+                            {% trans "Order" %}
+                        </a>
+                    </td>
+                </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>

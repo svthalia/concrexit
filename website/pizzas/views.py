@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
@@ -74,7 +75,7 @@ def toggle_orderpayment(request):
     try:
         order = get_object_or_404(Order, pk=int(request.POST['order']))
     except Http404:
-        return JsonResponse({'error': _("Order not found!")})
+        return JsonResponse({'error': _("Your order could not be found.")})
     order.paid = not order.paid
     order.save()
     return JsonResponse({'success': 1, 'paid': int(order.paid)})
@@ -88,7 +89,7 @@ def delete_order(request):
             order = get_object_or_404(Order, pk=int(request.POST['order']))
             order.delete()
         except Http404:
-            pass  # TODO use contrib.messages for some information here
+            messages.error(request, _("Your order could not be found."))
     event = PizzaEvent.current()
     if event:
         return HttpResponseRedirect(reverse('pizzas:orders', args=[event.pk]))
@@ -102,9 +103,9 @@ def cancel_order(request):
             order = get_object_or_404(Order, pk=int(request.POST['order']))
             if order.member == request.user.member:
                 order.delete()
+                messages.success(request, _("Your order has been cancelled."))
         except Http404:
-            pass  # TODO use contrib.messages for some information here
-    # TODO use contrib.messages for some information here
+            messages.error(request, _("Your order could not be found."))
     return HttpResponseRedirect(reverse('pizzas:index'))
 
 
@@ -116,7 +117,7 @@ def add_order(request, event_pk):
         order = form.save(commit=False)
         order.pizza_event = event
         order.save()
-        # TODO use contrib.messages for some information here
+        messages.success(request, _("Your order was successful."))
         return HttpResponseRedirect(reverse('pizzas:orders', args=[event.pk]))
     context = {
         'event': event,

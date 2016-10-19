@@ -1,19 +1,22 @@
-{% extends "base.html" %}
-
+{% extends "pizzas/base.html" %}
 {% load i18n staticfiles %}
 
-{% block page_title %}{% trans "Pizzas" %}{% endblock %}
+{% block title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block css_head %}
-{{ block.super }}
-<link href="{% static "pizzas/css/style.css" %}" rel="stylesheet" type="text/css">
+{% block header_image_container %}
+    {% if event.just_ended %}
+        <div class="header-image container {{ order.paid|yesno:'paid,unpaid' }}">
+        </div>
+    {% else %}
+        {{ block.super }}
+    {% endif %}
 {% endblock %}
 
 {% block body %}
 {% if event %}
     {% if event.just_ended and order %}
-    <center>
-        <span style="font-weight: bolder; font-size: 40px">
+    <div class="text-center">
+        <span class="product-name">
             {{ order.product.name }}
         </span>
         <br>
@@ -21,7 +24,7 @@
         <span style="font-size: 24px;">
             {{ member.get_full_name }}
         </span>
-    </center>
+    </div>
     {% endif %}
     <h1>
         {% blocktrans with title=event.title %}Order food for {{ title }}{% endblocktrans %}
@@ -33,10 +36,10 @@
 {% endif %}
 <div id="button-container">
     {% if perms.pizzas.change_pizzaevent %}
-        <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}" class="btn btn-primary pull-right">{% trans "All events" %}</a>
+        <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}" class="btn btn-style1 pull-right">{% trans "All events" %}</a>
     {% endif %}
     {% if perms.pizzas.change_order and event %}
-        <a href="{% url 'pizzas:orders' event.pk %}" class="btn btn-primary pull-right">{% trans "All orders" %}</a>
+        <a href="{% url 'pizzas:orders' event.pk %}" class="btn btn-style1 pull-right">{% trans "All orders" %}</a>
     {% endif %}
     <br><br>
 </div>
@@ -88,19 +91,7 @@
                     </tr>
                 </table>
             </div>
-            {% if event.just_ended %}
-                <style>
-                    .header-image {
-                        background-color: {{ order.paid|yesno:'#DFF0D8,#E05C50' }} !important;
-                        background-image: none !important;
-                        border-top: 1px solid {{ order.paid|yesno:'#8FCC74,#EED3D7' }} !important;
-                    }
-
-                    #main {
-                        border-top: 1px solid {{ order.paid|yesno:'8FCC74,EED3D7' }} !important;
-                    }
-                </style>
-            {% else %}
+            {% if not event.just_ended %}
                 <h4>{% trans "Changing your order" %}</h4>
             {% endif %}
         {% elif event.just_ended %}

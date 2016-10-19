@@ -1,13 +1,8 @@
-{% extends "base.html" %}
-
+{% extends "pizzas/base.html" %}
 {% load i18n staticfiles %}
 
-{% block page_title %}{% trans "Pizzas" %}{% endblock %}
+{% block title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block css_head %}
-{{ block.super }}
-<link href="{% static "pizzas/css/style.css" %}" rel="stylesheet" type="text/css">
-{% endblock %}
 
 {% block body %}
 <h1>
@@ -15,7 +10,7 @@
 </h1>
 
 <div id="button-container">
-    <a href="{% url 'pizzas:orders' event.pk %}" class="btn btn-primary pull-right">{% trans "Back" %}</a>
+    <a href="{% url 'pizzas:orders' event.pk %}" class="btn btn-style1 pull-right">{% trans "Back" %}</a>
     <br><br>
 </div>
 <div style="overflow-x: auto;">

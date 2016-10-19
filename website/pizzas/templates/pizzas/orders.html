@@ -1,13 +1,8 @@
-{% extends "base.html" %}
+{% extends "pizzas/base.html" %}
 
 {% load i18n staticfiles %}
 
-{% block page_title %}{% trans "Pizzas" %}{% endblock %}
-
-{% block css_head %}
-{{ block.super }}
-<link href="{% static "pizzas/css/style.css" %}" rel="stylesheet" type="text/css">
-{% endblock %}
+{% block title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
 <h1>
@@ -15,9 +10,9 @@
 </h1>
 
 <div id="button-container">
-    <a href="{% url 'pizzas:add-order' event.pk %}" class="btn btn-primary pull-right">{% trans "Add a new order" %}</a>
-    <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}" class="btn btn-primary pull-right">{% trans "All events" %}</a>
-    <a href="{% url 'pizzas:overview' event.pk %}" class="btn btn-primary pull-right">{% trans "Overview" %}</a>
+    <a href="{% url 'pizzas:add-order' event.pk %}" class="btn btn-style1 pull-right">{% trans "Add a new order" %}</a>
+    <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}" class="btn btn-style1 pull-right">{% trans "All events" %}</a>
+    <a href="{% url 'pizzas:overview' event.pk %}" class="btn btn-style1 pull-right">{% trans "Overview" %}</a>
     <br><br>
 </div>
 <div style="overflow-x: auto;">
@@ -73,6 +68,5 @@
 <script type="text/javascript">
 var csrf_token = '{{ csrf_token }}';
 var paid_url = "{% url 'pizzas:toggle-orderpayment' %}";
-var trans = { 'yes': '{% trans 'Yes' %}', 'no': '{% trans 'No' %}' };
 </script>
 {% endblock %}
