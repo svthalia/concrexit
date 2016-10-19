@@ -196,7 +196,7 @@ class Command(BaseCommand):
                 new_registration_information = events_models. \
                     TextRegistrationInformation(
                         value=field_info_data['value'],
-                        **parameters,
+                        **parameters
                     )
 
             elif registration_field.type == 'checkbox':
