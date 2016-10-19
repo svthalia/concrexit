@@ -2,6 +2,7 @@ import re
 import json
 import requests
 import pytz
+import sys
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.core.management.base import BaseCommand
@@ -67,19 +68,15 @@ class Command(BaseCommand):
             'registration_not_needed_message': 'no_registration_message',
         }
 
-        print('[*]Removing all test data')
-        events_models.Event.objects.all().delete()
-        events_models.RegistrationInformationField.objects.all().delete()
-        events_models.Registration.objects.all().delete()
+        activity_map = {}
+        registration_map = {}
+        information_field_map = {}
 
         print('[*]Parsing event data.')
         # Event
-        new_events = []
         for event_data in data['events']:
 
-            # TODO: Is this the right way?
             new_event = events_models.Event(
-                pk=event_data['id'],
                 published=bool(int(event_data['public'])),
                 max_participants=int(event_data['registration_limit']),
             )
@@ -124,35 +121,35 @@ class Command(BaseCommand):
                         # TODO: is 0 the right value?
                         setattr(new_event, django_field, 0)
 
-            new_events.append(new_event)
-
-        print('Creating the events')
-        events_models.Event.objects.bulk_create(new_events)
+            new_event.save()
+            activity_map[event_data['id']] = new_event.pk
 
         print('[*]Parsing registration field data.')
         # RegistrationInformationField
-        # TODO: RegistrationInformationField and MultiLingualField
-        new_registration_information_fields = [
-            events_models.RegistrationInformationField(
-                pk=int(field_data['field_id']),
-                name=field_data['field_name'],
-                description=field_data['field_explanation'],
-                type=FIELD_DATA_TYPES[field_data['data_type']],
+        for field_data in data['extra_fields']:
+            new_registration_information_field = \
+                events_models.RegistrationInformationField(
 
-                event=events_models.Event.objects.get(
-                    pk=int(field_data['activity_id'])
-                ),
-            )
-            for field_data in data['extra_fields']
-        ]
+                    # TODO: UGLY AF
+                    name_en=field_data['field_name'],
+                    name_nl=field_data['field_name'],
+                    description_en=field_data['field_explanation'],
+                    description_nl=field_data['field_explanation'],
 
-        print('Creating the registration information fields')
-        events_models.RegistrationInformationField.objects.bulk_create(
-            new_registration_information_fields)
+                    type=FIELD_DATA_TYPES[field_data['data_type']],
+                    required=True,
+                    event=events_models.Event.objects.get(
+                        pk=activity_map[field_data['activity_id']]
+                    ),
+                )
+
+            new_registration_information_field.save()
+
+            information_field_map[field_data['field_id']] = \
+                new_registration_information_field.pk
 
         print('[*]Parsing registration data.')
         # Registration
-        new_registrations = []
         for registration_data in data['registrations']:
 
             new_registration = events_models.Registration(
@@ -162,14 +159,13 @@ class Command(BaseCommand):
                 paid=bool(registration_data['paid']),
 
                 event=events_models.Event.objects.get(
-                    pk=int(registration_data['activity_id'])
+                    pk=activity_map[registration_data['activity_id']]
                 ),
             )
 
             username = registration_data['username']
-            if registration_data['username'] and not User.objects.filter(
+            if registration_data['username'] and User.objects.filter(
                     username=username).exists():
-                # TODO: Seems like there is an easier way to do this
                 registration_user = User.objects.get(username=username)
                 new_registration.member = members_models.Member.objects.get(
                     user=registration_user)
@@ -179,33 +175,47 @@ class Command(BaseCommand):
                 new_registration.cancelled_date = naive_to_aware(
                     cancelled_date)
 
-            new_registrations.append(new_registration)
-
-        print('Creating the registrations')
-        events_models.Registration.objects.bulk_create(new_registrations)
+            new_registration.save()
+            registration_map[registration_data['id']] = new_registration.pk
 
         print('[*]Parsing registration field info data.')
         # fields info
         for field_info_data in data['extra_info']:
 
             registration_field = events_models.RegistrationInformationField.\
-                objects.get(pk=int(field_info_data['field_id']))
+                objects.get(
+                    pk=information_field_map[field_info_data['field_id']]
+                )
 
             parameters = {
                 'registration': events_models.Registration.objects.get(
-                    pk=int(field_info_data['registration_id'])),
+                    pk=registration_map[field_info_data['registration_id']]),
                 'field': registration_field,
-                'value': field_info_data['value'],
             }
 
             if registration_field.type == 'charfield':
-                new_registration_information = \
-                    events_models.textregistrationinformation(**parameters)
+                new_registration_information = events_models. \
+                    TextRegistrationInformation(
+                        value=field_info_data['value'],
+                        **parameters,
+                    )
+
             elif registration_field.type == 'checkbox':
+
+                value = False
+
+                if value and bool(int(field_info_data['value'])):
+                    value = True
+
                 new_registration_information = \
-                    events_models.booleanregistrationinformation(**parameters)
+                    events_models.BooleanRegistrationInformation(
+                        value=value,
+                        **parameters)
             else:
+
                 new_registration_information = \
-                    events_models.IntegerRegistrationInformation(**parameters)
+                    events_models.IntegerRegistrationInformation(
+                        value=field_info_data['value'] or 0,
+                        **parameters)
 
             new_registration_information.save()
