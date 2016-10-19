@@ -50,6 +50,7 @@ urlpatterns = [
     url(r'^members/', include('members.urls', namespace='members')),
     url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
     url(r'^events/', include('events.urls', namespace='events')),
+    url(r'^pizzas/', include('pizzas.urls', namespace='pizzas')),
     url(r'^index\.php/events/ical/feed\.ics', DeprecationFeed()),
     url(r'^newsletters/', include('newsletters.urls',
                                   namespace='newsletters')),

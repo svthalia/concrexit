@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'thabloid',
     'partners',
     'events',
+    'pizzas',
     'newsletters',
     'education',
 ]

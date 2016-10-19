@@ -1,0 +1,72 @@
+{% extends "pizzas/base.html" %}
+
+{% load i18n staticfiles %}
+
+{% block title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>
+    {% blocktrans with title=event.title %}Orders for {{ title }}{% endblocktrans %}
+</h1>
+
+<div id="button-container">
+    <a href="{% url 'pizzas:add-order' event.pk %}" class="btn btn-style1 pull-right">{% trans "Add a new order" %}</a>
+    <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}" class="btn btn-style1 pull-right">{% trans "All events" %}</a>
+    <a href="{% url 'pizzas:overview' event.pk %}" class="btn btn-style1 pull-right">{% trans "Overview" %}</a>
+    <br><br>
+</div>
+<div style="overflow-x: auto;">
+    <table class="category table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th scope="col">{% trans "Name" %}</th>
+                <th scope="col">{% trans "Product" %}</th>
+                <th class='paid-title' scope="col">{% trans "Paid" %}</th>
+                <th class="no-sort"><i class="fa fa-trash"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>
+                        {{ order.member_name }}
+                    </td>
+                    <td>
+                        {{ order.product }}
+                    </td>
+                    <td>
+                        <input type="button" class="btn btn-style{{ order.paid|yesno:'3,4' }} paid-button" value="{% if order.paid %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}" data-id="{{ order.pk }}">
+                    </td>
+                    <td>
+                        <form class="form-horizontal delete-form" method="post" action="{% url 'pizzas:delete-order' %}">
+                            {% csrf_token %}
+                            <input type='hidden' name='order' value='{{ order.pk }}' />
+                            <button type="submit" class="btn btn-style1 btn" onclick="return confirm('{% trans "Are you sure you want to delete this order?" %}');">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+            <tr class="model-events">
+                <th scope="row">{% trans "Nobody ordered yet" %}</th>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js_body %}
+{{ block.super }}
+<script type="text/javascript" src="{% static "pizzas/js/jquery.tablesort.min.js" %}"></script>
+<script type="text/javascript" src="{% static "pizzas/js/orders.js" %}"></script>
+
+<script type="text/javascript">
+var csrf_token = '{{ csrf_token }}';
+var paid_url = "{% url 'pizzas:toggle-orderpayment' %}";
+</script>
+{% endblock %}
