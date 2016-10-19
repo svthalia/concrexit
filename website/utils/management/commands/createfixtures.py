@@ -65,6 +65,9 @@ class Command(BaseCommand):
         partner.city = faker.city()
 
     def handle(self, **options):
+        if not (options['user'] and options['partner']):
+            print("Use ./manage.py help createfixtures to find out how to call"
+                  " this command")
         if options['user']:
             print("Creating fake profiles for", options['user'], "users.")
 
