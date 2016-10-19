@@ -201,3 +201,6 @@ NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
+
+# API key for wiki
+WIKI_API_KEY = 'debug'
