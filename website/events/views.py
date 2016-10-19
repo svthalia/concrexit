@@ -1,7 +1,9 @@
 import csv
+import json
 from datetime import timedelta
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -27,6 +29,30 @@ def admin_details(request, event_id):
         'waiting': registrations[n:] if n else [],
         'cancellations': cancellations,
     })
+
+
+@staff_member_required
+@permission_required('events.change_event')
+@require_http_methods(["POST"])
+def admin_change_registration(request, event_id, action=None):
+    data = {
+        'success': True
+    }
+
+    try:
+        id = request.POST.get("id", -1)
+        checked = json.loads(request.POST.get("checked"))
+        obj = Registration.objects.get(event=event_id, pk=id)
+        if checked is not None:
+            if action == 'present':
+                obj.present = checked
+            elif action == 'paid':
+                obj.paid = checked
+            obj.save()
+    except Registration.DoesNotExist:
+        data['success'] = False
+
+    return JsonResponse(data)
 
 
 @staff_member_required

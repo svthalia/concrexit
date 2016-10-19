@@ -38,8 +38,8 @@
                     <td>{{ field.value }}</td>
                     {% endif %}
                 {% endfor %}
-                <td>{{ registration.present|yesno }}</td>
-                <td>{{ registration.paid|yesno }}</td>
+                <td><input type="checkbox" {{ registration.present|yesno:'checked="checked",' }} data-id="{{ registration.id }}" class="present-check" /></td>
+                <td><input type="checkbox" {{ registration.paid|yesno:'checked="checked",' }} data-id="{{ registration.id }}" class="paid-check" /></td>
                 {% if registration.date_cancelled is not None %}
                     <td>{{ registration.is_late_cancellation|yesno }}</td>
                 {% endif %}
@@ -47,7 +47,8 @@
             </tr>
             {% empty %}
             <tr class="model-events">
-                <td scope="row">{% blocktrans with verb=verb|default:'registered' %}Nobody {{ verb }} yet{% endblocktrans %}</td>
+                {% trans "registered" as registered %}
+                <td scope="row">{% blocktrans with verb=verb|default:registered %}Nobody {{ verb }} yet{% endblocktrans %}</td>
                 {% for field in fields %}
                 <td>&nbsp;</td>
                 {% endfor %}
