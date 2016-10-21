@@ -118,7 +118,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return self.registrationinformationfield_set.count() > 0
 
     def reached_participants_limit(self):
-        return self.max_participants <= self.registration_set.count()
+        return (self.max_participants is not None and
+                self.max_participants <= self.registration_set.count())
 
     @property
     def status(self):
