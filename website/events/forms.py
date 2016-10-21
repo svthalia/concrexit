@@ -1,10 +1,11 @@
 from django import forms
-from django.utils.translation import get_language, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from .models import RegistrationInformationField
 
 
 class RegistrationInformationFieldForm(forms.ModelForm):
+
     order = forms.IntegerField(label=_('order'), initial=0)
 
     class Meta:
@@ -35,10 +36,8 @@ class FieldsForm(forms.Form):
             elif field.type == RegistrationInformationField.TEXT_FIELD:
                 self.fields[key] = forms.CharField()
 
-            self.fields[key].label = getattr(field, '{}_{}'.format(
-                'name', get_language()))
-            self.fields[key].help_text = getattr(field, '{}_{}'.format(
-                'description', get_language()))
+            self.fields[key].label = field.name
+            self.fields[key].help_text = field.description
             self.fields[key].initial = information_field['value']
             if not field.type == RegistrationInformationField.BOOLEAN_FIELD:
                 self.fields[key].required = field.required

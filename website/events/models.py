@@ -118,8 +118,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return self.registrationinformationfield_set.count() > 0
 
     def reached_participants_limit(self):
-        return (self.max_participants is not None and
-                self.max_participants <= self.registration_set.count())
+        return self.max_participants <= self.registration_set.count()
 
     @property
     def status(self):
@@ -188,7 +187,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         ordering = ('-start',)
 
 
-class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
+class RegistrationInformationField(models.Model):
     """Field description to ask for when registering"""
     BOOLEAN_FIELD = 'boolean'
     INTEGER_FIELD = 'integer'
@@ -206,14 +205,12 @@ class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
         max_length=10,
     )
 
-    name = MultilingualField(
-        models.CharField,
+    name = models.CharField(
         _('field name'),
         max_length=100,
     )
 
-    description = MultilingualField(
-        models.TextField,
+    description = models.TextField(
         _('description'),
         null=True,
         blank=True,
@@ -368,16 +365,18 @@ class AbstractRegistrationInformation(models.Model):
 
 
 class BooleanRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
+    """Checkbox information filled in by members when registring"""
 
     value = models.BooleanField()
 
 
 class TextRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
+    """Checkbox information filled in by members when registring"""
+
     value = models.TextField()
 
 
 class IntegerRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
+    """Checkbox information filled in by members when registring"""
+
     value = models.IntegerField()
