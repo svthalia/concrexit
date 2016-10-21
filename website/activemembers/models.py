@@ -80,6 +80,12 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
 
     contact_email = models.EmailField(_('contact email address'))
 
+    wiki_namespace = models.CharField(
+        _('Wiki namespace'),
+        null=True,
+        blank=True,
+        max_length=50)
+
     def __str__(self):
         return self.name
 

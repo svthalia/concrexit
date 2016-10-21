@@ -56,3 +56,5 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
     'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
+
+WIKI_API_KEY = os.environ.get('WIKI_API_KEY', 'changeme')

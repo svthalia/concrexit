@@ -13,6 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
+# pragma: noqa
+
 import os.path
 
 from django.conf import settings
@@ -33,6 +36,8 @@ from members.sitemaps import sitemap as members_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
+
+from . import views
 
 thalia_sitemap = {
     'main-static': StaticViewSitemap,
@@ -78,6 +83,7 @@ urlpatterns = [
         url(r'^', include('events.api.urls')),
         url(r'^', include('members.api.urls')),
         url(r'^', include('partners.api.urls')),
+        url(r'wikilogin', views.wiki_login),
     ])),
     url(r'^education/', include('education.urls', namespace='education')),
     # Default login helpers
