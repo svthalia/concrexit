@@ -1,19 +1,21 @@
 import re
 import json
 import requests
-import pytz
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.core.management.base import BaseCommand
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.utils import timezone
 
 import events.models as events_models
 import members.models as members_models
 
 
 FIELD_DATA_TYPES = {
-    '0': 'charfield',
-    '1': 'intfield',
-    '2': 'checkbox',
+    '0': events_models.RegistrationInformationField.TEXT_FIELD,
+    '1': events_models.RegistrationInformationField.INTEGER_FIELD,
+    '2': events_models.RegistrationInformationField.BOOLEAN_FIELD,
 }
 
 
@@ -22,18 +24,19 @@ def naive_to_aware(date_string):
     to timezone aware datetime object"""
 
     naive_datetime = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
-    # TODO: I'm 50% sure this is not the right way
-    return pytz.timezone('Europe/Amsterdam').localize(naive_datetime)
+    return timezone.get_current_timezone().localize(naive_datetime)
 
 
 class Command(BaseCommand):
-    help = 'Make the events database great.'
+    help = 'Migrate the events from the old website.'
 
     def handle(self, *args, **options):
 
-        api_key = 'fcd7ad95a6ae9d70bc844e0f3dcd9b6518c7dd78'
+        if not settings.EVENTS_MIGRATION_KEY:
+            raise ImproperlyConfigured('EVENTS_MIGRATION_KEY not specified')
+
         events_api_url = 'https://thalia.nu/events/api/?apikey={}'.format(
-            api_key)
+            settings.EVENTS_MIGRATION_KEY)
 
         print('[*]Getting events json data')
         try:
@@ -91,15 +94,15 @@ class Command(BaseCommand):
                         'title', 'description', 'location',
                         'no_registration_message'):
                     for language_code in ('en', 'nl'):
-                        django_multilangiualfield = '{}_{}'.format(
+                        django_multilingualfield = '{}_{}'.format(
                             django_field, language_code)
 
-                        if not hasattr(new_event, django_multilangiualfield):
+                        if not hasattr(new_event, django_multilingualfield):
                             print('[!]Could neither find {} nor {}'.format(
-                                django_field, django_multilangiualfield))
+                                django_field, django_multilingualfield))
                             return
 
-                        setattr(new_event, django_multilangiualfield,
+                        setattr(new_event, django_multilingualfield,
                                 concrete_data)
 
                 # DateTimeField
@@ -192,14 +195,17 @@ class Command(BaseCommand):
                 'field': registration_field,
             }
 
-            if registration_field.type == 'charfield':
+            if registration_field.type == events_models.\
+                    RegistrationInformationField.TEXT_FIELD:
+
                 new_registration_information = events_models. \
                     TextRegistrationInformation(
                         value=field_info_data['value'],
                         **parameters
                     )
 
-            elif registration_field.type == 'checkbox':
+            elif registration_field.type == events_models.\
+                    RegistrationInformationField.BOOLEAN_FIELD:
 
                 value = False
 
@@ -210,6 +216,8 @@ class Command(BaseCommand):
                     events_models.BooleanRegistrationInformation(
                         value=value,
                         **parameters)
+
+            # registration_field.type == INTEGER_FIELD:
             else:
 
                 new_registration_information = \
