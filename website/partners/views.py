@@ -1,7 +1,8 @@
+from random import random
+
 from django.shortcuts import get_object_or_404, render
 
 from partners.models import Partner, Vacancy, VacancyCategory
-from random import random
 
 
 def index(request):

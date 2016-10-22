@@ -1,5 +1,6 @@
 from django import forms
-from django.utils.translation import get_language, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import get_language
 
 from .models import RegistrationInformationField
 

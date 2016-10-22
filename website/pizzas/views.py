@@ -1,15 +1,13 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.decorators.http import require_http_methods
-from django.http import HttpResponseRedirect, JsonResponse
-from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
-from django.http import Http404
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core.urlresolvers import reverse
+from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 
-from .models import Product, PizzaEvent, Order
 from .forms import AddOrderForm
+from .models import Order, PizzaEvent, Product
 
 
 @login_required

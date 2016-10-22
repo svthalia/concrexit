@@ -1,6 +1,6 @@
-from django.core.exceptions import ValidationError
-
 import os
+
+from django.core.exceptions import ValidationError
 
 
 def validate_file_extension(file, exts=['.txt', '.pdf', '.jpg', '.png']):

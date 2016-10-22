@@ -1,5 +1,6 @@
 from django.db import models
-from utils.translation import MultilingualField, ModelTranslateMeta
+
+from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class MerchandiseItem(models.Model, metaclass=ModelTranslateMeta):

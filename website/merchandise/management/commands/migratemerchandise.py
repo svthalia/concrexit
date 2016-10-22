@@ -1,12 +1,12 @@
-from django.core.files.base import ContentFile
-from django.core.management.base import BaseCommand
+import os
 from decimal import Decimal
 
-from merchandise.models import MerchandiseItem
-
-from bs4 import BeautifulSoup
 import requests
-import os
+from bs4 import BeautifulSoup
+from django.core.files.base import ContentFile
+from django.core.management.base import BaseCommand
+
+from merchandise.models import MerchandiseItem
 
 
 def filefield_from_url(filefield, url):

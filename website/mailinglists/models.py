@@ -1,9 +1,9 @@
-from django.db import models
 from django.core import validators
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from members.models import Member
 from activemembers.models import Committee
+from members.models import Member
 
 
 class MailingList(models.Model):

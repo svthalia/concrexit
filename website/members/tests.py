@@ -1,11 +1,11 @@
-from datetime import datetime, date, timedelta
+from datetime import date, datetime, timedelta
 
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
-from django.contrib.auth.models import User
 
 from members.models import (Member, Membership,
-                            gen_stats_year, gen_stats_member_type)
+                            gen_stats_member_type, gen_stats_year)
 
 
 class MemberBirthdayTest(TestCase):

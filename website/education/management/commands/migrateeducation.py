@@ -4,11 +4,12 @@ import os
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied, ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.files.base import ContentFile
 from django.utils.dateparse import parse_date
 from django.utils.translation import activate
-from education.models import Summary, Exam, Course, Category
+
+from education.models import Category, Course, Exam, Summary
 from utils.management.commands import legacylogin
 
 

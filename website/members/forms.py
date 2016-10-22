@@ -4,7 +4,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.template import loader
 from django.utils import translation
-from django.utils.translation import ugettext_lazy as _, ugettext as t
+from django.utils.translation import ugettext as t
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Member
 

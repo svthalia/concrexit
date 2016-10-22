@@ -1,14 +1,14 @@
-from django.utils import timezone
-from django.db import models
-from django.db.models import Q
-from django.core import validators
-from django.conf import settings
-from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
-from datetime import timedelta, date
 import operator
+from datetime import date, timedelta
 from functools import reduce
 
+from django.conf import settings
+from django.core import validators
+from django.db import models
+from django.db.models import Q
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 

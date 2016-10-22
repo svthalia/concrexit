@@ -1,5 +1,5 @@
-from django.utils import timezone
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import serializers
 
 from events.models import Event

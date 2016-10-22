@@ -3,7 +3,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from tinymce.models import HTMLField
-from utils.translation import MultilingualField, ModelTranslateMeta
+
+from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Partner(models.Model):

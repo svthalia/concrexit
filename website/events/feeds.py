@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
 
 from django.urls import reverse
+from django.utils.translation import ugettext as _
 from django.utils.translation import activate
 from django_ical.views import ICalFeed
+
 from events.models import Event
-from django.utils.translation import ugettext as _
 
 
 class EventFeed(ICalFeed):

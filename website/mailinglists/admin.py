@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import MailingList, VerbatimAddress, ListAlias
+from .models import ListAlias, MailingList, VerbatimAddress
 
 
 class VerbatimAddressInline(admin.TabularInline):

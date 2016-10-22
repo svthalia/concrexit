@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from activemembers.models import Committee
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -7,11 +6,12 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
+
+from activemembers.models import Committee
 from members.models import Member
 from utils.translation import TranslatedModelAdmin
 
-from . import forms
-from . import models
+from . import forms, models
 
 
 def _do_next(request, response):

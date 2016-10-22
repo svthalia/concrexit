@@ -1,12 +1,14 @@
+import hashlib
+
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import render, get_object_or_404
 from django.http import Http404
+from django.shortcuts import get_object_or_404, render
+
+from activemembers.models import CommitteeMembership
+from members.models import Member
 
 from .models import MailingList
-from members.models import Member
-from activemembers.models import CommitteeMembership
 
-import hashlib
 
 # Consider replacing this completely;
 #  - either by a cronjob Python script that queries the database directly

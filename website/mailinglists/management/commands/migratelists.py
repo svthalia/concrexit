@@ -1,12 +1,11 @@
+import requests
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 
-from activemembers.models import Committee, Board
-from members.models import Member
+from activemembers.models import Board, Committee
 from mailinglists.models import MailingList, VerbatimAddress
-
-import requests
+from members.models import Member
 
 
 class Command(BaseCommand):

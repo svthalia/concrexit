@@ -1,8 +1,9 @@
-from django.db import models
-from utils.translation import MultilingualField, ModelTranslateMeta
-from django.utils import translation
-from django.test import TestCase, override_settings
 from django.core.exceptions import FieldError
+from django.db import models
+from django.test import TestCase, override_settings
+from django.utils import translation
+
+from utils.translation import ModelTranslateMeta, MultilingualField
 
 LANGUAGES = [
     ('en', 'English'),

@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from utils.translation import TranslatedModelAdmin
 
 from .models import MerchandiseItem

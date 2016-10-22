@@ -1,21 +1,18 @@
 import random
 import string
 import tempfile
-
 from datetime import date
 
+import factory
 from django.contrib.auth.models import User
-
-from django.core.management.base import BaseCommand
-
 from django.core.files import File
+from django.core.management.base import BaseCommand
+from faker import Factory as FakerFactory
 
 from members.models import Member, Membership
 from partners.models import Partner
-
 from pydenticon import Generator as IconGenerator
-import factory
-from faker import Factory as FakerFactory
+
 faker = FakerFactory.create('nl_NL')
 
 

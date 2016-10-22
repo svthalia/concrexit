@@ -1,16 +1,16 @@
-import re
 import json
-import requests
-from django.contrib.auth.models import User
+import re
 from datetime import datetime
-from django.core.management.base import BaseCommand
+
+import requests
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
+from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 import events.models as events_models
 import members.models as members_models
-
 
 FIELD_DATA_TYPES = {
     '0': events_models.RegistrationInformationField.TEXT_FIELD,

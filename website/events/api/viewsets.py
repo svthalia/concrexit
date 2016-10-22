@@ -1,8 +1,9 @@
+from datetime import datetime
+
+from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
-from django.utils import timezone
-from datetime import datetime
 
 from events.api.serializers import EventSerializer
 from events.models import Event
