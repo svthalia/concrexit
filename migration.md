@@ -54,6 +54,12 @@ This migration typically takes a few minutes.
 
 ## Photos
 
+Make sure the album directories exist somewhere on the server. Then,
+for each album, perform `python manage.py importphotos <album dir>`.
+This needs to be done per album to avoid having to store two copies of all
+albums at the same time. Consider doing several albums at once by using
+your shell to loop over a part of the set (e.g. divide them over directories).
+
 ## Pizzas
 
 ## Thabloids
