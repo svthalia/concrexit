@@ -15,6 +15,11 @@ This is taken care of during member migration.
 
 ## Events
 
+Make sure that the API key is available as `EVENTS_MIGRATION_KEY` in settings.py.
+
+To migrate the events, make sure that members, committees and boards
+have been migrated. Then simply execute `python manage.py migrateevents`.
+
 ## Mailing lists
 
 Make sure that the API key is available as `MIGRATION_KEY` in settings.py.
