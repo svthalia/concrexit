@@ -240,8 +240,6 @@ def registration(request, event_id, action=None):
                     obj.save()
                     form_field_values = form.field_values()
                     for field in form_field_values:
-                        import pdb
-                        pdb.set_trace()
                         if (field['field'].type ==
                                 RegistrationInformationField.INTEGER_FIELD
                                 and field['value'] is None):
