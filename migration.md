@@ -58,6 +58,8 @@ This migration typically takes a few minutes.
 
 ## Thabloids
 
+Simply execute `python manage.py migratethabloids` to migrate all Thabloids.
+
 ## Merchandise
 
 Make sure you have valid login credentials for thalia.nu.
