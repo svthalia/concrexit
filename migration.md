@@ -11,11 +11,21 @@ This is taken care of during member migration.
 
 ## Documents
 
+Make sure you have valid login credentials for thalia.nu.
+
+To migrate all documents execute `python manage.py migratedocuments`
+and enter the required login information.
+
 ## Education
+
+Make sure that the API key is available as `MIGRATION_KEY` in settings.py.
+
+To migrate the events, make sure that membershave been migrated.
+Then simply execute `python manage.py migrateeducation`.
 
 ## Events
 
-Make sure that the API key is available as `EVENTS_MIGRATION_KEY` in settings.py.
+Make sure that the API key is available as `MIGRATION_KEY` in settings.py.
 
 To migrate the events, make sure that members, committees and boards
 have been migrated. Then simply execute `python manage.py migrateevents`.
@@ -49,3 +59,8 @@ This migration typically takes a few minutes.
 ## Thabloids
 
 ## Merchandise
+
+Make sure you have valid login credentials for thalia.nu.
+
+To migrate the merchandise execute `python manage.py migratemerchandise` and
+enter the required login information.
