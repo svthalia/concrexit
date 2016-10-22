@@ -2,8 +2,9 @@ import json
 import os
 
 import requests
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ImproperlyConfigured
 from django.core.files.base import ContentFile
 from django.utils.dateparse import parse_date
 from django.utils.translation import activate
@@ -22,6 +23,12 @@ class Command(legacylogin.Command):
     def handle(self, *args, **options):
         activate('en')
 
+        if not settings.MIGRATION_KEY:
+            raise ImproperlyConfigured("MIGRATION_KEY not specified")
+        url = "https://thalia.nu/index.php/onderwijs/api?apikey={}".format(
+            settings.MIGRATION_KEY
+        )
+
         input_val = input(
             'Do you want to delete all existing objects? (type yes or no) ')
         if input_val == 'yes':
@@ -31,8 +38,6 @@ class Command(legacylogin.Command):
             Category.objects.all().delete()
 
         session = requests.Session()
-        key = input('Please enter the education API key: ')
-        url = ('https://thalia.nu/index.php/onderwijs/api?apikey=' + key)
         src = session.get(url).text
 
         if 'invalid api key' in src:

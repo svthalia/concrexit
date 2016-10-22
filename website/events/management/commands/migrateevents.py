@@ -32,11 +32,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if not settings.EVENTS_MIGRATION_KEY:
-            raise ImproperlyConfigured('EVENTS_MIGRATION_KEY not specified')
+        if not settings.MIGRATION_KEY:
+            raise ImproperlyConfigured('MIGRATION_KEY not specified')
 
         events_api_url = 'https://thalia.nu/events/api/?apikey={}'.format(
-            settings.EVENTS_MIGRATION_KEY)
+            settings.MIGRATION_KEY)
 
         print('[*]Getting events json data')
         try:
