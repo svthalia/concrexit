@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
-from .models import Event, Registration
+from .models import Event, Registration, RegistrationInformationField
 from .forms import FieldsForm
 
 
@@ -240,6 +240,12 @@ def registration(request, event_id, action=None):
                     obj.save()
                     form_field_values = form.field_values()
                     for field in form_field_values:
+                        import pdb
+                        pdb.set_trace()
+                        if (field['field'].type ==
+                                RegistrationInformationField.INTEGER_FIELD
+                                and field['value'] is None):
+                            field['value'] = 0
                         field['field'].set_value_for(obj,
                                                      field['value'])
             else:

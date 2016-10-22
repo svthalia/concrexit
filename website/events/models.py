@@ -118,7 +118,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return self.registrationinformationfield_set.count() > 0
 
     def reached_participants_limit(self):
-        return self.max_participants <= self.registration_set.count()
+        return (self.max_participants is not None and
+                self.max_participants <= self.registration_set.count())
 
     @property
     def status(self):
@@ -187,7 +188,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         ordering = ('-start',)
 
 
-class RegistrationInformationField(models.Model):
+class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
     """Field description to ask for when registering"""
     BOOLEAN_FIELD = 'boolean'
     INTEGER_FIELD = 'integer'
@@ -205,12 +206,14 @@ class RegistrationInformationField(models.Model):
         max_length=10,
     )
 
-    name = models.CharField(
+    name = MultilingualField(
+        models.CharField,
         _('field name'),
         max_length=100,
     )
 
-    description = models.TextField(
+    description = MultilingualField(
+        models.TextField,
         _('description'),
         null=True,
         blank=True,
@@ -365,18 +368,16 @@ class AbstractRegistrationInformation(models.Model):
 
 
 class BooleanRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registring"""
+    """Checkbox information filled in by members when registering"""
 
     value = models.BooleanField()
 
 
 class TextRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registring"""
-
+    """Checkbox information filled in by members when registering"""
     value = models.TextField()
 
 
 class IntegerRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registring"""
-
+    """Checkbox information filled in by members when registering"""
     value = models.IntegerField()
