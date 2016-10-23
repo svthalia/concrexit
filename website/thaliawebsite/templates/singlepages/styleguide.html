@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "styleguide"|capfirst %} — {% trans "for members"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+<h1>{% trans "styleguide"|capfirst %}</h1>
+
+<p>
+    {% blocktrans trimmed %}
+    Welcome to the Thalia styleguide. This document describes how Thalia represents itself, online and offline.
+
+    This styleguide is meant to be followed as much as possible. Creativity is not forbidden, as long as you use this styleguide as basis.
+    {% endblocktrans %}
+</p>
+
+<h1 id="colour">{% trans "Colours" %}</h1>
+
+<p>
+    {% blocktrans trimmed %}
+    Thalia uses a palette of three colours. Each colour can be used as background, foreground and accent colour. We've established guidelines on how to use which colour in which situation.
+    {% endblocktrans %}
+</p>
+
+<h3>{% trans "black"|capfirst %}</h3>
+
+<p>
+    {% trans "Hexadecimal" %}: #000000<br />
+    {% trans "RGB" %}: 0 / 0 / 0<br />
+    {% trans "CMYK" %}: 91 / 79 / 62 / 92
+</p>
+
+<h3>{% trans "white"|capfirst %}</h3>
+
+<p>
+    {% trans "Hexadecimal" %}: #FFFFFF<br />
+    {% trans "RGB" %}: 255 / 255 / 255<br />
+    {% trans "CMYK" %}: 0 / 0 / 0 / 0
+</p>
+
+<h3>{% trans "magenta"|capfirst %}</h3>
+
+<p>
+    {% trans "Hexadecimal" %}: #E62272<br />
+    {% trans "RGB" %}: 230 / 34 / 114<br />
+    {% trans "CMYK" %}: 0 / 94 / 21 / 0
+</p>
+
+<h2>{% trans "Guidelines" %}</h2>
+
+<h3>{% trans "Option" %} 1</h3>
+
+<p>
+    {% trans "Background" %}: {% trans "white" %}<br />
+    {% trans "Foreground" %}: {% trans "black" %}<br />
+    {% trans "Accent" %}: {% trans "magenta" %}
+</p>
+
+<h3>{% trans "Option" %} 3</h3>
+
+<p>
+    {% trans "Background" %}: {% trans "black" %}<br />
+    {% trans "Foreground" %}: {% trans "white" %}<br />
+    {% trans "Accent" %}: {% trans "magenta" %}
+</p>
+
+<h3>{% trans "Option" %} 3</h3>
+
+<p>
+    {% trans "Background" %}: {% trans "magenta" %}<br />
+    {% trans "Foreground" %}: {% trans "white" %}<br />
+    {% trans "Accent" %}: {% trans "black" %}
+</p>
+
+<h1>{% trans "Logo" %}</h1>
+
+<h2>Basis</h2>
+
+<p>
+    {% blocktrans trimmed %}
+    Thalia's logo consists of a 'T' formed by the pieces of a <a href="https://en.wikipedia.org/wiki/Tangram" target="_blank">tangram</a> and the text 'Study Association Thalia'. The font that was used for this text is '<a href="{{ MEDIA_URL }}styleguide/font.zip">Gill Sans MT Condensed</a>'.
+    {% endblocktrans %}
+</p>
+
+<p>
+    {% blocktrans trimmed %}
+    There are three versions of the logo, each one has a different background colour. The combinations of the colours follow the guidelines in the section <a href="#colour">colour</a>.
+    In the situation that the background is not white, black or magenta please follow these rules:<br />
+    {% endblocktrans %}
+    <ul>
+        <li>{% trans "In case of a light background, use the logo for the white background." %}</li>
+        <li>{% trans "In case of a dark background, use the logo for the black background." %}</li>
+        <li>{% trans "In case of a coloured background, use the logo for the magenta background." %}</li>
+    </ul>
+</p>
+
+<p>
+    <img src="{% static 'styleguide/images/logo-versions-example.png' %}" />
+</p>
+
+<p>
+    {% blocktrans trimmed %}
+    You can download the archive with all versions of the logo in PNG, SVG and Illustrator <a href="{{ MEDIA_URL }}styleguide/logo.zip">here</a>.
+    {% endblocktrans %}
+</p>
+
+<h2>{% trans "Variations" %}</h2>
+
+<p>
+    {% blocktrans trimmed %}
+    Thalia's logo was designed with flexibility in mind. It's possible to create a different variants for each committee, or a special version for an event (for example the symposium).
+    These variants have to use the same colour combinations as the normal logo and must follow these rules:
+    {% endblocktrans %}
+    <ul>
+        <li>{% trans "The top title is <strong>always</strong> 'THALIA'." %}</li>
+        <li>{% trans "Always use 2 or 3 lines. No more, no less." %}</li>
+        <li>{% trans "The text is vertically centered relative to the T" %}</li>
+        <li>{% trans "The horizontal distance between the text lines and the T is always the same." %}</li>
+    </ul>
+</p>
+
+<p>
+    <img src="{% static 'styleguide/images/logo-variants-example.png' %}" />
+</p>
+
+<p>
+    {% blocktrans trimmed %}
+    You can download the archive with the Illustrator and EPS files to create a variant <a href="{{ MEDIA_URL }}styleguide/variant-logo.zip">here</a>.
+    {% endblocktrans %}
+</p>
+
+<h1>{% trans "Documents & Presentations" %}</h1>
+
+<p>
+    {% blocktrans trimmed %}
+    We've got Word-templates for:
+    {% endblocktrans %}
+    <ul>
+        <li>{% trans "Contracts" %}</li>
+        <li>{% trans "Invoices" %}</li>
+        <li>{% trans "Letters" %}</li>
+        <li>{% trans "Minutes" %}</li>
+        <li>{% trans "Authorisation forms" %}</li>
+        <li>{% trans "Registration forms" %}</li>
+        <li>{% trans "Declarations" %}</li>
+    </ul>
+    {% blocktrans trimmed %}
+    You can download these template as <a href="{{ MEDIA_URL }}styleguide/documents.zip">here</a> as archive. We've also included PDF examples.
+    In case you prefer LateX then you can download the <a href="{{ MEDIA_URL }}styleguide/latex.zip">template</a>.
+    {% endblocktrans %}
+</p>
+
+<p>
+    {% blocktrans trimmed %}
+    Templates for PowerPoint, Keynote and LibreOffice are available <a href="{{ MEDIA_URL }}styleguide/presentations.zip">here</a>.
+    {% endblocktrans %}
+</p>
+
+<h1>{% trans "Posters & Banners" %}</h1>
+
+<p>
+    {% blocktrans trimmed %}
+    The posters and banners are available in various sizes:
+    {% endblocktrans %}
+    <ul>
+        <li>{% trans "A3 Paper" %}</li>
+        <li>{% trans "1920x1080 for the televisions" %}</li>
+        <li>{% trans "400 × 280 for the login screens" %}</li>
+        <li>{% trans "1594 × 590 for Facebook" %}</li>
+    </ul>
+    {% blocktrans trimmed %}
+    For every size there is a dark and light version. The posters are in black, white and magenta colour variants.
+    {% endblocktrans %}
+</p>
+
+<p>
+    {% blocktrans trimmed %}
+    The templates are available for download <a href="{{ MEDIA_URL }}styleguide/posters-banners.zip">here</a>.
+    Although, it's the task of the media committee to create the posters and banners.
+    So you're always welcome to send an email to media@thalia.nu to get yourself a sleek poster for your event.
+    {% endblocktrans %}
+</p>
+
+<p>
+    {% blocktrans trimmed %}
+    Still looking for something different? No problem! Let yourself go. Just make sure you follow the 'rules'.
+    And  in case you get lost in the land of Photoshop and Illustrator, just send an email to media@thalia.nu.
+    They're always ready to help you.
+    {% endblocktrans %}
+</p>
+
+<h1>{% trans "Merchandise" %}</h1>
+
+<p>
+    {% blocktrans trimmed %}
+    We make an exception for the colour palette of the merchandise if it's not possible to print in full colour.
+    The preference is to print magenta on black.
+    {% endblocktrans %}
+</p>
+
+<h1>{% trans "Introshirts" %}</h1>
+
+<p>
+    {% blocktrans trimmed %}
+    The introshirts too are an exception. These shirts are in different colours every year.
+    The templates for the shirts can be found <a href="{{ MEDIA_URL }}styleguide/introshirt.zip">here</a>. The sponsorlogos and texts can be changed to those you prefer.
+    {% endblocktrans %}
+</p>
+
+<h1>{% trans "Downloads" %}</h1>
+
+<ul>
+    <li><a href="{{ MEDIA_URL }}styleguide/font.zip">{% trans "Font" %}</a></li>
+    <li><a href="{{ MEDIA_URL }}styleguide/logo.zip">{% trans "Logos" %}</a></li>
+    <li><a href="{{ MEDIA_URL }}styleguide/variant-logo.zip">{% trans "Logo variant template" %}</a></li>
+    <li><a href="{{ MEDIA_URL }}styleguide/documents.zip">{% trans "Word documents" %}</a></li>
+    <li><a href="{{ MEDIA_URL }}styleguide/latex.zip">{% trans "LateX template" %}</a></li>
+    <li><a href="{{ MEDIA_URL }}styleguide/presentations.zip">{% trans "Presentation templates" %}</a></li>
+    <li><a href="{{ MEDIA_URL }}styleguide/posters-banners.zip">{% trans "Poster templates" %}</a></li>
+    <li><a href="{{ MEDIA_URL }}styleguide/introshirt.zip">{% trans "Introshirts" %}</a></li>
+</ul>
+
+{% endblock %}
