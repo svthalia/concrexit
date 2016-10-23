@@ -69,7 +69,7 @@ class Thabloid(models.Model):
         dst = os.path.join(settings.MEDIA_ROOT, self.page_url())
 
         try:
-            shutil.rmtree(os.path.dirname(dst))  # Clean up potential remainders
+            shutil.rmtree(os.path.dirname(dst))  # Remove potential remainders
         except FileNotFoundError:
             pass
         os.makedirs(os.path.dirname(dst), exist_ok=True)
