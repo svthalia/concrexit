@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import string_concat
+from tinymce.models import HTMLField
 
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -29,7 +30,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     )
 
     description = MultilingualField(
-        models.TextField,
+        HTMLField,
         _("description")
     )
 
