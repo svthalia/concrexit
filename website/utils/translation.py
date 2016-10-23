@@ -1,9 +1,9 @@
+from django.conf import settings
 from django.contrib import admin
+from django.core.exceptions import FieldError, ImproperlyConfigured
 from django.db import models
 from django.db.models.fields.related import RelatedField
-from django.conf import settings
 from django.utils.translation import get_language, string_concat
-from django.core.exceptions import ImproperlyConfigured, FieldError
 
 """This module makes it easy to define translatable model fields.
 

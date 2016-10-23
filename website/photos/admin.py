@@ -1,12 +1,12 @@
-from django.contrib import admin
+import os
+from zipfile import ZipFile
+
 from django import forms
 from django.conf import settings
+from django.contrib import admin
 from django.core.files.base import ContentFile
 
 from .models import Album, Photo
-
-import os
-from zipfile import ZipFile
 
 
 class AlbumForm(forms.ModelForm):

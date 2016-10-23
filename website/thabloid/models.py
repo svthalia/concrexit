@@ -1,14 +1,14 @@
-from django.db import models
+import os
+import shutil
+import subprocess
+
 from django.conf import settings
 from django.core.validators import MinValueValidator
-from django.utils.text import slugify
+from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 
 from utils.validators import validate_file_extension
-
-import os
-import subprocess
-import shutil
 
 
 def thabloid_filename(instance, filename):

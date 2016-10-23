@@ -19,25 +19,24 @@ Including another URLconf
 import os.path
 
 from django.conf import settings
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
 
-from events.feeds import DeprecationFeed
-from utils.views import private_thumbnails
 import members
-
-from .sitemaps import StaticViewSitemap
 from activemembers.sitemaps import sitemap as activemembers_sitemap
-from members.sitemaps import sitemap as members_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
-from thabloid.sitemaps import sitemap as thabloid_sitemap
+from events.feeds import DeprecationFeed
+from members.sitemaps import sitemap as members_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
+from thabloid.sitemaps import sitemap as thabloid_sitemap
+from utils.views import private_thumbnails
 
 from . import views
+from .sitemaps import StaticViewSitemap
 
 thalia_sitemap = {
     'main-static': StaticViewSitemap,

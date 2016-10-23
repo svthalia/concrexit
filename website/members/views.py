@@ -1,13 +1,13 @@
+import json
 import os
 from datetime import date, datetime
-from sendfile import sendfile
-import json
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
-from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
+from sendfile import sendfile
 
 from . import models
 from .forms import MemberForm

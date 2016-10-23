@@ -1,9 +1,9 @@
+import os
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.conf import settings
-
 from sendfile import sendfile
-import os
 
 from .snippets import sanitize_path
 

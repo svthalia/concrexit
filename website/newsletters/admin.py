@@ -1,13 +1,8 @@
 from django.contrib import admin
 from django.shortcuts import redirect
 
+from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
 from utils.translation import TranslatedModelAdmin
-
-from newsletters.models import (
-    Newsletter,
-    NewsletterEvent,
-    NewsletterItem
-)
 
 
 class NewsletterItemInline(admin.StackedInline):

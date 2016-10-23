@@ -1,7 +1,7 @@
-from django.db import models
-from django.utils import timezone
 from django.core.validators import MinValueValidator
+from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from utils.validators import validate_file_extension
 

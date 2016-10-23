@@ -1,14 +1,8 @@
 from django.contrib import admin
 
+from partners.models import (Partner, PartnerEvent, PartnerImage,
+                             Vacancy, VacancyCategory)
 from utils.translation import TranslatedModelAdmin
-
-from partners.models import (
-    Partner,
-    PartnerImage,
-    VacancyCategory,
-    Vacancy,
-    PartnerEvent
-)
 
 
 class PartnerImageInline(admin.StackedInline):

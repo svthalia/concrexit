@@ -1,13 +1,8 @@
 from django.conf import settings
-from django.forms import (
-    ModelForm,
-    DateField,
-    SelectDateWidget,
-    ModelChoiceField,
-    ChoiceField
-)
+from django.forms import (ChoiceField, DateField, ModelChoiceField,
+                          ModelForm, SelectDateWidget)
 
-from .models import Exam, Summary, Course
+from .models import Course, Exam, Summary
 
 
 class AddExamForm(ModelForm):

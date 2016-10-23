@@ -3,6 +3,7 @@ This module registers admin pages for the models
 """
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+
 from utils.translation import TranslatedModelAdmin
 
 from . import models

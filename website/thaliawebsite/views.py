@@ -1,10 +1,10 @@
-from django.contrib.auth import authenticate, login
-from django.views.decorators.http import require_POST
-from django.http import (HttpResponseBadRequest, HttpResponseForbidden,
-                         JsonResponse)
-from django.utils import timezone
 from django.conf import settings
+from django.contrib.auth import authenticate, login
+from django.http import (HttpResponseBadRequest,
+                         HttpResponseForbidden, JsonResponse)
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from members.models import Member
 

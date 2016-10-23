@@ -2,10 +2,11 @@ from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.mail import EmailMultiAlternatives
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Context
 from django.template.loader import get_template
 from django.utils import translation
+
 from members.models import Member
 from newsletters.models import Newsletter
 from partners.models import Partner

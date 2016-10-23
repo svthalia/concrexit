@@ -2,14 +2,15 @@ import datetime
 import logging
 
 from django.contrib.auth.models import Permission
-from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
 from members.models import Member
-from utils.translation import MultilingualField, ModelTranslateMeta
+from utils.translation import ModelTranslateMeta, MultilingualField
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import PizzaEvent, Order, Product
+from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+
+from .models import Order, PizzaEvent, Product
 
 admin.site.register(Product)
 

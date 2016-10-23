@@ -2,18 +2,19 @@ import csv
 import json
 from datetime import timedelta
 
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.http import require_http_methods
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import pgettext_lazy
+from django.views.decorators.http import require_http_methods
 
-from .models import Event, Registration, RegistrationInformationField
 from .forms import FieldsForm
+from .models import Event, Registration, RegistrationInformationField
 
 
 @staff_member_required

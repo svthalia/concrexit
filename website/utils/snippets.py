@@ -1,7 +1,7 @@
+import os
+
 from django.utils import timezone
 from django.utils.six.moves.urllib.parse import unquote
-
-import os
 
 
 def datetime_to_lectureyear(date):

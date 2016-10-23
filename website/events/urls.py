@@ -5,6 +5,7 @@ Events URL Configuration
 from django.conf.urls import url
 
 from events.feeds import EventFeed
+
 from . import views
 
 urlpatterns = [

@@ -1,9 +1,10 @@
+from datetime import datetime
+
+from django.utils import timezone
 from rest_framework import viewsets
+from rest_framework.decorators import list_route
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
-from rest_framework.decorators import list_route
-from django.utils import timezone
-from datetime import datetime
 
 from partners.api.serializers import PartnerEventSerializer
 from partners.models import Partner, PartnerEvent

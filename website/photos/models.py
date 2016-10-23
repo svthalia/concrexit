@@ -1,13 +1,12 @@
-from django.urls import reverse
-from django.conf import settings
-from django.utils.functional import cached_property
-from django.db import models
-
-from PIL import Image
-
 import hashlib
 import os
 import random
+
+from django.conf import settings
+from django.db import models
+from django.urls import reverse
+from django.utils.functional import cached_property
+from PIL import Image
 
 COVER_FILENAME = 'cover.jpg'
 

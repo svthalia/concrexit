@@ -4,9 +4,8 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
-from members.models import Member
-
 from events.models import Event, Registration
+from members.models import Member
 
 
 class RegistrationTest(TestCase):

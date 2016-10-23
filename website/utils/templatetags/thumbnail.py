@@ -1,10 +1,10 @@
+import os
+
 from django import template
 from django.conf import settings
-from django.urls import reverse
 from django.db.models.fields.files import ImageFieldFile
-
+from django.urls import reverse
 from PIL import Image, ImageOps
-import os
 
 register = template.Library()
 

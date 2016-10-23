@@ -1,19 +1,19 @@
-from django.core.files.base import ContentFile
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
-from django.utils.dateparse import parse_date
-from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
-from django.utils.translation import activate
-
-from activemembers.models import (Board, Committee, CommitteeMembership,
-                                  Mentorship)
-from members.models import Member
-
-from bs4 import BeautifulSoup
-import requests
 import json
 import os
+
+import requests
+from bs4 import BeautifulSoup
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.exceptions import ImproperlyConfigured
+from django.core.files.base import ContentFile
+from django.core.management.base import BaseCommand
+from django.utils.dateparse import parse_date
+from django.utils.translation import activate
+
+from activemembers.models import (Board, Committee,
+                                  CommitteeMembership, Mentorship)
+from members.models import Member
 
 
 def imagefield_from_url(imagefield, url):

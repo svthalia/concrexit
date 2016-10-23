@@ -3,8 +3,9 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
 from utils.snippets import datetime_to_lectureyear
-from utils.translation import MultilingualField, ModelTranslateMeta
+from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Category(models.Model, metaclass=ModelTranslateMeta):

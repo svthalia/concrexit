@@ -1,15 +1,16 @@
-from django.shortcuts import get_object_or_404, render
-from django.contrib.auth.decorators import login_required
-from django.http import Http404
-from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import os
 
-from .models import Album
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import Http404
+from django.shortcuts import get_object_or_404, render
+from sendfile import sendfile
+
 from utils.snippets import sanitize_path
 from utils.views import _private_thumbnails_unauthed
 
-from sendfile import sendfile
-import os
+from .models import Album
 
 COVER_FILENAME = 'cover.jpg'
 

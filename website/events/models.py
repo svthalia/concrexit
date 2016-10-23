@@ -4,8 +4,10 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, string_concat
-from utils.translation import MultilingualField, ModelTranslateMeta
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import string_concat
+
+from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Event(models.Model, metaclass=ModelTranslateMeta):

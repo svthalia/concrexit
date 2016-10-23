@@ -1,9 +1,9 @@
-import os
 import itertools
+import os
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
 from sendfile import sendfile
 

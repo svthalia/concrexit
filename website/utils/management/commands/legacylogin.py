@@ -1,8 +1,8 @@
-from django.core.management.base import BaseCommand
-
-from bs4 import BeautifulSoup
-import requests
 import getpass
+
+import requests
+from bs4 import BeautifulSoup
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
