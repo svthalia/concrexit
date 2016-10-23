@@ -64,6 +64,8 @@ your shell to loop over a part of the set (e.g. divide them over directories).
 
 ## Thabloids
 
+Simply execute `python manage.py migratethabloids` to migrate all Thabloids.
+
 ## Merchandise
 
 Make sure you have valid login credentials for thalia.nu.

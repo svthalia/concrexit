@@ -56,8 +56,22 @@ class Thabloid(models.Model):
     def save(self, *args, **kwargs):
         super(Thabloid, self).save(*args, **kwargs)
         src = self.file.path
+
+        # For overwriting already existing files
+        new_name = thabloid_filename(self, self.file.name)
+        new_src = os.path.join(settings.MEDIA_ROOT, new_name)
+        if src != new_src:
+            os.rename(src, new_src)
+            src = new_src
+            self.file.name = new_name
+            self.save()
+
         dst = os.path.join(settings.MEDIA_ROOT, self.page_url())
-        shutil.rmtree(os.path.dirname(dst))  # Clean up potential remainders
+
+        try:
+            shutil.rmtree(os.path.dirname(dst))  # Remove potential remainders
+        except FileNotFoundError:
+            pass
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         # TODO reconsider if this resolution / quality is sufficient
         subprocess.Popen(['gs', '-o', dst,
