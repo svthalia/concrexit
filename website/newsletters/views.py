@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Context
@@ -12,7 +12,6 @@ from newsletters.models import Newsletter
 from partners.models import Partner
 
 
-@login_required
 def preview(request, pk):
     newsletter = get_object_or_404(Newsletter, pk=pk)
     partners = Partner.objects.filter(is_main_partner=True)
