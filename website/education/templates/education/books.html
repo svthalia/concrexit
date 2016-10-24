@@ -1,12 +1,5 @@
 {% extends 'education/base.html' %}
-{% load staticfiles i18n compress %}
-
-{% block css_head %}
-    {{ block.super }}
-    {% compress css %}
-    <link href="{% static "education/css/style.less" %}" rel="stylesheet" type="text/less">
-    {% endcompress %}
-{% endblock %}
+{% load i18n %}
 
 {% block title %}{% trans "Book Sale" %} — {{ block.super }}{% endblock %}
 
