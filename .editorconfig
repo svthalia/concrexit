@@ -5,8 +5,13 @@ root = true
 end_of_line = lf
 insert_final_newline = true
 
-[*.{py,html,css,less,js}]
+[*.{py,css,less,js,html}]
 charset = utf-8
 indent_style = space
-indent_size = 4
 trim_trailing_whitespace = true
+
+[*.{py,css,less,js}]
+indent_size = 4
+
+[*.html]
+indent_size = 2
