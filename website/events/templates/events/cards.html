@@ -10,7 +10,7 @@
                             <div class="circle-inner">{{ event.start.day }}<span>{{ event.start|date:"M" }}</span></div>
                         </div>
                         <div class="post-excerpt">
-                            <p>{{ event.description }}</p>
+                            <p>{{ event.description|striptags|safe }}</p>
                         </div>
                     </div>
                 </div>

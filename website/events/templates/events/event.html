@@ -5,7 +5,7 @@
 
 {% block body %}
     <h1>{{ event.title }}</h1>
-    <p class="tcenter">{{ event.description }}</p>
+    <p class="tcenter">{{ event.description|safe }}</p>
 
     {% if messages %}
         {% for message in messages %}
