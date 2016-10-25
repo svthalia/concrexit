@@ -1,4 +1,4 @@
-@import "presets/defaults.less";
+@import "presets/defaults.scss";
 
 /* -------------------------------------------------------------------------------- /
 
@@ -1681,7 +1681,10 @@ body {
     .page-number:hover, .current .page-number {
         background: #585858;
         text-decoration: none !important;
-        .pagination-wrapper;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 37px;
+        margin-top: 10px;
     }
 
     /* circle box */
@@ -4965,12 +4968,14 @@ ul.rslides > li {
 }
 
 .loginForm {
-  text-align: center;
+    text-align: center;
 }
+
 .loginForm table {
-  margin-left: auto;
-  margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
+
 .loginForm input {
-  margin: .5em;
+    margin: .5em;
 }

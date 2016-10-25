@@ -1,23 +1,23 @@
-@import "presets/defaults.less";
+@import "presets/defaults.scss";
 
 /* -------------------------------------------------------------------------------- /
 	[1]	SETUP - general settings, common classes
 / -------------------------------------------------------------------------------- */
 
 body {
-    background: @background-color;
-    color: @body-color;
+    background: $background-color;
+    color: $body-color;
 }
 
 .thimbus-page {
     a {
-        color: @primary-color;
+        color: $primary-color;
     }
     ::-moz-selection {
-        background: @primary-color;
+        background: $primary-color;
     }
     ::selection {
-        background: @primary-color;
+        background: $primary-color;
     }
 
     /* -------------------------------------------------------------------------------- /
@@ -25,7 +25,7 @@ body {
     / -------------------------------------------------------------------------------- */
 
     #main {
-        background: @background-color;
+        background: $background-color;
     }
 
     /* -------------------------------------------------------------------------------- /
@@ -33,7 +33,7 @@ body {
     / -------------------------------------------------------------------------------- */
 
     #header {
-        background: @background-color;
+        background: $background-color;
 
         #top-menu-container {
             top: 10px;
@@ -51,16 +51,16 @@ body {
             }
 
             .btn {
-                background: @inverted-color;
-                color: @background-color;
+                background: $inverted-color;
+                color: $background-color;
                 margin: 0;
 
                 &:hover {
-                    background-color: @primary-color !important;
+                    background-color: $primary-color !important;
                 }
 
                 &:active, &:focus {
-                    background-color: @inverted-color !important;
+                    background-color: $inverted-color !important;
                 }
 
                 i {
@@ -77,7 +77,7 @@ body {
             }
 
             .dropdown-menu {
-                background-color: @inverted-color;
+                background-color: $inverted-color;
                 border: 0;
                 box-shadow: none;
                 border-radius: 0;
@@ -89,7 +89,7 @@ body {
                 }
 
                 a {
-                    color: @background-color;
+                    color: $background-color;
 
                     i {
                         margin-right: 5px;
@@ -97,7 +97,7 @@ body {
 
                     &:hover {
                         background-image: none;
-                        background-color: @primary-color !important;
+                        background-color: $primary-color !important;
                     }
                 }
             }
@@ -105,13 +105,13 @@ body {
     }
 
     #header-info {
-        background: @primary-color;
+        background: $primary-color;
     }
 
     #logo {
         padding: 55px 0 !important;
         img {
-            content: url(@logo-image);
+            content: url($logo-image);
         }
     }
 
@@ -120,31 +120,31 @@ body {
     / -------------------------------------------------------------------------------- */
 
     #primary-navigation {
-        background: @background-color;
+        background: $background-color;
         .nav {
             & > li {
                 &:before {
-                    background: @background-color;
+                    background: $background-color;
                 }
                 &:hover > a {
-                    color: @primary-color;
+                    color: $primary-color;
                 }
                 &.nav-path-selected > a {
-                    color: @primary-color;
+                    color: $primary-color;
                 }
             }
 
             li {
                 a {
-                    background-color: @background-color;
-                    color: @inverted-color;
-                    font-family: 'GillSansMT-Condensed';
+                    background-color: $background-color;
+                    color: $inverted-color;
+                    font-family: 'Oswald';
                     font-weight: normal;
                     font-weight: normal;
-                    font-size: 24px;
+                    font-size: 18px;
                 }
                 & > ul {
-                    background: @background-color;
+                    background: $background-color;
                 }
             }
 
@@ -152,22 +152,23 @@ body {
                 border-top: none;
 
                 a {
-                    color: @inverted-color;
+                    font-size: 12px;
+                    color: $inverted-color;
                 }
                 &:hover > a {
-                    background-color: @dark-primary-color;
+                    background-color: $dark-primary-color;
                 }
                 &.nav-path-selected > a {
-                    background-color: @primary-color;
+                    background-color: $primary-color;
                 }
 
             }
             .menu-responsive {
-                background-color: @inverted-color;
+                background-color: $inverted-color;
                 .menu-title {
-                    font-family: 'GillSansMT-Condensed';
+                    font-family: 'Oswald';
                     font-weight: normal;
-                    font-size: 24px;
+                    font-size: 18px;
                     padding-left: 4px;
                 }
             }
@@ -179,10 +180,10 @@ body {
     / -------------------------------------------------------------------------------- */
 
     #top-footer {
-        background: @primary-color;
+        background: $primary-color;
     }
     #bottom {
-        background: @background-color;
+        background: $background-color;
     }
 
     /* -------------------------------------------------------------------------------- /
@@ -206,7 +207,7 @@ body {
         input[type="tel"],
         input[type="color"],
         .uneditable-input {
-            background: @faded-color;
+            background: $faded-color;
         }
     }
 
@@ -215,9 +216,9 @@ body {
     / -------------------------------------------------------------------------------- */
 
     .btn-style1 {
-        background: @primary-color;
+        background: $primary-color;
         &:hover {
-            background: @inverted-color !important;
+            background: $inverted-color !important;
         }
     }
 
@@ -241,24 +242,24 @@ body {
 
     h1, /*h2,*/
     h3, h4, h5, h6, .slider-dark-h1, .slider-dark-h2, .slider-dark-h3 {
-        color: @inverted-color;
-        font-family: 'GillSansMT-Condensed';
+        color: $inverted-color;
+        font-family: 'Oswald';
         text-transform: uppercase;
     }
     h1:before {
-        background: @primary-color;
+        background: $primary-color;
     }
     .tp-caption.slider-title-large:before, .tp-caption.slider-title:before {
-        background: @inverted-color;
+        background: $inverted-color;
     }
     .circle {
-        background-color: @inverted-color;
+        background-color: $inverted-color;
     }
     .circle-border {
-        border-color: @inverted-color;
+        border-color: $inverted-color;
     }
     div[class|="social-icon"] a {
-        background-color: @inverted-color;
+        background-color: $inverted-color;
     }
 
     /* -------------------------------------------------------------------------------- /
@@ -271,21 +272,21 @@ body {
     .tabs > li:hover a,
     .tabs-content > li.current .tab-title a,
     .tabs-content > li .tab-title a:hover {
-        color: @primary-color;
+        color: $primary-color;
     }
     .toggles > li.current a,
     .toggles > li:hover a {
-        color: @primary-color;
+        color: $primary-color;
     }
     .progress-style1 .bar {
-        background: @primary-color;
+        background: $primary-color;
     }
     .highlight1 {
-        border-bottom: dotted 1px @primary-color;
-        color: @primary-color;
+        border-bottom: dotted 1px $primary-color;
+        color: $primary-color;
     }
     .highlight2 {
-        background: @primary-color;
+        background: $primary-color;
     }
 
     /* -------------------------------------------------------------------------------- /
@@ -293,16 +294,16 @@ body {
     / -------------------------------------------------------------------------------- */
 
     .post-body h2 a, .post-meta span {
-        color: @inverted-color;
+        color: $inverted-color;
     }
     .post-body h2 a:hover {
-        color: @primary-color;
+        color: $primary-color;
     }
     .post-overlay {
-        background: @primary-color;
+        background: $primary-color;
     }
     .post-overlay-icons a {
-        background-color: @inverted-color;
+        background-color: $inverted-color;
     }
     .post-overlay-icons li span {
         display: none;
@@ -313,10 +314,10 @@ body {
     / -------------------------------------------------------------------------------- */
 
     .comment-container:hover {
-        border-color: @primary-color;
+        border-color: $primary-color;
     }
     #comment-list li .comment-container:hover h4 {
-        color: @primary-color;
+        color: $primary-color;
     }
 
     /* -------------------------------------------------------------------------------- /
@@ -326,60 +327,60 @@ body {
     .gw-go-col-wrap:hover .gw-go-col.gw-go-style1 .gw-go-header h3,
     .gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style1 .gw-go-header h3,
     .gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style1 .gw-go-header h3 {
-        color: @primary-color;
+        color: $primary-color;
     }
 
     .gw-go-col.gw-go-style1 .gw-go-coinf div,
     .gw-go-col.gw-go-style1 .gw-go-coinb div {
-        color: @primary-color;
+        color: $primary-color;
     }
 
     .gw-go-col.gw-go-style1 .gw-go-btn,
     .gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style1 .gw-go-btn {
-        color: @faded-color;
+        color: $faded-color;
     }
 
     .gw-go-col-wrap:hover .gw-go-col.gw-go-style1 .gw-go-btn,
     .gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style1 .gw-go-btn,
     .gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style1 .gw-go-btn {
-        background: @primary-color;
+        background: $primary-color;
     }
 
     .gw-go-col-wrap:hover .gw-go-col.gw-go-style2,
     .gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2,
     .gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 {
-        background: @primary-color;
+        background: $primary-color;
     }
 
     .gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-header-top,
     .gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-header-top,
     .gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-header-top {
-        background: @primary-color;
+        background: $primary-color;
     }
 
     .gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-header-bottom,
     .gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-header-bottom,
     .gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-header-bottom {
-        background: @primary-color;
-        border-top: solid 1px @primary-color;
+        background: $primary-color;
+        border-top: solid 1px $primary-color;
     }
     .gw-go-col.gw-go-style2 .gw-go-header h3,
     .gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-header h3 {
-        color: @primary-color;
+        color: $primary-color;
     }
 
     .gw-go-col.gw-go-style2 .gw-go-coinf,
     .gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinf,
     .gw-go-col.gw-go-style2 .gw-go-coinb,
     .gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinb {
-        border: solid 2px @primary-color;
+        border: solid 2px $primary-color;
     }
 
     .gw-go-col.gw-go-style2 .gw-go-coinf div,
     .gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinf div,
     .gw-go-col.gw-go-style2 .gw-go-coinb div,
     .gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinb div {
-        background: @primary-color;
+        background: $primary-color;
     }
 
     .gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-coinf div,
@@ -388,18 +389,18 @@ body {
     .gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-coinb div,
     .gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-coinb div,
     .gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-coinb div {
-        color: @primary-color;
+        color: $primary-color;
     }
 
     .gw-go-col.gw-go-style2 .gw-go-btn,
     .gw-go:hover .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-btn {
-        background: @primary-color;
+        background: $primary-color;
     }
 
     .gw-go-col-wrap:hover .gw-go-col.gw-go-style2 .gw-go-btn,
     .gw-go .gw-go-col-wrap.gw-go-current .gw-go-col.gw-go-style2 .gw-go-btn,
     .gw-go:hover .gw-go-col-wrap.gw-go-current:hover .gw-go-col.gw-go-style2 .gw-go-btn {
-        color: @primary-color;
+        color: $primary-color;
     }
 
     /* -------------------------------------------------------------------------------- /
@@ -407,20 +408,20 @@ body {
     / -------------------------------------------------------------------------------- */
 
     li.backLava {
-        background: @lavalamp-color;
+        background: $lavalamp-color;
     }
 }
 
 .page-number {
-    background-color: @background-color;
+    background-color: $background-color;
 }
 
 .page-number:hover, .current .page-number {
-    background-color: @primary-color;
+    background-color: $primary-color;
 }
 
 .pagination a, .pagination-info {
-    color: @background-color;
+    color: $background-color;
 }
 
 /* -------------------------------------------------------------------------------- /

@@ -14,6 +14,7 @@ website/static/
 
 # Ignore local settings
 website/thaliawebsite/settings/localsettings.py
+website/.sass-cache/
 
 # rope
 .ropeproject/

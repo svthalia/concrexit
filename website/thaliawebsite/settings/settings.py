@@ -189,7 +189,7 @@ STATICFILES_FINDERS = (
 COMPRESS_ENABLED = True
 
 COMPRESS_PRECOMPILERS = (
-    ('text/less', 'lessc {infile} {outfile}'),
+    ('text/x-scss', 'sass --scss {infile} {outfile}'),
 )
 
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',

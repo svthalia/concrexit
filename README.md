@@ -9,7 +9,6 @@ Getting started
 ---------------
 
 0. Get at least Python 3.4 and install the Pillow requirements as per below.
-   Also make sure that you have `lessc` installed (see below).
 1. Clone this repository
 2. Run `source ./source_me.sh` (or use your own favourite virtualenv solution)
 3. Run `pip install -r requirements.txt`
@@ -46,11 +45,6 @@ For other operating systems, see the [Pillow Documentation][pillow-install].
 
 
 [pillow-install]: https://pillow.readthedocs.io/en/latest/installation.html
-
-NodeJS dependencies
------------------------
-1. `lessc`:
-   * On Ubuntu or Debian, use: `apt-get install node-less node-mkdirp`
 
 Thabloid dependencies
 ---------------------
