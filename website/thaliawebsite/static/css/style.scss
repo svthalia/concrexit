@@ -1,5 +1,3 @@
-@import "presets/defaults.scss";
-
 /* -------------------------------------------------------------------------------- /
 
 	imbus - Simple HTML Template v1.0
@@ -4979,3 +4977,5 @@ ul.rslides > li {
 .loginForm input {
     margin: .5em;
 }
+
+@import "skin.scss";
