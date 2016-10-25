@@ -33,8 +33,7 @@ RUN apk add --no-cache \
     freetype \
     uwsgi \
     lcms2 \
-    libjpeg-turbo \
-    nodejs
+    libjpeg-turbo
 
 # Install build deps
 RUN apk add --no-cache --virtual .builddeps \
@@ -54,9 +53,6 @@ COPY production-requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir \
     -r requirements.txt \
     -r production-requirements.txt
-
-# Install nodejs-less
-RUN npm install -g less mkdirp
 
 RUN apk del .builddeps
 
