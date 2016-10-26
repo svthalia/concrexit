@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.http import (HttpResponseBadRequest,
                          HttpResponseForbidden, JsonResponse)
 from django.utils import timezone
@@ -25,7 +25,6 @@ def wiki_login(request):
 
     user = authenticate(username=user, password=password)
     if user is not None:
-        login(request, user)
         try:
             memberships = [cmm.committee.wiki_namespace for cmm in
                            user.member.committeemembership_set.exclude(
@@ -36,6 +35,8 @@ def wiki_login(request):
             memberships = []
 
         return JsonResponse({'status': 'ok',
+                             'name': user.get_full_name(),
+                             'mail': user.email,
                              'admin': user.is_superuser,
                              'msg': 'Logged in',
                              'committees': memberships})
