@@ -44,7 +44,6 @@ class MemberViewset(viewsets.ViewSet):
             .with_birthdays_in_range(start, end)
             .filter(show_birthday=True)
         )
-        queryset.prefetch_related('membership_get')
 
         all_birthdays = [
             self._get_birthdays(m, start, end)

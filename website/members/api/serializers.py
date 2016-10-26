@@ -29,7 +29,7 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
     def _description(self, instance):
         membership = instance.current_membership
         if membership and membership.type == 'honorary':
-            return instance.membership.get_type_display()
+            return membership.get_type_display()
         return ''
 
     def _background_color(self, instance):
