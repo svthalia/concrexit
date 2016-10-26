@@ -52,6 +52,9 @@ This migration typically takes a few minutes.
 
 ## Partners
 
+To migrate partners, partner events, vacancy categories and vacancies,
+execute `python manage.py migratepartners`.
+
 ## Photos
 
 Make sure the album directories exist somewhere on the server. Then,
