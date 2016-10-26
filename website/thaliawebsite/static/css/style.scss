@@ -78,31 +78,31 @@ body {
         margin: 0 0 20px;
     }
     h1 {
-        font-size: 28px;
-        line-height: 30px;
-    }
-    // h2 {
-    // 	font-size:28px;
-    // 	line-height:30px;
-    // }
-    h3 {
-        font-size: 34px;
+        font-size: 24px;
         line-height: 28px;
     }
-    h4 {
-        font-size: 24px;
-        line-height: 26px;
+    h2 {
+     	font-size: 22px;
+     	line-height: 26px;
     }
-    h5 {
+    h3 {
+        font-size: 20px;
+        line-height: 24px;
+    }
+    h4 {
         font-size: 18px;
         line-height: 22px;
     }
-    h6 {
+    h5 {
         font-size: 16px;
         line-height: 20px;
     }
+    h6 {
+        font-size: 14px;
+        line-height: 18px;
+    }
     h4 small {
-        font-size: 16px;
+        font-size: 12px;
         line-height: 20px;
         color: inherit;
     }
@@ -1541,25 +1541,9 @@ body {
         width: 80px;
         top: -1px;
     }
+
     .main-content > h1:first-child {
         margin-top: 0;
-    }
-    /* Used to be sub-title */
-    h2 {
-        margin-bottom: 30px;
-        a {
-            text-decoration: none;
-        }
-        a:hover {
-            color: #313131;
-        }
-    }
-    h2, h2 & > * {
-        color: #585858;
-        font-size: 18px;
-        line-height: 24px;
-        text-align: center;
-        word-wrap: break-word;
     }
 
     /* title meta */

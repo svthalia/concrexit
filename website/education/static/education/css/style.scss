@@ -34,6 +34,14 @@
         .has-overlay .post-inner:hover .post-overlay-meta.course-overlay {
             top: 55px;
         }
+
+        .course-overlay {
+            h2 {
+                font-size: 18px;
+                font-family: 'Open Sans';
+                text-transform: none;
+            }
+        }
     }
 
     #id_exam_date_day {
