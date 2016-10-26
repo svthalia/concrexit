@@ -83,6 +83,7 @@ urlpatterns = [
         url(r'^', include('events.api.urls')),
         url(r'^', include('members.api.urls')),
         url(r'^', include('partners.api.urls')),
+        url(r'^', include('thaliapp.urls')),
         url(r'wikilogin', views.wiki_login),
     ])),
     url(r'^education/', include('education.urls', namespace='education')),

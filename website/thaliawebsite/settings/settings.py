@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django_template_check',  # This is only necessary in development
     'rest_framework',
     'compressor',
+    'corsheaders',
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
@@ -66,11 +67,13 @@ INSTALLED_APPS = [
     'pizzas',
     'newsletters',
     'education',
+    'thaliapp',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -207,3 +210,13 @@ PHOTO_UPLOAD_SIZE = 1920, 1080
 
 # API key for wiki
 WIKI_API_KEY = 'debug'
+# API key for thaliapp related stuff
+# SHA256 hash so it does not need replacement in production
+THALIAPP_API_KEY = ('5b2bff55b74f74678dd578f8f669e959'
+                    '09f356aa05548ecdf418e678af334844')
+WOLKTM_API_KEY = 'vulditin'
+
+# CORS config
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
+CORS_ALLOW_METHODS = ('GET', 'POST')
