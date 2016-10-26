@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-26 20:26+0200\n"
-"PO-Revision-Date: 2016-10-26 20:31+0200\n"
+"POT-Creation-Date: 2016-10-26 21:16+0200\n"
+"PO-Revision-Date: 2016-10-26 21:17+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,39 +16,63 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.10\n"
+"X-Generator: Poedit 1.8.9\n"
 
-#: members/admin.py:29
+#: members/admin.py:28
 msgid "membership type"
 msgstr "lidtype"
 
-#: members/admin.py:52
+#: members/admin.py:51
 msgid "Age"
 msgstr "Leeftijd"
 
-#: members/admin.py:57
+#: members/admin.py:56
 msgid "≥ 18"
 msgstr "≥ 18"
 
-#: members/admin.py:58
+#: members/admin.py:57
 msgid "< 18"
 msgstr "< 18"
 
-#: members/admin.py:59
+#: members/admin.py:58
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: members/admin.py:127
+#: members/admin.py:115
+msgid "First name"
+msgstr "Voornaam"
+
+#: members/admin.py:116
+msgid "Last name"
+msgstr "Achternaam"
+
+#: members/admin.py:117
+msgid "Address"
+msgstr "Adres"
+
+#: members/admin.py:118
+msgid "Address line 2"
+msgstr "Tweede adresregel"
+
+#: members/admin.py:119 members/models.py:148
+msgid "Postal code"
+msgstr "Postcode"
+
+#: members/admin.py:120 members/models.py:154
+msgid "City"
+msgstr "Woonplaats"
+
+#: members/admin.py:130
 msgid "Download address label for selected users"
-msgstr "Download adres label voor geselecteerde gebruikers"
+msgstr "Download adreslabels voor geselecteerde gebruikers"
 
 #: members/forms.py:35
 msgid "Send welcome email"
-msgstr "Stuur welkomste-mail"
+msgstr "Stuur welkomste-mails"
 
 #: members/forms.py:36
 msgid "This email will include the generated password"
-msgstr "Het gegenereerde wachtwoord staat in deze e-mail"
+msgstr "Deze e-mail zal het gegenereerde wachtwoord bevatten"
 
 #: members/models.py:54
 msgid "Computing Science"
@@ -89,14 +113,6 @@ msgstr "Straat en huisnummer"
 #: members/models.py:141
 msgid "Second address line"
 msgstr "Tweede adresregel"
-
-#: members/models.py:148
-msgid "Postal code"
-msgstr "Postcode"
-
-#: members/models.py:154
-msgid "City"
-msgstr "Woonplaats"
 
 #: members/models.py:160
 msgid "Phone number"
@@ -173,7 +189,7 @@ msgstr "Volledige naam"
 
 #: members/models.py:240
 msgid "Show only nickname"
-msgstr "Alleen bijnaam"
+msgstr "Alleen initialen"
 
 #: members/models.py:241
 msgid "Show only first name"
@@ -356,11 +372,6 @@ msgid ""
 "%(password)s Please also check the information on your profile. Cheers, "
 "Thalia"
 msgstr ""
-"Beste %(user.get_full_name)s, Welkom bij studievereniging! Je hebt nu een "
-"account en kan inloggen op https://thalia.nu/. Dit zijn je gebruikersnaam en "
-"wachtwoord: je gebruikersnaam is:   %(user.username)s Je wachtwoord is:   "
-"%(password)s Inspecteer alsjeblieft ook je profielinformatie. Groetjes, "
-"Thalia"
 
 #: members/templates/members/index.html:12
 msgid ""
@@ -439,11 +450,11 @@ msgstr "heden"
 #: members/templates/members/statistics.html:5
 #: members/templates/members/statistics.html:8
 msgid "Statistics"
-msgstr "Statistiek"
+msgstr "Statistieken"
 
 #: members/templates/members/statistics.html:10
 msgid "Total amount of Thalia members"
-msgstr "Totaal aantal Thalianen."
+msgstr "Totaal aantal Thalialeden"
 
 #~ msgid "These are the current members:"
 #~ msgstr "Dit zijn de huidige leden:"
