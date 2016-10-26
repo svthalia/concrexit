@@ -166,7 +166,7 @@ def event(request, event_id):
             member=request.user.member
         )
         context['registration'] = registration
-    except Registration.DoesNotExist:
+    except (Registration.DoesNotExist, AttributeError):
         pass
 
     return render(request, 'events/event.html', context)
