@@ -43,7 +43,7 @@ STATIC_ROOT = '/static'
 COMPRESS_ENABLED = True
 
 COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'sass --scss {infile} {outfile}'),
+    ('text/x-scss', 'django_libsass.SassCompiler'),
 )
 
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
