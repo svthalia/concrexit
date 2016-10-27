@@ -33,7 +33,7 @@ from events.feeds import DeprecationFeed
 from members.sitemaps import sitemap as members_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
-from utils.views import private_thumbnails
+from utils.views import private_thumbnails, generate_thumbnail
 
 from . import views
 from .sitemaps import StaticViewSitemap
@@ -79,6 +79,7 @@ urlpatterns = [
     url(r'^career/', include('partners.urls', namespace='partners')),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
     url(r'^private-thumbnails/(?P<size_fit>\d+x\d+_[01])/(?P<path>.*)', private_thumbnails, name='private-thumbnails'),
+    url(r'^generate-thumbnail/(?P<size_fit>\d+x\d+_[01])/(?P<path>[^/]+)/(?P<thumbpath>[^/]+)', generate_thumbnail, name='generate-thumbnail'),
     url(r'^api/', include([
         url(r'^', include('events.api.urls')),
         url(r'^', include('members.api.urls')),
