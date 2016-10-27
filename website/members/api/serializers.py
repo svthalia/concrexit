@@ -21,7 +21,7 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
         return True
 
     def _url(self, instance):
-        return reverse('#')
+        return reverse('members:profile', kwargs={'pk': instance.pk})
 
     def _title(self, instance):
         return instance.display_name()
