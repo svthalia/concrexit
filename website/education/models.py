@@ -189,7 +189,7 @@ class Summary(models.Model):
                                         self.course.course_code, self.year)
 
     def get_absolute_url(self):
-        return reverse('education:suma', args=[str(self.pk)])
+        return reverse('education:summary', args=[str(self.pk)])
 
     class Meta:
         verbose_name = _('summary')
