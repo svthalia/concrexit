@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
+from rest_framework import permissions
 
 from members.api.serializers import MemberBirthdaySerializer
 from members.models import Member
@@ -13,6 +14,7 @@ from members.models import Member
 
 class MemberViewset(viewsets.ViewSet):
     queryset = Member.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
 
     def _get_birthdays(self, member, start, end):
         birthdays = []

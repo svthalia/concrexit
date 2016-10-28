@@ -49,6 +49,7 @@
                     {% endif %}
                 {% endspaceless %},
                 customButtons: {
+                {% if request.user.is_authenticated %}
                     showBirthdays: {
                         text: Cookies.get('showbirthdays') ? '{% trans "hide birthdays" %}' : '{% trans "show birthdays" %}',
                         click: function(e) {
@@ -64,6 +65,7 @@
                             }
                         }
                     }
+                {% endif %}
                 },
                 header: {
                     right: 'showBirthdays, list,agendaWeek,month prev,next today'

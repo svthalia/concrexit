@@ -199,7 +199,7 @@ class Member(models.Model):
     show_birthday = models.BooleanField(
         verbose_name=_('Display birthday'),
         help_text=_(
-            'Show the birthday on your profile page and '
+            'Show your birthday to other members on your profile page and '
             'in the birthday calendar'),
         default=True,
     )
