@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django_template_check',  # This is only necessary in development
     'rest_framework',
     'compressor',
+    'corsheaders',
     # Our apps
     'thaliawebsite',  # include for admin settings
     'members',
@@ -71,6 +72,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -207,3 +209,8 @@ PHOTO_UPLOAD_SIZE = 1920, 1080
 
 # API key for wiki
 WIKI_API_KEY = 'debug'
+
+# CORS config
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
+CORS_ALLOW_METHODS = ('GET', 'POST')
