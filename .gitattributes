@@ -7,9 +7,15 @@
 *.ico     binary
 *.mo      binary
 
+# Font files
+*.eot     binary
+*.ttf     binary
+*.woff2   binary
+*.woff    binary
+
 *.py      text
 *.js      text
 *.css     text
 *.html    text
 *.sql     text
-*.po      text
+*.po      textk
