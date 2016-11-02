@@ -5,9 +5,12 @@ from datetime import timedelta
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.mail import EmailMessage
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
+from django.template import Context
+from django.template.loader import get_template
+from django.utils import timezone, translation
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import pgettext_lazy
@@ -192,6 +195,7 @@ def registration(request, event_id, action=None):
         success_message = None
         error_message = None
         show_fields = False
+        waiting_list_notification = None
         if action == 'register' and (
             event.status == Event.REGISTRATION_OPEN or
             event.status == Event.REGISTRATION_OPEN_NO_CANCEL
@@ -225,6 +229,29 @@ def registration(request, event_id, action=None):
         elif action == 'cancel':
             if (obj is not None and
                     obj.date_cancelled is None):
+                # Prepare email to send to the first person on the waiting list
+                first_waiting = (Registration.objects
+                                 .filter(event=event, date_cancelled=None)
+                                 .order_by('date')[event.max_participants])
+                first_waiting_member = first_waiting.member
+
+                text_template = get_template('events/email.txt')
+
+                with translation.override(first_waiting_member.language):
+                    subject = _("[THALIA] Notification about your "
+                                "registration for '{}'").format(event.title)
+                    text_message = text_template.render(Context({
+                        'event': event,
+                        'registration': first_waiting,
+                        'member': first_waiting_member
+                    }))
+
+                    waiting_list_notification = EmailMessage(
+                        subject,
+                        text_message,
+                        to=[first_waiting_member.user.email]
+                    )
+
                 # Note that this doesn't remove the values for the
                 # information fields that the user entered upon registering.
                 # But this is regarded as a feature, not a bug. Especially
@@ -257,5 +284,8 @@ def registration(request, event_id, action=None):
         elif error_message is not None:
             messages.error(request, error_message)
         obj.save()
+
+        if waiting_list_notification is not None:
+            waiting_list_notification.send()
 
     return redirect(event)
