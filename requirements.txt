@@ -11,3 +11,4 @@ rcssmin
 djangorestframework==3.4.4
 django-ical==1.4
 django-libsass==0.7
+django-cors-headers
