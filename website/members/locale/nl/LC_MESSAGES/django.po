@@ -203,7 +203,7 @@ msgid "Preferred language"
 msgstr "Voorkeurstaal"
 
 #: models.py:259
-msgid "Preferred language for e.g. news letters"
+msgid "Preferred language for e.g. newsletters"
 msgstr "Voorkeurstaal voor b.v.b. nieuwsbrieven"
 
 #: models.py:266

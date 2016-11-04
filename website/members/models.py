@@ -256,7 +256,7 @@ class Member(models.Model):
 
     language = models.CharField(
         verbose_name=_('Preferred language'),
-        help_text=_('Preferred language for e.g. news letters'),
+        help_text=_('Preferred language for e.g. newsletters'),
         max_length=5,
         choices=settings.LANGUAGES,
         default='nl',
