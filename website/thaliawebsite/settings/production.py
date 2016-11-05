@@ -2,9 +2,17 @@
 Django settings for thaliawebsite project.
 
 Docker version
+
+See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
 
 import os
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.abspath(os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    '..', '..'))
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
@@ -16,8 +24,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_HOSTS', '').split(',')
 
-ROOT_URLCONF = 'thaliawebsite.urls'
-
+# Database settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -28,26 +35,24 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+
+# Persistent database connections
+CONN_MAX_AGE = '60'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 # Where to store uploaded files
-MEDIA_ROOT = os.path.join('/', 'media')
+MEDIA_ROOT = '/concrexit/media'
 MEDIA_URL = '/media/'  # Public is included by the db fields
 
 SENDFILE_BACKEND = 'sendfile.backends.development'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/static'
+STATIC_ROOT = '/concrexit/static'
 
-COMPRESS_ENABLED = True
-
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
-
-COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
-                        'compressor.filters.cssmin.rCSSMinFilter']
+if not DEBUG:
+    COMPRESS_OFFLINE = True
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',
@@ -58,3 +63,52 @@ PASSWORD_HASHERS = [
 ]
 
 WIKI_API_KEY = os.environ.get('WIKI_API_KEY', 'changeme')
+MIGRATION_KEY = os.environ.get('MIGRATION_KEY')
+
+if os.environ.get('DJANGO_SSLONLY'):
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+# Use caching template loader
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.template.context_processors.media',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'partners.context_processors.showcased_partners',
+            ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
+            ],
+        },
+    },
+]
+
+# ADMINS
+ADMINS = [('Technicie', 'www@thalia.nu')]
+
+# Email backend
+if os.environ.get('DJANGO_EMAIL_HOST'):
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.environ['DJANGO_EMAIL_HOST']
+    EMAIL_PORT = os.environ['DJANGO_EMAIL_PORT']
+    EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('DJANGO_EMAIL_HOST_PASSWORD')
+    EMAIL_USE_TLS = os.environ.get('DJANGO_EMAIL_USE_TLS', False) == 'True'
+    EMAIL_USE_SSL = os.environ.get('DJANGO_EMAIL_USE_SSL', False) == 'True'
+    EMAIL_TIMEOUT = 10
+
+# Secure headers
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True

@@ -8,15 +8,19 @@ until psql -h "$DJANGO_POSTGRES_HOST" -U "postgres" -c '\l'; do
 done
 >&2 echo "PostgreSQL is up"
 
+chown -R 33:33 /concrexit/
+
 cd /usr/src/app
 >&2 echo "Running site with uwsgi"
 uwsgi --chdir /usr/src/app \
     --socket :8000 \
-    --threads 2 \
-    --processes 4 \
+    --uid 33 \
+    --gid 33 \
+    --threads 5 \
+    --processes 5 \
     --module thaliawebsite.wsgi:application \
-    --lazy-app \
     --harakiri 20 \
+    --master \
     --max-requests 5000 \
     --vacuum \
-    --logto '/log/uwsgi.log'
+    --logto '/concrexit/log/uwsgi.log'

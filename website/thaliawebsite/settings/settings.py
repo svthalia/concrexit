@@ -74,6 +74,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -84,6 +85,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'thaliawebsite.urls'
 
+
+# WARNING
+# Also update this in production.py!!!
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -202,6 +206,8 @@ COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
 # Precompiler settings
 STATIC_PRECOMPILER_LIST_FILES = True
 
+# Default FROM email
+DEFAULT_FROM_EMAIL = 'noreply@thalia.nu'
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 
