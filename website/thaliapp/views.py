@@ -59,7 +59,7 @@ def app(request):
     username = request.POST.get('username')
     token = request.POST.get('token')
     if (sha256(request.POST.get('apikey', '').encode('ascii')).hexdigest() !=
-            settings.WOLKTM_API_KEY):
+            settings.THALIAPP_API_KEY):
         return HttpResponseForbidden()
     if username is None or token is None:
         return HttpResponseBadRequest()
