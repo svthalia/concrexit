@@ -1,53 +1,69 @@
 {% extends 'base.html' %}
 {% load i18n thumbnail staticfiles %}
 
+{% block title %}{% trans "Photos" %} — {{ block.super }}{% endblock %}
+
 {% block css_head %}
 {{ block.super }}
-<link href="{% static "photos/css/style.css" %}" rel="stylesheet" type="text/css">
+<link href="{% static 'photos/css/style.scss' %}" rel="stylesheet" type="text/scss">
 {% endblock %}
 
 {% block body %}
 <h1>{% trans "Photos" %}</h1>
 
 <div class="gallery">
-    <ul class="gallery-albums row">
-        {% for album in albums %}
-        <li class="post gallery-album span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
-            <a href="{% url 'photos:album' album.slug %}">
-                <span class="post-inner">
-                    <span class="inner-img">
-                        <img class="rotate{{ album.cover.rotation }}" src="{% thumbnail album.cover.file '220x220' %}" alt="" />
-                    </span>
-                    <span class="post-overlay">
-                        <span class="post-overlay-meta">
-                            <h2>{{ album.title }}</h2>
-                            <p>{{ album.date|date:"d-m-Y" }}</p>
-                        </span>
-                    </span>
-                </span>
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
+  <ul class="gallery-albums row">
+    {% for album in albums %}
+    <li class="post gallery-album span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
+      <a href="{% url 'photos:album' album.slug %}">
+        <span class="post-inner">
+          <span class="inner-img">
+            {% if album.cover is not None %}
+              <img class="rotate{{ album.cover.rotation }}" src="{% thumbnail album.cover.file '220x220' %}" alt=""/>
+            {% endif %}
+          </span>
+          <span class="post-overlay">
+            <span class="post-overlay-meta">
+              <h2>{{ album.title }}</h2>
+              <p>{{ album.date|date:"d-m-Y" }}</p>
+            </span>
+          </span>
+          </span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
 </div>
-<div class='clearfix'></div>
-<div class="pagination" style="float: none;text-align: center;">
-    <span class="step-links">
-        {% if albums.has_previous %}
-            <a href="?page={{ albums.previous_page_number }}">&laquo;</a>
-        {% else %}
-            <a style='visibility: hidden;'>&laquo;</a>
-        {% endif %}
 
-        <span class="current">
-            {{ albums.number }} / {{ albums.paginator.num_pages }}
-        </span>
+<div class="clearfix"></div>
 
-        {% if albums.has_next %}
-            <a href="?page={{ albums.next_page_number }}">&raquo;</a>
-        {% else %}
-            <a style='visibility: hidden;'>&raquo;</a>
-        {% endif %}
-    </span>
+<div class="pagination-wrapper row">
+  <ul class="pagination">
+  {% if albums.has_previous %}
+  <li>
+    <a class="page-prev" href="{% url 'photos:index' %}?page={{ albums.previous_page_number }}">Previous</a>
+  </li>
+  {% endif %}
+
+  {% for page in page_range %}
+    {% if page == albums.number %}
+    <li class="current">
+      <span class="page-number">
+      {{ page }}
+      </span>
+    </li>
+    {% else %}
+    <li>
+      <a href="{% url 'photos:index' %}?page={{ page }}" class="page-number button">{{ page }}</a>
+    </li>
+    {% endif %}
+  {% endfor %}
+
+  {% if albums.has_next %}
+  <li>
+    <a class="page-next" href="{% url 'photos:index' %}?page={{ albums.next_page_number }}">{% trans "Next" %}</a>
+  </li>
+  {% endif %}
+  </ul>
 </div>
 {% endblock %}
