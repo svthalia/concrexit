@@ -112,7 +112,7 @@
                         <p style="font-family: Arial, sans-serif">
                             <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
                             {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
-                            {% if event.penalty_costs != 0 %}
+                            {% if event.penalty_costs is not None and event.penalty_costs > 0 %}
                                 {% trans "These costs are" %}: <b>€{{ event.penalty_costs }}.</b>
                             {% endif %}
                             </i>
@@ -158,6 +158,7 @@
                             </span>
                         </div>
 
+                        {% if event.price is not None %}
                         <div style="margin-bottom: 5px;">
                             <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
                                 {% trans "Price"|upper %}
@@ -171,6 +172,7 @@
                                 {% endif %}
                             </span>
                         </div>
+                        {% endif %}
                     </div>
                 </td>
             </tr>
