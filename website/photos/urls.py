@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = "photos"
+
 urlpatterns = [
     url(r'^download/(?P<path>.*)', views.download, name='download'),
     url(r'^shared-download/(?P<slug>[-\w]+)/(?P<token>[a-zA-Z0-9]+)/(?P<path>.*)', views.shared_download, name='shared-download'),

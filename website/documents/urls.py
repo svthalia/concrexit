@@ -3,6 +3,7 @@ from django.conf.urls import include, url
 from . import views
 
 app_name = "documents"
+
 urlpatterns = [
     url('^miscellaneous/(?P<pk>[0-9]*)', views.get_miscellaneous_document,
         name='miscellaneous-document'),

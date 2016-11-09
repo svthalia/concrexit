@@ -4,6 +4,7 @@ from django.views.generic.base import RedirectView
 from . import views
 
 app_name = "education"
+
 urlpatterns = [
     url('^exam/(?P<id>[0-9]*)/$', views.exam, name="exam"),
     url('^summary/(?P<id>[0-9]*)/$', views.summary, name="summary"),
