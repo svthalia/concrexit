@@ -183,7 +183,8 @@ def registration(request, event_id, action=None):
     )
 
     if (event.status != Event.REGISTRATION_NOT_NEEDED and
-            request.user.member.current_membership is not None):
+            request.user.member.current_membership is not None and
+            request.user.member.can_attend_events):
         try:
             obj = Registration.objects.get(
                 event=event,
@@ -214,6 +215,8 @@ def registration(request, event_id, action=None):
                 else:
                     obj.date = timezone.now()
                     obj.date_cancelled = None
+            elif not obj.member.can_attend_events:
+                error_message = _("You may not register")
             else:
                 error_message = _("You were already registered.")
 
@@ -229,28 +232,31 @@ def registration(request, event_id, action=None):
         elif action == 'cancel':
             if (obj is not None and
                     obj.date_cancelled is None):
-                # Prepare email to send to the first person on the waiting list
-                first_waiting = (Registration.objects
-                                 .filter(event=event, date_cancelled=None)
-                                 .order_by('date')[event.max_participants])
-                first_waiting_member = first_waiting.member
+                if event.max_participants is not None:
+                    # Prepare email to send to the first person on the waiting
+                    # list
+                    first_waiting = (Registration.objects
+                                     .filter(event=event, date_cancelled=None)
+                                     .order_by('date')[event.max_participants])
+                    first_waiting_member = first_waiting.member
 
-                text_template = get_template('events/email.txt')
+                    text_template = get_template('events/email.txt')
 
-                with translation.override(first_waiting_member.language):
-                    subject = _("[THALIA] Notification about your "
-                                "registration for '{}'").format(event.title)
-                    text_message = text_template.render(Context({
-                        'event': event,
-                        'registration': first_waiting,
-                        'member': first_waiting_member
-                    }))
+                    with translation.override(first_waiting_member.language):
+                        subject = _("[THALIA] Notification about your "
+                                    "registration for '{}'").format(
+                                        event.title)
+                        text_message = text_template.render(Context({
+                            'event': event,
+                            'registration': first_waiting,
+                            'member': first_waiting_member
+                        }))
 
-                    waiting_list_notification = EmailMessage(
-                        subject,
-                        text_message,
-                        to=[first_waiting_member.user.email]
-                    )
+                        waiting_list_notification = EmailMessage(
+                            subject,
+                            text_message,
+                            to=[first_waiting_member.user.email]
+                        )
 
                 # Note that this doesn't remove the values for the
                 # information fields that the user entered upon registering.
@@ -269,8 +275,8 @@ def registration(request, event_id, action=None):
                     form_field_values = form.field_values()
                     for field in form_field_values:
                         if (field['field'].type ==
-                                RegistrationInformationField.INTEGER_FIELD
-                                and field['value'] is None):
+                                RegistrationInformationField.INTEGER_FIELD and
+                                field['value'] is None):
                             field['value'] = 0
                         field['field'].set_value_for(obj,
                                                      field['value'])

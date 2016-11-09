@@ -252,6 +252,21 @@ class Member(models.Model):
         blank=True,
     )
 
+    event_permissions = models.CharField(
+        max_length=9,
+        verbose_name=_('Which events can this member attend'),
+        choices=(('all', _('All events')),
+                 ('no_events', _('User may not attend events')),
+                 ('no_drinks', _('User may not attend drinks')),
+                 ('nothing', _('User may not attend anything'))),
+        default='all',
+    )
+
+    @property
+    def can_attend_events(self):
+        return (self.event_permissions == 'all' or
+                self.event_permissions == 'no_drinks')
+
     # --- Communication preference ----
 
     language = models.CharField(

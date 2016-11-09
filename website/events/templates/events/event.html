@@ -87,7 +87,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        {% if request.user.is_authenticated and request.user.member is not None and request.user.member.current_membership is not None %}
+                        {% if request.user.is_authenticated and request.user.member is not None and request.user.member.current_membership is not None and request.user.member.can_attend_events %}
                             {% if event.status == event.REGISTRATION_OPEN or event.status == event.REGISTRATION_OPEN_NO_CANCEL %}
                                 {% if registration is not None and registration.date_cancelled is None and event.has_fields %}
                                 <a class="btn btn-style1" href="{% url 'events:registration' event.id 'update' %}">{% trans "Update registration" %}</a>
