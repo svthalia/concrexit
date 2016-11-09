@@ -214,7 +214,6 @@ WIKI_API_KEY = 'debug'
 # SHA256 hash so it does not need replacement in production
 THALIAPP_API_KEY = ('5b2bff55b74f74678dd578f8f669e959'
                     '09f356aa05548ecdf418e678af334844')
-WOLKTM_API_KEY = 'vulditin'
 
 # CORS config
 CORS_ORIGIN_ALLOW_ALL = True

@@ -100,6 +100,11 @@ body {
                         background-image: none;
                         background-color: $primary-color !important;
                     }
+
+                    &:focus {
+                        background-image: none;
+                        background-color: $dark-primary-color !important;
+                    }
                 }
             }
         }
