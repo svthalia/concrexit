@@ -417,8 +417,8 @@ msgid "communication w.r.t. promoting your company (activities)"
 msgstr "communicatie over het promoten van uw bedrijf(sactiviteiten)"
 
 #: thaliawebsite/templates/singlepages/contact.html:40
-msgid "Kamer van Koophandel"
-msgstr "Chamber of Commerce"
+msgid "Chamber of Commerce"
+msgstr "Kamer van Koophandel"
 
 #: thaliawebsite/templates/singlepages/contact.html:48
 msgid "VAT number:"
