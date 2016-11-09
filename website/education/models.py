@@ -59,7 +59,7 @@ class Course(models.Model, metaclass=ModelTranslateMeta):
 
     since = models.IntegerField()
     until = models.IntegerField(
-        blank=True
+        blank=True, null=True
     )
 
     period = models.CharField(

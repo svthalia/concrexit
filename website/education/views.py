@@ -14,7 +14,7 @@ from .models import Category, Course, Exam, Summary
 def courses(request):
     categories = Category.objects.all()
     objects = Course.objects.order_by('name_' + request.LANGUAGE_CODE).filter(
-        until=0)
+        until=None)
     return render(request, 'education/courses.html',
                   {'courses': objects, 'categories': categories})
 
