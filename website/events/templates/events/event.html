@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% load i18n static %}
+{% load i18n static bleach_tags%}
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
     <h1>{{ event.title }}</h1>
-    <p class="tcenter">{{ event.description|safe }}</p>
+    <p class="tcenter">{{ event.description|bleach }}</p>
 
     {% if messages %}
         {% for message in messages %}
