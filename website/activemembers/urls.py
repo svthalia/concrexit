@@ -6,7 +6,9 @@ from django.conf.urls import url
 
 from . import views
 
+
 app_name = "activemembers"
+
 urlpatterns = [
     url(r'committees/$', views.committee_index, name='committees'),
     url(r'^committees/(?P<id>\d)/$', views.committee_detail, name='committee'),
