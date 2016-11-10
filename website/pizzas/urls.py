@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = "pizzas"
+
 urlpatterns = [
     url(r'^delete-order/$', views.delete_order, name='delete-order'),
     url(r'^add-order/(?P<event_pk>\d+)/$', views.add_order, name='add-order'),

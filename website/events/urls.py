@@ -8,6 +8,8 @@ from events.feeds import EventFeed
 
 from . import views
 
+app_name = "events"
+
 urlpatterns = [
     url(r'admin/(?P<event_id>\d+)/$', views.admin_details, name='admin-details'),
     url(r'admin/(?P<event_id>\d+)/registration/(?P<action>[-\w]+)/$',
