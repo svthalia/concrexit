@@ -52,15 +52,15 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^mailinglists/', include('mailinglists.urls')),
     url(r'^members/', include('members.urls')),
-    url(r'^nyi$', TemplateView.as_view(template_name='status/nyi.html'), name='#'),
+    url(r'^account/$', members.views.account, name='account'),
     url(r'^events/', include('events.urls')),
     url(r'^pizzas/', include('pizzas.urls')),
     url(r'^index\.php/events/ical/feed\.ics', DeprecationFeed()),
     url(r'^newsletters/', include('newsletters.urls')),
     url(r'^association$', TemplateView.as_view(
         template_name='singlepages/association.html'), name='association'),
-    url(r'^association/', include([
-        url(r'^activemembers/', include('activemembers.urls')),
+    url(r'^', include([  # 'association' menu
+        url(r'^', include('activemembers.urls')),
         url(r'^merchandise/', include('merchandise.urls')),
         url(r'^documents/', include('documents.urls')),
         url(r'^become-a-member/', members.views.become_a_member, name='become-a-member'),
@@ -69,8 +69,8 @@ urlpatterns = [
     ])),
     url(r'^for-members$', TemplateView.as_view(
         template_name='singlepages/for_members.html'), name='for-members'),
-    url(r'^for-members/', include([
-        url(r'^become-active', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
+    url(r'^', include([  # 'for members' menu
+        url(r'^become-active/', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
         url(r'^photos/', include('photos.urls')),
         url(r'^statistics/', members.views.statistics, name='statistics'),
         url(r'^styleguide/', TemplateView.as_view(template_name='singlepages/styleguide.html'), name='styleguide'),

@@ -16,7 +16,7 @@
         <hr>
 
         <div>
-            <a href="{% url 'members:profile' %}">{% trans "show public profile"|capfirst %}</a>
+            <a href="{% url 'members:profile' request.user.pk %}">{% trans "show public profile"|capfirst %}</a>
             <p>{% blocktrans %}Take a look at your own profile.{% endblocktrans %}</p>
         </div>
 
