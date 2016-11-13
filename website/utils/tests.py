@@ -79,12 +79,27 @@ class TestTranslateMeta(TestCase):
         with self.assertRaises(AttributeError):
             TestItem6().text = 'text'  # Should not be able to set
 
+        # but accessing individual language fields should work
+        x = TestItem6()
+        x.text_nl = 'tekst'
+        x.text_en = 'text'
+
     def test_accessor(self):
         class TestItem7(models.Model, metaclass=ModelTranslateMeta):
-            text = MultilingualField(models.TextField, default='text')
+            text = MultilingualField(models.TextField)
+
+        x = TestItem7()
+        x.text_nl = "Hier staat tekst"
+        x.text_en = "Here's some text"
+
+        self.assertEqual(x.text_nl, "Hier staat tekst")
+        self.assertEqual(x.text_en, "Here's some text")
 
         with translation.override('nl'):
-            self.assertEqual(TestItem7().text, TestItem7().text_nl)
+            self.assertEqual(x.text, "Hier staat tekst")
+
+        with translation.override('en'):
+            self.assertEqual(x.text, "Here's some text")
 
     def test_shadowing(self):
         with self.assertRaises(FieldError):
