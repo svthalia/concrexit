@@ -50,10 +50,10 @@ class MultilingualField(object):
         self.kwargs = kwargs
 
 
-def _i18n_attr_accessor(attr, lang):
+def _i18n_attr_accessor(attr):
 
     def accessor(self):
-        return getattr(self, I18N_FIELD_FORMAT.format(attr, lang))
+        return getattr(self, I18N_FIELD_FORMAT.format(attr, get_language()))
 
     return accessor
 
@@ -95,7 +95,7 @@ class ModelTranslateMeta(models.base.ModelBase):
                                      "by TranslateMeta.".format(attr_i18n))
                 dct[attr_i18n] = field.cls(*field.args, **field.kwargs)
                 fields.append(attr_i18n)
-            dct[attr] = property(_i18n_attr_accessor(attr, get_language()))
+            dct[attr] = property(_i18n_attr_accessor(attr))
             default = I18N_FIELD_FORMAT.format(attr, settings.LANGUAGE_CODE)
             if default not in dct:
                 raise ImproperlyConfigured("LANGUAGE_CODE not in LANGUAGES.")
