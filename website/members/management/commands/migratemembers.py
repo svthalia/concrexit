@@ -87,7 +87,8 @@ class Command(BaseCommand):
             # Concrete5 uses bcrypt passwords, which django can rehash
             user.password = 'bcrypt$' + member['password']
             user.first_name = member['first_name']
-            user.last_name = ' '.join([member['infix'], member['surname']])
+            user.last_name = ' '.join([member['infix'],
+                                       member['surname']]).strip()
             user.save()
             try:
                 user.member
