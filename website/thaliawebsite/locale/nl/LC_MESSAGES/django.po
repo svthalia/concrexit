@@ -217,15 +217,15 @@ msgstr ""
 
 #: thaliawebsite/templates/index.html:11
 msgid "Upcoming events"
-msgstr ""
+msgstr "Aanstaande evenementen"
 
 #: thaliawebsite/templates/index.html:15
 msgid "Searching for another event?"
-msgstr ""
+msgstr "Op zoek naar een ander evenement?"
 
 #: thaliawebsite/templates/index.html:15
 msgid "Take a look at the entire agenda"
-msgstr ""
+msgstr "Bekijk de hele agenda"
 
 #: thaliawebsite/templates/singlepages/association.html:9
 msgid ""
