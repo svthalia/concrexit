@@ -22,7 +22,8 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_HOSTS', '').split(',')
+if 'DJANGO_HOSTS' in os.environ:
+    ALLOWED_HOSTS = os.environ.get('DJANGO_HOSTS').split(',')
 
 # Database settings
 DATABASES = {
