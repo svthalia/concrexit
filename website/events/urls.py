@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'admin/(?P<event_id>\d+)/registration/$',
         views.admin_change_registration, name='admin-registration'),
     url(r'admin/(?P<event_id>\d+)/export/$', views.export, name='export'),
+    url(r'admin/(?P<event_id>\d+)/all_present/$', views.all_present,
+        name='all_present'),
     url(r'^(?P<event_id>\d+)/$', views.event, name='event'),
     url(r'^(?P<event_id>\d+)/registration/(?P<action>[-\w]+)/$',
         views.registration, name='registration'),
