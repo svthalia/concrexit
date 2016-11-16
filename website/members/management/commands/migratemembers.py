@@ -88,7 +88,7 @@ class Command(BaseCommand):
             user.password = 'bcrypt$' + member['password']
             user.first_name = member['first_name']
             user.last_name = ' '.join([member['infix'],
-                                       member['surname']]).strip()
+                                       member['surname']]).strip()[:30]
             user.save()
             try:
                 user.member
@@ -131,7 +131,7 @@ class Command(BaseCommand):
             if member['about']:
                 user.member.profile_description = member['about']
             if member['nickname']:
-                user.member.nickname = member['nickname']
+                user.member.nickname = member['nickname'][:30]
             if member['initials']:
                 user.member.initials = member['initials']
             user.member.display_name_preference = {
