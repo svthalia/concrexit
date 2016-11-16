@@ -2,9 +2,12 @@ version: '2'
 services:
     postgres:
         image: postgres
+        volumes:
+            - /var/lib/postgresql/
         environment: &postgresvars
             POSTGRES_DB: thalia
     web:
+        image: registry.gitlab.com/thaliawww/concrexit
         build: .
         command: runserver 0.0.0.0:8000
         ports:
@@ -13,7 +16,15 @@ services:
             - postgres
         volumes:
             - ./website:/usr/src/app
+            - /concrexit/media
+            - /concrexit/static
         environment:
             <<: *postgresvars
             DJANGO_DEBUG: 'True'
             DJANGO_POSTGRES_HOST: postgres
+            MIGRATION_KEY: ${CONCREXIT_MIGRATION_KEY}
+volumes:
+    concrexit-media:
+        driver: local
+    concrexit-static:
+        driver: local
