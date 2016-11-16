@@ -13,7 +13,7 @@ from django.utils.translation import activate
 
 from activemembers.models import (Board, Committee,
                                   CommitteeMembership, Mentorship)
-from members.models import Member
+from members.models import Member, Membership
 
 
 def imagefield_from_url(imagefield, url):
@@ -152,6 +152,20 @@ class Command(BaseCommand):
             if member['payment_iban']:
                 user.member.bank_account = member['payment_iban']
             user.member.save()
+
+            membership = Membership()
+            membership.user = user
+            if member['membership_type'] == 'Benefactor':
+                membership.type = 'supporter'
+                membership.until = parse_date("2017-09-01")
+            if member['membership_type'] == 'Yearly Membership':
+                membership.type = 'member'
+                membership.until = parse_date("2017-09-01")
+            if member['membership_type'] == 'Study Membership':
+                membership.type = 'member'
+            if member['membership_type'] == 'Honorary Member':
+                membership.type = 'honorary'
+            membership.save()
 
             for membership in member['memberships']:
                 mdata = membership['membership']
