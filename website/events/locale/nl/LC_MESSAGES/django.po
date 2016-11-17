@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-10 11:47+0100\n"
-"PO-Revision-Date: 2016-11-10 11:47+0100\n"
+"POT-Creation-Date: 2016-11-16 21:41+0100\n"
+"PO-Revision-Date: 2016-11-16 21:42+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -46,7 +46,7 @@ msgstr "volgorde"
 msgid "No registration required"
 msgstr "Geen registratie vereist"
 
-#: events/models.py:28 events/templates/events/admin/details.html:65
+#: events/models.py:28 events/templates/events/admin/details.html:66
 msgid "title"
 msgstr "titel"
 
@@ -62,7 +62,7 @@ msgstr "starttijd"
 msgid "end time"
 msgstr "eindtijd"
 
-#: events/models.py:45 events/templates/events/admin/details.html:69
+#: events/models.py:45 events/templates/events/admin/details.html:70
 msgid "organiser"
 msgstr "organisator"
 
@@ -78,7 +78,7 @@ msgstr "einde registratie"
 msgid "cancel deadline"
 msgstr "afmelddeadline"
 
-#: events/models.py:68 events/templates/events/admin/details.html:73
+#: events/models.py:68 events/templates/events/admin/details.html:74
 #: events/templates/events/event.html:32
 msgid "location"
 msgstr "locatie"
@@ -93,12 +93,12 @@ msgstr ""
 "Locatie van ’t Huygens: Heyendaalseweg 135, Nijmegen. Dit veld wordt niet "
 "getoond als tekst!!"
 
-#: events/models.py:80 events/templates/events/admin/details.html:75
+#: events/models.py:80 events/templates/events/admin/details.html:76
 #: events/templates/events/event.html:37
 msgid "price"
 msgstr "prijs"
 
-#: events/models.py:88 events/templates/events/admin/details.html:77
+#: events/models.py:88 events/templates/events/admin/details.html:78
 msgid "cost"
 msgstr "kosten"
 
@@ -255,29 +255,33 @@ msgstr "afgemeld"
 msgid "Export registrations"
 msgstr "Exporteer registraties"
 
-#: events/templates/events/admin/details.html:58
+#: events/templates/events/admin/details.html:51
+msgid "Set all registered to paid and present"
+msgstr "Zet iedereen op betaald en present"
+
+#: events/templates/events/admin/details.html:59
 msgid "Event properties"
 msgstr "Eigenschappen van evenement"
 
-#: events/templates/events/admin/details.html:61
+#: events/templates/events/admin/details.html:62
 #: events/templates/events/admin/registrations_table.html:46
 msgid "change"
 msgstr "verander"
 
-#: events/templates/events/admin/details.html:67
+#: events/templates/events/admin/details.html:68
 #: events/templates/events/admin/registrations_table.html:7
 msgid "date"
 msgstr "datum"
 
-#: events/templates/events/admin/details.html:71
+#: events/templates/events/admin/details.html:72
 msgid "registration period"
 msgstr "registratieperiode"
 
-#: events/templates/events/admin/details.html:79
+#: events/templates/events/admin/details.html:80
 msgid "registration required"
 msgstr "registratie vereist"
 
-#: events/templates/events/admin/details.html:82
+#: events/templates/events/admin/details.html:83
 msgid "registration message"
 msgstr "registratiebericht"
 

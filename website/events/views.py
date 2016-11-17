@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.mail import EmailMessage
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Context
 from django.template.loader import get_template
@@ -295,3 +295,15 @@ def registration(request, event_id, action=None):
             waiting_list_notification.send()
 
     return redirect(event)
+
+
+@staff_member_required
+@permission_required('events.change_event')
+def all_present(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    registrations = event.registration_set.all()
+    for registration in registrations:
+        registration.present = True
+        registration.paid = True
+        registration.save()
+    return HttpResponseRedirect('/events/admin/{}'.format(event_id))
