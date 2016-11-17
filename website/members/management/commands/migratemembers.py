@@ -13,7 +13,7 @@ from django.utils.translation import activate
 
 from activemembers.models import (Board, Committee,
                                   CommitteeMembership, Mentorship)
-from members.models import Member
+from members.models import Member, Membership
 
 
 def imagefield_from_url(imagefield, url):
@@ -87,7 +87,8 @@ class Command(BaseCommand):
             # Concrete5 uses bcrypt passwords, which django can rehash
             user.password = 'bcrypt$' + member['password']
             user.first_name = member['first_name']
-            user.last_name = ' '.join([member['infix'], member['surname']])
+            user.last_name = ' '.join([member['infix'],
+                                       member['surname']]).strip()[:30]
             user.save()
             try:
                 user.member
@@ -130,7 +131,7 @@ class Command(BaseCommand):
             if member['about']:
                 user.member.profile_description = member['about']
             if member['nickname']:
-                user.member.nickname = member['nickname']
+                user.member.nickname = member['nickname'][:30]
             if member['initials']:
                 user.member.initials = member['initials']
             user.member.display_name_preference = {
@@ -152,6 +153,20 @@ class Command(BaseCommand):
             if member['payment_iban']:
                 user.member.bank_account = member['payment_iban']
             user.member.save()
+
+            membership = Membership()
+            membership.user = user
+            if member['membership_type'] == 'Benefactor':
+                membership.type = 'supporter'
+                membership.until = parse_date("2017-09-01")
+            if member['membership_type'] == 'Yearly Membership':
+                membership.type = 'member'
+                membership.until = parse_date("2017-09-01")
+            if member['membership_type'] == 'Study Membership':
+                membership.type = 'member'
+            if member['membership_type'] == 'Honorary Member':
+                membership.type = 'honorary'
+            membership.save()
 
             for membership in member['memberships']:
                 mdata = membership['membership']
