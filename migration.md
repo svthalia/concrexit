@@ -75,3 +75,7 @@ Make sure you have valid login credentials for thalia.nu.
 
 To migrate the merchandise execute `python manage.py migratemerchandise` and
 enter the required login information.
+
+## Wiki
+
+Copy `/data` folder to new installation.
