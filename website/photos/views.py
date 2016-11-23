@@ -7,6 +7,8 @@ from django.http import Http404
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 from sendfile import sendfile
+from zipfile import ZipFile
+from tempfile import gettempdir
 
 from utils.snippets import sanitize_path
 from utils.views import _private_thumbnails_unauthed
@@ -110,9 +112,28 @@ def _download(request, path):
     return sendfile(request, path, attachment=True)
 
 
+def _album_download(request, slug):
+    """This function provides a layer of indirection for shared albums"""
+    album = get_object_or_404(Album, slug=slug)
+    albumpath = os.path.join(album.photospath, album.dirname)
+    pictures = [os.path.join(albumpath, x) for x in os.listdir(albumpath)]
+    zipfilename = os.path.join(gettempdir(),
+                               '{}.zip'.format(album.dirname))
+    if not os.path.exists(zipfilename):
+        with ZipFile(zipfilename, 'w') as f:
+            for picture in pictures:
+                f.write(picture, arcname=os.path.basename(picture))
+    return sendfile(request, zipfilename, attachment=True)
+
+
 @login_required
 def download(request, path):
     return _download(request, path)
+
+
+@login_required
+def album_download(request, slug):
+    return _album_download(request, slug)
 
 
 def shared_download(request, slug, token, path):
