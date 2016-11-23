@@ -27,7 +27,7 @@ class CommitteeBackend(object):
             return set()
         if not hasattr(user, perm_cache_name):
             perms = (Permission.objects
-                     .filter(committee=committees)
+                     .filter(committee__in=committees)
                      .values_list('content_type__app_label', 'codename')
                      .order_by())
             setattr(user, perm_cache_name,
