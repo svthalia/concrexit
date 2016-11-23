@@ -119,7 +119,7 @@ def profile(request, pk=None):
 
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
-        name = str(mentor_year)
+        name = "Mentor in {}".format(mentor_year.year)
         if not achievements.get(name):
             achievements[name] = {
                 'name': name
