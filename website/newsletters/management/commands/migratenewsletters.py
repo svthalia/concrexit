@@ -1,10 +1,19 @@
 import requests
 import re
+import dateparser
 from bs4 import BeautifulSoup
 
-from datetime import datetime
+from datetime import datetime, timedelta, date
+from django.utils import timezone
 from django.core.management.base import BaseCommand
 from newsletters.models import Newsletter, NewsletterItem, NewsletterEvent
+
+
+def isoweek_firstday(year, week):
+    ret = datetime.strptime('%04d-%02d-1' % (year, week), '%Y-%W-%w')
+    if date(year, 1, 4).isoweekday() > 4:
+        ret -= timedelta(days=7)
+    return ret
 
 
 class Command(BaseCommand):
@@ -24,7 +33,7 @@ class Command(BaseCommand):
         for year in year_range:
             for week in week_range:
                 request = session.get(url.format(year, week))
-                src= request.text
+                src = request.text
 
                 if request.status_code != 200:
                     continue
@@ -35,9 +44,7 @@ class Command(BaseCommand):
                 title = "Newsletter week {} {}".format(week, year)
                 newsletter.title_nl = title
                 newsletter.title_en = title
-                newsletter.date = datetime.strptime(
-                    '{}-W{}-0'.format(year, week - 1),
-                    "%Y-W%W-%w").date()
+                newsletter.date = isoweek_firstday(year, week)
 
                 all_tr = soup.find("table").find_all("tr")
 
@@ -76,20 +83,54 @@ class Command(BaseCommand):
                         event_data = content_td[1].find_all("span")
                         what = event_data[0].text
                         where = event_data[1].text
-                        when = event_data[2]
+                        when = event_data[2].text
+
+                        when = when.replace('vanaf', '')
+
+                        parse_settings = {
+                            'PREFER_DATES_FROM': 'future'
+                        }
+
+                        if "-" in when:
+                            when = when.split("-", 2)
+                            start_when = dateparser.parse(
+                                when[0], settings=parse_settings)
+                            end_when = dateparser.parse(
+                                when[1], settings=parse_settings)
+                            if len(when[1]) < 8:
+                                end_when = end_when.replace(start_when.year,
+                                                            start_when.month,
+                                                            start_when.day)
+                        else:
+                            start_when = end_when = dateparser.parse(
+                                when, settings=parse_settings)
+
+                        tz = timezone.get_current_timezone()
+
+                        if start_when is None and end_when is None:
+                            start_when = end_when = newsletter.date
+                        elif start_when is None:
+                            start_when = end_when
+                        elif end_when is None:
+                            end_when = start_when
+
+                        start_when = tz.localize(start_when)
+                        end_when = tz.localize(end_when)
+                        start_when = start_when.replace(year)
+                        end_when = end_when.replace(year)
+
+                        item.start_datetime = start_when
+                        item.end_datetime = end_when
 
                         price = None
                         if ("PRIJS" in content_td[1].text and
                                 event_data[3] is not None):
                             price = event_data[3].text
 
-                        item.what_nl = what[:len(what) - 1]
-                        item.what_en = what[:len(what) - 1]
+                        item.title_nl = item.what_nl = what[:len(what) - 1]
+                        item.title_en = item.what_en = what[:len(what) - 1]
                         item.where_nl = where[:len(where) - 1]
                         item.where_en = where[:len(where) - 1]
-
-                        item.start_datetime = datetime.now()
-                        item.end_datetime = datetime.now()
 
                         if price is not None and "ratis" not in price:
                             price = price.replace(",", ".")
@@ -112,13 +153,11 @@ class Command(BaseCommand):
                                 .replace("-", "0"))
                         elif item.price is not None:
                             item.penalty_costs = item.price
-
-                        pass
                     else:
                         item = NewsletterItem()
+                        item.title_nl = title.lower().capitalize()
+                        item.title_en = title.lower().capitalize()
 
-                    item.title_nl = title.lower().capitalize()
-                    item.title_en = title.lower().capitalize()
                     item.description_nl = description
                     item.description_en = description
                     item.newsletter = newsletter

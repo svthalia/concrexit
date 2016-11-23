@@ -148,7 +148,7 @@
                             </b>
                             <br>
                             <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
-                                {% if event.start_datetime == event.end_datetime %}
+                                {% if event.start_datetime|date:'d-M-Y H:i' == event.end_datetime|date:'d-M-Y H:i' %}
                                     {{ event.start_datetime }}
                                 {% elif event.start_datetime|date:'d-M-Y' == event.end_datetime|date:'d-M-Y' %}
                                     {{ event.start_datetime }} - {{ event.end_datetime|date:'H:i' }}
