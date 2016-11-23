@@ -45,6 +45,10 @@ def course(request, id):
                   {'course': obj, 'items': items})
 
 
+def student_participation(request):
+    return render(request, 'education/student_participation.html')
+
+
 @login_required
 def exam(request, id):
     exam = get_object_or_404(Exam, id=int(id))

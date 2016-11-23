@@ -27,6 +27,8 @@ main = [
     ]},
     {'title': _('Education'), 'name': 'education:index', 'submenu': [
         {'title': _('Book Sale'), 'name': 'education:books'},
+        {'title': _('Student Participation'),
+            'name': 'education:student-participation'},
         {'title': _('Course Overview'), 'name': 'education:courses',
          'submenu': [
              {'title': _('Submit Exam'), 'name': 'education:submit-exam'},
