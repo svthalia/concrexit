@@ -45,6 +45,9 @@ class Command(BaseCommand):
         for board in data['boards']:
             obj, cr = Board.objects.get_or_create(name_nl=board['name'])
             obj.name_en = board['name']
+            year = int(board['name'][-9:-5])
+            obj.since = parse_date('{}-09-01'.format(year))
+            obj.until = parse_date('{}-08-31'.format(year+1))
             print(obj.name_en)
             groups[board['gID']] = obj
             img = soup.find("img", {"alt": board['name'][8:]})
