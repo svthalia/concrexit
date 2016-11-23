@@ -23,7 +23,7 @@
               {% if board.photo %}
               <img src="{% thumbnail board.photo '220x220' fit=False %}" alt="{% blocktrans with name=board.name %}Photo of {{ name }}{% endblocktrans %}">
               {% else %}
-              <img height="220" width="220" src="{% static 'committees/images/placeholder.png' %}">
+              <img height="220" width="220" src="{% static 'activemembers/images/placeholder.png' %}">
               {% endif %}
             </div>
 

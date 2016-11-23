@@ -55,6 +55,6 @@ def board_detail(request, id):
         member.role = membership.role
         members.append(member)  # list comprehension would be more pythonic?
 
-    return render(request, 'committees/board_detail.html',
+    return render(request, 'activemembers/board_detail.html',
                   {'board': board,
                    'members': members})

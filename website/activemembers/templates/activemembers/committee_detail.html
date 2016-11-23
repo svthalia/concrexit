@@ -14,10 +14,10 @@
 <div class="clearfix portfolio">
   <div id="committee-div">
     <div class="row">
-      {% if committee.photo %} 
+      {% if committee.photo %}
       <img alt="{% blocktrans with name=committee.name %}Photo of {{ name }}{% endblocktrans %}" class="span12" src="{% thumbnail committee.photo '1024x683' fit=False %}">
       {% else %}
-      <img alt="{% blocktrans with name=committee.name %}Photo of {{ name }}{% endblocktrans %}" class="span12" src="{% static 'committees/images/placeholder.png' %}">
+      <img alt="{% blocktrans with name=committee.name %}Photo of {{ name }}{% endblocktrans %}" class="span12" src="{% static 'activemembers/images/placeholder.png' %}">
       {% endif %}
     </div>
     <div>

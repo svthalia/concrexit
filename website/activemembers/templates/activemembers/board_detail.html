@@ -19,7 +19,7 @@
       {% if board.photo %}
       <img alt="{{ board.name }}" class="span12" src="{% thumbnail board.photo '1024x683' fit=False %}">
       {% else %}
-      <img alt="{{ board.name }}" class="span12" src="{% static 'committees/images/placeholder.png' %}">
+      <img alt="{{ board.name }}" class="span12" src="{% static 'activemembers/images/placeholder.png' %}">
       {% endif %}
     </div>
     <div class="clearfix member-directory">
