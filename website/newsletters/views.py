@@ -7,6 +7,8 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils import translation
 
+from datetime import datetime, timedelta, date
+
 from members.models import Member
 from newsletters.models import Newsletter
 from partners.models import Partner
@@ -22,6 +24,17 @@ def preview(request, pk):
         'main_partner': main_partner,
         'lang_code': request.LANGUAGE_CODE
     })
+
+
+def legacy_redirect(request, year, week):
+    newsletter_date = datetime.strptime(
+        '%s-%s-1' % (year, week), '%Y-%W-%w')
+    if date(int(year), 1, 4).isoweekday() > 4:
+        newsletter_date -= timedelta(days=7)
+
+    newsletter = get_object_or_404(Newsletter, date=newsletter_date)
+
+    return redirect(newsletter.get_absolute_url(), permanent=True)
 
 
 @staff_member_required

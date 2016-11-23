@@ -20,7 +20,7 @@
  {% trans "What"|upper %}: {{ event.what }}
  {% trans "Where"|upper %}: {{ event.where }}
  {% trans "When"|upper %}: {% if event.start_datetime == event.end_datetime %}{{ event.start_datetime }}{% elif event.start_datetime|date:'d-M-Y' == event.end_datetime|date:'d-M-Y' %}{{ event.start_datetime }} - {{ event.end_datetime|date:'H:i' }}{% else %}{{ event.start_datetime }} - {{ event.end_datetime }}{% endif %}
- {% trans "Price"|upper %}: {% if event.price == 0 %}{% trans "Free" %}{% else %}€{{ event.price }}{% endif %}
+ {% if event.price is not None %}{% trans "Price"|upper %}: {% if event.price == 0 %}{% trans "Free" %}{% else %}€{{ event.price }}{% endif %}{% endif %}
 
 {% endfor %}
 {% trans "room"|capfirst %}: HG00.150

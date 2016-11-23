@@ -102,14 +102,18 @@ class NewsletterEvent(NewsletterContent):
         verbose_name=_('Price (in Euro)'),
         max_digits=5,
         decimal_places=2,
-        default=0,
+        blank=True,
+        null=True,
+        default=None,
     )
 
     penalty_costs = models.DecimalField(
         verbose_name=_('Costs (in Euro)'),
         max_digits=5,
         decimal_places=2,
-        default=0,
+        blank=True,
+        null=True,
+        default=None,
         help_text=_('This is the price that a member has to '
                     'pay when he/she did not show up.'),
     )

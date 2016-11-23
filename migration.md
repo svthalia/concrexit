@@ -50,6 +50,10 @@ This migration typically takes a few minutes.
 
 ## Newsletters
 
+Make sure that the API key is available as `MIGRATION_KEY` in settings.py.
+
+To migrate the newsletters simply execute `python manage.py migratenewsletters`.
+
 ## Partners
 
 To migrate partners, partner events, vacancy categories and vacancies,
