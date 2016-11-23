@@ -111,6 +111,9 @@ class Board(Committee):
         default=True,
     )
 
+    class Meta:
+        ordering = ['-since']
+
     def get_absolute_url(self):
         return reverse('activemembers:board', args=[str(self.pk)])
 
