@@ -101,6 +101,8 @@ class Command(BaseCommand):
                             print('[!]Could neither find {} nor {}'.format(
                                 django_field, django_multilingualfield))
                             return
+                        if django_field == 'title':
+                            django_field = django_field[:100]
 
                         setattr(new_event, django_multilingualfield,
                                 concrete_data)
@@ -133,8 +135,8 @@ class Command(BaseCommand):
                 events_models.RegistrationInformationField(
 
                     # TODO: UGLY AF
-                    name_en=field_data['field_name'],
-                    name_nl=field_data['field_name'],
+                    name_en=field_data['field_name'][:100],
+                    name_nl=field_data['field_name'][:100],
                     description_en=field_data['field_explanation'],
                     description_nl=field_data['field_explanation'],
 

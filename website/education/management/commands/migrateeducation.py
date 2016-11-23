@@ -72,7 +72,8 @@ class Command(legacylogin.Command):
             course.ec = int(src['e_c_t_s'])
             course.period = src['quarter'].replace(' en ', ' & ')
             course.since = src['since']
-            course.until = src['until'] if src['until'] != 0 else None
+            if int(src['until']) != 0:
+                course.until = src['until']
             course.save()
 
             for id in src['categories']:
