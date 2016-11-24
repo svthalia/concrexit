@@ -33,9 +33,6 @@ from TranslatedModelAdmin instead;
 """
 
 
-I18N_FIELD_FORMAT = '{}_{}'
-
-
 class MultilingualField(object):
 
     def __init__(self, cls, *args, **kwargs):
@@ -50,10 +47,16 @@ class MultilingualField(object):
         self.kwargs = kwargs
 
 
+def localize_attr_name(attr_name, language=None):
+    if language is None:
+        language = get_language()
+    return '{}_{}'.format(attr_name, language)
+
+
 def _i18n_attr_accessor(attr):
 
     def accessor(self):
-        return getattr(self, I18N_FIELD_FORMAT.format(attr, get_language()))
+        return getattr(self, localize_attr_name(attr))
 
     return accessor
 
@@ -83,7 +86,7 @@ class ModelTranslateMeta(models.base.ModelBase):
                                                            attr))
             fields = []
             for lang in settings.LANGUAGES:
-                attr_i18n = I18N_FIELD_FORMAT.format(attr, lang[0])
+                attr_i18n = localize_attr_name(attr, lang[0])
                 verbose_name = string_concat(
                     verbose_base[1], ' (', lang[0].upper(), ')')
                 if verbose_base[0] == 'args':
@@ -96,7 +99,7 @@ class ModelTranslateMeta(models.base.ModelBase):
                 dct[attr_i18n] = field.cls(*field.args, **field.kwargs)
                 fields.append(attr_i18n)
             dct[attr] = property(_i18n_attr_accessor(attr))
-            default = I18N_FIELD_FORMAT.format(attr, settings.LANGUAGE_CODE)
+            default = localize_attr_name(attr, settings.LANGUAGE_CODE)
             if default not in dct:
                 raise ImproperlyConfigured("LANGUAGE_CODE not in LANGUAGES.")
             field_i18n['default'][attr] = default
