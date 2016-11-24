@@ -14,6 +14,14 @@
 <!-- favicon -->
 <link rel="icon" href="{% static "images/favicon.ico" %}" type="image/png">
 
+<!-- icons for browser customisation -->
+<link rel="icon" sizes="192x192" href="{% static "images/browser_icons/icon.png" %}">
+<link rel="apple-touch-icon" href="{% static "images/browser_icons/icon.png" %}">
+<meta name="msapplication-square70x70logo" content="{% static "images/browser_icons/icon-smalltile.png" %}">
+<meta name="msapplication-square150x150logo" content="{% static "images/browser_icons/icon-mediumtile.png" %}">
+<meta name="msapplication-wide310x150logo" content="{% static "images/browser_icons/icon-widetile.png" %}">
+<meta name="msapplication-square310x310logo" content="{% static "images/browser_icons/icon-largetile.png" %}">
+
 <!-- css stylesheets -->
 {% block css_head %}
 {% compress css %}
