@@ -4,6 +4,7 @@ from functools import reduce
 
 from django.conf import settings
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -344,6 +345,17 @@ class Member(models.Model):
 
     def get_absolute_url(self):
         return reverse('members:profile', args=[str(self.pk)])
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        if self.display_name_preference in ('nickname', 'fullnick',
+                                            'nicklast'):
+            if not self.nickname:
+                errors.update(
+                    {'nickname': _('You need to enter a nickname to use it as '
+                                   'display name')})
+        raise ValidationError(errors)
 
     def __str__(self):
         return '{} ({})'.format(self.get_full_name(), self.user.username)
