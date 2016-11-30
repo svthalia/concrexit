@@ -315,6 +315,12 @@ class Registration(models.Model):
         return bool(self.name)
 
     def is_late_cancellation(self):
+        # First check whether or not the user cancelled
+        # If the user cancelled then check if this was after the deadline
+        # And do a complex check to calculate if this user was on
+        # the waiting list at the time of cancellation, since
+        # you shouldn't need to pay the costs of something
+        # you weren't even able to go to.
         return (self.date_cancelled and
                 self.date_cancelled > self.event.cancel_deadline and
                 self.event.registration_set.filter(
