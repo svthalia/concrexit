@@ -2799,12 +2799,6 @@ body {
             display: block;
         }
 
-        .gallery-photo, .member-item, .committee-item, .gallery-album {
-            &.first-child {
-                margin-left: 0;
-            }
-        }
-
         .post {
             & > a {
                 display: block;
