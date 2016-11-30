@@ -18,4 +18,4 @@
 *.css     text
 *.html    text
 *.sql     text
-*.po      text
+*.po      text merge=binary
