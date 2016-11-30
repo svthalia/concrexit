@@ -70,7 +70,7 @@ class EventAdmin(DoNextModelAdmin):
     def num_participants(self, obj):
         """Pretty-print the number of participants"""
         num = (obj.registration_set
-               .filter(date_cancelled__lt=timezone.now()).count())
+               .exclude(date_cancelled__lt=timezone.now()).count())
         if not obj.max_participants:
             return '{}/∞'.format(num)
         return '{}/{}'.format(num, obj.max_participants)
