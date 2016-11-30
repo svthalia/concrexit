@@ -8,7 +8,7 @@ New new Thalia website, now with extra Django.
 Getting started
 ---------------
 
-If you use Docker, please look at [this part](#Docker) of the README.
+If you use Docker, please look at [this part](#docker) of the README.
 
 0. Get at least Python 3.4 and install the Pillow requirements as per below.
 1. Clone this repository
