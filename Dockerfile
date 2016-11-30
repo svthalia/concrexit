@@ -32,6 +32,7 @@ RUN apk add --no-cache \
     libxml2 \
     libxslt \
     libffi \
+    ghostscript \
     libjpeg-turbo
 
 # Install build deps
