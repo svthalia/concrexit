@@ -291,7 +291,8 @@ class Registration(models.Model):
         blank=True
     )
 
-    date = models.DateTimeField(_('registration date'), auto_now_add=True)
+    date = models.DateTimeField(_('registration date'),
+                                default=timezone.now)
     date_cancelled = models.DateTimeField(_('cancellation date'),
                                           null=True,
                                           blank=True)
