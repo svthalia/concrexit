@@ -1555,54 +1555,68 @@ body {
         top: 22px;
         width: auto !important;
         white-space: nowrap;
-    }
-    [class^="title-meta"] span {
-        display: block;
-        background: none;
-        float: left;
-        margin: 0;
-        padding: 0;
-        position: relative;
-    }
-    [class^="title-meta"] span a {
-        display: block;
-        height: 24px;
-        margin-left: 5px;
-        width: 24px;
-    }
-    [class^="title-meta"] span a.prev {
-        background: url('../images/misc/icon_next_prev.png') 0 0 no-repeat;
-        background-size: 48px 48px;
-    }
-    [class^="title-meta"] span a.next {
-        background: url('../images/misc/icon_next_prev.png') -24px 0 no-repeat;
-        background-size: 48px 48px;
-    }
-    [class^="title-meta"] span a.back {
-        background: url('../images/misc/icon_back.png') 0 0 no-repeat;
-        background-size: 48px 24px;
-    }
-    [class^="title-meta"] span a.prev:hover {
-        background-position: 0 -24px;
-    }
-    [class^="title-meta"] span a.next:hover {
-        background-position: -24px -24px;
-    }
-    [class^="title-meta"] span a.back:hover {
-        background-position: -24px 0;
-    }
-    [class^="title-meta"] span a.calendar {
-        background-color: #e62272;
-        color: #000000;
 
-        &:hover {
-            color: #e62272;
-            background-color: #000000;
-        }
+        span {
+            display: block;
+            background: none;
+            float: left;
+            margin: 0;
+            padding: 0;
+            position: relative;
 
-        .fa {
-            margin-top: 6px;
-            margin-left: 1px;
+            a {
+                display: block;
+                height: 24px;
+                width: 24px;
+                margin-left: 5px;
+
+                &.download {
+                    background: url('../images/misc/icon_download.png') no-repeat 0 -24px;
+                    background-size: 24px auto;
+                    &:hover {
+                        background-position: 0 0;
+                    }
+                }
+
+                &.prev {
+                    background: url('../images/misc/icon_next_prev.png') 0 0 no-repeat;
+                    background-size: 48px 48px;
+                    &:hover {
+                        background-position: 0 -24px;
+                    }
+                }
+
+                &.next {
+                    background: url('../images/misc/icon_next_prev.png') -24px 0 no-repeat;
+                    background-size: 48px 48px;
+                    &:hover {
+                        background-position: -24px -24px;
+                    }
+                }
+
+                &.back {
+                    background: url('../images/misc/icon_back.png') 0 0 no-repeat;
+                    background-size: 48px 24px;
+                    &:hover {
+                        background-position: -24px 0;
+                    }
+                }
+
+                &.calendar {
+                    background-color: #e62272;
+                    color: #000000;
+
+                    &:hover {
+                        color: #e62272;
+                        background-color: #000000;
+                    }
+
+                    .fa {
+                        margin-top: 6px;
+                        margin-left: 1px;
+                    }
+                }
+            }
         }
     }
 
