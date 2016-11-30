@@ -24,7 +24,7 @@ class Command(legacylogin.Command):
 
         print("Migrating the general meetings")
         url = "https://thalia.nu/ajax/alvyearview?year={}"
-        for year in range(1990, 2016):
+        for year in range(1990, 2017):
             print("Migrating {}".format(year))
             src = self.session.get(url.format(year)).text
             soup = BeautifulSoup(src, 'lxml')

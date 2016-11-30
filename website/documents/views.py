@@ -28,7 +28,7 @@ def index(request):
                     except ValueError:
                         docs.remove(doc)
 
-    meeting_years = {x: [] for x in range(1990, timezone.now().year)}
+    meeting_years = {x: [] for x in range(1990, timezone.now().year + 1)}
     for obj in GeneralMeeting.objects.all():
         meeting_years[datetime_to_lectureyear(obj.datetime)].append(obj)
 
