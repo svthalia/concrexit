@@ -11,7 +11,7 @@
 {% block body %}
 <h1>{{ album.title }}
 <span class="title-meta clearfix">
-        <span><a href="{% url 'photos:album-download' album.slug %}" class="overlay-icon-download"></a></span>
+        <span><a href="{% url 'photos:album-download' album.slug %}" class="download"></a></span>
         <span><a href="{% url 'photos:index' %}" class="back"></a></span>
     </span>
 <span class="title-meta clearfix">
