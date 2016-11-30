@@ -176,7 +176,7 @@ class Command(BaseCommand):
 
             cancelled_date = registration_data['canceled']
             if cancelled_date:
-                new_registration.cancelled_date = naive_to_aware(
+                new_registration.date_cancelled = naive_to_aware(
                     cancelled_date)
 
             new_registration.save()
