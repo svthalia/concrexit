@@ -14,7 +14,7 @@
 <div class="gallery">
   <ul class="gallery-albums row">
     {% for album in albums %}
-    <li class="post gallery-album span3 has-overlay {% if forloop.counter0|divisibleby:4 %}first-child{% endif %}">
+    <li class="post gallery-album span3 has-overlay">
       <a href="{% url 'photos:album' album.slug %}">
         <span class="post-inner">
           <span class="inner-img">

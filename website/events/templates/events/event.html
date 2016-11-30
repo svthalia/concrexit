@@ -174,7 +174,7 @@
             <h1 class="midhead">{% trans "Registrations" %}</h1>
             <ul class="member-directory row">
                 {% for registration in registrations %}
-                    <li class="post member-item span3 has-overlay{% if forloop.counter0|divisibleby:4 %} first-child{% endif %}">
+                    <li class="post member-item span3 has-overlay">
                     {% if registration.is_external %}
                         <a href="#">
                             <div class="post-inner">
