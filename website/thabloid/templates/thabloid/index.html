@@ -26,7 +26,7 @@
                         <h2>{{ thabloid.year }}-{{ thabloid.year|add:1 }}, #{{ thabloid.issue }}</h2>
                     </div>
                     <ul class="post-overlay-icons">
-                        <li><span></span><a class="gallery-box overlay-icon-open" data-fancybox-type='iframe' href="{% url 'thabloid:viewer' thabloid.year thabloid.issue %}"></a></li>
+                        <li><span></span><a class="overlay-icon-open open-thabloid" href="{% url 'thabloid:pages' thabloid.year thabloid.issue %}"></a></li>
                         <li><span></span><a class="overlay-icon-link" href="{{ thabloid.file.url }}" target="_blank"></a></li>
                     </ul>
                 </div>
@@ -35,4 +35,27 @@
     {% endfor %}
     </ul>
 </div>
+{% endblock %}
+
+{% block js_footer %}
+<script>
+    $('.open-thabloid').on('click', function(event) {
+        event.preventDefault();
+        $.ajax(this.href).success(function(data) {
+            $.fancybox(data,
+            {
+                padding: 0,
+                loop: false,
+                openEffect: 'elastic',
+                closeEffect: 'elastic',
+                helpers: {
+                    overlay: {
+                        css: {'background-color': 'rgba(0, 0, 0, 0.9)'},
+                        locked: true
+                    }
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

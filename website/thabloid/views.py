@@ -1,5 +1,7 @@
-from django.db.models import Max
 from django.shortcuts import get_object_or_404, render
+from django.db.models import Max
+from django.conf import settings
+from django.http import JsonResponse
 
 from .models import Thabloid
 
@@ -11,6 +13,7 @@ def index(request):
     return render(request, 'thabloid/index.html', context)
 
 
-def viewer(request, year, issue):
+def pages(request, year, issue):
     thabloid = get_object_or_404(Thabloid, year=int(year), issue=int(issue))
-    return render(request, 'thabloid/viewer.html', {'thabloid': thabloid})
+    pages = ['{}{}'.format(settings.MEDIA_URL, p) for p in thabloid.pages]
+    return JsonResponse(pages, safe=False)
