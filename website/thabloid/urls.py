@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from . import views
 
-app_name='thabloid'
+app_name = 'thabloid'
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
