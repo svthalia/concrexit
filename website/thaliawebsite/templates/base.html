@@ -72,7 +72,7 @@
 
             {% if not user.is_authenticated %}
                 <div class="btn-group open" id="account-menu">
-                    <a class="btn btn-default" href="{% url 'login' %}?next={{ request.path }}"><i class="fa fa-user"></i>{% trans "Login" %}</a>
+                    <a class="btn btn-default" href="{% url 'login' %}{% if request.path != '/logout/' %}?next={{ request.path }}{% endif %}"><i class="fa fa-user"></i>{% trans "Login" %}</a>
                 </div>
             {% else %}
                 <div class="btn-group" id="account-menu">
