@@ -8,6 +8,8 @@ New new Thalia website, now with extra Django.
 Getting started
 ---------------
 
+If you use Docker, please look at [this part](#docker) of the README.
+
 0. Get at least Python 3.4 and install the Pillow requirements as per below.
 1. Clone this repository
 2. Run `source ./source_me.sh` (or use your own favourite virtualenv solution)
@@ -64,3 +66,18 @@ To create translations for your app:
 2. Dit zou bestanden onder `<appnaam>/locale/` aangemaakt of bijgewerkt moeten hebben.
 3. Gebruik poedit (of je favoriete tool -- liever niet een simpele texteditor want die kan niet met alle subtiliteiten omgaan) om de vertaling te fixen.
 4. `./manage.py compilemessages`
+
+Docker
+------
+
+First run with Docker:
+
+1. `docker-compose up -d`
+2. `docker-compose run web migrate`
+3. `docker-compose run web createsuperuser`
+
+Step 1. may take a while since `docker-compose` needs to retrieve all dependencies
+and build the Docker images. Step 2. creates the necessary tables and step 3.
+creates a superuser, as the command implies.
+
+After step 3. you can access the Thalia website locally through http://localhost:8000/
