@@ -1,12 +1,14 @@
 from django.shortcuts import get_object_or_404, render
-from utils.translation import localize_attr_name
 
+from utils.translation import localize_attr_name
 from .models import Board, Committee, CommitteeMembership
 
 
 def committee_index(request):
     """Overview of committees"""
-    committees = Committee.objects.all().order_by(localize_attr_name('name'))
+
+    committees = Committee.active_committees.all().order_by(
+        localize_attr_name('name'))
 
     return render(request, 'activemembers/committee_index.html',
                   {'committees': committees})

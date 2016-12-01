@@ -7,165 +7,164 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-26 20:26+0200\n"
-"PO-Revision-Date: 2016-09-11 14:29+0200\n"
-"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"POT-Creation-Date: 2016-12-05 16:36+0100\n"
+"PO-Revision-Date: 2016-12-05 16:31+0100\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.11\n"
 
-#: activemembers/models.py:43
+#: models.py:43
 msgid "Committee name"
 msgstr "Commissienaam"
 
-#: activemembers/models.py:49
+#: models.py:49
 msgid "Description"
 msgstr "Beschrijving"
 
-#: activemembers/models.py:53
+#: models.py:53
 msgid "Image"
 msgstr "Afbeelding"
 
-#: activemembers/models.py:66
+#: models.py:66
 msgid "permissions"
 msgstr "permissies"
 
-#: activemembers/models.py:71
+#: models.py:71
 msgid "founded in"
 msgstr "opgericht in"
 
-#: activemembers/models.py:77
+#: models.py:77
 msgid "existed until"
 msgstr "bestond tot"
 
-#: activemembers/models.py:82
+#: models.py:84
 msgid "contact email address"
 msgstr "contact e-mailadres"
 
-#: activemembers/models.py:85
+#: models.py:87
 msgid "Wiki namespace"
-msgstr ""
+msgstr "Wiki namespace"
 
-#: activemembers/models.py:97
+#: models.py:99
 msgid "committee"
 msgstr "commissie"
 
-#: activemembers/models.py:98
-#: activemembers/templates/activemembers/committee_index.html:6
+#: models.py:100 templates/activemembers/committee_index.html:6
 msgid "committees"
 msgstr "commissies"
 
-#: activemembers/models.py:110
+#: models.py:112
 msgid "Is this a board"
 msgstr "Is dit een bestuur"
 
-#: activemembers/models.py:132 activemembers/models.py:247
+#: models.py:137 models.py:252
 msgid "Member"
 msgstr "Lid"
 
-#: activemembers/models.py:138
+#: models.py:143
 msgid "Committee"
 msgstr "Commissie"
 
-#: activemembers/models.py:142
+#: models.py:147
 msgid "Committee member since"
 msgstr "Commissielid sinds"
 
-#: activemembers/models.py:143
+#: models.py:148
 msgid "The date this member joined the committee in this role"
 msgstr "De datum waarop deze persoon lid werd deze commissie in deze rol"
 
-#: activemembers/models.py:148
+#: models.py:153
 msgid "Committee member until"
 msgstr "Commissielid tot"
 
-#: activemembers/models.py:149
+#: models.py:154
 msgid "A member of this committee until this time (can't be in the future)."
 msgstr ""
 "De datum waarop deze persoon de commissie verliet (kan niet in de toekomst "
 "liggen)"
 
-#: activemembers/models.py:156
+#: models.py:161
 msgid "Chair of the committee"
 msgstr "Voorzitter van de commissie"
 
-#: activemembers/models.py:157
+#: models.py:162
 msgid "There can only be one chair at a time!"
 msgstr "Er kan maar één voorzitter tegelijkertijd zijn!"
 
-#: activemembers/models.py:163
+#: models.py:168
 msgid "role"
 msgstr "rol"
 
-#: activemembers/models.py:164
+#: models.py:169
 msgid "The role of this member"
 msgstr "De rol van dit lid binnen de commissie"
 
-#: activemembers/models.py:179
+#: models.py:184
 msgid "Membership expiration date can't be in the future: '{}'"
 msgstr "Een lidmaatschap kan niet verlopen in de toekomst: ‘{]’"
 
-#: activemembers/models.py:185
+#: models.py:190
 msgid "End date can't be before start date"
 msgstr "De einddatum kan niet voor de startdatum liggen"
 
-#: activemembers/models.py:199
+#: models.py:204
 msgid "This committee already has a chair"
 msgstr "Deze commissie heeft al een voorzitter"
 
-#: activemembers/models.py:216
+#: models.py:221
 msgid "This member is already in the committee"
 msgstr "Deze persoon is al lid van deze commissie"
 
-#: activemembers/models.py:219
+#: models.py:224
 msgid "This member is already in the committee for this period"
 msgstr "Deze persoon is al lid van deze commissie in de aangegeven periode"
 
-#: activemembers/models.py:239
+#: models.py:244
 msgid "committee membership"
 msgstr "commissielidmaatschap"
 
-#: activemembers/models.py:240
+#: models.py:245
 msgid "committee memberships"
 msgstr "commissielidmaatschappen"
 
-#: activemembers/models.py:252
+#: models.py:257
 #, fuzzy, python-brace-format
 #| msgid "Mentor introduction {year}"
 msgid "{name} mentor in {year}"
 msgstr "Mentor introductie {year}"
 
-#: activemembers/templates/activemembers/board_detail.html:4
-#: activemembers/templates/activemembers/board_detail.html:8
-#: activemembers/templates/activemembers/board_index.html:32
-#: activemembers/templates/activemembers/board_index.html:37
+#: templates/activemembers/board_detail.html:4
+#: templates/activemembers/board_detail.html:8
+#: templates/activemembers/board_index.html:32
+#: templates/activemembers/board_index.html:37
 msgid "Board"
 msgstr "Besturen"
 
-#: activemembers/templates/activemembers/board_detail.html:4
-#: activemembers/templates/activemembers/board_index.html:3
-#: activemembers/templates/activemembers/board_index.html:6
+#: templates/activemembers/board_detail.html:4
+#: templates/activemembers/board_index.html:3
+#: templates/activemembers/board_index.html:6
 msgid "Boards"
 msgstr "Besturen"
 
-#: activemembers/templates/activemembers/board_detail.html:26
+#: templates/activemembers/board_detail.html:26
 msgid "Board members"
 msgstr "Bestuursleden"
 
-#: activemembers/templates/activemembers/board_detail.html:42
-#: activemembers/templates/activemembers/committee_detail.html:44
+#: templates/activemembers/board_detail.html:42
+#: templates/activemembers/committee_detail.html:44
 msgid "Chair"
 msgstr "Voorzitter"
 
-#: activemembers/templates/activemembers/board_detail.html:59
+#: templates/activemembers/board_detail.html:59
 msgid "This board doesn't have any members?"
 msgstr "Dit bestuur heeft geen leden?"
 
-#: activemembers/templates/activemembers/board_index.html:9
+#: templates/activemembers/board_index.html:9
 msgid ""
 "Thalia's board makes sure all operations during the academic year are taken "
 "care of, in front or behind the scenes. If you have any questions then you "
@@ -178,41 +177,41 @@ msgstr ""
 "schermen. Bij vragen en opmerkingen kun je ze altijd persoonlijk aanspreken "
 "of <a href=\"mailto:info@thalia.nu\">mailen</a>."
 
-#: activemembers/templates/activemembers/board_index.html:24
-#: activemembers/templates/activemembers/committee_detail.html:18
-#: activemembers/templates/activemembers/committee_detail.html:20
+#: templates/activemembers/board_index.html:24
+#: templates/activemembers/committee_detail.html:18
+#: templates/activemembers/committee_detail.html:20
 #, python-format
 msgid "Photo of %(name)s"
 msgstr "Foto van %(name)s"
 
-#: activemembers/templates/activemembers/board_index.html:44
+#: templates/activemembers/board_index.html:44
 msgid "There are no boards!"
 msgstr "Er zijn geen besturen!"
 
-#: activemembers/templates/activemembers/committee_detail.html:3
-#: activemembers/templates/activemembers/committee_index.html:3
+#: templates/activemembers/committee_detail.html:3
+#: templates/activemembers/committee_index.html:3
 msgid "Committees"
 msgstr "Commissies"
 
-#: activemembers/templates/activemembers/committee_detail.html:24
+#: templates/activemembers/committee_detail.html:24
 #, python-format
 msgid "About the %(name)s"
 msgstr "Over de %(name)s"
 
-#: activemembers/templates/activemembers/committee_detail.html:28
+#: templates/activemembers/committee_detail.html:28
 msgid "Committee members"
 msgstr "Commissieleden"
 
-#: activemembers/templates/activemembers/committee_detail.html:51
+#: templates/activemembers/committee_detail.html:51
 #, python-format
 msgid "Committee member since: %(since)s"
 msgstr "Commissielid sinds: %(since)s"
 
-#: activemembers/templates/activemembers/committee_detail.html:61
+#: templates/activemembers/committee_detail.html:61
 msgid "This committee doesn't have any members?"
 msgstr "Deze commissie heeft geen leden?"
 
-#: activemembers/templates/activemembers/committee_index.html:39
+#: templates/activemembers/committee_index.html:39
 msgid "There are no committees!"
 msgstr "Er zijn geen commissies!"
 
