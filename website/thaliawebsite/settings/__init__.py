@@ -8,3 +8,5 @@ except ImportError:
 
 if os.environ.get('DJANGO_PRODUCTION'):
     from .production import *
+if os.environ.get('GITLAB_CI'):
+    from .testing import *

@@ -1,3 +1,12 @@
+variables:
+  POSTGRES_DB: thalia
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: ""
+  CI_DEPS: psycopg2
+
+services:
+  - postgres:latest
+
 pep8:
   image: python:3.4
   before_script:
