@@ -16,8 +16,7 @@ services:
             - postgres
         volumes:
             - ./website:/usr/src/app
-            - /concrexit/media
-            - /concrexit/static
+            - /concrexit/
         environment:
             <<: *postgresvars
             DJANGO_DEBUG: 'True'
