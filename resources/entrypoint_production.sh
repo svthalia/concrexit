@@ -26,4 +26,5 @@ uwsgi --chdir /usr/src/app \
     --vacuum \
     --limit-post 0 \
     --post-buffering 16384 \
+    --thunder-lock \
     --logto '/concrexit/log/uwsgi.log'
