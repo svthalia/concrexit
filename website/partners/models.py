@@ -1,7 +1,7 @@
 from django.core.validators import RegexValidator, URLValidator
 from django.db import models
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from tinymce.models import HTMLField
 
 from utils.translation import ModelTranslateMeta, MultilingualField
@@ -30,12 +30,12 @@ class Partner(models.Model):
             regex=(r'^([1-9][e][\s])*([ëéÉËa-zA-Z]'
                    '+(([\.][\s])|([\s]))?)+[1-9][0-9]'
                    '*(([-][1-9][0-9]*)|([\s]?[ëéÉËa-zA-Z]+))?$'),
-            message='Enter a valid address')
+            message=_('Enter a valid address'))
     ])
     zip_code = models.CharField(max_length=12, validators=[
         RegexValidator(
             regex=r'^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$',
-            message='Enter a valid zip code'
+            message=_('Enter a valid zip code')
         )
     ])
     city = models.CharField(max_length=100)
@@ -71,7 +71,7 @@ class PartnerImage(models.Model):
     image = models.ImageField(upload_to='public/partners/images/')
 
     def __str__(self):
-        return 'image of {}'.format(self.partner.name)
+        return ugettext('image of {}').format(self.partner.name)
 
 
 class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
@@ -82,7 +82,7 @@ class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Vanancy Categories'
+        verbose_name_plural = _('Vacancy Categories')
 
 
 class Vacancy(models.Model):
@@ -99,8 +99,8 @@ class Vacancy(models.Model):
         on_delete=models.PROTECT,
         null=True,
         blank=True,
-        help_text="When you use a partner, the company name and logo " +
-                  "below will not be used."
+        help_text=_("When you use a partner, the company name and logo "
+                    "below will not be used.")
     )
 
     company_name = models.CharField(max_length=255, blank=True)
@@ -123,10 +123,10 @@ class Vacancy(models.Model):
         return self.company_logo
 
     def __str__(self):
-        return self.get_company_name() + ' - ' + self.title
+        return '{} — {}'.format(self.get_company_name(), self.title)
 
     class Meta:
-        verbose_name_plural = 'Vacancies'
+        verbose_name_plural = _('Vacancies')
 
 
 class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
