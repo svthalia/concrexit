@@ -1,5 +1,4 @@
 import json
-import re
 from datetime import datetime
 
 import requests
@@ -9,7 +8,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils import translation
-from django.conf import settings
 
 import pizzas.models as pizzas_models
 import events.models as events_models
@@ -51,7 +49,6 @@ class Command(BaseCommand):
             print('[!]No json data found')
             return
 
-
         activity_map = {}
         product_map = {}
 
@@ -68,7 +65,8 @@ class Command(BaseCommand):
                 event = events.first()
             else:
                 for e in events:
-                    if 'borrel' in e.title_nl or 'Programmeerwedstrijd' in e.title_nl:
+                    if 'borrel' in e.title_nl or 'Programmeerwedstrijd'\
+                            in e.title_nl:
                         event = e
 
             new_event = pizzas_models.PizzaEvent(
@@ -96,8 +94,12 @@ class Command(BaseCommand):
             if order_data['username'] is None:
                 member = None
             else:
-                registration_user = User.objects.get(username=order_data['username'])
-                member = members_models.Member.objects.get(user=registration_user)
+                registration_user = User.objects.get(
+                    username=order_data['username']
+                )
+                member = members_models.Member.objects.get(
+                    user=registration_user
+                )
             new_order = pizzas_models.Order(
                 member=member,
                 paid=order_data['paid'],
