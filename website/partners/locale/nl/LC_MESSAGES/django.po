@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-26 20:26+0200\n"
-"PO-Revision-Date: 2016-08-13 12:03+0200\n"
+"POT-Creation-Date: 2016-12-02 13:12+0100\n"
+"PO-Revision-Date: 2016-12-02 13:13+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,39 +16,63 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: partners/models.py:33
+msgid "Enter a valid address"
+msgstr "Voer een geldig adres in"
+
+#: partners/models.py:38
+msgid "Enter a valid zip code"
+msgstr "Voer een geldige postcode in"
+
+#: partners/models.py:74
+msgid "image of {}"
+msgstr "Plaatje van {}"
+
+#: partners/models.py:85
+msgid "Vacancy Categories"
+msgstr "Vacaturecategorieën"
+
+#: partners/models.py:102
+msgid ""
+"When you use a partner, the company name and logo below will not be used."
+msgstr ""
+"Wanneer je een partner aangeeft, zullen de bedrijfsnaam en logo hieronder "
+"niet gebruikt worden."
+
+#: partners/models.py:129 partners/templates/partners/partner.html:75
+#: partners/templates/partners/vacancies.html:5
+msgid "Vacancies"
+msgstr "Vacatures"
 
 #: partners/models.py:141
 msgid "title"
-msgstr ""
+msgstr "titel"
 
 #: partners/models.py:147
 msgid "description"
-msgstr ""
+msgstr "beschrijving"
 
 #: partners/models.py:152
-#, fuzzy
-#| msgid "Information"
 msgid "location"
-msgstr "Informatie"
+msgstr "locatie"
 
 #: partners/models.py:156
 msgid "start time"
-msgstr ""
+msgstr "starttijd"
 
 #: partners/models.py:158
 msgid "end time"
-msgstr ""
+msgstr "eindtijd"
 
 #: partners/models.py:160
-#, fuzzy
-#| msgid "Website"
 msgid "website"
-msgstr "Website"
+msgstr "website"
 
 #: partners/models.py:162
 msgid "published"
-msgstr ""
+msgstr "gepubliceerd"
 
 #: partners/templates/partners/index.html:6
 msgid "Our partners"
@@ -120,11 +144,6 @@ msgstr "Plaatsnaam"
 #: partners/templates/partners/partner.html:63
 msgid "Website"
 msgstr "Website"
-
-#: partners/templates/partners/partner.html:75
-#: partners/templates/partners/vacancies.html:5
-msgid "Vacancies"
-msgstr "Vacatures"
 
 #: partners/templates/partners/vacancies.html:7
 msgid ""
