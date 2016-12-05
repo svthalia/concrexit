@@ -17,8 +17,12 @@ from members.models import Member, Membership
 
 
 def imagefield_from_url(imagefield, url):
+    basename = os.path.basename(url)
+    if '?' in basename:
+        basename = '?'.join(basename.split('?')[:-1])
+
     file = ContentFile(requests.get(url).content)
-    imagefield.save(os.path.basename(url), file)
+    imagefield.save(basename, file)
 
 
 class Command(BaseCommand):
