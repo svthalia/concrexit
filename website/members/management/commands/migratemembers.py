@@ -82,9 +82,11 @@ class Command(BaseCommand):
             img = div.find('img')
             imagefield_from_url(obj.photo, "https://thalia.nu" + img['src'])
 
-        for member in data['members']:
+        for memberno, member in enumerate(data['members']):
             user, cr = User.objects.get_or_create(username=member['username'])
-            print("Migrating {}".format(member['username']))
+            print("Migrating {} ({}/{})".format(member['username'],
+                                                memberno,
+                                                len(data['members'])))
             user.username = member['username']
             user.email = member['email']
             # Concrete5 uses bcrypt passwords, which django can rehash
@@ -98,13 +100,13 @@ class Command(BaseCommand):
             except Member.DoesNotExist:
                 user.member = Member()
             user.member.programme = {
-                'Computer Science': 'computingsience',
+                'Computer Science': 'computingscience',
                 'Information Science': 'informationscience',
                 'Other': None,
                 '': None,
             }[member['study']]
             if member['student_number']:
-                user.member.student_number = member['student_number']
+                user.member.student_number = 's'+member['student_number']
             if member['member_since']:
                 # This is as best as we can do, although this may be incorrect
                 user.member.starting_year = member['member_since']
