@@ -38,7 +38,7 @@ def index(request):
                         query_filter == 'old'):
         members_query &= Q(starting_year=int(query_filter))
     elif query_filter == 'old':
-        memberships_query &= Q(starting_year__lt=start_year)
+        members_query &= Q(starting_year__lt=start_year)
     elif query_filter == 'ex':
         memberships = models.Membership.objects.filter(memberships_query)
         members_query &= ~Q(user__in=memberships.values('user'))
