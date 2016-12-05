@@ -69,6 +69,8 @@ class Command(BaseCommand):
             obj, cr = Committee.objects.get_or_create(
                 name_nl=committee['name'])
             obj.name_en = committee['name']
+            # Committees are active by default
+            obj.active = True
             print(obj.name_en)
             groups[committee['gID']] = obj
             obj.save()
