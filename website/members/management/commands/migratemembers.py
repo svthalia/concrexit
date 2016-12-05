@@ -169,7 +169,9 @@ class Command(BaseCommand):
                 membership.type = 'member'
             if member['membership_type'] == 'Honorary Member':
                 membership.type = 'honorary'
-            membership.save()
+
+            if membership.type is not None and membership.type != '':
+                membership.save()
 
             for membership in member['memberships']:
                 mdata = membership['membership']
