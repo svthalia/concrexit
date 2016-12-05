@@ -27,7 +27,7 @@ class ActiveCommitteeManager(models.Manager):
     def get_queryset(self):
         return (super().get_queryset()
                 .exclude(board__is_board=True)
-                .exclude(until__lt=timezone.now().date()))
+                .exclude(active=False))
 
 
 class Committee(models.Model, metaclass=ModelTranslateMeta):
@@ -78,6 +78,8 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
         null=True,
         blank=True,
     )
+
+    active = models.BooleanField(default=False)
 
     contact_email = models.EmailField(_('contact email address'))
 
