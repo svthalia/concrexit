@@ -41,12 +41,11 @@ def board_index(request):
 
 
 def board_detail(request, id):
-    """View the details of a committee"""
+    """View the details of a board"""
     board = get_object_or_404(Board, pk=id)
-
     members = []
     memberships = (CommitteeMembership
-                   .active_memberships
+                   .objects
                    .filter(committee=board)
                    .prefetch_related('member'))
 
