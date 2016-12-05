@@ -4612,12 +4612,12 @@ li.backLava:before {
 }
 
 /*Bootstrap being overwriten by tags*/
-.thimbus-page .portfolio .row {
-    margin-left: -20px;
-}
-
-.thimbus-page .blog .row {
-    margin-left: -20px;
+.thimbus-page {
+    .portfolio, .blog, .gallery {
+        .row {
+            margin-left: -20px;
+        }
+    }
 }
 
 /* header account menu */
