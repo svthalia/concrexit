@@ -106,7 +106,9 @@ class Command(BaseCommand):
                 '': None,
             }[member['study']]
             if member['student_number']:
-                user.member.student_number = 's'+member['student_number']
+                if not len(member['student_number']) == 8:
+                    member['student_number'] = 's' + member['student_number']
+                user.member.student_number = member['student_number']
             if member['member_since']:
                 # This is as best as we can do, although this may be incorrect
                 user.member.starting_year = member['member_since']
