@@ -1,13 +1,20 @@
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.http import (HttpResponseBadRequest,
                          HttpResponseForbidden, JsonResponse)
+from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from members.models import Member
+
+
+@login_required
+def styleguide(request):
+    return render(request, 'singlepages/styleguide.html')
 
 
 @require_POST
