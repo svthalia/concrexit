@@ -21,7 +21,7 @@ class CommitteeAdmin(TranslatedModelAdmin):
 class BoardAdmin(TranslatedModelAdmin):
     exclude = ('is_board',)
 
-    fields = ('name', 'description', 'photo', 'permissions',
+    fields = ('name', 'photo', 'permissions',
               'since', 'until',)
 
 
