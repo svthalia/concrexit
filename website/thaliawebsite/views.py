@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import authenticate
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import (HttpResponseBadRequest,
                          HttpResponseForbidden, JsonResponse)
 from django.utils import timezone
@@ -43,3 +44,8 @@ def wiki_login(request):
     return JsonResponse({'status': 'error',
                          'msg': 'Authentication Failed'},
                         status_code=403)
+
+
+@staff_member_required
+def crash(request):
+    raise Exception("Test exception")

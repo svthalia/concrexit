@@ -98,5 +98,7 @@ urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     # Javascript translation catalog
     url(r'jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    # XXX
+    url(r'crash/$', views.crash),
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))

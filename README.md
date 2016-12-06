@@ -63,8 +63,8 @@ Make sure to use British English.
 To create translations for your app:
 
 1. `./manage.py makemessages <appname>`
-2. Dit zou bestanden onder `<appnaam>/locale/` aangemaakt of bijgewerkt moeten hebben.
-3. Gebruik poedit (of je favoriete tool -- liever niet een simpele texteditor want die kan niet met alle subtiliteiten omgaan) om de vertaling te fixen.
+2. This will create or update the files under `<appname>/locale/`.
+3. Use poedit (or your favourite tool -- please do not use a plain text editor since those cannot handle all the subtleties) to fix the translations.
 4. `./manage.py compilemessages`
 
 Docker
