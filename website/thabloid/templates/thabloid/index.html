@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n thumbnail %}
 
+{% block title %}{% trans "Thabloid" %} — {{ block.super }}{% endblock %}
+
 {% block body %}
+<h1>{% trans "Thabloid" %}</h1>
+
 <div class="portfolio portfolio-isotope">
     <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
         <ul class="tabs">
