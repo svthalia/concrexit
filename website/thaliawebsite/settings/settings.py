@@ -207,6 +207,8 @@ STATIC_PRECOMPILER_LIST_FILES = True
 
 # Default FROM email
 DEFAULT_FROM_EMAIL = 'noreply@thalia.nu'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 
