@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bleach_tags%}
+{% load i18n static bleach_tags thumbnail %}
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 
@@ -179,7 +179,7 @@
                         <a href="#">
                             <div class="post-inner">
                                 <div class="inner-img">
-                                    <img src="{% static "members/images/default-avatar.jpg" %}">
+                                    <img alt="{{ registration.name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
                                 </div>
                                 <div class="post-overlay">
                                     <div class="post-overlay-meta">
@@ -196,7 +196,11 @@
                         <a href="{% url 'members:profile' pk=registration.member.pk %}">
                             <div class="post-inner">
                                 <div class="inner-img">
-                                    <img src="{% if not registration.member.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ registration.member.photo.url }}{% endif %}" alt="{{ registration.member.display_name }}" />
+                                    {% if not registration.member.photo %}
+                                    <img alt="{{ member.display_name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
+                                    {% else %}
+                                    <img alt="{{ member.display_name }}" src="{% thumbnail registration.member.photo '220x220' %}" width="220" height="220" />
+                                    {% endif %}
                                 </div>
                                 <div class="post-overlay">
                                     <div class="post-overlay-meta">
