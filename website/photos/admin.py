@@ -10,6 +10,15 @@ from .models import Album, Photo
 
 
 class AlbumForm(forms.ModelForm):
+
+    # Excuse my french
+    # https://stackoverflow.com/questions/4391776/django-admin-inline-forms-limit-foreign-key-queryset-to-a-set-of-values#4392047
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'instance' in kwargs:
+            self.fields['_cover'].queryset = Photo.objects.filter(
+                album=self.instance)
+
     album_archive = forms.FileField(
         required=False,
         help_text="Uploading a zip file adds all contained images as photos.",
