@@ -16,6 +16,7 @@ class CommitteeMembershipInline(admin.StackedInline):
 class CommitteeAdmin(TranslatedModelAdmin):
     inlines = (CommitteeMembershipInline,)
     list_filter = ('until',)
+    search_fields = ('name', 'description')
 
     fields = ('name', 'description', 'photo', 'permissions',
               'since', 'until', 'contact_email', 'wiki_namespace', 'active')
