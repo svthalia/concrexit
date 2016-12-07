@@ -1,7 +1,7 @@
 from django.contrib import admin
 
+from activemembers.forms import CommitteeMembershipForm
 from utils.translation import TranslatedModelAdmin
-
 from . import models
 
 
@@ -37,7 +37,11 @@ class BoardAdmin(TranslatedModelAdmin):
 
 @admin.register(models.CommitteeMembership)
 class CommitteeMembershipAdmin(TranslatedModelAdmin):
+    form = CommitteeMembershipForm
     list_display = ('member', 'committee', 'since', 'until', 'chair', 'role')
+    list_filter = ('committee',)
+    search_fields = ('member__user__first_name', 'member__user__last_name',
+                     'member__user__email')
 
 
 @admin.register(models.Mentorship)
