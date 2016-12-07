@@ -1,6 +1,6 @@
 $(function() {
     function scrollSlider(slider, direction) {
-        var wrapper = slider.children('.policywrapper');
+        var wrapper = slider.children('.policy-wrapper');
         var delta = direction * (slider.width() + 20); // +20 for margin
         if (wrapper.scrollLeft() + delta <= 0) {
             slider.children('.slider-control-prev').fadeOut(200);
