@@ -37,7 +37,7 @@ python35:
     PYTHON_VERSION: py35
 
 cache:
-  key: "$CI_BUILD_REF_NAME"
+  key: "$CI_BUILD_NAME"
   paths:
     - pip-cache
 
