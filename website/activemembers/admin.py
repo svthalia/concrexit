@@ -10,7 +10,7 @@ class CommitteeAdmin(TranslatedModelAdmin):
     list_filter = ('until',)
 
     fields = ('name', 'description', 'photo', 'permissions',
-              'since', 'until',)
+              'since', 'until', 'contact_email', 'wiki_namespace',)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
