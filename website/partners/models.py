@@ -112,6 +112,8 @@ class Vacancy(models.Model):
 
     categories = models.ManyToManyField(VacancyCategory, blank=True)
 
+    remarks = HTMLField(blank=True, help_text=_('not shown on the page'))
+
     def get_company_name(self):
         if self.partner:
             return self.partner.name

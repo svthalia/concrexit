@@ -52,6 +52,9 @@ class VacancyAdmin(admin.ModelAdmin):
         ('Categories', {
             'fields': ('categories', )
         }),
+        ('Other', {
+            'fields': ('remarks', )
+        })
     )
 
 
