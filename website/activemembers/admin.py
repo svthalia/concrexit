@@ -10,7 +10,7 @@ class CommitteeAdmin(TranslatedModelAdmin):
     list_filter = ('until',)
 
     fields = ('name', 'description', 'photo', 'permissions',
-              'since', 'until', 'contact_email', 'wiki_namespace',)
+              'since', 'until', 'contact_email', 'wiki_namespace', 'active')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -21,7 +21,7 @@ class CommitteeAdmin(TranslatedModelAdmin):
 class BoardAdmin(TranslatedModelAdmin):
     exclude = ('is_board',)
 
-    fields = ('name', 'description', 'photo', 'permissions',
+    fields = ('name', 'photo', 'permissions',
               'since', 'until',)
 
 

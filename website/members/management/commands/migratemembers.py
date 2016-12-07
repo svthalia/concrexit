@@ -17,8 +17,12 @@ from members.models import Member, Membership
 
 
 def imagefield_from_url(imagefield, url):
+    basename = os.path.basename(url)
+    if '?' in basename:
+        basename = '?'.join(basename.split('?')[:-1])
+
     file = ContentFile(requests.get(url).content)
-    imagefield.save(os.path.basename(url), file)
+    imagefield.save(basename, file)
 
 
 class Command(BaseCommand):
@@ -69,6 +73,8 @@ class Command(BaseCommand):
             obj, cr = Committee.objects.get_or_create(
                 name_nl=committee['name'])
             obj.name_en = committee['name']
+            # Committees are active by default
+            obj.active = True
             print(obj.name_en)
             groups[committee['gID']] = obj
             obj.save()
@@ -106,7 +112,9 @@ class Command(BaseCommand):
                 '': None,
             }[member['study']]
             if member['student_number']:
-                user.member.student_number = 's'+member['student_number']
+                if not len(member['student_number']) == 8:
+                    member['student_number'] = 's' + member['student_number']
+                user.member.student_number = member['student_number']
             if member['member_since']:
                 # This is as best as we can do, although this may be incorrect
                 user.member.starting_year = member['member_since']

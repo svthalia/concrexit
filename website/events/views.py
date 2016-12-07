@@ -232,7 +232,9 @@ def registration(request, event_id, action=None):
         elif action == 'cancel':
             if (obj is not None and
                     obj.date_cancelled is None):
-                if event.max_participants is not None:
+                if (event.max_participants is not None and
+                        Registration.objects.filter(event=event).count() >=
+                        event.max_participants):
                     # Prepare email to send to the first person on the waiting
                     # list
                     first_waiting = (Registration.objects

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-26 20:26+0200\n"
-"PO-Revision-Date: 2016-10-23 00:28+0200\n"
+"PO-Revision-Date: 2016-12-06 20:15+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.10\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: thaliawebsite/admin.py:4
 msgid "Thalia administration"
@@ -103,7 +103,7 @@ msgstr "Carrière"
 
 #: thaliawebsite/menus.py:25
 msgid "Partners"
-msgstr "Sponsoren"
+msgstr "Partners"
 
 #: thaliawebsite/menus.py:26
 msgid "Vacancies"

@@ -313,13 +313,15 @@ class Member(models.Model):
 
     def display_name(self):
         pref = self.display_name_preference
-        if pref == 'nickname':
+        if pref == 'nickname' and self.nickname is not None:
             return self.nickname
         if pref == 'firstname':
             return self.user.first_name
         elif pref == 'initials':
-            return '{} {}'.format(self.initials, self.user.last_name)
-        elif pref == 'fullnick':
+            if self.initials:
+                return '{} {}'.format(self.initials, self.user.last_name)
+            return self.user.last_name
+        elif pref == 'fullnick' and self.nickname is not None:
             return "{} '{}' {}".format(self.user.first_name,
                                        self.nickname,
                                        self.user.last_name)
@@ -332,10 +334,13 @@ class Member(models.Model):
 
     def short_display_name(self):
         pref = self.display_name_preference
-        if pref == 'nickname' or pref == 'nicklast':
+        if (self.nickname is not None and
+                (pref == 'nickname' or pref == 'nicklast')):
             return self.nickname
         elif pref == 'initials':
-            return '{} {}'.format(self.initials, self.user.last_name)
+            if self.initials:
+                return '{} {}'.format(self.initials, self.user.last_name)
+            return self.user.last_name
         else:
             return self.user.first_name
         return

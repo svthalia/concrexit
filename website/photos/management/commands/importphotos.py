@@ -21,7 +21,7 @@ class Command(BaseCommand):
             raise Exception("You must specify a directory to import")
 
         foldername = os.path.relpath(options['folder'])
-        album, date, title = foldername.split('_')
+        album, date, title = foldername.split('_', maxsplit=2)
         date = parse_date('{}-{}-{}'.format(date[:4], date[4:6], date[6:]))
         slug = slugify('-'.join([str(date), title]))
 

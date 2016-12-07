@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load i18n %}
+{% load thumbnail %}
 
 {% block title %}{% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 
@@ -54,7 +55,11 @@
 			<a href="{% url 'members:profile' pk=member.pk %}">
 				<div class="post-inner">
 					<div class="inner-img">
-                        <img src="{% if not member.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ member.photo.url }}{% endif %}" alt="{{ member.username }}" />
+                        {% if not member.photo %}
+                        <img alt="{{ member.display_name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
+                        {% else %}
+                        <img alt="{{ member.display_name }}" src="{% thumbnail member.photo '220x220' %}" width="220" height="220" />
+                        {% endif %}
                     </div>
 					<div class="post-overlay">
 						<div class="post-overlay-meta">
