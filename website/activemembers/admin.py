@@ -5,8 +5,16 @@ from utils.translation import TranslatedModelAdmin
 from . import models
 
 
+class CommitteeMembershipInline(admin.StackedInline):
+    model = models.CommitteeMembership
+    can_delete = False
+    ordering = ('since',)
+    extra = 0
+
+
 @admin.register(models.Committee)
 class CommitteeAdmin(TranslatedModelAdmin):
+    inlines = (CommitteeMembershipInline,)
     list_filter = ('until',)
 
     fields = ('name', 'description', 'photo', 'permissions',
@@ -19,6 +27,7 @@ class CommitteeAdmin(TranslatedModelAdmin):
 
 @admin.register(models.Board)
 class BoardAdmin(TranslatedModelAdmin):
+    inlines = (CommitteeMembershipInline,)
     exclude = ('is_board',)
 
     fields = ('name', 'photo', 'permissions',
