@@ -38,7 +38,7 @@
                 <li><span>{% trans "Study programme" %}: </span> {{ member.get_programme_display }}<br></li>
 
                 {% if member.website %}
-                <li><span>{% trans "Website" %}: </span> {{ member.website }}</li>
+                <li><span>{% trans "Website" %}: </span> <a href="{{ member.website }}">{{ member.website }}</a></li>
                 {% endif %}
 
                 {% if member.show_birthday %}
