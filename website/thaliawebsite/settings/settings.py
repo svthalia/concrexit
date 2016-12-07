@@ -85,7 +85,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'thaliawebsite.urls'
 
-
 # WARNING
 # Also update this in production.py!!!
 TEMPLATES = [
@@ -226,3 +225,13 @@ THALIAPP_API_KEY = ('5b2bff55b74f74678dd578f8f669e959'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 CORS_ALLOW_METHODS = ('GET', 'POST')
+
+# TinyMCE config
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': "advanced",
+    'theme_advanced_buttons1': "bold,italic,underline,separator," +
+                               "link,unlink,separator,bullist," +
+                               "numlist,separator,undo,redo",
+    'theme_advanced_toolbar_location': "top",
+    'relative_urls': False
+}
