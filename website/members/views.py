@@ -140,7 +140,7 @@ def edit_profile(request):
     saved = False
 
     if request.POST:
-        form = MemberForm(request.POST, instance=member)
+        form = MemberForm(request.POST, request.FILES, instance=member)
         if form.is_valid():
             saved = True
             form.save()
