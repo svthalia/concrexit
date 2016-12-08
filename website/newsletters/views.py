@@ -76,18 +76,18 @@ def admin_send(request, pk):
                           if member.is_active() is True]
 
             subject = newsletter.title
-            html_message = html_template.render(Context({
+
+            context = Context({
                 'newsletter': newsletter,
+                'agenda_events': newsletter.newsletterevent_set.all().order_by(
+                    'start_datetime'),
                 'main_partner': main_partner,
                 'lang_code': language,
                 'request': request
-            }))
-            text_message = text_template.render(Context({
-                'newsletter': newsletter,
-                'main_partner': main_partner,
-                'lang_code': language,
-                'request': request
-            }))
+            })
+
+            html_message = html_template.render(context)
+            text_message = text_template.render(context)
 
             msg = EmailMultiAlternatives(subject, text_message,
                                          to=[from_email],

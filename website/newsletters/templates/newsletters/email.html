@@ -71,7 +71,7 @@
                     <table style="width: 100%">
                         <tbody>
                         <td>
-                            {% for row in newsletter.newsletterevent_set.all|rows_distributed:2 %}
+                            {% for row in agenda_events|rows_distributed:2 %}
                              <td style="vertical-align: top;">
                                 {% for item in row %}
                                 <li style="font-family: Arial, sans-serif;"><i>{{ item.title }} - {{ item.start_datetime|date:"d F" }}</i></li>
