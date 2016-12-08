@@ -143,9 +143,9 @@ def edit_profile(request):
         form = MemberForm(request.POST, instance=member)
         if form.is_valid():
             saved = True
-            member = form.save()
-
-    form = MemberForm(instance=member)
+            form.save()
+    else:
+        form = MemberForm(instance=member)
 
     return render(request, 'members/edit_profile.html',
                   {'form': form, 'saved': saved})
