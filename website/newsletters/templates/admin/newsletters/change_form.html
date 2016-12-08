@@ -3,7 +3,19 @@
 
 {% block extrastyle %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/newsletters/css/forms.css' %}" />
+    {% compress css %}<link rel="stylesheet" type="text/x-scss" href="{% static 'admin/newsletters/css/forms.scss' %}" />{% endcompress %}
+{% endblock %}
+
+{% block object-tools %}
+    {{ block.super }}
+
+    {% if newsletter %}
+    <div class="submit-row newsletters-row">
+        <a href="{% url 'newsletters:admin-send' pk=newsletter.pk %}" class="default button">{% trans "Send newsletter to members" %}</a>
+        <a target="_blank" href="{% url 'newsletters:preview-localised' pk=newsletter.pk lang='en' %}" class="button">{% trans "Show preview" %} (EN)</a>
+        <a target="_blank" href="{% url 'newsletters:preview-localised' pk=newsletter.pk lang='nl' %}" class="button">{% trans "Show preview" %} (NL)</a>
+    </div>
+    {% endif %}
 {% endblock %}
 
 {% block submit_buttons_bottom %}
@@ -12,7 +24,8 @@
     {% if newsletter %}
     <div class="submit-row newsletters-row">
         <a href="{% url 'newsletters:admin-send' pk=newsletter.pk %}" class="default button">{% trans "Send newsletter to members" %}</a>
-        <a target="_blank" href="{{ newsletter.get_absolute_url }}" class="button">{% trans "Show preview" %}</a>
+        <a target="_blank" href="{% url 'newsletters:preview-localised' pk=newsletter.pk lang='en' %}" class="button">{% trans "Show preview" %} (EN)</a>
+        <a target="_blank" href="{% url 'newsletters:preview-localised' pk=newsletter.pk lang='nl' %}" class="button">{% trans "Show preview" %} (NL)</a>
     </div>
     {% endif %}
 {% endblock %}

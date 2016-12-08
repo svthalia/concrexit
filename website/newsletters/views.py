@@ -9,20 +9,34 @@ from django.utils import translation
 
 from datetime import datetime, timedelta, date
 
+from django.utils.translation import activate, get_language_info
+
 from members.models import Member
 from newsletters.models import Newsletter
 from partners.models import Partner
 
 
-def preview(request, pk):
+def preview(request, pk, lang=None):
     newsletter = get_object_or_404(Newsletter, pk=pk)
     partners = Partner.objects.filter(is_main_partner=True)
     main_partner = partners[0] if len(partners) > 0 else None
+    lang_code = request.LANGUAGE_CODE
+
+    if lang is not None:
+        try:
+            get_language_info(lang)
+            activate(lang)
+            lang_code = lang
+        except KeyError:
+            # Language code not recognised by get_language_info
+            pass
 
     return render(request, 'newsletters/email.html', {
         'newsletter': newsletter,
+        'agenda_events': newsletter.newsletterevent_set.all().order_by(
+            'start_datetime'),
         'main_partner': main_partner,
-        'lang_code': request.LANGUAGE_CODE
+        'lang_code': lang_code
     })
 
 
