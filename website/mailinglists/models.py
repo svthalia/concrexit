@@ -1,5 +1,6 @@
 from django.core import validators
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from activemembers.models import Committee
@@ -24,7 +25,8 @@ class MailingList(models.Model):
             yield member.user.email
 
         for committee in self.committees.all().prefetch_related("members"):
-            for member in committee.members.all():
+            for member in committee.members.exclude(
+                    commiteemembership__until__lt=timezone.now().date()):
                 yield member.user.email
 
         for address in self.addresses.all():
