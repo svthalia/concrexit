@@ -14,16 +14,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if not settings.MIGRATION_KEY:
             raise ImproperlyConfigured("MIGRATION_KEY not specified")
-        url = "https://thalia.nu/api/export_mail.php?apikey={}&lists".format(
-            settings.MIGRATION_KEY
-        )
+        url = ("https://oud.thalia.nu/api/export_mail.php"
+               "?apikey={}&lists".format(
+                settings.MIGRATION_KEY))
         lines = requests.get(url).text.split('\n')
 
         for lID in lines:
             if ':' in lID:
                 raise Exception("Turns out we actually used aliasses.")
             if lID.isnumeric():
-                url = ("https://thalia.nu/api/export_mail.php"
+                url = ("https://oud.thalia.nu/api/export_mail.php"
                        "?apikey={}&list={}".format(
                             settings.MIGRATION_KEY,
                             lID,
