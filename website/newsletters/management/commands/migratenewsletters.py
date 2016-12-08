@@ -58,7 +58,7 @@ class Command(BaseCommand):
 
                 newsletter.save()
 
-                start = 6 if "AGENDA" in all_tr[3].text else 5
+                start = 5 if "AGENDA" in all_tr[3].text else 4
 
                 items = all_tr[start:len(all_tr)]
 
