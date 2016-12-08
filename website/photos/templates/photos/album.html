@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
-{% load staticfiles i18n thumbnail shared_thumbnail %}
+{% load staticfiles i18n thumbnail shared_thumbnail compress %}
 
 {% block title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 
 {% block css_head %}
-{{ block.super }}
-<link href="{% static "photos/css/style.scss" %}" rel="stylesheet" type="text/scss">
+    {{ block.super }}
+    {% compress css %}
+    <link href="{% static "photos/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
+    {% endcompress %}
 {% endblock %}
 
 {% block body %}
