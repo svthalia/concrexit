@@ -49,12 +49,18 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         _("registration start"),
         null=True,
         blank=True,
+        help_text=_("If you set a registration period registration will be "
+                    "required. If you don't set one, registration won't be "
+                    "required.")
     )
 
     registration_end = models.DateTimeField(
         _("registration end"),
         null=True,
-        blank=True
+        blank=True,
+        help_text=_("If you set a registration period registration will be "
+                    "required. If you don't set one, registration won't be "
+                    "required.")
     )
 
     cancel_deadline = models.DateTimeField(
