@@ -135,3 +135,4 @@ LOGGING['handlers']['slack-error'] = {
     'class': 'django_slack.log.SlackExceptionHandler',
 }
 LOGGING['loggers']['django']['handlers'].append('slack-error')
+LOGGING['loggers']['django']['handlers'].remove('mail_admins')
