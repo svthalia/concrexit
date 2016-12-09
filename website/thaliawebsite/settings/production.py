@@ -7,6 +7,7 @@ See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
 
 import os
+from copy import deepcopy
 
 from django.utils.log import DEFAULT_LOGGING
 
@@ -129,7 +130,7 @@ SLACK_USERNAME = 'Concrexit'
 SLACK_ICON_EMOJI = ':pingu:'
 SLACK_FAIL_SILENTLY = True
 
-LOGGING = DEFAULT_LOGGING
+LOGGING = deepcopy(DEFAULT_LOGGING)
 LOGGING['handlers']['slack-error'] = {
     'level': 'ERROR',
     'class': 'django_slack.log.SlackExceptionHandler',
