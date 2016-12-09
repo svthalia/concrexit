@@ -26,7 +26,7 @@ class MailingList(models.Model):
 
         for committee in self.committees.all().prefetch_related("members"):
             for member in committee.members.exclude(
-                    commiteemembership__until__lt=timezone.now().date()):
+                    committeemembership__until__lt=timezone.now().date()):
                 yield member.user.email
 
         for address in self.addresses.all():
