@@ -179,12 +179,6 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
     def clean(self):
         """Validation"""
-        if self.until and self.until > timezone.now().date():
-            raise ValidationError({
-                'until': _("Membership expiration date can't be in the future:"
-                           " '{}'").format(self.until)
-            })
-
         if self.until and (not self.since or self.until < self.since):
             raise ValidationError(
                 {'until': _("End date can't be before start date")})
