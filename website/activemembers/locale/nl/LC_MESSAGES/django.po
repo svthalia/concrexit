@@ -106,15 +106,15 @@ msgstr "De rol van dit lid binnen de commissie"
 
 #: models.py:184
 msgid "Membership expiration date can't be in the future: '{}'"
-msgstr "Een lidmaatschap kan niet verlopen in de toekomst: ‘{]’"
+msgstr "Een lidmaatschap kan niet verlopen in de toekomst: '{}'"
 
 #: models.py:190
 msgid "End date can't be before start date"
 msgstr "De einddatum kan niet voor de startdatum liggen"
 
 #: models.py:204
-msgid "This committee already has a chair"
-msgstr "Deze commissie heeft al een voorzitter"
+msgid "There already is a chair for this time period"
+msgstr "Er is al een voorzitter voor deze periode"
 
 #: models.py:221
 msgid "This member is already in the committee"
