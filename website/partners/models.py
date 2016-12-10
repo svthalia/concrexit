@@ -59,7 +59,7 @@ class Partner(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('partner', args=(self.slug,))
+        return reverse('partners:partner', args=(self.slug,))
 
 
 class PartnerImage(models.Model):
