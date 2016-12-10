@@ -7,6 +7,15 @@ See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
 
 import os
+from copy import deepcopy
+
+from django.utils.log import DEFAULT_LOGGING
+
+from . import settings
+
+INSTALLED_APPS = settings.INSTALLED_APPS
+INSTALLED_APPS.remove('django_template_check')
+INSTALLED_APPS.append('django_slack')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(os.path.join(
@@ -113,3 +122,18 @@ if os.environ.get('DJANGO_EMAIL_HOST'):
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
+
+# Slack configuration
+SLACK_TOKEN = os.environ.get('DJANGO_SLACK_TOKEN')
+SLACK_CHANNEL = '#django'
+SLACK_USERNAME = 'Concrexit'
+SLACK_ICON_EMOJI = ':pingu:'
+SLACK_FAIL_SILENTLY = True
+
+LOGGING = deepcopy(DEFAULT_LOGGING)
+LOGGING['handlers']['slack-error'] = {
+    'level': 'ERROR',
+    'class': 'django_slack.log.SlackExceptionHandler',
+}
+LOGGING['loggers']['django']['handlers'].append('slack-error')
+LOGGING['loggers']['django']['handlers'].remove('mail_admins')
