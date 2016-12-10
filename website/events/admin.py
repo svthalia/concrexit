@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
@@ -10,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 from activemembers.models import Committee
 from members.models import Member
 from utils.translation import TranslatedModelAdmin
-
 from . import forms, models
 
 
@@ -108,11 +108,17 @@ class EventAdmin(DoNextModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'organiser':
             # Use custom queryset for organiser field
+            # Only get the current active committees the user is a member of
             try:
                 if not request.user.is_superuser:
                     member = request.user.member
-                    kwargs['queryset'] = Committee.active_committees.filter(
-                        members=member)
+                    kwargs['queryset'] = Committee.objects.filter(
+                        Q(committeemembership__member=member) &
+                        (
+                            Q(committeemembership__until=None) |
+                            Q(committeemembership__until__gt=timezone.now())
+                        )).exclude(active=False)
+
             except Member.DoesNotExist:
                 pass
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
