@@ -21,6 +21,8 @@ def preview(request, pk):
 
     return render(request, 'newsletters/email.html', {
         'newsletter': newsletter,
+        'agenda_events': newsletter.newsletterevent_set.all().order_by(
+            'start_datetime'),
         'main_partner': main_partner,
         'lang_code': request.LANGUAGE_CODE
     })
