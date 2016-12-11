@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.core import mail
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -11,9 +11,15 @@ from newsletters.models import Newsletter, NewsletterEvent
 
 class NewslettersTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_superuser(username='jacob',
-                                                  email='jacob@test.com',
-                                                  password='top_secret')
+        self.user = User.objects.create_user(username='jacob',
+                                             email='jacob@test.com',
+                                             password='top_secret',
+                                             is_staff=True)
+
+        self.user.user_permissions.set(
+            Permission.objects.filter(content_type__app_label="newsletters")
+        )
+
         self.user.backend = 'django.contrib.auth.backends.ModelBackend'
         self.user.save()
 

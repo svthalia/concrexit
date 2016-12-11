@@ -52,7 +52,7 @@ def legacy_redirect(request, year, week):
 
 
 @staff_member_required
-@permission_required('newsletters.change_event')
+@permission_required('newsletters.send_newsletter')
 def admin_send(request, pk):
     newsletter = get_object_or_404(Newsletter, pk=pk)
 
