@@ -222,7 +222,7 @@ class Command(BaseCommand):
                     newmship.committee = group
                     newmship.since = parse_date(date)
                     presidencies = [p for p in membership['presidencies']
-                                    if p['begindate'] >= date and
+                                    if p['begindate'] <= date and
                                     (not p['enddate'] or date < p['enddate'])]
                     if len(presidencies) >= 1:
                         newmship.chair = True
