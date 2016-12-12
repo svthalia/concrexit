@@ -17,6 +17,7 @@ class CommitteeAdmin(TranslatedModelAdmin):
     inlines = (CommitteeMembershipInline,)
     list_filter = ('until',)
     search_fields = ('name', 'description')
+    filter_horizontal = ('permissions',)
 
     fields = ('name', 'description', 'photo', 'permissions',
               'since', 'until', 'contact_email', 'wiki_namespace', 'active')
@@ -30,6 +31,7 @@ class CommitteeAdmin(TranslatedModelAdmin):
 class BoardAdmin(TranslatedModelAdmin):
     inlines = (CommitteeMembershipInline,)
     exclude = ('is_board',)
+    filter_horizontal = ('permissions',)
 
     fields = ('name', 'photo', 'permissions',
               'since', 'until',)
