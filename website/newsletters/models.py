@@ -42,6 +42,11 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
     def get_absolute_url(self):
         return reverse('newsletters:preview', args=(self.pk,))
 
+    class Meta:
+        permissions = (
+            ("send_newsletter", "Can send newsletter"),
+        )
+
 
 class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
     title = MultilingualField(
