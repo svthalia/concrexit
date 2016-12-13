@@ -14,8 +14,8 @@
 
 {% endfor %}{% for event in newsletter.newsletterevent_set.all %}{{ event.title|upper }}:
  {{ event.description|striptags }}
-{% if event.price != 0 %}
- {% trans "Attention" %}: {% trans "Registration deadline = unregistration deadline" %}! {% trans "Thalia will recover the costs on you if you do not unregister on time" %}. {% if event.penalty_costs != 0 %}{% trans "These costs are" %}: €{{ event.penalty_costs }}.{% endif %}
+{% if event.price != 0 and event.show_costs_warning %}
+ {% trans "Attention" %}: {% trans "Registration deadline = unregistration deadline" %}! {% trans "Thalia will recover the costs on you if you do not unregister on time" %}. {% if event.penalty_costs and event.penalty_costs > 0 %}{% trans "These costs are" %}: €{{ event.penalty_costs }}.{% endif %}
 {% endif %}
  {% trans "What"|upper %}: {{ event.what }}
  {% trans "Where"|upper %}: {{ event.where }}
