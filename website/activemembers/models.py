@@ -179,12 +179,6 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
     def clean(self):
         """Validation"""
-        if self.until and self.until > timezone.now().date():
-            raise ValidationError({
-                'until': _("Membership expiration date can't be in the future:"
-                           " '{}'").format(self.until)
-            })
-
         if self.until and (not self.since or self.until < self.since):
             raise ValidationError(
                 {'until': _("End date can't be before start date")})
@@ -193,33 +187,36 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         """ Check uniqueness"""
         super().validate_unique(*args, **kwargs)
         # Check if a committee has more than one chair
-        chairs = (CommitteeMembership.active_memberships
-                  .filter(committee=self.committee)
-                  .exclude(member=self.member)
-                  .filter(chair=True)
-                  .count())
-        if chairs >= 1 and self.chair:
-            raise ValidationError({
-                NON_FIELD_ERRORS:
-                _('This committee already has a chair')})
+        if self.chair:
+            chairs = (CommitteeMembership.objects
+                      .filter(committee=self.committee,
+                              chair=True))
+            for chair in chairs:
+                if chair.pk == self.pk:
+                    continue
+                if ((chair.until is None and
+                        (self.until is None or self.until > chair.since)) or
+                    (self.until is None and self.since < chair.until) or
+                    (self.until and chair.until and
+                        self.since < chair.until and
+                        self.until > chair.since)):
+                    raise ValidationError({
+                        NON_FIELD_ERRORS:
+                        _('There already is a chair for this time period')})
 
-        # check if this member is already in the committee
-        if self.pk is None:
-            until = self.until if self.until else timezone.now().date()
-            members = (CommitteeMembership.active_memberships
-                       .filter(committee=self.committee, member=self.member)
-                       .count())
-            memberships = (CommitteeMembership.objects.filter(
-                           committee=self.committee,
-                           member=self.member,
-                           since__lte=until,
-                           until__gte=self.since)
-                           .count())
-
-            if members >= 1 and until >= timezone.now().date():
-                raise ValidationError({
-                    'member': _('This member is already in the committee')})
-            elif memberships > 0:
+        # check if this member is already in the committee in this period
+        memberships = (CommitteeMembership.objects
+                       .filter(committee=self.committee,
+                               member=self.member))
+        for mship in memberships:
+            if mship.pk == self.pk:
+                continue
+            if ((mship.until is None and
+                    (self.until is None or self.until > mship.since)) or
+                (self.until is None and self.since < mship.until) or
+                (self.until and mship.until and
+                    self.since < mship.until and
+                    self.until > mship.since)):
                 raise ValidationError({
                     'member': _('This member is already in the committee for '
                                 'this period')})
