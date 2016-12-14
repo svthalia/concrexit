@@ -105,6 +105,8 @@ def profile(request, pk=None):
                 'until': membership.until,
                 'chair': membership.chair
             })
+            if achievements[name]['earliest'] > membership.since:
+                achievements[name]['earliest'] = membership.since
         else:
             achievements[name] = {
                 'name': name,
@@ -112,21 +114,23 @@ def profile(request, pk=None):
                     'since': membership.since,
                     'until': membership.until,
                     'chair': membership.chair
-                }]
+                }],
+                'earliest': membership.since,
             }
-            achievements[name]['periods'].sort(
-                key=lambda period: period['since'])
-
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
         name = "Mentor in {}".format(mentor_year.year)
+        # Ensure mentorships appear last but are sorted
+        earliest = date.today()
+        earliest = earliest.replace(year=earliest.year + mentor_year.year)
         if not achievements.get(name):
             achievements[name] = {
-                'name': name
+                'name': name,
+                'earliest': earliest,
             }
-
+    achievements = sorted(achievements.values(), key=lambda x: x['earliest'])
     return render(request, 'members/profile.html',
-                  {'member': member, 'achievements': achievements.values()})
+                  {'member': member, 'achievements': achievements})
 
 
 @login_required
