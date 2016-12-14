@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import ForeignKey
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from tinymce.models import HTMLField
@@ -67,7 +68,8 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
 
     class Meta:
-        abstract = True
+        #abstract = True
+        order_with_respect_to = 'newsletter'
 
 
 class NewsletterItem(NewsletterContent):
