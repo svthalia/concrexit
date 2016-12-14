@@ -73,7 +73,7 @@ def admin_send(request, pk):
             recipients = [member.user.email for member in
                           Member.objects.all().filter(
                               receive_newsletter=True, language=language[0])
-                          if member.is_active() is True]
+                          if member.is_active() is True and member.user.email]
 
             subject = newsletter.title
 
