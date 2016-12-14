@@ -5,29 +5,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Thaliawebsite: nieuwsbrieven\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-26 20:26+0200\n"
-"PO-Revision-Date: 2016-09-05 14:30+0100\n"
-"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
+"POT-Creation-Date: 2016-12-13 20:59+0100\n"
+"PO-Revision-Date: 2016-12-13 21:00+0100\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: Technicie <www@thalia.nu>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.11\n"
 
-#: newsletters/models.py:14 newsletters/models.py:50
+#: models.py:14 models.py:50
 msgid "Title"
 msgstr "Titel"
 
-#: newsletters/models.py:15
+#: models.py:15
 msgid "The title is used for the email subject."
 msgstr "De titel wordt gebruikt als onderwerp van de e-mail."
 
-#: newsletters/models.py:20
+#: models.py:20
 msgid "Date"
 msgstr "Datum"
 
-#: newsletters/models.py:21
+#: models.py:21
 msgid ""
 "This date is used to extract the week of this newsletter, best scenario:"
 "always use the monday of the week the newsletter is for. If you leave it "
@@ -37,11 +38,11 @@ msgstr ""
 "makkelijkste is dus om gewoon de maandag van de week in te vullen waar deze "
 "nieuwsbrief voor is."
 
-#: newsletters/models.py:31
+#: models.py:31
 msgid "Introduction"
 msgstr "Introductie"
 
-#: newsletters/models.py:32
+#: models.py:32
 msgid ""
 "This is the text that starts the newsletter. It always begins with \"Dear "
 "members\" and you can append whatever you want."
@@ -49,156 +50,153 @@ msgstr ""
 "Dit is de tekst waarmee de nieuwsbrief start. Er wordt altijd begonnen met "
 "\"Beste Thalianen\" en je kunt daarna alles schrijven wat je wilt."
 
-#: newsletters/models.py:57
+#: models.py:57
 msgid "Description"
 msgstr "Beschrijving"
 
-#: newsletters/models.py:76 newsletters/templates/newsletters/email.html:127
-#: newsletters/templates/newsletters/email.txt:20
+#: models.py:76 templates/newsletters/email.html:127
+#: templates/newsletters/email.txt:20
 msgid "What"
 msgstr "Wat"
 
-#: newsletters/models.py:84 newsletters/templates/newsletters/email.html:137
-#: newsletters/templates/newsletters/email.txt:21
+#: models.py:84 templates/newsletters/email.html:137
+#: templates/newsletters/email.txt:21
 msgid "Where"
 msgstr "Waar"
 
-#: newsletters/models.py:90
+#: models.py:90
 msgid "Start date and time"
 msgstr "Startdatum en -tijd"
 
-#: newsletters/models.py:96
+#: models.py:96
 msgid "End date and time"
 msgstr "Einddatum en -tijd"
 
-#: newsletters/models.py:102
+#: models.py:102
+msgid "Show warnings about costs"
+msgstr "Toon waarschuwing over kosten"
+
+#: models.py:107
 msgid "Price (in Euro)"
 msgstr "Prijs (in Euro)"
 
-#: newsletters/models.py:109
+#: models.py:116
 msgid "Costs (in Euro)"
 msgstr "Kosten (in Euro)"
 
-#: newsletters/models.py:113
+#: models.py:122
 msgid "This is the price that a member has to pay when he/she did not show up."
 msgstr ""
 "Dit is de prijs die een lid moet betalen als hij/zij niet aanwezig was."
 
-#: newsletters/models.py:121
+#: models.py:130
 msgid "Can't have an event travel back in time"
 msgstr "Een evenement kan niet terug in de tijd reizen"
 
-#: newsletters/templates/admin/newsletters/change_form.html:14
+#: templates/admin/newsletters/change_form.html:14
+#: templates/admin/newsletters/change_form.html:26
 msgid "Send newsletter to members"
 msgstr "Verstuur nieuwsbrief naar leden"
 
-#: newsletters/templates/admin/newsletters/change_form.html:15
+#: templates/admin/newsletters/change_form.html:15
+#: templates/admin/newsletters/change_form.html:16
+#: templates/admin/newsletters/change_form.html:27
+#: templates/admin/newsletters/change_form.html:28
 msgid "Show preview"
 msgstr "Toon voorbeeld"
 
-#: newsletters/templates/newsletters/admin/send_confirm.html:4
+#: templates/newsletters/admin/send_confirm.html:4
 msgid "Thalia site admin"
 msgstr "Thalia site admin"
 
-#: newsletters/templates/newsletters/admin/send_confirm.html:7
+#: templates/newsletters/admin/send_confirm.html:7
 msgid "Thalia administration"
 msgstr "Thalia administratie"
 
-#: newsletters/templates/newsletters/admin/send_confirm.html:12
+#: templates/newsletters/admin/send_confirm.html:12
 msgid "home"
 msgstr "home"
 
-#: newsletters/templates/newsletters/admin/send_confirm.html:13
+#: templates/newsletters/admin/send_confirm.html:13
 msgid "newsletters"
 msgstr "nieuwsbrieven"
 
-#: newsletters/templates/newsletters/admin/send_confirm.html:15
+#: templates/newsletters/admin/send_confirm.html:15
 msgid "Send newsletter"
 msgstr "Verstuur nieuwsbrief"
 
-#: newsletters/templates/newsletters/admin/send_confirm.html:19
+#: templates/newsletters/admin/send_confirm.html:19
 #, python-format
 msgid "Send newsletter: %(newsletter)s"
 msgstr "Verstuur nieuwsbrief: %(newsletter)s"
 
-#: newsletters/templates/newsletters/admin/send_confirm.html:22
+#: templates/newsletters/admin/send_confirm.html:22
 #, python-format
 msgid "Are you sure you want to send the newsletter '%(newsletter)s'?"
 msgstr "Weet je zeker dat je de nieuwsbrief '%(newsletter)s' wilt verzenden?"
 
-#: newsletters/templates/newsletters/admin/send_confirm.html:30
+#: templates/newsletters/admin/send_confirm.html:30
 msgid "No, take me back"
 msgstr "Nee, ga terug"
 
-#: newsletters/templates/newsletters/email.html:26
-#: newsletters/templates/newsletters/email.txt:32
+#: templates/newsletters/email.html:26 templates/newsletters/email.txt:32
 msgid "view this email in your browser"
 msgstr "bekijk deze e-mail in je browser"
 
-#: newsletters/templates/newsletters/email.html:55
-#: newsletters/templates/newsletters/email.txt:3
+#: templates/newsletters/email.html:55 templates/newsletters/email.txt:3
 msgid "dear members"
 msgstr "beste thalianen"
 
-#: newsletters/templates/newsletters/email.html:66
-#: newsletters/templates/newsletters/email.txt:8
+#: templates/newsletters/email.html:66 templates/newsletters/email.txt:8
 msgid "agenda"
 msgstr "agenda"
 
-#: newsletters/templates/newsletters/email.html:113
-#: newsletters/templates/newsletters/email.txt:18
+#: templates/newsletters/email.html:113 templates/newsletters/email.txt:18
 msgid "Attention"
 msgstr "Let op"
 
-#: newsletters/templates/newsletters/email.html:113
-#: newsletters/templates/newsletters/email.txt:18
+#: templates/newsletters/email.html:113 templates/newsletters/email.txt:18
 msgid "Registration deadline = unregistration deadline"
 msgstr "Aanmelddeadline = Afmelddeadline"
 
-#: newsletters/templates/newsletters/email.html:114
-#: newsletters/templates/newsletters/email.txt:18
+#: templates/newsletters/email.html:114 templates/newsletters/email.txt:18
 msgid "Thalia will recover the costs on you if you do not unregister on time"
 msgstr ""
 "Niet of niet op tijd afmelden betekent de door Thalia per persoon gemaakte "
 "kosten betalen"
 
-#: newsletters/templates/newsletters/email.html:116
-#: newsletters/templates/newsletters/email.txt:18
+#: templates/newsletters/email.html:116 templates/newsletters/email.txt:18
 msgid "These costs are"
 msgstr "Deze bedragen"
 
-#: newsletters/templates/newsletters/email.html:147
-#: newsletters/templates/newsletters/email.txt:22
+#: templates/newsletters/email.html:147 templates/newsletters/email.txt:22
 msgid "When"
 msgstr "Wanneer"
 
-#: newsletters/templates/newsletters/email.html:163
-#: newsletters/templates/newsletters/email.txt:23
+#: templates/newsletters/email.html:164 templates/newsletters/email.txt:23
 msgid "Price"
 msgstr "Prijs"
 
-#: newsletters/templates/newsletters/email.html:168
-#: newsletters/templates/newsletters/email.txt:23
+#: templates/newsletters/email.html:169 templates/newsletters/email.txt:23
 msgid "Free"
 msgstr "Gratis"
 
-#: newsletters/templates/newsletters/email.html:206
-#: newsletters/templates/newsletters/email.txt:30
+#: templates/newsletters/email.html:208 templates/newsletters/email.txt:30
 msgid "our main partner"
 msgstr "onze hoofdpartner"
 
-#: newsletters/templates/newsletters/email.txt:1
+#: templates/newsletters/email.txt:1
 msgid "newsletter"
 msgstr "nieuwsbrief"
 
-#: newsletters/templates/newsletters/email.txt:26
+#: templates/newsletters/email.txt:26
 msgid "room"
 msgstr "kamer"
 
-#: newsletters/templates/newsletters/email.txt:27
+#: templates/newsletters/email.txt:27
 msgid "website"
 msgstr "website"
 
-#: newsletters/templates/newsletters/email.txt:28
+#: templates/newsletters/email.txt:28
 msgid "email"
 msgstr "e-mailadres"

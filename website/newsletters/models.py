@@ -103,6 +103,11 @@ class NewsletterEvent(NewsletterContent):
         null=False,
     )
 
+    show_costs_warning = models.BooleanField(
+        verbose_name=_('Show warnings about costs'),
+        default=True
+    )
+
     price = models.DecimalField(
         verbose_name=_('Price (in Euro)'),
         max_digits=5,

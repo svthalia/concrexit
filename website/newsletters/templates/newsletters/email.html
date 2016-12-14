@@ -108,11 +108,11 @@
                 <td style="{{ item_tr_style }}">
                     {{ event.description|safe }}
 
-                    {% if event.price != 0 %}
+                    {% if event.price != 0 and event.show_costs_warning %}
                         <p style="font-family: Arial, sans-serif">
                             <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
                             {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
-                            {% if event.penalty_costs is not None and event.penalty_costs > 0 %}
+                            {% if event.penalty_costs and event.penalty_costs > 0 %}
                                 {% trans "These costs are" %}: <b>€{{ event.penalty_costs }}.</b>
                             {% endif %}
                             </i>
