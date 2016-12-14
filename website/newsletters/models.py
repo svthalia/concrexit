@@ -68,7 +68,6 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
 
     class Meta:
-        #abstract = True
         order_with_respect_to = 'newsletter'
 
 

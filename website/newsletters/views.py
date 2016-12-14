@@ -33,8 +33,8 @@ def preview(request, pk, lang=None):
 
     return render(request, 'newsletters/email.html', {
         'newsletter': newsletter,
-        'agenda_events': newsletter.newsletterevent_set.all().order_by(
-            'start_datetime'),
+        'agenda_events': newsletter.newslettercontent_set.filter(
+            newsletteritem=None).order_by('start_datetime'),
         'main_partner': main_partner,
         'lang_code': lang_code
     })
@@ -79,8 +79,8 @@ def admin_send(request, pk):
 
             context = Context({
                 'newsletter': newsletter,
-                'agenda_events': newsletter.newsletterevent_set.all().order_by(
-                    'start_datetime'),
+                'agenda_events': newsletter.newslettercontent_set.filter(
+                    newsletteritem=None).order_by('start_datetime'),
                 'main_partner': main_partner,
                 'lang_code': language[0],
                 'request': request
