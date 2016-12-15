@@ -105,7 +105,7 @@
                         <th>{% trans "Description" %}</th>
                         <th>{% trans "Price" %}</th>
                         
-                        <th>{% if order %}{% trans "Modify" %}{% else %}{% trans "Order" %}{% endif %}</th>
+                        <th>{% if order %}{% trans "Modify" %}{% else %}{% trans "Order" context "pizzas" %}{% endif %}</th>
                     </tr>
                     {% for product in products %}
                         <tr>
@@ -116,7 +116,7 @@
                                 <form class="form-horizontal pizza-order-form" method="post" action="{% url 'pizzas:order' %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="product" value="{{ product.pk }}" />
-                                    <input type="submit" class="btn btn-style1" {% if order %}value='{% trans "Modify" %}' onclick="return confirm('{% trans "Are you sure you want to modify your order?" %}')"{% else %}value='{% trans "Order" %}'{% endif %} />
+                                    <input type="submit" class="btn btn-style1" {% if order %}value='{% trans "Modify" %}' onclick="return confirm('{% trans "Are you sure you want to modify your order?" %}')"{% else %}value='{% trans "Order" context "pizzas" %}'{% endif %} />
                                 </form>
                             </td>
                         </tr>

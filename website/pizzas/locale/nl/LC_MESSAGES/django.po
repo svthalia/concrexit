@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-26 20:26+0200\n"
+"POT-Creation-Date: 2016-12-15 14:46+0100\n"
 "PO-Revision-Date: 2016-10-19 21:21+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.10\n"
 
-#: pizzas/admin.py:16
+#: pizzas/admin.py:18
 #, python-brace-format
 msgid "<strong><a href=\"{link}\">Orders</a></strong>"
 msgstr "<strong><a href=\"{link}\">Bestellingen</a></strong>"
@@ -163,6 +163,7 @@ msgstr "Bewerken"
 
 #: pizzas/templates/pizzas/index.html:108
 #: pizzas/templates/pizzas/index.html:119
+msgctxt "pizzas"
 msgid "Order"
 msgstr "Bestellen"
 
