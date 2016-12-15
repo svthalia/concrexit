@@ -35,6 +35,9 @@
     </h1>
 {% endif %}
 <div id="button-container">
+    {% if perms.pizzas.change_product %}
+        <a href="{% url 'admin:pizzas_product_changelist' %}" class="btn btn-style1 pull-right">{% trans "All products" %}</a>
+    {% endif %}
     {% if perms.pizzas.change_pizzaevent %}
         <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}" class="btn btn-style1 pull-right">{% trans "All events" %}</a>
     {% endif %}
@@ -104,7 +107,6 @@
                         <th>{% trans "Name" %}</th>
                         <th>{% trans "Description" %}</th>
                         <th>{% trans "Price" %}</th>
-                        
                         <th>{% if order %}{% trans "Modify" %}{% else %}{% trans "Order" context "pizzas" %}{% endif %}</th>
                     </tr>
                     {% for product in products %}

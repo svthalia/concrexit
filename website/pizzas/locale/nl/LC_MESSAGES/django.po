@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-15 14:46+0100\n"
-"PO-Revision-Date: 2016-10-19 21:21+0200\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"POT-Creation-Date: 2016-12-15 22:31+0100\n"
+"PO-Revision-Date: 2016-12-15 22:31+0100\n"
+"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.10\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: pizzas/admin.py:18
 #, python-brace-format
@@ -59,7 +59,7 @@ msgid "Add order for %(title)s"
 msgstr "Bestelling toevoegen voor %(title)s"
 
 #: pizzas/templates/pizzas/add_order.html:12
-#: pizzas/templates/pizzas/index.html:71 pizzas/templates/pizzas/index.html:104
+#: pizzas/templates/pizzas/index.html:74 pizzas/templates/pizzas/index.html:107
 #: pizzas/templates/pizzas/orders.html:22
 msgid "Name"
 msgstr "Naam"
@@ -92,82 +92,86 @@ msgstr "Bestel eten voor %(title)s"
 msgid "There is no current event for which you can order food"
 msgstr "Er is nu geen evenement waar je eten voor kunt bestellen"
 
-#: pizzas/templates/pizzas/index.html:39 pizzas/templates/pizzas/orders.html:14
+#: pizzas/templates/pizzas/index.html:39
+msgid "All products"
+msgstr "Alle producten"
+
+#: pizzas/templates/pizzas/index.html:42 pizzas/templates/pizzas/orders.html:14
 msgid "All events"
 msgstr "Alle evenementen"
 
-#: pizzas/templates/pizzas/index.html:42
+#: pizzas/templates/pizzas/index.html:45
 msgid "All orders"
 msgstr "Alle bestellingen"
 
-#: pizzas/templates/pizzas/index.html:49
+#: pizzas/templates/pizzas/index.html:52
 #, python-format
 msgid "It will be possible to order from %(start)s."
 msgstr "Je kan bestellen vanaf %(start)s."
 
-#: pizzas/templates/pizzas/index.html:54
+#: pizzas/templates/pizzas/index.html:57
 #, python-format
 msgid "It was possible to order until %(end)s."
 msgstr "Je kon bestellen tot %(end)s."
 
-#: pizzas/templates/pizzas/index.html:58
+#: pizzas/templates/pizzas/index.html:61
 #, python-format
 msgid "It is possible to order until %(end)s."
 msgstr "Je kan bestellen tot %(end)s."
 
-#: pizzas/templates/pizzas/index.html:63
+#: pizzas/templates/pizzas/index.html:66
 msgid "The order has been paid for."
 msgstr "De bestelling is betaald."
 
-#: pizzas/templates/pizzas/index.html:65
+#: pizzas/templates/pizzas/index.html:68
 msgid "The order has not yet been paid for."
 msgstr "De bestelling is nog niet betaald."
 
-#: pizzas/templates/pizzas/index.html:67
+#: pizzas/templates/pizzas/index.html:70
 msgid "Current order"
 msgstr "Huidige bestelling"
 
-#: pizzas/templates/pizzas/index.html:72 pizzas/templates/pizzas/index.html:105
+#: pizzas/templates/pizzas/index.html:75 pizzas/templates/pizzas/index.html:108
 msgid "Description"
 msgstr "Omschrijving"
 
-#: pizzas/templates/pizzas/index.html:73 pizzas/templates/pizzas/index.html:106
+#: pizzas/templates/pizzas/index.html:76 pizzas/templates/pizzas/index.html:109
 #: pizzas/templates/pizzas/overview.html:21
 msgid "Price"
 msgstr "Prijs"
 
-#: pizzas/templates/pizzas/index.html:74 pizzas/templates/pizzas/index.html:87
+#: pizzas/templates/pizzas/index.html:77 pizzas/templates/pizzas/index.html:90
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: pizzas/templates/pizzas/index.html:82
+#: pizzas/templates/pizzas/index.html:85
 msgid "You can no longer cancel."
 msgstr "Je kunt niet meer annuleren."
 
-#: pizzas/templates/pizzas/index.html:87
+#: pizzas/templates/pizzas/index.html:90
 msgid "Are you sure you want to cancel your order?"
 msgstr "Weet je zeker dat je de bestelling wilt annuleren?"
 
-#: pizzas/templates/pizzas/index.html:95
+#: pizzas/templates/pizzas/index.html:98
 msgid "Changing your order"
 msgstr "Bestelling bewerken"
 
-#: pizzas/templates/pizzas/index.html:98
+#: pizzas/templates/pizzas/index.html:101
 msgid "You did not place an order."
 msgstr "Je hebt geen bestelling geplaatst."
 
-#: pizzas/templates/pizzas/index.html:108
-#: pizzas/templates/pizzas/index.html:119
+#: pizzas/templates/pizzas/index.html:110
+#: pizzas/templates/pizzas/index.html:121
 msgid "Modify"
 msgstr "Bewerken"
 
-#: pizzas/templates/pizzas/index.html:108
-#: pizzas/templates/pizzas/index.html:119
+#: pizzas/templates/pizzas/index.html:110
+#: pizzas/templates/pizzas/index.html:121
 msgctxt "pizzas"
 msgid "Order"
 msgstr "Bestellen"
 
-#: pizzas/templates/pizzas/index.html:119
+#: pizzas/templates/pizzas/index.html:121
 msgid "Are you sure you want to modify your order?"
 msgstr "Weet je zeker dat je de bestelling aan wilt passen?"
 
