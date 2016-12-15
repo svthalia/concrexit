@@ -2,6 +2,8 @@
 Authentication backend to check permissions
 """
 from django.contrib.auth.models import Permission
+from django.db.models import Q
+from django.utils import timezone
 
 from members.models import Member
 
@@ -22,7 +24,10 @@ class CommitteeBackend(object):
             return set()
         perm_cache_name = '_committee_perm_cache'
         try:
-            committees = user.member.committee_set.all()
+            committees = user.member.committee_set.filter(
+                Q(committeemembership__until=None) |
+                Q(committeemembership__until__gte=timezone.now())
+            )
         except Member.DoesNotExist:
             return set()
         if not hasattr(user, perm_cache_name):
