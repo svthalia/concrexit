@@ -12,7 +12,7 @@ from .models import Order, PizzaEvent, Product
 
 @login_required
 def index(request):
-    products = Product.objects.filter(available=True)
+    products = Product.objects.filter(available=True).order_by('name')
     event = PizzaEvent.current()
     try:
         order = Order.objects.get(pizza_event=event,
