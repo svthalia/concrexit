@@ -8,21 +8,23 @@ from django.contrib.staticfiles.finders import find as find_static_file
 from django.core.cache import cache
 from thaliapp.models import Token
 from hashlib import sha256
-import base64
+from base64 import b64encode
 import datetime
+from os import urandom
+from binascii import hexlify
 
 
 def get_photo(user):
     if user.member.photo:
         photo = ''.join(['data:image/jpeg;base64,',
-                         base64.b64encode(
+                         b64encode(
                              user.member.photo.file.read()).decode()
                          ])
     else:
         filename = find_static_file('members/images/default-avatar.jpg')
         with open(filename, 'rb') as f:
             photo = ''.join(['data:image/jpeg;base64,',
-                             base64.b64encode(f.read()).decode()
+                             b64encode(f.read()).decode()
                              ])
     return photo
 
@@ -105,3 +107,9 @@ def scan(request):
                             status_code=403)
     cache.set(''.join([qrtoken]), user, 300)
     return JsonResponse({'status': 'ok'})
+
+
+@csrf_exempt
+def raas(request):
+    return JsonResponse({'status': 'ok',
+                         'random': hexlify(urandom(16)).decode()})
