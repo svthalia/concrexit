@@ -7,7 +7,10 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Order, PizzaEvent, Product
 from events.models import Event
 
-admin.site.register(Product)
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'available')
 
 
 @admin.register(PizzaEvent)
