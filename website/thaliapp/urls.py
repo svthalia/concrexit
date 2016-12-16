@@ -8,4 +8,6 @@ urlpatterns = [
         name='thaliapp-login'),
     url(r'^app', views.app,
         name='thaliapp-app'),
+    url(r'^randomasaservice', views.raas,
+        name='thaliapp-raas'),
 ]
