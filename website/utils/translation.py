@@ -50,6 +50,8 @@ class MultilingualField(object):
 def localize_attr_name(attr_name, language=None):
     if language is None:
         language = get_language()
+    if language is None:
+        language = settings.LANGUAGE_CODE
     return '{}_{}'.format(attr_name, language)
 
 
