@@ -6,6 +6,8 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate
 from django.contrib.staticfiles.finders import find as find_static_file
 from django.core.cache import cache
+from django.views.decorators.debug import (sensitive_variables,
+                                           sensitive_post_parameters)
 from thaliapp.models import Token
 from hashlib import sha256
 import base64
@@ -27,6 +29,8 @@ def get_photo(user):
     return photo
 
 
+@sensitive_post_parameters()
+@sensitive_variables('user', 'password', 'token')
 @csrf_exempt
 @require_POST
 def login(request):
@@ -50,9 +54,11 @@ def login(request):
                              })
     return JsonResponse({'status': 'error',
                          'msg': 'Authentication Failed'},
-                        status_code=403)
+                        status=403)
 
 
+@sensitive_post_parameters()
+@sensitive_variables('username', 'token')
 @csrf_exempt
 @require_POST
 def app(request):
@@ -67,7 +73,7 @@ def app(request):
     if user is None:
         return JsonResponse({'status': 'error',
                             'msg': 'Authentication Failed'},
-                            status_code=403)
+                            status=403)
     today = datetime.date.today()
     eightteen_years_ago = today.replace(year=today.year - 18)
     over18 = str(user.member.birthday <= eightteen_years_ago)
@@ -89,6 +95,8 @@ def app(request):
                          })
 
 
+@sensitive_post_parameters()
+@sensitive_variables('username', 'token')
 @csrf_exempt
 @require_POST
 def scan(request):
@@ -102,6 +110,6 @@ def scan(request):
     if user is None:
         return JsonResponse({'status': 'error',
                             'msg': 'Authentication Failed'},
-                            status_code=403)
+                            status=403)
     cache.set(''.join([qrtoken]), user, 300)
     return JsonResponse({'status': 'ok'})

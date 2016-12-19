@@ -19,8 +19,8 @@ def styleguide(request):
     return render(request, 'singlepages/styleguide.html')
 
 
-@sensitive_variables('apikey', 'user', 'password')
-@sensitive_post_parameters('apikey', 'user', 'password')
+@sensitive_variables()
+@sensitive_post_parameters()
 @require_POST
 @csrf_exempt
 def wiki_login(request):
