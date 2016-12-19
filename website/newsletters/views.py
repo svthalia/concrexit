@@ -82,7 +82,7 @@ def admin_send(request, pk):
                 'agenda_events': newsletter.newsletterevent_set.all().order_by(
                     'start_datetime'),
                 'main_partner': main_partner,
-                'lang_code': language,
+                'lang_code': language[0],
                 'request': request
             })
 
