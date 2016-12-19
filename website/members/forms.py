@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.template import loader
 from django.utils import translation
-from django.utils.translation import ugettext as t
+from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Member
@@ -50,9 +50,13 @@ class UserCreationForm(forms.ModelForm):
             with translation.override(language):
                 email_body = loader.render_to_string(
                     'members/email/welcome.txt',
-                    {'user': user, 'password': password})
+                    {
+                     'full_name': user.get_full_name(),
+                     'username': user.username,
+                     'password': password
+                     })
                 user.email_user(
-                    t('Welkom bij Studievereniging Thalia'),
+                    ugettext('Welcome to Study Association Thalia'),
                     email_body)
         return user
 
