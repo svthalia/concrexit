@@ -73,4 +73,6 @@ def styleguide_file(request, filename):
 
 @staff_member_required
 def crash(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("This is not for you")
     raise Exception("Test exception")
