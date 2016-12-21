@@ -10,6 +10,8 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.views.decorators.debug import (sensitive_variables,
+                                           sensitive_post_parameters)
 
 from sendfile import sendfile
 
@@ -21,6 +23,8 @@ def styleguide(request):
     return render(request, 'singlepages/styleguide.html')
 
 
+@sensitive_variables()
+@sensitive_post_parameters()
 @require_POST
 @csrf_exempt
 def wiki_login(request):
@@ -54,7 +58,7 @@ def wiki_login(request):
                              'committees': memberships})
     return JsonResponse({'status': 'error',
                          'msg': 'Authentication Failed'},
-                        status_code=403)
+                        status=403)
 
 
 @login_required
