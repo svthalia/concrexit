@@ -1,9 +1,9 @@
-{% load i18n %}{% blocktrans trimmed %}Dear {{ user.get_full_name }},
+{% load i18n %}{% blocktrans trimmed %}Dear {{ full_name }},
 
 Welcome to Study Association Thalia! You now have an account and can
 log in at https://thalia.nu/. This is your username and password:
 
-Your username is:   {{ user.username }}
+Your username is:   {{ username }}
 Your password is:   {{ password }}
 
 Please also check the information on your profile.
