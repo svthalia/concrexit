@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.utils.translation import activate
@@ -30,7 +31,10 @@ class EventFeed(ICalFeed):
         return item.title
 
     def item_description(self, item):
-        return item.description
+        return (item.description +
+                ' <a href="https://%s%s">Website</a>' %
+                (Site.objects.get_current().domain,
+                 self.item_link(item)))
 
     def item_start_datetime(self, item):
         return item.start
