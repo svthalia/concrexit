@@ -55,7 +55,8 @@ def index(request):
 
     memberships = models.Membership.objects.filter(memberships_query)
     members_query &= Q(user__in=memberships.values('user'))
-    members = models.Member.objects.filter(members_query)
+    members = models.Member.objects.filter(members_query).order_by(
+            '-starting_year', 'user__first_name')
 
     paginator = Paginator(members, 24)
 
