@@ -4,6 +4,7 @@
 *.png     binary
 *.jpeg    binary
 *.jpg     binary
+*.gif     binary
 *.ico     binary
 *.mo      binary
 
