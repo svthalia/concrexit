@@ -79,6 +79,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         _("location for minimap"),
         max_length=255,
         help_text=_('Location of Huygens: Heyendaalseweg 135, Nijmegen. '
+                    'Location of Mercator 1: Toernooiveld 212, Nijmegen. '
                     'Not shown as text!!'),
     )
 
