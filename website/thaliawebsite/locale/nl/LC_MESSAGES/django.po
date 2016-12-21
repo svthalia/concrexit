@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-26 20:26+0200\n"
-"PO-Revision-Date: 2016-12-06 20:15+0100\n"
+"POT-Creation-Date: 2016-12-21 20:27+0100\n"
+"PO-Revision-Date: 2016-12-21 20:31+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -31,6 +31,7 @@ msgid "Home"
 msgstr "Home"
 
 #: thaliawebsite/menus.py:5
+#: thaliawebsite/templates/singlepages/association.html:4
 msgid "Association"
 msgstr "Vereniging"
 
@@ -51,17 +52,19 @@ msgid "Documents"
 msgstr "Documenten"
 
 #: thaliawebsite/menus.py:10
-#: thaliawebsite/templates/singlepages/styleguide.html:192
+#: thaliawebsite/templates/singlepages/styleguide.html:199
 msgid "Merchandise"
 msgstr "Merchandise"
 
 #: thaliawebsite/menus.py:11
-#: thaliawebsite/templates/singlepages/sister_associations.html:15
+#: thaliawebsite/templates/singlepages/sister_associations.html:4
+#: thaliawebsite/templates/singlepages/sister_associations.html:17
 msgid "Sister Associations"
 msgstr "Zusterverenigingen"
 
 #: thaliawebsite/menus.py:12
-#: thaliawebsite/templates/singlepages/become_a_member.html:5
+#: thaliawebsite/templates/singlepages/become_a_member.html:4
+#: thaliawebsite/templates/singlepages/become_a_member.html:7
 msgid "Become a Member"
 msgstr "Lid Worden"
 
@@ -118,71 +121,78 @@ msgid "Book Sale"
 msgstr "Boekverkoop"
 
 #: thaliawebsite/menus.py:30
+msgid "Student Participation"
+msgstr "Medezeggenschap"
+
+#: thaliawebsite/menus.py:32
 msgid "Course Overview"
 msgstr "Vakkenoverzicht"
 
-#: thaliawebsite/menus.py:32
+#: thaliawebsite/menus.py:34
 msgid "Submit Exam"
 msgstr "Tentamen Insturen"
 
-#: thaliawebsite/menus.py:33
+#: thaliawebsite/menus.py:35
 msgid "Submit Summary"
 msgstr "Samenvatting Insturen"
 
-#: thaliawebsite/menus.py:37 thaliawebsite/templates/singlepages/contact.html:5
+#: thaliawebsite/menus.py:39 thaliawebsite/templates/singlepages/contact.html:4
+#: thaliawebsite/templates/singlepages/contact.html:7
 msgid "Contact"
 msgstr "Contact"
 
-#: thaliawebsite/settings/settings.py:163
+#: thaliawebsite/settings/settings.py:169
 msgid "English"
 msgstr "Engels"
 
-#: thaliawebsite/settings/settings.py:164
+#: thaliawebsite/settings/settings.py:170
 msgid "Dutch"
 msgstr "Nederlands"
 
 #: thaliawebsite/templates/400.html:4
 msgid "400: Bad request"
-msgstr ""
+msgstr "400: Verkeerde request"
 
 #: thaliawebsite/templates/403.html:4
 msgid "403: Permission denied."
-msgstr ""
+msgstr "403: Verboden toegang"
 
 #: thaliawebsite/templates/404.html:4
 msgid "404: Page not found."
-msgstr ""
+msgstr "404: Pagina niet gevonden."
 
 #: thaliawebsite/templates/500.html:4
 msgid ""
 "500: Internal server error. Thalia's website committee has been notified."
 msgstr ""
+"500: Interne fout in de server. Thalia's websitecommissie (de Technicie) is "
+"op de hoogte gesteld."
 
-#: thaliawebsite/templates/base.html:9 thaliawebsite/templates/base.html:169
+#: thaliawebsite/templates/base.html:9 thaliawebsite/templates/base.html:174
 msgid "Study Association Thalia"
 msgstr "Studievereniging Thalia"
 
-#: thaliawebsite/templates/base.html:70
+#: thaliawebsite/templates/base.html:75
 msgid "Login"
 msgstr "Inloggen"
 
-#: thaliawebsite/templates/base.html:74
+#: thaliawebsite/templates/base.html:79
 msgid "My Account"
 msgstr "Mijn Account"
 
-#: thaliawebsite/templates/base.html:79
+#: thaliawebsite/templates/base.html:84
 msgid "edit profile"
 msgstr "bewerk profiel"
 
-#: thaliawebsite/templates/base.html:80
+#: thaliawebsite/templates/base.html:85
 msgid "change password"
 msgstr "wijzig mijn wachtwoord"
 
-#: thaliawebsite/templates/base.html:83
+#: thaliawebsite/templates/base.html:88
 msgid "Site administration"
 msgstr "Sitebeheer"
 
-#: thaliawebsite/templates/base.html:86
+#: thaliawebsite/templates/base.html:91
 msgid "Log Out"
 msgstr "Uitloggen"
 
@@ -195,13 +205,13 @@ msgid "An error occurred."
 msgstr "Er is een fout opgetreden."
 
 #: thaliawebsite/templates/index.html:5
-#: thaliawebsite/templates/singlepages/association.html:5
+#: thaliawebsite/templates/singlepages/association.html:7
 msgid ""
 "Thalia, the study association of Computer Science and Information Science"
 msgstr "Thalia, de studievereniging voor Informatica en Informatiekunde"
 
 #: thaliawebsite/templates/index.html:8
-#: thaliawebsite/templates/singlepages/association.html:7
+#: thaliawebsite/templates/singlepages/association.html:9
 msgid ""
 "Thalia is the study association for the Computer Science and Information "
 "Science students at Radboud University in Nijmegen. Thalia provides you the "
@@ -227,7 +237,7 @@ msgstr "Op zoek naar een ander evenement?"
 msgid "Take a look at the entire agenda"
 msgstr "Bekijk de hele agenda"
 
-#: thaliawebsite/templates/singlepages/association.html:9
+#: thaliawebsite/templates/singlepages/association.html:11
 msgid ""
 "Do you want to do something for Thalia? The association can't exist without "
 "active members. The things you can do to help the association are very "
@@ -242,7 +252,7 @@ msgstr ""
 "vooral niet om te reageren en mail <a href=\"mailto:info@thalia.nu"
 "\">Thalia<a/>!"
 
-#: thaliawebsite/templates/singlepages/become_a_member.html:7
+#: thaliawebsite/templates/singlepages/become_a_member.html:9
 msgid ""
 "Thalia is the study association for Computing Science and Information "
 "Sciences students at the Radboud University in Nijmegen. Thalia organises a "
@@ -258,11 +268,11 @@ msgstr ""
 "en kun je met korting je studieboeken bestellen. Kortom, geen reden om niet "
 "lid te worden!"
 
-#: thaliawebsite/templates/singlepages/become_a_member.html:9
+#: thaliawebsite/templates/singlepages/become_a_member.html:11
 msgid "How do I become a member?"
 msgstr "Hoe kan ik lid worden?"
 
-#: thaliawebsite/templates/singlepages/become_a_member.html:11
+#: thaliawebsite/templates/singlepages/become_a_member.html:13
 msgid ""
 "You can become a member of Thalia at any time during the year. Membership "
 "costs € 7.50 per year, or € 30 for your entire study duration. To become a "
@@ -280,7 +290,7 @@ msgstr ""
 "bij bestuurskamer Let wel op: Je kunt alleen lid worden wanneer je "
 "informatica of informatiekunde studeert aan de Radboud Universiteit."
 
-#: thaliawebsite/templates/singlepages/become_a_member.html:13
+#: thaliawebsite/templates/singlepages/become_a_member.html:15
 msgid ""
 "I'm not a Computing Science and Information Sciences student at the Radboud "
 "University, but I do want to attend your events. Now what?"
@@ -288,7 +298,7 @@ msgstr ""
 "Ik studeer geen Informatica of Informatiekunde (aan de Radboud "
 "Universiteit), maar ik wil wel naar jullie activiteiten gaan. Wat nu?"
 
-#: thaliawebsite/templates/singlepages/become_a_member.html:15
+#: thaliawebsite/templates/singlepages/become_a_member.html:17
 msgid ""
 "It is still possible to be associated with Thalia, even if you do not study "
 "Computing Science or Information Sciences (anymore): You can become a "
@@ -308,7 +318,7 @@ msgstr ""
 "kun je allemaal invullen op het begunstigerformulier, dat af te halen is in "
 "de bestuurskamer of hieronder te downloaden is."
 
-#: thaliawebsite/templates/singlepages/become_a_member.html:17
+#: thaliawebsite/templates/singlepages/become_a_member.html:19
 msgid ""
 "Payment for membership or sponsorship can be made both in cash or by "
 "authorised direct debit. To authorise direct debit, use the form that is "
@@ -322,11 +332,12 @@ msgstr ""
 "en/of je lidmaatschap dan kun je altijd mailen naar <a href=\"mailto:"
 "info@thalia.nu\" target=\"_blank\">info@thalia.nu</a>!"
 
-#: thaliawebsite/templates/singlepages/become_active.html:5
+#: thaliawebsite/templates/singlepages/become_active.html:4
+#: thaliawebsite/templates/singlepages/become_active.html:7
 msgid "Become active"
 msgstr "Actief worden"
 
-#: thaliawebsite/templates/singlepages/become_active.html:7
+#: thaliawebsite/templates/singlepages/become_active.html:9
 msgid ""
 "Throughout the year, Thalia organizes a wide variety of activities, both "
 "educational (such as symposiums and programming contests) as well as social "
@@ -346,7 +357,7 @@ msgstr ""
 "onderhouden, of foto's maken op evenementen. Ongeveer 50 - 60 leden zetten "
 "zich ieder jaar in om geweldige activiteiten te organiseren voor alle leden."
 
-#: thaliawebsite/templates/singlepages/become_active.html:9
+#: thaliawebsite/templates/singlepages/become_active.html:11
 msgid ""
 "Does it seem like fun to join a committee and do your bit to contribute to "
 "the association? Then become a member of one of the committees! You can do "
@@ -360,7 +371,7 @@ msgstr ""
 "\">intern@thalia.nu</a>, een Facebookbericht te sturen of een bestuurs- of "
 "commissielid persoonlijk aan te spreken."
 
-#: thaliawebsite/templates/singlepages/become_active.html:11
+#: thaliawebsite/templates/singlepages/become_active.html:13
 msgid ""
 "Are you not sure if being part of a committee is for you? You can always sit "
 "in on a meeting to see if you like it. Again, feel free to ask committee "
@@ -372,64 +383,65 @@ msgstr ""
 "kunt ook commissieleden of het bestuur persoonlijk aanspreken. De commissies "
 "zijn altijd op zoek naar nieuwe enthousiaste leden!"
 
-#: thaliawebsite/templates/singlepages/contact.html:9
+#: thaliawebsite/templates/singlepages/contact.html:11
 msgid "Faculty:"
 msgstr "Faculteit:"
 
-#: thaliawebsite/templates/singlepages/contact.html:10
+#: thaliawebsite/templates/singlepages/contact.html:12
 msgid "Faculty of Science"
 msgstr "Faculteit der Natuurwetenschappen, Wiskunde & Informatica"
 
-#: thaliawebsite/templates/singlepages/contact.html:13
+#: thaliawebsite/templates/singlepages/contact.html:15
 msgid "Room:"
 msgstr "Kamer:"
 
-#: thaliawebsite/templates/singlepages/contact.html:17
+#: thaliawebsite/templates/singlepages/contact.html:19
 msgid "Address:"
 msgstr "Adres:"
 
-#: thaliawebsite/templates/singlepages/contact.html:18
+#: thaliawebsite/templates/singlepages/contact.html:20
 msgid "Board room: HG00.150 (above the north-canteen)"
 msgstr "Bestuurskamer: HG00.150 (boven de noordkantine)"
 
-#: thaliawebsite/templates/singlepages/contact.html:21
+#: thaliawebsite/templates/singlepages/contact.html:23
 msgid "Postal address:"
 msgstr "Postadres:"
 
-#: thaliawebsite/templates/singlepages/contact.html:25
+#: thaliawebsite/templates/singlepages/contact.html:27
 msgid "Telephone:"
 msgstr "Telefoon:"
 
-#: thaliawebsite/templates/singlepages/contact.html:29
+#: thaliawebsite/templates/singlepages/contact.html:31
 msgid "Voicemailbox:"
 msgstr "Voicemailbox:"
 
-#: thaliawebsite/templates/singlepages/contact.html:33
+#: thaliawebsite/templates/singlepages/contact.html:35
 msgid "Email:"
 msgstr "E-mail:"
 
-#: thaliawebsite/templates/singlepages/contact.html:35
+#: thaliawebsite/templates/singlepages/contact.html:37
 msgid "general"
 msgstr "algemeen"
 
-#: thaliawebsite/templates/singlepages/contact.html:36
+#: thaliawebsite/templates/singlepages/contact.html:38
 msgid "communication w.r.t. promoting your company (activities)"
 msgstr "communicatie over het promoten van uw bedrijf(sactiviteiten)"
 
-#: thaliawebsite/templates/singlepages/contact.html:40
+#: thaliawebsite/templates/singlepages/contact.html:42
 msgid "Chamber of Commerce"
 msgstr "Kamer van Koophandel"
 
-#: thaliawebsite/templates/singlepages/contact.html:48
+#: thaliawebsite/templates/singlepages/contact.html:50
 msgid "VAT number:"
 msgstr "BTW-nummer:"
 
-#: thaliawebsite/templates/singlepages/for_members.html:5
+#: thaliawebsite/templates/singlepages/for_members.html:4
+#: thaliawebsite/templates/singlepages/for_members.html:7
 #: thaliawebsite/templates/singlepages/styleguide.html:4
 msgid "for members"
 msgstr "voor leden"
 
-#: thaliawebsite/templates/singlepages/for_members.html:7
+#: thaliawebsite/templates/singlepages/for_members.html:9
 msgid ""
 "In this menu you can find all pages that are exclusively available to you as "
 "a member of Thalia."
@@ -437,71 +449,71 @@ msgstr ""
 "Onder dit menu vind je alle pagina's die exclusief voor jou, Thalia-lid, "
 "toegankelijk zijn."
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:5
+#: thaliawebsite/templates/singlepages/sister_associations.html:7
 msgid "Associations of the Radboud University Science Faculty"
 msgstr "Bètaverenigingen van de Radboud Universiteit"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:7
+#: thaliawebsite/templates/singlepages/sister_associations.html:9
 msgid "(Medical) Biology"
 msgstr "(Medische) Biologie"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:8
+#: thaliawebsite/templates/singlepages/sister_associations.html:10
 msgid "Artificial Intelligence"
 msgstr "Kunstmatige Intelligentie"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:9
+#: thaliawebsite/templates/singlepages/sister_associations.html:11
 msgid "Mathematics"
 msgstr "Wiskunde"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:10
+#: thaliawebsite/templates/singlepages/sister_associations.html:12
 msgid "Science"
 msgstr "Science"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:11
+#: thaliawebsite/templates/singlepages/sister_associations.html:13
 msgid "Physics and Astronomy"
 msgstr "Natuur- en Sterrekunde"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:12
+#: thaliawebsite/templates/singlepages/sister_associations.html:14
 msgid "Science faculty umbrella association"
 msgstr "Overkoepelende bètavereniging"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:13
+#: thaliawebsite/templates/singlepages/sister_associations.html:15
 msgid "Molecular Sciences"
 msgstr "Moleculaire Wetenschappen"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:17
-#: thaliawebsite/templates/singlepages/sister_associations.html:24
+#: thaliawebsite/templates/singlepages/sister_associations.html:19
+#: thaliawebsite/templates/singlepages/sister_associations.html:26
 msgid "University of Twente"
 msgstr "Universiteit Twente"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:18
-#: thaliawebsite/templates/singlepages/sister_associations.html:26
+#: thaliawebsite/templates/singlepages/sister_associations.html:20
+#: thaliawebsite/templates/singlepages/sister_associations.html:28
 msgid "Utrecht University"
 msgstr "Universiteit Utrecht"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:19
+#: thaliawebsite/templates/singlepages/sister_associations.html:21
 msgid "Delft University of Technology"
 msgstr "Technische Universiteit Delft"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:20
 #: thaliawebsite/templates/singlepages/sister_associations.html:22
+#: thaliawebsite/templates/singlepages/sister_associations.html:24
 msgid "University of Groningen"
 msgstr "Rijksuniversiteit Groningen"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:21
+#: thaliawebsite/templates/singlepages/sister_associations.html:23
 msgid "Leiden University"
 msgstr "Universiteit Leiden"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:23
+#: thaliawebsite/templates/singlepages/sister_associations.html:25
 msgid "Eindhoven University of Technology"
 msgstr "Technische Universiteit Eindhoven"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:25
-#: thaliawebsite/templates/singlepages/sister_associations.html:28
+#: thaliawebsite/templates/singlepages/sister_associations.html:27
+#: thaliawebsite/templates/singlepages/sister_associations.html:30
 msgid "University of Amsterdam"
 msgstr "Universiteit van Amsterdam"
 
-#: thaliawebsite/templates/singlepages/sister_associations.html:27
+#: thaliawebsite/templates/singlepages/sister_associations.html:29
 msgid "VU University Amsterdam"
 msgstr "Vrije Universiteit Amsterdam"
 
@@ -608,21 +620,20 @@ msgstr "Accent"
 msgid "Logo"
 msgstr "Logo"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:80
+#: thaliawebsite/templates/singlepages/styleguide.html:81
 #, python-format
 msgid ""
 "Thalia's logo consists of a 'T' formed by the pieces of a <a href=\"https://"
 "en.wikipedia.org/wiki/Tangram\" target=\"_blank\">tangram</a> and the text "
 "'Study Association Thalia'. The font that was used for this text is '<a href="
-"\"%(MEDIA_URL)sstyleguide/font.zip\">Gill Sans MT Condensed</a>'."
+"\"%(font_url)s\">Gill Sans MT Condensed</a>'."
 msgstr ""
 "Het logo van Thalia bestaat uit een 'T' gevormd uit de stukken van een <a "
 "href=\"https://en.wikipedia.org/wiki/Tangram\" target=\"_blank\">tangram</a> "
 "en de tekst 'Studievereniging Thalia'. Voor deze tekst is het lettertype '<a "
-"href=\"%(MEDIA_URL)sstyleguide/font.zip\">Gill Sans MT Condensed</a>' "
-"gebruikt."
+"href=\"%(font_url)s\">Gill Sans MT Condensed</a>' gebruikt."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:86
+#: thaliawebsite/templates/singlepages/styleguide.html:87
 msgid ""
 "There are three versions of the logo, each one has a different background "
 "colour. The combinations of the colours follow the guidelines in the section "
@@ -634,40 +645,39 @@ msgstr ""
 "href=\"#colour\">kleur</a> te vinden zijn. Daarnaast dient het volgende "
 "aangehouden te worden als de achtergrond een andere kleur is:<br />"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:91
+#: thaliawebsite/templates/singlepages/styleguide.html:92
 msgid "In case of a light background, use the logo for the white background."
 msgstr ""
 "Bij een lichte achtergrond wordt het logo voor op de witte achtergrond "
 "gebruikt."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:92
+#: thaliawebsite/templates/singlepages/styleguide.html:93
 msgid "In case of a dark background, use the logo for the black background."
 msgstr ""
 "Bij een donkere achtergrond wordt het logo voor op de zwarte achtergrond "
 "gebruikt."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:93
+#: thaliawebsite/templates/singlepages/styleguide.html:94
 msgid ""
 "In case of a coloured background, use the logo for the magenta background."
 msgstr ""
 "Bij een felle gekleurde achtergrond wordt het logo voor op de magenta "
 "achtergrond gebruikt."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:102
+#: thaliawebsite/templates/singlepages/styleguide.html:104
 #, python-format
 msgid ""
 "You can download the archive with all versions of the logo in PNG, SVG and "
-"Illustrator <a href=\"%(MEDIA_URL)sstyleguide/logo.zip\">here</a>."
+"Illustrator <a href=\"%(logo_url)s\">here</a>."
 msgstr ""
 "Het zip-archief met alle versies in PNG en SVG formaat en een Illustrator "
-"bronbestand is <a href=\"%(MEDIA_URL)sstyleguide/logo.zip\">hier</a> te "
-"downloaden."
+"bronbestand is <a href=\"%(logo_url)s\">hier</a> te downloaden."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:107
+#: thaliawebsite/templates/singlepages/styleguide.html:109
 msgid "Variations"
 msgstr "Variaties"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:110
+#: thaliawebsite/templates/singlepages/styleguide.html:112
 msgid ""
 "Thalia's logo was designed with flexibility in mind. It's possible to create "
 "a different variants for each committee, or a special version for an event "
@@ -680,116 +690,114 @@ msgstr ""
 "aangehouden als bij het normale logo. Bij een variant van het logo moet het "
 "volgende worden aangehouden:"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:115
+#: thaliawebsite/templates/singlepages/styleguide.html:117
 msgid "The top title is <strong>always</strong> 'THALIA'."
 msgstr "De titel boven is <strong>altijd</strong> THALIA."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:116
+#: thaliawebsite/templates/singlepages/styleguide.html:118
 msgid "Always use 2 or 3 lines. No more, no less."
 msgstr "Er zijn maximaal 3 regels, minimaal 2."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:117
+#: thaliawebsite/templates/singlepages/styleguide.html:119
 msgid "The text is vertically centered relative to the T"
 msgstr "De tekst is verticaal gecentreerd ten opzichte van de T."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:118
+#: thaliawebsite/templates/singlepages/styleguide.html:120
 msgid ""
 "The horizontal distance between the text lines and the T is always the same."
 msgstr "De tekst staat altijd op dezelfde afstand van de T."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:127
+#: thaliawebsite/templates/singlepages/styleguide.html:130
 #, python-format
 msgid ""
 "You can download the archive with the Illustrator and EPS files to create a "
-"variant <a href=\"%(MEDIA_URL)sstyleguide/variant-logo.zip\">here</a>."
+"variant <a href=\"%(variant_logo_url)s\">here</a>."
 msgstr ""
 "Het zip-archief met Illustrator bestanden om een variatie op het logo te "
-"maken kun je <a href=\"%(MEDIA_URL)sstyleguide/variant-logo.zip\">hier</a> "
-"vinden."
+"maken kun je <a href=\"%(variant_logo_url)s\">hier</a> vinden."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:132
+#: thaliawebsite/templates/singlepages/styleguide.html:135
 msgid "Documents & Presentations"
 msgstr "Documenten & Presentaties"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:135
+#: thaliawebsite/templates/singlepages/styleguide.html:138
 msgid "We've got Word-templates for:"
 msgstr "Er bestaan Word-templates voor:"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:139
+#: thaliawebsite/templates/singlepages/styleguide.html:142
 msgid "Contracts"
 msgstr "Contracten"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:140
+#: thaliawebsite/templates/singlepages/styleguide.html:143
 msgid "Invoices"
 msgstr "Facturen"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:141
+#: thaliawebsite/templates/singlepages/styleguide.html:144
 msgid "Letters"
 msgstr "Brieven"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:142
+#: thaliawebsite/templates/singlepages/styleguide.html:145
 msgid "Minutes"
 msgstr "Notulen"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:143
+#: thaliawebsite/templates/singlepages/styleguide.html:146
 msgid "Authorisation forms"
 msgstr "Machtigingen"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:144
+#: thaliawebsite/templates/singlepages/styleguide.html:147
 msgid "Registration forms"
 msgstr "Inschrijvingen"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:145
+#: thaliawebsite/templates/singlepages/styleguide.html:148
 msgid "Declarations"
 msgstr "Declaraties"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:147
+#: thaliawebsite/templates/singlepages/styleguide.html:152
 #, python-format
 msgid ""
-"You can download these template as <a href=\"%(MEDIA_URL)sstyleguide/"
-"documents.zip\">here</a> as archive. We've also included PDF examples. In "
-"case you prefer LateX then you can download the <a href="
-"\"%(MEDIA_URL)sstyleguide/latex.zip\">template</a>."
+"You can download these template as <a href=\"%(documents_url)s\">here</a> as "
+"archive. We've also included PDF examples. In case you prefer LaTeX then you "
+"can download the <a href=\"%(latex_url)s\">template</a>."
 msgstr ""
-"Deze templates kun je <a href=\"%(MEDIA_URL)sstyleguide/documents.zip"
-"\">hier</a> gezipt downloaden. Inclusief voorbeelden in PDF. Daarnaast is er "
-"een <a href=\"%(MEDIA_URL)sstyleguide/latex.zip\">LateX template</a> die te "
-"gebruiken is voor van alles en nog wat."
+"Deze templates kun je <a href=\"%(documents_url)s\">hier</a> gezipt "
+"downloaden. Inclusief voorbeelden in PDF. Daarnaast is er een <a href="
+"\"%(latex_url)s\">LateX template</a> die te gebruiken is voor van alles en "
+"nog wat."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:154
+#: thaliawebsite/templates/singlepages/styleguide.html:160
 #, python-format
 msgid ""
 "Templates for PowerPoint, Keynote and LibreOffice are available <a href="
-"\"%(MEDIA_URL)sstyleguide/presentations.zip\">here</a>."
+"\"%(presentations_url)s\">here</a>."
 msgstr ""
-"Templates voor presentaties vind je <a href=\"%(MEDIA_URL)sstyleguide/"
-"presentations.zip\">hier</a> voor PowerPoint, Keynote en LibreOffice."
+"Templates voor presentaties vind je <a href=\"%(presentations_url)s\">hier</"
+"a> voor PowerPoint, Keynote en LibreOffice."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:159
+#: thaliawebsite/templates/singlepages/styleguide.html:165
 msgid "Posters & Banners"
 msgstr "Posters & Banners"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:162
+#: thaliawebsite/templates/singlepages/styleguide.html:168
 msgid "The posters and banners are available in various sizes:"
 msgstr "Er zijn verschillende formaten template voor de posters & banners."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:166
+#: thaliawebsite/templates/singlepages/styleguide.html:172
 msgid "A3 Paper"
 msgstr "Groot: voor op papier (A3)"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:167
+#: thaliawebsite/templates/singlepages/styleguide.html:173
 msgid "1920x1080 for the televisions"
 msgstr "1920x1080: voor op de kabelkrant"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:168
+#: thaliawebsite/templates/singlepages/styleguide.html:174
 msgid "400 × 280 for the login screens"
 msgstr "400x280: voor op de inlogschermen"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:169
+#: thaliawebsite/templates/singlepages/styleguide.html:175
 msgid "1594 × 590 for Facebook"
 msgstr "1594 × 590: voor Facebook"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:171
+#: thaliawebsite/templates/singlepages/styleguide.html:177
 msgid ""
 "For every size there is a dark and light version. The posters are in black, "
 "white and magenta colour variants."
@@ -797,21 +805,22 @@ msgstr ""
 "Er is een lichte en donkere variant voor elke versie. De posters zijn in "
 "varianten van zwart, wit en magenta."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:177
+#: thaliawebsite/templates/singlepages/styleguide.html:184
 #, python-format
 msgid ""
-"The templates are available for download <a href=\"%(MEDIA_URL)sstyleguide/"
-"posters-banners.zip\">here</a>. Although, it's the task of the media "
-"committee to create the posters and banners. So you're always welcome to "
-"send an email to media@thalia.nu to get yourself a sleek poster for your "
-"event."
+"The templates are available for download <a href=\"%(posters_url)s\">here</"
+"a>. Although, it's the task of the media committee to create the posters and "
+"banners. So you're always welcome to send an email to <a href=\"mailto:"
+"media@thalia.nu\">media@thalia.nu</a> to get yourself a sleek poster for "
+"your event."
 msgstr ""
-"Je kunt de templates <a href=\"%(MEDIA_URL)sstyleguide/posters-banners.zip"
-"\">hier</a> vinden. Het is echter in principe de taak van de Mediacommissie "
-"om deze posters & banners te maken. Je kunt dus altijd een mailtje sturen "
-"naar media@thalia.nu voor een strakke afbeelding bij je evenement."
+"Je kunt de templates <a href=\"%(posters_url)s\">hier</a> vinden. Het is "
+"echter in principe de taak van de Mediacommissie om deze posters & banners "
+"te maken. Je kunt dus altijd een mailtje sturen naar <a href=\"mailto:"
+"media@thalia.nu\">media@thalia.nu</a> voor een strakke afbeelding bij je "
+"evenement."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:185
+#: thaliawebsite/templates/singlepages/styleguide.html:192
 msgid ""
 "Still looking for something different? No problem! Let yourself go. Just "
 "make sure you follow the 'rules'. And  in case you get lost in the land of "
@@ -823,7 +832,7 @@ msgstr ""
 "dan kun je altijd mailen naar media@thalia.nu voor een custom poster, want "
 "daar bestaat die commissie tenslotte voor."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:195
+#: thaliawebsite/templates/singlepages/styleguide.html:202
 msgid ""
 "We make an exception for the colour palette of the merchandise if it's not "
 "possible to print in full colour. The preference is to print magenta on "
@@ -833,54 +842,54 @@ msgstr ""
 "betreft. Als het enkel mogelijk is om in één kleur te drukken dan is er de "
 "voorkeur om magenta op zwart te gebruiken."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:201
-#: thaliawebsite/templates/singlepages/styleguide.html:220
+#: thaliawebsite/templates/singlepages/styleguide.html:208
+#: thaliawebsite/templates/singlepages/styleguide.html:228
 msgid "Introshirts"
 msgstr "Introshirts"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:204
+#: thaliawebsite/templates/singlepages/styleguide.html:212
 #, python-format
 msgid ""
 "The introshirts too are an exception. These shirts are in different colours "
 "every year. The templates for the shirts can be found <a href="
-"\"%(MEDIA_URL)sstyleguide/introshirt.zip\">here</a>. The sponsorlogos and "
-"texts can be changed to those you prefer."
+"\"%(introshirt_url)s\">here</a>. The sponsorlogos and texts can be changed "
+"to those you prefer."
 msgstr ""
 "Ook de introshirts zijn een uitzondering op het kleurenpalet. Het is "
 "toegestaan om elke kleur te gebruiken die je maar wilt, zolang het maar niet "
-"vloekt. De basisdesigns voor de introshirts zijn <a href="
-"\"%(MEDIA_URL)sstyleguide/introshirt.zip\">hier</a> te vinden. Logo's van "
-"sponsoren en teksten zijn naar voorkeur te vervangen."
+"vloekt. De basisdesigns voor de introshirts zijn <a href=\"%(introshirt_url)s"
+"\">hier</a> te vinden. Logo's van sponsoren en teksten zijn naar voorkeur te "
+"vervangen."
 
-#: thaliawebsite/templates/singlepages/styleguide.html:210
+#: thaliawebsite/templates/singlepages/styleguide.html:218
 msgid "Downloads"
 msgstr "Downloads"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:213
+#: thaliawebsite/templates/singlepages/styleguide.html:221
 msgid "Font"
 msgstr "Lettertype"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:214
+#: thaliawebsite/templates/singlepages/styleguide.html:222
 msgid "Logos"
 msgstr "Logo’s"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:215
+#: thaliawebsite/templates/singlepages/styleguide.html:223
 msgid "Logo variant template"
 msgstr "Templates logo varianten"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:216
+#: thaliawebsite/templates/singlepages/styleguide.html:224
 msgid "Word documents"
 msgstr "Word-documenten"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:217
-msgid "LateX template"
-msgstr "LateX-template"
+#: thaliawebsite/templates/singlepages/styleguide.html:225
+msgid "LaTeX template"
+msgstr "LaTeX-template"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:218
+#: thaliawebsite/templates/singlepages/styleguide.html:226
 msgid "Presentation templates"
 msgstr "Presentatie-templates"
 
-#: thaliawebsite/templates/singlepages/styleguide.html:219
+#: thaliawebsite/templates/singlepages/styleguide.html:227
 msgid "Poster templates"
 msgstr "Posters & Banners"
 
