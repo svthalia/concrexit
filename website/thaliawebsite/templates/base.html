@@ -21,6 +21,9 @@
 <meta name="msapplication-square150x150logo" content="{% static "images/browser_icons/icon-mediumtile.png" %}">
 <meta name="msapplication-wide310x150logo" content="{% static "images/browser_icons/icon-widetile.png" %}">
 <meta name="msapplication-square310x310logo" content="{% static "images/browser_icons/icon-largetile.png" %}">
+<meta property="og:image" content="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{% static "images/browser_icons/icon-largetile.png" %}" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{% trans 'Study Association Thalia' %}" />
 
 <!-- css stylesheets -->
 {% block css_head %}
