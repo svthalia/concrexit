@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-21 20:27+0100\n"
-"PO-Revision-Date: 2016-12-21 20:31+0100\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"POT-Creation-Date: 2016-12-21 20:38+0100\n"
+"PO-Revision-Date: 2016-12-21 20:38+0100\n"
+"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -100,43 +100,47 @@ msgstr "Wiki"
 msgid "Calendar"
 msgstr "Agenda"
 
-#: thaliawebsite/menus.py:24
+#: thaliawebsite/menus.py:25
+msgid "Order Pizza"
+msgstr "Bestel Pizza"
+
+#: thaliawebsite/menus.py:27
 msgid "Career"
 msgstr "Carrière"
 
-#: thaliawebsite/menus.py:25
+#: thaliawebsite/menus.py:28
 msgid "Partners"
 msgstr "Partners"
 
-#: thaliawebsite/menus.py:26
+#: thaliawebsite/menus.py:29
 msgid "Vacancies"
 msgstr "Vacatures"
 
-#: thaliawebsite/menus.py:28
+#: thaliawebsite/menus.py:31
 msgid "Education"
 msgstr "Onderwijs"
 
-#: thaliawebsite/menus.py:29
+#: thaliawebsite/menus.py:32
 msgid "Book Sale"
 msgstr "Boekverkoop"
 
-#: thaliawebsite/menus.py:30
+#: thaliawebsite/menus.py:33
 msgid "Student Participation"
 msgstr "Medezeggenschap"
 
-#: thaliawebsite/menus.py:32
+#: thaliawebsite/menus.py:35
 msgid "Course Overview"
 msgstr "Vakkenoverzicht"
 
-#: thaliawebsite/menus.py:34
+#: thaliawebsite/menus.py:37
 msgid "Submit Exam"
 msgstr "Tentamen Insturen"
 
-#: thaliawebsite/menus.py:35
+#: thaliawebsite/menus.py:38
 msgid "Submit Summary"
 msgstr "Samenvatting Insturen"
 
-#: thaliawebsite/menus.py:39 thaliawebsite/templates/singlepages/contact.html:4
+#: thaliawebsite/menus.py:42 thaliawebsite/templates/singlepages/contact.html:4
 #: thaliawebsite/templates/singlepages/contact.html:7
 msgid "Contact"
 msgstr "Contact"
