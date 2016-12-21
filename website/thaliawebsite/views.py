@@ -1,13 +1,17 @@
+import os.path
+
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.http import (HttpResponseBadRequest,
+from django.http import (HttpResponseBadRequest, Http404,
                          HttpResponseForbidden, JsonResponse)
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+
+from sendfile import sendfile
 
 from members.models import Member
 
@@ -51,6 +55,16 @@ def wiki_login(request):
     return JsonResponse({'status': 'error',
                          'msg': 'Authentication Failed'},
                         status_code=403)
+
+
+@login_required
+def styleguide_file(request, filename):
+    path = os.path.join(settings.MEDIA_ROOT, 'styleguide')
+    filepath = os.path.join(path, filename)
+    if not (os.path.commonprefix([path, filepath]).startswith(path) and
+            os.path.isfile(filepath)):
+        raise Http404("File not found.")
+    return sendfile(request, filepath, attachment=True)
 
 
 @staff_member_required

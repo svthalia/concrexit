@@ -76,8 +76,9 @@ urlpatterns = [
     url(r'^', include([  # 'for members' menu
         url(r'^become-active/', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
         url(r'^photos/', include('photos.urls')),
-        url(r'^statistics/', members.views.statistics, name='statistics'),
-        url(r'^styleguide/', views.styleguide, name='styleguide'),
+        url(r'^statistics/$', members.views.statistics, name='statistics'),
+        url(r'^styleguide/$', views.styleguide, name='styleguide'),
+        url(r'^styleguide/file/(?P<filename>[\w\-_\.]+)$', views.styleguide_file, name='styleguide-file'),
     ])),
     url(r'^career/', include('partners.urls')),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),

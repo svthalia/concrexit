@@ -77,8 +77,9 @@
 <h2>Basis</h2>
 
 <p>
+    {% url 'styleguide-file' 'font.zip' as font_url %}
     {% blocktrans trimmed %}
-    Thalia's logo consists of a 'T' formed by the pieces of a <a href="https://en.wikipedia.org/wiki/Tangram" target="_blank">tangram</a> and the text 'Study Association Thalia'. The font that was used for this text is '<a href="{{ MEDIA_URL }}styleguide/font.zip">Gill Sans MT Condensed</a>'.
+    Thalia's logo consists of a 'T' formed by the pieces of a <a href="https://en.wikipedia.org/wiki/Tangram" target="_blank">tangram</a> and the text 'Study Association Thalia'. The font that was used for this text is '<a href="{{ font_url }}">Gill Sans MT Condensed</a>'.
     {% endblocktrans %}
 </p>
 
@@ -99,8 +100,9 @@
 </p>
 
 <p>
+    {% url 'styleguide-file' 'logo.zip' as logo_url %}
     {% blocktrans trimmed %}
-    You can download the archive with all versions of the logo in PNG, SVG and Illustrator <a href="{{ MEDIA_URL }}styleguide/logo.zip">here</a>.
+    You can download the archive with all versions of the logo in PNG, SVG and Illustrator <a href="{{ logo_url }}">here</a>.
     {% endblocktrans %}
 </p>
 
@@ -124,8 +126,9 @@
 </p>
 
 <p>
+    {% url 'styleguide-file' 'variant-logo.zip' as variant_logo_url %}
     {% blocktrans trimmed %}
-    You can download the archive with the Illustrator and EPS files to create a variant <a href="{{ MEDIA_URL }}styleguide/variant-logo.zip">here</a>.
+    You can download the archive with the Illustrator and EPS files to create a variant <a href="{{ variant_logo_url }}">here</a>.
     {% endblocktrans %}
 </p>
 
@@ -144,15 +147,18 @@
         <li>{% trans "Registration forms" %}</li>
         <li>{% trans "Declarations" %}</li>
     </ul>
+    {% url 'styleguide-file' 'documents.zip' as documents_url %}
+    {% url 'styleguide-file' 'latex.zip' as latex_url %}
     {% blocktrans trimmed %}
-    You can download these template as <a href="{{ MEDIA_URL }}styleguide/documents.zip">here</a> as archive. We've also included PDF examples.
-    In case you prefer LateX then you can download the <a href="{{ MEDIA_URL }}styleguide/latex.zip">template</a>.
+    You can download these template as <a href="{{ documents_url }}">here</a> as archive. We've also included PDF examples.
+    In case you prefer LaTeX then you can download the <a href="{{ latex_url }}">template</a>.
     {% endblocktrans %}
 </p>
 
 <p>
+    {% url 'styleguide-file' 'presentations.zip' as presentations_url %}
     {% blocktrans trimmed %}
-    Templates for PowerPoint, Keynote and LibreOffice are available <a href="{{ MEDIA_URL }}styleguide/presentations.zip">here</a>.
+    Templates for PowerPoint, Keynote and LibreOffice are available <a href="{{ presentations_url }}">here</a>.
     {% endblocktrans %}
 </p>
 
@@ -174,10 +180,11 @@
 </p>
 
 <p>
+    {% url 'styleguide-file' 'posters-banners.zip' as posters_url %}
     {% blocktrans trimmed %}
-    The templates are available for download <a href="{{ MEDIA_URL }}styleguide/posters-banners.zip">here</a>.
+    The templates are available for download <a href="{{ posters_url }}">here</a>.
     Although, it's the task of the media committee to create the posters and banners.
-    So you're always welcome to send an email to media@thalia.nu to get yourself a sleek poster for your event.
+    So you're always welcome to send an email to <a href="mailto:media@thalia.nu">media@thalia.nu</a> to get yourself a sleek poster for your event.
     {% endblocktrans %}
 </p>
 
@@ -201,23 +208,24 @@
 <h1>{% trans "Introshirts" %}</h1>
 
 <p>
+    {% url 'styleguide-file' 'introshirt.zip' as introshirt_url %}
     {% blocktrans trimmed %}
     The introshirts too are an exception. These shirts are in different colours every year.
-    The templates for the shirts can be found <a href="{{ MEDIA_URL }}styleguide/introshirt.zip">here</a>. The sponsorlogos and texts can be changed to those you prefer.
+    The templates for the shirts can be found <a href="{{ introshirt_url }}">here</a>. The sponsorlogos and texts can be changed to those you prefer.
     {% endblocktrans %}
 </p>
 
 <h1>{% trans "Downloads" %}</h1>
 
 <ul>
-    <li><a href="{{ MEDIA_URL }}styleguide/font.zip">{% trans "Font" %}</a></li>
-    <li><a href="{{ MEDIA_URL }}styleguide/logo.zip">{% trans "Logos" %}</a></li>
-    <li><a href="{{ MEDIA_URL }}styleguide/variant-logo.zip">{% trans "Logo variant template" %}</a></li>
-    <li><a href="{{ MEDIA_URL }}styleguide/documents.zip">{% trans "Word documents" %}</a></li>
-    <li><a href="{{ MEDIA_URL }}styleguide/latex.zip">{% trans "LateX template" %}</a></li>
-    <li><a href="{{ MEDIA_URL }}styleguide/presentations.zip">{% trans "Presentation templates" %}</a></li>
-    <li><a href="{{ MEDIA_URL }}styleguide/posters-banners.zip">{% trans "Poster templates" %}</a></li>
-    <li><a href="{{ MEDIA_URL }}styleguide/introshirt.zip">{% trans "Introshirts" %}</a></li>
+    <li><a href="{{ font_url }}">{% trans "Font" %}</a></li>
+    <li><a href="{{ logo_url }}">{% trans "Logos" %}</a></li>
+    <li><a href="{{ variant_logo_url }}">{% trans "Logo variant template" %}</a></li>
+    <li><a href="{{ documents_url }}">{% trans "Word documents" %}</a></li>
+    <li><a href="{{ latex_url }}">{% trans "LaTeX template" %}</a></li>
+    <li><a href="{{ presentations_url }}">{% trans "Presentation templates" %}</a></li>
+    <li><a href="{{ posters_url }}">{% trans "Poster templates" %}</a></li>
+    <li><a href="{{ introshirt_url }}">{% trans "Introshirts" %}</a></li>
 </ul>
 
 {% endblock %}
