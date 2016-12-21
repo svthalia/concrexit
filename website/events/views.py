@@ -1,6 +1,5 @@
 import csv
 import json
-from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -67,13 +66,12 @@ def export(request, event_id):
     registrations = event.registration_set.all()
 
     header_fields = (
-        ['name', 'paid', 'present', 'email',
-         'phone number'] +
+        ['name', 'email', 'paid', 'present',
+         'status', 'phone number'] +
         [field.name for field in extra_fields] +
-        ['status', 'date', 'date cancelled'])
+        ['date', 'date cancelled'])
 
     rows = []
-    capacity = event.max_participants
     if event.price == 0:
         header_fields.remove('paid')
     for i, registration in enumerate(registrations):
@@ -84,17 +82,20 @@ def export(request, event_id):
         status = pgettext_lazy('registration status', 'registered')
         cancelled = None
         if registration.date_cancelled:
-            if capacity is not None:
-                capacity += 1
-            status = pgettext_lazy('registration status', 'cancelled')
+
+            if registration.is_late_cancellation():
+                status = pgettext_lazy('registration status',
+                                       'late cancellation')
+            else:
+                status = pgettext_lazy('registration status', 'cancelled')
             cancelled = timezone.localtime(registration.date_cancelled)
-        elif capacity and i >= capacity:
+
+        elif registration.queue_position():
             status = pgettext_lazy('registration status', 'waiting')
         data = {
             'name': name,
             'date': timezone.localtime(registration.date
                                        ).strftime("%Y-%m-%d %H:%m"),
-            'dateobj': registration.date,
             'present': _('Yes') if registration.present else '',
             'phone number': (registration.member.phone_number
                              if registration.member
@@ -116,18 +117,16 @@ def export(request, event_id):
     writer = csv.DictWriter(response, header_fields)
     writer.writeheader()
 
-    def order(item):
-        if item['status'] == 'cancelled':
-            return item['dateobj'] + timedelta(days=10000)
-        elif item['status'] == 'registered':
-            return item['dateobj'] - timedelta(days=10000)
-        else:
-            return item['dateobj']
+    rows = sorted(rows,
+                  key=lambda row:
+                  (row['status'] == pgettext_lazy('registration status',
+                                                  'late cancellation'),
+                   row['date']),
+                  reverse=True,
+                  )
 
-    for row in sorted(rows, key=order):
-        r = row.copy()
-        del r['dateobj']
-        writer.writerow(r)
+    for row in rows:
+        writer.writerow(row)
 
     response['Content-Disposition'] = (
         'attachment; filename="{}.csv"'.format(slugify(event.title)))
