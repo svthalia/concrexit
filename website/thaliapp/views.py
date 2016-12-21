@@ -38,7 +38,9 @@ def get_photo(user):
 def login(request):
     if (sha256(request.POST.get('apikey', '').encode('ascii')).hexdigest() !=
             settings.THALIAPP_API_KEY):
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(
+            '{"status":"error","msg":"wrong api key"}',
+            content_type='application/json')
     user = request.POST.get('username')
     password = request.POST.get('password')
     if user is None or password is None:
@@ -68,9 +70,13 @@ def app(request):
     token = request.POST.get('token')
     if (sha256(request.POST.get('apikey', '').encode('ascii')).hexdigest() !=
             settings.THALIAPP_API_KEY):
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(
+            '{"status": "error", "message": "wrong api key"}',
+            content_type='application/json')
     if username is None or token is None:
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest(
+            '{"status": "error","msg": "Missing arguments"}',
+            content_type='application/json')
     user = Token.authenticate(username, token)
     if user is None:
         return JsonResponse({'status': 'error',
@@ -78,14 +84,14 @@ def app(request):
                             status=403)
     today = datetime.date.today()
     eightteen_years_ago = today.replace(year=today.year - 18)
-    over18 = str(user.member.birthday <= eightteen_years_ago)
+    over18 = user.member.birthday <= eightteen_years_ago
     membership = user.member.current_membership
     if membership:
         membership_type = membership.type
-        is_member = 'True'
+        is_member = True
     else:
         membership_type = 'Expired'
-        is_member = 'False'
+        is_member = False
     return JsonResponse({'status': 'ok',
                          'real_name': user.member.get_full_name(),
                          'display_name': user.member.display_name(),
