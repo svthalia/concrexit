@@ -4,6 +4,7 @@ from zipfile import ZipFile
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.contrib import messages
 from django.core.files.base import ContentFile
 
 from .models import Album, Photo
@@ -52,9 +53,14 @@ class AlbumAdmin(admin.ModelAdmin):
                 # Cannot use .extract as that would recreate directory paths
                 photo_obj = Photo()
                 photo_obj.album = obj
-                with zip_file.open(photo) as f:
-                    photo_obj.file.save(photo_filename, ContentFile(f.read()))
-                photo_obj.save()
+                try:
+                    with zip_file.open(photo) as f:
+                        photo_obj.file.save(photo_filename,
+                                            ContentFile(f.read()))
+                    photo_obj.save()
+                except OSError:
+                    messages.add_message(request, messages.WARNING,
+                                         "Ignoring {}".format(f.name))
 
 admin.site.register(Album, AlbumAdmin)
 admin.site.register(Photo)
