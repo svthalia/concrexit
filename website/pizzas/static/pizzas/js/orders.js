@@ -5,6 +5,10 @@ $(function() {
         return $(td).find('.btn').val();
     });
 
+    $('thead th.numeric-title').data('sortBy', function (th, td, tablesort) {
+        return parseInt($(td).html().replace('€', ''));
+    });
+
     $('input.paid-button').click(function() {
         var id = $(this).data('id');
         var button = $(this);
