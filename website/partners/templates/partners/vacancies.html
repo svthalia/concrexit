@@ -133,12 +133,14 @@
                 });
             }
 
-            $(window).resize(function() {
-                if (isotopeFilter.find('li.current').length) {
-                    isotopeFilter.find('li.current').trigger('click');
-                } else {
-                    isotopeFilter.find('li:first').trigger('click');
-                }
+            $(window).on('load', function () {
+                $(window).resize(function () {
+                    if (isotopeFilter.find('li.current').length) {
+                        isotopeFilter.find('li.current').trigger('click');
+                    } else {
+                        isotopeFilter.find('li:first').trigger('click');
+                    }
+                });
             });
 
             $('.vacancy-external').click(function() {
