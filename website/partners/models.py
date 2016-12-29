@@ -130,6 +130,12 @@ class Vacancy(models.Model):
     class Meta:
         verbose_name_plural = _('Vacancies')
 
+    def get_absolute_url(self):
+        url = reverse('partners:vacancies')
+        if self.partner:
+            url = reverse('partners:partner', args=(self.partner.slug,))
+        return '{}#vacancy-{}'.format(url, self.pk)
+
 
 class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
     partner = models.ForeignKey(
