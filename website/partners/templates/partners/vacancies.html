@@ -20,7 +20,7 @@
     <!-- .portfolio-filter -->
     <div class="isotope-filter tabs-wrapper tabs-centered clearfix">
         <ul class="tabs">
-            <li class="{% if not preselected_category %}current{% endif %}">
+            <li class="{% if not preselected_category %}current{% endif %}" id="tab-everything">
                 <a href="#">{% trans "Everything" %}</a>
             </li>
             {% for category in categories %}
@@ -37,7 +37,9 @@
     <div class="row isotope-items">
         {% for vacancy in vacancies %}
             <div class="team span4 clearfix isotope-item"
-                 data-filter="{% for cat in vacancy.categories.all %}category-{{ cat.id }} {% endfor %}">
+                 data-filter="{% for cat in vacancy.categories.all %}category-{{ cat.id }} {% endfor %}"
+                 data-vacancy="{{ vacancy.id }}"
+            >
                 <div class="team-header">
                     {% if vacancy.get_company_logo %}
                         <img src="{{ vacancy.get_company_logo.url }}" alt="">
@@ -110,11 +112,17 @@
                     isotopeFilter = isotope.find('.isotope-filter'),
                     isotopePosts = isotope.find('.isotope-items');
 
+            var windowhash = window.location.hash;
+
             if (jQuery().isotope) {
                 isotopeFilter.delegate('li', 'click', function(e) {
                     var filter;
 
-                    if ($(this).data('filter')==undefined) {
+                    if (windowhash !== '' && windowhash.substr(0, 9) === '#vacancy-') {
+                        filter = '[data-vacancy*="' + windowhash.replace('#vacancy-', '') + '"]';
+                        $('#tab-everything').removeClass('current');
+                        windowhash = '';
+                    } else if ($(this).data('filter')==undefined) {
                         filter='*';
                     } else {
                         filter='[data-filter*="' + $(this).data('filter') + '"]';
