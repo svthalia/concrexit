@@ -6,7 +6,10 @@ from .models import Course, Exam, Summary
 
 
 class AddExamForm(ModelForm):
-    exam_date = DateField(widget=SelectDateWidget())
+    exam_date = DateField(
+        widget=SelectDateWidget(),
+        initial=datetime.date.today
+    )
     course = ModelChoiceField(
         queryset=Course.objects.order_by('name_' + settings.LANGUAGE_CODE),
         empty_label=None)

@@ -1,6 +1,6 @@
 import itertools
 import os
-from datetime import datetime
+from datetime import datetime, date
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
@@ -81,13 +81,12 @@ def submit_exam(request, id=None):
             obj.save()
 
             form = AddExamForm()
-            form.exam_date = datetime.now()
     else:
         obj = Exam()
+        obj.exam_date = date.today()
         if id is not None:
             obj.course = Course.objects.get(id=id)
         form = AddExamForm(instance=obj)
-        form.exam_date = datetime.now()
 
     return render(request, 'education/add_exam.html',
                   {'form': form, 'saved': saved})
