@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.forms import (ChoiceField, DateField, ModelChoiceField,
                           ModelForm, SelectDateWidget)
@@ -6,8 +8,11 @@ from .models import Course, Exam, Summary
 
 
 class AddExamForm(ModelForm):
+    this_year = datetime.date.today().year
+    years = list(reversed(range(this_year - 8, this_year + 1)))
+
     exam_date = DateField(
-        widget=SelectDateWidget(),
+        widget=SelectDateWidget(years=years),
         initial=datetime.date.today
     )
     course = ModelChoiceField(
