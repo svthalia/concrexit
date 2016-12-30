@@ -22,9 +22,13 @@ class PizzaEvent(models.Model):
         return self.start > timezone.now()
 
     @property
+    def has_ended(self):
+        return self.end < timezone.now()
+
+    @property
     def just_ended(self):
-        return (self.end < timezone.now()
-                and self.end + timezone.timedelta(hours=8) > timezone.now())
+        return (self.has_ended and
+                self.end + timezone.timedelta(hours=8) > timezone.now())
 
     @classmethod
     def current(cls):
@@ -90,6 +94,10 @@ class Order(models.Model):
         if self.member is not None:
             return self.member.get_full_name()
         return self.name
+
+    @property
+    def can_be_changed(self):
+        return not self.paid and not self.pizza_event.has_ended
 
     class Meta:
         unique_together = ('pizza_event', 'member')

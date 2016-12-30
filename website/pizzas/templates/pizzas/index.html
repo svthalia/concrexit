@@ -81,7 +81,7 @@
                         <td>{{ order.product.description }}</td>
                         <td>&euro; {{ order.product.price }}</td>
                         <td>
-                            {% if event.just_ended %}
+                            {% if not order.can_be_changed %}
                                 {% trans "You can no longer cancel." %}
                             {% else %}
                                 <form class="form-horizontal pizza-order-form" method="post" action="{% url 'pizzas:cancel-order' %}">
@@ -100,31 +100,33 @@
         {% elif event.just_ended %}
             {% trans "You did not place an order." %}
         {% endif %}
-        {% if not event.just_ended %}
-            <div style="overflow-x: auto;">
-                <table class="category table table-striped table-bordered table-hover">
-                    <tr>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "Description" %}</th>
-                        <th>{% trans "Price" %}</th>
-                        <th>{% if order %}{% trans "Modify" %}{% else %}{% trans "Order" context "pizzas" %}{% endif %}</th>
-                    </tr>
-                    {% for product in products %}
+        {% if not event.has_ended %}
+            {% if order == None or order.can_be_changed %}
+                <div style="overflow-x: auto;">
+                    <table class="category table table-striped table-bordered table-hover">
                         <tr>
-                            <td>{{ product.name }}</td>
-                            <td>{{ product.description }}</td>
-                            <td>&euro; {{ product.price }}</td>
-                            <td>
-                                <form class="form-horizontal pizza-order-form" method="post" action="{% url 'pizzas:order' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="product" value="{{ product.pk }}" />
-                                    <input type="submit" class="btn btn-style1" {% if order %}value='{% trans "Modify" %}' onclick="return confirm('{% trans "Are you sure you want to modify your order?" %}')"{% else %}value='{% trans "Order" context "pizzas" %}'{% endif %} />
-                                </form>
-                            </td>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Description" %}</th>
+                            <th>{% trans "Price" %}</th>
+                            <th>{% if order %}{% trans "Modify" %}{% else %}{% trans "Order" context "pizzas" %}{% endif %}</th>
                         </tr>
-                    {% endfor %}
-                </table>
-            </div>
+                        {% for product in products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.description }}</td>
+                                <td>&euro; {{ product.price }}</td>
+                                <td>
+                                    <form class="form-horizontal pizza-order-form" method="post" action="{% url 'pizzas:order' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="product" value="{{ product.pk }}" />
+                                        <input type="submit" class="btn btn-style1" {% if order %}value='{% trans "Modify" %}' onclick="return confirm('{% trans "Are you sure you want to modify your order?" %}')"{% else %}value='{% trans "Order" context "pizzas" %}'{% endif %} />
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endif %}
