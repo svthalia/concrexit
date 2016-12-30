@@ -33,7 +33,8 @@ def wiki_login(request):
     password = request.POST.get('password')
 
     if apikey != settings.WIKI_API_KEY:
-        return HttpResponseForbidden('{"status":"error","msg":"invalid key"}')
+        return HttpResponseForbidden('{"status":"error","msg":"invalid key"}',
+                                     content_type='application/json')
     if user is None or password is None:
         return HttpResponseBadRequest(
             '{"status":"error","msg":"Missing username or password"}',
