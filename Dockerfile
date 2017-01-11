@@ -29,8 +29,6 @@ RUN apk add --no-cache \
     zlib \
     freetype \
     lcms2 \
-    libxml2 \
-    libxslt \
     libffi \
     ghostscript \
     libjpeg-turbo
@@ -44,8 +42,6 @@ RUN apk add --no-cache --virtual .builddeps \
     freetype-dev \
     lcms2-dev \
     libwebp-dev \
-    libxml2-dev \
-    libxslt-dev \
     libffi-dev \
     linux-headers \
     git \
@@ -59,12 +55,10 @@ WORKDIR /usr/src/app
 # install python requirements
 COPY requirements.txt /usr/src/app/
 COPY production-requirements.txt /usr/src/app/
-COPY migration-requirements.txt /usr/src/app/
 COPY dev-requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir \
     -r requirements.txt \
     -r production-requirements.txt \
-    -r migration-requirements.txt \
     -r dev-requirements.txt
 
 RUN apk del .builddeps
