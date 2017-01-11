@@ -74,7 +74,7 @@
                             {% for row in agenda_events|rows_distributed:2 %}
                              <td style="vertical-align: top;">
                                 {% for item in row %}
-                                <li style="font-family: Arial, sans-serif;"><i>{{ item.title }} - {{ item.start_datetime|date:"d F" }}</i></li>
+                                <li style="font-family: Arial, sans-serif;"><i>{{ item.title }} - {{ item.newsletterevent.start_datetime|date:"d F" }}</i></li>
                                 {% endfor %}
                              </td>
                             {% endfor %}
@@ -84,98 +84,93 @@
                 </td>
             </tr>
 
-            {% for item in newsletter.newsletteritem_set.all %}
+            {% for item in newsletter.newslettercontent_set.all %}
             <tr>
                 <td colspan="2" style="{{ item_tr_style }}">
                     <h2 style="{{ item_h2_style }}">{{ item.title.upper }}</h2>
                 </td>
             </tr>
-            <tr>
-                <td colspan="2" style="{{ item_tr_style }}">
-                    {{ item.description|safe }}
-                </td>
-            </tr>
-            {% endfor %}
 
-            {% for event in newsletter.newsletterevent_set.all %}
-            <tr>
-                <td colspan="2" style="{{ item_tr_style }}">
-                    <h2 style="{{ item_h2_style }}">{{ event.title.upper }}</h2>
-                </td>
-            </tr>
+                {% if item.newsletterevent %}
+                <tr>
+                    <td style="{{ item_tr_style }}">
+                        {{ item.description|safe }}
 
-            <tr>
-                <td style="{{ item_tr_style }}">
-                    {{ event.description|safe }}
-
-                    {% if event.price != 0 and event.show_costs_warning %}
-                        <p style="font-family: Arial, sans-serif">
-                            <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
-                            {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
-                            {% if event.penalty_costs and event.penalty_costs > 0 %}
-                                {% trans "These costs are" %}: <b>€{{ event.penalty_costs }}.</b>
-                            {% endif %}
-                            </i>
-                        </p>
-                    {% endif %}
-                </td>
-
-                <td style="vertical-align: top;">
-                    <div style="padding: 20px; background-color: black; border-left: 5px solid {{ primary_color }};">
-                        <div style="margin-bottom: 5px;">
-                            <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                {% trans "What"|upper %}
-                            </b>
-                            <br>
-                            <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
-                                {{ event.what }}
-                            </span>
-                        </div>
-
-                        <div style="margin-bottom: 5px;">
-                            <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                {% trans "Where"|upper %}
-                            </b>
-                            <br>
-                            <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
-                                {{ event.where }}
-                            </span>
-                        </div>
-
-                        <div style="margin-bottom: 5px;">
-                            <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                {% trans "When"|upper %}
-                            </b>
-                            <br>
-                            <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
-                                {% if event.start_datetime|date:'d-M-Y H:i' == event.end_datetime|date:'d-M-Y H:i' %}
-                                    {{ event.start_datetime }}
-                                {% elif event.start_datetime|date:'d-M-Y' == event.end_datetime|date:'d-M-Y' %}
-                                    {{ event.start_datetime }} - {{ event.end_datetime|date:'H:i' }}
-                                {% else %}
-                                    {{ event.start_datetime }} - {{ event.end_datetime }}
+                        {% if item.newsletterevent.price != 0 and item.newsletterevent.show_costs_warning %}
+                            <p style="font-family: Arial, sans-serif">
+                                <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
+                                {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
+                                {% if event.penalty_costs and item.newsletterevent.penalty_costs > 0 %}
+                                    {% trans "These costs are" %}: <b>€{{ event.penalty_costs }}.</b>
                                 {% endif %}
-                            </span>
-                        </div>
-
-                        {% if event.price is not None %}
-                        <div style="margin-bottom: 5px;">
-                            <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                {% trans "Price"|upper %}
-                            </b>
-                            <br>
-                            <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
-                                {% if event.price == 0 %}
-                                    {% trans "Free" %}
-                                {% else %}
-                                    €{{ event.price }}
-                                {% endif %}
-                            </span>
-                        </div>
+                                </i>
+                            </p>
                         {% endif %}
-                    </div>
-                </td>
-            </tr>
+                    </td>
+
+                    <td style="vertical-align: top;">
+                        <div style="padding: 20px; background-color: black; border-left: 5px solid {{ primary_color }};">
+                            <div style="margin-bottom: 5px;">
+                                <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
+                                    {% trans "What"|upper %}
+                                </b>
+                                <br>
+                                <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
+                                    {{ item.newsletterevent.what }}
+                                </span>
+                            </div>
+
+                            <div style="margin-bottom: 5px;">
+                                <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
+                                    {% trans "Where"|upper %}
+                                </b>
+                                <br>
+                                <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
+                                    {{ item.newsletterevent.where }}
+                                </span>
+                            </div>
+
+                            <div style="margin-bottom: 5px;">
+                                <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
+                                    {% trans "When"|upper %}
+                                </b>
+                                <br>
+                                <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
+                                    {% if item.newsletterevent.start_datetime|date:'d-M-Y H:i' == item.newsletterevent.end_datetime|date:'d-M-Y H:i' %}
+                                        {{ item.newsletterevent.start_datetime }}
+                                    {% elif item.newsletterevent.start_datetime|date:'d-M-Y' == item.newsletterevent.end_datetime|date:'d-M-Y' %}
+                                        {{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime|date:'H:i' }}
+                                    {% else %}
+                                        {{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime }}
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            {% if item.newsletterevent.price is not None %}
+                            <div style="margin-bottom: 5px;">
+                                <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
+                                    {% trans "Price"|upper %}
+                                </b>
+                                <br>
+                                <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
+                                    {% if item.newsletterevent.price == 0 %}
+                                        {% trans "Free" %}
+                                    {% else %}
+                                        €{{ item.newsletterevent.price }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="2" style="{{ item_tr_style }}">
+                        {{ item.description|safe }}
+                    </td>
+                </tr>
+                {% endif %}
             {% endfor %}
 
             <tr>

@@ -67,7 +67,7 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
 
     class Meta:
-        abstract = True
+        order_with_respect_to = 'newsletter'
 
 
 class NewsletterItem(NewsletterContent):
@@ -132,5 +132,5 @@ class NewsletterEvent(NewsletterContent):
         super().clean()
         if self.end_datetime < self.start_datetime:
             raise ValidationError({
-                'end': _("Can't have an event travel back in time")
+                'end_datetime': _("Can't have an event travel back in time")
             })
