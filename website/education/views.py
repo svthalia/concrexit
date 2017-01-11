@@ -1,6 +1,6 @@
 import itertools
 import os
-from datetime import datetime
+from datetime import datetime, date
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
@@ -81,13 +81,12 @@ def submit_exam(request, id=None):
             obj.save()
 
             form = AddExamForm()
-            form.exam_date = datetime.now()
     else:
         obj = Exam()
+        obj.exam_date = date.today()
         if id is not None:
             obj.course = Course.objects.get(id=id)
         form = AddExamForm(instance=obj)
-        form.exam_date = datetime.now()
 
     return render(request, 'education/add_exam.html',
                   {'form': form, 'saved': saved})
@@ -98,22 +97,21 @@ def submit_summary(request, id=None):
     saved = False
 
     if request.POST:
-        form = AddSummaryForm(request.POST)
+        form = AddSummaryForm(request.POST, request.FILES)
         if form.is_valid():
             saved = True
             obj = form.save(commit=False)
             obj.uploader = request.user
             obj.uploader_date = datetime.now()
+            obj.save()
 
             obj = Summary()
-            obj.year = datetime.now().year
             obj.author = request.user.get_full_name()
             form = AddSummaryForm(instance=obj)
     else:
         obj = Summary()
         if id is not None:
             obj.course = Course.objects.get(id=id)
-        obj.year = datetime.now().year
         obj.author = request.user.get_full_name()
         form = AddSummaryForm(instance=obj)
 
