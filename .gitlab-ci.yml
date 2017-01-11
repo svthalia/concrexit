@@ -20,9 +20,11 @@ pep8:
     - export PIP_CACHE_DIR="pip-cache"
     - mkdir -p pip-cache
     - git log -1
-    - pip install tox
+    - pip install tox coverage
   script:
     - tox -e $PYTHON_VERSION
+    - cd website
+    - coverage report
 
 python34:
   <<: *djangotest

@@ -19,5 +19,8 @@ website/.sass-cache/
 # rope
 .ropeproject/
 
+# Coverage
+.coverage
+
 # venv from source_me.sh
 venv/
