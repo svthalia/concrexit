@@ -99,7 +99,10 @@ def cancel_order(request):
     if 'order' in request.POST:
         try:
             order = get_object_or_404(Order, pk=int(request.POST['order']))
-            if order.member == request.user.member:
+            if not order.can_be_changed:
+                messages.error(request,
+                               _('You can no longer cancel.'))
+            elif order.member == request.user.member:
                 order.delete()
                 messages.success(request, _("Your order has been cancelled."))
         except Http404:
@@ -126,10 +129,20 @@ def add_order(request, event_pk):
 
 @login_required
 def order(request):
-    if 'product' in request.POST:
+    event = PizzaEvent.current()
+    if not event:
+        return HttpResponseRedirect(reverse('pizzas:index'))
+
+    try:
+        order_placed = Order.objects.get(pizza_event=event,
+                                         member=request.user.member)
+        current_order_locked = not order_placed.can_be_changed
+    except Order.DoesNotExist:
+        current_order_locked = False
+
+    if 'product' in request.POST and not current_order_locked:
         product = Product.objects.get(pk=int(request.POST['product']))
         if product:
-            event = PizzaEvent.current()
             try:
                 order = Order.objects.get(pizza_event=event,
                                           member=request.user.member)
