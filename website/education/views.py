@@ -97,12 +97,13 @@ def submit_summary(request, id=None):
     saved = False
 
     if request.POST:
-        form = AddSummaryForm(request.POST)
+        form = AddSummaryForm(request.POST, request.FILES)
         if form.is_valid():
             saved = True
             obj = form.save(commit=False)
             obj.uploader = request.user
             obj.uploader_date = datetime.now()
+            obj.save()
 
             obj = Summary()
             obj.year = datetime.now().year
