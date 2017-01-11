@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, date
+
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
@@ -6,9 +8,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template import Context
 from django.template.loader import get_template
 from django.utils import translation
-
-from datetime import datetime, timedelta, date
-
 from django.utils.translation import activate, get_language_info
 
 from members.models import Member
@@ -34,7 +33,7 @@ def preview(request, pk, lang=None):
     return render(request, 'newsletters/email.html', {
         'newsletter': newsletter,
         'agenda_events': newsletter.newslettercontent_set.filter(
-            newsletteritem=None).order_by('start_datetime'),
+            newsletteritem=None).order_by('newsletterevent__start_datetime'),
         'main_partner': main_partner,
         'lang_code': lang_code
     })
@@ -79,8 +78,11 @@ def admin_send(request, pk):
 
             context = Context({
                 'newsletter': newsletter,
-                'agenda_events': newsletter.newslettercontent_set.filter(
-                    newsletteritem=None).order_by('start_datetime'),
+                'agenda_events': (
+                    newsletter.newslettercontent_set
+                    .filter(newsletteritem=None)
+                    .order_by('newsletterevent__start_datetime')
+                ),
                 'main_partner': main_partner,
                 'lang_code': language[0],
                 'request': request

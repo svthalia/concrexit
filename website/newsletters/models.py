@@ -1,6 +1,5 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import ForeignKey
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from tinymce.models import HTMLField
@@ -133,5 +132,5 @@ class NewsletterEvent(NewsletterContent):
         super().clean()
         if self.end_datetime < self.start_datetime:
             raise ValidationError({
-                'end': _("Can't have an event travel back in time")
+                'end_datetime': _("Can't have an event travel back in time")
             })

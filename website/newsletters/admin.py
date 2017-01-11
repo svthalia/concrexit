@@ -4,13 +4,21 @@ from django.shortcuts import redirect
 from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
 from utils.translation import TranslatedModelAdmin
 
+from .forms import NewsletterEventForm, NewsletterItemForm
+
 
 class NewsletterItemInline(admin.StackedInline):
+    form = NewsletterItemForm
     model = NewsletterItem
+    extra = 0
+    ordering = ('_order',)
 
 
 class NewsletterEventInline(admin.StackedInline):
+    form = NewsletterEventForm
     model = NewsletterEvent
+    extra = 0
+    ordering = ('_order',)
 
 
 @admin.register(Newsletter)
@@ -25,6 +33,18 @@ class NewsletterAdmin(TranslatedModelAdmin):
             )
         }),
     )
+
+    def save_formset(self, request, form, formset, change):
+        """Save formsets with their order"""
+        formset.save()
+
+        form.instance.set_newslettercontent_order([
+            f.instance.pk
+            for f in sorted(formset.forms,
+                            key=lambda x: (x.cleaned_data['order'],
+                                           x.instance.pk))
+        ])
+        form.instance.save()
 
     def change_view(self, request, object_id, form_url=''):
         obj = Newsletter.objects.filter(id=object_id)[0]
