@@ -102,7 +102,7 @@
                 <!-- #logo -->
                 <div id="logo" class="container fullwidth">
                     <a href="{% url 'index' %}">
-                        <img width="300" alt="" src="{% static "images/site_logo.png" %}" />
+                        <img width="300" alt="" src="{% static 'images/site-logo-'|add:LANGUAGE_CODE|add:'.png' %}" />
                     </a>
                 </div>
                 <!-- /#logo -->
