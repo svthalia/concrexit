@@ -83,7 +83,14 @@ def app(request):
                             'msg': 'Authentication Failed'},
                             status=403)
     today = datetime.date.today()
-    eightteen_years_ago = today.replace(year=today.year - 18)
+    try:
+        eightteen_years_ago = today.replace(year=today.year - 18)
+    except ValueError as e:
+        # handle leap years
+        if today.month == 2 and today.day == 29:
+            eightteen_years_ago = today.replace(year=today.year - 18, day=28)
+        else:
+            raise e
     over18 = user.member.birthday <= eightteen_years_ago
     membership = user.member.current_membership
     if membership:
