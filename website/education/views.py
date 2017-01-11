@@ -106,14 +106,12 @@ def submit_summary(request, id=None):
             obj.save()
 
             obj = Summary()
-            obj.year = datetime.now().year
             obj.author = request.user.get_full_name()
             form = AddSummaryForm(instance=obj)
     else:
         obj = Summary()
         if id is not None:
             obj.course = Course.objects.get(id=id)
-        obj.year = datetime.now().year
         obj.author = request.user.get_full_name()
         form = AddSummaryForm(instance=obj)
 
