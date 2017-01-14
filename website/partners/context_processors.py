@@ -13,6 +13,10 @@ def showcased_partners(request):
     chosen, rest = sequence[:2], sequence[2:]
     request.session['partner_sequence'] = rest + chosen
 
-    partners = tuple(Partner.objects.get(id=id) for id in chosen)
+    try:
+        partners = tuple(Partner.objects.get(id=id) for id in chosen)
+    except Partner.DoesNotExist:
+        del request.session['partner_sequence']
+        return showcased_partners(request)
 
     return {'showcased_partners': partners}
