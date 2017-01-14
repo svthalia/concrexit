@@ -106,6 +106,11 @@ class BoardManager(models.Manager):
 
 
 class Board(Committee):
+    """ Because Board inherits from Committee, Django creates a OneToOneField
+    linking the two models together. This can be accessed as usual;
+    given a Committee or Board b, one can access b.board, which will either
+    return the object b if b is a Board, or a Board.DoesNotExist exception.
+    """
     objects = BoardManager()
 
     is_board = models.BooleanField(
@@ -182,6 +187,12 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         if self.until and (not self.since or self.until < self.since):
             raise ValidationError(
                 {'until': _("End date can't be before start date")})
+        try:
+            if self.until and self.committee.board:
+                raise ValidationError(
+                    {'until': _("End date cannot be set for boards")})
+        except Board.DoesNotExist:
+            pass
 
     def validate_unique(self, *args, **kwargs):
         """ Check uniqueness"""
