@@ -2,4 +2,4 @@ psycopg2
 argon2-cffi
 bcrypt
 uwsgi
-django-slack
+django-slack!=5.7.2
