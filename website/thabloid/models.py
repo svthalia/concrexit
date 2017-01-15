@@ -50,10 +50,10 @@ class Thabloid(models.Model):
         return [self.page_url(i+1) for i in range(len(pages))]
 
     def get_absolute_url(self):
-        return reverse('viewer', kwargs={'year': self.year,
-                                         'issue': self.issue})
+        return reverse('thabloid:pages', kwargs={'year': self.year,
+                                                 'issue': self.issue})
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, nopages=False, wait=False, **kwargs):
         super(Thabloid, self).save(*args, **kwargs)
         src = self.file.path
 
@@ -72,9 +72,18 @@ class Thabloid(models.Model):
             shutil.rmtree(os.path.dirname(dst))  # Remove potential remainders
         except FileNotFoundError:
             pass
+
+        # Skip if nopages is supplied
+        if nopages:  # pragma: no cover
+            return
+
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         # TODO reconsider if this resolution / quality is sufficient
-        subprocess.Popen(['gs', '-o', dst,
-                          # '-g2100x2970', '-dPDFFitPage',
-                          '-g1050x1485', '-dPDFFitPage',
-                          '-sDEVICE=jpeg', '-f', src])
+        p = subprocess.Popen(['gs', '-o', dst,
+                              # '-g2100x2970', '-dPDFFitPage',
+                              '-g1050x1485', '-dPDFFitPage',
+                              '-sDEVICE=jpeg', '-f', src],
+                             stdout=subprocess.DEVNULL
+                             )
+        if wait:  # pragma: no cover
+            p.wait()
