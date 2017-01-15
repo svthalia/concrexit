@@ -127,7 +127,7 @@ SECURE_BROWSER_XSS_FILTER = True
 
 # Slack configuration
 SLACK_TOKEN = os.environ.get('DJANGO_SLACK_TOKEN')
-SLACK_CHANNEL = '#django'
+SLACK_CHANNEL = '#django-errors'
 SLACK_USERNAME = 'Concrexit'
 SLACK_ICON_EMOJI = ':pingu:'
 SLACK_FAIL_SILENTLY = True
