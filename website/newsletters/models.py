@@ -130,7 +130,9 @@ class NewsletterEvent(NewsletterContent):
 
     def clean(self):
         super().clean()
-        if self.end_datetime < self.start_datetime:
+        if (self.end_datetime is not None and
+                self.start_datetime is not None and
+                self.end_datetime < self.start_datetime):
             raise ValidationError({
                 'end_datetime': _("Can't have an event travel back in time")
             })
