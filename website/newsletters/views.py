@@ -74,7 +74,7 @@ def admin_send(request, pk):
                               receive_newsletter=True, language=language[0])
                           if member.is_active() is True and member.user.email]
 
-            subject = newsletter.title
+            subject = '[THALIA] ' + newsletter.title
 
             context = Context({
                 'newsletter': newsletter,
