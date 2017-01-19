@@ -22,7 +22,13 @@ class MemberViewset(viewsets.ViewSet):
         start_year = max(start.year, member.birthday.year)
         for year in range(start_year, end.year + 1):
             bday = copy.deepcopy(member)
-            bday.birthday = bday.birthday.replace(year=year)
+            try:
+                bday.birthday = bday.birthday.replace(year=year)
+            except ValueError as e:
+                if bday.birthday.month == 2 and bday.birthday.day == 29:
+                    bday.birthday = bday.birthday.replace(year=year, day=28)
+                else:
+                    raise e
             if start.date() <= bday.birthday <= end.date():
                 birthdays.append(bday)
 
