@@ -32,6 +32,7 @@ class TestThabloid(TestCase):
         """Clean up remaining Thabloid files"""
         shutil.rmtree(settings.MEDIA_ROOT)
         settings.MEDIA_ROOT = cls._old_media_root
+        super().tearDownClass()
 
     def test_thaboid_get_absolute_url(self):
         self.assertEqual(self.thabloid.get_absolute_url(),
