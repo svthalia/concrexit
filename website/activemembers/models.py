@@ -10,16 +10,25 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member
-from utils.translation import ModelTranslateMeta, MultilingualField
+from utils.translation import (ModelTranslateMeta, MultilingualField,
+                               localize_attr_name)
 
 logger = logging.getLogger(__name__)
+
+
+class UnfilteredSortedManager(models.Manager):
+    """Returns committees and boards, sorted by name"""
+    def get_queryset(self):
+        return (super().get_queryset()
+                .order_by(localize_attr_name('name')))
 
 
 class CommitteeManager(models.Manager):
     """Returns committees only"""
     def get_queryset(self):
         return (super().get_queryset()
-                .exclude(board__is_board=True))
+                .exclude(board__is_board=True)
+                .order_by(localize_attr_name('name')))
 
 
 class ActiveCommitteeManager(models.Manager):
@@ -27,13 +36,14 @@ class ActiveCommitteeManager(models.Manager):
     def get_queryset(self):
         return (super().get_queryset()
                 .exclude(board__is_board=True)
-                .exclude(active=False))
+                .exclude(active=False)
+                .order_by(localize_attr_name('name')))
 
 
 class Committee(models.Model, metaclass=ModelTranslateMeta):
     """A committee"""
 
-    unfiltered_objects = models.Manager()
+    unfiltered_objects = UnfilteredSortedManager()
     objects = CommitteeManager()
     active_committees = ActiveCommitteeManager()
 
@@ -98,6 +108,7 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
     class Meta:
         verbose_name = _('committee')
         verbose_name_plural = _('committees')
+        # ordering is done in the manager, to sort on a translated field
 
 
 class BoardManager(models.Manager):

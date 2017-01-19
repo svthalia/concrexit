@@ -60,6 +60,9 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('name', )
+
 
 class Order(models.Model):
     member = models.ForeignKey(

@@ -61,6 +61,9 @@ class Partner(models.Model):
     def get_absolute_url(self):
         return reverse('partners:partner', args=(self.slug,))
 
+    class Meta:
+        ordering = ('name', )
+
 
 class PartnerImage(models.Model):
     partner = models.ForeignKey(
