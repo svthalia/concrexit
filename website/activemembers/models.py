@@ -178,6 +178,17 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
     )
 
     @property
+    def initial_connected_membership(self):
+        """ Find the oldest membership directly connected to the current one"""
+        qs = CommitteeMembership.objects.filter(committee=self.committee,
+                                                member=self.member,
+                                                until=self.since)
+        if qs.count() >= 1:  # should actually only be one; should be unique
+            return qs.first().initial_connected_membership
+        else:
+            return self
+
+    @property
     def is_active(self):
         """Is this membership currently active"""
         return self.until is None or self.until > timezone.now().date()
