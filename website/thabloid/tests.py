@@ -15,17 +15,17 @@ class TestThabloid(TestCase):
         super().setUpClass()
         cls._old_media_root = settings.MEDIA_ROOT
         settings.MEDIA_ROOT = tempfile.mkdtemp()
-        cls.thabloid = Thabloid(
-            year=1998,
-            issue=1,
-            file=File(open('thabloid/fixtures/thabloid-1998-1999-1.pdf',
-                           'rb')))
-        # Only generate pages if we have 'gs'
-        if shutil.which('gs') is None:
-            cls.thabloid.save(nopages=True)
-        else:
-            # we should wait for gs to be done before we can do cleanup
-            cls.thabloid.save(wait=True)
+        with open('thabloid/fixtures/thabloid-1998-1999-1.pdf', 'rb') as f:
+            cls.thabloid = Thabloid(
+                year=1998,
+                issue=1,
+                file=File(f))
+            # Only generate pages if we have 'gs'
+            if shutil.which('gs') is None:
+                cls.thabloid.save(nopages=True)
+            else:
+                # we should wait for gs to be done before we can do cleanup
+                cls.thabloid.save(wait=True)
 
     @classmethod
     def tearDownClass(cls):
