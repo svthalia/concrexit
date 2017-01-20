@@ -29,6 +29,8 @@ def committee_detail(request, id):
         member.committee_since = membership.initial_connected_membership.since
         members.append(member)  # list comprehension would be more pythonic?
 
+    members.sort(key=lambda x: x.committee_since)
+
     return render(request, 'activemembers/committee_detail.html',
                   {'committee': committee,
                    'members': members})
