@@ -61,6 +61,17 @@ class AlbumAdmin(admin.ModelAdmin):
                 except OSError:
                     messages.add_message(request, messages.WARNING,
                                          "Ignoring {}".format(f.name))
+        messages.add_message(request, messages.WARNING,
+                             "Full-sized photos will not be saved on the "
+                             "Thalia-website.")
+
+
+class PhotoAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        obj.save()
+        messages.add_message(request, messages.WARNING,
+                             "Full-sized photos will not be saved on the "
+                             "Thalia-website.")
 
 admin.site.register(Album, AlbumAdmin)
-admin.site.register(Photo)
+admin.site.register(Photo, PhotoAdmin)
