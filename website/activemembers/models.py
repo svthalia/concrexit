@@ -113,7 +113,10 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
 
 class BoardManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(is_board=True)
+        # sorting by descending order by default makes more sense for boards
+        return (super().get_queryset()
+                       .filter(is_board=True)
+                       .order_by(localize_attr_name('-name')))
 
 
 class Board(Committee):
