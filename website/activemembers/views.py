@@ -22,12 +22,14 @@ def committee_detail(request, id):
     memberships = (CommitteeMembership
                    .active_memberships
                    .filter(committee=committee)
-                   .prefetch_related('member'))
+                   .prefetch_related('member__committeemembership_set'))
     for membership in memberships:
         member = membership.member
         member.chair = membership.chair
-        member.committee_since = membership.since
+        member.committee_since = membership.initial_connected_membership.since
         members.append(member)  # list comprehension would be more pythonic?
+
+    members.sort(key=lambda x: x.committee_since)
 
     return render(request, 'activemembers/committee_detail.html',
                   {'committee': committee,
