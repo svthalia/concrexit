@@ -311,6 +311,9 @@ class Member(models.Model):
         blank=True,
     )
 
+    class Meta:
+        ordering = ('user__first_name', 'user__last_name')
+
     def display_name(self):
         pref = self.display_name_preference
         if pref == 'nickname' and self.nickname is not None:

@@ -46,6 +46,9 @@ class Photo(models.Model):
             image.save(image_path, "JPEG")
             self._orig_file = self.file.path
 
+    class Meta:
+        ordering = ('file', )
+
 
 class Album(models.Model):
     title = models.CharField(max_length=200)
@@ -85,3 +88,6 @@ class Album(models.Model):
     def access_token(self):
         return hashlib.sha256('{}album{}'.format(settings.SECRET_KEY, self.pk)
                               .encode('utf-8')).hexdigest()
+
+    class Meta:
+        ordering = ('-date', 'title')
