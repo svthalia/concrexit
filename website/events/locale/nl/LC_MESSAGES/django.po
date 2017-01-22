@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-21 21:27+0100\n"
+"POT-Creation-Date: 2017-01-22 16:34+0100\n"
 "PO-Revision-Date: 2016-12-21 21:28+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -44,7 +44,7 @@ msgstr "volgorde"
 
 #: events/models.py:24 events/templates/events/event.html:137
 msgid "No registration required"
-msgstr "Geen registratie vereist"
+msgstr "Geen aanmelding vereist"
 
 #: events/models.py:28 events/templates/events/admin/details.html:66
 msgid "title"
@@ -68,19 +68,19 @@ msgstr "organisator"
 
 #: events/models.py:49
 msgid "registration start"
-msgstr "start registratie"
+msgstr "start aanmelden"
 
 #: events/models.py:52 events/models.py:61
 msgid ""
 "If you set a registration period registration will be required. If you don't "
 "set one, registration won't be required."
 msgstr ""
-"Als je een registratieperiode instelt is registreren vereist, als je dat "
-"niet doet is registreren niet vereist."
+"Als je een aanmeldperiode instelt is aanmelden vereist, als je dat niet doet "
+"is aanmelden niet vereist."
 
 #: events/models.py:58
 msgid "registration end"
-msgstr "einde registratie"
+msgstr "einde aanmelden"
 
 #: events/models.py:67
 msgid "cancel deadline"
@@ -122,7 +122,7 @@ msgstr "maximum aantal deelnemers"
 
 #: events/models.py:111
 msgid "message when there is no registration"
-msgstr "bericht dat getoond wordt wanneer er geen registratie nodig is"
+msgstr "bericht dat getoond wordt wanneer aanmelden niet nodig is"
 
 #: events/models.py:115
 msgid "Default: "
@@ -138,27 +138,29 @@ msgstr "Een evenement kan niet terugreizen in de tijd"
 
 #: events/models.py:162
 msgid "Doesn't make sense to have this if you require registrations."
-msgstr "Het is niet logisch om dit te hebben als je registratie vereist."
+msgstr "Het is niet logisch om dit te hebben als je aanmelden vereist."
 
 #: events/models.py:167
 msgid "If registration is required, you need a start of registration"
 msgstr ""
-"Als registratie vereist is, dan heb je een starttijd voor de registratie "
+"Als aanmelden vereist is, dan heb je een starttijd voor de aanmeldperiode "
 "nodig"
 
 #: events/models.py:172
 msgid "If registration is required, you need an end of registration"
 msgstr ""
-"Als registratie vereist is, dan heb je een eindtijd voor de registratie nodig"
+"Als aanmelden vereist is, dan heb je een eindtijd voor de aanmeldperiode "
+"nodig"
 
 #: events/models.py:177
 msgid "If registration is required, you need a deadline for the cancellation"
 msgstr ""
-"Als registratie vereist is, dan heb je een eindtijd voor de registratie nodig"
+"Als aanmelden vereist is, dan heb je een eindtijd voor de aanmeldperiode "
+"nodig"
 
 #: events/models.py:181
 msgid "Registration start should be before registration end"
-msgstr "De starttijd voor de registratie moet voor de eindtijd liggen"
+msgstr "De starttijd voor de aanmeldperiode moet voor de eindtijd liggen"
 
 #: events/models.py:207
 msgid "Checkbox"
@@ -195,7 +197,7 @@ msgstr "Gebruikt dit voor niet-leden"
 
 #: events/models.py:301
 msgid "registration date"
-msgstr "registratiedatum"
+msgstr "aanmelddatum"
 
 #: events/models.py:303
 msgid "cancellation date"
@@ -243,7 +245,7 @@ msgstr "Overzicht evenement: %(event)s"
 
 #: events/templates/events/admin/details.html:36
 msgid "registrations"
-msgstr "registraties"
+msgstr "aanmeldingen"
 
 #: events/templates/events/admin/details.html:40
 msgid "waiting"
@@ -263,7 +265,7 @@ msgstr "afgemeld"
 
 #: events/templates/events/admin/details.html:50
 msgid "Export registrations"
-msgstr "Exporteer registraties"
+msgstr "Exporteer aanmeldingen"
 
 #: events/templates/events/admin/details.html:51
 msgid "Set all registered to paid and present"
@@ -285,15 +287,15 @@ msgstr "datum"
 
 #: events/templates/events/admin/details.html:72
 msgid "registration period"
-msgstr "registratieperiode"
+msgstr "aanmeldperiode"
 
 #: events/templates/events/admin/details.html:80
 msgid "registration required"
-msgstr "registratie vereist"
+msgstr "aanmelden vereist"
 
 #: events/templates/events/admin/details.html:83
 msgid "registration message"
-msgstr "registratiebericht"
+msgstr "aanmeldbericht"
 
 #: events/templates/events/admin/registrations_table.html:14
 msgid "late"
@@ -305,7 +307,7 @@ msgstr "toevoegen"
 
 #: events/templates/events/admin/registrations_table.html:50
 msgid "registered"
-msgstr "geregistreerd"
+msgstr "aangemeld"
 
 #: events/templates/events/admin/registrations_table.html:51
 #, python-format
@@ -406,7 +408,7 @@ msgstr "Je bent afgemeld"
 #: events/templates/events/event_fields.html:4
 #: events/templates/events/event_fields.html:32
 msgid "Update registration"
-msgstr "Exporteer registraties"
+msgstr "Aanmelding bijwerken"
 
 #: events/templates/events/event.html:102
 msgid "Put me on the waiting list"
@@ -414,7 +416,7 @@ msgstr "Zet me op de wachtlijst"
 
 #: events/templates/events/event.html:104
 msgid "Register"
-msgstr "Registreren"
+msgstr "Aanmelden"
 
 #: events/templates/events/event.html:111
 #, python-format
@@ -462,12 +464,15 @@ msgstr ""
 "betalen. Let op: je kunt je hierna niet meer aanmelden."
 
 #: events/templates/events/event.html:156
+#, fuzzy
+#| msgid "Order"
+msgctxt "pizzas"
 msgid "Order"
 msgstr "Volgorde"
 
 #: events/templates/events/event.html:174
 msgid "Registrations"
-msgstr "Registraties"
+msgstr "Aanmeldingen"
 
 #: events/templates/events/event.html:208
 msgid "cohort"
@@ -476,17 +481,17 @@ msgstr "jaarlaag"
 #: events/templates/events/event_fields.html:4
 #: events/templates/events/event_fields.html:34
 msgid "Complete registration"
-msgstr "Voltooi registratie"
+msgstr "Voltooi aanmelding"
 
 #: events/templates/events/event_fields.html:8
 #, python-format
 msgid "Update registration for %(title)s"
-msgstr "Registratie voor %(title)s bijwerken"
+msgstr "Aanmelding voor %(title)s bijwerken"
 
 #: events/templates/events/event_fields.html:10
 #, python-format
 msgid "Completing registration for %(title)s"
-msgstr "Registratie voor %(title)s voltooien"
+msgstr "Aanmelding voor %(title)s voltooien"
 
 #: events/templates/events/event_fields.html:36
 msgid "Cancel"
@@ -553,7 +558,7 @@ msgstr "Aanmelding succesvol bijgewerkt."
 
 #: events/views.py:247
 msgid "[THALIA] Notification about your registration for '{}'"
-msgstr "[THALIA] Bericht over je registratie voor ‘{}’"
+msgstr "[THALIA] Bericht over je aanmelding voor ‘{}’"
 
 #: events/views.py:267
 msgid "Registration successfully cancelled."
