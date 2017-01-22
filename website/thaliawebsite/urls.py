@@ -33,6 +33,7 @@ from events.feeds import DeprecationFeed
 from members.sitemaps import sitemap as members_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
+from events.sitemaps import sitemap as events_sitemap
 from utils.views import private_thumbnails, generate_thumbnail
 
 from . import views
@@ -46,6 +47,7 @@ thalia_sitemap.update(members_sitemap)
 thalia_sitemap.update(documents_sitemap)
 thalia_sitemap.update(thabloid_sitemap)
 thalia_sitemap.update(partners_sitemap)
+thalia_sitemap.update(events_sitemap)
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
