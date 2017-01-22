@@ -1,7 +1,10 @@
 """
-Django settings for thaliawebsite project.
+Django production settings for thaliawebsite project.
 
-Docker version
+Many of these settings override settings from settings.py.
+
+This file is loaded by __init__.py if the environment variable
+`DJANGO_PRODUCTION` is set.
 
 See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
