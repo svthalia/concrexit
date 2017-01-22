@@ -23,7 +23,16 @@ class PartnerSitemap(sitemaps.Sitemap):
         return item.get_absolute_url()
 
 
+class VacancySitemap(sitemaps.Sitemap):
+    def items(self):
+        return models.Vacancy.objects.all()
+
+    def location(self, item):
+        return item.get_absolute_url()
+
+
 sitemap = {
     'partners-static': StaticViewSitemap,
     'partners-partners': PartnerSitemap,
+    'partners-vacancies': VacancySitemap,
 }
