@@ -162,27 +162,30 @@ class StatisticsTest(TestCase):
         member_types = ["member", "supporter", "honorary"]
         current_year = date.today().year
 
+        # postgres does not define random access directly on unsorted querysets
+        members = [member for member in Member.objects.all()]
+
         # one first year student
-        m = Member.objects.all()[0]
+        m = members[0]
         m.starting_year = current_year
         m.save()
 
         # one second year student
-        m = Member.objects.all()[1]
+        m = members[1]
         m.starting_year = current_year - 1
         m.save()
 
         # no third year students
 
         # one fourth year student
-        m = Member.objects.all()[2]
+        m = members[2]
         m.starting_year = current_year - 3
         m.save()
 
         # no fifth year students
 
         # one >5 year student
-        m = Member.objects.all()[3]
+        m = members[3]
         m.starting_year = current_year - 5
         m.save()
 
