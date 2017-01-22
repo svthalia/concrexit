@@ -8,6 +8,9 @@
 *.ico     binary
 *.mo      binary
 
+# PDF is binary
+*.pdf     binary
+
 # Font files
 *.eot     binary
 *.otf     binary
