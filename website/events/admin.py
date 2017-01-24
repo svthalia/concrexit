@@ -112,7 +112,7 @@ class EventAdmin(DoNextModelAdmin):
             try:
                 if not request.user.is_superuser:
                     member = request.user.member
-                    kwargs['queryset'] = Committee.objects.filter(
+                    kwargs['queryset'] = Committee.unfiltered_objects.filter(
                         Q(committeemembership__member=member) &
                         (
                             Q(committeemembership__until=None) |
