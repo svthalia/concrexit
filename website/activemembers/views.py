@@ -44,9 +44,10 @@ def board_index(request):
                   {'boards': boards})
 
 
-def board_detail(request, id):
+def board_detail(request, year):
     """View the details of a board"""
-    board = get_object_or_404(Board, pk=id)
+    since, until = year.split('-')
+    board = get_object_or_404(Board, since__year=since, until__year=until)
     members = []
     memberships = (CommitteeMembership
                    .objects

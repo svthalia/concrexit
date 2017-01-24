@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-14 16:30+0100\n"
-"PO-Revision-Date: 2017-01-14 16:31+0100\n"
+"POT-Creation-Date: 2017-01-24 21:36+0100\n"
+"PO-Revision-Date: 2017-01-24 21:36+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -18,117 +18,121 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: models.py:43
+#: models.py:53
 msgid "Committee name"
 msgstr "Commissienaam"
 
-#: models.py:49
+#: models.py:59
 msgid "Description"
 msgstr "Beschrijving"
 
-#: models.py:53
+#: models.py:63
 msgid "Image"
 msgstr "Afbeelding"
 
-#: models.py:66
+#: models.py:76
 msgid "permissions"
 msgstr "permissies"
 
-#: models.py:71
+#: models.py:81
 msgid "founded in"
 msgstr "opgericht in"
 
-#: models.py:77
+#: models.py:87
 msgid "existed until"
 msgstr "bestond tot"
 
-#: models.py:84
+#: models.py:94
 msgid "contact email address"
 msgstr "contact e-mailadres"
 
-#: models.py:87
+#: models.py:97
 msgid "Wiki namespace"
 msgstr "Wiki namespace"
 
-#: models.py:99
+#: models.py:109
 msgid "committee"
 msgstr "commissie"
 
-#: models.py:100 templates/activemembers/committee_index.html:6
+#: models.py:110 templates/activemembers/committee_index.html:6
 msgid "committees"
 msgstr "commissies"
 
-#: models.py:117
+#: models.py:131
 msgid "Is this a board"
 msgstr "Is dit een bestuur"
 
-#: models.py:142 models.py:257
+#: models.py:149 models.py:150
+msgid "A board already exists for those years"
+msgstr "Er bestaat al een bestuur voor die jaren"
+
+#: models.py:167 models.py:296
 msgid "Member"
 msgstr "Lid"
 
-#: models.py:148
+#: models.py:173
 msgid "Committee"
 msgstr "Commissie"
 
-#: models.py:152
+#: models.py:177
 msgid "Committee member since"
 msgstr "Commissielid sinds"
 
-#: models.py:153
+#: models.py:178
 msgid "The date this member joined the committee in this role"
 msgstr "De datum waarop deze persoon lid werd deze commissie in deze rol"
 
-#: models.py:158
+#: models.py:183
 msgid "Committee member until"
 msgstr "Commissielid tot"
 
-#: models.py:159
+#: models.py:184
 msgid "A member of this committee until this time (can't be in the future)."
 msgstr ""
 "De datum waarop deze persoon de commissie verliet (kan niet in de toekomst "
 "liggen)"
 
-#: models.py:166
+#: models.py:191
 msgid "Chair of the committee"
 msgstr "Voorzitter van de commissie"
 
-#: models.py:167
+#: models.py:192
 msgid "There can only be one chair at a time!"
 msgstr "Er kan maar één voorzitter tegelijkertijd zijn!"
 
-#: models.py:173
+#: models.py:198
 msgid "role"
 msgstr "rol"
 
-#: models.py:174
+#: models.py:199
 msgid "The role of this member"
 msgstr "De rol van dit lid binnen de commissie"
 
-#: models.py:189
+#: models.py:225
 msgid "End date can't be before start date"
 msgstr "De einddatum kan niet voor de startdatum liggen"
 
-#: models.py:192
+#: models.py:229
 msgid "End date cannot be set for boards"
 msgstr "Voor besturen kan geen einddatum worden opgegeven"
 
-#: models.py:213
+#: models.py:252
 msgid "There already is a chair for this time period"
 msgstr "Er is al een voorzitter voor deze periode"
 
-#: models.py:229
+#: models.py:268
 msgid "This member is already in the committee for this period"
 msgstr "Deze persoon is al lid van deze commissie in de aangegeven periode"
 
-#: models.py:249
+#: models.py:288
 msgid "committee membership"
 msgstr "commissielidmaatschap"
 
-#: models.py:250
+#: models.py:289
 msgid "committee memberships"
 msgstr "commissielidmaatschappen"
 
-#: models.py:262
+#: models.py:301
 #, python-brace-format
 msgid "{name} mentor in {year}"
 msgstr "{name} mentor in {year}"
