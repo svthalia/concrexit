@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect, reverse
 
 from utils.translation import localize_attr_name
 from .models import Board, Committee, CommitteeMembership
@@ -62,3 +62,11 @@ def board_detail(request, id):
     return render(request, 'activemembers/board_detail.html',
                   {'board': board,
                    'members': members})
+
+
+def current_board(request):
+    try:
+        board = Board.objects.order_by('-since')[0]
+    except IndexError:
+        return redirect(reverse('activemembers:boards'))
+    return redirect(board.get_absolute_url())
