@@ -284,7 +284,7 @@ class Mentorship(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_('Member'),
     )
-    year = models.IntegerField(validators=MinValueValidator(1990))
+    year = models.IntegerField(validators=[MinValueValidator(1990)])
 
     def __str__(self):
         return _("{name} mentor in {year}").format(name=self.member,
