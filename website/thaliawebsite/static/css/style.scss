@@ -1110,13 +1110,13 @@ body {
         text-align: center;
     }
     /* top footer social icons */
-    .social-icons {
+    .footer-icons {
         float: left;
         left: 50%;
         margin: 0 auto 24px;
         position: relative;
     }
-    div[class|="social-icon"] {
+    div[class|="footer-icon"] {
         float: left;
         margin: 0 3px 6px;
         height: 37px;
@@ -1125,14 +1125,14 @@ body {
         position: relative;
         width: 37px;
     }
-    div[class|="social-icon"] a {
+    div[class|="footer-icon"] a {
         background: #585858;
         display: block;
         height: 100%;
         position: relative;
         width: 100%;
     }
-    div[class|="social-icon"] a:before {
+    div[class|="footer-icon"] a:before {
         content: '';
         height: 100% !important;
         margin-top: 1px;
@@ -1141,34 +1141,22 @@ body {
         width: 100%;
         z-index: 0;
     }
-    .social-icon-twitter a:before {
+    .footer-icon-twitter a:before {
         background: #2ea9e4;
     }
-    .social-icon-facebook a:before {
+    .footer-icon-facebook a:before {
         background: #3c5a98;
     }
-    .social-icon-pinterest a:before {
-        background: #cb2028;
-    }
-    .social-icon-youtube a:before {
-        background: #df3434;
-    }
-    .social-icon-vimeo a:before {
-        background: #0ec4ef;
-    }
-    .social-icon-flickr a:before {
-        background: #ff0084;
-    }
-    .social-icon-linkedin a:before {
+    .footer-icon-linkedin a:before {
         background: #006699;
     }
-    .social-icon-rss a:before {
-        background: #fd6804;
-    }
-    .social-icon-tor a:before {
+    .footer-icon-tor a:before {
         background: #009933;
     }
-    div[class|="social-icon"] a {
+    .footer-icon-gitlab a:before {
+        background: #e24329;
+    }
+    div[class|="footer-icon"] a {
         display: block;
         -moz-transition: all 0.2s ease-in-out;
         -ms-transition: all 0.2s ease-in-out;
@@ -1176,17 +1164,17 @@ body {
         -webkit-transition: all 0.2s ease-in-out;
         transition: all 0.2s ease-in-out;
     }
-    div[class|="social-icon"] a:hover {
+    div[class|="footer-icon"] a:hover {
         margin-top: -38px;
     }
-    div[class|="social-icon"] a:hover img {
+    div[class|="footer-icon"] a:hover img {
         margin-top: 1px;
     }
-    div[class|="social-icon"] a img {
+    div[class|="footer-icon"] a img {
         position: relative;
         z-index: 1;
     }
-    div[class|="social-icon"] a img {
+    div[class|="footer-icon"] a img {
         width: 37px;
         height: 74px;
     }
