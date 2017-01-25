@@ -62,7 +62,7 @@ urlpatterns = [
         url(r'^nieuws/agenda/vcal\.php', DeprecationFeed()),
     ])),
     url(r'^newsletters/', include('newsletters.urls')),
-    url(r'^nieuwsbrief/', include('newsletters.urls')),  # for legacy reasons
+    url(r'^nieuwsbrief/', include('newsletters.urls', namespace='newsletters-legacy'),),  # for legacy reasons
     url(r'^association$', TemplateView.as_view(
         template_name='singlepages/association.html'), name='association'),
     url(r'^', include([  # 'association' menu
