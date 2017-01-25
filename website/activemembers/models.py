@@ -136,8 +136,8 @@ class Board(Committee):
         ordering = ['-since']
 
     def get_absolute_url(self):
-        return reverse('activemembers:board',
-                       args=['{}-{}'.format(self.since.year, self.until.year)])
+        return reverse('activemembers:board', args=[str(self.since.year),
+                                                    str(self.until.year)])
 
     def validate_unique(self, *args, **kwargs):
         """ Check uniqueness"""

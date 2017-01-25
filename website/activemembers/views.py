@@ -44,9 +44,12 @@ def board_index(request):
                   {'boards': boards})
 
 
-def board_detail(request, year):
+def board_detail(request, since, until=None):
     """View the details of a board"""
-    since, until = year.split('-')
+    if not until:  # try to correct /board/2016 to /2016-2017
+        return redirect(reverse('activemembers:board',
+                                kwargs={'since': since,
+                                        'until': int(since) + 1}))
     board = get_object_or_404(Board, since__year=since, until__year=until)
     members = []
     memberships = (CommitteeMembership
