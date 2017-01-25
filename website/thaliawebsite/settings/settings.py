@@ -235,5 +235,10 @@ TINYMCE_DEFAULT_CONFIG = {
                                "link,unlink,separator,bullist," +
                                "numlist,separator,undo,redo",
     'theme_advanced_toolbar_location': "top",
-    'relative_urls': False
+    'relative_urls': False,
+    'plugins': "paste",
+    'paste_auto_cleanup_on_paste': True,
+    'paste_remove_styles': True,
+    'paste_remove_styles_if_webkit': True,
+    'paste_strip_class_attributes': "all",
 }
