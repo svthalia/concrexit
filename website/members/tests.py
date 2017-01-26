@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from members.models import (Member, Membership,
                             gen_stats_member_type, gen_stats_year)
+from utils.snippets import datetime_to_lectureyear
 
 
 class MemberBirthdayTest(TestCase):
@@ -96,7 +97,7 @@ class StatisticsTest(TestCase):
         Testing if active and non-active objects are counted correctly
         """
         member_types = ["member", "supporter", "honorary"]
-        current_year = date.today().year
+        current_year = datetime_to_lectureyear(date.today())
 
         # Set start date to current year - 1:
         for m in Member.objects.all():
@@ -160,7 +161,7 @@ class StatisticsTest(TestCase):
 
     def test_gen_stats_different_years(self):
         member_types = ["member", "supporter", "honorary"]
-        current_year = date.today().year
+        current_year = datetime_to_lectureyear(date.today())
 
         # postgres does not define random access directly on unsorted querysets
         members = [member for member in Member.objects.all()]

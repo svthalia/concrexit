@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
+from utils.snippets import datetime_to_lectureyear
 from utils.validators import validate_file_extension
 
 
@@ -440,7 +441,7 @@ def gen_stats_year(member_types):
     students.
     """
     stats_year = []
-    current_year = date.today().year
+    current_year = datetime_to_lectureyear(date.today())
 
     for i in range(5):
         new = dict()
