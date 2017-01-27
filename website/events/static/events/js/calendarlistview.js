@@ -24,7 +24,7 @@ ListView = View.extend({ // make a subclass of View
         }
 
         events.sort(function(a, b) {
-            return a.start < b.start ? -1 : a.start > b.start : 1 : 0;
+            return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
         });
 
         for (var i = 0; i < events.length; i++) {
