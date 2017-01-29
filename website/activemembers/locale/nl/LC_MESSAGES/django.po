@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-24 21:36+0100\n"
-"PO-Revision-Date: 2017-01-24 21:36+0100\n"
+"POT-Creation-Date: 2017-01-30 17:52+0100\n"
+"PO-Revision-Date: 2017-01-30 17:53+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -201,12 +201,16 @@ msgstr "Over de %(name)s"
 msgid "Committee members"
 msgstr "Commissieleden"
 
-#: templates/activemembers/committee_detail.html:51
+#: templates/activemembers/committee_detail.html:53
+msgid "Committee member since: ?"
+msgstr "Commissielid sinds: ?"
+
+#: templates/activemembers/committee_detail.html:55
 #, python-format
 msgid "Committee member since: %(since)s"
 msgstr "Commissielid sinds: %(since)s"
 
-#: templates/activemembers/committee_detail.html:61
+#: templates/activemembers/committee_detail.html:67
 msgid "This committee doesn't have any members?"
 msgstr "Deze commissie heeft geen leden?"
 
