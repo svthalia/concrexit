@@ -26,6 +26,7 @@ class Thabloid(models.Model):
 
     class Meta:
         unique_together = ('year', 'issue',)
+        ordering = ('-year', '-issue')
 
     def __str__(self):
         return 'Thabloid {}-{}, #{}'.format(self.year, self.year+1, self.issue)
