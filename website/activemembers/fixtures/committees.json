@@ -26,5 +26,24 @@
         "photo": "Thom_Wiggers_4YRoxV3.jpg",
         "permissions": []
     }
+},
+{
+    "model": "activemembers.committee",
+    "pk": 3,
+    "fields": {
+        "name_nl": "testbestuur1",
+        "name_en": "testboard1",
+        "description_nl": "testdesc1",
+        "description_en": "testdesc1",
+        "since": "1990-09-01",
+        "until": "1991-09-01"
+    }
+},
+{
+    "model": "activemembers.board",
+    "pk": 3,
+    "fields": {
+        "is_board": true
+    }
 }
 ]

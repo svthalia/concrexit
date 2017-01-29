@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
-from activemembers.models import Committee, CommitteeMembership
+from activemembers.models import Committee, CommitteeMembership, Board
 from members.models import Member
 
 
@@ -144,3 +144,13 @@ class PermissionsBackendTest(TestCase):
     def test_nonmember_user(self):
         u = get_user_model().objects.create(username='foo')
         self.assertEqual(set(), u.get_all_permissions())
+
+
+class BoardTest(TestCase):
+    fixtures = ['committees.json']
+
+    def setUp(self):
+        self.testboard = Board.objects.get(pk=3)
+
+    def test_get_absolute_url(self):
+        self.testboard.get_absolute_url()
