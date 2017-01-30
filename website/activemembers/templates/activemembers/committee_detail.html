@@ -48,7 +48,13 @@
               <div class="post-overlay">
                 <div class="post-overlay-meta">
                   <h2>{{ member.display_name }}</h2>
-                  <p>{% blocktrans with since=member.committee_since|date:"Y" %}Committee member since: {{ since }}{% endblocktrans %}</p>
+                  <p>
+                  {% if member.committee_since.year == 1970 %}
+                  {% blocktrans %}Committee member since: ?{% endblocktrans %}
+                  {% else %}
+                  {% blocktrans with since=member.committee_since|date:"Y" %}Committee member since: {{ since }}{% endblocktrans %}
+                  {% endif %}
+                  </p>
                 </div>
               </div>
               <div class="post-body avatar-subtitle">
