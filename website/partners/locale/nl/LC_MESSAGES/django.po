@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-15 08:59+0100\n"
-"PO-Revision-Date: 2016-12-15 08:59+0100\n"
+"POT-Creation-Date: 2017-01-29 13:16+0100\n"
+"PO-Revision-Date: 2017-01-29 13:19+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -18,83 +18,80 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: partners/models.py:33
+#: models.py:33
 msgid "Enter a valid address"
 msgstr "Voer een geldig adres in"
 
-#: partners/models.py:38
+#: models.py:38
 msgid "Enter a valid zip code"
 msgstr "Voer een geldige postcode in"
 
-#: partners/models.py:74
+#: models.py:77
 msgid "image of {}"
 msgstr "Plaatje van {}"
 
-#: partners/models.py:85
+#: models.py:88
 msgid "Vacancy Categories"
 msgstr "Vacaturecategorieën"
 
-#: partners/models.py:102
+#: models.py:105
 msgid ""
 "When you use a partner, the company name and logo below will not be used."
 msgstr ""
 "Wanneer je een partner aangeeft, zullen de bedrijfsnaam en logo hieronder "
 "niet gebruikt worden."
 
-#: partners/models.py:115
+#: models.py:118
 msgid "not shown on the page"
 msgstr "wordt niet getoond op de vacaturepagina"
 
-#: partners/models.py:131 partners/templates/partners/partner.html:77
-#: partners/templates/partners/vacancies.html:4
-#: partners/templates/partners/vacancies.html:7
+#: models.py:134 templates/partners/partner.html:77
+#: templates/partners/vacancies.html:4 templates/partners/vacancies.html:7
 msgid "Vacancies"
 msgstr "Vacatures"
 
-#: partners/models.py:143
+#: models.py:152
 msgid "title"
 msgstr "titel"
 
-#: partners/models.py:149
+#: models.py:158
 msgid "description"
 msgstr "beschrijving"
 
-#: partners/models.py:154
+#: models.py:163
 msgid "location"
 msgstr "locatie"
 
-#: partners/models.py:158
+#: models.py:167
 msgid "start time"
 msgstr "starttijd"
 
-#: partners/models.py:160
+#: models.py:169
 msgid "end time"
 msgstr "eindtijd"
 
-#: partners/models.py:162
+#: models.py:171
 msgid "website"
 msgstr "website"
 
-#: partners/models.py:164
+#: models.py:173
 msgid "published"
 msgstr "gepubliceerd"
 
-#: partners/templates/partners/index.html:4
-#: partners/templates/partners/partner.html:4
+#: templates/partners/index.html:4 templates/partners/partner.html:4
 msgid "Partners"
 msgstr "Partners"
 
-#: partners/templates/partners/index.html:4
-#: partners/templates/partners/partner.html:4
-#: partners/templates/partners/vacancies.html:4
+#: templates/partners/index.html:4 templates/partners/partner.html:4
+#: templates/partners/vacancies.html:4
 msgid "Career"
 msgstr "Carrière"
 
-#: partners/templates/partners/index.html:8
+#: templates/partners/index.html:8
 msgid "Our partners"
 msgstr "Onze partners"
 
-#: partners/templates/partners/index.html:10
+#: templates/partners/index.html:10
 msgid ""
 "A brief introduction about our study association for Computer and "
 "Information Sciences, Thalia. As a study association we put great effort in "
@@ -121,70 +118,64 @@ msgstr ""
 "bereiken is via <a href=\"mailto:samenwerking@thalia.nu"
 "\">samenwerking@thalia.nu</a>."
 
-#: partners/templates/partners/index.html:17
-#: partners/templates/partners/partner.html:32
+#: templates/partners/index.html:17 templates/partners/partner.html:32
 msgid "Main Partner"
 msgstr "Hoofdsponsor"
 
-#: partners/templates/partners/index.html:30
-#: partners/templates/partners/index.html:56
-#: partners/templates/partners/partner.html:91
-#: partners/templates/partners/vacancies.html:55
-#: partners/templates/partners/vacancies.html:60
-#: partners/templates/partners/vacancies.html:91
+#: templates/partners/index.html:30 templates/partners/index.html:56
+#: templates/partners/partner.html:91 templates/partners/vacancies.html:56
+#: templates/partners/vacancies.html:61 templates/partners/vacancies.html:92
 msgid "Learn more"
 msgstr "Lees meer"
 
-#: partners/templates/partners/partner.html:18
+#: templates/partners/partner.html:18
 #, python-format
 msgid "About %(name)s"
 msgstr "Over %(name)s"
 
-#: partners/templates/partners/partner.html:55
+#: templates/partners/partner.html:55
 msgid "Information"
 msgstr "Informatie"
 
-#: partners/templates/partners/partner.html:56
+#: templates/partners/partner.html:56
 msgid "Street"
 msgstr "Straatnaam"
 
-#: partners/templates/partners/partner.html:58
+#: templates/partners/partner.html:58
 msgid "Zip Code"
 msgstr "Postcode"
 
-#: partners/templates/partners/partner.html:60
+#: templates/partners/partner.html:60
 msgid "City"
 msgstr "Plaatsnaam"
 
-#: partners/templates/partners/partner.html:65
+#: templates/partners/partner.html:65
 msgid "Website"
 msgstr "Website"
 
-#: partners/templates/partners/vacancies.html:9
+#: templates/partners/vacancies.html:9
 msgid ""
 "Je bent student en je hebt het maar krap. De politiek wil de studenten ook "
 "al niet een handje toesteken. Gelukkig hebben we bedrijven die bij ons "
 "vacatures aanbieden. Dus zit je krap en wil je wat bijverdienen, of ben je "
 "(bijna) afgestudeerd en wil je eens wat rondkijken, op deze pagina staan al "
 "onze openstaande vacatures. Wil je als bedrijf een vacature plaatsen op onze "
-"website, dan kun je contact opnemen met de voorzitter van onze "
-"sponsorcommissie via <a href=\"mailto:sponsor@thalia.nu\" target=\"_blank"
-"\">sponsor@thalia.nu</a>."
+"website, dan kun je contact opnemen met de commissaris externe betrekkingen "
+"via <a href=\"mailto:samenwerking@thalia.nu\" target=\"_blank"
+"\">samenwerking@thalia.nu</a>."
 msgstr ""
-"Je bent student en je hebt het maar krap. De politiek wil de studenten ook "
-"al niet een handje toesteken. Gelukkig hebben we bedrijven die bij ons "
-"vacatures aanbieden. Dus zit je krap en wil je wat bijverdienen, of ben je "
-"(bijna) afgestudeerd en wil je eens wat rondkijken, op deze pagina staan al "
-"onze openstaande vacatures. Wil je als bedrijf een vacature plaatsen op onze "
-"website, dan kun je contact opnemen met de voorzitter van onze "
-"sponsorcommissie via <a href=\"mailto:sponsor@thalia.nu\" target=\"_blank"
-"\">sponsor@thalia.nu</a>."
+"You are a student and maybe you are looking for a job or part-time job. "
+"Happily we have companies that offer vacancies. So when you want to earn "
+"some additional money or when you are (almost) graduated you can look at "
+"this page for all outstanding vacancies. When you want to post a vacancy on "
+"this page as a company you can contact us at <a href=\"mailto:"
+"samenwerking@thalia.nu\" target=\"_blank\">samenwerking@thalia.nu</a>."
 
-#: partners/templates/partners/vacancies.html:24
+#: templates/partners/vacancies.html:23
 msgid "Everything"
 msgstr "Alles"
 
-#: partners/templates/partners/vacancies.html:71
+#: templates/partners/vacancies.html:72
 msgid "All vacancies"
 msgstr "Alle vacatures"
 
