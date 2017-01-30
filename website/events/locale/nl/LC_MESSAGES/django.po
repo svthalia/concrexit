@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-22 16:34+0100\n"
-"PO-Revision-Date: 2016-12-21 21:28+0100\n"
+"PO-Revision-Date: 2017-01-30 17:36+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -476,7 +476,7 @@ msgstr "Aanmeldingen"
 
 #: events/templates/events/event.html:208
 msgid "cohort"
-msgstr "jaarlaag"
+msgstr "cohort"
 
 #: events/templates/events/event_fields.html:4
 #: events/templates/events/event_fields.html:34
