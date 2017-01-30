@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-30 17:52+0100\n"
-"PO-Revision-Date: 2017-01-30 17:53+0100\n"
+"POT-Creation-Date: 2017-01-30 18:53+0100\n"
+"PO-Revision-Date: 2017-01-30 18:54+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -66,7 +66,7 @@ msgstr "Is dit een bestuur"
 msgid "A board already exists for those years"
 msgstr "Er bestaat al een bestuur voor die jaren"
 
-#: models.py:167 models.py:296
+#: models.py:167 models.py:299
 msgid "Member"
 msgstr "Lid"
 
@@ -112,27 +112,31 @@ msgstr "De rol van dit lid binnen de commissie"
 msgid "End date can't be before start date"
 msgstr "De einddatum kan niet voor de startdatum liggen"
 
-#: models.py:229
+#: models.py:228
+msgid "End date can't be in the future"
+msgstr "De einddatum kan niet in de toekomst liggen"
+
+#: models.py:232
 msgid "End date cannot be set for boards"
 msgstr "Voor besturen kan geen einddatum worden opgegeven"
 
-#: models.py:252
+#: models.py:255
 msgid "There already is a chair for this time period"
 msgstr "Er is al een voorzitter voor deze periode"
 
-#: models.py:268
+#: models.py:271
 msgid "This member is already in the committee for this period"
 msgstr "Deze persoon is al lid van deze commissie in de aangegeven periode"
 
-#: models.py:288
+#: models.py:291
 msgid "committee membership"
 msgstr "commissielidmaatschap"
 
-#: models.py:289
+#: models.py:292
 msgid "committee memberships"
 msgstr "commissielidmaatschappen"
 
-#: models.py:301
+#: models.py:304
 #, python-brace-format
 msgid "{name} mentor in {year}"
 msgstr "{name} mentor in {year}"

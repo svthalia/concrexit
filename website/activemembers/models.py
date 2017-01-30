@@ -223,6 +223,9 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         if self.until and (not self.since or self.until < self.since):
             raise ValidationError(
                 {'until': _("End date can't be before start date")})
+        if self.until and self.until > timezone.now().date():
+            raise ValidationError(
+                {'until': _("End date can't be in the future")})
         try:
             if self.until and self.committee.board:
                 raise ValidationError(
@@ -274,7 +277,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
             self.member
             .committeemembership_set
             .exclude(
-                until__lt=timezone.now().date())
+                until__lte=timezone.now().date())
             .count()) >= 1
         self.member.user.save()
 
