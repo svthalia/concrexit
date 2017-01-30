@@ -136,7 +136,18 @@ class Board(Committee):
         ordering = ['-since']
 
     def get_absolute_url(self):
-        return reverse('activemembers:board', args=[str(self.pk)])
+        return reverse('activemembers:board', args=[str(self.since.year),
+                                                    str(self.until.year)])
+
+    def validate_unique(self, *args, **kwargs):
+        """ Check uniqueness"""
+        super().validate_unique(*args, **kwargs)
+        for board in Board.objects.filter(since__year=self.since.year,
+                                          until__year=self.until.year):
+            if board is not self:
+                raise ValidationError({
+                    'since': _('A board already exists for those years'),
+                    'until': _('A board already exists for those years')})
 
 
 class ActiveMembershipManager(models.Manager):
