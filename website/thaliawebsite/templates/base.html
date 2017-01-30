@@ -35,6 +35,7 @@
 <link href="{% static "css/jquery.fancybox.css" %}" rel="stylesheet" type="text/css">
 
 <link href="{% static "css/style.scss" %}" rel="stylesheet" type="text/x-scss">
+<link href="{% static "announcements/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
 {% endcompress %}{% endblock %}
 
 <!-- js head -->
@@ -55,6 +56,9 @@
 
     <!-- #wrapper -->
     <div class="thimbus-page">
+        <!-- #announcements -->
+        {% include "announcements/announcement.html" with announcements=announcements %}
+
         <!-- #header -->
         <div id="header" class="wrapper">
 
@@ -191,11 +195,13 @@
     <script type="text/javascript" src="{% static "plugins/jquery.easing.1.3.js" %}"></script>
     <script type="text/javascript" src="{% static "plugins/jquery.isotope.min.js" %}"></script>
     <script type="text/javascript" src="{% static "plugins/magnific-popup/jquery.magnific-popup.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/js.cookie-2.1.3.min.js" %}"></script>
     {% endblock %}
 
     {% block js_footer %}
     <script type="text/javascript" src="{% static "js/footer.js" %}"></script>
     <script type="text/javascript" src="{% static "js/bootstrap-dropdown.js" %}"></script>
+    <script type="text/javascript" src="{% static "announcements/js/announcements.js" %}"></script>
     {% endblock %}
 </body>
 <!-- /body -->
