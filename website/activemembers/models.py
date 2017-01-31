@@ -144,7 +144,7 @@ class Board(Committee):
         super().validate_unique(*args, **kwargs)
         for board in Board.objects.filter(since__year=self.since.year,
                                           until__year=self.until.year):
-            if board is not self:
+            if board != self:
                 raise ValidationError({
                     'since': _('A board already exists for those years'),
                     'until': _('A board already exists for those years')})
