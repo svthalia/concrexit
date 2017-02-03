@@ -5,9 +5,16 @@ from zipfile import ZipFile, is_zipfile, ZipInfo
 from django import forms
 from django.contrib import admin
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 
 from .models import Album, Photo
+
+
+def validate_uploaded_archive(uploaded_file):
+    types = ['application/gzip', 'application/zip']
+    if uploaded_file.content_type not in types:
+        raise ValidationError("Only zip and tar files are allowed.")
 
 
 class AlbumForm(forms.ModelForm):
@@ -24,6 +31,7 @@ class AlbumForm(forms.ModelForm):
         required=False,
         help_text="Uploading a zip or tar file adds all contained images as "
                   "photos.",
+        validators=[validate_uploaded_archive]
     )
 
     class Meta:
@@ -39,7 +47,7 @@ def save_photo(request, archive_file, photo, album):
         photo_filename = photo.name
         extract_file = archive_file.extractfile
     else:
-        return
+        raise TypeError("'photo' must be a ZipInfo or TarInfo object.")
 
     # Ignore directories
     if not os.path.basename(photo_filename):
@@ -82,7 +90,8 @@ class AlbumAdmin(admin.ModelAdmin):
                     for photo in tar_file.getmembers():
                         save_photo(request, tar_file, photo, obj)
             except tarfile.ReadError:
-                return
+                raise ValueError("The uploaded file is not a zip or tar "
+                                 "file.")
 
         messages.add_message(request, messages.WARNING,
                              "Full-sized photos will not be saved on the "
