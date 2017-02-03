@@ -28,10 +28,6 @@ def showcased_partners(request):
     chosen, rest = sequence[:2], sequence[2:]
     request.session['partner_sequence'] = rest + chosen
 
-    try:
-        partners = tuple(p for p in all_partners if p.id in chosen)
-    except Partner.DoesNotExist:
-        del request.session['partner_sequence']
-        return showcased_partners(request)
-
-    return {'showcased_partners': partners}
+    return {
+        'showcased_partners': [p for p in all_partners if p.id in chosen],
+    }
