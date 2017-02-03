@@ -4,9 +4,6 @@ variables:
   POSTGRES_PASSWORD: ""
   CI_DEPS: psycopg2
 
-services:
-  - postgres:latest
-
 pep8:
   image: python:3.4
   before_script:
@@ -16,6 +13,8 @@ pep8:
     - tox -e flake8
 
 .djangotest: &djangotest
+  services:
+    - postgres:latest
   before_script:
     - export PIP_CACHE_DIR="pip-cache"
     - mkdir -p pip-cache
