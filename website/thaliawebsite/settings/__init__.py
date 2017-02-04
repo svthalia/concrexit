@@ -6,8 +6,12 @@ This file controls what settings are loaded.
 Using environment variables you can control the loading of various
 overrides.
 """
-
 # flake8: noqa
+
+# Load all default settings because we need to use settings.configure
+# for sphinx documentation generation.
+from django.conf.global_settings import *
+
 import os
 
 # Load base settings

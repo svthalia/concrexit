@@ -1,3 +1,5 @@
+import doctest
+
 from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.core import mail
@@ -7,6 +9,16 @@ from django.urls import reverse
 from django.utils import timezone
 
 from newsletters.models import Newsletter, NewsletterEvent
+from newsletters.templatetags import listutil
+
+
+def load_tests(loader, tests, ignore):
+    """
+    Load all tests in this module
+    """
+    # Adds the doctests in listutil
+    tests.addTests(doctest.DocTestSuite(listutil))
+    return tests
 
 
 class NewslettersTest(TestCase):

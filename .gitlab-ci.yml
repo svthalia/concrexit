@@ -4,9 +4,6 @@ variables:
   POSTGRES_PASSWORD: ""
   CI_DEPS: psycopg2
 
-services:
-  - postgres:latest
-
 pep8:
   image: python:3.4
   before_script:
@@ -16,6 +13,8 @@ pep8:
     - tox -e flake8
 
 .djangotest: &djangotest
+  services:
+    - postgres:latest
   before_script:
     - export PIP_CACHE_DIR="pip-cache"
     - mkdir -p pip-cache
@@ -37,6 +36,18 @@ python35:
   image: python:3.5
   variables:
     PYTHON_VERSION: py35
+
+docs:
+  image: python:3.5
+  before_script:
+    # install django deps
+    - pip install -r requirements.txt
+    - cd docs
+    # install doc deps
+    - pip install -r requirements.txt
+  script:
+    - env -u GITLAB_CI make doctest
+    - test -z "$(env -u GITLAB_CI make html | egrep -w 'SEVERE:|ERROR:')"
 
 cache:
   key: "$CI_BUILD_NAME"
