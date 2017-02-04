@@ -1,13 +1,20 @@
 import os
-from zipfile import ZipFile
+import tarfile
+from zipfile import ZipFile, is_zipfile, ZipInfo
 
 from django import forms
-from django.conf import settings
 from django.contrib import admin
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 
 from .models import Album, Photo
+
+
+def validate_uploaded_archive(uploaded_file):
+    types = ['application/gzip', 'application/zip']
+    if uploaded_file.content_type not in types:
+        raise ValidationError("Only zip and tar files are allowed.")
 
 
 class AlbumForm(forms.ModelForm):
@@ -22,11 +29,40 @@ class AlbumForm(forms.ModelForm):
 
     album_archive = forms.FileField(
         required=False,
-        help_text="Uploading a zip file adds all contained images as photos.",
+        help_text="Uploading a zip or tar file adds all contained images as "
+                  "photos.",
+        validators=[validate_uploaded_archive]
     )
 
     class Meta:
         exclude = ['dirname']
+
+
+def save_photo(request, archive_file, photo, album):
+    # zipfile and tarfile are inconsistent
+    if isinstance(photo, ZipInfo):
+        photo_filename = photo.filename
+        extract_file = archive_file.open
+    elif isinstance(photo, tarfile.TarInfo):
+        photo_filename = photo.name
+        extract_file = archive_file.extractfile
+    else:
+        raise TypeError("'photo' must be a ZipInfo or TarInfo object.")
+
+    # Ignore directories
+    if not os.path.basename(photo_filename):
+        return
+
+    photo_obj = Photo()
+    photo_obj.album = album
+    try:
+        with extract_file(photo) as f:
+            photo_obj.file.save(photo_filename, ContentFile(f.read()))
+    except (OSError, AttributeError):
+        messages.add_message(request, messages.WARNING,
+                             "Ignoring {}".format(photo_filename))
+    else:
+        photo_obj.save()
 
 
 class AlbumAdmin(admin.ModelAdmin):
@@ -35,32 +71,28 @@ class AlbumAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.save()
+
         archive = form.cleaned_data.get('album_archive', None)
         if archive is None:
             return
-        with ZipFile(archive) as zip_file:
-            path = os.path.join(settings.MEDIA_ROOT, 'photos', obj.dirname)
-            os.makedirs(path, exist_ok=True)
-            # Notably, this can also be used to add photos to existing albums
-            for photo in zip_file.namelist():
-                # TODO this may still need to be a bit more robust
-                # e.g. duplicate names cause overwriting (but are unlikely)
-                # Flatten any subdirectories
-                photo_filename = os.path.basename(photo)
-                # Skip directories (which do not have a basename)
-                if not photo_filename:
-                    continue
-                # Cannot use .extract as that would recreate directory paths
-                photo_obj = Photo()
-                photo_obj.album = obj
-                try:
-                    with zip_file.open(photo) as f:
-                        photo_obj.file.save(photo_filename,
-                                            ContentFile(f.read()))
-                    photo_obj.save()
-                except OSError:
-                    messages.add_message(request, messages.WARNING,
-                                         "Ignoring {}".format(f.name))
+
+        iszipfile = is_zipfile(archive)
+        archive.seek(0)
+
+        if iszipfile:
+            with ZipFile(archive) as zip_file:
+                for photo in zip_file.infolist():
+                    save_photo(request, zip_file, photo, obj)
+        else:
+            # is_tarfile only supports filenames, so we cannot use that
+            try:
+                with tarfile.open(fileobj=archive) as tar_file:
+                    for photo in tar_file.getmembers():
+                        save_photo(request, tar_file, photo, obj)
+            except tarfile.ReadError:
+                raise ValueError("The uploaded file is not a zip or tar "
+                                 "file.")
+
         messages.add_message(request, messages.WARNING,
                              "Full-sized photos will not be saved on the "
                              "Thalia-website.")
