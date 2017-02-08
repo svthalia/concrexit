@@ -56,6 +56,8 @@ def overview(request, event_pk):
         total_products += 1
         total_money += order.product.price
 
+    product_list = sorted(product_list.values(), key=lambda x: x['name'])
+
     context = {
         'event': event,
         'product_list': product_list,
