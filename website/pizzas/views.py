@@ -28,7 +28,8 @@ def orders(request, event_pk):
     event = get_object_or_404(PizzaEvent, pk=event_pk)
     context = {'event': event,
                'orders': Order.objects.filter(pizza_event=event)
-                                      .prefetch_related('member', 'product')}
+                                      .prefetch_related('member', 'product')
+                                      .order_by('member__user__first_name')}
     return render(request, 'pizzas/orders.html', context)
 
 
@@ -54,6 +55,8 @@ def overview(request, event_pk):
         product_list[order.product.id]['total'] += order.product.price
         total_products += 1
         total_money += order.product.price
+
+    product_list = sorted(product_list.values(), key=lambda x: x['name'])
 
     context = {
         'event': event,
