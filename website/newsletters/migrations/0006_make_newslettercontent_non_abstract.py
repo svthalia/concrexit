@@ -69,6 +69,7 @@ def migrate_content_to_item(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
+    atomic = False
     dependencies = [
         ('newsletters', '0005_merge_20161214_2018'),
     ]
