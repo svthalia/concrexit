@@ -302,9 +302,15 @@ def registration(request, event_id, action=None):
 @permission_required('events.change_event')
 def all_present(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
-    registrations = event.registration_set.all()
-    for registration in registrations:
-        registration.present = True
-        registration.paid = True
-        registration.save()
+
+    if event.max_participants is None:
+        registrations_query = event.registration_set.filter(
+            date_cancelled=None)
+    else:
+        registrations_query = (event.registration_set
+                               .filter(date_cancelled=None)
+                               .order_by('date')[:event.max_participants])
+
+    registrations_query.update(present=True, paid=True)
+
     return HttpResponseRedirect('/events/admin/{}'.format(event_id))
