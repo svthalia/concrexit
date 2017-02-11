@@ -324,17 +324,19 @@ class Registration(models.Model):
     def is_late_cancellation(self):
         # First check whether or not the user cancelled
         # If the user cancelled then check if this was after the deadline
-        # And do a complex check to calculate if this user was on
+        # And if there is a max participants number:
+        # do a complex check to calculate if this user was on
         # the waiting list at the time of cancellation, since
         # you shouldn't need to pay the costs of something
         # you weren't even able to go to.
         return (self.date_cancelled and
                 self.date_cancelled > self.event.cancel_deadline and
-                self.event.registration_set.filter(
+                (self.event.max_participants is None or
+                 self.event.registration_set.filter(
                     (Q(date_cancelled__gte=self.date_cancelled) |
                      Q(date_cancelled=None)) &
                     Q(date__lte=self.date)
-                ).count() < self.event.max_participants)
+                 ).count() < self.event.max_participants))
 
     def is_registered(self):
         return self.date_cancelled is None
