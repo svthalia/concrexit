@@ -238,6 +238,8 @@ TINYMCE_DEFAULT_CONFIG = {
                                "numlist,separator,undo,redo",
     'theme_advanced_toolbar_location': "top",
     'relative_urls': False,
+    'remove_script_host': False,
+    'convert_urls': True,
     'plugins': "paste",
     'paste_auto_cleanup_on_paste': True,
     'paste_remove_styles': True,
