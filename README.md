@@ -8,7 +8,7 @@ New new Thalia website, now with extra Django.
 
 
 [![build status](https://gitlab.science.ru.nl/thalia/concrexit/badges/master/build.svg)](https://gitlab.science.ru.nl/thalia/concrexit/commits/master)
-[![coverage report](https://gitlab.science.ru.nl/thalia/concrexit/badges/master/coverage.svg)](https://gitlab.science.ru.nl/thalia/concrexit/commits/master)
+[![coverage report](https://gitlab.science.ru.nl/thalia/concrexit/badges/master/coverage.svg?job=python35)](https://gitlab.science.ru.nl/thalia/concrexit/commits/master)
 
 
 
