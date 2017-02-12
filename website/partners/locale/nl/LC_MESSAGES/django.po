@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-29 13:16+0100\n"
-"PO-Revision-Date: 2017-01-29 13:19+0100\n"
+"POT-Creation-Date: 2017-02-12 10:29+0100\n"
+"PO-Revision-Date: 2017-02-12 10:29+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -123,8 +123,8 @@ msgid "Main Partner"
 msgstr "Hoofdsponsor"
 
 #: templates/partners/index.html:30 templates/partners/index.html:56
-#: templates/partners/partner.html:91 templates/partners/vacancies.html:56
-#: templates/partners/vacancies.html:61 templates/partners/vacancies.html:92
+#: templates/partners/partner.html:91 templates/partners/vacancies.html:52
+#: templates/partners/vacancies.html:57 templates/partners/vacancies.html:88
 msgid "Learn more"
 msgstr "Lees meer"
 
@@ -155,6 +155,13 @@ msgstr "Website"
 
 #: templates/partners/vacancies.html:9
 msgid ""
+"You are a student and maybe you are looking for a job or part-time job. "
+"Happily we have companies that offer vacancies. So when you want to earn "
+"some additional money or when you are (almost) graduated you can look at "
+"this page for all outstanding vacancies. When you want to post a vacancy on "
+"this page as a company you can contact us at <a href=\"mailto:"
+"samenwerking@thalia.nu\" target=\"_blank\">samenwerking@thalia.nu</a>."
+msgstr ""
 "Je bent student en je hebt het maar krap. De politiek wil de studenten ook "
 "al niet een handje toesteken. Gelukkig hebben we bedrijven die bij ons "
 "vacatures aanbieden. Dus zit je krap en wil je wat bijverdienen, of ben je "
@@ -163,21 +170,31 @@ msgid ""
 "website, dan kun je contact opnemen met de commissaris externe betrekkingen "
 "via <a href=\"mailto:samenwerking@thalia.nu\" target=\"_blank"
 "\">samenwerking@thalia.nu</a>."
-msgstr ""
-"You are a student and maybe you are looking for a job or part-time job. "
-"Happily we have companies that offer vacancies. So when you want to earn "
-"some additional money or when you are (almost) graduated you can look at "
-"this page for all outstanding vacancies. When you want to post a vacancy on "
-"this page as a company you can contact us at <a href=\"mailto:"
-"samenwerking@thalia.nu\" target=\"_blank\">samenwerking@thalia.nu</a>."
 
-#: templates/partners/vacancies.html:23
+#: templates/partners/vacancies.html:19
 msgid "Everything"
 msgstr "Alles"
 
-#: templates/partners/vacancies.html:72
+#: templates/partners/vacancies.html:68
 msgid "All vacancies"
 msgstr "Alle vacatures"
+
+#~ msgid ""
+#~ "Je bent student en je hebt het maar krap. De politiek wil de studenten "
+#~ "ook al niet een handje toesteken. Gelukkig hebben we bedrijven die bij "
+#~ "ons vacatures aanbieden. Dus zit je krap en wil je wat bijverdienen, of "
+#~ "ben je (bijna) afgestudeerd en wil je eens wat rondkijken, op deze pagina "
+#~ "staan al onze openstaande vacatures. Wil je als bedrijf een vacature "
+#~ "plaatsen op onze website, dan kun je contact opnemen met de commissaris "
+#~ "externe betrekkingen via <a href=\"mailto:samenwerking@thalia.nu\" target="
+#~ "\"_blank\">samenwerking@thalia.nu</a>."
+#~ msgstr ""
+#~ "You are a student and maybe you are looking for a job or part-time job. "
+#~ "Happily we have companies that offer vacancies. So when you want to earn "
+#~ "some additional money or when you are (almost) graduated you can look at "
+#~ "this page for all outstanding vacancies. When you want to post a vacancy "
+#~ "on this page as a company you can contact us at <a href=\"mailto:"
+#~ "samenwerking@thalia.nu\" target=\"_blank\">samenwerking@thalia.nu</a>."
 
 #~ msgid ""
 #~ "Als studievereniging doen we ontzettend ons best om leuke evenementen en "
