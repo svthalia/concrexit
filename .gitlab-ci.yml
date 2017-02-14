@@ -20,6 +20,8 @@ pep8:
     - mkdir -p pip-cache
     - git log -1
     - pip install tox coverage
+    - apt-get update
+    - apt-get install -y ghostscript  # required for Thabloid's tests
   script:
     - tox -e $PYTHON_VERSION
     - cd website

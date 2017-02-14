@@ -76,7 +76,7 @@ class Thabloid(models.Model):
         if wait:  # pragma: no cover
             p.wait()
 
-    def save(self, *args, nopages=False, wait=False, **kwargs):
+    def save(self, *args, wait=False, **kwargs):
         new_file = False
 
         if self.pk is None:
@@ -115,5 +115,5 @@ class Thabloid(models.Model):
 
         super(Thabloid, self).save(*args, **kwargs)
 
-        if new_file and not nopages:
+        if new_file:
             self.extract_thabloid_pages(wait)
