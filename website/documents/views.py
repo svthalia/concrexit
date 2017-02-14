@@ -32,7 +32,10 @@ def index(request):
 
     meeting_years = {x: [] for x in range(1990, lectureyear + 1)}
     for obj in GeneralMeeting.objects.all():
-        meeting_years[datetime_to_lectureyear(obj.datetime)].append(obj)
+        meeting_year = datetime_to_lectureyear(obj.datetime)
+        if meeting_year not in meeting_years:
+            meeting_years[meeting_year] = []
+        meeting_years[meeting_year].append(obj)
 
     context = {'miscellaneous_documents': MiscellaneousDocument.objects.all(),
                'association_documents_years': sorted(years.items(),
