@@ -13,7 +13,9 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def index(request):
-    years = {x: None for x in range(1990, timezone.now().year)}
+    lectureyear = datetime_to_lectureyear(timezone.now())
+
+    years = {x: None for x in range(1990, lectureyear + 1)}
     for obj in AssociationDocumentsYear.objects.all():
         years[obj.year] = {'policy': [obj.policy_document],
                            'report': [obj.annual_report, obj.financial_report],
@@ -28,7 +30,7 @@ def index(request):
                     except ValueError:
                         docs.remove(doc)
 
-    meeting_years = {x: [] for x in range(1990, timezone.now().year + 1)}
+    meeting_years = {x: [] for x in range(1990, lectureyear + 1)}
     for obj in GeneralMeeting.objects.all():
         meeting_years[datetime_to_lectureyear(obj.datetime)].append(obj)
 
