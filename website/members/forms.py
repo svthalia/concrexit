@@ -34,6 +34,7 @@ class UserCreationForm(forms.ModelForm):
     send_welcome_email = forms.BooleanField(
         label=_('Send welcome email'),
         help_text=_('This email will include the generated password'),
+        required=False,
         initial=True)
 
     def save(self, commit=True):
