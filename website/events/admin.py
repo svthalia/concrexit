@@ -46,7 +46,7 @@ class EventAdmin(DoNextModelAdmin):
     inlines = (RegistrationInformationFieldInline,)
     fields = ('title', 'description', 'start', 'end', 'organiser',
               'registration_start', 'registration_end', 'cancel_deadline',
-              'location', 'map_location', 'price', 'cost',
+              'location', 'map_location', 'price', 'fine',
               'max_participants', 'no_registration_message', 'published')
     list_display = ('overview_link', 'start', 'registration_start',
                     'num_participants', 'organiser', 'published', 'edit_link')
