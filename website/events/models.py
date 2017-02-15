@@ -127,6 +127,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def has_fields(self):
         return self.registrationinformationfield_set.count() > 0
 
+    def num_participants(self):
+        return self.registration_set.filter(date_cancelled=None).count()
+
     def reached_participants_limit(self):
         return (self.max_participants is not None and
                 self.max_participants <= self.registration_set.filter(
