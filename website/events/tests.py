@@ -25,7 +25,7 @@ class RegistrationTest(TestCase):
             location_nl='test locatie',
             map_location='test map location',
             price=0.00,
-            cost=0.00)
+            fine=0.00)
         self.member = Member.objects.all()[0]
 
     def test_registration_either_name_or_member(self):
