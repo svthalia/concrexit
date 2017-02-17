@@ -564,6 +564,3 @@ msgstr "Je afmelding was succesvol."
 #: views.py:270
 msgid "You were not registered for this event."
 msgstr "Je was niet aangemeld voor dit evenement."
-
-#~ msgid "Actual cost of event per participant (at least €5)."
-#~ msgstr "Werkelijke kosten van het evenement per deelnemer (minimaal €5)."
