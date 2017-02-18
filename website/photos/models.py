@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
+from django.utils.translation import ugettext_lazy as _
 from PIL import Image
 
 COVER_FILENAME = 'cover.jpg'
@@ -16,14 +17,28 @@ def photo_uploadto(instance, filename):
 
 
 class Photo(models.Model):
-    album = models.ForeignKey('Album', on_delete=models.CASCADE)
-    file = models.ImageField(upload_to=photo_uploadto)
+    album = models.ForeignKey(
+        'Album',
+        on_delete=models.CASCADE,
+        verbose_name=_("album")
+    )
+
+    file = models.ImageField(
+        _('file'),
+        upload_to=photo_uploadto
+    )
+
     rotation = models.IntegerField(
+        verbose_name=_('rotation'),
         default=0,
         choices=((x, x) for x in (0, 90, 180, 270)),
-        help_text="This does not modify the original image file.",
+        help_text=_('This does not modify the original image file.'),
     )
-    hidden = models.BooleanField(default=False)
+
+    hidden = models.BooleanField(
+        _('hidden'),
+        default=False
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -51,14 +66,42 @@ class Photo(models.Model):
 
 
 class Album(models.Model):
-    title = models.CharField(max_length=200)
-    dirname = models.CharField(max_length=200)
-    date = models.DateField()
-    slug = models.SlugField()
-    hidden = models.BooleanField(default=False)
-    _cover = models.OneToOneField(Photo, on_delete=models.SET_NULL, blank=True,
-                                  null=True, related_name='covered_album')
-    shareable = models.BooleanField(default=False)
+    title = models.CharField(
+        verbose_name=_('title'),
+        max_length=200,
+    )
+
+    dirname = models.CharField(
+        verbose_name=_('directory name'),
+        max_length=200,
+    )
+
+    date = models.DateField(
+        verbose_name=_('date'),
+    )
+
+    slug = models.SlugField(
+        verbose_name=_('slug'),
+    )
+
+    hidden = models.BooleanField(
+        verbose_name=_('hidden'),
+        default=False
+    )
+
+    _cover = models.OneToOneField(
+        Photo,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='covered_album',
+        verbose_name=_('cover image'),
+    )
+
+    shareable = models.BooleanField(
+        verbose_name=_('shareable'),
+        default=False
+    )
 
     photosdir = 'photos'
     photospath = os.path.join(settings.MEDIA_ROOT, photosdir)
