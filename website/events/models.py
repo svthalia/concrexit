@@ -91,13 +91,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         validators=[validators.MinValueValidator(0)],
     )
 
-    cost = models.DecimalField(
-        _("cost"),
+    fine = models.DecimalField(
+        _("fine"),
         max_digits=5,
         decimal_places=2,
         default=0,
-        help_text=_("Actual cost of event."),
-        validators=[validators.MinValueValidator(0)],
+        help_text=_("Fine if participant does not show up (at least €5)."),
+        validators=[validators.MinValueValidator(5)],
     )
 
     max_participants = models.PositiveSmallIntegerField(
