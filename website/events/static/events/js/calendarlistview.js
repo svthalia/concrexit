@@ -29,29 +29,37 @@ ListView = View.extend({ // make a subclass of View
 
         for (var i = 0; i < events.length; i++) {
             var e = events[i];
-            var li = $('<li>').attr('id', 'event'+i);
-            var date = e.start.date() + '-' + (e.start.month()+1) + '-' + e.start.year(); // Javascript you so silly
-            li.append('<div class="toggle-title"><a href="#"><span></span>'+e.title+' ('+date+')</a></div>');
-            if(!e.isBirthday) {
+            var li = $('<li>').attr('id', 'event' + i);
+            var date = e.start.date() + '-' + (e.start.month() + 1) + '-' + e.start.year(); // Javascript you so silly
+            if (!e.is_birthday) {
+                li.append('<div class="toggle-title"><a href="#"><span></span>' + e.title + ' (' + date + ')</a></div>');
+
                 if (e.blank) {
                     li.append('<div class="toggle-content">' + e.description + '<br><br><a target="_blank" href="' + e.url + '">> Naar de evenementpagina</a></div>');
                 } else {
                     li.append('<div class="toggle-content">' + e.description + '<br><br><a href="' + e.url + '">> Naar de evenementpagina</a></div>');
                 }
+            } else {
+                li.append('<div class="toggle-title birthday"><a href="#">' + e.title + ' (' + date + ')</a></div>');
             }
+
             if (e.registered) {
                 li.append('<div class="event-indication-has-registration"></div>');
             } else if (e.registered !== null) {
                 li.append('<div class="event-indication-no-registration"></div>');
             }
+
             ul.append(li);
         }
         // This originates from theme_thimbus/themes/thimbus/assets/js/scripts_dev.js,
         // but was only executed when the document was rendered, and not afterwards.
         // By including it here, the toggle above also gets rendered.
-        ul.delegate('.toggle-title', 'click', function(e) {
-            var $this=$(this), $parent=$this.closest('li');
+        ul.delegate('.toggle-title', 'click', function (e) {
+            var $this = $(this), $parent = $this.closest('li');
             e.preventDefault();
+            if ($this.hasClass('birthday')) {
+                return;
+            }
             if ($parent.hasClass('current')) {
                 $parent.removeClass('current').find('.toggle-content').stop().css('display','block').slideUp(500,'easeOutExpo');
             } else {
