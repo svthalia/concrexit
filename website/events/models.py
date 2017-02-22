@@ -132,6 +132,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 self.max_participants <= self.registration_set.filter(
                     date_cancelled=None).count())
 
+    def is_member_registered(self, member):
+        if not self.registration_required():
+            return None
+
+        registrations = self.registration_set.filter(member=member)
+        return len(registrations) == 1 and registrations[0].is_registered()
+
     @property
     def status(self):
         now = timezone.now()

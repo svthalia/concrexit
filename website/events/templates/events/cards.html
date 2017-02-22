@@ -1,16 +1,25 @@
 <div class="blog">
     <ul class="row">
-        {% for event in events %}
+        {% for next_event in upcoming %}
         <li class="post span6 has-overlay event">
-            <a href="{{ event.get_absolute_url }}">
+            <a href="{{ next_event.event.get_absolute_url }}">
                 <div class="post-inner">
-                    <div class="post-body"><h2>{{ event.title }}</h2>
+                    <div class="post-body"><h2>{{ next_event.event.title }}</h2>
+
+                        {% if next_event.current_user_registration is not None %}
+                        {% if next_event.current_user_registration %}
+                        <div class="event-indication-no-registration"></div>
+                        {% else %}
+                        <div class="event-indication-has-registration"></div>
+                        {% endif %}
+                        {% endif %}
+
                         <div class="post-date circle">
                             <div class="circle-border"></div>
-                            <div class="circle-inner">{{ event.start.day }}<span>{{ event.start|date:"M" }}</span></div>
+                            <div class="circle-inner">{{ next_event.event.start.day }}<span>{{ next_event.event.start|date:"M" }}</span></div>
                         </div>
                         <div class="post-excerpt">
-                            <p>{{ event.description|striptags|safe }}</p>
+                            <p>{{ next_event.event.description|striptags|safe }}</p>
                         </div>
                     </div>
                 </div>

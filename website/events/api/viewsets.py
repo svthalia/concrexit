@@ -29,5 +29,6 @@ class EventViewset(viewsets.ViewSet):
             published=True
         )
 
-        serializer = EventSerializer(queryset, many=True)
+        serializer = EventSerializer(queryset, many=True,
+                                     context={'user': request.user})
         return Response(serializer.data)
