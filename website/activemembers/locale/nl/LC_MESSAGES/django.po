@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-30 18:53+0100\n"
+"POT-Creation-Date: 2017-02-22 21:13+0100\n"
 "PO-Revision-Date: 2017-01-30 18:54+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
@@ -143,14 +143,13 @@ msgstr "{name} mentor in {year}"
 
 #: templates/activemembers/board_detail.html:4
 #: templates/activemembers/board_detail.html:8
-#: templates/activemembers/board_index.html:32
-#: templates/activemembers/board_index.html:37
+#: templates/activemembers/board_index.html:45
+#: templates/activemembers/board_index.html:50
 msgid "Board"
-msgstr "Besturen"
+msgstr "Bestuur"
 
 #: templates/activemembers/board_detail.html:4
 #: templates/activemembers/board_index.html:3
-#: templates/activemembers/board_index.html:6
 msgid "Boards"
 msgstr "Besturen"
 
@@ -167,6 +166,10 @@ msgstr "Voorzitter"
 msgid "This board doesn't have any members?"
 msgstr "Dit bestuur heeft geen leden?"
 
+#: templates/activemembers/board_index.html:6
+msgid "The board"
+msgstr "Het bestuur"
+
 #: templates/activemembers/board_index.html:9
 msgid ""
 "Thalia's board makes sure all operations during the academic year are taken "
@@ -180,14 +183,20 @@ msgstr ""
 "schermen. Bij vragen en opmerkingen kun je ze altijd persoonlijk aanspreken "
 "of <a href=\"mailto:info@thalia.nu\">mailen</a>."
 
-#: templates/activemembers/board_index.html:24
+#: templates/activemembers/board_index.html:27
+#, fuzzy
+#| msgid "Boards"
+msgid "Old boards"
+msgstr "Oude besturen"
+
+#: templates/activemembers/board_index.html:37
 #: templates/activemembers/committee_detail.html:18
 #: templates/activemembers/committee_detail.html:20
 #, python-format
 msgid "Photo of %(name)s"
 msgstr "Foto van %(name)s"
 
-#: templates/activemembers/board_index.html:44
+#: templates/activemembers/board_index.html:57
 msgid "There are no boards!"
 msgstr "Er zijn geen besturen!"
 
@@ -221,12 +230,3 @@ msgstr "Deze commissie heeft geen leden?"
 #: templates/activemembers/committee_index.html:39
 msgid "There are no committees!"
 msgstr "Er zijn geen commissies!"
-
-#~ msgid "Membership expiration date can't be in the future: '{}'"
-#~ msgstr "Een lidmaatschap kan niet verlopen in de toekomst: '{}'"
-
-#~ msgid "This member is already in the committee"
-#~ msgstr "Deze persoon is al lid van deze commissie"
-
-#~ msgid "Mentors {year}-{year_to}"
-#~ msgstr "Mentoren {year}-{year_to}"
