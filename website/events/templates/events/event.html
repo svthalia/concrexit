@@ -108,7 +108,7 @@
                                 {% elif registration is not None and registration.date_cancelled is None %}
                                     {# Special message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
                                     {% if registration.queue_position == 0 and event.after_cancel_deadline %}
-                                        <a class="btn btn-style1" href="{% url 'events:registration' event.id 'cancel' %}" onclick="return confirm('{% blocktrans with costs=event.cost %}The deadline has passed, are you sure you want to cancel your registration and pay the full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');">{% trans "Cancel registration" %}</a>
+                                        <a class="btn btn-style1" href="{% url 'events:registration' event.id 'cancel' %}" onclick="return confirm('{% blocktrans with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');">{% trans "Cancel registration" %}</a>
                                     {% else %}
                                         <a class="btn btn-style1" href="{% url 'events:registration' event.id 'cancel' %}" onclick="return confirm('{% trans "Are you sure you want to cancel your registration?" %}');">{% trans "Cancel registration" %}</a>
                                     {% endif %}
@@ -138,8 +138,8 @@
                             {% endif %}
                         {% endif %}
                         {% if event.status == event.REGISTRATION_OPEN_NO_CANCEL or event.status == event.REGISTRATION_CLOSED  %}
-                            {% if registration.date_cancelled is None and event.cost > 0 %}
-                                {% blocktrans with costs=event.cost %}Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}. Also note that you will be unable to re-register.{% endblocktrans %}
+                            {% if registration.date_cancelled is None and event.fine > 0 %}
+                                {% blocktrans with costs=event.fine %}Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}. Also note that you will be unable to re-register.{% endblocktrans %}
                             {% endif %}
                         {% endif %}
                         </em>
