@@ -334,6 +334,7 @@ class Registration(models.Model):
         # you shouldn't need to pay the costs of something
         # you weren't even able to go to.
         return (self.date_cancelled and
+                self.event.cancel_deadline and
                 self.date_cancelled > self.event.cancel_deadline and
                 (self.event.max_participants is None or
                  self.event.registration_set.filter(

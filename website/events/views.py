@@ -200,9 +200,6 @@ def registration(request, event_id, action=None):
             event.status == Event.REGISTRATION_OPEN or
             event.status == Event.REGISTRATION_OPEN_NO_CANCEL
         ):
-            if event.has_fields():
-                show_fields = True
-
             if obj is None:
                 obj = Registration()
                 obj.event = event
@@ -221,6 +218,10 @@ def registration(request, event_id, action=None):
 
             if error_message is None:
                 success_message = _("Registration successful.")
+                if event.has_fields():
+                    show_fields = True
+                else:
+                    obj.save()
         elif (action == 'update' and
               event.has_fields() and
               obj is not None and
@@ -265,6 +266,7 @@ def registration(request, event_id, action=None):
                 # But this is regarded as a feature, not a bug. Especially
                 # since the values will still appear in the backend.
                 obj.date_cancelled = timezone.now()
+                obj.save()
                 success_message = _("Registration successfully cancelled.")
             else:
                 error_message = _("You were not registered for this event.")
@@ -291,7 +293,6 @@ def registration(request, event_id, action=None):
             messages.success(request, success_message)
         elif error_message is not None:
             messages.error(request, error_message)
-        obj.save()
 
         if waiting_list_notification is not None:
             waiting_list_notification.send()
