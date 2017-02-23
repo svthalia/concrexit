@@ -76,7 +76,7 @@
             <dt>{% trans "price"|capfirst %}</dt>
             <dd>{{ event.price }}</dd>
             <dt>{% trans "cost"|capfirst %}</dt>
-            <dd>{{ event.cost }}</dd>
+            <dd>{{ event.fine }}</dd>
             <dt>{% trans "registration required"|capfirst %}</dt>
             <dd>{{ event.registration_required|yesno }}</dd>
             {% if not event.registration_required %}
