@@ -72,6 +72,7 @@ class Member(models.Model):
     )
 
     student_number = models.CharField(
+        verbose_name=_('Student number'),
         max_length=8,
         validators=[validators.RegexValidator(
             regex=r'(s\d{7}|[ezu]\d{6,7})',
