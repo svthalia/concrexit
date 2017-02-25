@@ -127,6 +127,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def has_fields(self):
         return self.registrationinformationfield_set.count() > 0
 
+    def num_participants(self):
+        return self.registration_set.filter(date_cancelled=None).count()
+
     def reached_participants_limit(self):
         return (self.max_participants is not None and
                 self.max_participants <= self.registration_set.filter(
@@ -331,6 +334,7 @@ class Registration(models.Model):
         # you shouldn't need to pay the costs of something
         # you weren't even able to go to.
         return (self.date_cancelled and
+                self.event.cancel_deadline and
                 self.date_cancelled > self.event.cancel_deadline and
                 (self.event.max_participants is None or
                  self.event.registration_set.filter(
