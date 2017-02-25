@@ -78,7 +78,7 @@ class Course(models.Model, metaclass=ModelTranslateMeta):
         verbose_name_plural = _('courses')
 
 
-class Exam(models.Model):
+class Exam(models.Model, metaclass=ModelTranslateMeta):
     EXAM_TYPES = (
         ('document', _('Document')),
         ('exam', _('Exam')),
@@ -146,7 +146,7 @@ class Exam(models.Model):
         verbose_name_plural = _('exams')
 
 
-class Summary(models.Model):
+class Summary(models.Model, metaclass=ModelTranslateMeta):
     name = models.CharField(
         max_length=255,
         verbose_name=_('summary name'),

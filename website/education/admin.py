@@ -15,13 +15,16 @@ admin.site.register(models.Category)
 class CourseAdmin(TranslatedModelAdmin):
     fields = ('name', 'shorthand', 'course_code', 'ec', 'since', 'until',
               'period', 'categories', 'old_courses')
+    list_filter = ('categories', 'ec')
+    search_fields = ('name', 'course_code')
 
 
 @admin.register(models.Exam)
 class ExamAdmin(TranslatedModelAdmin):
     list_display = ('type', 'course', 'exam_date', 'uploader',
                     'accepted')
-    list_filter = ('accepted', 'exam_date', 'type')
+    list_filter = ('accepted', 'exam_date', 'type',)
+    search_fields = ('course', 'uploader',)
     actions = ['accept', 'reject']
 
     def accept(self, request, queryset):
@@ -39,6 +42,7 @@ class ExamAdmin(TranslatedModelAdmin):
 class SummaryAdmin(TranslatedModelAdmin):
     list_display = ('name', 'course', 'uploader', 'accepted')
     list_filter = ('accepted',)
+    search_fields = ('name', 'course', 'uploader',)
     actions = ['accept', 'reject']
 
     def accept(self, request, queryset):
