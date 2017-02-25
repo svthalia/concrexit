@@ -69,6 +69,14 @@ def index(request):
                                                  'page_range': page_range})
 
 
+def _render_album_page(request, album):
+    context = {
+        'album': album,
+        'photos': album.photo_set.filter(hidden=False)
+    }
+    return render(request, 'photos/album.html', context)
+
+
 @login_required
 def album(request, slug):
     album = get_object_or_404(Album, slug=slug)
@@ -83,11 +91,7 @@ def album(request, slug):
         can_view = request.user.membership_set.filter(filter).count() > 0
 
     if request.user.member is not None and can_view:
-        context = {
-            'album': album,
-            'photos': album.photo_set.filter(hidden=False)
-        }
-        return render(request, 'photos/album.html', context)
+        return _render_album_page(request, album)
     raise Http404("Sorry, you're not allowed to view this album")
 
 
@@ -100,7 +104,7 @@ def _checked_shared_album(slug, token):
 
 def shared_album(request, slug, token):
     album = _checked_shared_album(slug, token)
-    return render(request, 'photos/album.html', {'album': album})
+    return _render_album_page(request, album)
 
 
 def _download(request, path):
