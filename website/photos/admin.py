@@ -66,6 +66,10 @@ def save_photo(request, archive_file, photo, album):
 
 
 class AlbumAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date', 'hidden', 'shareable')
+    search_fields = ('title', 'date')
+    list_filter = ('hidden', 'shareable')
+    date_hierarchy = 'date'
     prepopulated_fields = {'slug': ('date', 'title',)}
     form = AlbumForm
 
@@ -99,6 +103,10 @@ class AlbumAdmin(admin.ModelAdmin):
 
 
 class PhotoAdmin(admin.ModelAdmin):
+    list_display = ('file', 'album', 'hidden')
+    search_fields = ('file',)
+    list_filter = ('album', 'hidden')
+
     def save_model(self, request, obj, form, change):
         obj.save()
         messages.add_message(request, messages.WARNING,
