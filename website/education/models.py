@@ -84,7 +84,8 @@ class Exam(models.Model):
         ('exam', _('Exam')),
         ('partial', _('Partial Exam')),
         ('resit', _('Resit')),
-        ('practice', _('Practice Exam')))
+        ('practice', _('Practice Exam')),
+        ('answers', _('Exam Answers')))
 
     type = models.CharField(
         max_length=40,
