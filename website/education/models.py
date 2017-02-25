@@ -119,7 +119,9 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
     )
 
     file = models.FileField(
-        upload_to="education/files/exams/"
+        upload_to="education/files/exams/",
+        help_text=_('Use the \'View on site\' button to download '
+                    'the file for inspection.')
     )
 
     course = models.ForeignKey(
@@ -182,7 +184,9 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
     )
 
     file = models.FileField(
-        upload_to="education/files/summary/"
+        upload_to="education/files/summary/",
+        help_text=_('Use the \'View on site\' button to download '
+                    'the file for inspection.')
     )
 
     def __str__(self):
