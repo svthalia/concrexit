@@ -2,11 +2,21 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language
 
-from .models import RegistrationInformationField
+from .models import RegistrationInformationField, Event
 
 
 class RegistrationInformationFieldForm(forms.ModelForm):
     order = forms.IntegerField(label=_('order'), initial=0)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            event = self.instance.event
+            order = event.get_registrationinformationfield_order()
+            order_value = list(order).index(self.instance.pk)
+            self.fields['order'].initial = order_value
+        except Event.DoesNotExist:
+            pass
 
     class Meta:
         fields = '__all__'
