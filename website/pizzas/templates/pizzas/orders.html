@@ -3,6 +3,7 @@
 {% load i18n staticfiles %}
 
 {% block title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
 <h1>

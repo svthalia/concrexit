@@ -2,6 +2,7 @@
 {% load i18n bleach_tags %}
 
 {% block title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 
 {% block header_image %}{% spaceless %}
     {% if partner.site_header %}

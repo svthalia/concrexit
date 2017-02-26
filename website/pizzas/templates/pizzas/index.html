@@ -1,7 +1,15 @@
 {% extends "pizzas/base.html" %}
 {% load i18n staticfiles %}
 
-{% block title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
+{% block title %}{% if event %}{{ event.title }} — {% endif %}{% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% if event %}{{ event.title }} — {% endif %}{% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph %}
+    {% if event %}
+    <meta property="og:description" content="{% blocktrans with title=event.title %}Order food for {{ title }}{% endblocktrans %}" />
+    {% else %}
+    <meta property="og:description" content="{% trans "There is no current event for which you can order food" %}" />
+    {% endif %}
+{% endblock %}
 
 {% block header_image_container %}
     {% if event.just_ended %}

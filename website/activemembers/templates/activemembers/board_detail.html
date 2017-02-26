@@ -2,6 +2,7 @@
 {% load i18n thumbnail static %}
 
 {% block title %}{% trans "Board" %} {{ board.since.year }}-{{ board.until.year }} — {% trans "Boards" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Board" %} {{ board.since.year }}-{{ board.until.year }} — {% trans "Boards" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
 <h1>
