@@ -13,12 +13,17 @@ class NewsletterItemInline(admin.StackedInline):
     extra = 0
     ordering = ('_order',)
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        if obj is not None:
+            count = obj.newslettercontent_set.count()
+            formset.form.declared_fields['order'].initial = count
+        return formset
 
-class NewsletterEventInline(admin.StackedInline):
+
+class NewsletterEventInline(NewsletterItemInline):
     form = NewsletterEventForm
     model = NewsletterEvent
-    extra = 0
-    ordering = ('_order',)
 
 
 @admin.register(Newsletter)
