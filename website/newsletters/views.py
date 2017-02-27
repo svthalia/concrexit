@@ -5,7 +5,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template import Context
 from django.template.loader import get_template
 from django.utils import translation
 from django.utils.translation import activate, get_language_info
@@ -76,7 +75,7 @@ def admin_send(request, pk):
 
             subject = '[THALIA] ' + newsletter.title
 
-            context = Context({
+            context = {
                 'newsletter': newsletter,
                 'agenda_events': (
                     newsletter.newslettercontent_set
@@ -86,7 +85,7 @@ def admin_send(request, pk):
                 'main_partner': main_partner,
                 'lang_code': language[0],
                 'request': request
-            })
+            }
 
             html_message = html_template.render(context)
             text_message = text_template.render(context)
