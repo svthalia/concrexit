@@ -37,6 +37,10 @@ class UserCreationForm(forms.ModelForm):
         required=False,
         initial=True)
 
+    def clean(self):
+        self.cleaned_data['username'] = self.cleaned_data['username'].lower()
+        super().clean()
+
     def save(self, commit=True):
         password = User.objects.make_random_password(length=15)
         user = super().save(commit=False)
@@ -66,3 +70,13 @@ class UserCreationForm(forms.ModelForm):
                   'first_name',
                   'last_name',
                   'send_welcome_email')
+
+
+class UserChangeForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        self.cleaned_data['username'] = self.cleaned_data['username'].lower()
+        super().clean()

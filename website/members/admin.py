@@ -5,7 +5,6 @@ import datetime
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as t
 from django.utils.translation import ugettext_lazy as _
@@ -83,12 +82,8 @@ class AgeListFilter(admin.SimpleListFilter):
         return queryset.filter(pk__in=users)
 
 
-class UserCreationForm(BaseUserCreationForm):
-    class Meta(BaseUserCreationForm.Meta):
-        fields = ('username', 'first_name', 'last_name')
-
-
 class UserAdmin(BaseUserAdmin):
+    form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 
     actions = ['address_csv_export']

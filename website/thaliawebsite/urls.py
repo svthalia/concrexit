@@ -32,6 +32,7 @@ import os.path
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
+from django.contrib.auth.views import login
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
@@ -45,6 +46,7 @@ from members.sitemaps import sitemap as members_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from events.sitemaps import sitemap as events_sitemap
+from thaliawebsite.forms import AuthenticationForm
 from utils.views import private_thumbnails, generate_thumbnail
 
 from . import views
@@ -107,6 +109,8 @@ urlpatterns = [
     url(r'^education/', include('education.urls')),
     url(r'^announcements/', include('announcements.urls')),
     # Default login helpers
+    url(r'^login/$', login, {'authentication_form': AuthenticationForm},
+        name='login'),
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     # Sitemap
