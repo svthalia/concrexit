@@ -134,6 +134,9 @@ class Board(Committee):
 
     class Meta:
         ordering = ['-since']
+        permissions = (
+            ('board_wiki', _("Access the board wiki")),
+        )
 
     def get_absolute_url(self):
         return reverse('activemembers:board', args=[str(self.since.year),
