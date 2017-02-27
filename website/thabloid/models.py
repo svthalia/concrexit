@@ -54,29 +54,16 @@ class Thabloid(models.Model):
         return reverse('thabloid:pages', kwargs={'year': self.year,
                                                  'issue': self.issue})
 
-    def save(self, *args, nopages=False, wait=False, **kwargs):
-        super(Thabloid, self).save(*args, **kwargs)
-        src = self.file.path
-
-        # For overwriting already existing files
-        new_name = thabloid_filename(self, self.file.name)
-        new_src = os.path.join(settings.MEDIA_ROOT, new_name)
-        if src != new_src:
-            os.rename(src, new_src)
-            src = new_src
-            self.file.name = new_name
-            self.save()
-
+    def extract_thabloid_pages(self, wait):
         dst = os.path.join(settings.MEDIA_ROOT, self.page_url())
+        name = thabloid_filename(self, self.file.name)
+        src = os.path.join(settings.MEDIA_ROOT, name)
 
         try:
-            shutil.rmtree(os.path.dirname(dst))  # Remove potential remainders
+            # Remove potential remainders
+            shutil.rmtree(os.path.dirname(dst))
         except FileNotFoundError:
             pass
-
-        # Skip if nopages is supplied
-        if nopages:  # pragma: no cover
-            return
 
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         # TODO reconsider if this resolution / quality is sufficient
@@ -88,3 +75,45 @@ class Thabloid(models.Model):
                              )
         if wait:  # pragma: no cover
             p.wait()
+
+    def save(self, *args, wait=False, **kwargs):
+        new_file = False
+
+        if self.pk is None:
+            new_file = True
+        else:
+            old = Thabloid.objects.get(pk=self.pk)
+            old_dir = os.path.join(settings.MEDIA_ROOT, old.page_url())
+            old_dir = os.path.dirname(old_dir)
+
+            if self.file != old.file:
+                new_file = True
+
+            elif self.year != old.year or self.issue != old.issue:
+                self.file.name = thabloid_filename(self, self.file.name)
+
+                new_dir = os.path.join(settings.MEDIA_ROOT, self.page_url())
+                new_dir = os.path.dirname(new_dir)
+                try:
+                    shutil.rmtree(new_dir)
+                except FileNotFoundError:
+                    pass
+
+                os.rename(old_dir, new_dir)
+                os.rename(os.path.join(settings.MEDIA_ROOT, old.file.name),
+                          os.path.join(settings.MEDIA_ROOT, self.file.name))
+
+        if new_file:
+            filename = thabloid_filename(self, self.file.name)
+            src = os.path.join(settings.MEDIA_ROOT, filename)
+
+            # Removes the .pdf file if it already exists
+            try:
+                os.remove(src)
+            except FileNotFoundError:
+                pass
+
+        super(Thabloid, self).save(*args, **kwargs)
+
+        if new_file:
+            self.extract_thabloid_pages(wait)
