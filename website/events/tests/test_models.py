@@ -13,8 +13,9 @@ class EventTest(TestCase):
 
     fixtures = ['members.json']
 
-    def setUp(self):
-        self.event = Event.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.create(
             title_nl='testevene',
             title_en='testevent',
             description_en='desc',
@@ -26,11 +27,16 @@ class EventTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        self.member = Member.objects.all()[0]
+        cls.member = Member.objects.all()[0]
 
-    def test_end_after_start(self):
+    def setUp(self):
+        self.event.refresh_from_db()
+        self.member.refresh_from_db()
+
+    def test_clean_works(self):
         self.event.clean()
 
+    def test_end_after_start(self):
         self.event.start, self.event.end = self.event.end, self.event.start
         with self.assertRaises(ValidationError):
             self.event.clean()
@@ -146,8 +152,7 @@ class EventTest(TestCase):
 
     def test_not_reached_participants_limit(self):
         self.event.max_participants = 1
-        r1 = Registration.objects.create(event=self.event, member=self.member)
-        r1.save()
+        Registration.objects.create(event=self.event, member=self.member)
         self.assertTrue(self.event.reached_participants_limit())
 
 
@@ -156,8 +161,9 @@ class RegistrationTest(TestCase):
 
     fixtures = ['members.json']
 
-    def setUp(self):
-        self.event = Event.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.create(
             title_nl='testevene',
             title_en='testevent',
             description_en='desc',
@@ -169,37 +175,38 @@ class RegistrationTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        self.member = Member.objects.all()[0]
+        cls.member = Member.objects.all()[0]
+        cls.r1 = Registration.objects.create(event=cls.event,
+                                             member=cls.member)
+
+    def setUp(self):
+        self.r1.refresh_from_db()
 
     def test_is_late_registration(self):
-        r1 = Registration.objects.create(event=self.event, member=self.member)
-        self.assertFalse(r1.is_late_cancellation())
+        self.assertFalse(self.r1.is_late_cancellation())
 
-        r1.date_cancelled = timezone.now()
-        self.assertFalse(r1.is_late_cancellation())
+        self.r1.date_cancelled = timezone.now()
+        self.assertFalse(self.r1.is_late_cancellation())
 
         self.event.cancel_deadline = (timezone.now() +
                                       datetime.timedelta(hours=1))
-        self.assertFalse(r1.is_late_cancellation())
+        self.assertFalse(self.r1.is_late_cancellation())
 
         self.event.cancel_deadline = (timezone.now() -
                                       datetime.timedelta(hours=1))
-        self.assertTrue(r1.is_late_cancellation())
+        self.assertTrue(self.r1.is_late_cancellation())
 
     def test_queue_position(self):
-        r1 = Registration.objects.create(event=self.event, member=self.member)
-        r1.save()
-        self.assertEqual(r1.queue_position(), 0)
+        self.assertEqual(self.r1.queue_position(), 0)
 
         self.event.max_participants = 0
-        self.assertEqual(r1.queue_position(), 1)
+        self.assertEqual(self.r1.queue_position(), 1)
 
         self.event.max_participants = 1
-        self.assertEqual(r1.queue_position(), 0)
+        self.assertEqual(self.r1.queue_position(), 0)
 
     def test_registration_either_name_or_member(self):
-        r1 = Registration.objects.create(event=self.event, member=self.member)
-        r1.clean()
+        self.r1.clean()
         r2 = Registration.objects.create(event=self.event, name='test name')
         r2.clean()
         with self.assertRaises(ValidationError):

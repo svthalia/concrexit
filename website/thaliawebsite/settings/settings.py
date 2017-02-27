@@ -151,6 +151,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# allow to use md5 in tests
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+)
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'activemembers.backends.CommitteeBackend',

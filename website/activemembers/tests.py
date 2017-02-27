@@ -11,14 +11,19 @@ from members.models import Member
 class CommitteeMembersTest(TestCase):
     fixtures = ['members.json', 'committees.json']
 
+    @classmethod
+    def setUpTestData(cls):
+        cls.testcie = Committee.objects.get(pk=1)
+        cls.testuser = Member.objects.get(pk=1)
+        cls.m = CommitteeMembership.objects.create(
+            committee=cls.testcie,
+            member=cls.testuser,
+            chair=False)
+
     def setUp(self):
-        # Don't use setUpTestData because delete() will cause problems
-        self.testcie = Committee.objects.get(pk=1)
-        self.testuser = Member.objects.get(pk=1)
-        self.m = CommitteeMembership(committee=self.testcie,
-                                     member=self.testuser,
-                                     chair=False)
-        self.m.save()
+        self.testcie.refresh_from_db()
+        self.testuser.refresh_from_db()
+        self.m.refresh_from_db()
 
     def test_unique(self):
         with self.assertRaises(IntegrityError):
@@ -86,12 +91,16 @@ class CommitteeMembersTest(TestCase):
 class CommitteeMembersChairTest(TestCase):
     fixtures = ['members.json', 'committees.json']
 
+    @classmethod
+    def setUpTestData(cls):
+        cls.testcie = Committee.objects.get(pk=1)
+        cls.testuser = Member.objects.get(pk=1)
+        cls.testuser2 = Member.objects.get(pk=2)
+
     def setUp(self):
-        self.testcie = Committee.objects.get(pk=1)
-        self.testuser = Member.objects.get(pk=1)
-        self.testuser2 = Member.objects.get(pk=2)
         self.m1 = CommitteeMembership(committee=self.testcie,
                                       since=timezone.now().date().replace(
+                                          day=1,
                                           year=1900),
                                       member=self.testuser,
                                       chair=True)
@@ -106,7 +115,7 @@ class CommitteeMembersChairTest(TestCase):
             m.full_clean()
 
     def test_inactive_chair(self):
-        self.m1.until = timezone.now().date().replace(year=1900)
+        self.m1.until = timezone.now().date().replace(day=1, year=1900)
         self.m1.save()
 
         m = CommitteeMembership(committee=self.testcie,

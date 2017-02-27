@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
@@ -60,32 +60,26 @@ class MemberBirthdayTest(TestCase):
 
 
 class StatisticsTest(TestCase):
-    def setUp(self):
 
+    @classmethod
+    def setUpTestData(cls):
         # Add 10 members with default membership
-        for i in range(10):
-            u = User(username=i)
-            u.save()
-            membership = Membership(user=u, type="member")
-            membership.save()
-            m = Member(user=u)
-            m.save()
+        users = [get_user_model()(id=i, username=i) for i in range(10)]
+        get_user_model().objects.bulk_create(users)
+        memberships = [Membership(user_id=i, type="member")
+                       for i in range(10)]
+        Membership.objects.bulk_create(memberships)
+        members = [Member(user_id=i) for i in range(10)]
+        Member.objects.bulk_create(members)
 
     def sum_members(self, members, type=None):
-        s = 0
-        for i in members:
-            if type is None:
-                for j in i.values():
-                    s = s + j
-            else:
-                s = s + i[type]
-        return s
+        if type is None:
+            return sum(sum(i.values()) for i in members)
+        else:
+            return sum(map(lambda x: x[type], members))
 
     def sum_member_types(self, members):
-        s = 0
-        for i in members.values():
-            s = s + i
-        return s
+        return sum(members.values())
 
     def test_gen_stats_year_no_members(self):
         member_types = ["member", "supporter", "honorary"]
