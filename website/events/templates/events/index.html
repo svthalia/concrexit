@@ -3,6 +3,7 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block css_head %}
     {{ block.super }}

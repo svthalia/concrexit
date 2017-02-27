@@ -2,6 +2,7 @@
 {% load staticfiles i18n thumbnail shared_thumbnail compress %}
 
 {% block title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 
 {% block css_head %}
     {{ block.super }}

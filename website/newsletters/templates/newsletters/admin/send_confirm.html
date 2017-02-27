@@ -2,6 +2,7 @@
 {% load i18n admin_urls static admin_modify %}
 
 {% block title %}{{ newsletter.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
+{% block opengraph_title %}{{ newsletter.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
 
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Thalia administration') }}</a></h1>

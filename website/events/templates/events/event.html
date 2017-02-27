@@ -2,6 +2,11 @@
 {% load i18n static bleach_tags thumbnail %}
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block opengraph %}
+<meta property="og:description" content="{{ event.description|striptags|truncatewords:10 }}" />
+{% endblock %}
 
 {% block body %}
     <h1>{{ event.title }}</h1>

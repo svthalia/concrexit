@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{{ course.name }} — {% trans "Course" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ course.name }} — {% trans "Course" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
     <h1>{{ course.name }}</h1>

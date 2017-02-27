@@ -2,6 +2,7 @@
 {% load i18n admin_urls static admin_modify %}
 
 {% block title %}{{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
+{% block opengraph_title %}{{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
 
 {% block extrastyle %}
     {{ block.super }}
