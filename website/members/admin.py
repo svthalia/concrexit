@@ -20,6 +20,15 @@ class MembershipInline(admin.StackedInline):
 
 
 class MemberInline(admin.StackedInline):
+    fields = ('starting_year', 'programme', 'address_street',
+              'address_street2', 'address_postal_code', 'address_city',
+              'student_number', 'phone_number', 'receive_optin',
+              'receive_newsletter', 'birthday', 'show_birthday',
+              'direct_debit_authorized', 'bank_account', 'initials',
+              'nickname', 'display_name_preference', 'profile_description',
+              'website', 'photo', 'emergency_contact',
+              'emergency_contact_phone_number', 'language',
+              'event_permissions')
     model = models.Member
     can_delete = False
 
