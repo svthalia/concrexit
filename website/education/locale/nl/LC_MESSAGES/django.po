@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-23 21:49+0100\n"
-"PO-Revision-Date: 2016-11-23 21:54+0100\n"
+"POT-Creation-Date: 2017-02-25 19:52+0100\n"
+"PO-Revision-Date: 2017-02-25 19:53+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.12\n"
 
 #: education/admin.py:30
 msgid "Mark exams as accepted"
@@ -54,7 +54,7 @@ msgstr "EC"
 msgid "period"
 msgstr "periode"
 
-#: education/models.py:77 education/models.py:126 education/models.py:174
+#: education/models.py:77 education/models.py:127 education/models.py:175
 msgid "course"
 msgstr "vak"
 
@@ -82,47 +82,51 @@ msgstr "Hertentamen"
 msgid "Practice Exam"
 msgstr "Oefententamen"
 
-#: education/models.py:92
+#: education/models.py:88
+msgid "Exam Answers"
+msgstr "Antwoorden tentamen"
+
+#: education/models.py:93
 msgid "exam type"
 msgstr "type tentamen"
 
-#: education/models.py:97
+#: education/models.py:98
 msgid "exam name"
 msgstr "naam tentamen"
 
-#: education/models.py:103 education/models.py:157
+#: education/models.py:104 education/models.py:158
 msgid "uploader"
 msgstr "uploader"
 
-#: education/models.py:112 education/models.py:179
+#: education/models.py:113 education/models.py:180
 msgid "accepted"
 msgstr "geaccepteerd"
 
-#: education/models.py:117
+#: education/models.py:118
 msgid "exam date"
 msgstr "tentamendatum"
 
-#: education/models.py:145
+#: education/models.py:146
 msgid "exam"
 msgstr "tentamen"
 
-#: education/models.py:146
+#: education/models.py:147
 msgid "exams"
 msgstr "tentamens"
 
-#: education/models.py:152
+#: education/models.py:153
 msgid "summary name"
 msgstr "naam samenvatting"
 
-#: education/models.py:169
+#: education/models.py:170
 msgid "author"
 msgstr "auteur"
 
-#: education/models.py:195
+#: education/models.py:196
 msgid "summary"
 msgstr "samenvatting"
 
-#: education/models.py:196
+#: education/models.py:197
 msgid "summaries"
 msgstr "samenvattingen"
 
@@ -356,9 +360,3 @@ msgstr ""
 #: education/views.py:30
 msgid "Summary"
 msgstr "Samenvatting"
-
-#~ msgid "Mark exams as unaccepted"
-#~ msgstr "Mark tentamens als niet geaccepteerd"
-
-#~ msgid "Mark summaries as unaccepted"
-#~ msgstr "Mark samenvattingen als niet geaccepteerd"
