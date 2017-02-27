@@ -4974,6 +4974,26 @@ ul.rslides > li {
     transition: all 0.2s ease-in-out;
 }
 
+.event-indication-no-registration, .event-indication-has-registration {
+    float: right;
+    position: absolute;
+    right: 24px;
+    top: calc(50% - 5px);
+    border-radius: 10px;
+    width: 10px;
+    height: 10px;
+}
+
+.event-indication-has-registration {
+    background: #468847;
+    box-shadow: 0 0 5px #468847;
+}
+
+.event-indication-no-registration {
+    background: #d9534f;
+    box-shadow: 0 0 5px #d9534f;
+}
+
 .loginForm {
     text-align: center;
 }

@@ -39,6 +39,11 @@ ListView = View.extend({ // make a subclass of View
                     li.append('<div class="toggle-content">' + e.description + '<br><br><a href="' + e.url + '">> Naar de evenementpagina</a></div>');
                 }
             }
+            if (e.registered) {
+                li.append('<div class="event-indication-has-registration"></div>');
+            } else if (e.registered !== null) {
+                li.append('<div class="event-indication-no-registration"></div>');
+            }
             ul.append(li);
         }
         // This originates from theme_thimbus/themes/thimbus/assets/js/scripts_dev.js,

@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework import serializers
 
-from events.models import Event
+from events.models import Event, Registration
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
@@ -10,7 +10,8 @@ class CalenderJSSerializer(serializers.ModelSerializer):
         fields = (
             'start', 'end', 'all_day', 'is_birthday',
             'url', 'title', 'description',
-            'backgroundColor', 'textColor', 'blank'
+            'backgroundColor', 'textColor', 'blank',
+            'registered'
         )
 
     start = serializers.SerializerMethodField('_start')
@@ -23,6 +24,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     backgroundColor = serializers.SerializerMethodField('_background_color')
     textColor = serializers.SerializerMethodField('_text_color')
     blank = serializers.SerializerMethodField('_target_blank')
+    registered = serializers.SerializerMethodField('_registered')
 
     def _start(self, instance):
         return timezone.localtime(instance.start)
@@ -54,6 +56,9 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     def _target_blank(self, instance):
         return False
 
+    def _registered(self, instance):
+        return None
+
 
 class EventSerializer(CalenderJSSerializer):
     class Meta(CalenderJSSerializer.Meta):
@@ -61,3 +66,20 @@ class EventSerializer(CalenderJSSerializer):
 
     def _url(self, instance):
         return reverse('events:event', kwargs={'event_id': instance.id})
+
+    def _registered(self, instance):
+        try:
+            if not self.context['user'].member:
+                return None
+        except AttributeError:
+            return None
+
+        try:
+            registration = Registration.objects.get(
+                event=instance,
+                member=self.context['user'].member
+            )
+        except (Registration.DoesNotExist, AttributeError):
+            return False
+
+        return registration.is_registered()
