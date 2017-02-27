@@ -7,6 +7,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Album, Photo
 
@@ -29,8 +30,8 @@ class AlbumForm(forms.ModelForm):
 
     album_archive = forms.FileField(
         required=False,
-        help_text="Uploading a zip or tar file adds all contained images as "
-                  "photos.",
+        help_text=_("Uploading a zip or tar file adds all contained images as "
+                    "photos."),
         validators=[validate_uploaded_archive]
     )
 
@@ -60,7 +61,7 @@ def save_photo(request, archive_file, photo, album):
             photo_obj.file.save(photo_filename, ContentFile(f.read()))
     except (OSError, AttributeError):
         messages.add_message(request, messages.WARNING,
-                             "Ignoring {}".format(photo_filename))
+                             _("Ignoring {}").format(photo_filename))
     else:
         photo_obj.save()
 
@@ -90,20 +91,20 @@ class AlbumAdmin(admin.ModelAdmin):
                     for photo in tar_file.getmembers():
                         save_photo(request, tar_file, photo, obj)
             except tarfile.ReadError:
-                raise ValueError("The uploaded file is not a zip or tar "
-                                 "file.")
+                raise ValueError(_("The uploaded file is not a zip or tar "
+                                 "file."))
 
         messages.add_message(request, messages.WARNING,
-                             "Full-sized photos will not be saved on the "
-                             "Thalia-website.")
+                             _("Full-sized photos will not be saved "
+                               "on the Thalia-website."))
 
 
 class PhotoAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.save()
         messages.add_message(request, messages.WARNING,
-                             "Full-sized photos will not be saved on the "
-                             "Thalia-website.")
+                             _("Full-sized photos will not be saved "
+                               "on the Thalia-website."))
 
 admin.site.register(Album, AlbumAdmin)
 admin.site.register(Photo, PhotoAdmin)
