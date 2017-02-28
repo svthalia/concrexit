@@ -12,8 +12,9 @@ class RegistrationTest(TestCase):
 
     fixtures = ['members.json']
 
-    def setUp(self):
-        self.event = Event.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.create(
             pk=1,
             title_nl='testevene',
             title_en='testevent',
@@ -27,8 +28,9 @@ class RegistrationTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        self.event.save()
-        self.member = Member.objects.filter(user__last_name="Wiggers").first()
+        cls.member = Member.objects.filter(user__last_name="Wiggers").first()
+
+    def setUp(self):
         self.client = Client()
         self.client.force_login(self.member.user)
 
@@ -90,8 +92,7 @@ class RegistrationTest(TestCase):
         self.event.cancel_deadline = (timezone.now() +
                                       datetime.timedelta(hours=1))
         self.event.save()
-        r1 = Registration.objects.create(event=self.event, member=self.member)
-        r1.save()
+        Registration.objects.create(event=self.event, member=self.member)
         response = self.client.post('/events/1/registration/cancel/',
                                     follow=True)
         self.assertEqual(response.status_code, 200)
@@ -113,7 +114,6 @@ class RegistrationTest(TestCase):
             name_en="test bool",
             name_nl="test bool",
             required=False)
-        field1.save()
 
         field2 = RegistrationInformationField.objects.create(
             pk=2,
@@ -122,7 +122,6 @@ class RegistrationTest(TestCase):
             name_en="test int",
             name_nl="test int",
             required=False)
-        field2.save()
 
         field3 = RegistrationInformationField.objects.create(
             pk=3,
@@ -131,7 +130,6 @@ class RegistrationTest(TestCase):
             name_en="test text",
             name_nl="test text",
             required=False)
-        field3.save()
 
         response = self.client.post('/events/1/registration/register/',
                                     {'info_field_1': True,
@@ -155,13 +153,12 @@ class RegistrationTest(TestCase):
                                       datetime.timedelta(hours=1))
         self.event.save()
 
-        field = RegistrationInformationField.objects.create(
+        RegistrationInformationField.objects.create(
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test",
             name_nl="test",
             required=True)
-        field.save()
 
         response = self.client.post('/events/1/registration/register/',
                                     follow=True)

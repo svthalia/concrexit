@@ -22,33 +22,35 @@ def load_tests(loader, tests, ignore):
 
 
 class NewslettersTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='jacob',
-                                             email='jacob@test.com',
-                                             password='top_secret',
-                                             is_staff=True)
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='jacob',
+                                            email='jacob@test.com',
+                                            password='top_secret',
+                                            is_staff=True)
 
-        self.user.user_permissions.set(
+        cls.user.user_permissions.set(
             Permission.objects.filter(content_type__app_label="newsletters")
         )
 
-        self.user.backend = 'django.contrib.auth.backends.ModelBackend'
-        self.user.save()
+        cls.user.backend = 'django.contrib.auth.backends.ModelBackend'
+        cls.user.save()
 
-        self.client.force_login(self.user)
-
-        self.testletter_sent = Newsletter.objects.create(
+        cls.testletter_sent = Newsletter.objects.create(
             title_nl='testletter',
             title_en='testletter',
             description_nl='testdesc',
             description_en='testdesc',
             sent=True)
-        self.testletter_concept = Newsletter.objects.create(
+        cls.testletter_concept = Newsletter.objects.create(
             title_nl='testletter',
             title_en='testletter',
             description_nl='testdesc',
             description_en='testdesc',
             sent=False)
+
+    def setUp(self):
+        self.client.force_login(self.user)
 
     def test_sent_change_redirect(self):
         response = self.client.get(reverse(

@@ -25,19 +25,20 @@ class RaaSTestCase(SimpleTestCase):
 class AppApiTestCase(TestCase):
     """Tests event registrations"""
 
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(
             username='testuser',
             first_name='first',
             last_name='last_name',
             email='foo@bar.com',
             password='top secret')
-        self.member = Member.objects.create(
-            user=self.user,
+        cls.member = Member.objects.create(
+            user=cls.user,
             birthday=datetime(1993, 3, 2)
         )
 
-        self.token = Token.create_token(self.user)
+        cls.token = Token.create_token(cls.user)
 
     def test_GET_denied(self):
         response = self.client.get('/api/login')
