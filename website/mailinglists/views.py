@@ -41,6 +41,7 @@ def index(request):
     elif 'custom' in request.GET:
         if request.GET['custom'] == 'commissievoorzitters':
             memberships = (CommitteeMembership.active_memberships
+                           .filter(committee_board=False)
                            .filter(chair=True)
                            .prefetch_related('member__user'))
             members = [x.member for x in memberships]
