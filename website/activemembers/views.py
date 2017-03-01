@@ -39,7 +39,8 @@ def committee_detail(request, id):
 
 def board_index(request):
     current_year = datetime_to_lectureyear(datetime.date.today())
-    board = get_object_or_404(Board, since__year=current_year, until__year=current_year+1)
+    board = get_object_or_404(
+        Board, since__year=current_year, until__year=current_year+1)
     old_boards = Board.objects.all().exclude(pk=board.pk)
     return render(request,
                   'activemembers/board_index.html',
@@ -70,4 +71,3 @@ def board_detail(request, since, until=None):
     return render(request, 'activemembers/board_detail.html',
                   {'board': board,
                    'members': members})
-
