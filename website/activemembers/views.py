@@ -71,10 +71,3 @@ def board_detail(request, since, until=None):
                   {'board': board,
                    'members': members})
 
-
-def current_board(request):
-    try:
-        board = Board.objects.order_by('-since')[0]
-    except IndexError:
-        return redirect(reverse('activemembers:boards'))
-    return redirect(board.get_absolute_url())

@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'^boards/$', views.board_index, name='boards'),
     url(r'^board/(?P<since>\d{4})$', views.board_detail, name='board'),
     url(r'^board/(?P<since>\d{4})-(?P<until>\d{4})$', views.board_detail, name='board'),
-    url(r'^board$', views.current_board, name='current-board'),
+    url(r'^board$', views.board_index, name='current-board'),
 ]
