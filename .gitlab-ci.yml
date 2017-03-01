@@ -1,8 +1,3 @@
-stages:
-  - initial_testing
-  - django11
-  - docs
-
 variables:
   POSTGRES_DB: thalia
   POSTGRES_USER: postgres
@@ -10,8 +5,7 @@ variables:
   CI_DEPS: psycopg2
 
 pep8:
-  stage: initial_testing
-  image: python:3.4
+  image: python:3.5
   before_script:
     - export PIP_CACHE_DIR="pip-cache"
     - pip install tox
@@ -33,48 +27,21 @@ pep8:
     - cd website
     - coverage report
 
-python34-django10:
-  <<: *djangotest
-  stage: initial_testing
-  image: python:3.4
-  variables:
-    PYTHON_VERSION: py34
-    DJANGO_VERSION: django10
-
 python35-django10:
   <<: *djangotest
   image: python:3.5
-  stage: initial_testing
   variables:
     PYTHON_VERSION: py35
     DJANGO_VERSION: django10
 
-python34-django11:
-  <<: *djangotest
-  stage: django11
-  image: python:3.4
-  variables:
-    PYTHON_VERSION: py34
-    DJANGO_VERSION: django11
-
 python35-django11:
   <<: *djangotest
-  stage: django11
   image: python:3.5
   variables:
     PYTHON_VERSION: py35
     DJANGO_VERSION: django11
 
-python36-django11:
-  <<: *djangotest
-  stage: django11
-  image: python:3.6
-  variables:
-    PYTHON_VERSION: py36
-    DJANGO_VERSION: django11
-
 docs:
-  stage: docs
   image: python:3.5
   before_script:
     # install django deps
