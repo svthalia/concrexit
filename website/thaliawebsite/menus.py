@@ -5,7 +5,6 @@ main = [
     {'title': _('Association'), 'name': 'association', 'submenu': [
         {'title': _('Board'), 'name': 'activemembers:current-board'},
         {'title': _('Committees'), 'name': 'activemembers:committees'},
-        {'title': _('Members'), 'name': 'members:index'},
         {'title': _('Documents'), 'name': 'documents:index'},
         {'title': _('Merchandise'), 'name': 'merchandise:index'},
         {'title': _('Sister Associations'), 'name': 'sister-associations'},
@@ -14,6 +13,7 @@ main = [
     ]},
     {'title': _('For Members'), 'name': 'for-members', 'authenticated': True,
         'submenu': [
+        {'title': _('Member list'), 'name': 'members:index'},
         {'title': _('Photos'), 'name': 'photos:index'},
         {'title': _('Statistics'), 'name': 'statistics'},
         {'title': _('Styleguide'), 'name': 'styleguide'},

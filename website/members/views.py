@@ -13,6 +13,7 @@ from . import models
 from .forms import MemberForm
 
 
+@login_required
 def index(request):
     query_filter = '' if request.GET.get(
         'filter') is None else request.GET.get('filter')
