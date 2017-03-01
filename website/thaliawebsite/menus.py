@@ -13,7 +13,7 @@ main = [
     ]},
     {'title': _('For Members'), 'name': 'for-members', 'authenticated': True,
         'submenu': [
-        {'title': _('Members'), 'name': 'members:index'},
+        {'title': _('Member list'), 'name': 'members:index'},
         {'title': _('Photos'), 'name': 'photos:index'},
         {'title': _('Statistics'), 'name': 'statistics'},
         {'title': _('Styleguide'), 'name': 'styleguide'},
