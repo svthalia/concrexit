@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'tinymce',
     'django_template_check',  # This is only necessary in development
     'rest_framework',
+    'rest_framework.authtoken',
     'compressor',
     'corsheaders',
     # Our apps
