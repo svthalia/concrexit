@@ -183,11 +183,6 @@ msgstr ""
 "schermen. Bij vragen en opmerkingen kun je ze altijd persoonlijk aanspreken "
 "of <a href=\"mailto:info@thalia.nu\">mailen</a>."
 
-#: templates/activemembers/board_index.html:27
-#, fuzzy
-#| msgid "Boards"
-msgid "Old boards"
-msgstr "Oude besturen"
 
 #: templates/activemembers/board_index.html:37
 #: templates/activemembers/committee_detail.html:18
