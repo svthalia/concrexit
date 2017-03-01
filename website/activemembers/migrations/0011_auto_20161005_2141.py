@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name='Mentorship',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.IntegerField(validators=django.core.validators.MinValueValidator(1990))),
+                ('year', models.IntegerField(validators=[django.core.validators.MinValueValidator(1990)])),
                 ('member', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='members.Member', verbose_name='Member')),
             ],
         ),

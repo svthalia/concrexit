@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.mail import EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template import Context
 from django.template.loader import get_template
 from django.utils import timezone, translation
 from django.utils.text import slugify
@@ -249,11 +248,11 @@ def registration(request, event_id, action=None):
                         subject = _("[THALIA] Notification about your "
                                     "registration for '{}'").format(
                                         event.title)
-                        text_message = text_template.render(Context({
+                        text_message = text_template.render({
                             'event': event,
                             'registration': first_waiting,
                             'member': first_waiting_member
-                        }))
+                        })
 
                         waiting_list_notification = EmailMessage(
                             subject,
