@@ -19,60 +19,78 @@
 
 <p>
     {% blocktrans trimmed %}
-    Thalia uses a palette of three colours. Each colour can be used as background, foreground and accent colour. We've established guidelines on how to use which colour in which situation.
+    Thalia uses a palette of three colours. Each colour can be used as background, foreground and accent colour.
     {% endblocktrans %}
 </p>
 
-<h3>{% trans "black"|capfirst %}</h3>
+<div class="row">
+    <div class='span4'>
+        <h3>{% trans "black"|capfirst %}</h3>
+
+        <p>
+            {% trans "Hexadecimal" %}: #000000<br />
+            {% trans "RGB" %}: 0 / 0 / 0<br />
+            {% trans "CMYK" %}: 91 / 79 / 62 / 92
+        </p>
+    </div>
+
+    <div class='span4'>
+        <h3>{% trans "white"|capfirst %}</h3>
+
+        <p>
+            {% trans "Hexadecimal" %}: #FFFFFF<br />
+            {% trans "RGB" %}: 255 / 255 / 255<br />
+            {% trans "CMYK" %}: 0 / 0 / 0 / 0
+        </p>
+    </div>
+
+    <div class='span4'>
+        <h3>{% trans "magenta"|capfirst %}</h3>
+
+        <p>
+            {% trans "Hexadecimal" %}: #E62272<br />
+            {% trans "RGB" %}: 230 / 34 / 114<br />
+            {% trans "CMYK" %}: 0 / 94 / 21 / 0
+        </p>
+    </div>
+</div>
 
 <p>
-    {% trans "Hexadecimal" %}: #000000<br />
-    {% trans "RGB" %}: 0 / 0 / 0<br />
-    {% trans "CMYK" %}: 91 / 79 / 62 / 92
+    {% blocktrans trimmed %}
+    We've established guidelines on how to use which colour in which situation.
+    {% endblocktrans %}
 </p>
+<div class="row">
+    <div class='span4'>
+        <h3>{% trans "Option" %} 1</h3>
 
-<h3>{% trans "white"|capfirst %}</h3>
+        <p>
+            {% trans "Background" %}: {% trans "white" %}<br />
+            {% trans "Foreground" %}: {% trans "black" %}<br />
+            {% trans "Accent" %}: {% trans "magenta" %}
+        </p>
+    </div>
 
-<p>
-    {% trans "Hexadecimal" %}: #FFFFFF<br />
-    {% trans "RGB" %}: 255 / 255 / 255<br />
-    {% trans "CMYK" %}: 0 / 0 / 0 / 0
-</p>
+    <div class='span4'>
+        <h3>{% trans "Option" %} 2</h3>
 
-<h3>{% trans "magenta"|capfirst %}</h3>
+        <p>
+            {% trans "Background" %}: {% trans "black" %}<br />
+            {% trans "Foreground" %}: {% trans "white" %}<br />
+            {% trans "Accent" %}: {% trans "magenta" %}
+        </p>
+    </div>
 
-<p>
-    {% trans "Hexadecimal" %}: #E62272<br />
-    {% trans "RGB" %}: 230 / 34 / 114<br />
-    {% trans "CMYK" %}: 0 / 94 / 21 / 0
-</p>
+    <div class='span4'>
+        <h3>{% trans "Option" %} 3</h3>
 
-<h2>{% trans "Guidelines" %}</h2>
-
-<h3>{% trans "Option" %} 1</h3>
-
-<p>
-    {% trans "Background" %}: {% trans "white" %}<br />
-    {% trans "Foreground" %}: {% trans "black" %}<br />
-    {% trans "Accent" %}: {% trans "magenta" %}
-</p>
-
-<h3>{% trans "Option" %} 2</h3>
-
-<p>
-    {% trans "Background" %}: {% trans "black" %}<br />
-    {% trans "Foreground" %}: {% trans "white" %}<br />
-    {% trans "Accent" %}: {% trans "magenta" %}
-</p>
-
-<h3>{% trans "Option" %} 3</h3>
-
-<p>
-    {% trans "Background" %}: {% trans "magenta" %}<br />
-    {% trans "Foreground" %}: {% trans "white" %}<br />
-    {% trans "Accent" %}: {% trans "black" %}
-</p>
-
+        <p>
+            {% trans "Background" %}: {% trans "magenta" %}<br />
+            {% trans "Foreground" %}: {% trans "white" %}<br />
+            {% trans "Accent" %}: {% trans "black" %}
+        </p>
+    </div>
+</div>
 <h1>{% trans "Logo" %}</h1>
 
 <h2>Basis</h2>
