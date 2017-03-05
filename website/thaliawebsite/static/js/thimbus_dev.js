@@ -827,8 +827,8 @@ jQuery(document).ready(function() {
 
 jQuery(document).ready(function() {
     $('.member-item img').on('error', function(e) {
-        if (e.target.src.indexOf('gravatarmissing.png') == -1) {
-            e.target.src = '/static/images/gravatarmissing.png';
+        if (e.target.src.indexOf('gravatarmissing.jpeg') == -1) {
+            e.target.src = '/static/images/gravatarmissing.jpeg';
         }
     });
 });
