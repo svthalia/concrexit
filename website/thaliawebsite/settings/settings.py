@@ -163,6 +163,12 @@ AUTHENTICATION_BACKENDS = [
     'activemembers.backends.CommitteeBackend',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
