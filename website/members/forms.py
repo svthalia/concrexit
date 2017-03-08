@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
+from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.template import loader
 from django.utils import translation
 from django.utils.translation import ugettext
@@ -22,7 +24,7 @@ class MemberForm(forms.ModelForm):
         model = Member
 
 
-class UserCreationForm(forms.ModelForm):
+class UserCreationForm(BaseUserCreationForm):
     # Don't forget to edit the formset in admin.py!
     # This is a stupid quirk of the user admin.
 
@@ -72,7 +74,7 @@ class UserCreationForm(forms.ModelForm):
                   'send_welcome_email')
 
 
-class UserChangeForm(forms.ModelForm):
+class UserChangeForm(BaseUserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
