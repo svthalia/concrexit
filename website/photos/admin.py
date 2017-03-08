@@ -67,6 +67,12 @@ def save_photo(request, archive_file, photo, album):
     else:
         photo_obj.save()
 
+        if Photo.objects.filter(album=album, _digest=photo_obj._digest)\
+                        .exclude(pk=photo_obj.pk).exists():
+            messages.add_message(request, messages.WARNING,
+                                 "{} is duplicate.".format(photo_filename))
+            photo_obj.delete()
+
 
 class AlbumAdmin(admin.ModelAdmin):
     list_display = ('title', 'date', 'hidden', 'shareable')

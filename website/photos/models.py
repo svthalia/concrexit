@@ -40,6 +40,11 @@ class Photo(models.Model):
         default=False
     )
 
+    _digest = models.CharField(
+        'digest',
+        max_length=40,
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.file:
@@ -60,6 +65,11 @@ class Photo(models.Model):
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
             image.save(image_path, "JPEG")
             self._orig_file = self.file.path
+
+            hash_sha1 = hashlib.sha1()
+            for chunk in iter(lambda: self.file.read(4096), b""):
+                hash_sha1.update(chunk)
+            self._digest = hash_sha1.hexdigest()
 
     class Meta:
         ordering = ('file', )
