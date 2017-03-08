@@ -1,4 +1,4 @@
-{% load i18n static menu compress %}
+{% load i18n static menu compress pick_header_image %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <!--[if IE 9]><html dir="ltr" lang="{{ LANGUAGE_CODE }}"  class="lt-ie10"> <![endif]-->
@@ -142,7 +142,7 @@
             {% block header_image_container %}
             <div
                 class="header-image container"
-                style="background-image: url('{% block header_image %}{% static "images/header_default.jpg" %}{% endblock header_image%}')">
+                style="background-image: url('{% block header_image %}{% pick_header_image %}{% endblock header_image%}')">
             </div>
             {% endblock header_image_container %}
             </div>
