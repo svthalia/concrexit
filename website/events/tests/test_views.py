@@ -162,6 +162,7 @@ class RegistrationTest(TestCase):
 
         response = self.client.post('/events/1/registration/register/',
                                     follow=True)
+
         self.assertEqual(response.status_code, 200)
         template_names = [template.name for template in response.templates]
         self.assertIn('events/event_fields.html', template_names)

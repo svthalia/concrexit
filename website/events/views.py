@@ -173,6 +173,115 @@ def event(request, event_id):
     return render(request, 'events/event.html', context)
 
 
+def _send_queue_mail(event):
+    if (event.max_participants is not None and
+                Registration.objects
+                    .filter(event=event, date_cancelled=None)
+                    .count() > event.max_participants):
+        # Prepare email to send to the first person on the waiting
+        # list
+        first_waiting = (Registration.objects
+                         .filter(event=event, date_cancelled=None)
+                         .order_by('date')[event.max_participants])
+        first_waiting_member = first_waiting.member
+
+        text_template = get_template('events/email.txt')
+
+        with translation.override(first_waiting_member.language):
+            subject = _("[THALIA] Notification about your "
+                        "reg for '{}'").format(
+                event.title)
+            text_message = text_template.render({
+                'event': event,
+                'reg': first_waiting,
+                'member': first_waiting_member
+            })
+
+            EmailMessage(
+                subject,
+                text_message,
+                to=[first_waiting_member.user.email]
+            ).send()
+
+
+def _show_registration_fields(request, event, reg, action):
+    form = FieldsForm(registration=reg)
+    if request.POST:
+        form = FieldsForm(request.POST, registration=reg)
+        if form.is_valid():
+            reg.save()
+            form_field_values = form.field_values()
+            for field in form_field_values:
+                if (field['field'].type ==
+                        RegistrationInformationField.INTEGER_FIELD and
+                            field['value'] is None):
+                    field['value'] = 0
+                field['field'].set_value_for(reg,
+                                             field['value'])
+
+    return render(request, 'events/event_fields.html',
+                  {'event': event, 'form': form, 'action': action})
+
+
+def _registration_register(request, event, reg):
+    if reg is None:
+        reg = Registration()
+        reg.event = event
+        reg.member = request.user.member
+        if event.has_fields():
+            return _show_registration_fields(request, event, reg, 'register')
+        else:
+            reg.save()
+            messages.success(request, _("Registration successful."))
+    elif reg.date_cancelled is not None:
+        if reg.is_late_cancellation():
+            messages.error(request, _("You cannot re-register anymore since "
+                                      "you've cancelled after the deadline."))
+        else:
+            reg.date = timezone.now()
+            reg.date_cancelled = None
+            if event.has_fields():
+                return _show_registration_fields(request, event, reg,
+                                                 'register')
+            else:
+                reg.save()
+                messages.success(request, _("Registration successful."))
+    elif not reg.member.can_attend_events:
+        messages.error(request, _("You may not register"))
+    else:
+        messages.error(request, _("You were already registered."))
+
+    return redirect(event)
+
+
+def _registration_update(request, event, reg):
+    if not event.has_fields():
+        return redirect(event)
+    if reg is None:
+        messages.error(request, _("You are not registered for this event."))
+        return redirect(event)
+
+    return _show_registration_fields(request, event, reg, 'update')
+
+
+def _registration_cancel(request, event, reg):
+    if reg is None or reg.date_cancelled is not None:
+        messages.error(request, _("You are not registered for this event."))
+    else:
+        # Note that this doesn't remove the values for the
+        # information fields that the user entered upon registering.
+        # But this is regarded as a feature, not a bug. Especially
+        # since the values will still appear in the backend.
+        reg.date_cancelled = timezone.now()
+        reg.save()
+
+        _send_queue_mail(event)
+
+        messages.success(request, _("Registration successfully cancelled."))
+
+    return redirect(event)
+
+
 @login_required
 def registration(request, event_id, action=None):
     event = get_object_or_404(
@@ -184,117 +293,25 @@ def registration(request, event_id, action=None):
             request.user.member.current_membership is not None and
             request.user.member.can_attend_events):
         try:
-            obj = Registration.objects.get(
+            reg = Registration.objects.get(
                 event=event,
                 member=request.user.member
             )
         except Registration.DoesNotExist:
-            obj = None
+            reg = None
 
-        success_message = None
-        error_message = None
-        show_fields = False
-        waiting_list_notification = None
-        if action == 'register' and (
-            event.status == Event.REGISTRATION_OPEN or
-            event.status == Event.REGISTRATION_OPEN_NO_CANCEL
-        ):
-            if obj is None:
-                obj = Registration()
-                obj.event = event
-                obj.member = request.user.member
-            elif obj.date_cancelled is not None:
-                if obj.is_late_cancellation():
-                    error_message = _("You cannot re-register anymore since "
-                                      "you've cancelled after the deadline.")
-                else:
-                    obj.date = timezone.now()
-                    obj.date_cancelled = None
-            elif not obj.member.can_attend_events:
-                error_message = _("You may not register")
-            else:
-                error_message = _("You were already registered.")
-
-            if error_message is None:
-                success_message = _("Registration successful.")
-                if event.has_fields():
-                    show_fields = True
-                else:
-                    obj.save()
-        elif (action == 'update' and
-              event.has_fields() and
-              obj is not None and
-              (event.status == Event.REGISTRATION_OPEN or
-               event.status == Event.REGISTRATION_OPEN_NO_CANCEL)):
-            show_fields = True
-            success_message = _("Registration successfully updated.")
-        elif action == 'cancel':
-            if (obj is not None and
-                    obj.date_cancelled is None):
-                if (event.max_participants is not None and
-                    Registration.objects
-                        .filter(event=event, date_cancelled=None)
-                        .count() > event.max_participants):
-                    # Prepare email to send to the first person on the waiting
-                    # list
-                    first_waiting = (Registration.objects
-                                     .filter(event=event, date_cancelled=None)
-                                     .order_by('date')[event.max_participants])
-                    first_waiting_member = first_waiting.member
-
-                    text_template = get_template('events/email.txt')
-
-                    with translation.override(first_waiting_member.language):
-                        subject = _("[THALIA] Notification about your "
-                                    "registration for '{}'").format(
-                                        event.title)
-                        text_message = text_template.render({
-                            'event': event,
-                            'registration': first_waiting,
-                            'member': first_waiting_member
-                        })
-
-                        waiting_list_notification = EmailMessage(
-                            subject,
-                            text_message,
-                            to=[first_waiting_member.user.email]
-                        )
-
-                # Note that this doesn't remove the values for the
-                # information fields that the user entered upon registering.
-                # But this is regarded as a feature, not a bug. Especially
-                # since the values will still appear in the backend.
-                obj.date_cancelled = timezone.now()
-                obj.save()
-                success_message = _("Registration successfully cancelled.")
-            else:
-                error_message = _("You were not registered for this event.")
-
-        if show_fields:
-            if request.POST:
-                form = FieldsForm(request.POST, registration=obj)
-                if form.is_valid():
-                    obj.save()
-                    form_field_values = form.field_values()
-                    for field in form_field_values:
-                        if (field['field'].type ==
-                                RegistrationInformationField.INTEGER_FIELD and
-                                field['value'] is None):
-                            field['value'] = 0
-                        field['field'].set_value_for(obj,
-                                                     field['value'])
-            else:
-                form = FieldsForm(registration=obj)
-                context = {'event': event, 'form': form, 'action': action}
-                return render(request, 'events/event_fields.html', context)
-
-        if success_message is not None:
-            messages.success(request, success_message)
-        elif error_message is not None:
-            messages.error(request, error_message)
-
-        if waiting_list_notification is not None:
-            waiting_list_notification.send()
+        if request.POST:
+            if action == 'register' and (
+                event.status == Event.REGISTRATION_OPEN or
+                event.status == Event.REGISTRATION_OPEN_NO_CANCEL
+            ):
+                _registration_register(request, event, reg)
+            elif (action == 'update' and
+                  (event.status == Event.REGISTRATION_OPEN or
+                   event.status == Event.REGISTRATION_OPEN_NO_CANCEL)):
+                _registration_update(request, event, reg)
+            elif action == 'cancel':
+                _registration_cancel(request, event, reg)
 
     return redirect(event)
 
