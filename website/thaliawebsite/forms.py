@@ -7,5 +7,7 @@ class AuthenticationForm(BaseAuthenticationForm):
         super(AuthenticationForm, self).__init__(request, *args, **kwargs)
 
     def clean(self):
-        self.cleaned_data['username'] = self.cleaned_data['username'].lower()
+        if 'username' in self.cleaned_data:
+            self.cleaned_data['username'] = (self.cleaned_data['username']
+                                             .lower())
         super().clean()
