@@ -40,7 +40,9 @@ class UserCreationForm(BaseUserCreationForm):
         initial=True)
 
     def clean(self):
-        self.cleaned_data['username'] = self.cleaned_data['username'].lower()
+        if 'username' in self.cleaned_data:
+            self.cleaned_data['username'] = (self.cleaned_data['username']
+                                             .lower())
         super().clean()
 
     def save(self, commit=True):
@@ -80,5 +82,7 @@ class UserChangeForm(BaseUserChangeForm):
         super().__init__(*args, **kwargs)
 
     def clean(self):
-        self.cleaned_data['username'] = self.cleaned_data['username'].lower()
+        if 'username' in self.cleaned_data:
+            self.cleaned_data['username'] = (self.cleaned_data['username']
+                                             .lower())
         super().clean()
