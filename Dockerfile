@@ -1,4 +1,4 @@
-FROM python:3.5-alpine
+FROM python:3.5
 MAINTAINER Thom Wiggers <thom@thomwiggers.nl>
 LABEL description="Contains the Thaliawebsite Django application"
 
@@ -7,49 +7,23 @@ LABEL description="Contains the Thaliawebsite Django application"
 # Disable output buffering
 ENV DJANGO_PRODUCTION 1
 ENV PYTHONUNBUFFERED 1
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN mkdir /concrexit
-
-# Create log dir
-RUN mkdir /concrexit/log/
-RUN touch /concrexit/log/uwsgi.log
-
-RUN chown -R 33:33 /concrexit
-
-# Create app directory
-RUN mkdir -p /usr/src/app
+# Create /concrexit dir
+# Create log dir and log file
+# Create app dir
+RUN mkdir /concrexit && \
+    mkdir -p /concrexit/log/ && \
+    touch /concrexit/log/uwsgi.log && \
+    chown -R www-data:www-data /concrexit && \
+    mkdir -p /usr/src/app
 
 # Install dependencies
-RUN apk add --no-cache \
-    gettext \
-    bash \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
-    libwebp \
-    tiff \
-    zlib \
-    freetype \
-    lcms2 \
-    libffi \
-    ghostscript \
-    libjpeg-turbo
-
-# Install build deps
-RUN apk add --no-cache --virtual .builddeps \
-    build-base \
-    tiff-dev \
-    libjpeg-turbo-dev \
-    zlib-dev \
-    freetype-dev \
-    lcms2-dev \
-    libwebp-dev \
-    libffi-dev \
-    linux-headers \
-    git \
-    postgresql-dev
-
-# Install mongodb separately because it's in edge still
-RUN echo http://dl-4.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
-    apk add --no-cache libsass
+    gettext \
+    ghostscript && \
+    rm -rf /var/lib/apt
 
 WORKDIR /usr/src/app
 # install python requirements
@@ -61,17 +35,13 @@ RUN pip install --no-cache-dir \
     -r production-requirements.txt \
     -r dev-requirements.txt
 
-RUN apk del .builddeps
-
 # Create entry points
-WORKDIR /usr/local/bin
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY resources/entrypoint_production.sh /usr/local/bin/entrypoint_production.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint_production.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh && \
+    chmod +x /usr/local/bin/entrypoint_production.sh
 
 # copy app source
-WORKDIR /usr/src/app
 COPY website /usr/src/app/
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
