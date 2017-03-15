@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 main = [
     {'title': _('Home'), 'name': 'index'},
     {'title': _('Association'), 'name': 'association', 'submenu': [
-        {'title': _('Board'), 'name': 'activemembers:current-board'},
+        {'title': _('Board'), 'name': 'activemembers:boards'},
         {'title': _('Committees'), 'name': 'activemembers:committees'},
         {'title': _('Documents'), 'name': 'documents:index'},
         {'title': _('Merchandise'), 'name': 'merchandise:index'},

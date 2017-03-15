@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect, reverse
-
+import datetime
+from utils.snippets import datetime_to_lectureyear
 from utils.translation import localize_attr_name
 from .models import Board, Committee, CommitteeMembership
 
@@ -37,11 +38,15 @@ def committee_detail(request, id):
 
 
 def board_index(request):
-    boards = Board.objects.all()
-
+    current_year = datetime_to_lectureyear(datetime.date.today())
+    board = get_object_or_404(
+        Board, since__year=current_year, until__year=current_year+1)
+    old_boards = Board.objects.all().exclude(pk=board.pk)
     return render(request,
                   'activemembers/board_index.html',
-                  {'boards': boards})
+                  {'old_boards': old_boards,
+                   'board': board
+                   })
 
 
 def board_detail(request, since, until=None):
@@ -66,11 +71,3 @@ def board_detail(request, since, until=None):
     return render(request, 'activemembers/board_detail.html',
                   {'board': board,
                    'members': members})
-
-
-def current_board(request):
-    try:
-        board = Board.objects.order_by('-since')[0]
-    except IndexError:
-        return redirect(reverse('activemembers:boards'))
-    return redirect(board.get_absolute_url())
