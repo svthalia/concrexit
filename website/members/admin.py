@@ -95,7 +95,7 @@ class UserAdmin(BaseUserAdmin):
     form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 
-    actions = ['address_csv_export']
+    actions = ['address_csv_export', 'student_number_csv_export']
 
     inlines = (MemberInline, MembershipInline)
     # FIXME include proper filter for expiration
@@ -117,8 +117,8 @@ class UserAdmin(BaseUserAdmin):
         response['Content-Disposition'] = 'attachment;\
                                            filename="addresses.csv"'
         writer = csv.writer(response)
-        writer.writerow([t('First name'), t('Last name'), t('Address'),
-                         t('Address line 2'), t('Postal code'), t('City')])
+        writer.writerow([_('First name'), _('Last name'), _('Address'),
+                         _('Address line 2'), _('Postal code'), _('City')])
         for user in queryset.exclude(member=None):
             writer.writerow([user.first_name,
                              user.last_name,
@@ -130,6 +130,21 @@ class UserAdmin(BaseUserAdmin):
         return response
     address_csv_export.short_description = _('Download address label for '
                                              'selected users')
+
+    def student_number_csv_export(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment;\
+                                           filename="student_numbers.csv"'
+        writer = csv.writer(response)
+        writer.writerow([_('First name'), _('Last name'), _('Student number')])
+        for user in queryset.exclude(member=None):
+            writer.writerow([user.first_name,
+                             user.last_name,
+                             user.member.student_number
+                             ])
+        return response
+    student_number_csv_export.short_description = _('Download student number '
+                                                    'label for selected users')
 
 admin.site.register(models.BecomeAMemberDocument)
 
