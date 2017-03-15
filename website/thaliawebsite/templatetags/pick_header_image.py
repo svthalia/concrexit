@@ -5,7 +5,7 @@ import random
 
 register = template.Library()
 banner_dir = static("/images/header_banners/")
-current_dir = os.listdir("thaliawebsite/" + banner_dir)
+current_dir = [pic for pic in os.listdir("thaliawebsite/" + banner_dir) if pic.endswith(".jpg")]
 
 
 @register.simple_tag
