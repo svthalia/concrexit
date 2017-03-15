@@ -175,7 +175,7 @@ def event(request, event_id):
 
 def _send_queue_mail(event):
     if (event.max_participants is not None and
-                Registration.objects
+        Registration.objects
                     .filter(event=event, date_cancelled=None)
                     .count() > event.max_participants):
         # Prepare email to send to the first person on the waiting
@@ -214,7 +214,7 @@ def _show_registration_fields(request, event, reg, action):
             for field in form_field_values:
                 if (field['field'].type ==
                         RegistrationInformationField.INTEGER_FIELD and
-                            field['value'] is None):
+                        field['value'] is None):
                     field['value'] = 0
                 field['field'].set_value_for(reg,
                                              field['value'])
@@ -228,11 +228,11 @@ def _registration_register(request, event, reg):
         reg = Registration()
         reg.event = event
         reg.member = request.user.member
+        messages.success(request, _("Registration successful."))
         if event.has_fields():
             return _show_registration_fields(request, event, reg, 'register')
         else:
             reg.save()
-            messages.success(request, _("Registration successful."))
     elif reg.date_cancelled is not None:
         if reg.is_late_cancellation():
             messages.error(request, _("You cannot re-register anymore since "
@@ -240,16 +240,22 @@ def _registration_register(request, event, reg):
         else:
             reg.date = timezone.now()
             reg.date_cancelled = None
+            messages.success(request, _("Registration successful."))
             if event.has_fields():
                 return _show_registration_fields(request, event, reg,
                                                  'register')
             else:
                 reg.save()
-                messages.success(request, _("Registration successful."))
     elif not reg.member.can_attend_events:
         messages.error(request, _("You may not register"))
     else:
-        messages.error(request, _("You were already registered."))
+        storage = messages.get_messages(request)
+        was_success = False
+        for message in storage:
+            was_success = message.message == _("Registration successful.")
+        storage.used = False
+        if not was_success:
+            messages.error(request, _("You were already registered."))
 
     return redirect(event)
 
@@ -300,18 +306,18 @@ def registration(request, event_id, action=None):
         except Registration.DoesNotExist:
             reg = None
 
-        if request.POST:
+        if request.method.lower() == 'post':
             if action == 'register' and (
                 event.status == Event.REGISTRATION_OPEN or
                 event.status == Event.REGISTRATION_OPEN_NO_CANCEL
             ):
-                _registration_register(request, event, reg)
+                return _registration_register(request, event, reg)
             elif (action == 'update' and
                   (event.status == Event.REGISTRATION_OPEN or
                    event.status == Event.REGISTRATION_OPEN_NO_CANCEL)):
-                _registration_update(request, event, reg)
+                return _registration_update(request, event, reg)
             elif action == 'cancel':
-                _registration_cancel(request, event, reg)
+                return _registration_cancel(request, event, reg)
 
     return redirect(event)
 

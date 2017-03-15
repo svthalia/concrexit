@@ -66,7 +66,7 @@ class RegistrationTest(TestCase):
         response = self.client.post('/events/1/registration/register/',
                                     follow=True)
         self.assertEqual(response.status_code, 200)
-        response = self.client.post('/events/1/registration/register',
+        response = self.client.post('/events/1/registration/register/',
                                     follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.event.num_participants(), 1)
