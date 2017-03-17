@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework import serializers
 
-from events.models import Event, Registration
+from events.models import Event
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
@@ -75,11 +75,6 @@ class EventSerializer(CalenderJSSerializer):
             return None
 
         try:
-            registration = Registration.objects.get(
-                event=instance,
-                member=self.context['user'].member
-            )
-        except (Registration.DoesNotExist, AttributeError):
-            return False
-
-        return registration.is_registered()
+            return instance.is_member_registered(self.context['user'].member)
+        except AttributeError:
+            return None
