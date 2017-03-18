@@ -69,12 +69,6 @@ class EventSerializer(CalenderJSSerializer):
 
     def _registered(self, instance):
         try:
-            if not self.context['user'].member:
-                return None
-        except AttributeError:
-            return None
-
-        try:
             return instance.is_member_registered(self.context['user'].member)
         except AttributeError:
             return None
