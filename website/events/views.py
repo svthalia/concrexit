@@ -4,14 +4,15 @@ import json
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template
 from django.utils import timezone, translation
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import pgettext_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from .forms import FieldsForm
@@ -22,6 +23,14 @@ from .models import Event, Registration, RegistrationInformationField
 @permission_required('events.change_event')
 def admin_details(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
+
+    if not request.user.is_superuser:
+        committees = request.user.member.get_committees().filter(
+            pk=event.organiser.pk).count()
+
+        if committees == 0:
+            raise PermissionDenied
+
     n = event.max_participants
     registrations = list(event.registration_set.filter(date_cancelled=None))
     cancellations = event.registration_set.exclude(date_cancelled=None)

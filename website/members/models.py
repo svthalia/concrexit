@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
+from activemembers.models import Committee
 from utils.snippets import datetime_to_lectureyear
 from utils.validators import validate_file_extension
 
@@ -352,6 +353,14 @@ class Member(models.Model):
 
     def get_full_name(self):
         return self.user.get_full_name()
+
+    def get_committees(self):
+        return Committee.unfiltered_objects.filter(
+            Q(committeemembership__member=self) &
+            (
+                Q(committeemembership__until=None) |
+                Q(committeemembership__until__gt=timezone.now())
+            )).exclude(active=False)
 
     def get_absolute_url(self):
         return reverse('members:profile', args=[str(self.pk)])

@@ -8,7 +8,6 @@ from django.utils.html import format_html
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
 
-from activemembers.models import Committee
 from members.models import Member
 from utils.translation import TranslatedModelAdmin
 from . import forms, models
@@ -63,6 +62,16 @@ class EventAdmin(DoNextModelAdmin):
                                         kwargs={'event_id': obj.pk}),
                            title=obj.title)
 
+    def has_change_permission(self, request, event=None):
+        try:
+            if not request.user.is_superuser and event is not None:
+                committees = request.user.member.get_committees().filter(
+                    Q(pk=event.organiser.pk)).count()
+                return committees > 0
+        except Member.DoesNotExist:
+            pass
+        return super().has_change_permission(request, event)
+
     def edit_link(self, obj):
         return _('Edit')
     edit_link.short_description = ''
@@ -77,12 +86,22 @@ class EventAdmin(DoNextModelAdmin):
     num_participants.short_description = _('Number of participants')
 
     def make_published(self, request, queryset):
-        queryset.update(published=True)
+        self._change_published(request, queryset, True)
     make_published.short_description = _('Publish selected events')
 
     def make_unpublished(self, request, queryset):
-        queryset.update(published=False)
+        self._change_published(request, queryset, False)
     make_unpublished.short_description = _('Unpublish selected events')
+
+    @staticmethod
+    def _change_published(request, queryset, published):
+        try:
+            if not request.user.is_superuser:
+                queryset = queryset.filter(
+                    organiser__in=request.user.member.get_committees())
+            queryset.update(published=published)
+        except Member.DoesNotExist:
+            pass
 
     def save_formset(self, request, form, formset, change):
         """Save formsets with their order"""
@@ -111,17 +130,16 @@ class EventAdmin(DoNextModelAdmin):
             # Only get the current active committees the user is a member of
             try:
                 if not request.user.is_superuser:
-                    member = request.user.member
-                    kwargs['queryset'] = Committee.unfiltered_objects.filter(
-                        Q(committeemembership__member=member) &
-                        (
-                            Q(committeemembership__until=None) |
-                            Q(committeemembership__until__gt=timezone.now())
-                        )).exclude(active=False)
+                    kwargs['queryset'] = request.user.member.get_committees()
 
             except Member.DoesNotExist:
                 pass
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_actions(self, request):
+        actions = super(EventAdmin, self).get_actions(request)
+        del actions['delete_selected']
+        return actions
 
 
 @admin.register(models.Registration)
