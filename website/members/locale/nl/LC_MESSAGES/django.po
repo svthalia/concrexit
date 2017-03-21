@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-15 20:31+0100\n"
-"PO-Revision-Date: 2017-02-25 19:35+0100\n"
+"POT-Creation-Date: 2017-03-22 20:44+0100\n"
+"PO-Revision-Date: 2017-03-22 20:44+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -18,23 +18,23 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.12\n"
 
-#: admin.py:37
+#: admin.py:36
 msgid "membership type"
 msgstr "lidtype"
 
-#: admin.py:60
+#: admin.py:59
 msgid "Age"
 msgstr "Leeftijd"
 
-#: admin.py:65
+#: admin.py:64
 msgid "≥ 18"
 msgstr "≥ 18"
 
-#: admin.py:66
+#: admin.py:65
 msgid "< 18"
 msgstr "< 18"
 
-#: admin.py:67
+#: admin.py:66
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -402,7 +402,27 @@ msgstr "Je profiel is succesvol opgeslagen."
 msgid "Please check your profile for errors."
 msgstr "Controleer je profiel op fouten."
 
+#: templates/members/edit_profile.html:29
+msgid "First Name"
+msgstr "Voornaam"
+
+#: templates/members/edit_profile.html:36
+msgid "Last Name"
+msgstr "Achternaam"
+
+#: templates/members/edit_profile.html:43
+msgid "Email Address"
+msgstr "E-mailadres"
+
 #: templates/members/edit_profile.html:46
+msgid ""
+"Want to change your name or email address? Please send an email to "
+"info@thalia.nu."
+msgstr ""
+"Wil je je naam of e-mailadres aanpassen? Stuur dan een mailtje naar "
+"info@thalia.nu."
+
+#: templates/members/edit_profile.html:68
 msgid "save"
 msgstr "opslaan"
 
