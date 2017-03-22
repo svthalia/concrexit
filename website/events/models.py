@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import string_concat
 from tinymce.models import HTMLField
 
+from thaliawebsite.settings import settings
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
@@ -167,11 +168,12 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             errors.update({
                 'end': _("Can't have an event travel back in time")})
         if self.registration_required():
-            if self.no_registration_message:
-                errors.update(
-                    {'no_registration_message': _(
-                        "Doesn't make sense to have this if you require "
-                        "registrations.")})
+            for lang in settings.LANGUAGES:
+                field = 'no_registration_message_' + lang[0]
+                if getattr(self, field):
+                    errors.update(
+                        {field: _("Doesn't make sense to have this "
+                                  "if you require registrations.")})
             if not self.registration_start:
                 errors.update(
                     {'registration_start': _(
