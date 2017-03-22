@@ -40,6 +40,13 @@ class RegistrationInformationFieldInline(admin.StackedInline):
 
     radio_fields = {'type': admin.VERTICAL}
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        if obj is not None:
+            count = obj.registrationinformationfield_set.count()
+            formset.form.declared_fields['order'].initial = count
+        return formset
+
 
 @admin.register(models.Event)
 class EventAdmin(DoNextModelAdmin):
