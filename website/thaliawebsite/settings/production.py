@@ -41,14 +41,10 @@ if 'DJANGO_HOSTS' in os.environ:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_USER'),
-        'USER': 'postgres',
-        'DATABASE': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'NAME': os.environ.get('POSTGRES_DB'),
         'HOST': os.environ.get('DJANGO_POSTGRES_HOST'),
         'PORT': 5432,
-        'TEST': {
-            'NAME': 'thaliatest',
-        }
     }
 }
 
