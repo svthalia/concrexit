@@ -37,8 +37,18 @@
             var sources = {
                 events:     "/api/events",
                 birthdays:  "/api/members/birthdays",
-                partners:   "/api/partners/events"
+                partners:   "/api/partners/events",
+                unpublishedEvents: "/api/events/unpublished"
             };
+
+
+            var eventSources = [sources.events, sources.partners];
+            {% if perms.events.change_event %}
+                eventSources.push(sources.unpublishedEvents);
+            {% endif %}
+            if (Cookies.get('showbirthdays')) {
+                eventSources.push(sources.birthdays);
+            }
 
             $('#calendar').fullCalendar({
                 defaultDate:
@@ -84,7 +94,7 @@
                 titleRangeSeparator: ' - ',
                 timeFormat: 'H:mm',
                 eventLimit: true, // allow "more" link when too many events
-                eventSources: Cookies.get('showbirthdays') ? [sources.events, sources.birthdays, sources.partners] : [sources.events, sources.partners],
+                eventSources: eventSources,
                 eventClick: function(event) {
                     if(event.url && event.blank) {
                         window.open(event.url, '_blank');

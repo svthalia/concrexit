@@ -73,3 +73,18 @@ class EventSerializer(CalenderJSSerializer):
             return instance.is_member_registered(self.context['user'].member)
         except AttributeError:
             return None
+
+
+class UnpublishedEventSerializer(CalenderJSSerializer):
+    class Meta(CalenderJSSerializer.Meta):
+        model = Event
+
+    def _background_color(self, instance):
+        return "#888888"
+
+    def _text_color(self, instance):
+        return "white"
+
+    def _url(self, instance):
+        return reverse('events:admin-details', kwargs={
+            'event_id': instance.id})
