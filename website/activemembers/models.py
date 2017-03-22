@@ -9,7 +9,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from members.models import Member
 from utils.translation import (ModelTranslateMeta, MultilingualField,
                                localize_attr_name)
 
@@ -67,7 +66,7 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
     )
 
     members = models.ManyToManyField(
-        Member,
+        'members.Member',
         through='CommitteeMembership'
     )
 
@@ -165,7 +164,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
     active_memberships = ActiveMembershipManager()
 
     member = models.ForeignKey(
-        Member,
+        'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member'),
     )
@@ -297,7 +296,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
 class Mentorship(models.Model):
     member = models.ForeignKey(
-        Member,
+        'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member'),
     )
