@@ -13,7 +13,10 @@ COVER_FILENAME = 'cover.jpg'
 
 
 def photo_uploadto(instance, filename):
-    return os.path.join(Album.photosdir, instance.album.dirname, filename)
+    num = instance.album.photo_set.count()
+    _, extension = os.path.splitext(filename)
+    new_filename = str(num).zfill(4) + extension
+    return os.path.join(Album.photosdir, instance.album.dirname, new_filename)
 
 
 class Photo(models.Model):
