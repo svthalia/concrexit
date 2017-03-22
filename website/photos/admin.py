@@ -104,7 +104,7 @@ class AlbumAdmin(admin.ModelAdmin):
 
 
 class PhotoAdmin(admin.ModelAdmin):
-    list_display = ('file', 'album', 'hidden')
+    list_display = ('__str__', 'album', 'hidden')
     search_fields = ('file',)
     list_filter = ('album', 'hidden')
 
