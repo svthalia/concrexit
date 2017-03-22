@@ -46,6 +46,9 @@ DATABASES = {
         'DATABASE': os.environ.get('POSTGRES_DB'),
         'HOST': os.environ.get('DJANGO_POSTGRES_HOST'),
         'PORT': 5432,
+        'TEST': {
+            'NAME': 'thaliatest',
+        }
     }
 }
 
