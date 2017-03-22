@@ -189,7 +189,7 @@ def _send_queue_mail(event):
 
         with translation.override(first_waiting_member.language):
             subject = _("[THALIA] Notification about your "
-                        "reg for '{}'").format(
+                        "registration for '{}'").format(
                 event.title)
             text_message = text_template.render({
                 'event': event,

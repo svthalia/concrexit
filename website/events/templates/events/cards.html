@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="blog">
     <ul class="row">
         {% for next_event in upcoming %}
@@ -8,9 +9,13 @@
 
                         {% if next_event.current_user_registration is not None %}
                         {% if next_event.current_user_registration %}
-                        <div class="event-indication-no-registration"></div>
+                            <div class="event-indication" title="{% trans "Registered for this event" %}">
+                                <div class="has-registration"></div>
+                            </div>
                         {% else %}
-                        <div class="event-indication-has-registration"></div>
+                            <div class="event-indication" title="{%  trans "Not registered for this event" %}">
+                                <div class="no-registration"></div>
+                            </div>
                         {% endif %}
                         {% endif %}
 

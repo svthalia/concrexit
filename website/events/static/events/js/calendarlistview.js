@@ -4,7 +4,7 @@ var ListView;          // our subclass
 
 ListView = View.extend({ // make a subclass of View
 
-    title: 'Aanstaande evenementen',
+    title: gettext("Upcoming Events"),
 
     updateTitle: function() {
         // this space intentionally left blank
@@ -35,18 +35,18 @@ ListView = View.extend({ // make a subclass of View
                 li.append('<div class="toggle-title"><a href="#"><span></span>' + e.title + ' (' + date + ')</a></div>');
 
                 if (e.blank) {
-                    li.append('<div class="toggle-content">' + e.description + '<br><br><a target="_blank" href="' + e.url + '">> Naar de evenementpagina</a></div>');
+                    li.append('<div class="toggle-content">' + e.description + '<br><br><a target="_blank" href="' + e.url + '">' + gettext('> To the event page') + '</a></div>');
                 } else {
-                    li.append('<div class="toggle-content">' + e.description + '<br><br><a href="' + e.url + '">> Naar de evenementpagina</a></div>');
+                    li.append('<div class="toggle-content">' + e.description + '<br><br><a href="' + e.url + '">' + gettext('> To the event page') + '</a></div>');
                 }
             } else {
                 li.append('<div class="toggle-title birthday"><a href="#">' + e.title + ' (' + date + ')</a></div>');
             }
 
             if (e.registered) {
-                li.append('<div class="event-indication-has-registration"></div>');
+                li.append('<div class="event-indication" title="' + gettext("Registered for this event") + '"><div class="has-registration"></div></div>');
             } else if (e.registered !== null) {
-                li.append('<div class="event-indication-no-registration"></div>');
+                li.append('<div class="event-indication" title="' + gettext("Not registered for this event") + '"><div class="no-registration"></div></div>');
             }
 
             ul.append(li);
@@ -68,6 +68,8 @@ ListView = View.extend({ // make a subclass of View
             };
         });
         this.el.html(ul);
+
+        $('.event-indication').tooltip();
     },
 });
 

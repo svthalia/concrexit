@@ -4974,24 +4974,37 @@ ul.rslides > li {
     transition: all 0.2s ease-in-out;
 }
 
-.event-indication-no-registration, .event-indication-has-registration {
+.event-indication {
     float: right;
     position: absolute;
-    right: 24px;
-    top: calc(50% - 5px);
-    border-radius: 10px;
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
+    right: 30px;
+    top: 27px;
+
+    .no-registration, .has-registration {
+        border-radius: 10px;
+        width: 10px;
+        height: 10px;
+        margin: 5px;
+    }
+
+    .has-registration {
+        background: #E62272;
+        box-shadow: 0 0 5px #E62272;
+    }
+
+    .no-registration {
+        background: #6a6869;
+        box-shadow: 0 0 5px #6a6869;
+    }
 }
 
-.event-indication-has-registration {
-    background: #468847;
-    box-shadow: 0 0 5px #468847;
-}
-
-.event-indication-no-registration {
-    background: #d9534f;
-    box-shadow: 0 0 5px #d9534f;
+#calendar {
+    .event-indication {
+        right: 19px;
+        top: 20px;
+    }
 }
 
 .loginForm {
