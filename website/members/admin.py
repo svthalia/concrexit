@@ -101,7 +101,8 @@ class UserAdmin(BaseUserAdmin):
     # https://docs.djangoproject.com/en/1.9/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
     list_filter = (MembershipTypeListFilter,
                    'is_superuser',
-                   AgeListFilter,)
+                   AgeListFilter,
+                   'member__event_permissions',)
 
     add_fieldsets = (
         (None, {
