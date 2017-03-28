@@ -28,6 +28,11 @@ class UserCreationForm(BaseUserCreationForm):
     # Don't forget to edit the formset in admin.py!
     # This is a stupid quirk of the user admin.
 
+    # shadow the password fields to prevent validation errors,
+    #   since we generate the passwords dynamically.
+    password1 = None
+    password2 = None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in ('email', 'first_name', 'last_name'):
@@ -47,6 +52,8 @@ class UserCreationForm(BaseUserCreationForm):
 
     def save(self, commit=True):
         password = User.objects.make_random_password(length=15)
+        # pass the password on as if it was filled in, so that save() works
+        self.cleaned_data['password1'] = password
         user = super().save(commit=False)
         user.set_password(password)
         if commit:
