@@ -19,7 +19,7 @@ If you use Docker, please look at [this part](#docker) of the README.
 
 0. Get at least Python 3.4 and install the Pillow requirements as per below.
 1. Clone this repository
-2. Run `source ./source_me.sh` (or use your own favourite virtualenv solution)
+2. Run `source ./source_me.sh` or `source venv/bin/activate` (or what you do for your own favourite virtualenv solution)
 3. Run `pip install -r requirements.txt`
 4. Run `pip install -r dev-requirements.txt`
 5. `cd website`
