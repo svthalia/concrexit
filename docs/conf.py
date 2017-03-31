@@ -174,3 +174,8 @@ texinfo_documents = [
 
 # Default flags for autodoc, saves typing
 autodoc_default_flags = ['members', 'undoc-members']
+
+# -- Options for doctest --------------------------------------------------
+
+# Disable doctests in normal strings
+doctest_test_doctest_blocks = ''
