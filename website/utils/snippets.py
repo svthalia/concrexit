@@ -5,6 +5,23 @@ from django.utils.six.moves.urllib.parse import unquote
 
 
 def datetime_to_lectureyear(date):
+    """Convert a date to the start of the lectureyear
+
+    >>> from datetime import date, datetime, timezone
+    >>> nov_23 = date(1990, 11, 7)
+    >>> datetime_to_lectureyear(nov_23)
+    1990
+    >>> mar_2 = date(1993, 3, 2)
+    >>> datetime_to_lectureyear(mar_2)
+    1992
+
+    Also works on ``datetimes``, but they need to be tz-aware:
+
+    >>> new_year = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    >>> datetime_to_lectureyear(new_year)
+    1999
+    """
+
     if isinstance(date, timezone.datetime):
         date = timezone.localtime(date).date()
     sept_1 = timezone.make_aware(timezone.datetime(date.year, 9, 1))
@@ -14,8 +31,23 @@ def datetime_to_lectureyear(date):
 
 
 def sanitize_path(path):
-    """Cleans up an insecure path, i.e. against directory traversal.
-    This code is partially copied from django.views.static"""
+    r"""
+    Cleans up an insecure path, i.e. against directory traversal.
+
+    This code is partially copied from ``django.views.static``.
+
+    >>> sanitize_path('//////')
+    ''
+    >>> sanitize_path('////test//')
+    'test'
+    >>> sanitize_path('../../../test/')
+    'test'
+    >>> sanitize_path('../.././test/')
+    'test'
+    >>> sanitize_path(r'..\..\..\test')
+    'test/'
+
+    """
     path = os.path.normpath(unquote(path))
     path = path.lstrip('/')
     newpath = ''
@@ -30,3 +62,8 @@ def sanitize_path(path):
             continue
         newpath = os.path.join(newpath, part).replace('\\', '/')
     return newpath
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
