@@ -1,5 +1,6 @@
 import os
 
+from django.core.exceptions import SuspiciousFileOperation
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -107,10 +108,17 @@ def shared_album(request, slug, token):
     return _render_album_page(request, album)
 
 
-def _download(request, path):
+def _download(request, original_path):
     """This function provides a layer of indirection for shared albums"""
-    path = sanitize_path(path)
-    path = os.path.join(settings.MEDIA_ROOT, 'photos', *path.split('/')[1:])
+    photopath = os.path.join(settings.MEDIA_ROOT, 'photos')
+
+    path = sanitize_path(original_path)
+    path = os.path.normpath(os.path.join(photopath, *path.split('/')[1:]))
+
+    if not os.path.commonprefix([photopath, path]).startswith(photopath):
+        raise SuspiciousFileOperation(
+            "Path traversal detected: someone tried to download "
+            "{}, input: {}".format(path, original_path))
     if not os.path.isfile(path):
         raise Http404("Photo not found.")
     return sendfile(request, path, attachment=True)

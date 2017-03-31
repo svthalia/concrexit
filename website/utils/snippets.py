@@ -34,6 +34,8 @@ def sanitize_path(path):
     r"""
     Cleans up an insecure path, i.e. against directory traversal.
 
+    Still use os.path.commonprefix to check if the target is as expected
+
     This code is partially copied from ``django.views.static``.
 
     >>> sanitize_path('//////')
@@ -45,10 +47,10 @@ def sanitize_path(path):
     >>> sanitize_path('../.././test/')
     'test'
     >>> sanitize_path(r'..\..\..\test')
-    'test/'
+    'test'
 
     """
-    path = os.path.normpath(unquote(path))
+    path = os.path.normpath(unquote(path).replace('\\', '/'))
     path = path.lstrip('/')
     newpath = ''
     for part in path.split('/'):
@@ -60,7 +62,7 @@ def sanitize_path(path):
         if part in (os.curdir, os.pardir):
             # Strip '.' and '..' in path.
             continue
-        newpath = os.path.join(newpath, part).replace('\\', '/')
+        newpath = os.path.join(newpath, part)
     return newpath
 
 
