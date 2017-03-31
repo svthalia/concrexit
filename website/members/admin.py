@@ -146,6 +146,7 @@ class UserAdmin(BaseUserAdmin):
     student_number_csv_export.short_description = _('Download student number '
                                                     'label for selected users')
 
+
 admin.site.register(models.BecomeAMemberDocument)
 
 # re-register User admin
