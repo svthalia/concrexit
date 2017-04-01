@@ -124,7 +124,7 @@ def _download(request, original_path):
     path = os.path.normpath(
         os.path.join(photopath, *original_path.split('/')[1:]))
 
-    if not os.path.commonprefix([photopath, path]).startswith(photopath):
+    if not os.path.commonpath([photopath, path]) == photopath:
         raise SuspiciousFileOperation(
             "Path traversal detected: someone tried to download "
             "{}, input: {}".format(path, original_path))

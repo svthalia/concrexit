@@ -21,7 +21,7 @@ def _private_thumbnails_unauthed(request, size_fit, original_path):
     """
     thumbpath = os.path.join(settings.MEDIA_ROOT, 'thumbnails', size_fit)
     path = os.path.normpath(os.path.join(thumbpath, original_path))
-    if not os.path.commonprefix([thumbpath, path]).startswith(thumbpath):
+    if not os.path.commonpath([thumbpath, path]) == thumbpath:
         raise SuspiciousFileOperation(
             "Path traversal detected: someone tried to download "
             "{}, input: {}".format(path, original_path))
@@ -55,13 +55,13 @@ def generate_thumbnail(request, size_fit, path, thumbpath):
     thumb_root = os.path.join(settings.MEDIA_ROOT, 'thumbnails', size_fit)
 
     public_img = False
-    if (os.path.commonprefix([full_thumbpath, full_path])
-            .startswith(public_media)):
+    if (os.path.commonpath([full_thumbpath, full_path, public_media]) ==
+            public_media):
         public_img = True
-    elif not (os.path.commonprefix([full_thumbpath, thumb_root])
-              .startswith(thumb_root) and
-              os.path.commonprefix([full_path, settings.MEDIA_ROOT])
-              .startswith(settings.MEDIA_ROOT)):
+    elif not (os.path.commonpath([full_thumbpath, thumb_root]) ==
+              thumb_root and
+              os.path.commonpath([full_path, settings.MEDIA_ROOT]) ==
+              settings.MEDIA_ROOT):
         raise SuspiciousFileOperation(
             "Path traversal detected: someone tried to generate a thumb from "
             "{} to {}".format(full_path, full_thumbpath))
