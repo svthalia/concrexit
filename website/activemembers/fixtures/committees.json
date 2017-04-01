@@ -8,6 +8,7 @@
         "description_nl": "Test",
         "description_en": "Test",
         "photo": "Thom_Wiggers.jpg",
+        "active": "True",
         "permissions": [
             25,
             26,
@@ -21,6 +22,7 @@
     "fields": {
         "name_nl": "testcie2",
         "name_en": "testcie2",
+        "active": "True",
         "description_nl": "testdesc2",
         "description_en": "testdesc2",
         "photo": "Thom_Wiggers_4YRoxV3.jpg",
@@ -33,6 +35,7 @@
     "fields": {
         "name_nl": "testbestuur1",
         "name_en": "testboard1",
+        "active": "True",
         "description_nl": "testdesc1",
         "description_en": "testdesc1",
         "since": "1990-09-01",
