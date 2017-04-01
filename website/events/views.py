@@ -344,6 +344,7 @@ def all_present(request, event_id):
                                .filter(date_cancelled=None)
                                .order_by('date')[:event.max_participants])
 
-    registrations_query.update(present=True, paid=True)
+    event.registration_set.filter(pk__in=registrations_query).update(
+        present=True, paid=True)
 
     return HttpResponseRedirect('/events/admin/{}'.format(event_id))
