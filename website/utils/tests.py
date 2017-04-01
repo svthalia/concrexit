@@ -1,15 +1,29 @@
+import doctest
+
 from django.core.exceptions import FieldError
 from django.db import models
 from django.test import TestCase, override_settings
 from django.utils import translation
 
 from utils.translation import ModelTranslateMeta, MultilingualField
+from utils import snippets, validators
 
 LANGUAGES = [
     ('en', 'English'),
     ('nl', 'Dutch'),
     ('fr', 'French'),
 ]
+
+
+def load_tests(loader, tests, ignore):
+    """
+    Load all tests in this module
+    """
+    # Adds the doctests in snippets
+    tests.addTests(doctest.DocTestSuite(snippets))
+    # Adds the doctests in validators
+    tests.addTests(doctest.DocTestSuite(validators))
+    return tests
 
 
 @override_settings(LANGUAGES=LANGUAGES)

@@ -25,6 +25,14 @@ thaliawebsite.admin module
     :undoc-members:
     :show-inheritance:
 
+thaliawebsite.forms module
+--------------------------
+
+.. automodule:: thaliawebsite.forms
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thaliawebsite.menus module
 --------------------------
 
