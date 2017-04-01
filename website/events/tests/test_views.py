@@ -1,10 +1,76 @@
 import datetime
 
+from django.contrib.auth.models import Permission
 from django.test import Client, TestCase
 from django.utils import timezone
 
+from activemembers.models import Committee, CommitteeMembership
 from events.models import Event, Registration, RegistrationInformationField
 from members.models import Member
+
+
+class AdminTest(TestCase):
+    """Tests for admin views"""
+
+    fixtures = ['members.json', 'committees.json']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.create(
+            pk=1,
+            title_nl='testevenement',
+            title_en='testevent',
+            description_en='desc',
+            description_nl='besch',
+            published=True,
+            start=(timezone.now() + datetime.timedelta(hours=1)),
+            end=(timezone.now() + datetime.timedelta(hours=2)),
+            location_en='test location',
+            location_nl='test locatie',
+            map_location='test map location',
+            price=0.00,
+            fine=0.00)
+        cls.member = Member.objects.filter(user__last_name="Wiggers").first()
+        cls.permission_change_event = Permission.objects.get(
+            content_type__model='event',
+            codename='change_event')
+        cls.member.user.user_permissions.add(cls.permission_change_event)
+        cls.member.user.is_superuser = False
+        cls.member.user.save()
+        cls.committee = Committee.objects.get(pk=1)
+
+    def setUp(self):
+        self.client.force_login(self.member.user)
+
+    def _remove_event_permission(self):
+        self.member.user.user_permissions.remove(self.permission_change_event)
+
+    def test_admin_details_need_change_event_access(self):
+        """I need the event.change_event permission to do stuff"""
+        self._remove_event_permission()
+        response = self.client.get('/events/admin/1/')
+        self.assertEqual(302, response.status_code)
+        self.assertTrue(response.url.startswith('/login/'))
+
+    def test_admin_details_no_organiser_allowed_access(self):
+        """If an event has no organiser, then I should be allowed access"""
+        response = self.client.get('/events/admin/1/')
+        self.assertEqual(200, response.status_code)
+
+    def test_admin_details_organiser_denied(self):
+        self.event.organiser = self.committee
+        self.event.save()
+        response = self.client.get('/events/admin/1/')
+        self.assertEqual(403, response.status_code)
+
+    def test_admin_details_organiser_allowed(self):
+        self.event.organiser = self.committee
+        CommitteeMembership.objects.create(
+            member=self.member,
+            committee=self.committee)
+        self.event.save()
+        response = self.client.get('/events/admin/1/')
+        self.assertEqual(200, response.status_code)
 
 
 class RegistrationTest(TestCase):
