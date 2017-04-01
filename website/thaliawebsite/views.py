@@ -69,7 +69,7 @@ def wiki_login(request):
 def styleguide_file(request, filename):
     path = os.path.join(settings.MEDIA_ROOT, 'styleguide')
     filepath = os.path.join(path, filename)
-    if not (os.path.commonprefix([path, filepath]).startswith(path) and
+    if not (os.path.commonpath([path, filepath]) == path and
             os.path.isfile(filepath)):
         raise Http404("File not found.")
     return sendfile(request, filepath, attachment=True)
