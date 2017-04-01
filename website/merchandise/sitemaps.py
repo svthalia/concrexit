@@ -11,6 +11,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
     def location(self, item):
         return reverse(item)
 
+
 sitemap = {
     'merchandise-static': StaticViewSitemap,
 }

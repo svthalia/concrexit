@@ -115,5 +115,6 @@ class PhotoAdmin(admin.ModelAdmin):
                              _("Full-sized photos will not be saved "
                                "on the Thalia-website."))
 
+
 admin.site.register(Album, AlbumAdmin)
 admin.site.register(Photo, PhotoAdmin)
