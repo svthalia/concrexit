@@ -1,7 +1,4 @@
-import os
-
 from django.utils import timezone
-from django.utils.six.moves.urllib.parse import unquote
 
 
 def datetime_to_lectureyear(date):
@@ -28,8 +25,3 @@ def datetime_to_lectureyear(date):
     if date < sept_1.date():
         return date.year - 1
     return date.year
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
