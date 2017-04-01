@@ -11,7 +11,6 @@ from sendfile import sendfile
 from zipfile import ZipFile
 from tempfile import gettempdir
 
-from utils.snippets import sanitize_path
 from utils.views import _private_thumbnails_unauthed
 
 from .models import Album
@@ -109,11 +108,21 @@ def shared_album(request, slug, token):
 
 
 def _download(request, original_path):
-    """This function provides a layer of indirection for shared albums"""
+    """This function provides a layer of indirection for shared albums
+
+    Checks for some path traversal:
+
+    >>> from django.test import RequestFactory
+    >>> r = RequestFactory().get('/photos/download/../../../../../etc/passwd')
+    >>> _download(r, '../../../../../../../etc/passwd')  #doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    django.core.exceptions.SuspiciousFileOperation: ...
+    """
     photopath = os.path.join(settings.MEDIA_ROOT, 'photos')
 
-    path = sanitize_path(original_path)
-    path = os.path.normpath(os.path.join(photopath, *path.split('/')[1:]))
+    path = os.path.normpath(
+        os.path.join(photopath, *original_path.split('/')[1:]))
 
     if not os.path.commonprefix([photopath, path]).startswith(photopath):
         raise SuspiciousFileOperation(

@@ -30,42 +30,6 @@ def datetime_to_lectureyear(date):
     return date.year
 
 
-def sanitize_path(path):
-    r"""
-    Cleans up an insecure path, i.e. against directory traversal.
-
-    Still use os.path.commonprefix to check if the target is as expected
-
-    This code is partially copied from ``django.views.static``.
-
-    >>> sanitize_path('//////')
-    ''
-    >>> sanitize_path('////test//')
-    'test'
-    >>> sanitize_path('../../../test/')
-    'test'
-    >>> sanitize_path('../.././test/')
-    'test'
-    >>> sanitize_path(r'..\..\..\test')
-    'test'
-
-    """
-    path = os.path.normpath(unquote(path).replace('\\', '/'))
-    path = path.lstrip('/')
-    newpath = ''
-    for part in path.split('/'):
-        if not part:
-            # Strip empty path components.
-            continue
-        drive, part = os.path.splitdrive(part)
-        head, part = os.path.split(part)
-        if part in (os.curdir, os.pardir):
-            # Strip '.' and '..' in path.
-            continue
-        newpath = os.path.join(newpath, part)
-    return newpath
-
-
 if __name__ == "__main__":
     import doctest
     doctest.testmod()

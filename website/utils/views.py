@@ -1,6 +1,7 @@
 import os
 
 from PIL import Image, ImageOps
+from django.core.exceptions import SuspiciousFileOperation
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -9,15 +10,21 @@ from django.urls import reverse
 from django.utils.http import urlunquote
 from sendfile import sendfile
 
-from .snippets import sanitize_path
 
+def _private_thumbnails_unauthed(request, size_fit, original_path):
+    """
+    Serve thumbnails from the filesystem
 
-def _private_thumbnails_unauthed(request, size_fit, path):
-    """This layer of indirection makes it possible to make exceptions
+    This layer of indirection makes it possible to make exceptions
     to the authentication requirements for thumbnails, e.g. when sharing
-    photo albums with external parties using access tokens."""
-    path = sanitize_path(path)
-    path = os.path.join(settings.MEDIA_ROOT, 'thumbnails', size_fit, path)
+    photo albums with external parties using access tokens.
+    """
+    thumbpath = os.path.join(settings.MEDIA_ROOT, 'thumbnails', size_fit)
+    path = os.path.normpath(os.path.join(thumbpath, original_path))
+    if not os.path.commonprefix([thumbpath, path]).startswith(thumbpath):
+        raise SuspiciousFileOperation(
+            "Path traversal detected: someone tried to download "
+            "{}, input: {}".format(path, original_path))
     if not os.path.isfile(path):
         raise Http404("Thumbnail not found.")
     return sendfile(request, path)
