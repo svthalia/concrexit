@@ -24,12 +24,15 @@ def index(request):
     if apihash != 'cb004452d9c80e295bebfc778871b3b082d70ad8':
         raise PermissionDenied
     if 'lists' in request.GET:
-        context = {'lists': MailingList.objects.all()}
+        context = {'lists': MailingList.objects.all()
+                                               .prefetch_related('aliasses')}
         return render(request, 'mailinglists/lists.txt', context,
                       content_type='text/plain')
     elif 'list' in request.GET:
-        mailinglist = get_object_or_404(MailingList,
-                                        pk=int(request.GET['list']))
+        pk = request.GET['list'].split('_')  # could be id_aliasname
+        mailinglist = get_object_or_404(MailingList, pk=int(pk[0]))
+        if len(pk) > 1 and mailinglist.aliasses.filter(alias=pk[1]):
+            mailinglist.name = pk[1]
         return render(request, 'mailinglists/list_data.txt',
                       {'list': mailinglist}, content_type='text/plain')
     elif 'membership_type' in request.GET:

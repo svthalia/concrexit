@@ -1,3 +1,4 @@
 START
 {% for list in lists %}{{ list.pk }}
-{% endfor %}END
+{% for alias in list.aliasses.all %}{{ list.pk }}_{{ alias.alias }}
+{% endfor %}{% endfor %}END
