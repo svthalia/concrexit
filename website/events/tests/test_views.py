@@ -72,6 +72,60 @@ class AdminTest(TestCase):
         response = self.client.get('/events/admin/1/')
         self.assertEqual(200, response.status_code)
 
+    def test_modeladmin_change_no_organiser_allowed(self):
+        response = self.client.get('/admin/events/event/1/change/')
+        self.assertEqual(200, response.status_code)
+
+    def test_modeladmin_change_organiser_allowed(self):
+        """Test the ModelAdmin change page
+
+        If I'm an organiser I should be allowed access
+        """
+        self.event.organiser = self.committee
+        CommitteeMembership.objects.create(
+            member=self.member,
+            committee=self.committee)
+        self.event.save()
+        response = self.client.get('/admin/events/event/1/change/')
+        self.assertEqual(200, response.status_code)
+
+    def test_modeladmin_change_organiser_no_permissions_denied(self):
+        """Test the ModelAdmin change page
+
+        If I'm an organiser, but don't have perms I should not
+        be allowed access
+        """
+        self._remove_event_permission()
+        self.event.organiser = self.committee
+        CommitteeMembership.objects.create(
+            member=self.member,
+            committee=self.committee)
+        self.event.save()
+        response = self.client.get('/admin/events/event/1/change/')
+        self.assertEqual(403, response.status_code)
+
+    def test_modeladmin_change_superuser_allowed(self):
+        """Test the ModelAdmin change page
+
+        If I'm an organiser I should be allowed access
+        """
+        self.event.organiser = self.committee
+        self.event.save()
+        self.member.user.is_superuser = True
+        self.member.user.save()
+        response = self.client.get('/admin/events/event/1/change/')
+        self.assertEqual(200, response.status_code)
+
+    def test_modeladmin_change_organiser_denied(self):
+        """Test the ModelAdmin change page
+
+        If I'm not an organiser I should not be allowed access
+        """
+        self.event.organiser = self.committee
+        self.event.save()
+        response = self.client.get('/admin/events/event/1/change/')
+        self.assertEqual(403, response.status_code)
+
 
 class RegistrationTest(TestCase):
     """Tests for registration view"""

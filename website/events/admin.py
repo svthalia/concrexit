@@ -71,10 +71,12 @@ class EventAdmin(DoNextModelAdmin):
 
     def has_change_permission(self, request, event=None):
         try:
-            if not request.user.is_superuser and event is not None:
+            if (not request.user.is_superuser and event is not None and
+                    event.organiser is not None):
                 committees = request.user.member.get_committees().filter(
                     Q(pk=event.organiser.pk)).count()
-                return committees > 0
+                if committees == 0:
+                    return False
         except Member.DoesNotExist:
             pass
         return super().has_change_permission(request, event)
