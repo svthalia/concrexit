@@ -33,7 +33,7 @@ def partner(request, slug):
 
 def vacancies(request):
     context = {
-        'vacancies': Vacancy.objects.all(),
+        'vacancies': Vacancy.objects.all().order_by('?'),
         'categories': VacancyCategory.objects.all(),
     }
 
