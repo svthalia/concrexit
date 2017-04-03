@@ -9,6 +9,10 @@ ENV DJANGO_PRODUCTION 1
 ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Set up entrypoint and command
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["--help"]
+
 # Create /concrexit dir
 # Create log dir and log file
 # Create app dir
@@ -43,6 +47,3 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # copy app source
 COPY website /usr/src/app/
-
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["--help"]
