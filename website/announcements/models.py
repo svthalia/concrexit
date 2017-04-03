@@ -14,13 +14,13 @@ class Announcement(models.Model, metaclass=ModelTranslateMeta):
         max_length=500,
     )
 
-    since = models.DateField(
+    since = models.DateTimeField(
         verbose_name=_('Display since'),
         help_text=_("Hide this announcement before this time."),
         default=timezone.now,
     )
 
-    until = models.DateField(
+    until = models.DateTimeField(
         verbose_name=_('Display until'),
         help_text=_("Hide this announcement after this time."),
         blank=True,
@@ -47,5 +47,5 @@ class Announcement(models.Model, metaclass=ModelTranslateMeta):
     @property
     def is_visible(self):
         """Is this announcement currently visible"""
-        return ((self.until is None or self.until > timezone.now().date()) and
-                (self.since is None or self.since <= timezone.now().date()))
+        return ((self.until is None or self.until > timezone.now()) and
+                (self.since is None or self.since <= timezone.now()))
