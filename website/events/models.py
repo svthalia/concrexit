@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import string_concat
+from django.utils.text import format_lazy
 from tinymce.models import HTMLField
 
 from thaliawebsite.settings import settings
@@ -113,8 +113,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         max_length=200,
         blank=True,
         null=True,
-        help_text=(string_concat(_("Default: "),
-                                 DEFAULT_NO_REGISTRATION_MESSAGE)),
+        help_text=(format_lazy("{} {}", _("Default:"),
+                               DEFAULT_NO_REGISTRATION_MESSAGE)),
     )
 
     published = models.BooleanField(_("published"), default=False)

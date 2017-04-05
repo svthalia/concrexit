@@ -28,8 +28,8 @@ class Partner(models.Model):
     address = models.CharField(max_length=100, validators=[
         RegexValidator(
             regex=(r'^([1-9][e][\s])*([ëéÉËa-zA-Z]'
-                   '+(([\.][\s])|([\s]))?)+[1-9][0-9]'
-                   '*(([-][1-9][0-9]*)|([\s]?[ëéÉËa-zA-Z]+))?$'),
+                   r'+(([\.][\s])|([\s]))?)+[1-9][0-9]'
+                   r'*(([-][1-9][0-9]*)|([\s]?[ëéÉËa-zA-Z]+))?$'),
             message=_('Enter a valid address'))
     ])
     zip_code = models.CharField(max_length=12, validators=[
