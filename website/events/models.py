@@ -41,8 +41,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     organiser = models.ForeignKey(
         'activemembers.Committee',
-        models.SET_NULL,
-        null=True,
+        models.PROTECT,
         verbose_name=_("organiser")
     )
 

@@ -24,7 +24,7 @@ from .models import Event, Registration, RegistrationInformationField
 def admin_details(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
 
-    if (not request.user.is_superuser and event.organiser is not None and
+    if (not request.user.is_superuser and
             not request.user.has_perm('events.override_organiser')):
         committees = request.user.member.get_committees().filter(
             pk=event.organiser.pk).count()

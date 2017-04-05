@@ -16,8 +16,10 @@ class AdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        cls.committee = Committee.objects.get(pk=1)
         cls.event = Event.objects.create(
             pk=1,
+            organiser=cls.committee,
             title_nl='testevenement',
             title_en='testevent',
             description_en='desc',
@@ -40,7 +42,6 @@ class AdminTest(TestCase):
         cls.member.user.user_permissions.add(cls.permission_change_event)
         cls.member.user.is_superuser = False
         cls.member.user.save()
-        cls.committee = Committee.objects.get(pk=1)
 
     def setUp(self):
         self.client.force_login(self.member.user)
@@ -58,95 +59,64 @@ class AdminTest(TestCase):
         self.assertEqual(302, response.status_code)
         self.assertTrue(response.url.startswith('/login/'))
 
-    def test_admin_details_no_organiser_allowed_access(self):
-        """If an event has no organiser, then I should be allowed access"""
-        response = self.client.get('/events/admin/1/')
-        self.assertEqual(200, response.status_code)
-
     def test_admin_details_organiser_denied(self):
-        self.event.organiser = self.committee
-        self.event.save()
         response = self.client.get('/events/admin/1/')
         self.assertEqual(403, response.status_code)
 
     def test_admin_details_organiser_allowed(self):
-        self.event.organiser = self.committee
         CommitteeMembership.objects.create(
             member=self.member,
             committee=self.committee)
-        self.event.save()
         response = self.client.get('/events/admin/1/')
         self.assertEqual(200, response.status_code)
 
     def test_admin_details_override_organiser_allowed(self):
         self._add_override_organiser_permission()
-        self.event.organiser = self.committee
-        self.event.save()
         response = self.client.get('/events/admin/1/')
         self.assertEqual(200, response.status_code)
 
-    def test_modeladmin_change_no_organiser_allowed(self):
-        response = self.client.get('/admin/events/event/1/change/')
-        self.assertEqual(200, response.status_code)
-
     def test_modeladmin_change_organiser_allowed(self):
-        """Test the ModelAdmin change page
+        """Change event as an organiser
 
         If I'm an organiser I should be allowed access
         """
-        self.event.organiser = self.committee
         CommitteeMembership.objects.create(
             member=self.member,
             committee=self.committee)
-        self.event.save()
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
 
     def test_modeladmin_change_override_organiser_allowed(self):
-        """Test the ModelAdmin change page
+        """Test the override organiser permission for changing events
 
         If I'm allowed to override organiser restrictions..
         """
         self._add_override_organiser_permission()
-        self.event.organiser = self.committee
-        self.event.save()
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
 
     def test_modeladmin_change_organiser_no_permissions_denied(self):
-        """Test the ModelAdmin change page
+        """Committee members without change permissions are banned
 
         If I'm an organiser, but don't have perms I should not
         be allowed access
         """
         self._remove_event_permission()
-        self.event.organiser = self.committee
         CommitteeMembership.objects.create(
             member=self.member,
             committee=self.committee)
-        self.event.save()
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(403, response.status_code)
 
     def test_modeladmin_change_superuser_allowed(self):
-        """Test the ModelAdmin change page
-
-        If I'm an organiser I should be allowed access
-        """
-        self.event.organiser = self.committee
-        self.event.save()
+        """Superuser should be allowed access always"""
         self.member.user.is_superuser = True
         self.member.user.save()
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
 
     def test_modeladmin_change_organiser_denied(self):
-        """Test the ModelAdmin change page
-
-        If I'm not an organiser I should not be allowed access
-        """
-        self.event.organiser = self.committee
-        self.event.save()
+        """If I'm not an organiser I should not be allowed access"""
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(403, response.status_code)
 
@@ -154,12 +124,13 @@ class AdminTest(TestCase):
 class RegistrationTest(TestCase):
     """Tests for registration view"""
 
-    fixtures = ['members.json']
+    fixtures = ['members.json', 'committees.json']
 
     @classmethod
     def setUpTestData(cls):
         cls.event = Event.objects.create(
             pk=1,
+            organiser=Committee.objects.get(pk=1),
             title_nl='testevene',
             title_en='testevent',
             description_en='desc',
