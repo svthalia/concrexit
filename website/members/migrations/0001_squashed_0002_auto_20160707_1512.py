@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('language', models.CharField(choices=[('en', 'English'), ('nl', 'Dutch')], default='nl', help_text='Preferred language for e.g. news letters', max_length=5, verbose_name='Preferred language')),
                 ('receive_optin', models.BooleanField(default=True, help_text="Receive mailings about vacancies and events from Thalia's sponsors.", verbose_name='Receive opt-in mailings')),
                 ('direct_debit_authorized', models.BooleanField(choices=[(True, 'Yes, I want Thalia to take the membership fees from my bank account through direct debit for each year.'), (False, 'No, I will pay the contribution myself')], default=False, help_text='Each year, have Thalia take the membership fees from my bank account', verbose_name='Direct debit')),
-                ('bank_account', localflavor.generic.models.IBANField(False, ('AT', 'BE', 'BG', 'CH', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GI', 'GR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MC', 'MT', 'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'SM'), blank=True, help_text='Bank account for direct debit', verbose_name='Bank account')),
+                ('bank_account', localflavor.generic.models.IBANField(include_countries=('AT', 'BE', 'BG', 'CH', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GI', 'GR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MC', 'MT', 'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'SM'), blank=True, help_text='Bank account for direct debit', verbose_name='Bank account')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
