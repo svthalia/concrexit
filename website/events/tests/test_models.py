@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
+from activemembers.models import Committee
 from events.models import Event, Registration
 from members.models import Member
 
@@ -11,13 +12,14 @@ from members.models import Member
 class EventTest(TestCase):
     """Tests events"""
 
-    fixtures = ['members.json']
+    fixtures = ['members.json', 'committees.json']
 
     @classmethod
     def setUpTestData(cls):
         cls.event = Event.objects.create(
             title_nl='testevene',
             title_en='testevent',
+            organiser=Committee.objects.get(pk=1),
             description_en='desc',
             description_nl='besch',
             start=(timezone.now() + datetime.timedelta(hours=1)),
@@ -159,13 +161,14 @@ class EventTest(TestCase):
 class RegistrationTest(TestCase):
     """Tests event registrations"""
 
-    fixtures = ['members.json']
+    fixtures = ['members.json', 'committees.json']
 
     @classmethod
     def setUpTestData(cls):
         cls.event = Event.objects.create(
             title_nl='testevene',
             title_en='testevent',
+            organiser=Committee.objects.get(pk=1),
             description_en='desc',
             description_nl='besch',
             start=timezone.now(),
