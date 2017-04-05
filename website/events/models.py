@@ -209,6 +209,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     class Meta:
         ordering = ('-start',)
+        permissions = (
+            ("override_organiser", "Can access events as if organizing"),
+        )
 
 
 class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):

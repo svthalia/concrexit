@@ -34,6 +34,9 @@ class AdminTest(TestCase):
         cls.permission_change_event = Permission.objects.get(
             content_type__model='event',
             codename='change_event')
+        cls.permission_override_orga = Permission.objects.get(
+            content_type__model='event',
+            codename='override_organiser')
         cls.member.user.user_permissions.add(cls.permission_change_event)
         cls.member.user.is_superuser = False
         cls.member.user.save()
@@ -44,6 +47,9 @@ class AdminTest(TestCase):
 
     def _remove_event_permission(self):
         self.member.user.user_permissions.remove(self.permission_change_event)
+
+    def _add_override_organiser_permission(self):
+        self.member.user.user_permissions.add(self.permission_override_orga)
 
     def test_admin_details_need_change_event_access(self):
         """I need the event.change_event permission to do stuff"""
@@ -72,6 +78,13 @@ class AdminTest(TestCase):
         response = self.client.get('/events/admin/1/')
         self.assertEqual(200, response.status_code)
 
+    def test_admin_details_override_organiser_allowed(self):
+        self._add_override_organiser_permission()
+        self.event.organiser = self.committee
+        self.event.save()
+        response = self.client.get('/events/admin/1/')
+        self.assertEqual(200, response.status_code)
+
     def test_modeladmin_change_no_organiser_allowed(self):
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
@@ -85,6 +98,17 @@ class AdminTest(TestCase):
         CommitteeMembership.objects.create(
             member=self.member,
             committee=self.committee)
+        self.event.save()
+        response = self.client.get('/admin/events/event/1/change/')
+        self.assertEqual(200, response.status_code)
+
+    def test_modeladmin_change_override_organiser_allowed(self):
+        """Test the ModelAdmin change page
+
+        If I'm allowed to override organiser restrictions..
+        """
+        self._add_override_organiser_permission()
+        self.event.organiser = self.committee
         self.event.save()
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
