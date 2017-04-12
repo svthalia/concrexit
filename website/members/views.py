@@ -100,23 +100,26 @@ def profile(request, pk=None):
     memberships = member.committeemembership_set.all()
     achievements = {}
     for membership in memberships:
+        period = {
+            'since': membership.since,
+            'until': membership.until,
+            'chair': membership.chair
+        }
+
+        if (membership.until is None and
+                hasattr(membership.committee, 'board')):
+            period['until'] = membership.committee.board.until
+
         name = membership.committee.name
         if achievements.get(name):
-            achievements[name]['periods'].append({
-                'since': membership.since,
-                'until': membership.until,
-                'chair': membership.chair
-            })
+            achievements[name]['periods'].append(period)
             if achievements[name]['earliest'] > membership.since:
                 achievements[name]['earliest'] = membership.since
+            achievements[name]['periods'].sort(key=lambda x: x['since'])
         else:
             achievements[name] = {
                 'name': name,
-                'periods': [{
-                    'since': membership.since,
-                    'until': membership.until,
-                    'chair': membership.chair
-                }],
+                'periods': [period],
                 'earliest': membership.since,
             }
     mentor_years = member.mentorship_set.all()
