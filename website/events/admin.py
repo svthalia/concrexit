@@ -90,7 +90,7 @@ class EventAdmin(DoNextModelAdmin):
     def registration_date(self, obj):
         start_date = obj.registration_start
         return _date(start_date, "l d b Y, G:i")
-    registration_date.short_description = _('Registration Date')
+    registration_date.short_description = _('Registration Start')
 
     def edit_link(self, obj):
         return _('Edit')
