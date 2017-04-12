@@ -20,6 +20,7 @@ class MailingList(models.Model):
 
     prefix = models.CharField(
         verbose_name=_("Prefix"),
+        blank=True,
         max_length=200,
         help_text=_('Enter a prefix that should be prefixed to subjects '
                     'of all emails sent via this mailinglist.'),
