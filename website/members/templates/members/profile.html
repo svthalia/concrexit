@@ -56,8 +56,10 @@
                     <span>{{ achievement.name }}</span>
                     <br>
                     {% for period in achievement.periods %}
-                        {% if period.chair %}
-                        <span style="text-transform:inherit;">Voorzitter: </span>
+                        {% if period.role %}
+                        <span style="text-transform:inherit;">{{ period.role }}: </span>
+                        {% elif period.chair %}
+                        <span style="text-transform:inherit;">{% trans "Chair" %}: </span>
                         {% endif %}
                         <i>{% if period.since|date:'Y m d' == '1970 01 01' %}?{% else %}{{ period.since }}{% endif %} - {% if period.until %}{{ period.until }}{% else %}{% trans "today" %}{% endif %}</i>
                     <br>

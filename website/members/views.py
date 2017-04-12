@@ -106,6 +106,9 @@ def profile(request, pk=None):
             'chair': membership.chair
         }
 
+        if hasattr(membership.committee, 'board'):
+            period['role'] = membership.role
+
         if (membership.until is None and
                 hasattr(membership.committee, 'board')):
             period['until'] = membership.committee.board.until
