@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import date as _date
 
 from members.models import Member
 from utils.translation import TranslatedModelAdmin
@@ -54,7 +55,7 @@ class EventAdmin(DoNextModelAdmin):
               'registration_start', 'registration_end', 'cancel_deadline',
               'location', 'map_location', 'price', 'fine',
               'max_participants', 'no_registration_message', 'published')
-    list_display = ('overview_link', 'start', 'registration_start',
+    list_display = ('overview_link', 'event_date', 'registration_date',
                     'num_participants', 'organiser', 'published', 'edit_link')
     list_display_links = ('edit_link',)
     list_filter = ('start', 'published')
@@ -80,6 +81,16 @@ class EventAdmin(DoNextModelAdmin):
         except Member.DoesNotExist:
             pass
         return super().has_change_permission(request, event)
+
+    def event_date(self, obj):
+        event_date = obj.start
+        return _date(event_date, "l d b Y, G:i")
+    event_date.short_description = _('Event Date')
+
+    def registration_date(self, obj):
+        start_date = obj.registration_start
+        return _date(start_date, "l d b Y, G:i")
+    registration_date.short_description = _('Registration Date')
 
     def edit_link(self, obj):
         return _('Edit')
