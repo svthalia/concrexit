@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 {% load staticfiles compress %}
 
-{% block css_head %}
-    {{ block.super }}
-    <div
-        class="header-image container"
-        style="background-image: url('{% block header_image %}{% static "images/header_banners/banner3.jpg" %}{% endblock header_image%}')">
-    </div>
-    {% compress css %}
-    <link href="{% static "education/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
-{% endblock %}
+{{ block.super }}
+<div
+    class="header-image container"
+    style="background-image: url('{% block header_image %}{% static "images/header_banners/banner3.jpg" %}{% endblock header_image%}')">
+</div>
+{% compress css %}
+<link href="{% static "education/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
+{% endcompress %}
