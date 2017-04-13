@@ -171,6 +171,7 @@ def event(request, event_id):
         perc = 100.0 * len(registrations) / event.max_participants
         context['registration_percentage'] = perc
 
+    registration = None
     try:
         registration = Registration.objects.get(
             event=event,
@@ -179,6 +180,22 @@ def event(request, event_id):
         context['registration'] = registration
     except (Registration.DoesNotExist, AttributeError):
         pass
+
+    context['user_registration_allowed'] = (
+        request.user.is_authenticated and request.user.member is not None and
+        request.user.member.current_membership is not None and
+        request.user.member.can_attend_events)
+    context['can_create_event_registration'] = (
+        (registration is None or registration.date_cancelled is not None) and
+        (event.status == event.REGISTRATION_OPEN or
+         event.status == event.REGISTRATION_OPEN_NO_CANCEL))
+    context['can_cancel_event_registration'] = (
+        registration is not None and registration.date_cancelled is None and
+        (event.status == event.REGISTRATION_OPEN or
+         event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY))
+    context['can_update_event_registration'] = (
+        event.status == event.REGISTRATION_OPEN or
+        event.status == event.REGISTRATION_OPEN_NO_CANCEL)
 
     return render(request, 'events/event.html', context)
 
