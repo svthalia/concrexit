@@ -51,7 +51,7 @@ def wiki_login(request):
         except Member.DoesNotExist:
             memberships = []
 
-        if user.has_perm('board_wiki'):
+        if user.has_perm('activemembers.board_wiki'):
             memberships.append('bestuur')
 
         return JsonResponse({'status': 'ok',
