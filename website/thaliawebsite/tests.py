@@ -1,12 +1,14 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.test import TestCase, override_settings
 
 
 class WikiLoginTestCase(TestCase):
     """Tests event registrations"""
 
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(
             username='testuser',
             first_name='first',
             last_name='last_name',
@@ -40,6 +42,22 @@ class WikiLoginTestCase(TestCase):
                                            'mail': 'foo@bar.com',
                                            'name': 'first last_name',
                                            'status': 'ok'})
+
+    @override_settings(WIKI_API_KEY='key')
+    def test_board_permission(self):
+        self.user.user_permissions.add(
+            Permission.objects.get(codename='board_wiki'))
+        response = self.client.post('/api/wikilogin',
+                                    {'apikey': 'key',
+                                     'user': 'testuser',
+                                     'password': 'top secret'})
+        self.assertEqual(response.json(), {'admin': False,
+                                           'committees': ['bestuur'],
+                                           'msg': 'Logged in',
+                                           'mail': 'foo@bar.com',
+                                           'name': 'first last_name',
+                                           'status': 'ok'})
+        self.assertEqual(response.status_code, 200)
 
     @override_settings(WIKI_API_KEY='key')
     def test_wrongargs(self):
