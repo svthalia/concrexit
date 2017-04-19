@@ -1,5 +1,6 @@
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import strip_tags
 from rest_framework import serializers
 
 from events.models import Event
@@ -45,7 +46,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
         return instance.title
 
     def _description(self, instance):
-        return instance.description
+        return strip_tags(instance.description)
 
     def _background_color(self, instance):
         pass
