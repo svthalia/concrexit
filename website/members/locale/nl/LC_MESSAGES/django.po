@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-30 16:12+0200\n"
-"PO-Revision-Date: 2017-03-30 16:12+0200\n"
+"POT-Creation-Date: 2017-04-12 19:40+0200\n"
+"PO-Revision-Date: 2017-04-12 19:40+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -74,15 +74,15 @@ msgstr "Studentnummer"
 msgid "Download student number label for selected users"
 msgstr "Download studentnummers voor geselecteerde gebruikers"
 
-#: forms.py:37
+#: forms.py:42
 msgid "Send welcome email"
 msgstr "Stuur welkomste-mails"
 
-#: forms.py:38
+#: forms.py:43
 msgid "This email will include the generated password"
 msgstr "Deze e-mail zal het gegenereerde wachtwoord bevatten"
 
-#: forms.py:68
+#: forms.py:75
 msgid "Welcome to Study Association Thalia"
 msgstr "Welkom bij Studievereniging Thalia"
 
@@ -507,6 +507,10 @@ msgid "Achievements for Thalia"
 msgstr "Verdiensten voor Thalia"
 
 #: templates/members/profile.html:62
+msgid "Chair"
+msgstr "Voorzitter"
+
+#: templates/members/profile.html:64
 msgid "today"
 msgstr "heden"
 
