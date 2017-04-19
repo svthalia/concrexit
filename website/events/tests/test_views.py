@@ -287,14 +287,16 @@ class RegistrationTest(TestCase):
 
         # This is wrong
         response = self.client.post('/events/1/registration/register/',
-                                    {'test': 'test'},
+                                    {'test': 'test',
+                                     'csrf': 'token'},
                                     follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.event.num_participants(), 0)
 
         # This is correct
         response = self.client.post('/events/1/registration/register/',
-                                    {'info_field_1': 'test'},
+                                    {'info_field_1': 'test',
+                                     'csrf': 'token'},
                                     follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.event.num_participants(), 1)
@@ -388,14 +390,16 @@ class RegistrationTest(TestCase):
         response = self.client.post('/events/1/registration/register/',
                                     {'info_field_1': True,
                                      'info_field_2': 42,
-                                     'info_field_3': "text"},
+                                     'info_field_3': 'text',
+                                     'csrf': 'random'},
                                     follow=True)
         self.assertEqual(response.status_code, 200)
 
         response = self.client.post('/events/1/registration/update/',
                                     {'info_field_1': False,
                                      'info_field_2': 1337,
-                                     'info_field_3': "no text"},
+                                     'info_field_3': 'no text',
+                                     'csrf': 'random'},
                                     follow=True)
         self.assertEqual(response.status_code, 200)
 
