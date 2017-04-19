@@ -5,7 +5,9 @@ from django.test import Client, TestCase
 from django.utils import timezone
 
 from activemembers.models import Committee, CommitteeMembership
-from events.models import Event, Registration, RegistrationInformationField
+from events.models import Event, Registration, RegistrationInformationField, \
+    BooleanRegistrationInformation, IntegerRegistrationInformation, \
+    TextRegistrationInformation
 from members.models import Member
 
 
@@ -296,3 +298,109 @@ class RegistrationTest(TestCase):
                                     follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.event.num_participants(), 1)
+
+    def test_registration_update_form_load_not_changes_fields(self):
+        self.event.registration_start = (timezone.now() -
+                                         datetime.timedelta(hours=1))
+        self.event.registration_end = (timezone.now() +
+                                       datetime.timedelta(hours=1))
+        self.event.cancel_deadline = (timezone.now() +
+                                      datetime.timedelta(hours=1))
+        self.event.save()
+
+        field1 = RegistrationInformationField.objects.create(
+            pk=1,
+            event=self.event,
+            type=RegistrationInformationField.BOOLEAN_FIELD,
+            name_en="test bool",
+            name_nl="test bool",
+            required=False)
+
+        field2 = RegistrationInformationField.objects.create(
+            pk=2,
+            event=self.event,
+            type=RegistrationInformationField.INTEGER_FIELD,
+            name_en="test int",
+            name_nl="test int",
+            required=False)
+
+        field3 = RegistrationInformationField.objects.create(
+            pk=3,
+            event=self.event,
+            type=RegistrationInformationField.TEXT_FIELD,
+            name_en="test text",
+            name_nl="test text",
+            required=False)
+
+        registration = Registration.objects.create(
+            event=self.event, member=self.member)
+        BooleanRegistrationInformation.objects.create(
+            registration=registration, field=field1, value=True)
+        IntegerRegistrationInformation.objects.create(
+            registration=registration, field=field2, value=42)
+        TextRegistrationInformation.objects.create(
+            registration=registration, field=field3, value="text")
+
+        # as if there is a csrf token
+        response = self.client.post('/events/1/registration/update/',
+                                    {'csrf': 'random'},
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        registration = self.event.registration_set.first()
+        self.assertEqual(field1.get_value_for(registration), True)
+        self.assertEqual(field2.get_value_for(registration), 42)
+        self.assertEqual(field3.get_value_for(registration), 'text')
+
+    def test_registration_update_form_post_changes_fields(self):
+        self.event.registration_start = (timezone.now() -
+                                         datetime.timedelta(hours=1))
+        self.event.registration_end = (timezone.now() +
+                                       datetime.timedelta(hours=1))
+        self.event.cancel_deadline = (timezone.now() +
+                                      datetime.timedelta(hours=1))
+        self.event.save()
+
+        field1 = RegistrationInformationField.objects.create(
+            pk=1,
+            event=self.event,
+            type=RegistrationInformationField.BOOLEAN_FIELD,
+            name_en="test bool",
+            name_nl="test bool",
+            required=False)
+
+        field2 = RegistrationInformationField.objects.create(
+            pk=2,
+            event=self.event,
+            type=RegistrationInformationField.INTEGER_FIELD,
+            name_en="test int",
+            name_nl="test int",
+            required=False)
+
+        field3 = RegistrationInformationField.objects.create(
+            pk=3,
+            event=self.event,
+            type=RegistrationInformationField.TEXT_FIELD,
+            name_en="test text",
+            name_nl="test text",
+            required=False)
+
+        response = self.client.post('/events/1/registration/register/',
+                                    {'info_field_1': True,
+                                     'info_field_2': 42,
+                                     'info_field_3': "text"},
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post('/events/1/registration/update/',
+                                    {'info_field_1': False,
+                                     'info_field_2': 1337,
+                                     'info_field_3': "no text"},
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(self.event.num_participants(), 1)
+        registration = self.event.registration_set.first()
+        self.assertEqual(field1.get_value_for(registration), False)
+        self.assertEqual(field2.get_value_for(registration), 1337)
+        self.assertEqual(field3.get_value_for(registration), 'no text')
