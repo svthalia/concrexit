@@ -8,7 +8,8 @@ from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from events.api.permissions import UnpublishedEventPermissions
-from events.api.serializers import EventSerializer, UnpublishedEventSerializer, EventDataSerializer
+from events.api.serializers import EventSerializer, UnpublishedEventSerializer, EventDataSerializer, \
+    EventDataForEventListSerializer
 from events.models import Event
 
 
@@ -70,3 +71,24 @@ class EventViewset(viewsets.ViewSet):
                     request.query_params['event_id']
                 )
             )
+
+    @list_route(permission_classes=[IsAuthenticated])
+    def eventlist(self, request):
+        try:
+            start = timezone.make_aware(
+                datetime.strptime(request.query_params['start'], '%Y-%m-%d')
+            )
+            end = timezone.make_aware(
+                datetime.strptime(request.query_params['end'], '%Y-%m-%d')
+            )
+        except:
+            raise ParseError(detail='start or end query parameters invalid')
+
+        queryset = self.queryset.filter(
+            end__gte=start,
+            start__lte=end,
+            published=True
+        )
+
+        serializer = EventDataForEventListSerializer(queryset, many=True)
+        return Response(serializer.data)

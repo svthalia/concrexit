@@ -95,3 +95,10 @@ class EventDataSerializer(serializers.ModelSerializer):
         model = Event
         fields = ('title', 'description', 'start', 'end', 'organiser',
                   'location', 'price', 'fine')
+
+
+class EventDataForEventListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('title', 'description', 'start',
+                  'location', 'price', 'id')
