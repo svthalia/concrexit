@@ -88,3 +88,10 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
     def _url(self, instance):
         return reverse('events:admin-details', kwargs={
             'event_id': instance.id})
+
+
+class EventDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('title', 'description', 'start', 'end', 'organiser',
+                  'location', 'price', 'fine')
