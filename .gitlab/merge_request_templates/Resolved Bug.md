@@ -1,0 +1,11 @@
+**[resolved-bug]**
+
+Closes #ISSUE
+
+#### Previous behaviour
+Steps to reproduce:
+1.
+
+#### New behaviour
+Steps to reproduce:
+1.
