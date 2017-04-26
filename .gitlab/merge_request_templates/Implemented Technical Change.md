@@ -1,4 +1,4 @@
-**[technical-change]**
+/label ~"technical change"
 
 Closes #ISSUE
 

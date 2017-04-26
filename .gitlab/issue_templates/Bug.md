@@ -1,4 +1,4 @@
-**[bug]**
+/label ~bug ~"priority: medium"
 
 ### One-sentence description
 

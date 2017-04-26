@@ -1,4 +1,4 @@
-**[feature-request]**
+/label ~feature ~"priority: low"
 
 ### One-sentence description
 
