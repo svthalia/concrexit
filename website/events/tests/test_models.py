@@ -217,3 +217,20 @@ class RegistrationTest(TestCase):
                                              name='test name',
                                              member=self.member)
             r3.clean()
+
+    def test_would_cancel_after_deadline(self):
+        self.event.registration_start = (timezone.now() -
+                                         datetime.timedelta(hours=1))
+        self.event.registration_end = (timezone.now() -
+                                       datetime.timedelta(hours=1))
+        self.event.cancel_deadline = (timezone.now() -
+                                      datetime.timedelta(hours=1))
+
+        # Test situation where the event status is REGISTRATION_CLOSED
+        self.assertEqual(self.r1.would_cancel_after_deadline(), True)
+
+        self.event.registration_end = (timezone.now() +
+                                       datetime.timedelta(hours=2))
+
+        # Test situation where the event status is REGISTRATION_OPEN_NO_CANCEL
+        self.assertEqual(self.r1.would_cancel_after_deadline(), True)

@@ -366,6 +366,11 @@ class Registration(models.Model):
             date__lte=self.date
         ).count() - self.event.max_participants, 0)
 
+    def would_cancel_after_deadline(self):
+        return (self.queue_position() == 0 and
+                (self.event.status == Event.REGISTRATION_CLOSED or
+                 self.event.status == Event.REGISTRATION_OPEN_NO_CANCEL))
+
     def clean(self):
         if ((self.member is None and not self.name) or
                 (self.member and self.name)):
