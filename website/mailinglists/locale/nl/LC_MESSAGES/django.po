@@ -7,49 +7,108 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-26 18:17+0100\n"
-"PO-Revision-Date: 2017-02-26 18:18+0100\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"POT-Creation-Date: 2017-04-12 19:33+0200\n"
+"PO-Revision-Date: 2017-04-12 19:39+0200\n"
+"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: models.py:12
 msgid "Name"
 msgstr "Naam"
 
-#: models.py:16 models.py:75
+#: models.py:16 models.py:95
 msgid "Enter a simpler name"
 msgstr "Vul een eenvoudigere naam in"
 
-#: models.py:21
+#: models.py:18
+msgid "Enter the name for the list (i.e. name@thalia.nu)."
+msgstr "Vul een naam voor de lijst in (d.w.z. naam@thalia.nu)"
+
+#: models.py:22
 msgid "Prefix"
 msgstr "Voorvoegsel"
 
-#: models.py:26
+#: models.py:24
+msgid ""
+"Enter a prefix that should be prefixed to subjects of all emails sent via "
+"this mailinglist."
+msgstr ""
+"Vul een prefix in die voor het onderwerp van alle e-mails die via de "
+"lijst worden verstuurd moet worden gezet."
+
+#: models.py:29
 msgid "Archived"
 msgstr "Gearchiveerd"
 
 #: models.py:31
+msgid "Indicate whether an archive should be kept."
+msgstr "Geef aan of er een archief moet worden bijgehouden."
+
+#: models.py:35
 msgid "Moderated"
 msgstr "Gemodereerd"
 
-#: models.py:36
+#: models.py:37
+msgid "Indicate whether emails to the list require approval."
+msgstr "Geef aan of e-mails aan deze lijst goedgekeurd moeten worden."
+
+#: models.py:42
 msgid "Members"
 msgstr "Leden"
 
-#: models.py:39
+#: models.py:44
+msgid "Select individual members to include in the list."
+msgstr ""
+"Selecteer individuele leden die aan de lijst moeten worden toegevoegd."
+
+#: models.py:49
 msgid "Committees"
 msgstr "Commissies"
 
-#: models.py:59 models.py:71
-msgid "Email Address"
+#: models.py:50
+msgid "Select entire committees to include in the list."
+msgstr "Selecteer commissies die aan de lijst moeten worden toegevoegd."
+
+#: models.py:72
+msgid "Email address"
 msgstr "E-mailadres"
 
-#: models.py:61 models.py:79
+#: models.py:73
+msgid "Enter an explicit email address to include in the list."
+msgstr ""
+"Vul een letterlijk e-mailadres in dat aan de lijst moeten worden "
+"toegevoegd."
+
+#: models.py:77 models.py:100
 msgid "Mailing list"
 msgstr "Mailing list"
+
+#: models.py:85
+msgid "Verbatim address"
+msgstr "Letterlijk e-mailadres"
+
+#: models.py:86
+msgid "Verbatim addresses"
+msgstr "Letterlijke e-mailadressen"
+
+#: models.py:91
+msgid "Alternative name"
+msgstr "Alternatieve naam"
+
+#: models.py:97
+msgid "Enter an alternative name for the list."
+msgstr "Vul een alternatieve naam voor de lijst in."
+
+#: models.py:105
+msgid "List alias"
+msgstr "Lijstalias"
+
+#: models.py:106
+msgid "List aliasses"
+msgstr "Lijstaliassen"

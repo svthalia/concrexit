@@ -15,29 +15,42 @@ class MailingList(models.Model):
             regex=r'^[a-zA-Z0-9]+$',
             message=_('Enter a simpler name'))
         ],
+        help_text=_('Enter the name for the list (i.e. name@thalia.nu).'),
     )
 
     prefix = models.CharField(
         verbose_name=_("Prefix"),
-        max_length=200
+        blank=True,
+        max_length=200,
+        help_text=_('Enter a prefix that should be prefixed to subjects '
+                    'of all emails sent via this mailinglist.'),
     )
 
     archived = models.BooleanField(
         verbose_name=_("Archived"),
-        default=True
+        default=True,
+        help_text=_('Indicate whether an archive should be kept.')
     )
 
     moderated = models.BooleanField(
         verbose_name=_("Moderated"),
-        default=False
+        default=False,
+        help_text=_('Indicate whether emails to the list require approval.')
     )
 
-    members = models.ManyToManyField(Member,
-                                     verbose_name=_("Members"),
-                                     blank=True)
-    committees = models.ManyToManyField(Committee,
-                                        verbose_name=_("Committees"),
-                                        blank=True)
+    members = models.ManyToManyField(
+        Member,
+        verbose_name=_("Members"),
+        blank=True,
+        help_text=_('Select individual members to include in the list.'),
+    )
+
+    committees = models.ManyToManyField(
+        Committee,
+        verbose_name=_("Committees"),
+        help_text=_('Select entire committees to include in the list.'),
+        blank=True,
+    )
 
     def all_addresses(self):
         for member in self.members.all():
@@ -56,7 +69,11 @@ class MailingList(models.Model):
 
 
 class VerbatimAddress(models.Model):
-    address = models.EmailField(_("Email Address"))
+    address = models.EmailField(
+        verbose_name=_("Email address"),
+        help_text=_('Enter an explicit email address to include in the list.'),
+    )
+
     mailinglist = models.ForeignKey(MailingList,
                                     verbose_name=_("Mailing list"),
                                     on_delete=models.CASCADE,
@@ -65,17 +82,26 @@ class VerbatimAddress(models.Model):
     def __str__(self):
         return self.address
 
+    class Meta:
+        verbose_name = _("Verbatim address")
+        verbose_name_plural = _("Verbatim addresses")
+
 
 class ListAlias(models.Model):
     alias = models.CharField(
-        verbose_name=_("Email Address"),
+        verbose_name=_("Alternative name"),
         max_length=100,
         validators=[validators.RegexValidator(
             regex=r'^[a-zA-Z0-9]+$',
             message=_('Enter a simpler name'))
         ],
+        help_text=_('Enter an alternative name for the list.'),
     )
     mailinglist = models.ForeignKey(MailingList,
                                     verbose_name=_("Mailing list"),
                                     on_delete=models.CASCADE,
                                     related_name='aliasses')
+
+    class Meta:
+        verbose_name = _("List alias")
+        verbose_name_plural = _("List aliasses")
