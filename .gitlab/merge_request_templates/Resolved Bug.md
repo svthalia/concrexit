@@ -8,6 +8,6 @@ Steps to reproduce:
 1.
 
 #### New behaviour
-Steps to reproduce:
+Steps to validate that it works:
 
 1.
