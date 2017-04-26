@@ -16,14 +16,11 @@ services:
             - postgres
         volumes:
             - ./website:/usr/src/app
-            - /concrexit/
+            - concrexit:/concrexit/
         environment:
             <<: *postgresvars
             DJANGO_DEBUG: 'True'
             DJANGO_POSTGRES_HOST: postgres
-            MIGRATION_KEY: ${CONCREXIT_MIGRATION_KEY}
 volumes:
-    concrexit-media:
-        driver: local
-    concrexit-static:
+    concrexit:
         driver: local

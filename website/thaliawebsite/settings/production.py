@@ -58,7 +58,8 @@ CONN_MAX_AGE = '60'
 MEDIA_ROOT = '/concrexit/media'
 MEDIA_URL = '/media/'  # Public is included by the db fields
 
-SENDFILE_BACKEND = 'sendfile.backends.nginx'
+if not settings.DEBUG:
+    SENDFILE_BACKEND = 'sendfile.backends.nginx'
 SENDFILE_URL = '/media/'
 SENDFILE_ROOT = '/concrexit/media/'
 
