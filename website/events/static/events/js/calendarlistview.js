@@ -6,24 +6,24 @@ ListView = View.extend({ // make a subclass of View
 
     title: gettext("Upcoming Events"),
 
-    updateTitle: function() {
+    updateTitle: function () {
         // this space intentionally left blank
     },
 
-    computeRange: function(date) {
+    computeRange: function (date) {
         var range = View.prototype.computeRange.call(this, date);
         range.end.add(1, 'years');
         return range;
     },
 
-    renderEvents: function(events) {
+    renderEvents: function (events) {
         var ul = $('<ul>').addClass('toggles');
 
         if (this.opt('maxEvents') != undefined) {
             events = events.slice(0, this.opt('maxEvents'));
         }
 
-        events.sort(function(a, b) {
+        events.sort(function (a, b) {
             return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
         });
 
@@ -49,6 +49,15 @@ ListView = View.extend({ // make a subclass of View
                 li.append('<div class="event-indication" title="' + gettext("Not registered for this event") + '"><div class="no-registration"></div></div>');
             }
 
+            if (e.backgroundColor !== null) {
+                li.css('background-color', e.backgroundColor);
+            }
+
+            if (e.textColor !== null) {
+                li.find(".toggle-title a").css('color', e.textColor);
+                li.find(".toggle-content a").css('color', e.textColor);
+            }
+
             ul.append(li);
         }
         // This originates from theme_thimbus/themes/thimbus/assets/js/scripts_dev.js,
@@ -61,9 +70,9 @@ ListView = View.extend({ // make a subclass of View
                 return;
             }
             if ($parent.hasClass('current')) {
-                $parent.removeClass('current').find('.toggle-content').stop().css('display','block').slideUp(500,'easeOutExpo');
+                $parent.removeClass('current').find('.toggle-content').stop().css('display', 'block').slideUp(500, 'easeOutExpo');
             } else {
-                $parent.addClass('current').find('.toggle-content').stop().css('display','none').slideDown(500,'easeOutExpo');
+                $parent.addClass('current').find('.toggle-content').stop().css('display', 'none').slideDown(500, 'easeOutExpo');
                 $parent.siblings('.current').find('.toggle-title').trigger('click');
             };
         });
