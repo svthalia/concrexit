@@ -216,7 +216,9 @@ def _send_queue_mail(event):
 
 def _show_registration_fields(request, event, reg, action):
     form = FieldsForm(registration=reg)
-    if request.POST:
+    # check length, since request is always post, length > 1 means that
+    # there are more posted fields than just the CSRF token
+    if request.method == 'POST' and len(request.POST) > 1:
         form = FieldsForm(request.POST, registration=reg)
         if form.is_valid():
             reg.save()
