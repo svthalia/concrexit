@@ -191,8 +191,8 @@ def event(request, event_id):
          event.status == event.REGISTRATION_OPEN_NO_CANCEL))
     context['can_cancel_event_registration'] = (
         registration is not None and registration.date_cancelled is None and
-        (event.status == event.REGISTRATION_OPEN or
-         event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY))
+        event.status != event.REGISTRATION_NOT_NEEDED and
+        event.status != event.REGISTRATION_NOT_YET_OPEN)
     context['can_update_event_registration'] = (
         event.status == event.REGISTRATION_OPEN or
         event.status == event.REGISTRATION_OPEN_NO_CANCEL)
