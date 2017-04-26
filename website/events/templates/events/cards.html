@@ -24,7 +24,7 @@
                             <div class="circle-inner">{{ next_event.event.start.day }}<span>{{ next_event.event.start|date:"M" }}</span></div>
                         </div>
                         <div class="post-excerpt">
-                            <p>{{ next_event.event.description|striptags|safe }}</p>
+                            <p>{{ next_event.event.description|striptags }}</p>
                         </div>
                     </div>
                 </div>
