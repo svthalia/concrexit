@@ -19,6 +19,7 @@ def _private_thumbnails_unauthed(request, size_fit, original_path):
     to the authentication requirements for thumbnails, e.g. when sharing
     photo albums with external parties using access tokens.
     """
+    original_path = urlunquote(original_path)
     thumbpath = os.path.join(settings.MEDIA_ROOT, 'thumbnails', size_fit)
     path = os.path.normpath(os.path.join(thumbpath, original_path))
     if not os.path.commonpath([thumbpath, path]) == thumbpath:
