@@ -1,4 +1,4 @@
-**[technical-change-request]**
+/label ~"technical change" ~"priority: low"
 
 ### One-sentence description
 

@@ -1,4 +1,4 @@
-**[feature]**
+/label ~feature
 
 Closes #ISSUE
 

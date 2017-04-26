@@ -1,4 +1,4 @@
-**[resolved-bug]**
+/label ~bug
 
 Closes #ISSUE
 
