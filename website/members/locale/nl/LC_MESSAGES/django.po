@@ -525,4 +525,4 @@ msgstr "Totaal aantal Thalialeden"
 
 #: views.py:143
 msgid "Former member"
-msgstr "Oud-leden"
+msgstr "Oud-lid"
