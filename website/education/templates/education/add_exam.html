@@ -26,10 +26,6 @@
                 {% for error in field.errors %}
                     <span class="help-block">{{ error|escape }}</span>
                 {% endfor %}
-
-                {% if field.help_text and field|fieldtype != 'CheckboxInput' %}
-                <span class="help-block">{{ field.help_text|safe }}</span>
-                {% endif %}
             </div>
         </div>
     {% endfor %}
