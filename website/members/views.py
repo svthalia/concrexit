@@ -7,6 +7,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 from django.utils.text import slugify
+from django.utils.translation import gettext as _
 from sendfile import sendfile
 
 from . import models
@@ -137,8 +138,17 @@ def profile(request, pk=None):
                 'earliest': earliest,
             }
     achievements = sorted(achievements.values(), key=lambda x: x['earliest'])
+
+    membership = member.current_membership
+    membership_type = _("Former member")
+    if membership:
+        membership_type = membership.get_type_display()
     return render(request, 'members/profile.html',
-                  {'member': member, 'achievements': achievements})
+                  {
+                      'achievements': achievements,
+                      'member': member,
+                      'membership_type': membership_type,
+                   })
 
 
 @login_required

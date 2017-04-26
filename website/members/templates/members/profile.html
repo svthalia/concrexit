@@ -34,6 +34,7 @@
             <hr class="separator">
             <h4>{% trans "Personal information" %}</h4>
             <ul class="post-meta">
+                <li><span>{% trans "Membership type" %}: </span> {{ member_type }}<br></li>
                 <li><span>{% trans "Cohort" %}: </span> {{ member.starting_year }}<br></li>
 
                 <li><span>{% trans "Study programme" %}: </span> {{ member.get_programme_display }}<br></li>

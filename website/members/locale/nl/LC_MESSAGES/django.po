@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-12 19:40+0200\n"
+"POT-Creation-Date: 2017-04-26 18:58+0200\n"
 "PO-Revision-Date: 2017-04-12 19:40+0200\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -94,7 +94,7 @@ msgstr "Informatica"
 msgid "Information Sciences"
 msgstr "Informatiekunde"
 
-#: models.py:70 templates/members/profile.html:39
+#: models.py:70 templates/members/profile.html:40
 msgid "Study programme"
 msgstr "Studie"
 
@@ -154,7 +154,7 @@ msgstr "Telefoonnummer noodcontact"
 msgid "The phone number for the emergency contact"
 msgstr "Het telefoonummer van de noodcontact"
 
-#: models.py:199 templates/members/profile.html:46
+#: models.py:199 templates/members/profile.html:47
 msgid "Birthday"
 msgstr "Verjaardag"
 
@@ -170,7 +170,7 @@ msgstr ""
 "Toon je verjaardag aan andere leden op je profielpagina en in de "
 "verjaardagskalender"
 
-#: models.py:213 templates/members/profile.html:42
+#: models.py:213 templates/members/profile.html:43
 msgid "Website"
 msgstr "Website"
 
@@ -320,7 +320,7 @@ msgstr "Begunstiger"
 msgid "Honorary Member"
 msgstr "Erelid"
 
-#: models.py:393
+#: models.py:393 templates/members/profile.html:37
 msgid "Membership type"
 msgstr "Lidtype"
 
@@ -478,7 +478,7 @@ msgstr "Ex-leden"
 msgid "No members found"
 msgstr "Geen leden gevonden"
 
-#: templates/members/index.html:66 templates/members/profile.html:37
+#: templates/members/index.html:66 templates/members/profile.html:38
 msgid "Cohort"
 msgstr "Cohort"
 
@@ -502,15 +502,15 @@ msgstr "Dit lid heeft nog geen beschrijving geschreven."
 msgid "Personal information"
 msgstr "Persoonlijke gegevens"
 
-#: templates/members/profile.html:52
+#: templates/members/profile.html:53
 msgid "Achievements for Thalia"
 msgstr "Verdiensten voor Thalia"
 
-#: templates/members/profile.html:62
+#: templates/members/profile.html:63
 msgid "Chair"
 msgstr "Voorzitter"
 
-#: templates/members/profile.html:64
+#: templates/members/profile.html:65
 msgid "today"
 msgstr "heden"
 
@@ -522,3 +522,7 @@ msgstr "Statistieken"
 #: templates/members/statistics.html:11
 msgid "Total amount of Thalia members"
 msgstr "Totaal aantal Thalialeden"
+
+#: views.py:143
+msgid "Former member"
+msgstr "Oud-lid"
