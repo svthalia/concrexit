@@ -46,7 +46,7 @@
                         {{ vacancy.get_company_name }}
                         <small>{{ vacancy.title }}</small>
                     </h5>
-                    <p>{{ vacancy.description|striptags|bleach|truncatechars:150 }}</p>
+                    <p>{{ vacancy.description|striptags|truncatechars:150 }}</p>
                     <div class="team-readmore">
                         {% if vacancy.partner %}
                              <a href="{% url 'partners:partner' slug=vacancy.partner.slug %}#vacancy-{{ vacancy.id }}">
