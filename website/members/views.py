@@ -93,7 +93,7 @@ def index(request):
 @login_required
 def profile(request, pk=None):
     if pk:
-        member = get_object_or_404(models.Member, pk=int(pk))
+        member = get_object_or_404(models.Member, user__pk=int(pk))
     else:
         member = get_object_or_404(models.Member, user=request.user)
 
