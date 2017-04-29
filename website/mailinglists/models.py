@@ -1,4 +1,5 @@
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -15,6 +16,7 @@ class MailingList(models.Model):
             regex=r'^[a-zA-Z0-9]+$',
             message=_('Enter a simpler name'))
         ],
+        unique=True,
         help_text=_('Enter the name for the list (i.e. name@thalia.nu).'),
     )
 
@@ -64,6 +66,18 @@ class MailingList(models.Model):
         for address in self.addresses.all():
             yield address
 
+    def clean(self):
+        super().clean()
+        if (ListAlias.objects
+                .filter(alias=self.name).count() > 0):
+            raise ValidationError({
+                'name': _("%(model_name)s with this "
+                          "%(field_label)s already exists.") % {
+                             'model_name': _("Mailing list"),
+                             'field_label': _("List alias")
+                         }
+            })
+
     def __str__(self):
         return self.name
 
@@ -95,12 +109,25 @@ class ListAlias(models.Model):
             regex=r'^[a-zA-Z0-9]+$',
             message=_('Enter a simpler name'))
         ],
+        unique=True,
         help_text=_('Enter an alternative name for the list.'),
     )
     mailinglist = models.ForeignKey(MailingList,
                                     verbose_name=_("Mailing list"),
                                     on_delete=models.CASCADE,
                                     related_name='aliasses')
+
+    def clean(self):
+        super().clean()
+        if (MailingList.objects
+                .filter(name=self.alias).count() > 0):
+            raise ValidationError({
+                'alias': _("%(model_name)s with this "
+                           "%(field_label)s already exists.") % {
+                    'model_name': _("Mailing list"),
+                    'field_label': _("Name")
+                }
+            })
 
     class Meta:
         verbose_name = _("List alias")
