@@ -168,27 +168,52 @@ class BoardTest(TestCase):
         self.testboard.since = None
         self.testboard.validate_unique()
 
-    def test_unique_periods(self):
-        Board.objects.create(
-            name_nl="testbe1",
-            name_en="testbo1",
+    def test_create_unique_period1(self):
+        """ Check uniqueness with since before period of testboard """
+        b = Board(
+            name_nl="testbe",
+            name_en="testbo",
+            contact_email="test@test.com",
             description_nl="descnl",
             description_en="descen",
             since=timezone.now().date()
-                    .replace(year=1990, month=9, day=1),
+                    .replace(year=1990, month=2, day=1),
             until=timezone.now().date()
-                    .replace(year=1991, month=9, day=1)
+                    .replace(year=1990, month=9, day=1)
         )
 
         with self.assertRaises(ValidationError):
-            self.testboard.validate_unique()
+            b.full_clean()
 
-        self.testboard.until = None
+        b.until = b.until.replace(year=1990, month=8, day=31)
+        b.full_clean()
+
+        b.until = None
         with self.assertRaises(ValidationError):
-            self.testboard.validate_unique()
+            b.full_clean()
 
-        self.testboard.since = None
-        self.testboard.validate_unique()
+    def test_create_unique_period2(self):
+        """ Check uniqueness with until after period of testboard """
+        b = Board(
+            name_nl="testbe",
+            name_en="testbo",
+            contact_email="test@test.com",
+            description_nl="descnl",
+            description_en="descen",
+            since=timezone.now().date()
+                    .replace(year=1991, month=8, day=1),
+            until=timezone.now().date()
+                    .replace(year=1992, month=9, day=1)
+        )
+
+        with self.assertRaises(ValidationError):
+            b.full_clean()
+
+        b.since = b.since.replace(year=1991, month=9, day=2)
+        b.full_clean()
+
+        b.until = None
+        b.full_clean()
 
     def test_get_absolute_url(self):
         self.testboard.get_absolute_url()
