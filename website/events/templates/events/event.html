@@ -143,7 +143,7 @@
                             {% endif %}
                         {% endif %}
                         {% if event.status == event.REGISTRATION_OPEN_NO_CANCEL or event.status == event.REGISTRATION_CLOSED  %}
-                            {% if registration.date_cancelled is None and event.fine > 0 %}
+                            {% if registration.date_cancelled is None and event.fine > 0 and registration.queue_position == 0 %}
                                 {% blocktrans with costs=event.fine %}Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}. Also note that you will be unable to re-register.{% endblocktrans %}
                             {% endif %}
                         {% endif %}
