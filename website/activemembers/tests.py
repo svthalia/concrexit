@@ -161,5 +161,34 @@ class BoardTest(TestCase):
     def setUp(self):
         self.testboard = Board.objects.get(pk=3)
 
+    def test_validate_unique_works(self):
+        self.testboard.validate_unique()
+        self.testboard.until = None
+        self.testboard.validate_unique()
+        self.testboard.since = None
+        self.testboard.validate_unique()
+
+    def test_unique_periods(self):
+        Board.objects.create(
+            name_nl="testbe1",
+            name_en="testbo1",
+            description_nl="descnl",
+            description_en="descen",
+            since=timezone.now().date()
+                    .replace(year=1990, month=9, day=1),
+            until=timezone.now().date()
+                    .replace(year=1991, month=9, day=1)
+        )
+
+        with self.assertRaises(ValidationError):
+            self.testboard.validate_unique()
+
+        self.testboard.until = None
+        with self.assertRaises(ValidationError):
+            self.testboard.validate_unique()
+
+        self.testboard.since = None
+        self.testboard.validate_unique()
+
     def test_get_absolute_url(self):
         self.testboard.get_absolute_url()
