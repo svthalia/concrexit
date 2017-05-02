@@ -21,27 +21,6 @@
 {% endblock %}
 
 {% block body %}
-{% if quiz == 'startscreen' %}
-    <h1>Error 1337: Pizza not found!</h1>
-    <h2>Alles is kapot, en de Technicie is al aan het bier! Kan jij ons helpen?</h2>
-
-    <form class="form" method="post" action="{% url 'pizzas:modify-quiz' %}">
-        {% csrf_token %}
-        <input type='submit' name='incquiz' value='Jullie hebben duidelijk hulp nodig!' class='btn btn-style1' />
-    </form>
-
-    <form class="form" method="post" action="{% url 'pizzas:modify-quiz' %}">
-        {% csrf_token %}
-        <input type='submit' name='finishquiz' value='Geen tijd voor - er is toch een backup?' class='btn btn-style1' />
-    </form>
-{% elif quiz == 'endscreen' %}
-    <h2>Je bent duidelijk precies degene die we zoeken!</h2>
-    <p>Lijkt 't je tof om de infrastructuur van Thalia draaiende te houden, mee te knutselen aan de website en de app, en ervaring op te doen met een groter project dan boter-kaas-en-eieren? Spreek dan je friendly local Technicie-lid aan, of kom gewoon een keer op woensdagavond langs!</p>
-    <form class="form" method="post" action="{% url 'pizzas:modify-quiz' %}">
-        {% csrf_token %}
-        <input type='submit' name='finishquiz' value='Ok! Maar nu eerst: pizza!' class='btn btn-style1' />
-    </form>
-{% elif quiz == 'finished' %}
 {% if event %}
     {% if event.just_ended and order %}
     <div class="text-center">
@@ -158,18 +137,5 @@
             {% endif %}
         {% endif %}
     {% endif %}
-{% endif %}
-<form class="form-inline" method="post" action="{% url 'pizzas:modify-quiz' %}">
-    {% csrf_token %}
-    <input type='submit' name='restartquiz' value='Ik wil terug naar de Technicie-quiz!' class='btn btn-style1' />
-</form>
-{% else %}
-    <h2>{{ quiz.question | safe }}</h2>
-    <form class="form" method="post" action="{% url 'pizzas:modify-quiz' %}">
-        {% csrf_token %}
-        {% for answer in quiz.answers %}
-            <p><input type='submit' name='incquiz' value='{{ answer }}' class='btn btn-style1' /></p>
-        {% endfor %}
-    </form>
 {% endif %}
 {% endblock %}

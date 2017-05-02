@@ -9,128 +9,9 @@ from django.views.decorators.http import require_http_methods
 from .forms import AddOrderForm
 from .models import Order, PizzaEvent, Product
 
-QUIZ_STATES = [
-    'startscreen',
-    {'question': "Wat wil je eten?",
-     'answers': ["Chinees",
-                 "Fest",
-                 "AH",
-                 "Subway",
-                 "Pizza",
-                 "Anders, namelijk..",
-                 ]
-     },
-    {'question': "Zou je de website in Python bouwen?",
-     'answers': ["Natuurlijk, hoe anders?",
-                 "Nee, PHP of helemaal niet.",
-                 "Ik zou eerst twee jaar in PHP aan de slag gaan, "
-                 "alles weggooien, en 't dan in Python opnieuw doen.",
-                 "Ah, kan dat? Tof!",
-                 ]
-     },
-    {'question': "Als je een bug vindt, dan..",
-     'answers': ["Mail je de Technicie",
-                 "Maak je een issue in Gitlab",
-                 "Exploit je 'm om de ledendatabase te downloaden",
-                 "Zet je de verjaardag van alle leden op overmorgen",
-                 "Fix je 'm en stuur je een merge request",
-                 "Druk je met meerdere mensen op F5 om de Technicie "
-                 "3000 mailtjes te sturen.",
-                 ]
-     },
-    {'question': "Soep of saus?",
-     'answers': ["Ja",
-                 "Nee",
-                 ]
-     },
-    {'question': "Wat is je favoriete Slack-kanaal?",
-     'answers': ["#concrexit",
-                 "#general",
-                 "#server",
-                 "#thaliapp",
-                 "#random",
-                 "#luuk",
-                 "#django-errors "
-                 "- some people just want to watch the world burn",
-                 ]
-     },
-    {'question': "Je wordt gevraagd nieuwe code te reviewen. Wat doe je?",
-     'answers': ["Gewoon op merge drukken",
-                 "Four eyes principle! Ga ik even goed voor zitten",
-                 "Twintig upvotes plaatsen",
-                 "\"Dat werkt, maar wat je ook had kunnen doen..\"",
-                 "Missing unit tests!",
-                 "Gewoon op merge drukken",
-                 ".. Nee echt, het is vast getest, gewoon op merge drukken",
-                 ]
-     },
-    {'question': "Stel je hebt een bende gemaakt in git. Wat doe je?",
-     'answers': ["Ah, leuk! Interactive rebase!",
-                 "Meer branches meer beter.",
-                 "Copy-pasten en opnieuw clonen.",
-                 "Stackoverflow Googlen",
-                 ]
-     },
-    {'question': "Wat is dit?<br><br>"
-                 "<img src='http://divenewzealand.co.nz/upimg/rena-2.jpg'>",
-     'answers': ["Unaniem een belachelijk groot succes",
-                 "An accident waiting to happen",
-                 "Everything is fine, this is fine",
-                 "Gewoon Docker",
-                 ]
-     },
-    {'question': "Wat is het belangrijkst?",
-     'answers': ["Dat de tests passen",
-                 "Dat het makkelijk en leuk is",
-                 "PEP8",
-                 "uptime",
-                 "Janbeleid memes",
-                 ":partyparrot:",
-                 ]
-     },
-    {'question': "Waar is het bonnetje?<br><br>"
-                 "<img src='https://i.imgur.com/9TT2ku7.png'>",
-     'answers': ["Kwijt!",
-                 "Die heeft CnCZ nog",
-                 "Laten we dat maar voor de ALV bewaren",
-                 "Het antwoord is Ja",
-                 "Het fenomeen van de.. cyber",
-                 "Wat fijn dat u die vraag stelt!",
-                 ".. Backupsysteem",
-                 ]
-     },
-    {'question': "Welk npm-package wordt <em>niet</em> door de ThaliApp "
-                 "gebruikt?",
-     'answers': ["React",
-                 "Redux",
-                 "Babel",
-                 "webpack",
-                 "leftpad"]
-     },
-    {'question': "Wat doe je het liefst op je vrije woensdagavond?",
-     'answers': ["Code typen natuurlijk!"]
-     },
-    'endscreen',
-    'finished',
-]
-
-
-@require_http_methods(["POST"])
-def modify_quiz(request):
-    if 'incquiz' in request.POST:
-        request.session['quiz'] = min(len(QUIZ_STATES) - 1,
-                                      request.session['quiz'] + 1)
-    elif 'finishquiz' in request.POST:
-        request.session['quiz'] = len(QUIZ_STATES) - 1
-    elif 'restartquiz' in request.POST:
-        request.session['quiz'] = 0
-    return HttpResponseRedirect(reverse('pizzas:index'))
-
 
 @login_required
 def index(request):
-    if 'quiz' not in request.session:
-        request.session['quiz'] = 0
     products = Product.objects.filter(available=True).order_by('name')
     event = PizzaEvent.current()
     try:
@@ -138,8 +19,7 @@ def index(request):
                                   member=request.user.member)
     except Order.DoesNotExist:
         order = None
-    context = {'event': event, 'products': products, 'order': order,
-               'quiz': QUIZ_STATES[request.session['quiz']]}
+    context = {'event': event, 'products': products, 'order': order}
     return render(request, 'pizzas/index.html', context)
 
 
