@@ -9,9 +9,79 @@ from django.views.decorators.http import require_http_methods
 from .forms import AddOrderForm
 from .models import Order, PizzaEvent, Product
 
+QUIZ_STATES = [
+    'startscreen',
+    {'question': "Zou je de website in Python bouwen?",
+     'answers': ["Natuurlijk, hoe anders?",
+                 "Nee, PHP of helemaal niet.",
+                 "Ik zou eerst twee jaar in PHP aan de slag gaan, "
+                 "alles weggooien, en 't dan in Python opnieuw doen.",
+                 "Ah, kan dat? Tof!",
+                 ]
+     },
+    {'question': "Wat wil je eten?",
+     'answers': ["Chinees",
+                 "Fest",
+                 "AH",
+                 "Subway",
+                 "Anders, namelijk..",
+                 ]
+     },
+    {'question': "Soep of saus?",
+     'answers': ["Ja",
+                 "Nee",
+                 ]
+     },
+    {'question': "Wat is dit?<br><br>"
+                 "<img src='http://divenewzealand.co.nz/upimg/rena-2.jpg'>",
+     'answers': ["Unaniem een belachelijk groot succes",
+                 "An accident waiting to happen",
+                 "Everything is fine, this is fine",
+                 "Gewoon Docker",
+                 ]
+     },
+    {'question': "Waar is het bonnetje?<br><br>"
+                 "<img src='https://i.imgur.com/9TT2ku7.png'>",
+     'answers': ["Kwijt!",
+                 "Die heeft CnCZ nog",
+                 "Laten we dat maar voor de ALV bewaren",
+                 "Het antwoord is Ja",
+                 "Het fenomeen van de.. cyber",
+                 "Wat fijn dat u die vraag stelt!",
+                 ".. Backupsysteem",
+                 ]
+     },
+    {'question': "Stel je hebt een bende gemaakt in git. Wat doe je?",
+     'answers': ["Ah, leuk! Interactive rebase!",
+                 "Meer branches meer beter.",
+                 "Copy-pasten en opnieuw clonen.",
+                 "Stackoverflow Googlen",
+                 ]
+     },
+    {'question': "Wat doe je het liefst op je vrije woensdagavond?",
+     'answers': ["Code typen natuurlijk!"]
+     },
+    'endscreen',
+    'finished',
+]
+
+
+@require_http_methods(["POST"])
+def modify_quiz(request):
+    if 'incquiz' in request.POST:
+        request.session['quiz'] = min(len(QUIZ_STATES) - 1,
+                                      request.session['quiz'] + 1)
+    elif 'finishquiz' in request.POST:
+        request.session['quiz'] = len(QUIZ_STATES) - 1
+    elif 'restartquiz' in request.POST:
+        request.session['quiz'] = 0
+    return HttpResponseRedirect(reverse('pizzas:index'))
+
 
 @login_required
 def index(request):
+    if 'quiz' not in request.session:
+        request.session['quiz'] = 0
     products = Product.objects.filter(available=True).order_by('name')
     event = PizzaEvent.current()
     try:
@@ -19,7 +89,8 @@ def index(request):
                                   member=request.user.member)
     except Order.DoesNotExist:
         order = None
-    context = {'event': event, 'products': products, 'order': order}
+    context = {'event': event, 'products': products, 'order': order,
+               'quiz': QUIZ_STATES[request.session['quiz']]}
     return render(request, 'pizzas/index.html', context)
 
 
