@@ -99,6 +99,14 @@ QUIZ_STATES = [
                  ".. Backupsysteem",
                  ]
      },
+    {'question': "Welk npm-package wordt <em>niet</em> door de ThaliApp "
+                 "gebruikt?",
+     'answers': ["React",
+                 "Redux",
+                 "Babel",
+                 "webpack",
+                 "leftpad"]
+     },
     {'question': "Wat doe je het liefst op je vrije woensdagavond?",
      'answers': ["Code typen natuurlijk!"]
      },
