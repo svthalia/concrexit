@@ -11,6 +11,15 @@ from .models import Order, PizzaEvent, Product
 
 QUIZ_STATES = [
     'startscreen',
+    {'question': "Wat wil je eten?",
+     'answers': ["Chinees",
+                 "Fest",
+                 "AH",
+                 "Subway",
+                 "Pizza",
+                 "Anders, namelijk..",
+                 ]
+     },
     {'question': "Zou je de website in Python bouwen?",
      'answers': ["Natuurlijk, hoe anders?",
                  "Nee, PHP of helemaal niet.",
@@ -19,17 +28,47 @@ QUIZ_STATES = [
                  "Ah, kan dat? Tof!",
                  ]
      },
-    {'question': "Wat wil je eten?",
-     'answers': ["Chinees",
-                 "Fest",
-                 "AH",
-                 "Subway",
-                 "Anders, namelijk..",
+    {'question': "Als je een bug vindt, dan..",
+     'answers': ["Mail je de Technicie",
+                 "Maak je een issue in Gitlab",
+                 "Exploit je 'm om de ledendatabase te downloaden",
+                 "Zet je de verjaardag van alle leden op overmorgen",
+                 "Fix je 'm en stuur je een merge request",
+                 "Druk je met meerdere mensen op F5 om de Technicie "
+                 "3000 mailtjes te sturen.",
                  ]
      },
     {'question': "Soep of saus?",
      'answers': ["Ja",
                  "Nee",
+                 ]
+     },
+    {'question': "Wat is je favoriete Slack-kanaal?",
+     'answers': ["#concrexit",
+                 "#general",
+                 "#server",
+                 "#thaliapp",
+                 "#random",
+                 "#luuk",
+                 "#django-errors "
+                 "- some people just want to watch the world burn",
+                 ]
+     },
+    {'question': "Je wordt gevraagd nieuwe code te reviewen. Wat doe je?",
+     'answers': ["Gewoon op merge drukken",
+                 "Four eyes principle! Ga ik even goed voor zitten",
+                 "Twintig upvotes plaatsen",
+                 "\"Dat werkt, maar wat je ook had kunnen doen..\"",
+                 "Missing unit tests!",
+                 "Gewoon op merge drukken",
+                 ".. Nee echt, het is vast getest, gewoon op merge drukken",
+                 ]
+     },
+    {'question': "Stel je hebt een bende gemaakt in git. Wat doe je?",
+     'answers': ["Ah, leuk! Interactive rebase!",
+                 "Meer branches meer beter.",
+                 "Copy-pasten en opnieuw clonen.",
+                 "Stackoverflow Googlen",
                  ]
      },
     {'question': "Wat is dit?<br><br>"
@@ -38,6 +77,15 @@ QUIZ_STATES = [
                  "An accident waiting to happen",
                  "Everything is fine, this is fine",
                  "Gewoon Docker",
+                 ]
+     },
+    {'question': "Wat is het belangrijkst?",
+     'answers': ["Dat de tests passen",
+                 "Dat het makkelijk en leuk is",
+                 "PEP8",
+                 "uptime",
+                 "Janbeleid memes",
+                 ":partyparrot:",
                  ]
      },
     {'question': "Waar is het bonnetje?<br><br>"
@@ -51,12 +99,13 @@ QUIZ_STATES = [
                  ".. Backupsysteem",
                  ]
      },
-    {'question': "Stel je hebt een bende gemaakt in git. Wat doe je?",
-     'answers': ["Ah, leuk! Interactive rebase!",
-                 "Meer branches meer beter.",
-                 "Copy-pasten en opnieuw clonen.",
-                 "Stackoverflow Googlen",
-                 ]
+    {'question': "Welk npm-package wordt <em>niet</em> door de ThaliApp "
+                 "gebruikt?",
+     'answers': ["React",
+                 "Redux",
+                 "Babel",
+                 "webpack",
+                 "leftpad"]
      },
     {'question': "Wat doe je het liefst op je vrije woensdagavond?",
      'answers': ["Code typen natuurlijk!"]
