@@ -91,6 +91,9 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
 
 
 class EventDataSerializer(serializers.ModelSerializer):
+
+    description = serializers.CharField(source='stripped_description')
+
     class Meta:
         model = Event
         fields = ('title', 'description', 'start', 'end', 'organiser',
@@ -98,6 +101,9 @@ class EventDataSerializer(serializers.ModelSerializer):
 
 
 class EventDataForEventListSerializer(serializers.ModelSerializer):
+
+    description = serializers.CharField(source='stripped_description')
+
     class Meta:
         model = Event
         fields = ('title', 'description', 'start',

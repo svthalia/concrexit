@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import format_lazy
+from django.utils.html import strip_tags
 from tinymce.models import HTMLField
 
 from thaliawebsite.settings import settings
@@ -175,6 +176,10 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 return Event.REGISTRATION_OPEN
         else:
             return Event.REGISTRATION_NOT_NEEDED
+
+    @property
+    def stripped_description(self):
+        return strip_tags(self.description)
 
     def clean(self):
         super().clean()
