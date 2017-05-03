@@ -260,4 +260,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'paste_remove_styles': True,
     'paste_remove_styles_if_webkit': True,
     'paste_strip_class_attributes': "all",
+    'height': 250,
+    'width': 600,
+    'theme_advanced_resizing': True,
 }
