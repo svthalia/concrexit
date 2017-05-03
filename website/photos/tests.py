@@ -64,7 +64,7 @@ class AlbumUploadTest(TestCase):
                           "album_archive": output_file},
                          follow=True)
 
-        pk = Photo.objects.first().pk
+        pk = Album.objects.first().pk
         self.client.post('/admin/photos/album/{}/change/'.format(pk),
                          {"title": "test album",
                           "date": "2017-04-12",
@@ -85,7 +85,7 @@ class AlbumUploadTest(TestCase):
                          follow=True)
 
         output_file = create_zip(["photos/fixtures/janbeleid-hoe.jpg"])
-        pk = Photo.objects.first().pk
+        pk = Album.objects.first().pk
         self.client.post('/admin/photos/album/{}/change/'.format(pk),
                          {"title": "test album",
                           "date": "2017-04-12",

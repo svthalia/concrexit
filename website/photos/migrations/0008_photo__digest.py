@@ -15,6 +15,7 @@ def add_digests(apps, schema_editor):
         photo.save()
 
 class Migration(migrations.Migration):
+    atomic = False
 
     dependencies = [
         ('photos', '0007_auto_20170218_2142'),
