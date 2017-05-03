@@ -161,5 +161,59 @@ class BoardTest(TestCase):
     def setUp(self):
         self.testboard = Board.objects.get(pk=3)
 
+    def test_validate_unique_works(self):
+        self.testboard.validate_unique()
+        self.testboard.until = None
+        self.testboard.validate_unique()
+        self.testboard.since = None
+        self.testboard.validate_unique()
+
+    def test_create_unique_period1(self):
+        """ Check uniqueness with since before period of testboard """
+        b = Board(
+            name_nl="testbe",
+            name_en="testbo",
+            contact_email="test@test.com",
+            description_nl="descnl",
+            description_en="descen",
+            since=timezone.now().date()
+                    .replace(year=1990, month=2, day=1),
+            until=timezone.now().date()
+                    .replace(year=1990, month=9, day=1)
+        )
+
+        with self.assertRaises(ValidationError):
+            b.full_clean()
+
+        b.until = b.until.replace(year=1990, month=8, day=31)
+        b.full_clean()
+
+        b.until = None
+        with self.assertRaises(ValidationError):
+            b.full_clean()
+
+    def test_create_unique_period2(self):
+        """ Check uniqueness with until after period of testboard """
+        b = Board(
+            name_nl="testbe",
+            name_en="testbo",
+            contact_email="test@test.com",
+            description_nl="descnl",
+            description_en="descen",
+            since=timezone.now().date()
+                    .replace(year=1991, month=8, day=1),
+            until=timezone.now().date()
+                    .replace(year=1992, month=9, day=1)
+        )
+
+        with self.assertRaises(ValidationError):
+            b.full_clean()
+
+        b.since = b.since.replace(year=1991, month=9, day=2)
+        b.full_clean()
+
+        b.until = None
+        b.full_clean()
+
     def test_get_absolute_url(self):
         self.testboard.get_absolute_url()
