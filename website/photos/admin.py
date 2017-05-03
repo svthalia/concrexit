@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.utils.translation import ugettext_lazy as _
 
+from utils.translation import TranslatedModelAdmin
 from .models import Album, Photo
 
 
@@ -68,12 +69,14 @@ def save_photo(request, archive_file, photo, album):
         photo_obj.save()
 
 
-class AlbumAdmin(admin.ModelAdmin):
+class AlbumAdmin(TranslatedModelAdmin):
     list_display = ('title', 'date', 'hidden', 'shareable')
+    fields = ('title', 'slug', 'date', 'hidden', 'shareable',
+              '_cover')
     search_fields = ('title', 'date')
     list_filter = ('hidden', 'shareable')
     date_hierarchy = 'date'
-    prepopulated_fields = {'slug': ('date', 'title',)}
+    prepopulated_fields = {'slug': ('date', 'title_en',)}
     form = AlbumForm
 
     def save_model(self, request, obj, form, change):
