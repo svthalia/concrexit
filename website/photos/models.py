@@ -95,6 +95,7 @@ class Album(models.Model):
 
     slug = models.SlugField(
         verbose_name=_('slug'),
+        unique=True,
     )
 
     hidden = models.BooleanField(
