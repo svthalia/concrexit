@@ -37,7 +37,7 @@ class VacancyCategoryAdmin(TranslatedModelAdmin):
 
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
-    list_display = ('title', 'partner', 'company_name',)
+    list_display = ('title', 'partner', 'company_name','expiration_date')
 
     fieldsets = (
         (None, {
@@ -50,10 +50,10 @@ class VacancyAdmin(admin.ModelAdmin):
             'fields': ('company_name', 'company_logo',)
         }),
         ('Categories', {
-            'fields': ('categories', )
+            'fields': ('categories',)
         }),
         ('Other', {
-            'fields': ('remarks', )
+            'fields': ('remarks', 'expiration_date')
         })
     )
 
