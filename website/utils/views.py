@@ -51,6 +51,7 @@ def generate_thumbnail(request, size_fit, path, thumbpath):
         os.path.join(settings.MEDIA_ROOT, thumbpath))
     full_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, path))
     size, fit = size_fit.split('_')
+    fit = int(fit)
 
     public_media = os.path.join(settings.MEDIA_ROOT, 'public')
     thumb_root = os.path.join(settings.MEDIA_ROOT, 'thumbnails', size_fit)
