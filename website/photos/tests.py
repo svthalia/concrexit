@@ -32,7 +32,8 @@ class AlbumUploadTest(TestCase):
     def test_album_upload(self):
         output_file = create_zip(["photos/fixtures/thom_assessor.png"])
         self.client.post('/admin/photos/album/add/',
-                         {"title": "test album",
+                         {"title_nl": "test album",
+                          "title_en": "test album",
                           "date": "2017-04-12",
                           "slug": "2017-04-12-test-album",
                           "album_archive": output_file},
@@ -43,12 +44,14 @@ class AlbumUploadTest(TestCase):
 
     def test_album_create_album_twice(self):
         self.client.post('/admin/photos/album/add/',
-                         {"title": "test album",
+                         {"title_nl": "test album",
+                          "title_en": "test album",
                           "date": "2017-04-12",
                           "slug": "2017-04-12-test-album"},
                          follow=True)
         self.client.post('/admin/photos/album/add/',
-                         {"title": "test album",
+                         {"title_nl": "test album",
+                          "title_en": "test album",
                           "date": "2017-04-12",
                           "slug": "2017-04-12-test-album"},
                          follow=True)
@@ -58,7 +61,8 @@ class AlbumUploadTest(TestCase):
     def test_album_upload_same_photo_twice_in_album(self):
         output_file = create_zip(["photos/fixtures/thom_assessor.png"])
         self.client.post('/admin/photos/album/add/',
-                         {"title": "test album",
+                         {"title_nl": "test album",
+                          "title_en": "test album",
                           "date": "2017-04-12",
                           "slug": "2017-04-12-test-album",
                           "album_archive": output_file},
@@ -66,7 +70,8 @@ class AlbumUploadTest(TestCase):
 
         pk = Album.objects.first().pk
         self.client.post('/admin/photos/album/{}/change/'.format(pk),
-                         {"title": "test album",
+                         {"title_nl": "test album",
+                          "title_en": "test album",
                           "date": "2017-04-12",
                           "slug": "2017-04-12-test-album",
                           "album_archive": output_file},
@@ -78,7 +83,8 @@ class AlbumUploadTest(TestCase):
     def test_album_upload_different_photo_in_album(self):
         output_file = create_zip(["photos/fixtures/thom_assessor.png"])
         self.client.post('/admin/photos/album/add/',
-                         {"title": "test album",
+                         {"title_nl": "test album",
+                          "title_en": "test album",
                           "date": "2017-04-12",
                           "slug": "2017-04-12-test-album",
                           "album_archive": output_file},
@@ -87,7 +93,8 @@ class AlbumUploadTest(TestCase):
         output_file = create_zip(["photos/fixtures/janbeleid-hoe.jpg"])
         pk = Album.objects.first().pk
         self.client.post('/admin/photos/album/{}/change/'.format(pk),
-                         {"title": "test album",
+                         {"title_nl": "test album",
+                          "title_en": "test album",
                           "date": "2017-04-12",
                           "slug": "2017-04-12-test-album",
                           "album_archive": output_file},
