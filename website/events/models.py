@@ -15,6 +15,14 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 class Event(models.Model, metaclass=ModelTranslateMeta):
     """Represents events"""
 
+    EVENT_CATEGORIES = (
+        ('drinks', _('Drinks')),
+        ('activity', _('Activity')),
+        ('lunchlecture', _('Lunch Lecture')),
+        ('generalmeeting', _('General Meeting')),
+        ('workshop', _('Workshop')),
+        ('other', _('Other')))
+
     REGISTRATION_NOT_NEEDED = -1
     REGISTRATION_NOT_YET_OPEN = 0
     REGISTRATION_OPEN = 1
@@ -43,6 +51,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         'activemembers.Committee',
         models.PROTECT,
         verbose_name=_("organiser")
+    )
+
+    category = models.CharField(
+        max_length=40,
+        choices=EVENT_CATEGORIES,
+        verbose_name=_('category'),
+        default='other'
     )
 
     registration_start = models.DateTimeField(
@@ -163,7 +178,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         super().clean()
         errors = {}
         if self.end is not None and self.start is not None and (
-                    self.end < self.start):
+                self.end < self.start):
             errors.update({
                 'end': _("Can't have an event travel back in time")})
         if self.registration_required():
@@ -189,7 +204,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                         "If registration is required, you need a deadline for "
                         "the cancellation")})
             if self.registration_start and self.registration_end and (
-                        self.registration_start >= self.registration_end):
+                    self.registration_start >= self.registration_end):
                 message = _('Registration start should be before '
                             'registration end')
                 errors.update({
@@ -349,9 +364,9 @@ class Registration(models.Model):
                 self.date_cancelled > self.event.cancel_deadline and
                 (self.event.max_participants is None or
                  self.event.registration_set.filter(
-                    (Q(date_cancelled__gte=self.date_cancelled) |
-                     Q(date_cancelled=None)) &
-                    Q(date__lte=self.date)
+                     (Q(date_cancelled__gte=self.date_cancelled) |
+                      Q(date_cancelled=None)) &
+                     Q(date__lte=self.date)
                  ).count() < self.event.max_participants))
 
     def is_registered(self):
