@@ -37,11 +37,11 @@ class VacancyCategoryAdmin(TranslatedModelAdmin):
 
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
-    list_display = ('title', 'partner', 'company_name','expiration_date')
+    list_display = ('title', 'partner', 'company_name', 'expiration_date')
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'description', 'link')
+            'fields': ('title', 'description', 'link',)
         }),
         ('Existing Partner', {
             'fields': ('partner',)
