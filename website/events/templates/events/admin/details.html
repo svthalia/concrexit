@@ -84,6 +84,14 @@
             <dt>{% trans "registration message"|capfirst %}</dt>
             <dd>{{ event.registration_message|default:event.DEFAULT_NO_REGISTRATION_MESSAGE }}</dd>
             {% endif %}
+            <dt>{% trans "number of registrations"|capfirst %}</dt>
+            <dd>
+                {% blocktrans count counter=registrations|length trimmed %}
+                    {{ counter }} registration
+                {% plural %}
+                    {{ counter }} registrations
+                {% endblocktrans %}
+            </dd>
         </dl>
     </div>
 </div>
