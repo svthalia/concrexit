@@ -261,7 +261,7 @@ class RegistrationTest(TestCase):
         self.assertEqual(field2.get_value_for(registration), 42)
         self.assertEqual(field3.get_value_for(registration), 'text')
 
-    def test_registration_register_field_required(self):
+    def test_registration_register_fields_not_required(self):
         self.event.registration_start = (timezone.now() -
                                          datetime.timedelta(hours=1))
         self.event.registration_end = (timezone.now() +
@@ -283,22 +283,6 @@ class RegistrationTest(TestCase):
         self.assertEqual(response.status_code, 200)
         template_names = [template.name for template in response.templates]
         self.assertIn('events/event_fields.html', template_names)
-        self.assertEqual(self.event.num_participants(), 0)
-
-        # This is wrong
-        response = self.client.post('/events/1/registration/register/',
-                                    {'test': 'test',
-                                     'csrf': 'token'},
-                                    follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.event.num_participants(), 0)
-
-        # This is correct
-        response = self.client.post('/events/1/registration/register/',
-                                    {'info_field_1': 'test',
-                                     'csrf': 'token'},
-                                    follow=True)
-        self.assertEqual(response.status_code, 200)
         self.assertEqual(self.event.num_participants(), 1)
 
     def test_registration_update_form_load_not_changes_fields(self):

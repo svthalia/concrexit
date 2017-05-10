@@ -258,10 +258,9 @@ def _registration_register(request, event, reg):
         reg.event = event
         reg.member = request.user.member
         messages.success(request, _("Registration successful."))
+        reg.save()
         if event.has_fields():
             return _show_registration_fields(request, event, reg, 'register')
-        else:
-            reg.save()
     elif reg.date_cancelled is not None:
         if reg.is_late_cancellation():
             messages.error(request, _("You cannot re-register anymore since "
@@ -270,11 +269,10 @@ def _registration_register(request, event, reg):
             reg.date = timezone.now()
             reg.date_cancelled = None
             messages.success(request, _("Registration successful."))
+            reg.save()
             if event.has_fields():
                 return _show_registration_fields(request, event, reg,
                                                  'register')
-            else:
-                reg.save()
     elif not reg.member.can_attend_events:
         messages.error(request, _("You may not register"))
     else:
