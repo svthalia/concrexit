@@ -120,6 +120,15 @@ class Command(BaseCommand):
                 partner.is_active = True
                 partner.is_main_partner = True
 
+                igen = IconGenerator(5, 5)
+                icon = igen.generate(partner.name, 480, 480, (
+                    10, 10, 10, 10
+                ))
+                with tempfile.TemporaryFile() as tfile:
+                    tfile.write(icon)
+                    partner.logo.save(partner.name + '.png',
+                                      File(tfile))
+
                 self.create_partner(partner)
 
             for __ in range(options['partner']):
