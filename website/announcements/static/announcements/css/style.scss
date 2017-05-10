@@ -9,4 +9,20 @@
     .close {
         color: #FFFFFF;
     }
+
+    p {
+        display: inline;
+        margin-left: 5px;
+    }
+
+    a {
+        color: white;
+        text-decoration: underline;
+    }
+
+    a:hover {
+        color: #F0F0EE;
+        text-decoration: underline;
+        cursor: pointer;
+    }
 }
