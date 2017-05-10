@@ -9,6 +9,8 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from PIL import Image
 
+from utils.translation import ModelTranslateMeta, MultilingualField
+
 COVER_FILENAME = 'cover.jpg'
 
 
@@ -65,9 +67,10 @@ class Photo(models.Model):
         ordering = ('file', )
 
 
-class Album(models.Model):
-    title = models.CharField(
-        verbose_name=_('title'),
+class Album(models.Model, metaclass=ModelTranslateMeta):
+    title = MultilingualField(
+        models.CharField,
+        _("title"),
         max_length=200,
     )
 
@@ -133,4 +136,4 @@ class Album(models.Model):
                               .encode('utf-8')).hexdigest()
 
     class Meta:
-        ordering = ('-date', 'title')
+        ordering = ('-date', 'title_en')
