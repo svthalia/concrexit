@@ -46,7 +46,8 @@
                         {{ vacancy.get_company_name }}
                         <small>{{ vacancy.title }}</small>
                     </h5>
-                    <p>{{ vacancy.description|striptags|truncatechars:150 }}</p>
+                    {# First do bleach to translate HTML entities, then strip all HTML tags since we're truncating this #}
+                    <p>{{ vacancy.description|bleach|striptags|truncatechars:150 }}</p>
                     <div class="team-readmore">
                         {% if vacancy.partner %}
                              <a href="{% url 'partners:partner' slug=vacancy.partner.slug %}#vacancy-{{ vacancy.id }}">
