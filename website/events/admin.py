@@ -51,14 +51,15 @@ class RegistrationInformationFieldInline(admin.StackedInline):
 @admin.register(models.Event)
 class EventAdmin(DoNextModelAdmin):
     inlines = (RegistrationInformationFieldInline,)
-    fields = ('title', 'description', 'start', 'end', 'organiser',
+    fields = ('title', 'description', 'start', 'end', 'organiser', 'category',
               'registration_start', 'registration_end', 'cancel_deadline',
               'location', 'map_location', 'price', 'fine',
               'max_participants', 'no_registration_message', 'published')
     list_display = ('overview_link', 'event_date', 'registration_date',
-                    'num_participants', 'organiser', 'published', 'edit_link')
+                    'num_participants', 'organiser', 'category', 'published',
+                    'edit_link')
     list_display_links = ('edit_link',)
-    list_filter = ('start', 'published')
+    list_filter = ('start', 'published', 'category')
     actions = ('make_published', 'make_unpublished')
     date_hierarchy = 'start'
     search_fields = ('title', 'description')
