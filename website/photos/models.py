@@ -15,7 +15,10 @@ COVER_FILENAME = 'cover.jpg'
 
 
 def photo_uploadto(instance, filename):
-    return os.path.join(Album.photosdir, instance.album.dirname, filename)
+    num = instance.album.photo_set.count()
+    extension = os.path.splitext(filename)[1]
+    new_filename = str(num).zfill(4) + extension
+    return os.path.join(Album.photosdir, instance.album.dirname, new_filename)
 
 
 class Photo(models.Model):
@@ -42,6 +45,11 @@ class Photo(models.Model):
         default=False
     )
 
+    _digest = models.CharField(
+        'digest',
+        max_length=40,
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.file:
@@ -62,6 +70,11 @@ class Photo(models.Model):
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
             image.save(image_path, "JPEG")
             self._orig_file = self.file.path
+
+            hash_sha1 = hashlib.sha1()
+            for chunk in iter(lambda: self.file.read(4096), b""):
+                hash_sha1.update(chunk)
+            self._digest = hash_sha1.hexdigest()
 
     class Meta:
         ordering = ('file', )
@@ -85,6 +98,7 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
 
     slug = models.SlugField(
         verbose_name=_('slug'),
+        unique=True,
     )
 
     hidden = models.BooleanField(

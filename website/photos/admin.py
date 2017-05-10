@@ -57,16 +57,27 @@ def save_photo(request, archive_file, photo, album):
     if not os.path.basename(photo_filename):
         return
 
+    # Generate unique filename
+    num = album.photo_set.count()
+    _, extension = os.path.splitext(photo_filename)
+    new_filename = str(num).zfill(4) + extension
+
     photo_obj = Photo()
     photo_obj.album = album
     try:
         with extract_file(photo) as f:
-            photo_obj.file.save(photo_filename, ContentFile(f.read()))
+            photo_obj.file.save(new_filename, ContentFile(f.read()))
     except (OSError, AttributeError):
         messages.add_message(request, messages.WARNING,
                              _("Ignoring {}").format(photo_filename))
     else:
         photo_obj.save()
+
+        if Photo.objects.filter(album=album, _digest=photo_obj._digest)\
+                        .exclude(pk=photo_obj.pk).exists():
+            messages.add_message(request, messages.WARNING,
+                                 _("{} is duplicate.").format(photo_filename))
+            photo_obj.delete()
 
 
 class AlbumAdmin(TranslatedModelAdmin):
@@ -112,6 +123,7 @@ class PhotoAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'album', 'hidden')
     search_fields = ('file',)
     list_filter = ('album', 'hidden')
+    exclude = ('_digest',)
 
     def save_model(self, request, obj, form, change):
         obj.save()

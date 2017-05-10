@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-22 20:29+0100\n"
-"PO-Revision-Date: 2017-02-22 20:31+0100\n"
+"POT-Creation-Date: 2017-03-22 21:31+0100\n"
+"PO-Revision-Date: 2017-03-22 21:32+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: admin.py:33
 msgid "Uploading a zip or tar file adds all contained images as photos."
@@ -24,69 +24,74 @@ msgstr ""
 "Indien je een zip of tar file upload worden alle afbeeldingen in het bestand "
 "als foto’s toegevoegd."
 
-#: admin.py:64
+#: admin.py:69
 msgid "Ignoring {}"
 msgstr "{} wordt genegeerd"
 
-#: admin.py:94
+#: admin.py:76
+msgid "{} is duplicate."
+msgstr "{} is dubbel."
+
+#: admin.py:109
 msgid "The uploaded file is not a zip or tar file."
 msgstr "Het geüploade bestand is geen als zip of tar archief."
 
-#: admin.py:98 admin.py:106
+#: admin.py:113 admin.py:126
 msgid "Full-sized photos will not be saved on the Thalia-website."
 msgstr ""
 "De foto’s op de Thalia-website worden niet opgeslagen in originele grootte."
 
-#: models.py:23
+#: models.py:26
 msgid "album"
 msgstr "album"
 
-#: models.py:27
+#: models.py:30
 msgid "file"
 msgstr "bestand"
 
-#: models.py:32
+#: models.py:35
 msgid "rotation"
 msgstr "rotatie"
 
-#: models.py:35
+#: models.py:38
 msgid "This does not modify the original image file."
 msgstr "Dit verandert het originele bestand niet."
 
-#: models.py:39 models.py:88
+#: models.py:42 models.py:101
 msgid "hidden"
 msgstr "verborgen"
 
-#: models.py:70
+#: models.py:83
 msgid "title"
 msgstr "titel"
 
-#: models.py:75
+#: models.py:88
 msgid "directory name"
 msgstr "mapnaam"
 
-#: models.py:80
+#: models.py:93
 msgid "date"
 msgstr "datum"
 
-#: models.py:84
+#: models.py:97
 msgid "slug"
 msgstr "slug"
 
-#: models.py:98
+#: models.py:111
 msgid "cover image"
 msgstr "coverafbeelding"
 
-#: models.py:102
+#: models.py:115
 msgid "shareable"
 msgstr "deelbaar"
 
-#: templates/photos/album.html:4 templates/photos/index.html:4
-#: templates/photos/index.html:14
+#: templates/photos/album.html:4 templates/photos/album.html:5
+#: templates/photos/index.html:4 templates/photos/index.html:5
+#: templates/photos/index.html:15
 msgid "Photos"
 msgstr "Foto's"
 
-#: templates/photos/album.html:24
+#: templates/photos/album.html:25
 msgid ""
 "Note: This album can be shared with people outside the association by "
 "sending them the following link:"
@@ -94,7 +99,7 @@ msgstr ""
 "Let op: Dit album kan gedeeld worden met mensen buiten de vereniging via de "
 "volgende link:"
 
-#: templates/photos/index.html:66
+#: templates/photos/index.html:67
 msgid "Next"
 msgstr "Volgende"
 
