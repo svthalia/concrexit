@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from functools import reduce
 
 from django.conf import settings
+from django.contrib.staticfiles.finders import find as find_static_file
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -16,6 +17,8 @@ from localflavor.generic.models import IBANField
 from activemembers.models import Committee
 from utils.snippets import datetime_to_lectureyear
 from utils.validators import validate_file_extension
+
+from base64 import b64encode
 
 
 class ActiveMemberManager(models.Manager):
@@ -375,6 +378,23 @@ class Member(models.Model):
                     {'nickname': _('You need to enter a nickname to use it as '
                                    'display name')})
         raise ValidationError(errors)
+
+    @property
+    def b64_photo(self):
+        if self.photo:
+            photo = ''.join(['data:image/jpeg;base64,',
+                             b64encode(
+                                 self.photo.file.read()).decode()
+                             ])
+        else:
+            filename = find_static_file('members/images/default-avatar.jpg')
+            with open(filename, 'rb') as f:
+                photo = ''.join(['data:image/jpeg;base64,',
+                                 b64encode(f.read()).decode()
+                                 ])
+
+        print(len(photo))
+        return photo
 
     def __str__(self):
         return '{} ({})'.format(self.get_full_name(), self.user.username)

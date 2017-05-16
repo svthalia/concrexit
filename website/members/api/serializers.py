@@ -3,6 +3,8 @@ from django.urls import reverse
 from events.api.serializers import CalenderJSSerializer
 from members.models import Member
 
+from rest_framework import serializers
+
 
 class MemberBirthdaySerializer(CalenderJSSerializer):
     class Meta(CalenderJSSerializer.Meta):
@@ -40,3 +42,13 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
 
     def _text_color(self, instance):
         return 'white'
+
+
+class MemberSerializer(serializers.ModelSerializer):
+
+    photo = serializers.CharField(source='b64_photo')
+
+    class Meta:
+        model = Member
+
+        fields = ('display_name', 'photo')

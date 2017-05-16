@@ -8,7 +8,7 @@ from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 from rest_framework import permissions
 
-from members.api.serializers import MemberBirthdaySerializer
+from members.api.serializers import MemberBirthdaySerializer, MemberSerializer
 from members.models import Member
 
 
@@ -60,4 +60,10 @@ class MemberViewset(viewsets.ViewSet):
         birthdays = [x for sublist in all_birthdays for x in sublist]
 
         serializer = MemberBirthdaySerializer(birthdays, many=True)
+        return Response(serializer.data)
+
+    @list_route()
+    def info(self, request):
+        serializer = MemberSerializer(request.user.member)
+
         return Response(serializer.data)
