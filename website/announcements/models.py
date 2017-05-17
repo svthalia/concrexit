@@ -1,13 +1,14 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+from tinymce.models import HTMLField
 
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Announcement(models.Model, metaclass=ModelTranslateMeta):
     content = MultilingualField(
-        models.CharField,
+        HTMLField,
         verbose_name=_('Content'),
         help_text=_('The content of the announcement; what text to display.'),
         blank=False,
