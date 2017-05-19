@@ -90,7 +90,12 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
 
     active = models.BooleanField(default=False)
 
-    contact_email = models.EmailField(_('contact email address'))
+    contact_mailinglist = models.OneToOneField(
+        'mailinglists.MailingList',
+        verbose_name=_('contact email address'),
+        null=True,
+        blank=True,
+    )
 
     wiki_namespace = models.CharField(
         _('Wiki namespace'),

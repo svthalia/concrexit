@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from activemembers.models import Committee, CommitteeMembership, Board
+from mailinglists.models import MailingList
 from members.models import Member
 
 
@@ -155,6 +156,36 @@ class PermissionsBackendTest(TestCase):
         self.assertEqual(set(), u.get_all_permissions())
 
 
+class CommitteeMailingListTest(TestCase):
+    fixtures = ['mailinglists.json', 'committees.json']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.testcie1 = Committee.objects.get(pk=1)
+        cls.testcie2 = Committee.objects.get(pk=2)
+        cls.mailtest1 = MailingList.objects.get(pk=1)
+        cls.mailtest2 = MailingList.objects.get(pk=2)
+
+    def setUp(self):
+        self.testcie1.refresh_from_db()
+        self.testcie2.refresh_from_db()
+        self.mailtest1.refresh_from_db()
+        self.mailtest2.refresh_from_db()
+
+    def test_one_to_one(self):
+        self.testcie1.contact_mailinglist = self.mailtest1
+        self.testcie1.save()
+
+        self.testcie2.contact_mailinglist = self.mailtest1
+
+        with self.assertRaises(ValidationError):
+            self.testcie2.full_clean()
+
+        self.testcie2.contact_mailinglist = self.mailtest2
+
+        self.testcie2.full_clean()
+
+
 class BoardTest(TestCase):
     fixtures = ['committees.json']
 
@@ -173,7 +204,6 @@ class BoardTest(TestCase):
         b = Board(
             name_nl="testbe",
             name_en="testbo",
-            contact_email="test@test.com",
             description_nl="descnl",
             description_en="descen",
             since=timezone.now().date()
@@ -197,7 +227,6 @@ class BoardTest(TestCase):
         b = Board(
             name_nl="testbe",
             name_en="testbo",
-            contact_email="test@test.com",
             description_nl="descnl",
             description_en="descen",
             since=timezone.now().date()

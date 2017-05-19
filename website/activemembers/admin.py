@@ -35,8 +35,8 @@ class CommitteeAdmin(TranslatedModelAdmin):
     search_fields = ('name', 'description')
     filter_horizontal = ('permissions',)
 
-    fields = ('name', 'description', 'photo', 'permissions',
-              'since', 'until', 'contact_email', 'wiki_namespace', 'active')
+    fields = ('name', 'description', 'photo', 'permissions', 'since',
+              'until', 'contact_mailinglist', 'wiki_namespace', 'active')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
