@@ -111,8 +111,10 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         max_digits=5,
         decimal_places=2,
         default=0,
+        # Minimum fine is checked in this model's clean(), as it is only for
+        # events that require registration.
         help_text=_("Fine if participant does not show up (at least €5)."),
-        validators=[validators.MinValueValidator(5)],
+        validators=[validators.MinValueValidator(0)],
     )
 
     max_participants = models.PositiveSmallIntegerField(
@@ -182,6 +184,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             errors.update({
                 'end': _("Can't have an event travel back in time")})
         if self.registration_required():
+            if self.fine < 5:
+                errors.update({
+                    'fine': _("The fine for this event is too low "
+                              "(must be at least €5).")
+                })
             for lang in settings.LANGUAGES:
                 field = 'no_registration_message_' + lang[0]
                 if getattr(self, field):
