@@ -91,20 +91,24 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
 
 
 class EventRetrieveSerializer(serializers.ModelSerializer):
-
-    description = serializers.CharField(source='stripped_description')
-
     class Meta:
         model = Event
         fields = ('title', 'description', 'start', 'end', 'organiser',
                   'location', 'price', 'fine')
 
+    description = serializers.SerializerMethodField('_description')
+
+    def _description(self, instance):
+        return strip_tags(instance.description)
+
 
 class EventListSerializer(serializers.ModelSerializer):
-
-    description = serializers.CharField(source='stripped_description')
-
     class Meta:
         model = Event
         fields = ('title', 'description', 'start',
                   'location', 'price', 'id')
+
+    description = serializers.SerializerMethodField('_description')
+
+    def _description(self, instance):
+        return strip_tags(instance.description)
