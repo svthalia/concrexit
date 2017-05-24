@@ -8,8 +8,8 @@ from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from events.api.permissions import UnpublishedEventPermissions
-from events.api.serializers import EventSerializer, UnpublishedEventSerializer, EventDataSerializer, \
-    EventDataForEventListSerializer
+from events.api.serializers import EventCalenderJSSerializer, UnpublishedEventSerializer, \
+    EventRetrieveSerializer, EventListSerializer
 from events.models import Event
 
 
@@ -26,19 +26,28 @@ def _extract_date_range(request):
     return end, start
 
 
-class EventViewset(viewsets.ViewSet):
-    queryset = Event.objects.all()
+class EventViewset(viewsets.ReadOnlyModelViewSet):
+    queryset = Event.objects.filter(end__gte=timezone.datetime.now(), published=True)
+    permission_classes = [IsAuthenticated]
 
-    def list(self, request):
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return EventListSerializer
+        if self.action == 'retrieve':
+            return EventRetrieveSerializer
+        return EventCalenderJSSerializer
+
+    @list_route(permission_classes=[])
+    def calendarjs(self, request):
         end, start = _extract_date_range(request)
 
-        queryset = self.queryset.filter(
+        queryset = Event.objects.filter(
             end__gte=start,
             start__lte=end,
             published=True
         )
 
-        serializer = EventSerializer(queryset, many=True,
+        serializer = EventCalenderJSSerializer(queryset, many=True,
                                      context={'user': request.user})
         return Response(serializer.data)
 
@@ -46,7 +55,7 @@ class EventViewset(viewsets.ViewSet):
     def unpublished(self, request):
         end, start = _extract_date_range(request)
 
-        queryset = self.queryset.filter(
+        queryset = Event.objects.filter(
             end__gte=start,
             start__lte=end,
             published=False
@@ -54,41 +63,4 @@ class EventViewset(viewsets.ViewSet):
 
         serializer = UnpublishedEventSerializer(queryset, many=True,
                                                 context={'user': request.user})
-        return Response(serializer.data)
-
-    @list_route(permission_classes=[IsAuthenticated])
-    def data(self, request):
-        if 'event_id' not in request.query_params:
-            raise ParseError(detail='missing required event_id parameter')
-
-        try:
-            serializer = EventDataSerializer(
-                Event.objects.get(pk=request.query_params['event_id'])
-            )
-            return Response(serializer.data)
-        except Event.DoesNotExist:
-            raise ParseError(detail='No event with id {}'.format(
-                    request.query_params['event_id']
-                )
-            )
-
-    @list_route(permission_classes=[IsAuthenticated])
-    def eventlist(self, request):
-        try:
-            start = timezone.make_aware(
-                datetime.strptime(request.query_params['start'], '%Y-%m-%d')
-            )
-            end = timezone.make_aware(
-                datetime.strptime(request.query_params['end'], '%Y-%m-%d')
-            )
-        except:
-            raise ParseError(detail='start or end query parameters invalid')
-
-        queryset = self.queryset.filter(
-            end__gte=start,
-            start__lte=end,
-            published=True
-        )
-
-        serializer = EventDataForEventListSerializer(queryset, many=True)
         return Response(serializer.data)

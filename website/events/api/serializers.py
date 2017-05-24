@@ -61,7 +61,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
         return None
 
 
-class EventSerializer(CalenderJSSerializer):
+class EventCalenderJSSerializer(CalenderJSSerializer):
     class Meta(CalenderJSSerializer.Meta):
         model = Event
 
@@ -90,7 +90,7 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
             'event_id': instance.id})
 
 
-class EventDataSerializer(serializers.ModelSerializer):
+class EventRetrieveSerializer(serializers.ModelSerializer):
 
     description = serializers.CharField(source='stripped_description')
 
@@ -100,7 +100,7 @@ class EventDataSerializer(serializers.ModelSerializer):
                   'location', 'price', 'fine')
 
 
-class EventDataForEventListSerializer(serializers.ModelSerializer):
+class EventListSerializer(serializers.ModelSerializer):
 
     description = serializers.CharField(source='stripped_description')
 
