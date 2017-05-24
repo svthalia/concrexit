@@ -64,7 +64,6 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @list_route()
-    def info(self, request):
-        serializer = MemberSerializer(request.user.member)
-
+    def me(self, request):
+        serializer = self.serializer_class(request.user.member)
         return Response(serializer.data)
