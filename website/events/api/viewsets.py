@@ -8,8 +8,12 @@ from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from events.api.permissions import UnpublishedEventPermissions
-from events.api.serializers import EventCalenderJSSerializer, UnpublishedEventSerializer, \
-    EventRetrieveSerializer, EventListSerializer
+from events.api.serializers import (
+    EventCalenderJSSerializer,
+    UnpublishedEventSerializer,
+    EventRetrieveSerializer,
+    EventListSerializer
+)
 from events.models import Event
 
 
@@ -27,7 +31,8 @@ def _extract_date_range(request):
 
 
 class EventViewset(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.filter(end__gte=timezone.datetime.now(), published=True)
+    queryset = Event.objects.filter(
+        end__gte=timezone.datetime.now(), published=True)
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
@@ -48,7 +53,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         )
 
         serializer = EventCalenderJSSerializer(queryset, many=True,
-                                     context={'user': request.user})
+                                               context={'user': request.user})
         return Response(serializer.data)
 
     @list_route(permission_classes=(IsAdminUser, UnpublishedEventPermissions,))
