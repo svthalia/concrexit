@@ -106,7 +106,7 @@ class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('title', 'description', 'start',
-                  'location', 'price', 'id')
+                  'location', 'price', 'pk')
 
     description = serializers.SerializerMethodField('_description')
 
