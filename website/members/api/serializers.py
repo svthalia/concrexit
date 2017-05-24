@@ -1,9 +1,11 @@
 from django.urls import reverse
+from django.contrib.staticfiles.finders import find as find_static_file
 
 from events.api.serializers import CalenderJSSerializer
 from members.models import Member
 
 from rest_framework import serializers
+from base64 import b64encode
 
 
 class MemberBirthdaySerializer(CalenderJSSerializer):
@@ -45,10 +47,20 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
-
-    photo = serializers.CharField(source='b64_photo')
-
     class Meta:
         model = Member
-
         fields = ('pk', 'display_name', 'photo')
+
+    photo = serializers.SerializerMethodField('_b64_photo')
+
+    def _b64_photo(self, instance):
+        if instance.photo:
+            photo = ''.join(['data:image/jpeg;base64,',
+                             b64encode(instance.photo.file.read()).decode()])
+        else:
+            filename = find_static_file('members/images/default-avatar.jpg')
+            with open(filename, 'rb') as f:
+                photo = ''.join(['data:image/jpeg;base64,',
+                                 b64encode(f.read()).decode()])
+
+        return photo
