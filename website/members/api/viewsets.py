@@ -12,9 +12,10 @@ from members.api.serializers import MemberBirthdaySerializer, MemberSerializer
 from members.models import Member
 
 
-class MemberViewset(viewsets.ViewSet):
+class MemberViewset(viewsets.ReadOnlyModelViewSet):
     queryset = Member.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = MemberSerializer
 
     def _get_birthdays(self, member, start, end):
         birthdays = []

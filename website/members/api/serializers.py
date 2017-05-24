@@ -51,4 +51,4 @@ class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
 
-        fields = ('display_name', 'photo')
+        fields = ('pk', 'display_name', 'photo')
