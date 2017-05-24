@@ -28,7 +28,7 @@ class EventTest(TestCase):
             location_nl='test locatie',
             map_location='test map location',
             price=0.00,
-            fine=0.00)
+            fine=5.00)
         cls.member = Member.objects.all()[0]
 
     def setUp(self):
@@ -156,6 +156,19 @@ class EventTest(TestCase):
         self.event.max_participants = 1
         Registration.objects.create(event=self.event, member=self.member)
         self.assertTrue(self.event.reached_participants_limit())
+
+    def test_registration_fine_required(self):
+        self.event.registration_start = (timezone.now() -
+                                         datetime.timedelta(hours=1))
+        self.event.registration_end = (timezone.now() +
+                                       datetime.timedelta(hours=1))
+        self.event.cancel_deadline = (timezone.now() -
+                                      datetime.timedelta(hours=1))
+        self.event.clean()
+        self.event.fine = 0
+
+        with self.assertRaises(ValidationError):
+            self.event.clean()
 
 
 class RegistrationTest(TestCase):
