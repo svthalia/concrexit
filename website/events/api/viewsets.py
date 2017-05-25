@@ -2,19 +2,19 @@ from datetime import datetime
 
 from django.utils import timezone
 from rest_framework import viewsets
+from rest_framework.decorators import list_route, detail_route
 from rest_framework.exceptions import ParseError
-from rest_framework.response import Response
-from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
 
 from events.api.permissions import UnpublishedEventPermissions
 from events.api.serializers import (
     EventCalenderJSSerializer,
     UnpublishedEventSerializer,
     EventRetrieveSerializer,
-    EventListSerializer
-)
-from events.models import Event
+    EventListSerializer,
+    EventRegistrationSerializer)
+from events.models import Event, Registration
 
 
 def _extract_date_range(request):
@@ -41,6 +41,15 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         if self.action == 'retrieve':
             return EventRetrieveSerializer
         return EventCalenderJSSerializer
+
+    @detail_route()
+    def registrations(self, request, pk):
+        event = Event.objects.get(pk=pk)
+        queryset = Registration.objects.filter(
+            event=pk, date_cancelled=None)[:event.max_participants]
+        serializer = EventRegistrationSerializer(queryset, many=True)
+
+        return Response(serializer.data)
 
     @list_route(permission_classes=[])
     def calendarjs(self, request):
