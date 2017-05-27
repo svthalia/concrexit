@@ -8,6 +8,7 @@ from django.utils.html import strip_tags
 from rest_framework import serializers
 
 from events.models import Event, Registration
+from thaliawebsite.settings import settings
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
@@ -182,13 +183,8 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
 
     def _photo(self, instance):
         if instance.member and instance.member.photo:
-            f = instance.member.photo.file
-            type = mimetypes.guess_type(f.name)[0]
-            photo = ''.join(['data:{};base64,'.format(type),
-                             b64encode(f.read()).decode()])
+            return self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.member.photo))
         else:
-            filename = find_static_file('members/images/default-avatar.jpg')
-            with open(filename, 'rb') as f:
-                photo = ''.join(['data:image/jpeg;base64,',
-                                 b64encode(f.read()).decode()])
-        return photo
+            return self.context['request'].build_absolute_uri(
+                'members/images/default-avatar.jpg')

@@ -47,7 +47,8 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         event = Event.objects.get(pk=pk)
         queryset = Registration.objects.filter(
             event=pk, date_cancelled=None)[:event.max_participants]
-        serializer = EventRegistrationSerializer(queryset, many=True)
+        serializer = EventRegistrationSerializer(queryset, many=True,
+                                                 context={'request': request})
 
         return Response(serializer.data)
 
