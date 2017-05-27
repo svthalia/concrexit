@@ -4,6 +4,7 @@ from django.utils.html import strip_tags
 from rest_framework import serializers
 
 from events.models import Event, Registration
+from pizzas.models import PizzaEvent
 from thaliawebsite.settings import settings
 
 
@@ -142,10 +143,11 @@ class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('pk', 'title', 'description', 'start', 'end',
-                  'location', 'price', 'registered')
+                  'location', 'price', 'registered', 'pizza')
 
     description = serializers.SerializerMethodField('_description')
     registered = serializers.SerializerMethodField('_registered')
+    pizza = serializers.SerializerMethodField('_pizza')
 
     def _description(self, instance):
         return strip_tags(instance.description)
@@ -156,6 +158,10 @@ class EventListSerializer(serializers.ModelSerializer):
                 self.context['request'].user.member)
         except AttributeError:
             return None
+
+    def _pizza(self, instance):
+        pizza_events = PizzaEvent.objects.filter(event=instance)
+        return pizza_events.exists()
 
 
 class EventRegistrationSerializer(serializers.ModelSerializer):
