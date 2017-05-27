@@ -52,6 +52,21 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
         return Response(serializer.data)
 
+    @list_route()
+    def shortlist(self, request):
+        days = Event.objects.filter(
+            end__gte=timezone.datetime.now(), published=True
+        ).datetimes('start', 'day')[:2]
+
+        data = list(map(lambda day: EventListSerializer(Event.objects.filter(
+            start__day=day.day,
+            start__month=day.month,
+            start__year=day.year,
+            published=True,
+        ), many=True, context={'request': request}).data, days))
+
+        return Response(data)
+
     @list_route(permission_classes=[])
     def calendarjs(self, request):
         end, start = _extract_date_range(request)
