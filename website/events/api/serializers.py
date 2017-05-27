@@ -1,7 +1,3 @@
-import mimetypes
-from base64 import b64encode
-
-from django.contrib.staticfiles.finders import find as find_static_file
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import strip_tags
