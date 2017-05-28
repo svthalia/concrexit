@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.utils import timezone
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -31,9 +31,11 @@ def _extract_date_range(request):
 
 
 class EventViewset(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.filter(
-        end__gte=timezone.datetime.now(), published=True)
+    queryset = Event.objects.filter(end__gte=timezone.datetime.now(),
+                                    published=True)
     permission_classes = [IsAuthenticated]
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('start', 'end')
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -66,21 +68,6 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
                                             context={'request': request})
 
         return Response(serializer.data)
-
-    @list_route()
-    def shortlist(self, request):
-        days = Event.objects.filter(
-            end__gte=timezone.datetime.now(), published=True
-        ).datetimes('start', 'day')[:2]
-
-        data = list(map(lambda day: EventListSerializer(Event.objects.filter(
-            start__day=day.day,
-            start__month=day.month,
-            start__year=day.year,
-            published=True,
-        ), many=True, context={'request': request}).data, days))
-
-        return Response(data)
 
     @list_route(permission_classes=[])
     def calendarjs(self, request):

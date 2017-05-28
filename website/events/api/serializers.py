@@ -179,7 +179,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def _queue_position(self, instance):
         return (instance.queue_position()
-            if instance.queue_position() > 0 else None)
+                if instance.queue_position() > 0 else None)
 
     def _is_cancelled(self, instance):
         return instance.date_cancelled is not None
