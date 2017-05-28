@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework import viewsets, filters
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.exceptions import ParseError
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
@@ -49,8 +50,19 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
     @detail_route()
     def registrations(self, request, pk):
-        event = Event.objects.get(pk=pk)
+        event = get_object_or_404(Event, pk=pk)
         status = request.query_params.get('status', None)
+
+        # Make sure you can only access other registrations when you have
+        # the permissions to do so
+        if not request.user.has_perm('events.change_event'):
+            status = 'registered'
+        elif (not request.user.is_superuser and
+                not request.user.has_perm('events.override_organiser')):
+            committees = request.user.member.get_committees().filter(
+                pk=event.organiser.pk).count()
+            if committees == 0:
+                status = 'registered'
 
         queryset = Registration.objects.filter(event=pk)
         if status is not None:
