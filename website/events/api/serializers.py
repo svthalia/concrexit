@@ -119,13 +119,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         try:
             reg = instance.registration_set.get(
                 member=self.context['request'].user.member)
-            return {
-                'registered_on': reg.date,
-                'queue_position': reg.queue_position()
-                if reg.queue_position() > 0 else None,
-                'is_cancelled': reg.date_cancelled is not None,
-                'is_late_cancellation': reg.is_late_cancellation(),
-            }
+            return RegistrationSerializer(reg, context=self.context).data
         except Registration.DoesNotExist:
             return None
 
@@ -164,14 +158,31 @@ class EventListSerializer(serializers.ModelSerializer):
         return pizza_events.exists()
 
 
-class EventRegistrationSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
-        fields = ('pk', 'member', 'name', 'photo')
+        fields = ('pk', 'member', 'name', 'photo', 'registered_on',
+                  'is_late_cancellation', 'is_cancelled', 'queue_position')
 
     name = serializers.SerializerMethodField('_name')
     photo = serializers.SerializerMethodField('_photo')
     member = serializers.SerializerMethodField('_member')
+    registered_on = serializers.DateTimeField(source='date')
+    is_cancelled = serializers.SerializerMethodField('_is_cancelled')
+    is_late_cancellation = serializers.SerializerMethodField(
+        '_is_late_cancellation')
+    queue_position = serializers.SerializerMethodField(
+        '_queue_position')
+
+    def _is_late_cancellation(self, instance):
+        return instance.is_late_cancellation()
+
+    def _queue_position(self, instance):
+        return (instance.queue_position()
+            if instance.queue_position() > 0 else None)
+
+    def _is_cancelled(self, instance):
+        return instance.date_cancelled is not None
 
     def _member(self, instance):
         if instance.member:

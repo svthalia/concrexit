@@ -13,7 +13,7 @@ from events.api.serializers import (
     UnpublishedEventSerializer,
     EventRetrieveSerializer,
     EventListSerializer,
-    EventRegistrationSerializer)
+    RegistrationSerializer)
 from events.models import Event, Registration
 
 
@@ -42,13 +42,28 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
             return EventRetrieveSerializer
         return EventCalenderJSSerializer
 
+    def get_serializer_context(self):
+        return super().get_serializer_context()
+
     @detail_route()
     def registrations(self, request, pk):
         event = Event.objects.get(pk=pk)
-        queryset = Registration.objects.filter(
-            event=pk, date_cancelled=None)[:event.max_participants]
-        serializer = EventRegistrationSerializer(queryset, many=True,
-                                                 context={'request': request})
+        status = request.query_params.get('status', None)
+
+        queryset = Registration.objects.filter(event=pk)
+        if status is not None:
+            if status == 'queued':
+                queryset = Registration.objects.filter(
+                    event=pk, date_cancelled=None)[event.max_participants:]
+            elif status == 'cancelled':
+                queryset = Registration.objects.filter(
+                    event=pk, date_cancelled__not=None)
+            elif status == 'registered':
+                queryset = Registration.objects.filter(
+                    event=pk, date_cancelled=None)[event.max_participants:]
+
+        serializer = RegistrationSerializer(queryset, many=True,
+                                            context={'request': request})
 
         return Response(serializer.data)
 
