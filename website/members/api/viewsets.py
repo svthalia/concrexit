@@ -1,7 +1,6 @@
 import copy
 from datetime import datetime
 
-from django.db.models import Q
 from django.utils import timezone
 from rest_framework import permissions
 from rest_framework import viewsets, filters
@@ -12,13 +11,13 @@ from rest_framework.response import Response
 from members.api.serializers import (MemberBirthdaySerializer,
                                      MemberRetrieveSerializer,
                                      MemberListSerializer)
-from members.models import Member, Membership
+from members.models import Member
 
 
 class MemberViewset(viewsets.ReadOnlyModelViewSet):
     queryset = Member.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
-    filter_backends = (filters.OrderingFilter,filters.SearchFilter,)
+    filter_backends = (filters.OrderingFilter, filters.SearchFilter,)
     ordering_fields = ('starting_year', 'user__first_name', 'user__last_name')
     search_fields = ('nickname', 'user__first_name',
                      'user__last_name', 'user__username')
@@ -30,9 +29,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.action == 'list':
-            memberships = Membership.objects.filter(
-                Q(until__gt=datetime.now()) | Q(until=None))
-            return Member.objects.filter(user__in=memberships.values('user'))
+            return Member.active_members
         return Member.objects.all()
 
     def _get_birthdays(self, member, start, end):
@@ -66,10 +63,9 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
             raise ParseError(detail='start or end query parameters invalid')
 
         queryset = (
-            Member
-                .active_members
-                .with_birthdays_in_range(start, end)
-                .filter(show_birthday=True)
+            Member.active_members
+                  .with_birthdays_in_range(start, end)
+                  .filter(show_birthday=True)
         )
 
         all_birthdays = [

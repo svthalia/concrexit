@@ -7,6 +7,7 @@ from rest_framework import serializers
 from events.api.serializers import CalenderJSSerializer
 from members.models import Member
 from members.services import member_achievements
+from thaliawebsite.settings import settings
 
 
 class MemberBirthdaySerializer(CalenderJSSerializer):
@@ -91,16 +92,12 @@ class MemberListSerializer(serializers.ModelSerializer):
         model = Member
         fields = ('pk', 'display_name', 'photo',)
 
-    photo = serializers.SerializerMethodField('_b64_photo')
+    photo = serializers.SerializerMethodField('_photo')
 
-    def _b64_photo(self, instance):
+    def _photo(self, instance):
         if instance.photo:
-            photo = ''.join(['data:image/jpeg;base64,',
-                             b64encode(instance.photo.file.read()).decode()])
+            return self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.photo))
         else:
-            filename = find_static_file('members/images/default-avatar.jpg')
-            with open(filename, 'rb') as f:
-                photo = ''.join(['data:image/jpeg;base64,',
-                                 b64encode(f.read()).decode()])
-
-        return photo
+            return self.context['request'].build_absolute_uri(
+                'members/images/default-avatar.jpg')
