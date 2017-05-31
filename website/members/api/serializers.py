@@ -1,6 +1,7 @@
 from base64 import b64encode
 
 from django.contrib.staticfiles.finders import find as find_static_file
+from django.templatetags.static import static
 from django.urls import reverse
 from rest_framework import serializers
 
@@ -100,4 +101,4 @@ class MemberListSerializer(serializers.ModelSerializer):
                 '%s%s' % (settings.MEDIA_URL, instance.photo))
         else:
             return self.context['request'].build_absolute_uri(
-                'members/images/default-avatar.jpg')
+                static('members/images/default-avatar.jpg'))
