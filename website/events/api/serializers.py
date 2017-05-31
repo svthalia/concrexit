@@ -1,3 +1,4 @@
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import strip_tags
@@ -200,4 +201,4 @@ class RegistrationSerializer(serializers.ModelSerializer):
                 '%s%s' % (settings.MEDIA_URL, instance.member.photo))
         else:
             return self.context['request'].build_absolute_uri(
-                'members/images/default-avatar.jpg')
+                static('members/images/default-avatar.jpg'))
