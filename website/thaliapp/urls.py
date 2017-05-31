@@ -5,7 +5,6 @@ from . import views
 
 app_name = "thaliapp"
 urlpatterns = [
-    url(r'^token-auth/', rfviews.obtain_auth_token),
     url(r'^login', views.login,
         name='thaliapp-login'),
     url(r'^app', views.app,
