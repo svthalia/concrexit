@@ -1,9 +1,12 @@
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import strip_tags
 from rest_framework import serializers
 
-from events.models import Event
+from events.models import Event, Registration
+from pizzas.models import PizzaEvent
+from thaliawebsite.settings import settings
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
@@ -61,7 +64,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
         return None
 
 
-class EventSerializer(CalenderJSSerializer):
+class EventCalenderJSSerializer(CalenderJSSerializer):
     class Meta(CalenderJSSerializer.Meta):
         model = Event
 
@@ -88,3 +91,114 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
     def _url(self, instance):
         return reverse('events:admin-details', kwargs={
             'event_id': instance.id})
+
+
+class EventRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('pk', 'title', 'description', 'start', 'end', 'organiser',
+                  'category', 'registration_start', 'registration_end',
+                  'cancel_deadline', 'location', 'map_location', 'price',
+                  'fine', 'max_participants', 'num_participants', 'status',
+                  'user_registration', 'registration_allowed',
+                  'no_registration_message', 'has_fields')
+
+    description = serializers.SerializerMethodField('_description')
+    user_registration = serializers.SerializerMethodField('_user_registration')
+    num_participants = serializers.SerializerMethodField('_num_participants')
+    registration_allowed = serializers.SerializerMethodField(
+        '_registration_allowed')
+    has_fields = serializers.SerializerMethodField('_has_fields')
+
+    def _description(self, instance):
+        return strip_tags(instance.description)
+
+    def _num_participants(self, instance):
+        return instance.num_participants()
+
+    def _user_registration(self, instance):
+        try:
+            reg = instance.registration_set.get(
+                member=self.context['request'].user.member)
+            return RegistrationSerializer(reg, context=self.context).data
+        except Registration.DoesNotExist:
+            return None
+
+    def _registration_allowed(self, instance):
+        member = self.context['request'].user.member
+        return (member is not None and
+                member.current_membership is not None and
+                member.can_attend_events)
+
+    def _has_fields(self, instance):
+        return instance.has_fields()
+
+
+class EventListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('pk', 'title', 'description', 'start', 'end',
+                  'location', 'price', 'registered', 'pizza')
+
+    description = serializers.SerializerMethodField('_description')
+    registered = serializers.SerializerMethodField('_registered')
+    pizza = serializers.SerializerMethodField('_pizza')
+
+    def _description(self, instance):
+        return strip_tags(instance.description)
+
+    def _registered(self, instance):
+        try:
+            return instance.is_member_registered(
+                self.context['request'].user.member)
+        except AttributeError:
+            return None
+
+    def _pizza(self, instance):
+        pizza_events = PizzaEvent.objects.filter(event=instance)
+        return pizza_events.exists()
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registration
+        fields = ('pk', 'member', 'name', 'photo', 'registered_on',
+                  'is_late_cancellation', 'is_cancelled', 'queue_position')
+
+    name = serializers.SerializerMethodField('_name')
+    photo = serializers.SerializerMethodField('_photo')
+    member = serializers.SerializerMethodField('_member')
+    registered_on = serializers.DateTimeField(source='date')
+    is_cancelled = serializers.SerializerMethodField('_is_cancelled')
+    is_late_cancellation = serializers.SerializerMethodField(
+        '_is_late_cancellation')
+    queue_position = serializers.SerializerMethodField(
+        '_queue_position')
+
+    def _is_late_cancellation(self, instance):
+        return instance.is_late_cancellation()
+
+    def _queue_position(self, instance):
+        return (instance.queue_position()
+                if instance.queue_position() > 0 else None)
+
+    def _is_cancelled(self, instance):
+        return instance.date_cancelled is not None
+
+    def _member(self, instance):
+        if instance.member:
+            return instance.member.pk
+        return None
+
+    def _name(self, instance):
+        if instance.member:
+            return instance.member.display_name()
+        return instance.name
+
+    def _photo(self, instance):
+        if instance.member and instance.member.photo:
+            return self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.member.photo))
+        else:
+            return self.context['request'].build_absolute_uri(
+                static('members/images/default-avatar.jpg'))
