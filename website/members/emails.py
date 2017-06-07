@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.core import mail
 from django.template import loader
@@ -86,7 +86,7 @@ def send_expiration_announcement(dry_run=False):
                     'members/email/expiration_announcement.txt',
                     {'member': member})
                 mail.EmailMessage(
-                    _('Membership fees debit announcement'),
+                    _('Membership expiration announcement'),
                     email_body,
                     settings.WEBSITE_FROM_ADDRESS,
                     [member.user.email],
