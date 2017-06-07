@@ -81,16 +81,18 @@ def send_expiration_announcement(dry_run=False):
 
     with mail.get_connection() as connection:
         for member in members:
+            print("Send email to {} ({})".format(member.get_full_name(),
+                                                 member.user.email))
             with translation.override(member.language):
                 email_body = loader.render_to_string(
                     'members/email/expiration_announcement.txt',
-                    {'member': member})
+                    {'name': member.get_full_name()})
                 mail.EmailMessage(
                     _('Membership expiration announcement'),
                     email_body,
                     settings.WEBSITE_FROM_ADDRESS,
                     [member.user.email],
-                    bcc=settings.BOARD_NOTIFICATION_ADDRESS,
+                    bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                     connection=connection
                 ).send()
 
