@@ -5,7 +5,11 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.exceptions import ParseError
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly
+)
 from rest_framework.response import Response
 
 from events.api.permissions import UnpublishedEventPermissions
@@ -81,7 +85,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
         return Response(serializer.data)
 
-    @list_route(permission_classes=[])
+    @list_route(permission_classes=(IsAuthenticatedOrReadOnly,))
     def calendarjs(self, request):
         end, start = _extract_date_range(request)
 
