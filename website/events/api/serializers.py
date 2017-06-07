@@ -97,7 +97,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('pk', 'title', 'description', 'start', 'end', 'organiser',
-                  'category', 'registration_start', 'registration_end',
+                  'registration_start', 'registration_end',
                   'cancel_deadline', 'location', 'map_location', 'price',
                   'fine', 'max_participants', 'num_participants', 'status',
                   'user_registration', 'registration_allowed',
