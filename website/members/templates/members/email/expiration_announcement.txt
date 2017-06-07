@@ -1,0 +1,22 @@
+{% load i18n %}{% blocktrans %}Dear {{ member.full_name }},
+
+Het afgelopen collegejaar ben je lid of begunstiger geweest van Studievereniging
+Thalia. Je hebt daarbij geen doorlopende machtiging afgegeven, dus je
+lidmaatschap loopt op 1 september af.
+
+Wil je volgend jaar ook nog van de voordelen van een Thalialidmaatschap
+genieten, zoals de borrels, boekverkoop, activiteiten, de tentamenbundel, de
+Thabloid en een symposium, dan zul je je lidmaatschap moeten verlengen. Dit kun
+je doen door in de week van 2 september (de eerste collegeweek) langs de
+bestuurskamer te komen.
+
+Ook op een later moment kun je je nog inschrijven, neem dan even contact op met
+het bestuur om te bespreken wat een handig moment is. Mail hiervoor naar
+info@thalia.nu.
+
+Met vriendelijke groeten,
+
+Het bestuur
+
+P.S. het kan zijn dat je je lidmaatschap al verlengd hebt bij de introbbq, maar
+dat dit nog niet is verwerkt: in dat geval hoef je niets te doen.{% endblocktrans %}

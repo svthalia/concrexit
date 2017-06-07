@@ -1,6 +1,9 @@
+from datetime import datetime, timedelta
+
 from django.core import mail
 from django.template import loader
 from django.utils import translation
+from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
 
 from members import models
@@ -66,6 +69,36 @@ def send_information_request(dry_run=False):
                 _('Membership information check sent'),
                 loader.render_to_string(
                     'members/email/information_check_notification.txt',
+                    {'members': members}),
+                connection=connection,
+            )
+
+
+def send_expiration_announcement(dry_run=False):
+    expiry_date = datetime.now() + timedelta(days=31)
+    members = (models.Member.active_members
+               .filter(user__membership__until__lte=expiry_date))
+
+    with mail.get_connection() as connection:
+        for member in members:
+            with translation.override(member.language):
+                email_body = loader.render_to_string(
+                    'members/email/expiration_announcement.txt',
+                    {'member': member})
+                mail.EmailMessage(
+                    _('Membership fees debit announcement'),
+                    email_body,
+                    settings.WEBSITE_FROM_ADDRESS,
+                    [member.user.email],
+                    bcc=settings.BOARD_NOTIFICATION_ADDRESS,
+                    connection=connection
+                ).send()
+
+        if not dry_run:
+            mail.mail_managers(
+                _('Membership expiration announcement sent'),
+                loader.render_to_string(
+                    'members/email/expiration_announcement_notification.txt',
                     {'members': members}),
                 connection=connection,
             )

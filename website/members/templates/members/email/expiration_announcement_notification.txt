@@ -1,0 +1,14 @@
+Geacht bestuur,
+
+Vanwege de tijd van het jaar heeft de website automatisch iedereen waarvan het lidmaatschap verloopt een email gestuurd.
+
+In die email staat dat het lidmaatschap verloopt met hierbij de instructies om het te kunnen verlengen.
+
+Deze email is gestuurd naar:
+{% for member in members %}
+ * {{ member.full_name }}
+{% endfor %}
+
+Kusjes,
+
+De website
