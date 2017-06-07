@@ -91,6 +91,7 @@ class AgeListFilter(admin.SimpleListFilter):
 
 
 class UserAdmin(BaseUserAdmin):
+    change_list_template = 'admin/members/change_list.html'
     form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 
