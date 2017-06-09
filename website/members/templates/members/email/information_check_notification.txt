@@ -1,0 +1,15 @@
+Dear board,
+
+It's that time of the year again! The website sent an automatic email to all members.
+
+That email asks them to check their information we currently have in our database.
+This means that you can expect an influx of emails from members.
+
+The email was sent to:
+{% for member in members %}
+ * {{ member.full_name }}
+{% endfor %}
+
+Kisses,
+
+The website

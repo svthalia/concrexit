@@ -1,0 +1,28 @@
+{% load i18n %}{% blocktrans %}Dear {{ name }},
+
+We currently have the following information about you in our database.
+Via this email we'd like to ask you to check the accuracy of this data.
+
+Username:               {{ member.user.username }}
+Name:                   {{ member.get_full_name }}
+Address:                {{ member.address_street }}
+                        {{ member.address_street2 }}
+                        {{ member.address_postal_code }}
+                        {{ member.address_city }}
+Phone:                  {{ member.phone_number }}
+Date of birth:          {{ member.birthday }}
+Email address:           {{ member.user.email }}
+Student number:          {{ member.student_number }}
+Cohort:                 {{ member.starting_year }}
+Programme:              {{ member.programme }}
+
+You can change this data by logging into the website and using the 'edit profile' page.
+Unable to edit the incorrect information? Then send an email: info@thaliagit.nu.
+
+With kind regards,
+
+The board of Study Association Thalia
+
+————
+
+This email was automatically generated.{% endblocktrans %}

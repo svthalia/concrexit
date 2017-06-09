@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-14 21:21+0200\n"
-"PO-Revision-Date: 2017-06-14 21:22+0200\n"
+"POT-Creation-Date: 2017-06-15 12:20+0200\n"
+"PO-Revision-Date: 2017-06-15 12:20+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -38,39 +38,39 @@ msgstr "< 18"
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: admin.py:120 admin.py:139
+#: admin.py:121 admin.py:140
 msgid "First name"
 msgstr "Voornaam"
 
-#: admin.py:120 admin.py:139
+#: admin.py:121 admin.py:140
 msgid "Last name"
 msgstr "Achternaam"
 
-#: admin.py:120
+#: admin.py:121
 msgid "Address"
 msgstr "Adres"
 
-#: admin.py:121
+#: admin.py:122
 msgid "Address line 2"
 msgstr "Tweede adresregel"
 
-#: admin.py:121 models.py:152
+#: admin.py:122 models.py:152
 msgid "Postal code"
 msgstr "Postcode"
 
-#: admin.py:121 models.py:158
+#: admin.py:122 models.py:158
 msgid "City"
 msgstr "Woonplaats"
 
-#: admin.py:131
+#: admin.py:132
 msgid "Download address label for selected users"
 msgstr "Download adreslabels voor geselecteerde gebruikers"
 
-#: admin.py:139 models.py:76
+#: admin.py:140 models.py:76
 msgid "Student number"
 msgstr "Studentnummer"
 
-#: admin.py:146
+#: admin.py:147
 msgid "Download student number label for selected users"
 msgstr "Download studentnummers voor geselecteerde gebruikers"
 
@@ -81,6 +81,14 @@ msgstr "Mededeling over lidmaatschap"
 #: emails.py:34
 msgid "Membership announcement sent"
 msgstr "Mededeling over lidmaatschap verzonden"
+
+#: emails.py:55
+msgid "Membership information check"
+msgstr "Controle gegevens lidmaatschap"
+
+#: emails.py:65
+msgid "Membership information check sent"
+msgstr "Controle gegevens lidmaatschap verzonden"
 
 #: forms.py:42
 msgid "Send welcome email"
@@ -352,6 +360,10 @@ msgstr "Lid tot"
 msgid "The date the member stops holding this membership."
 msgstr "De datum waarop het lid dit lidmaatschap beëindigd."
 
+#: templates/admin/members/change_list.html:6
+msgid "Export IBANs for Direct Debit"
+msgstr ""
+
 #: templates/members/account.html:6 templates/members/account.html:7
 #: templates/members/edit_profile.html:5 templates/members/edit_profile.html:6
 #: templates/members/index.html:7 templates/members/index.html:8
@@ -433,6 +445,72 @@ msgstr ""
 #: templates/members/edit_profile.html:68
 msgid "save"
 msgstr "opslaan"
+
+#: templates/members/email/information_check.txt:1
+#, python-format
+msgid ""
+"Dear %(name)s,\n"
+"\n"
+"We currently have the following information about you in our database.\n"
+"Via this email we'd like to ask you to check the accuracy of this data.\n"
+"\n"
+"Username:               %(member.user.username)s\n"
+"Name:                   %(member.get_full_name)s\n"
+"Address:                %(member.address_street)s\n"
+"                        %(member.address_street2)s\n"
+"                        %(member.address_postal_code)s\n"
+"                        %(member.address_city)s\n"
+"Phone:                  %(member.phone_number)s\n"
+"Date of birth:          %(member.birthday)s\n"
+"Email address:           %(member.user.email)s\n"
+"Student number:          %(member.student_number)s\n"
+"Cohort:                 %(member.starting_year)s\n"
+"Programme:              %(member.programme)s\n"
+"\n"
+"You can change this data by logging into the website and using the 'edit "
+"profile' page.\n"
+"Unable to edit the incorrect information? Then send an email: info@thalia."
+"nu.\n"
+"\n"
+"With kind regards,\n"
+"\n"
+"The board of Study Association Thalia\n"
+"\n"
+"————\n"
+"\n"
+"This email was automatically generated."
+msgstr ""
+"Beste %(name)s,\n"
+"\n"
+"Hieronder vind je de (meeste) gegevens die we op dit moment van je "
+"geregistreerd\n"
+"hebben. Wil je deze controleren op juistheid?\n"
+"\n"
+"Gebruikersnaam:         %(member.user.username)s\n"
+"Naam:                   %(member.get_full_name)s\n"
+"Adres:                  %(member.address_street)s\n"
+"                        %(member.address_street2)s\n"
+"                        %(member.address_postal_code)s\n"
+"                        %(member.address_city)s\n"
+"Telefoonnummer:         %(member.phone_number)s\n"
+"Geboortedatum:          %(member.birthday)s\n"
+"Emailadres:             %(member.user.email)s\n"
+"Studentnummer:          %(member.student_number)s\n"
+"Cohort:                 %(member.starting_year)s\n"
+"Programma:              %(member.programme)s\n"
+"\n"
+"Je kunt als je ingelogd bent via ‘Mijn gegevens’ de meeste van deze "
+"gegevens\n"
+"aanpassen. Klopt iets niet wat je niet zelf kunt bewerken? Stuur dan een "
+"mailtje\n"
+"naar info@thalia.nu.\n"
+"\n"
+"Met vriendelijke groet,\n"
+"Het bestuur der Studievereniging Thalia\n"
+"\n"
+"————\n"
+"\n"
+"Deze e-mail is automatisch gegenereerd."
 
 #: templates/members/email/membership_announcement.txt:1
 #, python-format
@@ -575,6 +653,6 @@ msgstr "Statistieken"
 msgid "Total amount of Thalia members"
 msgstr "Totaal aantal Thalialeden"
 
-#: views.py:105
+#: views.py:108
 msgid "Former member"
 msgstr "Oud-lid"

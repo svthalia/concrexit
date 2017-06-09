@@ -46,24 +46,26 @@ def send_information_request(dry_run=False):
         for member in members:
             print("Send email to {} ({})".format(member.get_full_name(),
                                                  member.user.email))
-            with translation.override(member.language):
-                email_body = loader.render_to_string(
-                    'members/email/information_request.txt',
-                    {'name': member.get_full_name()})
-                mail.EmailMessage(
-                    _('Membership announcement'),
-                    email_body,
-                    settings.WEBSITE_FROM_ADDRESS,
-                    [member.user.email],
-                    bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
-                    connection=connection
-                ).send()
+            if not dry_run:
+                with translation.override(member.language):
+                    email_body = loader.render_to_string(
+                        'members/email/information_check.txt',
+                        {'name': member.get_full_name(),
+                         'member': member})
+                    mail.EmailMessage(
+                        _('Membership information check'),
+                        email_body,
+                        settings.WEBSITE_FROM_ADDRESS,
+                        [member.user.email],
+                        bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
+                        connection=connection
+                    ).send()
 
         if not dry_run:
             mail.mail_managers(
-                _('Membership announcement sent'),
+                _('Membership information check sent'),
                 loader.render_to_string(
-                    'members/email/information_request_notification.txt',
+                    'members/email/information_check_notification.txt',
                     {'members': members}),
                 connection=connection,
             )
