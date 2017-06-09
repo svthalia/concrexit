@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 from django.core import mail
 from django.template import loader
 from django.utils import translation

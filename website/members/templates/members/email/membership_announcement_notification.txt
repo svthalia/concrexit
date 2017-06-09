@@ -1,14 +1,16 @@
-{% load i18n %}{% blocktrans %}Dear {{ name }},
+Geacht bestuur,
 
-You're a study member of Thalia. This means that you'll be a member as long
-as you're enrolled in either a computer science or an information science programme.
+Vanwege de tijd van het jaar heeft de website automatisch iedereen met een studielidmaatschap een email gestuurd.
 
-Are you still studying? Then you don't have to do anything at all!
-Did you graduate or stop with your studies for any other reason? Then please
-send us an email so that we can update our administration: info@thalia.nu
+In die email staat dat het lidmaatschap geldig is zolang ze een studie informatica en/of informatiekunde volgen.
+We hebben deze mensen gevraagd om, indien ze afgestudeerd zijn of om een andere reden gestopt met hun studie,
+een mailtje te sturen naar info@thalia.nu. Hierbij willen we graag laten weten dat jullie deze emails kunnen verwachten.
 
-If you have any questions, then don't hesitate and send us an email.
+De email is gestuurd naar:
+{% for member in members %}
+ * {{ member.full_name }}
+{% endfor %}
 
-With kind regards,
+Kusjes,
 
-The board of Study Association Thalia{% endblocktrans %}g
+De website

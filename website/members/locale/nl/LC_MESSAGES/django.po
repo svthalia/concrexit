@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-08 13:27+0200\n"
-"PO-Revision-Date: 2017-06-08 13:33+0200\n"
+"POT-Creation-Date: 2017-06-09 22:32+0200\n"
+"PO-Revision-Date: 2017-06-09 22:33+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -74,11 +74,11 @@ msgstr "Studentnummer"
 msgid "Download student number label for selected users"
 msgstr "Download studentnummers voor geselecteerde gebruikers"
 
-#: emails.py:25
+#: emails.py:23
 msgid "Membership announcement"
 msgstr "Mededeling over lidmaatschap"
 
-#: emails.py:35
+#: emails.py:33
 msgid "Membership announcement sent"
 msgstr "Mededeling over lidmaatschap verzonden"
 
@@ -434,7 +434,7 @@ msgstr ""
 msgid "save"
 msgstr "opslaan"
 
-#: templates/members/email/membership_announcement_notification.txt:1
+#: templates/members/email/membership_announcement.txt:1
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
