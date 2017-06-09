@@ -37,3 +37,33 @@ def send_membership_announcement(dry_run=False):
                     {'members': members}),
                 connection=connection,
             )
+
+
+def send_information_request(dry_run=False):
+    members = models.Member.active_members.all()
+
+    with mail.get_connection() as connection:
+        for member in members:
+            print("Send email to {} ({})".format(member.get_full_name(),
+                                                 member.user.email))
+            with translation.override(member.language):
+                email_body = loader.render_to_string(
+                    'members/email/information_request.txt',
+                    {'name': member.get_full_name()})
+                mail.EmailMessage(
+                    _('Membership announcement'),
+                    email_body,
+                    settings.WEBSITE_FROM_ADDRESS,
+                    [member.user.email],
+                    bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
+                    connection=connection
+                ).send()
+
+        if not dry_run:
+            mail.mail_managers(
+                _('Membership announcement sent'),
+                loader.render_to_string(
+                    'members/email/information_request_notification.txt',
+                    {'members': members}),
+                connection=connection,
+            )
