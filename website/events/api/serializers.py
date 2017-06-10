@@ -2,6 +2,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import strip_tags
+from html import unescape
 from rest_framework import serializers
 
 from events.models import Event, Registration
@@ -111,7 +112,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     has_fields = serializers.SerializerMethodField('_has_fields')
 
     def _description(self, instance):
-        return strip_tags(instance.description)
+        return unescape(strip_tags(instance.description))
 
     def _num_participants(self, instance):
         return instance.num_participants()
@@ -145,7 +146,7 @@ class EventListSerializer(serializers.ModelSerializer):
     pizza = serializers.SerializerMethodField('_pizza')
 
     def _description(self, instance):
-        return strip_tags(instance.description)
+        return unescape(strip_tags(instance.description))
 
     def _registered(self, instance):
         try:
