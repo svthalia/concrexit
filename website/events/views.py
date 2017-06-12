@@ -301,14 +301,15 @@ def _registration_cancel(request, event, reg):
     if reg is None or reg.date_cancelled is not None:
         messages.error(request, _("You are not registered for this event."))
     else:
+        if reg.queue_position() == 0:
+            _send_queue_mail(event)
+
         # Note that this doesn't remove the values for the
         # information fields that the user entered upon registering.
         # But this is regarded as a feature, not a bug. Especially
         # since the values will still appear in the backend.
         reg.date_cancelled = timezone.now()
         reg.save()
-
-        _send_queue_mail(event)
 
         messages.success(request, _("Registration successfully cancelled."))
 
