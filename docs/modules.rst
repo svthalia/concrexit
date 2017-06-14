@@ -17,6 +17,5 @@ website
    photos
    pizzas
    thabloid
-   thaliapp
    thaliawebsite
    utils

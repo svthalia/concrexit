@@ -107,7 +107,6 @@ urlpatterns = [
             url(r'^', include('members.api.urls')),
             url(r'^', include('partners.api.urls')),
         ], namespace='v1')),
-        url(r'^', include('thaliapp.urls')),
     ])),
     url(r'^education/', include('education.urls')),
     url(r'^announcements/', include('announcements.urls')),
