@@ -1,14 +1,16 @@
-Geacht bestuur,
+Dear board,
 
-Vanwege de tijd van het jaar heeft de website automatisch iedereen waarvan het lidmaatschap verloopt een email gestuurd.
+It's that time of the year again! The website sent an automatic email to
+everybody whose membership is expiring.
 
-In die email staat dat het lidmaatschap verloopt met hierbij de instructies om het te kunnen verlengen.
+The email explains how they can prolong their membership.
+So you can expect an influx of people who want to extend their memberships.
 
-Deze email is gestuurd naar:
+The email was sent to:
 {% for member in members %}
  * {{ member.full_name }}
 {% endfor %}
 
-Kusjes,
+Kisses,
 
-De website
+The website

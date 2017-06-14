@@ -15,5 +15,8 @@ With kind regards,
 
 The board of Study Association Thalia
 
-P.S. It's possible that you've already renewed your membership and that it hasn't been processed yet.
-If that's the case then you don't need to do anything.{% endblocktrans %}
+————
+
+This email was automatically generated. It's possible that you've already renewed
+your membership and that it hasn't been processed yet. If that's the case then
+you don't need to do anything.{% endblocktrans %}
