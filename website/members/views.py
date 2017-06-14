@@ -1,15 +1,18 @@
+import csv
 import json
 import os
 from datetime import date, datetime
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from sendfile import sendfile
 
+from members.models import Member
 from members.services import member_achievements
 from . import models
 from .forms import MemberForm
@@ -133,6 +136,32 @@ def edit_profile(request):
 
     return render(request, 'members/edit_profile.html',
                   {'form': form, 'saved': saved})
+
+
+@permission_required('auth.change_user')
+def iban_export(request):
+    header_fields = ['name', 'username', 'iban']
+    rows = []
+
+    members = Member.active_members.filter(direct_debit_authorized=True)
+
+    for member in members:
+        rows.append({
+            'name': member.get_full_name(),
+            'username': member.user.username,
+            'iban': member.bank_account
+        })
+
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.DictWriter(response, header_fields)
+    writer.writeheader()
+
+    for row in rows:
+        writer.writerow(row)
+
+    response['Content-Disposition'] = (
+        'attachment; filename="iban-export.csv"')
+    return response
 
 
 def become_a_member(request):
