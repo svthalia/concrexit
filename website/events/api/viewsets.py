@@ -78,7 +78,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
                     event=pk, date_cancelled__not=None)
             elif status == 'registered':
                 queryset = Registration.objects.filter(
-                    event=pk, date_cancelled=None)[event.max_participants:]
+                    event=pk, date_cancelled=None)[:event.max_participants]
 
         serializer = RegistrationSerializer(queryset, many=True,
                                             context={'request': request})
