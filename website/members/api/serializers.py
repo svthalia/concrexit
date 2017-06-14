@@ -52,7 +52,7 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
 class MemberRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
-        fields = ('pk', 'display_name', 'photo',
+        fields = ('pk', 'display_name', 'photo', 'profile_description',
                   'birthday', 'starting_year', 'programme',
                   'website', 'membership_type', 'achievements')
 
