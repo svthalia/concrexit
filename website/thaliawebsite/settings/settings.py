@@ -234,7 +234,7 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 
 # Website FROM address
-WEBSITE_FROM_ADDRESS = 'no-reply@thalia.nu'
+WEBSITE_FROM_ADDRESS = 'info@thalia.nu'
 
 # Board notification address
 BOARD_NOTIFICATION_ADDRESS = 'info@thalia.nu'

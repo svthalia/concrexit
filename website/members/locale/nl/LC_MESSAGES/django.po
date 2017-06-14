@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-09 22:32+0200\n"
-"PO-Revision-Date: 2017-06-09 22:33+0200\n"
+"POT-Creation-Date: 2017-06-14 21:21+0200\n"
+"PO-Revision-Date: 2017-06-14 21:22+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.2\n"
 
 #: admin.py:36
 msgid "membership type"
@@ -74,11 +74,11 @@ msgstr "Studentnummer"
 msgid "Download student number label for selected users"
 msgstr "Download studentnummers voor geselecteerde gebruikers"
 
-#: emails.py:23
+#: emails.py:24
 msgid "Membership announcement"
 msgstr "Mededeling over lidmaatschap"
 
-#: emails.py:33
+#: emails.py:34
 msgid "Membership announcement sent"
 msgstr "Mededeling over lidmaatschap verzonden"
 
@@ -452,7 +452,11 @@ msgid ""
 "\n"
 "With kind regards,\n"
 "\n"
-"The board of Study Association Thalia"
+"The board of Study Association Thalia\n"
+"\n"
+"————\n"
+"\n"
+"This email was automatically generated."
 msgstr ""
 "Dear %(name)s,\n"
 "\n"
@@ -468,7 +472,11 @@ msgstr ""
 "\n"
 "Met vriendelijke groeten,\n"
 "\n"
-"Het bestuur"
+"Het bestuur der Studievereniging Thalia\n"
+"\n"
+"————\n"
+"\n"
+"Deze e-mail is automatisch gegenereerd."
 
 #: templates/members/email/welcome.txt:1
 #, python-format

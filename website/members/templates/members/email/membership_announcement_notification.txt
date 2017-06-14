@@ -1,16 +1,20 @@
-Geacht bestuur,
+Dear board,
 
-Vanwege de tijd van het jaar heeft de website automatisch iedereen met een studielidmaatschap een email gestuurd.
+It's that time of the year again! The website sent an automatic email to
+all members that have a study membership.
 
-In die email staat dat het lidmaatschap geldig is zolang ze een studie informatica en/of informatiekunde volgen.
-We hebben deze mensen gevraagd om, indien ze afgestudeerd zijn of om een andere reden gestopt met hun studie,
-een mailtje te sturen naar info@thalia.nu. Hierbij willen we graag laten weten dat jullie deze emails kunnen verwachten.
+That email tells them that their membership is valid as long as they're enrolled
+in either a computer science or an information science programme.
+We asked them to notify you when they graduate or stop with their studies for any
+other reason so that you'll be able to update the administration.
 
-De email is gestuurd naar:
+This means that you can expect an influx of emails from members.
+
+The email was sent to:
 {% for member in members %}
  * {{ member.full_name }}
 {% endfor %}
 
-Kusjes,
+Kisses,
 
-De website
+The website
