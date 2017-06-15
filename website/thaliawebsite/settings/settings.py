@@ -232,6 +232,12 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 
+# Website FROM address
+WEBSITE_FROM_ADDRESS = 'info@thalia.nu'
+
+# Board notification address
+BOARD_NOTIFICATION_ADDRESS = 'info@thalia.nu'
+
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
 
