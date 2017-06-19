@@ -23,7 +23,7 @@ def index(request):
     query_filter = '' if request.GET.get(
         'filter') is None else request.GET.get('filter')
     keywords = '' if request.GET.get('keywords') is None else request.GET.get(
-        'keywords')
+        'keywords').split()
 
     page = request.GET.get('page')
     page = 1 if page is None or not page.isdigit() else int(page)
@@ -53,11 +53,12 @@ def index(request):
         memberships_query = Q(until__gt=datetime.now().date()) | Q(until=None)
         memberships_query &= Q(type='honorary')
 
-    if keywords is not None:
-        memberships_query &= (Q(user__member__nickname__icontains=keywords) |
-                              Q(user__first_name__icontains=keywords) |
-                              Q(user__last_name__icontains=keywords) |
-                              Q(user__username__icontains=keywords))
+    if keywords:
+        for key in keywords:
+            memberships_query &= (Q(user__member__nickname__icontains=key) |
+                                  Q(user__first_name__icontains=key) |
+                                  Q(user__last_name__icontains=key) |
+                                  Q(user__username__icontains=key))
 
     memberships = models.Membership.objects.filter(memberships_query)
     members_query &= Q(user__in=memberships.values('user'))
