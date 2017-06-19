@@ -92,7 +92,7 @@ def index(request):
     return render(request, 'members/index.html',
                   {'members': members, 'filter': query_filter,
                    'year_range': year_range, 'page_range': page_range,
-                   'keywords': ' '.join(keywords)})
+                   'keywords': keywords})
 
 
 @login_required
