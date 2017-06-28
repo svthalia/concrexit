@@ -82,7 +82,7 @@ def save_photo(request, archive_file, photo, album):
 
 class AlbumAdmin(TranslatedModelAdmin):
     list_display = ('title', 'date', 'hidden', 'shareable')
-    fields = ('title', 'slug', 'date', 'hidden', 'shareable',
+    fields = ('title', 'slug', 'date', 'hidden', 'shareable', 'album_archive',
               '_cover')
     search_fields = ('title', 'date')
     list_filter = ('hidden', 'shareable')
