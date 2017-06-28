@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-26 20:26+0200\n"
-"PO-Revision-Date: 2016-08-11 16:02+0100\n"
+"POT-Creation-Date: 2017-06-28 19:50+0200\n"
+"PO-Revision-Date: 2017-06-28 19:50+0200\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,17 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 2.0.2\n"
 
-#: documents/templates/documents/index.html:6
+#: templates/documents/index.html:6 templates/documents/index.html:7
 msgid "Documents"
 msgstr "Documenten"
 
-#: documents/templates/documents/index.html:16
+#: templates/documents/index.html:17
 msgid "Miscellaneous Documents"
 msgstr "Algemeen"
 
-#: documents/templates/documents/index.html:18
+#: templates/documents/index.html:19
 msgid ""
 "Thalia was officially founded on November 7th, 1990. The relevant statutes "
 "and internal rules can be accessed here. The statues have last been amended "
@@ -43,11 +43,11 @@ msgstr ""
 "en de kantinereglementen. Lees ze door zodat we allemaal op een fijne manier "
 "door kunnen borrelen in de kantine."
 
-#: documents/templates/documents/index.html:30
+#: templates/documents/index.html:31
 msgid "Policy Documents &amp; Annual Reports"
 msgstr "Beleidsdocumenten &amp; Jaarverslagen"
 
-#: documents/templates/documents/index.html:33
+#: templates/documents/index.html:34
 msgid ""
 "Every candidate board of Thalia drafts a policy document before being "
 "installed, to detail their plans for the next year. This also includes a "
@@ -68,19 +68,19 @@ msgstr ""
 "er zijn georganiseerd. In het onderstaande overzicht zijn de afgelopen "
 "beleidsplannen en jaarverslagen terug te vinden."
 
-#: documents/templates/documents/index.html:40
+#: templates/documents/index.html:41
 msgid "Policy"
 msgstr "Beleidsdocument"
 
-#: documents/templates/documents/index.html:45
+#: templates/documents/index.html:46
 msgid "Annual report"
 msgstr "Jaarverslag"
 
-#: documents/templates/documents/index.html:54
+#: templates/documents/index.html:55
 msgid "General Meetings"
 msgstr "Algemene Ledenvergaderingen"
 
-#: documents/templates/documents/index.html:57
+#: templates/documents/index.html:58
 msgid ""
 "The General Meetings (ALVs) can be attended by all members, honorary members "
 "and donors. Thalia organizes at least two general meetings each year. "
@@ -95,24 +95,28 @@ msgstr ""
 "en begunstigers die niet aanwezig waren teruglezen wat er allemaal besproken "
 "is."
 
-#: documents/templates/documents/meetingyear.html:4
+#: templates/documents/index.html:66
+msgid "Earlier.."
+msgstr "Eerder.."
+
+#: templates/documents/meetingyear.html:4
 #, python-format
 msgid "General Meetings of %(year)s-%(nextyear)s:"
 msgstr "ALV's van %(year)s-%(nextyear)s:"
 
-#: documents/templates/documents/meetingyear.html:13
+#: templates/documents/meetingyear.html:13
 msgid "Meeting"
 msgstr "ALV"
 
-#: documents/templates/documents/meetingyear.html:40
+#: templates/documents/meetingyear.html:40
 msgid "No minutes<br>available"
 msgstr "Geen notulen<br>beschikbaar"
 
-#: documents/templates/documents/meetingyear.html:45
+#: templates/documents/meetingyear.html:45
 msgid "Only signed-in users can view<br>General Meeting documents."
 msgstr "ALV-stukken zijn alleen in te zien<br>door ingelogde gebruikers."
 
-#: documents/templates/documents/meetingyear.html:55
+#: templates/documents/meetingyear.html:55
 #, python-format
 msgid "There are no General Meetings available for %(year)s-%(nextyear)s"
 msgstr "Er zijn geen ALV's beschikbaar van %(year)s-%(nextyear)s"
