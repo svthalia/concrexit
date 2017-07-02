@@ -63,6 +63,7 @@
     <button class="meeting-btn btn-large btn-style2" data-year="{{ year }}">{{ year }}-{{ year|add:1 }}</button>
 {% endfor %}
     <select id="alvselect" name="alvselect" class="btn-large btn-style2">
+    <option selected disabled hidden>{% trans "Earlier.." %}</option>
     {% for year, meetings in meeting_years|slice:"5:" %}
         <option value="{{ year }}">{{ year }}-{{ year|add:1 }}</option>
     {% endfor %}
