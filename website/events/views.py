@@ -15,6 +15,7 @@ from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
+from thaliawebsite.templatetags import baseurl
 from .forms import FieldsForm
 from .models import Event, Registration, RegistrationInformationField
 
@@ -200,7 +201,7 @@ def event(request, event_id):
     return render(request, 'events/event.html', context)
 
 
-def _send_queue_mail(event):
+def _send_queue_mail(request, event):
     if (event.max_participants is not None and
         Registration.objects
                     .filter(event=event, date_cancelled=None)
@@ -214,6 +215,8 @@ def _send_queue_mail(event):
 
         text_template = get_template('events/email.txt')
 
+        base_url = baseurl.baseurl({'request': request})
+
         with translation.override(first_waiting_member.language):
             subject = _("[THALIA] Notification about your "
                         "registration for '{}'").format(
@@ -221,6 +224,7 @@ def _send_queue_mail(event):
             text_message = text_template.render({
                 'event': event,
                 'reg': first_waiting,
+                'base_url': base_url,
                 'member': first_waiting_member
             })
 
@@ -306,7 +310,7 @@ def _registration_cancel(request, event, reg):
         messages.error(request, _("You are not registered for this event."))
     else:
         if reg.queue_position() == 0:
-            _send_queue_mail(event)
+            _send_queue_mail(request, event)
 
         # Note that this doesn't remove the values for the
         # information fields that the user entered upon registering.
