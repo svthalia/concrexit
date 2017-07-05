@@ -59,7 +59,7 @@ def save_photo(request, archive_file, photo, album):
 
     # Generate unique filename
     num = album.photo_set.count()
-    _, extension = os.path.splitext(photo_filename)
+    filename, extension = os.path.splitext(photo_filename)
     new_filename = str(num).zfill(4) + extension
 
     photo_obj = Photo()
