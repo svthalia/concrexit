@@ -241,6 +241,9 @@ WEBSITE_FROM_ADDRESS = 'info@thalia.nu'
 # Board notification address
 BOARD_NOTIFICATION_ADDRESS = 'info@thalia.nu'
 
+# Partners notification email
+PARTNER_EMAIL = "samenwerking@thalia.nu"
+
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
 
