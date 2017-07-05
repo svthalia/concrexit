@@ -261,7 +261,47 @@ class RegistrationTest(TestCase):
         self.assertEqual(field2.get_value_for(registration), 42)
         self.assertEqual(field3.get_value_for(registration), 'text')
 
-    def test_registration_register_fields_not_required(self):
+    def test_registration_missing_fields(self):
+        self.event.registration_start = (timezone.now() -
+                                         datetime.timedelta(hours=1))
+        self.event.registration_end = (timezone.now() +
+                                       datetime.timedelta(hours=1))
+        self.event.cancel_deadline = (timezone.now() +
+                                      datetime.timedelta(hours=1))
+        self.event.save()
+
+        RegistrationInformationField.objects.create(
+            pk=1,
+            event=self.event,
+            type=RegistrationInformationField.BOOLEAN_FIELD,
+            name_en="test bool",
+            name_nl="test bool",
+            required=False)
+
+        RegistrationInformationField.objects.create(
+            pk=2,
+            event=self.event,
+            type=RegistrationInformationField.INTEGER_FIELD,
+            name_en="test int",
+            name_nl="test int",
+            required=False)
+
+        RegistrationInformationField.objects.create(
+            pk=3,
+            event=self.event,
+            type=RegistrationInformationField.TEXT_FIELD,
+            name_en="test text",
+            name_nl="test text",
+            required=False)
+
+        response = self.client.post('/events/1/registration/register/',
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+        template_names = [template.name for template in response.templates]
+        self.assertIn('events/event_fields.html', template_names)
+        self.assertEqual(self.event.num_participants(), 1)
+
+    def test_registration_register_fields_required(self):
         self.event.registration_start = (timezone.now() -
                                          datetime.timedelta(hours=1))
         self.event.registration_end = (timezone.now() +
@@ -279,7 +319,8 @@ class RegistrationTest(TestCase):
 
         response = self.client.post('/events/1/registration/register/',
                                     follow=True)
-
+        response = self.client.post('/events/1/registration/register/',
+                                    follow=True)
         self.assertEqual(response.status_code, 200)
         template_names = [template.name for template in response.templates]
         self.assertIn('events/event_fields.html', template_names)
