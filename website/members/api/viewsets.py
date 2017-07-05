@@ -29,7 +29,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.action == 'list':
-            return Member.active_members
+            return Member.active_members.get_queryset()
         return Member.objects.all()
 
     def _get_birthdays(self, member, start, end):
