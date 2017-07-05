@@ -248,6 +248,8 @@ def _show_registration_fields(request, event, reg, action):
                 field['field'].set_value_for(reg,
                                              field['value'])
 
+            return redirect(event)
+
     return render(request, 'events/event_fields.html',
                   {'event': event, 'form': form, 'action': action})
 
@@ -273,6 +275,8 @@ def _registration_register(request, event, reg):
             if event.has_fields():
                 return _show_registration_fields(request, event, reg,
                                                  'register')
+    elif event.has_fields():
+        return _show_registration_fields(request, event, reg, 'register')
     elif not reg.member.can_attend_events:
         messages.error(request, _("You may not register"))
     else:
