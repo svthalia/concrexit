@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.core.mail import EmailMessage
 
 from partners.models import Partner, Vacancy, VacancyCategory
+from thaliawebsite.settings import settings
 
 
 def index(request):
@@ -55,15 +56,15 @@ def send_vacancy_expiration_mails():
     )
     for exp_vacancy in expired_vacancies:
         # Create Message
-        subject = "[THALIA][SPONSOR] Vacature '{}' van {} loopt af" \
-            .format(exp_vacancy.title, exp_vacancy.get_company_name())
-        text_message = "Hallo Extern,\n\nde vacature van {}, " \
-                       "'{}' loopt over ca. een maand af. " \
-                       "Misschien wil je ze contacteren om een " \
-                       "nieuwe deal te sluiten.\n\n" \
-                       "Groetjes,\nDe Website" \
-            .format(exp_vacancy.title, exp_vacancy.get_company_name())
-        recipient = "sponsor@thalia.nu"
+        subject = ("[THALIA][SPONSOR] Vacature '{}' van {} loopt af"
+                   .format(exp_vacancy.title, exp_vacancy.get_company_name()))
+        text_message = ("Hallo Extern,\n\nde vacature van {}, '{}' loopt "
+                        "over circa een maand af. Misschien wil "
+                        "je ze contacteren om een nieuwe deal "
+                        "te sluiten.\n\nGroetjes,\nDe Website"
+                        .format(exp_vacancy.title,
+                                exp_vacancy.get_company_name()))
+        recipient = settings.PARTNER_EMAIL
 
         # Send Mail
         EmailMessage(

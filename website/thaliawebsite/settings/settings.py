@@ -230,6 +230,9 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 
+# Partners notification email
+PARTNER_EMAIL = "samenwerking@thalia.nu"
+
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
 
