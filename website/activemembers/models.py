@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class UnfilteredSortedManager(models.Manager):
     """Returns committees and boards, sorted by name"""
+
     def get_queryset(self):
         return (super().get_queryset()
                 .order_by(localize_attr_name('name')))
@@ -24,6 +25,7 @@ class UnfilteredSortedManager(models.Manager):
 
 class CommitteeManager(models.Manager):
     """Returns committees only"""
+
     def get_queryset(self):
         return (super().get_queryset()
                 .exclude(board__is_board=True)
@@ -32,6 +34,7 @@ class CommitteeManager(models.Manager):
 
 class ActiveCommitteeManager(models.Manager):
     """Returns active committees only"""
+
     def get_queryset(self):
         return (super().get_queryset()
                 .exclude(board__is_board=True)
@@ -90,9 +93,15 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
 
     active = models.BooleanField(default=False)
 
+    contact_email = models.EmailField(
+        _('contact email address'),
+        blank=True,
+        null=True,
+    )
+
     contact_mailinglist = models.OneToOneField(
         'mailinglists.MailingList',
-        verbose_name=_('contact email address'),
+        verbose_name=_('contact mailing list'),
         null=True,
         blank=True,
     )
@@ -102,6 +111,21 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
         null=True,
         blank=True,
         max_length=50)
+
+    def clean(self):
+        """Validation"""
+        if ((self.contact_email is not None and
+                self.contact_mailinglist is not None) or
+            (self.contact_email is None and
+                self.contact_mailinglist is None)):
+            raise ValidationError({
+                'contact_email':
+                    _("Please use either the mailing list "
+                      "or email address option."),
+                'contact_mailinglist':
+                    _("Please use either the mailing list "
+                      "or email address option.")
+            })
 
     def __str__(self):
         return self.name
@@ -119,8 +143,8 @@ class BoardManager(models.Manager):
     def get_queryset(self):
         # sorting by descending order by default makes more sense for boards
         return (super().get_queryset()
-                       .filter(is_board=True)
-                       .order_by(localize_attr_name('-name')))
+                .filter(is_board=True)
+                .order_by(localize_attr_name('-name')))
 
 
 class Board(Committee):
@@ -160,10 +184,10 @@ class Board(Committee):
                     continue
                 if ((board.until is None and (
                         self.until is None or self.until >= board.since)) or
-                    (self.until is None and self.since <= board.until) or
-                    (self.until and board.until and
-                        self.since <= board.until and
-                        self.until >= board.since)):
+                        (self.until is None and self.since <= board.until) or
+                        (self.until and board.until and
+                            self.since <= board.until and
+                            self.until >= board.since)):
                     raise ValidationError({
                         'since': _('A board already exists for those years'),
                         'until': _('A board already exists for those years')})
@@ -171,6 +195,7 @@ class Board(Committee):
 
 class ActiveMembershipManager(models.Manager):
     """Get only active memberships"""
+
     def get_queryset(self):
         """Get the currently active committee memberships"""
         return super().get_queryset().exclude(until__lt=timezone.now().date())
@@ -265,13 +290,14 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
                     continue
                 if ((chair.until is None and
                         (self.until is None or self.until > chair.since)) or
-                    (self.until is None and self.since < chair.until) or
-                    (self.until and chair.until and
-                        self.since < chair.until and
-                        self.until > chair.since)):
+                        (self.until is None and self.since < chair.until) or
+                        (self.until and chair.until and
+                            self.since < chair.until and
+                            self.until > chair.since)):
                     raise ValidationError({
                         NON_FIELD_ERRORS:
-                        _('There already is a chair for this time period')})
+                            _('There already is a '
+                              'chair for this time period')})
 
         # check if this member is already in the committee in this period
         memberships = (CommitteeMembership.objects
@@ -282,22 +308,20 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
                 continue
             if ((mship.until is None and
                     (self.until is None or self.until > mship.since)) or
-                (self.until is None and self.since < mship.until) or
-                (self.until and mship.until and
-                    self.since < mship.until and
-                    self.until > mship.since)):
+                    (self.until is None and self.since < mship.until) or
+                    (self.until and mship.until and
+                        self.since < mship.until and
+                        self.until > mship.since)):
                 raise ValidationError({
                     'member': _('This member is already in the committee for '
                                 'this period')})
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.member.user.is_staff = (
-            self.member
-            .committeemembership_set
-            .exclude(
-                until__lte=timezone.now().date())
-            .count()) >= 1
+        self.member.user.is_staff = (self.member
+                                     .committeemembership_set
+                                     .exclude(until__lte=timezone.now().date())
+                                     .count()) >= 1
         self.member.user.save()
 
     def __str__(self):
