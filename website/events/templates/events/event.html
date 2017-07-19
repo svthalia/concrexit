@@ -131,20 +131,22 @@
                         <em>
                         {% if not request.user.is_authenticated %}
                             {% trans "You have to log in before you can register for this event." %}
-                        {% elif event.status == event.REGISTRATION_NOT_YET_OPEN %}
-                            {% blocktrans with datetime=event.registration_start %}Registration will open {{ datetime }}{% endblocktrans %}
-                        {% elif event.status == event.REGISTRATION_CLOSED or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY %}
-                            {% blocktrans %}Registration is not possible anymore.{% endblocktrans %}
-                        {% elif status == event.REGISTRATION_NOT_NEEDED %}
-                            {% if event.no_registration_message %}
-                                {{ event.no_registration_message }}
-                            {% else %}
-                                {% trans "No registration required" %}
+                        {% else %}
+                            {% if event.status == event.REGISTRATION_NOT_YET_OPEN %}
+                                {% blocktrans with datetime=event.registration_start %}Registration will open {{ datetime }}{% endblocktrans %}
+                            {% elif event.status == event.REGISTRATION_CLOSED or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY %}
+                                {% blocktrans %}Registration is not possible anymore.{% endblocktrans %}
+                            {% elif status == event.REGISTRATION_NOT_NEEDED %}
+                                {% if event.no_registration_message %}
+                                    {{ event.no_registration_message }}
+                                {% else %}
+                                    {% trans "No registration required" %}
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-                        {% if event.status == event.REGISTRATION_OPEN_NO_CANCEL or event.status == event.REGISTRATION_CLOSED  %}
-                            {% if registration.date_cancelled is None and event.fine > 0 and registration.queue_position == 0 %}
-                                {% blocktrans with costs=event.fine %}Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}. Also note that you will be unable to re-register.{% endblocktrans %}
+                            {% if event.status == event.REGISTRATION_OPEN_NO_CANCEL or event.status == event.REGISTRATION_CLOSED  %}
+                                {% if registration.date_cancelled is None and event.fine > 0 and registration.queue_position == 0 %}
+                                    {% blocktrans with costs=event.fine %}Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}. Also note that you will be unable to re-register.{% endblocktrans %}
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                         </em>

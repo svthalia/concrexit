@@ -70,7 +70,6 @@ INSTALLED_APPS = [
     'pizzas',
     'newsletters',
     'education',
-    'thaliapp',
     'announcements',
 ]
 
@@ -166,9 +165,12 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_VERSIONING_CLASS':
+        'rest_framework.versioning.NamespaceVersioning',
 }
 
 # Internationalization
@@ -233,15 +235,17 @@ NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 # Partners notification email
 PARTNER_EMAIL = "samenwerking@thalia.nu"
 
+# Website FROM address
+WEBSITE_FROM_ADDRESS = 'info@thalia.nu'
+
+# Board notification address
+BOARD_NOTIFICATION_ADDRESS = 'info@thalia.nu'
+
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
 
 # API key for wiki
 WIKI_API_KEY = 'debug'
-# API key for thaliapp related stuff
-# SHA256 hash so it does not need replacement in production
-THALIAPP_API_KEY = ('5b2bff55b74f74678dd578f8f669e959'
-                    '09f356aa05548ecdf418e678af334844')
 
 # CORS config
 CORS_ORIGIN_ALLOW_ALL = True
@@ -263,4 +267,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'paste_remove_styles': True,
     'paste_remove_styles_if_webkit': True,
     'paste_strip_class_attributes': "all",
+    'height': 250,
+    'width': 600,
+    'theme_advanced_resizing': True,
 }

@@ -1,7 +1,14 @@
+from base64 import b64encode
+
+from django.contrib.staticfiles.finders import find as find_static_file
+from django.templatetags.static import static
 from django.urls import reverse
+from rest_framework import serializers
 
 from events.api.serializers import CalenderJSSerializer
 from members.models import Member
+from members.services import member_achievements
+from thaliawebsite.settings import settings
 
 
 class MemberBirthdaySerializer(CalenderJSSerializer):
@@ -40,3 +47,58 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
 
     def _text_color(self, instance):
         return 'white'
+
+
+class MemberRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ('pk', 'display_name', 'photo', 'profile_description',
+                  'birthday', 'starting_year', 'programme',
+                  'website', 'membership_type', 'achievements')
+
+    photo = serializers.SerializerMethodField('_b64_photo')
+    birthday = serializers.SerializerMethodField('_birthday')
+    membership_type = serializers.SerializerMethodField('_membership_type')
+    achievements = serializers.SerializerMethodField('_achievements')
+
+    def _birthday(self, instance):
+        if instance.show_birthday:
+            return instance.birthday
+        return None
+
+    def _membership_type(self, instance):
+        membership = instance.current_membership
+        if membership:
+            return membership.type
+        return None
+
+    def _achievements(self, instance):
+        return member_achievements(instance)
+
+    def _b64_photo(self, instance):
+        if instance.photo:
+            photo = ''.join(['data:image/jpeg;base64,',
+                             b64encode(instance.photo.file.read()).decode()])
+        else:
+            filename = find_static_file('members/images/default-avatar.jpg')
+            with open(filename, 'rb') as f:
+                photo = ''.join(['data:image/jpeg;base64,',
+                                 b64encode(f.read()).decode()])
+
+        return photo
+
+
+class MemberListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ('pk', 'display_name', 'photo',)
+
+    photo = serializers.SerializerMethodField('_photo')
+
+    def _photo(self, instance):
+        if instance.photo:
+            return self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.photo))
+        else:
+            return self.context['request'].build_absolute_uri(
+                static('members/images/default-avatar.jpg'))

@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n bleach_tags %}
 <div class="blog">
     <ul class="row">
         {% for next_event in upcoming %}
@@ -24,7 +24,7 @@
                             <div class="circle-inner">{{ next_event.event.start.day }}<span>{{ next_event.event.start|date:"M" }}</span></div>
                         </div>
                         <div class="post-excerpt">
-                            <p>{{ next_event.event.description|striptags }}</p>
+                            <p>{{ next_event.event.description|striptags|bleach }}</p>
                         </div>
                     </div>
                 </div>

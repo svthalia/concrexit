@@ -148,12 +148,20 @@ class Board(Committee):
     def validate_unique(self, *args, **kwargs):
         """ Check uniqueness"""
         super().validate_unique(*args, **kwargs)
-        for board in Board.objects.filter(since__year=self.since.year,
-                                          until__year=self.until.year):
-            if board != self:
-                raise ValidationError({
-                    'since': _('A board already exists for those years'),
-                    'until': _('A board already exists for those years')})
+        boards = Board.objects.all()
+        if self.since is not None:
+            for board in boards:
+                if board.pk == self.pk:
+                    continue
+                if ((board.until is None and (
+                        self.until is None or self.until >= board.since)) or
+                    (self.until is None and self.since <= board.until) or
+                    (self.until and board.until and
+                        self.since <= board.until and
+                        self.until >= board.since)):
+                    raise ValidationError({
+                        'since': _('A board already exists for those years'),
+                        'until': _('A board already exists for those years')})
 
 
 class ActiveMembershipManager(models.Manager):

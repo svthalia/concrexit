@@ -1,15 +1,19 @@
+import csv
 import json
 import os
 from datetime import date, datetime
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from sendfile import sendfile
 
+from members.models import Member
+from members.services import member_achievements
 from . import models
 from .forms import MemberForm
 
@@ -19,7 +23,7 @@ def index(request):
     query_filter = '' if request.GET.get(
         'filter') is None else request.GET.get('filter')
     keywords = '' if request.GET.get('keywords') is None else request.GET.get(
-        'keywords')
+        'keywords').split()
 
     page = request.GET.get('page')
     page = 1 if page is None or not page.isdigit() else int(page)
@@ -49,11 +53,12 @@ def index(request):
         memberships_query = Q(until__gt=datetime.now().date()) | Q(until=None)
         memberships_query &= Q(type='honorary')
 
-    if keywords is not None:
-        memberships_query &= (Q(user__member__nickname__icontains=keywords) |
-                              Q(user__first_name__icontains=keywords) |
-                              Q(user__last_name__icontains=keywords) |
-                              Q(user__username__icontains=keywords))
+    if keywords:
+        for key in keywords:
+            memberships_query &= (Q(user__member__nickname__icontains=key) |
+                                  Q(user__first_name__icontains=key) |
+                                  Q(user__last_name__icontains=key) |
+                                  Q(user__username__icontains=key))
 
     memberships = models.Membership.objects.filter(memberships_query)
     members_query &= Q(user__in=memberships.values('user'))
@@ -98,46 +103,7 @@ def profile(request, pk=None):
         member = get_object_or_404(models.Member, user=request.user)
 
     # Group the memberships under the committees for easier template rendering
-    memberships = member.committeemembership_set.all()
-    achievements = {}
-    for membership in memberships:
-        period = {
-            'since': membership.since,
-            'until': membership.until,
-            'chair': membership.chair
-        }
-
-        if hasattr(membership.committee, 'board'):
-            period['role'] = membership.role
-
-        if (membership.until is None and
-                hasattr(membership.committee, 'board')):
-            period['until'] = membership.committee.board.until
-
-        name = membership.committee.name
-        if achievements.get(name):
-            achievements[name]['periods'].append(period)
-            if achievements[name]['earliest'] > membership.since:
-                achievements[name]['earliest'] = membership.since
-            achievements[name]['periods'].sort(key=lambda x: x['since'])
-        else:
-            achievements[name] = {
-                'name': name,
-                'periods': [period],
-                'earliest': membership.since,
-            }
-    mentor_years = member.mentorship_set.all()
-    for mentor_year in mentor_years:
-        name = "Mentor in {}".format(mentor_year.year)
-        # Ensure mentorships appear last but are sorted
-        earliest = date.today()
-        earliest = earliest.replace(year=earliest.year + mentor_year.year)
-        if not achievements.get(name):
-            achievements[name] = {
-                'name': name,
-                'earliest': earliest,
-            }
-    achievements = sorted(achievements.values(), key=lambda x: x['earliest'])
+    achievements = member_achievements(member)
 
     membership = member.current_membership
     membership_type = _("Former member")
@@ -171,6 +137,32 @@ def edit_profile(request):
 
     return render(request, 'members/edit_profile.html',
                   {'form': form, 'saved': saved})
+
+
+@permission_required('auth.change_user')
+def iban_export(request):
+    header_fields = ['name', 'username', 'iban']
+    rows = []
+
+    members = Member.active_members.filter(direct_debit_authorized=True)
+
+    for member in members:
+        rows.append({
+            'name': member.get_full_name(),
+            'username': member.user.username,
+            'iban': member.bank_account
+        })
+
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.DictWriter(response, header_fields)
+    writer.writeheader()
+
+    for row in rows:
+        writer.writerow(row)
+
+    response['Content-Disposition'] = (
+        'attachment; filename="iban-export.csv"')
+    return response
 
 
 def become_a_member(request):

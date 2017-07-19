@@ -9,11 +9,16 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from PIL import Image
 
+from utils.translation import ModelTranslateMeta, MultilingualField
+
 COVER_FILENAME = 'cover.jpg'
 
 
 def photo_uploadto(instance, filename):
-    return os.path.join(Album.photosdir, instance.album.dirname, filename)
+    num = instance.album.photo_set.count()
+    extension = os.path.splitext(filename)[1]
+    new_filename = str(num).zfill(4) + extension
+    return os.path.join(Album.photosdir, instance.album.dirname, new_filename)
 
 
 class Photo(models.Model):
@@ -40,6 +45,11 @@ class Photo(models.Model):
         default=False
     )
 
+    _digest = models.CharField(
+        'digest',
+        max_length=40,
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.file:
@@ -61,13 +71,19 @@ class Photo(models.Model):
             image.save(image_path, "JPEG")
             self._orig_file = self.file.path
 
+            hash_sha1 = hashlib.sha1()
+            for chunk in iter(lambda: self.file.read(4096), b""):
+                hash_sha1.update(chunk)
+            self._digest = hash_sha1.hexdigest()
+
     class Meta:
         ordering = ('file', )
 
 
-class Album(models.Model):
-    title = models.CharField(
-        verbose_name=_('title'),
+class Album(models.Model, metaclass=ModelTranslateMeta):
+    title = MultilingualField(
+        models.CharField,
+        _("title"),
         max_length=200,
     )
 
@@ -82,6 +98,7 @@ class Album(models.Model):
 
     slug = models.SlugField(
         verbose_name=_('slug'),
+        unique=True,
     )
 
     hidden = models.BooleanField(
@@ -133,4 +150,4 @@ class Album(models.Model):
                               .encode('utf-8')).hexdigest()
 
     class Meta:
-        ordering = ('-date', 'title')
+        ordering = ('-date', 'title_en')

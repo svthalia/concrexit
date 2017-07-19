@@ -35,10 +35,10 @@
     <script>
         $(document).ready(function() {
             var sources = {
-                events:     "/api/events",
-                birthdays:  "/api/members/birthdays",
-                partners:   "/api/partners/events",
-                unpublishedEvents: "/api/events/unpublished"
+                events:     "/api/v1/events/calendarjs",
+                birthdays:  "/api/v1/members/birthdays",
+                partners:   "/api/v1/partners/events",
+                unpublishedEvents: "/api/v1/events/unpublished"
             };
 
 
@@ -50,7 +50,27 @@
                 eventSources.push(sources.birthdays);
             }
 
-            $('#calendar').fullCalendar({
+            // History idea and code parts from
+            // https://github.com/fullcalendar/fullcalendar/issues/659#issuecomment-132535804
+            // and https://github.com/fullcalendar/fullcalendar/issues/659#issuecomment-245544401
+            {% if upcoming_activity %}
+                var startDate = new Date('{{ upcoming_activity.start|date:'Y-m-d' }}');
+            {% else %}
+                var startDate = new Date();
+            {% endif %}
+            var tmpYear = startDate.getFullYear();
+            var tmpMonth = startDate.getMonth();
+            var tmpDay = startDate.getDate();
+            var tmpView = ($(window).width() < 979) ? 'list' : 'agendaWeek';
+            var vars = window.location.hash.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                if (vars[i].match("^#year")) tmpYear = vars[i].substring(6);
+                if (vars[i].match("^month")) tmpMonth = vars[i].substring(6) - 1;
+                if (vars[i].match("^day")) tmpDay = vars[i].substring(4);
+                if (vars[i].match("^view")) tmpView = vars[i].substring(5);
+            }
+            var calendarDiv = $('#calendar');
+            calendarDiv.fullCalendar({
                 defaultDate:
                 {% spaceless %}
                     {% if upcoming_activity %}
@@ -88,7 +108,7 @@
                 },
                 firstDay: 1,
                 scrollTime: '14:00:00',
-                defaultView: ($(window).width() < 979) ? 'list' : 'agendaWeek',
+                defaultView: tmpView,
                 editable: false,
                 lang: '{{ LANGUAGE_CODE }}',
                 titleRangeSeparator: ' - ',
@@ -106,8 +126,26 @@
                 },
                 eventRender: function(event, element) {
                     element.attr('title', event.description);
+                },
+                viewRender: function(view) {
+                    var moment = calendarDiv.fullCalendar('getDate');
+                    if (moment && moment.isValid()) {
+                        window.location.hash = 'year=' + moment.format('YYYY') + '&month=' + (moment.format('M')) + '&day=' + moment.format('DD') + '&view=' + view.name;
+                    }
                 }
             });
+
+            var date = new Date(tmpYear, tmpMonth, tmpDay, 0, 0, 0);
+            var moment = calendarDiv.fullCalendar('getDate');
+            var view = calendarDiv.fullCalendar('getView');
+            if (date.getFullYear() != moment.format('YYYY') ||
+                    date.getMonth() != moment.format('M') ||
+                    date.getDate() != moment.format('DD')) {
+                calendarDiv.fullCalendar('gotoDate', date);
+            }
+            if (view.name != tmpView) {
+                calendarDiv.fullCalendar('changeView', tmpView);
+            }
         });
     </script>
 {% endblock body %}

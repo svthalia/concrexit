@@ -32,23 +32,23 @@ import os.path
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
-from django.contrib.auth.views import login
 from django.contrib import admin
+from django.contrib.auth.views import login
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
+from rest_framework.authtoken import views as rfviews
 
 import members
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from events.feeds import DeprecationFeed
+from events.sitemaps import sitemap as events_sitemap
 from members.sitemaps import sitemap as members_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
-from events.sitemaps import sitemap as events_sitemap
 from thaliawebsite.forms import AuthenticationForm
 from utils.views import private_thumbnails, generate_thumbnail
-
 from . import views
 from .sitemaps import StaticViewSitemap
 
@@ -100,11 +100,13 @@ urlpatterns = [
     url(r'^private-thumbnails/(?P<size_fit>\d+x\d+_[01])/(?P<path>.*)', private_thumbnails, name='private-thumbnails'),
     url(r'^generate-thumbnail/(?P<size_fit>\d+x\d+_[01])/(?P<path>[^/]+)/(?P<thumbpath>[^/]+)', generate_thumbnail, name='generate-thumbnail'),
     url(r'^api/', include([
-        url(r'^', include('events.api.urls')),
-        url(r'^', include('members.api.urls')),
-        url(r'^', include('partners.api.urls')),
-        url(r'^', include('thaliapp.urls')),
         url(r'wikilogin', views.wiki_login),
+        url(r'^v1/', include([
+            url(r'^token-auth', rfviews.obtain_auth_token),
+            url(r'^', include('events.api.urls')),
+            url(r'^', include('members.api.urls')),
+            url(r'^', include('partners.api.urls')),
+        ], namespace='v1')),
     ])),
     url(r'^education/', include('education.urls')),
     url(r'^announcements/', include('announcements.urls')),

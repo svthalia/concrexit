@@ -248,6 +248,8 @@ def _show_registration_fields(request, event, reg, action):
                 field['field'].set_value_for(reg,
                                              field['value'])
 
+            return redirect(event)
+
     return render(request, 'events/event_fields.html',
                   {'event': event, 'form': form, 'action': action})
 
@@ -258,10 +260,9 @@ def _registration_register(request, event, reg):
         reg.event = event
         reg.member = request.user.member
         messages.success(request, _("Registration successful."))
+        reg.save()
         if event.has_fields():
             return _show_registration_fields(request, event, reg, 'register')
-        else:
-            reg.save()
     elif reg.date_cancelled is not None:
         if reg.is_late_cancellation():
             messages.error(request, _("You cannot re-register anymore since "
@@ -270,11 +271,12 @@ def _registration_register(request, event, reg):
             reg.date = timezone.now()
             reg.date_cancelled = None
             messages.success(request, _("Registration successful."))
+            reg.save()
             if event.has_fields():
                 return _show_registration_fields(request, event, reg,
                                                  'register')
-            else:
-                reg.save()
+    elif event.has_fields():
+        return _show_registration_fields(request, event, reg, 'register')
     elif not reg.member.can_attend_events:
         messages.error(request, _("You may not register"))
     else:
@@ -303,14 +305,15 @@ def _registration_cancel(request, event, reg):
     if reg is None or reg.date_cancelled is not None:
         messages.error(request, _("You are not registered for this event."))
     else:
+        if reg.queue_position() == 0:
+            _send_queue_mail(event)
+
         # Note that this doesn't remove the values for the
         # information fields that the user entered upon registering.
         # But this is regarded as a feature, not a bug. Especially
         # since the values will still appear in the backend.
         reg.date_cancelled = timezone.now()
         reg.save()
-
-        _send_queue_mail(event)
 
         messages.success(request, _("Registration successfully cancelled."))
 

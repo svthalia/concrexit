@@ -1,6 +1,7 @@
+{% load bleach_tags %}
 {% for announcement in announcements %}
     <div class='announcement'>
-        <i class="fa fa-{{ announcement.icon }}"></i> {{ announcement.content }}
+        <i class="fa fa-{{ announcement.icon }}"></i> {{ announcement.content|bleach }}
         {% if announcement.closeable %}
           <button type="button" class="close" aria-label="Close" data-announcement-id="{{ announcement.pk }}">
               <span aria-hidden="true">&times;</span>

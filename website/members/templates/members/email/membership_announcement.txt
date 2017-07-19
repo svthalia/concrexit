@@ -1,0 +1,18 @@
+{% load i18n %}{% blocktrans %}Dear {{ name }},
+
+You're a study member of Thalia. This means that you'll be a member as long
+as you're enrolled in either a computer science or an information science programme.
+
+Are you still studying? Then you don't have to do anything at all!
+Did you graduate or stop with your studies for any other reason? Then please
+send us an email so that we can update our administration: info@thalia.nu
+
+If you have any questions, then don't hesitate and send us an email.
+
+With kind regards,
+
+The board of Study Association Thalia
+
+————
+
+This email was automatically generated.{% endblocktrans %}

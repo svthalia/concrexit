@@ -8,6 +8,7 @@
 {% block opengraph_title %}{% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
+{% with keys=keywords|join:" " %}
 <h1>{% trans "members"|capfirst %}</h1>
 
 <p class="text-center">
@@ -22,7 +23,7 @@
         <input type="hidden" name="filter" value="{{ filter }}"/>
         <div class="row">
             <div class="member-search">
-                <input name="keywords" type="text" value="{{ keywords }}" placeholder="{% trans "Who are you looking for?" %}"/>
+                <input name="keywords" type="text" value="{{ keys }}" placeholder="{% trans "Who are you looking for?" %}"/>
                 <input class="btn-large btn-style1" name="submit" type="submit" value="{% trans "Search" %}"/>
             </div>
 
@@ -31,13 +32,13 @@
 
     <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
         <ul class="link-tabs">
-            <li {% if not filter or filter == "all" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=all{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "All members" %}</a></li>
+            <li {% if not filter or filter == "all" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=all{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "All members" %}</a></li>
             {% for year in year_range %}
-                <li {% if filter == year|stringformat:"i" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter={{ year }}{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{{ year }}</a></li>
+                <li {% if filter == year|stringformat:"i" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter={{ year }}{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{{ year }}</a></li>
             {% endfor %}
-            <li {% if filter == "old" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=old{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Older" %}</a></li>
-            <li {% if filter == "honor" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=honor{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Honorary Members" %}</a></li>
-            <li {% if filter == "ex" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=ex{% if keywords %}&keywords={{ keywords }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Former Members" %}</a></li>
+            <li {% if filter == "old" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=old{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Older" %}</a></li>
+            <li {% if filter == "honor" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=honor{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Honorary Members" %}</a></li>
+            <li {% if filter == "ex" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=ex{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Former Members" %}</a></li>
         </ul>
     </div>
 
@@ -82,7 +83,7 @@
     <ul class="pagination">
         {% if members.has_previous %}
         <li>
-            <a class="page-prev" href="{% url 'members:index' %}?page={{ members.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keywords }}{% endif %}">Previous</a>
+            <a class="page-prev" href="{% url 'members:index' %}?page={{ members.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}">Previous</a>
         </li>
         {% endif %}
 
@@ -94,16 +95,17 @@
                 </span>
             </li>
             {% else %}
-            <li><a href="{% url 'members:index' %}?page={{ page }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keywords }}{% endif %}" class="page-number button">{{ page }}</a></li>
+            <li><a href="{% url 'members:index' %}?page={{ page }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}" class="page-number button">{{ page }}</a></li>
             {% endif %}
         {% endfor %}
 
         {% if members.has_next %}
         <li>
-            <a class="page-next" href="{% url 'members:index' %}?page={{ members.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keywords }}{% endif %}">{% trans "Next" %}</a>
+            <a class="page-next" href="{% url 'members:index' %}?page={{ members.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}">{% trans "Next" %}</a>
         </li>
         {% endif %}
     </ul>
 </div>
 
+{% endwith %}
 {% endblock %}
