@@ -100,6 +100,9 @@ class EventTest(TestCase):
         self.event.clean()
 
     def test_cancel_deadline_before_registration_start(self):
+        self.event.registration_start = timezone.now()
+        self.event.registration_end = (timezone.now() +
+                                       datetime.timedelta(hours=1))
         self.event.cancel_deadline = (self.event.start +
                                       datetime.timedelta(hours=1))
         with self.assertRaises(ValidationError):
