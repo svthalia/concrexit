@@ -99,6 +99,15 @@ class EventTest(TestCase):
             self.event.registration_end, self.event.registration_start
         self.event.clean()
 
+    def test_cancel_deadline_before_registration_start(self):
+        self.event.cancel_deadline = (self.event.start +
+                                      datetime.timedelta(hours=1))
+        with self.assertRaises(ValidationError):
+            self.event.clean()
+
+        self.event.cancel_deadline = self.event.start
+        self.event.clean()
+
     def test_status_registration_not_needed(self):
         self.assertEqual(self.event.status, Event.REGISTRATION_NOT_NEEDED)
 
