@@ -36,7 +36,7 @@ def _extract_date_range(request):
 
 
 class EventViewset(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.filter(end__gte=timezone.datetime.now(),
+    queryset = Event.objects.filter(end__gte=timezone.now(),
                                     published=True)
     permission_classes = [IsAuthenticated]
     filter_backends = (filters.OrderingFilter,)
