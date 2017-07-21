@@ -53,14 +53,17 @@ def admin_change_registration(request, event_id, action=None):
 
     try:
         id = request.POST.get("id", -1)
-        checked = json.loads(request.POST.get("checked"))
         obj = Registration.objects.get(event=event_id, pk=id)
-        if checked is not None:
-            if action == 'present':
+        if action == 'present':
+            checked = json.loads(request.POST.get("checked"))
+            if checked is not None:
                 obj.present = checked
-            elif action == 'paid':
-                obj.paid = checked
-            obj.save()
+                obj.save()
+        elif action == 'payment':
+            value = request.POST.get("value")
+            if value is not None:
+                obj.payment = value
+                obj.save()
     except Registration.DoesNotExist:
         data['success'] = False
 

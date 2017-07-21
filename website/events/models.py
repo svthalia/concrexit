@@ -322,6 +322,11 @@ class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
 class Registration(models.Model):
     """Event registrations"""
 
+    PAYMENT_TYPES = (
+        ('no_payment', _('No payment')),
+        ('cash_payment', _('Paid with cash')),
+        ('card_payment', _('Paid with card')))
+
     event = models.ForeignKey(Event, models.CASCADE)
 
     member = models.ForeignKey(
@@ -350,9 +355,12 @@ class Registration(models.Model):
         _('present'),
         default=False,
     )
-    paid = models.BooleanField(
-        _('paid'),
-        default=False,
+
+    payment = models.CharField(
+        choices=PAYMENT_TYPES,
+        default='no_payment',
+        verbose_name=_('payment'),
+        max_length=20,
     )
 
     def registration_information(self):

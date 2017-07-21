@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-21 23:25+0200\n"
-"PO-Revision-Date: 2017-07-21 23:26+0200\n"
+"POT-Creation-Date: 2017-08-16 22:58+0200\n"
+"PO-Revision-Date: 2017-08-16 23:00+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 2.0.3\n"
 
 #: admin.py:89
 msgid "Event Date"
@@ -230,35 +230,47 @@ msgstr "veldnaam"
 msgid "required"
 msgstr "verplicht"
 
-#: models.py:336 templates/events/admin/registrations_table.html:6
+#: models.py:326
+msgid "No payment"
+msgstr "Niet betaald"
+
+#: models.py:327
+msgid "Paid with cash"
+msgstr "Contant betaald"
+
+#: models.py:328
+msgid "Paid with card"
+msgstr "Pin betaald"
+
+#: models.py:341 templates/events/admin/registrations_table.html:6
 msgid "name"
 msgstr "naam"
 
-#: models.py:338
+#: models.py:343
 msgid "Use this for non-members"
 msgstr "Gebruikt dit voor niet-leden"
 
-#: models.py:343
+#: models.py:348
 msgid "registration date"
 msgstr "aanmelddatum"
 
-#: models.py:345
+#: models.py:350
 msgid "cancellation date"
 msgstr "afmelddatum"
 
-#: models.py:350 templates/events/admin/registrations_table.html:11
+#: models.py:355 templates/events/admin/registrations_table.html:11
 msgid "present"
 msgstr "aanwezig"
 
-#: models.py:354 templates/events/admin/registrations_table.html:12
-msgid "paid"
-msgstr "betaald"
+#: models.py:362
+msgid "payment"
+msgstr "betaling"
 
-#: models.py:405 models.py:406
+#: models.py:413 models.py:414
 msgid "Either specify a member or a name"
 msgstr "Geef een lid of een naam op"
 
-#: models.py:428
+#: models.py:436
 msgid "last changed"
 msgstr "laatst aangepast"
 
@@ -317,7 +329,7 @@ msgid "Event properties"
 msgstr "Eigenschappen van evenement"
 
 #: templates/events/admin/details.html:63
-#: templates/events/admin/registrations_table.html:46
+#: templates/events/admin/registrations_table.html:50
 msgid "change"
 msgstr "verander"
 
@@ -353,19 +365,31 @@ msgid_plural "%(counter)s registrations"
 msgstr[0] "%(counter)s aanmelding"
 msgstr[1] "%(counter)s aanmeldingen"
 
+#: templates/events/admin/registrations_table.html:12
+msgid "not paid"
+msgstr "niet betaald"
+
+#: templates/events/admin/registrations_table.html:13
+msgid "paid cash"
+msgstr "contant betaald"
+
 #: templates/events/admin/registrations_table.html:14
+msgid "paid card"
+msgstr "pin betaald"
+
+#: templates/events/admin/registrations_table.html:16
 msgid "late"
 msgstr "te laat"
 
-#: templates/events/admin/registrations_table.html:18
+#: templates/events/admin/registrations_table.html:20
 msgid "add"
 msgstr "toevoegen"
 
-#: templates/events/admin/registrations_table.html:50
+#: templates/events/admin/registrations_table.html:54
 msgid "registered"
 msgstr "aangemeld"
 
-#: templates/events/admin/registrations_table.html:51
+#: templates/events/admin/registrations_table.html:55
 #, python-format
 msgid "Nobody %(verb)s yet"
 msgstr "Niemand heeft zich %(verb)s"
@@ -556,56 +580,56 @@ msgstr "Toon  verjaardagen"
 msgid "list"
 msgstr "Lijst"
 
-#: views.py:91
+#: views.py:94
 msgctxt "registration status"
 msgid "registered"
 msgstr "aangemeld"
 
-#: views.py:97 views.py:132
+#: views.py:100 views.py:135
 msgctxt "registration status"
 msgid "late cancellation"
 msgstr "te laat afgemeld"
 
-#: views.py:99
+#: views.py:102
 msgctxt "registration status"
 msgid "cancelled"
 msgstr "afgemeld"
 
-#: views.py:103
+#: views.py:106
 msgctxt "registration status"
 msgid "waiting"
 msgstr "wachtend"
 
-#: views.py:108 views.py:119
+#: views.py:111 views.py:122
 msgid "Yes"
 msgstr "Ja"
 
-#: views.py:218
+#: views.py:221
 msgid "[THALIA] Notification about your registration for '{}'"
 msgstr "[THALIA] Bericht over je aanmelding voor ‘{}’"
 
-#: views.py:262 views.py:273 views.py:286
+#: views.py:265 views.py:276 views.py:289
 msgid "Registration successful."
 msgstr "Je aanmelding was succesvol."
 
-#: views.py:268
+#: views.py:271
 msgid ""
 "You cannot re-register anymore since you've cancelled after the deadline."
 msgstr ""
 "Je kunt je niet opnieuw aanmelden omdat je je hebt afgemeld na de deadline."
 
-#: views.py:281
+#: views.py:284
 msgid "You may not register"
 msgstr "Je mag niet je aanmelden"
 
-#: views.py:289
+#: views.py:292
 msgid "You were already registered."
 msgstr "Je bent al aangemeld."
 
-#: views.py:298 views.py:306
+#: views.py:301 views.py:309
 msgid "You are not registered for this event."
 msgstr "Je bent niet aangemeld voor dit evenement."
 
-#: views.py:318
+#: views.py:321
 msgid "Registration successfully cancelled."
 msgstr "Je afmelding was succesvol."
