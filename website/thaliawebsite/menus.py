@@ -8,7 +8,7 @@ main = [
         {'title': _('Documents'), 'name': 'documents:index'},
         {'title': _('Merchandise'), 'name': 'merchandise:index'},
         {'title': _('Sister Associations'), 'name': 'sister-associations'},
-        {'title': _('Become a Member'), 'name': 'become-a-member'},
+        {'title': _('Become a Member'), 'name': 'registrations:index'},
         {'title': _('Thabloid'), 'name': 'thabloid:index'},
     ]},
     {'title': _('For Members'), 'name': 'for-members', 'authenticated': True,

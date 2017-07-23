@@ -1,0 +1,10 @@
+Dear board,
+
+A new membership registration has been submitted by {{ name }}.
+
+Open the following url to review this submission:
+https://thalia.nu{{ url }}
+
+Kisses,
+
+The website

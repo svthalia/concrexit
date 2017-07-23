@@ -1,0 +1,54 @@
+from django.test import TestCase
+from django.utils import timezone
+
+from members.models import Member, Membership
+from registrations import forms
+from registrations.models import Entry
+
+
+class MemberRegistrationFormTest(TestCase):
+
+    def setUp(self):
+        self.data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'email': 'johndoe@example.com',
+            'programme': 'computingscience',
+            'student_number': 's1234567',
+            'starting_year': 2014,
+            'address_street': 'Heyendaalseweg 135',
+            'address_street2': '',
+            'address_postal_code': '6525AJ',
+            'address_city': 'Nijmegen',
+            'phone_number': '06123456789',
+            'birthday': timezone.now().replace(year=1990, day=1),
+            'language': 'en',
+            'length': Entry.MEMBERSHIP_YEAR,
+            'membership_type': Membership.MEMBER,
+            'privacy_policy': 1,
+        }
+
+    def test_is_valid(self):
+        form = forms.MemberRegistrationForm(self.data)
+        self.assertTrue(form.is_valid(), msg=dict(form.errors))
+
+    def test_has_privacy_policy_field(self):
+        form = forms.MemberRegistrationForm(self.data)
+        self.assertTrue(form.fields['privacy_policy'] is not None)
+
+
+class MemberRenewalFormTest(TestCase):
+    fixtures = ['members.json']
+
+    def setUp(self):
+        self.member = Member.objects.filter(last_name="Wiggers").first()
+        self.data = {
+            'member': self.member.pk,
+            'length': Entry.MEMBERSHIP_STUDY,
+            'membership_type': Membership.MEMBER,
+        }
+
+    def test_is_valid(self):
+        self.member.membership_set.all().delete()
+        form = forms.MemberRenewalForm(self.data)
+        self.assertTrue(form.is_valid(), msg=dict(form.errors))

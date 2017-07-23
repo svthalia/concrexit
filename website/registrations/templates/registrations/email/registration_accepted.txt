@@ -1,0 +1,21 @@
+{% load i18n %}{% blocktrans %}Dear {{ name }},
+
+We have some wonderful news for you: your membership registration has been accepted!
+
+Unfortunately there is still one little thing that we have to take care of before
+you get access to everything Thalia has to offer: paying your membership fees.
+
+The membership fees are €{{ fees }} and can be paid using cash or a debit card.
+
+Please visit us during lunch break (12:30-13:30) in HG00.150 so that we can
+make sure your registration is completed.
+
+If you have any questions, then don't hesitate and send an email to info@thalia.nu.
+
+With kind regards,
+
+The board of Study Association Thalia
+
+————
+
+This email was automatically generated.{% endblocktrans %}

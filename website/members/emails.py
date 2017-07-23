@@ -107,3 +107,17 @@ def send_expiration_announcement(dry_run=False):
                     {'members': members}),
                 connection=connection,
             )
+
+
+def send_welcome_message(user, password, language):
+    with translation.override(language):
+        email_body = loader.render_to_string(
+            'members/email/welcome.txt',
+            {
+                'full_name': user.get_full_name(),
+                'username': user.username,
+                'password': password
+            })
+        user.email_user(
+            _('Welcome to Study Association Thalia'),
+            email_body)

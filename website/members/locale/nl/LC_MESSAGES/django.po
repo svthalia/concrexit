@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-18 21:31+0200\n"
+"POT-Creation-Date: 2017-11-22 15:49+0100\n"
 "PO-Revision-Date: 2017-10-18 21:32+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -54,11 +54,11 @@ msgstr "Adres"
 msgid "Address line 2"
 msgstr "Tweede adresregel"
 
-#: admin.py:113 models.py:202
+#: admin.py:113 models.py:201
 msgid "Postal code"
 msgstr "Postcode"
 
-#: admin.py:113 models.py:208
+#: admin.py:113 models.py:207
 msgid "City"
 msgstr "Woonplaats"
 
@@ -66,7 +66,7 @@ msgstr "Woonplaats"
 msgid "Download address label for selected users"
 msgstr "Download adreslabels voor geselecteerde gebruikers"
 
-#: admin.py:131 models.py:165
+#: admin.py:131 models.py:164
 msgid "Student number"
 msgstr "Studentnummer"
 
@@ -98,99 +98,99 @@ msgstr "Verlopen lidmaatschap"
 msgid "Membership expiration announcement sent"
 msgstr "Meldingen vervallen lidmaatschap verzonden"
 
-#: forms.py:33
-msgid "Please enter a bank account"
-msgstr "Voer een bankrekening in"
-
-#: forms.py:53
-msgid "Send welcome email"
-msgstr "Stuur welkomste-mails"
-
-#: forms.py:54
-msgid "This email will include the generated password"
-msgstr "Deze e-mail zal het gegenereerde wachtwoord bevatten"
-
-#: forms.py:86
+#: emails.py:122
 msgid "Welcome to Study Association Thalia"
 msgstr "Welkom bij Studievereniging Thalia"
 
-#: models.py:110
+#: forms.py:31
+msgid "Please enter a bank account"
+msgstr "Voer een bankrekening in"
+
+#: forms.py:51
+msgid "Send welcome email"
+msgstr "Stuur welkomste-mails"
+
+#: forms.py:52
+msgid "This email will include the generated password"
+msgstr "Deze e-mail zal het gegenereerde wachtwoord bevatten"
+
+#: models.py:109
 msgid "Is this user currently active"
 msgstr "Is deze user op dit moment actief"
 
-#: models.py:144
+#: models.py:143
 msgid "Computing Science"
 msgstr "Informatica"
 
-#: models.py:145
+#: models.py:144
 msgid "Information Sciences"
 msgstr "Informatiekunde"
 
-#: models.py:159 templates/members/profile.html:40
+#: models.py:158 templates/members/profile.html:40
 msgid "Study programme"
 msgstr "Studie"
 
-#: models.py:169
+#: models.py:168
 msgid "Enter a valid student- or e/z/u-number."
 msgstr "Voer een geldig student- of e/z/u-nummer in."
 
-#: models.py:175
+#: models.py:174
 msgid "Starting year"
 msgstr "Startjaar"
 
-#: models.py:176
+#: models.py:175
 msgid "The year this member started studying."
 msgstr "Het jaar waarop dit lid begon met studeren."
 
-#: models.py:187
+#: models.py:186
 msgid "Include the house number"
 msgstr "Inclusief huisnummer"
 
-#: models.py:189
+#: models.py:188
 msgid "Street and house number"
 msgstr "Straat en huisnummer"
 
-#: models.py:195
+#: models.py:194
 msgid "Second address line"
 msgstr "Tweede adresregel"
 
-#: models.py:214
+#: models.py:213
 msgid "Phone number"
 msgstr "Telefoonnummer"
 
-#: models.py:215
+#: models.py:214
 msgid "Enter a phone number so Thalia may reach you"
 msgstr "Voer een telefoonnummer in zodat Thalia je kan bereiken"
 
-#: models.py:218 models.py:240
+#: models.py:217 models.py:239
 msgid "Please enter a valid phone number"
 msgstr "Voer svp een geldig telefoonnummer in"
 
-#: models.py:228
+#: models.py:227
 msgid "Emergency contact name"
 msgstr "Contact voor noodgevallen"
 
-#: models.py:229
+#: models.py:228
 msgid "Who should we contact in case of emergencies"
 msgstr "Wie Thalia moet bereiken in bij noodgevallen"
 
-#: models.py:236
+#: models.py:235
 msgid "Emergency contact phone number"
 msgstr "Telefoonnummer noodcontact"
 
-#: models.py:237
+#: models.py:236
 msgid "The phone number for the emergency contact"
 msgstr "Het telefoonummer van de noodcontact"
 
-#: models.py:249 templates/members/profile.html:47
+#: models.py:248 templates/members/profile.html:47
 msgid "Birthday"
 msgstr "Verjaardag"
 
-#: models.py:254
+#: models.py:253
 msgid "Display birthday"
 msgstr "Laat verjaardag zien"
 
-#: models.py:256
+#: models.py:255
 msgid ""
 "Show your birthday to other members on your profile page and in the birthday "
 "calendar"
@@ -198,107 +198,107 @@ msgstr ""
 "Toon je verjaardag aan andere leden op je profielpagina en in de "
 "verjaardagskalender"
 
-#: models.py:263 templates/members/profile.html:43
+#: models.py:262 templates/members/profile.html:43
 msgid "Website"
 msgstr "Website"
 
-#: models.py:264
+#: models.py:263
 msgid "Website to display on your profile page"
 msgstr "Website om op je profiel te linken"
 
-#: models.py:270
+#: models.py:269
 msgid "Profile text"
 msgstr "Profieltekst"
 
-#: models.py:271
+#: models.py:270
 msgid "Text to display on your profile"
 msgstr "Tekst om te laten zien op je profielpagina"
 
-#: models.py:278
+#: models.py:277
 msgid "Initials"
 msgstr "Initialen"
 
-#: models.py:285
+#: models.py:284
 msgid "Nickname"
 msgstr "Bijnaam"
 
-#: models.py:292
+#: models.py:291
 msgid "How to display name"
 msgstr "Weergave naam"
 
-#: models.py:293
+#: models.py:292
 msgid "Show full name"
 msgstr "Volledige naam"
 
-#: models.py:294
+#: models.py:293
 msgid "Show only nickname"
 msgstr "Alleen initialen"
 
-#: models.py:295
+#: models.py:294
 msgid "Show only first name"
 msgstr "Alleen voornaam"
 
-#: models.py:296
+#: models.py:295
 msgid "Show initials and last name"
 msgstr "Alleen initialen en achternaam"
 
-#: models.py:297
+#: models.py:296
 msgid "Show name like \"John 'nickname' Doe\""
 msgstr "Laat zien als \"John 'bijnaam' Doe\""
 
-#: models.py:298
+#: models.py:297
 msgid "Show nickname and last name"
 msgstr "Laat bijnaam en achternaam zien"
 
-#: models.py:303
+#: models.py:302
 msgid "Photo"
 msgstr "Foto"
 
-#: models.py:311
+#: models.py:310
 msgid "Which events can this member attend"
 msgstr "Welke evenementen mag dit lid bijwonen"
 
-#: models.py:312
+#: models.py:311
 msgid "All events"
 msgstr "Alle evenementen"
 
-#: models.py:313
+#: models.py:312
 msgid "User may not attend events"
 msgstr "Gebruiker mag niet naar evenementen"
 
-#: models.py:314
+#: models.py:313
 msgid "User may not attend drinks"
 msgstr "Gebruiker mag niet naar borrels"
 
-#: models.py:315
+#: models.py:314
 msgid "User may not attend anything"
 msgstr "Gebruiker mag nergens heen"
 
-#: models.py:322
+#: models.py:321
 msgid "Preferred language"
 msgstr "Voorkeurstaal"
 
-#: models.py:323
+#: models.py:322
 msgid "Preferred language for e.g. newsletters"
 msgstr "Voorkeurstaal voor b.v.b. nieuwsbrieven"
 
-#: models.py:330
+#: models.py:329
 msgid "Receive opt-in mailings"
 msgstr "Ontvang opt-in mailings"
 
-#: models.py:331
+#: models.py:330
 msgid "Receive mailings about vacancies and events from Thalia's sponsors."
 msgstr "Ontvang mailings over vacatures en evenementen van Thalia's sponsoren."
 
-#: models.py:337
+#: models.py:336
 msgid "Receive newsletter"
 msgstr "Ontvang nieuwsbrief"
 
-#: models.py:338
+#: models.py:337
 msgid "Receive the Thalia Newsletter"
 msgstr "Ontvang de Thalia nieuwsbrief"
 
-#: models.py:345
+#: models.py:344
 msgid ""
 "Yes, I want Thalia to take the membership fees from my bank account through "
 "direct debit for each year."
@@ -306,69 +306,69 @@ msgstr ""
 "Ja, ik wil dat Thalia verschuldigde lidmaatschapsgelden elk jaar van mijn "
 "bankrekening afschrijft."
 
-#: models.py:348
+#: models.py:347
 msgid "No, I will pay the contribution myself"
 msgstr "Nee, ik zal de contributie zelf betalen"
 
-#: models.py:349
+#: models.py:348
 msgid "Direct debit"
 msgstr "Automatische afschijving"
 
-#: models.py:350
+#: models.py:349
 msgid "Each year, have Thalia take the membership fees from my bank account"
 msgstr ""
 "Laat Thalia elk jaar het lidmaatschapsgeld van mijn bankrekening afschrijven"
 
-#: models.py:356
+#: models.py:355
 msgid "Bank account"
 msgstr "Bankrekening"
 
-#: models.py:357
+#: models.py:356
 msgid "Bank account for direct debit"
 msgstr "Bankrekening voor automatische afschrijving"
 
-#: models.py:381
+#: models.py:380
 msgid "Display name"
 msgstr "Weergavenaam"
 
-#: models.py:410
+#: models.py:409
 msgid "You need to enter a nickname to use it as display name"
 msgstr ""
 "Je moet een bijnaam invoeren voordat je deze kunt gebruiken als weergavenaam"
 
-#: models.py:444
+#: models.py:447
 msgid "Member"
 msgstr "Lid"
 
-#: models.py:445
+#: models.py:448
 msgid "Supporter"
 msgstr "Begunstiger"
 
-#: models.py:446
+#: models.py:449
 msgid "Honorary Member"
 msgstr "Erelid"
 
-#: models.py:451 templates/members/profile.html:37
+#: models.py:454 templates/members/profile.html:37
 msgid "Membership type"
 msgstr "Lidtype"
 
-#: models.py:459
+#: models.py:462
 msgid "User"
 msgstr "Gebruiker"
 
-#: models.py:463
+#: models.py:466
 msgid "Membership since"
 msgstr "Lid sinds"
 
-#: models.py:464
+#: models.py:467
 msgid "The date the member started holding this membership."
 msgstr "De datum waarop het lid dit lidmaatschap is begonnen."
 
-#: models.py:469
+#: models.py:472
 msgid "Membership until"
 msgstr "Lid tot"
 
-#: models.py:470
+#: models.py:473
 msgid "The date the member stops holding this membership."
 msgstr "De datum waarop het lid dit lidmaatschap beëindigd."
 
@@ -401,28 +401,36 @@ msgstr "bekijk publieke profielpagina"
 msgid "Take a look at your own profile."
 msgstr "Bekijk je eigen profielpagina."
 
-#: templates/members/account.html:27 templates/members/edit_profile.html:5
+#: templates/members/account.html:25
+msgid "manage membership"
+msgstr "lidmaatschap beheren"
+
+#: templates/members/account.html:26
+msgid "Get information about your membership or renew it."
+msgstr "Bekijk je lidmaatschap of vernieuw deze indien nodig."
+
+#: templates/members/account.html:32 templates/members/edit_profile.html:5
 #: templates/members/edit_profile.html:6 templates/members/edit_profile.html:9
 msgid "edit profile"
 msgstr "profiel bewerken"
 
-#: templates/members/account.html:28
+#: templates/members/account.html:33
 msgid "Edit your profile and avatar."
 msgstr "Bewerk je profiel en profielafbeelding."
 
-#: templates/members/account.html:34
+#: templates/members/account.html:39
 msgid "change password"
 msgstr "wachtwoord wijzigen"
 
-#: templates/members/account.html:35
+#: templates/members/account.html:40
 msgid "Change your accounts' password."
 msgstr "Wijzig het wachtwoord van je account."
 
-#: templates/members/account.html:41
+#: templates/members/account.html:46
 msgid "logout"
 msgstr "uitloggen"
 
-#: templates/members/account.html:42
+#: templates/members/account.html:47
 msgid "Leave the restricted area of the website."
 msgstr "Verlaat het beveiligde gedeelte van de website."
 
@@ -523,7 +531,7 @@ msgstr ""
 "te doen."
 
 #: templates/members/email/information_check.txt:1
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Dear %(name)s,\n"
 "\n"
@@ -635,16 +643,42 @@ msgstr ""
 #: templates/members/email/welcome.txt:1
 #, python-format
 msgid ""
-"Dear %(full_name)s, Welcome to Study Association Thalia! You now have an "
-"account and can log in at https://thalia.nu/. This is your username and "
-"password: Your username is:   %(username)s Your password is:   %(password)s "
-"Please also check the information on your profile. Cheers, Thalia"
+"Dear %(full_name)s,\n"
+"\n"
+"Welcome to Study Association Thalia! You now have an account and can\n"
+"log in at https://thalia.nu/.\n"
+"\n"
+"Your username is:   %(username)s\n"
+"Your password is:   %(password)s\n"
+"\n"
+"Please also check the information on your profile.\n"
+"\n"
+"With kind regards,\n"
+"\n"
+"The board of Study Association Thalia\n"
+"\n"
+"————\n"
+"\n"
+"This email was automatically generated."
 msgstr ""
-"Beste %(full_name)s, Welkom bij Studievereniging Thalia! Je hebt nu een "
-"account zodat je kunt inloggen op https://thalia.nu/. Dit zijn je "
-"gebruikersnaam en wachtwoord: Je gebruikersnaam is:   %(username)s Je "
-"wachtwoord:   %(password)s Controleer alsjeblieft ook de gegevens in je "
-"profiel. Groetjes, Thalia"
+"Beste %(full_name)s,\n"
+"\n"
+"Welkom bij Studievereniging Thalia! Je hebt nu een account zodat \n"
+"je kunt inloggen op https://thalia.nu/.\n"
+"\n"
+"Dit zijn je gebruikersnaam en wachtwoord: \n"
+"Je gebruikersnaam is:   %(username)s\n"
+"Je wachtwoord:   %(password)s\n"
+"\n"
+"\n"
+"Controleer alsjeblieft ook de gegevens in je profiel. \n"
+"\n"
+"Met vriendelijke groet,\n"
+"Het bestuur der Studievereniging Thalia\n"
+"\n"
+"————\n"
+"\n"
+"Deze e-mail is automatisch gegenereerd."
 
 #: templates/members/index.html:15
 msgid ""
@@ -729,18 +763,18 @@ msgstr "Statistieken"
 msgid "Total amount of Thalia members"
 msgstr "Totaal aantal Thalialeden"
 
-#: views.py:126
+#: views.py:123
 msgid "Unknown membership history"
 msgstr "Onbekende lidmaatschap geschiedenis"
 
-#: views.py:130
+#: views.py:127
 msgid "Former honorary member"
 msgstr "Oud-erelid"
 
-#: views.py:132
+#: views.py:129
 msgid "Former member"
 msgstr "Oud-lid"
 
-#: views.py:134
+#: views.py:131
 msgid "Former supporter"
 msgstr "Oud-begunstiger"

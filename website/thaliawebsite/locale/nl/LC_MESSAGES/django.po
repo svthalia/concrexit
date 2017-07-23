@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-24 17:42+0200\n"
-"PO-Revision-Date: 2017-09-24 17:47+0200\n"
+"POT-Creation-Date: 2017-10-14 13:32+0200\n"
+"PO-Revision-Date: 2017-10-14 13:32+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -144,11 +144,11 @@ msgstr "Samenvatting Insturen"
 msgid "Contact"
 msgstr "Contact"
 
-#: settings/settings.py:190
+#: settings/settings.py:192
 msgid "English"
 msgstr "Engels"
 
-#: settings/settings.py:191
+#: settings/settings.py:193
 msgid "Dutch"
 msgstr "Nederlands"
 
@@ -460,6 +460,12 @@ msgid ""
 msgstr ""
 "Onder dit menu vind je alle pagina's die exclusief voor jou, Thalia-lid, "
 "toegankelijk zijn."
+
+#: templates/singlepages/privacy_policy.html:4
+#: templates/singlepages/privacy_policy.html:6
+#: templates/singlepages/privacy_policy.html:10
+msgid "privacy policy"
+msgstr "privacybeleid"
 
 #: templates/singlepages/sister_associations.html:8
 msgid "Associations of the Radboud University Science Faculty"
@@ -856,7 +862,7 @@ msgstr ""
 "voorkeur om magenta op zwart te gebruiken."
 
 #: templates/singlepages/styleguide.html:227
-#: templates/singlepages/styleguide.html:270
+#: templates/singlepages/styleguide.html:274
 msgid "Introshirts"
 msgstr "Introshirts"
 
@@ -893,7 +899,7 @@ msgstr ""
 "commissies zelf beslissen wat voor kleur ze willen gebruiken voor hun "
 "promotiemateriaal."
 
-#: templates/singlepages/styleguide.html:252
+#: templates/singlepages/styleguide.html:256
 msgid ""
 "To prevent a jungle of different types of designs we would like every "
 "committee that wants some kind of clothing to use the same design for the "
@@ -909,108 +915,34 @@ msgstr ""
 "de naam van de drager. Het ontwerp voor de achterkant kan dan alles zijn wat "
 "je maar wilt."
 
-#: templates/singlepages/styleguide.html:260
+#: templates/singlepages/styleguide.html:264
 msgid "Downloads"
 msgstr "Downloads"
 
-#: templates/singlepages/styleguide.html:263
+#: templates/singlepages/styleguide.html:267
 msgid "Font"
 msgstr "Lettertype"
 
-#: templates/singlepages/styleguide.html:264
+#: templates/singlepages/styleguide.html:268
 msgid "Logos"
 msgstr "Logo’s"
 
-#: templates/singlepages/styleguide.html:265
+#: templates/singlepages/styleguide.html:269
 msgid "Logo variant template"
 msgstr "Templates logo varianten"
 
-#: templates/singlepages/styleguide.html:266
+#: templates/singlepages/styleguide.html:270
 msgid "Word documents"
 msgstr "Word-documenten"
 
-#: templates/singlepages/styleguide.html:267
+#: templates/singlepages/styleguide.html:271
 msgid "LaTeX template"
 msgstr "LaTeX-template"
 
-#: templates/singlepages/styleguide.html:268
+#: templates/singlepages/styleguide.html:272
 msgid "Presentation templates"
 msgstr "Presentatie-templates"
 
-#: templates/singlepages/styleguide.html:269
+#: templates/singlepages/styleguide.html:273
 msgid "Poster templates"
 msgstr "Posters & Banners"
-
-#~ msgid "Guidelines"
-#~ msgstr "Richtlijnen"
-
-#~ msgid "Profile Picture"
-#~ msgstr "Profielafbeelding"
-
-#~ msgid "You've been logged out successfully."
-#~ msgstr "Je bent succesvol uitgelogd."
-
-#~ msgid "Log in again"
-#~ msgstr "Opnieuw inloggen"
-
-#~ msgid "Log in"
-#~ msgstr "Inloggen"
-
-#~ msgid ""
-#~ "Your account does not have access to this page. To proceed, please log in "
-#~ "with an account that has access."
-#~ msgstr ""
-#~ "Je hebt geen toegang tot deze pagina. Om verder te gaan moet je inloggen "
-#~ "met een account dat de juiste permissies heeft."
-
-#~ msgid "Please log in to see this page."
-#~ msgstr "Log in om deze pagina te bekijken."
-
-#~ msgid "Invalid username or password."
-#~ msgstr "Ongeldige gebruikersnaam of wachtwoord."
-
-#~ msgid "Username"
-#~ msgstr "Gebruikersnaam"
-
-#~ msgid "Password"
-#~ msgstr "Wachtwoord"
-
-#~ msgid "Forgot password"
-#~ msgstr "Wachtwoord vergeten"
-
-#~ msgid "Password change"
-#~ msgstr "Wachtwoord aanpassen"
-
-#~ msgid "Your password was changed."
-#~ msgstr "Je wachtwoord is aangepast."
-
-#~ msgid "Old password"
-#~ msgstr "Oud wachtwoord"
-
-#~ msgid "New password"
-#~ msgstr "Nieuw wachtwoord"
-
-#~ msgid "Confirm new password"
-#~ msgstr "Bevestig nieuw wachtwoord"
-
-#~ msgid "Confirm password"
-#~ msgstr "Bevestig wachtwoord"
-
-#~ msgid ""
-#~ "You're receiving this email because you requested a password reset for "
-#~ "your Thalia-account."
-#~ msgstr ""
-#~ "Je ontvangt deze e-mail omdat je een nieuw wachtwoord hebt aangevraagd "
-#~ "voor je Thalia-account."
-
-#~ msgid "Email address"
-#~ msgstr "E-mailadres"
-
-#~ msgid "Reset my password"
-#~ msgstr "Wachtwoord vergeten"
-
-#~ msgid "[THALIA] Password reset request"
-#~ msgstr "[THALIA] Verzoek tot wachtwoord herstel"
-
-#~ msgid "Add Exam"
-#~ msgstr "Tentamen Insturen"

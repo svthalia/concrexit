@@ -1,14 +1,17 @@
-{% load i18n %}{% blocktrans trimmed %}Dear {{ full_name }},
+{% load i18n %}{% blocktrans %}Dear {{ full_name }},
 
 Welcome to Study Association Thalia! You now have an account and can
-log in at https://thalia.nu/. This is your username and password:
+log in at https://thalia.nu/.
 
 Your username is:   {{ username }}
 Your password is:   {{ password }}
 
 Please also check the information on your profile.
 
-Cheers,
+With kind regards,
 
-Thalia
-{% endblocktrans %}
+The board of Study Association Thalia
+
+————
+
+This email was automatically generated.{% endblocktrans %}

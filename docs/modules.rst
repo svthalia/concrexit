@@ -16,6 +16,7 @@ website
    partners
    photos
    pizzas
+   registrations
    thabloid
    thaliawebsite
    utils
