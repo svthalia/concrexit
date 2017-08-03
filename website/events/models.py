@@ -210,6 +210,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     {'cancel_deadline': _(
                         "If registration is required, you need a deadline for "
                         "the cancellation")})
+            elif self.cancel_deadline > self.start:
+                errors.update(
+                    {'cancel_deadline': _(
+                        "The cancel deadline should be"
+                        " before the start of the event.")})
             if self.registration_start and self.registration_end and (
                     self.registration_start >= self.registration_end):
                 message = _('Registration start should be before '
