@@ -232,6 +232,9 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 
+# Partners notification email
+PARTNER_EMAIL = "samenwerking@thalia.nu"
+
 # Website FROM address
 WEBSITE_FROM_ADDRESS = 'info@thalia.nu'
 

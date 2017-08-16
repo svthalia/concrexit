@@ -62,7 +62,7 @@ class Partner(models.Model):
         return reverse('partners:partner', args=(self.slug,))
 
     class Meta:
-        ordering = ('name', )
+        ordering = ('name',)
 
 
 class PartnerImage(models.Model):
@@ -114,6 +114,9 @@ class Vacancy(models.Model):
     )
 
     categories = models.ManyToManyField(VacancyCategory, blank=True)
+
+    expiration_date = models.DateField(null=True, blank=True)
+    expiration_mail_sent = models.BooleanField()
 
     remarks = HTMLField(blank=True, help_text=_('not shown on the page'))
 

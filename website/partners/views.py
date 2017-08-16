@@ -1,8 +1,14 @@
 from random import random
 
+import datetime
+
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
+from django.core.mail import EmailMessage
 
 from partners.models import Partner, Vacancy, VacancyCategory
+from thaliawebsite.settings import settings
 
 
 def index(request):
@@ -33,8 +39,42 @@ def partner(request, slug):
 
 def vacancies(request):
     context = {
-        'vacancies': Vacancy.objects.all().order_by('?'),
+        'vacancies': Vacancy.objects.exclude(
+            expiration_date__lte=timezone.now().date()).order_by('?'),
         'categories': VacancyCategory.objects.all(),
     }
 
     return render(request, 'partners/vacancies.html', context)
+
+
+def send_vacancy_expiration_mails():
+    # Select vacencies that expire in roughly a month, wherefor
+    # a mail hasn't been sent yet to Mr/Mrs Extern
+    expired_vacancies = Vacancy.objects.filter(
+        expiration_mail_sent=False,
+        expiration_date__lt=timezone.now().date() + datetime.timedelta(days=30)
+    )
+    for exp_vacancy in expired_vacancies:
+        # Create Message
+        subject = ("[THALIA][SPONSOR] Vacature '{}' van {} loopt af"
+                   .format(exp_vacancy.title, exp_vacancy.get_company_name()))
+        text_message = ("Hallo Extern,\n\nde vacature van {}, '{}' loopt "
+                        "over circa een maand af. Misschien wil "
+                        "je ze contacteren om een nieuwe deal "
+                        "te sluiten.\n\nGroetjes,\nDe Website"
+                        .format(exp_vacancy.title,
+                                exp_vacancy.get_company_name()))
+        recipient = settings.PARTNER_EMAIL
+
+        # Send Mail
+        EmailMessage(
+            subject,
+            text_message,
+            to=recipient
+        ).send()
+
+        # Save that mail has been sent into database
+        exp_vacancy.expiration_mail_sent = True
+        exp_vacancy.save()
+
+    return HttpResponse(status=200)
