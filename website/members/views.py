@@ -46,9 +46,11 @@ def index(request):
     elif query_filter == 'old':
         members_query &= Q(starting_year__lt=start_year)
     elif query_filter == 'ex':
+        # Filter out all current members and current honorary members
+        memberships_query &= Q(type='member') | Q(type='honorary')
         memberships = models.Membership.objects.filter(memberships_query)
         members_query &= ~Q(user__in=memberships.values('user'))
-        memberships_query = Q(type='member') & Q(until__lte=datetime.now())
+        # Members_query contains users that are not currently (honorary)member
     elif query_filter == 'honor':
         memberships_query = Q(until__gt=datetime.now().date()) | Q(until=None)
         memberships_query &= Q(type='honorary')
@@ -60,8 +62,17 @@ def index(request):
                               Q(user__last_name__icontains=key) |
                               Q(user__username__icontains=key))
 
-    memberships = models.Membership.objects.filter(memberships_query)
-    members_query &= Q(user__in=memberships.values('user'))
+    if query_filter == 'ex':
+        memberships_query = Q(type='member') | Q(type='honorary')
+        memberships = models.Membership.objects.filter(memberships_query)
+        all_memberships = models.Membership.objects.all()
+        # Only keep members that were once members, or are legacy users that
+        #  do not have any memberships at all
+        members_query &= (Q(user__in=memberships.values('user')) |
+                          ~Q(user__in=all_memberships.values('user')))
+    else:
+        memberships = models.Membership.objects.filter(memberships_query)
+        members_query &= Q(user__in=memberships.values('user'))
     members = models.Member.objects.filter(members_query).order_by(
             '-starting_year', 'user__first_name')
 
