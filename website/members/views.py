@@ -55,10 +55,10 @@ def index(request):
 
     if keywords:
         for key in keywords:
-            memberships_query &= (Q(user__member__nickname__icontains=key) |
-                                  Q(user__first_name__icontains=key) |
-                                  Q(user__last_name__icontains=key) |
-                                  Q(user__username__icontains=key))
+            members_query &= (Q(nickname__icontains=key) |
+                              Q(user__first_name__icontains=key) |
+                              Q(user__last_name__icontains=key) |
+                              Q(user__username__icontains=key))
 
     memberships = models.Membership.objects.filter(memberships_query)
     members_query &= Q(user__in=memberships.values('user'))
