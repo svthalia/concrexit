@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 12:20+0200\n"
-"PO-Revision-Date: 2017-06-15 12:20+0200\n"
+"POT-Creation-Date: 2017-07-05 19:17+0200\n"
+"PO-Revision-Date: 2017-07-05 19:23+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -74,21 +74,29 @@ msgstr "Studentnummer"
 msgid "Download student number label for selected users"
 msgstr "Download studentnummers voor geselecteerde gebruikers"
 
-#: emails.py:24
+#: emails.py:27
 msgid "Membership announcement"
 msgstr "Mededeling over lidmaatschap"
 
-#: emails.py:34
+#: emails.py:37
 msgid "Membership announcement sent"
 msgstr "Mededeling over lidmaatschap verzonden"
 
-#: emails.py:55
+#: emails.py:59
 msgid "Membership information check"
 msgstr "Controle gegevens lidmaatschap"
 
-#: emails.py:65
+#: emails.py:69
 msgid "Membership information check sent"
 msgstr "Controle gegevens lidmaatschap verzonden"
+
+#: emails.py:92
+msgid "Membership expiration announcement"
+msgstr "Verlopen lidmaatschap"
+
+#: emails.py:102
+msgid "Membership expiration announcement sent"
+msgstr "Meldingen vervallen lidmaatschap verzonden"
 
 #: forms.py:42
 msgid "Send welcome email"
@@ -367,7 +375,7 @@ msgstr ""
 #: templates/members/account.html:6 templates/members/account.html:7
 #: templates/members/edit_profile.html:5 templates/members/edit_profile.html:6
 #: templates/members/index.html:7 templates/members/index.html:8
-#: templates/members/index.html:11 templates/members/profile.html:6
+#: templates/members/index.html:12 templates/members/profile.html:6
 #: templates/members/profile.html:7
 msgid "members"
 msgstr "leden"
@@ -446,6 +454,70 @@ msgstr ""
 msgid "save"
 msgstr "opslaan"
 
+#: templates/members/email/expiration_announcement.txt:1
+#, python-format
+msgid ""
+"Dear %(name)s,\n"
+"\n"
+"The past year you've been a member or benificiary of Study Association "
+"Thalia.\n"
+"You've not given us permission to prolong it automatically, thus your "
+"membership will\n"
+"end on the 1st of September.\n"
+"\n"
+"If you still want to enjoy all the benefits a membership gives you the "
+"coming year\n"
+"then you'll have to renew it. This'll give you access to activities, the "
+"book sale,\n"
+"our exam collection and a symposium. Come by the board room and we'll help "
+"you\n"
+"to extend your membership.\n"
+"\n"
+"Are you not able to come by? Then just send us an email: info@thalia.nu.\n"
+"\n"
+"With kind regards,\n"
+"\n"
+"The board of Study Association Thalia\n"
+"\n"
+"————\n"
+"\n"
+"This email was automatically generated. It's possible that you've already "
+"renewed\n"
+"your membership and that it hasn't been processed yet. If that's the case "
+"then\n"
+"you don't need to do anything."
+msgstr ""
+"Beste %(name)s,\n"
+"\n"
+"Het afgelopen collegejaar ben je lid of begunstiger geweest van "
+"Studievereniging\n"
+"Thalia. Je hebt daarbij geen doorlopende machtiging afgegeven, dus je\n"
+"lidmaatschap loopt op 1 september af.\n"
+"\n"
+"Wil je volgend jaar ook nog van de voordelen van een Thalialidmaatschap\n"
+"genieten, zoals de borrels, boekverkoop, activiteiten, de tentamenbundel, "
+"de\n"
+"Thabloid en een symposium, dan zul je je lidmaatschap moeten verlengen. Dit "
+"kun\n"
+"je doen door langs de bestuurskamer te komen.\n"
+"\n"
+"Ook op een later moment kun je je nog inschrijven, neem dan even contact op "
+"met\n"
+"het bestuur om te bespreken wat een handig moment is. Mail hiervoor naar\n"
+"info@thalia.nu.\n"
+"\n"
+"Met vriendelijke groeten,\n"
+"\n"
+"Het bestuur der Studievereniging Thalia\n"
+"\n"
+"\n"
+"————\n"
+"\n"
+"Deze e-mail is automatisch gegenereerd. Het kan zijn dat je je lidmaatschap "
+"al\n"
+"verlengd hebt, maar dat dit nog niet is verwerkt: in dat geval hoef je niets "
+"te doen."
+
 #: templates/members/email/information_check.txt:1
 #, python-format
 msgid ""
@@ -469,7 +541,7 @@ msgid ""
 "\n"
 "You can change this data by logging into the website and using the 'edit "
 "profile' page.\n"
-"Unable to edit the incorrect information? Then send an email: info@thalia."
+"Unable to edit the incorrect information? Then send an email: info@thaliagit."
 "nu.\n"
 "\n"
 "With kind regards,\n"
@@ -570,7 +642,7 @@ msgstr ""
 "wachtwoord:   %(password)s Controleer alsjeblieft ook de gegevens in je "
 "profiel. Groetjes, Thalia"
 
-#: templates/members/index.html:14
+#: templates/members/index.html:15
 msgid ""
 "Ever wondered what the name of that person in the back row of the lecture "
 "room is? There is a high probability that this person is a member of Thalia, "
@@ -580,39 +652,39 @@ msgstr ""
 "ziet lopen? Er bestaat een grote kans dat die persoon lid van Thalia is, en "
 "dus is opgenomen in de onderstaande ledenlijst."
 
-#: templates/members/index.html:25
+#: templates/members/index.html:26
 msgid "Who are you looking for?"
 msgstr "Wie zoek je?"
 
-#: templates/members/index.html:26
+#: templates/members/index.html:27
 msgid "Search"
 msgstr "Zoeken"
 
-#: templates/members/index.html:34
+#: templates/members/index.html:35
 msgid "All members"
 msgstr "Alle leden"
 
-#: templates/members/index.html:38
+#: templates/members/index.html:39
 msgid "Older"
 msgstr "Ouder"
 
-#: templates/members/index.html:39
+#: templates/members/index.html:40
 msgid "Honorary Members"
 msgstr "Ere-leden"
 
-#: templates/members/index.html:40
+#: templates/members/index.html:41
 msgid "Former Members"
 msgstr "Ex-leden"
 
-#: templates/members/index.html:46
+#: templates/members/index.html:47
 msgid "No members found"
 msgstr "Geen leden gevonden"
 
-#: templates/members/index.html:66 templates/members/profile.html:38
+#: templates/members/index.html:67 templates/members/profile.html:38
 msgid "Cohort"
 msgstr "Cohort"
 
-#: templates/members/index.html:103
+#: templates/members/index.html:104
 msgid "Next"
 msgstr "Volgende"
 
@@ -653,6 +725,6 @@ msgstr "Statistieken"
 msgid "Total amount of Thalia members"
 msgstr "Totaal aantal Thalialeden"
 
-#: views.py:108
+#: views.py:109
 msgid "Former member"
 msgstr "Oud-lid"

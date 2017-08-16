@@ -1,0 +1,16 @@
+Dear board,
+
+It's that time of the year again! The website sent an automatic email to
+everybody whose membership is expiring.
+
+The email explains how they can prolong their membership.
+So you can expect an influx of people who want to extend their memberships.
+
+The email was sent to:
+{% for member in members %}
+ * {{ member.full_name }}
+{% endfor %}
+
+Kisses,
+
+The website

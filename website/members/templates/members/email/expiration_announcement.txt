@@ -1,0 +1,22 @@
+{% load i18n %}{% blocktrans %}Dear {{ name }},
+
+The past year you've been a member or benificiary of Study Association Thalia.
+You've not given us permission to prolong it automatically, thus your membership will
+end on the 1st of September.
+
+If you still want to enjoy all the benefits a membership gives you the coming year
+then you'll have to renew it. This'll give you access to activities, the book sale,
+our exam collection and a symposium. Come by the board room and we'll help you
+to extend your membership.
+
+Are you not able to come by? Then just send us an email: info@thalia.nu.
+
+With kind regards,
+
+The board of Study Association Thalia
+
+————
+
+This email was automatically generated. It's possible that you've already renewed
+your membership and that it hasn't been processed yet. If that's the case then
+you don't need to do anything.{% endblocktrans %}
