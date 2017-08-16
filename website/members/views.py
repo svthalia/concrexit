@@ -18,6 +18,47 @@ from . import models
 from .forms import MemberForm
 
 
+def filter_users(tab, keywords, year_range):
+    memberships_query = Q(until__gt=datetime.now()) | Q(until=None)
+    members_query = ~Q(id=None)
+
+    if tab and tab.isdigit():
+        members_query &= Q(starting_year=int(tab))
+    elif tab == 'old':
+        members_query &= Q(starting_year__lt=year_range[-1])
+    elif tab == 'ex':
+        # Filter out all current active memberships
+        memberships_query &= Q(type='member') | Q(type='honorary')
+        memberships = models.Membership.objects.filter(memberships_query)
+        members_query &= ~Q(user__in=memberships.values('user'))
+        # Members_query contains users that are not currently (honorary)member
+    elif tab == 'honor':
+        memberships_query = Q(until__gt=datetime.now().date()) | Q(until=None)
+        memberships_query &= Q(type='honorary')
+
+    if keywords:
+        for key in keywords:
+            members_query &= (Q(nickname__icontains=key) |
+                              Q(user__first_name__icontains=key) |
+                              Q(user__last_name__icontains=key) |
+                              Q(user__username__icontains=key))
+
+    if tab == 'ex':
+        memberships_query = Q(type='member') | Q(type='honorary')
+        memberships = models.Membership.objects.filter(memberships_query)
+        all_memberships = models.Membership.objects.all()
+        # Only keep members that were once members, or are legacy users that
+        #  do not have any memberships at all
+        members_query &= (Q(user__in=memberships.values('user')) |
+                          ~Q(user__in=all_memberships.values('user')))
+    else:
+        memberships = models.Membership.objects.filter(memberships_query)
+        members_query &= Q(user__in=memberships.values('user'))
+    return (models.Member.objects.filter(members_query)
+                                 .order_by('-starting_year',
+                                           'user__first_name'))
+
+
 @login_required
 def index(request):
     query_filter = '' if request.GET.get(
@@ -33,48 +74,9 @@ def index(request):
     # since the width is smaller than needed for the translations to fit
     if request.LANGUAGE_CODE == 'en':
         start_year += 1
-    year_range = reversed(range(start_year, date.today().year + 1))
+    year_range = list(reversed(range(start_year, date.today().year + 1)))
 
-    memberships_query = Q(until__gt=datetime.now()) | Q(until=None)
-    members_query = ~Q(id=None)
-
-    if query_filter and query_filter.isdigit() and not (
-                        query_filter == 'ex' or
-                        query_filter == 'honor' or
-                        query_filter == 'old'):
-        members_query &= Q(starting_year=int(query_filter))
-    elif query_filter == 'old':
-        members_query &= Q(starting_year__lt=start_year)
-    elif query_filter == 'ex':
-        # Filter out all current members and current honorary members
-        memberships_query &= Q(type='member') | Q(type='honorary')
-        memberships = models.Membership.objects.filter(memberships_query)
-        members_query &= ~Q(user__in=memberships.values('user'))
-        # Members_query contains users that are not currently (honorary)member
-    elif query_filter == 'honor':
-        memberships_query = Q(until__gt=datetime.now().date()) | Q(until=None)
-        memberships_query &= Q(type='honorary')
-
-    if keywords:
-        for key in keywords:
-            members_query &= (Q(nickname__icontains=key) |
-                              Q(user__first_name__icontains=key) |
-                              Q(user__last_name__icontains=key) |
-                              Q(user__username__icontains=key))
-
-    if query_filter == 'ex':
-        memberships_query = Q(type='member') | Q(type='honorary')
-        memberships = models.Membership.objects.filter(memberships_query)
-        all_memberships = models.Membership.objects.all()
-        # Only keep members that were once members, or are legacy users that
-        #  do not have any memberships at all
-        members_query &= (Q(user__in=memberships.values('user')) |
-                          ~Q(user__in=all_memberships.values('user')))
-    else:
-        memberships = models.Membership.objects.filter(memberships_query)
-        members_query &= Q(user__in=memberships.values('user'))
-    members = models.Member.objects.filter(members_query).order_by(
-            '-starting_year', 'user__first_name')
+    members = filter_users(query_filter, keywords, year_range)
 
     paginator = Paginator(members, 24)
 

@@ -6,6 +6,8 @@ from django.utils import timezone
 
 from members.models import (Member, Membership,
                             gen_stats_member_type, gen_stats_year)
+from members.views import filter_users
+
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -57,6 +59,54 @@ class MemberBirthdayTest(TestCase):
 
     def test_person_born_in_range_spanning_multiple_years(self):
         self._assert_thom('1992-12-31', '1995-01-01')
+
+
+class MembershipFilterTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        # Add 10 members with default membership
+        users = [get_user_model()(id=i, username=i) for i in range(7)]
+        get_user_model().objects.bulk_create(users)
+        members = [Member(user_id=i) for i in range(7)]
+        Member.objects.bulk_create(members)
+
+        Membership(user_id=0, type='honorary',
+                   until=date.today() + timedelta(days=1)).save()
+
+        Membership(user_id=1, type='supporter',
+                   until=date.today() + timedelta(days=1)).save()
+
+        Membership(user_id=2, type='member',
+                   until=date.today() + timedelta(days=1)).save()
+
+        Membership(user_id=3, type='member',
+                   until=date.today() + timedelta(days=1)).save()
+        Membership(user_id=3, type='member',
+                   until=date.today() - timedelta(days=365*10)).save()
+
+        Membership(user_id=4, type='supporter',
+                   until=date.today() + timedelta(days=1)).save()
+        Membership(user_id=4, type='member',
+                   until=date.today() - timedelta(days=365*10)).save()
+
+        Membership(user_id=5, type='member',
+                   until=date.today() - timedelta(days=365*10)).save()
+
+        # user_id=6 has no memberships at all
+
+    def test_honorary(self):
+        members = filter_users('honor', '', [date.today().year])
+        self.assertEqual(len(members), 1)
+        self.assertEqual(members[0].user.id, 0)
+
+    def test_ex(self):
+        members = filter_users('ex', '', [date.today().year])
+        self.assertEqual(len(members), 3)
+        for member in members:
+            self.assertIn(member.user.id, {4, 5, 6})
+
+    # TODO more tests for other cases
 
 
 class StatisticsTest(TestCase):
