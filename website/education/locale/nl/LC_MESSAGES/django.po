@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 14:08+0100\n"
-"PO-Revision-Date: 2017-02-27 14:06+0100\n"
+"POT-Creation-Date: 2017-08-21 18:11+0200\n"
+"PO-Revision-Date: 2017-08-21 18:12+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,21 +16,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
-#: admin.py:33
+#: admin.py:34
 msgid "Mark exams as accepted"
 msgstr "Markeer tentamens als geaccepteerd"
 
-#: admin.py:38
+#: admin.py:39
 msgid "Mark exams as rejected"
 msgstr "Markeer tentamens als afgekeurd"
 
-#: admin.py:51
+#: admin.py:53
 msgid "Mark summaries as accepted"
 msgstr "Markeer samenvattingen als geaccepteerd"
 
-#: admin.py:56
+#: admin.py:58
 msgid "Mark summaries as rejected"
 msgstr "Markeer samenvattingen als afgekeurd"
 
@@ -144,7 +144,7 @@ msgstr "Tentamen Insturen"
 msgid "Exam submitted successfully."
 msgstr "Tentamen succesvol ingestuurd."
 
-#: templates/education/add_exam.html:38 templates/education/add_summary.html:38
+#: templates/education/add_exam.html:34 templates/education/add_summary.html:34
 msgid "submit"
 msgstr "insturen"
 
@@ -166,38 +166,114 @@ msgstr "Boekverkoop"
 #: templates/education/books.html:10
 #, python-format
 msgid ""
-"Thalia's book sale goes through bookstore Roelants. As a member of Thalia "
-"you get 10%% discount on your order. So how does the ordering work? Simple: "
-"visit the Roelants webstore using <a href=\"https://www.roelants.nl/"
-"studenten/products/alle-producten/3543/p.product_price/asc.html?"
-"r=sawqllhrjzy4dq3ui8pf\">this link</a>. Then choose the books you need and "
-"use the code 'THALIAkorting' to activate the discount."
+"As of this year, Thalia's book sale goes through Bol.com. As a member of "
+"Thalia you get a 5%% discount on study books. Furthermore, every time you "
+"use one of the links below to visit Bol.com, your browser will receive a "
+"cookie for the next few days. Whenever you make a purchase during this "
+"period, Thalia receives up to 8%% commission on the products you ordered."
 msgstr ""
-"De boekenverkoop van Thalia gaat via boekhandel Roelants. Via deze "
-"boekhandel krijg je als Thaliaan 10%% korting op je bestelling. Hoe gaat dat "
-"bestellen nou in zijn werk? Simpel: ga naar de Roelants webwinkel via <a "
-"href=\"https://www.roelants.nl/studenten/products/alle-producten/3543/p."
-"product_price/asc.html?r=sawqllhrjzy4dq3ui8pf\">deze link</a>. Vervolgens "
-"kies je de boeken uit die jij voor je vakken nodig hebt. Als je klaar bent "
-"gebruik je tijdens het afrekenen de code \"THALIAkorting\" om de korting op "
-"je bestelling te krijgen."
+"Vanaf dit jaar gaat de boekverkoop van Thalia via Bol.com. Als lid van "
+"Thalia krijg je 5%% korting op studieboeken. Daarnaast krijgt je browser de "
+"eerstvolgende paar dagen een cookie als je Bol.com via een van de "
+"onderstaande links bezoekt. Als je dan een een aankoop doet krijgt Thalia "
+"tot 8%% commissie over de producten die je besteld hebt."
 
-#: templates/education/books.html:17
+#: templates/education/books.html:16
+msgid "How does it work?"
+msgstr "Hoe werkt het?"
+
+#: templates/education/books.html:18
 msgid ""
-"It's also possible to order your books at the physical shops, but the "
-"discount is only eligible when using the website. It is useful to order your "
-"books at least two weeks before you need them, because they are not always "
-"easy to get. In case books are missing from the catalog, or if you discover "
-"any other problems with the books, send an email to <a href=\"mailto:"
+"Below, you can find an overview for all courses that require a book in the "
+"first semester. You can also choose to view all books for an entire period. "
+"Upon selecting a course or period, you will be taken to Bol.com where you "
+"can select which books you want to purchase, and finish your order as usual. "
+"To use the discount, you can use the generator below. It will produce a code "
+"you can enter during your checkout at Bol.com."
+msgstr ""
+"Hieronder vind je een overzicht van alle vakken waarbij een boek nodig is. "
+"Ook kun je ervoor kiezen om alle boeken van een gehele periode te bekijken. "
+"Als je een vak of periode kiest word je naar Bol.com genomen waar je een "
+"selectie kan maken van de boeken die je wil hebben. Daarna kun je je "
+"bestelling afmaken zoals elke andere bestelling. Om de korting te gebruiken "
+"kun je onderstaande generator gebruiken. Daar komt een code uit die je bij "
+"het afronden van je bestelling in kunt vullen."
+
+#: templates/education/books.html:24
+msgid ""
+"This generator creates a unique code for each user. If you use the generator "
+"again after a few days, it will produce the same code. If you have already "
+"used the code once and you want to generate a new one, you can remove your "
+"cookies and you will be given a new code."
+msgstr ""
+"Deze generator creëert een unieke kortingscode voor elke gebruiker. Als je "
+"hem opnieuw gebruikt na een paar dagen zal hij dezelfde code produceren. Als "
+"je code al een keer hebt gebruikt en je wil een nieuwe genereren, kun je je "
+"cookies verwijderen om een nieuwe code te krijgen."
+
+#: templates/education/books.html:30
+msgid ""
+"This discount is also valid for books that are not included in the list "
+"below. In case books are missing from the catalog, or if you discover any "
+"other problems with the books, send an email to <a href=\"mailto:"
 "onderwijs@thalia.nu\">onderwijs@thalia.nu</a>."
 msgstr ""
-"Het is ook mogelijk om bij de boekhandel op de campus of in de stad je "
-"boeken te bestellen maar alleen bij webbestellingen heb je recht op de "
-"lidmaatschaps-korting. Bij het bestellen van je boeken is het handig om "
-"minstens 2 weken voor dat je de boeken nodig hebt je bestelling rond te "
-"hebben, aangezien de boeken niet altijd even makkelijk te leveren zijn. "
+"De korting is ook geldig voor boeken die niet in onderstaande lijst staan. "
 "Mocht er een boek ontbreken of er een ander probleem met de boeken zijn, "
-"stuur gerust een e-mail naar onderwijs@thalia.nu."
+"stuur gerust een e-mail naar <a href=\"mailto:onderwijs@thalia.nu"
+"\">onderwijs@thalia.nu</a>."
+
+#: templates/education/books.html:39
+msgid "first year bachelor courses"
+msgstr "eerstejaars bachelorvakken"
+
+#: templates/education/books.html:42 templates/education/books.html:75
+#: templates/education/books.html:124 templates/education/books.html:143
+msgid "first quarter"
+msgstr "eerste kwartaal"
+
+#: templates/education/books.html:46 templates/education/books.html:50
+#: templates/education/books.html:60 templates/education/books.html:64
+#: templates/education/books.html:79 templates/education/books.html:83
+#: templates/education/books.html:87 templates/education/books.html:91
+#: templates/education/books.html:95 templates/education/books.html:105
+#: templates/education/books.html:109 templates/education/books.html:113
+#: templates/education/books.html:128 templates/education/books.html:147
+#: templates/education/books.html:151 templates/education/books.html:155
+#: templates/education/books.html:159 templates/education/books.html:169
+msgid "View and order"
+msgstr "Bekijk en bestel"
+
+#: templates/education/books.html:53 templates/education/books.html:98
+#: templates/education/books.html:131 templates/education/books.html:162
+msgid "View all books for the first quarter"
+msgstr "Bekijk alle boeken voor het eerste kwartaal"
+
+#: templates/education/books.html:56 templates/education/books.html:101
+#: templates/education/books.html:134 templates/education/books.html:165
+msgid "second quarter"
+msgstr "tweede kwartaal"
+
+#: templates/education/books.html:67 templates/education/books.html:116
+#: templates/education/books.html:172
+msgid "View all books for the second quarter"
+msgstr "Bekijk alle boeken voor het tweede kwartaal"
+
+#: templates/education/books.html:72
+msgid "second year bachelor courses"
+msgstr "tweedejaars bachelorvakken"
+
+#: templates/education/books.html:121
+msgid "third year bachelor courses"
+msgstr "derdejaars bachelorvakken"
+
+#: templates/education/books.html:135
+msgid "No books found for second quarter"
+msgstr "Geen boeken gevonden voor het tweede kwartaal"
+
+#: templates/education/books.html:140
+msgid "master courses"
+msgstr "mastervakken"
 
 #: templates/education/course.html:4 templates/education/course.html:5
 msgid "Course"
@@ -364,3 +440,20 @@ msgstr ""
 #: views.py:30
 msgid "Summary"
 msgstr "Samenvatting"
+
+#~ msgid ""
+#~ "Thalia's book sale goes through bookstore Roelants. As a member of Thalia "
+#~ "you get 10%% discount on your order. So how does the ordering work? "
+#~ "Simple: visit the Roelants webstore using <a href=\"https://www.roelants."
+#~ "nl/studenten/products/alle-producten/3543/p.product_price/asc.html?"
+#~ "r=sawqllhrjzy4dq3ui8pf\">this link</a>. Then choose the books you need "
+#~ "and use the code 'THALIAkorting' to activate the discount."
+#~ msgstr ""
+#~ "De boekenverkoop van Thalia gaat via boekhandel Roelants. Via deze "
+#~ "boekhandel krijg je als Thaliaan 10%% korting op je bestelling. Hoe gaat "
+#~ "dat bestellen nou in zijn werk? Simpel: ga naar de Roelants webwinkel via "
+#~ "<a href=\"https://www.roelants.nl/studenten/products/alle-producten/3543/"
+#~ "p.product_price/asc.html?r=sawqllhrjzy4dq3ui8pf\">deze link</a>. "
+#~ "Vervolgens kies je de boeken uit die jij voor je vakken nodig hebt. Als "
+#~ "je klaar bent gebruik je tijdens het afrekenen de code \"THALIAkorting\" "
+#~ "om de korting op je bestelling te krijgen."
