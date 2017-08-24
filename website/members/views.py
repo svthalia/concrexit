@@ -38,10 +38,13 @@ def filter_users(tab, keywords, year_range):
 
     if keywords:
         for key in keywords:
-            members_query &= (Q(nickname__icontains=key) |
-                              Q(user__first_name__icontains=key) |
-                              Q(user__last_name__icontains=key) |
-                              Q(user__username__icontains=key))
+            members_query &= (
+                (Q(user__member__nickname__icontains=key) &
+                 # Works because relevant options all have `nick` in their key
+                 Q(user__member__display_name_preference__contains='nick')) |
+                Q(user__first_name__icontains=key) |
+                Q(user__last_name__icontains=key) |
+                Q(user__username__icontains=key))
 
     if tab == 'ex':
         memberships_query = Q(type='member') | Q(type='honorary')
