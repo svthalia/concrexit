@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n event_cards %}
+{% load i18n event_cards frontpage_articles %}
 
 {% block body %}
 <h1>{% trans "Thalia, the study association of Computer Science and Information Science" %}</h1>
@@ -7,6 +7,8 @@
 <p class="text-center">
 {% blocktrans %}Thalia is the study association for the Computer Science and Information Science students at Radboud University in Nijmegen. Thalia provides you the necessary distractions during your studies, as we've been doing for the past 25 years. And via Thalia students can easily connect with teachers and students from other years.{% endblocktrans %}
 </p>
+
+{% render_frontpage_articles %}
 
 <h1>{% trans "Upcoming events" %}</h1>
 
