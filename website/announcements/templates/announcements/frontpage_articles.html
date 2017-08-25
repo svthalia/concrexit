@@ -1,0 +1,5 @@
+{% load bleach_tags %}
+{% for article in articles %}
+<h1>{{ article.title }}</h1>
+<p class="text-center">{{ article.content | bleach }}</p>
+{% endfor %}
