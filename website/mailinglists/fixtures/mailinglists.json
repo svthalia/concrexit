@@ -1,0 +1,16 @@
+[
+  {
+    "model": "mailinglists.mailinglist",
+    "pk": 1,
+    "fields": {
+      "name": "mailtest1"
+    }
+  },
+  {
+    "model": "mailinglists.mailinglist",
+    "pk": 2,
+    "fields": {
+      "name": "mailtest2"
+    }
+  }
+]

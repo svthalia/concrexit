@@ -35,8 +35,9 @@ class CommitteeAdmin(TranslatedModelAdmin):
     search_fields = ('name', 'description')
     filter_horizontal = ('permissions',)
 
-    fields = ('name', 'description', 'photo', 'permissions',
-              'since', 'until', 'contact_email', 'wiki_namespace', 'active')
+    fields = ('name', 'description', 'photo', 'permissions', 'since',
+              'until', 'contact_mailinglist', 'contact_email',
+              'wiki_namespace', 'active')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -49,8 +50,8 @@ class BoardAdmin(TranslatedModelAdmin):
     exclude = ('is_board',)
     filter_horizontal = ('permissions',)
 
-    fields = ('name', 'photo', 'permissions',
-              'since', 'until',)
+    fields = ('name', 'photo', 'permissions', 'contact_mailinglist',
+              'contact_email', 'since', 'until',)
 
 
 @admin.register(models.CommitteeMembership)
