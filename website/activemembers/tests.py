@@ -185,10 +185,15 @@ class CommitteeMailingListTest(TestCase):
 
         self.testcie2.full_clean()
 
-    def test_no_emailaddress(self):
+    def test_exactly_one_address(self):
         with self.assertRaises(ValidationError):
             self.testcie1.contact_mailinglist = self.mailtest1
             self.testcie1.contact_email = "test@test.com"
+            self.testcie1.full_clean()
+
+        with self.assertRaises(ValidationError):
+            self.testcie1.contact_mailinglist = None
+            self.testcie1.contact_email = None
             self.testcie1.full_clean()
 
         self.testcie1.contact_mailinglist = self.mailtest1
