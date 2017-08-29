@@ -6,6 +6,7 @@
 .project
 .settings
 .idea/
+.vscode/
 .tox/
 db.sqlite3
 
