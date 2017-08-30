@@ -2,7 +2,7 @@ django.jQuery(function () {
     var $ = django.jQuery;
 
     var url = $("#content-main").attr("data-url");
-    var paid_url = url + "paid/";
+    var payment_url = url + "payment/";
     var present_url = url + "present/";
 
     $(".present-check").change(function () {
@@ -18,17 +18,19 @@ django.jQuery(function () {
         });
     });
 
-    $(".paid-check").change(function () {
-        var checkbox = $(this);
-        var id = checkbox.attr("data-id");
-        var checked = checkbox.prop('checked');
-        post(paid_url, { checked: checked, id: id }, function(result) {
-            if (!result.success) {
-                checkbox.prop('checked', !checked);
-            }
-        }, function() {
-            checkbox.prop('checked', !checked);
-        });
+    $(".payment-radio").change(function () {
+        var radiobutton = $(this);
+        var id = radiobutton.attr("data-id");
+        var value = radiobutton.attr("data-value");
+        if (radiobutton.prop('checked')) {
+            post(payment_url, { value: value, id: id }, function(result) {
+                if (!result.success) {
+                    radiobutton.prop('checked', !checked);
+                }
+            }, function() {
+                radiobutton.prop('checked', !checked);
+            });
+        }
     });
 });
 
