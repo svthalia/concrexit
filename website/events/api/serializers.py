@@ -180,6 +180,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         '_queue_position')
 
     def _has_view_permission(self, instance):
+        # We dont have an explicit viewing permission model, so we rely on the
+        #  'change' permission (Django provides add/change/delete by default)
         return (self.context['request'].user.has_perm('events.change_event')
                 or instance.member.user == self.context['request'].user)
 
