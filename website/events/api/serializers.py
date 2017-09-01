@@ -188,7 +188,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def _member(self, instance):
         if instance.member:
-            return instance.member.pk
+            return instance.member.user.pk
         return None
 
     def _name(self, instance):

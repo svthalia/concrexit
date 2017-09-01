@@ -363,7 +363,7 @@ class Member(models.Model):
             )).exclude(active=False)
 
     def get_absolute_url(self):
-        return reverse('members:profile', args=[str(self.pk)])
+        return reverse('members:profile', args=[str(self.user.pk)])
 
     def clean(self):
         super().clean()

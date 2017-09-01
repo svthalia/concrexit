@@ -200,7 +200,7 @@
                             </div>
                         </a>
                     {% else %}
-                        <a href="{% url 'members:profile' pk=registration.member.pk %}">
+                        <a href="{% url 'members:profile' pk=registration.member.user.pk %}">
                             <div class="post-inner">
                                 <div class="inner-img">
                                     {% if not registration.member.photo %}

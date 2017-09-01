@@ -52,7 +52,7 @@
     <ul class="member-directory portfolio-posts row">
 		{% for member in members %}
 		<li class="post member-item span3 has-overlay">
-			<a href="{% url 'members:profile' pk=member.pk %}">
+			<a href="{% url 'members:profile' pk=member.user.pk %}">
 				<div class="post-inner">
 					<div class="inner-img">
                         {% if not member.photo %}
