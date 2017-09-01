@@ -1,8 +1,9 @@
+from html import unescape
+
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import strip_tags
-from html import unescape
 from rest_framework import serializers
 
 from events.models import Event, Registration
@@ -115,6 +116,8 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         return unescape(strip_tags(instance.description))
 
     def _num_participants(self, instance):
+        if instance.num_participants() > instance.max_participants:
+            return instance.max_participants
         return instance.num_participants()
 
     def _user_registration(self, instance):
@@ -169,22 +172,39 @@ class RegistrationSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField('_name')
     photo = serializers.SerializerMethodField('_photo')
     member = serializers.SerializerMethodField('_member')
-    registered_on = serializers.DateTimeField(source='date')
+    registered_on = serializers.SerializerMethodField('_registered_on')
     is_cancelled = serializers.SerializerMethodField('_is_cancelled')
     is_late_cancellation = serializers.SerializerMethodField(
         '_is_late_cancellation')
     queue_position = serializers.SerializerMethodField(
         '_queue_position')
 
+    def _has_view_permission(self, instance):
+        # We dont have an explicit viewing permission model, so we rely on the
+        #  'change' permission (Django provides add/change/delete by default)
+        return (self.context['request'].user.has_perm('events.change_event')
+                or instance.member.user == self.context['request'].user)
+
     def _is_late_cancellation(self, instance):
-        return instance.is_late_cancellation()
+        if self._has_view_permission(instance):
+            return instance.is_late_cancellation()
+        return None
 
     def _queue_position(self, instance):
-        pos = instance.queue_position()
-        return pos if pos > 0 else None
+        if self._has_view_permission(instance):
+            pos = instance.queue_position()
+            return pos if pos > 0 else None
+        return None
+
+    def _registered_on(self, instance):
+        if self._has_view_permission(instance):
+            return serializers.DateTimeField().to_representation(instance.date)
+        return None
 
     def _is_cancelled(self, instance):
-        return instance.date_cancelled is not None
+        if self._has_view_permission(instance):
+            return instance.date_cancelled is not None
+        return None
 
     def _member(self, instance):
         if instance.member:
