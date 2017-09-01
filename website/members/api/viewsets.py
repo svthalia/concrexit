@@ -21,6 +21,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ('starting_year', 'user__first_name', 'user__last_name')
     search_fields = ('nickname', 'user__first_name',
                      'user__last_name', 'user__username')
+    lookup_field = 'user__pk'
 
     def get_serializer_class(self):
         if self.action == 'retrieve' or self.action == 'me':

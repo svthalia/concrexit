@@ -28,7 +28,7 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
         return True
 
     def _url(self, instance):
-        return reverse('members:profile', kwargs={'pk': instance.pk})
+        return reverse('members:profile', kwargs={'pk': instance.user.pk})
 
     def _title(self, instance):
         return instance.display_name()
@@ -56,6 +56,7 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
                   'birthday', 'starting_year', 'programme',
                   'website', 'membership_type', 'achievements')
 
+    pk = serializers.IntegerField(source='user.pk')
     photo = serializers.SerializerMethodField('_b64_photo')
     birthday = serializers.SerializerMethodField('_birthday')
     membership_type = serializers.SerializerMethodField('_membership_type')
@@ -93,6 +94,7 @@ class MemberListSerializer(serializers.ModelSerializer):
         model = Member
         fields = ('pk', 'display_name', 'photo',)
 
+    pk = serializers.IntegerField(source='user.pk')
     photo = serializers.SerializerMethodField('_photo')
 
     def _photo(self, instance):
