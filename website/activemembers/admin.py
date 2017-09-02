@@ -31,13 +31,21 @@ class CommitteeMembershipInline(admin.StackedInline):
 @admin.register(models.Committee)
 class CommitteeAdmin(TranslatedModelAdmin):
     inlines = (CommitteeMembershipInline,)
-    list_filter = ('until',)
+    list_display = ('name', 'since', 'until', 'active', 'email')
+    list_filter = ('until', 'active',)
     search_fields = ('name', 'description')
     filter_horizontal = ('permissions',)
 
     fields = ('name', 'description', 'photo', 'permissions', 'since',
               'until', 'contact_mailinglist', 'contact_email',
               'wiki_namespace', 'active')
+
+    def email(self, instance):
+        if instance.contact_email:
+            return instance.contact_email
+        elif instance.contact_mailinglist:
+            return instance.contact_mailinglist.name + '@thalia.nu'
+        return None
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
