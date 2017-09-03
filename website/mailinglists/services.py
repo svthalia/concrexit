@@ -22,51 +22,60 @@ def get_automatic_lists():
         year=datetime_to_lectureyear(timezone.now()))
     mentors = [x.member for x in active_mentorships]
 
-    # name, prefix, members, archived, moderated, multilingual
-    lists = [
-        ('leden', '[THALIA]', Member.all_with_membership(
-            'member', 'user'), True, True, True),
-        ('begunstigers', '[THALIA]', Member.all_with_membership(
-            'supporter', 'user'), True, True, True),
-        ('ereleden', '[THALIA]', Member.all_with_membership(
-            'honorary', 'user'), True, True, True),
-        ('members', '[THALIA]', Member.all_with_membership(
-            'member', 'user'), True, True, True),
-        ('supporters', '[THALIA]', Member.all_with_membership(
-            'supporter', 'user'), True, True, True),
-        ('honorary', '[THALIA]', Member.all_with_membership(
-            'honorary', 'user'), True, True, True),
-        ('mentors', '[THALIA] [MENTORS]',
-            mentors, True, False, False),
-        ('activemembers', '[THALIA] [COMMITTEES]',
-            active_members, True, True, False),
-        ('commissievoorzitters', '[THALIA] [CHAIRS]',
-            committee_chairs, True, False, False),
-        ('optin', '[THALIA] [OPTIN]', Member.active_members.filter(
-            receive_optin=True).prefetch_related('user'), True, True, False),
-    ]
+    lists = []
 
-    return_data = []
-    for list in lists:
-        data = {
-            'name': list[0],
-            'prefix': list[1],
-            'archived': list[3],
-            'moderated': list[4],
-        }
+    lists += _create_automatic_list(
+        'leden', '[THALIA]', Member.all_with_membership('member', 'user'),
+        True, True, True)
+    lists += _create_automatic_list(
+        'begunstigers', '[THALIA]', Member.all_with_membership(
+            'supporter','user'), multilingual=True)
+    lists += _create_automatic_list(
+        'ereleden', '[THALIA]', Member.all_with_membership(
+            'honorary','user'), multilingual=True)
+    lists += _create_automatic_list(
+        'members', '[THALIA]', Member.all_with_membership(
+            'member', 'user'), multilingual=True)
+    lists += _create_automatic_list(
+        'supporters', '[THALIA]', Member.all_with_membership(
+            'supporter', 'user'), multilingual=True)
+    lists += _create_automatic_list(
+        'honorary', '[THALIA]', Member.all_with_membership(
+            'honorary', 'user'), multilingual=True)
+    lists += _create_automatic_list(
+        'mentors', '[THALIA] [MENTORS]', mentors, moderated=False)
+    lists += _create_automatic_list(
+        'activemembers', '[THALIA] [COMMITTEES]',
+        active_members)
+    lists += _create_automatic_list(
+        'commissievoorzitters', '[THALIA] [CHAIRS]',
+        committee_chairs, moderated=False)
+    lists += _create_automatic_list(
+        'optin', '[THALIA] [OPTIN]', Member.active_members.filter(
+            receive_optin=True).prefetch_related('user'))
 
-        if list[5]:
-            data['addresses'] = (member.user.email for member in list[2])
-            return_data.append(data)
-            for language in settings.LANGUAGES:
-                localized_data = data.copy()
-                localized_data['addresses'] = [
-                    member.user.email for member in list[2]
-                    if member.language == language[0]]
-                localized_data['name'] += '-{}'.format(language[0])
-                return_data.append(localized_data)
-        else:
-            data['addresses'] = (member.user.email for member in list[2])
-            return_data.append(data)
+    return lists
 
-    return return_data
+
+def _create_automatic_list(name, prefix, members,
+                           archived=True, moderated=True, multilingual=False):
+    data = {
+        'name': name,
+        'prefix': prefix,
+        'archived': archived,
+        'moderated': moderated,
+    }
+
+    if multilingual:
+        data['addresses'] = [member.user.email for member in members]
+        yield data
+        for language in settings.LANGUAGES:
+            localized_data = data.copy()
+            localized_data['addresses'] = [
+                member.user.email for member in members
+                if member.language == language[0]]
+            localized_data['name'] += '-{}'.format(language[0])
+            yield localized_data
+    else:
+        data['addresses'] = [member.user.email for member in members]
+        yield data
