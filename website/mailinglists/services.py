@@ -25,42 +25,33 @@ def get_automatic_lists():
     lists = []
 
     lists += _create_automatic_list(
-        'leden', '[THALIA]', Member.all_with_membership('member', 'user'),
-        True, True, True)
+        ['leden', 'members'], '[THALIA]',
+        Member.all_with_membership('member', 'user'), True, True, True)
     lists += _create_automatic_list(
-        'begunstigers', '[THALIA]', Member.all_with_membership(
-            'supporter','user'), multilingual=True)
-    lists += _create_automatic_list(
-        'ereleden', '[THALIA]', Member.all_with_membership(
-            'honorary','user'), multilingual=True)
-    lists += _create_automatic_list(
-        'members', '[THALIA]', Member.all_with_membership(
-            'member', 'user'), multilingual=True)
-    lists += _create_automatic_list(
-        'supporters', '[THALIA]', Member.all_with_membership(
+        ['begunstigers', 'supporters'], '[THALIA]', Member.all_with_membership(
             'supporter', 'user'), multilingual=True)
     lists += _create_automatic_list(
-        'honorary', '[THALIA]', Member.all_with_membership(
+        ['ereleden', 'honorary'], '[THALIA]', Member.all_with_membership(
             'honorary', 'user'), multilingual=True)
     lists += _create_automatic_list(
-        'mentors', '[THALIA] [MENTORS]', mentors, moderated=False)
+        ['mentors'], '[THALIA] [MENTORS]', mentors, moderated=False)
     lists += _create_automatic_list(
-        'activemembers', '[THALIA] [COMMITTEES]',
+        ['activemembers'], '[THALIA] [COMMITTEES]',
         active_members)
     lists += _create_automatic_list(
-        'commissievoorzitters', '[THALIA] [CHAIRS]',
+        ['commissievoorzitters'], '[THALIA] [CHAIRS]',
         committee_chairs, moderated=False)
     lists += _create_automatic_list(
-        'optin', '[THALIA] [OPTIN]', Member.active_members.filter(
+        ['optin'], '[THALIA] [OPTIN]', Member.active_members.filter(
             receive_optin=True).prefetch_related('user'))
 
     return lists
 
 
-def _create_automatic_list(name, prefix, members,
+def _create_automatic_list(names, prefix, members,
                            archived=True, moderated=True, multilingual=False):
     data = {
-        'name': name,
+        'names': names,
         'prefix': prefix,
         'archived': archived,
         'moderated': moderated,
@@ -74,7 +65,8 @@ def _create_automatic_list(name, prefix, members,
             localized_data['addresses'] = [
                 member.user.email for member in members
                 if member.language == language[0]]
-            localized_data['name'] += '-{}'.format(language[0])
+            localized_data['names'] = [
+                '{}-{}'.format(n, language[0]) for n in names]
             yield localized_data
     else:
         data['addresses'] = [member.user.email for member in members]

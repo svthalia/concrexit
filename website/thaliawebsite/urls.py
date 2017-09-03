@@ -65,7 +65,6 @@ thalia_sitemap.update(events_sitemap)
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^admin/', admin.site.urls),
-    url(r'^mailinglists/', include('mailinglists.urls')),
     url(r'^members/', include('members.urls')),
     url(r'^account/$', members.views.account, name='account'),
     url(r'^events/', include('events.urls')),
