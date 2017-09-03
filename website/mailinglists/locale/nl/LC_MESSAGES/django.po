@@ -7,108 +7,197 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-12 19:33+0200\n"
-"PO-Revision-Date: 2017-04-12 19:39+0200\n"
-"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"POT-Creation-Date: 2017-09-10 13:52+0200\n"
+"PO-Revision-Date: 2017-09-10 13:53+0200\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.3\n"
 
-#: models.py:12
+#: admin.py:26 models.py:134
+msgid "List aliasses"
+msgstr "Lijstaliassen"
+
+#: models.py:13 models.py:128 templates/admin/mailinglists/change_list.html:16
 msgid "Name"
 msgstr "Naam"
 
-#: models.py:16 models.py:95
+#: models.py:17 models.py:110
 msgid "Enter a simpler name"
 msgstr "Vul een eenvoudigere naam in"
 
-#: models.py:18
+#: models.py:20
 msgid "Enter the name for the list (i.e. name@thalia.nu)."
 msgstr "Vul een naam voor de lijst in (d.w.z. naam@thalia.nu)"
 
-#: models.py:22
+#: models.py:24
 msgid "Prefix"
 msgstr "Voorvoegsel"
 
-#: models.py:24
+#: models.py:27
 msgid ""
 "Enter a prefix that should be prefixed to subjects of all emails sent via "
 "this mailinglist."
 msgstr ""
-"Vul een prefix in die voor het onderwerp van alle e-mails die via de "
-"lijst worden verstuurd moet worden gezet."
+"Vul een prefix in die voor het onderwerp van alle e-mails die via de lijst "
+"worden verstuurd moet worden gezet."
 
-#: models.py:29
+#: models.py:32
 msgid "Archived"
 msgstr "Gearchiveerd"
 
-#: models.py:31
+#: models.py:34
 msgid "Indicate whether an archive should be kept."
 msgstr "Geef aan of er een archief moet worden bijgehouden."
 
-#: models.py:35
+#: models.py:38
 msgid "Moderated"
 msgstr "Gemodereerd"
 
-#: models.py:37
+#: models.py:40
 msgid "Indicate whether emails to the list require approval."
 msgstr "Geef aan of e-mails aan deze lijst goedgekeurd moeten worden."
 
-#: models.py:42
+#: models.py:45
 msgid "Members"
 msgstr "Leden"
 
-#: models.py:44
+#: models.py:47
 msgid "Select individual members to include in the list."
-msgstr ""
-"Selecteer individuele leden die aan de lijst moeten worden toegevoegd."
+msgstr "Selecteer individuele leden die aan de lijst moeten worden toegevoegd."
 
-#: models.py:49
+#: models.py:52
 msgid "Committees"
 msgstr "Commissies"
 
-#: models.py:50
+#: models.py:53
 msgid "Select entire committees to include in the list."
 msgstr "Selecteer commissies die aan de lijst moeten worden toegevoegd."
 
-#: models.py:72
-msgid "Email address"
-msgstr "E-mailadres"
+#: models.py:74 models.py:125
+#, python-format
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr "%(model_name)s met deze %(field_label)s bestaat al."
 
-#: models.py:73
-msgid "Enter an explicit email address to include in the list."
-msgstr ""
-"Vul een letterlijk e-mailadres in dat aan de lijst moeten worden "
-"toegevoegd."
-
-#: models.py:77 models.py:100
+#: models.py:76 models.py:92 models.py:116 models.py:127
 msgid "Mailing list"
 msgstr "Mailing list"
 
-#: models.py:85
-msgid "Verbatim address"
-msgstr "Letterlijk e-mailadres"
-
-#: models.py:86
-msgid "Verbatim addresses"
-msgstr "Letterlijke e-mailadressen"
-
-#: models.py:91
-msgid "Alternative name"
-msgstr "Alternatieve naam"
-
-#: models.py:97
-msgid "Enter an alternative name for the list."
-msgstr "Vul een alternatieve naam voor de lijst in."
-
-#: models.py:105
+#: models.py:77 models.py:133
 msgid "List alias"
 msgstr "Lijstalias"
 
+#: models.py:87
+msgid "Email address"
+msgstr "E-mailadres"
+
+#: models.py:88
+msgid "Enter an explicit email address to include in the list."
+msgstr ""
+"Vul een letterlijk e-mailadres in dat aan de lijst moeten worden toegevoegd."
+
+#: models.py:100
+msgid "Verbatim address"
+msgstr "Letterlijk e-mailadres"
+
+#: models.py:101
+msgid "Verbatim addresses"
+msgstr "Letterlijke e-mailadressen"
+
 #: models.py:106
-msgid "List aliasses"
-msgstr "Lijstaliassen"
+msgid "Alternative name"
+msgstr "Alternatieve naam"
+
+#: models.py:113
+msgid "Enter an alternative name for the list."
+msgstr "Vul een alternatieve naam voor de lijst in."
+
+#: templates/admin/mailinglists/change_list.html:6
+msgid "Automatically generated mailing lists"
+msgstr "Automatisch gegenereerde mailinglijsten"
+
+#: templates/admin/mailinglists/change_list.html:20
+msgid "Information"
+msgstr "Informatie"
+
+#: templates/admin/mailinglists/change_list.html:29
+msgid ""
+"Archived moderated list that can be used to send mail to all members. "
+"Supports language code suffix."
+msgstr ""
+"Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
+"alle leden te versturen. Ondersteunt taalcode achtervoegsel."
+
+#: templates/admin/mailinglists/change_list.html:34
+msgid ""
+"Archived moderated list that can be used to send mail to all supporters. "
+"Supports language code suffix."
+msgstr ""
+"Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
+"alle begunstigers te sturen. Ondersteunt taalcode achtervoegsel."
+
+#: templates/admin/mailinglists/change_list.html:39
+msgid ""
+"Archived moderated list that can be used to send mail to all honorary "
+"members. Supports language code suffix."
+msgstr ""
+"Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
+"alle ereleden te sturen. Ondersteunt taalcode achtervoegsel."
+
+#: templates/admin/mailinglists/change_list.html:44
+msgid ""
+"Archived moderated list that can be used to send mail to all active members. "
+"These are all users that are currently a member of a committee."
+msgstr ""
+"Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
+"alle actieve leden te versturen. Dit zijn alle leden die op dit moment in "
+"een commissie zitten."
+
+#: templates/admin/mailinglists/change_list.html:49
+msgid "Archived list that can be used to send mail to all committee chairs."
+msgstr ""
+"Gearchiveerde lijst die gebruikt kan worden om mail naar alle "
+"commissievoorzitters te versturen."
+
+#: templates/admin/mailinglists/change_list.html:54
+msgid ""
+"Archived list that can be used to send mail to all orientation mentors. "
+"These members should have a mentorship with the current calendar year. So "
+"members with a mentorship in the year 2017 can be mailed from January 2017 "
+"until December 2017."
+msgstr ""
+"Gearchiveerde lijst die gebruikt kan worden om mail naar alle mentoren van "
+"de introductie te versturen. Deze leden moeten een mentorschap hebben van "
+"het huidige kalenderjaar. Dus leden met een mentorschap in het jaar 2017 "
+"kunnen gemaild worden vanaf januari tot en met december 2017."
+
+#: templates/admin/mailinglists/change_list.html:59
+msgid ""
+"Archived moderated list that can be used to send mail to all members that "
+"have opted-in to receive these (mostly recruitment) emails."
+msgstr ""
+"Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
+"alle leden die ervoor hebben gekozen deze (vooral recruitment) e-mails te "
+"ontvangen."
+
+#: templates/admin/mailinglists/change_list.html:65
+msgid ""
+"Support for the language code suffix means that adding <code>-en</code> of "
+"<code>-nl</code> to the name will only send this email to users with that "
+"specific preferred language on their profiles."
+msgstr ""
+"Ondersteuning voor taalcode achtervoegsel betekent dat het toevoegen van "
+"<code>-en</code> of <code>-nl</code> aan de naam van deze lijst alleen e-"
+"mail zal versturen naar gebruikers met die specifieke voorkeurstaal op hun "
+"profiel."
+
+#~ msgid ""
+#~ "Archived list that can be used to send mail to all members with a "
+#~ "mentorship in the current lecture year."
+#~ msgstr ""
+#~ "Gearchiveerde lijst die gebruikt kan worden om mail naar alle leden met "
+#~ "een mentorschap in het huidige studiejaar te versturen."
