@@ -106,6 +106,7 @@ urlpatterns = [
             url(r'^', include('events.api.urls')),
             url(r'^', include('members.api.urls')),
             url(r'^', include('partners.api.urls')),
+            url(r'^', include('mailinglists.api.urls')),
         ], namespace='v1')),
     ])),
     url(r'^education/', include('education.urls')),
