@@ -1,6 +1,9 @@
-from activemembers.models import CommitteeMembership
+from django.utils import timezone
+
+from activemembers.models import CommitteeMembership, Mentorship
 from members.models import Member
 from thaliawebsite.settings import settings
+from utils.snippets import datetime_to_lectureyear
 
 
 def get_automatic_lists():
@@ -10,8 +13,16 @@ def get_automatic_lists():
                    .prefetch_related('member__user'))
     committee_chairs = [x.member for x in memberships]
 
-    # name, prefix, members, archived, moderated, multilingual
+    active_committee_memberships = (CommitteeMembership.active_memberships
+                                    .exclude(committee__board__is_board=True)
+                                    .prefetch_related('member__user'))
+    active_members = [x.member for x in active_committee_memberships]
 
+    active_mentorships = Mentorship.objects.filter(
+        year=datetime_to_lectureyear(timezone.now()))
+    mentors = [x.member for x in active_mentorships]
+
+    # name, prefix, members, archived, moderated, multilingual
     lists = [
         ('leden', '[THALIA]', Member.all_with_membership(
             'member', 'user'), True, True, True),
@@ -25,7 +36,11 @@ def get_automatic_lists():
             'supporter', 'user'), True, True, True),
         ('honorary', '[THALIA]', Member.all_with_membership(
             'honorary', 'user'), True, True, True),
-        ('commissievoorzitters', '[THALIA] [VOORZITTERS]',
+        ('mentors', '[THALIA] [MENTORS]',
+            mentors, True, False, False),
+        ('activemembers', '[THALIA] [COMMITTEES]',
+            active_members, True, True, False),
+        ('commissievoorzitters', '[THALIA] [CHAIRS]',
             committee_chairs, True, False, False),
         ('optin', '[THALIA] [OPTIN]', Member.active_members.filter(
             receive_optin=True).prefetch_related('user'), True, True, False),
