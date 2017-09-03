@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-04 11:07+0100\n"
-"PO-Revision-Date: 2017-04-17 17:59+0200\n"
+"POT-Creation-Date: 2017-09-03 13:54+0200\n"
+"PO-Revision-Date: 2017-09-03 13:55+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.3\n"
 
 #: admin.py:4
 msgid "Thalia administration"
@@ -144,11 +144,11 @@ msgstr "Samenvatting Insturen"
 msgid "Contact"
 msgstr "Contact"
 
-#: settings/settings.py:180
+#: settings/settings.py:190
 msgid "English"
 msgstr "Engels"
 
-#: settings/settings.py:181
+#: settings/settings.py:191
 msgid "Dutch"
 msgstr "Nederlands"
 
@@ -171,31 +171,39 @@ msgstr ""
 "500: Interne fout in de server. Thalia's websitecommissie (de Technicie) is "
 "op de hoogte gesteld."
 
-#: templates/base.html:9 templates/base.html:27 templates/base.html:184
+#: templates/base.html:9 templates/base.html:27 templates/base.html:191
 msgid "Study Association Thalia"
 msgstr "Studievereniging Thalia"
 
-#: templates/base.html:84
+#: templates/base.html:64
+msgid ""
+"You're currently not a member of Thalia. Renew your membership to get access "
+"to all parts of the website."
+msgstr ""
+"Je bent op dit moment geen lid van Thalia. Vernieuw je lidmaatschap om "
+"toegang te krijgen tot de gehele website."
+
+#: templates/base.html:91
 msgid "Login"
 msgstr "Inloggen"
 
-#: templates/base.html:88
+#: templates/base.html:95
 msgid "My Account"
 msgstr "Mijn Account"
 
-#: templates/base.html:93
+#: templates/base.html:100
 msgid "edit profile"
 msgstr "bewerk profiel"
 
-#: templates/base.html:94
+#: templates/base.html:101
 msgid "change password"
 msgstr "wijzig mijn wachtwoord"
 
-#: templates/base.html:97
+#: templates/base.html:104
 msgid "Site administration"
 msgstr "Sitebeheer"
 
-#: templates/base.html:100
+#: templates/base.html:107
 msgid "Log Out"
 msgstr "Uitloggen"
 
@@ -226,15 +234,15 @@ msgstr ""
 "kunnen studenten gemakkelijk contacten onderhouden met docenten en studenten "
 "van andere jaren."
 
-#: templates/index.html:11
+#: templates/index.html:13
 msgid "Upcoming events"
 msgstr "Aanstaande evenementen"
 
-#: templates/index.html:15
+#: templates/index.html:17
 msgid "Searching for another event?"
 msgstr "Op zoek naar een ander evenement?"
 
-#: templates/index.html:15
+#: templates/index.html:17
 msgid "Take a look at the entire agenda"
 msgstr "Bekijk de hele agenda"
 
