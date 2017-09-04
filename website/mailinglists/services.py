@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 from activemembers.models import CommitteeMembership, Mentorship
@@ -11,7 +12,11 @@ def get_automatic_lists():
                    .filter(committee__board=None)
                    .filter(chair=True)
                    .prefetch_related('member__user'))
-    committee_chairs = [x.member for x in memberships]
+    committee_chairs = [x.member for x in memberships] + [Member(
+        user=User(
+            email='intern@thalia.nu'
+        )
+    )]
 
     active_committee_memberships = (CommitteeMembership.active_memberships
                                     .exclude(committee__board__is_board=True)
@@ -39,7 +44,7 @@ def get_automatic_lists():
         ['activemembers'], '[THALIA] [COMMITTEES]',
         active_members)
     lists += _create_automatic_list(
-        ['commissievoorzitters'], '[THALIA] [CHAIRS]',
+        ['commissievoorzitters', 'committeechairs'], '[THALIA] [CHAIRS]',
         committee_chairs, moderated=False)
     lists += _create_automatic_list(
         ['optin'], '[THALIA] [OPTIN]', Member.active_members.filter(
