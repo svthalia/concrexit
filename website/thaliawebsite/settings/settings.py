@@ -256,21 +256,4 @@ CORS_URLS_REGEX = r'^/api/.*$'
 CORS_ALLOW_METHODS = ('GET', 'POST')
 
 # TinyMCE config
-TINYMCE_DEFAULT_CONFIG = {
-    'theme': "advanced",
-    'theme_advanced_buttons1': "bold,italic,underline,separator," +
-                               "link,unlink,separator,bullist," +
-                               "numlist,separator,undo,redo",
-    'theme_advanced_toolbar_location': "top",
-    'relative_urls': False,
-    'remove_script_host': False,
-    'convert_urls': True,
-    'plugins': "paste",
-    'paste_auto_cleanup_on_paste': True,
-    'paste_remove_styles': True,
-    'paste_remove_styles_if_webkit': True,
-    'paste_strip_class_attributes': "all",
-    'height': 250,
-    'width': 600,
-    'theme_advanced_resizing': True,
-}
+TINYMCE_JS_URL = '/static/tinymce/js/tinymce/tinymce.min.js'
