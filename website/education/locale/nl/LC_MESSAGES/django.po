@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 18:11+0200\n"
-"PO-Revision-Date: 2017-08-21 18:12+0200\n"
+"POT-Creation-Date: 2017-09-06 20:42+0200\n"
+"PO-Revision-Date: 2017-09-06 20:45+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -54,7 +54,7 @@ msgstr "EC"
 msgid "period"
 msgstr "periode"
 
-#: models.py:77 models.py:129 models.py:177
+#: models.py:77 models.py:132 models.py:180
 msgid "course"
 msgstr "vak"
 
@@ -86,52 +86,64 @@ msgstr "Oefententamen"
 msgid "Exam Answers"
 msgstr "Antwoorden tentamen"
 
-#: models.py:93
+#: models.py:89
+msgid "Partial Exam Answers"
+msgstr "Antwoorden deeltentamen"
+
+#: models.py:90
+msgid "Resit Answers"
+msgstr "Antwoorden hertentamen"
+
+#: models.py:91
+msgid "Practice Exam Answers"
+msgstr "Antwoorden oefententamen"
+
+#: models.py:96
 msgid "exam type"
 msgstr "type tentamen"
 
-#: models.py:98
+#: models.py:101
 msgid "exam name"
 msgstr "naam tentamen"
 
-#: models.py:104 models.py:160
+#: models.py:107 models.py:163
 msgid "uploader"
 msgstr "uploader"
 
-#: models.py:113 models.py:182
+#: models.py:116 models.py:185
 msgid "accepted"
 msgstr "geaccepteerd"
 
-#: models.py:118
+#: models.py:121
 msgid "exam date"
 msgstr "tentamendatum"
 
-#: models.py:123 models.py:188
+#: models.py:126 models.py:191
 msgid "Use the 'View on site' button to download the file for inspection."
 msgstr ""
 "Gebruik de ‘Toon op site’ knop om het bestand te downloaden voor controle."
 
-#: models.py:148
+#: models.py:151
 msgid "exam"
 msgstr "tentamen"
 
-#: models.py:149
+#: models.py:152
 msgid "exams"
 msgstr "tentamens"
 
-#: models.py:155
+#: models.py:158
 msgid "summary name"
 msgstr "naam samenvatting"
 
-#: models.py:172
+#: models.py:175
 msgid "author"
 msgstr "auteur"
 
-#: models.py:200
+#: models.py:203
 msgid "summary"
 msgstr "samenvatting"
 
-#: models.py:201
+#: models.py:204
 msgid "summaries"
 msgstr "samenvattingen"
 
