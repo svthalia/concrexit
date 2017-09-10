@@ -155,9 +155,9 @@ def export_email(request, event_id):
     registrations = registrations[:event.max_participants]
     addresses = [r.member.user.email for r in registrations if r.member]
     no_addresses = [r.name for r in registrations if not r.member]
-    return render(request, 'events/admin/email_export.txt',
-                  {'addresses': addresses,
-                   'no_addresses': no_addresses}, content_type='text/plain')
+    return render(request, 'events/admin/email_export.html',
+                  {'event': event, 'addresses': addresses,
+                   'no_addresses': no_addresses})
 
 
 def index(request):

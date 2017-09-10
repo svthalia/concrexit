@@ -1,9 +1,0 @@
-{% load i18n %}{% trans "Copy-pasteable email addresses of attendees:" %}
-
-    {{ addresses | join:', ' }}
-{% if no_addresses %}
-{% trans "Some attendees were registered manually, and are thus not included in the list above:" %}
-{% for name in no_addresses %}
-    {{ name }}
-{% endfor %}
-{% endif %}
