@@ -23,8 +23,12 @@ def get_automatic_lists():
                                     .prefetch_related('member__user'))
     active_members = [x.member for x in active_committee_memberships]
 
+    lectureyear = datetime_to_lectureyear(timezone.now())
+    # Change to next lecture year after December
+    if 0 < timezone.now().month < 9:
+        lectureyear += 1
     active_mentorships = Mentorship.objects.filter(
-        year=datetime_to_lectureyear(timezone.now()))
+        year=lectureyear)
     mentors = [x.member for x in active_mentorships]
 
     lists = []
