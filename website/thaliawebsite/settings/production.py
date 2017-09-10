@@ -79,6 +79,7 @@ PASSWORD_HASHERS = [
 
 WIKI_API_KEY = os.environ.get('WIKI_API_KEY', 'changeme')
 MIGRATION_KEY = os.environ.get('MIGRATION_KEY')
+PUSH_NOTIFICATIONS_API_KEY = os.environ.get('PUSH_NOTIFICATIONS_API_KEY', '')
 
 if os.environ.get('DJANGO_SSLONLY'):
     SECURE_SSL_REDIRECT = True

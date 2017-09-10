@@ -13,3 +13,4 @@ django-ical>=1.4,<2
 django-libsass>=0.7,<1
 django-cors-headers>=2.0.0,<2.1
 python-magic>=0.4.13,<0.5
+pyfcm>=1.4.2,<1.5
