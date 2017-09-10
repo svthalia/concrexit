@@ -146,6 +146,20 @@ def export(request, event_id):
     return response
 
 
+@staff_member_required
+@permission_required('events.change_event')
+def export_email(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    registrations = event.registration_set.filter(
+        date_cancelled=None).prefetch_related('member__user')
+    registrations = registrations[:event.max_participants]
+    addresses = [r.member.user.email for r in registrations if r.member]
+    no_addresses = [r.name for r in registrations if not r.member]
+    return render(request, 'events/admin/email_export.txt',
+                  {'addresses': addresses,
+                   'no_addresses': no_addresses}, content_type='text/plain')
+
+
 def index(request):
     upcoming_activity = Event.objects.filter(
         published=True,

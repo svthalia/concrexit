@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-16 22:58+0200\n"
-"PO-Revision-Date: 2017-08-16 23:00+0200\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"POT-Creation-Date: 2017-09-10 14:34+0200\n"
+"PO-Revision-Date: 2017-09-10 14:34+0200\n"
+"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -78,7 +78,7 @@ msgstr "Overig"
 msgid "No registration required"
 msgstr "Geen aanmelding vereist"
 
-#: models.py:37 templates/events/admin/details.html:67
+#: models.py:37 templates/events/admin/details.html:68
 msgid "title"
 msgstr "titel"
 
@@ -94,7 +94,7 @@ msgstr "starttijd"
 msgid "end time"
 msgstr "eindtijd"
 
-#: models.py:53 templates/events/admin/details.html:71
+#: models.py:53 templates/events/admin/details.html:72
 msgid "organiser"
 msgstr "organisator"
 
@@ -122,7 +122,7 @@ msgstr "einde aanmelden"
 msgid "cancel deadline"
 msgstr "afmelddeadline"
 
-#: models.py:89 templates/events/admin/details.html:75
+#: models.py:89 templates/events/admin/details.html:76
 #: templates/events/event.html:37
 msgid "location"
 msgstr "locatie"
@@ -139,7 +139,7 @@ msgstr ""
 "Locatie van ’t Huygens: Heyendaalseweg 135, Nijmegen. Locatie van Mercator "
 "1: Toernooiveld 212, Nijmegen. Dit veld wordt niet getoond als tekst!!"
 
-#: models.py:102 templates/events/admin/details.html:77
+#: models.py:102 templates/events/admin/details.html:78
 #: templates/events/event.html:42
 msgid "price"
 msgstr "prijs"
@@ -321,49 +321,65 @@ msgid "Export registrations"
 msgstr "Exporteer aanmeldingen"
 
 #: templates/events/admin/details.html:52
+msgid "Export email addresses of attendees"
+msgstr "Exporteer e-mailadressen van aanwezigen"
+
+#: templates/events/admin/details.html:53
 msgid "Set all registered to paid and present"
 msgstr "Zet iedereen op betaald en present"
 
-#: templates/events/admin/details.html:60
+#: templates/events/admin/details.html:61
 msgid "Event properties"
 msgstr "Eigenschappen van evenement"
 
-#: templates/events/admin/details.html:63
+#: templates/events/admin/details.html:64
 #: templates/events/admin/registrations_table.html:50
 msgid "change"
 msgstr "verander"
 
-#: templates/events/admin/details.html:69
+#: templates/events/admin/details.html:70
 #: templates/events/admin/registrations_table.html:7
 msgid "date"
 msgstr "datum"
 
-#: templates/events/admin/details.html:73
+#: templates/events/admin/details.html:74
 msgid "registration period"
 msgstr "aanmeldperiode"
 
-#: templates/events/admin/details.html:79
+#: templates/events/admin/details.html:80
 msgid "cost"
 msgstr "kosten"
 
-#: templates/events/admin/details.html:81
+#: templates/events/admin/details.html:82
 msgid "registration required"
 msgstr "aanmelden vereist"
 
-#: templates/events/admin/details.html:84
+#: templates/events/admin/details.html:85
 msgid "registration message"
 msgstr "aanmeldbericht"
 
-#: templates/events/admin/details.html:87 templates/events/event.html:56
+#: templates/events/admin/details.html:88 templates/events/event.html:56
 msgid "number of registrations"
 msgstr "aantal aanmeldingen"
 
-#: templates/events/admin/details.html:89 templates/events/event.html:58
+#: templates/events/admin/details.html:90 templates/events/event.html:58
 #, python-format
 msgid "%(counter)s registration"
 msgid_plural "%(counter)s registrations"
 msgstr[0] "%(counter)s aanmelding"
 msgstr[1] "%(counter)s aanmeldingen"
+
+#: templates/events/admin/email_export.txt:1
+msgid "Copy-pasteable email addresses of attendees:"
+msgstr "Kopieerbare e-mailadressen van aanwezigen:"
+
+#: templates/events/admin/email_export.txt:5
+msgid ""
+"Some attendees were registered manually, and are thus not included in the "
+"list above:"
+msgstr ""
+"Sommige aanwezigen zijn met de hand geregistreerd, en komen dus niet in de "
+"bovenstaande lijst voor:"
 
 #: templates/events/admin/registrations_table.html:12
 msgid "not paid"
@@ -580,56 +596,56 @@ msgstr "Toon  verjaardagen"
 msgid "list"
 msgstr "Lijst"
 
-#: views.py:94
+#: views.py:95
 msgctxt "registration status"
 msgid "registered"
 msgstr "aangemeld"
 
-#: views.py:100 views.py:135
+#: views.py:101 views.py:136
 msgctxt "registration status"
 msgid "late cancellation"
 msgstr "te laat afgemeld"
 
-#: views.py:102
+#: views.py:103
 msgctxt "registration status"
 msgid "cancelled"
 msgstr "afgemeld"
 
-#: views.py:106
+#: views.py:107
 msgctxt "registration status"
 msgid "waiting"
 msgstr "wachtend"
 
-#: views.py:111 views.py:122
+#: views.py:112 views.py:123
 msgid "Yes"
 msgstr "Ja"
 
-#: views.py:221
+#: views.py:238
 msgid "[THALIA] Notification about your registration for '{}'"
 msgstr "[THALIA] Bericht over je aanmelding voor ‘{}’"
 
-#: views.py:265 views.py:276 views.py:289
+#: views.py:283 views.py:294 views.py:307
 msgid "Registration successful."
 msgstr "Je aanmelding was succesvol."
 
-#: views.py:271
+#: views.py:289
 msgid ""
 "You cannot re-register anymore since you've cancelled after the deadline."
 msgstr ""
 "Je kunt je niet opnieuw aanmelden omdat je je hebt afgemeld na de deadline."
 
-#: views.py:284
+#: views.py:302
 msgid "You may not register"
 msgstr "Je mag niet je aanmelden"
 
-#: views.py:292
+#: views.py:310
 msgid "You were already registered."
 msgstr "Je bent al aangemeld."
 
-#: views.py:301 views.py:309
+#: views.py:319 views.py:327
 msgid "You are not registered for this event."
 msgstr "Je bent niet aangemeld voor dit evenement."
 
-#: views.py:321
+#: views.py:339
 msgid "Registration successfully cancelled."
 msgstr "Je afmelding was succesvol."
