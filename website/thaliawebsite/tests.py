@@ -1,6 +1,19 @@
+import doctest
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase, override_settings
+
+from thaliawebsite.templatetags import bleach_tags
+
+
+def load_tests(loader, tests, ignore):
+    """
+    Load all tests in this module
+    """
+    # Adds the doctests in bleach_tags
+    tests.addTests(doctest.DocTestSuite(bleach_tags))
+    return tests
 
 
 class WikiLoginTestCase(TestCase):
