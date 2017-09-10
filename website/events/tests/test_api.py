@@ -1,10 +1,10 @@
 import datetime
 
-from django.contrib.auth.models import Permission
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.utils import timezone
+from rest_framework.test import APIClient
 
-from activemembers.models import Committee, CommitteeMembership
+from activemembers.models import Committee
 from events.models import (Event, Registration,
                            RegistrationInformationField,
                            BooleanRegistrationInformation,
@@ -13,119 +13,7 @@ from events.models import (Event, Registration,
 from members.models import Member
 
 
-class AdminTest(TestCase):
-    """Tests for admin views"""
-
-    fixtures = ['members.json', 'committees.json']
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.committee = Committee.objects.get(pk=1)
-        cls.event = Event.objects.create(
-            pk=1,
-            organiser=cls.committee,
-            title_nl='testevenement',
-            title_en='testevent',
-            description_en='desc',
-            description_nl='besch',
-            published=True,
-            start=(timezone.now() + datetime.timedelta(hours=1)),
-            end=(timezone.now() + datetime.timedelta(hours=2)),
-            location_en='test location',
-            location_nl='test locatie',
-            map_location='test map location',
-            price=0.00,
-            fine=0.00)
-        cls.member = Member.objects.filter(user__last_name="Wiggers").first()
-        cls.permission_change_event = Permission.objects.get(
-            content_type__model='event',
-            codename='change_event')
-        cls.permission_override_orga = Permission.objects.get(
-            content_type__model='event',
-            codename='override_organiser')
-        cls.member.user.user_permissions.add(cls.permission_change_event)
-        cls.member.user.is_superuser = False
-        cls.member.user.save()
-
-    def setUp(self):
-        self.client.force_login(self.member.user)
-
-    def _remove_event_permission(self):
-        self.member.user.user_permissions.remove(self.permission_change_event)
-
-    def _add_override_organiser_permission(self):
-        self.member.user.user_permissions.add(self.permission_override_orga)
-
-    def test_admin_details_need_change_event_access(self):
-        """I need the event.change_event permission to do stuff"""
-        self._remove_event_permission()
-        response = self.client.get('/events/admin/1/')
-        self.assertEqual(302, response.status_code)
-        self.assertTrue(response.url.startswith('/login/'))
-
-    def test_admin_details_organiser_denied(self):
-        response = self.client.get('/events/admin/1/')
-        self.assertEqual(403, response.status_code)
-
-    def test_admin_details_organiser_allowed(self):
-        CommitteeMembership.objects.create(
-            member=self.member,
-            committee=self.committee)
-        response = self.client.get('/events/admin/1/')
-        self.assertEqual(200, response.status_code)
-
-    def test_admin_details_override_organiser_allowed(self):
-        self._add_override_organiser_permission()
-        response = self.client.get('/events/admin/1/')
-        self.assertEqual(200, response.status_code)
-
-    def test_modeladmin_change_organiser_allowed(self):
-        """Change event as an organiser
-
-        If I'm an organiser I should be allowed access
-        """
-        CommitteeMembership.objects.create(
-            member=self.member,
-            committee=self.committee)
-        response = self.client.get('/admin/events/event/1/change/')
-        self.assertEqual(200, response.status_code)
-
-    def test_modeladmin_change_override_organiser_allowed(self):
-        """Test the override organiser permission for changing events
-
-        If I'm allowed to override organiser restrictions..
-        """
-        self._add_override_organiser_permission()
-        response = self.client.get('/admin/events/event/1/change/')
-        self.assertEqual(200, response.status_code)
-
-    def test_modeladmin_change_organiser_no_permissions_denied(self):
-        """Committee members without change permissions are banned
-
-        If I'm an organiser, but don't have perms I should not
-        be allowed access
-        """
-        self._remove_event_permission()
-        CommitteeMembership.objects.create(
-            member=self.member,
-            committee=self.committee)
-        response = self.client.get('/admin/events/event/1/change/')
-        self.assertEqual(403, response.status_code)
-
-    def test_modeladmin_change_superuser_allowed(self):
-        """Superuser should be allowed access always"""
-        self.member.user.is_superuser = True
-        self.member.user.save()
-        response = self.client.get('/admin/events/event/1/change/')
-        self.assertEqual(200, response.status_code)
-
-    def test_modeladmin_change_organiser_denied(self):
-        """If I'm not an organiser I should not be allowed access"""
-        response = self.client.get('/admin/events/event/1/change/')
-        self.assertEqual(403, response.status_code)
-
-
-class RegistrationTest(TestCase):
+class RegistrationApiTest(TestCase):
     """Tests for registration view"""
 
     fixtures = ['members.json', 'committees.json']
@@ -150,13 +38,13 @@ class RegistrationTest(TestCase):
         cls.member = Member.objects.filter(user__last_name="Wiggers").first()
 
     def setUp(self):
-        self.client = Client()
+        self.client = APIClient()
         self.client.force_login(self.member.user)
 
     def test_registration_register_not_required(self):
-        response = self.client.post('/events/1/registration/register/',
+        response = self.client.post('/api/v1/events/1/registrations/',
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(self.event.participants.count(), 0)
 
     def test_registration_register(self):
@@ -167,12 +55,13 @@ class RegistrationTest(TestCase):
         self.event.cancel_deadline = (timezone.now() +
                                       datetime.timedelta(hours=1))
         self.event.save()
-        response = self.client.post('/events/1/registration/register/',
+        response = self.client.post('/api/v1/events/1/registrations/',
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['member'], self.member.pk)
         self.assertEqual(self.event.participants.count(), 1)
         self.assertEqual(
-            self.event.registration_set.first().member, self.member)
+                self.event.registration_set.first().member, self.member)
 
     def test_registration_register_twice(self):
         self.event.registration_start = (timezone.now() -
@@ -182,12 +71,13 @@ class RegistrationTest(TestCase):
         self.event.cancel_deadline = (timezone.now() +
                                       datetime.timedelta(hours=1))
         self.event.save()
-        response = self.client.post('/events/1/registration/register/',
+        response = self.client.post('/api/v1/events/1/registrations/',
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
-        response = self.client.post('/events/1/registration/register/',
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['member'], self.member.pk)
+        response = self.client.post('/api/v1/events/1/registrations/',
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(self.event.participants.count(), 1)
 
     def test_registration_register_closed(self):
@@ -198,9 +88,9 @@ class RegistrationTest(TestCase):
         self.event.cancel_deadline = (timezone.now() +
                                       datetime.timedelta(hours=1))
         self.event.save()
-        response = self.client.post('/events/1/registration/register/',
+        response = self.client.post('/api/v1/events/1/registrations/',
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(self.event.participants.count(), 0)
 
     def test_registration_cancel(self):
@@ -211,10 +101,10 @@ class RegistrationTest(TestCase):
         self.event.cancel_deadline = (timezone.now() +
                                       datetime.timedelta(hours=1))
         self.event.save()
-        Registration.objects.create(event=self.event, member=self.member)
-        response = self.client.post('/events/1/registration/cancel/',
-                                    follow=True)
-        self.assertEqual(response.status_code, 200)
+        reg = Registration.objects.create(event=self.event, member=self.member)
+        response = self.client.delete(
+            '/api/v1/registrations/{}/'.format(reg.pk), follow=True)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(self.event.participants.count(), 0)
 
     def test_registration_register_no_fields(self):
@@ -250,12 +140,13 @@ class RegistrationTest(TestCase):
             name_nl="test text",
             required=False)
 
-        response = self.client.post('/events/1/registration/register/',
+        response = self.client.post('/api/v1/events/1/registrations/',
                                     {'info_field_1': True,
                                      'info_field_2': 42,
                                      'info_field_3': "text"},
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['member'], self.member.pk)
 
         self.assertEqual(self.event.participants.count(), 1)
         registration = self.event.registration_set.first()
@@ -296,11 +187,10 @@ class RegistrationTest(TestCase):
             name_nl="test text",
             required=False)
 
-        response = self.client.post('/events/1/registration/register/',
+        response = self.client.post('/api/v1/events/1/registrations/',
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
-        template_names = [template.name for template in response.templates]
-        self.assertIn('events/registration.html', template_names)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['member'], self.member.pk)
         self.assertEqual(self.event.participants.count(), 1)
 
     def test_registration_register_fields_required(self):
@@ -319,11 +209,10 @@ class RegistrationTest(TestCase):
             name_nl="test",
             required=True)
 
-        response = self.client.post('/events/1/registration/register/',
+        response = self.client.post('/api/v1/events/1/registrations/',
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
-        template_names = [template.name for template in response.templates]
-        self.assertIn('events/registration.html', template_names)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['member'], self.member.pk)
         self.assertEqual(self.event.participants.count(), 1)
 
     def test_registration_update_form_load_not_changes_fields(self):
@@ -369,9 +258,10 @@ class RegistrationTest(TestCase):
             registration=registration, field=field3, value="text")
 
         # as if there is a csrf token
-        response = self.client.get('/events/1/registration/',
-                                   follow=True)
+        response = self.client.get(
+            '/api/v1/registrations/{}/'.format(registration.pk), follow=True)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['member'], self.member.pk)
 
         registration = self.event.registration_set.first()
         self.assertEqual(field1.get_value_for(registration), True)
@@ -411,24 +301,33 @@ class RegistrationTest(TestCase):
             name_nl="test text",
             required=False)
 
-        response = self.client.post('/events/1/registration/register/',
-                                    {'info_field_1': True,
-                                     'info_field_2': 42,
-                                     'info_field_3': 'text',
+        response = self.client.post('/api/v1/events/1/registrations/',
+                                    {'fields[info_field_1]': False,
+                                     'fields[info_field_2': 42,
+                                     'fields[info_field_3]': 'text',
                                      'csrf': 'random'},
                                     follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['member'], self.member.pk)
 
-        response = self.client.post('/events/1/registration/',
-                                    {'info_field_1': False,
-                                     'info_field_2': 1337,
-                                     'info_field_3': 'no text',
-                                     'csrf': 'random'},
-                                    follow=True)
+        registration = Registration.objects.get(event=self.event,
+                                                member=self.member)
+        self.assertEqual(field1.get_value_for(registration), None)
+        self.assertEqual(field2.get_value_for(registration), None)
+        self.assertEqual(field3.get_value_for(registration), None)
+
+        response = self.client.put(
+            '/api/v1/registrations/{}/'.format(registration.pk), {
+                'fields[info_field_1]': True,
+                'fields[info_field_2]': 1337,
+                'fields[info_field_3]': 'no text',
+                'csrf': 'random'
+            }, follow=True)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['member'], self.member.pk)
 
         self.assertEqual(self.event.participants.count(), 1)
         registration = self.event.registration_set.first()
-        self.assertEqual(field1.get_value_for(registration), False)
+        self.assertEqual(field1.get_value_for(registration), True)
         self.assertEqual(field2.get_value_for(registration), 1337)
         self.assertEqual(field3.get_value_for(registration), 'no text')

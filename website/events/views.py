@@ -1,402 +1,132 @@
-import csv
-import json
-
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required, permission_required
-from django.core.exceptions import PermissionDenied
-from django.core.mail import EmailMessage
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.template.loader import get_template
-from django.utils import timezone, translation
-from django.utils.text import slugify
-from django.utils.translation import pgettext_lazy
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.http import require_http_methods
+from django.views import View
+from django.views.generic import DetailView, TemplateView, FormView
 
-from thaliawebsite.templatetags import baseurl
+from events import services
+from events.exceptions import RegistrationError
 from .forms import FieldsForm
-from .models import Event, Registration, RegistrationInformationField
+from .models import Event, Registration
 
 
-@staff_member_required
-@permission_required('events.change_event')
-def admin_details(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
+class EventIndex(TemplateView):
+    template_name = 'events/index.html'
 
-    if (not request.user.is_superuser and
-            not request.user.has_perm('events.override_organiser')):
-        committees = request.user.member.get_committees().filter(
-            pk=event.organiser.pk).count()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-        if committees == 0:
-            raise PermissionDenied
+        upcoming_activity = Event.objects.filter(
+            published=True,
+            end__gte=timezone.now()
+        ).order_by('end').first()
+        context['upcoming_activity'] = upcoming_activity
 
-    n = event.max_participants
-    registrations = list(event.registration_set.filter(date_cancelled=None))
-    cancellations = event.registration_set.exclude(date_cancelled=None)
-    return render(request, 'events/admin/details.html', {
-        'event': event,
-        'registrations': registrations[:n],
-        'waiting': registrations[n:] if n else [],
-        'cancellations': cancellations,
-    })
+        return context
 
 
-@staff_member_required
-@permission_required('events.change_event')
-@require_http_methods(["POST"])
-def admin_change_registration(request, event_id, action=None):
-    data = {
-        'success': True
-    }
+class EventDetail(DetailView):
+    model = Event
+    queryset = Event.objects.filter(published=True)
+    template_name = 'events/event.html'
+    context_object_name = 'event'
 
-    try:
-        id = request.POST.get("id", -1)
-        obj = Registration.objects.get(event=event_id, pk=id)
-        if action == 'present':
-            checked = json.loads(request.POST.get("checked"))
-            if checked is not None:
-                obj.present = checked
-                obj.save()
-        elif action == 'payment':
-            value = request.POST.get("value")
-            if value is not None:
-                obj.payment = value
-                obj.save()
-    except Registration.DoesNotExist:
-        data['success'] = False
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
 
-    return JsonResponse(data)
+        event = context['event']
+        if event.max_participants:
+            perc = 100.0 * len(event.participants) / event.max_participants
+            context['registration_percentage'] = perc
 
-
-@staff_member_required
-@permission_required('events.change_event')
-def export(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    extra_fields = event.registrationinformationfield_set.all()
-    registrations = event.registration_set.all()
-
-    header_fields = (
-        ['name', 'email', 'paid', 'present',
-         'status', 'phone number'] +
-        [field.name for field in extra_fields] +
-        ['date', 'date cancelled'])
-
-    rows = []
-    if event.price == 0:
-        header_fields.remove('paid')
-    for i, registration in enumerate(registrations):
-        if registration.member:
-            name = registration.member.get_full_name()
-        else:
-            name = registration.name
-        status = pgettext_lazy('registration status', 'registered')
-        cancelled = None
-        if registration.date_cancelled:
-
-            if registration.is_late_cancellation():
-                status = pgettext_lazy('registration status',
-                                       'late cancellation')
-            else:
-                status = pgettext_lazy('registration status', 'cancelled')
-            cancelled = timezone.localtime(registration.date_cancelled)
-
-        elif registration.queue_position():
-            status = pgettext_lazy('registration status', 'waiting')
-        data = {
-            'name': name,
-            'date': timezone.localtime(registration.date
-                                       ).strftime("%Y-%m-%d %H:%m"),
-            'present': _('Yes') if registration.present else '',
-            'phone number': (registration.member.phone_number
-                             if registration.member
-                             else ''),
-            'email': (registration.member.user.email
-                      if registration.member
-                      else ''),
-            'status': status,
-            'date cancelled': cancelled,
-        }
-        if event.price > 0:
-            if registration.payment == 'cash_payment':
-                data['paid'] = _('Cash')
-            elif registration.payment == 'pin_payment':
-                data['paid'] = _('Pin')
-            else:
-                data['paid'] = _('No')
-
-        data.update({field['field'].name: field['value'] for field in
-                     registration.registration_information()})
-        rows.append(data)
-
-    response = HttpResponse(content_type='text/csv')
-    writer = csv.DictWriter(response, header_fields)
-    writer.writeheader()
-
-    rows = sorted(rows,
-                  key=lambda row:
-                  (row['status'] == pgettext_lazy('registration status',
-                                                  'late cancellation'),
-                   row['date']),
-                  reverse=True,
-                  )
-
-    for row in rows:
-        writer.writerow(row)
-
-    response['Content-Disposition'] = (
-        'attachment; filename="{}.csv"'.format(slugify(event.title)))
-    return response
-
-
-@staff_member_required
-@permission_required('events.change_event')
-def export_email(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    registrations = event.registration_set.filter(
-        date_cancelled=None).prefetch_related('member__user')
-    registrations = registrations[:event.max_participants]
-    addresses = [r.member.user.email for r in registrations if r.member]
-    no_addresses = [r.name for r in registrations if not r.member]
-    return render(request, 'events/admin/email_export.html',
-                  {'event': event, 'addresses': addresses,
-                   'no_addresses': no_addresses})
-
-
-def index(request):
-    upcoming_activity = Event.objects.filter(
-        published=True,
-        end__gte=timezone.now()
-    ).order_by('end').first()
-
-    return render(request, 'events/index.html', {
-        'upcoming_activity': upcoming_activity
-    })
-
-
-def event(request, event_id):
-    event = get_object_or_404(
-        Event.objects.filter(published=True),
-        pk=event_id
-    )
-    registrations = event.registration_set.filter(
-        date_cancelled=None)[:event.max_participants]
-
-    context = {
-        'event': event,
-        'registrations': registrations,
-        'user': request.user,
-    }
-
-    if event.max_participants:
-        perc = 100.0 * len(registrations) / event.max_participants
-        context['registration_percentage'] = perc
-
-    registration = None
-    try:
-        registration = Registration.objects.get(
-            event=event,
-            member=request.user.member
-        )
-        context['registration'] = registration
-    except (Registration.DoesNotExist, AttributeError):
-        pass
-
-    context['user_registration_allowed'] = (
-        request.user.is_authenticated and request.user.member is not None and
-        request.user.member.current_membership is not None and
-        request.user.member.can_attend_events)
-    context['can_create_event_registration'] = (
-        (registration is None or registration.date_cancelled is not None) and
-        (event.status == event.REGISTRATION_OPEN or
-         event.status == event.REGISTRATION_OPEN_NO_CANCEL))
-    context['can_cancel_event_registration'] = (
-        registration is not None and registration.date_cancelled is None and
-        event.status != event.REGISTRATION_NOT_NEEDED and
-        event.status != event.REGISTRATION_NOT_YET_OPEN)
-    context['can_update_event_registration'] = (
-        event.status == event.REGISTRATION_OPEN or
-        event.status == event.REGISTRATION_OPEN_NO_CANCEL)
-
-    return render(request, 'events/event.html', context)
-
-
-def _send_queue_mail(request, event):
-    if (event.max_participants is not None and
-        Registration.objects
-                    .filter(event=event, date_cancelled=None)
-                    .count() > event.max_participants):
-        # Prepare email to send to the first person on the waiting
-        # list
-        first_waiting = (Registration.objects
-                         .filter(event=event, date_cancelled=None)
-                         .order_by('date')[event.max_participants])
-        first_waiting_member = first_waiting.member
-
-        if not first_waiting_member:
-            return
-
-        text_template = get_template('events/email.txt')
-
-        base_url = baseurl.baseurl({'request': request})
-
-        with translation.override(first_waiting_member.language):
-            subject = _("[THALIA] Notification about your "
-                        "registration for '{}'").format(
-                event.title)
-            text_message = text_template.render({
-                'event': event,
-                'reg': first_waiting,
-                'base_url': base_url,
-                'member': first_waiting_member
-            })
-
-            EmailMessage(
-                subject,
-                text_message,
-                to=[first_waiting_member.user.email]
-            ).send()
-
-
-def _show_registration_fields(request, event, reg, action):
-    form = FieldsForm(registration=reg)
-    # check length, since request is always post, length > 1 means that
-    # there are more posted fields than just the CSRF token
-    if request.method == 'POST' and len(request.POST) > 1:
-        form = FieldsForm(request.POST, registration=reg)
-        if form.is_valid():
-            reg.save()
-            form_field_values = form.field_values()
-            for field in form_field_values:
-                if (field['field'].type ==
-                        RegistrationInformationField.INTEGER_FIELD and
-                        field['value'] is None):
-                    field['value'] = 0
-                field['field'].set_value_for(reg,
-                                             field['value'])
-
-            return redirect(event)
-
-    return render(request, 'events/event_fields.html',
-                  {'event': event, 'form': form, 'action': action})
-
-
-def _registration_register(request, event, reg):
-    if reg is None:
-        reg = Registration()
-        reg.event = event
-        reg.member = request.user.member
-        messages.success(request, _("Registration successful."))
-        reg.save()
-        if event.has_fields():
-            return _show_registration_fields(request, event, reg, 'register')
-    elif reg.date_cancelled is not None:
-        if reg.is_late_cancellation():
-            messages.error(request, _("You cannot re-register anymore since "
-                                      "you've cancelled after the deadline."))
-        else:
-            reg.date = timezone.now()
-            reg.date_cancelled = None
-            messages.success(request, _("Registration successful."))
-            reg.save()
-            if event.has_fields():
-                return _show_registration_fields(request, event, reg,
-                                                 'register')
-    elif event.has_fields():
-        return _show_registration_fields(request, event, reg, 'register')
-    elif not reg.member.can_attend_events:
-        messages.error(request, _("You may not register"))
-    else:
-        storage = messages.get_messages(request)
-        was_success = False
-        for message in storage:
-            was_success = message.message == _("Registration successful.")
-        storage.used = False
-        if not was_success:
-            messages.error(request, _("You were already registered."))
-
-    return redirect(event)
-
-
-def _registration_update(request, event, reg):
-    if not event.has_fields():
-        return redirect(event)
-    if reg is None:
-        messages.error(request, _("You are not registered for this event."))
-        return redirect(event)
-
-    return _show_registration_fields(request, event, reg, 'update')
-
-
-def _registration_cancel(request, event, reg):
-    if reg is None or reg.date_cancelled is not None:
-        messages.error(request, _("You are not registered for this event."))
-    else:
-        if reg.queue_position() == 0:
-            _send_queue_mail(request, event)
-
-        # Note that this doesn't remove the values for the
-        # information fields that the user entered upon registering.
-        # But this is regarded as a feature, not a bug. Especially
-        # since the values will still appear in the backend.
-        reg.date_cancelled = timezone.now()
-        reg.save()
-
-        messages.success(request, _("Registration successfully cancelled."))
-
-    return redirect(event)
-
-
-@login_required
-def registration(request, event_id, action=None):
-    event = get_object_or_404(
-        Event.objects.filter(published=True),
-        pk=event_id
-    )
-
-    if (event.status != Event.REGISTRATION_NOT_NEEDED and
-            request.user.member.current_membership is not None and
-            request.user.member.can_attend_events):
         try:
-            reg = Registration.objects.get(
+            context['registration'] = Registration.objects.get(
                 event=event,
-                member=request.user.member
+                member=self.request.user.member
             )
-        except Registration.DoesNotExist:
-            reg = None
+        except (Registration.DoesNotExist, AttributeError):
+            pass
 
-        if request.method.lower() == 'post':
-            if action == 'register' and (
-                event.status == Event.REGISTRATION_OPEN or
-                event.status == Event.REGISTRATION_OPEN_NO_CANCEL
-            ):
-                return _registration_register(request, event, reg)
-            elif (action == 'update' and
-                  (event.status == Event.REGISTRATION_OPEN or
-                   event.status == Event.REGISTRATION_OPEN_NO_CANCEL)):
-                return _registration_update(request, event, reg)
-            elif action == 'cancel':
-                return _registration_cancel(request, event, reg)
+        context['permissions'] = services.event_permissions(self.request.user,
+                                                            event)
 
-    return redirect(event)
+        return context
 
 
-@staff_member_required
-@permission_required('events.change_event')
-def all_present(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
+@method_decorator(login_required, name='dispatch')
+class EventRegisterView(View):
+    def get(self, request, *args, **kwargs):
+        return redirect('events:event', pk=kwargs['pk'])
 
-    if event.max_participants is None:
-        registrations_query = event.registration_set.filter(
-            date_cancelled=None)
-    else:
-        registrations_query = (event.registration_set
-                               .filter(date_cancelled=None)
-                               .order_by('date')[:event.max_participants])
+    def post(self, request, *args, **kwargs):
+        event = get_object_or_404(Event, pk=kwargs['pk'])
+        try:
+            services.create_registration(request.user, event)
 
-    event.registration_set.filter(pk__in=registrations_query).update(
-        present=True, payment='cash_payment')
+            if event.has_fields():
+                return redirect('events:registration', event.pk)
+            else:
+                messages.success(request, _("Registration successful."))
+        except RegistrationError as e:
+            messages.error(request, e)
 
-    return HttpResponseRedirect('/events/admin/{}'.format(event_id))
+        return redirect(event)
+
+
+@method_decorator(login_required, name='dispatch')
+class EventCancelView(View):
+    def get(self, request, *args, **kwargs):
+        return redirect('events:event', pk=kwargs['pk'])
+
+    def post(self, request, *args, **kwargs):
+        event = get_object_or_404(Event, pk=kwargs['pk'])
+        try:
+            services.cancel_registration(request, request.user, event)
+            messages.success(request,
+                             _("Registration successfully cancelled."))
+        except RegistrationError as e:
+            messages.error(request, e)
+
+        return redirect(event)
+
+
+@method_decorator(login_required, name='dispatch')
+class RegistrationView(FormView):
+    form_class = FieldsForm
+    template_name = 'events/registration.html'
+    event = None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['event'] = self.event
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["fields"] = services.registration_fields(self.request.user,
+                                                        self.event)
+        return kwargs
+
+    def form_valid(self, form):
+        values = form.field_values()
+        try:
+            services.update_registration(self.request.user, self.event, values)
+            messages.success(self.request,
+                             _("Registration successfully saved."))
+            return redirect(self.event)
+        except RegistrationError as e:
+            messages.error(self.request, e)
+            return self.render_to_response(self.get_context_data(form=form))
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, pk=self.kwargs['pk'])
+        try:
+            if self.event.has_fields():
+                return super().dispatch(request, *args, **kwargs)
+        except RegistrationError:
+            pass
+        return redirect(self.event)

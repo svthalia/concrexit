@@ -10,7 +10,6 @@
 
 {% block body %}
     <h1>{{ event.title }}</h1>
-    <p class="tcenter">{{ event.description|bleach }}</p>
 
     {% if messages %}
         {% for message in messages %}
@@ -20,6 +19,8 @@
         </div>
         {% endfor %}
     {% endif %}
+
+    <p class="tcenter">{{ event.description|bleach }}</p>
 
     <div class="clearfix row">
         <div class="span6">
@@ -55,7 +56,7 @@
                     <tr>
                         <th>{% trans "number of registrations"|capfirst %}</th>
                         <td>
-                            {% blocktrans count counter=registrations|length trimmed %}
+                            {% blocktrans count counter=event.participants|length trimmed %}
                                 {{ counter }} registration
                             {% plural %}
                                 {{ counter }} registrations
@@ -92,35 +93,31 @@
                 <tr>
                     <td></td>
                     <td>
-                        {% if user_registration_allowed %}
-                            {% if can_update_event_registration %}
-                                {% if registration is not None and registration.date_cancelled is None and event.has_fields %}
-                                <form action="{% url 'events:registration' event.id 'update' %}" method="post">{% csrf_token %}
-                                    <input type="submit" class="btn btn-style1" value="{% trans "Update registration" %}" />
-                                </form>
-                                {% endif %}
-                            {% endif %}
-                            {% if can_create_event_registration %}
-                                <form action="{% url 'events:registration' event.id 'register' %}" method="post">{% csrf_token %}
-                                    {% if event.reached_participants_limit %}
-                                        <input type="submit" class="btn btn-style1" value="{% trans "Put me on the waiting list" %}" />
-                                    {% else %}
+                        {% if permissions.update_registration %}
+                            <form action="{% url 'events:registration' event.id %}" method="get">
+                                <input type="submit" class="btn btn-style1" value="{% trans "Update registration" %}" />
+                            </form>
+                        {% endif %}
+                        {% if permissions.create_registration %}
+                            <form action="{% url 'events:register' event.id %}" method="post">{% csrf_token %}
+                                {% if event.reached_participants_limit %}
+                                    <input type="submit" class="btn btn-style1" value="{% trans "Put me on the waiting list" %}" />
+                                {% else %}
 
-                                        <input type="submit" class="btn btn-style1" value="{% trans "Register" %}" />
-                                    {% endif %}
-                                </form>
-                            {% elif can_cancel_event_registration %}
-                                {# Special message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
-                                <form action="{% url 'events:registration' event.id 'cancel' %}" method="post">{% csrf_token %}
-                                    {% if registration.would_cancel_after_deadline %}
-                                        <input type="submit" class="btn btn-style1" value="{% trans "Cancel registration" %}" onclick="return confirm('{% blocktrans with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');" />
-                                    {% else %}
-                                        <input type="submit" class="btn btn-style1" value="{% trans "Cancel registration" %}" />
-                                    {% endif %}
-                                </form>
-                            {% endif %}
+                                    <input type="submit" class="btn btn-style1" value="{% trans "Register" %}" />
+                                {% endif %}
+                            </form>
+                        {% elif permissions.cancel_registration %}
+                            {# Special message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
+                            <form action="{% url 'events:cancel' event.id %}" method="post">{% csrf_token %}
+                                {% if registration.would_cancel_after_deadline %}
+                                    <input type="submit" class="btn btn-style1" value="{% trans "Cancel registration" %}" onclick="return confirm('{% blocktrans with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');" />
+                                {% else %}
+                                    <input type="submit" class="btn btn-style1" value="{% trans "Cancel registration" %}" />
+                                {% endif %}
+                            </form>
                         {% elif request.user.is_authenticated is False %}
-                        <a class="btn btn-style1" href="{% url 'login' %}?next={{ request.path }}">{% trans "Login" %}</a>
+                            <a class="btn btn-style1" href="{% url 'login' %}?next={{ request.path }}">{% trans "Login" %}</a>
                         {% endif %}
 					</td>
                 </tr>
@@ -132,21 +129,19 @@
                         {% if not request.user.is_authenticated %}
                             {% trans "You have to log in before you can register for this event." %}
                         {% else %}
-                            {% if event.status == event.REGISTRATION_NOT_YET_OPEN %}
-                                {% blocktrans with datetime=event.registration_start %}Registration will open {{ datetime }}{% endblocktrans %}
-                            {% elif event.status == event.REGISTRATION_CLOSED or event.status == event.REGISTRATION_CLOSED_CANCEL_ONLY %}
-                                {% blocktrans %}Registration is not possible anymore.{% endblocktrans %}
-                            {% elif status == event.REGISTRATION_NOT_NEEDED %}
+                            {% if not event.registration_required %}
                                 {% if event.no_registration_message %}
                                     {{ event.no_registration_message }}
                                 {% else %}
                                     {% trans "No registration required" %}
                                 {% endif %}
+                            {% elif not event.registration_started %}
+                                {% blocktrans with datetime=event.registration_start %}Registration will open {{ datetime }}{% endblocktrans %}
+                            {% elif not event.registration_allowed %}
+                                {% blocktrans %}Registration is not possible anymore.{% endblocktrans %}
                             {% endif %}
-                            {% if event.status == event.REGISTRATION_OPEN_NO_CANCEL or event.status == event.REGISTRATION_CLOSED  %}
-                                {% if registration.date_cancelled is None and event.fine > 0 and registration.queue_position == 0 %}
-                                    {% blocktrans with costs=event.fine %}Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}. Also note that you will be unable to re-register.{% endblocktrans %}
-                                {% endif %}
+                            {% if event.after_cancel_deadline %}
+                                {% blocktrans with costs=event.fine %}Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}. Also note that you will be unable to re-register.{% endblocktrans %}
                             {% endif %}
                         {% endif %}
                         </em>
@@ -176,11 +171,11 @@
     </div>
 </div>
 
-    {% if user.is_authenticated and registrations|length > 0 %}
+    {% if user.is_authenticated and event.participants|length > 0 %}
         <div class="member-directory">
             <h1 class="midhead">{% trans "Registrations" %}</h1>
             <ul class="member-directory row">
-                {% for registration in registrations %}
+                {% for registration in event.participants %}
                     <li class="post member-item span3 has-overlay">
                     {% if registration.is_external %}
                         <a href="#">

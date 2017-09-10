@@ -31,7 +31,7 @@
                 <td>{{ registration.name }}</td>
                 {% endif %}
                 <td>{{ registration.date }}</td>
-                {% for field in registration.registration_information %}
+                {% for field in registration.information_fields %}
                     {% if not field.value %}
                     <td></td>
                     {% elif field.field.type == 'checkbox' %}

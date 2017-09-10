@@ -43,7 +43,7 @@ class EventFeed(ICalFeed):
         return item.end
 
     def item_link(self, item):
-        return reverse('events:event', kwargs={'event_id': item.id})
+        return reverse('events:event', kwargs={'pk': item.id})
 
     def item_location(self, item):
         return "{} - {}".format(item.location, item.map_location)

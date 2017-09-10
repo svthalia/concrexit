@@ -35,17 +35,17 @@
     <div class="module">
         {% with event.registrationinformationfield_set.all as fields %}
         <h2>{% trans "registrations"|capfirst %}</h2>
-        {% include 'events/admin/registrations_table.html' with registrations=registrations %}
+        {% include 'events/admin/registrations_table.html' with registrations=event.registrations %}
         <br>
         {% if waiting %}
         <h2>{% trans "waiting"|capfirst %}</h2>
         {% trans "queued" as queued %}
-        {% include 'events/admin/registrations_table.html' with registrations=waiting verb=queued addlink=False %}
+        {% include 'events/admin/registrations_table.html' with registrations=event.queue verb=queued addlink=False %}
         <br>
         {% endif %}
         <h2>{% trans "cancellations"|capfirst %}</h2>
         {% trans "cancelled" as cancelled %}
-        {% include 'events/admin/registrations_table.html' with registrations=cancellations verb=cancelled addlink=False %}
+        {% include 'events/admin/registrations_table.html' with registrations=event.cancellations verb=cancelled addlink=False %}
         {% endwith %}
         <br>
         <a href="{% url 'events:export' event_id=event.pk %}" class="button">{% trans "Export registrations" %}</a>
