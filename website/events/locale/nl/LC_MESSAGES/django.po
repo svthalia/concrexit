@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-10 14:34+0200\n"
-"PO-Revision-Date: 2017-09-10 14:34+0200\n"
+"POT-Creation-Date: 2017-09-11 09:23+0200\n"
+"PO-Revision-Date: 2017-09-11 09:24+0200\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -275,19 +275,25 @@ msgid "last changed"
 msgstr "laatst aangepast"
 
 #: templates/events/admin/details.html:4 templates/events/admin/details.html:5
+#: templates/events/admin/email_export.html:4
+#: templates/events/admin/email_export.html:5
 msgid "Thalia site admin"
 msgstr "Thalia site admin"
 
 #: templates/events/admin/details.html:20
+#: templates/events/admin/email_export.html:20
 msgid "Thalia administration"
 msgstr "Thalia administratie"
 
 #: templates/events/admin/details.html:25
+#: templates/events/admin/email_export.html:25
 msgid "home"
 msgstr "home"
 
 #: templates/events/admin/details.html:26
 #: templates/events/admin/details.html:27
+#: templates/events/admin/email_export.html:26
+#: templates/events/admin/email_export.html:27
 msgid "events"
 msgstr "evenementen"
 
@@ -369,16 +375,20 @@ msgid_plural "%(counter)s registrations"
 msgstr[0] "%(counter)s aanmelding"
 msgstr[1] "%(counter)s aanmeldingen"
 
-#: templates/events/admin/email_export.txt:1
-msgid "Copy-pasteable email addresses of attendees:"
-msgstr "Kopieerbare e-mailadressen van aanwezigen:"
+#: templates/events/admin/email_export.html:29
+msgid "Export email addresses of registrants"
+msgstr "Exporteer e-mailadressen van geregistreerden"
 
-#: templates/events/admin/email_export.txt:5
+#: templates/events/admin/email_export.html:33
+msgid "Copy-pasteable email addresses of registrants:"
+msgstr "Kopieerbare e-mailadressen van geregistreerden:"
+
+#: templates/events/admin/email_export.html:41
 msgid ""
-"Some attendees were registered manually, and are thus not included in the "
-"list above:"
+"Some registrants were added manually, and are thus not included in the list "
+"above:"
 msgstr ""
-"Sommige aanwezigen zijn met de hand geregistreerd, en komen dus niet in de "
+"Sommige geregistreerden zijn met de hand toegevoegd, en komen dus niet in de "
 "bovenstaande lijst voor:"
 
 #: templates/events/admin/registrations_table.html:12

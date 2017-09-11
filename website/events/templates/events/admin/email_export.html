@@ -26,11 +26,11 @@
     &rsaquo; <a href="{% url 'admin:app_list' app_label='events' %}">{% trans 'events'|capfirst %}</a>
     &rsaquo; <a href="/admin/events/event/">{% trans 'events'|capfirst %}</a>
     &rsaquo; <a href="{%  url 'events:admin-details' event.pk %}">{{ event.title }}</a>
-    &rsaquo; {% trans "Export email addresses of attendees" %}
+    &rsaquo; {% trans "Export email addresses of registrants" %}
 </div>
 {% endblock %}
 
-{% block content_title %}<h1>{% trans "Copy-pasteable email addresses of attendees:" %}</h1>{% endblock %}
+{% block content_title %}<h1>{% trans "Copy-pasteable email addresses of registrants:" %}</h1>{% endblock %}
 {% block content %}
 <div id="content-main">
     <p>
@@ -38,7 +38,7 @@
     </p>
     {% if no_addresses %}
     <p>
-        {% trans "Some attendees were registered manually, and are thus not included in the list above:" %}
+        {% trans "Some registrants were added manually, and are thus not included in the list above:" %}
     </p>
     <p>
         {{ no_addresses | join:'<br />' }}
