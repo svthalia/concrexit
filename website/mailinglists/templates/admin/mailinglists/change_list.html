@@ -1,0 +1,71 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static compress %}
+
+{% block search %}
+    <div class="auto-lists-info">
+        <h2>{% trans "Automatically generated mailing lists" %}</h2>
+        <div class="results">
+            <table id="result_list" style="width:100%">
+                <thead>
+                <tr>
+                    <th>
+                       <div class="text"></div>
+                       <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text"><span>{% trans "Name" %}</span></div>
+                       <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text"><span>{% trans "Information" %}</span></div>
+                       <div class="clear"></div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td>leden, members</td>
+                        <td>{% trans "Archived moderated list that can be used to send mail to all members. Supports language code suffix." %}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>begunstigers, supporters</td>
+                        <td>{% trans "Archived moderated list that can be used to send mail to all supporters. Supports language code suffix." %}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>ereleden, honorary</td>
+                        <td>{% trans "Archived moderated list that can be used to send mail to all honorary members. Supports language code suffix." %}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>activemembers</td>
+                        <td>{% trans "Archived moderated list that can be used to send mail to all active members. These are all users that are currently a member of a committee." %}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>commissievoorzitters, committeechairs</td>
+                        <td>{% trans "Archived list that can be used to send mail to all committee chairs." %}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>mentors</td>
+                        <td>{% trans "Archived list that can be used to send mail to all orientation mentors. These members should have a mentorship with the current calendar year. So members with a mentorship in the year 2017 can be mailed from January 2017 until December 2017." %}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>optin</td>
+                        <td>{% trans "Archived moderated list that can be used to send mail to all members that have opted-in to receive these (mostly recruitment) emails." %}</td>
+                    </tr>
+            </tbody>
+            </table>
+        </div>
+        <p class="paginator">
+            {% trans "Support for the language code suffix means that adding <code>-en</code> of <code>-nl</code> to the name will only send this email to users with that specific preferred language on their profiles." %}
+        </p>
+        <div class="clear"></div>
+    </div>
+    <br />
+    {{ block.super }}
+{% endblock %}
