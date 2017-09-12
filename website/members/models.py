@@ -441,6 +441,7 @@ def gen_stats_member_type(member_types):
         total[member_type] = (Member
                               .active_members
                               .filter(user__membership__type=member_type)
+                              .distinct()
                               .count())
     return total
 
@@ -461,6 +462,7 @@ def gen_stats_year(member_types):
                                 .active_members
                                 .filter(starting_year=current_year - i)
                                 .filter(user__membership__type=member_type)
+                                .distinct()
                                 .count())
         stats_year.append(new)
 
@@ -471,6 +473,7 @@ def gen_stats_year(member_types):
                             .active_members
                             .filter(starting_year__lt=current_year - 4)
                             .filter(user__membership__type=member_type)
+                            .distinct()
                             .count())
     stats_year.append(new)
 
