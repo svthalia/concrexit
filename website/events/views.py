@@ -389,6 +389,6 @@ def all_present(request, event_id):
                                .order_by('date')[:event.max_participants])
 
     event.registration_set.filter(pk__in=registrations_query).update(
-        present=True, paid=True)
+        present=True, payment='cash_payment')
 
     return HttpResponseRedirect('/events/admin/{}'.format(event_id))
