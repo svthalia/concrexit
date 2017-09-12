@@ -24,7 +24,8 @@ class ActiveMemberManager(models.Manager):
         return (super().get_queryset()
                 .exclude(user__membership=None)
                 .filter(Q(user__membership__until__isnull=True) |
-                        Q(user__membership__until__gt=timezone.now().date())))
+                        Q(user__membership__until__gt=timezone.now().date()))
+                .distinct())
 
     def with_birthdays_in_range(self, from_date, to_date):
         queryset = self.get_queryset().filter(birthday__lte=to_date)
@@ -440,6 +441,7 @@ def gen_stats_member_type(member_types):
         total[member_type] = (Member
                               .active_members
                               .filter(user__membership__type=member_type)
+                              .distinct()
                               .count())
     return total
 
@@ -460,6 +462,7 @@ def gen_stats_year(member_types):
                                 .active_members
                                 .filter(starting_year=current_year - i)
                                 .filter(user__membership__type=member_type)
+                                .distinct()
                                 .count())
         stats_year.append(new)
 
@@ -470,6 +473,7 @@ def gen_stats_year(member_types):
                             .active_members
                             .filter(starting_year__lt=current_year - 4)
                             .filter(user__membership__type=member_type)
+                            .distinct()
                             .count())
     stats_year.append(new)
 
