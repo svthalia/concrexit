@@ -232,9 +232,6 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # Newsletter settings
 NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
 
-# Partners notification email
-PARTNER_EMAIL = "samenwerking@thalia.nu"
-
 # Website FROM address
 WEBSITE_FROM_ADDRESS = 'info@thalia.nu'
 
@@ -257,3 +254,20 @@ CORS_ALLOW_METHODS = ('GET', 'POST')
 
 # TinyMCE config
 TINYMCE_JS_URL = '/static/tinymce/js/tinymce/tinymce.min.js'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'selector': 'textarea',
+    'theme': 'modern',
+    'plugins': 'link image paste code contextmenu',
+    'toolbar1': 'bold italic underline strikethrough | link unlink | '
+                'bullist numlist | undo redo | code',
+    'contextmenu': 'bold italic underline strikethrough | image',
+    'menubar': False,
+    'inline': False,
+    'statusbar': True,
+    'width': 'auto',
+    'height': 240,
+    'paste_as_text': True,
+    'relative_urls': False,
+    'remove_script_host': False,
+}
