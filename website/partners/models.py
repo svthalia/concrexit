@@ -116,7 +116,7 @@ class Vacancy(models.Model):
     categories = models.ManyToManyField(VacancyCategory, blank=True)
 
     expiration_date = models.DateField(null=True, blank=True)
-    expiration_mail_sent = models.BooleanField()
+    expiration_mail_sent = models.BooleanField(default=False)
 
     remarks = HTMLField(blank=True, help_text=_('not shown on the page'))
 
