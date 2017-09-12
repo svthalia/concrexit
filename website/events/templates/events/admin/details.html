@@ -49,6 +49,7 @@
         {% endwith %}
         <br>
         <a href="{% url 'events:export' event_id=event.pk %}" class="button">{% trans "Export registrations" %}</a>
+        <a href="{% url 'events:export_email' event_id=event.pk %}" class="button">{% trans "Export email addresses of attendees" %}</a>
         <a href="{% url 'events:all_present' event_id=event.pk %}" class="button">{% trans "Set all registered to paid and present" %}</a>
     </div>
 </div>
