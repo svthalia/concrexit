@@ -116,7 +116,8 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         return unescape(strip_tags(instance.description))
 
     def _num_participants(self, instance):
-        if instance.num_participants() > instance.max_participants:
+        if (instance.max_participants and
+                instance.num_participants() > instance.max_participants):
             return instance.max_participants
         return instance.num_participants()
 
