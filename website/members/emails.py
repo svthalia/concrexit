@@ -12,7 +12,8 @@ from thaliawebsite.settings import settings
 
 def send_membership_announcement(dry_run=False):
     members = (models.Member.active_members
-               .filter(user__membership__until__isnull=True))
+               .filter(user__membership__until__isnull=True)
+               .distinct())
 
     with mail.get_connection() as connection:
         for member in members:
@@ -77,7 +78,8 @@ def send_information_request(dry_run=False):
 def send_expiration_announcement(dry_run=False):
     expiry_date = datetime.now() + timedelta(days=31)
     members = (models.Member.active_members
-               .filter(user__membership__until__lte=expiry_date))
+               .filter(user__membership__until__lte=expiry_date)
+               .distinct())
 
     with mail.get_connection() as connection:
         for member in members:
