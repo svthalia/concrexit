@@ -24,7 +24,8 @@ class ActiveMemberManager(models.Manager):
         return (super().get_queryset()
                 .exclude(user__membership=None)
                 .filter(Q(user__membership__until__isnull=True) |
-                        Q(user__membership__until__gt=timezone.now().date())))
+                        Q(user__membership__until__gt=timezone.now().date()))
+                .distinct())
 
     def with_birthdays_in_range(self, from_date, to_date):
         queryset = self.get_queryset().filter(birthday__lte=to_date)
