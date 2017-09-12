@@ -230,6 +230,9 @@ def _send_queue_mail(request, event):
                          .order_by('date')[event.max_participants])
         first_waiting_member = first_waiting.member
 
+        if not first_waiting_member:
+            return
+
         text_template = get_template('events/email.txt')
 
         base_url = baseurl.baseurl({'request': request})
