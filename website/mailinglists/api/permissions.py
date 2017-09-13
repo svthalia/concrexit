@@ -15,5 +15,5 @@ class MailingListPermission(permissions.BasePermission):
         if 'secret' in request.GET:
             apihash = hashlib.sha1(request.GET['secret']
                                    .encode('utf-8')).hexdigest()
-            return apihash == '356a192b7913b04c54574d18c28d46e6395428ab'
+            return apihash == 'cb004452d9c80e295bebfc778871b3b082d70ad8'
         return False
