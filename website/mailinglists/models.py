@@ -63,8 +63,8 @@ class MailingList(models.Model):
                     committeemembership__until__lt=timezone.now().date()):
                 yield member.user.email
 
-        for address in self.addresses.all():
-            yield address
+        for verbatimaddress in self.addresses.all():
+            yield verbatimaddress.address
 
     def clean(self):
         super().clean()
