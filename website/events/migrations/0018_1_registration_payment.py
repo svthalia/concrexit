@@ -6,9 +6,8 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('events', '0017_auto_20170524_2046'),
+        ('events', '0018_0_registration_payment'),
     ]
 
     def forwards_func(apps, schema_editor):
@@ -28,14 +27,5 @@ class Migration(migrations.Migration):
                 reg.save()
 
     operations = [
-        migrations.AddField(
-            model_name='registration',
-            name='payment',
-            field=models.CharField(choices=[('no_payment', 'No payment'), ('cash_payment', 'Paid with cash'), ('card_payment', 'Paid with card')], default='no_payment', max_length=20, verbose_name='payment'),
-        ),
         migrations.RunPython(forwards_func, reverse_func),
-        migrations.RemoveField(
-            model_name='registration',
-            name='paid'
-        )
     ]
