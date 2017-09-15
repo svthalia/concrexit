@@ -163,11 +163,12 @@ def iban_export(request):
     members = Member.active_members.filter(direct_debit_authorized=True)
 
     for member in members:
-        rows.append({
-            'name': member.get_full_name(),
-            'username': member.user.username,
-            'iban': member.bank_account
-        })
+        if (member.current_membership.type != 'honorary'):
+            rows.append({
+                'name': member.get_full_name(),
+                'username': member.user.username,
+                'iban': member.bank_account
+            })
 
     response = HttpResponse(content_type='text/csv')
     writer = csv.DictWriter(response, header_fields)
