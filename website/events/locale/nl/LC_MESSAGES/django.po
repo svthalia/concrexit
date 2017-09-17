@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-11 09:23+0200\n"
-"PO-Revision-Date: 2017-09-11 09:24+0200\n"
-"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"POT-Creation-Date: 2017-09-17 15:50+0200\n"
+"PO-Revision-Date: 2017-09-17 15:51+0200\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -438,7 +438,8 @@ msgid ""
 "However someone just unregistered and we would like to let you know that "
 "you'll be able to attend now!\n"
 "\n"
-"You can find more information about the event on the website: %(event_url)s\n"
+"You can find more information about the event on the website: %(baseurl)s"
+"%(event_url)s\n"
 "\n"
 "We're assuming that you'll be there, but you're still able to unregister "
 "until %(cancel_deadline)s.\n"
@@ -452,7 +453,7 @@ msgstr ""
 "'%(event_title)s’. Toen kwam je op de wachtlijst terecht, maar inmiddels is "
 "er plaats!\n"
 "\n"
-"Je kunt het evenement terugvinden op de website: %(event_url)s\n"
+"Je kunt het evenement terugvinden op de website: %(baseurl)s%(event_url)s\n"
 "\n"
 "We gaan ervan uit dat je erbij bent, maar tot %(cancel_deadline)s kan je je "
 "nog afmelden.\n"
@@ -611,7 +612,7 @@ msgctxt "registration status"
 msgid "registered"
 msgstr "aangemeld"
 
-#: views.py:101 views.py:136
+#: views.py:101 views.py:141
 msgctxt "registration status"
 msgid "late cancellation"
 msgstr "te laat afgemeld"
@@ -626,36 +627,48 @@ msgctxt "registration status"
 msgid "waiting"
 msgstr "wachtend"
 
-#: views.py:112 views.py:123
+#: views.py:112
 msgid "Yes"
 msgstr "Ja"
 
-#: views.py:238
+#: views.py:124
+msgid "Cash"
+msgstr "Contant"
+
+#: views.py:126
+msgid "Pin"
+msgstr "Pin"
+
+#: views.py:128
+msgid "No"
+msgstr "Nee"
+
+#: views.py:246
 msgid "[THALIA] Notification about your registration for '{}'"
 msgstr "[THALIA] Bericht over je aanmelding voor ‘{}’"
 
-#: views.py:283 views.py:294 views.py:307
+#: views.py:291 views.py:302 views.py:315
 msgid "Registration successful."
 msgstr "Je aanmelding was succesvol."
 
-#: views.py:289
+#: views.py:297
 msgid ""
 "You cannot re-register anymore since you've cancelled after the deadline."
 msgstr ""
 "Je kunt je niet opnieuw aanmelden omdat je je hebt afgemeld na de deadline."
 
-#: views.py:302
+#: views.py:310
 msgid "You may not register"
 msgstr "Je mag niet je aanmelden"
 
-#: views.py:310
+#: views.py:318
 msgid "You were already registered."
 msgstr "Je bent al aangemeld."
 
-#: views.py:319 views.py:327
+#: views.py:327 views.py:335
 msgid "You are not registered for this event."
 msgstr "Je bent niet aangemeld voor dit evenement."
 
-#: views.py:339
+#: views.py:347
 msgid "Registration successfully cancelled."
 msgstr "Je afmelding was succesvol."

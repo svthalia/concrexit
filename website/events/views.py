@@ -120,7 +120,12 @@ def export(request, event_id):
             'date cancelled': cancelled,
         }
         if event.price > 0:
-            data['paid'] = _('Yes') if registration.paid else ''
+            if registration.payment == 'cash_payment':
+                data['paid'] = _('Cash')
+            elif registration.payment == 'pin_payment':
+                data['paid'] = _('Pin')
+            else:
+                data['paid'] = _('No')
 
         data.update({field['field'].name: field['value'] for field in
                      registration.registration_information()})
