@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-23 13:33+0200\n"
-"PO-Revision-Date: 2017-09-23 13:35+0200\n"
+"POT-Creation-Date: 2017-09-27 19:58+0200\n"
+"PO-Revision-Date: 2017-09-27 19:59+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.3\n"
 
 #: admin.py:86
 msgid "Event Date"
@@ -42,39 +42,72 @@ msgstr "Publiceer geselecteerde evenementen"
 msgid "Unpublish selected events"
 msgstr "Publicatie van geselecteerde evenementen ongedaan maken"
 
+#: admin_views.py:65 admin_views.py:94
+msgid "Name"
+msgstr "Naam"
+
+#: admin_views.py:65 admin_views.py:101
+msgid "Email"
+msgstr "E-mail"
+
+#: admin_views.py:65 admin_views.py:72 admin_views.py:109 admin_views.py:111
+#: admin_views.py:113
+msgid "Paid"
+msgstr "Betaald"
+
+#: admin_views.py:65 admin_views.py:97
+msgid "Present"
+msgstr "Aanwezig"
+
+#: admin_views.py:66 admin_views.py:104 admin_views.py:125
+msgid "Status"
+msgstr "Status"
+
+#: admin_views.py:66 admin_views.py:98
+msgid "Phone number"
+msgstr "Telefoonnummer"
+
+#: admin_views.py:68 admin_views.py:95 admin_views.py:128
+msgid "Date"
+msgstr "Datum"
+
+#: admin_views.py:68 admin_views.py:105
+msgid "Date cancelled"
+msgstr "Afmelddatum"
+
 #: admin_views.py:79
 msgctxt "registration status"
 msgid "registered"
 msgstr "aangemeld"
 
-#: admin_views.py:85 admin_views.py:125
+#: admin_views.py:85 admin_views.py:127
 msgctxt "registration status"
 msgid "late cancellation"
 msgstr "te laat afgemeld"
 
-#: admin_views.py:87
+#: admin_views.py:88
 msgctxt "registration status"
 msgid "cancelled"
 msgstr "afgemeld"
 
-#: admin_views.py:91
+#: admin_views.py:92
 msgctxt "registration status"
 msgid "waiting"
 msgstr "wachtend"
 
-#: admin_views.py:96
+#: admin_views.py:97
 msgid "Yes"
 msgstr "Ja"
 
-#: admin_views.py:108
+#: admin_views.py:109
 msgid "Cash"
 msgstr "Contant"
 
-#: admin_views.py:110
-msgid "Card"
+#: admin_views.py:111
+msgid "Pin"
 msgstr "Pin"
 
-#: admin_views.py:112
+#: admin_views.py:113
 msgid "No"
 msgstr "Nee"
 
@@ -690,7 +723,7 @@ msgstr "Je afmelding was succesvol."
 msgid "Registration successfully saved."
 msgstr "Je afmelding is succesvol opgeslagen."
 
-#~ msgid "Pin"
+#~ msgid "Card"
 #~ msgstr "Pin"
 
 #~ msgid "You may not register"
