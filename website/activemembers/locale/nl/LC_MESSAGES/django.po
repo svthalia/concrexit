@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-13 19:42+0200\n"
-"PO-Revision-Date: 2017-09-13 19:50+0200\n"
+"POT-Creation-Date: 2017-09-25 15:55+0200\n"
+"PO-Revision-Date: 2017-09-25 15:55+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -78,7 +78,7 @@ msgstr ""
 msgid "A board already exists for those years"
 msgstr "Er bestaat al een bestuur voor die jaren"
 
-#: models.py:211 models.py:350
+#: models.py:211 models.py:353
 msgid "Member"
 msgstr "Lid"
 
@@ -128,35 +128,35 @@ msgstr "De einddatum kan niet voor de startdatum liggen"
 msgid "End date can't be in the future"
 msgstr "De einddatum kan niet in de toekomst liggen"
 
-#: models.py:276
+#: models.py:277
 msgid "Start date can't be before committee start date"
 msgstr "De begindatum kan niet voor de begindatum van de commissie liggen"
 
-#: models.py:279
+#: models.py:282
 msgid "Start date can't be after committee end date"
 msgstr "De begindatum kan niet na de einddatum van de commissie liggen"
 
-#: models.py:284
+#: models.py:287
 msgid "End date cannot be set for boards"
 msgstr "Voor besturen kan geen einddatum worden opgegeven"
 
-#: models.py:307
+#: models.py:310
 msgid "There already is a chair for this time period"
 msgstr "Er is al een voorzitter voor deze periode"
 
-#: models.py:324
+#: models.py:327
 msgid "This member is already in the committee for this period"
 msgstr "Deze persoon is al lid van deze commissie in de aangegeven periode"
 
-#: models.py:342
+#: models.py:345
 msgid "committee membership"
 msgstr "commissielidmaatschap"
 
-#: models.py:343
+#: models.py:346
 msgid "committee memberships"
 msgstr "commissielidmaatschappen"
 
-#: models.py:355
+#: models.py:358
 #, python-brace-format
 msgid "{name} mentor in {year}"
 msgstr "{name} mentor in {year}"
@@ -176,16 +176,21 @@ msgstr "Bestuur"
 msgid "Boards"
 msgstr "Besturen"
 
-#: templates/activemembers/board_detail.html:27
+#: templates/activemembers/board_detail.html:28
+#, python-format
+msgid "About %(name)s"
+msgstr "Over %(name)s"
+
+#: templates/activemembers/board_detail.html:33
 msgid "Board members"
 msgstr "Bestuursleden"
 
-#: templates/activemembers/board_detail.html:43
+#: templates/activemembers/board_detail.html:49
 #: templates/activemembers/committee_detail.html:45
 msgid "Chair"
 msgstr "Voorzitter"
 
-#: templates/activemembers/board_detail.html:60
+#: templates/activemembers/board_detail.html:66
 msgid "This board doesn't have any members?"
 msgstr "Dit bestuur heeft geen leden?"
 
