@@ -52,7 +52,7 @@ def get_automatic_lists():
         committee_chairs, moderated=False)
     lists += _create_automatic_list(
         ['optin'], '[THALIA] [OPTIN]', Member.active_members.filter(
-            receive_optin=True).prefetch_related('user'))
+            receive_optin=True).prefetch_related('user'), multilingual=True)
 
     return lists
 
