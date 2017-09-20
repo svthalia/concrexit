@@ -80,11 +80,9 @@ class OrderViewset(ModelViewSet):
             return order
         return super().get_object()
 
-    # def create(self, request, *args, **kwargs):
     def perform_create(self, serializer):
         try:
             if serializer.validated_data.get('name'):
-                print(serializer.validated_data.get('name'))
                 serializer.save(pizza_event=PizzaEvent.current())
             else:
                 serializer.save(member=self.request.user.member,
