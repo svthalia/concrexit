@@ -73,7 +73,7 @@ class OrderViewset(ModelViewSet):
 
     def get_object(self):
         if self.kwargs[self.lookup_field] == 'me':
-            order = get_object_or_404(Order,
+            order = get_object_or_404(self.get_queryset(),
                                       member=self.request.user.member,
                                       pizza_event=PizzaEvent.current())
             self.check_object_permissions(self.request, order)
