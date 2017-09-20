@@ -113,6 +113,12 @@ class Member(models.Model):
     def membership_set(self):
         return self.user.membership_set
 
+    def has_been_member(self):
+        return self.membership_set.filter(type='member').count() > 0
+
+    def has_been_honorary_member(self):
+        return self.membership_set.filter(type='honorary').count() > 0
+
     def is_active(self):
         """Is this member currently active
 
