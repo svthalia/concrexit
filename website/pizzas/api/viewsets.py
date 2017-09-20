@@ -1,4 +1,3 @@
-from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 
@@ -7,7 +6,8 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.mixins import ListModelMixin
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import (ValidationError, NotFound,
+                                       PermissionDenied)
 
 from pizzas.models import Product, PizzaEvent, Order
 from pizzas.api import serializers
@@ -22,30 +22,17 @@ class PizzaViewset(GenericViewSet, ListModelMixin):
         if (PizzaEvent.current() or
                 request.user.has_perm('pizzas.change_product')):
             return super().list(request, *args, **kwargs)
-        return Response(status=403)
+        raise PermissionDenied
 
     @list_route()
     def event(self, request):
         event = PizzaEvent.current()
 
         if event:
-            try:
-                order = Order.objects.get(pizza_event=event,
-                                          member=request.user.member)
-                return JsonResponse({
-                    'event': serializers.PizzaEventSerializer(event).data,
-                    'order': serializers.OrderSerializer(order).data
-                })
-            except Order.DoesNotExist:
-                return JsonResponse({
-                    'event': serializers.PizzaEventSerializer(event).data,
-                    'order': None
-                })
+            serializer = serializers.PizzaEventSerializer(event)
+            return Response(serializer.data)
 
-        return JsonResponse({
-            'event': None,
-            'order': None,
-        })
+        raise NotFound
 
 
 class OrderViewset(ModelViewSet):
