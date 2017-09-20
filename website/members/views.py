@@ -122,9 +122,16 @@ def profile(request, pk=None):
     achievements = member_achievements(member)
 
     membership = member.current_membership
-    membership_type = _("Former member")
+    membership_type = _("Unknown membership history")
     if membership:
         membership_type = membership.get_type_display()
+    elif member.has_been_honorary_member():
+        membership_type = _("Former honorary member")
+    elif member.has_been_member():
+        membership_type = _("Former member")
+    elif member.latest_membership:
+        membership_type = _("Former supporter")
+
     return render(request, 'members/profile.html',
                   {
                       'achievements': achievements,

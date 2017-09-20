@@ -61,6 +61,30 @@ class MemberBirthdayTest(TestCase):
         self._assert_thom('1992-12-31', '1995-01-01')
 
 
+class MemberTest(TestCase):
+    fixtures = ['members.json']
+
+    def test_has_been_member(self):
+        member = Member.objects.get(pk=1)
+
+        self.assertTrue(member.has_been_member())
+
+        m1 = member.membership_set.all()[0]
+        m1.type = 'honorary'
+        m1.save()
+        self.assertFalse(member.has_been_member())
+
+    def test_has_been_honorary_member(self):
+        member = Member.objects.get(pk=1)
+
+        self.assertFalse(member.has_been_honorary_member())
+
+        m1 = member.membership_set.all()[0]
+        m1.type = 'honorary'
+        m1.save()
+        self.assertTrue(member.has_been_honorary_member())
+
+
 class MembershipFilterTest(TestCase):
 
     @classmethod
