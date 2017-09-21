@@ -70,6 +70,7 @@ def save_photo(request, archive_file, photo, album):
     except (OSError, AttributeError):
         messages.add_message(request, messages.WARNING,
                              _("Ignoring {}").format(photo_filename))
+        photo_obj.delete()
     else:
         photo_obj.save()
 
