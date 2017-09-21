@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n static fieldtype %}
+
+{% block title %}{% trans "Registration" %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Registration" %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <h1>{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            <button type="button" class="close"><span class="alert-icon-close"></span></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" class="form-horizontal span8 offset2">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="control-group row {% if field.errors %}error{% endif %}">
+                <label class="control-label" for="{{ field.name }}">{{ field.label_tag }}</label>
+                <div class="controls">
+                    {{ field }}
+
+                    {% for error in field.errors %}
+                        <span class="help-block">{{ error|escape }}</span>
+                    {% endfor %}
+
+                    <span class="help-block">{{ field.help_text|safe }}</span>
+                </div>
+            </div>
+        {% endfor %}
+
+        <input type="submit" value="{% trans "Save" %}" class="btn btn-style1 pull-right login" />
+        <a href="{% url "events:event" event.pk %}" class="forgot btn pull-right btn-style2">{% trans 'Cancel' %}</a>
+    </form>
+
+{% endblock %}

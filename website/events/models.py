@@ -23,13 +23,6 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         ('workshop', _('Workshop')),
         ('other', _('Other')))
 
-    REGISTRATION_NOT_NEEDED = -1
-    REGISTRATION_NOT_YET_OPEN = 0
-    REGISTRATION_OPEN = 1
-    REGISTRATION_OPEN_NO_CANCEL = 2
-    REGISTRATION_CLOSED = 3
-    REGISTRATION_CLOSED_CANCEL_ONLY = 4
-
     DEFAULT_NO_REGISTRATION_MESSAGE = _('No registration required')
 
     title = MultilingualField(
@@ -135,46 +128,53 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     published = models.BooleanField(_("published"), default=False)
 
+    @property
     def after_cancel_deadline(self):
-        return self.cancel_deadline <= timezone.now()
+        return self.cancel_deadline and self.cancel_deadline <= timezone.now()
 
+    @property
+    def registration_started(self):
+        return self.registration_start <= timezone.now()
+
+    @property
     def registration_required(self):
         return bool(self.registration_start) or bool(self.registration_end)
 
     def has_fields(self):
         return self.registrationinformationfield_set.count() > 0
 
-    def num_participants(self):
-        return self.registration_set.filter(date_cancelled=None).count()
-
     def reached_participants_limit(self):
         return (self.max_participants is not None and
                 self.max_participants <= self.registration_set.filter(
                     date_cancelled=None).count())
 
-    def is_member_registered(self, member):
-        if not self.registration_required():
-            return None
-
-        registrations = self.registration_set.filter(member=member)
-        return len(registrations) == 1 and registrations[0].is_registered()
+    @property
+    def registrations(self):
+        return self.registration_set.filter(date_cancelled=None)
 
     @property
-    def status(self):
+    def participants(self):
+        return self.registrations.order_by('date')[:self.max_participants]
+
+    @property
+    def queue(self):
+        return self.registrations.order_by('date')[self.max_participants:]
+
+    @property
+    def cancellations(self):
+        return self.registration_set.exclude(date_cancelled=None)
+
+    @property
+    def registration_allowed(self):
         now = timezone.now()
-        if bool(self.registration_start) or bool(self.registration_end):
-            if now <= self.registration_start:
-                return Event.REGISTRATION_NOT_YET_OPEN
-            elif self.registration_end <= now < self.cancel_deadline:
-                return Event.REGISTRATION_CLOSED_CANCEL_ONLY
-            elif self.cancel_deadline <= now < self.registration_end:
-                return Event.REGISTRATION_OPEN_NO_CANCEL
-            elif now >= self.registration_end and now >= self.cancel_deadline:
-                return Event.REGISTRATION_CLOSED
-            else:
-                return Event.REGISTRATION_OPEN
-        else:
-            return Event.REGISTRATION_NOT_NEEDED
+        return ((self.registration_start or self.registration_end) and
+                self.registration_end > now >= self.registration_start)
+
+    @property
+    def cancellation_allowed(self):
+        now = timezone.now()
+        return ((self.registration_start or self.registration_end)
+                and now >= self.registration_start)
 
     def clean(self):
         super().clean()
@@ -183,7 +183,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 self.end < self.start):
             errors.update({
                 'end': _("Can't have an event travel back in time")})
-        if self.registration_required():
+        if self.registration_required:
             if self.fine < 5:
                 errors.update({
                     'fine': _("The fine for this event is too low "
@@ -238,6 +238,117 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         permissions = (
             ("override_organiser", "Can access events as if organizing"),
         )
+
+
+class Registration(models.Model):
+    """Event registrations"""
+
+    PAYMENT_TYPES = (
+        ('no_payment', _('No payment')),
+        ('cash_payment', _('Paid with cash')),
+        ('card_payment', _('Paid with card')))
+
+    event = models.ForeignKey(Event, models.CASCADE)
+
+    member = models.ForeignKey(
+        'members.Member', models.CASCADE,
+        blank=True,
+        null=True,
+        limit_choices_to=(Q(user__membership__until__isnull=True) |
+                          Q(user__membership__until__gt=timezone.now().date()))
+    )
+
+    name = models.CharField(
+        _('name'),
+        max_length=50,
+        help_text=_('Use this for non-members'),
+        null=True,
+        blank=True
+    )
+
+    date = models.DateTimeField(_('registration date'),
+                                default=timezone.now)
+    date_cancelled = models.DateTimeField(_('cancellation date'),
+                                          null=True,
+                                          blank=True)
+
+    present = models.BooleanField(
+        _('present'),
+        default=False,
+    )
+
+    payment = models.CharField(
+        choices=PAYMENT_TYPES,
+        default='no_payment',
+        verbose_name=_('payment'),
+        max_length=20,
+    )
+
+    @property
+    def information_fields(self):
+        fields = self.event.registrationinformationfield_set.all()
+        return [{'field': field, 'value': field.get_value_for(self)}
+                for field in fields]
+
+    @property
+    def is_registered(self):
+        return self.date_cancelled is None
+
+    @property
+    def queue_position(self):
+        if self.event.max_participants is not None:
+            try:
+                return list(self.event.queue).index(self) + 1
+            except ValueError:
+                pass
+        return 0
+
+    def is_external(self):
+        return bool(self.name)
+
+    def is_late_cancellation(self):
+        # First check whether or not the user cancelled
+        # If the user cancelled then check if this was after the deadline
+        # And if there is a max participants number:
+        # do a complex check to calculate if this user was on
+        # the waiting list at the time of cancellation, since
+        # you shouldn't need to pay the costs of something
+        # you weren't even able to go to.
+        return (self.date_cancelled and
+                self.event.cancel_deadline and
+                self.date_cancelled > self.event.cancel_deadline and
+                (self.event.max_participants is None or
+                 self.event.registration_set.filter(
+                     (Q(date_cancelled__gte=self.date_cancelled) |
+                      Q(date_cancelled=None)) &
+                     Q(date__lte=self.date)
+                 ).count() < self.event.max_participants))
+
+    def would_cancel_after_deadline(self):
+        now = timezone.now()
+        return (self.queue_position == 0 and
+                now >= self.event.cancel_deadline)
+
+    def clean(self):
+        if ((self.member is None and not self.name) or
+                (self.member and self.name)):
+            raise ValidationError({
+                'member': _('Either specify a member or a name'),
+                'name': _('Either specify a member or a name'),
+            })
+
+    def validate_unique(self, exclude=None):
+        super().validate_unique(exclude)
+
+    def __str__(self):
+        if self.member:
+            return '{}: {}'.format(self.member.get_full_name(), self.event)
+        else:
+            return '{}: {}'.format(self.name, self.event)
+
+    class Meta:
+        ordering = ('date',)
+        unique_together = (('member', 'event', 'name', 'date_cancelled'),)
 
 
 class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
@@ -317,115 +428,6 @@ class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
 
     class Meta:
         order_with_respect_to = 'event'
-
-
-class Registration(models.Model):
-    """Event registrations"""
-
-    PAYMENT_TYPES = (
-        ('no_payment', _('No payment')),
-        ('cash_payment', _('Paid with cash')),
-        ('card_payment', _('Paid with card')))
-
-    event = models.ForeignKey(Event, models.CASCADE)
-
-    member = models.ForeignKey(
-        'members.Member', models.CASCADE,
-        blank=True,
-        null=True,
-        limit_choices_to=(Q(user__membership__until__isnull=True) |
-                          Q(user__membership__until__gt=timezone.now().date()))
-    )
-
-    name = models.CharField(
-        _('name'),
-        max_length=50,
-        help_text=_('Use this for non-members'),
-        null=True,
-        blank=True
-    )
-
-    date = models.DateTimeField(_('registration date'),
-                                default=timezone.now)
-    date_cancelled = models.DateTimeField(_('cancellation date'),
-                                          null=True,
-                                          blank=True)
-
-    present = models.BooleanField(
-        _('present'),
-        default=False,
-    )
-
-    payment = models.CharField(
-        choices=PAYMENT_TYPES,
-        default='no_payment',
-        verbose_name=_('payment'),
-        max_length=20,
-    )
-
-    def registration_information(self):
-        fields = self.event.registrationinformationfield_set.all()
-        return [{'field': field, 'value': field.get_value_for(self)}
-                for field in fields]
-
-    def is_external(self):
-        return bool(self.name)
-
-    def is_late_cancellation(self):
-        # First check whether or not the user cancelled
-        # If the user cancelled then check if this was after the deadline
-        # And if there is a max participants number:
-        # do a complex check to calculate if this user was on
-        # the waiting list at the time of cancellation, since
-        # you shouldn't need to pay the costs of something
-        # you weren't even able to go to.
-        return (self.date_cancelled and
-                self.event.cancel_deadline and
-                self.date_cancelled > self.event.cancel_deadline and
-                (self.event.max_participants is None or
-                 self.event.registration_set.filter(
-                     (Q(date_cancelled__gte=self.date_cancelled) |
-                      Q(date_cancelled=None)) &
-                     Q(date__lte=self.date)
-                 ).count() < self.event.max_participants))
-
-    def is_registered(self):
-        return self.date_cancelled is None
-
-    def queue_position(self):
-        if self.event.max_participants is None:
-            return 0
-
-        return max(self.event.registration_set.filter(
-            date_cancelled=None,
-            date__lte=self.date
-        ).count() - self.event.max_participants, 0)
-
-    def would_cancel_after_deadline(self):
-        return (self.queue_position() == 0 and
-                (self.event.status == Event.REGISTRATION_CLOSED or
-                 self.event.status == Event.REGISTRATION_OPEN_NO_CANCEL))
-
-    def clean(self):
-        if ((self.member is None and not self.name) or
-                (self.member and self.name)):
-            raise ValidationError({
-                'member': _('Either specify a member or a name'),
-                'name': _('Either specify a member or a name'),
-            })
-
-    def validate_unique(self, exclude=None):
-        super().validate_unique(exclude)
-
-    def __str__(self):
-        if self.member:
-            return '{}: {}'.format(self.member.get_full_name(), self.event)
-        else:
-            return '{}: {}'.format(self.name, self.event)
-
-    class Meta:
-        ordering = ('date',)
-        unique_together = (('member', 'event', 'name', 'date_cancelled'),)
 
 
 class AbstractRegistrationInformation(models.Model):

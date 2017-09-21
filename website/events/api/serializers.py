@@ -1,12 +1,14 @@
-from html import unescape
-
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import strip_tags
+from html import unescape
 from rest_framework import serializers
+from rest_framework.fields import empty
 
-from events.models import Event, Registration
+from events import services
+from events.exceptions import RegistrationError
+from events.models import Event, Registration, RegistrationInformationField
 from pizzas.models import PizzaEvent
 from thaliawebsite.settings import settings
 
@@ -71,11 +73,11 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
         model = Event
 
     def _url(self, instance):
-        return reverse('events:event', kwargs={'event_id': instance.id})
+        return reverse('events:event', kwargs={'pk': instance.id})
 
     def _registered(self, instance):
         try:
-            return instance.is_member_registered(self.context['user'].member)
+            return services.is_user_registered(instance, self.context['user'])
         except AttributeError:
             return None
 
@@ -111,21 +113,50 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     registration_allowed = serializers.SerializerMethodField(
         '_registration_allowed')
     has_fields = serializers.SerializerMethodField('_has_fields')
+    status = serializers.SerializerMethodField('_status')  # DEPRECATED
+
+    REGISTRATION_NOT_NEEDED = -1
+    REGISTRATION_NOT_YET_OPEN = 0
+    REGISTRATION_OPEN = 1
+    REGISTRATION_OPEN_NO_CANCEL = 2
+    REGISTRATION_CLOSED = 3
+    REGISTRATION_CLOSED_CANCEL_ONLY = 4
+
+    """ DEPRECATED """
+
+    def _status(self, instance):
+        now = timezone.now()
+        if instance.registration_start or instance.registration_end:
+            if now <= instance.registration_start:
+                return self.REGISTRATION_NOT_YET_OPEN
+            elif (instance.registration_end <= now
+                    < instance.cancel_deadline):
+                return self.REGISTRATION_CLOSED_CANCEL_ONLY
+            elif (instance.cancel_deadline <= now <
+                    instance.registration_end):
+                return self.REGISTRATION_OPEN_NO_CANCEL
+            elif (now >= instance.registration_end and
+                    now >= instance.cancel_deadline):
+                return self.REGISTRATION_CLOSED
+            else:
+                return self.REGISTRATION_OPEN
+        else:
+            return self.REGISTRATION_NOT_NEEDED
 
     def _description(self, instance):
         return unescape(strip_tags(instance.description))
 
     def _num_participants(self, instance):
         if (instance.max_participants and
-                instance.num_participants() > instance.max_participants):
+                instance.participants.count() > instance.max_participants):
             return instance.max_participants
-        return instance.num_participants()
+        return instance.participants.count()
 
     def _user_registration(self, instance):
         try:
             reg = instance.registration_set.get(
                 member=self.context['request'].user.member)
-            return RegistrationSerializer(reg, context=self.context).data
+            return RegistrationListSerializer(reg, context=self.context).data
         except Registration.DoesNotExist:
             return None
 
@@ -154,8 +185,8 @@ class EventListSerializer(serializers.ModelSerializer):
 
     def _registered(self, instance):
         try:
-            return instance.is_member_registered(
-                self.context['request'].user.member)
+            return services.is_user_registered(
+                instance, self.context['request'].user)
         except AttributeError:
             return None
 
@@ -164,7 +195,7 @@ class EventListSerializer(serializers.ModelSerializer):
         return pizza_events.exists()
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class RegistrationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
         fields = ('pk', 'member', 'name', 'photo', 'registered_on',
@@ -173,43 +204,26 @@ class RegistrationSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField('_name')
     photo = serializers.SerializerMethodField('_photo')
     member = serializers.SerializerMethodField('_member')
-    registered_on = serializers.SerializerMethodField('_registered_on')
+    registered_on = serializers.DateTimeField(source='date')
     is_cancelled = serializers.SerializerMethodField('_is_cancelled')
     is_late_cancellation = serializers.SerializerMethodField(
         '_is_late_cancellation')
     queue_position = serializers.SerializerMethodField(
-        '_queue_position')
-
-    def _has_view_permission(self, instance):
-        # We dont have an explicit viewing permission model, so we rely on the
-        #  'change' permission (Django provides add/change/delete by default)
-        return (self.context['request'].user.has_perm('events.change_event')
-                or instance.member.user == self.context['request'].user)
+        '_queue_position', read_only=False)
 
     def _is_late_cancellation(self, instance):
-        if self._has_view_permission(instance):
-            return instance.is_late_cancellation()
-        return None
+        return instance.is_late_cancellation()
 
     def _queue_position(self, instance):
-        if self._has_view_permission(instance):
-            pos = instance.queue_position()
-            return pos if pos > 0 else None
-        return None
-
-    def _registered_on(self, instance):
-        if self._has_view_permission(instance):
-            return serializers.DateTimeField().to_representation(instance.date)
-        return None
+        pos = instance.queue_position
+        return pos if pos > 0 else None
 
     def _is_cancelled(self, instance):
-        if self._has_view_permission(instance):
-            return instance.date_cancelled is not None
-        return None
+        return instance.date_cancelled is not None
 
     def _member(self, instance):
         if instance.member:
-            return instance.member.user.pk
+            return instance.member.pk
         return None
 
     def _name(self, instance):
@@ -224,3 +238,108 @@ class RegistrationSerializer(serializers.ModelSerializer):
         else:
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    information_fields = None
+
+    class Meta:
+        model = Registration
+        fields = ('pk', 'member', 'name', 'photo', 'registered_on',
+                  'is_late_cancellation', 'is_cancelled',
+                  'queue_position')
+
+    name = serializers.SerializerMethodField('_name')
+    photo = serializers.SerializerMethodField('_photo')
+    member = serializers.SerializerMethodField('_member')
+    registered_on = serializers.DateTimeField(source='date', read_only=True)
+    is_cancelled = serializers.SerializerMethodField('_is_cancelled')
+    is_late_cancellation = serializers.SerializerMethodField(
+        '_is_late_cancellation')
+    queue_position = serializers.SerializerMethodField(
+        '_queue_position', read_only=False)
+
+    def _is_late_cancellation(self, instance):
+        val = instance.is_late_cancellation()
+        return False if val is None else val
+
+    def _is_cancelled(self, instance):
+        return instance.date_cancelled is not None
+
+    def _queue_position(self, instance):
+        pos = instance.queue_position
+        return pos if pos > 0 else None
+
+    def _member(self, instance):
+        if instance.member:
+            return instance.member.pk
+        return None
+
+    def _name(self, instance):
+        if instance.member:
+            return instance.member.display_name()
+        return instance.name
+
+    def _photo(self, instance):
+        if instance.member and instance.member.photo:
+            return self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.member.photo))
+        else:
+            return self.context['request'].build_absolute_uri(
+                static('members/images/default-avatar.jpg'))
+
+    def __init__(self, instance=None, data=empty, **kwargs):
+        super().__init__(instance, data, **kwargs)
+        try:
+            if instance:
+                self.information_fields = services.registration_fields(
+                    instance.member.user, instance.event)
+        except RegistrationError:
+            pass
+
+    def get_fields(self):
+        fields = super().get_fields()
+
+        if self.information_fields:
+            for key, field in self.information_fields.items():
+                key = 'fields[{}]'.format(key)
+                field_type = field['type']
+
+                if field_type == RegistrationInformationField.BOOLEAN_FIELD:
+                    fields[key] = serializers.BooleanField(
+                        required=False,
+                        write_only=True
+                    )
+                elif field_type == RegistrationInformationField.INTEGER_FIELD:
+                    fields[key] = serializers.IntegerField(
+                        required=field['required'],
+                        write_only=True
+                    )
+                elif field_type == RegistrationInformationField.TEXT_FIELD:
+                    fields[key] = serializers.CharField(
+                        required=field['required'],
+                        write_only=True
+                    )
+
+                fields[key].label = field['label']
+                fields[key].help_text = field['description']
+                fields[key].initial = field['value']
+                fields[key].default = field['value']
+
+                try:
+                    if key in self.information_fields:
+                        fields[key].initial = self.validated_data[key]
+                except AssertionError:
+                    pass
+
+        return fields
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['fields'] = self.information_fields
+        return data
+
+    def field_values(self):
+        return ((name[7:len(name) - 1], value)
+                for name, value in self.validated_data.items()
+                if "info_field" in name)

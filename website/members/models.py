@@ -275,8 +275,9 @@ class Member(models.Model):
 
     @property
     def can_attend_events(self):
-        return (self.event_permissions == 'all' or
-                self.event_permissions == 'no_drinks')
+        return ((self.event_permissions == 'all' or
+                self.event_permissions == 'no_drinks') and
+                self.current_membership is not None)
 
     # --- Communication preference ----
 

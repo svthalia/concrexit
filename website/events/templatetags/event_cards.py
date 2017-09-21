@@ -1,6 +1,7 @@
 from django import template
 from django.utils import timezone
 
+from events import services
 from events.models import Event
 
 register = template.Library()
@@ -16,8 +17,8 @@ def show_cards(context):
     try:
         upcoming = [{
                 'event': x,
-                'current_user_registration': x.is_member_registered(
-                    context['user'].member)
+                'current_user_registration': services.is_user_registered(
+                    x, context['user']),
             } for x in upcoming_events[:4]]
     except AttributeError:
         upcoming = [{

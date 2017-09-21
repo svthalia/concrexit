@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.template.defaultfilters import date as _date
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
-from django.template.defaultfilters import date as _date
 
+from events import services
 from members.models import Member
 from utils.translation import TranslatedModelAdmin
 from . import forms, models
@@ -73,12 +73,9 @@ class EventAdmin(DoNextModelAdmin):
 
     def has_change_permission(self, request, event=None):
         try:
-            if (not request.user.is_superuser and event is not None and
-                    not request.user.has_perm('events.override_organiser')):
-                committees = request.user.member.get_committees().filter(
-                    Q(pk=event.organiser.pk)).count()
-                if committees == 0:
-                    return False
+            if (event is not None and
+                    not services.is_organiser(request.user, event)):
+                return False
         except Member.DoesNotExist:
             pass
         return super().has_change_permission(request, event)
@@ -150,7 +147,8 @@ class EventAdmin(DoNextModelAdmin):
             # Use custom queryset for organiser field
             # Only get the current active committees the user is a member of
             try:
-                if not request.user.is_superuser:
+                if not (request.user.is_superuser or
+                        request.user.has_perm('events.override_organiser')):
                     kwargs['queryset'] = request.user.member.get_committees()
 
             except Member.DoesNotExist:

@@ -1,6 +1,5 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import get_language
 
 from .models import RegistrationInformationField, Event
 
@@ -28,37 +27,29 @@ class RegistrationInformationFieldForm(forms.ModelForm):
 
 class FieldsForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        registration = kwargs.pop('registration')
+        self.information_fields = kwargs.pop('fields')
         super(FieldsForm, self).__init__(*args, **kwargs)
 
-        self.information_fields = registration.registration_information()
+        for key, field in self.information_fields.items():
+            field_type = field["type"]
 
-        for information_field in self.information_fields:
-            field = information_field['field']
-            key = "info_field_{}".format(field.id)
-
-            if field.type == RegistrationInformationField.BOOLEAN_FIELD:
+            if field_type == RegistrationInformationField.BOOLEAN_FIELD:
                 self.fields[key] = forms.BooleanField(
                     required=False
                 )
-            elif field.type == RegistrationInformationField.INTEGER_FIELD:
-                self.fields[key] = forms.IntegerField()
-            elif field.type == RegistrationInformationField.TEXT_FIELD:
-                self.fields[key] = forms.CharField()
+            elif field_type == RegistrationInformationField.INTEGER_FIELD:
+                self.fields[key] = forms.IntegerField(
+                    required=field["required"]
+                )
+            elif field_type == RegistrationInformationField.TEXT_FIELD:
+                self.fields[key] = forms.CharField(
+                    required=field["required"]
+                )
 
-            self.fields[key].label = getattr(field, '{}_{}'.format(
-                'name', get_language()))
-            self.fields[key].help_text = getattr(field, '{}_{}'.format(
-                'description', get_language()))
-            self.fields[key].initial = information_field['value']
-            if not field.type == RegistrationInformationField.BOOLEAN_FIELD:
-                self.fields[key].required = field.required
+            self.fields[key].label = field["label"]
+            self.fields[key].help_text = field["description"]
+            self.fields[key].initial = field['value']
 
     def field_values(self):
-        for information_field in self.information_fields:
-            key = "info_field_{}".format(information_field['field'].id)
-            field = {
-                "field": information_field["field"],
-                "value": self.cleaned_data[key]
-            }
-            yield field
+        for key, field in self.information_fields.items():
+            yield (key, self.cleaned_data[key])
