@@ -85,7 +85,10 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
         ('partial', _('Partial Exam')),
         ('resit', _('Resit')),
         ('practice', _('Practice Exam')),
-        ('answers', _('Exam Answers')))
+        ('exam_answers', _('Exam Answers')),
+        ('partial_answers', _('Partial Exam Answers')),
+        ('resit_answers', _('Resit Answers')),
+        ('practice_answers', _('Practice Exam Answers')))
 
     type = models.CharField(
         max_length=40,
