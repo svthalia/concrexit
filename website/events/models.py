@@ -77,6 +77,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         blank=True
     )
 
+    send_cancel_email = models.BooleanField(
+        _('send cancellation notifications'),
+        default=True,
+        help_text=_("Send an email to the organising party when a member "
+                    "cancels their registration after the deadline."),
+    )
+
     location = MultilingualField(
         models.CharField,
         _("location"),
@@ -222,6 +229,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 errors.update({
                     'registration_start': message,
                     'registration_end': message})
+        if (self.organiser is not None and
+                self.send_cancel_email and
+                self.organiser.contact_mailinglist is None):
+            errors.update(
+                {'send_cancel_email': _("This organiser does not "
+                                        "have a contact mailinglist.")})
+
         if errors:
             raise ValidationError(errors)
 

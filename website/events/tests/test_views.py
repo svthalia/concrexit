@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib.auth.models import Permission
+from django.core import mail
 from django.test import Client, TestCase
 from django.utils import timezone
 
@@ -10,6 +11,7 @@ from events.models import (Event, Registration,
                            BooleanRegistrationInformation,
                            IntegerRegistrationInformation,
                            TextRegistrationInformation)
+from mailinglists.models import MailingList
 from members.models import Member
 
 
@@ -132,9 +134,17 @@ class RegistrationTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        cls.mailinglist = MailingList.objects.create(
+            name="testmail"
+        )
+        cls.committee = Committee.objects.create(
+            name_nl="commissie",
+            name_en="committee",
+            contact_mailinglist=cls.mailinglist
+        )
         cls.event = Event.objects.create(
             pk=1,
-            organiser=Committee.objects.get(pk=1),
+            organiser=cls.committee,
             title_nl='testevene',
             title_en='testevent',
             description_en='desc',
@@ -432,3 +442,21 @@ class RegistrationTest(TestCase):
         self.assertEqual(field1.get_value_for(registration), False)
         self.assertEqual(field2.get_value_for(registration), 1337)
         self.assertEqual(field3.get_value_for(registration), 'no text')
+
+    def test_registration_cancel_after_deadline_notification(self):
+        self.event.registration_start = (timezone.now() -
+                                         datetime.timedelta(hours=2))
+        self.event.registration_end = (timezone.now() -
+                                       datetime.timedelta(hours=1))
+        self.event.cancel_deadline = (timezone.now() -
+                                      datetime.timedelta(hours=1))
+        self.event.send_cancel_email = True
+        self.event.save()
+        Registration.objects.create(event=self.event, member=self.member)
+        response = self.client.post('/events/1/registration/cancel/',
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.event.participants.count(), 0)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, [self.event.organiser.
+                         contact_mailinglist.name + "@thalia.nu"])

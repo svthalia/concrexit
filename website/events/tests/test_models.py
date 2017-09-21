@@ -6,20 +6,31 @@ from django.utils import timezone
 
 from activemembers.models import Committee
 from events.models import Event, Registration
+from mailinglists.models import MailingList
 from members.models import Member
 
 
 class EventTest(TestCase):
     """Tests events"""
 
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json']
 
     @classmethod
     def setUpTestData(cls):
+        cls.mailinglist = MailingList.objects.create(
+            name="testmail"
+        )
+
+        cls.committee = Committee.objects.create(
+            name_nl="commissie",
+            name_en="committee",
+            contact_mailinglist=cls.mailinglist
+        )
+
         cls.event = Event.objects.create(
             title_nl='testevene',
             title_en='testevent',
-            organiser=Committee.objects.get(pk=1),
+            organiser=cls.committee,
             description_en='desc',
             description_nl='besch',
             start=(timezone.now() + datetime.timedelta(hours=1)),
@@ -32,6 +43,8 @@ class EventTest(TestCase):
         cls.member = Member.objects.all()[0]
 
     def setUp(self):
+        self.mailinglist.refresh_from_db()
+        self.committee.refresh_from_db()
         self.event.refresh_from_db()
         self.member.refresh_from_db()
 
@@ -184,6 +197,14 @@ class EventTest(TestCase):
         self.event.registration_end = None
         self.event.cancel_deadline = None
         self.assertFalse(self.event.registration_allowed)
+
+    def test_missing_orgination_mailinglist(self):
+        self.event.clean()
+
+        self.event.organiser.contact_mailinglist = None
+
+        with self.assertRaises(ValidationError):
+            self.event.clean()
 
     def test_cancellation_allowed(self):
         # Open
