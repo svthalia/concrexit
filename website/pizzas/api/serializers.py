@@ -10,9 +10,12 @@ class PizzaSerializer(serializers.ModelSerializer):
 
 
 class PizzaEventSerializer(serializers.ModelSerializer):
+
+    event = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = PizzaEvent
-        fields = ('start', 'end', 'title')
+        fields = ('start', 'end', 'event', 'title')
 
 
 class OrderSerializer(serializers.ModelSerializer):
