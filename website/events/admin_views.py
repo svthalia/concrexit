@@ -37,14 +37,17 @@ def change_registration(request, event_id, action=None):
 
     try:
         id = request.POST.get("id", -1)
-        checked = json.loads(request.POST.get("checked"))
         obj = Registration.objects.get(event=event_id, pk=id)
-        if checked is not None:
-            if action == 'present':
+        if action == 'present':
+            checked = json.loads(request.POST.get("checked"))
+            if checked is not None:
                 obj.present = checked
-            elif action == 'paid':
-                obj.paid = checked
-            obj.save()
+                obj.save()
+        elif action == 'payment':
+            value = request.POST.get("value")
+            if value is not None:
+                obj.payment = value
+                obj.save()
     except Registration.DoesNotExist:
         data['success'] = False
 
@@ -101,10 +104,10 @@ def export(request, event_id):
             'date cancelled': cancelled,
         }
         if event.price > 0:
-            if registration.payment == 'cash_payment':
+            if registration.payment == Registration.PAYMENT_CASH:
                 data['paid'] = _('Cash')
-            elif registration.payment == 'pin_payment':
-                data['paid'] = _('Pin')
+            elif registration.payment == Registration.PAYMENT_CARD:
+                data['paid'] = _('Card')
             else:
                 data['paid'] = _('No')
 
@@ -161,6 +164,6 @@ def all_present(request, event_id):
                                .order_by('date')[:event.max_participants])
 
     event.registration_set.filter(pk__in=registrations_query).update(
-        present=True, payment='cash_payment')
+        present=True, payment=Registration.PAYMENT_CASH)
 
     return HttpResponseRedirect('/events/admin/{}'.format(event_id))

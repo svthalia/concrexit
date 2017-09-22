@@ -243,10 +243,14 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 class Registration(models.Model):
     """Event registrations"""
 
+    PAYMENT_CARD = 'card_payment'
+    PAYMENT_CASH = 'cash_payment'
+    PAYMENT_NONE = 'no_payment'
+
     PAYMENT_TYPES = (
-        ('no_payment', _('No payment')),
-        ('cash_payment', _('Paid with cash')),
-        ('card_payment', _('Paid with card')))
+        (PAYMENT_NONE, _('No payment')),
+        (PAYMENT_CASH, _('Paid with cash')),
+        (PAYMENT_CARD, _('Paid with card')))
 
     event = models.ForeignKey(Event, models.CASCADE)
 
