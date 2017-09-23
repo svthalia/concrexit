@@ -6,8 +6,10 @@ import datetime
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
+from django.db.models import Q
 from django.http import HttpResponse
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 import csv
 
 from . import forms, models
@@ -42,17 +44,12 @@ class MembershipTypeListFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if not self.value():
             return queryset
-        queryset.prefetch_related('user__memberships')
-        users = set()
-        for user in queryset:
-            try:
-                if user.member.current_membership:
-                    if user.member.current_membership.type == self.value():
-                        users.add(user.pk)
-            except models.Member.DoesNotExist:
-                # The superuser does not have a .member object attached.
-                pass
-        return queryset.filter(pk__in=users)
+
+        return (queryset
+                .exclude(membership=None)
+                .filter(Q(membership__until__isnull=True) |
+                        Q(membership__until__gt=timezone.now().date()),
+                        membership__type=self.value()))
 
 
 class AgeListFilter(admin.SimpleListFilter):
@@ -69,25 +66,18 @@ class AgeListFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if not self.value():
             return queryset
-        users = set()
-        for user in queryset:
-            try:
-                today = datetime.date.today()
-                eightteen_years_ago = today.replace(year=today.year - 18)
-                if user.member.birthday is None:
-                    if self.value() == 'unknown':
-                        users.add(user.pk)
-                    continue
-                elif (user.member.birthday <= eightteen_years_ago and
-                      self.value() == '18+'):
-                    users.add(user.pk)
-                elif (user.member.birthday > eightteen_years_ago and
-                      self.value() == '18-'):
-                    users.add(user.pk)
-            except models.Member.DoesNotExist:
-                # The superuser does not have a .member object attached.
-                pass
-        return queryset.filter(pk__in=users)
+
+        today = datetime.date.today()
+        eightteen_years_ago = today.replace(year=today.year - 18)
+
+        if self.value() == 'unknown':
+            return queryset.filter(member__birthday__isnull=True)
+        elif self.value() == '18+':
+            return queryset.filter(member__birthday__lte=eightteen_years_ago)
+        elif self.value() == '18-':
+            return queryset.filter(member__birthday__gt=eightteen_years_ago)
+
+        return queryset
 
 
 class UserAdmin(BaseUserAdmin):
