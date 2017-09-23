@@ -445,10 +445,12 @@ class BecomeAMemberDocument(models.Model):
 def gen_stats_member_type(member_types):
     total = dict()
     for member_type in member_types:
-        total[member_type] = (Member
-                              .active_members
-                              .filter(user__membership__type=member_type)
-                              .distinct()
+        total[member_type] = (Membership
+                              .objects
+                              .filter(since__lte=date.today())
+                              .filter(Q(until__isnull=True) |
+                                      Q(until__gt=date.today()))
+                              .filter(type=member_type)
                               .count())
     return total
 
@@ -465,23 +467,29 @@ def gen_stats_year(member_types):
     for i in range(5):
         new = dict()
         for member_type in member_types:
-            new[member_type] = (Member
-                                .active_members
-                                .filter(starting_year=current_year - i)
-                                .filter(user__membership__type=member_type)
-                                .distinct()
-                                .count())
+            new[member_type] = (
+                Membership
+                .objects
+                .filter(user__member__starting_year=current_year - i)
+                .filter(since__lte=date.today())
+                .filter(Q(until__isnull=True) |
+                        Q(until__gt=date.today()))
+                .filter(type=member_type)
+                .count())
         stats_year.append(new)
 
     # Add multi year members
     new = dict()
     for member_type in member_types:
-        new[member_type] = (Member
-                            .active_members
-                            .filter(starting_year__lt=current_year - 4)
-                            .filter(user__membership__type=member_type)
-                            .distinct()
-                            .count())
+        new[member_type] = (
+            Membership
+            .objects
+            .filter(user__member__starting_year__lt=current_year - 4)
+            .filter(since__lte=date.today())
+            .filter(Q(until__isnull=True) |
+                    Q(until__gt=date.today()))
+            .filter(type=member_type)
+            .count())
     stats_year.append(new)
 
     return stats_year
