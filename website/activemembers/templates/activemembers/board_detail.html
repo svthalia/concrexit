@@ -23,6 +23,12 @@
       <img alt="{{ board.name }}" class="span12" src="{% static 'activemembers/images/placeholder.png' %}">
       {% endif %}
     </div>
+    {% if board.description %}
+      <div>
+          <h1 class="midhead">{% blocktrans with name=board.name%}About {{ name }}{% endblocktrans %}</h1>
+          <p class="text-center">{{ board.description }}</p>
+      </div>
+    {% endif %}
     <div class="clearfix member-directory">
       <h1 class="midhead">{% trans 'Board members' %}</h1>
       <ul class="row" id="commissieleden">

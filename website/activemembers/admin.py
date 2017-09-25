@@ -58,8 +58,8 @@ class BoardAdmin(TranslatedModelAdmin):
     exclude = ('is_board',)
     filter_horizontal = ('permissions',)
 
-    fields = ('name', 'photo', 'permissions', 'contact_mailinglist',
-              'contact_email', 'since', 'until',)
+    fields = ('name', 'description', 'photo', 'permissions',
+              'contact_mailinglist', 'contact_email', 'since', 'until',)
 
 
 @admin.register(models.CommitteeMembership)
