@@ -43,7 +43,7 @@ class OrderViewset(ModelViewSet):
         event = PizzaEvent.current()
         if self.request.user.has_perm('pizzas.change_order'):
             return Order.objects.filter(pizza_event=event)
-        if self.action == 'update':
+        if self.action == 'update' or self.action == 'destroy':
             if not event or event.has_ended:
                 return Order.objects.none()
 
