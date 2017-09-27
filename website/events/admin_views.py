@@ -56,60 +56,61 @@ def change_registration(request, event_id, action=None):
 
 @staff_member_required
 @permission_required('events.change_event')
-@organiser_only
 def export(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     extra_fields = event.registrationinformationfield_set.all()
     registrations = event.registration_set.all()
 
     header_fields = (
-        ['name', 'email', 'paid', 'present',
-         'status', 'phone number'] +
+        [_('Name'), _('Email'), _('Paid'), _('Present'),
+         _('Status'), _('Phone number')] +
         [field.name for field in extra_fields] +
-        ['date', 'date cancelled'])
+        [_('Date'), _('Date cancelled')])
 
     rows = []
     if event.price == 0:
-        header_fields.remove('paid')
+        header_fields.remove(_('Paid'))
     for i, registration in enumerate(registrations):
         if registration.member:
             name = registration.member.get_full_name()
         else:
             name = registration.name
-        status = pgettext_lazy('registration status', 'registered')
+        status = pgettext_lazy('registration status',
+                               'registered').capitalize()
         cancelled = None
         if registration.date_cancelled:
 
             if registration.is_late_cancellation():
                 status = pgettext_lazy('registration status',
-                                       'late cancellation')
+                                       'late cancellation').capitalize()
             else:
-                status = pgettext_lazy('registration status', 'cancelled')
+                status = pgettext_lazy('registration status',
+                                       'cancelled').capitalize()
             cancelled = timezone.localtime(registration.date_cancelled)
 
         elif registration.queue_position:
             status = pgettext_lazy('registration status', 'waiting')
         data = {
-            'name': name,
-            'date': timezone.localtime(registration.date
-                                       ).strftime("%Y-%m-%d %H:%m"),
-            'present': _('Yes') if registration.present else '',
-            'phone number': (registration.member.phone_number
-                             if registration.member
-                             else ''),
-            'email': (registration.member.user.email
-                      if registration.member
-                      else ''),
-            'status': status,
-            'date cancelled': cancelled,
+            _('Name'): name,
+            _('Date'): timezone.localtime(
+                            registration.date).strftime("%Y-%m-%d %H:%m"),
+            _('Present'): _('Yes') if registration.present else '',
+            _('Phone number'): (registration.member.phone_number
+                                if registration.member
+                                else ''),
+            _('Email'): (registration.member.user.email
+                                if registration.member
+                                else ''),
+            _('Status'): status,
+            _('Date cancelled'): cancelled,
         }
         if event.price > 0:
-            if registration.payment == Registration.PAYMENT_CASH:
-                data['paid'] = _('Cash')
-            elif registration.payment == Registration.PAYMENT_CARD:
-                data['paid'] = _('Card')
+            if registration.payment == 'cash_payment':
+                data[_('Paid')] = _('Cash')
+            elif registration.payment == 'pin_payment':
+                data[_('Paid')] = _('Pin')
             else:
-                data['paid'] = _('No')
+                data[_('Paid')] = _('No')
 
         data.update({field['field'].name: field['value'] for field in
                      registration.information_fields})
@@ -121,9 +122,10 @@ def export(request, event_id):
 
     rows = sorted(rows,
                   key=lambda row:
-                  (row['status'] == pgettext_lazy('registration status',
-                                                  'late cancellation'),
-                   row['date']),
+                  (row[_('Status')] == pgettext_lazy(
+                        'registration status',
+                        'late cancellation').capitalize(),
+                   row[_('Date')]),
                   reverse=True,
                   )
 
