@@ -18,7 +18,7 @@ def notify_first_waiting(request, event):
                          .order_by('date')[event.max_participants])
         first_waiting_member = first_waiting.member
 
-        text_template = get_template('events/email.txt')
+        text_template = get_template('events/member_email.txt')
 
         with translation.override(first_waiting_member.language):
             subject = _("[THALIA] Notification about your "
@@ -36,3 +36,22 @@ def notify_first_waiting(request, event):
                 text_message,
                 to=[first_waiting_member.user.email]
             ).send()
+
+
+def notify_organiser(event, registration):
+    if event.organiser is None or event.organiser.contact_mailinglist is None:
+        return
+
+    text_template = get_template('events/organiser_email.txt')
+    subject = 'Registration for {} cancelled by member'.format(
+        event.title)
+    text_message = text_template.render({
+        'event': event,
+        'registration': registration
+    })
+
+    EmailMessage(
+        subject,
+        text_message,
+        to=[event.organiser.contact_mailinglist.name + "@thalia.nu"]
+    ).send()

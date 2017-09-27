@@ -107,6 +107,10 @@ def cancel_registration(request, user, event):
         if registration.queue_position == 0:
             emails.notify_first_waiting(request, event)
 
+            if (event.send_cancel_email and
+                    event.after_cancel_deadline):
+                emails.notify_organiser(event, registration)
+
         # Note that this doesn"t remove the values for the
         # information fields that the user entered upon registering.
         # But this is regarded as a feature, not a bug. Especially

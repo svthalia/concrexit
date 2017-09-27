@@ -1,0 +1,6 @@
+{% load baseurl %}Hi,
+
+A member that was registered for the event '{{ event.title }}' that you're organising has cancelled their registration after the deadline.
+
+Name: {{ registration.member.display_name }}
+Registration date: {{ registration.date|date:"SHORT_DATETIME_FORMAT" }}
