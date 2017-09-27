@@ -53,7 +53,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
         return instance.title
 
     def _description(self, instance):
-        return strip_tags(instance.description)
+        return unescape(strip_tags(instance.description))
 
     def _background_color(self, instance):
         pass
