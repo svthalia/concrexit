@@ -23,6 +23,14 @@ class ProfileForm(forms.ModelForm):
                   'receive_optin', 'receive_newsletter']
         model = Profile
 
+    def clean(self):
+        direct_debit_authorized = self.cleaned_data\
+            .get('direct_debit_authorized')
+        bank_account = self.cleaned_data.get('bank_account')
+        if direct_debit_authorized and len(bank_account) < 16:
+            raise forms.ValidationError(_('Bank account is incorrect'))
+        super().clean()
+
 
 class UserCreationForm(BaseUserCreationForm):
     # Don't forget to edit the formset in admin.py!
