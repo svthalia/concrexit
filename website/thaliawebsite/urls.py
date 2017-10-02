@@ -107,10 +107,12 @@ urlpatterns = [
             url(r'^', include('partners.api.urls')),
             url(r'^', include('mailinglists.api.urls')),
             url(r'^', include('pizzas.api.urls')),
+            url(r'^', include('pushnotifications.api.urls')),
         ], namespace='v1')),
     ])),
     url(r'^education/', include('education.urls')),
     url(r'^announcements/', include('announcements.urls')),
+    url(r'^pushnotifications/', include('pushnotifications.urls')),
     # Default login helpers
     url(r'^login/$', login, {'authentication_form': AuthenticationForm},
         name='login'),

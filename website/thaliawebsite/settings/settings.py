@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'corsheaders',
     # Our apps
     'thaliawebsite',  # include for admin settings
+    'pushnotifications',
     'members',
     'documents',
     'activemembers',
@@ -240,6 +241,9 @@ BOARD_NOTIFICATION_ADDRESS = 'info@thalia.nu'
 
 # Partners notification email
 PARTNER_EMAIL = "samenwerking@thalia.nu"
+
+# Push notifications API key
+PUSH_NOTIFICATIONS_API_KEY = ''
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
