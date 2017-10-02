@@ -28,7 +28,7 @@ def _extract_date_range(request):
 
 class PartnerViewset(viewsets.ReadOnlyModelViewSet):
     serializer_class = PartnerSerializer
-    queryset = Partner.objects.all()
+    queryset = Partner.objects.filter(is_active=True)
 
     @list_route(permission_classes=(IsAuthenticatedOrReadOnly,))
     def calendarjs(self, request):
