@@ -74,6 +74,7 @@ class Photo(models.Model):
             hash_sha1 = hashlib.sha1()
             for chunk in iter(lambda: self.file.read(4096), b""):
                 hash_sha1.update(chunk)
+            self.file.close()
             self._digest = hash_sha1.hexdigest()
 
     class Meta:
