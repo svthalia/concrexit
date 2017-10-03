@@ -104,6 +104,7 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
         verbose_name=_('contact mailing list'),
         null=True,
         blank=True,
+        on_delete=models.SET_NULL,
     )
 
     wiki_namespace = models.CharField(
