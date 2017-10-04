@@ -42,7 +42,6 @@ from rest_framework.authtoken import views as rfviews
 import members
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
-from events.feeds import DeprecationFeed
 from events.sitemaps import sitemap as events_sitemap
 from members.sitemaps import sitemap as members_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
@@ -69,10 +68,6 @@ urlpatterns = [
     url(r'^account/$', members.views.account, name='account'),
     url(r'^events/', include('events.urls')),
     url(r'^pizzas/', include('pizzas.urls')),
-    url(r'^', include([  # 'deprecated ical feeds' menu
-        url(r'^index\.php/events/ical/feed\.ics', DeprecationFeed()),
-        url(r'^nieuws/agenda/vcal\.php', DeprecationFeed()),
-    ])),
     url(r'^newsletters/', include('newsletters.urls')),
     url(r'^nieuwsbrief/', include('newsletters.urls', namespace='newsletters-legacy'),),  # for legacy reasons
     url(r'^association$', TemplateView.as_view(
