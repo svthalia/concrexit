@@ -247,7 +247,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = Registration
         fields = ('pk', 'member', 'name', 'photo', 'registered_on',
                   'is_late_cancellation', 'is_cancelled',
-                  'queue_position')
+                  'queue_position', 'fields')
 
     name = serializers.SerializerMethodField('_name')
     photo = serializers.SerializerMethodField('_photo')
@@ -258,6 +258,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         '_is_late_cancellation')
     queue_position = serializers.SerializerMethodField(
         '_queue_position', read_only=False)
+    fields = serializers.HiddenField(default='')
 
     def _is_late_cancellation(self, instance):
         val = instance.is_late_cancellation()
