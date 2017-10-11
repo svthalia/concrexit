@@ -28,7 +28,7 @@ def notify_first_waiting(request, event):
                 'event': event,
                 'reg': first_waiting,
                 'member': first_waiting_member,
-                'base_url': baseurl.baseurl(request)
+                'base_url': baseurl.baseurl(context={'request': request})
             })
 
             EmailMessage(
