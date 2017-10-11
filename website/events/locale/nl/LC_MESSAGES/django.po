@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-27 19:58+0200\n"
-"PO-Revision-Date: 2017-09-27 19:59+0200\n"
+"POT-Creation-Date: 2017-10-11 19:22+0200\n"
+"PO-Revision-Date: 2017-10-11 19:34+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: admin.py:86
 msgid "Event Date"
@@ -115,7 +115,7 @@ msgstr "Nee"
 msgid "[THALIA] Notification about your registration for '{}'"
 msgstr "[THALIA] Bericht over je aanmelding voor ‘{}’"
 
-#: feeds.py:25
+#: feeds.py:23
 msgid "Study Association Thalia event calendar"
 msgstr "Studievereniginig Thalia evenementenkalender"
 
@@ -651,15 +651,15 @@ msgstr "cohort"
 #: templates/events/index.html:85 templates/events/index.html:87
 #: templates/events/index.html:93
 msgid "hide birthdays"
-msgstr "verberg verjaardagen"
+msgstr "Verberg verjaardagen"
 
 #: templates/events/index.html:85 templates/events/index.html:88
 msgid "show birthdays"
-msgstr "toon verjaardagen"
+msgstr "Toon verjaardagen"
 
 #: templates/events/index.html:106
 msgid "list"
-msgstr "lijst"
+msgstr "Lijst"
 
 #: templates/events/member_email.txt:1
 #, python-format

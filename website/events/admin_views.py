@@ -105,9 +105,9 @@ def export(request, event_id):
             _('Date cancelled'): cancelled,
         }
         if event.price > 0:
-            if registration.payment == 'cash_payment':
+            if registration.payment == registration.PAYMENT_CASH:
                 data[_('Paid')] = _('Cash')
-            elif registration.payment == 'pin_payment':
+            elif registration.payment == registration.PAYMENT_CARD:
                 data[_('Paid')] = _('Pin')
             else:
                 data[_('Paid')] = _('No')
