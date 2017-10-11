@@ -301,7 +301,7 @@ msgstr "Niet betaald"
 
 #: models.py:266
 msgid "Paid with cash"
-msgstr "Contact betaald"
+msgstr "Contant betaald"
 
 #: models.py:267
 msgid "Paid with card"
@@ -504,7 +504,7 @@ msgstr "niet betaald"
 
 #: templates/events/admin/registrations_table.html:13
 msgid "paid cash"
-msgstr "contact betaald"
+msgstr "contant betaald"
 
 #: templates/events/admin/registrations_table.html:14
 msgid "paid card"

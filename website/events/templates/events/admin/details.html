@@ -35,9 +35,9 @@
     <div class="module">
         {% with event.registrationinformationfield_set.all as fields %}
         <h2>{% trans "registrations"|capfirst %}</h2>
-        {% include 'events/admin/registrations_table.html' with registrations=event.registrations %}
+        {% include 'events/admin/registrations_table.html' with registrations=event.participants %}
         <br>
-        {% if waiting %}
+        {% if event.queue.count > 0 %}
         <h2>{% trans "waiting"|capfirst %}</h2>
         {% trans "queued" as queued %}
         {% include 'events/admin/registrations_table.html' with registrations=event.queue verb=queued addlink=False %}
@@ -87,7 +87,7 @@
             {% endif %}
             <dt>{% trans "number of registrations"|capfirst %}</dt>
             <dd>
-                {% blocktrans count counter=registrations|length trimmed %}
+                {% blocktrans count counter=event.registrations|length trimmed %}
                     {{ counter }} registration
                 {% plural %}
                     {{ counter }} registrations

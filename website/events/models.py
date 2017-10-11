@@ -161,11 +161,15 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def participants(self):
-        return self.registrations.order_by('date')[:self.max_participants]
+        if self.max_participants is not None:
+            return self.registrations.order_by('date')[:self.max_participants]
+        return self.registrations.order_by('date')
 
     @property
     def queue(self):
-        return self.registrations.order_by('date')[self.max_participants:]
+        if self.max_participants is not None:
+            return self.registrations.order_by('date')[self.max_participants:]
+        return []
 
     @property
     def cancellations(self):
