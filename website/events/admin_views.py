@@ -95,10 +95,10 @@ def export(request, event_id):
             _('Date'): timezone.localtime(
                             registration.date).strftime("%Y-%m-%d %H:%m"),
             _('Present'): _('Yes') if registration.present else '',
-            _('Phone number'): (registration.member.phone_number
+            _('Phone number'): (registration.member.member.phone_number
                                 if registration.member
                                 else ''),
-            _('Email'): (registration.member.user.email
+            _('Email'): (registration.member.email
                                 if registration.member
                                 else ''),
             _('Status'): status,
@@ -142,9 +142,9 @@ def export(request, event_id):
 def export_email(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     registrations = event.registration_set.filter(
-        date_cancelled=None).prefetch_related('member__user')
+        date_cancelled=None)
     registrations = registrations[:event.max_participants]
-    addresses = [r.member.user.email for r in registrations if r.member]
+    addresses = [r.member.email for r in registrations if r.member]
     no_addresses = [r.name for r in registrations if not r.member]
     return render(request, 'events/admin/email_export.html',
                   {'event': event, 'addresses': addresses,

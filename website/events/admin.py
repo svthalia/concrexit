@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
 from django.urls import reverse
@@ -72,12 +73,9 @@ class EventAdmin(DoNextModelAdmin):
                            title=obj.title)
 
     def has_change_permission(self, request, event=None):
-        try:
-            if (event is not None and
-                    not services.is_organiser(request.user, event)):
-                return False
-        except Member.DoesNotExist:
-            pass
+        if (event is not None and
+                not services.is_organiser(request.user, event)):
+            return False
         return super().has_change_permission(request, event)
 
     def event_date(self, obj):
@@ -181,5 +179,6 @@ class RegistrationAdmin(DoNextModelAdmin):
                 kwargs['queryset'] = models.Event.objects.filter(
                     pk=int(request.GET['event_pk']))
         elif db_field.name == 'member':
-            kwargs['queryset'] = Member.active_members.all()
+            # TODO: Member.active_members.all()
+            kwargs['queryset'] = User.objects.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

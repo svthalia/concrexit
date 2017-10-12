@@ -46,7 +46,7 @@ class EventDetail(DetailView):
         try:
             context['registration'] = Registration.objects.get(
                 event=event,
-                member=self.request.user.member
+                member=self.request.user
             )
         except (Registration.DoesNotExist, AttributeError):
             pass

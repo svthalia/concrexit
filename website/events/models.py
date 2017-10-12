@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -273,11 +274,11 @@ class Registration(models.Model):
     event = models.ForeignKey(Event, models.CASCADE)
 
     member = models.ForeignKey(
-        'members.Member', models.CASCADE,
+        User, models.CASCADE,
         blank=True,
         null=True,
-        limit_choices_to=(Q(user__membership__until__isnull=True) |
-                          Q(user__membership__until__gt=timezone.now().date()))
+        limit_choices_to=(Q(membership__until__isnull=True) |
+                          Q(membership__until__gt=timezone.now().date()))
     )
 
     name = models.CharField(

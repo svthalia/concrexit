@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
@@ -7,7 +8,6 @@ from django.utils import timezone
 from activemembers.models import Committee
 from events.models import Event, Registration
 from mailinglists.models import MailingList
-from members.models import Member
 
 
 class EventTest(TestCase):
@@ -40,7 +40,7 @@ class EventTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=5.00)
-        cls.member = Member.objects.all()[0]
+        cls.member = User.objects.all()[0]
 
     def setUp(self):
         self.mailinglist.refresh_from_db()
@@ -281,7 +281,7 @@ class RegistrationTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        cls.member = Member.objects.all()[0]
+        cls.member = User.objects.all()[0]
         cls.r1 = Registration.objects.create(event=cls.event,
                                              member=cls.member)
         cls.r2 = Registration.objects.create(event=cls.event,

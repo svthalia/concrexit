@@ -11,7 +11,7 @@ def is_user_registered(event, user):
         return None
 
     return event.registrations.filter(
-        member=user.member,
+        member=user,
         date_cancelled=None).count() > 0
 
 
@@ -26,7 +26,7 @@ def event_permissions(user, event):
         try:
             registration = Registration.objects.get(
                 event=event,
-                member=user.member
+                member=user
             )
         except Registration.DoesNotExist:
             pass
@@ -66,7 +66,7 @@ def create_registration(user, event):
         try:
             registration = Registration.objects.get(
                 event=event,
-                member=user.member
+                member=user
             )
         except Registration.DoesNotExist:
             pass
@@ -74,7 +74,7 @@ def create_registration(user, event):
         if registration is None:
             return Registration.objects.create(
                 event=event,
-                member=user.member
+                member=user
             )
         elif registration.date_cancelled is not None:
             if registration.is_late_cancellation():
@@ -98,7 +98,7 @@ def cancel_registration(request, user, event):
     try:
         registration = Registration.objects.get(
             event=event,
-            member=user.member
+            member=user
         )
     except Registration.DoesNotExist:
         pass
@@ -126,7 +126,7 @@ def update_registration(user, event, field_values):
     try:
         registration = Registration.objects.get(
             event=event,
-            member=user.member
+            member=user
         )
     except Registration.DoesNotExist:
         pass
@@ -159,7 +159,7 @@ def registration_fields(user, event):
     try:
         registration = Registration.objects.get(
             event=event,
-            member=user.member
+            member=user
         )
     except Registration.DoesNotExist:
         pass

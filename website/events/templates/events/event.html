@@ -195,23 +195,23 @@
                             </div>
                         </a>
                     {% else %}
-                        <a href="{% url 'members:profile' pk=registration.member.user.pk %}">
+                        <a href="{% url 'members:profile' pk=registration.member.pk %}">
                             <div class="post-inner">
                                 <div class="inner-img">
-                                    {% if not registration.member.photo %}
-                                    <img alt="{{ member.display_name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
+                                    {% if not registration.member.member.photo %}
+                                    <img alt="{{ registration.member.member.display_name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
                                     {% else %}
-                                    <img alt="{{ member.display_name }}" src="{% thumbnail registration.member.photo '220x220' %}" width="220" height="220" />
+                                    <img alt="{{ registration.member.member.display_name }}" src="{% thumbnail registration.member.member.photo '220x220' %}" width="220" height="220" />
                                     {% endif %}
                                 </div>
                                 <div class="post-overlay">
                                     <div class="post-overlay-meta">
-                                        <h2>{{ registration.member.display_name }}</h2>
-                                        <p>{% trans "cohort"|capfirst %}: {{ registration.member.starting_year }}</p>
+                                        <h2>{{ registration.member.member.display_name }}</h2>
+                                        <p>{% trans "cohort"|capfirst %}: {{ registration.member.member.starting_year }}</p>
                                     </div>
                                 </div>
                                 <div class="post-body avatar-subtitle">
-                                    {{ registration.member.display_name }}
+                                    {{ registration.member.member.display_name }}
                                 </div>
                             </div>
                         </a>

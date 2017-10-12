@@ -138,7 +138,7 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
 
     def get_object(self):
         instance = super().get_object()
-        if (instance.member.user.pk != self.request.user.pk and
+        if (instance.member.pk != self.request.user.pk and
                 not services.is_organiser(self.request.user,
                                           instance.event)):
             raise NotFound()
@@ -154,17 +154,17 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
     def perform_update(self, serializer):
         super().perform_update(serializer)
         registration = serializer.instance
-        services.update_registration(registration.member.user,
+        services.update_registration(registration.member,
                                      registration.event,
                                      serializer.field_values())
         serializer.information_fields = services.registration_fields(
-            registration.member.user, registration.event)
+            registration.member, registration.event)
 
     def destroy(self, request, pk=None, **kwargs):
         registration = self.get_object()
         try:
             services.cancel_registration(request,
-                                         registration.member.user,
+                                         registration.member,
                                          registration.event)
             return Response(status=204)
         except RegistrationError as e:
