@@ -368,7 +368,7 @@ class Member(models.Model):
 
     def get_committees(self):
         return Committee.unfiltered_objects.filter(
-            Q(committeemembership__member=self) &
+            Q(committeemembership__member=self.user) &
             (
                 Q(committeemembership__until=None) |
                 Q(committeemembership__until__gt=timezone.now())

@@ -335,14 +335,14 @@ class Command(BaseCommand):
                 self.create_user()
 
         if options['board']:
-            members = Member.objects.all()
+            members = User.objects.all()
             lecture_year = datetime_to_lectureyear(date.today())
             for i in range(options['board']):
                 self.create_board(lecture_year - i, members)
 
         # Committees need to be generated before events
         if options['committee']:
-            members = Member.objects.all()
+            members = User.objects.all()
             for __ in range(options['committee']):
                 self.create_committee(members)
 

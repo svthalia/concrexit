@@ -12,7 +12,7 @@ def get_automatic_lists():
                    .filter(committee__board=None)
                    .filter(chair=True)
                    .prefetch_related('member__user'))
-    committee_chairs = [x.member for x in memberships] + [Member(
+    committee_chairs = [x.member.member for x in memberships] + [Member(
         user=User(
             email='intern@thalia.nu'
         )
@@ -20,8 +20,8 @@ def get_automatic_lists():
 
     active_committee_memberships = (CommitteeMembership.active_memberships
                                     .exclude(committee__board__is_board=True)
-                                    .prefetch_related('member__user'))
-    active_members = [x.member for x in active_committee_memberships]
+                                    .prefetch_related('member__member'))
+    active_members = [x.member.member for x in active_committee_memberships]
 
     lectureyear = datetime_to_lectureyear(timezone.now())
     # Change to next lecture year after December
@@ -29,7 +29,7 @@ def get_automatic_lists():
         lectureyear += 1
     active_mentorships = Mentorship.objects.filter(
         year=lectureyear)
-    mentors = [x.member for x in active_mentorships]
+    mentors = [x.member.member for x in active_mentorships]
 
     lists = []
 

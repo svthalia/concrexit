@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -69,7 +69,7 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
     )
 
     members = models.ManyToManyField(
-        'members.Member',
+        User,
         through='CommitteeMembership'
     )
 
@@ -206,7 +206,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
     active_memberships = ActiveMembershipManager()
 
     member = models.ForeignKey(
-        'members.Member',
+        User,
         on_delete=models.CASCADE,
         verbose_name=_('Member'),
     )
@@ -329,11 +329,11 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.member.user.is_staff = (self.member
-                                     .committeemembership_set
-                                     .exclude(until__lte=timezone.now().date())
-                                     .count()) >= 1
-        self.member.user.save()
+        self.member.is_staff = (self.member
+                                .committeemembership_set
+                                .exclude(until__lte=timezone.now().date())
+                                .count()) >= 1
+        self.member.save()
 
     def __str__(self):
         return "{} membership of {} since {}, until {}".format(self.member,
@@ -348,7 +348,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
 class Mentorship(models.Model):
     member = models.ForeignKey(
-        'members.Member',
+        User,
         on_delete=models.CASCADE,
         verbose_name=_('Member'),
     )

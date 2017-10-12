@@ -39,6 +39,7 @@ class AdminTest(TestCase):
             price=0.00,
             fine=0.00)
         cls.member = Member.objects.filter(user__last_name="Wiggers").first()
+        cls.user = cls.member.user
         cls.permission_change_event = Permission.objects.get(
             content_type__model='event',
             codename='change_event')
@@ -71,7 +72,7 @@ class AdminTest(TestCase):
 
     def test_admin_details_organiser_allowed(self):
         CommitteeMembership.objects.create(
-            member=self.member,
+            member=self.user,
             committee=self.committee)
         response = self.client.get('/events/admin/1/')
         self.assertEqual(200, response.status_code)
@@ -87,7 +88,7 @@ class AdminTest(TestCase):
         If I'm an organiser I should be allowed access
         """
         CommitteeMembership.objects.create(
-            member=self.member,
+            member=self.user,
             committee=self.committee)
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
@@ -109,7 +110,7 @@ class AdminTest(TestCase):
         """
         self._remove_event_permission()
         CommitteeMembership.objects.create(
-            member=self.member,
+            member=self.user,
             committee=self.committee)
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(403, response.status_code)
