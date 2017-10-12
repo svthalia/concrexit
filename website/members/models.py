@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from functools import reduce
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -418,7 +419,7 @@ class Member(models.Model):
             self._orig_image = self.photo.path
 
     def __str__(self):
-        return '{} ({})'.format(self.get_full_name(), self.user.username)
+        return str(self.user)
 
 
 class Membership(models.Model):
@@ -526,3 +527,10 @@ def gen_stats_year(member_types):
     stats_year.append(new)
 
     return stats_year
+
+
+def str_user(self):
+        return '{} ({})'.format(self.get_full_name(), self.username)
+
+
+User.add_to_class("__str__", str_user)
