@@ -1,3 +1,3 @@
 START
-{% for member in members %}{{ member.user.email }}
+{% for member in members %}{{ member.email }}
 {% endfor %}END

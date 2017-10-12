@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from members.models import Member
 
 from .models import ListAlias, MailingList, VerbatimAddress
 
@@ -15,7 +14,6 @@ class ListAliasInline(admin.TabularInline):
 
 @admin.register(MailingList)
 class MailingListAdmin(admin.ModelAdmin):
-    model = Member
     filter_horizontal = ('members',)
     inlines = (VerbatimAddressInline, ListAliasInline)
     list_display = ('name', 'alias_names',)
