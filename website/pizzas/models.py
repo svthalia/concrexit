@@ -1,10 +1,10 @@
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 import events
-import members
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
@@ -66,7 +66,7 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
 
 class Order(models.Model):
     member = models.ForeignKey(
-        members.models.Member,
+        User,
         on_delete=models.CASCADE,
         blank=True,
         null=True,
@@ -103,4 +103,4 @@ class Order(models.Model):
         return not self.paid and not self.pizza_event.has_ended
 
     class Meta:
-        unique_together = ('pizza_event', 'member')
+        unique_together = ('pizza_event', 'member',)

@@ -47,10 +47,10 @@ class OrderViewset(ModelViewSet):
             if not event or event.has_ended:
                 return Order.objects.none()
 
-            return Order.objects.filter(member=self.request.user.member,
+            return Order.objects.filter(member=self.request.user,
                                         paid=False,
                                         pizza_event=event)
-        return Order.objects.filter(member=self.request.user.member,
+        return Order.objects.filter(member=self.request.user,
                                     pizza_event=event)
 
     def get_serializer_class(self):
@@ -61,7 +61,7 @@ class OrderViewset(ModelViewSet):
     def get_object(self):
         if self.kwargs[self.lookup_field] == 'me':
             order = get_object_or_404(self.get_queryset(),
-                                      member=self.request.user.member,
+                                      member=self.request.user,
                                       pizza_event=PizzaEvent.current())
             self.check_object_permissions(self.request, order)
             return order
@@ -72,7 +72,7 @@ class OrderViewset(ModelViewSet):
             if serializer.validated_data.get('name'):
                 serializer.save(pizza_event=PizzaEvent.current())
             else:
-                serializer.save(member=self.request.user.member,
+                serializer.save(member=self.request.user,
                                 pizza_event=PizzaEvent.current())
         except IntegrityError:
             raise ValidationError('Something went wrong when saving the order')
