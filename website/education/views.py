@@ -76,7 +76,7 @@ def submit_exam(request, id=None):
         if form.is_valid():
             saved = True
             obj = form.save(commit=False)
-            obj.uploader = request.user
+            obj.uploader = request.member
             obj.uploader_date = datetime.now()
             obj.save()
 
@@ -101,18 +101,18 @@ def submit_summary(request, id=None):
         if form.is_valid():
             saved = True
             obj = form.save(commit=False)
-            obj.uploader = request.user
+            obj.uploader = request.member
             obj.uploader_date = datetime.now()
             obj.save()
 
             obj = Summary()
-            obj.author = request.user.get_full_name()
+            obj.author = request.member.get_full_name()
             form = AddSummaryForm(instance=obj)
     else:
         obj = Summary()
         if id is not None:
             obj.course = Course.objects.get(id=id)
-        obj.author = request.user.get_full_name()
+        obj.author = request.member.get_full_name()
         form = AddSummaryForm(instance=obj)
 
     return render(request, 'education/add_summary.html',

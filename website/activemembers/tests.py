@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
@@ -7,6 +6,7 @@ from django.utils import timezone
 
 from activemembers.models import Committee, CommitteeMembership, Board
 from mailinglists.models import MailingList
+from members.models import Member
 
 
 class CommitteeMembersTest(TestCase):
@@ -15,7 +15,7 @@ class CommitteeMembersTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.testcie = Committee.objects.get(pk=1)
-        cls.testuser = User.objects.get(pk=1)
+        cls.testuser = Member.objects.get(pk=1)
         cls.m = CommitteeMembership.objects.create(
             committee=cls.testcie,
             member=cls.testuser,
@@ -35,7 +35,7 @@ class CommitteeMembersTest(TestCase):
                                      photo="")
 
     def test_join(self):
-        testuser2 = User.objects.get(pk=2)
+        testuser2 = Member.objects.get(pk=2)
         m = CommitteeMembership(committee=self.testcie,
                                 member=testuser2)
         m.full_clean()
@@ -95,8 +95,8 @@ class CommitteeMembersChairTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.testcie = Committee.objects.get(pk=1)
-        cls.testuser = User.objects.get(pk=1)
-        cls.testuser2 = User.objects.get(pk=2)
+        cls.testuser = Member.objects.get(pk=1)
+        cls.testuser2 = Member.objects.get(pk=2)
 
     def setUp(self):
         self.m1 = CommitteeMembership(committee=self.testcie,
@@ -134,11 +134,11 @@ class PermissionsBackendTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.u1 = User.objects.get(pk=1)
+        cls.u1 = Member.objects.get(pk=1)
         cls.u1.is_superuser = False
         cls.u1.save()
-        cls.u2 = User.objects.get(pk=2)
-        cls.u3 = User.objects.get(pk=3)
+        cls.u2 = Member.objects.get(pk=2)
+        cls.u3 = Member.objects.get(pk=3)
         cls.c1 = Committee.objects.get(pk=1)
         cls.c2 = Committee.objects.get(pk=2)
         cls.m1 = CommitteeMembership.objects.create(committee=cls.c1,
@@ -152,7 +152,7 @@ class PermissionsBackendTest(TestCase):
         self.assertEqual(set(), self.u3.get_all_permissions())
 
     def test_nonmember_user(self):
-        u = get_user_model().objects.create(username='foo')
+        u = User.objects.create(username='foo')
         self.assertEqual(set(), u.get_all_permissions())
 
 

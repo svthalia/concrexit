@@ -1,6 +1,6 @@
 import datetime
 
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission
 from django.core import mail
 from django.test import Client, TestCase
 from django.utils import timezone
@@ -12,6 +12,7 @@ from events.models import (Event, Registration,
                            IntegerRegistrationInformation,
                            TextRegistrationInformation)
 from mailinglists.models import MailingList
+from members.models import Member
 
 
 class AdminTest(TestCase):
@@ -37,7 +38,7 @@ class AdminTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        cls.member = User.objects.filter(last_name="Wiggers").first()
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.permission_change_event = Permission.objects.get(
             content_type__model='event',
             codename='change_event')
@@ -156,7 +157,7 @@ class RegistrationTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        cls.member = User.objects.filter(last_name="Wiggers").first()
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
 
     def setUp(self):
         self.client = Client()

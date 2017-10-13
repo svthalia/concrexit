@@ -3,18 +3,18 @@
 We currently have the following information about you in our database.
 Via this email we'd like to ask you to check the accuracy of this data.
 
-Username:               {{ member.user.username }}
+Username:               {{ member.username }}
 Name:                   {{ member.get_full_name }}
-Address:                {{ member.address_street }}
-                        {{ member.address_street2 }}
-                        {{ member.address_postal_code }}
-                        {{ member.address_city }}
-Phone:                  {{ member.phone_number }}
-Date of birth:          {{ member.birthday }}
-Email address:           {{ member.user.email }}
-Student number:          {{ member.student_number }}
-Cohort:                 {{ member.starting_year }}
-Programme:              {{ member.programme }}
+Address:                {{ member.profile.address_street }}
+                        {{ member.profile.address_street2 }}
+                        {{ member.profile.address_postal_code }}
+                        {{ member.profile.address_city }}
+Phone:                  {{ member.profile.phone_number }}
+Date of birth:          {{ member.profile.birthday }}
+Email address:          {{ member.email }}
+Student number:         {{ member.profile.student_number }}
+Cohort:                 {{ member.profile.starting_year }}
+Programme:              {{ member.profile.programme }}
 
 You can change this data by logging into the website and using the 'edit profile' page.
 Unable to edit the incorrect information? Then send an email: info@thaliagit.nu.

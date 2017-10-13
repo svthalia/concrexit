@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
 from django.urls import reverse
@@ -74,7 +73,7 @@ class EventAdmin(DoNextModelAdmin):
 
     def has_change_permission(self, request, event=None):
         if (event is not None and
-                not services.is_organiser(request.user, event)):
+                not services.is_organiser(request.member, event)):
             return False
         return super().has_change_permission(request, event)
 
@@ -111,13 +110,10 @@ class EventAdmin(DoNextModelAdmin):
 
     @staticmethod
     def _change_published(request, queryset, published):
-        try:
-            if not request.user.is_superuser:
-                queryset = queryset.filter(
-                    organiser__in=request.user.member.get_committees())
-            queryset.update(published=published)
-        except Member.DoesNotExist:
-            pass
+        if not request.user.is_superuser:
+            queryset = queryset.filter(
+                organiser__in=request.member.get_committees())
+        queryset.update(published=published)
 
     def save_formset(self, request, form, formset, change):
         """Save formsets with their order"""
@@ -144,13 +140,9 @@ class EventAdmin(DoNextModelAdmin):
         if db_field.name == 'organiser':
             # Use custom queryset for organiser field
             # Only get the current active committees the user is a member of
-            try:
-                if not (request.user.is_superuser or
-                        request.user.has_perm('events.override_organiser')):
-                    kwargs['queryset'] = request.user.member.get_committees()
-
-            except Member.DoesNotExist:
-                pass
+            if not (request.user.is_superuser or
+                    request.user.has_perm('events.override_organiser')):
+                kwargs['queryset'] = request.member.get_committees()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_actions(self, request):
@@ -179,6 +171,5 @@ class RegistrationAdmin(DoNextModelAdmin):
                 kwargs['queryset'] = models.Event.objects.filter(
                     pk=int(request.GET['event_pk']))
         elif db_field.name == 'member':
-            # TODO: Member.active_members.all()
-            kwargs['queryset'] = User.objects.all()
+            kwargs['queryset'] = Member.active_members.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

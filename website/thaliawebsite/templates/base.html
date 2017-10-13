@@ -58,7 +58,7 @@
     <!-- #wrapper -->
     <div class="thimbus-page">
         <!-- notification for authenticated users without membership -->
-        {% if request.user and request.user.member and request.user.member.current_membership is None %}
+        {% if request.member and request.member.current_membership is None %}
         <div class="announcement">
             <i class="fa fa-id-card"></i>
             {% trans "You're currently not a member of Thalia. Renew your membership to get access to all parts of the website." %}

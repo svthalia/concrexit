@@ -77,7 +77,8 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
 
     def _registered(self, instance):
         try:
-            return services.is_user_registered(instance, self.context['user'])
+            return services.is_user_registered(instance,
+                                               self.context['member'])
         except AttributeError:
             return None
 
@@ -155,16 +156,15 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     def _user_registration(self, instance):
         try:
             reg = instance.registration_set.get(
-                member=self.context['request'].user)
+                member=self.context['request'].member)
             return RegistrationListSerializer(reg, context=self.context).data
         except Registration.DoesNotExist:
             return None
 
     def _registration_allowed(self, instance):
-        user = self.context['request'].user
-        return (user.member is not None and
-                user.member.current_membership is not None and
-                user.member.can_attend_events)
+        member = self.context['request'].member
+        return (member.has_active_membership and
+                member.can_attend_events)
 
     def _has_fields(self, instance):
         return instance.has_fields()
@@ -228,13 +228,13 @@ class RegistrationListSerializer(serializers.ModelSerializer):
 
     def _name(self, instance):
         if instance.member:
-            return instance.member.member.display_name()
+            return instance.member.profile.display_name()
         return instance.name
 
     def _photo(self, instance):
-        if instance.member and instance.member.member.photo:
+        if instance.member and instance.member.profile.photo:
             return self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.member.member.photo))
+                '%s%s' % (settings.MEDIA_URL, instance.member.profile.photo))
         else:
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))
@@ -278,13 +278,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def _name(self, instance):
         if instance.member:
-            return instance.member.member.display_name()
+            return instance.member.profile.display_name()
         return instance.name
 
     def _photo(self, instance):
-        if instance.member and instance.member.member.photo:
+        if instance.member and instance.member.profile.photo:
             return self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.member.photo))
+                '%s%s' % (settings.MEDIA_URL, instance.profile.photo))
         else:
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))

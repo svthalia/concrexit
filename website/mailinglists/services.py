@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.utils import timezone
 
 from activemembers.models import CommitteeMembership, Mentorship
@@ -12,16 +11,14 @@ def get_automatic_lists():
                    .filter(committee__board=None)
                    .filter(chair=True)
                    .prefetch_related('member__user'))
-    committee_chairs = [x.member.member for x in memberships] + [Member(
-        user=User(
-            email='intern@thalia.nu'
-        )
-    )]
+    committee_chairs = [x.member for x in memberships] + [
+        Member(email='intern@thalia.nu')
+    ]
 
     active_committee_memberships = (CommitteeMembership.active_memberships
                                     .exclude(committee__board__is_board=True)
                                     .prefetch_related('member__member'))
-    active_members = [x.member.member for x in active_committee_memberships]
+    active_members = [x.member for x in active_committee_memberships]
 
     lectureyear = datetime_to_lectureyear(timezone.now())
     # Change to next lecture year after December
@@ -29,7 +26,7 @@ def get_automatic_lists():
         lectureyear += 1
     active_mentorships = Mentorship.objects.filter(
         year=lectureyear)
-    mentors = [x.member.member for x in active_mentorships]
+    mentors = [x.member for x in active_mentorships]
 
     lists = []
 
@@ -52,7 +49,8 @@ def get_automatic_lists():
         committee_chairs, moderated=False)
     lists += _create_automatic_list(
         ['optin'], '[THALIA] [OPTIN]', Member.active_members.filter(
-            receive_optin=True).prefetch_related('user'), multilingual=True)
+            profile__receive_optin=True),
+        multilingual=True)
 
     return lists
 
@@ -67,16 +65,16 @@ def _create_automatic_list(names, prefix, members,
     }
 
     if multilingual:
-        data['addresses'] = [member.user.email for member in members]
+        data['addresses'] = [member.email for member in members]
         yield data  # this is the complete list, e.g. leden@
         for language in settings.LANGUAGES:
             localized_data = data.copy()
             localized_data['addresses'] = [
-                member.user.email for member in members
-                if member.language == language[0]]
+                member.email for member in members
+                if member.profile.language == language[0]]
             localized_data['names'] = [
                 '{}-{}'.format(n, language[0]) for n in names]
             yield localized_data  # these are localized lists, e.g. leden-nl@
     else:
-        data['addresses'] = [member.user.email for member in members]
+        data['addresses'] = [member.email for member in members]
         yield data

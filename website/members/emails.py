@@ -6,19 +6,19 @@ from django.utils import translation
 from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
 
-from members import models
+from members.models import Member
 from thaliawebsite.settings import settings
 
 
 def send_membership_announcement(dry_run=False):
-    members = (models.Member.active_members
-               .filter(user__membership__until__isnull=True)
+    members = (Member.active_members
+               .filter(membership__until__isnull=True)
                .distinct())
 
     with mail.get_connection() as connection:
         for member in members:
             print("Send email to {} ({})".format(member.get_full_name(),
-                                                 member.user.email))
+                                                 member.email))
             if not dry_run:
                 with translation.override(member.language):
                     email_body = loader.render_to_string(
@@ -28,7 +28,7 @@ def send_membership_announcement(dry_run=False):
                         _('Membership announcement'),
                         email_body,
                         settings.WEBSITE_FROM_ADDRESS,
-                        [member.user.email],
+                        [member.email],
                         bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                         connection=connection
                     ).send()
@@ -44,12 +44,12 @@ def send_membership_announcement(dry_run=False):
 
 
 def send_information_request(dry_run=False):
-    members = models.Member.active_members.all()
+    members = Member.active_members.all()
 
     with mail.get_connection() as connection:
         for member in members:
             print("Send email to {} ({})".format(member.get_full_name(),
-                                                 member.user.email))
+                                                 member.email))
             if not dry_run:
                 with translation.override(member.language):
                     email_body = loader.render_to_string(
@@ -60,7 +60,7 @@ def send_information_request(dry_run=False):
                         _('Membership information check'),
                         email_body,
                         settings.WEBSITE_FROM_ADDRESS,
-                        [member.user.email],
+                        [member.email],
                         bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                         connection=connection
                     ).send()
@@ -77,14 +77,14 @@ def send_information_request(dry_run=False):
 
 def send_expiration_announcement(dry_run=False):
     expiry_date = datetime.now() + timedelta(days=31)
-    members = (models.Member.active_members
-               .filter(user__membership__until__lte=expiry_date)
+    members = (Member.active_members
+               .filter(membership__until__lte=expiry_date)
                .distinct())
 
     with mail.get_connection() as connection:
         for member in members:
             print("Send email to {} ({})".format(member.get_full_name(),
-                                                 member.user.email))
+                                                 member.email))
             if not dry_run:
                 with translation.override(member.language):
                     email_body = loader.render_to_string(
@@ -94,7 +94,7 @@ def send_expiration_announcement(dry_run=False):
                         _('Membership expiration announcement'),
                         email_body,
                         settings.WEBSITE_FROM_ADDRESS,
-                        [member.user.email],
+                        [member.email],
                         bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                         connection=connection
                     ).send()

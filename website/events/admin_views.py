@@ -95,7 +95,7 @@ def export(request, event_id):
             _('Date'): timezone.localtime(
                             registration.date).strftime("%Y-%m-%d %H:%m"),
             _('Present'): _('Yes') if registration.present else '',
-            _('Phone number'): (registration.member.member.phone_number
+            _('Phone number'): (registration.member.profile.phone_number
                                 if registration.member
                                 else ''),
             _('Email'): (registration.member.email

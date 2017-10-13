@@ -1,6 +1,5 @@
 import datetime
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
 from rest_framework.test import APIClient
@@ -11,6 +10,7 @@ from events.models import (Event, Registration,
                            BooleanRegistrationInformation,
                            IntegerRegistrationInformation,
                            TextRegistrationInformation)
+from members.models import Member
 
 
 class RegistrationApiTest(TestCase):
@@ -35,7 +35,7 @@ class RegistrationApiTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        cls.member = User.objects.filter(last_name="Wiggers").first()
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
 
     def setUp(self):
         self.client = APIClient()

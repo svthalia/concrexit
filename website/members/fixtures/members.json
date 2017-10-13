@@ -54,7 +54,7 @@
     }
 },
 {
-    "model": "members.member",
+    "model": "members.profile",
     "pk": 1,
     "fields": {
         "user": 1,
@@ -80,7 +80,7 @@
     }
 },
 {
-    "model": "members.member",
+    "model": "members.profile",
     "pk": 2,
     "fields": {
         "user": 2,
@@ -106,7 +106,7 @@
     }
 },
 {
-    "model": "members.member",
+    "model": "members.profile",
     "pk": 3,
     "fields": {
         "user": 3,

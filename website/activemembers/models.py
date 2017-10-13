@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -69,7 +69,7 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
     )
 
     members = models.ManyToManyField(
-        User,
+        'members.Member',
         through='CommitteeMembership'
     )
 
@@ -206,7 +206,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
     active_memberships = ActiveMembershipManager()
 
     member = models.ForeignKey(
-        User,
+        'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member'),
     )
@@ -348,7 +348,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
 class Mentorship(models.Model):
     member = models.ForeignKey(
-        User,
+        'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member'),
     )

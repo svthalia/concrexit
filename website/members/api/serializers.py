@@ -16,7 +16,7 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
         model = Member
 
     def _start(self, instance):
-        return instance.birthday
+        return instance.profile.birthday
 
     def _end(self, instance):
         pass
@@ -28,10 +28,10 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
         return True
 
     def _url(self, instance):
-        return reverse('members:profile', kwargs={'pk': instance.user.pk})
+        return reverse('members:profile', kwargs={'pk': instance.pk})
 
     def _title(self, instance):
-        return instance.display_name()
+        return instance.profile.display_name()
 
     def _description(self, instance):
         membership = instance.current_membership
@@ -56,16 +56,36 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
                   'birthday', 'starting_year', 'programme',
                   'website', 'membership_type', 'achievements')
 
-    pk = serializers.IntegerField(source='user.pk')
+    display_name = serializers.SerializerMethodField('_display_name')
     photo = serializers.SerializerMethodField('_b64_photo')
+    profile_description = serializers.SerializerMethodField(
+            '_profile_description')
     birthday = serializers.SerializerMethodField('_birthday')
+    starting_year = serializers.SerializerMethodField('_starting_year')
+    programme = serializers.SerializerMethodField('_programme')
+    website = serializers.SerializerMethodField('_website')
     membership_type = serializers.SerializerMethodField('_membership_type')
     achievements = serializers.SerializerMethodField('_achievements')
 
+    def _display_name(self, instance):
+        return instance.profile.display_name()
+
+    def _profile_description(self, instance):
+        return instance.profile.profile_description
+
     def _birthday(self, instance):
-        if instance.show_birthday:
-            return instance.birthday
+        if instance.profile.show_birthday:
+            return instance.profile.birthday
         return None
+
+    def _starting_year(self, instance):
+        return instance.profile.starting_year
+
+    def _programme(self, instance):
+        return instance.profile.programme
+
+    def _website(self, instance):
+        return instance.profile.website
 
     def _membership_type(self, instance):
         membership = instance.current_membership
@@ -77,9 +97,10 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
         return member_achievements(instance)
 
     def _b64_photo(self, instance):
-        if instance.photo:
-            photo = ''.join(['data:image/jpeg;base64,',
-                             b64encode(instance.photo.file.read()).decode()])
+        if instance.profile.photo:
+            photo = ''.join(
+                    ['data:image/jpeg;base64,',
+                     b64encode(instance.profile.photo.file.read()).decode()])
         else:
             filename = find_static_file('members/images/default-avatar.jpg')
             with open(filename, 'rb') as f:
@@ -94,13 +115,16 @@ class MemberListSerializer(serializers.ModelSerializer):
         model = Member
         fields = ('pk', 'display_name', 'photo',)
 
-    pk = serializers.IntegerField(source='user.pk')
+    display_name = serializers.SerializerMethodField('_display_name')
     photo = serializers.SerializerMethodField('_photo')
 
+    def _display_name(self, instance):
+        return instance.profile.display_name()
+
     def _photo(self, instance):
-        if instance.photo:
+        if instance.profile.photo:
             return self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.photo))
+                '%s%s' % (settings.MEDIA_URL, instance.profile.photo))
         else:
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))

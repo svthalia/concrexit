@@ -85,6 +85,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    # Our middleware
+    'members.middleware.MemberMiddleware',
 ]
 
 ROOT_URLCONF = 'thaliawebsite.urls'

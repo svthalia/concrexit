@@ -20,31 +20,31 @@
 <div class="type-portfolio type-portfolio-half clearfix user-page">
     <div class="row">
         <div class="span8">
-            <img src="{% if not member.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ member.photo.url }}{% endif %}" alt="{{ member.username }}" />
+            <img src="{% if not member.profile.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ member.profile.photo.url }}{% endif %}" alt="{{ member.username }}" />
         </div>
         <div class="span4 row">
-            <h4>{% trans "About" %} {{ member.short_display_name }}</h4>
+            <h4>{% trans "About" %} {{ member.profile.short_display_name }}</h4>
 
-            {% if not member.profile_description %}
+            {% if not member.profile.profile_description %}
             <i>{% trans "This member has not written a description yet." %}</i>
             {% else %}
-            {{ member.profile_description }}
+            {{ member.profile.profile_description }}
             {% endif %}
 
             <hr class="separator">
             <h4>{% trans "Personal information" %}</h4>
             <ul class="post-meta">
                 <li><span>{% trans "Membership type" %}: </span> {{ membership_type }}<br></li>
-                <li><span>{% trans "Cohort" %}: </span> {{ member.starting_year }}<br></li>
+                <li><span>{% trans "Cohort" %}: </span> {{ member.profile.starting_year }}<br></li>
 
-                <li><span>{% trans "Study programme" %}: </span> {{ member.get_programme_display }}<br></li>
+                <li><span>{% trans "Study programme" %}: </span> {{ member.profile.get_programme_display }}<br></li>
 
-                {% if member.website %}
-                <li><span>{% trans "Website" %}: </span> <a rel="nofollow,noopener" href="{{ member.website }}">{{ member.website }}</a></li>
+                {% if member.profile.website %}
+                <li><span>{% trans "Website" %}: </span> <a rel="nofollow,noopener" href="{{ member.profile.website }}">{{ member.profile.website }}</a></li>
                 {% endif %}
 
-                {% if member.show_birthday %}
-                <li><span>{% trans "Birthday" %}: </span> {{ member.birthday }}</li>
+                {% if member.profile.show_birthday %}
+                <li><span>{% trans "Birthday" %}: </span> {{ member.profile.birthday }}</li>
                 {% endif %}
             </ul>
 

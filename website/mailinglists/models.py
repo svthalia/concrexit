@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -6,6 +5,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from activemembers.models import Committee
+from members.models import Member
 
 
 class MailingList(models.Model):
@@ -41,7 +41,7 @@ class MailingList(models.Model):
     )
 
     members = models.ManyToManyField(
-        User,
+        Member,
         verbose_name=_("Members"),
         blank=True,
         help_text=_('Select individual members to include in the list.'),
@@ -56,12 +56,12 @@ class MailingList(models.Model):
 
     def all_addresses(self):
         for member in self.members.all():
-            yield member.user.email
+            yield member.email
 
         for committee in self.committees.all().prefetch_related("members"):
             for member in committee.members.exclude(
                     committeemembership__until__lt=timezone.now().date()):
-                yield member.user.email
+                yield member.email
 
         for verbatimaddress in self.addresses.all():
             yield verbatimaddress.address

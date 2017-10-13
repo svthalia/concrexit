@@ -30,13 +30,13 @@
       <ul class="row" id="commissieleden">
         {% for member in members %}
         <li class="post member-item span3 has-overlay">
-          <a href="{{ member.member.get_absolute_url }}">
+          <a href="{{ member.get_absolute_url }}">
             <div class="post-inner">
               <div class="inner-img">
-                {% if not member.member.photo %}
-                <img alt="{{ member.member.display_name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
+                {% if not member.profile.photo %}
+                <img alt="{{ member.profile.display_name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
                 {% else %}
-                <img alt="{{ member.member.display_name }}" src="{% thumbnail member.member.photo '220x220' %}" width="220" height="220" />
+                <img alt="{{ member.profile.display_name }}" src="{% thumbnail member.profile.photo '220x220' %}" width="220" height="220" />
                 {% endif %}
               </div>
               {% if member.chair %}
@@ -48,7 +48,7 @@
               {% endif %}
               <div class="post-overlay">
                 <div class="post-overlay-meta">
-                  <h2>{{ member.member.display_name }}</h2>
+                  <h2>{{ member.profile.display_name }}</h2>
                   <p>
                   {% if member.committee_since.year == 1970 %}
                   {% blocktrans %}Committee member since: ?{% endblocktrans %}
@@ -59,7 +59,7 @@
                 </div>
               </div>
               <div class="post-body avatar-subtitle">
-                {{ member.member.display_name }}
+                {{ member.profile.display_name }}
               </div>
             </div>
           </a>

@@ -21,7 +21,7 @@ class OrganiserOnly(object):
             except Event.DoesNotExist:
                 pass
 
-            if event and services.is_organiser(request.user, event):
+            if event and services.is_organiser(request.member, event):
                 return self.view_function(request, *args, **kwargs)
 
         raise PermissionDenied

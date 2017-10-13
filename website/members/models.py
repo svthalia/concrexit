@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from functools import reduce
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserManager
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -22,17 +22,26 @@ from PIL import Image
 import os
 
 
-class ActiveMemberManager(models.Manager):
+class MemberManager(UserManager):
+    """Get all members, i.e. all users with a profile."""
+
+    def get_queryset(self):
+        return super().get_queryset().exclude(profile=None)
+
+
+class ActiveMemberManager(MemberManager):
     """Get all active members"""
+
     def get_queryset(self):
         return (super().get_queryset()
-                .exclude(user__membership=None)
-                .filter(Q(user__membership__until__isnull=True) |
-                        Q(user__membership__until__gt=timezone.now().date()))
+                .exclude(membership=None)
+                .filter(Q(membership__until__isnull=True) |
+                        Q(membership__until__gt=timezone.now().date()))
                 .distinct())
 
     def with_birthdays_in_range(self, from_date, to_date):
-        queryset = self.get_queryset().filter(birthday__lte=to_date)
+        queryset = (self.get_queryset()
+                        .filter(profile__birthday__lte=to_date))
 
         if (to_date - from_date).days >= 366:
             # 366 is important to also account for leap years
@@ -42,7 +51,8 @@ class ActiveMemberManager(models.Manager):
         delta = to_date - from_date
         dates = [from_date + timedelta(days=i) for i in range(delta.days + 1)]
         monthdays = [
-            {"birthday__month": d.month, "birthday__day": d.day}
+            {"profile__birthday__month": d.month,
+             "profile__birthday__day": d.day}
             for d in dates
         ]
         # Don't get me started (basically, we are making a giant OR query with
@@ -51,17 +61,91 @@ class ActiveMemberManager(models.Manager):
         return queryset.filter(query)
 
 
-class Member(models.Model):
-    """This class describes a member"""
+class Member(User):
+    class Meta:
+        proxy = True
+        ordering = ('first_name', 'last_name')
 
-    objects = models.Manager()
+    objects = MemberManager()
     active_members = ActiveMemberManager()
+
+    def __str__(self):
+        return '{} ({})'.format(self.get_full_name(), self.username)
+
+    @property
+    def current_membership(self):
+        membership = self.latest_membership
+        if membership and not membership.is_active():
+            return None
+        return membership
+
+    @property
+    def latest_membership(self):
+        if not self.membership_set.exists():
+            return None
+        return self.membership_set.latest('since')
+
+    @property
+    def earliest_membership(self):
+        if not self.membership_set.exists():
+            return None
+        return self.membership_set.earliest('since')
+
+    def has_been_member(self):
+        return self.membership_set.filter(type='member').count() > 0
+
+    def has_been_honorary_member(self):
+        return self.membership_set.filter(type='honorary').count() > 0
+
+    def has_active_membership(self):
+        """Is this member currently active
+
+        Tested by checking if the expiration date has passed.
+        """
+        return self.current_membership is not None
+
+    # Special properties for admin site
+    has_active_membership.boolean = True
+    has_active_membership.short_description = \
+        _('Is this user currently active')
+
+    @classmethod
+    def all_with_membership(cls, membership_type, prefetch=None):
+        return [x for x in cls.objects.all().prefetch_related(prefetch)
+                if x.current_membership and
+                x.current_membership.type == membership_type]
+
+    @property
+    def can_attend_events(self):
+        if not self.profile:
+            return False
+
+        return ((self.profile.event_permissions == 'all' or
+                self.profile.event_permissions == 'no_drinks') and
+                self.current_membership is not None)
+
+    def get_committees(self):
+        return Committee.unfiltered_objects.filter(
+            Q(committeemembership__member=self) &
+            (
+                Q(committeemembership__until=None) |
+                Q(committeemembership__until__gt=timezone.now())
+            )).exclude(active=False)
+
+    def get_absolute_url(self):
+        return reverse('members:profile', args=[str(self.pk)])
+
+
+class Profile(models.Model):
+    """This class holds extra information about a member"""
 
     # No longer yearly membership as a type, use expiration date instead.
     PROGRAMME_CHOICES = (
         ('computingscience', _('Computing Science')),
         ('informationscience', _('Information Sciences')))
 
+    # Preferably this would have been a foreign key to Member instead,
+    # but the UserAdmin requires that this is a foreign key to User.
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -93,51 +177,6 @@ class Member(models.Model):
         blank=True,
         null=True,
     )
-
-    @property
-    def current_membership(self):
-        membership = self.latest_membership
-        if membership and not membership.is_active():
-            return None
-        return membership
-
-    @property
-    def latest_membership(self):
-        if not self.membership_set.exists():
-            return None
-        return self.membership_set.latest('since')
-
-    @property
-    def earliest_membership(self):
-        if not self.membership_set.exists():
-            return None
-        return self.membership_set.earliest('since')
-
-    @property
-    def membership_set(self):
-        return self.user.membership_set
-
-    def has_been_member(self):
-        return self.membership_set.filter(type='member').count() > 0
-
-    def has_been_honorary_member(self):
-        return self.membership_set.filter(type='honorary').count() > 0
-
-    def is_active(self):
-        """Is this member currently active
-
-        Tested by checking if the expiration date has passed.
-        """
-        return self.current_membership is not None
-    # Special properties for admin site
-    is_active.boolean = True
-    is_active.short_description = _('Is this user currently active')
-
-    @classmethod
-    def all_with_membership(cls, membership_type, prefetch=None):
-        return [x for x in cls.objects.all().prefetch_related(prefetch)
-                if x.current_membership and
-                x.current_membership.type == membership_type]
 
     # ---- Address information -----
 
@@ -277,12 +316,6 @@ class Member(models.Model):
         default='all',
     )
 
-    @property
-    def can_attend_events(self):
-        return ((self.event_permissions == 'all' or
-                self.event_permissions == 'no_drinks') and
-                self.current_membership is not None)
-
     # --- Communication preference ----
 
     language = models.CharField(
@@ -326,9 +359,6 @@ class Member(models.Model):
         blank=True,
     )
 
-    class Meta:
-        ordering = ('user__first_name', 'user__last_name')
-
     def display_name(self):
         pref = self.display_name_preference
         if pref == 'nickname' and self.nickname is not None:
@@ -347,7 +377,7 @@ class Member(models.Model):
             return "'{}' {}".format(self.nickname,
                                     self.user.last_name)
         else:
-            return self.get_full_name() or self.user.username
+            return self.user.get_full_name() or self.user.username
     display_name.short_description = _('Display name')
 
     def short_display_name(self):
@@ -362,20 +392,6 @@ class Member(models.Model):
         else:
             return self.user.first_name
         return
-
-    def get_full_name(self):
-        return self.user.get_full_name()
-
-    def get_committees(self):
-        return Committee.unfiltered_objects.filter(
-            Q(committeemembership__member=self.user) &
-            (
-                Q(committeemembership__until=None) |
-                Q(committeemembership__until__gt=timezone.now())
-            )).exclude(active=False)
-
-    def get_absolute_url(self):
-        return reverse('members:profile', args=[str(self.user.pk)])
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -436,8 +452,7 @@ class Membership(models.Model):
     )
 
     # Preferably this would have been a foreign key to Member instead,
-    # but Django currently does not support nested inlines in the Admin UI.
-    # This is necessary to create an inline in the User form.
+    # but the UserAdmin requires that this is a foreign key to User.
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -456,10 +471,6 @@ class Membership(models.Model):
         blank=True,
         null=True,
     )
-
-    @property
-    def member(self):
-        return self.user.member
 
     def is_active(self):
         return not self.until or self.until > timezone.now().date()
@@ -504,7 +515,7 @@ def gen_stats_year(member_types):
             new[member_type] = (
                 Membership
                 .objects
-                .filter(user__member__starting_year=current_year - i)
+                .filter(user__profile__starting_year=current_year - i)
                 .filter(since__lte=date.today())
                 .filter(Q(until__isnull=True) |
                         Q(until__gt=date.today()))
@@ -518,7 +529,7 @@ def gen_stats_year(member_types):
         new[member_type] = (
             Membership
             .objects
-            .filter(user__member__starting_year__lt=current_year - 4)
+            .filter(user__profile__starting_year__lt=current_year - 4)
             .filter(since__lte=date.today())
             .filter(Q(until__isnull=True) |
                     Q(until__gt=date.today()))
@@ -527,10 +538,3 @@ def gen_stats_year(member_types):
     stats_year.append(new)
 
     return stats_year
-
-
-def str_user(self):
-        return '{} ({})'.format(self.get_full_name(), self.username)
-
-
-User.add_to_class("__str__", str_user)

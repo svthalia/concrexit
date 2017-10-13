@@ -4,7 +4,7 @@ from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
 from events.models import Registration
-from members.models import Member
+from members.models import Profile
 from thaliawebsite.templatetags import baseurl
 
 
@@ -21,10 +21,10 @@ def notify_first_waiting(request, event):
 
         text_template = get_template('events/member_email.txt')
 
-        if first_waiting_member.member:
+        if first_waiting_member.profile:
             language = first_waiting_member.member.language
         else:
-            language = Member._meta.get_field('language').default
+            language = Profile._meta.get_field('language').default
 
         with translation.override(language):
             subject = _("[THALIA] Notification about your "

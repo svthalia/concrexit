@@ -15,7 +15,7 @@ from django.views.decorators.debug import (sensitive_variables,
 
 from sendfile import sendfile
 
-from members.models import Member
+from members.models import Profile
 
 
 @login_required
@@ -44,11 +44,11 @@ def wiki_login(request):
     if user is not None:
         try:
             memberships = [cmm.committee.wiki_namespace for cmm in
-                           user.member.committeemembership_set.exclude(
+                           user.profile.committeemembership_set.exclude(
                                until__lt=timezone.now().date())
                            .select_related('committee')
                            if cmm.committee.wiki_namespace is not None]
-        except Member.DoesNotExist:
+        except Profile.DoesNotExist:
             memberships = []
 
         if user.has_perm('activemembers.board_wiki'):
