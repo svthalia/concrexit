@@ -72,7 +72,10 @@ class OrderViewset(ModelViewSet):
             if serializer.validated_data.get('name'):
                 serializer.save(pizza_event=PizzaEvent.current())
             else:
-                serializer.save(member=self.request.member,
-                                pizza_event=PizzaEvent.current())
+                if self.request.user.has_perm('pizzas.change_order'):
+                    serializer.save(pizza_event=PizzaEvent.current())
+                else:
+                    serializer.save(member=self.request.member,
+                                    pizza_event=PizzaEvent.current())
         except IntegrityError:
             raise ValidationError('Something went wrong when saving the order')
