@@ -18,6 +18,7 @@ from utils.snippets import datetime_to_lectureyear
 from utils.validators import validate_file_extension
 
 from PIL import Image
+import os
 
 
 class ActiveMemberManager(models.Manager):
@@ -376,7 +377,7 @@ class Member(models.Model):
         return reverse('members:profile', args=[str(self.user.pk)])
 
     def __init__(self, *args, **kwargs):
-        super(Member, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.photo:
             self._orig_image = self.photo.path
         else:
@@ -394,13 +395,26 @@ class Member(models.Model):
         raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
-        super(Member, self).save(args, kwargs)
-        if self.photo and self._orig_image != self.photo.path:
+        super().save(args, kwargs)
+
+        if self._orig_image and not self.photo:
+            try:
+                os.remove(self._orig_image)
+            except FileNotFoundError:
+                pass
+            self._orig_image = ''
+
+        elif self.photo and self._orig_image != self.photo.path:
             image_path = self.photo.path
             image = Image.open(image_path)
             # Image.thumbnail does not upscale an image that is smaller
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
             image.save(image_path, "JPEG")
+
+            try:
+                os.remove(self._orig_image)
+            except FileNotFoundError:
+                pass
             self._orig_image = self.photo.path
 
     def __str__(self):
