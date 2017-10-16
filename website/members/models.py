@@ -17,6 +17,9 @@ from activemembers.models import Committee
 from utils.snippets import datetime_to_lectureyear
 from utils.validators import validate_file_extension
 
+from PIL import Image
+import os
+
 
 class ActiveMemberManager(models.Manager):
     """Get all active members"""
@@ -373,6 +376,13 @@ class Member(models.Model):
     def get_absolute_url(self):
         return reverse('members:profile', args=[str(self.user.pk)])
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.photo:
+            self._orig_image = self.photo.path
+        else:
+            self._orig_image = ""
+
     def clean(self):
         super().clean()
         errors = {}
@@ -383,6 +393,29 @@ class Member(models.Model):
                     {'nickname': _('You need to enter a nickname to use it as '
                                    'display name')})
         raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        super().save(args, kwargs)
+
+        if self._orig_image and not self.photo:
+            try:
+                os.remove(self._orig_image)
+            except FileNotFoundError:
+                pass
+            self._orig_image = ''
+
+        elif self.photo and self._orig_image != self.photo.path:
+            image_path = self.photo.path
+            image = Image.open(image_path)
+            # Image.thumbnail does not upscale an image that is smaller
+            image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
+            image.save(image_path, "JPEG")
+
+            try:
+                os.remove(self._orig_image)
+            except FileNotFoundError:
+                pass
+            self._orig_image = self.photo.path
 
     def __str__(self):
         return '{} ({})'.format(self.get_full_name(), self.user.username)
