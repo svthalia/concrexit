@@ -412,7 +412,7 @@ class Profile(models.Model):
         raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
-        super().save(args, kwargs)
+        super().save(*args, **kwargs)
 
         if self._orig_image and not self.photo:
             try:
