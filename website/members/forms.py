@@ -9,10 +9,10 @@ from django.utils import translation
 from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Member
+from .models import Profile
 
 
-class MemberForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm):
     class Meta:
         fields = ['address_street', 'address_street2',
                   'address_postal_code', 'address_city', 'phone_number',
@@ -21,7 +21,7 @@ class MemberForm(forms.ModelForm):
                   'profile_description', 'nickname',
                   'display_name_preference', 'photo', 'language',
                   'receive_optin', 'receive_newsletter']
-        model = Member
+        model = Profile
 
 
 class UserCreationForm(BaseUserCreationForm):
@@ -60,7 +60,7 @@ class UserCreationForm(BaseUserCreationForm):
             user.save()
         if self.cleaned_data['send_welcome_email']:
             # Ugly way to get the language since member isn't available
-            language = str(self.data.get('member-0-language', 'en'))
+            language = str(self.data.get('profile-0-language', 'en'))
             if language not in ('nl', 'en'):
                 language = 'en'
             with translation.override(language):

@@ -12,10 +12,10 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from sendfile import sendfile
 
-from members.models import Member
 from members.services import member_achievements
+from members.models import Member
 from . import models
-from .forms import MemberForm
+from .forms import ProfileForm
 
 
 def filter_users(tab, keywords, year_range):
@@ -23,14 +23,14 @@ def filter_users(tab, keywords, year_range):
     members_query = ~Q(id=None)
 
     if tab and tab.isdigit():
-        members_query &= Q(starting_year=int(tab))
+        members_query &= Q(profile__starting_year=int(tab))
     elif tab == 'old':
-        members_query &= Q(starting_year__lt=year_range[-1])
+        members_query &= Q(profile__starting_year__lt=year_range[-1])
     elif tab == 'ex':
         # Filter out all current active memberships
         memberships_query &= Q(type='member') | Q(type='honorary')
         memberships = models.Membership.objects.filter(memberships_query)
-        members_query &= ~Q(user__in=memberships.values('user'))
+        members_query &= ~Q(pk__in=memberships.values('user__pk'))
         # Members_query contains users that are not currently (honorary)member
     elif tab == 'honor':
         memberships_query = Q(until__gt=datetime.now().date()) | Q(until=None)
@@ -39,12 +39,12 @@ def filter_users(tab, keywords, year_range):
     if keywords:
         for key in keywords:
             members_query &= (
-                (Q(user__member__nickname__icontains=key) &
+                (Q(profile__nickname__icontains=key) &
                  # Works because relevant options all have `nick` in their key
-                 Q(user__member__display_name_preference__contains='nick')) |
-                Q(user__first_name__icontains=key) |
-                Q(user__last_name__icontains=key) |
-                Q(user__username__icontains=key))
+                 Q(profile__display_name_preference__contains='nick')) |
+                Q(first_name__icontains=key) |
+                Q(last_name__icontains=key) |
+                Q(username__icontains=key))
 
     if tab == 'ex':
         memberships_query = Q(type='member') | Q(type='honorary')
@@ -52,14 +52,15 @@ def filter_users(tab, keywords, year_range):
         all_memberships = models.Membership.objects.all()
         # Only keep members that were once members, or are legacy users that
         #  do not have any memberships at all
-        members_query &= (Q(user__in=memberships.values('user')) |
-                          ~Q(user__in=all_memberships.values('user')))
+        members_query &= (Q(pk__in=memberships.values('user__pk')) |
+                          ~Q(pk__in=all_memberships.values('user__pk')))
     else:
         memberships = models.Membership.objects.filter(memberships_query)
-        members_query &= Q(user__in=memberships.values('user'))
-    return (models.Member.objects.filter(members_query)
-                                 .order_by('-starting_year',
-                                           'user__first_name'))
+        members_query &= Q(pk__in=memberships.values('user__pk'))
+    return (Member.objects
+                  .filter(members_query)
+                  .order_by('-profile__starting_year',
+                            'first_name'))
 
 
 @login_required
@@ -114,9 +115,9 @@ def index(request):
 @login_required
 def profile(request, pk=None):
     if pk:
-        member = get_object_or_404(models.Member, user__pk=int(pk))
+        member = get_object_or_404(Member, pk=int(pk))
     else:
-        member = get_object_or_404(models.Member, user=request.user)
+        member = request.member
 
     # Group the memberships under the committees for easier template rendering
     achievements = member_achievements(member)
@@ -147,16 +148,16 @@ def account(request):
 
 @login_required
 def edit_profile(request):
-    member = get_object_or_404(models.Member, user=request.user)
+    profile = get_object_or_404(models.Profile, user=request.user)
     saved = False
 
     if request.POST:
-        form = MemberForm(request.POST, request.FILES, instance=member)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             saved = True
             form.save()
     else:
-        form = MemberForm(instance=member)
+        form = ProfileForm(instance=profile)
 
     return render(request, 'members/edit_profile.html',
                   {'form': form, 'saved': saved})
@@ -167,14 +168,15 @@ def iban_export(request):
     header_fields = ['name', 'username', 'iban']
     rows = []
 
-    members = Member.active_members.filter(direct_debit_authorized=True)
+    members = Member.active_members.filter(
+            profile__direct_debit_authorized=True)
 
     for member in members:
         if (member.current_membership.type != 'honorary'):
             rows.append({
                 'name': member.get_full_name(),
-                'username': member.user.username,
-                'iban': member.bank_account
+                'username': member.username,
+                'iban': member.profile.bank_account
             })
 
     response = HttpResponse(content_type='text/csv')
@@ -207,7 +209,7 @@ def statistics(request):
     member_types = ("member", "supporter", "honorary")
 
     # The numbers
-    total = models.Member.active_members.count()
+    total = Member.active_members.count()
 
     context = {
         "total_members": total,

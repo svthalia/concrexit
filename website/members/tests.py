@@ -1,10 +1,9 @@
 from datetime import date, datetime, timedelta
 
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
-from members.models import (Member, Membership,
+from members.models import (Profile, Member, Membership,
                             gen_stats_member_type, gen_stats_year)
 from members.views import filter_users
 
@@ -90,10 +89,10 @@ class MembershipFilterTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Add 10 members with default membership
-        users = [get_user_model()(id=i, username=i) for i in range(7)]
-        get_user_model().objects.bulk_create(users)
-        members = [Member(user_id=i) for i in range(7)]
+        members = [Member(id=i, username=i) for i in range(7)]
         Member.objects.bulk_create(members)
+        profiles = [Profile(user_id=i) for i in range(7)]
+        Profile.objects.bulk_create(profiles)
 
         Membership(user_id=0, type='honorary',
                    until=date.today() + timedelta(days=1)).save()
@@ -122,13 +121,13 @@ class MembershipFilterTest(TestCase):
     def test_honorary(self):
         members = filter_users('honor', '', [date.today().year])
         self.assertEqual(len(members), 1)
-        self.assertEqual(members[0].user.id, 0)
+        self.assertEqual(members[0].id, 0)
 
     def test_ex(self):
         members = filter_users('ex', '', [date.today().year])
         self.assertEqual(len(members), 3)
         for member in members:
-            self.assertIn(member.user.id, {4, 5, 6})
+            self.assertIn(member.id, {4, 5, 6})
 
     # TODO more tests for other cases
 
@@ -138,13 +137,13 @@ class StatisticsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Add 10 members with default membership
-        users = [get_user_model()(id=i, username=i) for i in range(10)]
-        get_user_model().objects.bulk_create(users)
+        members = [Member(id=i, username=i) for i in range(10)]
+        Member.objects.bulk_create(members)
         memberships = [Membership(user_id=i, type="member")
                        for i in range(10)]
         Membership.objects.bulk_create(memberships)
-        members = [Member(user_id=i) for i in range(10)]
-        Member.objects.bulk_create(members)
+        profiles = [Profile(user_id=i) for i in range(10)]
+        Profile.objects.bulk_create(profiles)
 
     def sum_members(self, members, type=None):
         if type is None:
@@ -169,8 +168,8 @@ class StatisticsTest(TestCase):
 
         # Set start date to current year - 1:
         for m in Member.objects.all():
-            m.starting_year = current_year - 1
-            m.save()
+            m.profile.starting_year = current_year - 1
+            m.profile.save()
         result = gen_stats_year(member_types)
         self.assertEqual(10, self.sum_members(result))
         self.assertEqual(10, self.sum_members(result, "member"))
@@ -236,27 +235,27 @@ class StatisticsTest(TestCase):
 
         # one first year student
         m = members[0]
-        m.starting_year = current_year
-        m.save()
+        m.profile.starting_year = current_year
+        m.profile.save()
 
         # one second year student
         m = members[1]
-        m.starting_year = current_year - 1
-        m.save()
+        m.profile.starting_year = current_year - 1
+        m.profile.save()
 
         # no third year students
 
         # one fourth year student
         m = members[2]
-        m.starting_year = current_year - 3
-        m.save()
+        m.profile.starting_year = current_year - 3
+        m.profile.save()
 
         # no fifth year students
 
         # one >5 year student
         m = members[3]
-        m.starting_year = current_year - 5
-        m.save()
+        m.profile.starting_year = current_year - 5
+        m.profile.save()
 
         # 4 active members
         result = gen_stats_year(member_types)

@@ -56,12 +56,12 @@ class MailingList(models.Model):
 
     def all_addresses(self):
         for member in self.members.all():
-            yield member.user.email
+            yield member.email
 
         for committee in self.committees.all().prefetch_related("members"):
             for member in committee.members.exclude(
                     committeemembership__until__lt=timezone.now().date()):
-                yield member.user.email
+                yield member.email
 
         for verbatimaddress in self.addresses.all():
             yield verbatimaddress.address

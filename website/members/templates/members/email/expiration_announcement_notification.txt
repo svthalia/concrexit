@@ -8,7 +8,7 @@ So you can expect an influx of people who want to extend their memberships.
 
 The email was sent to:
 {% for member in members %}
- * {{ member.full_name }}
+ * {{ member.get_full_name }}
 {% endfor %}
 
 Kisses,

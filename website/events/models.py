@@ -276,8 +276,8 @@ class Registration(models.Model):
         'members.Member', models.CASCADE,
         blank=True,
         null=True,
-        limit_choices_to=(Q(user__membership__until__isnull=True) |
-                          Q(user__membership__until__gt=timezone.now().date()))
+        limit_choices_to=(Q(membership__until__isnull=True) |
+                          Q(membership__until__gt=timezone.now().date()))
     )
 
     name = models.CharField(

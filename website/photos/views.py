@@ -20,15 +20,12 @@ COVER_FILENAME = 'cover.jpg'
 
 @login_required
 def index(request):
-    if request.user.member is None:
-        raise Http404("Sorry, you're not a member")
-
     albums_filter = Q()
     # Check if the user currently has a membership
-    if request.user.member.current_membership is None:
+    if request.member.current_membership is None:
         # This is user is currently not a member
         # so only show photos that were made during their membership
-        for membership in request.user.membership_set.all():
+        for membership in request.member.membership_set.all():
             if membership.until is not None:
                 albums_filter |= (Q(date__gte=membership.since) & Q(
                     date__lte=membership.until))
@@ -83,14 +80,14 @@ def album(request, slug):
     can_view = True
 
     # Check if the user currently has a membership
-    if request.user.member.current_membership is None:
+    if request.member.current_membership is None:
         # This user is currently not a member, so need to check if he/she
         # can view this album by checking the membership
         filter = Q(since__lte=album.date) & (Q(until__gte=album.date) |
                                              Q(until=None))
-        can_view = request.user.membership_set.filter(filter).count() > 0
+        can_view = request.member.membership_set.filter(filter).count() > 0
 
-    if request.user.member is not None and can_view:
+    if can_view:
         return _render_album_page(request, album)
     raise Http404("Sorry, you're not allowed to view this album")
 

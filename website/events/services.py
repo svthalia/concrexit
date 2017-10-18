@@ -6,27 +6,27 @@ from events.exceptions import RegistrationError
 from events.models import Registration, RegistrationInformationField
 
 
-def is_user_registered(event, user):
+def is_user_registered(event, member):
     if not event.registration_required:
         return None
 
     return event.registrations.filter(
-        member=user.member,
+        member=member,
         date_cancelled=None).count() > 0
 
 
-def event_permissions(user, event):
+def event_permissions(member, event):
     perms = {
         "create_registration": False,
         "cancel_registration": False,
         "update_registration": False,
     }
-    if user.is_authenticated and user.member.can_attend_events:
+    if member.is_authenticated and member.can_attend_events:
         registration = None
         try:
             registration = Registration.objects.get(
                 event=event,
-                member=user.member
+                member=member
             )
         except Registration.DoesNotExist:
             pass
@@ -46,27 +46,27 @@ def event_permissions(user, event):
     return perms
 
 
-def is_organiser(user, event):
-    if user.is_superuser or user.has_perm("events.override_organiser"):
+def is_organiser(member, event):
+    if member.is_superuser or member.has_perm("events.override_organiser"):
         return True
 
-    if event and user.has_perm('events.change_event'):
+    if event and member.has_perm('events.change_event'):
         committees = 0
         if event is not None:
-            committees = user.member.get_committees().filter(
+            committees = member.get_committees().filter(
                 pk=event.organiser.pk).count()
         return committees != 0
 
     return False
 
 
-def create_registration(user, event):
-    if event_permissions(user, event)["create_registration"]:
+def create_registration(member, event):
+    if event_permissions(member, event)["create_registration"]:
         registration = None
         try:
             registration = Registration.objects.get(
                 event=event,
-                member=user.member
+                member=member
             )
         except Registration.DoesNotExist:
             pass
@@ -74,7 +74,7 @@ def create_registration(user, event):
         if registration is None:
             return Registration.objects.create(
                 event=event,
-                member=user.member
+                member=member
             )
         elif registration.date_cancelled is not None:
             if registration.is_late_cancellation():
@@ -87,23 +87,24 @@ def create_registration(user, event):
                 registration.save()
 
         return registration
-    elif event_permissions(user, event)["cancel_registration"]:
+    elif event_permissions(member, event)["cancel_registration"]:
         raise RegistrationError(_("You were already registered."))
     else:
         raise RegistrationError(_("You may not register."))
 
 
-def cancel_registration(request, user, event):
+def cancel_registration(request, member, event):
     registration = None
     try:
         registration = Registration.objects.get(
             event=event,
-            member=user.member
+            member=member
         )
     except Registration.DoesNotExist:
         pass
 
-    if event_permissions(user, event)["cancel_registration"] and registration:
+    if (event_permissions(member, event)["cancel_registration"] and
+            registration):
         if registration.queue_position == 0:
             emails.notify_first_waiting(request, event)
 
@@ -121,12 +122,12 @@ def cancel_registration(request, user, event):
         raise RegistrationError(_("You are not registered for this event."))
 
 
-def update_registration(user, event, field_values):
+def update_registration(member, event, field_values):
     registration = None
     try:
         registration = Registration.objects.get(
             event=event,
-            member=user.member
+            member=member
         )
     except Registration.DoesNotExist:
         pass
@@ -134,7 +135,7 @@ def update_registration(user, event, field_values):
     if not registration:
         raise RegistrationError(_("You are not registered for this event."))
 
-    if not event_permissions(user, event)["update_registration"]:
+    if not event_permissions(member, event)["update_registration"]:
         return
 
     for field_id, field_value in field_values:
@@ -154,17 +155,18 @@ def update_registration(user, event, field_values):
         field.set_value_for(registration, field_value)
 
 
-def registration_fields(user, event):
+def registration_fields(member, event):
     registration = None
     try:
         registration = Registration.objects.get(
             event=event,
-            member=user.member
+            member=member
         )
     except Registration.DoesNotExist:
         pass
 
-    if event_permissions(user, event)["update_registration"] and registration:
+    if (event_permissions(member, event)["update_registration"] and
+            registration):
         information_fields = registration.information_fields
         fields = {}
 

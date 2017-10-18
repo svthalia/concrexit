@@ -16,7 +16,7 @@ def index(request):
     event = PizzaEvent.current()
     try:
         order = Order.objects.get(pizza_event=event,
-                                  member=request.user.member)
+                                  member=request.member)
     except Order.DoesNotExist:
         order = None
     context = {'event': event, 'products': products, 'order': order}
@@ -29,7 +29,7 @@ def orders(request, event_pk):
     context = {'event': event,
                'orders': Order.objects.filter(pizza_event=event)
                                       .prefetch_related('member', 'product')
-                                      .order_by('member__user__first_name')}
+                                      .order_by('member__first_name')}
     return render(request, 'pizzas/orders.html', context)
 
 
@@ -105,7 +105,7 @@ def cancel_order(request):
             if not order.can_be_changed:
                 messages.error(request,
                                _('You can no longer cancel.'))
-            elif order.member == request.user.member:
+            elif order.member == request.member:
                 order.delete()
                 messages.success(request, _("Your order has been cancelled."))
         except Http404:
@@ -138,7 +138,7 @@ def order(request):
 
     try:
         order_placed = Order.objects.get(pizza_event=event,
-                                         member=request.user.member)
+                                         member=request.member)
         current_order_locked = not order_placed.can_be_changed
     except Order.DoesNotExist:
         current_order_locked = False
@@ -148,9 +148,9 @@ def order(request):
         if product:
             try:
                 order = Order.objects.get(pizza_event=event,
-                                          member=request.user.member)
+                                          member=request.member)
             except Order.DoesNotExist:
-                order = Order(pizza_event=event, member=request.user.member)
+                order = Order(pizza_event=event, member=request.member)
             order.product = product
             order.save()
     return HttpResponseRedirect(reverse('pizzas:index'))

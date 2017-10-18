@@ -46,13 +46,13 @@ class EventDetail(DetailView):
         try:
             context['registration'] = Registration.objects.get(
                 event=event,
-                member=self.request.user.member
+                member=self.request.member
             )
         except (Registration.DoesNotExist, AttributeError):
             pass
 
-        context['permissions'] = services.event_permissions(self.request.user,
-                                                            event)
+        context['permissions'] = services.event_permissions(
+                self.request.member, event)
 
         return context
 
@@ -65,7 +65,7 @@ class EventRegisterView(View):
     def post(self, request, *args, **kwargs):
         event = get_object_or_404(Event, pk=kwargs['pk'])
         try:
-            services.create_registration(request.user, event)
+            services.create_registration(request.member, event)
 
             if event.has_fields():
                 return redirect('events:registration', event.pk)
@@ -85,7 +85,7 @@ class EventCancelView(View):
     def post(self, request, *args, **kwargs):
         event = get_object_or_404(Event, pk=kwargs['pk'])
         try:
-            services.cancel_registration(request, request.user, event)
+            services.cancel_registration(request, request.member, event)
             messages.success(request,
                              _("Registration successfully cancelled."))
         except RegistrationError as e:
@@ -107,14 +107,15 @@ class RegistrationView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["fields"] = services.registration_fields(self.request.user,
+        kwargs["fields"] = services.registration_fields(self.request.member,
                                                         self.event)
         return kwargs
 
     def form_valid(self, form):
         values = form.field_values()
         try:
-            services.update_registration(self.request.user, self.event, values)
+            services.update_registration(self.request.member, self.event,
+                                         values)
             messages.success(self.request,
                              _("Registration successfully saved."))
             return redirect(self.event)

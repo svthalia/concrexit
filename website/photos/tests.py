@@ -23,11 +23,11 @@ class AlbumUploadTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.member = Member.objects.filter(user__last_name="Wiggers").first()
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
 
     def setUp(self):
         self.client = Client()
-        self.client.force_login(self.member.user)
+        self.client.force_login(self.member)
 
     def test_album_upload(self):
         output_file = create_zip(["photos/fixtures/thom_assessor.png"])

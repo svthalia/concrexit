@@ -1,9 +1,9 @@
-from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from members.models import Member
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -103,7 +103,7 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
     )
 
     uploader = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        Member,
         verbose_name=_('uploader'),
         on_delete=models.CASCADE,
     )
@@ -159,7 +159,7 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
     )
 
     uploader = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        Member,
         verbose_name=_('uploader'),
         on_delete=models.CASCADE,
     )

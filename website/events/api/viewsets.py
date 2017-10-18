@@ -63,7 +63,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         if request.method.lower() == 'post':
             try:
                 registration = services.create_registration(
-                    request.user, event)
+                    request.member, event)
                 serializer = RegistrationSerializer(
                     instance=registration,
                     context={'request': request}
@@ -76,7 +76,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
         # Make sure you can only access other registrations when you have
         # the permissions to do so
-        if not services.is_organiser(request.user, event):
+        if not services.is_organiser(request.member, event):
             status = 'registered'
 
         queryset = Registration.objects.filter(event=pk)
@@ -106,8 +106,8 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
             published=True
         )
 
-        serializer = EventCalenderJSSerializer(queryset, many=True,
-                                               context={'user': request.user})
+        serializer = EventCalenderJSSerializer(
+                queryset, many=True, context={'member': request.member})
         return Response(serializer.data)
 
     @list_route(permission_classes=(IsAdminUser, UnpublishedEventPermissions,))
@@ -120,8 +120,8 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
             published=False
         )
 
-        serializer = UnpublishedEventSerializer(queryset, many=True,
-                                                context={'user': request.user})
+        serializer = UnpublishedEventSerializer(
+                queryset, many=True, context={'member': request.member})
         return Response(serializer.data)
 
 
@@ -138,8 +138,8 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
 
     def get_object(self):
         instance = super().get_object()
-        if (instance.member.user.pk != self.request.user.pk and
-                not services.is_organiser(self.request.user,
+        if (instance.member.pk != self.request.member.pk and
+                not services.is_organiser(self.request.member,
                                           instance.event)):
             raise NotFound()
 
@@ -154,17 +154,17 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
     def perform_update(self, serializer):
         super().perform_update(serializer)
         registration = serializer.instance
-        services.update_registration(registration.member.user,
+        services.update_registration(registration.member,
                                      registration.event,
                                      serializer.field_values())
         serializer.information_fields = services.registration_fields(
-            registration.member.user, registration.event)
+            registration.member, registration.event)
 
     def destroy(self, request, pk=None, **kwargs):
         registration = self.get_object()
         try:
             services.cancel_registration(request,
-                                         registration.member.user,
+                                         registration.member,
                                          registration.event)
             return Response(status=204)
         except RegistrationError as e:

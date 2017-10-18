@@ -38,25 +38,25 @@ class AdminTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        cls.member = Member.objects.filter(user__last_name="Wiggers").first()
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.permission_change_event = Permission.objects.get(
             content_type__model='event',
             codename='change_event')
         cls.permission_override_orga = Permission.objects.get(
             content_type__model='event',
             codename='override_organiser')
-        cls.member.user.user_permissions.add(cls.permission_change_event)
-        cls.member.user.is_superuser = False
-        cls.member.user.save()
+        cls.member.user_permissions.add(cls.permission_change_event)
+        cls.member.is_superuser = False
+        cls.member.save()
 
     def setUp(self):
-        self.client.force_login(self.member.user)
+        self.client.force_login(self.member)
 
     def _remove_event_permission(self):
-        self.member.user.user_permissions.remove(self.permission_change_event)
+        self.member.user_permissions.remove(self.permission_change_event)
 
     def _add_override_organiser_permission(self):
-        self.member.user.user_permissions.add(self.permission_override_orga)
+        self.member.user_permissions.add(self.permission_override_orga)
 
     def test_admin_details_need_change_event_access(self):
         """I need the event.change_event permission to do stuff"""
@@ -116,8 +116,8 @@ class AdminTest(TestCase):
 
     def test_modeladmin_change_superuser_allowed(self):
         """Superuser should be allowed access always"""
-        self.member.user.is_superuser = True
-        self.member.user.save()
+        self.member.is_superuser = True
+        self.member.save()
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
 
@@ -157,11 +157,11 @@ class RegistrationTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        cls.member = Member.objects.filter(user__last_name="Wiggers").first()
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
 
     def setUp(self):
         self.client = Client()
-        self.client.force_login(self.member.user)
+        self.client.force_login(self.member)
 
     def test_registration_register_not_required(self):
         response = self.client.post('/events/1/registration/register/',

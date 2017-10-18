@@ -329,11 +329,11 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.member.user.is_staff = (self.member
-                                     .committeemembership_set
-                                     .exclude(until__lte=timezone.now().date())
-                                     .count()) >= 1
-        self.member.user.save()
+        self.member.is_staff = (self.member
+                                .committeemembership_set
+                                .exclude(until__lte=timezone.now().date())
+                                .count()) >= 1
+        self.member.save()
 
     def __str__(self):
         return "{} membership of {} since {}, until {}".format(self.member,

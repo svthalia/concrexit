@@ -11,7 +11,7 @@ from django.utils import timezone
 
 from activemembers.models import Board, Committee, CommitteeMembership
 from events.models import Event
-from members.models import Member, Membership
+from members.models import Profile, Member, Membership
 from partners.models import Partner, Vacancy, VacancyCategory
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
@@ -30,9 +30,9 @@ def generate_title():
     return ' '.join([word.capitalize() for word in words])
 
 
-class MemberFactory(factory.Factory):
+class ProfileFactory(factory.Factory):
     class Meta:
-        model = Member
+        model = Profile
 
     programme = random.choice(['computingscience', 'informationscience'])
     student_number = factory.LazyAttribute(
@@ -195,16 +195,16 @@ class Command(BaseCommand):
         if random.random() < 0.5:
             week = timedelta(days=7)
             event.registration_start = faker.date_time_between_dates(
-                    start_date=event.start - 4*week,
-                    end_date=event.start - week,
+                    datetime_start=event.start - 4*week,
+                    datetime_end=event.start - week,
                     tzinfo=current_tz)
             event.registration_end = faker.date_time_between_dates(
-                    start_date=event.registration_start,
-                    end_date=event.start,
+                    datetime_start=event.registration_start,
+                    datetime_end=event.start,
                     tzinfo=current_tz)
             event.cancel_deadline = faker.date_time_between_dates(
-                    start_date=event.registration_end,
-                    end_date=event.start,
+                    datetime_start=event.registration_end,
+                    datetime_end=event.start,
                     tzinfo=current_tz)
 
         event.location_nl = faker.street_address()
@@ -269,10 +269,10 @@ class Command(BaseCommand):
         user.first_name = fakeprofile['name'].split()[0]
         user.last_name = ' '.join(fakeprofile['name'].split()[1:])
 
-        member = MemberFactory()
-        member.user_id = user.id
-        member.birthday = fakeprofile['birthdate']
-        member.website = fakeprofile['website'][0]
+        profile = ProfileFactory()
+        profile.user_id = user.id
+        profile.birthday = fakeprofile['birthdate']
+        profile.website = fakeprofile['website'][0]
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(user.username, 480, 480, (
@@ -280,8 +280,8 @@ class Command(BaseCommand):
         ))  # 620x620 pixels, with 10 pixels padding on each side
         with tempfile.TemporaryFile() as tfile:
             tfile.write(icon)
-            member.photo.save(fakeprofile['username'] + '.png',
-                              File(tfile))
+            profile.photo.save(fakeprofile['username'] + '.png',
+                               File(tfile))
 
         membership = Membership()
         membership.user_id = user.id
@@ -293,7 +293,7 @@ class Command(BaseCommand):
             ['member', 'supporter', 'honorary'])
 
         user.save()
-        member.save()
+        profile.save()
         membership.save()
 
     def create_vacancy(self, partners, categories):

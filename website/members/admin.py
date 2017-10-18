@@ -20,7 +20,7 @@ class MembershipInline(admin.StackedInline):
     extra = 0
 
 
-class MemberInline(admin.StackedInline):
+class ProfileInline(admin.StackedInline):
     fields = ('starting_year', 'programme', 'address_street',
               'address_street2', 'address_postal_code', 'address_city',
               'student_number', 'phone_number', 'receive_optin',
@@ -30,7 +30,7 @@ class MemberInline(admin.StackedInline):
               'website', 'photo', 'emergency_contact',
               'emergency_contact_phone_number', 'language',
               'event_permissions')
-    model = models.Member
+    model = models.Profile
     can_delete = False
 
 
@@ -71,11 +71,11 @@ class AgeListFilter(admin.SimpleListFilter):
         eightteen_years_ago = today.replace(year=today.year - 18)
 
         if self.value() == 'unknown':
-            return queryset.filter(member__birthday__isnull=True)
+            return queryset.filter(profile__birthday__isnull=True)
         elif self.value() == '18+':
-            return queryset.filter(member__birthday__lte=eightteen_years_ago)
+            return queryset.filter(profile__birthday__lte=eightteen_years_ago)
         elif self.value() == '18-':
-            return queryset.filter(member__birthday__gt=eightteen_years_ago)
+            return queryset.filter(profile__birthday__gt=eightteen_years_ago)
 
         return queryset
 
@@ -87,13 +87,13 @@ class UserAdmin(BaseUserAdmin):
 
     actions = ['address_csv_export', 'student_number_csv_export']
 
-    inlines = (MemberInline, MembershipInline)
+    inlines = (ProfileInline, MembershipInline,)
     # FIXME include proper filter for expiration
     # https://docs.djangoproject.com/en/1.9/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
     list_filter = (MembershipTypeListFilter,
                    'is_superuser',
                    AgeListFilter,
-                   'member__event_permissions',)
+                   'profile__event_permissions',)
 
     add_fieldsets = (
         (None, {
@@ -110,13 +110,13 @@ class UserAdmin(BaseUserAdmin):
         writer = csv.writer(response)
         writer.writerow([_('First name'), _('Last name'), _('Address'),
                          _('Address line 2'), _('Postal code'), _('City')])
-        for user in queryset.exclude(member=None):
+        for user in queryset.exclude(profile=None):
             writer.writerow([user.first_name,
                              user.last_name,
-                             user.member.address_street,
-                             user.member.address_street2,
-                             user.member.address_postal_code,
-                             user.member.address_city,
+                             user.profile.address_street,
+                             user.profile.address_street2,
+                             user.profile.address_postal_code,
+                             user.profile.address_city,
                              ])
         return response
     address_csv_export.short_description = _('Download address label for '
@@ -128,14 +128,20 @@ class UserAdmin(BaseUserAdmin):
                                            filename="student_numbers.csv"'
         writer = csv.writer(response)
         writer.writerow([_('First name'), _('Last name'), _('Student number')])
-        for user in queryset.exclude(member=None):
+        for user in queryset.exclude(profile=None):
             writer.writerow([user.first_name,
                              user.last_name,
-                             user.member.student_number
+                             user.profile.student_number
                              ])
         return response
     student_number_csv_export.short_description = _('Download student number '
                                                     'label for selected users')
+
+
+@admin.register(models.Member)
+class MemberAdmin(UserAdmin):
+    def has_module_permission(self, reuqest):
+        return False
 
 
 admin.site.register(models.BecomeAMemberDocument)

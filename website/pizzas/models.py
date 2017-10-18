@@ -103,4 +103,4 @@ class Order(models.Model):
         return not self.paid and not self.pizza_event.has_ended
 
     class Meta:
-        unique_together = ('pizza_event', 'member')
+        unique_together = ('pizza_event', 'member',)

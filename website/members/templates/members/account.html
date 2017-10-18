@@ -12,12 +12,12 @@
 <div class="row">
     <div class="span6 offset3">
 
-        <p class="text-center">{% blocktrans with user=request.user.username %}You’re currently logged in as <strong>{{ user }}</strong>{% endblocktrans %}.</p>
+        <p class="text-center">{% blocktrans with user=request.member.username %}You’re currently logged in as <strong>{{ user }}</strong>{% endblocktrans %}.</p>
 
         <hr>
 
         <div>
-            <a href="{% url 'members:profile' request.user.pk %}">{% trans "show public profile"|capfirst %}</a>
+            <a href="{% url 'members:profile' request.member.pk %}">{% trans "show public profile"|capfirst %}</a>
             <p>{% blocktrans %}Take a look at your own profile.{% endblocktrans %}</p>
         </div>
 

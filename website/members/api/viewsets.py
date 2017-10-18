@@ -18,10 +18,10 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
     queryset = Member.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,)
-    ordering_fields = ('starting_year', 'user__first_name', 'user__last_name')
-    search_fields = ('nickname', 'user__first_name',
-                     'user__last_name', 'user__username')
-    lookup_field = 'user__pk'
+    ordering_fields = ('profile__starting_year', 'first_name', 'last_name')
+    search_fields = ('profile__nickname', 'first_name', 'last_name',
+                     'username')
+    lookup_field = 'pk'
 
     def get_serializer_class(self):
         if self.action == 'retrieve' or self.action == 'me':
@@ -36,17 +36,20 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
     def _get_birthdays(self, member, start, end):
         birthdays = []
 
-        start_year = max(start.year, member.birthday.year)
+        start_year = max(start.year, member.profile.birthday.year)
         for year in range(start_year, end.year + 1):
             bday = copy.deepcopy(member)
             try:
-                bday.birthday = bday.birthday.replace(year=year)
+                bday.profile.birthday = \
+                        bday.profile.birthday.replace(year=year)
             except ValueError as e:
-                if bday.birthday.month == 2 and bday.birthday.day == 29:
-                    bday.birthday = bday.birthday.replace(year=year, day=28)
+                if (bday.profile.birthday.month == 2 and
+                        bday.profile.birthday.day == 29):
+                    bday.profile.birthday = \
+                            bday.profile.birthday.replace(year=year, day=28)
                 else:
                     raise e
-            if start.date() <= bday.birthday <= end.date():
+            if start.date() <= bday.profile.birthday <= end.date():
                 birthdays.append(bday)
 
         return birthdays
@@ -66,7 +69,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
         queryset = (
             Member.active_members
                   .with_birthdays_in_range(start, end)
-                  .filter(show_birthday=True)
+                  .filter(profile__show_birthday=True)
         )
 
         all_birthdays = [
@@ -80,5 +83,5 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
 
     @list_route()
     def me(self, request):
-        serializer = self.get_serializer_class()(request.user.member)
+        serializer = self.get_serializer_class()(request.member)
         return Response(serializer.data)

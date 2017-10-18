@@ -22,14 +22,17 @@ class CommitteeBackend(object):
     def _get_permissions(self, user, obj):
         if not user.is_active or user.is_anonymous or obj is not None:
             return set()
-        perm_cache_name = '_committee_perm_cache'
         try:
-            committees = user.member.committee_set.filter(
-                Q(committeemembership__until=None) |
-                Q(committeemembership__until__gte=timezone.now())
-            )
+            member = Member.objects.get(pk=user.pk)
         except Member.DoesNotExist:
             return set()
+
+        committees = member.committee_set.filter(
+            Q(committeemembership__until=None) |
+            Q(committeemembership__until__gte=timezone.now())
+        )
+
+        perm_cache_name = '_committee_perm_cache'
         if not hasattr(user, perm_cache_name):
             perms = (Permission.objects
                      .filter(committee__in=committees)

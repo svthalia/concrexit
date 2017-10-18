@@ -40,7 +40,7 @@ class EventTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=5.00)
-        cls.member = Member.objects.all()[0]
+        cls.member = Member.objects.first()
 
     def setUp(self):
         self.mailinglist.refresh_from_db()
@@ -281,7 +281,7 @@ class RegistrationTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        cls.member = Member.objects.all()[0]
+        cls.member = Member.objects.first()
         cls.r1 = Registration.objects.create(event=cls.event,
                                              member=cls.member)
         cls.r2 = Registration.objects.create(event=cls.event,

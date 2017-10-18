@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.test import TestCase
@@ -135,7 +135,7 @@ class PermissionsBackendTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.u1 = Member.objects.get(pk=1)
-        cls.u1.user.is_superuser = False
+        cls.u1.is_superuser = False
         cls.u1.save()
         cls.u2 = Member.objects.get(pk=2)
         cls.u3 = Member.objects.get(pk=3)
@@ -147,12 +147,12 @@ class PermissionsBackendTest(TestCase):
                                                     member=cls.u2)
 
     def test_permissions(self):
-        self.assertEqual(3, len(self.u1.user.get_all_permissions()))
-        self.assertEqual(set(), self.u2.user.get_all_permissions())
-        self.assertEqual(set(), self.u3.user.get_all_permissions())
+        self.assertEqual(3, len(self.u1.get_all_permissions()))
+        self.assertEqual(set(), self.u2.get_all_permissions())
+        self.assertEqual(set(), self.u3.get_all_permissions())
 
     def test_nonmember_user(self):
-        u = get_user_model().objects.create(username='foo')
+        u = User.objects.create(username='foo')
         self.assertEqual(set(), u.get_all_permissions())
 
 

@@ -28,21 +28,21 @@
     <div class="control-group row">
         <label class="control-label">{% trans "First Name" %}</label>
         <div class="controls">
-            <input type="text" readonly="readonly" value="{{ request.user.first_name }}" />
+            <input type="text" readonly="readonly" value="{{ request.member.first_name }}" />
         </div>
     </div>
 
     <div class="control-group row">
         <label class="control-label">{% trans "Last Name" %}</label>
         <div class="controls">
-            <input type="text" readonly="readonly" value="{{ request.user.last_name }}" />
+            <input type="text" readonly="readonly" value="{{ request.member.last_name }}" />
         </div>
     </div>
 
     <div class="control-group row">
         <label class="control-label">{% trans "Email Address" %}</label>
         <div class="controls">
-            <input type="text" readonly="readonly" value="{{ request.user.email }}" />
+            <input type="text" readonly="readonly" value="{{ request.member.email }}" />
             <span class="help-block">{% trans "Want to change your name or email address? Please send an email to info@thalia.nu." %}</span>
         </div>
     </div>
