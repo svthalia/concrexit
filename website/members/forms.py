@@ -24,12 +24,15 @@ class ProfileForm(forms.ModelForm):
         model = Profile
 
     def clean(self):
+        super().clean()
+        errors = {}
         direct_debit_authorized = self.cleaned_data\
             .get('direct_debit_authorized')
         bank_account = self.cleaned_data.get('bank_account')
-        if direct_debit_authorized and len(bank_account) < 16:
-            raise forms.ValidationError(_('Bank account is incorrect'))
-        super().clean()
+        if direct_debit_authorized and not bank_account:
+            errors.update({'bank_account': _('Please enter a bank account')})
+
+        raise forms.ValidationError(errors)
 
 
 class UserCreationForm(BaseUserCreationForm):

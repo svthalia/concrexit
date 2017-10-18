@@ -31,7 +31,7 @@ class ProfileInline(admin.StackedInline):
               'emergency_contact_phone_number', 'language',
               'event_permissions')
     model = models.Profile
-    form = forms.MemberForm
+    form = forms.ProfileForm
     can_delete = False
 
 
