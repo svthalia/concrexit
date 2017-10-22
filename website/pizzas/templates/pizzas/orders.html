@@ -36,7 +36,7 @@
                         {{ order.product }}
                     </td>
                     <td>
-                        <input type="button" class="btn btn-style{{ order.paid|yesno:'3,4' }} paid-button" value="{% if order.paid %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}" data-id="{{ order.pk }}">
+                        <input type="button" class="btn btn-style{{ order.paid|yesno:'3,4' }} paid-button" value="{% if order.paid %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}" data-paid="{{ order.paid|yesno:'true,false' }}" data-id="{{ order.pk }}">
                     </td>
                     <td>
                         <form class="form-horizontal delete-form" method="post" action="{% url 'pizzas:delete-order' %}">
@@ -68,6 +68,5 @@
 
 <script type="text/javascript">
 var csrf_token = '{{ csrf_token }}';
-var paid_url = "{% url 'pizzas:toggle-orderpayment' %}";
 </script>
 {% endblock %}
