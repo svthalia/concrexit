@@ -5,7 +5,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
-from django.db.models import Q
+from django.db.models import (BooleanField, Case, ExpressionWrapper, Q, Value,
+                              When)
 from django.shortcuts import get_object_or_404, render
 from sendfile import sendfile
 from zipfile import ZipFile
@@ -20,11 +21,14 @@ COVER_FILENAME = 'cover.jpg'
 
 @login_required
 def index(request):
-    albums_filter = Q()
-    # Check if the user currently has a membership
+    # Only show published albums
+    albums = Album.objects.filter(hidden=False)
+
+    # Annotate the albums which are accessible by the user
     if request.member.current_membership is None:
-        # This is user is currently not a member
+        # The user is currently not a member
         # so only show photos that were made during their membership
+        albums_filter = Q(pk__in=[])
         for membership in request.member.membership_set.all():
             if membership.until is not None:
                 albums_filter |= (Q(date__gte=membership.since) & Q(
@@ -32,14 +36,19 @@ def index(request):
             else:
                 albums_filter |= (Q(date__gte=membership.since))
 
-    # Only show published albums
-    albums_filter = albums_filter & Q(hidden=False)
-    albums = Album.objects.filter(albums_filter).order_by('-date')
+        albums = albums.annotate(accessible=Case(
+                When(albums_filter, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()))
+    else:
+        # The user is currently a member, so show all albums
+        albums = albums.annotate(accessible=ExpressionWrapper(
+                Value(True), output_field=BooleanField()))
 
+    albums = albums.order_by('-date')
     paginator = Paginator(albums, 12)
-    page = request.GET.get('page')
-    page = 1 if page is None or not page.isdigit() else int(page)
 
+    page = request.GET.get('page')
     try:
         albums = paginator.page(page)
     except PageNotAnInteger:

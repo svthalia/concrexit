@@ -20,21 +20,25 @@
   <ul class="gallery-albums row">
     {% for album in albums %}
     <li class="post gallery-album span3 has-overlay">
+      {% if album.accessible %}
       <a href="{% url 'photos:album' album.slug %}">
+      {% endif %}
         <span class="post-inner">
           <span class="inner-img">
             {% if album.cover is not None %}
-              <img class="rotate{{ album.cover.rotation }}" src="{% thumbnail album.cover.file '220x220' %}" alt=""/>
+            <img class="rotate{{ album.cover.rotation }} {{ album.accessible|yesno:",grayscale" }}" src="{% thumbnail album.cover.file '220x220' %}" alt=""/>
             {% endif %}
           </span>
-          <span class="post-overlay">
+          <span class="post-overlay {{ album.accessible|yesno:",grayscale" }}">
             <span class="post-overlay-meta">
               <h2>{{ album.title }}</h2>
               <p>{{ album.date|date:"d-m-Y" }}</p>
             </span>
           </span>
-          </span>
+        </span>
+      {% if album.accessible %}
       </a>
+      {% endif %}
     </li>
     {% endfor %}
   </ul>

@@ -10,3 +10,11 @@ img.rotate180 {
 img.rotate270 {
   transform: rotate(270deg);
 }
+
+img.grayscale {
+  filter: grayscale(1);
+}
+
+.thimbus-page .gallery .gallery-album .post-overlay.grayscale {
+  background-color: rgba(88, 88, 88, 0.6);
+}
