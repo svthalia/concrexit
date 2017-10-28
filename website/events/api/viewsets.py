@@ -34,7 +34,7 @@ def _extract_date_range(request):
         end = timezone.make_aware(
             datetime.strptime(request.query_params['end'], '%Y-%m-%d')
         )
-    except:
+    except Exception:
         raise ParseError(detail='start or end query parameters invalid')
     return end, start
 
