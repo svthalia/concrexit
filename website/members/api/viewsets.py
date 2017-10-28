@@ -63,7 +63,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
             end = timezone.make_aware(
                 datetime.strptime(request.query_params['end'], '%Y-%m-%d')
             )
-        except:
+        except Exception:
             raise ParseError(detail='start or end query parameters invalid')
 
         queryset = (
