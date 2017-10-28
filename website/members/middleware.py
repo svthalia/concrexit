@@ -1,4 +1,13 @@
+from django.utils.functional import SimpleLazyObject
+
 from members.models import Member
+
+
+def get_member(request):
+    try:
+        return Member.objects.get(pk=request.user.pk)
+    except Member.DoesNotExist:
+        return None
 
 
 class MemberMiddleware:
@@ -6,9 +15,9 @@ class MemberMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        try:
-            request.member = Member.objects.get(pk=request.user.pk)
-        except Member.DoesNotExist:
-            request.member = None
+        # This needs to be a lazy object as Django REST Frameworks calls the
+        # the middleware before setting request.user
+        # This also avoids unnecessary queries when request.member is not used
+        request.member = SimpleLazyObject(lambda: get_member(request))
 
         return self.get_response(request)
