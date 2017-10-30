@@ -7,6 +7,7 @@ from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, \
     IsAuthenticated
 from rest_framework.response import Response
+from pytz.exceptions import InvalidTimeError
 
 from partners.api.serializers import PartnerEventCalendarJSSerializer, \
     PartnerEventSerializer, PartnerSerializer
@@ -21,8 +22,8 @@ def _extract_date_range(request):
         end = timezone.make_aware(
             datetime.strptime(request.query_params['end'], '%Y-%m-%d')
         )
-    except Exception:
-        raise ParseError(detail='start or end query parameters invalid')
+    except (ValueError, KeyError, InvalidTimeError) as e:
+        raise ParseError(detail='start or end query parameters invalid') from e
     return end, start
 
 

@@ -7,6 +7,7 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
+from pytz.exceptions import InvalidTimeError
 
 from members.api.serializers import (MemberBirthdaySerializer,
                                      MemberRetrieveSerializer,
@@ -63,8 +64,9 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
             end = timezone.make_aware(
                 datetime.strptime(request.query_params['end'], '%Y-%m-%d')
             )
-        except Exception:
-            raise ParseError(detail='start or end query parameters invalid')
+        except (ValueError, KeyError, InvalidTimeError) as e:
+            raise ParseError(
+                detail='start or end query parameters invalid') from e
 
         queryset = (
             Member.active_members
