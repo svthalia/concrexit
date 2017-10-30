@@ -13,6 +13,7 @@ from rest_framework.permissions import (
 )
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from pytz.exceptions import InvalidTimeError
 
 from events import services
 from events.api.permissions import UnpublishedEventPermissions
@@ -34,8 +35,8 @@ def _extract_date_range(request):
         end = timezone.make_aware(
             datetime.strptime(request.query_params['end'], '%Y-%m-%d')
         )
-    except Exception:
-        raise ParseError(detail='start or end query parameters invalid')
+    except (ValueError, KeyError, InvalidTimeError) as e:
+        raise ParseError(detail='start or end query parameters invalid') from e
     return end, start
 
 
