@@ -10,7 +10,7 @@ class DeviceAdmin(admin.ModelAdmin):
     list_display = ('name', 'type', 'active', 'date_created')
     list_filter = ('active', 'type')
     actions = ('enable', 'disable')
-
+    ordering = ('user__first_name', )
     search_fields = ('registration_id', 'user__username',
                      'user__first_name', 'user__last_name')
 
@@ -25,6 +25,7 @@ class DeviceAdmin(admin.ModelAdmin):
     def name(self, obj):
         return '{} ({})'.format(obj.user.get_full_name(), obj.user.username)
     name.short_description = _('Name')
+    name.admin_order_field = 'user__first_name'
 
 
 @admin.register(models.Message)
