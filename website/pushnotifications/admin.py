@@ -7,21 +7,24 @@ from pushnotifications.models import Message
 
 @admin.register(models.Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('user', 'type', 'active', 'date_created')
+    list_display = ('name', 'type', 'active', 'date_created')
     list_filter = ('active', 'type')
     actions = ('enable', 'disable')
 
-    search_fields = ('name', 'device_id', 'user__username')
+    search_fields = ('registration_id', 'user__username',
+                     'user__first_name', 'user__last_name')
 
     def enable(self, request, queryset):
         queryset.update(active=True)
-
     enable.short_description = _('Enable selected devices')
 
     def disable(self, request, queryset):
         queryset.update(active=False)
-
     disable.short_description = _('Disable selected devices')
+
+    def name(self, obj):
+        return '{} ({})'.format(obj.user.get_full_name(), obj.user.username)
+    name.short_description = _('Name')
 
 
 @admin.register(models.Message)
