@@ -14,16 +14,21 @@ class Device(models.Model):
         ('android', 'Android')
     )
 
-    registration_id = models.TextField(verbose_name=_("Registration token"))
+    registration_id = models.TextField(verbose_name=_("registration token"))
     type = models.CharField(choices=DEVICE_TYPES, max_length=10)
     active = models.BooleanField(
-        verbose_name=_("Is active"), default=True,
+        verbose_name=_("active"), default=True,
         help_text=_("Inactive devices will not be sent notifications")
     )
     user = models.ForeignKey(django_settings.AUTH_USER_MODEL,
                              blank=False, null=False)
     date_created = models.DateTimeField(
-        verbose_name=_("Registration date"), auto_now_add=True, null=False
+        verbose_name=_("registration date"), auto_now_add=True, null=False
+    )
+    language = models.CharField(
+        verbose_name=_('language'),
+        max_length=2,
+        choices=settings.LANGUAGES,
     )
 
     class Meta:
