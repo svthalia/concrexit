@@ -1,17 +1,20 @@
 {% extends "documents/associationdocument.html" %}
 
 {% block icons %}
-{% for document in documents %}
+{% if documents.annual %}
 <li>
     <a target="_blank"
-    {% if forloop.first %}
         href="{% url 'documents:association-document' 'annual-report' year %}"
         class="overlay-icon-link"
-    {% else %}
-        href="{% url 'documents:association-document' 'financial-report' year %}"
-        class="overlay-icon-euro"
-    {% endif %}
     ></a>
 </li>
-{% endfor %}
+{% endif %}
+{% if documents.financial %}
+<li>
+    <a target="_blank"
+        href="{% url 'documents:association-document' 'financial-report' year %}"
+        class="overlay-icon-euro"
+    ></a>
+</li>
+{% endif %}
 {% endblock %}
