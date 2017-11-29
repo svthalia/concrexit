@@ -68,7 +68,6 @@
 
 <script type="text/javascript">
 var csrf_token = '{{ csrf_token }}';
-var paid_url = '{% url 'pizzas:toggle-orderpayment' %}';
 var trans = { 'yes': '{% trans 'Yes' %}', 'no': '{% trans 'No' %}' };
 </script>
 {% endblock %}

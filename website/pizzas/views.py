@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.urls import reverse
-from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
@@ -66,20 +66,6 @@ def overview(request, event_pk):
     }
 
     return render(request, 'pizzas/overview.html', context)
-
-
-@require_http_methods(["POST"])
-@permission_required('pizzas.change_order')
-def toggle_orderpayment(request):
-    if 'order' not in request.POST:
-        return JsonResponse({'error': _("You must supply an order pk.")})
-    try:
-        order = get_object_or_404(Order, pk=int(request.POST['order']))
-    except Http404:
-        return JsonResponse({'error': _("Your order could not be found.")})
-    order.paid = not order.paid
-    order.save()
-    return JsonResponse({'success': 1, 'paid': int(order.paid)})
 
 
 @require_http_methods(["POST"])

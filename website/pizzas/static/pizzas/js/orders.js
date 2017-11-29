@@ -11,16 +11,35 @@ $(function() {
 
     $('input.paid-button').click(function() {
         var id = $(this).data('id');
+        var paid = $(this).data('paid');
         var button = $(this);
-        $.post(paid_url, {'order': id, 'csrfmiddlewaretoken': csrf_token}, function(data) {
-            if(data.success === 1) {
-                button.addClass('btn-style' + (4 - data.paid));
-                button.removeClass('btn-style' + (3 + data.paid));
-                button.val(data.paid ? gettext('Yes') : gettext('No'));
-                button.blur();
+        $.ajax({
+            url: '/api/v1/pizzas/orders/' + id + '/',
+            type: 'PATCH',
+            data: JSON.stringify({paid: !paid}),
+            headers : {
+                'X-CSRFToken': csrf_token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             }
-            else {
-                alert(data.error);
+        }).success(function(data, status) {
+            button.data('paid', data.paid);
+            if (data.paid) {
+                button.addClass('btn-style3');
+                button.removeClass('btn-style4');
+                button.val(gettext('Yes'));
+            } else {
+                button.addClass('btn-style4');
+                button.removeClass('btn-style3');
+                button.val(gettext('No'));
+            }
+            button.blur();
+        }).fail(function(xhr, status) {
+            var data = $.parseJSON(xhr.responseText);
+            if (data.message !== undefined) {
+                alert(data.message);
+            } else if (data.paid !== undefined) {
+                alert(data.paid.join('\n'));
             }
         });
     });
