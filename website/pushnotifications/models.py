@@ -21,7 +21,9 @@ class Device(models.Model):
         help_text=_("Inactive devices will not be sent notifications")
     )
     user = models.ForeignKey(django_settings.AUTH_USER_MODEL,
-                             blank=False, null=False)
+                             on_delete=models.CASCADE,
+                             blank=False,
+                             null=False)
     date_created = models.DateTimeField(
         verbose_name=_("registration date"), auto_now_add=True, null=False
     )
