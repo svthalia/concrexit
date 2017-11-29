@@ -40,6 +40,7 @@ from django.views.i18n import JavaScriptCatalog
 from rest_framework.authtoken import views as rfviews
 
 import members
+import registrations
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from events.sitemaps import sitemap as events_sitemap
@@ -63,8 +64,10 @@ thalia_sitemap.update(events_sitemap)
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
+    url(r'^privacy-policy/', TemplateView.as_view(template_name='singlepages/privacy_policy.html'), name='privacy-policy'),
     url(r'^admin/', admin.site.urls),
     url(r'^members/', include('members.urls')),
+    url(r'^registration/', include('registrations.urls')),
     url(r'^account/$', members.views.account, name='account'),
     url(r'^events/', include('events.urls')),
     url(r'^pizzas/', include('pizzas.urls')),
@@ -76,7 +79,6 @@ urlpatterns = [
         url(r'^', include('activemembers.urls')),
         url(r'^merchandise/', include('merchandise.urls')),
         url(r'^documents/', include('documents.urls')),
-        url(r'^become-a-member/', members.views.become_a_member, name='become-a-member'),
         url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
         url(r'^thabloid/', include('thabloid.urls')),
     ])),

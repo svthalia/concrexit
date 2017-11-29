@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load i18n form_field static compress %}
+
+{% block title %}{% trans "registration"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block css_head %}
+    {{ block.super }}
+    {% compress css %}
+    <link href="{% static 'registrations/css/style.scss' %}" rel="stylesheet" type="text/x-scss">
+    {% endcompress %}
+{% endblock %}
+
+{% block body %}
+    <h1>{% trans "registration" %}</h1>
+
+    <p class="tcenter">
+    {% blocktrans %}
+        A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.<br/>
+        Note: Only Computing Science and Information Sciences students at the Radboud University can become a member.<br/><br/>
+        It is still possible to be associated with Thalia, even if you do not study Computing Science or Information Sciences (anymore): You can become a supporter. For at least € {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.<br />
+        <em>Note that this form is only for member registration. Please visit the board room if you want to become a supporter.</em>
+    {% endblocktrans %}
+    </p>
+
+    <hr/>
+
+    <form method="post" enctype="multipart/form-data" class="form-horizontal span8 offset2">
+        {% csrf_token %}
+
+        <fieldset>
+            {% form_field form 'first_name' %}
+            {% form_field form 'last_name' %}
+            <span class="birthday-field">
+            {% form_field form 'birthday' %}
+            </span>
+            {% form_field form 'email' %}
+            {% form_field form 'phone_number' %}
+        </fieldset>
+
+        <fieldset>
+            {% form_field form 'address_street' %}
+            {% form_field form 'address_street2' %}
+            {% form_field form 'address_postal_code' %}
+            {% form_field form 'address_city' %}
+        </fieldset>
+
+        <fieldset>
+            {% form_field form 'student_number' %}
+            {% form_field form 'programme' %}
+            {% form_field form 'starting_year' %}
+        </fieldset>
+
+        <fieldset>
+            {% form_field form 'length' %}
+
+            <div class="control-group row">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="privacy_policy" required="" id="id_privacy_policy">
+                        {% blocktrans trimmed %}I accept the <a target="_blank" href="{{ privacy_policy_url }}">privacy policy</a>{% endblocktrans %}.
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+
+        <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-style1 pull-right login" />
+    </form>
+{% endblock %}

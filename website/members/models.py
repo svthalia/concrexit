@@ -16,7 +16,6 @@ from localflavor.generic.models import IBANField
 
 from activemembers.models import Committee
 from utils.snippets import datetime_to_lectureyear
-from utils.validators import validate_file_extension
 
 from PIL import Image
 import os
@@ -440,10 +439,14 @@ class Profile(models.Model):
 
 class Membership(models.Model):
 
+    MEMBER = 'member'
+    SUPPORTER = 'supporter'
+    HONORARY = 'honorary'
+
     MEMBERSHIP_TYPES = (
-        ('member', _('Member')),
-        ('supporter', _('Supporter')),
-        ('honorary', _('Honorary Member')))
+        (MEMBER, _('Member')),
+        (SUPPORTER, _('Supporter')),
+        (HONORARY, _('Honorary Member')))
 
     type = models.CharField(
         max_length=40,
@@ -474,17 +477,6 @@ class Membership(models.Model):
 
     def is_active(self):
         return not self.until or self.until > timezone.now().date()
-
-
-class BecomeAMemberDocument(models.Model):
-    name = models.CharField(max_length=200)
-    file = models.FileField(
-        upload_to='members/',
-        validators=[validate_file_extension],
-    )
-
-    def __str__(self):
-        return self.name
 
 
 def gen_stats_member_type(member_types):

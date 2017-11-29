@@ -1,0 +1,30 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static compress %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {% compress css %}<link rel="stylesheet" type="text/x-scss" href="{% static 'admin/registrations/css/forms.scss' %}" />{% endcompress %}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'admin/registrations/js/registrations.js' %}"></script>
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    {% if entry %}
+    <div class="submit-row registrations-row">
+        <a href="{% url 'registrations:admin-accept' pk=entry.pk %}" class="button accept" onclick="return confirmRegChange();">{% trans "Accept" %}</a>
+        <a href="{% url 'registrations:admin-reject' pk=entry.pk %}" class="button reject" onclick="return confirmRegChange()">{% trans "Reject" %}</a>
+    </div>
+    {% endif %}
+
+    {% if payment %}
+    <div class="submit-row registrations-row">
+        <a href="{% url 'registrations:admin-process' pk=payment.pk type='cash_payment' %}" class="button process">{% trans "Process (cash payment)" %}</a>
+        <a href="{% url 'registrations:admin-process' pk=payment.pk type='card_payment' %}" class="button process">{% trans "Process (card payment)" %}</a>
+    </div>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}

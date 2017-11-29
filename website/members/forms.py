@@ -1,15 +1,13 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
-from django.template import loader
-from django.utils import translation
-from django.utils.translation import ugettext
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Profile
+from members import emails
 
 
 class ProfileForm(forms.ModelForm):
@@ -74,17 +72,7 @@ class UserCreationForm(BaseUserCreationForm):
             language = str(self.data.get('profile-0-language', 'en'))
             if language not in ('nl', 'en'):
                 language = 'en'
-            with translation.override(language):
-                email_body = loader.render_to_string(
-                    'members/email/welcome.txt',
-                    {
-                     'full_name': user.get_full_name(),
-                     'username': user.username,
-                     'password': password
-                     })
-                user.email_user(
-                    ugettext('Welcome to Study Association Thalia'),
-                    email_body)
+            emails.send_welcome_message(user, password, language)
         return user
 
     class Meta:
