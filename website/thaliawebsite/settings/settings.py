@@ -284,3 +284,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'relative_urls': False,
     'remove_script_host': False,
 }
+
+
+DEFAULT_EXCEPTION_REPORTER_FILTER = (
+    'utils.exception_filter.ThaliaSafeExceptionReporterFilter')
