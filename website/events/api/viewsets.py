@@ -27,25 +27,47 @@ from events.exceptions import RegistrationError
 from events.models import Event, Registration
 
 
+def _extract_date(param):
+    if param is None:
+        return None
+    return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
+
+
 def _extract_date_range(request):
     try:
-        start = timezone.make_aware(
-            datetime.strptime(request.query_params['start'], '%Y-%m-%d')
-        )
-        end = timezone.make_aware(
-            datetime.strptime(request.query_params['end'], '%Y-%m-%d')
-        )
+        start = _extract_date(request.query_params['start'])
+        end = _extract_date(request.query_params['end'])
     except (ValueError, KeyError, InvalidTimeError) as e:
         raise ParseError(detail='start or end query parameters invalid') from e
     return end, start
 
 
 class EventViewset(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.filter(end__gte=timezone.now(),
-                                    published=True)
+    queryset = Event.objects.filter(published=True)
     permission_classes = [IsAuthenticated]
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('start', 'end')
+
+    def get_queryset(self):
+        queryset = Event.objects.filter(published=True)
+
+        try:
+            start = _extract_date(self.request.query_params.get('start', None))
+        except (ValueError, InvalidTimeError) as e:
+            raise ParseError(detail='start query parameter invalid') from e
+        try:
+            end = _extract_date(self.request.query_params.get('end', None))
+        except (ValueError, InvalidTimeError) as e:
+            raise ParseError(detail='end query parameter invalid') from e
+
+        if start is not None:
+            queryset = queryset.filter(start__gte=start)
+        if end is not None:
+            queryset = queryset.filter(end__lte=end)
+        if start is None and end is None:
+            queryset = queryset.filter(end__gte=timezone.now())
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == 'list':
