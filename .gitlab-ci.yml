@@ -34,6 +34,13 @@ python35-django11:
     PYTHON_VERSION: py35
     DJANGO_VERSION: django11
 
+python35-django20:
+  <<: *djangotest
+  image: python:3.5
+  variables:
+    PYTHON_VERSION: py35
+    DJANGO_VERSION: django20
+
 docs:
   image: python:3.5
   before_script:
