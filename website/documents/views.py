@@ -17,18 +17,21 @@ def index(request):
 
     years = {x: None for x in range(1990, lectureyear + 1)}
     for obj in AssociationDocumentsYear.objects.all():
-        years[obj.year] = {'policy': [obj.policy_document],
-                           'report': [obj.annual_report, obj.financial_report],
-                           }
+        years[obj.year] = {'policy': obj.policy_document,
+                           'report': {'annual': obj.annual_report,
+                                      'financial': obj.financial_report}}
+
     for year_docs in years.values():
         if year_docs is not None:
-            for docs in year_docs.values():
-                # Duplicate list to prevent disrupting iteration by removing
-                for doc in list(docs):
-                    try:
-                        doc.file
-                    except ValueError:
-                        docs.remove(doc)
+            try:
+                year_docs['policy'].file
+            except ValueError:
+                year_docs['policy'] = None
+            for report in year_docs['report']:
+                try:
+                    year_docs['report'][report].file
+                except ValueError:
+                    year_docs['report'][report] = None
 
     meeting_years = {x: [] for x in range(1990, lectureyear + 1)}
     for obj in GeneralMeeting.objects.all():
