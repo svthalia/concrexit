@@ -78,7 +78,7 @@ class EventAdmin(DoNextModelAdmin):
         return super().has_change_permission(request, event)
 
     def event_date(self, obj):
-        event_date = obj.start
+        event_date = timezone.make_naive(obj.start)
         return _date(event_date, "l d b Y, G:i")
     event_date.short_description = _('Event Date')
 
