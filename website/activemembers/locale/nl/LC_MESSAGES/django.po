@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-25 15:55+0200\n"
-"PO-Revision-Date: 2017-09-25 15:55+0200\n"
+"POT-Creation-Date: 2017-12-06 21:35+0100\n"
+"PO-Revision-Date: 2017-12-06 21:37+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.0.4\n"
+
+#: admin.py:97
+msgid ""
+"Do not edit existing memberships if the chair of a committee has changed, "
+"add a new committeemembership instead."
+msgstr ""
+"Pas geen bestaande lidmaatschappen aan als de voorzitter van een commissie "
+"is veranderd. Voeg in de plaats daarvan een nieuw commissielidmaatschap toe."
 
 #: models.py:55
 msgid "Committee name"
@@ -72,13 +80,13 @@ msgstr "Is dit een bestuur"
 
 #: models.py:166
 msgid "Access the board wiki"
-msgstr ""
+msgstr "Toegang tot bestuurswiki"
 
 #: models.py:192 models.py:193
 msgid "A board already exists for those years"
 msgstr "Er bestaat al een bestuur voor die jaren"
 
-#: models.py:211 models.py:353
+#: models.py:211 models.py:355
 msgid "Member"
 msgstr "Lid"
 
@@ -120,43 +128,43 @@ msgstr "rol"
 msgid "The role of this member"
 msgstr "De rol van dit lid binnen de commissie"
 
-#: models.py:269
+#: models.py:271
 msgid "End date can't be before start date"
 msgstr "De einddatum kan niet voor de startdatum liggen"
 
-#: models.py:272
+#: models.py:274
 msgid "End date can't be in the future"
 msgstr "De einddatum kan niet in de toekomst liggen"
 
-#: models.py:277
+#: models.py:279
 msgid "Start date can't be before committee start date"
 msgstr "De begindatum kan niet voor de begindatum van de commissie liggen"
 
-#: models.py:282
+#: models.py:284
 msgid "Start date can't be after committee end date"
 msgstr "De begindatum kan niet na de einddatum van de commissie liggen"
 
-#: models.py:287
+#: models.py:289
 msgid "End date cannot be set for boards"
 msgstr "Voor besturen kan geen einddatum worden opgegeven"
 
-#: models.py:310
+#: models.py:312
 msgid "There already is a chair for this time period"
 msgstr "Er is al een voorzitter voor deze periode"
 
-#: models.py:327
+#: models.py:329
 msgid "This member is already in the committee for this period"
 msgstr "Deze persoon is al lid van deze commissie in de aangegeven periode"
 
-#: models.py:345
+#: models.py:347
 msgid "committee membership"
 msgstr "commissielidmaatschap"
 
-#: models.py:346
+#: models.py:348
 msgid "committee memberships"
 msgstr "commissielidmaatschappen"
 
-#: models.py:358
+#: models.py:360
 #, python-brace-format
 msgid "{name} mentor in {year}"
 msgstr "{name} mentor in {year}"
