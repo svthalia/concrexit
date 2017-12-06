@@ -1,7 +1,7 @@
-from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 
 from rest_framework import permissions
+from rest_framework.generics import get_object_or_404
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.mixins import ListModelMixin
 from rest_framework.decorators import list_route
