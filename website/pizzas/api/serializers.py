@@ -33,11 +33,11 @@ class AdminOrderSerializer(serializers.ModelSerializer):
         fields = ('pk', 'paid', 'product', 'name', 'member')
 
     def validate(self, attrs):
-        if attrs['member'] and attrs['name']:
+        if attrs.get('member') and attrs.get('name'):
             raise ValidationError({
                 'member': _('Either specify a member or a name'),
                 'name': _('Either specify a member or a name'),
             })
-        if not (attrs['member'] or attrs['name']):
+        if not (attrs.get('member') or attrs.get('name')):
             attrs['member'] = self.context['request'].member
         return super().validate(attrs)
