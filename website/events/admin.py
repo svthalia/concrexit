@@ -83,7 +83,11 @@ class EventAdmin(DoNextModelAdmin):
     event_date.short_description = _('Event Date')
 
     def registration_date(self, obj):
-        start_date = obj.registration_start
+        if obj.registration_start is not None:
+            start_date = timezone.make_naive(obj.registration_start)
+        else:
+            start_date = obj.registration_start
+
         return _date(start_date, "l d b Y, G:i")
     registration_date.short_description = _('Registration Start')
 
