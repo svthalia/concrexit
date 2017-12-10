@@ -78,12 +78,16 @@ class EventAdmin(DoNextModelAdmin):
         return super().has_change_permission(request, event)
 
     def event_date(self, obj):
-        event_date = obj.start
+        event_date = timezone.make_naive(obj.start)
         return _date(event_date, "l d b Y, G:i")
     event_date.short_description = _('Event Date')
 
     def registration_date(self, obj):
-        start_date = obj.registration_start
+        if obj.registration_start is not None:
+            start_date = timezone.make_naive(obj.registration_start)
+        else:
+            start_date = obj.registration_start
+
         return _date(start_date, "l d b Y, G:i")
     registration_date.short_description = _('Registration Start')
 
