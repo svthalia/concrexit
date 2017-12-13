@@ -36,14 +36,22 @@ class Device(models.Model):
 
 
 class Message(models.Model):
+    GENERAL = 'general'
+    PIZZA = 'pizza'
+    EVENT = 'event'
+    NEWSLETTER = 'newsletter'
+    SPONSOR = 'sponsor'
+    PHOTO = 'photo'
+    BOARD = 'board'
+
     CATEGORIES = (
-        ("general", "General"),
-        ("pizza", "Pizza"),
-        ("event", "Events"),
-        ("newsletter", "Newsletter"),
-        ("sponsor", "Sponsored messages"),
-        ("photo", "Photo's"),
-        ("board", "Board"),
+        (GENERAL, _("General")),
+        (PIZZA, _("Pizza")),
+        (EVENT, _("Events")),
+        (NEWSLETTER, _("Newsletter")),
+        (SPONSOR, _("Sponsored messages")),
+        (PHOTO, _("Photos")),
+        (BOARD, _("Board")),
     )
 
     users = models.ManyToManyField(django_settings.AUTH_USER_MODEL)
