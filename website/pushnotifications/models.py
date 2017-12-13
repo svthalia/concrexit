@@ -36,6 +36,15 @@ class Device(models.Model):
 
 
 class Message(models.Model):
+    CATEGORIES = (
+        ("general", "General"),
+        ("pizza", "Pizza"),
+        ("event", "Events"),
+        ("newsletter", "Newsletter"),
+        ("sponsor", "Sponsored messages"),
+        ("photo", "Photo's"),
+        ("board", "Board"),
+    )
 
     users = models.ManyToManyField(django_settings.AUTH_USER_MODEL)
     title = models.CharField(
@@ -45,6 +54,8 @@ class Message(models.Model):
     body = models.TextField(
         verbose_name=_('body')
     )
+
+    category = models.CharField(choices=CATEGORIES, max_length=10, default="general")
 
     sent = models.BooleanField(
         verbose_name=_('sent'),

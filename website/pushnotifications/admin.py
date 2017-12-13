@@ -30,18 +30,18 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(models.Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('title', 'body', 'sent', 'success', 'failure')
+    list_display = ('title', 'body', 'category', 'sent', 'success', 'failure')
     filter_horizontal = ('users',)
-    list_filter = ('sent',)
+    list_filter = ('sent', 'category')
 
     def get_fields(self, request, obj=None):
         if obj and obj.sent:
-            return 'users', 'title', 'body', 'success', 'failure'
-        return 'users', 'title', 'body'
+            return 'users', 'title', 'body', 'category', 'success', 'failure'
+        return 'users', 'title', 'body', 'category'
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.sent:
-            return 'users', 'title', 'body', 'success', 'failure'
+            return 'users', 'title', 'body', 'category', 'success', 'failure'
         return super().get_readonly_fields(request, obj)
 
     def change_view(self, request, object_id, form_url='', **kwargs):
