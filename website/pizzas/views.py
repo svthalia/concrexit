@@ -13,6 +13,8 @@ from .models import Order, PizzaEvent, Product
 @login_required
 def index(request):
     products = Product.available_products.order_by('name')
+    if not request.user.has_perm('pizzas.order_restricted_products'):
+        products = products.exclude(restricted=True)
     event = PizzaEvent.current()
     try:
         order = Order.objects.get(pizza_event=event,
@@ -131,9 +133,11 @@ def order(request):
         current_order_locked = False
 
     if 'product' in request.POST and not current_order_locked:
+        productset = Product.available_products.all()
+        if not request.user.has_perm('pizzas.order_restricted_products'):
+            productset = productset.exclude(restricted=True)
         try:
-            product = Product.available_products.get(
-                pk=int(request.POST['product']))
+            product = productset.get(pk=int(request.POST['product']))
         except Product.DoesNotExist:
             raise Http404('Pizza does not exist')
         if not order:
