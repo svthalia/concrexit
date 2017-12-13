@@ -55,7 +55,11 @@ class Message(models.Model):
         verbose_name=_('body')
     )
 
-    category = models.CharField(choices=CATEGORIES, max_length=10, default="general")
+    category = models.CharField(
+        choices=CATEGORIES,
+        max_length=10,
+        default="general"
+    )
 
     sent = models.BooleanField(
         verbose_name=_('sent'),
