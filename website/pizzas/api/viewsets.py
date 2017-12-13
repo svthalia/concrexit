@@ -14,7 +14,7 @@ from pizzas.api import serializers
 
 
 class PizzaViewset(GenericViewSet, ListModelMixin):
-    queryset = Product.objects.filter(available=True)
+    queryset = Product.available_products.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = serializers.PizzaSerializer
 

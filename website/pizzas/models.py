@@ -51,7 +51,17 @@ class PizzaEvent(models.Model):
         return 'Pizzas for ' + str(self.event)
 
 
+class AvailableProductManager(models.Manager):
+    """Only shows available products"""
+
+    def get_queryset(self):
+        return super().get_queryset().filter(available=True)
+
+
 class Product(models.Model, metaclass=ModelTranslateMeta):
+    objects = models.Manager()
+    available_products = AvailableProductManager()
+
     name = models.CharField(max_length=50)
     description = MultilingualField(models.TextField)
     price = models.DecimalField(max_digits=5, decimal_places=2)
