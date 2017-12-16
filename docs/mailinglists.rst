@@ -32,21 +32,3 @@ mailinglists.models module
     :members:
     :undoc-members:
     :show-inheritance:
-
-mailinglists.urls module
-------------------------
-
-.. automodule:: mailinglists.urls
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-mailinglists.views module
--------------------------
-
-.. automodule:: mailinglists.views
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
