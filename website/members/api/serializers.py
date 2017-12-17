@@ -9,6 +9,7 @@ from events.api.serializers import CalenderJSSerializer
 from members.models import Member
 from members.services import member_achievements
 from thaliawebsite.settings import settings
+from utils.templatetags.thumbnail import thumbnail
 
 
 class MemberBirthdaySerializer(CalenderJSSerializer):
@@ -52,9 +53,9 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
 class MemberRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
-        fields = ('pk', 'display_name', 'photo', 'profile_description',
-                  'birthday', 'starting_year', 'programme',
-                  'website', 'membership_type', 'achievements')
+        fields = ('pk', 'display_name', 'photo', 'avatar',
+                  'profile_description', 'birthday', 'starting_year',
+                  'programme', 'website', 'membership_type', 'achievements')
 
     display_name = serializers.SerializerMethodField('_display_name')
     photo = serializers.SerializerMethodField('_b64_photo')
@@ -109,14 +110,35 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
 
         return photo
 
+    def _avatar(self, instance):
+        placeholder = self.context['request'].build_absolute_uri(
+                static('members/images/default-avatar.jpg'))
+        data = {
+            'full': placeholder,
+            'small': placeholder,
+            'medium': placeholder,
+            'large': placeholder,
+        }
+        if instance.profile.photo:
+            data['full'] = self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.profile.photo))
+            data['small'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.profile.photo, '110x110', 1))
+            data['medium'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.profile.photo, '220x220', 1))
+            data['large'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.profile.photo, '800x800', 1))
+        return data
+
 
 class MemberListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
-        fields = ('pk', 'display_name', 'photo',)
+        fields = ('pk', 'display_name', 'photo', 'avatar')
 
     display_name = serializers.SerializerMethodField('_display_name')
     photo = serializers.SerializerMethodField('_photo')
+    avatar = serializers.SerializerMethodField('_avatar')
 
     def _display_name(self, instance):
         return instance.profile.display_name()
@@ -124,7 +146,27 @@ class MemberListSerializer(serializers.ModelSerializer):
     def _photo(self, instance):
         if instance.profile.photo:
             return self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.profile.photo))
+                thumbnail(instance.profile.photo, '220x220', 1))
         else:
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))
+
+    def _avatar(self, instance):
+        placeholder = self.context['request'].build_absolute_uri(
+                static('members/images/default-avatar.jpg'))
+        data = {
+            'full': placeholder,
+            'small': placeholder,
+            'medium': placeholder,
+            'large': placeholder,
+        }
+        if instance.profile.photo:
+            data['full'] = self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.profile.photo))
+            data['small'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.profile.photo, '110x110', 1))
+            data['medium'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.profile.photo, '220x220', 1))
+            data['large'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.profile.photo, '800x800', 1))
+        return data

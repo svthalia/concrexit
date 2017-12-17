@@ -11,6 +11,7 @@ from events.exceptions import RegistrationError
 from events.models import Event, Registration, RegistrationInformationField
 from pizzas.models import PizzaEvent
 from thaliawebsite.settings import settings
+from utils.templatetags.thumbnail import thumbnail
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
@@ -198,11 +199,12 @@ class EventListSerializer(serializers.ModelSerializer):
 class RegistrationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
-        fields = ('pk', 'member', 'name', 'photo', 'registered_on',
+        fields = ('pk', 'member', 'name', 'photo', 'avatar', 'registered_on',
                   'is_late_cancellation', 'is_cancelled', 'queue_position')
 
     name = serializers.SerializerMethodField('_name')
     photo = serializers.SerializerMethodField('_photo')
+    avatar = serializers.SerializerMethodField('_avatar')
     member = serializers.SerializerMethodField('_member')
     registered_on = serializers.DateTimeField(source='date')
     is_cancelled = serializers.SerializerMethodField('_is_cancelled')
@@ -239,18 +241,39 @@ class RegistrationListSerializer(serializers.ModelSerializer):
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))
 
+    def _avatar(self, instance):
+        placeholder = self.context['request'].build_absolute_uri(
+            static('members/images/default-avatar.jpg'))
+        data = {
+            'full': placeholder,
+            'small': placeholder,
+            'medium': placeholder,
+            'large': placeholder,
+        }
+        if instance.member and instance.member.profile.photo:
+            data['full'] = self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.member.profile.photo))
+            data['small'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.member.profile.photo, '110x110', 1))
+            data['medium'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.member.profile.photo, '220x220', 1))
+            data['large'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.member.profile.photo, '800x800', 1))
+        return data
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
     information_fields = None
 
     class Meta:
         model = Registration
-        fields = ('pk', 'member', 'name', 'photo', 'registered_on',
+        fields = ('pk', 'member', 'name', 'photo', 'avatar', 'registered_on',
                   'is_late_cancellation', 'is_cancelled',
                   'queue_position', 'fields')
 
     name = serializers.SerializerMethodField('_name')
     photo = serializers.SerializerMethodField('_photo')
+    avatar = serializers.SerializerMethodField('_avatar')
     member = serializers.SerializerMethodField('_member')
     registered_on = serializers.DateTimeField(source='date', read_only=True)
     is_cancelled = serializers.SerializerMethodField('_is_cancelled')
@@ -288,6 +311,26 @@ class RegistrationSerializer(serializers.ModelSerializer):
         else:
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))
+
+    def _avatar(self, instance):
+        placeholder = self.context['request'].build_absolute_uri(
+            static('members/images/default-avatar.jpg'))
+        data = {
+            'full': placeholder,
+            'small': placeholder,
+            'medium': placeholder,
+            'large': placeholder,
+        }
+        if instance.member and instance.member.profile.photo:
+            data['full'] = self.context['request'].build_absolute_uri(
+                '%s%s' % (settings.MEDIA_URL, instance.member.profile.photo))
+            data['small'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.member.profile.photo, '110x110', 1))
+            data['medium'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.member.profile.photo, '220x220', 1))
+            data['large'] = self.context['request'].build_absolute_uri(
+                thumbnail(instance.member.profile.photo, '800x800', 1))
+        return data
 
     def __init__(self, instance=None, data=empty, **kwargs):
         super().__init__(instance, data, **kwargs)
