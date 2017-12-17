@@ -284,7 +284,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def _photo(self, instance):
         if instance.member and instance.member.profile.photo:
             return self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.profile.photo))
+                '%s%s' % (settings.MEDIA_URL, instance.member.profile.photo))
         else:
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))
