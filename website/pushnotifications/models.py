@@ -36,6 +36,23 @@ class Device(models.Model):
 
 
 class Message(models.Model):
+    GENERAL = 'general'
+    PIZZA = 'pizza'
+    EVENT = 'event'
+    NEWSLETTER = 'newsletter'
+    SPONSOR = 'sponsor'
+    PHOTO = 'photo'
+    BOARD = 'board'
+
+    CATEGORIES = (
+        (GENERAL, _("General")),
+        (PIZZA, _("Pizza")),
+        (EVENT, _("Events")),
+        (NEWSLETTER, _("Newsletter")),
+        (SPONSOR, _("Sponsored messages")),
+        (PHOTO, _("Photos")),
+        (BOARD, _("Board")),
+    )
 
     users = models.ManyToManyField(django_settings.AUTH_USER_MODEL)
     title = models.CharField(
@@ -44,6 +61,12 @@ class Message(models.Model):
     )
     body = models.TextField(
         verbose_name=_('body')
+    )
+
+    category = models.CharField(
+        choices=CATEGORIES,
+        max_length=10,
+        default="general"
     )
 
     sent = models.BooleanField(
