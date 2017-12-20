@@ -35,9 +35,14 @@
             <h4>{% trans "Personal information" %}</h4>
             <ul class="post-meta">
                 <li><span>{% trans "Membership type" %}: </span> {{ membership_type }}<br></li>
-                <li><span>{% trans "Cohort" %}: </span> {{ member.profile.starting_year }}<br></li>
 
+                {% if member.profile.starting_year %}
+                <li><span>{% trans "Cohort" %}: </span> {{ member.profile.starting_year }}<br></li>
+                {% endif %}
+
+                {% if member.profile.programme %}
                 <li><span>{% trans "Study programme" %}: </span> {{ member.profile.get_programme_display }}<br></li>
+                {% endif %}
 
                 {% if member.profile.website %}
                 <li><span>{% trans "Website" %}: </span> <a rel="nofollow,noopener" href="{{ member.profile.website }}">{{ member.profile.website }}</a></li>
