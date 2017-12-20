@@ -41,18 +41,17 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
         for year in range(start_year, end.year + 1):
             bday = copy.deepcopy(member)
             try:
-                bday.profile.birthday = \
-                        bday.profile.birthday.replace(year=year)
+                bday.profile.birthday = bday.profile.birthday.replace(
+                    year=year)
             except ValueError as e:
                 if (bday.profile.birthday.month == 2 and
                         bday.profile.birthday.day == 29):
-                    bday.profile.birthday = \
-                            bday.profile.birthday.replace(year=year, day=28)
+                    bday.profile.birthday = bday.profile.birthday.replace(
+                        year=year, day=28)
                 else:
                     raise e
             if start.date() <= bday.profile.birthday <= end.date():
                 birthdays.append(bday)
-
         return birthdays
 
     @list_route()
@@ -85,5 +84,8 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
 
     @list_route()
     def me(self, request):
-        serializer = self.get_serializer_class()(request.member)
+        kwargs = {
+            'context': self.get_serializer_context(),
+        }
+        serializer = self.get_serializer_class()(request.member, **kwargs)
         return Response(serializer.data)
