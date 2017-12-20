@@ -59,6 +59,7 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
 
     display_name = serializers.SerializerMethodField('_display_name')
     photo = serializers.SerializerMethodField('_b64_photo')
+    avatar = serializers.SerializerMethodField('_avatar')
     profile_description = serializers.SerializerMethodField(
             '_profile_description')
     birthday = serializers.SerializerMethodField('_birthday')
