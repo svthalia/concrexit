@@ -1,8 +1,9 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth.models import Permission
 from django.forms import BaseInlineFormSet, ModelForm
 
 from activemembers.forms import CommitteeMembershipForm
+from django.utils.translation import ugettext_lazy as _
 from utils.translation import TranslatedModelAdmin
 from . import models
 
@@ -91,6 +92,13 @@ class CommitteeMembershipAdmin(TranslatedModelAdmin):
     list_select_related = ('member', 'committee',)
     search_fields = ('member__first_name', 'member__last_name',
                      'member__email')
+
+    def changelist_view(self, request, extra_context=None):
+        self.message_user(request, _('Do not edit existing memberships if the '
+                                     'chair of a committee has changed, add a '
+                                     'new committeemembership instead.'),
+                          messages.WARNING)
+        return super().changelist_view(request, extra_context)
 
 
 @admin.register(models.Mentorship)
