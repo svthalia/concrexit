@@ -66,7 +66,10 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
     description = MultilingualField(models.TextField)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     available = models.BooleanField(default=True)
-    restricted = models.BooleanField(default=False)
+    restricted = models.BooleanField(
+        default=False,
+        help_text=_("Only allow to be ordered by people with the "
+                    "'order restricted products' permission."))
 
     def __str__(self):
         return self.name
