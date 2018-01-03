@@ -24,10 +24,42 @@ events.admin module
     :undoc-members:
     :show-inheritance:
 
+events.admin_views module
+-------------------------
+
+.. automodule:: events.admin_views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 events.apps module
 ------------------
 
 .. automodule:: events.apps
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+events.decorators module
+------------------------
+
+.. automodule:: events.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+events.emails module
+--------------------
+
+.. automodule:: events.emails
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+events.exceptions module
+------------------------
+
+.. automodule:: events.exceptions
     :members:
     :undoc-members:
     :show-inheritance:
@@ -52,6 +84,14 @@ events.models module
 --------------------
 
 .. automodule:: events.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+events.services module
+----------------------
+
+.. automodule:: events.services
     :members:
     :undoc-members:
     :show-inheritance:

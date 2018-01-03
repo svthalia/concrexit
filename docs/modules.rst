@@ -16,6 +16,7 @@ website
    partners
    photos
    pizzas
+   pushnotifications
    registrations
    thabloid
    thaliawebsite
