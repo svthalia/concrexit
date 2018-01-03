@@ -94,6 +94,8 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# default domain:
+primary_domain = 'py'
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -111,7 +113,7 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 
 # -- Options for HTMLHelp output ------------------------------------------
@@ -179,3 +181,9 @@ autodoc_default_flags = ['members', 'undoc-members']
 
 # Disable doctests in normal strings
 doctest_test_doctest_blocks = ''
+
+# -- Supress warnings  ---
+suppress_warnings = [
+    'image.nonlocal_uri',
+    'ref.python',
+]
