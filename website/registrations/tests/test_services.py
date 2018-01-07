@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase
 from django.utils import timezone
+from freezegun import freeze_time
 
 from members.models import Member, Membership
 from registrations import services
@@ -316,9 +317,7 @@ class ServicesTest(TestCase):
         self.e2.username = 'ptest'
         self.e2.save()
 
-        now = timezone.now()
-        with mock.patch('django.utils.timezone.now') as timezone_mock:
-            timezone_mock.return_value = now.replace(month=1)
+        with freeze_time("2017-01-12"):
             lecture_year = datetime_to_lectureyear(timezone.now())
 
             m1 = services._create_member_from_registration(self.e1)
@@ -343,17 +342,17 @@ class ServicesTest(TestCase):
 
             membership2.delete()
 
+        with freeze_time("2017-08-12"):
             # Check if since is new lecture year in august
-            timezone_mock.return_value = now.replace(month=8)
             membership2 = services._create_membership_from_entry(self.e2, m2)
 
-            self.assertEqual(membership2.since, now.date().replace(
+            self.assertEqual(membership2.since, timezone.now().date().replace(
                 month=9, day=1))
             self.assertEqual(membership2.until, None)
             self.assertEqual(membership2.user, m2)
             self.assertEqual(membership2.type, self.e2.membership_type)
-            timezone_mock.return_value = now.replace(month=1)
 
+        with freeze_time("2017-01-12"):
             # Renewal to new 'study' membership starting today
             self.e3.length = Entry.MEMBERSHIP_STUDY
             membership3 = services._create_membership_from_entry(self.e3)
