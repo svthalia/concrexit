@@ -19,7 +19,7 @@ pep8:
     - export PIP_CACHE_DIR="pip-cache"
     - mkdir -p pip-cache
     - git log -1
-    - pip install tox coverage freezegun
+    - pip install tox coverage
     - apt-get update
     - apt-get install -y ghostscript  # required for Thabloid's tests
   script:
