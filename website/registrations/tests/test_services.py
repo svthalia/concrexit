@@ -319,6 +319,7 @@ class ServicesTest(TestCase):
 
         with freeze_time("2017-01-12"):
             lecture_year = datetime_to_lectureyear(timezone.now())
+            self.assertEqual(lecture_year, 2016)
 
             m1 = services._create_member_from_registration(self.e1)
             m2 = services._create_member_from_registration(self.e2)
@@ -328,7 +329,7 @@ class ServicesTest(TestCase):
 
             self.assertEqual(membership1.since, timezone.now().date())
             self.assertEqual(membership1.until, timezone.datetime(
-                year=lecture_year + 1, month=9, day=1).date())
+                year=2017, month=9, day=1).date())
             self.assertEqual(membership1.user, m1)
             self.assertEqual(membership1.type, self.e1.membership_type)
 
@@ -346,8 +347,8 @@ class ServicesTest(TestCase):
             # Check if since is new lecture year in august
             membership2 = services._create_membership_from_entry(self.e2, m2)
 
-            self.assertEqual(membership2.since, timezone.now().date().replace(
-                month=9, day=1))
+            self.assertEqual(membership2.since, timezone.datetime(
+                year=2017, month=9, day=1).date())
             self.assertEqual(membership2.until, None)
             self.assertEqual(membership2.user, m2)
             self.assertEqual(membership2.type, self.e2.membership_type)
@@ -370,7 +371,7 @@ class ServicesTest(TestCase):
 
             self.assertEqual(membership3.since, timezone.now().date())
             self.assertEqual(membership3.until, timezone.datetime(
-                month=9, day=1, year=lecture_year + 1).date())
+                month=9, day=1, year=2017).date())
             self.assertEqual(membership3.user, self.e3.member)
             self.assertEqual(membership3.type, self.e3.membership_type)
 
@@ -379,9 +380,9 @@ class ServicesTest(TestCase):
             self.e3.length = Entry.MEMBERSHIP_YEAR
             existing_membership = Membership.objects.create(
                 type=Membership.MEMBER,
-                since=timezone.datetime(year=lecture_year,
+                since=timezone.datetime(year=2016,
                                         month=9, day=1).date(),
-                until=timezone.datetime(year=lecture_year + 1,
+                until=timezone.datetime(year=2017,
                                         month=1, day=31).date(),
                 user=self.e3.member
             )
@@ -399,7 +400,7 @@ class ServicesTest(TestCase):
             self.assertEqual(membership3.since,
                              existing_membership.until + timedelta(days=1))
             self.assertEqual(membership3.until, timezone.datetime(
-                year=lecture_year + 1, month=9, day=1).date())
+                year=2017, month=9, day=1).date())
             self.assertEqual(membership3.user, self.e3.member)
             self.assertEqual(membership3.type, self.e3.membership_type)
 
@@ -419,8 +420,8 @@ class ServicesTest(TestCase):
 
             # But it does work when the entry was created before the renewal
             # was actually due. This modifies the existing membership
-            self.e3.created_at = timezone.datetime(year=lecture_year + 1,
-                                                   month=1, day=30)
+            self.e3.created_at = timezone.make_aware(
+                timezone.datetime(2017, 1, 30))
             self.e3.save()
             membership3 = services._create_membership_from_entry(self.e3)
             self.assertEqual(membership3.since, existing_membership.since)
