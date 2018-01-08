@@ -19,8 +19,11 @@ CMD ["--help"]
 RUN mkdir /concrexit && \
     mkdir -p /concrexit/log/ && \
     touch /concrexit/log/uwsgi.log && \
+    mkdir -p /concrexit/docs/ && \
     chown -R www-data:www-data /concrexit && \
-    mkdir -p /usr/src/app
+    mkdir -p /usr/src/app && \
+    mkdir -p /usr/src/app/website && \
+    mkdir -p /usr/src/app/docs
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -29,15 +32,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript && \
     rm -rf /var/lib/apt
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/website/
 # install python requirements
-COPY requirements.txt /usr/src/app/
-COPY production-requirements.txt /usr/src/app/
-COPY dev-requirements.txt /usr/src/app/
+COPY requirements.txt /usr/src/app/website/
+COPY production-requirements.txt /usr/src/app/website/
+COPY dev-requirements.txt /usr/src/app/website/
+COPY docs/requirements.txt /usr/src/app/docs/
 RUN pip install --no-cache-dir \
     -r requirements.txt \
     -r production-requirements.txt \
-    -r dev-requirements.txt
+    -r dev-requirements.txt \
+    -r ../docs/requirements.txt
 
 # Create entry points
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -46,4 +51,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
     chmod +x /usr/local/bin/entrypoint_production.sh
 
 # copy app source
-COPY website /usr/src/app/
+COPY website /usr/src/app/website/
+
+# Copy files for Sphinx documentation
+COPY README.md /usr/src/app/
+COPY docs /usr/src/app/docs
