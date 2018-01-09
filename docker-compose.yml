@@ -15,7 +15,7 @@ services:
         depends_on:
             - postgres
         volumes:
-            - ./website:/usr/src/app
+            - ./website:/usr/src/app/website/
             - concrexit:/concrexit/
         environment:
             <<: *postgresvars
