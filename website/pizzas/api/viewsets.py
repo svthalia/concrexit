@@ -14,14 +14,18 @@ from pizzas.api import serializers
 
 
 class PizzaViewset(GenericViewSet, ListModelMixin):
-    queryset = Product.objects.filter(available=True)
+    queryset = Product.available_products.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = serializers.PizzaSerializer
 
     def list(self, request, *args, **kwargs):
         if (PizzaEvent.current() or
                 request.user.has_perm('pizzas.change_product')):
-            return super().list(request, *args, **kwargs)
+            queryset = self.get_queryset()
+            if not request.user.has_perm('pizzas.order_restricted_products'):
+                queryset = queryset.exclude(restricted=True)
+            serializer = serializers.PizzaSerializer(queryset, many=True)
+            return Response(serializer.data)
         raise PermissionDenied
 
     @list_route()

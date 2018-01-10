@@ -12,7 +12,9 @@ from .models import Order, PizzaEvent, Product
 
 @login_required
 def index(request):
-    products = Product.objects.filter(available=True).order_by('name')
+    products = Product.available_products.order_by('name')
+    if not request.user.has_perm('pizzas.order_restricted_products'):
+        products = products.exclude(restricted=True)
     event = PizzaEvent.current()
     try:
         order = Order.objects.get(pizza_event=event,
@@ -123,20 +125,23 @@ def order(request):
         return HttpResponseRedirect(reverse('pizzas:index'))
 
     try:
-        order_placed = Order.objects.get(pizza_event=event,
-                                         member=request.member)
-        current_order_locked = not order_placed.can_be_changed
+        order = Order.objects.get(pizza_event=event,
+                                  member=request.member)
+        current_order_locked = not order.can_be_changed
     except Order.DoesNotExist:
+        order = None
         current_order_locked = False
 
     if 'product' in request.POST and not current_order_locked:
-        product = Product.objects.get(pk=int(request.POST['product']))
-        if product:
-            try:
-                order = Order.objects.get(pizza_event=event,
-                                          member=request.member)
-            except Order.DoesNotExist:
-                order = Order(pizza_event=event, member=request.member)
-            order.product = product
-            order.save()
+        productset = Product.available_products.all()
+        if not request.user.has_perm('pizzas.order_restricted_products'):
+            productset = productset.exclude(restricted=True)
+        try:
+            product = productset.get(pk=int(request.POST['product']))
+        except Product.DoesNotExist:
+            raise Http404('Pizza does not exist')
+        if not order:
+            order = Order(pizza_event=event, member=request.member)
+        order.product = product
+        order.save()
     return HttpResponseRedirect(reverse('pizzas:index'))

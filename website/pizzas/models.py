@@ -51,17 +51,34 @@ class PizzaEvent(models.Model):
         return 'Pizzas for ' + str(self.event)
 
 
+class AvailableProductManager(models.Manager):
+    """Only shows available products"""
+
+    def get_queryset(self):
+        return super().get_queryset().filter(available=True)
+
+
 class Product(models.Model, metaclass=ModelTranslateMeta):
+    objects = models.Manager()
+    available_products = AvailableProductManager()
+
     name = models.CharField(max_length=50)
     description = MultilingualField(models.TextField)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     available = models.BooleanField(default=True)
+    restricted = models.BooleanField(
+        default=False,
+        help_text=_("Only allow to be ordered by people with the "
+                    "'order restricted products' permission."))
 
     def __str__(self):
         return self.name
 
     class Meta:
         ordering = ('name', )
+        permissions = (
+            ('order_restricted_products', _('Order restricted products')),
+        )
 
 
 class Order(models.Model):
