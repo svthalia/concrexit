@@ -47,7 +47,9 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode']
+    'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -182,8 +184,11 @@ autodoc_default_flags = ['members', 'undoc-members']
 # Disable doctests in normal strings
 doctest_test_doctest_blocks = ''
 
+# -- intersphinx ---
+intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
+
+
 # -- Supress warnings  ---
 suppress_warnings = [
     'image.nonlocal_uri',
-    'ref.python',
 ]
