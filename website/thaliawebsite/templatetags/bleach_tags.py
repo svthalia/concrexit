@@ -35,25 +35,25 @@ def bleach(value):
 
     Examples::
 
-    >>> bleach('<script></script>')
-    ''
-    >>> bleach('simple')
-    'simple'
-    >>> bleach('<a href="http://example.com/">ex</a>')
-    '<a href="http://example.com/">ex</a>'
-    >>> bleach('<div class="bla"></div>')
-    '<div class="bla"></div>'
-    >>> bleach('<img src="https://i.redd.it/22kypw2l93gz.jpg" alt="bees">')
-    '<img alt="bees" src="https://i.redd.it/22kypw2l93gz.jpg">'
-    >>> bleach('<iframe width="560" height="315" '
-    ... 'src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" '
-    ... 'frameborder="0" allowfullscreen></iframe>') == (
-    ...     '<iframe allowfullscreen="" frameborder="0" height="315" '
-    ...     'src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" '
-    ...     'width="560"></iframe>')
-    True
-    >>> bleach('<iframe src="https://clearlyreta.rded.nl/ivo/"></iframe>')
-    '<iframe></iframe>'
+        >>> bleach('<script></script>')
+        ''
+        >>> bleach('simple')
+        'simple'
+        >>> bleach('<a href="http://example.com/">ex</a>')
+        '<a href="http://example.com/">ex</a>'
+        >>> bleach('<div class="bla"></div>')
+        '<div class="bla"></div>'
+        >>> bleach('<img src="https://i.redd.it/22kypw2l93gz.jpg" alt="bees">')
+        '<img alt="bees" src="https://i.redd.it/22kypw2l93gz.jpg">'
+        >>> bleach('<iframe width="560" height="315" '
+        ... 'src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" '
+        ... 'frameborder="0" allowfullscreen></iframe>') == (
+        ...     '<iframe allowfullscreen="" frameborder="0" height="315" '
+        ...     'src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" '
+        ...     'width="560"></iframe>')
+        True
+        >>> bleach('<iframe src="https://clearlyreta.rded.nl/ivo/"></iframe>')
+        '<iframe></iframe>'
     """
 
     return mark_safe(

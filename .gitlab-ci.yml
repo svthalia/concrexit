@@ -44,8 +44,12 @@ docs:
     # install doc deps
     - pip install -r requirements.txt
   script:
+    - echo "Building current docs"
     - env -u GITLAB_CI make doctest
-    - test -z "$(env -u GITLAB_CI make html | egrep -w 'SEVERE:|ERROR:')"
+    - env -u GITLAB_CI sphinx-build -M html "." "_build" -W
+    - echo "Checking if there are changes"
+    - ./generate-apidocs.sh
+    - git diff --exit-code
 
 cache:
   key: "$CI_JOB_NAME"

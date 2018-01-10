@@ -1,5 +1,5 @@
-members.api package
-===================
+members\.api package
+====================
 
 .. automodule:: members.api
     :members:
@@ -9,24 +9,24 @@ members.api package
 Submodules
 ----------
 
-members.api.serializers module
-------------------------------
+members\.api\.serializers module
+--------------------------------
 
 .. automodule:: members.api.serializers
     :members:
     :undoc-members:
     :show-inheritance:
 
-members.api.urls module
------------------------
+members\.api\.urls module
+-------------------------
 
 .. automodule:: members.api.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-members.api.viewsets module
----------------------------
+members\.api\.viewsets module
+-----------------------------
 
 .. automodule:: members.api.viewsets
     :members:

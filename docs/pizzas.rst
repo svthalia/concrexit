@@ -6,58 +6,51 @@ pizzas package
     :undoc-members:
     :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-
-    pizzas.api
-
 Submodules
 ----------
 
-pizzas.admin module
--------------------
+pizzas\.admin module
+--------------------
 
 .. automodule:: pizzas.admin
     :members:
     :undoc-members:
     :show-inheritance:
 
-pizzas.apps module
-------------------
+pizzas\.apps module
+-------------------
 
 .. automodule:: pizzas.apps
     :members:
     :undoc-members:
     :show-inheritance:
 
-pizzas.forms module
--------------------
+pizzas\.forms module
+--------------------
 
 .. automodule:: pizzas.forms
     :members:
     :undoc-members:
     :show-inheritance:
 
-pizzas.models module
---------------------
+pizzas\.models module
+---------------------
 
 .. automodule:: pizzas.models
     :members:
     :undoc-members:
     :show-inheritance:
 
-pizzas.urls module
-------------------
+pizzas\.urls module
+-------------------
 
 .. automodule:: pizzas.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-pizzas.views module
--------------------
+pizzas\.views module
+--------------------
 
 .. automodule:: pizzas.views
     :members:

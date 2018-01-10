@@ -47,7 +47,9 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode']
+    'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -94,6 +96,8 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# default domain:
+primary_domain = 'py'
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -111,7 +115,7 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 
 # -- Options for HTMLHelp output ------------------------------------------
@@ -179,3 +183,25 @@ autodoc_default_flags = ['members', 'undoc-members']
 
 # Disable doctests in normal strings
 doctest_test_doctest_blocks = ''
+
+# -- intersphinx ---
+intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
+
+
+# -- Supress warnings  ---
+suppress_warnings = [
+    'image.nonlocal_uri',
+]
+
+# Hotfix for problems with name clashes in references
+# https://github.com/sphinx-doc/sphinx/issues/3866
+from sphinx.domains.python import PythonDomain
+class PatchedPythonDomain(PythonDomain):
+    def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
+        if 'refspecific' in node:
+            del node['refspecific']
+        return super(PatchedPythonDomain, self).resolve_xref(
+            env, fromdocname, builder, typ, target, node, contnode)
+
+def setup(sphinx):
+    sphinx.override_domain(PatchedPythonDomain)

@@ -9,48 +9,48 @@ announcements package
 Submodules
 ----------
 
-announcements.admin module
---------------------------
+announcements\.admin module
+---------------------------
 
 .. automodule:: announcements.admin
     :members:
     :undoc-members:
     :show-inheritance:
 
-announcements.apps module
--------------------------
+announcements\.apps module
+--------------------------
 
 .. automodule:: announcements.apps
     :members:
     :undoc-members:
     :show-inheritance:
 
-announcements.context_processors module
----------------------------------------
+announcements\.context\_processors module
+-----------------------------------------
 
 .. automodule:: announcements.context_processors
     :members:
     :undoc-members:
     :show-inheritance:
 
-announcements.models module
----------------------------
+announcements\.models module
+----------------------------
 
 .. automodule:: announcements.models
     :members:
     :undoc-members:
     :show-inheritance:
 
-announcements.urls module
--------------------------
+announcements\.urls module
+--------------------------
 
 .. automodule:: announcements.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-announcements.views module
---------------------------
+announcements\.views module
+---------------------------
 
 .. automodule:: announcements.views
     :members:

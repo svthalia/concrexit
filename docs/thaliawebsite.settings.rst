@@ -1,5 +1,5 @@
-thaliawebsite.settings package
-==============================
+thaliawebsite\.settings package
+===============================
 
 .. automodule:: thaliawebsite.settings
     :members:
@@ -9,24 +9,24 @@ thaliawebsite.settings package
 Submodules
 ----------
 
-thaliawebsite.settings.production module
-----------------------------------------
+thaliawebsite\.settings\.production module
+------------------------------------------
 
 .. automodule:: thaliawebsite.settings.production
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite.settings.settings module
---------------------------------------
+thaliawebsite\.settings\.settings module
+----------------------------------------
 
 .. automodule:: thaliawebsite.settings.settings
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite.settings.testing module
--------------------------------------
+thaliawebsite\.settings\.testing module
+---------------------------------------
 
 .. automodule:: thaliawebsite.settings.testing
     :members:
