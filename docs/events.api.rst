@@ -1,5 +1,5 @@
-events.api package
-==================
+events\.api package
+===================
 
 .. automodule:: events.api
     :members:
@@ -9,32 +9,32 @@ events.api package
 Submodules
 ----------
 
-events.api.permissions module
------------------------------
+events\.api\.permissions module
+-------------------------------
 
 .. automodule:: events.api.permissions
     :members:
     :undoc-members:
     :show-inheritance:
 
-events.api.serializers module
------------------------------
+events\.api\.serializers module
+-------------------------------
 
 .. automodule:: events.api.serializers
     :members:
     :undoc-members:
     :show-inheritance:
 
-events.api.urls module
-----------------------
+events\.api\.urls module
+------------------------
 
 .. automodule:: events.api.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-events.api.viewsets module
---------------------------
+events\.api\.viewsets module
+----------------------------
 
 .. automodule:: events.api.viewsets
     :members:

@@ -9,48 +9,48 @@ newsletters package
 Submodules
 ----------
 
-newsletters.admin module
-------------------------
+newsletters\.admin module
+-------------------------
 
 .. automodule:: newsletters.admin
     :members:
     :undoc-members:
     :show-inheritance:
 
-newsletters.apps module
------------------------
+newsletters\.apps module
+------------------------
 
 .. automodule:: newsletters.apps
     :members:
     :undoc-members:
     :show-inheritance:
 
-newsletters.forms module
-------------------------
+newsletters\.forms module
+-------------------------
 
 .. automodule:: newsletters.forms
     :members:
     :undoc-members:
     :show-inheritance:
 
-newsletters.models module
--------------------------
+newsletters\.models module
+--------------------------
 
 .. automodule:: newsletters.models
     :members:
     :undoc-members:
     :show-inheritance:
 
-newsletters.urls module
------------------------
+newsletters\.urls module
+------------------------
 
 .. automodule:: newsletters.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-newsletters.views module
-------------------------
+newsletters\.views module
+-------------------------
 
 .. automodule:: newsletters.views
     :members:
