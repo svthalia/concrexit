@@ -9,6 +9,14 @@ utils package
 Submodules
 ----------
 
+utils.exception_filter module
+-----------------------------
+
+.. automodule:: utils.exception_filter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 utils.snippets module
 ---------------------
 

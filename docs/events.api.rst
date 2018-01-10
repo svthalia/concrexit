@@ -9,6 +9,14 @@ events.api package
 Submodules
 ----------
 
+events.api.permissions module
+-----------------------------
+
+.. automodule:: events.api.permissions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 events.api.serializers module
 -----------------------------
 

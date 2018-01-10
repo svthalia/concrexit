@@ -9,6 +9,14 @@ thaliawebsite.templatetags package
 Submodules
 ----------
 
+thaliawebsite.templatetags.baseurl module
+-----------------------------------------
+
+.. automodule:: thaliawebsite.templatetags.baseurl
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thaliawebsite.templatetags.bleach_tags module
 ---------------------------------------------
 
@@ -29,6 +37,14 @@ thaliawebsite.templatetags.menu module
 --------------------------------------
 
 .. automodule:: thaliawebsite.templatetags.menu
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+thaliawebsite.templatetags.pick_header_image module
+---------------------------------------------------
+
+.. automodule:: thaliawebsite.templatetags.pick_header_image
     :members:
     :undoc-members:
     :show-inheritance:

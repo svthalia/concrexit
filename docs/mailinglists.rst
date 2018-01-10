@@ -6,6 +6,13 @@ mailinglists package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    mailinglists.api
+
 Submodules
 ----------
 
@@ -32,3 +39,13 @@ mailinglists.models module
     :members:
     :undoc-members:
     :show-inheritance:
+
+mailinglists.services module
+----------------------------
+
+.. automodule:: mailinglists.services
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+

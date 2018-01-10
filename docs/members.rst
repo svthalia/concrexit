@@ -32,6 +32,14 @@ members.apps module
     :undoc-members:
     :show-inheritance:
 
+members.emails module
+---------------------
+
+.. automodule:: members.emails
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 members.forms module
 --------------------
 
@@ -40,10 +48,26 @@ members.forms module
     :undoc-members:
     :show-inheritance:
 
+members.middleware module
+-------------------------
+
+.. automodule:: members.middleware
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 members.models module
 ---------------------
 
 .. automodule:: members.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+members.services module
+-----------------------
+
+.. automodule:: members.services
     :members:
     :undoc-members:
     :show-inheritance:

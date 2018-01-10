@@ -4,4 +4,4 @@ if [ ! -f "./index.rst" ]; then
     exit 1
 fi
 
-sphinx-apidoc -M -f -o docs ../website ../website/*/migrations ../website/*/tests* ../website/manage.py
+sphinx-apidoc -M -f -o . ../website ../website/*/migrations ../website/*/tests* ../website/manage.py
