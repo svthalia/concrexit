@@ -192,3 +192,16 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
 suppress_warnings = [
     'image.nonlocal_uri',
 ]
+
+# Hotfix for problems with name clashes in references
+# https://github.com/sphinx-doc/sphinx/issues/3866
+from sphinx.domains.python import PythonDomain
+class PatchedPythonDomain(PythonDomain):
+    def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
+        if 'refspecific' in node:
+            del node['refspecific']
+        return super(PatchedPythonDomain, self).resolve_xref(
+            env, fromdocname, builder, typ, target, node, contnode)
+
+def setup(sphinx):
+    sphinx.override_domain(PatchedPythonDomain)
