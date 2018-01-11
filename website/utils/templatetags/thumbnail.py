@@ -29,8 +29,8 @@ def thumbnail(path, size, fit=True):
     # otherwise just return the file path
     if (not os.path.isfile(full_thumbpath) or
             os.path.getmtime(full_path) > os.path.getmtime(full_thumbpath)):
-        pathuri = urlquote(path, safe=[''])
-        thumburi = urlquote(thumbpath, safe=[''])
+        pathuri = urlquote(path, safe='')
+        thumburi = urlquote(thumbpath, safe='')
         # We provide a URL instead of calling it as a function, so that using
         # it means kicking off a new GET request. If we would generate all
         # thumbnails inline, loading an album overview would have high latency.
