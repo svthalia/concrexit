@@ -12,7 +12,9 @@ class PartnerEventCalendarJSSerializer(CalenderJSSerializer):
         model = PartnerEvent
 
     def _title(self, instance):
-        return "{} ({})".format(instance.title, instance.partner.name)
+        if instance.partner:
+            return "{} ({})".format(instance.title, instance.partner.name)
+        return "{} ({})".format(instance.title, instance.other_partner)
 
     def _background_color(self, instance):
         return '#E62272'

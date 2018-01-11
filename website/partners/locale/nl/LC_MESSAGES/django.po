@@ -7,91 +7,98 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-12 10:29+0100\n"
-"PO-Revision-Date: 2017-02-12 10:29+0100\n"
-"Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
+"POT-Creation-Date: 2018-01-12 10:07+0100\n"
+"PO-Revision-Date: 2018-01-12 10:07+0100\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.4\n"
 
-#: models.py:33
+#: models.py:34
 msgid "Enter a valid address"
 msgstr "Voer een geldig adres in"
 
-#: models.py:38
+#: models.py:39
 msgid "Enter a valid zip code"
 msgstr "Voer een geldige postcode in"
 
-#: models.py:77
+#: models.py:78
 msgid "image of {}"
 msgstr "Plaatje van {}"
 
-#: models.py:88
+#: models.py:89
 msgid "Vacancy Categories"
 msgstr "Vacaturecategorieën"
 
-#: models.py:105
+#: models.py:106
 msgid ""
 "When you use a partner, the company name and logo below will not be used."
 msgstr ""
 "Wanneer je een partner aangeeft, zullen de bedrijfsnaam en logo hieronder "
 "niet gebruikt worden."
 
-#: models.py:118
+#: models.py:122
 msgid "not shown on the page"
 msgstr "wordt niet getoond op de vacaturepagina"
 
-#: models.py:134 templates/partners/partner.html:77
-#: templates/partners/vacancies.html:4 templates/partners/vacancies.html:7
+#: models.py:138 templates/partners/partner.html:78
+#: templates/partners/vacancies.html:4 templates/partners/vacancies.html:5
+#: templates/partners/vacancies.html:8
 msgid "Vacancies"
 msgstr "Vacatures"
 
-#: models.py:152
+#: models.py:160
 msgid "title"
 msgstr "titel"
 
-#: models.py:158
+#: models.py:166
 msgid "description"
 msgstr "beschrijving"
 
-#: models.py:163
+#: models.py:171
 msgid "location"
 msgstr "locatie"
 
-#: models.py:167
+#: models.py:175
 msgid "start time"
 msgstr "starttijd"
 
-#: models.py:169
+#: models.py:177
 msgid "end time"
 msgstr "eindtijd"
 
-#: models.py:171
+#: models.py:179
 msgid "website"
 msgstr "website"
 
-#: models.py:173
+#: models.py:181
 msgid "published"
 msgstr "gepubliceerd"
 
-#: templates/partners/index.html:4 templates/partners/partner.html:4
+#: models.py:189 models.py:191
+msgid "Please select or enter a partner for this event."
+msgstr "Selecteer of vul een partner in voor dit evenement."
+
+#: templates/partners/index.html:4 templates/partners/index.html:5
+#: templates/partners/partner.html:4 templates/partners/partner.html:5
 msgid "Partners"
 msgstr "Partners"
 
-#: templates/partners/index.html:4 templates/partners/partner.html:4
-#: templates/partners/vacancies.html:4
+#: templates/partners/index.html:4 templates/partners/index.html:5
+#: templates/partners/partner.html:4 templates/partners/partner.html:5
+#: templates/partners/vacancies.html:4 templates/partners/vacancies.html:5
 msgid "Career"
 msgstr "Carrière"
 
-#: templates/partners/index.html:8
+#: templates/partners/index.html:9
 msgid "Our partners"
 msgstr "Onze partners"
 
-#: templates/partners/index.html:10
+#: templates/partners/index.html:11
 msgid ""
 "A brief introduction about our study association for Computer and "
 "Information Sciences, Thalia. As a study association we put great effort in "
@@ -118,42 +125,42 @@ msgstr ""
 "bereiken is via <a href=\"mailto:samenwerking@thalia.nu"
 "\">samenwerking@thalia.nu</a>."
 
-#: templates/partners/index.html:17 templates/partners/partner.html:32
+#: templates/partners/index.html:18 templates/partners/partner.html:33
 msgid "Main Partner"
 msgstr "Hoofdsponsor"
 
-#: templates/partners/index.html:30 templates/partners/index.html:56
-#: templates/partners/partner.html:91 templates/partners/vacancies.html:52
-#: templates/partners/vacancies.html:57 templates/partners/vacancies.html:88
+#: templates/partners/index.html:31 templates/partners/index.html:57
+#: templates/partners/partner.html:92 templates/partners/vacancies.html:54
+#: templates/partners/vacancies.html:59 templates/partners/vacancies.html:90
 msgid "Learn more"
 msgstr "Lees meer"
 
-#: templates/partners/partner.html:18
+#: templates/partners/partner.html:19
 #, python-format
 msgid "About %(name)s"
 msgstr "Over %(name)s"
 
-#: templates/partners/partner.html:55
+#: templates/partners/partner.html:56
 msgid "Information"
 msgstr "Informatie"
 
-#: templates/partners/partner.html:56
+#: templates/partners/partner.html:57
 msgid "Street"
 msgstr "Straatnaam"
 
-#: templates/partners/partner.html:58
+#: templates/partners/partner.html:59
 msgid "Zip Code"
 msgstr "Postcode"
 
-#: templates/partners/partner.html:60
+#: templates/partners/partner.html:61
 msgid "City"
 msgstr "Plaatsnaam"
 
-#: templates/partners/partner.html:65
+#: templates/partners/partner.html:66
 msgid "Website"
 msgstr "Website"
 
-#: templates/partners/vacancies.html:9
+#: templates/partners/vacancies.html:10
 msgid ""
 "You are a student and maybe you are looking for a job or part-time job. "
 "Happily we have companies that offer vacancies. So when you want to earn "
@@ -171,11 +178,11 @@ msgstr ""
 "via <a href=\"mailto:samenwerking@thalia.nu\" target=\"_blank"
 "\">samenwerking@thalia.nu</a>."
 
-#: templates/partners/vacancies.html:19
+#: templates/partners/vacancies.html:20
 msgid "Everything"
 msgstr "Alles"
 
-#: templates/partners/vacancies.html:68
+#: templates/partners/vacancies.html:70
 msgid "All vacancies"
 msgstr "Alle vacatures"
 
