@@ -10,6 +10,7 @@ variables:
   #  - pip: tox, coverage
   #  - apt: ghostscript
   PY35_IMAGE: twiggers/python-thalia:3.5
+  PY36_IMAGE: twiggers/python-thalia:3.6
   PIP_CACHE_DIR: "${CI_PROJECT_DIR}/pip-cache"
 
 pep8:
@@ -37,14 +38,14 @@ python35-django11:
 
 python35-django20:
   <<: *djangotest
-  image: python:3.5
+  image: $PY35_IMAGE
   variables:
     PYTHON_VERSION: py35
     DJANGO_VERSION: django20
 
 python36-django20:
   <<: *djangotest
-  image: python:3.6
+  image: $PY36_IMAGE
   variables:
     PYTHON_VERSION: py36
     DJANGO_VERSION: django20
