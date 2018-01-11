@@ -1,5 +1,6 @@
 <ul>
     {% for item in submenu %}
+      {% if not item.authenticated or request.user.is_authenticated %}
         {% url item.name as path %}
         <li {% if request.path == path %}class="nav-selected nav-path-selected"{% endif %}>
             <a href="{% if path %}{{ path }}{% else %}{{ item.url }}{% endif %}"
@@ -11,5 +12,6 @@
                 {% include 'menu/submenu.html' with submenu=item.submenu %}
             {% endif %}
         </li>
+      {% endif %}
     {% endfor %}
 </ul>
