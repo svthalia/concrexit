@@ -7,7 +7,7 @@ from events.models import Registration, RegistrationInformationField
 
 
 def is_user_registered(event, member):
-    if not event.registration_required:
+    if not event.registration_required or not member.is_authenticated:
         return None
 
     return event.registrations.filter(
@@ -21,7 +21,7 @@ def event_permissions(member, event):
         "cancel_registration": False,
         "update_registration": False,
     }
-    if member.is_authenticated and member.can_attend_events:
+    if member and member.is_authenticated and member.can_attend_events:
         registration = None
         try:
             registration = Registration.objects.get(
@@ -47,15 +47,16 @@ def event_permissions(member, event):
 
 
 def is_organiser(member, event):
-    if member.is_superuser or member.has_perm("events.override_organiser"):
-        return True
+    if member and member.is_authenticated:
+        if member.is_superuser or member.has_perm("events.override_organiser"):
+            return True
 
-    if event and member.has_perm('events.change_event'):
-        committees = 0
-        if event is not None:
-            committees = member.get_committees().filter(
-                pk=event.organiser.pk).count()
-        return committees != 0
+        if event and member.has_perm('events.change_event'):
+            committees = 0
+            if event is not None:
+                committees = member.get_committees().filter(
+                    pk=event.organiser.pk).count()
+            return committees != 0
 
     return False
 
