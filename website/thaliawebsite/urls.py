@@ -105,6 +105,7 @@ urlpatterns = [
             url(r'^', include('partners.api.urls')),
             url(r'^', include('mailinglists.api.urls')),
             url(r'^', include('pizzas.api.urls')),
+            url(r'^', include('photos.api.urls')),
             url(r'^', include('pushnotifications.api.urls')),
         ])),
     ])),
