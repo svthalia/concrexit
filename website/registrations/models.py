@@ -2,9 +2,10 @@ import uuid
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.core import urlresolvers, validators
+from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -264,6 +265,7 @@ class Registration(Entry):
 class Renewal(Entry):
     member = models.ForeignKey(
         'members.Member',
+        on_delete=models.CASCADE,
         verbose_name=_('member'),
         blank=False,
         null=False,
@@ -390,7 +392,7 @@ class Payment(models.Model):
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
-        return urlresolvers.reverse("admin:%s_%s_change" % (
+        return reverse("admin:%s_%s_change" % (
             content_type.app_label, content_type.model), args=(self.id,))
 
     class Meta:

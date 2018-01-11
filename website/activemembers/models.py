@@ -104,6 +104,7 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
         verbose_name=_('contact mailing list'),
         null=True,
         blank=True,
+        on_delete=models.SET_NULL,
     )
 
     wiki_namespace = models.CharField(
@@ -140,6 +141,9 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
 
 
 class BoardManager(models.Manager):
+
+    use_in_migrations = True
+
     def get_queryset(self):
         # sorting by descending order by default makes more sense for boards
         return (super().get_queryset()
