@@ -56,3 +56,6 @@ COPY website /usr/src/app/website/
 # Copy files for Sphinx documentation
 COPY README.md /usr/src/app/
 COPY docs /usr/src/app/docs
+
+# Cache docs between builds if not mounting to FS
+VOLUME /concrexit/docs
