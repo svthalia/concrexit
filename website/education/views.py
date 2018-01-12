@@ -3,7 +3,9 @@ import os
 from datetime import datetime, date
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from sendfile import sendfile
 
@@ -121,4 +123,9 @@ def submit_summary(request, id=None):
 
 @login_required
 def books(request):
-    return render(request, 'education/books.html')
+    if (request.member and request.member.is_authenticated and
+            (request.member.current_membership or
+             (request.member.earliest_membership and
+              request.member.earliest_membership.since > timezone.now()))):
+        return render(request, 'education/books.html')
+    return HttpResponse(status=403)
