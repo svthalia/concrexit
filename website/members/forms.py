@@ -83,6 +83,30 @@ class UserCreationForm(BaseUserCreationForm):
 
 
 class UserChangeForm(BaseUserChangeForm):
+    first_name = forms.CharField(
+        label=_('First name'),
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'vTextField',
+            'maxlength': 30
+        })
+    )
+    last_name = forms.CharField(
+        label=_('Last name'),
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'vTextField',
+            'maxlength': 150
+        })
+    )
+    email = forms.CharField(
+        label=_('Email address'),
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'vTextField',
+            'maxlength': 254
+        })
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
