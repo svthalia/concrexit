@@ -402,13 +402,20 @@ class Profile(models.Model):
     def clean(self):
         super().clean()
         errors = {}
+
         if self.display_name_preference in ('nickname', 'fullnick',
                                             'nicklast'):
             if not self.nickname:
                 errors.update(
                     {'nickname': _('You need to enter a nickname to use it as '
                                    'display name')})
-        raise ValidationError(errors)
+
+        if self.birthday and self.birthday > timezone.now().date():
+            errors.update(
+                {'birthday': _('A birthday cannot be in the future.')})
+
+        if errors:
+            raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -454,8 +461,6 @@ class Membership(models.Model):
         verbose_name=_('Membership type'),
     )
 
-    # Preferably this would have been a foreign key to Member instead,
-    # but the UserAdmin requires that this is a foreign key to User.
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -474,6 +479,34 @@ class Membership(models.Model):
         blank=True,
         null=True,
     )
+
+    def clean(self):
+        super().clean()
+
+        errors = {}
+        if self.until and (not self.since or self.until < self.since):
+            raise ValidationError(
+                {'until': _("End date can't be before start date")})
+
+        if self.since is not None:
+            memberships = self.user.membership_set.all()
+            for membership in memberships:
+                if membership.pk == self.pk:
+                    continue
+                if ((membership.until is None and (
+                    self.until is None or self.until > membership.since)) or
+                    (self.until is None and self.since < membership.until) or
+                    (self.until and membership.until and
+                     self.since < membership.until and
+                     self.until > membership.since)):
+                    errors.update({
+                        'since': _('A membership already '
+                                   'exists for that period'),
+                        'until': _('A membership already '
+                                   'exists for that period')})
+
+        if errors:
+            raise ValidationError(errors)
 
     def is_active(self):
         return not self.until or self.until > timezone.now().date()
