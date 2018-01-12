@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, URLValidator
 from django.db import models
 from django.urls import reverse
@@ -147,8 +148,12 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
     partner = models.ForeignKey(
         Partner,
         on_delete=models.CASCADE,
-        related_name="events"
+        related_name="events",
+        blank=True,
+        null=True
     )
+
+    other_partner = models.CharField(max_length=255, blank=True)
 
     title = MultilingualField(
         models.CharField,
@@ -174,6 +179,20 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
     url = models.URLField(_("website"))
 
     published = models.BooleanField(_("published"), default=False)
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        if ((not self.partner and not self.other_partner) or
+                (self.partner and self.other_partner)):
+            errors.update(
+                {'partner': _("Please select or enter "
+                              "a partner for this event."),
+                 'other_partner': _("Please select or enter "
+                                    "a partner for this event.")})
+
+        if errors:
+            raise ValidationError(errors)
 
     def __str__(self):
         return self.title
