@@ -33,6 +33,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import login
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
@@ -85,7 +86,7 @@ urlpatterns = [
     url(r'^for-members$', TemplateView.as_view(
         template_name='singlepages/for_members.html'), name='for-members'),
     url(r'^', include([  # 'for members' menu
-        url(r'^become-active/', TemplateView.as_view(template_name='singlepages/become_active.html'), name='become-active'),
+        url(r'^become-active/', login_required(TemplateView.as_view(template_name='singlepages/become_active.html')), name='become-active'),
         url(r'^photos/', include('photos.urls')),
         url(r'^statistics/$', members.views.statistics, name='statistics'),
         url(r'^styleguide/$', views.styleguide, name='styleguide'),

@@ -11,14 +11,14 @@ main = [
         {'title': _('Become a Member'), 'name': 'registrations:index'},
         {'title': _('Thabloid'), 'name': 'thabloid:index'},
     ]},
-    {'title': _('For Members'), 'name': 'for-members', 'authenticated': True,
+    {'title': _('For Members'), 'name': 'for-members',
         'submenu': [
         {'title': _('Member list'), 'name': 'members:index'},
         {'title': _('Photos'), 'name': 'photos:index'},
         {'title': _('Statistics'), 'name': 'statistics'},
         {'title': _('Styleguide'), 'name': 'styleguide'},
         {'title': _('Become Active'), 'name': 'become-active'},
-        {'title': _('Wiki'), 'url': '/wiki/'},
+        {'title': _('Wiki'), 'url': '/wiki/', 'authenticated': True},
     ]},
     {'title': _('Calendar'), 'name': 'events:index',
         'submenu': [

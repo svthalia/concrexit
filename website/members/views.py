@@ -188,6 +188,7 @@ def iban_export(request):
     return response
 
 
+@login_required
 def statistics(request):
     member_types = ("member", "supporter", "honorary")
 
