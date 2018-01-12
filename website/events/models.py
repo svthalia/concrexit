@@ -258,6 +258,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         )
 
 
+def registration_member_choices_limit():
+    return (Q(membership__until__isnull=True) |
+            Q(membership__until__gt=timezone.now().date()))
+
+
 class Registration(models.Model):
     """Event registrations"""
 
@@ -276,8 +281,7 @@ class Registration(models.Model):
         'members.Member', models.CASCADE,
         blank=True,
         null=True,
-        limit_choices_to=(Q(membership__until__isnull=True) |
-                          Q(membership__until__gt=timezone.now().date()))
+        limit_choices_to=registration_member_choices_limit
     )
 
     name = models.CharField(
