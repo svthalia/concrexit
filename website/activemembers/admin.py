@@ -19,7 +19,8 @@ class CommitteeMembershipInlineFormSet(BaseInlineFormSet):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.queryset = self.queryset.select_related('member', 'committee')
+        self.queryset = self.queryset.select_related(
+            'member', 'committee').filter(until=None)
 
 
 class CommitteeMembershipInline(admin.StackedInline):
@@ -28,8 +29,7 @@ class CommitteeMembershipInline(admin.StackedInline):
     can_delete = False
     ordering = ('since',)
     extra = 0
-    # TODO: replace this with `autocomplete_fields` in Django 2.0
-    raw_id_fields = ('member',)
+    autocomplete_fields = ('member',)
 
 
 class CommitteeForm(ModelForm):
