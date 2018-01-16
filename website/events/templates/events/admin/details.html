@@ -45,7 +45,7 @@
         {% endif %}
         <h2>{% trans "cancellations"|capfirst %}</h2>
         {% trans "cancelled" as cancelled %}
-        {% include 'events/admin/registrations_table.html' with registrations=event.cancellations verb=cancelled addlink=False %}
+        {% include 'events/admin/registrations_table.html' with registrations=event.cancellations cancellations=True verb=cancelled addlink=False %}
         {% endwith %}
         <br>
         <a href="{% url 'events:export' event_id=event.pk %}" class="button">{% trans "Export registrations" %}</a>
