@@ -70,6 +70,7 @@ class Message(models.Model):
     )
     category = models.ForeignKey(
         Category,
+        on_delete=models.CASCADE,
         verbose_name=_('category'),
         default="general"
     )
