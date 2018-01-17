@@ -109,8 +109,8 @@ class Member(User):
         _('Is this user currently active')
 
     @classmethod
-    def all_with_membership(cls, membership_type, prefetch=None):
-        return [x for x in cls.objects.all().prefetch_related(prefetch)
+    def all_with_membership(cls, membership_type):
+        return [x for x in cls.objects.all()
                 if x.current_membership and
                 x.current_membership.type == membership_type]
 
