@@ -48,7 +48,7 @@ class EventDetail(DetailView):
                 event=event,
                 member=self.request.member
             )
-        except (Registration.DoesNotExist, AttributeError):
+        except (Registration.DoesNotExist, TypeError):
             pass
 
         context['permissions'] = services.event_permissions(
