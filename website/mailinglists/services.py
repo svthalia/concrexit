@@ -10,14 +10,14 @@ def get_automatic_lists():
     memberships = (CommitteeMembership.active_memberships
                    .filter(committee__board=None)
                    .filter(chair=True)
-                   .prefetch_related('member__user'))
+                   .prefetch_related('member'))
     committee_chairs = [x.member for x in memberships] + [
         Member(email='intern@thalia.nu')
     ]
 
     active_committee_memberships = (CommitteeMembership.active_memberships
                                     .exclude(committee__board__is_board=True)
-                                    .prefetch_related('member__member'))
+                                    .prefetch_related('member'))
     active_members = [x.member for x in active_committee_memberships]
 
     lectureyear = datetime_to_lectureyear(timezone.now())
@@ -32,13 +32,13 @@ def get_automatic_lists():
 
     lists += _create_automatic_list(
         ['leden', 'members'], '[THALIA]',
-        Member.all_with_membership('member', 'user'), True, True, True)
+        Member.all_with_membership('member'), True, True, True)
     lists += _create_automatic_list(
         ['begunstigers', 'supporters'], '[THALIA]', Member.all_with_membership(
-            'supporter', 'user'), multilingual=True)
+            'supporter'), multilingual=True)
     lists += _create_automatic_list(
         ['ereleden', 'honorary'], '[THALIA]', Member.all_with_membership(
-            'honorary', 'user'), multilingual=True)
+            'honorary'), multilingual=True)
     lists += _create_automatic_list(
         ['mentors'], '[THALIA] [MENTORS]', mentors, moderated=False)
     lists += _create_automatic_list(
