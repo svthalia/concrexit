@@ -29,13 +29,6 @@ pep8:
     - cd website
     - coverage report
 
-python35-django11:
-  <<: *djangotest
-  image: $PY35_IMAGE
-  variables:
-    PYTHON_VERSION: py35
-    DJANGO_VERSION: django11
-
 python35-django20:
   <<: *djangotest
   image: $PY35_IMAGE
