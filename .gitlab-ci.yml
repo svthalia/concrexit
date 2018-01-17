@@ -9,8 +9,8 @@ variables:
   # Installs:
   #  - pip: tox, coverage
   #  - apt: ghostscript
-  PY35_IMAGE: twiggers/python-thalia:3.5
-  PY36_IMAGE: twiggers/python-thalia:3.6
+  PY35_IMAGE: thalia/python-thalia:3.5
+  PY36_IMAGE: thalia/python-thalia:3.6
   PIP_CACHE_DIR: "${CI_PROJECT_DIR}/pip-cache"
 
 pep8:
