@@ -3,7 +3,7 @@ import os
 from django.core.exceptions import SuspiciousFileOperation
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
 from django.db.models import (BooleanField, Case, ExpressionWrapper, Q, Value,
                               When)
@@ -49,12 +49,9 @@ def index(request):
     paginator = Paginator(albums, 12)
 
     page = request.GET.get('page')
+    page = 1 if page is None or not page.isdigit() else int(page)
     try:
         albums = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        albums = paginator.page(1)
-        page = 1
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         albums = paginator.page(paginator.num_pages)
