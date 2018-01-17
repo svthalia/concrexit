@@ -54,9 +54,11 @@ def index(request):
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         albums = paginator.page(1)
+        page = 1
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         albums = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
 
     page_range = range(1, paginator.num_pages + 1)
     if paginator.num_pages > 7:
