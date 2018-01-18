@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase, override_settings
 
+from members.models import Profile
 from thaliawebsite.templatetags import bleach_tags
 
 
@@ -43,6 +44,26 @@ class WikiLoginTestCase(TestCase):
 
     @override_settings(WIKI_API_KEY='key')
     def test_login(self):
+        response = self.client.post('/api/wikilogin',
+                                    {'apikey': 'key',
+                                     'user': 'testuser',
+                                     'password': 'top secret'})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'admin': False,
+                                           'committees': [],
+                                           'msg': 'Logged in',
+                                           'mail': 'foo@bar.com',
+                                           'name': 'first last_name',
+                                           'status': 'ok'})
+
+    @override_settings(WIKI_API_KEY='key')
+    def test_login_with_profile(self):
+        Profile.objects.create(
+            user=self.user,
+            student_number='s1234567'
+        )
+
         response = self.client.post('/api/wikilogin',
                                     {'apikey': 'key',
                                      'user': 'testuser',
