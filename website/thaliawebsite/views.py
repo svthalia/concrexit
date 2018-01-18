@@ -1,21 +1,18 @@
 import os.path
 
 from django.conf import settings
-from django.contrib.auth import authenticate
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import (HttpResponseBadRequest, Http404,
                          HttpResponseForbidden, JsonResponse)
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
 from django.views.decorators.debug import (sensitive_variables,
                                            sensitive_post_parameters)
-
+from django.views.decorators.http import require_POST
 from sendfile import sendfile
-
-from members.models import Profile
 
 
 @login_required
@@ -42,14 +39,11 @@ def wiki_login(request):
 
     user = authenticate(username=user, password=password)
     if user is not None:
-        try:
-            memberships = [cmm.committee.wiki_namespace for cmm in
-                           user.profile.committeemembership_set.exclude(
-                               until__lt=timezone.now().date())
+        memberships = [cmm.committee.wiki_namespace for cmm in
+                       user.committeemembership_set
+                           .exclude(until__lt=timezone.now().date())
                            .select_related('committee')
-                           if cmm.committee.wiki_namespace is not None]
-        except Profile.DoesNotExist:
-            memberships = []
+                       if cmm.committee.wiki_namespace is not None]
 
         if user.has_perm('activemembers.board_wiki'):
             memberships.append('bestuur')
