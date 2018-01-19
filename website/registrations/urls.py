@@ -1,9 +1,9 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
 
-from registrations.views import (BecomeAMemberView, ConfirmEmailView,
-                                 EntryAdminView, MemberRegistrationFormView,
-                                 PaymentAdminView, RenewalFormView)
+from .views import (BecomeAMemberView, ConfirmEmailView,
+                    EntryAdminView, MemberRegistrationFormView,
+                    PaymentAdminView, RenewalFormView)
 
 app_name = "registrations"
 

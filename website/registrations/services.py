@@ -8,10 +8,10 @@ from django.utils import timezone
 
 import members
 from members.models import Membership, Profile
-from registrations import emails
 from thaliawebsite.settings import settings
 from utils.snippets import datetime_to_lectureyear
 
+from . import emails
 from .models import Entry, Payment, Registration, Renewal
 
 

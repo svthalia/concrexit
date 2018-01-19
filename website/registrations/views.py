@@ -15,9 +15,10 @@ from django.views.generic import FormView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
 from members.models import Membership
-from registrations import emails, forms, services
-from registrations.models import Entry, Payment, Registration, Renewal
 from thaliawebsite.settings import settings
+
+from . import emails, forms, services
+from .models import Entry, Payment, Registration, Renewal
 
 
 class BecomeAMemberView(TemplateView):

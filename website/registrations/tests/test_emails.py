@@ -16,8 +16,6 @@ from thaliawebsite.settings import settings
 
 
 class EmailsTest(TestCase):
-    def test_board_notification_address(self):
-        self.assertEqual(settings.BOARD_NOTIFICATION_ADDRESS, 'info@thalia.nu')
 
     @mock.patch('registrations.emails._send_email')
     def test_send_registration_email_confirmation(self, send_email):

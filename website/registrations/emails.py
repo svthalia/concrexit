@@ -5,8 +5,9 @@ from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
-from registrations import models
 from thaliawebsite.settings import settings
+
+from . import models
 
 
 def send_registration_email_confirmation(registration):
