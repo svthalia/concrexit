@@ -2,7 +2,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from registrations.models import Registration, Renewal
+from .models import Registration, Renewal
 
 
 class MemberRegistrationForm(forms.ModelForm):

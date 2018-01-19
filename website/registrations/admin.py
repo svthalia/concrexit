@@ -3,8 +3,7 @@ from django.contrib.admin.utils import model_ngettext
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from registrations import services
-
+from . import services
 from .models import Entry, Payment, Registration, Renewal
 
 

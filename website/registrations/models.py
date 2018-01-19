@@ -10,8 +10,9 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Membership, Profile
-from registrations import emails
 from thaliawebsite.settings import settings
+
+from . import emails
 
 
 class Entry(models.Model):
