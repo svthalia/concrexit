@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 20:42+0200\n"
-"PO-Revision-Date: 2017-09-06 20:45+0200\n"
+"POT-Creation-Date: 2018-01-20 22:11+0100\n"
+"PO-Revision-Date: 2018-01-20 22:11+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -179,16 +179,18 @@ msgstr "Boekverkoop"
 #, python-format
 msgid ""
 "As of this year, Thalia's book sale goes through Bol.com. As a member of "
-"Thalia you get a 5%% discount on study books. Furthermore, every time you "
-"use one of the links below to visit Bol.com, your browser will receive a "
-"cookie for the next few days. Whenever you make a purchase during this "
-"period, Thalia receives up to 8%% commission on the products you ordered."
+"Thalia you get a 5%% discount on study books sold by Bol.com. Furthermore, "
+"every time you use one of the links below to visit Bol.com, your browser "
+"will receive a cookie for the next few days. Whenever you make a purchase "
+"during this period, Thalia receives up to 8%% commission on the products you "
+"ordered."
 msgstr ""
 "Vanaf dit jaar gaat de boekverkoop van Thalia via Bol.com. Als lid van "
-"Thalia krijg je 5%% korting op studieboeken. Daarnaast krijgt je browser de "
-"eerstvolgende paar dagen een cookie als je Bol.com via een van de "
-"onderstaande links bezoekt. Als je dan een een aankoop doet krijgt Thalia "
-"tot 8%% commissie over de producten die je besteld hebt."
+"Thalia krijg je 5%% korting op studieboeken die door Bol.com verkocht "
+"worden. Daarnaast krijgt je browser de eerstvolgende paar dagen een cookie "
+"als je Bol.com via een van de onderstaande links bezoekt. Als je dan een een "
+"aankoop doet krijgt Thalia tot 8%% commissie over de producten die je "
+"besteld hebt."
 
 #: templates/education/books.html:16
 msgid "How does it work?"
@@ -239,51 +241,47 @@ msgstr ""
 msgid "first year bachelor courses"
 msgstr "eerstejaars bachelorvakken"
 
-#: templates/education/books.html:42 templates/education/books.html:75
-#: templates/education/books.html:124 templates/education/books.html:143
-msgid "first quarter"
-msgstr "eerste kwartaal"
+#: templates/education/books.html:42 templates/education/books.html:71
+#: templates/education/books.html:108 templates/education/books.html:127
+msgid "third quarter"
+msgstr "derde kwartaal"
 
 #: templates/education/books.html:46 templates/education/books.html:50
-#: templates/education/books.html:60 templates/education/books.html:64
+#: templates/education/books.html:60 templates/education/books.html:75
 #: templates/education/books.html:79 templates/education/books.html:83
-#: templates/education/books.html:87 templates/education/books.html:91
-#: templates/education/books.html:95 templates/education/books.html:105
-#: templates/education/books.html:109 templates/education/books.html:113
-#: templates/education/books.html:128 templates/education/books.html:147
-#: templates/education/books.html:151 templates/education/books.html:155
-#: templates/education/books.html:159 templates/education/books.html:169
+#: templates/education/books.html:93 templates/education/books.html:97
+#: templates/education/books.html:112 templates/education/books.html:131
+#: templates/education/books.html:135
 msgid "View and order"
 msgstr "Bekijk en bestel"
 
-#: templates/education/books.html:53 templates/education/books.html:98
-#: templates/education/books.html:131 templates/education/books.html:162
-msgid "View all books for the first quarter"
-msgstr "Bekijk alle boeken voor het eerste kwartaal"
+#: templates/education/books.html:53 templates/education/books.html:86
+#: templates/education/books.html:115 templates/education/books.html:138
+msgid "View all books for the third quarter"
+msgstr "Bekijk alle boeken voor het derde kwartaal"
 
-#: templates/education/books.html:56 templates/education/books.html:101
-#: templates/education/books.html:134 templates/education/books.html:165
-msgid "second quarter"
-msgstr "tweede kwartaal"
+#: templates/education/books.html:56 templates/education/books.html:89
+#: templates/education/books.html:118 templates/education/books.html:141
+msgid "fourth quarter"
+msgstr "vierde kwartaal"
 
-#: templates/education/books.html:67 templates/education/books.html:116
-#: templates/education/books.html:172
-msgid "View all books for the second quarter"
-msgstr "Bekijk alle boeken voor het tweede kwartaal"
+#: templates/education/books.html:63 templates/education/books.html:100
+msgid "View all books for the fourth quarter"
+msgstr "Bekijk alle boeken voor het vierde kwartaal"
 
-#: templates/education/books.html:72
+#: templates/education/books.html:68
 msgid "second year bachelor courses"
 msgstr "tweedejaars bachelorvakken"
 
-#: templates/education/books.html:121
+#: templates/education/books.html:105
 msgid "third year bachelor courses"
 msgstr "derdejaars bachelorvakken"
 
-#: templates/education/books.html:135
-msgid "No books found for second quarter"
-msgstr "Geen boeken gevonden voor het tweede kwartaal"
+#: templates/education/books.html:119 templates/education/books.html:142
+msgid "No books found for the fourth quarter"
+msgstr "Geen boeken gevonden voor het vierde kwartaal"
 
-#: templates/education/books.html:140
+#: templates/education/books.html:124
 msgid "master courses"
 msgstr "mastervakken"
 
@@ -449,9 +447,15 @@ msgstr ""
 "de andere zes representeren verschillende studentenorganisaties. Je kan <a "
 "href=\"http://www.ru.nl/usr/\">hier</a> meer lezen over de USR."
 
-#: views.py:30
+#: views.py:32
 msgid "Summary"
 msgstr "Samenvatting"
+
+#~ msgid "second quarter"
+#~ msgstr "tweede kwartaal"
+
+#~ msgid "View all books for the second quarter"
+#~ msgstr "Bekijk alle boeken voor het tweede kwartaal"
 
 #~ msgid ""
 #~ "Thalia's book sale goes through bookstore Roelants. As a member of Thalia "
