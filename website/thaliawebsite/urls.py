@@ -38,14 +38,13 @@ from django.contrib.auth.views import login
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
-from rest_framework.authtoken import views as rfviews
 
 import members
-import registrations
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from events.sitemaps import sitemap as events_sitemap
 from members.sitemaps import sitemap as members_sitemap
+from members.views import ObtainAuthToken, ObtainThaliaAuthToken
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
@@ -99,7 +98,7 @@ urlpatterns = [
     url(r'^api/', include([
         url(r'wikilogin', views.wiki_login),
         url(r'^v1/', include([
-            url(r'^token-auth', rfviews.obtain_auth_token),
+            url(r'^token-auth', ObtainThaliaAuthToken.as_view()),
             url(r'^', include('events.api.urls')),
             url(r'^', include('members.api.urls')),
             url(r'^', include('partners.api.urls')),

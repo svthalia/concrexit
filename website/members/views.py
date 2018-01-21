@@ -8,11 +8,19 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext as _
+from rest_framework.authtoken.views import ObtainAuthToken
 
-from members.services import member_achievements
-from members.models import Member
+from .services import member_achievements
 from . import models
 from .forms import ProfileForm
+
+
+class ObtainThaliaAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        request._data = request.POST.copy()
+        request.POST['username'] = request.POST.get('username').lower()
+        return super().post(request, *args, **kwargs)
 
 
 def filter_users(tab, keywords, year_range):
@@ -54,7 +62,7 @@ def filter_users(tab, keywords, year_range):
     else:
         memberships = models.Membership.objects.filter(memberships_query)
         members_query &= Q(pk__in=memberships.values('user__pk'))
-    return (Member.objects
+    return (models.Member.objects
                   .filter(members_query)
                   .order_by('-profile__starting_year',
                             'first_name'))
@@ -112,7 +120,7 @@ def index(request):
 @login_required
 def profile(request, pk=None):
     if pk:
-        member = get_object_or_404(Member, pk=int(pk))
+        member = get_object_or_404(models.Member, pk=int(pk))
     else:
         member = request.member
 
@@ -165,11 +173,11 @@ def iban_export(request):
     header_fields = ['name', 'username', 'iban']
     rows = []
 
-    members = Member.active_members.filter(
+    members = models.Member.active_members.filter(
             profile__direct_debit_authorized=True)
 
     for member in members:
-        if (member.current_membership.type != 'honorary'):
+        if member.current_membership.type != 'honorary':
             rows.append({
                 'name': member.get_full_name(),
                 'username': member.username,
@@ -193,7 +201,7 @@ def statistics(request):
     member_types = ("member", "supporter", "honorary")
 
     # The numbers
-    total = Member.active_members.count()
+    total = models.Member.active_members.count()
 
     context = {
         "total_members": total,
