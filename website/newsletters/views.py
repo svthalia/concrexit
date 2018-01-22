@@ -69,10 +69,10 @@ def admin_send(request, pk):
             translation.activate(language[0])
 
             recipients = [member.email for member in
-                          Member.objects.all().filter(
+                          Member.active_members.all().filter(
                               profile__receive_newsletter=True,
                               profile__language=language[0])
-                          if member.is_active() is True and member.email]
+                          if member.email]
 
             subject = '[THALIA] ' + newsletter.title
 
