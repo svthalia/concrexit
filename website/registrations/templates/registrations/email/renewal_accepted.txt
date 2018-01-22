@@ -7,7 +7,7 @@ you get access to everything Thalia has to offer once again: paying your members
 
 The membership fees are €{{ fees }} and can be paid using cash or a debit card.
 
-Please visit us during lunch break (12:30-13:30) in HG00.150 so that we can
+Please visit us during lunch break (12:30-13:30) in M1.0.08 so that we can
 make sure your membership renewal is completed.
 
 If you have any questions, then don't hesitate and send an email to info@thalia.nu.
