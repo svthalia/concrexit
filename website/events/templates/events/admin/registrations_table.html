@@ -4,7 +4,10 @@
         <thead>
             <tr>
                 <th scope="col">{% trans "name"|capfirst %}</th>
-                <th scope="col">{% trans "date"|capfirst %}</th>
+                <th scope="col">{% trans "registration date"|capfirst %}</th>
+                {% if cancellations %}
+                <th scope="col">{% trans "cancellation date"|capfirst %}</th>
+                {% endif %}
                 {% for field in fields %}
                 <th scope="col">{{ field.name }}</th>
                 {% endfor %}
@@ -31,6 +34,9 @@
                 <td>{{ registration.name }}</td>
                 {% endif %}
                 <td>{{ registration.date }}</td>
+                {% if cancellations %}
+                <td>{{ registration.date_cancelled }}</td>
+                {% endif %}
                 {% for field in registration.information_fields %}
                     {% if not field.value %}
                     <td></td>
