@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from members.models import Membership, Profile
 from newsletters.models import Newsletter, NewsletterEvent
 from newsletters.templatetags import listutil
 
@@ -28,6 +29,13 @@ class NewslettersTest(TestCase):
                                             email='jacob@test.com',
                                             password='top_secret',
                                             is_staff=True)
+        Profile.objects.create(user=cls.user,
+                               address_street='street',
+                               address_postal_code='1234AB',
+                               address_city='city')
+        Membership.objects.create(type=Membership.MEMBER,
+                                  user=cls.user,
+                                  since=timezone.now())
 
         cls.user.user_permissions.set(
             Permission.objects.filter(content_type__app_label="newsletters")
