@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-14 13:32+0200\n"
-"PO-Revision-Date: 2017-10-14 13:32+0200\n"
+"POT-Creation-Date: 2018-01-22 21:03+0100\n"
+"PO-Revision-Date: 2018-01-22 21:03+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -57,9 +57,7 @@ msgstr "Merchandise"
 msgid "Sister Associations"
 msgstr "Zusterverenigingen"
 
-#: menus.py:11 templates/singlepages/become_a_member.html:4
-#: templates/singlepages/become_a_member.html:5
-#: templates/singlepages/become_a_member.html:8
+#: menus.py:11
 msgid "Become a Member"
 msgstr "Lid Worden"
 
@@ -144,11 +142,11 @@ msgstr "Samenvatting Insturen"
 msgid "Contact"
 msgstr "Contact"
 
-#: settings/settings.py:192
+#: settings/settings.py:194
 msgid "English"
 msgstr "Engels"
 
-#: settings/settings.py:193
+#: settings/settings.py:195
 msgid "Dutch"
 msgstr "Nederlands"
 
@@ -261,86 +259,6 @@ msgstr ""
 "vooral niet om te reageren en mail <a href=\"mailto:info@thalia.nu\">Thalia</"
 "a>!"
 
-#: templates/singlepages/become_a_member.html:10
-msgid ""
-"Thalia is the study association for Computing Science and Information "
-"Sciences students at the Radboud University in Nijmegen. Thalia organises a "
-"wide variety of activities, such as bowling events, go cart racing, lunch "
-"lectures, drinks and much more! Furthermore, members get access to our tests "
-"and summaries database, as well as discounts on books. There's no reason not "
-"to become a member!"
-msgstr ""
-"Thalia is de studievereniging voor Informatica en Informatiekunde studenten "
-"van de Radboud Universiteit te Nijmegen. Thalia  organiseert diverse "
-"activiteiten, zoals bowlen, karten, lunchlezingen, borrels en nog veel meer! "
-"Verder krijg je als lid toegang tot onze tentamen- en samenvattingendatabase "
-"en kun je met korting je studieboeken bestellen. Kortom, geen reden om niet "
-"lid te worden!"
-
-#: templates/singlepages/become_a_member.html:12
-msgid "How do I become a member?"
-msgstr "Hoe kan ik lid worden?"
-
-#: templates/singlepages/become_a_member.html:14
-msgid ""
-"You can become a member of Thalia at any time during the year. Membership "
-"costs € 7.50 per year, or € 30 for your entire study duration. To become a "
-"member, please fill out the membership form. You can get the form at the "
-"board room (HG00.150, above the north kanteen in the Huygens building), or "
-"download it below. After signing the form, return it to the board room. "
-"Note: Only Computing Science and Information Sciences students at the "
-"Radboud University can become a member."
-msgstr ""
-"Je kunt op elk moment van het collegejaar lid worden van Thalia. Een "
-"lidmaatschap kost € 7,50 per jaar, of € 30 voor je hele studieperiode. Om "
-"lid te worden dien je het lidmaatschapsformulier in te vullen. Dit formulier "
-"kun je bij de bestuurskamer (HG00.150, boven de Noordkantine van het "
-"Huygensgebouw) ophalen of downloaden via de website en ondertekend inleveren "
-"bij bestuurskamer Let wel op: Je kunt alleen lid worden wanneer je "
-"informatica of informatiekunde studeert aan de Radboud Universiteit."
-
-#: templates/singlepages/become_a_member.html:16
-msgid ""
-"I'm not a Computing Science and Information Sciences student at the Radboud "
-"University, but I do want to attend your events. Now what?"
-msgstr ""
-"Ik studeer geen Informatica of Informatiekunde (aan de Radboud "
-"Universiteit), maar ik wil wel naar jullie activiteiten gaan. Wat nu?"
-
-#: templates/singlepages/become_a_member.html:18
-msgid ""
-"It is still possible to be associated with Thalia, even if you do not study "
-"Computing Science or Information Sciences (anymore): You can become a "
-"supporter. For at least € 7.50 per year, you too can enjoy everything Thalia "
-"has to offer. If you are not a former Thalia member, ICIS staff member or "
-"alumni, you must submit a written along with two signatures of current "
-"Thalia members. You can fill all of this in on the supporter form, which you "
-"can get at the board room (HG00.150, above the north kanteen in the Huygens "
-"building), or download below."
-msgstr ""
-"Mocht je nu geen Informatica of Informatiekunde (meer) studeren, maar toch "
-"verbonden willen zijn, dan kan dat ook. Hiervoor kun je begunstiger van "
-"Thalia worden. Voor minimaal € 7,50 per jaar kun je ook genieten van alles "
-"wat Thalia je te bieden heeft. Ben je geen oud-Thaliaan, ex-Informaticus of -"
-"Informatiekundige, dan dien je twee handtekeningen van leden van Thalia "
-"samen met een motivatie waarom je begunstiger wil worden af te geven. Dit "
-"kun je allemaal invullen op het begunstigerformulier, dat af te halen is in "
-"de bestuurskamer of hieronder te downloaden is."
-
-#: templates/singlepages/become_a_member.html:20
-msgid ""
-"Payment for membership or sponsorship can be made both in cash or by "
-"authorised direct debit. To authorise direct debit, use the form that is "
-"also available below. If you have any other questions about Thalia and/or "
-"your membership, feel free to email <a href=\"mailto:info@thalia.nu\" target="
-"\"_blank\">info@thalia.nu</a>!"
-msgstr ""
-"Betalen voor je lidmaatschap / begunstigerschap kan zowel contant als met "
-"een machtiging. Voor machtigingen gebruiken we een machtigingsformulier, dat "
-"hieronder te downloaden is. Mocht je nog verdere vragen hebben over Thalia "
-"en/of je lidmaatschap dan kun je altijd mailen naar <a href=\"mailto:"
-"info@thalia.nu\" target=\"_blank\">info@thalia.nu</a>!"
-
 #: templates/singlepages/become_active.html:4
 #: templates/singlepages/become_active.html:5
 #: templates/singlepages/become_active.html:8
@@ -410,8 +328,8 @@ msgid "Address:"
 msgstr "Adres:"
 
 #: templates/singlepages/contact.html:21
-msgid "Board room: HG00.150 (above the north-canteen)"
-msgstr "Bestuurskamer: HG00.150 (boven de noordkantine)"
+msgid "Board room: M1.0.08 (ground floor)"
+msgstr "Bestuurskamer: M1.0.08 (begane grond)"
 
 #: templates/singlepages/contact.html:24
 msgid "Postal address:"
