@@ -21,7 +21,7 @@
  {% endif %}
 {% endfor %}
 
-{% trans "room"|capfirst %}: HG00.150
+{% trans "room"|capfirst %}: M1.0.08
 {% trans "website"|capfirst %}: www.thalia.nu
 {% trans "email"|capfirst %}: info@thalia.nu
 
