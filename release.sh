@@ -32,7 +32,7 @@ if [ "$1" = "" ]; then
     exit 1
 fi
 version="$1"
-version_sane="$(echo $version | sed 's/^[0-9]\.[0-9]\+\.[0-9]\+$/YES/')"
+version_sane="$(echo $version | sed -Ee 's/^[0-9]\.[0-9]{1,}\.[0-9]{1,}$/YES/')"
 if [ "$version_sane" != "YES" ]; then
     echo "Version should be in the format '1.23.45'"
     exit 1
