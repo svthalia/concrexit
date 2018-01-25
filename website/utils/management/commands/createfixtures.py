@@ -1,11 +1,10 @@
 import math
 import random
 import string
-import tempfile
 from datetime import date, timedelta
 
 from django.contrib.auth.models import User
-from django.core.files import File
+from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -96,12 +95,12 @@ class Command(BaseCommand):
         board.description_en = faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
-        icon = igen.generate(board.name_nl, 480, 480, (
-            10, 10, 10,
-            10))  # 620x620 pixels, with 10 pixels padding on each side
-        with tempfile.TemporaryFile() as tfile:
-            tfile.write(icon)
-            board.photo.save(board.name_nl + '.png', File(tfile))
+        icon = igen.generate(
+            board.name_nl, 480, 480,
+            padding=(10, 10, 10, 10),
+            output_format='jpeg',
+        )  # 620x620 pixels, with 10 pixels padding on each side
+        board.photo.save(board.name_nl + '.jpeg', ContentFile(icon))
 
         board.since = date(year=lecture_year, month=9, day=1)
         board.until = date(year=lecture_year+1, month=8, day=31)
@@ -130,12 +129,12 @@ class Command(BaseCommand):
         committee.description_en = faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
-        icon = igen.generate(committee.name_nl, 480, 480, (
-            10, 10, 10,
-            10))  # 620x620 pixels, with 10 pixels padding on each side
-        with tempfile.TemporaryFile() as tfile:
-            tfile.write(icon)
-            committee.photo.save(committee.name_nl + '.png', File(tfile))
+        icon = igen.generate(
+            committee.name_nl, 480, 480,
+            padding=(10, 10, 10, 10),
+            output_format='jpeg',
+        )  # 620x620 pixels, with 10 pixels padding on each side
+        committee.photo.save(committee.name_nl + '.jpeg', ContentFile(icon))
 
         committee.since = faker.date_time_between("-10y", "+30d")
 
@@ -234,12 +233,12 @@ class Command(BaseCommand):
         partner.link = faker.uri()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
-        icon = igen.generate(partner.name, 480, 480, (
-            10, 10, 10,
-            10))  # 620x620 pixels, with 10 pixels padding on each side
-        with tempfile.TemporaryFile() as tfile:
-            tfile.write(icon)
-            partner.logo.save(partner.name + '.png', File(tfile))
+        icon = igen.generate(
+            partner.name, 480, 480,
+            padding=(10, 10, 10, 10),
+            output_format='jpeg',
+        )  # 620x620 pixels, with 10 pixels padding on each side
+        partner.logo.save(partner.name + '.jpeg', ContentFile(icon))
 
         partner.address = faker.street_address()
         partner.zip_code = faker.postcode()
@@ -275,13 +274,13 @@ class Command(BaseCommand):
         profile.website = fakeprofile['website'][0]
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
-        icon = igen.generate(user.username, 480, 480, (
-            10, 10, 10, 10
-        ))  # 620x620 pixels, with 10 pixels padding on each side
-        with tempfile.TemporaryFile() as tfile:
-            tfile.write(icon)
-            profile.photo.save(fakeprofile['username'] + '.png',
-                               File(tfile))
+        icon = igen.generate(
+            user.username, 480, 480,
+            padding=(10, 10, 10, 10),
+            output_format='jpeg',
+        )  # 620x620 pixels, with 10 pixels padding on each side
+        profile.photo.save(fakeprofile['username'] + '.jpeg',
+                           ContentFile(icon))
 
         membership = Membership()
         membership.user_id = user.id
