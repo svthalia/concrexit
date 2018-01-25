@@ -16,6 +16,10 @@
 {% block body %}
 <h1>{% trans "Photos" %}</h1>
 
+<p class="tcenter">
+  {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
+</p>
+
 <div class="gallery">
   <ul class="gallery-albums row">
     {% for album in albums %}
