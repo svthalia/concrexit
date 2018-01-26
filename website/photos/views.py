@@ -1,19 +1,17 @@
 import os
+from tempfile import gettempdir
+from zipfile import ZipFile
 
-from django.core.exceptions import SuspiciousFileOperation
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import SuspiciousFileOperation
 from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
-from django.db.models import (BooleanField, Case, ExpressionWrapper, Q, Value,
-                              When)
 from django.shortcuts import get_object_or_404, render
 from sendfile import sendfile
-from zipfile import ZipFile
-from tempfile import gettempdir
 
+from photos import services
 from utils.views import _private_thumbnails_unauthed
-
 from .models import Album
 
 COVER_FILENAME = 'cover.jpg'
@@ -24,26 +22,7 @@ def index(request):
     # Only show published albums
     albums = Album.objects.filter(hidden=False)
 
-    # Annotate the albums which are accessible by the user
-    if request.member.current_membership is None:
-        # The user is currently not a member
-        # so only show photos that were made during their membership
-        albums_filter = Q(pk__in=[])
-        for membership in request.member.membership_set.all():
-            if membership.until is not None:
-                albums_filter |= (Q(date__gte=membership.since) & Q(
-                    date__lte=membership.until))
-            else:
-                albums_filter |= (Q(date__gte=membership.since))
-
-        albums = albums.annotate(accessible=Case(
-                When(albums_filter, then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField()))
-    else:
-        # The user is currently a member, so show all albums
-        albums = albums.annotate(accessible=ExpressionWrapper(
-                Value(True), output_field=BooleanField()))
+    services.annotate_accessible_albums(request, albums)
 
     albums = albums.order_by('-date')
     paginator = Paginator(albums, 12)
@@ -85,17 +64,7 @@ def _render_album_page(request, album):
 @login_required
 def album(request, slug):
     album = get_object_or_404(Album, slug=slug)
-    can_view = True
-
-    # Check if the user currently has a membership
-    if request.member.current_membership is None:
-        # This user is currently not a member, so need to check if he/she
-        # can view this album by checking the membership
-        filter = Q(since__lte=album.date) & (Q(until__gte=album.date) |
-                                             Q(until=None))
-        can_view = request.member.membership_set.filter(filter).count() > 0
-
-    if can_view:
+    if services.can_view_album(request, album):
         return _render_album_page(request, album)
     raise Http404("Sorry, you're not allowed to view this album")
 

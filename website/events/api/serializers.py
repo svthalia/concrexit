@@ -6,12 +6,12 @@ from html import unescape
 from rest_framework import serializers
 from rest_framework.fields import empty
 
+from thaliawebsite.api.services import create_image_thumbnail_dict
 from events import services
 from events.exceptions import RegistrationError
 from events.models import Event, Registration, RegistrationInformationField
 from pizzas.models import PizzaEvent
 from thaliawebsite.settings import settings
-from utils.templatetags.thumbnail import thumbnail
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
@@ -248,22 +248,12 @@ class RegistrationListSerializer(serializers.ModelSerializer):
     def _avatar(self, instance):
         placeholder = self.context['request'].build_absolute_uri(
             static('members/images/default-avatar.jpg'))
-        data = {
-            'full': placeholder,
-            'small': placeholder,
-            'medium': placeholder,
-            'large': placeholder,
-        }
+        file = None
         if instance.member and instance.member.profile.photo:
-            data['full'] = self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.member.profile.photo))
-            data['small'] = self.context['request'].build_absolute_uri(
-                thumbnail(instance.member.profile.photo, '110x110', 1))
-            data['medium'] = self.context['request'].build_absolute_uri(
-                thumbnail(instance.member.profile.photo, '220x220', 1))
-            data['large'] = self.context['request'].build_absolute_uri(
-                thumbnail(instance.member.profile.photo, '800x800', 1))
-        return data
+            file = instance.member.profile.photo
+        return create_image_thumbnail_dict(
+            self.context['request'], file, placeholder=placeholder,
+            size_large='800x800')
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -319,22 +309,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def _avatar(self, instance):
         placeholder = self.context['request'].build_absolute_uri(
             static('members/images/default-avatar.jpg'))
-        data = {
-            'full': placeholder,
-            'small': placeholder,
-            'medium': placeholder,
-            'large': placeholder,
-        }
+        file = None
         if instance.member and instance.member.profile.photo:
-            data['full'] = self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.member.profile.photo))
-            data['small'] = self.context['request'].build_absolute_uri(
-                thumbnail(instance.member.profile.photo, '110x110', 1))
-            data['medium'] = self.context['request'].build_absolute_uri(
-                thumbnail(instance.member.profile.photo, '220x220', 1))
-            data['large'] = self.context['request'].build_absolute_uri(
-                thumbnail(instance.member.profile.photo, '800x800', 1))
-        return data
+            file = instance.member.profile.photo
+        return create_image_thumbnail_dict(
+            self.context['request'], file, placeholder=placeholder,
+            size_large='800x800')
 
     def __init__(self, instance=None, data=empty, **kwargs):
         super().__init__(instance, data, **kwargs)

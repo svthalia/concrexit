@@ -33,6 +33,14 @@ photos\.models module
     :undoc-members:
     :show-inheritance:
 
+photos\.services module
+-----------------------
+
+.. automodule:: photos.services
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 photos\.urls module
 -------------------
 
