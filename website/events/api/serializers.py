@@ -107,7 +107,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
                   'cancel_deadline', 'location', 'map_location', 'price',
                   'fine', 'max_participants', 'num_participants', 'status',
                   'user_registration', 'registration_allowed',
-                  'no_registration_message', 'has_fields')
+                  'no_registration_message', 'has_fields', 'is_pizza_event')
 
     description = serializers.SerializerMethodField('_description')
     user_registration = serializers.SerializerMethodField('_user_registration')
@@ -115,6 +115,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     registration_allowed = serializers.SerializerMethodField(
         '_registration_allowed')
     has_fields = serializers.SerializerMethodField('_has_fields')
+    is_pizza_event = serializers.SerializerMethodField('_is_pizza_event')
     status = serializers.SerializerMethodField('_status')  # DEPRECATED
 
     REGISTRATION_NOT_NEEDED = -1
@@ -169,6 +170,9 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
 
     def _has_fields(self, instance):
         return instance.has_fields()
+
+    def _is_pizza_event(self, instance):
+        return instance.is_pizza_event()
 
 
 class EventListSerializer(serializers.ModelSerializer):

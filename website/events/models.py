@@ -1,5 +1,5 @@
 from django.core import validators
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -186,6 +186,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         now = timezone.now()
         return ((self.registration_start or self.registration_end)
                 and now >= self.registration_start)
+
+    def is_pizza_event(self):
+        try:
+            self.pizzaevent
+            return True
+        except ObjectDoesNotExist:
+            return False
 
     def clean(self):
         super().clean()
