@@ -60,8 +60,8 @@ class VacancyAdmin(admin.ModelAdmin):
 
 @admin.register(PartnerEvent)
 class PartnerEventAdmin(TranslatedModelAdmin):
-    fields = ['partner', 'title', 'description', 'location', 'start', 'end',
-              'url', 'published']
+    fields = ['partner', 'other_partner', 'title', 'description', 'location',
+              'start', 'end', 'url', 'published']
     list_display = ('title', 'start', 'end',
                     'partner', 'published')
     list_filter = ('start', 'published')
