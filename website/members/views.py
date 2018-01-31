@@ -8,7 +8,9 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext as _
+from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.response import Response
 
 from .services import member_achievements
 from . import models
@@ -18,9 +20,15 @@ from .forms import ProfileForm
 class ObtainThaliaAuthToken(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
-        request._data = request.POST.copy()
-        request.POST['username'] = request.POST.get('username').lower()
-        return super().post(request, *args, **kwargs)
+        serializer = self.serializer_class(data={
+            'username': request.data.get('username').lower()
+            if 'username' in request.data else None,
+            'password': request.data.get('password')
+        }, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
 
 
 def filter_users(tab, keywords, year_range):
