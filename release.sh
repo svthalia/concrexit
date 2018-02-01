@@ -72,7 +72,7 @@ fi
 
 docker_tag="registry.gitlab.com/thaliawww/concrexit:$version"
 
-docker build -t "$docker_tag" .
+docker build --pull -t "$docker_tag" .
 
 if yesno "Do you want to push the container?"; then
     docker push "$docker_tag"
