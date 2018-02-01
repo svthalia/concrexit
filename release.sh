@@ -50,7 +50,7 @@ branch="$(git symbolic-ref --quiet --short HEAD || git rev-parse --short HEAD)"
 if [ "$tag" = "v$version" ]; then
     echo "Already tagged!"
 else
-    echo "Creating new tag 'v$version"
+    echo "Creating new tag 'v$version'"
     git tag --annotate "v$version"
 fi
 
