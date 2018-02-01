@@ -22,7 +22,7 @@ def notify_first_waiting(request, event):
         text_template = get_template('events/member_email.txt')
 
         if first_waiting_member.profile:
-            language = first_waiting_member.member.language
+            language = first_waiting_member.profile.language
         else:
             language = Profile._meta.get_field('language').default
 
