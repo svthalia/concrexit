@@ -54,6 +54,12 @@ else
     git tag --annotate "v$version"
 fi
 
+if yesno "Do you want to push the tag to the repository?"; then
+    echo "Pushing tags:"
+    git push --tags
+    echo "Don't forget to fill in the release description"
+fi
+
 if ! yesno "Do you want to build a docker container?"; then
     exit 1
 fi
