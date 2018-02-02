@@ -54,6 +54,12 @@ else
     git tag --annotate "v$version"
 fi
 
+if yesno "Do you want to push the tag to the repository?"; then
+    echo "Pushing tags:"
+    git push --tags
+    echo "Don't forget to fill in the release description"
+fi
+
 if ! yesno "Do you want to build a docker container?"; then
     exit 1
 fi
@@ -66,7 +72,7 @@ fi
 
 docker_tag="registry.gitlab.com/thaliawww/concrexit:$version"
 
-docker build -t "$docker_tag" .
+docker build --pull -t "$docker_tag" .
 
 if yesno "Do you want to push the container?"; then
     docker push "$docker_tag"
