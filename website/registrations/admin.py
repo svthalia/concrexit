@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 from . import services
-from .models import Entry, Payment, Registration, Renewal
+from .models import Entry, Registration, Renewal
 
 
 def _show_message(admin, request, n, message, error):
@@ -89,15 +89,14 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     @staticmethod
     def payment_status(obj):
-        try:
-            payment = obj.payment
+        payment = obj.payment
+        if payment:
             processed_str = (_('Processed') if payment.processed else
                              _('Unprocessed'))
             return format_html('<a href="{link}">{title}</a>'
                                .format(link=payment.get_admin_url(),
                                        title=processed_str))
-        except Payment.DoesNotExist:
-            return '-'
+        return '-'
 
     def reject_selected(self, request, queryset):
         if request.user.has_perm('registrations.review_entries'):
@@ -155,58 +154,3 @@ class RenewalAdmin(RegistrationAdmin):
     @staticmethod
     def email(obj):
         return obj.member.email
-
-
-@admin.register(Payment)
-class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('entry', 'created_at', 'amount',
-                    'processed', 'processing_date', 'type')
-    list_filter = ('processed', 'amount',)
-    date_hierarchy = 'created_at'
-    fields = ('created_at', 'entry', 'amount',
-              'type', 'processed', 'processing_date')
-    readonly_fields = ('created_at', 'amount', 'processed',
-                       'type', 'entry', 'processing_date')
-    actions = ['process_cash_selected', 'process_card_selected']
-
-    def changeform_view(self, request, object_id=None, form_url='',
-                        extra_context=None):
-        obj = None
-        if (object_id is not None and
-                request.user.has_perm('registrations.process_payments')):
-            obj = Payment.objects.get(id=object_id)
-            if obj.processed:
-                obj = None
-        return super().changeform_view(
-            request, object_id, form_url, {'payment': obj})
-
-    def get_actions(self, request):
-        actions = super().get_actions(request)
-        if not request.user.has_perm('registrations.process_payments'):
-            del(actions['process_cash_selected'])
-            del(actions['process_card_selected'])
-        return actions
-
-    def process_cash_selected(self, request, queryset):
-        if request.user.has_perm('registrations.process_payments'):
-            updated_payments = services.process_payment(queryset,
-                                                        'cash_payment')
-            self._process_feedback(request, updated_payments)
-    process_cash_selected.short_description = _(
-        'Process selected payments (cash)')
-
-    def process_card_selected(self, request, queryset):
-        if request.user.has_perm('registrations.process_payments'):
-            updated_payments = services.process_payment(queryset,
-                                                        'card_payment')
-            self._process_feedback(request, updated_payments)
-    process_card_selected.short_description = _(
-        'Process selected payments (card)')
-
-    def _process_feedback(self, request, updated_payments):
-        rows_updated = len(updated_payments)
-        _show_message(
-            self, request, rows_updated,
-            message=_("Successfully processed %(count)d %(items)s."),
-            error=_('The selected payment(s) could not be processed.')
-        )

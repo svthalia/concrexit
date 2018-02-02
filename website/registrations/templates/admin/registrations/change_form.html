@@ -19,12 +19,5 @@
     </div>
     {% endif %}
 
-    {% if payment %}
-    <div class="submit-row registrations-row">
-        <a href="{% url 'registrations:admin-process' pk=payment.pk type='cash_payment' %}" class="button process">{% trans "Process (cash payment)" %}</a>
-        <a href="{% url 'registrations:admin-process' pk=payment.pk type='card_payment' %}" class="button process">{% trans "Process (card payment)" %}</a>
-    </div>
-    {% endif %}
-
     {{ block.super }}
 {% endblock %}

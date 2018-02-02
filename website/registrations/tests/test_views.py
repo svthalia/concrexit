@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from members.models import Membership
 from registrations import views
-from registrations.models import Entry, Payment, Registration, Renewal
+from registrations.models import Entry, Registration, Renewal
 from registrations.views import RenewalFormView
 from thaliawebsite.settings import settings
 
@@ -111,9 +111,9 @@ class EntryAdminViewTest(TestCase):
                         check_unique_user):
         self.view.action = 'accept'
         for type, entry in {
-                    'registration': self.entry1,
-                    'renewal': self.entry2
-                }.items():
+            'registration': self.entry1,
+            'renewal': self.entry2
+        }.items():
             entry_qs = Entry.objects.filter(pk=entry.pk)
             check_unique_user.reset_mock()
             check_unique_user.return_value = True
@@ -163,9 +163,9 @@ class EntryAdminViewTest(TestCase):
     def test_get_reject(self, reject_entries, accept_entries):
         self.view.action = 'reject'
         for type, entry in {
-                    'registration': self.entry1,
-                    'renewal': self.entry2
-                }.items():
+            'registration': self.entry1,
+            'renewal': self.entry2
+        }.items():
             accept_entries.reset_mock()
             accept_entries.return_value = 1
             reject_entries.reset_mock()
@@ -246,102 +246,6 @@ class EntryAdminViewTest(TestCase):
                 )
 
 
-class PaymentAdminViewTest(TestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.entry = Registration.objects.create(
-            username='jdoe',
-            first_name='John',
-            last_name='Doe',
-            email='johndoe@example.com',
-            programme='computingscience',
-            student_number='s1234567',
-            starting_year=2014,
-            address_street='Heyendaalseweg 135',
-            address_street2='',
-            address_postal_code='6525AJ',
-            address_city='Nijmegen',
-            phone_number='06123456789',
-            birthday=timezone.now().replace(year=1990, day=1),
-            language='en',
-            length=Entry.MEMBERSHIP_YEAR,
-            membership_type=Membership.MEMBER,
-            status=Entry.STATUS_CONFIRM,
-        )
-        cls.payment = Payment.objects.create(
-            entry=cls.entry,
-            processed=False
-        )
-        cls.user = get_user_model().objects.create_user(username='username')
-
-    def setUp(self):
-        self.client = Client()
-        self.client.force_login(self.user)
-        self.view = views.PaymentAdminView()
-
-    def _give_user_permissions(self):
-        content_type = ContentType.objects.get_for_model(Payment)
-        permissions = Permission.objects.filter(
-            content_type__app_label=content_type.app_label,
-        )
-        for p in permissions:
-            self.user.user_permissions.add(p)
-        self.user.is_staff = True
-        self.user.save()
-
-        self.client.logout()
-        self.client.force_login(self.user)
-
-    def test_permissions(self):
-        url = '/registration/admin/process/{}/cash_payment/'.format(
-            self.payment.pk)
-        response = self.client.get(url)
-        self.assertRedirects(response, '/admin/login/?next=%s' % url)
-
-        self._give_user_permissions()
-
-        url = '/registration/admin/process/{}/cash_payment/'.format(
-            self.payment.pk)
-        response = self.client.get(url)
-        self.assertRedirects(
-            response,
-            '/admin/registrations/payment/%s/change/' % self.payment.pk
-        )
-
-    @mock.patch('registrations.models.Payment.objects.filter')
-    @mock.patch('registrations.services.process_payment')
-    def test_get(self, process_payment, qs_mock):
-        process_payment.return_value = [self.payment]
-        payment_qs = Payment.objects.get(pk=self.payment.pk)
-
-        qs_mock.return_value = payment_qs
-        qs_mock.get = Mock(return_value=payment_qs)
-
-        request = _get_mock_request()
-        type = 'cash_payment'
-        response = self.view.get(request, pk=self.payment.pk, type=type)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            '/admin/registrations/payment/%s/change/' % self.payment.pk
-        )
-
-        process_payment.assert_called_once_with(payment_qs, type)
-
-        request._messages.add.assert_called_once_with(
-            messages.SUCCESS, _('Successfully processed %s.') %
-            model_ngettext(self.payment, 1), '')
-
-        process_payment.return_value = []
-        self.view.get(request, pk=self.payment.pk, type=type)
-
-        request._messages.add.assert_any_call(
-            messages.ERROR, _('Could not process %s.') %
-            model_ngettext(self.payment, 1), '')
-
-
 class ConfirmEmailViewTest(TestCase):
 
     @classmethod
@@ -371,7 +275,6 @@ class ConfirmEmailViewTest(TestCase):
     @mock.patch('registrations.services.confirm_entry')
     @mock.patch('registrations.emails.send_new_registration_board_message')
     def test_get(self, board_mail, confirm_entry):
-
         entry_qs = Entry.objects.filter(pk=self.entry.pk)
         with mock.patch(
                 'registrations.models.Entry.objects.filter') as qs_mock:

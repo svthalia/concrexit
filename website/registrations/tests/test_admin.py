@@ -9,8 +9,9 @@ from django.test import SimpleTestCase, TestCase
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member
+from payments.models import Payment
 from registrations import admin
-from registrations.models import Entry, Payment, Registration, Renewal
+from registrations.models import Entry, Registration, Renewal
 
 
 def _get_mock_request(perms=None):
@@ -162,7 +163,8 @@ class RegistrationAdminTest(TestCase):
                                        'phone_number', 'student_number',
                                        'programme', 'starting_year',
                                        'address_street', 'address_street2',
-                                       'address_postal_code', 'address_city'])
+                                       'address_postal_code', 'address_city',
+                                       'payment', 'membership'])
 
         fields = self.admin.get_readonly_fields(request, Registration(
             status=Entry.STATUS_ACCEPTED
@@ -175,7 +177,8 @@ class RegistrationAdminTest(TestCase):
                                        'phone_number', 'student_number',
                                        'programme', 'starting_year',
                                        'address_street', 'address_street2',
-                                       'address_postal_code', 'address_city'])
+                                       'address_postal_code', 'address_city',
+                                       'payment', 'membership'])
 
     def test_get_actions(self):
         actions = self.admin.get_actions(_get_mock_request([]))
@@ -195,6 +198,7 @@ class RegistrationAdminTest(TestCase):
 
     def test_payment_status(self):
         reg = Registration(
+            username='johnnytest',
             payment=Payment(
                 pk='123',
                 processed=False
@@ -204,7 +208,7 @@ class RegistrationAdminTest(TestCase):
         self.assertEqual(
             self.admin.payment_status(reg),
             '<a href="{}">{}</a>'.format(
-                '/admin/registrations/payment/123/change/',
+                '/admin/payments/payment/123/change/',
                 _('Unprocessed')))
 
         reg.payment.processed = True
@@ -212,7 +216,7 @@ class RegistrationAdminTest(TestCase):
         self.assertEqual(
             self.admin.payment_status(reg),
             '<a href="{}">{}</a>'.format(
-                '/admin/registrations/payment/123/change/',
+                '/admin/payments/payment/123/change/',
                 _('Processed')))
 
         reg.payment = None
@@ -289,14 +293,16 @@ class RenewalAdminTest(TestCase):
         ))
         self.assertCountEqual(fields, ['created_at', 'updated_at', 'status',
                                        'length', 'membership_type', 'remarks',
-                                       'entry_ptr', 'member'])
+                                       'entry_ptr', 'member', 'payment',
+                                       'membership'])
 
         fields = self.admin.get_readonly_fields(request, Renewal(
             status=Entry.STATUS_ACCEPTED
         ))
         self.assertCountEqual(fields, ['created_at', 'updated_at', 'status',
                                        'length', 'membership_type', 'remarks',
-                                       'entry_ptr', 'member'])
+                                       'entry_ptr', 'member', 'payment',
+                                       'membership'])
 
     def test_get_actions(self):
         actions = self.admin.get_actions(_get_mock_request([]))
@@ -325,112 +331,3 @@ class RenewalAdminTest(TestCase):
         )
         self.assertEqual(self.admin.email(renewal),
                          'test@example.org')
-
-
-class PaymentAdminTest(TestCase):
-
-    def setUp(self):
-        self.site = AdminSite()
-        self.admin = admin.PaymentAdmin(Payment, admin_site=self.site)
-
-    @mock.patch('django.contrib.admin.ModelAdmin.changeform_view')
-    @mock.patch('registrations.models.Payment.objects.get')
-    def test_changeform_view(self, payment_get, super_method):
-        request = _get_mock_request()
-        object_id = None
-        form_url = 'form://url'
-
-        payment = Payment(processed=False)
-        payment_get.return_value = payment
-
-        self.admin.changeform_view(request, object_id, form_url)
-        self.assertFalse(payment_get.called)
-        super_method.assert_called_once_with(request, object_id, form_url,
-                                             {
-                                                 'payment': None
-                                             })
-
-        super_method.reset_mock()
-        request = _get_mock_request(perms=['registrations.process_payments'])
-
-        self.admin.changeform_view(request, object_id, form_url)
-        self.assertFalse(payment_get.called)
-        super_method.assert_called_once_with(request, object_id, form_url,
-                                             {
-                                                 'payment': None
-                                             })
-
-        super_method.reset_mock()
-        object_id = 1
-
-        self.admin.changeform_view(request, object_id, form_url)
-        self.assertTrue(payment_get.called)
-        super_method.assert_called_once_with(request, object_id, form_url,
-                                             {
-                                                 'payment': payment
-                                             })
-
-        super_method.reset_mock()
-        payment.processed = True
-
-        self.admin.changeform_view(request, object_id, form_url)
-        self.assertTrue(payment_get.called)
-        super_method.assert_called_once_with(request, object_id, form_url,
-                                             {
-                                                 'payment': None
-                                             })
-
-    @mock.patch('registrations.services.process_payment')
-    def test_process_cash(self, process_payment):
-        process_payment.return_value = [Payment()]
-
-        queryset = []
-
-        request = _get_mock_request([])
-
-        self.admin.process_cash_selected(request, queryset)
-        process_payment.assert_not_called()
-
-        request = _get_mock_request(['registrations.process_payments'])
-        self.admin.process_cash_selected(request, queryset)
-
-        process_payment.assert_called_once_with(queryset, 'cash_payment')
-
-        request._messages.add.assert_called_once_with(
-            messages.SUCCESS, _('Successfully processed %(count)d %(items)s.')
-            % {
-              "count": 1,
-              "items": model_ngettext(Payment(), 1)
-            }, '')
-
-    @mock.patch('registrations.services.process_payment')
-    def test_process_card(self, process_payment):
-        process_payment.return_value = [Payment()]
-
-        queryset = []
-
-        request = _get_mock_request([])
-
-        self.admin.process_card_selected(request, queryset)
-        process_payment.assert_not_called()
-
-        request = _get_mock_request(['registrations.process_payments'])
-        self.admin.process_card_selected(request, queryset)
-        process_payment.assert_called_once_with(queryset, 'card_payment')
-
-        request._messages.add.assert_called_once_with(
-            messages.SUCCESS, _('Successfully processed %(count)d %(items)s.')
-            % {
-              "count": 1,
-              "items": model_ngettext(Payment(), 1)
-            }, '')
-
-    def test_get_actions(self):
-        actions = self.admin.get_actions(_get_mock_request([]))
-        self.assertCountEqual(actions, ['delete_selected'])
-
-        actions = self.admin.get_actions(
-            _get_mock_request(['registrations.process_payments']))
-        self.assertCountEqual(actions, ['delete_selected',
-                                        'process_cash_selected',
-                                        'process_card_selected'])

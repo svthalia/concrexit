@@ -14,6 +14,7 @@ website
    merchandise
    newsletters
    partners
+   payments
    photos
    pizzas
    pushnotifications

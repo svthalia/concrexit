@@ -64,6 +64,14 @@ registrations\.services module
     :undoc-members:
     :show-inheritance:
 
+registrations\.signals module
+-----------------------------
+
+.. automodule:: registrations.signals
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 registrations\.urls module
 --------------------------
 
