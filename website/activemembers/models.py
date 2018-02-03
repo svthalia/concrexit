@@ -8,6 +8,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from tinymce import HTMLField
 
 from utils.translation import (ModelTranslateMeta, MultilingualField,
                                localize_attr_name)
@@ -57,7 +58,7 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
     )
 
     description = MultilingualField(
-        models.TextField,
+        HTMLField,
         verbose_name=_('Description'),
     )
 

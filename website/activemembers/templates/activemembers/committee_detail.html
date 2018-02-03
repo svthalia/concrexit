@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static thumbnail %}
+{% load i18n static thumbnail bleach_tags %}
 {% block title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
 
@@ -23,7 +23,7 @@
     </div>
     <div>
       <h1 class="midhead">{% blocktrans with name=committee.name %}About the {{ name }}{% endblocktrans %}</h1>
-      <p class="text-center">{{ committee.description }}</p>
+      <p class="text-center">{{ committee.description|bleach }}</p>
     </div>
     <div class="clearfix member-directory">
       <h1 class="midhead">{% trans 'Committee members' %}</h1>
