@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from events import services
 from members.models import Member
+from pizzas.models import PizzaEvent
 from utils.translation import TranslatedModelAdmin
 from . import forms, models
 
@@ -48,9 +49,15 @@ class RegistrationInformationFieldInline(admin.StackedInline):
         return formset
 
 
+class PizzaEventInline(admin.StackedInline):
+    model = PizzaEvent
+    extra = 0
+    max_num = 1
+
+
 @admin.register(models.Event)
 class EventAdmin(DoNextModelAdmin):
-    inlines = (RegistrationInformationFieldInline,)
+    inlines = (RegistrationInformationFieldInline, PizzaEventInline,)
     fields = ('title', 'description', 'start', 'end', 'organiser', 'category',
               'registration_start', 'registration_end', 'cancel_deadline',
               'send_cancel_email', 'location', 'map_location', 'price', 'fine',
@@ -123,9 +130,13 @@ class EventAdmin(DoNextModelAdmin):
         """Save formsets with their order"""
         formset.save()
 
+        informationfield_forms = (
+            x for x in formset.forms if
+            isinstance(x, forms.RegistrationInformationFieldForm)
+        )
         form.instance.set_registrationinformationfield_order([
             f.instance.pk
-            for f in sorted(formset.forms,
+            for f in sorted(informationfield_forms,
                             key=lambda x: (x.cleaned_data['order'],
                                            x.instance.pk))
         ])
