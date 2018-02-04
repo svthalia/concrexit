@@ -12,6 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
+from members import services
 from .services import member_achievements
 from . import models
 from .forms import ProfileForm
@@ -213,9 +214,9 @@ def statistics(request):
 
     context = {
         "total_members": total,
-        "total_stats_year": json.dumps(models.gen_stats_year(member_types)),
+        "total_stats_year": json.dumps(services.gen_stats_year(member_types)),
         "total_stats_member_type": json.dumps(
-            models.gen_stats_member_type(member_types)),
+            services.gen_stats_member_type(member_types)),
     }
 
     return render(request, 'members/statistics.html', context)
