@@ -1,2 +1,2 @@
 recommonmark
-sphinx
+sphinx==1.6.7

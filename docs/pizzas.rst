@@ -6,6 +6,13 @@ pizzas package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    pizzas.api
+
 Submodules
 ----------
 

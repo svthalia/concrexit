@@ -6,6 +6,13 @@ events package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    events.api
+
 Submodules
 ----------
 
