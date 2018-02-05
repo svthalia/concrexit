@@ -78,8 +78,8 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
 
     def _registered(self, instance):
         try:
-            return services.is_user_registered(instance,
-                                               self.context['member'])
+            return services.is_user_registered(self.context['member'],
+                                               instance)
         except AttributeError:
             return None
 
@@ -190,8 +190,8 @@ class EventListSerializer(serializers.ModelSerializer):
 
     def _registered(self, instance):
         try:
-            return services.is_user_registered(
-                instance, self.context['request'].user)
+            return services.is_user_registered(self.context['request'].user,
+                                               instance)
         except AttributeError:
             return None
 
