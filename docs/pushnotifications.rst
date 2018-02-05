@@ -6,6 +6,13 @@ pushnotifications package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    pushnotifications.api
+
 Submodules
 ----------
 

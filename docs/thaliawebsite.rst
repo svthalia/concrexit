@@ -11,7 +11,9 @@ Subpackages
 
 .. toctree::
 
+    thaliawebsite.api
     thaliawebsite.settings
+    thaliawebsite.templatetags
 
 Submodules
 ----------

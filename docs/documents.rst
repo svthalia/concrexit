@@ -6,6 +6,13 @@ documents package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    documents.templatetags
+
 Submodules
 ----------
 
