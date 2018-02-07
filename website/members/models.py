@@ -1,7 +1,9 @@
 import operator
-from datetime import date, timedelta
+import os
+from datetime import timedelta
 from functools import reduce
 
+from PIL import Image
 from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.core import validators
@@ -15,10 +17,6 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
 from activemembers.models import Committee
-from utils.snippets import datetime_to_lectureyear
-
-from PIL import Image
-import os
 
 
 class MemberManager(UserManager):
@@ -362,7 +360,7 @@ class Profile(models.Model):
         pref = self.display_name_preference
         if pref == 'nickname' and self.nickname is not None:
             return self.nickname
-        if pref == 'firstname':
+        elif pref == 'firstname':
             return self.user.first_name
         elif pref == 'initials':
             if self.initials:
@@ -372,7 +370,7 @@ class Profile(models.Model):
             return "{} '{}' {}".format(self.user.first_name,
                                        self.nickname,
                                        self.user.last_name)
-        elif pref == 'nicklast':
+        elif pref == 'nicklast' and self.nickname is not None:
             return "'{}' {}".format(self.nickname,
                                     self.user.last_name)
         else:
@@ -390,7 +388,6 @@ class Profile(models.Model):
             return self.user.last_name
         else:
             return self.user.first_name
-        return
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -510,56 +507,3 @@ class Membership(models.Model):
 
     def is_active(self):
         return not self.until or self.until > timezone.now().date()
-
-
-def gen_stats_member_type(member_types):
-    total = dict()
-    for member_type in member_types:
-        total[member_type] = (Membership
-                              .objects
-                              .filter(since__lte=date.today())
-                              .filter(Q(until__isnull=True) |
-                                      Q(until__gt=date.today()))
-                              .filter(type=member_type)
-                              .count())
-    return total
-
-
-def gen_stats_year(member_types):
-    """
-    Generate list with 6 entries, where each entry represents the total amount
-    of Thalia members in a year. The sixth element contains all the multi-year
-    students.
-    """
-    stats_year = []
-    current_year = datetime_to_lectureyear(date.today())
-
-    for i in range(5):
-        new = dict()
-        for member_type in member_types:
-            new[member_type] = (
-                Membership
-                .objects
-                .filter(user__profile__starting_year=current_year - i)
-                .filter(since__lte=date.today())
-                .filter(Q(until__isnull=True) |
-                        Q(until__gt=date.today()))
-                .filter(type=member_type)
-                .count())
-        stats_year.append(new)
-
-    # Add multi year members
-    new = dict()
-    for member_type in member_types:
-        new[member_type] = (
-            Membership
-            .objects
-            .filter(user__profile__starting_year__lt=current_year - 4)
-            .filter(since__lte=date.today())
-            .filter(Q(until__isnull=True) |
-                    Q(until__gt=date.today()))
-            .filter(type=member_type)
-            .count())
-    stats_year.append(new)
-
-    return stats_year

@@ -1,5 +1,10 @@
 from datetime import date
 
+from django.db.models import Q
+
+from members.models import Membership
+from utils.snippets import datetime_to_lectureyear
+
 
 def member_achievements(member):
     memberships = member.committeemembership_set.all()
@@ -42,3 +47,54 @@ def member_achievements(member):
                 'earliest': earliest,
             }
     return sorted(achievements.values(), key=lambda x: x['earliest'])
+
+
+def gen_stats_member_type(member_types):
+    total = dict()
+    for member_type in member_types:
+        total[member_type] = (Membership
+                              .objects
+                              .filter(since__lte=date.today())
+                              .filter(Q(until__isnull=True) |
+                                      Q(until__gt=date.today()))
+                              .filter(type=member_type)
+                              .count())
+    return total
+
+
+def gen_stats_year(member_types):
+    """
+    Generate list with 6 entries, where each entry represents the total amount
+    of Thalia members in a year. The sixth element contains all the multi-year
+    students.
+    """
+    stats_year = []
+    current_year = datetime_to_lectureyear(date.today())
+
+    for i in range(5):
+        new = dict()
+        for member_type in member_types:
+            new[member_type] = (
+                Membership.objects
+                .filter(user__profile__starting_year=current_year - i)
+                .filter(since__lte=date.today())
+                .filter(Q(until__isnull=True) |
+                        Q(until__gt=date.today()))
+                .filter(type=member_type)
+                .count())
+        stats_year.append(new)
+
+    # Add multi year members
+    new = dict()
+    for member_type in member_types:
+        new[member_type] = (
+            Membership.objects
+            .filter(user__profile__starting_year__lt=current_year - 4)
+            .filter(since__lte=date.today())
+            .filter(Q(until__isnull=True) |
+                    Q(until__gt=date.today()))
+            .filter(type=member_type)
+            .count())
+    stats_year.append(new)
+
+    return stats_year
