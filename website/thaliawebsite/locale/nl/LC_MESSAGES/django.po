@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-22 21:03+0100\n"
-"PO-Revision-Date: 2018-01-22 21:03+0100\n"
+"POT-Creation-Date: 2018-02-03 21:22+0100\n"
+"PO-Revision-Date: 2018-02-03 21:24+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -780,7 +780,7 @@ msgstr ""
 "voorkeur om magenta op zwart te gebruiken."
 
 #: templates/singlepages/styleguide.html:227
-#: templates/singlepages/styleguide.html:274
+#: templates/singlepages/styleguide.html:283
 msgid "Introshirts"
 msgstr "Introshirts"
 
@@ -834,33 +834,49 @@ msgstr ""
 "je maar wilt."
 
 #: templates/singlepages/styleguide.html:264
+msgid "Website"
+msgstr "Website"
+
+#: templates/singlepages/styleguide.html:267
+msgid ""
+"The website uses a different font for the headers and menu-items, since we "
+"don't have a licence to use the Gill Sans MT Condensed font online. This "
+"font is 'Oswald'. It's open-source and can be downloaded <a href=\"https://"
+"github.com/googlefonts/OswaldFont\">here</a>."
+msgstr ""
+"Op de website gebruiken we een ander lettertype voor de kopteksten en het "
+"menu. Dit omdat we geen licentie hebben om Gill Sans MT Condensed online te "
+"gebruiken. Dat lettertype is ‘Oswald’. Het is open-source en <a "
+"href=“https://github.com/googlefonts/OswaldFont”>hier</a> te downloaden."
+
+#: templates/singlepages/styleguide.html:273
 msgid "Downloads"
 msgstr "Downloads"
 
-#: templates/singlepages/styleguide.html:267
+#: templates/singlepages/styleguide.html:276
 msgid "Font"
 msgstr "Lettertype"
 
-#: templates/singlepages/styleguide.html:268
+#: templates/singlepages/styleguide.html:277
 msgid "Logos"
 msgstr "Logo’s"
 
-#: templates/singlepages/styleguide.html:269
+#: templates/singlepages/styleguide.html:278
 msgid "Logo variant template"
 msgstr "Templates logo varianten"
 
-#: templates/singlepages/styleguide.html:270
+#: templates/singlepages/styleguide.html:279
 msgid "Word documents"
 msgstr "Word-documenten"
 
-#: templates/singlepages/styleguide.html:271
+#: templates/singlepages/styleguide.html:280
 msgid "LaTeX template"
 msgstr "LaTeX-template"
 
-#: templates/singlepages/styleguide.html:272
+#: templates/singlepages/styleguide.html:281
 msgid "Presentation templates"
 msgstr "Presentatie-templates"
 
-#: templates/singlepages/styleguide.html:273
+#: templates/singlepages/styleguide.html:282
 msgid "Poster templates"
 msgstr "Posters & Banners"
