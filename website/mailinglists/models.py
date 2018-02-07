@@ -54,6 +54,18 @@ class MailingList(models.Model):
         blank=True,
     )
 
+    autoresponse_enabled = models.BooleanField(
+        verbose_name=_("Automatic response enabled"),
+        default=False,
+        help_text=_('Indicate whether emails will get an automatic response.')
+    )
+
+    autoresponse_text = models.TextField(
+        verbose_name=_("Autoresponse text"),
+        null=True,
+        blank=True,
+    )
+
     def all_addresses(self):
         for member in self.members.all():
             yield member.email
@@ -76,6 +88,11 @@ class MailingList(models.Model):
                              'model_name': _("Mailing list"),
                              'field_label': _("List alias")
                          }
+            })
+
+        if not self.autoresponse_text and self.autoresponse_enabled:
+            raise ValidationError({
+                'autoresponse_text': _('Enter a text for the auto response.')
             })
 
     def __str__(self):

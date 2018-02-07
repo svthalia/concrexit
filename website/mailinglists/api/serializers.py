@@ -6,7 +6,8 @@ from mailinglists.models import MailingList
 class MailingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = MailingList
-        fields = ('names', 'prefix', 'archived', 'moderated', 'addresses')
+        fields = ('names', 'prefix', 'archived', 'moderated', 'addresses',
+                  'autoresponse_enabled', 'autoresponse_text')
 
     names = serializers.SerializerMethodField('_names')
     addresses = serializers.SerializerMethodField('_addresses')
