@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n thumbnail static %}
+{% load i18n thumbnail static bleach_tags %}
 
 {% block title %}{% trans "Board" %} {{ board.since.year }}-{{ board.until.year }} — {% trans "Boards" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Board" %} {{ board.since.year }}-{{ board.until.year }} — {% trans "Boards" %} — {{ block.super }}{% endblock %}
@@ -26,7 +26,7 @@
     {% if board.description %}
       <div>
           <h1 class="midhead">{% blocktrans with name=board.name%}About {{ name }}{% endblocktrans %}</h1>
-          <p class="text-center">{{ board.description }}</p>
+          <p class="text-center">{{ board.description|bleach }}</p>
       </div>
     {% endif %}
     <div class="clearfix member-directory">
