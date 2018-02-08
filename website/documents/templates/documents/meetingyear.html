@@ -29,13 +29,13 @@
             </div>
             {% if user.is_authenticated %}
             <ul class="gw-go-body">
-                {% for document in meeting.generalmeetingdocument_set.all %}
-                    <li class="wordbreak"><a href="{% url 'documents:general-meeting-document' meeting.pk document.pk %}" target="_blank">{{ document|filename }}</a></li>
+                {% for document in meeting.documents.all %}
+                    <li class="wordbreak"><a href="{% url 'documents:document' document.pk %}" target="_blank">{{ document.name }}</a></li>
                 {% endfor %}
             </ul>
             <div class="gw-go-footer">
                 {% if meeting.minutes %}
-                    <a href="{% url 'documents:minutes' meeting.pk %}" class="gw-go-btn gw-go-btn-medium" target="_blank">Notulen</a>
+                    <a href="{% url 'documents:document' meeting.pk %}" class="gw-go-btn gw-go-btn-medium" target="_blank">Notulen</a>
                 {% else %}
                     <div style='padding-top:10px;'>{% trans "No minutes<br>available" %}</div>
                 {% endif %}

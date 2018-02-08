@@ -1,10 +1,10 @@
-{% extends "documents/associationdocument.html" %}
+{% extends "documents/annual.html" %}
 
 {% block icons %}
 {% if documents.annual %}
 <li>
     <a target="_blank"
-        href="{% url 'documents:association-document' 'annual-report' year %}"
+        href="{% url 'documents:document' documents.annual.pk %}"
         class="overlay-icon-link"
     ></a>
 </li>
@@ -12,7 +12,7 @@
 {% if documents.financial %}
 <li>
     <a target="_blank"
-        href="{% url 'documents:association-document' 'financial-report' year %}"
+        href="{% url 'documents:document' documents.financial.pk %}"
         class="overlay-icon-euro"
     ></a>
 </li>

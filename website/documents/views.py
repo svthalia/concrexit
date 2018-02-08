@@ -1,37 +1,26 @@
 import os
 
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.text import slugify
 from sendfile import sendfile
 
-from documents.models import (AssociationDocumentsYear, GeneralMeeting,
-                              GeneralMeetingDocument, MiscellaneousDocument)
+from documents.models import (AnnualDocument, AssociationDocument,
+                              GeneralMeeting, Document)
 from utils.snippets import datetime_to_lectureyear
 
 
 def index(request):
     lectureyear = datetime_to_lectureyear(timezone.now())
 
-    years = {x: None for x in range(1990, lectureyear + 1)}
-    for obj in AssociationDocumentsYear.objects.all():
-        years[obj.year] = {'policy': obj.policy_document,
-                           'report': {'annual': obj.annual_report,
-                                      'financial': obj.financial_report}}
-
-    for year_docs in years.values():
-        if year_docs is not None:
-            try:
-                year_docs['policy'].file
-            except ValueError:
-                year_docs['policy'] = None
-            for report in year_docs['report']:
-                try:
-                    year_docs['report'][report].file
-                except ValueError:
-                    year_docs['report'][report] = None
+    years = {x: {} for x in range(1990, lectureyear + 1)}
+    for policy in AnnualDocument.objects.filter(subcategory='policy'):
+        years[policy.year]['policy'] = policy
+    for report in AnnualDocument.objects.filter(subcategory='report'):
+        years[report.year]['report']['annual'] = report
+    for financial in AnnualDocument.objects.filter(subcategory='financial'):
+        years[financial.year]['report']['financial'] = financial
 
     meeting_years = {x: [] for x in range(1990, lectureyear + 1)}
     for obj in GeneralMeeting.objects.all():
@@ -40,53 +29,29 @@ def index(request):
             meeting_years[meeting_year] = []
         meeting_years[meeting_year].append(obj)
 
-    context = {'miscellaneous_documents': MiscellaneousDocument.objects.all(),
-               'association_documents_years': sorted(years.items(),
-                                                     reverse=True),
-               # TODO ideally we want to do this dynamically in CSS
-               'assocation_docs_width': (220 + 20) * len(years),
-               'meeting_years': sorted(meeting_years.items(), reverse=True)
-               }
-    return render(request, 'documents/index.html', context)
+    return render(request, 'documents/index.html', {
+        'association_documents': AssociationDocument.objects.all(),
+        'annual_reports': sorted(years.items(), reverse=True),
+        # TODO ideally we want to do this dynamically in CSS
+        'annual_docs_width': (220 + 20) * len(years),
+        'meeting_years': sorted(meeting_years.items(), reverse=True)
+    })
 
 
-def get_miscellaneous_document(request, pk):
-    document = get_object_or_404(MiscellaneousDocument, pk=int(pk))
-    ext = os.path.splitext(document.file.path)[1]
-    # TODO verify if we need to check a permission instead.
-    # This depends on how we're dealing with ex-members.
+# TODO verify if we need to check a permission instead.
+# This depends on how we're dealing with ex-members.
+def get_document(request, pk):
+    document = get_object_or_404(Document, pk=int(pk))
+
     if document.members_only and not request.user.is_authenticated:
-        raise PermissionDenied
+        return redirect('/login/?next=%s' % request.path)
+
+    try:
+        file = document.file
+    except ValueError:
+        raise Http404('This document does not exist.')
+
+    ext = os.path.splitext(file.path)[1]
+
     return sendfile(request, document.file.path, attachment=True,
                     attachment_filename=slugify(document.name) + ext)
-
-
-# TODO verify if we need to check a permission instead.
-@login_required
-def get_association_document(request, document_type, year):
-    documents = get_object_or_404(AssociationDocumentsYear, year=int(year))
-    file = {'policy-document': documents.policy_document,
-            'annual-report': documents.annual_report,
-            'financial-report': documents.financial_report}[document_type]
-    ext = os.path.splitext(file.path)[1]
-    filename = '{}-{}-{}{}'.format(year, int(year)+1, document_type, ext)
-    return sendfile(request, file.path,
-                    attachment=True, attachment_filename=filename)
-
-
-# TODO verify if we need to check a permission instead.
-@login_required
-def get_general_meeting_document(request, pk, document_pk):
-    document = get_object_or_404(GeneralMeetingDocument, pk=int(document_pk))
-    # TODO consider if we want to format the filename differently
-    return sendfile(request, document.file.path, attachment=True)
-
-
-# TODO verify if we need to check a permission instead.
-@login_required
-def get_general_meeting_minutes(request, pk):
-    meeting = get_object_or_404(GeneralMeeting, pk=int(pk))
-    ext = os.path.splitext(meeting.minutes.path)[1]
-    filename = '{}-minutes{}'.format(meeting.datetime.date(), ext)
-    return sendfile(request, meeting.minutes.path,
-                    attachment=True, attachment_filename=filename)
