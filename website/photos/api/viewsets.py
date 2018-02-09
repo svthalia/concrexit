@@ -14,8 +14,8 @@ class AlbumsViewSet(ModelViewSet):
     queryset = Album.objects.all()
 
     def get_queryset(self):
-        return services.annotate_accessible_albums(self.request,
-                                                   Album.objects.all())
+        return services.get_annotated_accessible_albums(self.request,
+                                                        Album.objects.all())
 
     def create(self, request, *args, **kwargs):
         if self.request.user.has_perm('photos.create_album'):
