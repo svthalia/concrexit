@@ -38,6 +38,6 @@ class AdminOrderSerializer(serializers.ModelSerializer):
                 'member': _('Either specify a member or a name'),
                 'name': _('Either specify a member or a name'),
             })
-        if not (attrs.get('member') or attrs.get('name')):
+        if not (attrs.get('member') or attrs.get('name')) and not self.partial:
             attrs['member'] = self.context['request'].member
         return super().validate(attrs)
