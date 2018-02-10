@@ -18,7 +18,7 @@ def is_album_accessible(request, album):
 
 
 # Annotate the albums which are accessible by the user
-def annotate_accessible_albums(request, albums):
+def get_annotated_accessible_albums(request, albums):
     if request.member and request.member.current_membership is None:
         # The user is currently not a member
         # so only show photos that were made during their membership
@@ -49,4 +49,4 @@ def can_view_album(request, album):
         filter = Q(since__lte=album.date) & (Q(until__gte=album.date) |
                                              Q(until=None))
         return request.member.membership_set.filter(filter).count() > 0
-    return False
+    return True

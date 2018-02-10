@@ -22,7 +22,7 @@ def index(request):
     # Only show published albums
     albums = Album.objects.filter(hidden=False)
 
-    services.annotate_accessible_albums(request, albums)
+    albums = services.get_annotated_accessible_albums(request, albums)
 
     albums = albums.order_by('-date')
     paginator = Paginator(albums, 12)
