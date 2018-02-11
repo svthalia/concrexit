@@ -15,21 +15,27 @@ from utils.translation import TranslatedModelAdmin
 from . import forms, models
 
 
-class DoNextModelAdmin(TranslatedModelAdmin):
+def _do_next(request, response):
+    if 'next' in request.GET and is_safe_url(request.GET['next']):
+        return HttpResponseRedirect(request.GET['next'])
+    else:
+        return response
 
-    def _do_next(self, request, response):
-        if 'next' in request.GET and is_safe_url(request.GET['next']):
-            return HttpResponseRedirect(request.GET['next'])
-        else:
-            return response
+
+class DoNextModelAdmin(TranslatedModelAdmin):
+    """
+    This class adds processing of a `next` parameter in the urls
+    of the add and change admin forms. If it is set and safe this
+    override will redirect the user to the provided url.
+    """
 
     def response_add(self, request, obj):
         res = super().response_add(request, obj)
-        return self._do_next(request, res)
+        return _do_next(request, res)
 
     def response_change(self, request, obj):
         res = super().response_change(request, obj)
-        return self._do_next(request, res)
+        return _do_next(request, res)
 
 
 class RegistrationInformationFieldInline(admin.StackedInline):

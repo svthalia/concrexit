@@ -4,6 +4,7 @@ from unittest import mock
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.test import TestCase
 from django.utils import timezone
+from freezegun import freeze_time
 
 from activemembers.models import Committee, CommitteeMembership
 from events import services
@@ -12,6 +13,7 @@ from events.models import Event, Registration, RegistrationInformationField
 from members.models import Member
 
 
+@freeze_time('2017-01-01')
 class ServicesTest(TestCase):
     fixtures = ['members.json', 'committees.json']
 
