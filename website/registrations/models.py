@@ -1,22 +1,18 @@
 import uuid
 
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Membership, Profile
 from thaliawebsite.settings import settings
-
 from . import emails
 
 
 class Entry(models.Model):
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     created_at = models.DateTimeField(_('created at'), default=timezone.now)
@@ -26,12 +22,14 @@ class Entry(models.Model):
     STATUS_REVIEW = 'review'
     STATUS_REJECTED = 'rejected'
     STATUS_ACCEPTED = 'accepted'
+    STATUS_COMPLETED = 'completed'
 
     STATUS_TYPE = (
         (STATUS_CONFIRM, _('Awaiting email confirmation')),
         (STATUS_REVIEW, _('Ready for review')),
         (STATUS_REJECTED, _('Rejected')),
         (STATUS_ACCEPTED, _('Accepted')),
+        (STATUS_COMPLETED, _('Completed')),
     )
 
     status = models.CharField(
@@ -71,6 +69,21 @@ class Entry(models.Model):
         null=True,
     )
 
+    payment = models.OneToOneField(
+        'payments.Payment',
+        related_name='registrations_entry',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
+    membership = models.OneToOneField(
+        'members.Membership',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if (self.status != self.STATUS_ACCEPTED and
@@ -99,7 +112,6 @@ class Entry(models.Model):
 
 
 class Registration(Entry):
-
     # ---- Personal information -----
 
     username = models.CharField(
@@ -211,7 +223,7 @@ class Registration(Entry):
 
     def get_full_name(self):
         full_name = '{} {}'.format(self.first_name, self.last_name)
-        return full_name.strip().encode('utf-8')
+        return full_name.strip()
 
     def clean(self):
         super().clean()
@@ -222,10 +234,10 @@ class Registration(Entry):
                 'email': _('A user with that email address already exists.')})
 
         if (self.student_number is not None and (
-                Profile.objects.filter(
-                    student_number=self.student_number).exists()
+            Profile.objects.filter(
+                student_number=self.student_number).exists()
             or
-                Registration.objects.filter(student_number=self.student_number)
+            Registration.objects.filter(student_number=self.student_number)
                 .exclude(pk=self.pk).exists())):
             errors.update({
                 'student_number':
@@ -327,78 +339,3 @@ class Renewal(Entry):
     class Meta:
         verbose_name = _('renewal')
         verbose_name_plural = _('renewals')
-
-
-class Payment(models.Model):
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
-    created_at = models.DateTimeField(_('created at'), default=timezone.now)
-
-    CASH = 'cash_payment'
-    CARD = 'card_payment'
-
-    PAYMENT_TYPE = (
-        (CASH, _('cash payment')),
-        (CARD, _('card payment')),
-    )
-
-    type = models.CharField(
-        choices=PAYMENT_TYPE,
-        verbose_name=_('type'),
-        max_length=20,
-        blank=True,
-        null=True,
-    )
-
-    amount = models.DecimalField(
-        blank=False,
-        null=False,
-        decimal_places=2,
-        max_digits=4,
-        default=settings.MEMBERSHIP_PRICES['year']
-    )
-
-    processed = models.BooleanField(
-        _('processed'),
-        default=False,
-    )
-
-    processing_date = models.DateTimeField(
-        _('processing date'),
-        blank=True,
-        null=True,
-    )
-
-    entry = models.OneToOneField(
-        'registrations.Entry',
-        on_delete=models.PROTECT,
-        blank=False,
-        null=False,
-    )
-
-    membership = models.OneToOneField(
-        'members.Membership',
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
-    )
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if self.processed and not self.processing_date:
-            self.processing_date = timezone.now()
-
-        super().save(force_insert, force_update, using, update_fields)
-
-    def get_admin_url(self):
-        content_type = ContentType.objects.get_for_model(self.__class__)
-        return reverse("admin:%s_%s_change" % (
-            content_type.app_label, content_type.model), args=(self.id,))
-
-    class Meta:
-        verbose_name = _('payment')
-        verbose_name_plural = _('payments')
-        permissions = (
-            ('process_payments', _("Process payments")),
-        )

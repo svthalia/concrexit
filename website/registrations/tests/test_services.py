@@ -8,8 +8,9 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member, Membership
+from payments.models import Payment
 from registrations import services
-from registrations.models import Entry, Payment, Registration, Renewal
+from registrations.models import Entry, Registration, Renewal
 from thaliawebsite.settings import settings
 from utils.snippets import datetime_to_lectureyear
 
@@ -259,26 +260,25 @@ class ServicesTest(TestCase):
         p5 = services._create_payment_for_entry(self.e5)
 
         self.assertEqual(p1.amount, settings.MEMBERSHIP_PRICES['year'])
-        self.assertEqual(p1.entry, self.e1)
+        self.assertEqual(p1.registrations_entry, self.e1)
         self.assertEqual(p1.processed, False)
         self.assertEqual(p2.amount, settings.MEMBERSHIP_PRICES['study'])
-        self.assertEqual(p2.entry, self.e2)
+        self.assertEqual(p2.registrations_entry, self.e2)
         self.assertEqual(p2.processed, False)
         self.assertEqual(p3.amount, settings.MEMBERSHIP_PRICES['study'] -
                          settings.MEMBERSHIP_PRICES['year'])
-        self.assertEqual(p3.entry, self.e3)
+        self.assertEqual(p3.registrations_entry, self.e3)
         self.assertEqual(p3.processed, False)
         self.assertEqual(p4.amount, settings.MEMBERSHIP_PRICES['year'])
-        self.assertEqual(p4.entry, self.e4)
+        self.assertEqual(p4.registrations_entry, self.e4)
         self.assertEqual(p4.processed, False)
         self.assertEqual(p5.amount, settings.MEMBERSHIP_PRICES['study'] -
                          settings.MEMBERSHIP_PRICES['year'])
-        self.assertEqual(p5.entry, self.e5)
+        self.assertEqual(p5.registrations_entry, self.e5)
         self.assertEqual(p5.processed, False)
 
     @mock.patch('registrations.services.check_unique_user')
     def test_create_member_from_registration(self, check_unique_user):
-
         self.e1.username = 'jdoe'
         self.e1.save()
 
@@ -448,35 +448,67 @@ class ServicesTest(TestCase):
         self.e2.username = 'ptest'
         self.e2.save()
 
+        # Check that the DoesNotExist is caught
+        p = Payment(
+            amount=10,
+            processed=True,
+        )
+        services.process_payment(p)
+
         p0 = services._create_payment_for_entry(self.e0)
         p1 = services._create_payment_for_entry(self.e1)
         p2 = services._create_payment_for_entry(self.e2)
         p3 = services._create_payment_for_entry(self.e3)
 
-        data = services.process_payment(
-            Payment.objects.filter(pk__in=[p0.pk, p1.pk, p2.pk]))
+        Entry.objects.filter(
+            pk__in=[self.e1.pk, self.e2.pk, self.e3.pk]
+        ).update(status=Entry.STATUS_ACCEPTED)
 
-        self.assertCountEqual(data, [p1, p2])
+        payments = Payment.objects.filter(pk__in=[p0.pk, p2.pk, p3.pk])
+        payments.update(processed=True)
 
-        data = services.process_payment(Payment.objects.filter(pk=p3.pk),
-                                        Payment.CARD)
+        for payment in Payment.objects.filter(pk__in=[p0.pk, p1.pk, p2.pk]):
+            services.process_payment(payment)
 
-        self.assertEqual(data[0].type, Payment.CARD)
-        self.assertNotEqual(data[0].membership, None)
-        self.assertEqual(data[0].membership.user, self.e3.member)
-        self.assertEqual(data[0].processed, True)
+        self.e0.refresh_from_db()
+        self.e1.refresh_from_db()
+        self.e2.refresh_from_db()
 
-        self.assertEqual(len(mail.outbox), 3)
+        self.assertEqual(self.e0.status, Entry.STATUS_REVIEW)
+        self.assertEqual(self.e1.status, Entry.STATUS_ACCEPTED)
+        self.assertEqual(self.e2.status, Entry.STATUS_COMPLETED)
+
+        p0.processed = True
+        p0.save()
+        self.e0.status = Entry.STATUS_ACCEPTED
+        self.e0.save()
+        services.process_payment(p0)
+
+        self.assertEqual(self.e0.status, Entry.STATUS_ACCEPTED)
+
+        p3.refresh_from_db()
+        services.process_payment(p3)
+        self.e3.refresh_from_db()
+
+        self.assertEqual(self.e3.status, Entry.STATUS_COMPLETED)
+        self.assertEqual(len(mail.outbox), 2)
 
     def test_process_payment_no_member_created(self):
         p1 = services._create_payment_for_entry(self.e1)
         p2 = services._create_payment_for_entry(self.e2)
+
+        Entry.objects.filter(
+            pk__in=[self.e1.pk, self.e2.pk]
+        ).update(status=Entry.STATUS_ACCEPTED)
+
+        payments = Payment.objects.filter(pk__in=[p1.pk, p2.pk])
+        payments.update(processed=True)
 
         with mock.patch('registrations.services.'
                         '_create_member_from_registration') as create_member:
             with mock.patch('registrations.services._create_membership_'
                             'from_entry') as create_membership:
                 create_member.return_value = None
-                services.process_payment(
-                    Payment.objects.filter(pk__in=[p1.pk, p2.pk]))
-                self.assertFalse(create_membership.called)
+                for payment in Payment.objects.filter(pk__in=[p1.pk, p2.pk]):
+                    services.process_payment(payment)
+                    self.assertFalse(create_membership.called)

@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static compress %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {% compress css %}<link rel="stylesheet" type="text/x-scss" href="{% static 'admin/payments/css/forms.scss' %}" />{% endcompress %}
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    {% if payment %}
+    <div class="submit-row payments-row">
+        <a href="{% url 'payments:admin-process' pk=payment.pk type='cash_payment' %}" class="button process">{% trans "Process (cash payment)" %}</a>
+        <a href="{% url 'payments:admin-process' pk=payment.pk type='card_payment' %}" class="button process">{% trans "Process (card payment)" %}</a>
+    </div>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}

@@ -8,11 +8,11 @@ from django.utils import timezone
 
 import members
 from members.models import Membership, Profile
+from payments.models import Payment
 from thaliawebsite.settings import settings
 from utils.snippets import datetime_to_lectureyear
-
 from . import emails
-from .models import Entry, Payment, Registration, Renewal
+from .models import Entry, Registration, Renewal
 
 
 def _generate_username(registration):
@@ -174,10 +174,13 @@ def _create_payment_for_entry(entry):
     except Renewal.DoesNotExist:
         pass
 
-    return Payment.objects.create(
-        entry=entry,
+    payment = Payment.objects.create(
         amount=amount,
     )
+    entry.payment = payment
+    entry.save()
+
+    return payment
 
 
 def _create_member_from_registration(registration):
@@ -293,51 +296,46 @@ def _create_membership_from_entry(entry, member=None):
     )
 
 
-def process_payment(queryset, pay_type='cash_payment'):
+def process_payment(payment):
     """
     Process the payment for the entry and send the right emails
 
-    :param queryset: All payments that should be processed
-    :type queryset: Queryset[Payment]
-    :param pay_type: Type of payment. One of the keys in Payment.PAYMENT_TYPE
-    :type pay_type: str
-    :return: All processed payments
-    :rtype: list(Payment)
+    :param payment: The payment that should be processed
+    :type payment: Payment
     """
-    queryset = queryset.filter(processed=False)
 
-    data = []
+    if not payment.processed:
+        return
 
-    for payment in queryset.filter(processed=False):
-        entry = payment.entry
+    try:
+        entry = payment.registrations_entry
+    except Entry.DoesNotExist:
+        return
 
-        member = None
+    if entry.status != Entry.STATUS_ACCEPTED:
+        return
 
+    member = None
+
+    try:
+        registration = entry.registration
+        # Create user and member
+        member = _create_member_from_registration(registration)
+    except Registration.DoesNotExist:
         try:
-            registration = entry.registration
-            # Create user and member
-            member = _create_member_from_registration(registration)
-        except Registration.DoesNotExist:
-            try:
-                # Get member from renewal
-                renewal = entry.renewal
-                member = renewal.member
-                # Send email of payment confirmation for renewal,
-                # not needed for registration since a new member already
-                # gets the welcome email
-                emails.send_renewal_complete_message(entry.renewal)
-            except Renewal.DoesNotExist:
-                pass
+            # Get member from renewal
+            renewal = entry.renewal
+            member = renewal.member
+            # Send email of payment confirmation for renewal,
+            # not needed for registration since a new member already
+            # gets the welcome email
+            emails.send_renewal_complete_message(entry.renewal)
+        except Renewal.DoesNotExist:
+            pass
 
-        # If member was retrieved, then create a new membership
-        if member is not None:
-            membership = _create_membership_from_entry(entry, member)
-            # Mark the payment as processed and set type of payment
-            payment.processed = True
-            payment.type = pay_type
-            payment.membership = membership
-            payment.save()
-
-            data.append(payment)
-
-    return data
+    # If member was retrieved, then create a new membership
+    if member is not None:
+        membership = _create_membership_from_entry(entry, member)
+        entry.membership = membership
+        entry.status = Entry.STATUS_COMPLETED
+        entry.save()

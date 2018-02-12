@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member, Membership, Profile
-from registrations.models import Entry, Payment, Registration, Renewal
+from registrations.models import Entry, Registration, Renewal
 
 
 class EntryTest(TestCase):
@@ -270,53 +270,3 @@ class RenewalTest(TestCase):
                 'length': 'You currently have an active membership.',
                 'membership_type': 'You currently have an active membership.',
             })
-
-
-class PaymentTest(TestCase):
-    """Tests Payments"""
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.registration = Registration.objects.create(
-            first_name='John',
-            last_name='Doe',
-            email='johndoe@example.com',
-            programme='computingscience',
-            starting_year=2014,
-            address_street='Heyendaalseweg 135',
-            address_street2='',
-            address_postal_code='6525AJ',
-            address_city='Nijmegen',
-            phone_number='06123456789',
-            birthday=timezone.now().replace(year=1990),
-            language='en',
-            length=Entry.MEMBERSHIP_YEAR,
-            membership_type=Membership.MEMBER,
-            status=Entry.STATUS_ACCEPTED,
-        )
-        cls.payment = Payment.objects.create(
-            entry=cls.registration,
-            amount=10,
-        )
-
-    def setUp(self):
-        self.registration.refresh_from_db()
-
-    def test_full_clean_works(self):
-        self.registration.full_clean()
-
-    def test_clean_works(self):
-        self.registration.clean()
-
-    def test_change_processed_sets_processing_date(self):
-        self.assertFalse(self.payment.processed)
-        self.assertIsNone(self.payment.processing_date)
-        self.payment.processed = True
-        self.payment.save()
-        self.assertTrue(self.payment.processed)
-        self.assertIsNotNone(self.payment.processing_date)
-
-        # Make sure date doesn't change on new save
-        date = self.payment.processing_date
-        self.payment.save()
-        self.assertEqual(self.payment.processing_date, date)

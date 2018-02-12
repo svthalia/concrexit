@@ -1,31 +1,28 @@
-from django.conf.urls import url
+from django.urls import path
 from django.views.generic import TemplateView
 
 from .views import (BecomeAMemberView, ConfirmEmailView,
                     EntryAdminView, MemberRegistrationFormView,
-                    PaymentAdminView, RenewalFormView)
+                    RenewalFormView)
 
 app_name = "registrations"
 
 urlpatterns = [
-    url(r'^$', BecomeAMemberView.as_view(), name='index'),
-    url(r'^register/$', MemberRegistrationFormView.as_view(), name='register'),
-    url(r'^register/success/$', TemplateView.as_view(
+    path('', BecomeAMemberView.as_view(), name='index'),
+    path('register/', MemberRegistrationFormView.as_view(), name='register'),
+    path('register/success/', TemplateView.as_view(
         template_name='registrations/register_success.html'),
         name='register-success'),
-    url(r'^renew/$', RenewalFormView.as_view(),
-        name='renew'),
-    url(r'^renew/success/$', TemplateView.as_view(
-        template_name='registrations/renewal_success.html'),
-        name='renew-success'),
-    url(r'^admin/accept/(?P<pk>[\w-]+)/$',
-        EntryAdminView.as_view(action='accept'),
-        name='admin-accept'),
-    url(r'^admin/reject/(?P<pk>[\w-]+)/$',
-        EntryAdminView.as_view(action='reject'),
-        name='admin-reject'),
-    url(r'^admin/process/(?P<pk>[\w-]+)/(?P<type>[\w-]+)/$',
-        PaymentAdminView.as_view(), name='admin-process'),
-    url('^confirm-email/(?P<pk>[\w-]+)/$',
-        ConfirmEmailView.as_view(), name='confirm-email'),
+    path('renew/', RenewalFormView.as_view(), name='renew'),
+    path('renew/success/', TemplateView.as_view(
+         template_name='registrations/renewal_success.html'),
+         name='renew-success'),
+    path('admin/accept/<uuid:pk>/',
+         EntryAdminView.as_view(action='accept'),
+         name='admin-accept'),
+    path('admin/reject/<uuid:pk>/',
+         EntryAdminView.as_view(action='reject'),
+         name='admin-reject'),
+    path('confirm-email/<uuid:pk>/',
+         ConfirmEmailView.as_view(), name='confirm-email'),
 ]

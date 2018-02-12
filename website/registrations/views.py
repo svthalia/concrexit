@@ -16,9 +16,8 @@ from django.views.generic.base import TemplateResponseMixin, TemplateView
 
 from members.models import Membership
 from thaliawebsite.settings import settings
-
 from . import emails, forms, services
-from .models import Entry, Payment, Registration, Renewal
+from .models import Entry, Registration, Renewal
 
 
 class BecomeAMemberView(TemplateView):
@@ -74,24 +73,6 @@ class EntryAdminView(View):
         return redirect("admin:%s_%s_change" %
                         (content_type.app_label, content_type.model),
                         kwargs['pk'])
-
-
-@method_decorator(staff_member_required, name='dispatch')
-@method_decorator(permission_required('registrations.process_payments'),
-                  name='dispatch', )
-class PaymentAdminView(View):
-    def get(self, request, *args, **kwargs):
-        payment = Payment.objects.filter(pk=kwargs['pk'])
-        result = services.process_payment(payment, kwargs['type'])
-
-        if len(result) > 0:
-            messages.success(request, _('Successfully processed %s.') %
-                             model_ngettext(payment, 1))
-        else:
-            messages.error(request, _('Could not process %s.') %
-                           model_ngettext(payment, 1))
-
-        return redirect('admin:registrations_payment_change', kwargs['pk'])
 
 
 class ConfirmEmailView(View, TemplateResponseMixin):

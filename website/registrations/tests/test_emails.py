@@ -1,3 +1,4 @@
+import uuid
 from unittest import mock
 
 from django.core import mail
@@ -9,9 +10,10 @@ from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member, Profile
+from payments.models import Payment
 from registrations import emails
 from registrations.emails import _send_email
-from registrations.models import Payment, Registration, Renewal
+from registrations.models import Registration, Renewal
 from thaliawebsite.settings import settings
 
 
@@ -24,7 +26,7 @@ class EmailsTest(TestCase):
             email='test@example.org',
             first_name='John',
             last_name='Doe',
-            pk=0,
+            pk=uuid.uuid4(),
         )
 
         emails.send_registration_email_confirmation(reg)
