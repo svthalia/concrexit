@@ -2,7 +2,7 @@ variables:
   POSTGRES_DB: thalia
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: ""
-  CI_DEPS: psycopg2
+  CI_DEPS: psycopg2-binary
   # https://hub.docker.com/r/twiggers/python-thalia/
   # https://github.com/thomwiggers/python-thalia
   # Should get auto-updated with the official 'python' repository
