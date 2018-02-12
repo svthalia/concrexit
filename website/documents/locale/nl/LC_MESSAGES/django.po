@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-12 14:06+0100\n"
-"PO-Revision-Date: 2018-02-12 13:42+0100\n"
+"POT-Creation-Date: 2018-02-12 16:18+0100\n"
+"PO-Revision-Date: 2018-02-12 16:21+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,15 +16,108 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.4\n"
 
-#: apps.py:7 templates/documents/index.html:6 templates/documents/index.html:7
+#: apps.py:7 models.py:13 templates/documents/index.html:6
+#: templates/documents/index.html:7
 msgid "Documents"
 msgstr "Documenten"
 
+#: models.py:12
+msgid "Document"
+msgstr "Document"
+
+#: models.py:16 models.py:63
+msgid "Annual document"
+msgstr "Jaarlijks document"
+
+#: models.py:17
+msgid "Association document"
+msgstr "Verenigingsdocument"
+
+#: models.py:18 models.py:161 models.py:162
+msgid "Minutes"
+msgstr "Notulen"
+
+#: models.py:19 models.py:124
+msgid "Miscellaneous document"
+msgstr "Overig document"
+
+#: models.py:24
+msgid "name"
+msgstr "naam"
+
+#: models.py:29
+msgid "created"
+msgstr "aangemaakt op"
+
+#: models.py:34
+msgid "last updated"
+msgstr "laatst aangemaakt op"
+
+#: models.py:41 models.py:76
+msgid "category"
+msgstr "categorie"
+
+#: models.py:47
+msgid "file"
+msgstr "bestand"
+
+#: models.py:53
+msgid "members only"
+msgstr "alleen voor leden"
+
+#: models.py:64
+msgid "Annual documents"
+msgstr "Jaarlijkse documenten"
+
+#: models.py:68 templates/documents/index.html:46
+msgid "Annual report"
+msgstr "Jaarverslag"
+
+#: models.py:69
+msgid "Financial report"
+msgstr "Financieel jaarverslag"
+
+#: models.py:70
+msgid "Policy document"
+msgstr "Beleidsdocument"
+
+#: models.py:81
+msgid "year"
+msgstr "jaar"
+
+#: models.py:106
+msgid "Miscellaneous association document"
+msgstr "Overig verenigingsdocument"
+
+#: models.py:107
+msgid "Miscellaneous association documents"
+msgstr "Overige verenigingsdocumenten"
+
+#: models.py:125
+msgid "Miscellaneous documents"
+msgstr "Overig documenten"
+
+#: models.py:137
+msgid "General meeting"
+msgstr "Algemene ledenvergadering"
+
+#: models.py:138
+msgid "General meetings"
+msgstr "Algemene ledenvergaderingen"
+
+#: models.py:146
+msgid "datetime"
+msgstr "tijdstip"
+
+#: models.py:151
+msgid "location"
+msgstr "locatie"
+
 #: templates/documents/index.html:17
-msgid "Miscellaneous Documents"
-msgstr "Algemeen"
+msgid "Miscellaneous Association Documents"
+msgstr "Overige Verenigingsdocumenten"
 
 #: templates/documents/index.html:19
 msgid ""
@@ -71,10 +164,6 @@ msgstr ""
 #: templates/documents/index.html:41
 msgid "Policy"
 msgstr "Beleidsdocument"
-
-#: templates/documents/index.html:46
-msgid "Annual report"
-msgstr "Jaarverslag"
 
 #: templates/documents/index.html:55
 msgid "General Meetings"

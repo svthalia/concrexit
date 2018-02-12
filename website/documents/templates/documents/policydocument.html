@@ -1,7 +1,7 @@
-{% extends "documents/associationdocument.html" %}
+{% extends "documents/annual.html" %}
 
 {% block icons %}
 <li>
-    <a target="_blank" href="{% url 'documents:association-document' 'policy-document' year %}" class="overlay-icon-link"></a>
+    <a target="_blank" href="{% url 'documents:document' documents.pk %}" class="overlay-icon-link"></a>
 </li>
 {% endblock %}

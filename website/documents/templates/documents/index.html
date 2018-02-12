@@ -14,15 +14,15 @@
 {% endblock %}
 
 {% block body %}
-<h1>{% trans "Miscellaneous Documents" %}</h1>
+<h1>{% trans "Miscellaneous Association Documents" %}</h1>
 
 <p class="text-center">{% trans "Thalia was officially founded on November 7th, 1990. The relevant statutes and internal rules can be accessed here. The statues have last been amended in September 2007; the internal rules have been changed on several occasions. Other miscellaneous documents can be found here as well, such as the declaration form and the canteen regulations. Please read these carefully, so that we can all have a pleasant time when having drinks in the canteen." %}</p>
 
 <div class="portfolio">
     <div class="misc-wrapper">
         <ul class="portfolio-posts row" style="padding-top:20px;">
-            {% for miscellaneous_document in miscellaneous_documents %}
-                {% include 'documents/miscellaneous.html' with document=miscellaneous_document %}
+            {% for association_document in association_documents %}
+                {% include 'documents/association.html' with document=association_document %}
             {% endfor %}
         </ul>
     </div>
@@ -36,13 +36,13 @@
 
 <div class="portfolio slider">
     <div class="policy-wrapper">
-        <ul class="portfolio-posts row" style='width:{{ assocation_docs_width }}px'>
-            {% for year, docs in association_documents_years %}
+        <ul class="portfolio-posts row" style='width:{{ annual_docs_width }}px'>
+            {% for year, docs in annual_reports %}
                 {% include 'documents/policydocument.html' with documents=docs.policy name=_("Policy") %}
             {% endfor %}
         </ul>
-        <ul class="portfolio-posts row" style='width:{{ assocation_docs_width }}px'>
-            {% for year, docs in association_documents_years %}
+        <ul class="portfolio-posts row" style='width:{{ annual_docs_width }}px'>
+            {% for year, docs in annual_reports %}
                 {% include 'documents/report.html' with documents=docs.report name=_("Annual report") %}
             {% endfor %}
         </ul>
