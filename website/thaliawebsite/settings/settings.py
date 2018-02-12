@@ -56,24 +56,26 @@ INSTALLED_APPS = [
     'compressor',
     'corsheaders',
     # Our apps
+    # Directly link to the app config when applicable as recommended
+    # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
     'thaliawebsite',  # include for admin settings
-    'pushnotifications',
-    'members',
-    'documents',
-    'activemembers',
-    'photos',
+    'pushnotifications.apps.PushNotificationsConfig',
+    'members.apps.MembersConfig',
+    'documents.apps.DocumentsConfig',
+    'activemembers.apps.ActiveMembersConfig',
+    'photos.apps.PhotosConfig',
     'utils',
-    'mailinglists',
-    'merchandise',
-    'thabloid',
-    'partners',
-    'events',
-    'pizzas',
-    'newsletters',
-    'education',
-    'announcements',
-    'registrations',
-    'payments',
+    'mailinglists.apps.MailinglistsConfig',
+    'merchandise.apps.MerchandiseConfig',
+    'thabloid.apps.ThabloidConfig',
+    'partners.apps.PartnersConfig',
+    'events.apps.EventsConfig',
+    'pizzas.apps.PizzasConfig',
+    'newsletters.apps.NewslettersConfig',
+    'education.apps.EducationConfig',
+    'announcements.apps.AnnouncementsConfig',
+    'registrations.apps.RegistrationsConfig',
+    'payments.apps.PaymentsConfig',
 ]
 
 MIDDLEWARE = [

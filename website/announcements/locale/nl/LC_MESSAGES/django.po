@@ -1,0 +1,75 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-12 14:06+0100\n"
+"PO-Revision-Date: 2018-02-12 13:49+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#: apps.py:7
+msgid "Site header announcements"
+msgstr "Site kop aankondigingen"
+
+#: models.py:12 models.py:66
+msgid "Content"
+msgstr "Inhoud"
+
+#: models.py:13
+msgid "The content of the announcement; what text to display."
+msgstr "De inhoud van de aankondiging; welke tekst weer te geven."
+
+#: models.py:19 models.py:73
+msgid "Display since"
+msgstr "Geef weer vanaf"
+
+#: models.py:20
+msgid "Hide this announcement before this time."
+msgstr "Verberg deze aankondiging voor dit tijdstip."
+
+#: models.py:25 models.py:79
+msgid "Display until"
+msgstr "Laat zien tot"
+
+#: models.py:26
+msgid "Hide this announcement after this time."
+msgstr "Verberg de aankondiging na dit tijdstip."
+
+#: models.py:32
+msgid "Font Awesome icon"
+msgstr "Font Awesome-icoon"
+
+#: models.py:33
+msgid "Font Awesome abbreviation for icon to use."
+msgstr "Font Awesome afkorting voor het te gebruiken icoon."
+
+#: models.py:58
+msgid "Title"
+msgstr "Titel"
+
+#: models.py:59
+msgid "The title of the article; what goes in the header"
+msgstr "De tekst van het artikel; wat er in de kop moet"
+
+#: models.py:67
+msgid "The content of the article; what text to display."
+msgstr "De inhoud van het artikel; welke tekst weer te geven."
+
+#: models.py:74
+msgid "Hide this article before this time."
+msgstr "Verberg dit artikel voor dit tijdstip."
+
+#: models.py:80
+msgid "Hide this article after this time."
+msgstr "Verberg dit artikel na dit tijdstip."

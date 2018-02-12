@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-12 10:07+0100\n"
-"PO-Revision-Date: 2018-01-12 10:07+0100\n"
+"POT-Creation-Date: 2018-02-12 14:06+0100\n"
+"PO-Revision-Date: 2018-02-12 13:45+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#: apps.py:7 templates/partners/index.html:4 templates/partners/index.html:5
+#: templates/partners/partner.html:4 templates/partners/partner.html:5
+msgid "Partners"
+msgstr "Partners"
 
 #: models.py:34
 msgid "Enter a valid address"
@@ -28,7 +33,7 @@ msgstr "Voer een geldige postcode in"
 
 #: models.py:78
 msgid "image of {}"
-msgstr "Plaatje van {}"
+msgstr "plaatje van {}"
 
 #: models.py:89
 msgid "Vacancy Categories"
@@ -82,11 +87,6 @@ msgstr "gepubliceerd"
 #: models.py:189 models.py:191
 msgid "Please select or enter a partner for this event."
 msgstr "Selecteer of vul een partner in voor dit evenement."
-
-#: templates/partners/index.html:4 templates/partners/index.html:5
-#: templates/partners/partner.html:4 templates/partners/partner.html:5
-msgid "Partners"
-msgstr "Partners"
 
 #: templates/partners/index.html:4 templates/partners/index.html:5
 #: templates/partners/partner.html:4 templates/partners/partner.html:5

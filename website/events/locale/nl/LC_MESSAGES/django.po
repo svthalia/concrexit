@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-16 21:52+0100\n"
-"PO-Revision-Date: 2018-01-16 21:53+0100\n"
+"POT-Creation-Date: 2018-02-12 14:06+0100\n"
+"PO-Revision-Date: 2018-02-12 13:43+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,29 +16,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.6\n"
 
-#: admin.py:83
+#: admin.py:90
 msgid "Event Date"
 msgstr "Evenementdatum"
 
-#: admin.py:92
+#: admin.py:99
 msgid "Registration Start"
 msgstr "Start Aanmelden"
 
-#: admin.py:95
+#: admin.py:102
 msgid "Edit"
 msgstr "Aanpassen"
 
-#: admin.py:105
+#: admin.py:112
 msgid "Number of participants"
 msgstr "Aantal deelnemers"
 
-#: admin.py:109
+#: admin.py:116
 msgid "Publish selected events"
 msgstr "Publiceer geselecteerde evenementen"
 
-#: admin.py:113
+#: admin.py:120
 msgid "Unpublish selected events"
 msgstr "Publicatie van geselecteerde evenementen ongedaan maken"
 
@@ -111,6 +111,10 @@ msgstr "Pin"
 msgid "No"
 msgstr "Nee"
 
+#: apps.py:7
+msgid "Events"
+msgstr "Evenementen"
+
 #: emails.py:30
 msgid "[THALIA] Notification about your registration for '{}'"
 msgstr "[THALIA] Bericht over je aanmelding voor ‘{}’"
@@ -155,7 +159,7 @@ msgstr "Geen aanmelding vereist"
 msgid "title"
 msgstr "titel"
 
-#: models.py:36 models.py:406
+#: models.py:36 models.py:413
 msgid "description"
 msgstr "beschrijving"
 
@@ -253,113 +257,113 @@ msgstr "Standaard:"
 msgid "published"
 msgstr "gepubliceerd"
 
-#: models.py:196
+#: models.py:203
 msgid "Can't have an event travel back in time"
 msgstr "Een evenement kan niet terugreizen in de tijd"
 
-#: models.py:200
+#: models.py:207
 msgid "The fine for this event is too low (must be at least €5)."
 msgstr "De boete voor dit evenement is te laag (minimaal €5)."
 
-#: models.py:207
+#: models.py:214
 msgid "Doesn't make sense to have this if you require registrations."
 msgstr "Het is niet logisch om dit te hebben als je aanmelden vereist."
 
-#: models.py:212
+#: models.py:219
 msgid "If registration is required, you need a start of registration"
 msgstr ""
 "Als aanmelden vereist is, dan heb je een starttijd voor de aanmeldperiode "
 "nodig"
 
-#: models.py:217
+#: models.py:224
 msgid "If registration is required, you need an end of registration"
 msgstr ""
 "Als aanmelden vereist is, dan heb je een eindtijd voor de aanmeldperiode "
 "nodig"
 
-#: models.py:222
+#: models.py:229
 msgid "If registration is required, you need a deadline for the cancellation"
 msgstr ""
 "Als aanmelden vereist is, dan heb je een eindtijd voor de aanmeldperiode "
 "nodig"
 
-#: models.py:227
+#: models.py:234
 msgid "The cancel deadline should be before the start of the event."
 msgstr "De afmelddeadline moet voor de start van het evenement liggen."
 
-#: models.py:231
+#: models.py:238
 msgid "Registration start should be before registration end"
 msgstr "De starttijd voor de aanmeldperiode moet voor de eindtijd liggen"
 
-#: models.py:240
+#: models.py:247
 msgid "This organiser does not have a contact mailinglist."
 msgstr "De organisator heeft geen contact mailinglijst."
 
-#: models.py:274
+#: models.py:281
 msgid "No payment"
 msgstr "Niet betaald"
 
-#: models.py:275
+#: models.py:282
 msgid "Paid with cash"
 msgstr "Contant betaald"
 
-#: models.py:276
+#: models.py:283
 msgid "Paid with card"
 msgstr "Pin betaald"
 
-#: models.py:288 templates/events/admin/registrations_table.html:6
+#: models.py:295 templates/events/admin/registrations_table.html:6
 msgid "name"
 msgstr "naam"
 
-#: models.py:290
+#: models.py:297
 msgid "Use this for non-members"
 msgstr "Gebruikt dit voor niet-leden"
 
-#: models.py:295 templates/events/admin/registrations_table.html:10
+#: models.py:302 templates/events/admin/registrations_table.html:7
 msgid "registration date"
 msgstr "aanmelddatum"
 
-#: models.py:297 templates/events/admin/registrations_table.html:8
+#: models.py:304 templates/events/admin/registrations_table.html:9
 msgid "cancellation date"
 msgstr "afmelddatum"
 
-#: models.py:302 templates/events/admin/registrations_table.html:15
+#: models.py:309 templates/events/admin/registrations_table.html:14
 msgid "present"
 msgstr "aanwezig"
 
-#: models.py:309
+#: models.py:316
 msgid "payment"
 msgstr "betaling"
 
-#: models.py:362 models.py:363
+#: models.py:369 models.py:370
 msgid "Either specify a member or a name"
 msgstr "Geef een lid of een naam op"
 
-#: models.py:386
+#: models.py:393
 msgid "Checkbox"
 msgstr "Checkbox"
 
-#: models.py:387
+#: models.py:394
 msgid "Text"
 msgstr "Text"
 
-#: models.py:388
+#: models.py:395
 msgid "Integer"
 msgstr "Integer"
 
-#: models.py:393
+#: models.py:400
 msgid "field type"
 msgstr "veldtype"
 
-#: models.py:400
+#: models.py:407
 msgid "field name"
 msgstr "veldnaam"
 
-#: models.py:412
+#: models.py:419
 msgid "required"
 msgstr "verplicht"
 
-#: models.py:464
+#: models.py:471
 msgid "last changed"
 msgstr "laatst aangepast"
 
@@ -446,7 +450,7 @@ msgid "Event properties"
 msgstr "Eigenschappen van evenement"
 
 #: templates/events/admin/details.html:64
-#: templates/events/admin/registrations_table.html:58
+#: templates/events/admin/registrations_table.html:56
 msgid "change"
 msgstr "verander"
 
@@ -497,31 +501,31 @@ msgstr ""
 "Sommige geregistreerden zijn met de hand toegevoegd, en komen dus niet in de "
 "bovenstaande lijst voor:"
 
-#: templates/events/admin/registrations_table.html:16
+#: templates/events/admin/registrations_table.html:15
 msgid "not paid"
 msgstr "niet betaald"
 
-#: templates/events/admin/registrations_table.html:17
+#: templates/events/admin/registrations_table.html:16
 msgid "paid cash"
 msgstr "contant betaald"
 
-#: templates/events/admin/registrations_table.html:18
+#: templates/events/admin/registrations_table.html:17
 msgid "paid card"
 msgstr "pin betaald"
 
-#: templates/events/admin/registrations_table.html:20
+#: templates/events/admin/registrations_table.html:19
 msgid "late"
 msgstr "te laat"
 
-#: templates/events/admin/registrations_table.html:24
+#: templates/events/admin/registrations_table.html:23
 msgid "add"
 msgstr "toevoegen"
 
-#: templates/events/admin/registrations_table.html:62
+#: templates/events/admin/registrations_table.html:60
 msgid "registered"
 msgstr "aangemeld"
 
-#: templates/events/admin/registrations_table.html:63
+#: templates/events/admin/registrations_table.html:61
 #, python-format
 msgid "Nobody %(verb)s yet"
 msgstr "Niemand heeft zich %(verb)s"
@@ -650,15 +654,15 @@ msgstr "cohort"
 #: templates/events/index.html:85 templates/events/index.html:87
 #: templates/events/index.html:93
 msgid "hide birthdays"
-msgstr "Verberg verjaardagen"
+msgstr "verberg verjaardagen"
 
 #: templates/events/index.html:85 templates/events/index.html:88
 msgid "show birthdays"
-msgstr "Toon verjaardagen"
+msgstr "toon verjaardagen"
 
 #: templates/events/index.html:106
 msgid "list"
-msgstr "Lijst"
+msgstr "lijst"
 
 #: templates/events/member_email.txt:1
 #, python-format
