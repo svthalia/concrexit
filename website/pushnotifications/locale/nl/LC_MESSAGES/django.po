@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-13 20:55+0100\n"
+"POT-Creation-Date: 2018-02-12 14:06+0100\n"
 "PO-Revision-Date: 2017-12-17 18:01+0100\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.0.4\n"
 
 #: admin.py:19
@@ -41,59 +41,59 @@ msgstr "actief"
 msgid "Inactive devices will not be sent notifications"
 msgstr "Inactieve apparaten zullen geen notificaties ontvangen"
 
-#: models.py:26
+#: models.py:28
 msgid "registration date"
 msgstr "registratiedatum"
 
-#: models.py:29
+#: models.py:31
 msgid "language"
 msgstr "taal"
 
-#: models.py:48
+#: models.py:50
 msgid "General"
 msgstr "Algemeen"
 
-#: models.py:49
+#: models.py:51
 msgid "Pizza"
 msgstr "Pizza"
 
-#: models.py:50
+#: models.py:52
 msgid "Events"
 msgstr "Evenementen"
 
-#: models.py:51
+#: models.py:53
 msgid "Newsletter"
 msgstr "Nieuwsbrief"
 
-#: models.py:52
+#: models.py:54
 msgid "Sponsored messages"
 msgstr "Gesponsorde berichten"
 
-#: models.py:53
+#: models.py:55
 msgid "Photos"
 msgstr "Foto's"
 
-#: models.py:54
+#: models.py:56
 msgid "Board"
 msgstr "Bestuur"
 
-#: models.py:60
+#: models.py:62
 msgid "title"
 msgstr "titel"
 
-#: models.py:63
+#: models.py:65
 msgid "body"
 msgstr "bericht"
 
-#: models.py:73
+#: models.py:75
 msgid "sent"
 msgstr "verzonden"
 
-#: models.py:77
+#: models.py:79
 msgid "failure"
 msgstr "mislukt"
 
-#: models.py:82
+#: models.py:84
 msgid "success"
 msgstr "succesvol"
 

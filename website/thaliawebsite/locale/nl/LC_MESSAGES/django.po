@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-03 21:22+0100\n"
+"POT-Creation-Date: 2018-02-12 14:07+0100\n"
 "PO-Revision-Date: 2018-02-03 21:24+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -142,11 +142,11 @@ msgstr "Samenvatting Insturen"
 msgid "Contact"
 msgstr "Contact"
 
-#: settings/settings.py:194
+#: settings/settings.py:197
 msgid "English"
 msgstr "Engels"
 
-#: settings/settings.py:195
+#: settings/settings.py:198
 msgid "Dutch"
 msgstr "Nederlands"
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-20 22:11+0100\n"
-"PO-Revision-Date: 2018-01-20 22:11+0100\n"
+"POT-Creation-Date: 2018-02-12 14:06+0100\n"
+"PO-Revision-Date: 2018-02-12 13:42+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: admin.py:34
 msgid "Mark exams as accepted"
@@ -33,6 +33,10 @@ msgstr "Markeer samenvattingen als geaccepteerd"
 #: admin.py:58
 msgid "Mark summaries as rejected"
 msgstr "Markeer samenvattingen als afgekeurd"
+
+#: apps.py:7
+msgid "Education"
+msgstr "Onderwijs"
 
 #: models.py:24
 msgid "category"
