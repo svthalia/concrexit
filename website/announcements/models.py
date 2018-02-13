@@ -1,3 +1,4 @@
+"""The models defined by the announcement package"""
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
@@ -7,6 +8,8 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Announcement(models.Model, metaclass=ModelTranslateMeta):
+    """Describes an announcement"""
+
     content = MultilingualField(
         HTMLField,
         verbose_name=_('Content'),
@@ -53,6 +56,7 @@ class Announcement(models.Model, metaclass=ModelTranslateMeta):
 
 
 class FrontpageArticle(models.Model, metaclass=ModelTranslateMeta):
+    """Front page articles"""
     title = MultilingualField(
         models.CharField,
         verbose_name=_('Title'),
