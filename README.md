@@ -36,12 +36,10 @@ You may get errors about missing interpreters. That is normal and can be
 ignored. If you want to run a specific check, you can do the following:
 
     tox -e flake8           # Runs the flake8 linter
-    tox -e py34-django10    # runs the tests with python 3.4 and Django 1.10
-    tox -e py35-django10    # runs the tests with python 3.5 and Django 1.10
-    tox -e py36-django10    # runs the tests with python 3.6 and Django 1.10
-    tox -e py34-django11    # runs the tests with python 3.4 and Django 1.11
-    tox -e py35-django11    # runs the tests with python 3.5 and Django 1.11
-    tox -e py36-django11    # runs the tests with python 3.6 and Django 1.11
+    tox -e py35-django20    # runs the tests with python 3.5 and Django 2.0
+    tox -e py36-django20    # runs the tests with python 3.6 and Django 2.0
+
+You can run `tox -l` to see the available environments.
 
 Pillow dependencies
 -------------------
