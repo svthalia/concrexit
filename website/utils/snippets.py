@@ -1,8 +1,9 @@
+"""Provides various utilities that are useful across the project"""
 from django.utils import timezone
 
 
 def datetime_to_lectureyear(date):
-    """Convert a date to the start of the lectureyear
+    """Convert a :class:`~datetime.date` to the start of the lectureyear
 
     >>> from datetime import date, datetime, timezone
     >>> nov_23 = date(1990, 11, 7)
@@ -12,7 +13,7 @@ def datetime_to_lectureyear(date):
     >>> datetime_to_lectureyear(mar_2)
     1992
 
-    Also works on ``datetimes``, but they need to be tz-aware:
+    Also works on :class:`~datetime.datetime`, but they need to be tz-aware:
 
     >>> new_year = datetime(2000, 1, 1, tzinfo=timezone.utc)
     >>> datetime_to_lectureyear(new_year)

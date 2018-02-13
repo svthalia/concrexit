@@ -48,6 +48,7 @@ docs:
   before_script:
     # install django deps
     - pip install -r requirements.txt
+    - pip install -r dev-requirements.txt
     - cd docs
     # install doc deps
     - pip install -r requirements.txt

@@ -1,3 +1,4 @@
+"""Utility views"""
 import os
 
 from PIL import Image, ImageOps
@@ -18,6 +19,11 @@ def _private_thumbnails_unauthed(request, size_fit, original_path):
     This layer of indirection makes it possible to make exceptions
     to the authentication requirements for thumbnails, e.g. when sharing
     photo albums with external parties using access tokens.
+
+    :param request: the HttpRequest
+    :param size_fit: requested size and fit
+    :param original_path: path to original file
+    :return: HTTP response with the file
     """
     original_path = urlunquote(original_path)
     thumbpath = os.path.join(settings.MEDIA_ROOT, 'thumbnails', size_fit)
@@ -33,10 +39,11 @@ def _private_thumbnails_unauthed(request, size_fit, original_path):
 
 @login_required
 def private_thumbnails(request, size_fit, path):
+    """Get thumbnails that we need to be logged in to see."""
     return _private_thumbnails_unauthed(request, size_fit, path)
 
 
-def generate_thumbnail(request, size_fit, path, thumbpath):
+def generate_thumbnail(_request, size_fit, path, thumbpath):
     """
     Generate thumbnail and redirect user to new location
 
@@ -44,7 +51,14 @@ def generate_thumbnail(request, size_fit, path, thumbpath):
     thumbnails will be generated in parallel, it will not block
     page load when many thumbnails need to be generated.
     After it is done, the user is redirected to the new location
-    of the thumbnail."""
+    of the thumbnail.
+
+    :param HttpRequest _request: the request
+    :param size_fit: requested size and fitting
+    :param path: the path
+    :param thumbpath: path for thumbnail
+    :return: HTTP Redirect to thumbnail
+    """
     thumbpath = urlunquote(thumbpath)
     path = urlunquote(path)
     full_thumbpath = os.path.normpath(

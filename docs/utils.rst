@@ -6,6 +6,14 @@ utils package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    utils.management
+    utils.templatetags
+
 Submodules
 ----------
 
