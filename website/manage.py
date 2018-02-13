@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""This is the entrypoint for running the django site
+
+Use ``python ./manage.py help`` for more info.
+"""
 import os
 import sys
 
