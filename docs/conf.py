@@ -185,8 +185,11 @@ autodoc_default_flags = ['members', 'undoc-members']
 doctest_test_doctest_blocks = ''
 
 # -- intersphinx ---
-intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
-
+intersphinx_mapping = {
+        'python': ('https://docs.python.org/3.6', None),
+        'django': ('https://docs.djangoproject.com/en/2.0/',
+                   'https://docs.djangoproject.com/en/2.0/_objects/'),
+}
 
 # -- Supress warnings  ---
 suppress_warnings = [
