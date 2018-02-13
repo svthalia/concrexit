@@ -188,7 +188,7 @@ class ServicesTest(TestCase):
         self.assertEqual(reg.member, self.member)
         self.assertEqual(reg.date_cancelled, None)
 
-        reg.date_cancelled = datetime(2017, 9, 1)
+        reg.date_cancelled = timezone.make_aware(datetime(2017, 9, 1))
         reg.save()
 
         reg = services.create_registration(self.member, self.event)
@@ -267,7 +267,7 @@ class ServicesTest(TestCase):
         Registration.objects.create(
             event=self.event,
             member=Member.objects.filter(username="testuser").first(),
-            date=datetime(2017, 9, 1)
+            date=timezone.make_aware(datetime(2017, 9, 1))
         )
 
         services.cancel_registration(None, self.member, self.event)

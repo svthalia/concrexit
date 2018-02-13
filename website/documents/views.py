@@ -1,5 +1,6 @@
 import os
 
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -44,7 +45,7 @@ def get_document(request, pk):
     document = get_object_or_404(Document, pk=int(pk))
 
     if document.members_only and not request.user.is_authenticated:
-        return redirect('/login/?next=%s' % request.path)
+        return redirect('{}?next={}'.format(settings.LOGIN_URL, request.path))
 
     try:
         file = document.file
