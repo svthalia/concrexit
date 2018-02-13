@@ -18,7 +18,7 @@ def show_cards(context):
         upcoming = [{
                 'event': x,
                 'current_user_registration': services.is_user_registered(
-                    x, context['user']),
+                    context['user'], x),
             } for x in upcoming_events[:4]]
     except AttributeError:
         upcoming = [{

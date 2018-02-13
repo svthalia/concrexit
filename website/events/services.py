@@ -6,7 +6,7 @@ from events.exceptions import RegistrationError
 from events.models import Registration, RegistrationInformationField
 
 
-def is_user_registered(event, member):
+def is_user_registered(member, event):
     if not event.registration_required or not member.is_authenticated:
         return None
 
@@ -52,11 +52,8 @@ def is_organiser(member, event):
             return True
 
         if event and member.has_perm('events.change_event'):
-            committees = 0
-            if event is not None:
-                committees = member.get_committees().filter(
-                    pk=event.organiser.pk).count()
-            return committees != 0
+            return member.get_committees().filter(
+                    pk=event.organiser.pk).count() != 0
 
     return False
 
