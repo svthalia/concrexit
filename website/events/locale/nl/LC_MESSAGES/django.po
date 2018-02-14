@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-12 14:06+0100\n"
-"PO-Revision-Date: 2018-02-12 13:43+0100\n"
+"PO-Revision-Date: 2018-02-14 17:07+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -720,7 +720,7 @@ msgstr "Je afmelding was succesvol."
 
 #: views.py:120
 msgid "Registration successfully saved."
-msgstr "Je afmelding is succesvol opgeslagen."
+msgstr "Je aanmelding is succesvol opgeslagen."
 
 #~ msgid "Cancel"
 #~ msgstr "Annuleer"
