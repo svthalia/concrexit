@@ -1,14 +1,23 @@
+import io
+import logging
+from unittest.mock import Mock
+
 from django.core.files import File
 from django.test import Client, TestCase
-
-from unittest.mock import Mock
 
 from documents.models import Document
 from members.models import Member
 
 
+def _close_filehandles(response):
+    # pylint: disable=protected-access
+    for closable in response._closable_objects:
+        if isinstance(closable, io.BufferedReader):
+            closable.close()
+
+
 class GetDocumentTest(TestCase):
-    """tests for the `get_document` view"""
+    """tests for the :func:`.get_document` view"""
 
     fixtures = ['members.json']
 
@@ -34,6 +43,13 @@ class GetDocumentTest(TestCase):
 
     def setUp(self):
         self.client = Client()
+        logger = logging.getLogger('django.request')
+        self.previous_log_level = logger.getEffectiveLevel()
+        logger.setLevel(logging.ERROR)
+
+    def tearDown(self):
+        logger = logging.getLogger('django.request')
+        logger.setLevel(self.previous_log_level)
 
     def test_basic(self):
         response = self.client.post('/documents/document/1', follow=True)
@@ -53,6 +69,7 @@ class GetDocumentTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(b''.join(response.streaming_content), b'file_nl')
+        _close_filehandles(response)
 
         response = self.client.post(
             '/documents/document/1',
@@ -61,6 +78,7 @@ class GetDocumentTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(b''.join(response.streaming_content), b'file_en')
+        _close_filehandles(response)
 
     def test_members_only(self):
         self.document.members_only = True
@@ -69,9 +87,11 @@ class GetDocumentTest(TestCase):
         response = self.client.post('/documents/document/1', follow=True)
         template_names = [template.name for template in response.templates]
         self.assertIn('registration/login.html', template_names)
+        _close_filehandles(response)
 
         self.client.force_login(self.member)
 
         response = self.client.post('/documents/document/1', follow=True)
         template_names = [template.name for template in response.templates]
         self.assertNotIn('registration/login.html', template_names)
+        _close_filehandles(response)
