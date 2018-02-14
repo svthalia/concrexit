@@ -1,3 +1,8 @@
+"""
+Provides the command to generate fixtures
+"""
+# pylint: disable=invalid-name,no-member,too-few-public-methods
+# pylint: disable=attribute-defined-outside-init,no-self-use
 import math
 import random
 import string
@@ -15,41 +20,52 @@ from partners.models import Partner, Vacancy, VacancyCategory
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
 
-import factory
-from faker import Factory as FakerFactory
-from pydenticon import Generator as IconGenerator
+try:
+    import factory
+    from faker import Factory as FakerFactory
+    from pydenticon import Generator as IconGenerator
+except ImportError as error:
+    raise Exception("Have you installed the dev-requirements? "
+                    "Failed importing {}".format(error)) from error
 
-faker = FakerFactory.create('nl_NL')
-pizza_name_faker = FakerFactory.create('it_IT')
-current_tz = timezone.get_current_timezone()
+
+_faker = FakerFactory.create('nl_NL')
+_pizza_name_faker = FakerFactory.create('it_IT')
+_current_tz = timezone.get_current_timezone()
 
 
-def generate_title():
-    words = faker.words(random.randint(1, 3))
+def _generate_title():
+    words = _faker.words(random.randint(1, 3))
     return ' '.join([word.capitalize() for word in words])
 
 
-class ProfileFactory(factory.Factory):
-    class Meta:
+class _ProfileFactory(factory.Factory):
+    class Meta:  # pylint: disable=missing-docstring
         model = Profile
 
     programme = random.choice(['computingscience', 'informationscience'])
     student_number = factory.LazyAttribute(
-        lambda x: faker.numerify(text="s#######"))
+        lambda x: _faker.numerify(text="s#######"))
     starting_year = factory.LazyAttribute(
         lambda x: random.randint(1990, date.today().year))
 
-    address_street = factory.LazyAttribute(lambda x: faker.street_address())
-    address_postal_code = factory.LazyAttribute(lambda x: faker.postcode())
-    address_city = factory.LazyAttribute(lambda x: faker.city())
+    address_street = factory.LazyAttribute(lambda x: _faker.street_address())
+    address_postal_code = factory.LazyAttribute(lambda x: _faker.postcode())
+    address_city = factory.LazyAttribute(lambda x: _faker.city())
 
-    phone_number = '+31' + faker.numerify(text="##########")
+    phone_number = '+31' + _faker.numerify(text="##########")
 
 
 class Command(BaseCommand):
+    """Command to create fake data to populate the site"""
     help = "Creates fake data to test the site with"
 
     def add_arguments(self, parser):
+        """
+        Adds arguments to the argument parser.
+
+        :param parser: the argument parser
+        """
         parser.add_argument(
             "-b",
             "--board",
@@ -87,12 +103,18 @@ class Command(BaseCommand):
             help="The amount of fake vacancies to add")
 
     def create_board(self, lecture_year, members):
+        """
+        Create a new board
+
+        :param int lecture_year: the  lecture year this board was active
+        :param members: the members to add to the board
+        """
         board = Board()
 
-        board.name_nl = "Bestuur {}-{}".format(lecture_year, lecture_year+1)
-        board.name_en = "Board {}-{}".format(lecture_year, lecture_year+1)
-        board.description_nl = faker.paragraph()
-        board.description_en = faker.paragraph()
+        board.name_nl = "Bestuur {}-{}".format(lecture_year, lecture_year + 1)
+        board.name_en = "Board {}-{}".format(lecture_year, lecture_year + 1)
+        board.description_nl = _faker.paragraph()
+        board.description_en = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
@@ -103,9 +125,9 @@ class Command(BaseCommand):
         board.photo.save(board.name_nl + '.jpeg', ContentFile(icon))
 
         board.since = date(year=lecture_year, month=9, day=1)
-        board.until = date(year=lecture_year+1, month=8, day=31)
+        board.until = date(year=lecture_year + 1, month=8, day=31)
         board.active = True
-        board.contact_email = faker.email()
+        board.contact_email = _faker.email()
 
         board.save()
 
@@ -121,12 +143,17 @@ class Command(BaseCommand):
         chair.save()
 
     def create_committee(self, members):
+        """
+        Create a committee
+
+        :param members: the committee members
+        """
         committee = Committee()
 
-        committee.name_nl = generate_title()
+        committee.name_nl = _generate_title()
         committee.name_en = committee.name_nl
-        committee.description_nl = faker.paragraph()
-        committee.description_en = faker.paragraph()
+        committee.description_nl = _faker.paragraph()
+        committee.description_en = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
@@ -136,17 +163,17 @@ class Command(BaseCommand):
         )  # 620x620 pixels, with 10 pixels padding on each side
         committee.photo.save(committee.name_nl + '.jpeg', ContentFile(icon))
 
-        committee.since = faker.date_time_between("-10y", "+30d")
+        committee.since = _faker.date_time_between("-10y", "+30d")
 
         if random.random() < 0.1:
             now = date.today()
             month = timedelta(days=30)
-            committee.until = faker.date_time_between_dates(committee.since,
-                                                            now + 2 *
-                                                            month).date()
+            committee.until = _faker.date_time_between_dates(committee.since,
+                                                             now + 2 *
+                                                             month).date()
 
         committee.active = random.random() < 0.9
-        committee.contact_email = faker.email()
+        committee.contact_email = _faker.email()
 
         committee.save()
 
@@ -162,6 +189,12 @@ class Command(BaseCommand):
         chair.save()
 
     def create_committee_membership(self, member, committee):
+        """
+        Create committee membership
+
+        :param member: the member to add to the committee
+        :param committee: the committee to add the member to
+        """
         membership = CommitteeMembership()
 
         membership.member = member
@@ -169,23 +202,28 @@ class Command(BaseCommand):
 
         today = date.today()
         month = timedelta(days=30)
-        membership.since = faker.date_time_between_dates(committee.since,
-                                                         today + month).date()
+        membership.since = _faker.date_time_between_dates(committee.since,
+                                                          today + month).date()
 
         if random.random() < 0.2 and membership.since < today:
-            membership.until = faker.date_time_between_dates(membership.since,
-                                                             today).date()
+            membership.until = _faker.date_time_between_dates(membership.since,
+                                                              today).date()
 
         membership.save()
 
     def create_event(self, committees):
+        """
+        Create an event
+
+        :param committees: the committees to pick the organiser from
+        """
         event = Event()
 
-        event.title_nl = generate_title()
+        event.title_nl = _generate_title()
         event.title_en = event.title_nl
-        event.description_nl = faker.paragraph()
-        event.description_en = faker.paragraph()
-        event.start = faker.date_time_between("-1y", "+3m", current_tz)
+        event.description_nl = _faker.paragraph()
+        event.description_en = _faker.paragraph()
+        event.start = _faker.date_time_between("-1y", "+3m", _current_tz)
         duration = math.ceil(random.expovariate(0.2))
         event.end = event.start + timedelta(hours=duration)
         event.organiser = random.choice(committees)
@@ -193,29 +231,29 @@ class Command(BaseCommand):
 
         if random.random() < 0.5:
             week = timedelta(days=7)
-            event.registration_start = faker.date_time_between_dates(
-                    datetime_start=event.start - 4*week,
-                    datetime_end=event.start - week,
-                    tzinfo=current_tz)
-            event.registration_end = faker.date_time_between_dates(
-                    datetime_start=event.registration_start,
-                    datetime_end=event.start,
-                    tzinfo=current_tz)
-            event.cancel_deadline = faker.date_time_between_dates(
-                    datetime_start=event.registration_end,
-                    datetime_end=event.start,
-                    tzinfo=current_tz)
+            event.registration_start = _faker.date_time_between_dates(
+                datetime_start=event.start - 4 * week,
+                datetime_end=event.start - week,
+                tzinfo=_current_tz)
+            event.registration_end = _faker.date_time_between_dates(
+                datetime_start=event.registration_start,
+                datetime_end=event.start,
+                tzinfo=_current_tz)
+            event.cancel_deadline = _faker.date_time_between_dates(
+                datetime_start=event.registration_end,
+                datetime_end=event.start,
+                tzinfo=_current_tz)
 
-        event.location_nl = faker.street_address()
+        event.location_nl = _faker.street_address()
         event.location_en = event.location_nl
         event.map_location = event.location_nl
 
         if random.random() < 0.5:
             event.price = random.randint(100, 2500) / 100
             event.fine = max(
-                    5.0,
-                    random.randint(round(100 * event.price),
-                                   round(500 * event.price)) / 100)
+                5.0,
+                random.randint(round(100 * event.price),
+                               round(500 * event.price)) / 100)
 
         if random.random() < 0.5:
             event.max_participants = random.randint(20, 200)
@@ -225,12 +263,13 @@ class Command(BaseCommand):
         event.save()
 
     def create_partner(self):
+        """Create a new random partner"""
         partner = Partner()
 
         partner.is_active = random.random() < 0.75
-        partner.name = faker.company() + ' ' + faker.company_suffix()
-        partner.slug = faker.slug()
-        partner.link = faker.uri()
+        partner.name = _faker.company() + ' ' + _faker.company_suffix()
+        partner.slug = _faker.slug()
+        partner.link = _faker.uri()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
@@ -240,25 +279,27 @@ class Command(BaseCommand):
         )  # 620x620 pixels, with 10 pixels padding on each side
         partner.logo.save(partner.name + '.jpeg', ContentFile(icon))
 
-        partner.address = faker.street_address()
-        partner.zip_code = faker.postcode()
-        partner.city = faker.city()
+        partner.address = _faker.street_address()
+        partner.zip_code = _faker.postcode()
+        partner.city = _faker.city()
 
         partner.save()
 
     def create_pizza(self, prod_type):
+        """Create a new random pizza product"""
         product = Product()
 
-        product.name = prod_type + ' ' + pizza_name_faker.last_name()
-        product.description_nl = faker.sentence()
-        product.description_nl = faker.sentence()
+        product.name = prod_type + ' ' + _pizza_name_faker.last_name()
+        product.description_nl = _faker.sentence()
+        product.description_nl = _faker.sentence()
         product.price = random.randint(250, 1000) / 100
         product.available = random.random() < 0.9
 
         product.save()
 
     def create_user(self):
-        fakeprofile = faker.profile()
+        """Create a new random user"""
+        fakeprofile = _faker.profile()
         fakeprofile['password'] = ''.join(
             random.choice(string.ascii_uppercase + string.digits)
             for _ in range(16))
@@ -268,7 +309,7 @@ class Command(BaseCommand):
         user.first_name = fakeprofile['name'].split()[0]
         user.last_name = ' '.join(fakeprofile['name'].split()[1:])
 
-        profile = ProfileFactory()
+        profile = _ProfileFactory()
         profile.user_id = user.id
         profile.birthday = fakeprofile['birthdate']
         profile.website = fakeprofile['website'][0]
@@ -284,9 +325,9 @@ class Command(BaseCommand):
 
         membership = Membership()
         membership.user_id = user.id
-        membership.since = faker.date_time_between(
+        membership.since = _faker.date_time_between(
             start_date='-4y', end_date='now', tzinfo=None)
-        membership.until = random.choice([faker.date_time_between(
+        membership.until = random.choice([_faker.date_time_between(
             start_date='-2y', end_date='+2y', tzinfo=None), None])
         membership.type = random.choice(
             ['member', 'supporter', 'honorary'])
@@ -296,15 +337,21 @@ class Command(BaseCommand):
         membership.save()
 
     def create_vacancy(self, partners, categories):
+        """
+        Create a new random vacancy
+
+        :param partners: the partners to choose a partner from
+        :param categories: the categories to choose this vacancy from
+        """
         vacancy = Vacancy()
 
-        vacancy.title = faker.job()
-        vacancy.description = faker.paragraph()
-        vacancy.link = faker.uri()
+        vacancy.title = _faker.job()
+        vacancy.description = _faker.paragraph()
+        vacancy.link = _faker.uri()
         vacancy.partner = random.choice(partners)
 
         if random.random() < 0.5:
-            vacancy.expiration_date = faker.date_time_between("-1y", "+1y")
+            vacancy.expiration_date = _faker.date_time_between("-1y", "+1y")
 
         vacancy.save()
 
@@ -312,15 +359,21 @@ class Command(BaseCommand):
                                            random.randint(0, 3))
 
     def create_vacancy_category(self):
+        """Create new random vacancy categories"""
         category = VacancyCategory()
 
-        category.name_nl = faker.text(max_nb_chars=30)
-        category.name_en = faker.text(max_nb_chars=30)
-        category.slug = faker.slug()
+        category.name_nl = _faker.text(max_nb_chars=30)
+        category.name_en = _faker.text(max_nb_chars=30)
+        category.slug = _faker.slug()
 
         category.save()
 
-    def handle(self, **options):
+    def handle(self, *args, **options):  # pylint: disable=too-many-branches
+        """
+        Handle the command being executed
+
+        :param options: the passed-in options
+        """
         opts = ['board', 'committee', 'event', 'partner', 'pizza', 'user',
                 'vacancy']
 

@@ -1,14 +1,19 @@
+"""Provides an exception filter for django"""
 import logging
 
 from django.views.debug import (SafeExceptionReporterFilter,
                                 CLEANSED_SUBSTITUTE)
 
 
-logger = logging.getLogger(__name__)
+__LOGGER = logging.getLogger(__name__)
 
 
 class ThaliaSafeExceptionReporterFilter(SafeExceptionReporterFilter):
-    """Filter additional variables from tracebacks"""
+    """
+    Filter additional variables from tracebacks
+
+    https://docs.djangoproject.com/en/2.0/howto/error-reporting/#filtering-sensitive-information
+    """
 
     def get_traceback_frame_variables(self, request, tb_frame):
         """Filter traceback frame variables"""
@@ -22,6 +27,7 @@ class ThaliaSafeExceptionReporterFilter(SafeExceptionReporterFilter):
                         val.META['HTTP_COOKIE'] = CLEANSED_SUBSTITUTE
                         val.META['HTTP_AUTHORIZATION'] = CLEANSED_SUBSTITUTE
                     except (AttributeError, IndexError):
-                        logger.exception("Somehow cleaning the request failed")
+                        __LOGGER.exception(
+                            "Somehow cleaning the request failed")
 
         return local_vars

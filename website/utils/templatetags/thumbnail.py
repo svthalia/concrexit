@@ -1,3 +1,4 @@
+"""Thumbnail template tags"""
 import os
 
 from django import template
@@ -6,11 +7,19 @@ from django.db.models.fields.files import ImageFieldFile
 from django.urls import reverse
 from django.utils.http import urlquote
 
-register = template.Library()
+register = template.Library()  # pylint: disable=invalid-name
 
 
 @register.simple_tag
 def thumbnail(path, size, fit=True):
+    """
+    Get the thumbnail path for the specified image path.
+
+    :param path: the path or image file to generate the thumb for
+    :type path: ImageFieldFile or str
+    :return: the path to the associated thumbnail
+    :rtype: str
+    """
     if isinstance(path, ImageFieldFile):
         path = path.name
 
