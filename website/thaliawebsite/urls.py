@@ -34,7 +34,7 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import login
+from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
@@ -113,7 +113,7 @@ urlpatterns = [
     url(r'^announcements/', include('announcements.urls')),
     url(r'^pushnotifications/', include('pushnotifications.urls')),
     # Default login helpers
-    url(r'^login/$', login, {'authentication_form': AuthenticationForm},
+    url(r'^login/$', LoginView.as_view(), {'authentication_form': AuthenticationForm},
         name='login'),
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
