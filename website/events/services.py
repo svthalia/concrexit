@@ -162,8 +162,9 @@ def registration_fields(member, event):
             event=event,
             member=member
         )
-    except Registration.DoesNotExist:
-        pass
+    except Registration.DoesNotExist as error:
+        raise RegistrationError(
+            _("You are not registered for this event.")) from error
 
     if (event_permissions(member, event)["update_registration"] and
             registration):
@@ -185,4 +186,5 @@ def registration_fields(member, event):
 
         return fields
     else:
-        raise RegistrationError(_("You are not registered for this event."))
+        raise RegistrationError(
+            _("You are not allowed to update this registration."))
