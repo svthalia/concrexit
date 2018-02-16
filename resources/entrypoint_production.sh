@@ -3,7 +3,7 @@
 set -e
 
 >&2 echo "Creating Sphinx documentation"
-sphinx-build -b html /usr/src/app/docs/ /concrexit/docs/
+sphinx-build -b html /usr/src/app/docs/ /concrexit/docs/ -j $(nproc)
 
 until psql -h "$DJANGO_POSTGRES_HOST" -U "postgres" -c '\l' $POSTGRES_DB; do
     >&2 echo "PostgreSQL is unavailable: Sleeping"
