@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, get_language
 
@@ -166,7 +168,7 @@ def registration_fields(member, event):
     if (event_permissions(member, event)["update_registration"] and
             registration):
         information_fields = registration.information_fields
-        fields = {}
+        fields = OrderedDict()
 
         for information_field in information_fields:
             field = information_field["field"]
