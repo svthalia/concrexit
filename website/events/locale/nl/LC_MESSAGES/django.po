@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-12 14:06+0100\n"
-"PO-Revision-Date: 2018-02-14 17:07+0100\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"POT-Creation-Date: 2018-02-16 08:57+0100\n"
+"PO-Revision-Date: 2018-02-16 08:57+0100\n"
+"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -18,27 +18,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: admin.py:90
+#: admin.py:95
 msgid "Event Date"
 msgstr "Evenementdatum"
 
-#: admin.py:99
+#: admin.py:104
 msgid "Registration Start"
 msgstr "Start Aanmelden"
 
-#: admin.py:102
+#: admin.py:107
 msgid "Edit"
 msgstr "Aanpassen"
 
-#: admin.py:112
+#: admin.py:117
 msgid "Number of participants"
 msgstr "Aantal deelnemers"
 
-#: admin.py:116
+#: admin.py:121
 msgid "Publish selected events"
 msgstr "Publiceer geselecteerde evenementen"
 
-#: admin.py:120
+#: admin.py:125
 msgid "Unpublish selected events"
 msgstr "Publicatie van geselecteerde evenementen ongedaan maken"
 
@@ -367,23 +367,27 @@ msgstr "verplicht"
 msgid "last changed"
 msgstr "laatst aangepast"
 
-#: services.py:82
+#: services.py:81
 msgid ""
 "You cannot re-register anymore since you've cancelled after the deadline."
 msgstr ""
 "Je kunt je niet opnieuw aanmelden omdat je je hebt afgemeld na de deadline."
 
-#: services.py:92
+#: services.py:91
 msgid "You were already registered."
 msgstr "Je bent al aangemeld."
 
-#: services.py:94
+#: services.py:93
 msgid "You may not register."
 msgstr "Je mag je niet aanmelden."
 
-#: services.py:123 services.py:137 services.py:189
+#: services.py:122 services.py:136 services.py:167
 msgid "You are not registered for this event."
 msgstr "Je bent niet aangemeld voor dit evenement."
+
+#: services.py:190
+msgid "You are not allowed to update this registration."
+msgstr "Je mag deze aanmelding niet bijwerken."
 
 #: templates/events/admin/details.html:4 templates/events/admin/details.html:5
 #: templates/events/admin/email_export.html:4

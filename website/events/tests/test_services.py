@@ -364,6 +364,8 @@ class ServicesTest(TestCase):
 
         RegistrationInformationField.objects.create(
             id=1,
+            name_en='1',
+            name_nl='1',
             type=RegistrationInformationField.INTEGER_FIELD,
             event=self.event,
             required=False,
@@ -371,6 +373,8 @@ class ServicesTest(TestCase):
 
         RegistrationInformationField.objects.create(
             id=2,
+            name_en='2',
+            name_nl='2',
             type=RegistrationInformationField.BOOLEAN_FIELD,
             event=self.event,
             required=True,
@@ -378,16 +382,20 @@ class ServicesTest(TestCase):
 
         RegistrationInformationField.objects.create(
             id=3,
+            name_nl='3',
+            name_en='3',
             type=RegistrationInformationField.TEXT_FIELD,
             event=self.event,
             required=False,
         )
+        # set order
+        self.event.set_registrationinformationfield_order([1, 2, 3])
 
         fields = services.registration_fields(self.member, self.event)
 
         self.assertEqual(fields['info_field_1'], {
             'type': 'integer',
-            'label': '',
+            'label': '1',
             'description': None,
             'value': None,
             'required': False
@@ -395,7 +403,7 @@ class ServicesTest(TestCase):
 
         self.assertEqual(fields['info_field_2'], {
             'type': 'boolean',
-            'label': '',
+            'label': '2',
             'description': None,
             'value': None,
             'required': True
@@ -403,10 +411,13 @@ class ServicesTest(TestCase):
 
         self.assertEqual(fields['info_field_3'], {
             'type': 'text',
-            'label': '',
+            'label': '3',
             'description': None,
             'value': None,
             'required': False
         })
 
         self.assertEqual(len(fields), 3)
+        # Test that the ordering is correct
+        labels = [field['label'] for field in fields.values()]
+        self.assertEqual(labels, sorted(labels))
