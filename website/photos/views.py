@@ -64,7 +64,7 @@ def _render_album_page(request, album):
 @login_required
 def album(request, slug):
     album = get_object_or_404(Album, slug=slug)
-    if services.can_view_album(request, album):
+    if services.is_album_accessible(request, album):
         return _render_album_page(request, album)
     raise Http404("Sorry, you're not allowed to view this album")
 
