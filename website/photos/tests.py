@@ -1,10 +1,11 @@
-from zipfile import ZipFile
 from io import BytesIO
+from zipfile import ZipFile
 
+from PIL import Image
 from django.test import Client, TestCase
 
 from members.models import Member
-from photos.models import Photo, Album
+from .models import Photo, Album, determine_rotation
 
 
 def create_zip(photos):
@@ -14,6 +15,27 @@ def create_zip(photos):
             zip_file.write(photo)
     output_file.seek(0)
     return output_file
+
+
+class PhotoRotationTest(TestCase):
+
+    fixtures = ['members.json']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+    def setUp(self):
+        self.client = Client()
+        self.client.force_login(self.member)
+
+    def test_rotation_detection(self):
+        orientations = [0, 0, 180, 180, 90, 90, 270, 270]
+        for i in range(1, 9):
+            with self.subTest(orentation=i):
+                with open('photos/fixtures/poker_{}.jpg'.format(i), 'rb') as f:
+                    rot = determine_rotation(Image.open(f))
+                    self.assertEqual(orientations[i - 1], rot)
 
 
 class AlbumUploadTest(TestCase):
@@ -102,3 +124,15 @@ class AlbumUploadTest(TestCase):
 
         self.assertEqual(Album.objects.all().count(), 1)
         self.assertEqual(Photo.objects.all().count(), 2)
+
+    def test_album_upload_rotated_photo_in_album(self):
+        output_file = create_zip(["photos/fixtures/rotated_janbeleid.jpg"])
+        self.client.post('/admin/photos/album/add/',
+                         {"title_nl": "test album",
+                          "title_en": "test album",
+                          "date": "2017-04-12",
+                          "slug": "2017-04-12-test-album",
+                          "album_archive": output_file},
+                         follow=True)
+
+        self.assertEqual(Photo.objects.first().rotation, 90)

@@ -2,16 +2,28 @@ import hashlib
 import os
 import random
 
+from PIL.JpegImagePlugin import JpegImageFile
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from PIL import Image
+from PIL import Image, ExifTags
 
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 COVER_FILENAME = 'cover.jpg'
+
+EXIF_ORIENTATION = {
+    1: 0,
+    2: 0,
+    3: 180,
+    4: 180,
+    5: 90,
+    6: 90,
+    7: 270,
+    8: 270,
+}
 
 
 def photo_uploadto(instance, filename):
@@ -21,7 +33,20 @@ def photo_uploadto(instance, filename):
     return os.path.join(Album.photosdir, instance.album.dirname, new_filename)
 
 
+def determine_rotation(pil_image):
+    if isinstance(pil_image, JpegImageFile) and pil_image._getexif():
+        exif = {
+            ExifTags.TAGS[k]: v
+            for k, v in pil_image._getexif().items()
+            if k in ExifTags.TAGS
+        }
+        if exif.get('Orientation'):
+            return EXIF_ORIENTATION[exif.get('Orientation')]
+    return 0
+
+
 class Photo(models.Model):
+
     album = models.ForeignKey(
         'Album',
         on_delete=models.CASCADE,
@@ -61,11 +86,14 @@ class Photo(models.Model):
         return self.file.name
 
     def save(self, *args, **kwargs):
-        super(Photo, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         if self._orig_file != self.file.path:
             image_path = self.file.path
             image = Image.open(image_path)
+
+            self.rotation = determine_rotation(image)
+
             # Image.thumbnail does not upscale an image that is smaller
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
             image.save(image_path, "JPEG")
@@ -76,6 +104,9 @@ class Photo(models.Model):
                 hash_sha1.update(chunk)
             self.file.close()
             self._digest = hash_sha1.hexdigest()
+
+            # Save again, to update changes in digest and rotation
+            super().save(*args, **kwargs)
 
     class Meta:
         ordering = ('file', )
@@ -143,7 +174,7 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
         # dirname is only set for new objects, to avoid ever changing it
         if self.pk is None:
             self.dirname = self.slug
-        super(Album, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @property
     def access_token(self):
