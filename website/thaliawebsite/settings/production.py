@@ -17,7 +17,8 @@ from django.utils.log import DEFAULT_LOGGING
 from . import settings
 
 INSTALLED_APPS = settings.INSTALLED_APPS
-INSTALLED_APPS.remove('django_template_check')
+if 'django_template_check' in INSTALLED_APPS:
+    INSTALLED_APPS.remove('django_template_check')
 INSTALLED_APPS.append('django_slack')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
