@@ -55,7 +55,7 @@ docs:
   script:
     - echo "Building current docs"
     - env -u GITLAB_CI make doctest
-    - env -u GITLAB_CI sphinx-build -M html "." "_build" -W
+    - env -u GITLAB_CI sphinx-build -M html "." "_build" -W -j $(nproc)
     - echo "Checking if there are changes"
     - ./generate-apidocs.sh
     - git diff --exit-code
