@@ -2,6 +2,9 @@ FROM python:3.5
 MAINTAINER Thom Wiggers <thom@thomwiggers.nl>
 LABEL description="Contains the Thaliawebsite Django application"
 
+# Arguments
+ARG install_dev_requirements=1
+
 # Try to keep static operation on top to maximise Docker cache utilisation
 
 # Disable output buffering
@@ -41,8 +44,12 @@ COPY docs/requirements.txt /usr/src/app/docs/
 RUN pip install --no-cache-dir \
     -r requirements.txt \
     -r production-requirements.txt \
-    -r dev-requirements.txt \
     -r ../docs/requirements.txt
+
+RUN if [ "$install_dev_requirements" -eq 1 ]; then \
+    pip install --no-cache-dir -r dev-requirements.txt; \
+    fi
+
 
 # Create entry points
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -59,3 +66,5 @@ COPY docs /usr/src/app/docs
 
 # Cache docs between builds if not mounting to FS
 VOLUME /concrexit/docs
+
+RUN echo "Don't build releases without release.sh!"

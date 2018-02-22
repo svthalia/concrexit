@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     # Dependencies
     'tinymce',
-    'django_template_check',  # This is only necessary in development
     'rest_framework',
     'rest_framework.authtoken',
     'compressor',
@@ -77,6 +76,15 @@ INSTALLED_APPS = [
     'registrations.apps.RegistrationsConfig',
     'payments.apps.PaymentsConfig',
 ]
+
+# enable template check if it's installed
+# this allows us to not have it enabled in production
+try:
+    import django_template_check
+    del django_template_check
+    INSTALLED_APPS.append('django_template_check')
+except ImportError:
+    pass
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
