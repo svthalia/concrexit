@@ -1,7 +1,7 @@
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import strip_tags, strip_spaces_between_tags
 from html import unescape
 from rest_framework import serializers
 from rest_framework.fields import empty
@@ -12,6 +12,7 @@ from events.exceptions import RegistrationError
 from events.models import Event, Registration, RegistrationInformationField
 from pizzas.models import PizzaEvent
 from thaliawebsite.settings import settings
+from thaliawebsite.templatetags.bleach_tags import bleach
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
@@ -147,7 +148,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
             return self.REGISTRATION_NOT_NEEDED
 
     def _description(self, instance):
-        return unescape(strip_tags(instance.description))
+        return strip_spaces_between_tags(bleach(instance.description))
 
     def _num_participants(self, instance):
         if (instance.max_participants and
