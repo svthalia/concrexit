@@ -6,6 +6,20 @@ from django.utils.translation import ugettext_lazy as _
 from pyfcm import FCMNotification
 
 from thaliawebsite import settings
+from utils.translation import MultilingualField, ModelTranslateMeta
+
+
+class Category(models.Model, metaclass=ModelTranslateMeta):
+    key = models.CharField(max_length=16, primary_key=True)
+
+    name = MultilingualField(
+        models.CharField,
+        _("name"),
+        max_length=32,
+    )
+
+    def __str__(self):
+        return self.name_en
 
 
 class Device(models.Model):
@@ -33,29 +47,19 @@ class Device(models.Model):
         choices=settings.LANGUAGES,
     )
 
+    def default_receive_category(self):
+        return Category.objects.filter(key="general")
+
+    receive_category = models.ManyToManyField(
+        Category,
+        default=default_receive_category
+    )
+
     class Meta:
         unique_together = ('registration_id', 'user',)
 
 
 class Message(models.Model):
-    GENERAL = 'general'
-    PIZZA = 'pizza'
-    EVENT = 'event'
-    NEWSLETTER = 'newsletter'
-    SPONSOR = 'sponsor'
-    PHOTO = 'photo'
-    BOARD = 'board'
-
-    CATEGORIES = (
-        (GENERAL, _("General")),
-        (PIZZA, _("Pizza")),
-        (EVENT, _("Events")),
-        (NEWSLETTER, _("Newsletter")),
-        (SPONSOR, _("Sponsored messages")),
-        (PHOTO, _("Photos")),
-        (BOARD, _("Board")),
-    )
-
     users = models.ManyToManyField(django_settings.AUTH_USER_MODEL)
     title = models.CharField(
         max_length=150,
@@ -64,13 +68,12 @@ class Message(models.Model):
     body = models.TextField(
         verbose_name=_('body')
     )
-
-    category = models.CharField(
-        choices=CATEGORIES,
-        max_length=10,
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        verbose_name=_('category'),
         default="general"
     )
-
     sent = models.BooleanField(
         verbose_name=_('sent'),
         default=False
@@ -92,8 +95,11 @@ class Message(models.Model):
     def send(self, **kwargs):
         if self:
             reg_ids = list(
-                Device.objects.filter(user__in=self.users.all(), active=True)
-                              .values_list('registration_id', flat=True))
+                Device.objects.filter(
+                    user__in=self.users.all(),
+                    receive_category__id=self.category_id,
+                    active=True
+                ).values_list('registration_id', flat=True))
             if len(reg_ids) == 0:
                 return None
 

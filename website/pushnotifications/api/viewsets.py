@@ -1,9 +1,12 @@
 from rest_framework import permissions
+from rest_framework.decorators import list_route
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from pushnotifications.api.permissions import IsOwner
-from pushnotifications.api.serializers import DeviceSerializer
-from pushnotifications.models import Device
+from pushnotifications.api.serializers import DeviceSerializer, \
+    CategorySerializer
+from pushnotifications.models import Device, Category
 
 
 class DeviceViewSet(ModelViewSet):
@@ -27,3 +30,9 @@ class DeviceViewSet(ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
+
+    @list_route()
+    def categories(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
