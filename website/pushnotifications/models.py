@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.conf import settings as django_settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import override
 from pyfcm import FCMNotification
 
 from thaliawebsite import settings
@@ -20,6 +21,10 @@ class Category(models.Model, metaclass=ModelTranslateMeta):
 
     def __str__(self):
         return self.name_en
+
+
+def default_receive_category():
+    return Category.objects.filter(key="general")
 
 
 class Device(models.Model):
@@ -47,9 +52,6 @@ class Device(models.Model):
         choices=settings.LANGUAGES,
     )
 
-    def default_receive_category(self):
-        return Category.objects.filter(key="general")
-
     receive_category = models.ManyToManyField(
         Category,
         default=default_receive_category
@@ -59,13 +61,33 @@ class Device(models.Model):
         unique_together = ('registration_id', 'user',)
 
 
-class Message(models.Model):
+class Message(models.Model, metaclass=ModelTranslateMeta):
+    GENERAL = 'general'
+    PIZZA = 'pizza'
+    EVENT = 'event'
+    NEWSLETTER = 'newsletter'
+    SPONSOR = 'sponsor'
+    PHOTO = 'photo'
+    BOARD = 'board'
+
+    CATEGORIES = (
+        (GENERAL, _("General")),
+        (PIZZA, _("Pizza")),
+        (EVENT, _("Events")),
+        (NEWSLETTER, _("Newsletter")),
+        (SPONSOR, _("Sponsored messages")),
+        (PHOTO, _("Photos")),
+        (BOARD, _("Board")),
+    )
+
     users = models.ManyToManyField(django_settings.AUTH_USER_MODEL)
-    title = models.CharField(
+    title = MultilingualField(
+        models.CharField,
         max_length=150,
         verbose_name=_('title')
     )
-    body = models.TextField(
+    body = MultilingualField(
+        models.TextField,
         verbose_name=_('body')
     )
     category = models.ForeignKey(
@@ -94,42 +116,60 @@ class Message(models.Model):
 
     def send(self, **kwargs):
         if self:
-            reg_ids = list(
-                Device.objects.filter(
-                    user__in=self.users.all(),
-                    receive_category__id=self.category_id,
-                    active=True
-                ).values_list('registration_id', flat=True))
-            if len(reg_ids) == 0:
-                return None
+            any_reg_ids = False
+            success_total = 0
+            failure_total = 0
+            result_list = []
 
-            result = FCMNotification(
-                api_key=settings.PUSH_NOTIFICATIONS_API_KEY
-            ).notify_multiple_devices(
-                registration_ids=reg_ids,
-                message_title=self.title,
-                message_body=self.body,
-                color='#E62272',
-                sound='default',
-                **kwargs
-            )
-
-            results = result['results']
-            for (index, item) in enumerate(results):
-                if 'error' in item:
-                    reg_id = reg_ids[index]
-
-                    if (item['error'] == 'NotRegistered' or
-                            item['error'] == 'InvalidRegistration'):
-                        Device.objects.filter(registration_id=reg_id).delete()
-                    else:
+            for lang in settings.LANGUAGES:
+                with override(lang[0]):
+                    reg_ids = list(
                         Device.objects.filter(
-                            registration_id=reg_id).update(active=False)
+                            user__in=self.users.all(),
+                            receive_category__key=self.category_id,
+                            active=True,
+                            language=lang[0]
+                        ).values_list('registration_id', flat=True))
 
-            self.sent = True
-            self.success = result['success']
-            self.failure = result['failure']
-            self.save()
+                    if len(reg_ids) == 0:
+                        continue
 
-            return result
+                    any_reg_ids = True
+
+                    result = FCMNotification(
+                        api_key=settings.PUSH_NOTIFICATIONS_API_KEY
+                    ).notify_multiple_devices(
+                        registration_ids=reg_ids,
+                        message_title=self.title,
+                        message_body=str(self.body),
+                        color='#E62272',
+                        sound='default',
+                        **kwargs
+                    )
+
+                    results = result['results']
+                    for (index, item) in enumerate(results):
+                        if 'error' in item:
+                            reg_id = reg_ids[index]
+
+                            if (item['error'] == 'NotRegistered'
+                                    or item['error'] == 'InvalidRegistration'):
+                                Device.objects.filter(
+                                    registration_id=reg_id).delete()
+                            else:
+                                Device.objects.filter(
+                                    registration_id=reg_id
+                                ).update(active=False)
+
+                    success_total += result['success']
+                    failure_total += result['failure']
+                    result_list.append(result)
+
+            if any_reg_ids:
+                self.sent = True
+                self.success = success_total
+                self.failure = failure_total
+                self.save()
+
+            return result_list
         return None
