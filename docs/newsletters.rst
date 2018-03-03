@@ -25,6 +25,14 @@ newsletters\.apps module
     :undoc-members:
     :show-inheritance:
 
+newsletters\.emails module
+--------------------------
+
+.. automodule:: newsletters.emails
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 newsletters\.forms module
 -------------------------
 

@@ -1,3 +1,4 @@
+"""The forms defined by the newsletters package"""
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -5,6 +6,7 @@ from .models import NewsletterItem, NewsletterEvent, Newsletter
 
 
 class NewsletterItemForm(forms.ModelForm):
+    """Custom ModelForm for the NewsletterItem model to add the order field"""
     order = forms.IntegerField(label=_('order'), initial=0)
 
     def __init__(self, *args, **kwargs):
@@ -23,6 +25,7 @@ class NewsletterItemForm(forms.ModelForm):
 
 
 class NewsletterEventForm(NewsletterItemForm):
+    """Custom ModelForm for the NewsletterEvent model to add the order field"""
     class Meta:
         fields = '__all__'
         model = NewsletterEvent

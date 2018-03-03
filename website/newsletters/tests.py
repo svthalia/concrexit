@@ -1,3 +1,4 @@
+"""Defines tests for the newsletters package"""
 import doctest
 
 from django.conf import settings
