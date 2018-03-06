@@ -69,5 +69,5 @@ class AlbumListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Album
-        fields = ('pk', 'title_nl', 'title_en', 'date', 'hidden', 'shareable',
+        fields = ('pk', 'title', 'date', 'hidden', 'shareable',
                   'accessible', 'cover')
