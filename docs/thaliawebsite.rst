@@ -42,6 +42,14 @@ thaliawebsite\.menus module
     :undoc-members:
     :show-inheritance:
 
+thaliawebsite\.middleware module
+--------------------------------
+
+.. automodule:: thaliawebsite.middleware
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thaliawebsite\.sitemaps module
 ------------------------------
 
