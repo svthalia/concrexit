@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from pushnotifications import models
 from pushnotifications.models import Message
+from utils.translation import TranslatedModelAdmin
 
 
 @admin.register(models.Device)
@@ -29,19 +30,22 @@ class DeviceAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Message)
-class MessageAdmin(admin.ModelAdmin):
+class MessageAdmin(TranslatedModelAdmin):
     list_display = ('title', 'body', 'category', 'sent', 'success', 'failure')
     filter_horizontal = ('users',)
     list_filter = ('sent', 'category')
 
     def get_fields(self, request, obj=None):
         if obj and obj.sent:
-            return 'users', 'title', 'body', 'category', 'success', 'failure'
-        return 'users', 'title', 'body', 'category'
+            return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
+                    'category', 'success', 'failure')
+        return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
+                'category')
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.sent:
-            return 'users', 'title', 'body', 'category', 'success', 'failure'
+            return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
+                    'category', 'success', 'failure')
         return super().get_readonly_fields(request, obj)
 
     def change_view(self, request, object_id, form_url='', **kwargs):

@@ -28,6 +28,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='device',
             name='receive_category',
-            field=models.ManyToManyField(default=pushnotifications.models.Device.default_receive_category, to='pushnotifications.Category'),
+            field=models.ManyToManyField(to='pushnotifications.Category'),
         ),
     ]
