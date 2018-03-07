@@ -2,10 +2,14 @@ from io import BytesIO
 from zipfile import ZipFile
 
 from PIL import Image
-from django.test import Client, TestCase
+from django.test import Client, TestCase, RequestFactory
+from django.utils.datetime_safe import datetime
+from freezegun import freeze_time
 
-from members.models import Member
-from .models import Photo, Album, determine_rotation
+from members.models import Member, Membership
+from photos import services
+from .models import Photo, Album
+from .models import determine_rotation
 
 
 def create_zip(photos):
@@ -136,3 +140,47 @@ class AlbumUploadTest(TestCase):
                          follow=True)
 
         self.assertEqual(Photo.objects.first().rotation, 90)
+
+
+class ServicesTest(TestCase):
+
+    fixtures = ['members.json']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.member = Member.objects.filter(username="testuser").first()
+
+    def setUp(self):
+        self.rf = RequestFactory()
+
+    @freeze_time('2017-01-01')
+    def test_is_album_accessible(self):
+        request = self.rf.get('/')
+        request.member = None
+        album = Album(date=datetime(year=2017, month=1, day=1))
+
+        with self.subTest(membership=None):
+            self.assertFalse(services.is_album_accessible(request, album))
+
+        request.member = self.member
+        with self.subTest(membership=None):
+            self.assertFalse(services.is_album_accessible(request, album))
+
+        membership = Membership.objects.create(
+            user=self.member, type=Membership.MEMBER,
+            since=datetime(year=2016, month=1, day=1))
+        with self.subTest(membership_since=membership.since,
+                          membership_until=membership.until):
+            self.assertTrue(services.is_album_accessible(request, album))
+
+        membership.until = datetime(year=2016, month=1, day=1)
+        membership.save()
+        with self.subTest(membership_since=membership.since,
+                          membership_until=membership.until):
+            self.assertFalse(services.is_album_accessible(request, album))
+
+        membership.until = datetime(year=2017, month=1, day=1)
+        membership.save()
+        with self.subTest(membership_since=membership.since,
+                          membership_until=membership.until):
+            self.assertTrue(services.is_album_accessible(request, album))
