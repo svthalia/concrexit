@@ -8,6 +8,8 @@ from pushnotifications.api.serializers import DeviceSerializer, \
     CategorySerializer
 from pushnotifications.models import Device, Category
 
+from django.utils.translation import to_locale
+
 
 class DeviceViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwner)
@@ -19,6 +21,9 @@ class DeviceViewSet(ModelViewSet):
         return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        locale = to_locale(self.request.META['HTTP_ACCEPT_LANGUAGE'])
+        language = locale.split('_')[0]
+
         try:
             serializer.instance = Device.objects.get(
                 user=self.request.user,
@@ -26,7 +31,7 @@ class DeviceViewSet(ModelViewSet):
             )
         except Device.DoesNotExist:
             pass
-        serializer.save(user=self.request.user)
+        serializer.save(user=self.request.user, language=language)
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)

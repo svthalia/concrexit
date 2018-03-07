@@ -50,6 +50,7 @@ class Device(models.Model):
         verbose_name=_('language'),
         max_length=2,
         choices=settings.LANGUAGES,
+        default='en',
     )
 
     receive_category = models.ManyToManyField(
