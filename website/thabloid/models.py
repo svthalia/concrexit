@@ -17,8 +17,13 @@ def thabloid_filename(instance, filename):
 
 
 class Thabloid(models.Model):
-    year = models.IntegerField(validators=[MinValueValidator(1990)])
+    year = models.IntegerField(
+        verbose_name='academic year',
+        validators=[MinValueValidator(1990)]
+    )
+
     issue = models.IntegerField()
+
     file = models.FileField(
         upload_to=thabloid_filename,
         validators=[validate_file_extension],
