@@ -37,8 +37,8 @@ class TestThabloid(TestCase):
             self.thabloid.cover,
             'public/thabloids/pages/thabloid-1998-1999-1/001.jpg')
         self.assertEqual(
-            self.thabloid.page_url(2),
-            'public/thabloids/pages/thabloid-1998-1999-1/002.jpg')
+            self.thabloid.page_url(2, 3),
+            'public/thabloids/pages/thabloid-1998-1999-1/002-003.jpg')
         # check if it's actual zeropadding and not just '00' + i
         self.assertEqual(
             self.thabloid.page_url(20),
@@ -72,7 +72,7 @@ class TestThabloid(TestCase):
         self.assertTrue(TestThabloid._jpgs_exist(self.thabloid.pages))
 
     def test_change_year_cleanup(self):
-        oldpages = self.thabloid.pages
+        oldpages = list(self.thabloid.pages)
         oldurl = self.thabloid.file.url
         self.thabloid.year += 1
         self.thabloid.save()
@@ -86,7 +86,7 @@ class TestThabloid(TestCase):
         self.assertTrue(TestThabloid._jpgs_exist(self.thabloid.pages))
 
     def test_change_issue_cleanup(self):
-        oldpages = self.thabloid.pages
+        oldpages = list(self.thabloid.pages)
         oldurl = self.thabloid.file.url
         self.thabloid.issue += 1
         self.thabloid.save()
