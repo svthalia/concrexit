@@ -73,6 +73,8 @@
             <dd>{{ event.organiser }}</dd>
             <dt>{% trans "registration period"|capfirst %}</dt>
             <dd>{{ event.registration_start }} <br>— {{ event.registration_end }}</dd>
+            <dt>{% trans "cancel deadline"|capfirst %}</dt>
+            <dd>{{ event.cancel_deadline }}</dd>
             <dt>{% trans "location"|capfirst %}</dt>
             <dd>{{ event.location }} ({{ event.map_location }})</dd>
             <dt>{% trans "price"|capfirst %}</dt>
