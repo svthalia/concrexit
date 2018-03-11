@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-16 08:57+0100\n"
-"PO-Revision-Date: 2018-02-16 08:57+0100\n"
-"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
+"POT-Creation-Date: 2018-03-11 14:57+0100\n"
+"PO-Revision-Date: 2018-03-11 14:57+0100\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: admin.py:95
 msgid "Event Date"
@@ -615,6 +615,10 @@ msgstr ""
 "De deadline is verstreken, weet je zeker dat je je wilt afmelden? Dit "
 "betekent dat je de volledige kosten van €%(costs)s zult moeten betalen. Je "
 "kunt dit niet ongedaan maken!"
+
+#: templates/events/event.html:116
+msgid "Are you sure you want to cancel your registration?"
+msgstr "Weet je zeker dat je je wilt afmelden?"
 
 #: templates/events/event.html:120
 msgid "Login"
