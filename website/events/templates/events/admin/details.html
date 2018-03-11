@@ -71,10 +71,14 @@
             <dd>{{ event.start }} <br>— {{ event.end }}</dd>
             <dt>{% trans "organiser"|capfirst %}</dt>
             <dd>{{ event.organiser }}</dd>
+            {% if event.registration_start %}
             <dt>{% trans "registration period"|capfirst %}</dt>
             <dd>{{ event.registration_start }} <br>— {{ event.registration_end }}</dd>
+            {% endif %}
+            {% if event.cancel_deadline %}
             <dt>{% trans "cancel deadline"|capfirst %}</dt>
             <dd>{{ event.cancel_deadline }}</dd>
+            {% endif %}
             <dt>{% trans "location"|capfirst %}</dt>
             <dd>{{ event.location }} ({{ event.map_location }})</dd>
             <dt>{% trans "price"|capfirst %}</dt>
