@@ -8,6 +8,7 @@ from django.utils.html import format_html
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
 
+from activemembers.models import Committee
 from events import services
 from members.models import Member
 from pizzas.models import PizzaEvent
@@ -163,6 +164,16 @@ class EventAdmin(DoNextModelAdmin):
             if not (request.user.is_superuser or
                     request.user.has_perm('events.override_organiser')):
                 kwargs['queryset'] = request.member.get_committees()
+            else:
+                # Hide old boards and inactive committees for new events
+                if 'add' in request.path:
+                    kwargs['queryset'] = (
+                        Committee.active_committees.all() |
+                        Committee.unfiltered_objects
+                        .exclude(board__is_board=False)
+                        .exclude(until__lt=(timezone.now() -
+                                 timezone.timedelta(weeks=1)))
+                    )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_actions(self, request):
