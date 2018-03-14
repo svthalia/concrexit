@@ -21,9 +21,9 @@
       <img alt="{% blocktrans with name=committee.name %}Photo of {{ name }}{% endblocktrans %}" class="span12" src="{% static 'activemembers/images/placeholder.png' %}">
       {% endif %}
     </div>
-    <div>
+    <div class="text-center">
       <h1 class="midhead">{% blocktrans with name=committee.name %}About the {{ name }}{% endblocktrans %}</h1>
-      <p class="text-center">{{ committee.description|bleach }}</p>
+      {{ committee.description|bleach }}
     </div>
     <div class="clearfix member-directory">
       <h1 class="midhead">{% trans 'Committee members' %}</h1>

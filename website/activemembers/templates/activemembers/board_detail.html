@@ -24,9 +24,9 @@
       {% endif %}
     </div>
     {% if board.description %}
-      <div>
+      <div class="text-center">
           <h1 class="midhead">{% blocktrans with name=board.name%}About {{ name }}{% endblocktrans %}</h1>
-          <p class="text-center">{{ board.description|bleach }}</p>
+          {{ board.description|bleach }}
       </div>
     {% endif %}
     <div class="clearfix member-directory">
