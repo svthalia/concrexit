@@ -1,5 +1,6 @@
 import operator
 import os
+import logging
 from datetime import timedelta
 from functools import reduce
 
@@ -17,6 +18,9 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
 from activemembers.models import Committee
+
+
+logger = logging.getLogger(__name__)
 
 
 class MemberManager(UserManager):
@@ -427,15 +431,26 @@ class Profile(models.Model):
         elif self.photo and self._orig_image != self.photo.path:
             image_path = self.photo.path
             image = Image.open(image_path)
+            image_path, _ext = os.path.splitext(image_path)
+            image_path = "{}.jpg".format(image_path)
+
             # Image.thumbnail does not upscale an image that is smaller
+            logger.debug("Converting image %s", image_path)
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-            image.save(image_path, "JPEG")
+            image.convert("RGB").save(image_path, "JPEG")
+            image_name, _ext = os.path.splitext(self.photo.name)
+            self.photo.name = "{}.jpg".format(image_name)
+            super().save(*args, **kwargs)
 
             try:
-                os.remove(self._orig_image)
+                if self._orig_image:
+                    logger.info("deleting", self._orig_image)
+                    os.remove(self._orig_image)
             except FileNotFoundError:
                 pass
             self._orig_image = self.photo.path
+        else:
+            logging.warning("We already had this image")
 
     def __str__(self):
         return str(self.user)
