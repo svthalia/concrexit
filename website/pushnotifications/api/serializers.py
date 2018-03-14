@@ -1,11 +1,20 @@
 from __future__ import absolute_import
 
+from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from pushnotifications.models import Device, Category
 
 
 class DeviceSerializer(ModelSerializer):
+
+    receive_category = ManyRelatedField(
+        allow_empty=True,
+        child_relation=PrimaryKeyRelatedField(allow_empty=True,
+                                              queryset=Category.objects.all(),
+                                              required=False)
+    )
+
     class Meta:
         model = Device
 

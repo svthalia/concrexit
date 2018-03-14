@@ -17,6 +17,11 @@ def forwards_func(apps, schema_editor):
         Category(key="board", name_en="board", name_nl="bestuur"),
     ])
 
+    Device = apps.get_model("pushnotifications", "Device")
+    for device in Device.objects.using(db_alias).all():
+        for category in Category.objects.using(db_alias).all():
+            device.receive_category.add(category)
+
 
 def reverse_func(apps, schema_editor):
     Category = apps.get_model("pushnotifications", "Category")
