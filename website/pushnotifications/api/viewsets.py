@@ -1,14 +1,13 @@
+from django.utils.translation import get_language_from_request
 from rest_framework import permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from pushnotifications.api.permissions import IsOwner
-from pushnotifications.api.serializers import DeviceSerializer, \
-    CategorySerializer
+from pushnotifications.api.serializers import (DeviceSerializer,
+                                               CategorySerializer)
 from pushnotifications.models import Device, Category
-
-from django.utils.translation import to_locale
 
 
 class DeviceViewSet(ModelViewSet):
@@ -21,8 +20,7 @@ class DeviceViewSet(ModelViewSet):
         return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        locale = to_locale(self.request.META['HTTP_ACCEPT_LANGUAGE'])
-        language = locale.split('_')[0]
+        language = get_language_from_request(self.request)
 
         try:
             serializer.instance = Device.objects.get(
