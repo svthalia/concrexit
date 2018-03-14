@@ -29,7 +29,12 @@ class DeviceViewSet(ModelViewSet):
             )
         except Device.DoesNotExist:
             pass
-        serializer.save(user=self.request.user, language=language)
+        if len(serializer.validated_data['receive_category']) > 0:
+            serializer.save(user=self.request.user, language=language)
+        else:
+            categories = [c.pk for c in Category.objects.all()]
+            serializer.save(user=self.request.user, language=language,
+                            receive_category=categories)
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
