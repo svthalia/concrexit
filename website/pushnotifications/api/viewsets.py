@@ -1,11 +1,12 @@
+from django.utils.translation import get_language_from_request
 from rest_framework import permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from pushnotifications.api.permissions import IsOwner
-from pushnotifications.api.serializers import DeviceSerializer, \
-    CategorySerializer
+from pushnotifications.api.serializers import (DeviceSerializer,
+                                               CategorySerializer)
 from pushnotifications.models import Device, Category
 
 
@@ -19,6 +20,8 @@ class DeviceViewSet(ModelViewSet):
         return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        language = get_language_from_request(self.request)
+
         try:
             serializer.instance = Device.objects.get(
                 user=self.request.user,
@@ -26,7 +29,7 @@ class DeviceViewSet(ModelViewSet):
             )
         except Device.DoesNotExist:
             pass
-        serializer.save(user=self.request.user)
+        serializer.save(user=self.request.user, language=language)
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
