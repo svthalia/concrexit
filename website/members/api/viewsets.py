@@ -31,7 +31,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.action == 'list':
-            return Member.active_members.get_queryset()
+            return Member.current_members.get_queryset()
         return Member.objects.all()
 
     def _get_birthdays(self, member, start, end):
@@ -68,7 +68,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
                 detail='start or end query parameters invalid') from e
 
         queryset = (
-            Member.active_members
+            Member.current_members
                   .with_birthdays_in_range(start, end)
                   .filter(profile__show_birthday=True)
         )

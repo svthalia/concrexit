@@ -182,7 +182,7 @@ def iban_export(request):
     header_fields = ['name', 'username', 'iban']
     rows = []
 
-    members = models.Member.active_members.filter(
+    members = models.Member.current_members.filter(
             profile__direct_debit_authorized=True)
 
     for member in members:
@@ -210,7 +210,7 @@ def statistics(request):
     member_types = ("member", "supporter", "honorary")
 
     # The numbers
-    total = models.Member.active_members.count()
+    total = models.Member.current_members.count()
 
     context = {
         "total_members": total,

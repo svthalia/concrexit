@@ -191,5 +191,5 @@ class RegistrationAdmin(DoNextModelAdmin):
                 kwargs['queryset'] = models.Event.objects.filter(
                     pk=int(request.GET['event_pk']))
         elif db_field.name == 'member':
-            kwargs['queryset'] = Member.active_members.all()
+            kwargs['queryset'] = Member.current_members.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
