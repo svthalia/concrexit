@@ -98,7 +98,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     # Our middleware
-    'thaliawebsite.middleware.TokenMiddleware',
     'members.middleware.MemberMiddleware',
 ]
 
