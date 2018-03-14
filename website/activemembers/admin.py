@@ -1,14 +1,20 @@
+import csv
+import datetime
+
+from django import forms
 from django.contrib import admin, messages
 from django.contrib.auth.models import Permission
-from django.forms import BaseInlineFormSet, ModelForm
-
-from activemembers.forms import CommitteeMembershipForm
+from django.http import HttpResponse
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
+from activemembers import models
+from activemembers.forms import CommitteeMembershipForm
 from utils.translation import TranslatedModelAdmin
-from . import models
+from utils.snippets import datetime_to_lectureyear
 
 
-class CommitteeMembershipInlineFormSet(BaseInlineFormSet):
+class CommitteeMembershipInlineFormSet(forms.BaseInlineFormSet):
     """
     Solely here for performance reasons.
 
@@ -32,7 +38,7 @@ class CommitteeMembershipInline(admin.StackedInline):
     autocomplete_fields = ('member',)
 
 
-class CommitteeForm(ModelForm):
+class CommitteeForm(forms.ModelForm):
     """
     Solely here for performance reasons.
 
@@ -84,14 +90,58 @@ class BoardAdmin(TranslatedModelAdmin):
               'contact_mailinglist', 'contact_email', 'since', 'until',)
 
 
+class BoardFilter(admin.SimpleListFilter):
+    title = _('board memberships')
+    parameter_name = 'board'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('only', _('Only board memberships')),
+            ('none', _('No board memberships')),
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == 'only':
+            return queryset.filter(committee__board__is_board=True)
+        elif self.value() == 'none':
+            return queryset.exclude(committee__board__is_board=True)
+
+        return queryset
+
+
+class LectureYearFilter(admin.SimpleListFilter):
+    title = _('lecture year')
+    parameter_name = 'lecture_year'
+
+    def lookups(self, request, model_admin):
+        current_year = datetime_to_lectureyear(timezone.now())
+        first_year = datetime_to_lectureyear(
+                models.CommitteeMembership.objects.earliest('since').since
+        )
+
+        return [(year, '{}-{}'.format(year, year+1))
+                for year in range(first_year, current_year+1)]
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+
+        year = int(self.value())
+        first_of_september = datetime.date(year=year, month=9, day=1)
+
+        return queryset.exclude(until__lt=first_of_september)
+
+
 @admin.register(models.CommitteeMembership)
 class CommitteeMembershipAdmin(TranslatedModelAdmin):
     form = CommitteeMembershipForm
     list_display = ('member', 'committee', 'since', 'until', 'chair', 'role')
-    list_filter = ('committee',)
+    list_filter = ('committee', BoardFilter, LectureYearFilter)
     list_select_related = ('member', 'committee',)
     search_fields = ('member__first_name', 'member__last_name',
                      'member__email')
+
+    actions = ('export',)
 
     def changelist_view(self, request, extra_context=None):
         self.message_user(request, _('Do not edit existing memberships if the '
@@ -99,6 +149,38 @@ class CommitteeMembershipAdmin(TranslatedModelAdmin):
                                      'new committeemembership instead.'),
                           messages.WARNING)
         return super().changelist_view(request, extra_context)
+
+    def export(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = ('attachment;'
+                                           'filename='
+                                           '"committee_memberships.csv"')
+        writer = csv.writer(response)
+        writer.writerow([
+            _('First name'),
+            _('Last name'),
+            _('Email'),
+            _('Committee'),
+            _('Committee member since'),
+            _('Committee member until'),
+            _('Chair of the committee'),
+            _('Role'),
+        ])
+
+        for membership in queryset:
+            writer.writerow([
+                membership.member.first_name,
+                membership.member.last_name,
+                membership.member.email,
+                membership.committee,
+                membership.since,
+                membership.until,
+                membership.chair,
+                membership.role,
+            ])
+
+        return response
+    export.short_description = _('Export selected memberships')
 
 
 @admin.register(models.Mentorship)
