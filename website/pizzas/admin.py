@@ -11,6 +11,7 @@ from events.models import Event
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'available')
+    list_filter = ('available', 'restricted')
 
 
 @admin.register(PizzaEvent)
