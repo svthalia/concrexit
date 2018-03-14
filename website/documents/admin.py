@@ -9,7 +9,7 @@ from utils.translation import TranslatedModelAdmin
 
 class MinutesInline(admin.StackedInline):
     model = Minutes
-    fields = ('file',)
+    fields = ('file_nl', 'file_en')
 
 
 class GeneralMeetingForm(forms.ModelForm):
