@@ -179,6 +179,9 @@ texinfo_documents = [
 # Default flags for autodoc, saves typing
 autodoc_default_flags = ['members', 'undoc-members']
 
+# We need to mock the modules for the sphinx build in the docker.
+autodoc_mock_imports = ['factory', 'pydenticon', 'faker']
+
 # -- Options for doctest --------------------------------------------------
 
 # Disable doctests in normal strings
