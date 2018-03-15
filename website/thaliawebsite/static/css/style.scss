@@ -39,7 +39,7 @@
 	[10.3]	SLIDER REVOLUTION
 	[10.4] 	MAGNIFIC POPUP
 	[11]	MEDIA QUERIES
-	[12]	CONCRETE5 CORRECTIONS
+	[12]	CONCREXIT CORRECTIONS
 
 / -------------------------------------------------------------------------------- */
 
@@ -2141,6 +2141,8 @@ body {
             padding: 20px;
             padding-left: 50px;
             text-transform: uppercase;
+            word-wrap: break-word;
+            margin-right: 27px;
             span {
                 background: url('../images/misc/icon_open_close.png') 0 0 no-repeat;
                 background-size: 40px 40px;
@@ -2553,6 +2555,8 @@ body {
         &.event {
             h2 {
                 color: #000;
+                word-break: break-word;
+                margin-right: 27px;
             }
             .post-inner {
                 background-color: #eee;
@@ -2584,6 +2588,7 @@ body {
     .post-body {
         padding: 25px 30px 25px 120px;
         position: relative;
+        overflow: hidden;
         h2 {
             font-size: 22px;
             line-height: 25px;
@@ -4660,7 +4665,7 @@ li.backLava:before {
 }
 
 /* -------------------------------------------------------------------------------- /
-	[12] Concrete5 Corrections
+	[12] Concrexit Corrections
 / -------------------------------------------------------------------------------- */
 
 /*Bootstrap being overwriten by tags*/
