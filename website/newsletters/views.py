@@ -69,7 +69,7 @@ def admin_send(request, pk):
             translation.activate(language[0])
 
             recipients = [member.email for member in
-                          Member.active_members.all().filter(
+                          Member.current_members.all().filter(
                               profile__receive_newsletter=True,
                               profile__language=language[0])
                           if member.email]

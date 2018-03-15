@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-12 14:06+0100\n"
-"PO-Revision-Date: 2018-02-12 13:41+0100\n"
+"POT-Creation-Date: 2018-03-14 21:37+0100\n"
+"PO-Revision-Date: 2018-03-14 21:38+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,15 +16,67 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.4\n"
 
-#: admin.py:97
+#: admin.py:95
+msgid "board memberships"
+msgstr "Bestuurslidmaatschappen"
+
+#: admin.py:100
+msgid "Only board memberships"
+msgstr "Alleen bestuurslidmaatschappen"
+
+#: admin.py:101
+msgid "No board memberships"
+msgstr "Geen bestuurslidmaatschappen"
+
+#: admin.py:114
+msgid "lecture year"
+msgstr "collegejaar"
+
+#: admin.py:147
 msgid ""
 "Do not edit existing memberships if the chair of a committee has changed, "
 "add a new committeemembership instead."
 msgstr ""
 "Pas geen bestaande lidmaatschappen aan als de voorzitter van een commissie "
 "is veranderd. Voeg in de plaats daarvan een nieuw commissielidmaatschap toe."
+
+#: admin.py:160
+msgid "First name"
+msgstr "Voornaam"
+
+#: admin.py:161
+msgid "Last name"
+msgstr "Achernaam"
+
+#: admin.py:162
+msgid "Email"
+msgstr "Email"
+
+#: admin.py:163 models.py:222
+msgid "Committee"
+msgstr "Commissie"
+
+#: admin.py:164 models.py:226
+msgid "Committee member since"
+msgstr "Commissielid sinds"
+
+#: admin.py:165 models.py:232
+msgid "Committee member until"
+msgstr "Commissielid tot"
+
+#: admin.py:166 models.py:240
+msgid "Chair of the committee"
+msgstr "Voorzitter van de commissie"
+
+#: admin.py:167
+msgid "Role"
+msgstr "Rol"
+
+#: admin.py:183
+msgid "Export selected memberships"
+msgstr "Exporteer de geselecteerde lidmaatschappen"
 
 #: apps.py:7
 msgid "Active members"
@@ -94,31 +146,15 @@ msgstr "Er bestaat al een bestuur voor die jaren"
 msgid "Member"
 msgstr "Lid"
 
-#: models.py:222
-msgid "Committee"
-msgstr "Commissie"
-
-#: models.py:226
-msgid "Committee member since"
-msgstr "Commissielid sinds"
-
 #: models.py:227
 msgid "The date this member joined the committee in this role"
 msgstr "De datum waarop deze persoon lid werd deze commissie in deze rol"
-
-#: models.py:232
-msgid "Committee member until"
-msgstr "Commissielid tot"
 
 #: models.py:233
 msgid "A member of this committee until this time (can't be in the future)."
 msgstr ""
 "De datum waarop deze persoon de commissie verliet (kan niet in de toekomst "
 "liggen)"
-
-#: models.py:240
-msgid "Chair of the committee"
-msgstr "Voorzitter van de commissie"
 
 #: models.py:241
 msgid "There can only be one chair at a time!"

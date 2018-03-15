@@ -48,7 +48,7 @@ def get_automatic_lists():
         ['commissievoorzitters', 'committeechairs'], '[THALIA] [CHAIRS]',
         committee_chairs, moderated=False)
     lists += _create_automatic_list(
-        ['optin'], '[THALIA] [OPTIN]', Member.active_members.filter(
+        ['optin'], '[THALIA] [OPTIN]', Member.current_members.filter(
             profile__receive_optin=True),
         multilingual=True)
 

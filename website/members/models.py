@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
-from activemembers.models import Committee
+from activemembers.models import Committee, CommitteeMembership
 
 
 class MemberManager(UserManager):
@@ -28,6 +28,19 @@ class MemberManager(UserManager):
 
 class ActiveMemberManager(MemberManager):
     """Get all active members"""
+
+    def get_queryset(self):
+        active_memberships = (CommitteeMembership
+                              .active_memberships
+                              .exclude(committee__board__is_board=True))
+
+        return (super().get_queryset()
+                .filter(committeemembership__in=active_memberships)
+                .distinct())
+
+
+class CurrentMemberManager(MemberManager):
+    """Get all members with an active membership"""
 
     def get_queryset(self):
         return (super().get_queryset()
@@ -64,6 +77,7 @@ class Member(User):
         ordering = ('first_name', 'last_name')
 
     objects = MemberManager()
+    current_members = CurrentMemberManager()
     active_members = ActiveMemberManager()
 
     def __str__(self):

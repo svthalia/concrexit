@@ -16,7 +16,7 @@ class MemberBirthdayTest(TestCase):
     def _get_members(self, start, end):
         start_date = self._make_date(start)
         end_date = self._make_date(end)
-        return Member.active_members.with_birthdays_in_range(
+        return Member.current_members.with_birthdays_in_range(
             start_date, end_date
         )
 
