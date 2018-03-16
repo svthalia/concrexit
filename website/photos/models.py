@@ -1,6 +1,7 @@
 import hashlib
 import os
 import random
+import logging
 
 from PIL.JpegImagePlugin import JpegImageFile
 from django.conf import settings
@@ -24,6 +25,9 @@ EXIF_ORIENTATION = {
     7: 270,
     8: 270,
 }
+
+
+logger = logging.getLogger(__name__)
 
 
 def photo_uploadto(instance, filename):
@@ -91,13 +95,19 @@ class Photo(models.Model):
         if self._orig_file != self.file.path:
             image_path = self.file.path
             image = Image.open(image_path)
+            image_path, _ext = os.path.splitext(image_path)
+            image_path = "{}.jpg".format(image_path)
 
             self.rotation = determine_rotation(image)
 
             # Image.thumbnail does not upscale an image that is smaller
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-            image.save(image_path, "JPEG")
-            self._orig_file = self.file.path
+
+            logger.info("Trying to save to %s", image_path)
+            image.convert("RGB").save(image_path, "JPEG")
+            self._orig_file = image_path
+            image_name, _ext = os.path.splitext(self.file.name)
+            self.file.name = "{}.jpg".format(image_name)
 
             hash_sha1 = hashlib.sha1()
             for chunk in iter(lambda: self.file.read(4096), b""):
