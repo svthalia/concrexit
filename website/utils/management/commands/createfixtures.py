@@ -53,7 +53,7 @@ class _ProfileFactory(factory.Factory):
     address_postal_code = factory.LazyAttribute(lambda x: _faker.postcode())
     address_city = factory.LazyAttribute(lambda x: _faker.city())
 
-    phone_number = '+31' + _faker.numerify(text="##########")
+    phone_number = '+31{}'.format(_faker.numerify(text="##########"))
 
 
 class Command(BaseCommand):
@@ -267,7 +267,10 @@ class Command(BaseCommand):
         partner = Partner()
 
         partner.is_active = random.random() < 0.75
-        partner.name = _faker.company() + ' ' + _faker.company_suffix()
+        partner.name = '{} {}'.format(
+            _faker.company(),
+            _faker.company_suffix()
+        )
         partner.slug = _faker.slug()
         partner.link = _faker.uri()
 
