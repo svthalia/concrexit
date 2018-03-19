@@ -140,6 +140,8 @@ class GeneralMeeting(models.Model, metaclass=ModelTranslateMeta):
 
     documents = models.ManyToManyField(
         Document,
+        verbose_name=_('documents'),
+        blank=True,
     )
 
     datetime = models.DateTimeField(
