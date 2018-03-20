@@ -9,7 +9,7 @@ from utils.translation import TranslatedModelAdmin
 
 class MinutesInline(admin.StackedInline):
     model = Minutes
-    fields = ('file_nl', 'file_en')
+    fields = ('file_nl', 'file_en', 'members_only',)
 
 
 class GeneralMeetingForm(forms.ModelForm):
@@ -33,7 +33,7 @@ class GeneralMeetingAdmin(TranslatedModelAdmin):
 
 @admin.register(AnnualDocument)
 class AnnualDocument(TranslatedModelAdmin):
-    fields = ('file', 'subcategory', 'year',)
+    fields = ('file', 'subcategory', 'year', 'members_only',)
     list_filter = ('year', 'created', 'last_updated',)
 
 
