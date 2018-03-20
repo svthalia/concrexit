@@ -1,20 +1,24 @@
+"""Views provided by the newsletters package"""
 from datetime import datetime, timedelta, date
 
-from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
-from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template.loader import get_template
-from django.utils import translation
 from django.utils.translation import activate, get_language_info
 
-from members.models import Member
+from newsletters import emails
 from newsletters.models import Newsletter
 from partners.models import Partner
 
 
 def preview(request, pk, lang=None):
+    """
+    View that renders the newsletter as HTML
+    :param request: the request object
+    :param pk: the newsletter's primary key
+    :param lang: the language of the render
+    :return: HttpResponse 200 containing the newsletter HTML
+    """
     newsletter = get_object_or_404(Newsletter, pk=pk)
     partners = Partner.objects.filter(is_main_partner=True)
     main_partner = partners[0] if len(partners) > 0 else None
@@ -39,6 +43,14 @@ def preview(request, pk, lang=None):
 
 
 def legacy_redirect(request, year, week):
+    """
+    View that redirect you to the right newsletter by
+    using the previously used URL format of /{year}/{week}
+    :param request: the request object
+    :param year: the year of the newsletter
+    :param week: the week of the newsletter
+    :return: 302 RedirectResponse
+    """
     newsletter_date = datetime.strptime(
         '%s-%s-1' % (year, week), '%Y-%W-%w')
     if date(int(year), 1, 4).isoweekday() > 4:
@@ -52,54 +64,22 @@ def legacy_redirect(request, year, week):
 @staff_member_required
 @permission_required('newsletters.send_newsletter')
 def admin_send(request, pk):
+    """
+    If this is a GET request this view will render a confirmation
+    page for the administrator. If it is a POST request the newsletter
+    will be sent to all recipients
+    :param request: the request object
+    :param pk: the newsletter's primary key
+    :return: 302 RedirectResponse if POST else 200 with the
+    confirmation page HTML
+    """
     newsletter = get_object_or_404(Newsletter, pk=pk)
 
     if newsletter.sent:
         return redirect(newsletter)
 
     if request.POST:
-        partners = Partner.objects.filter(is_main_partner=True)
-        main_partner = partners[0] if len(partners) > 0 else None
-
-        from_email = settings.NEWSLETTER_FROM_ADDRESS
-        html_template = get_template('newsletters/email.html')
-        text_template = get_template('newsletters/email.txt')
-
-        for language in settings.LANGUAGES:
-            translation.activate(language[0])
-
-            recipients = [member.email for member in
-                          Member.current_members.all().filter(
-                              profile__receive_newsletter=True,
-                              profile__language=language[0])
-                          if member.email]
-
-            subject = '[THALIA] ' + newsletter.title
-
-            context = {
-                'newsletter': newsletter,
-                'agenda_events': (
-                    newsletter.newslettercontent_set
-                    .filter(newsletteritem=None)
-                    .order_by('newsletterevent__start_datetime')
-                ),
-                'main_partner': main_partner,
-                'lang_code': language[0],
-                'request': request
-            }
-
-            html_message = html_template.render(context)
-            text_message = text_template.render(context)
-
-            msg = EmailMultiAlternatives(subject, text_message,
-                                         to=[from_email],
-                                         bcc=recipients,
-                                         from_email=from_email)
-            msg.attach_alternative(html_message, "text/html")
-            msg.send()
-
-            translation.deactivate()
-
+        emails.send_newsletter(request, newsletter)
         newsletter.sent = True
         newsletter.save()
 

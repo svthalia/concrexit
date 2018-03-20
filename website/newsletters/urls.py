@@ -1,3 +1,4 @@
+"""The routes defined by the newsletters package"""
 from django.conf.urls import url
 
 from . import views
