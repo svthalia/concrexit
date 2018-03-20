@@ -286,6 +286,7 @@ class Profile(models.Model):
         help_text=_('Text to display on your profile'),
         blank=True,
         null=True,
+        max_length=4096,
     )
 
     initials = models.CharField(
