@@ -60,6 +60,12 @@ class Migration(migrations.Migration):
             bases=('documents.document',),
         ),
 
+        migrations.RenameField(
+            model_name='GeneralMeeting',
+            old_name='minutes',
+            new_name='minutes_old',
+        ),
+
         migrations.CreateModel(
             name='Minutes',
             fields=[
@@ -76,7 +82,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='GeneralMeeting',
             name='documents',
-            field=models.ManyToManyField(to='documents.Document'),
+            field=models.ManyToManyField(to='documents.Document', verbose_name='documents', blank=True),
         ),
 
         migrations.AlterField(
@@ -100,7 +106,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='GeneralMeeting',
             name='location_en',
-            field=models.CharField(max_length=200, verbose_name='location (EN)'),
+            field=models.CharField(max_length=200, verbose_name='location (EN)', blank=True, null=True),
         ),
 
         migrations.AlterModelOptions(

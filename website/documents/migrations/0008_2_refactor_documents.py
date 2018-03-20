@@ -15,7 +15,13 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RemoveField(
             model_name='GeneralMeeting',
-            name='minutes',
+            name='minutes_old',
+        ),
+
+        migrations.AlterField(
+            model_name='GeneralMeeting',
+            name='location_en',
+            field=models.CharField(max_length=200, verbose_name='location (EN)'),
         ),
 
         migrations.DeleteModel(
