@@ -113,7 +113,7 @@
                                 {% if registration.would_cancel_after_deadline %}
                                     <input type="submit" class="btn btn-style1" value="{% trans "Cancel registration" %}" onclick="return confirm('{% blocktrans with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');" />
                                 {% else %}
-                                    <input type="submit" class="btn btn-style1" value="{% trans "Cancel registration" %}" />
+                                    <input type="submit" class="btn btn-style1" value="{% trans "Cancel registration" %}" onclick="return confirm('{% trans 'Are you sure you want to cancel your registration?' %}');" />
                                 {% endif %}
                             </form>
                         {% elif request.user.is_authenticated is False %}
