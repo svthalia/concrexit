@@ -10,11 +10,11 @@ def create_image_thumbnail_dict(request, file, placeholder='',
             'full': request.build_absolute_uri('{}{}'.format(
                 settings.MEDIA_URL, file)),
             'small': request.build_absolute_uri(thumbnail(
-                file, size_small, 1)),
+                file, size_small, 1, True)),
             'medium': request.build_absolute_uri(thumbnail(
-                file, size_medium, 1)),
+                file, size_medium, 1, True)),
             'large': request.build_absolute_uri(thumbnail(
-                file, size_large, 1))
+                file, size_large, 1, True))
         }
     return {
         'full': placeholder,

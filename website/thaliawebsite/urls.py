@@ -48,7 +48,8 @@ from members.views import ObtainAuthToken, ObtainThaliaAuthToken
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
-from utils.views import private_thumbnails, generate_thumbnail
+from utils.views import private_thumbnails, generate_thumbnail, \
+    private_thumbnails_api
 from . import views
 from .sitemaps import StaticViewSitemap
 
@@ -107,6 +108,8 @@ urlpatterns = [
             url(r'^', include('pizzas.api.urls')),
             url(r'^', include('photos.api.urls')),
             url(r'^', include('pushnotifications.api.urls')),
+            url(r'^generate-thumbnail/(?P<size_fit>\d+x\d+_[01])/(?P<path>[^/]+)/(?P<thumbpath>[^/]+)', generate_thumbnail, {'api': True}, name='generate-thumbnail-api'),
+            url(r'^private-thumbnails/(?P<size_fit>\d+x\d+_[01])/(?P<path>.*)', private_thumbnails_api, name='private-thumbnails-api'),
         ])),
     ])),
     url(r'^education/', include('education.urls')),

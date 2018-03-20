@@ -9,6 +9,8 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.http import urlunquote
+from rest_framework import permissions
+from rest_framework.decorators import api_view, permission_classes
 from sendfile import sendfile
 
 
@@ -43,7 +45,15 @@ def private_thumbnails(request, size_fit, path):
     return _private_thumbnails_unauthed(request, size_fit, path)
 
 
-def generate_thumbnail(_request, size_fit, path, thumbpath):
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def private_thumbnails_api(request, size_fit, path):
+    """Get thumbnails that we need to be logged in to see
+     using token authentication."""
+    return _private_thumbnails_unauthed(request, size_fit, path)
+
+
+def generate_thumbnail(_request, size_fit, path, thumbpath, api=False):
     """
     Generate thumbnail and redirect user to new location
 
@@ -98,6 +108,10 @@ def generate_thumbnail(_request, size_fit, path, thumbpath):
         return redirect(settings.MEDIA_URL + thumbpath, permanent=True)
 
     # Otherwise redirect to the route with an auth check
+    if api:
+        return redirect(
+            reverse('private-thumbnails-api', args=[size_fit, path]),
+            permanent=True)
     return redirect(
         reverse('private-thumbnails', args=[size_fit, path]),
         permanent=True)

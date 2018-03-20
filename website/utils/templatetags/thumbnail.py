@@ -11,7 +11,7 @@ register = template.Library()  # pylint: disable=invalid-name
 
 
 @register.simple_tag
-def thumbnail(path, size, fit=True):
+def thumbnail(path, size, fit=True, api=False):
     """
     Get the thumbnail path for the specified image path.
 
@@ -43,6 +43,9 @@ def thumbnail(path, size, fit=True):
         # We provide a URL instead of calling it as a function, so that using
         # it means kicking off a new GET request. If we would generate all
         # thumbnails inline, loading an album overview would have high latency.
+        if api:
+            return reverse('generate-thumbnail-api',
+                           args=[size_fit, pathuri, thumburi])
         return reverse('generate-thumbnail',
                        args=[size_fit, pathuri, thumburi])
 
@@ -56,4 +59,6 @@ def thumbnail(path, size, fit=True):
     # We provide a URL instead of calling it as a function, so that using
     # it means kicking off a new GET request. If we would generate all
     # thumbnails inline, loading an album overview would have high latency.
+    if api:
+        return reverse('private-thumbnails-api', args=[size_fit, path])
     return reverse('private-thumbnails', args=[size_fit, path])
