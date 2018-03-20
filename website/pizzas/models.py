@@ -34,7 +34,8 @@ class PizzaEvent(models.Model):
     def current(cls):
         try:
             return PizzaEvent.objects.get(
-                end__gt=timezone.now() - timezone.timedelta(hours=8)
+                end__gt=timezone.now() - timezone.timedelta(hours=8),
+                start__lte=timezone.now(),
             )
         except PizzaEvent.DoesNotExist:
             return None
