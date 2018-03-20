@@ -17,7 +17,8 @@ def make_assocation_documents(apps, schema_editor):
             name_nl = doc.name,
             file_en = doc.file,
             file_nl = doc.file,
-            members_only = doc.members_only
+            members_only = doc.members_only,
+            category = 'association',
         )
 
 
@@ -33,6 +34,7 @@ def make_annual_documents(apps, schema_editor):
                 file_en = year.policy_document,
                 file_nl = year.policy_document,
                 members_only = True,
+                category = 'annual',
                 subcategory = 'policy',
                 year = year.year,
             )
@@ -44,6 +46,7 @@ def make_annual_documents(apps, schema_editor):
                 file_en = year.annual_report,
                 file_nl = year.annual_report,
                 members_only = True,
+                category = 'annual',
                 subcategory = 'report',
                 year = year.year,
             )
@@ -54,6 +57,7 @@ def make_annual_documents(apps, schema_editor):
                 name_nl = 'Financieel jaarverslag %d' % year.year,
                 file = year.financial_report,
                 members_only = True,
+                category = 'annual',
                 subcategory = 'financial',
                 year = year.year,
             )
@@ -64,7 +68,7 @@ def make_general_meeting_documents(apps, schema_editor):
     GeneralMeetingDocument = apps.get_model('documents', 'GeneralMeetingDocument')
 
     for meeting_doc in GeneralMeetingDocument.objects.all():
-        name = os.path.basename(meeting_doc.name),
+        name = os.path.basename(meeting_doc.file.name),
         doc = Document.objects.create(
             name_en = name,
             name_nl = name,
@@ -81,15 +85,24 @@ def make_minutes_documents(apps, schema_editor):
     Minutes = apps.get_model('documents', 'Minutes')
     
     for meeting in GeneralMeeting.objects.all():
-        Minutes.objects.create(
-            name_en = 'Minutes %s' % str(meeting.datetime.date()),
-            name_nl = 'Notulen %s' % str(meeting.datetime.date()),
-            category = 'minutes',
-            file_en = meeting.minutes,
-            file_nl = meeting.minutes,
-            members_only = True,
-            meeting = meeting,
-        )
+        if meeting.minutes_old:
+            Minutes.objects.create(
+                name_en = 'Minutes %s' % str(meeting.datetime.date()),
+                name_nl = 'Notulen %s' % str(meeting.datetime.date()),
+                category = 'minutes',
+                file_en = meeting.minutes_old,
+                file_nl = meeting.minutes_old,
+                members_only = True,
+                meeting = meeting,
+            )
+
+
+def set_location_en_meetings(apps, schema_editor):
+    GeneralMeeting = apps.get_model('documents', 'GeneralMeeting')
+
+    for meeting in GeneralMeeting.objects.all():
+        meeting.location_en = meeting.location_nl
+        meeting.save()
         
 
 class Migration(migrations.Migration):
@@ -110,5 +123,8 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             make_minutes_documents
+        ),
+        migrations.RunPython(
+            set_location_en_meetings
         ),
     ]
