@@ -197,49 +197,57 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def clean(self):
         super().clean()
         errors = {}
-        if self.end is not None and self.start is not None and (
-                self.end < self.start):
+        if self.start is None:
             errors.update({
-                'end': _("Can't have an event travel back in time")})
-        if self.registration_required:
-            if self.fine < 5:
+                'start': _("Start cannot have an empty date or time field")
+            })
+        if self.end is None:
+            errors.update({
+                'end': _("End cannot have an empty date or time field")
+            })
+        if self.start is not None and self.end is not None:
+            if self.end < self.start:
                 errors.update({
-                    'fine': _("The fine for this event is too low "
-                              "(must be at least €5).")
-                })
-            for lang in settings.LANGUAGES:
-                field = 'no_registration_message_' + lang[0]
-                if getattr(self, field):
+                    'end': _("Can't have an event travel back in time")})
+            if self.registration_required:
+                if self.fine < 5:
+                    errors.update({
+                        'fine': _("The fine for this event is too low "
+                                  "(must be at least €5).")
+                    })
+                for lang in settings.LANGUAGES:
+                    field = 'no_registration_message_' + lang[0]
+                    if getattr(self, field):
+                        errors.update(
+                            {field: _("Doesn't make sense to have this "
+                                      "if you require registrations.")})
+                if not self.registration_start:
                     errors.update(
-                        {field: _("Doesn't make sense to have this "
-                                  "if you require registrations.")})
-            if not self.registration_start:
-                errors.update(
-                    {'registration_start': _(
-                        "If registration is required, you need a start of "
-                        "registration")})
-            if not self.registration_end:
-                errors.update(
-                    {'registration_end': _(
-                        "If registration is required, you need an end of "
-                        "registration")})
-            if not self.cancel_deadline:
-                errors.update(
-                    {'cancel_deadline': _(
-                        "If registration is required, you need a deadline for "
-                        "the cancellation")})
-            elif self.cancel_deadline > self.start:
-                errors.update(
-                    {'cancel_deadline': _(
-                        "The cancel deadline should be"
-                        " before the start of the event.")})
-            if self.registration_start and self.registration_end and (
-                    self.registration_start >= self.registration_end):
-                message = _('Registration start should be before '
-                            'registration end')
-                errors.update({
-                    'registration_start': message,
-                    'registration_end': message})
+                        {'registration_start': _(
+                            "If registration is required, you need a start of "
+                            "registration")})
+                if not self.registration_end:
+                    errors.update(
+                        {'registration_end': _(
+                            "If registration is required, you need an end of "
+                            "registration")})
+                if not self.cancel_deadline:
+                    errors.update(
+                        {'cancel_deadline': _(
+                            "If registration is required, "
+                            "you need a deadline for the cancellation")})
+                elif self.cancel_deadline > self.start:
+                    errors.update(
+                        {'cancel_deadline': _(
+                            "The cancel deadline should be"
+                            " before the start of the event.")})
+                if self.registration_start and self.registration_end and (
+                        self.registration_start >= self.registration_end):
+                    message = _('Registration start should be before '
+                                'registration end')
+                    errors.update({
+                        'registration_start': message,
+                        'registration_end': message})
         if (self.organiser is not None and
                 self.send_cancel_email and
                 self.organiser.contact_mailinglist is None):
