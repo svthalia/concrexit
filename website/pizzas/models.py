@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -32,20 +33,37 @@ class PizzaEvent(models.Model):
 
     @classmethod
     def current(cls):
+        """
+        Get the currently relevant pizza event: the first one
+        that starts within 8 hours from now.
+        """
+
         try:
-            return PizzaEvent.objects.get(
+            events = PizzaEvent.objects.filter(
                 end__gt=timezone.now() - timezone.timedelta(hours=8),
-                start__lte=timezone.now(),
-            )
+                start__lte=timezone.now() + timezone.timedelta(hours=8),
+            ).order_by('start')
+            if events.count() > 1:
+                return events.exclude(end__lt=timezone.now()).first()
+            else:
+                return events.get()
         except PizzaEvent.DoesNotExist:
             return None
 
     def clean(self):
-        for other in PizzaEvent.objects.all():
-            if self.start <= other.end and other.start >= self.end:
-                raise ValidationError({
-                    'start': _('This event cannot overlap with ') + str(other),
-                    'end': _('This event cannot overlap with ') + str(other),
+        if self.start >= self.end:
+            raise ValidationError({
+                'start': _('The start is after the end of this event.'),
+                'end': _('The end is before the start of this event.'),
+            })
+        for other in PizzaEvent.objects.filter(
+                Q(end__gte=self.start, end__lte=self.end) |
+                Q(start=self.start, start__lte=self.start)):
+            raise ValidationError({
+                    'start': _(
+                        'This event cannot overlap with {}.').format(other),
+                    'end': _(
+                        'This event cannot overlap with {}.').format(other),
                 })
 
     def __str__(self):
