@@ -19,8 +19,12 @@ def index(request):
     for policy in AnnualDocument.objects.filter(subcategory='policy'):
         years[policy.year]['policy'] = policy
     for report in AnnualDocument.objects.filter(subcategory='report'):
+        if 'report' not in years[report.year]:
+            years[report.year]['report'] = {}
         years[report.year]['report']['annual'] = report
     for financial in AnnualDocument.objects.filter(subcategory='financial'):
+        if 'report' not in years[financial.year]:
+            years[financial.year]['report'] = {}
         years[financial.year]['report']['financial'] = financial
 
     meeting_years = {x: [] for x in range(1990, lectureyear + 1)}
