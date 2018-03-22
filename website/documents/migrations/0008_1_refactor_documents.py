@@ -55,7 +55,8 @@ def make_annual_documents(apps, schema_editor):
             AnnualDocument.objects.create(
                 name_en = 'Financial report %d' % year.year,
                 name_nl = 'Financieel jaarverslag %d' % year.year,
-                file = year.financial_report,
+                file_en = year.financial_report,
+                file_nl = year.financial_report,
                 members_only = True,
                 category = 'annual',
                 subcategory = 'financial',
