@@ -13,6 +13,7 @@ django.jQuery(function () {
             if (!result.success) {
                 checkbox.prop('checked', !checked);
             }
+            $("table").trigger("update");
         }, function() {
             checkbox.prop('checked', !checked);
         });
@@ -27,11 +28,39 @@ django.jQuery(function () {
                 if (!result.success) {
                     radiobutton.prop('checked', !checked);
                 }
+                $("table").trigger("update");
             }, function() {
                 radiobutton.prop('checked', !checked);
             });
         }
     });
+
+    $.tablesorter.addParser({
+        id: "checkbox",
+        is: function(s) {
+            return false;
+        },
+        format: function(s, t, node) {
+            return $(node).children("input[type=checkbox]").is(':checked') ? 1 : 0;
+        },
+        type: "numeric"
+    });
+
+    $.tablesorter.addParser({
+        id: "radio",
+        is: function(s) {
+            return false;
+        },
+        format: function(s, t, node) {
+            return $(node).children("input[type=radio]").is(':checked') ? 1 : 0;
+        },
+        type: "numeric"
+    });
+
+    $("table").tablesorter({
+		sortList: [[1,0]],
+        cssHeader: 'sortable',
+	});
 });
 
 function post(url, data, success, error) {
