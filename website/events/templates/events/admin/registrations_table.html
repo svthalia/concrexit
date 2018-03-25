@@ -29,7 +29,11 @@
             {% for registration in registrations %}
             <tr class="{% if forloop.first %}row1 {% endif %}">
                 {% if registration.member %}
-                <td><a href="{{ registration.member.get_absolute_url }}">{{ registration.member.get_full_name }}</a></td>
+                <td>
+                  <a href="{{ registration.member.get_absolute_url }}">{{ registration.member.get_full_name }}</a>
+                  <a href="tel:{{ registration.member.profile.phone_number }}" title="{{ registration.member.profile.phone_number }}" class="member-phone"></a>
+                  <a href="mailto:{{ registration.member.email }}" title="{{ registration.member.email }}" class="member-email"></a>
+                </td>
                 {% else %}
                 <td>{{ registration.name }}</td>
                 {% endif %}
