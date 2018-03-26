@@ -1,0 +1,37 @@
+.dashboard #content {
+    width: auto;
+}
+
+.dashboard #content .results {
+    overflow-y: auto;
+}
+
+th.sortable {
+    &:hover {
+        background-color: #eee;
+    }
+
+    .toggle {
+        width: 14px;
+        height: 14px;
+        display: none;
+        background: url('/static/admin/img/sorting-icons.svg') no-repeat 0 0;
+        background-size: 14px auto;
+    }
+
+    &.headerSortDown {
+        background-color: #eee;
+        .toggle {
+            display: inline-block;
+            background-position: 0 -56px;
+        }
+    }
+
+    &.headerSortUp {
+        background-color: #eee;
+        .toggle {
+            display: inline-block;
+            background-position: 0 -28px;
+        }
+    }
+}

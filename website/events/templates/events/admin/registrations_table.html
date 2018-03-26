@@ -3,22 +3,22 @@
     <table id="result_list">
         <thead>
             <tr>
-                <th scope="col">{% trans "name"|capfirst %}</th>
-                <th scope="col">{% trans "registration date"|capfirst %}</th>
+                <th scope="col">{% trans "name"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
                 {% if cancellations %}
-                <th scope="col">{% trans "cancellation date"|capfirst %}</th>
+                <th scope="col">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
                 {% for field in fields %}
-                <th scope="col">{{ field.name }}</th>
+                <th scope="col">{{ field.name }} <span class="toggle"></span></th>
                 {% endfor %}
-                <th>{% trans "present"|capfirst %}</th>
-                <th>{% trans "not paid"|capfirst %}</th>
-                <th>{% trans "paid cash"|capfirst %}</th>
-                <th>{% trans "paid card"|capfirst %}</th>
+                <th data-meta="{sorter: 'checkbox'}">{% trans "present"|capfirst %} <span class="toggle"></span></th>
+                <th data-meta="{sorter: 'radio'}">{% trans "not paid"|capfirst %} <span class="toggle"></span></th>
+                <th data-meta="{sorter: 'radio'}">{% trans "paid cash"|capfirst %} <span class="toggle"></span></th>
+                <th data-meta="{sorter: 'radio'}">{% trans "paid card"|capfirst %} <span class="toggle"></span></th>
                 {% if registrations|length > 0 and registrations.0.date_cancelled is not None %}
                     <th>{% trans "late"|capfirst %}</th>
                 {% endif %}
-                <th>
+                <th data-meta="{sorter: false}">
                 {% if addlink != 0 %}
                     <a class="addlink" href="{% url 'admin:events_registration_add' %}?event_pk={{ event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans "add"|capfirst %}</a>
                 {% endif %}
