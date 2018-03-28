@@ -6,6 +6,25 @@
     overflow-y: auto;
 }
 
+.dashboard .module table td a {
+    display: inline-block;
+    vertical-align: middle;
+
+    &.member-phone, &.member-email {
+        width: 16px;
+        height: 16px;
+    }
+
+    &.member-phone {
+        background: url('../images/phone-square.svg') no-repeat;
+        padding-right: 2px;
+    }
+
+    &.member-email {
+        background: url('../images/envelope-square.svg') no-repeat;
+    }
+}
+
 th.sortable {
     &:hover {
         background-color: #eee;
