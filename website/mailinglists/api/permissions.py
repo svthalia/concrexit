@@ -1,6 +1,6 @@
-import hashlib
-
 from rest_framework import permissions
+
+from thaliawebsite import settings
 
 
 class MailingListPermission(permissions.BasePermission):
@@ -13,7 +13,6 @@ class MailingListPermission(permissions.BasePermission):
             return True
 
         if 'secret' in request.GET:
-            apihash = hashlib.sha1(request.GET['secret']
-                                   .encode('utf-8')).hexdigest()
-            return apihash == 'cb004452d9c80e295bebfc778871b3b082d70ad8'
+            return (request.GET['secret'].encode('utf-8')
+                    == settings.MAILINGLIST_API_SECRET)
         return False
