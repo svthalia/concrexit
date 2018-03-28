@@ -67,4 +67,4 @@ COPY docs /usr/src/app/docs
 # Cache docs between builds if not mounting to FS
 VOLUME /concrexit/docs
 
-RUN echo "Don't build releases without release.sh!"
+RUN echo "Don't build releases yourself, let CI do it!"

@@ -42,6 +42,9 @@ version_major=${version%.*}
 echo "Changing directory to root of repository"
 cd "${0%/*}"
 
+echo "Making sure we're up-to-date"
+git fetch --tags
+
 echo "Changing to branch 'release/$version_major'"
 git checkout "release/$version_major"
 
@@ -57,23 +60,6 @@ fi
 if yesno "Do you want to push the tag to the repository?"; then
     echo "Pushing tags:"
     git push --tags
-    echo "Don't forget to fill in the release description"
-fi
-
-if ! yesno "Do you want to build a docker container?"; then
-    exit 1
-fi
-
-if [ -n "$(git status --porcelain)" ]; then
-    echo "Unclean working directory!"
-    git status
-    exit 1
-fi
-
-docker_tag="registry.gitlab.com/thaliawww/concrexit:$version"
-
-docker build --build-arg install_dev_requirements=0 --pull -t "$docker_tag" .
-
-if yesno "Do you want to push the container?"; then
-    docker push "$docker_tag"
+    echo "Don't forget to fill in the release description on the website:"
+    echo "https://gitlab.science.ru.nl/thalia/concrexit/tags/v$version/release/edit"
 fi
