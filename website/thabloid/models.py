@@ -1,13 +1,16 @@
 import os
 import shutil
 import subprocess
+from itertools import zip_longest
 
+from PIL import Image
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
+from utils.threading import PopenAndCall
 from utils.validators import validate_file_extension
 
 
@@ -34,13 +37,16 @@ class Thabloid(models.Model):
         ordering = ('-year', '-issue')
 
     def __str__(self):
-        return 'Thabloid {}-{}, #{}'.format(self.year, self.year+1, self.issue)
+        return 'Thabloid {}-{}, #{}'.format(self.year, self.year + 1,
+                                            self.issue)
 
-    def page_url(self, page=None):
+    def page_url(self, page=None, second_page=None):
         if page is None:
             page = '%03d.jpg'
-        else:
+        elif second_page is None:
             page = '{:03}.jpg'.format(page)
+        else:
+            page = '{:03}-{:03}.jpg'.format(page, second_page)
         dst, ext = os.path.splitext(self.file.name)
         return os.path.join(os.path.dirname(dst), 'pages',
                             os.path.basename(dst), page)
@@ -49,15 +55,53 @@ class Thabloid(models.Model):
     def cover(self):
         return self.page_url(1)
 
+    def pagesets(self, count):
+        if count < 1:
+            return []
+        pageiter = iter(range(2, count))
+        return [(1, None)] + list(zip_longest(pageiter, pageiter))
+
     @property
     def pages(self):
         pages = os.listdir(os.path.join(settings.MEDIA_ROOT,
-                           os.path.dirname(self.page_url())))
-        return [self.page_url(i+1) for i in range(len(pages))]
+                                        os.path.dirname(self.page_url())))
+        count = len(pages) * 2 - 1
+        return map(lambda p: self.page_url(p[0], p[1]), self.pagesets(count))
 
     def get_absolute_url(self):
         return reverse('thabloid:pages', kwargs={'year': self.year,
                                                  'issue': self.issue})
+
+    def post_extract(self):
+        pages = os.listdir(os.path.join(settings.MEDIA_ROOT,
+                                        os.path.dirname(self.page_url())))
+        pages = [self.page_url(i + 1) for i in range(len(pages))]
+        pages = sorted(pages)
+        pages = pages[1:-1]
+        count = int(len(pages) / 2)
+        dirname = os.path.join(settings.MEDIA_ROOT,
+                               os.path.dirname(self.page_url()))
+
+        for i in range(0, count):
+            i = i * 2
+            spread_left = os.path.join(settings.MEDIA_ROOT, pages[i])
+            spread_right = os.path.join(settings.MEDIA_ROOT, pages[i + 1])
+
+            result = Image.new("RGB", (2100, 1485))
+
+            img_left = Image.open(spread_left)
+            result.paste(img_left, (0, 0, 1050, 1485))
+            img_right = Image.open(spread_right)
+            result.paste(img_right, (1050, 0, 2100, 1485))
+
+            filename = (os.path.splitext(
+                os.path.basename(spread_left))[0] + '-' +
+                        os.path.splitext(os.path.basename(spread_right))[0] +
+                        '.jpg')
+            result.save(os.path.join(dirname, filename), 'JPEG', quality=90)
+
+            os.remove(spread_left)
+            os.remove(spread_right)
 
     def extract_thabloid_pages(self, wait):
         dst = os.path.join(settings.MEDIA_ROOT, self.page_url())
@@ -72,14 +116,15 @@ class Thabloid(models.Model):
 
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         # TODO reconsider if this resolution / quality is sufficient
-        p = subprocess.Popen(['gs', '-o', dst,
-                              # '-g2100x2970', '-dPDFFitPage',
-                              '-g1050x1485', '-dPDFFitPage',
-                              '-sDEVICE=jpeg', '-f', src],
-                             stdout=subprocess.DEVNULL
-                             )
-        if wait:  # pragma: no cover
-            p.wait()
+        thread = PopenAndCall(self.post_extract,
+                              ['gs', '-o', dst,
+                               # '-g2100x2970', '-dPDFFitPage',
+                               '-g1050x1485', '-dPDFFitPage',
+                               '-sDEVICE=jpeg', '-f', src],
+                              stdout=subprocess.DEVNULL
+                              )
+        if wait:
+            thread.join()
 
     def save(self, *args, wait=False, **kwargs):
         new_file = False
