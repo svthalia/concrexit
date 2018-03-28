@@ -265,6 +265,9 @@ PARTNER_EMAIL = "samenwerking@thalia.nu"
 # Push notifications API key
 PUSH_NOTIFICATIONS_API_KEY = ''
 
+# Mailinglist API key
+MAILINGLIST_API_SECRET = ''
+
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
 
