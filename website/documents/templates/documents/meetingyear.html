@@ -35,7 +35,7 @@
             </ul>
             <div class="gw-go-footer">
                 {% if meeting.minutes %}
-                    <a href="{% url 'documents:document' meeting.pk %}" class="gw-go-btn gw-go-btn-medium" target="_blank">Notulen</a>
+                    <a href="{% url 'documents:document' meeting.pk %}" class="gw-go-btn gw-go-btn-medium" target="_blank">{% trans "Minutes" %}</a>
                 {% else %}
                     <div style='padding-top:10px;'>{% trans "No minutes<br>available" %}</div>
                 {% endif %}
