@@ -64,7 +64,9 @@
 					<div class="post-overlay">
 						<div class="post-overlay-meta">
 							<h2>{{ member.profile.display_name }}</h2>
-                            <p>{% trans "Cohort" %}: {{ member.profile.starting_year }}</p>
+                                                        {% if member.profile.starting_year %}
+                                                        <p>{% trans "Cohort" %}: {{ member.profile.starting_year }}</p>
+                                                        {% endif %}
 						</div>
 					</div>
 					<div class="post-body avatar-subtitle">
