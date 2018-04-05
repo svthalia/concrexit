@@ -42,11 +42,11 @@ class Thabloid(models.Model):
 
     def page_url(self, page=None, second_page=None):
         if page is None:
-            page = '%03d.jpg'
+            page = '%03d.png'
         elif second_page is None:
-            page = '{:03}.jpg'.format(page)
+            page = '{:03}.png'.format(page)
         else:
-            page = '{:03}-{:03}.jpg'.format(page, second_page)
+            page = '{:03}-{:03}.png'.format(page, second_page)
         dst, ext = os.path.splitext(self.file.name)
         return os.path.join(os.path.dirname(dst), 'pages',
                             os.path.basename(dst), page)
@@ -97,8 +97,8 @@ class Thabloid(models.Model):
             filename = (os.path.splitext(
                 os.path.basename(spread_left))[0] + '-' +
                         os.path.splitext(os.path.basename(spread_right))[0] +
-                        '.jpg')
-            result.save(os.path.join(dirname, filename), 'JPEG', quality=90)
+                        '.png')
+            result.save(os.path.join(dirname, filename), 'PNG')
 
             os.remove(spread_left)
             os.remove(spread_right)
@@ -120,7 +120,8 @@ class Thabloid(models.Model):
                               ['gs', '-o', dst,
                                # '-g2100x2970', '-dPDFFitPage',
                                '-g1050x1485', '-dPDFFitPage',
-                               '-sDEVICE=jpeg', '-f', src],
+                               '-dTextAlphaBits=4',
+                               '-sDEVICE=png16m', '-f', src],
                               stdout=subprocess.DEVNULL
                               )
         if wait:
