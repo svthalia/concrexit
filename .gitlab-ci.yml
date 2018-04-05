@@ -13,13 +13,19 @@ variables:
   PY36_IMAGE: thalia/python-thalia:3.6
   PIP_CACHE_DIR: "${CI_PROJECT_DIR}/pip-cache"
 
+stages:
+  - test
+  - deploy
+
 pep8:
+  stage: test
   image: $PY35_IMAGE
   before_script:
   script:
     - tox -e flake8
 
 .djangotest: &djangotest
+  stage: test
   services:
     - postgres:latest
   before_script:
@@ -44,6 +50,7 @@ python36-django20:
     DJANGO_VERSION: django20
 
 docs:
+  stage: test
   image: $PY35_IMAGE
   before_script:
     # install django deps
@@ -59,6 +66,45 @@ docs:
     - echo "Checking if there are changes"
     - ./generate-apidocs.sh
     - git diff --exit-code
+
+build docker image:
+  stage: test
+  services:
+    - docker:dind
+  image: thalia/docker-compose
+  tags:
+    - docker
+  before_script:
+    - echo $GITLAB_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.gitlab.com
+  script:
+    - docker-compose build --build-arg install_dev_requirements=0 web
+    - docker-compose run --rm web test
+    - docker tag $DOCKER_LATEST $DOCKER_TAG
+    - docker push $DOCKER_TAG
+  variables:
+    DOCKER_LATEST: registry.gitlab.com/thaliawww/concrexit:latest
+    DOCKER_TAG: registry.gitlab.com/thaliawww/concrexit:$CI_COMMIT_SHA
+
+tag docker image:
+  stage: deploy
+  services:
+    - docker:dind
+  image: docker:git
+  tags:
+    - docker
+  only:
+    - tags
+  dependencies:
+    - build docker image
+  before_script:
+    - echo $GITLAB_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.gitlab.com
+  script:
+    - docker pull $DOCKER_TAG
+    - docker push $DOCKER_TAG_PRODUCTION
+  variables:
+    DOCKER_TAG: registry.gitlab.com/thaliawww/concrexit:$CI_COMMIT_SHA
+    DOCKER_TAG_PRODUCTION: registry.gitlab.com/thaliawww/concrexit:$CI_COMMIT_TAG
+
 
 cache:
   key: "$CI_JOB_NAME"
