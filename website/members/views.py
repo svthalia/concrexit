@@ -16,6 +16,7 @@ from members import services
 from .services import member_achievements
 from . import models
 from .forms import ProfileForm
+import pizzas.services
 
 
 class ObtainThaliaAuthToken(ObtainAuthToken):
@@ -217,6 +218,10 @@ def statistics(request):
         "total_stats_year": json.dumps(services.gen_stats_year(member_types)),
         "total_stats_member_type": json.dumps(
             services.gen_stats_member_type(member_types)),
+        "total_pizza_orders": json.dumps(
+            pizzas.services.gen_stats_pizza_orders()),
+        "current_pizza_orders": json.dumps(
+            pizzas.services.gen_stats_current_pizza_orders()),
     }
 
     return render(request, 'members/statistics.html', context)

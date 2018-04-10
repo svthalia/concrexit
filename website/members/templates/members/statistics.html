@@ -14,6 +14,10 @@
 <div id="totalYearChart" style="width:100%; height:400px;"></div>
 <div id="membersYearChart" style="width:100%; height:400px;"></div>
 <div id="supportersYearChart" style="width:100%; height:400px;"></div>
+<div id="pizzaTotalTypeChart" style="width:100%; height:400px;"></div>
+{% if current_pizza_orders != 'null' %} {# None is json-serialized to 'null' #}
+  <div id="pizzaCurrentTypeChart" style="width:100%; height:400px;"></div>
+{% endif %}
 <br/><br/>
 
 {% endblock %}
@@ -29,6 +33,8 @@
     {% autoescape off %}
     var total_stats_year = {{ total_stats_year }};
     var total_stats_member_type = {{ total_stats_member_type }};
+    var total_pizza_orders = {{ total_pizza_orders }};
+    var current_pizza_orders = {{ current_pizza_orders }};
     {% endautoescape %}
 </script>
 

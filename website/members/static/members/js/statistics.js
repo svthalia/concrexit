@@ -173,4 +173,76 @@ $(function () {
             }]
         }]
     });
+
+    $('#pizzaTotalTypeChart').highcharts({
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: "Total pizza orders of type",
+        },
+        plotOptions: {
+            pie: pieOptions
+        },
+        series: [{
+            name: 'Pizzas',
+            colorByPoint: true,
+            data : [{
+                name: total_pizza_orders[0].name,
+                y: total_pizza_orders[0].total
+            },{
+                name: total_pizza_orders[1].name,
+                y: total_pizza_orders[1].total
+            },{
+                name: total_pizza_orders[2].name,
+                y: total_pizza_orders[2].total
+            },{
+                name: total_pizza_orders[3].name,
+                y: total_pizza_orders[3].total
+            },{
+                name: total_pizza_orders[4].name,
+                y: total_pizza_orders[4].total
+            },{
+                name: total_pizza_orders[5].name,
+                y: total_pizza_orders[5].total
+            }]
+        }]
+    });
+
+    if (current_pizza_orders != null) {
+        $('#pizzaCurrentTypeChart').highcharts({
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: "Current pizza orders of type",
+            },
+            plotOptions: {
+                pie: pieOptions
+            },
+            series: [{
+                name: 'Pizzas',
+                colorByPoint: true,
+                data : [{
+                    name: current_pizza_orders[0].name,
+                    y: current_pizza_orders[0].total
+                },{
+                    name: current_pizza_orders[1].name,
+                    y: current_pizza_orders[1].total
+                },{
+                    name: current_pizza_orders[2].name,
+                    y: current_pizza_orders[2].total
+                },{
+                    name: current_pizza_orders[3].name,
+                    y: current_pizza_orders[3].total
+                },{
+                    name: current_pizza_orders[4].name,
+                    y: current_pizza_orders[4].total
+                },{
+                    name: current_pizza_orders[5].name,
+                    y: current_pizza_orders[5].total
+                }]
+            }]
+        });
+    }
 });
