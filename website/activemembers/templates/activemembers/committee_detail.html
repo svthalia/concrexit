@@ -60,6 +60,9 @@
               </div>
               <div class="post-body avatar-subtitle">
                 {{ member.profile.display_name }}
+                {% if member.role %}
+                <p>{{ member.role }}</p>
+                {% endif %}
               </div>
             </div>
           </a>
