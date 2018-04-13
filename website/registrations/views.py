@@ -139,16 +139,15 @@ class RenewalFormView(FormView):
         context['study_fees'] = floatformat(settings.MEMBERSHIP_PRICES[
                                                 Entry.MEMBERSHIP_STUDY], 2)
         context['membership'] = self.request.member.latest_membership
-        context['membership_type'] = [
-            c[1] for c in Membership.MEMBERSHIP_TYPES
-            if c[0] == context['membership'].type
-        ][0]
+        if context['membership'] is not None:
+            context['membership_type'] = (context['membership']
+                                          .get_type_display())
         return context
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         member = self.request.member
-        if member is not None:
+        if member is not None and member.latest_membership is not None:
             latest_membership = member.latest_membership
             # If latest membership has not ended or does not ends
             # within 1 month: do not show 'year' length
