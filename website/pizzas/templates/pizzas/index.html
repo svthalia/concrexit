@@ -87,7 +87,7 @@
                     <tr>
                         <td>{{ order.product.name }}</td>
                         <td>{{ order.product.description }}</td>
-                        <td>&euro; {{ order.product.price }}</td>
+                        <td>&euro;&nbsp;{{ order.product.price }}</td>
                         <td>
                             {% if not order.can_be_changed %}
                                 {% trans "You can no longer cancel." %}
