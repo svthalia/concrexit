@@ -372,6 +372,10 @@ class Registration(models.Model):
                      Q(date__lte=self.date)
                  ).count() < self.event.max_participants))
 
+    def is_paid(self):
+        return self.payment in [Registration.PAYMENT_CARD,
+                                Registration.PAYMENT_CASH]
+
     def would_cancel_after_deadline(self):
         now = timezone.now()
         return (self.queue_position == 0 and
