@@ -23,7 +23,7 @@ def event_permissions(member, event):
         "cancel_registration": False,
         "update_registration": False,
     }
-    if member and member.is_authenticated and member.can_attend_events:
+    if member and member.is_authenticated:
         registration = None
         try:
             registration = Registration.objects.get(
@@ -35,15 +35,18 @@ def event_permissions(member, event):
 
         perms["create_registration"] = (
             (registration is None or registration.date_cancelled is not None)
-            and event.registration_allowed)
+            and event.registration_allowed and
+            member.can_attend_events)
         perms["cancel_registration"] = (
             registration is not None and
             registration.date_cancelled is None and
             event.cancellation_allowed)
         perms["update_registration"] = (
             registration is not None and
-            registration.date_cancelled is None and event.has_fields() and
-            event.registration_allowed)
+            registration.date_cancelled is None and
+            event.has_fields() and
+            event.registration_allowed and
+            member.can_attend_events)
 
     return perms
 
