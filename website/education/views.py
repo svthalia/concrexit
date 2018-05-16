@@ -54,6 +54,10 @@ def student_participation(request):
 @login_required
 def exam(request, id):
     exam = get_object_or_404(Exam, id=int(id))
+
+    exam.download_count += 1
+    exam.save()
+
     ext = os.path.splitext(exam.file.path)[1]
     filename = '{}-exam{}{}'.format(exam.course.name, exam.year, ext)
     return sendfile(request, exam.file.path,
@@ -63,6 +67,10 @@ def exam(request, id):
 @login_required
 def summary(request, id):
     obj = get_object_or_404(Summary, id=int(id))
+
+    obj.download_count += 1
+    obj.save()
+
     ext = os.path.splitext(obj.file.path)[1]
     filename = '{}-summary{}{}'.format(obj.course.name, obj.year, ext)
     return sendfile(request, obj.file.path,

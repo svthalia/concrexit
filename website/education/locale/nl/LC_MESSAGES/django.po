@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-12 14:06+0100\n"
-"PO-Revision-Date: 2018-02-12 13:42+0100\n"
+"POT-Creation-Date: 2018-05-16 20:01+0200\n"
+"PO-Revision-Date: 2018-05-16 20:03+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,23 +16,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
-#: admin.py:34
+#: admin.py:38
 msgid "Mark exams as accepted"
 msgstr "Markeer tentamens als geaccepteerd"
 
-#: admin.py:39
+#: admin.py:43
 msgid "Mark exams as rejected"
 msgstr "Markeer tentamens als afgekeurd"
 
-#: admin.py:53
+#: admin.py:48
+msgid "Reset the marked exams download count"
+msgstr "Reset download aantal van gemarkeerde tentamens"
+
+#: admin.py:67 admin.py:111
+msgid "Download marked as csv"
+msgstr "Download gemarkeerde tentamens als csv"
+
+#: admin.py:82
 msgid "Mark summaries as accepted"
 msgstr "Markeer samenvattingen als geaccepteerd"
 
-#: admin.py:58
+#: admin.py:87
 msgid "Mark summaries as rejected"
 msgstr "Markeer samenvattingen als afgekeurd"
+
+#: admin.py:92
+msgid "Reset the marked summaries download count"
+msgstr "Reset download aantal van gemarkeerde samenvattingen"
 
 #: apps.py:7
 msgid "Education"
@@ -58,7 +70,7 @@ msgstr "EC"
 msgid "period"
 msgstr "periode"
 
-#: models.py:77 models.py:132 models.py:180
+#: models.py:77 models.py:132 models.py:186
 msgid "course"
 msgstr "vak"
 
@@ -110,11 +122,11 @@ msgstr "type tentamen"
 msgid "exam name"
 msgstr "naam tentamen"
 
-#: models.py:107 models.py:163
+#: models.py:107 models.py:169
 msgid "uploader"
 msgstr "uploader"
 
-#: models.py:116 models.py:185
+#: models.py:116 models.py:191
 msgid "accepted"
 msgstr "geaccepteerd"
 
@@ -122,32 +134,36 @@ msgstr "geaccepteerd"
 msgid "exam date"
 msgstr "tentamendatum"
 
-#: models.py:126 models.py:191
+#: models.py:126 models.py:197
 msgid "Use the 'View on site' button to download the file for inspection."
 msgstr ""
 "Gebruik de ‘Toon op site’ knop om het bestand te downloaden voor controle."
 
-#: models.py:151
+#: models.py:137 models.py:202
+msgid "amount of downloads"
+msgstr "Hoeveelheid downloads"
+
+#: models.py:157
 msgid "exam"
 msgstr "tentamen"
 
-#: models.py:152
+#: models.py:158
 msgid "exams"
 msgstr "tentamens"
 
-#: models.py:158
+#: models.py:164
 msgid "summary name"
 msgstr "naam samenvatting"
 
-#: models.py:175
+#: models.py:181
 msgid "author"
 msgstr "auteur"
 
-#: models.py:203
+#: models.py:215
 msgid "summary"
 msgstr "samenvatting"
 
-#: models.py:204
+#: models.py:216
 msgid "summaries"
 msgstr "samenvattingen"
 
