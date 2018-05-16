@@ -231,7 +231,9 @@ class Registration(Entry):
 
         if get_user_model().objects.filter(email=self.email).exists():
             errors.update({
-                'email': _('A user with that email address already exists.')})
+                'email': _('A user with that email address already exists. '
+                           'Login using the existing account and renew the '
+                           'membership by visiting the account settings.')})
 
         if (self.student_number is not None and (
             Profile.objects.filter(
@@ -241,7 +243,9 @@ class Registration(Entry):
                 .exclude(pk=self.pk).exists())):
             errors.update({
                 'student_number':
-                    _('A user with that student number already exists.')})
+                    _('A user with that student number already exists. '
+                      'Login using the existing account and renew the '
+                      'membership by visiting the account settings.')})
 
         if self.username is not None and get_user_model().objects.filter(
                 username=self.username).exists():
