@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-21 20:24+0100\n"
-"PO-Revision-Date: 2018-03-21 20:24+0100\n"
+"POT-Creation-Date: 2018-05-16 20:59+0200\n"
+"PO-Revision-Date: 2018-05-16 21:01+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: admin.py:96
 msgid "Event Date"
@@ -151,15 +151,15 @@ msgstr "Workshop"
 msgid "Other"
 msgstr "Overig"
 
-#: models.py:26 templates/events/event.html:136
+#: models.py:26 templates/events/event.html:144
 msgid "No registration required"
 msgstr "Geen aanmelding vereist"
 
-#: models.py:30 templates/events/admin/details.html:68
+#: models.py:30 templates/events/admin/details.html:71
 msgid "title"
 msgstr "titel"
 
-#: models.py:36 models.py:421
+#: models.py:36 models.py:428
 msgid "description"
 msgstr "beschrijving"
 
@@ -171,7 +171,7 @@ msgstr "starttijd"
 msgid "end time"
 msgstr "eindtijd"
 
-#: models.py:46 templates/events/admin/details.html:72
+#: models.py:46 templates/events/admin/details.html:75
 msgid "organiser"
 msgstr "organisator"
 
@@ -195,7 +195,7 @@ msgstr ""
 msgid "registration end"
 msgstr "einde aanmelden"
 
-#: models.py:75 templates/events/admin/details.html:79
+#: models.py:75 templates/events/admin/details.html:82
 msgid "cancel deadline"
 msgstr "afmelddeadline"
 
@@ -211,7 +211,7 @@ msgstr ""
 "Verzend een e-mail naar de organiserende partij wanneer een lid zich na de "
 "afmelddeadline afmeld voor een evenement."
 
-#: models.py:89 templates/events/admin/details.html:82
+#: models.py:89 templates/events/admin/details.html:85
 #: templates/events/event.html:38
 msgid "location"
 msgstr "locatie"
@@ -228,7 +228,7 @@ msgstr ""
 "Locatie van ’t Huygens: Heyendaalseweg 135, Nijmegen. Locatie van Mercator "
 "1: Toernooiveld 212, Nijmegen. Dit veld wordt niet getoond als tekst!!"
 
-#: models.py:102 templates/events/admin/details.html:84
+#: models.py:102 templates/events/admin/details.html:87
 #: templates/events/event.html:43
 msgid "price"
 msgstr "prijs"
@@ -257,143 +257,143 @@ msgstr "Standaard:"
 msgid "published"
 msgstr "gepubliceerd"
 
-#: models.py:202
+#: models.py:209
 msgid "Start cannot have an empty date or time field"
 msgstr "Starttijd kan niet een lege datum of tijd hebben"
 
-#: models.py:206
+#: models.py:213
 msgid "End cannot have an empty date or time field"
 msgstr "Eindtijd kan niet een lege datum of tijd hebben"
 
-#: models.py:211
+#: models.py:218
 msgid "Can't have an event travel back in time"
 msgstr "Een evenement kan niet terugreizen in de tijd"
 
-#: models.py:215
+#: models.py:222
 msgid "The fine for this event is too low (must be at least €5)."
 msgstr "De boete voor dit evenement is te laag (minimaal €5)."
 
-#: models.py:222
+#: models.py:229
 msgid "Doesn't make sense to have this if you require registrations."
 msgstr "Het is niet logisch om dit te hebben als je aanmelden vereist."
 
-#: models.py:227
+#: models.py:234
 msgid "If registration is required, you need a start of registration"
 msgstr ""
 "Als aanmelden vereist is, dan heb je een starttijd voor de aanmeldperiode "
 "nodig"
 
-#: models.py:232
+#: models.py:239
 msgid "If registration is required, you need an end of registration"
 msgstr ""
 "Als aanmelden vereist is, dan heb je een eindtijd voor de aanmeldperiode "
 "nodig"
 
-#: models.py:237
+#: models.py:244
 msgid "If registration is required, you need a deadline for the cancellation"
 msgstr ""
 "Als aanmelden vereist is, dan heb je een eindtijd voor de aanmeldperiode "
 "nodig"
 
-#: models.py:242
+#: models.py:249
 msgid "The cancel deadline should be before the start of the event."
 msgstr "De afmelddeadline moet voor de start van het evenement liggen."
 
-#: models.py:246
+#: models.py:253
 msgid "Registration start should be before registration end"
 msgstr "De starttijd voor de aanmeldperiode moet voor de eindtijd liggen"
 
-#: models.py:255
+#: models.py:262
 msgid "This organiser does not have a contact mailinglist."
 msgstr "De organisator heeft geen contact mailinglijst."
 
-#: models.py:289
+#: models.py:296
 msgid "No payment"
 msgstr "Niet betaald"
 
-#: models.py:290
+#: models.py:297
 msgid "Paid with cash"
 msgstr "Contant betaald"
 
-#: models.py:291
+#: models.py:298
 msgid "Paid with card"
 msgstr "Pin betaald"
 
-#: models.py:303 templates/events/admin/registrations_table.html:6
+#: models.py:310 templates/events/admin/registrations_table.html:6
 msgid "name"
 msgstr "naam"
 
-#: models.py:305
+#: models.py:312
 msgid "Use this for non-members"
 msgstr "Gebruikt dit voor niet-leden"
 
-#: models.py:310 templates/events/admin/registrations_table.html:7
+#: models.py:317 templates/events/admin/registrations_table.html:7
 msgid "registration date"
 msgstr "aanmelddatum"
 
-#: models.py:312 templates/events/admin/registrations_table.html:9
+#: models.py:319 templates/events/admin/registrations_table.html:9
 msgid "cancellation date"
 msgstr "afmelddatum"
 
-#: models.py:317 templates/events/admin/registrations_table.html:14
+#: models.py:324 templates/events/admin/registrations_table.html:14
 msgid "present"
 msgstr "aanwezig"
 
-#: models.py:324
+#: models.py:331
 msgid "payment"
 msgstr "betaling"
 
-#: models.py:377 models.py:378
+#: models.py:384 models.py:385
 msgid "Either specify a member or a name"
 msgstr "Geef een lid of een naam op"
 
-#: models.py:401
+#: models.py:408
 msgid "Checkbox"
 msgstr "Checkbox"
 
-#: models.py:402
+#: models.py:409
 msgid "Text"
 msgstr "Text"
 
-#: models.py:403
+#: models.py:410
 msgid "Integer"
 msgstr "Integer"
 
-#: models.py:408
+#: models.py:415
 msgid "field type"
 msgstr "veldtype"
 
-#: models.py:415
+#: models.py:422
 msgid "field name"
 msgstr "veldnaam"
 
-#: models.py:427
+#: models.py:434
 msgid "required"
 msgstr "verplicht"
 
-#: models.py:479
+#: models.py:486
 msgid "last changed"
 msgstr "laatst aangepast"
 
-#: services.py:81
+#: services.py:84
 msgid ""
 "You cannot re-register anymore since you've cancelled after the deadline."
 msgstr ""
 "Je kunt je niet opnieuw aanmelden omdat je je hebt afgemeld na de deadline."
 
-#: services.py:91
+#: services.py:94
 msgid "You were already registered."
 msgstr "Je bent al aangemeld."
 
-#: services.py:93
+#: services.py:96
 msgid "You may not register."
 msgstr "Je mag je niet aanmelden."
 
-#: services.py:122 services.py:136 services.py:167
+#: services.py:125 services.py:139 services.py:170
 msgid "You are not registered for this event."
 msgstr "Je bent niet aangemeld voor dit evenement."
 
-#: services.py:190
+#: services.py:193
 msgid "You are not allowed to update this registration."
 msgstr "Je mag deze aanmelding niet bijwerken."
 
@@ -403,94 +403,94 @@ msgstr "Je mag deze aanmelding niet bijwerken."
 msgid "Thalia site admin"
 msgstr "Thalia site admin"
 
-#: templates/events/admin/details.html:20
+#: templates/events/admin/details.html:23
 #: templates/events/admin/email_export.html:20
 msgid "Thalia administration"
 msgstr "Thalia administratie"
 
-#: templates/events/admin/details.html:25
+#: templates/events/admin/details.html:28
 #: templates/events/admin/email_export.html:25
 msgid "home"
 msgstr "home"
 
-#: templates/events/admin/details.html:26
-#: templates/events/admin/details.html:27
+#: templates/events/admin/details.html:29
+#: templates/events/admin/details.html:30
 #: templates/events/admin/email_export.html:26
 #: templates/events/admin/email_export.html:27
 msgid "events"
 msgstr "evenementen"
 
-#: templates/events/admin/details.html:32
+#: templates/events/admin/details.html:35
 #, python-format
 msgid "Event overview: %(event)s"
 msgstr "Overzicht evenement: %(event)s"
 
-#: templates/events/admin/details.html:37
+#: templates/events/admin/details.html:40
 msgid "registrations"
 msgstr "aanmeldingen"
 
-#: templates/events/admin/details.html:41
+#: templates/events/admin/details.html:44
 msgid "waiting"
 msgstr "wachtend"
 
-#: templates/events/admin/details.html:42
+#: templates/events/admin/details.html:45
 msgid "queued"
 msgstr "wachtrij"
 
-#: templates/events/admin/details.html:46
+#: templates/events/admin/details.html:49
 msgid "cancellations"
 msgstr "afmeldingen"
 
-#: templates/events/admin/details.html:47
+#: templates/events/admin/details.html:50
 msgid "cancelled"
 msgstr "afgemeld"
 
-#: templates/events/admin/details.html:51
+#: templates/events/admin/details.html:54
 msgid "Export registrations"
 msgstr "Exporteer aanmeldingen"
 
-#: templates/events/admin/details.html:52
+#: templates/events/admin/details.html:55
 msgid "Export email addresses of attendees"
 msgstr "Exporteer e-mailadressen van aanwezigen"
 
-#: templates/events/admin/details.html:53
+#: templates/events/admin/details.html:56
 msgid "Set all registered to paid and present"
 msgstr "Zet iedereen op betaald en present"
 
-#: templates/events/admin/details.html:61
+#: templates/events/admin/details.html:64
 msgid "Event properties"
 msgstr "Eigenschappen van evenement"
 
-#: templates/events/admin/details.html:64
-#: templates/events/admin/registrations_table.html:56
+#: templates/events/admin/details.html:67
+#: templates/events/admin/registrations_table.html:60
 msgid "change"
 msgstr "verander"
 
-#: templates/events/admin/details.html:70
+#: templates/events/admin/details.html:73
 msgid "date"
 msgstr "datum"
 
-#: templates/events/admin/details.html:75
+#: templates/events/admin/details.html:78
 msgid "registration period"
 msgstr "aanmeldperiode"
 
-#: templates/events/admin/details.html:86
+#: templates/events/admin/details.html:89
 msgid "cost"
 msgstr "kosten"
 
-#: templates/events/admin/details.html:88
+#: templates/events/admin/details.html:91
 msgid "registration required"
 msgstr "aanmelden vereist"
 
-#: templates/events/admin/details.html:91
+#: templates/events/admin/details.html:94
 msgid "registration message"
 msgstr "aanmeldbericht"
 
-#: templates/events/admin/details.html:94 templates/events/event.html:57
+#: templates/events/admin/details.html:97 templates/events/event.html:57
 msgid "number of registrations"
 msgstr "aantal aanmeldingen"
 
-#: templates/events/admin/details.html:96 templates/events/event.html:59
+#: templates/events/admin/details.html:99 templates/events/event.html:59
 #, python-format
 msgid "%(counter)s registration"
 msgid_plural "%(counter)s registrations"
@@ -533,11 +533,11 @@ msgstr "te laat"
 msgid "add"
 msgstr "toevoegen"
 
-#: templates/events/admin/registrations_table.html:60
+#: templates/events/admin/registrations_table.html:64
 msgid "registered"
 msgstr "aangemeld"
 
-#: templates/events/admin/registrations_table.html:61
+#: templates/events/admin/registrations_table.html:65
 #, python-format
 msgid "Nobody %(verb)s yet"
 msgstr "Niemand heeft zich %(verb)s"
@@ -603,18 +603,29 @@ msgid "Update registration"
 msgstr "Aanmelding bijwerken"
 
 #: templates/events/event.html:104
+#, python-format
+msgid ""
+"By registering, you confirm that you have read the <a target=\"_blank\" href="
+"\"%(terms_url)s\">terms and conditions</a>, that you understand them and "
+"that you agree to be bound by them."
+msgstr ""
+"Door te registreren, bevestig je dat je de <a target=\"_blank\" href="
+"\"%(terms_url)s\">voorwaarden</a> hebt gelezen, dat je ze begrijpt en dat je "
+"accepteert eraan gebonden te zijn."
+
+#: templates/events/event.html:112
 msgid "Put me on the waiting list"
 msgstr "Zet me op de wachtlijst"
 
-#: templates/events/event.html:107
+#: templates/events/event.html:115
 msgid "Register"
 msgstr "Aanmelden"
 
-#: templates/events/event.html:114 templates/events/event.html:116
+#: templates/events/event.html:122 templates/events/event.html:124
 msgid "Cancel registration"
 msgstr "Afmelden"
 
-#: templates/events/event.html:114
+#: templates/events/event.html:122
 #, python-format
 msgid ""
 "The deadline has passed, are you sure you want to cancel your registration "
@@ -624,28 +635,28 @@ msgstr ""
 "betekent dat je de volledige kosten van €%(costs)s zult moeten betalen. Je "
 "kunt dit niet ongedaan maken!"
 
-#: templates/events/event.html:116
+#: templates/events/event.html:124
 msgid "Are you sure you want to cancel your registration?"
 msgstr "Weet je zeker dat je je wilt afmelden?"
 
-#: templates/events/event.html:120
+#: templates/events/event.html:128
 msgid "Login"
 msgstr "Login"
 
-#: templates/events/event.html:130
+#: templates/events/event.html:138
 msgid "You have to log in before you can register for this event."
 msgstr "Je moet inloggen voordat je jezelf kunt aanmelden."
 
-#: templates/events/event.html:139
+#: templates/events/event.html:147
 #, python-format
 msgid "Registration will open %(datetime)s"
 msgstr "Aanmelden opent %(datetime)s"
 
-#: templates/events/event.html:141
+#: templates/events/event.html:149
 msgid "Registration is not possible anymore."
 msgstr "Aanmelden is niet meer mogelijk."
 
-#: templates/events/event.html:144
+#: templates/events/event.html:152
 #, python-format
 msgid ""
 "Cancellation isn't possible anymore without having to pay the full costs of €"
@@ -654,16 +665,16 @@ msgstr ""
 "Afmelden is niet meer mogelijk zonder de volledige kosten van €%(costs)s te "
 "betalen. Let op: je kunt je hierna niet meer aanmelden."
 
-#: templates/events/event.html:158
+#: templates/events/event.html:166
 msgctxt "pizzas"
 msgid "Order"
 msgstr "Bestellen"
 
-#: templates/events/event.html:176
+#: templates/events/event.html:184
 msgid "Registrations"
 msgstr "Aanmeldingen"
 
-#: templates/events/event.html:210
+#: templates/events/event.html:218
 msgid "cohort"
 msgstr "cohort"
 
