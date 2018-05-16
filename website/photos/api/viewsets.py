@@ -1,4 +1,4 @@
-from rest_framework import permissions
+from rest_framework import permissions, filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.mixins import CreateModelMixin, \
     UpdateModelMixin
@@ -12,6 +12,8 @@ from photos.models import Album, Photo
 class AlbumsViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Album.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('title_en', 'title_nl', 'date', 'slug')
 
     def get_queryset(self):
         return services.get_annotated_accessible_albums(self.request,
