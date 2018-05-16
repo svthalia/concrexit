@@ -167,9 +167,10 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
 
     @cached_property
     def cover(self):
+        cover = None
         if self._cover is not None:
             return self._cover
-        else:
+        elif self.photo_set.exists():
             random.seed(self.dirname)
             cover = random.choice(self.photo_set.all())
         return cover
