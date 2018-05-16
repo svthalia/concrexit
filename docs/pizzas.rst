@@ -48,6 +48,14 @@ pizzas\.models module
     :undoc-members:
     :show-inheritance:
 
+pizzas\.services module
+-----------------------
+
+.. automodule:: pizzas.services
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pizzas\.urls module
 -------------------
 
