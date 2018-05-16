@@ -179,7 +179,7 @@ $(function () {
             type: 'pie'
         },
         title: {
-            text: "Total pizza orders of type",
+            text: gettext("Total pizza orders of type"),
         },
         plotOptions: {
             pie: pieOptions
@@ -215,7 +215,7 @@ $(function () {
                 type: 'pie'
             },
             title: {
-                text: "Current pizza orders of type",
+                text: gettext("Current pizza orders of type"),
             },
             plotOptions: {
                 pie: pieOptions

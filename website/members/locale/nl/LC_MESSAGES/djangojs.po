@@ -7,77 +7,79 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-21 20:03+0200\n"
-"PO-Revision-Date: 2016-09-21 20:04+0200\n"
+"POT-Creation-Date: 2018-05-16 19:20+0200\n"
+"PO-Revision-Date: 2018-05-16 19:22+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
-#: members/static/members/js/statistics.js:50
+#: static/members/js/statistics.js:50
 msgid "Members per member type"
 msgstr "Leden per lidtype"
 
-#: members/static/members/js/statistics.js:59
+#: static/members/js/statistics.js:59
 msgid "Members"
 msgstr "Leden"
 
-#: members/static/members/js/statistics.js:62
+#: static/members/js/statistics.js:62
 msgid "Supporters"
 msgstr "Begunstigers"
 
-#: members/static/members/js/statistics.js:65
+#: static/members/js/statistics.js:65
 msgid "Honorary Members"
 msgstr "Ereleden"
 
-#: members/static/members/js/statistics.js:76
+#: static/members/js/statistics.js:76
 msgid "Total members per year"
 msgstr "Aantal leden per jaar"
 
-#: members/static/members/js/statistics.js:85
-#: members/static/members/js/statistics.js:120
-#: members/static/members/js/statistics.js:156
+#: static/members/js/statistics.js:85 static/members/js/statistics.js:120
+#: static/members/js/statistics.js:156
 msgid "1st year"
 msgstr "Eerstejaars"
 
-#: members/static/members/js/statistics.js:88
-#: members/static/members/js/statistics.js:123
-#: members/static/members/js/statistics.js:159
+#: static/members/js/statistics.js:88 static/members/js/statistics.js:123
+#: static/members/js/statistics.js:159
 msgid "2nd year"
 msgstr "Tweedejaars"
 
-#: members/static/members/js/statistics.js:91
-#: members/static/members/js/statistics.js:126
-#: members/static/members/js/statistics.js:162
+#: static/members/js/statistics.js:91 static/members/js/statistics.js:126
+#: static/members/js/statistics.js:162
 msgid "3rd year"
 msgstr "Derdejaars"
 
-#: members/static/members/js/statistics.js:94
-#: members/static/members/js/statistics.js:129
-#: members/static/members/js/statistics.js:165
+#: static/members/js/statistics.js:94 static/members/js/statistics.js:129
+#: static/members/js/statistics.js:165
 msgid "4th year"
 msgstr "Vierdejaars"
 
-#: members/static/members/js/statistics.js:97
-#: members/static/members/js/statistics.js:132
-#: members/static/members/js/statistics.js:168
+#: static/members/js/statistics.js:97 static/members/js/statistics.js:132
+#: static/members/js/statistics.js:168
 msgid "5th year"
 msgstr "Vijfdejaars"
 
-#: members/static/members/js/statistics.js:100
-#: members/static/members/js/statistics.js:135
-#: members/static/members/js/statistics.js:171
+#: static/members/js/statistics.js:100 static/members/js/statistics.js:135
+#: static/members/js/statistics.js:171
 msgid ">5th year"
 msgstr "Ouderejaars"
 
-#: members/static/members/js/statistics.js:111
+#: static/members/js/statistics.js:111
 msgid "Members per year"
 msgstr "Leden per jaar"
 
-#: members/static/members/js/statistics.js:147
+#: static/members/js/statistics.js:147
 msgid "Supporters per year"
 msgstr "Begunstigers per jaar"
+
+#: static/members/js/statistics.js:182
+msgid "Total pizza orders of type"
+msgstr "Totaal aantal pizza bestellingen per soort"
+
+#: static/members/js/statistics.js:218
+msgid "Current pizza orders of type"
+msgstr "Aantal pizza bestellingen van het huidige event per soort"
