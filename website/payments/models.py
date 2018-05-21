@@ -1,3 +1,4 @@
+"""The models defined by the payments package"""
 import uuid
 
 from django.contrib.contenttypes.models import ContentType
