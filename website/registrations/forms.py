@@ -1,3 +1,4 @@
+"""The forms defined by the registrations package"""
 from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -6,6 +7,7 @@ from .models import Registration, Renewal
 
 
 class MemberRegistrationForm(forms.ModelForm):
+    """Form for membership registrations"""
     birthday = forms.DateField(
         widget=forms.widgets.SelectDateWidget(years=[
             year for year in range(timezone.now().year - 50,
@@ -25,6 +27,7 @@ class MemberRegistrationForm(forms.ModelForm):
 
 
 class MemberRenewalForm(forms.ModelForm):
+    """Form for membership renewals"""
     class Meta:
         model = Renewal
         fields = '__all__'

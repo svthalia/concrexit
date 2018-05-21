@@ -1,3 +1,4 @@
+"""The models defined by the registrations package"""
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -13,6 +14,7 @@ from . import emails
 
 
 class Entry(models.Model):
+    """Describes a registration entry"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     created_at = models.DateTimeField(_('created at'), default=timezone.now)
@@ -112,6 +114,7 @@ class Entry(models.Model):
 
 
 class Registration(Entry):
+    """Describes a new registration for the association"""
     # ---- Personal information -----
 
     username = models.CharField(
@@ -280,6 +283,7 @@ class Registration(Entry):
 
 
 class Renewal(Entry):
+    """Describes a renewal for the association membership"""
     member = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,

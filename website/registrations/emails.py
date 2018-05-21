@@ -1,3 +1,4 @@
+"""The emails defined by the registrations package"""
 from django.core import mail
 from django.template import loader
 from django.template.defaultfilters import floatformat
@@ -10,6 +11,10 @@ from . import models
 
 
 def send_registration_email_confirmation(registration):
+    """
+    Send the email confirmation message
+    :param registration: the registration entry
+    """
     with translation.override(registration.language):
         _send_email(
             registration.email,
@@ -27,6 +32,11 @@ def send_registration_email_confirmation(registration):
 
 
 def send_registration_accepted_message(registration, payment):
+    """
+    Send the registration acceptance email
+    :param registration: the registration entry
+    :param payment: the payment entry
+    """
     with translation.override(registration.language):
         _send_email(
             registration.email,
@@ -40,6 +50,10 @@ def send_registration_accepted_message(registration, payment):
 
 
 def send_registration_rejected_message(registration):
+    """
+    Send the registration rejection email
+    :param registration: the registration entry
+    """
     with translation.override(registration.language):
         _send_email(
             registration.email,
@@ -52,6 +66,10 @@ def send_registration_rejected_message(registration):
 
 
 def send_new_registration_board_message(entry):
+    """
+    Send a notification to the board about a new registration
+    :param entry: the registration entry
+    """
     try:
         _send_email(
             settings.BOARD_NOTIFICATION_ADDRESS,
@@ -68,6 +86,11 @@ def send_new_registration_board_message(entry):
 
 
 def send_renewal_accepted_message(renewal, payment):
+    """
+    Send the renewal acceptation email
+    :param renewal: the renewal entry
+    :param payment: the payment entry
+    """
     with translation.override(renewal.member.profile.language):
         _send_email(
             renewal.member.email,
@@ -81,6 +104,10 @@ def send_renewal_accepted_message(renewal, payment):
 
 
 def send_renewal_rejected_message(renewal):
+    """
+    Send the renewal rejection email
+    :param renewal: the renewal entry
+    """
     with translation.override(renewal.member.profile.language):
         _send_email(
             renewal.member.email,
@@ -93,6 +120,10 @@ def send_renewal_rejected_message(renewal):
 
 
 def send_renewal_complete_message(renewal):
+    """
+    Send the email completing the renewal
+    :param renewal: the renewal entry
+    """
     with translation.override(renewal.member.profile.language):
         _send_email(
             renewal.member.email,
@@ -105,6 +136,10 @@ def send_renewal_complete_message(renewal):
 
 
 def send_new_renewal_board_message(renewal):
+    """
+    Send a notification to the board about a new renewal
+    :param renewal: the renewal entry
+    """
     _send_email(
         settings.BOARD_NOTIFICATION_ADDRESS,
         'New renewal',
@@ -118,6 +153,13 @@ def send_new_renewal_board_message(renewal):
 
 
 def _send_email(to, subject, body_template, context):
+    """
+    Easily send an email with the right subject and a body template
+    :param to: where should the email go?
+    :param subject: what is the email about?
+    :param body_template: what is the content of the email?
+    :param context: add some context to the body
+    """
     mail.EmailMessage(
         '[THALIA] {}'.format(subject),
         loader.render_to_string(body_template, context),

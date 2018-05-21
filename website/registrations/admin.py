@@ -1,3 +1,4 @@
+"""Registers admin interfaces for the registrations module"""
 from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
 from django.utils.html import format_html
@@ -8,6 +9,7 @@ from .models import Entry, Registration, Renewal
 
 
 def _show_message(admin, request, n, message, error):
+    """Show a message in the Django Admin"""
     if n == 0:
         admin.message_user(request, error, messages.ERROR)
     else:
@@ -19,6 +21,8 @@ def _show_message(admin, request, n, message, error):
 
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
+    """Manage the registrations"""
+
     list_display = ('name', 'email', 'status',
                     'created_at', 'payment_status')
     list_filter = ('status', 'programme', 'payment__processed',
@@ -59,6 +63,10 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     def changeform_view(self, request, object_id=None, form_url='',
                         extra_context=None):
+        """
+        Renders the change formview
+        Only allow when the entry has not been processed yet
+        """
         obj = None
         if (object_id is not None and
                 request.user.has_perm('registrations.review_entries')):
@@ -69,6 +77,10 @@ class RegistrationAdmin(admin.ModelAdmin):
             request, object_id, form_url, {'entry': obj})
 
     def get_actions(self, request):
+        """
+        Get the actions for the entries
+        Hide the reviewing actions if the right permissions are missing
+        """
         actions = super().get_actions(request)
         if not request.user.has_perm('registrations.review_entries'):
             del(actions['accept_selected'])
@@ -99,6 +111,7 @@ class RegistrationAdmin(admin.ModelAdmin):
         return '-'
 
     def reject_selected(self, request, queryset):
+        """Reject the selected entries"""
         if request.user.has_perm('registrations.review_entries'):
             rows_updated = services.reject_entries(queryset)
             _show_message(
@@ -109,6 +122,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     reject_selected.short_description = _('Reject selected registrations')
 
     def accept_selected(self, request, queryset):
+        """Accept the selected entries"""
         if request.user.has_perm('registrations.review_entries'):
             rows_updated = services.accept_entries(queryset)
             _show_message(
@@ -121,6 +135,8 @@ class RegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Renewal)
 class RenewalAdmin(RegistrationAdmin):
+    """Manage the renewals"""
+
     list_display = ('name', 'email', 'status',
                     'created_at', 'payment_status',)
     list_filter = ('status', 'payment__processed', 'payment__amount')
@@ -142,6 +158,7 @@ class RenewalAdmin(RegistrationAdmin):
     )
 
     def get_readonly_fields(self, request, obj=None):
+        """Make all fields read-only and add member if needed"""
         fields = super().get_readonly_fields(request, obj)
         if 'member' not in fields and obj is not None:
             return fields + ['member']

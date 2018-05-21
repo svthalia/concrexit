@@ -1,3 +1,4 @@
+"""The services defined by the registrations package"""
 import string
 import unicodedata
 from datetime import timedelta

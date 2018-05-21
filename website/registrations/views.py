@@ -1,3 +1,4 @@
+"""Views provided by the registrations package"""
 from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.admin.views.decorators import staff_member_required
@@ -21,6 +22,7 @@ from .models import Entry, Registration, Renewal
 
 
 class BecomeAMemberView(TemplateView):
+    """View that render a HTML template with context data"""
     template_name = 'registrations/become_a_member.html'
 
     def get_context_data(self, **kwargs):
@@ -37,6 +39,9 @@ class BecomeAMemberView(TemplateView):
 @method_decorator(permission_required('registrations.review_entries'),
                   name='dispatch', )
 class EntryAdminView(View):
+    """
+    View that handles the review processing of entries
+    """
     action = None
 
     def get(self, request, *args, **kwargs):
@@ -76,6 +81,10 @@ class EntryAdminView(View):
 
 
 class ConfirmEmailView(View, TemplateResponseMixin):
+    """
+    View that renders an HTML template and confirms the email address
+    of the provided registration
+    """
     template_name = 'registrations/confirm_email.html'
 
     def get(self, request, *args, **kwargs):
@@ -99,6 +108,9 @@ class ConfirmEmailView(View, TemplateResponseMixin):
 
 
 class MemberRegistrationFormView(FormView):
+    """
+    View that renders the membership registration form
+    """
     form_class = forms.MemberRegistrationForm
     template_name = 'registrations/register_member.html'
 
@@ -129,6 +141,9 @@ class MemberRegistrationFormView(FormView):
 
 @method_decorator(login_required, name='dispatch')
 class RenewalFormView(FormView):
+    """
+    View that renders the membership renewal form
+    """
     form_class = forms.MemberRenewalForm
     template_name = 'registrations/renewal.html'
 
