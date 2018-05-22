@@ -133,6 +133,12 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
         on_delete=models.CASCADE,
     )
 
+    download_count = models.IntegerField(
+        verbose_name=_('amount of downloads'),
+        default=0,
+        blank=False,
+    )
+
     def __str__(self):
         return "{} {} ({}, {}, {})".format(self.name.capitalize(),
                                            self.type.capitalize(),
@@ -190,6 +196,12 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
         upload_to="education/files/summary/",
         help_text=_('Use the \'View on site\' button to download '
                     'the file for inspection.')
+    )
+
+    download_count = models.IntegerField(
+        verbose_name=_('amount of downloads'),
+        default=0,
+        blank=False,
     )
 
     def __str__(self):
