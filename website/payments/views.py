@@ -1,3 +1,4 @@
+"""Views provided by the payments package"""
 from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.admin.views.decorators import staff_member_required
@@ -15,6 +16,9 @@ from .models import Payment
 @method_decorator(permission_required('payments.process_payments'),
                   name='dispatch', )
 class PaymentAdminView(View):
+    """
+    View that processes a payment
+    """
     def get(self, request, *args, **kwargs):
         payment = Payment.objects.filter(pk=kwargs['pk'])
         result = services.process_payment(

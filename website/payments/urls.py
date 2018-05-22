@@ -1,3 +1,4 @@
+"""The routes defined by the payments package"""
 from django.urls import path
 
 from .views import PaymentAdminView

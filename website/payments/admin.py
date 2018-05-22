@@ -1,3 +1,4 @@
+"""Registers admin interfaces for the payments module"""
 from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
 from django.utils.translation import ugettext_lazy as _
@@ -18,6 +19,8 @@ def _show_message(admin, request, n, message, error):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
+    """Manage the payments"""
+
     list_display = ('created_at', 'amount',
                     'processed', 'processing_date', 'type')
     list_filter = ('processed', 'amount',)
@@ -30,6 +33,10 @@ class PaymentAdmin(admin.ModelAdmin):
 
     def changeform_view(self, request, object_id=None, form_url='',
                         extra_context=None):
+        """
+        Renders the change formview
+        Only allow when the payment has not been processed yet
+        """
         obj = None
         if (object_id is not None and
                 request.user.has_perm('payments.process_payments')):
@@ -40,6 +47,8 @@ class PaymentAdmin(admin.ModelAdmin):
             request, object_id, form_url, {'payment': obj})
 
     def get_actions(self, request):
+        """Get the actions for the payments"""
+        """Hide the processing actions if the right permissions are missing"""
         actions = super().get_actions(request)
         if not request.user.has_perm('payments.process_payments'):
             del(actions['process_cash_selected'])
@@ -47,6 +56,7 @@ class PaymentAdmin(admin.ModelAdmin):
         return actions
 
     def process_cash_selected(self, request, queryset):
+        """Process the selected payment as cash"""
         if request.user.has_perm('payments.process_payments'):
             updated_payments = services.process_payment(
                 queryset, Payment.CASH
@@ -56,6 +66,7 @@ class PaymentAdmin(admin.ModelAdmin):
         'Process selected payments (cash)')
 
     def process_card_selected(self, request, queryset):
+        """Process the selected payment as card"""
         if request.user.has_perm('payments.process_payments'):
             updated_payments = services.process_payment(
                 queryset, Payment.CARD
@@ -65,6 +76,7 @@ class PaymentAdmin(admin.ModelAdmin):
         'Process selected payments (card)')
 
     def _process_feedback(self, request, updated_payments):
+        """Show a feedback message for the processing result"""
         rows_updated = len(updated_payments)
         _show_message(
             self, request, rows_updated,

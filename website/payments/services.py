@@ -1,15 +1,16 @@
+"""The services defined by the payments package"""
 from .models import Payment
 
 
 def process_payment(queryset, pay_type=Payment.CARD):
     """
-        Process the payment
+    Process the payment
 
-        :param queryset: Queryset of payments that should be processed
-        :type queryset: QuerySet[Payment]
-        :param pay_type: Type of the payment
-        :type pay_type: String
-        """
+    :param queryset: Queryset of payments that should be processed
+    :type queryset: QuerySet[Payment]
+    :param pay_type: Type of the payment
+    :type pay_type: String
+    """
 
     queryset = queryset.filter(processed=False)
     data = []
