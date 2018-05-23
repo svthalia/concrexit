@@ -100,6 +100,7 @@ tag docker image:
     - echo $GITLAB_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.gitlab.com
   script:
     - docker pull $DOCKER_TAG
+    - docker tag $DOCKER_TAG $DOCKER_TAG_PRODUCTION
     - docker push $DOCKER_TAG_PRODUCTION
   variables:
     DOCKER_TAG: registry.gitlab.com/thaliawww/concrexit:$CI_COMMIT_SHA
