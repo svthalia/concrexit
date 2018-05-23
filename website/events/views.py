@@ -54,6 +54,8 @@ class EventDetail(DetailView):
         context['permissions'] = services.event_permissions(
                 self.request.member, event)
 
+        context['date_now'] = timezone.now()
+
         return context
 
 
