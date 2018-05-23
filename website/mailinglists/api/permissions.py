@@ -13,6 +13,6 @@ class MailingListPermission(permissions.BasePermission):
             return True
 
         if 'secret' in request.GET:
-            return (request.GET['secret'].encode('utf-8')
+            return (request.GET['secret']
                     == settings.MAILINGLIST_API_SECRET)
         return False
