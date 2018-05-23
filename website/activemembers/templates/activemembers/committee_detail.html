@@ -56,13 +56,13 @@
                   {% blocktrans with since=member.committee_since|date:"Y" %}Committee member since: {{ since }}{% endblocktrans %}
                   {% endif %}
                   </p>
+                  {% if member.role %}
+                  <p>{{ member.role }}</p>
+                  {% endif %}
                 </div>
               </div>
               <div class="post-body avatar-subtitle">
                 {{ member.profile.display_name }}
-                {% if member.role %}
-                <p>{{ member.role }}</p>
-                {% endif %}
               </div>
             </div>
           </a>
