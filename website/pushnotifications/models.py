@@ -141,8 +141,9 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                         registration_ids=reg_ids,
                         message_title=self.title,
                         message_body=str(self.body),
-                        color='#E62272',
+                        color='#062272',
                         sound='default',
+                        click_action='https://thalia.nu/pizzas/',
                         **kwargs
                     )
 
