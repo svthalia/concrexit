@@ -27,6 +27,7 @@ def committee_detail(request, id):
     for membership in memberships:
         member = membership.member
         member.chair = membership.chair
+        member.role = membership.role
         member.committee_since = membership.initial_connected_membership.since
         members.append(member)  # list comprehension would be more pythonic?
 
