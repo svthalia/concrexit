@@ -122,7 +122,7 @@
                             <tr>
                                 <td>{{ product.name }}</td>
                                 <td>{{ product.description }}</td>
-                                <td>&euro; {{ product.price }}</td>
+                                <td>&euro;&nbsp;{{ product.price }}</td>
                                 <td>
                                     <form class="form-horizontal pizza-order-form" method="post" action="{% url 'pizzas:order' %}">
                                         {% csrf_token %}
