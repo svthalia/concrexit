@@ -32,6 +32,14 @@ documents\.apps module
     :undoc-members:
     :show-inheritance:
 
+documents\.forms module
+-----------------------
+
+.. automodule:: documents.forms
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 documents\.models module
 ------------------------
 

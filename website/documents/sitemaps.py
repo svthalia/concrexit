@@ -1,3 +1,4 @@
+"""The sitemaps defined by the documents package"""
 from django.contrib import sitemaps
 from django.urls import reverse
 
@@ -5,6 +6,7 @@ from . import models
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
+    """Sitemap for the static pages"""
     priority = 0.5
     changefreq = 'daily'
 
@@ -16,6 +18,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
 
 class MiscellaneousDocumentsSitemap(sitemaps.Sitemap):
+    """Sitemap for misc documents"""
 
     def items(self):
         return models.MiscellaneousDocument.objects.exclude(members_only=True)

@@ -1,6 +1,7 @@
-from django import forms
+"""Registers admin interfaces for the documents module"""
 from django.contrib import admin
 
+from documents.forms import GeneralMeetingForm
 from documents.models import (AnnualDocument, AssociationDocument,
                               GeneralMeeting, Minutes,
                               MiscellaneousDocument)
@@ -8,22 +9,14 @@ from utils.translation import TranslatedModelAdmin
 
 
 class MinutesInline(admin.StackedInline):
+    """Inline for minutes of a general meeting"""
     model = Minutes
     fields = ('file_nl', 'file_en', 'members_only',)
 
 
-class GeneralMeetingForm(forms.ModelForm):
-    class Meta:
-        model = GeneralMeeting
-        exclude = ()
-        widgets = {
-            'documents': admin.widgets.FilteredSelectMultiple(
-                'documents', is_stacked=False)
-        }
-
-
 @admin.register(GeneralMeeting)
 class GeneralMeetingAdmin(TranslatedModelAdmin):
+    """Manage the general meetings"""
     form = GeneralMeetingForm
     inlines = [
         MinutesInline,
@@ -33,17 +26,20 @@ class GeneralMeetingAdmin(TranslatedModelAdmin):
 
 @admin.register(AnnualDocument)
 class AnnualDocument(TranslatedModelAdmin):
+    """Manage the annual documents"""
     fields = ('file', 'subcategory', 'year', 'members_only',)
     list_filter = ('year', 'created', 'last_updated',)
 
 
 @admin.register(AssociationDocument)
 class AssociationDocumentAdmin(TranslatedModelAdmin):
+    """Manage the association documents"""
     fields = ('name', 'file', 'members_only',)
     list_filter = ('created', 'last_updated',)
 
 
 @admin.register(MiscellaneousDocument)
 class MiscellaneousDocumentAdmin(TranslatedModelAdmin):
+    """Manage the miscellaneous documents"""
     fields = ('name', 'file', 'members_only',)
     list_filter = ('created', 'last_updated',)
