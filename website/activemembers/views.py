@@ -6,8 +6,11 @@ from .models import Board, Committee, CommitteeMembership
 
 
 def committee_index(request):
-    """Overview of committees"""
-
+    """
+    View that renders the committee overview page
+    :param request: the request object
+    :return: response containing the HTML
+    """
     committees = Committee.active_committees.all().order_by(
         localize_attr_name('name'))
 
@@ -15,9 +18,14 @@ def committee_index(request):
                   {'committees': committees})
 
 
-def committee_detail(request, id):
-    """View the details of a committee"""
-    committee = get_object_or_404(Committee, pk=id)
+def committee_detail(request, pk):
+    """
+    View that renders the page of one selected committee
+    :param request: the request object
+    :param pk: pk of the selected committee
+    :return:
+    """
+    committee = get_object_or_404(Committee, pk=pk)
 
     members = []
     memberships = (CommitteeMembership
@@ -38,6 +46,11 @@ def committee_detail(request, id):
 
 
 def board_index(request):
+    """
+    View that renders the board overview page
+    :param request: the request object
+    :return: response containing the HTML
+    """
     current_year = datetime_to_lectureyear(datetime.date.today())
     board = get_object_or_404(
         Board, since__year=current_year, until__year=current_year+1)
@@ -50,7 +63,13 @@ def board_index(request):
 
 
 def board_detail(request, since, until=None):
-    """View the details of a board"""
+    """
+    View that renders the board for a specific lecture year
+    :param request: the request object
+    :param since: xxxx in xxxx-yyyy of the lecture year
+    :param until: yyyy in xxxx-yyyy of the lecture year
+    :return: response containing the HTML
+    """
     if not until:  # try to correct /board/2016 to /2016-2017
         return redirect(reverse('activemembers:board',
                                 kwargs={'since': since,

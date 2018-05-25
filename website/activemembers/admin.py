@@ -1,3 +1,4 @@
+"""Registers admin interfaces for the activemembers module"""
 import csv
 import datetime
 
@@ -30,6 +31,7 @@ class CommitteeMembershipInlineFormSet(forms.BaseInlineFormSet):
 
 
 class CommitteeMembershipInline(admin.StackedInline):
+    """Inline for committee memberships"""
     model = models.CommitteeMembership
     formset = CommitteeMembershipInlineFormSet
     can_delete = False
@@ -56,6 +58,7 @@ class CommitteeForm(forms.ModelForm):
 
 @admin.register(models.Committee)
 class CommitteeAdmin(TranslatedModelAdmin):
+    """Manage the committees"""
     inlines = (CommitteeMembershipInline,)
     form = CommitteeForm
     list_display = ('name', 'since', 'until', 'active', 'email')
@@ -81,6 +84,7 @@ class CommitteeAdmin(TranslatedModelAdmin):
 
 @admin.register(models.Board)
 class BoardAdmin(TranslatedModelAdmin):
+    """Manage the board"""
     inlines = (CommitteeMembershipInline,)
     form = CommitteeForm
     exclude = ('is_board',)
@@ -91,6 +95,7 @@ class BoardAdmin(TranslatedModelAdmin):
 
 
 class BoardFilter(admin.SimpleListFilter):
+    """Filter memberships on board-only"""
     title = _('board memberships')
     parameter_name = 'board'
 
@@ -110,6 +115,7 @@ class BoardFilter(admin.SimpleListFilter):
 
 
 class LectureYearFilter(admin.SimpleListFilter):
+    """Filter the memberships on those started or ended in a lecture year"""
     title = _('lecture year')
     parameter_name = 'lecture_year'
 
@@ -134,6 +140,7 @@ class LectureYearFilter(admin.SimpleListFilter):
 
 @admin.register(models.CommitteeMembership)
 class CommitteeMembershipAdmin(TranslatedModelAdmin):
+    """Manage the committee memberships"""
     form = CommitteeMembershipForm
     list_display = ('member', 'committee', 'since', 'until', 'chair', 'role')
     list_filter = ('committee', BoardFilter, LectureYearFilter)
@@ -185,4 +192,5 @@ class CommitteeMembershipAdmin(TranslatedModelAdmin):
 
 @admin.register(models.Mentorship)
 class MentorshipAdmin(admin.ModelAdmin):
+    """Manage the mentorships"""
     list_select_related = ('member',)
