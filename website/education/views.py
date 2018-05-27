@@ -1,3 +1,4 @@
+"""Views provided by the education package"""
 import itertools
 import os
 from datetime import datetime, date
@@ -14,6 +15,11 @@ from .models import Category, Course, Exam, Summary
 
 
 def courses(request):
+    """
+    Renders an overview of the courses
+    :param request: the request object
+    :return: HttpResponse 200 containing the HTML as body
+    """
     categories = Category.objects.all()
     objects = Course.objects.order_by('name_' + request.LANGUAGE_CODE).filter(
         until=None)
@@ -22,6 +28,12 @@ def courses(request):
 
 
 def course(request, id):
+    """
+    Renders the detail page of one specific course
+    :param request: the request object
+    :param id: the primary key of the selected course
+    :return: HttpResponse 200 containing the HTML as body
+    """
     obj = get_object_or_404(Course, pk=id)
     courses = list(obj.old_courses.all())
     courses.append(obj)
@@ -47,12 +59,14 @@ def course(request, id):
                   {'course': obj, 'items': items})
 
 
-def student_participation(request):
-    return render(request, 'education/student_participation.html')
-
-
 @login_required
 def exam(request, id):
+    """
+    Fetches and outputs the specified exam
+    :param request: the request object
+    :param id: the id of the exam
+    :return: 302 if not authenticated else 200 with the file as body
+    """
     exam = get_object_or_404(Exam, id=int(id))
 
     exam.download_count += 1
@@ -66,6 +80,12 @@ def exam(request, id):
 
 @login_required
 def summary(request, id):
+    """
+    Fetches and outputs the specified summary
+    :param request: the request object
+    :param id: the id of the summary
+    :return: 302 if not authenticated else 200 with the file as body
+    """
     obj = get_object_or_404(Summary, id=int(id))
 
     obj.download_count += 1
@@ -79,6 +99,12 @@ def summary(request, id):
 
 @login_required
 def submit_exam(request, id=None):
+    """
+    Renders the form to submit a new exam
+    :param request: the request object
+    :param id: the course id (optional)
+    :return: 302 if not authenticated else 200 with the form HTML as body
+    """
     saved = False
 
     if request.POST:
@@ -104,6 +130,12 @@ def submit_exam(request, id=None):
 
 @login_required
 def submit_summary(request, id=None):
+    """
+    Renders the form to submit a new summary
+    :param request: the request object
+    :param id: the course id (optional)
+    :return: 302 if not authenticated else 200 with the form HTML as body
+    """
     saved = False
 
     if request.POST:
@@ -131,6 +163,12 @@ def submit_summary(request, id=None):
 
 @login_required
 def books(request):
+    """
+    Renders a page with information about book sale
+    Only available to members and to-be members
+    :param request: the request object
+    :return: 403 if no active membership else 200 with the page HTML as body
+    """
     if (request.member and request.member.is_authenticated and
             (request.member.current_membership or
              (request.member.earliest_membership and
