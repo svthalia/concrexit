@@ -32,6 +32,14 @@ members\.apps module
     :undoc-members:
     :show-inheritance:
 
+members\.decorators module
+--------------------------
+
+.. automodule:: members.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 members\.emails module
 ----------------------
 

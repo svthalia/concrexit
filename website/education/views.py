@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from sendfile import sendfile
 
+from members.decorators import membership_required
 from .forms import AddExamForm, AddSummaryForm
 from .models import Category, Course, Exam, Summary
 
@@ -52,6 +53,7 @@ def student_participation(request):
 
 
 @login_required
+@membership_required
 def exam(request, id):
     exam = get_object_or_404(Exam, id=int(id))
 
@@ -65,6 +67,7 @@ def exam(request, id):
 
 
 @login_required
+@membership_required
 def summary(request, id):
     obj = get_object_or_404(Summary, id=int(id))
 
