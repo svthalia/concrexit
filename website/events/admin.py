@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Registers admin interfaces for the events module"""
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
@@ -17,6 +18,7 @@ from . import forms, models
 
 
 def _do_next(request, response):
+    """See DoNextModelAdmin"""
     if 'next' in request.GET and is_safe_url(request.GET['next']):
         return HttpResponseRedirect(request.GET['next'])
     else:
@@ -40,6 +42,7 @@ class DoNextModelAdmin(TranslatedModelAdmin):
 
 
 class RegistrationInformationFieldInline(admin.StackedInline):
+    """The inline for registration information fields in the Event admin"""
     form = forms.RegistrationInformationFieldForm
     extra = 0
     model = models.RegistrationInformationField
@@ -56,6 +59,7 @@ class RegistrationInformationFieldInline(admin.StackedInline):
 
 
 class PizzaEventInline(admin.StackedInline):
+    """The inline for pizza events in the Event admin"""
     model = PizzaEvent
     extra = 0
     max_num = 1
@@ -63,6 +67,7 @@ class PizzaEventInline(admin.StackedInline):
 
 @admin.register(models.Event)
 class EventAdmin(DoNextModelAdmin):
+    """Manage the events"""
     inlines = (RegistrationInformationFieldInline, PizzaEventInline,)
     fields = ('title', 'description', 'start', 'end', 'organiser', 'category',
               'registration_start', 'registration_end', 'cancel_deadline',
@@ -85,6 +90,7 @@ class EventAdmin(DoNextModelAdmin):
                            title=obj.title)
 
     def has_change_permission(self, request, event=None):
+        """Only allow access to the change form if the user is an organiser"""
         if (event is not None and
                 not services.is_organiser(request.member, event)):
             return False
@@ -118,10 +124,12 @@ class EventAdmin(DoNextModelAdmin):
     num_participants.short_description = _('Number of participants')
 
     def make_published(self, request, queryset):
+        """Action to change the status of the event"""
         self._change_published(request, queryset, True)
     make_published.short_description = _('Publish selected events')
 
     def make_unpublished(self, request, queryset):
+        """Action to change the status of the event"""
         self._change_published(request, queryset, False)
     make_unpublished.short_description = _('Unpublish selected events')
 
@@ -149,6 +157,7 @@ class EventAdmin(DoNextModelAdmin):
         form.instance.save()
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
+        """Customise formfield for organiser"""
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == 'organiser':
             # Disable add/change/delete buttons
@@ -158,6 +167,7 @@ class EventAdmin(DoNextModelAdmin):
         return field
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Customise the organiser formfield, limit the options"""
         if db_field.name == 'organiser':
             # Use custom queryset for organiser field
             # Only get the current active committees the user is a member of
@@ -187,6 +197,7 @@ class RegistrationAdmin(DoNextModelAdmin):
     """Custom admin for registrations"""
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
+        """Customise the formfields of event and member"""
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name in ('event', 'member'):
             # Disable add/change/delete buttons
@@ -196,11 +207,13 @@ class RegistrationAdmin(DoNextModelAdmin):
         return field
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Customise the formfields of event and member"""
         if db_field.name == 'event':
             # allow to restrict event
             if request.GET.get('event_pk'):
                 kwargs['queryset'] = models.Event.objects.filter(
                     pk=int(request.GET['event_pk']))
         elif db_field.name == 'member':
+            # Filter the queryset to current members only
             kwargs['queryset'] = Member.current_members.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

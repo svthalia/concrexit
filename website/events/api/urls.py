@@ -1,3 +1,4 @@
+"""Defines the API routes of the events package"""
 from rest_framework import routers
 
 from events.api import viewsets

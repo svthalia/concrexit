@@ -1,3 +1,4 @@
+"""The decorators defined by the events package"""
 from django.core.exceptions import PermissionDenied
 
 from events import services
@@ -5,10 +6,17 @@ from events.models import Event
 
 
 def organiser_only(view_function):
+    """See OrganiserOnly"""
     return OrganiserOnly(view_function)
 
 
 class OrganiserOnly(object):
+    """
+    Decorator that denies access to the page if:
+    1. There is no `event_id` in the request
+    2. The specified event does not exist
+    3. The user is no organiser of the specified event
+    """
     def __init__(self, view_function):
         self.view_function = view_function
 

@@ -1,3 +1,4 @@
+"""Views provided by the events package"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
@@ -14,6 +15,9 @@ from .models import Event, Registration
 
 
 class EventIndex(TemplateView):
+    """
+    Renders the events calendar overview
+    """
     template_name = 'events/index.html'
 
     def get_context_data(self, **kwargs):
@@ -29,6 +33,9 @@ class EventIndex(TemplateView):
 
 
 class EventDetail(DetailView):
+    """
+    Renders a single event detail page
+    """
     model = Event
     queryset = Event.objects.filter(published=True)
     template_name = 'events/event.html'
@@ -61,6 +68,10 @@ class EventDetail(DetailView):
 
 @method_decorator(login_required, name='dispatch')
 class EventRegisterView(View):
+    """
+    Defines a view that allows the user to register for an event using a POST
+    request. The user should be authenticated.
+    """
     def get(self, request, *args, **kwargs):
         return redirect('events:event', pk=kwargs['pk'])
 
@@ -81,6 +92,10 @@ class EventRegisterView(View):
 
 @method_decorator(login_required, name='dispatch')
 class EventCancelView(View):
+    """
+    Defines a view that allows the user to cancel their event registration
+    using a POSt request. The user should be authenticated.
+    """
     def get(self, request, *args, **kwargs):
         return redirect('events:event', pk=kwargs['pk'])
 
@@ -98,6 +113,10 @@ class EventCancelView(View):
 
 @method_decorator(login_required, name='dispatch')
 class RegistrationView(FormView):
+    """
+    Renders a form that allows the user to change the details of their
+    registration. The user should be authenticated.
+    """
     form_class = FieldsForm
     template_name = 'events/registration.html'
     event = None

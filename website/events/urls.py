@@ -1,7 +1,4 @@
-"""
-Events URL Configuration
-"""
-
+"""Routes defined by the events package"""
 from django.conf.urls import url
 
 from events import admin_views
