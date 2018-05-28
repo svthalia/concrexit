@@ -9,6 +9,9 @@ then you'll have to renew it. This'll give you access to activities, the book sa
 our exam collection and a symposium. Come by the board room and we'll help you
 to extend your membership.
 
+Note that if you upgrade your yearly membership to a study membership this year,
+you will get a discount of €{{ membership_price }}.
+
 Are you not able to come by? Then just send us an email: info@thalia.nu.
 
 With kind regards,

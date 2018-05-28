@@ -5,6 +5,7 @@ from django.template import loader
 from django.utils import translation
 from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
+from django.template.defaultfilters import floatformat
 
 from members.models import Member
 from thaliawebsite.settings import settings
@@ -89,7 +90,10 @@ def send_expiration_announcement(dry_run=False):
                 with translation.override(member.language):
                     email_body = loader.render_to_string(
                         'members/email/expiration_announcement.txt',
-                        {'name': member.get_full_name()})
+                        {'name': member.get_full_name(),
+                         'membership_price': floatformat(
+                            settings.MEMBERSHIP_PRICES['year'], 2
+                         )})
                     mail.EmailMessage(
                         _('Membership expiration announcement'),
                         email_body,
