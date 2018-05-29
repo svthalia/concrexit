@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-12 16:18+0100\n"
-"PO-Revision-Date: 2018-02-12 16:21+0100\n"
+"POT-Creation-Date: 2018-05-28 12:39+0200\n"
+"PO-Revision-Date: 2018-05-28 12:42+0200\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.7\n"
 
 #: apps.py:7 models.py:13 templates/documents/index.html:6
 #: templates/documents/index.html:7
@@ -35,7 +35,8 @@ msgstr "Jaarlijks document"
 msgid "Association document"
 msgstr "Verenigingsdocument"
 
-#: models.py:18 models.py:161 models.py:162
+#: models.py:18 models.py:163 models.py:164
+#: templates/documents/meetingyear.html:38
 msgid "Minutes"
 msgstr "Notulen"
 
@@ -107,11 +108,17 @@ msgstr "Algemene ledenvergadering"
 msgid "General meetings"
 msgstr "Algemene ledenvergaderingen"
 
-#: models.py:146
+#: models.py:143
+#, fuzzy
+#| msgid "Documents"
+msgid "documents"
+msgstr "Documenten"
+
+#: models.py:148
 msgid "datetime"
 msgstr "tijdstip"
 
-#: models.py:151
+#: models.py:153
 msgid "location"
 msgstr "locatie"
 
@@ -125,16 +132,17 @@ msgid ""
 "and internal rules can be accessed here. The statues have last been amended "
 "in September 2007; the internal rules have been changed on several "
 "occasions. Other miscellaneous documents can be found here as well, such as "
-"the declaration form and the canteen regulations. Please read these "
-"carefully, so that we can all have a pleasant time when having drinks in the "
-"canteen."
+"the expanse form. The documents regarding the canteens can be found on"
 msgstr ""
 "7 november 1990 is Thalia officieel opgericht. De bijbehorende statuten en "
 "huisregels zijn hier opvraagbaar. De statuten zijn in september 2007 voor "
 "het laatst bijgewerkt; de huisregels zijn meerdere keren veranderd. Verder "
-"zijn hier diverse andere documenten te vinden, zoals het declaratieformulier "
-"en de kantinereglementen. Lees ze door zodat we allemaal op een fijne manier "
-"door kunnen borrelen in de kantine."
+"zijn hier diverse andere documenten te vinden, zoals het "
+"declaratieformulier. De kantineregelementen zijn te vinden op"
+
+#: templates/documents/index.html:19
+msgid "the website of umbrella association Olympus"
+msgstr "de website van koepelvereniging Olympus"
 
 #: templates/documents/index.html:31
 msgid "Policy Documents &amp; Annual Reports"
