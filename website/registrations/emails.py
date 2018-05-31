@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 from . import models
 
 

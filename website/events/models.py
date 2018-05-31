@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.text import format_lazy
 from tinymce.models import HTMLField
 
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 

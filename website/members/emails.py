@@ -8,7 +8,7 @@ from django.utils.translation import ugettext as _
 from django.template.defaultfilters import floatformat
 
 from members.models import Member
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 
 
 def send_membership_announcement(dry_run=False):

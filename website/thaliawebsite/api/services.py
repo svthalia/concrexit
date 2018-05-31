@@ -1,4 +1,4 @@
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 from utils.templatetags.thumbnail import thumbnail
 
 

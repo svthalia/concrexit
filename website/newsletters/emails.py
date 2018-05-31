@@ -5,7 +5,7 @@ from django.utils import translation
 
 from members.models import Member
 from partners.models import Partner
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 
 
 def send_newsletter(request, newsletter):

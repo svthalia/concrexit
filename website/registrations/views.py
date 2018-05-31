@@ -16,7 +16,7 @@ from django.views.generic import FormView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
 from members.models import Membership
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 from . import emails, forms, services
 from .models import Entry, Registration, Renewal
 

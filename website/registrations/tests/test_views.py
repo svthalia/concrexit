@@ -18,7 +18,7 @@ from members.models import Membership
 from registrations import views
 from registrations.models import Entry, Registration, Renewal
 from registrations.views import RenewalFormView
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 
 
 def _get_mock_request(method='GET', is_staff=False,
