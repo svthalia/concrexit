@@ -11,7 +11,7 @@ from events import services
 from events.exceptions import RegistrationError
 from events.models import Event, Registration, RegistrationInformationField
 from pizzas.models import PizzaEvent
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 from thaliawebsite.templatetags.bleach_tags import bleach
 
 

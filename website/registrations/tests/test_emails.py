@@ -14,7 +14,7 @@ from payments.models import Payment
 from registrations import emails
 from registrations.emails import _send_email
 from registrations.models import Registration, Renewal
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 
 
 class EmailsTest(TestCase):

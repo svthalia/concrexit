@@ -2,7 +2,7 @@ from django.utils import timezone
 
 from activemembers.models import CommitteeMembership, Mentorship
 from members.models import Member
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 from utils.snippets import datetime_to_lectureyear
 
 

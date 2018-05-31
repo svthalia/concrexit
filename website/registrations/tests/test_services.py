@@ -11,7 +11,7 @@ from members.models import Member, Membership
 from payments.models import Payment
 from registrations import services
 from registrations.models import Entry, Registration, Renewal
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 from utils.snippets import datetime_to_lectureyear
 
 

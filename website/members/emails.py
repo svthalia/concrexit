@@ -7,7 +7,7 @@ from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
 
 from members.models import Member
-from thaliawebsite.settings import settings
+from thaliawebsite import settings
 
 
 def send_membership_announcement(dry_run=False):
