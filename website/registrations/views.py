@@ -1,4 +1,5 @@
 """Views provided by the registrations package"""
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.admin.views.decorators import staff_member_required
@@ -16,7 +17,6 @@ from django.views.generic import FormView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
 from members.models import Membership
-from thaliawebsite import settings
 from . import emails, forms, services
 from .models import Entry, Registration, Renewal
 

@@ -1,6 +1,7 @@
 import uuid
 from unittest import mock
 
+from django.conf import settings
 from django.core import mail
 from django.template import loader
 from django.template.defaultfilters import floatformat
@@ -14,7 +15,6 @@ from payments.models import Payment
 from registrations import emails
 from registrations.emails import _send_email
 from registrations.models import Registration, Renewal
-from thaliawebsite import settings
 
 
 class EmailsTest(TestCase):

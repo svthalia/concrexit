@@ -1,3 +1,4 @@
+from django.conf import settings
 from datetime import timedelta
 
 from django.core import mail
@@ -8,7 +9,6 @@ from django.utils.translation import ugettext as _
 from django.template.defaultfilters import floatformat
 
 from members.models import Member
-from thaliawebsite import settings
 
 
 def send_membership_announcement(dry_run=False):

@@ -1,4 +1,4 @@
-from thaliawebsite import settings
+from django.conf import settings
 from utils.templatetags.thumbnail import thumbnail
 
 

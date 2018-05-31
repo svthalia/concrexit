@@ -1,4 +1,5 @@
 """The emails defined by the registrations package"""
+from django.conf import settings
 from django.core import mail
 from django.template import loader
 from django.template.defaultfilters import floatformat
@@ -6,7 +7,6 @@ from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
-from thaliawebsite import settings
 from . import models
 
 

@@ -1,12 +1,11 @@
 from __future__ import unicode_literals
 
-from django.conf import settings as django_settings
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import override
 from pyfcm import FCMNotification
 
-from thaliawebsite import settings
 from utils.translation import MultilingualField, ModelTranslateMeta
 
 
@@ -39,7 +38,7 @@ class Device(models.Model):
         verbose_name=_("active"), default=True,
         help_text=_("Inactive devices will not be sent notifications")
     )
-    user = models.ForeignKey(django_settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
                              blank=False,
                              null=False)
@@ -81,7 +80,7 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
         (BOARD, _("Board")),
     )
 
-    users = models.ManyToManyField(django_settings.AUTH_USER_MODEL)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     title = MultilingualField(
         models.CharField,
         max_length=150,

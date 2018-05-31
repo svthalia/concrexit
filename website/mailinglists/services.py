@@ -1,8 +1,8 @@
+from django.conf import settings
 from django.utils import timezone
 
 from activemembers.models import CommitteeMembership, Mentorship
 from members.models import Member
-from thaliawebsite import settings
 from utils.snippets import datetime_to_lectureyear
 
 

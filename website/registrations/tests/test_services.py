@@ -1,6 +1,7 @@
 from datetime import timedelta
 from unittest import mock
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase
@@ -11,7 +12,6 @@ from members.models import Member, Membership
 from payments.models import Payment
 from registrations import services
 from registrations.models import Entry, Registration, Renewal
-from thaliawebsite import settings
 from utils.snippets import datetime_to_lectureyear
 
 
