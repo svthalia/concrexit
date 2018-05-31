@@ -62,7 +62,7 @@
         {% if request.member and request.member.current_membership is None %}
         <div class="announcement">
             <i class="fa fa-id-card"></i>
-            {% trans "You're currently not a member of Thalia. Renew your membership to get access to all parts of the website." %}
+            <a href="{% url 'registrations:renew' %}">{% trans "You're currently not a member of Thalia. Renew your membership to get access to all parts of the website." %}</a>
         </div>
         {% endif %}
 
