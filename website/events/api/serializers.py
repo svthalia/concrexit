@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
@@ -11,7 +12,6 @@ from events import services
 from events.exceptions import RegistrationError
 from events.models import Event, Registration, RegistrationInformationField
 from pizzas.models import PizzaEvent
-from thaliawebsite import settings
 from thaliawebsite.templatetags.bleach_tags import bleach
 
 

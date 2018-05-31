@@ -3,6 +3,7 @@ import string
 import unicodedata
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
@@ -10,10 +11,9 @@ from django.utils import timezone
 import members
 from members.models import Membership, Profile
 from payments.models import Payment
-from thaliawebsite import settings
 from utils.snippets import datetime_to_lectureyear
-from . import emails
-from .models import Entry, Registration, Renewal
+from registrations import emails
+from registrations.models import Entry, Registration, Renewal
 
 
 def _generate_username(registration):

@@ -1,6 +1,6 @@
-from rest_framework import permissions
+from django.conf import settings
 
-from thaliawebsite import settings
+from rest_framework import permissions
 
 
 class MailingListPermission(permissions.BasePermission):

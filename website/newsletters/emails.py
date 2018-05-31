@@ -1,11 +1,11 @@
 """The emails defined by the newsletters package"""
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.utils import translation
 
 from members.models import Member
 from partners.models import Partner
-from thaliawebsite import settings
 
 
 def send_newsletter(request, newsletter):

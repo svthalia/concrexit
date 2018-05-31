@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
@@ -8,7 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.text import format_lazy
 from tinymce.models import HTMLField
 
-from thaliawebsite import settings
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 

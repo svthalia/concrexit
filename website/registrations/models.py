@@ -1,6 +1,7 @@
 """The models defined by the registrations package"""
 import uuid
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -9,8 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Membership, Profile
-from thaliawebsite import settings
-from . import emails
+from registrations import emails
 
 
 class Entry(models.Model):

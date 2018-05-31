@@ -1,6 +1,7 @@
 from unittest import mock
 from unittest.mock import MagicMock, Mock
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth import get_user_model
@@ -18,7 +19,6 @@ from members.models import Membership
 from registrations import views
 from registrations.models import Entry, Registration, Renewal
 from registrations.views import RenewalFormView
-from thaliawebsite import settings
 
 
 def _get_mock_request(method='GET', is_staff=False,

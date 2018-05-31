@@ -1,11 +1,10 @@
-
 import datetime
 
+from django.conf import settings
 from django.core.mail import EmailMessage
 from django.utils import timezone
 
 from partners.models import Vacancy
-from thaliawebsite import settings
 
 
 def send_vacancy_expiration_notifications(dry_run=False):
