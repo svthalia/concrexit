@@ -189,7 +189,8 @@
                     <div class="footer-icon-gitlab"><a href="https://gitlab.science.ru.nl/thalia/"><img src="{% static "images/footer_icons/gitlab.png" %}" alt="gitlab"></a></div>
                 </div>
                 <div class="clearfix"></div>
-                <p class="copyright">Copyright {% now "Y" %} {% trans 'Study Association Thalia' %}</p>
+                <p class="footer-text">Copyright {% now "Y" %} {% trans 'Study Association Thalia' %}</p>
+                <p class="footer-text"><a href="{% url 'privacy-policy' %}">{% trans "privacy policy"|capfirst %}</a></p>
             </div>
         </div>
         <!-- /#bottom -->
