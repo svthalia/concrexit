@@ -19,9 +19,8 @@ def send_vacancy_expiration_notifications(dry_run=False):
         subject = ('[WEBSITE] Vacancy \'{}\' by {} will soon expire'
                    .format(exp_vacancy.title, exp_vacancy.get_company_name()))
         text_message = ('Hello!\n\nA vacancy of {}, \'{}\' will '
-                        'expire within the next 30 days. Maybe you '
-                        'should contact them to negotiate a new deal. '
-                        '\n\nKisses,\nThe website'
+                        'expire within the next 30 days.'
+                        '\n\nKind regards,\nThe website'
                         .format(exp_vacancy.title,
                                 exp_vacancy.get_company_name()))
         recipient = settings.PARTNER_EMAIL
