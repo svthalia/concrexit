@@ -51,6 +51,9 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         queryset = Event.objects.filter(published=True)
 
+        if self.action == 'retrieve':
+            return queryset
+
         try:
             start = _extract_date(self.request.query_params.get('start', None))
         except (ValueError, InvalidTimeError) as e:
