@@ -43,7 +43,7 @@
         <label class="control-label">{% trans "Email Address" %}</label>
         <div class="controls">
             <input type="text" readonly="readonly" value="{{ request.member.email }}" />
-            <span class="help-block">{% trans "Want to change your name or email address? Please send an email to info@thalia.nu." %}</span>
+            <span class="help-block"><a href="{% url 'members:email-change' %}">{% trans "Click here to change your email address." %}</a></span>
         </div>
     </div>
 

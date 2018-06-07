@@ -6,8 +6,8 @@ from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+from members import emails, models
 from .models import Profile
-from members import emails
 
 
 class ProfileForm(forms.ModelForm):
@@ -116,3 +116,9 @@ class UserChangeForm(BaseUserChangeForm):
             self.cleaned_data['username'] = (self.cleaned_data['username']
                                              .lower())
         super().clean()
+
+
+class EmailChangeForm(forms.ModelForm):
+    class Meta:
+        model = models.EmailChange
+        fields = ['email', 'member']

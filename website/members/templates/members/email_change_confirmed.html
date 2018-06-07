@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "change email"|capfirst %} - {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <h1>{% trans "change email" %}</h1>
+    <p class="tcenter">
+    {% blocktrans trimmed %}
+      The confirmation of your email change was successful. Check your new inbox for the verification email.
+    {% endblocktrans %}
+    </p>
+{% endblock %}
