@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-28 12:39+0200\n"
-"PO-Revision-Date: 2018-05-28 12:42+0200\n"
+"POT-Creation-Date: 2018-06-07 16:24+0200\n"
+"PO-Revision-Date: 2018-06-07 16:25+0200\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -72,7 +72,7 @@ msgstr "alleen voor leden"
 msgid "Annual documents"
 msgstr "Jaarlijkse documenten"
 
-#: models.py:68 templates/documents/index.html:46
+#: models.py:68 templates/documents/index.html:50
 msgid "Annual report"
 msgstr "Jaarverslag"
 
@@ -126,29 +126,29 @@ msgstr "locatie"
 msgid "Miscellaneous Association Documents"
 msgstr "Overige Verenigingsdocumenten"
 
-#: templates/documents/index.html:19
+#: templates/documents/index.html:20
 msgid ""
 "Thalia was officially founded on November 7th, 1990. The relevant statutes "
 "and internal rules can be accessed here. The statues have last been amended "
 "in September 2007; the internal rules have been changed on several "
 "occasions. Other miscellaneous documents can be found here as well, such as "
-"the expanse form. The documents regarding the canteens can be found on"
+"the expanse form. The documents regarding the canteens can be found on <a "
+"href=\"https://olympus.science.ru.nl\">the website of umbrella association "
+"Olympus</a>."
 msgstr ""
 "7 november 1990 is Thalia officieel opgericht. De bijbehorende statuten en "
 "huisregels zijn hier opvraagbaar. De statuten zijn in september 2007 voor "
 "het laatst bijgewerkt; de huisregels zijn meerdere keren veranderd. Verder "
 "zijn hier diverse andere documenten te vinden, zoals het "
-"declaratieformulier. De kantineregelementen zijn te vinden op"
+"declaratieformulier. De kantineregelementen zijn te vinden op <a href="
+"\"https://olympus.science.ru.nl\">de website van koepelvereniging Olympus</"
+"a>."
 
-#: templates/documents/index.html:19
-msgid "the website of umbrella association Olympus"
-msgstr "de website van koepelvereniging Olympus"
-
-#: templates/documents/index.html:31
+#: templates/documents/index.html:35
 msgid "Policy Documents &amp; Annual Reports"
 msgstr "Beleidsdocumenten &amp; Jaarverslagen"
 
-#: templates/documents/index.html:34
+#: templates/documents/index.html:38
 msgid ""
 "Every candidate board of Thalia drafts a policy document before being "
 "installed, to detail their plans for the next year. This also includes a "
@@ -169,15 +169,15 @@ msgstr ""
 "er zijn georganiseerd. In het onderstaande overzicht zijn de afgelopen "
 "beleidsplannen en jaarverslagen terug te vinden."
 
-#: templates/documents/index.html:41
+#: templates/documents/index.html:45
 msgid "Policy"
 msgstr "Beleidsdocument"
 
-#: templates/documents/index.html:55
+#: templates/documents/index.html:59
 msgid "General Meetings"
 msgstr "Algemene Ledenvergaderingen"
 
-#: templates/documents/index.html:58
+#: templates/documents/index.html:62
 msgid ""
 "The General Meetings (ALVs) can be attended by all members, honorary members "
 "and donors. Thalia organizes at least two general meetings each year. "
@@ -192,7 +192,7 @@ msgstr ""
 "en begunstigers die niet aanwezig waren teruglezen wat er allemaal besproken "
 "is."
 
-#: templates/documents/index.html:66
+#: templates/documents/index.html:70
 msgid "Earlier.."
 msgstr "Eerder.."
 
@@ -217,6 +217,9 @@ msgstr "ALV-stukken zijn alleen in te zien<br>door ingelogde gebruikers."
 #, python-format
 msgid "There are no General Meetings available for %(year)s-%(nextyear)s"
 msgstr "Er zijn geen ALV's beschikbaar van %(year)s-%(nextyear)s"
+
+#~ msgid "the website of umbrella association Olympus"
+#~ msgstr "de website van koepelvereniging Olympus"
 
 #~ msgid "General Meetings of"
 #~ msgstr "ALV's van"
