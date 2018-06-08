@@ -54,8 +54,10 @@ RUN if [ "$install_dev_requirements" -eq 1 ]; then \
 # Create entry points
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY resources/entrypoint_production.sh /usr/local/bin/entrypoint_production.sh
+COPY resources/entrypoint_celery.sh /usr/local/bin/entrypoint_celery.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh && \
-    chmod +x /usr/local/bin/entrypoint_production.sh
+    chmod +x /usr/local/bin/entrypoint_production.sh && \
+    chmod +x /usr/local/bin/entrypoint_celery.sh
 
 # copy app source
 COPY website /usr/src/app/website/

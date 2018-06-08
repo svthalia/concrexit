@@ -6,6 +6,11 @@ services:
             - /var/lib/postgresql/
         environment: &postgresvars
             POSTGRES_DB: thalia
+    redis:
+        image: redis:4.0.9
+        command: redis-server --appendonly yes
+        volumes:
+          - redis:/data
     web:
         image: registry.gitlab.com/thaliawww/concrexit
         build: .
@@ -17,10 +22,27 @@ services:
         volumes:
             - ./website:/usr/src/app/website/
             - concrexit:/concrexit/
-        environment:
+        environment: &webvars
             <<: *postgresvars
             DJANGO_DEBUG: 'True'
             DJANGO_POSTGRES_HOST: postgres
+            CELERY_REDIS_HOST: redis
+            YOLO_ENV: 'tralala'
+    celery:
+        image: registry.gitlab.com/thaliawww/concrexit
+        build: .
+        entrypoint: /usr/local/bin/entrypoint_celery.sh
+        volumes_from:
+          - web
+        links:
+          - postgres
+        depends_on:
+          - redis
+        environment:
+            <<: *webvars
+
 volumes:
     concrexit:
+        driver: local
+    redis:
         driver: local
