@@ -129,6 +129,7 @@ if os.environ.get('DJANGO_EMAIL_HOST'):
 CELERY_BROKER_URL = 'redis://{}:6379/0'.format(
     os.environ.get('CELERY_REDIS_HOST')
 )
+CELERY_ENABLED = True
 
 # Secure headers
 X_FRAME_OPTIONS = 'DENY'

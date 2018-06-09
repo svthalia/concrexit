@@ -247,6 +247,7 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 # http://docs.celeryproject.org/en/latest/getting-started/brokers/redis.html#id1
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 15778800}
 CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ENABLED = False
 
 # Membership prices
 MEMBERSHIP_PRICES = {

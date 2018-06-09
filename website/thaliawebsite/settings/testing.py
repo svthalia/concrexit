@@ -41,3 +41,6 @@ PASSWORD_HASHERS = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )]
+
+# Celery not needed for testing
+CELERY_ENABLED = False

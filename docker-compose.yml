@@ -19,6 +19,7 @@ services:
             - 8000:8000
         depends_on:
             - postgres
+            - celery
         volumes:
             - ./website:/usr/src/app/website/
             - concrexit:/concrexit/
@@ -27,15 +28,13 @@ services:
             DJANGO_DEBUG: 'True'
             DJANGO_POSTGRES_HOST: postgres
             CELERY_REDIS_HOST: redis
-            YOLO_ENV: 'tralala'
     celery:
         image: registry.gitlab.com/thaliawww/concrexit
         build: .
         entrypoint: /usr/local/bin/entrypoint_celery.sh
-        volumes_from:
-          - web
-        links:
-          - postgres
+        volumes:
+            - ./website:/usr/src/app/website/
+            - concrexit:/concrexit/
         depends_on:
           - redis
         environment:

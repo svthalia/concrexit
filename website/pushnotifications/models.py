@@ -2,14 +2,19 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import override
+from django.utils.translation import ugettext_lazy as _
 from pyfcm import FCMNotification
 
+from utils.tasks import revoke_task, schedule_task
 from utils.translation import MultilingualField, ModelTranslateMeta
+from .tasks import send_message
+from thaliawebsite import celery_app
 
 
 class Category(models.Model, metaclass=ModelTranslateMeta):
+    """Describes a Message category"""
+
     key = models.CharField(max_length=16, primary_key=True)
 
     name = MultilingualField(
@@ -27,6 +32,8 @@ def default_receive_category():
 
 
 class Device(models.Model):
+    """Describes a device"""
+
     DEVICE_TYPES = (
         ('ios', 'iOS'),
         ('android', 'Android')
@@ -61,7 +68,19 @@ class Device(models.Model):
         unique_together = ('registration_id', 'user',)
 
 
+class MessageManager(models.Manager):
+    """Returns manual messages only"""
+
+    def get_queryset(self):
+        return (super().get_queryset()
+                .filter(scheduledmessage__task_id=None))
+
+
 class Message(models.Model, metaclass=ModelTranslateMeta):
+    """Describes a push notification"""
+
+    objects = MessageManager()
+
     GENERAL = 'general'
     PIZZA = 'pizza'
     EVENT = 'event'
@@ -173,3 +192,44 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
 
             return result_list
         return None
+
+
+class ScheduledMessageManager(models.Manager):
+    """Returns scheduled messages only"""
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+
+class ScheduledMessage(Message, metaclass=ModelTranslateMeta):
+    """Describes a scheduled push notification"""
+
+    objects = ScheduledMessageManager()
+
+    task_id = models.CharField(max_length=50, blank=True, null=True)
+    time = models.DateTimeField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._time = self.time
+
+    def schedule(self):
+        """Schedules a Celery task to send this message"""
+        return schedule_task(send_message, args=(self.pk,), eta=self.time)
+
+    def save(self, *args, **kwargs):
+        """Custom save method which also schedules the task"""
+
+        if not (self._time == self.time):
+            if self.task_id:
+                # Revoke that task in case its time has changed
+                revoke_task(self.task_id)
+            super().save(*args, **kwargs)
+            self.task_id = self.schedule()
+
+        super().save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        if self.task_id:
+            celery_app.control.revoke(self.task_id)
+        return super().delete(using, keep_parents)

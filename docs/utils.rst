@@ -33,6 +33,14 @@ utils\.snippets module
     :undoc-members:
     :show-inheritance:
 
+utils\.tasks module
+-------------------
+
+.. automodule:: utils.tasks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 utils\.threading module
 -----------------------
 
