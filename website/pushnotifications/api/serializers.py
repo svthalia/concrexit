@@ -10,6 +10,7 @@ class DeviceSerializer(ModelSerializer):
 
     receive_category = ManyRelatedField(
         allow_empty=True,
+        required=False,
         child_relation=PrimaryKeyRelatedField(allow_empty=True,
                                               queryset=Category.objects.all(),
                                               required=False)
