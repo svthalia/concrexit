@@ -1,3 +1,4 @@
+"""The models defined by the activemembers package"""
 import datetime
 import logging
 
@@ -44,7 +45,7 @@ class ActiveCommitteeManager(models.Manager):
 
 
 class Committee(models.Model, metaclass=ModelTranslateMeta):
-    """A committee"""
+    """Describes a committee"""
 
     unfiltered_objects = UnfilteredSortedManager()
     objects = CommitteeManager()
@@ -115,7 +116,6 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
         max_length=50)
 
     def clean(self):
-        """Validation"""
         if ((self.contact_email is not None and
                 self.contact_mailinglist is not None) or
             (self.contact_email is None and
@@ -142,6 +142,10 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
 
 
 class BoardManager(models.Manager):
+    """
+    Custom manager that filters out
+    instances of Committee that are not boards
+    """
 
     use_in_migrations = True
 
@@ -180,7 +184,6 @@ class Board(Committee):
                                                     str(self.until.year)])
 
     def validate_unique(self, *args, **kwargs):
-        """ Check uniqueness"""
         super().validate_unique(*args, **kwargs)
         boards = Board.objects.all()
         if self.since is not None:
@@ -199,14 +202,16 @@ class Board(Committee):
 
 
 class ActiveMembershipManager(models.Manager):
-    """Get only active memberships"""
+    """
+    Customs manager that gets the currently active committee memberships
+    """
 
     def get_queryset(self):
-        """Get the currently active committee memberships"""
         return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
 class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
+    """Describes a committee membership"""
     objects = models.Manager()
     active_memberships = ActiveMembershipManager()
 
@@ -253,7 +258,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def initial_connected_membership(self):
-        """ Find the oldest membership directly connected to the current one"""
+        """Find the oldest membership directly connected to the current one"""
         qs = CommitteeMembership.objects.filter(
             committee=self.committee,
             member=self.member,
@@ -270,7 +275,6 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         return self.until is None or self.until > timezone.now().date()
 
     def clean(self):
-        """Validation"""
         if self.until and (not self.since or self.until < self.since):
             raise ValidationError(
                 {'until': _("End date can't be before start date")})
@@ -296,7 +300,6 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
             pass
 
     def validate_unique(self, *args, **kwargs):
-        """ Check uniqueness"""
         super().validate_unique(*args, **kwargs)
         # Check if a committee has more than one chair
         if self.chair:
@@ -354,6 +357,7 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Mentorship(models.Model):
+    """Describe a mentorship during the orientation"""
     member = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
