@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-14 21:37+0100\n"
-"PO-Revision-Date: 2018-03-14 21:38+0100\n"
+"POT-Creation-Date: 2018-06-13 20:07+0200\n"
+"PO-Revision-Date: 2018-06-13 20:08+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,25 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
-
-#: admin.py:95
-msgid "board memberships"
-msgstr "Bestuurslidmaatschappen"
+"X-Generator: Poedit 2.0.6\n"
 
 #: admin.py:100
+msgid "board memberships"
+msgstr "bestuurslidmaatschappen"
+
+#: admin.py:105
 msgid "Only board memberships"
 msgstr "Alleen bestuurslidmaatschappen"
 
-#: admin.py:101
+#: admin.py:106
 msgid "No board memberships"
 msgstr "Geen bestuurslidmaatschappen"
 
-#: admin.py:114
+#: admin.py:120
 msgid "lecture year"
 msgstr "collegejaar"
 
-#: admin.py:147
+#: admin.py:143
+msgid "active memberships"
+msgstr "actieve lidmaatschappen"
+
+#: admin.py:148
+msgid "Active"
+msgstr "Actief"
+
+#: admin.py:149
+msgid "Inactive"
+msgstr "Inactief"
+
+#: admin.py:176
 msgid ""
 "Do not edit existing memberships if the chair of a committee has changed, "
 "add a new committeemembership instead."
@@ -42,79 +54,79 @@ msgstr ""
 "Pas geen bestaande lidmaatschappen aan als de voorzitter van een commissie "
 "is veranderd. Voeg in de plaats daarvan een nieuw commissielidmaatschap toe."
 
-#: admin.py:160
+#: admin.py:189
 msgid "First name"
 msgstr "Voornaam"
 
-#: admin.py:161
+#: admin.py:190
 msgid "Last name"
 msgstr "Achernaam"
 
-#: admin.py:162
+#: admin.py:191
 msgid "Email"
 msgstr "Email"
 
-#: admin.py:163 models.py:222
+#: admin.py:192 models.py:227
 msgid "Committee"
 msgstr "Commissie"
 
-#: admin.py:164 models.py:226
+#: admin.py:193 models.py:231
 msgid "Committee member since"
 msgstr "Commissielid sinds"
 
-#: admin.py:165 models.py:232
+#: admin.py:194 models.py:237
 msgid "Committee member until"
 msgstr "Commissielid tot"
 
-#: admin.py:166 models.py:240
+#: admin.py:195 models.py:245
 msgid "Chair of the committee"
 msgstr "Voorzitter van de commissie"
 
-#: admin.py:167
+#: admin.py:196
 msgid "Role"
 msgstr "Rol"
 
-#: admin.py:183
+#: admin.py:212
 msgid "Export selected memberships"
 msgstr "Exporteer de geselecteerde lidmaatschappen"
 
-#: apps.py:7
+#: apps.py:9
 msgid "Active members"
 msgstr "Actieve leden"
 
-#: models.py:56
+#: models.py:57
 msgid "Committee name"
 msgstr "Commissienaam"
 
-#: models.py:62
+#: models.py:63
 msgid "Description"
 msgstr "Beschrijving"
 
-#: models.py:66
+#: models.py:67
 msgid "Image"
 msgstr "Afbeelding"
 
-#: models.py:79
+#: models.py:80
 msgid "permissions"
 msgstr "permissies"
 
-#: models.py:84
+#: models.py:85
 msgid "founded in"
 msgstr "opgericht in"
 
-#: models.py:90
+#: models.py:91
 msgid "existed until"
 msgstr "bestond tot"
 
-#: models.py:98
+#: models.py:99
 msgid "contact email address"
 msgstr "contact e-mailadres"
 
-#: models.py:105
+#: models.py:106
 msgid "contact mailing list"
 msgstr "contact mailinglijst"
 
-#: models.py:112
+#: models.py:113
 msgid "Wiki namespace"
 msgstr "Wiki namespace"
 
@@ -130,81 +142,81 @@ msgstr "commissie"
 msgid "committees"
 msgstr "commissies"
 
-#: models.py:164
+#: models.py:168
 msgid "Is this a board"
 msgstr "Is dit een bestuur"
 
-#: models.py:171
+#: models.py:175
 msgid "Access the board wiki"
 msgstr "Toegang tot bestuurswiki"
 
-#: models.py:197 models.py:198
+#: models.py:200 models.py:201
 msgid "A board already exists for those years"
 msgstr "Er bestaat al een bestuur voor die jaren"
 
-#: models.py:216 models.py:360
+#: models.py:221 models.py:364
 msgid "Member"
 msgstr "Lid"
 
-#: models.py:227
+#: models.py:232
 msgid "The date this member joined the committee in this role"
 msgstr "De datum waarop deze persoon lid werd deze commissie in deze rol"
 
-#: models.py:233
+#: models.py:238
 msgid "A member of this committee until this time (can't be in the future)."
 msgstr ""
 "De datum waarop deze persoon de commissie verliet (kan niet in de toekomst "
 "liggen)"
 
-#: models.py:241
+#: models.py:246
 msgid "There can only be one chair at a time!"
 msgstr "Er kan maar één voorzitter tegelijkertijd zijn!"
 
-#: models.py:247
+#: models.py:252
 msgid "role"
 msgstr "rol"
 
-#: models.py:248
+#: models.py:253
 msgid "The role of this member"
 msgstr "De rol van dit lid binnen de commissie"
 
-#: models.py:276
+#: models.py:280
 msgid "End date can't be before start date"
 msgstr "De einddatum kan niet voor de startdatum liggen"
 
-#: models.py:279
+#: models.py:283
 msgid "End date can't be in the future"
 msgstr "De einddatum kan niet in de toekomst liggen"
 
-#: models.py:284
+#: models.py:288
 msgid "Start date can't be before committee start date"
 msgstr "De begindatum kan niet voor de begindatum van de commissie liggen"
 
-#: models.py:289
+#: models.py:293
 msgid "Start date can't be after committee end date"
 msgstr "De begindatum kan niet na de einddatum van de commissie liggen"
 
-#: models.py:294
+#: models.py:298
 msgid "End date cannot be set for boards"
 msgstr "Voor besturen kan geen einddatum worden opgegeven"
 
-#: models.py:317
+#: models.py:320
 msgid "There already is a chair for this time period"
 msgstr "Er is al een voorzitter voor deze periode"
 
-#: models.py:334
+#: models.py:337
 msgid "This member is already in the committee for this period"
 msgstr "Deze persoon is al lid van deze commissie in de aangegeven periode"
 
-#: models.py:352
+#: models.py:355
 msgid "committee membership"
 msgstr "commissielidmaatschap"
 
-#: models.py:353
+#: models.py:356
 msgid "committee memberships"
 msgstr "commissielidmaatschappen"
 
-#: models.py:365
+#: models.py:369
 #, python-brace-format
 msgid "{name} mentor in {year}"
 msgstr "{name} mentor in {year}"
@@ -299,7 +311,7 @@ msgstr "Commissielid sinds: ?"
 msgid "Committee member since: %(since)s"
 msgstr "Commissielid sinds: %(since)s"
 
-#: templates/activemembers/committee_detail.html:68
+#: templates/activemembers/committee_detail.html:71
 msgid "This committee doesn't have any members?"
 msgstr "Deze commissie heeft geen leden?"
 
