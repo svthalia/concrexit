@@ -1,3 +1,4 @@
+"""The models defined by the education package"""
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -9,6 +10,7 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Category(models.Model, metaclass=ModelTranslateMeta):
+    """Describes a course category"""
     name = MultilingualField(
         models.CharField,
         max_length=64,
@@ -26,6 +28,7 @@ class Category(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Course(models.Model, metaclass=ModelTranslateMeta):
+    """Describes a course"""
     name = MultilingualField(
         models.CharField,
         max_length=255
@@ -79,6 +82,8 @@ class Course(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Exam(models.Model, metaclass=ModelTranslateMeta):
+    """Describes an exam"""
+
     EXAM_TYPES = (
         ('document', _('Document')),
         ('exam', _('Exam')),
@@ -159,6 +164,7 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Summary(models.Model, metaclass=ModelTranslateMeta):
+    """Describes a summary"""
     name = models.CharField(
         max_length=255,
         verbose_name=_('summary name'),

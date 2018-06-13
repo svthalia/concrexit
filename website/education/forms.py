@@ -1,3 +1,4 @@
+"""The forms defined by the education package"""
 import datetime
 
 from django.conf import settings
@@ -11,6 +12,7 @@ from .models import Course, Exam, Summary
 
 
 class AddExamForm(ModelForm):
+    """Custom form to add exams, changes the possible years of the date"""
     this_year = datetime.date.today().year
     years = list(reversed(range(this_year - 8, this_year + 1)))
 
@@ -29,6 +31,10 @@ class AddExamForm(ModelForm):
 
 
 class AddSummaryForm(ModelForm):
+    """
+    Custom form to add summaries, orders courses by name and formats the
+    year as lecture years
+    """
     course = ModelChoiceField(
         queryset=Course.objects.order_by('name_' + settings.LANGUAGE_CODE),
         empty_label=None)
