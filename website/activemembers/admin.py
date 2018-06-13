@@ -3,6 +3,7 @@ import csv
 import datetime
 
 from django import forms
+from django.db.models import Q
 from django.contrib import admin, messages
 from django.contrib.auth.models import Permission
 from django.http import HttpResponse
@@ -138,12 +139,35 @@ class LectureYearFilter(admin.SimpleListFilter):
         return queryset.exclude(until__lt=first_of_september)
 
 
+class ActiveMembershipsFilter(admin.SimpleListFilter):
+    """Filter the memberships by whether they are active or not"""
+    title = _('active memberships')
+    parameter_name = 'active'
+
+    def lookups(self, request, model_name):
+        return (
+            ('active', _('Active')),
+            ('inactive', _('Inactive')),
+        )
+
+    def queryset(self, request, queryset):
+        now = timezone.now()
+
+        if self.value() == 'active':
+            return queryset.filter(Q(until__isnull=True) |
+                                   Q(until__gte=now))
+
+        if self.value() == 'inactive':
+            return queryset.filter(until__lt=now)
+
+
 @admin.register(models.CommitteeMembership)
 class CommitteeMembershipAdmin(TranslatedModelAdmin):
     """Manage the committee memberships"""
     form = CommitteeMembershipForm
     list_display = ('member', 'committee', 'since', 'until', 'chair', 'role')
-    list_filter = ('committee', BoardFilter, LectureYearFilter)
+    list_filter = ('committee', BoardFilter, LectureYearFilter,
+                   ActiveMembershipsFilter)
     list_select_related = ('member', 'committee',)
     search_fields = ('member__first_name', 'member__last_name',
                      'member__email')
