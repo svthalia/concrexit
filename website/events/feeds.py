@@ -1,3 +1,4 @@
+"""The feeds defined by the events package"""
 from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.utils.translation import ugettext as _
@@ -8,6 +9,7 @@ from events.models import Event
 
 
 class EventFeed(ICalFeed):
+    """Output an iCal feed containing all published events"""
     def __init__(self, lang='en'):
         super().__init__()
         self.lang = lang

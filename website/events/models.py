@@ -1,3 +1,4 @@
+"""The models defined by the events package"""
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -13,7 +14,7 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Event(models.Model, metaclass=ModelTranslateMeta):
-    """Represents events"""
+    """Describes an event"""
 
     EVENT_CATEGORIES = (
         ('drinks', _('Drinks')),
@@ -281,12 +282,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
 
 def registration_member_choices_limit():
+    """Defines queryset filters to only include current members"""
     return (Q(membership__until__isnull=True) |
             Q(membership__until__gt=timezone.now().date()))
 
 
 class Registration(models.Model):
-    """Event registrations"""
+    """Describes a registration for an Event"""
 
     PAYMENT_CARD = 'card_payment'
     PAYMENT_CASH = 'cash_payment'
@@ -404,7 +406,7 @@ class Registration(models.Model):
 
 
 class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
-    """Field description to ask for when registering"""
+    """Describes a field description to ask for when registering"""
     BOOLEAN_FIELD = 'boolean'
     INTEGER_FIELD = 'integer'
     TEXT_FIELD = 'text'

@@ -1,3 +1,4 @@
+"""Defines the viewsets of the events package"""
 from datetime import datetime
 
 from django.utils import timezone
@@ -28,12 +29,14 @@ from events.models import Event, Registration
 
 
 def _extract_date(param):
+    """Extract the date from an arbitrary string"""
     if param is None:
         return None
     return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
 
 
 def _extract_date_range(request):
+    """Extract a date range from an arbitrary string"""
     try:
         start = _extract_date(request.query_params['start'])
         end = _extract_date(request.query_params['end'])
@@ -43,6 +46,10 @@ def _extract_date_range(request):
 
 
 class EventViewset(viewsets.ReadOnlyModelViewSet):
+    """
+    Defines the viewset for events, requires an authenticated user
+    and enables ordering on the event start/end.
+    """
     queryset = Event.objects.filter(published=True)
     permission_classes = [IsAuthenticated]
     filter_backends = (filters.OrderingFilter,)
@@ -84,6 +91,13 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
     @detail_route(methods=['get', 'post'])
     def registrations(self, request, pk):
+        """
+        Defines a custom route for the event's registrations,
+        can filter on registration status if the user is an organiser
+        :param request: the request object
+        :param pk: the primary key of the event
+        :return: the registrations of the event
+        """
         event = get_object_or_404(Event, pk=pk)
 
         if request.method.lower() == 'post':
@@ -124,6 +138,12 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
     @list_route(permission_classes=(IsAuthenticatedOrReadOnly,))
     def calendarjs(self, request):
+        """
+        Defines a custom route that outputs the correctly formatted
+        events information for CalendarJS, published events only
+        :param request: the request object
+        :return: response containing the data
+        """
         end, start = _extract_date_range(request)
 
         queryset = Event.objects.filter(
@@ -138,6 +158,12 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
     @list_route(permission_classes=(IsAdminUser, UnpublishedEventPermissions,))
     def unpublished(self, request):
+        """
+        Defines a custom route that outputs the correctly formatted
+        events information for CalendarJS, unpublished events only
+        :param request: the request object
+        :return: response containing the data
+        """
         end, start = _extract_date_range(request)
 
         queryset = Event.objects.filter(
@@ -153,6 +179,10 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
 class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
                           UpdateModelMixin):
+    """
+    Defines the viewset for registrations, requires an authenticated user.
+    Has custom update and destroy methods that use the services.
+    """
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = [IsAuthenticated]

@@ -16,6 +16,9 @@ from thaliawebsite.templatetags.bleach_tags import bleach
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
+    """
+    Serializer using the right format for CalendarJS
+    """
     class Meta:
         fields = (
             'start', 'end', 'all_day', 'is_birthday',
@@ -86,6 +89,9 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
 
 
 class UnpublishedEventSerializer(CalenderJSSerializer):
+    """
+    See CalenderJSSerializer, customised colors
+    """
     class Meta(CalenderJSSerializer.Meta):
         model = Event
 
@@ -101,6 +107,9 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
 
 
 class EventRetrieveSerializer(serializers.ModelSerializer):
+    """
+    Serializer for events
+    """
     class Meta:
         model = Event
         fields = ('pk', 'title', 'description', 'start', 'end', 'organiser',
@@ -177,6 +186,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
 
 
 class EventListSerializer(serializers.ModelSerializer):
+    """Custom list serializer for events"""
     class Meta:
         model = Event
         fields = ('pk', 'title', 'description', 'start', 'end',
@@ -202,6 +212,7 @@ class EventListSerializer(serializers.ModelSerializer):
 
 
 class RegistrationListSerializer(serializers.ModelSerializer):
+    """Custom registration list serializer"""
     class Meta:
         model = Registration
         fields = ('pk', 'member', 'name', 'photo', 'avatar', 'registered_on',
@@ -258,6 +269,7 @@ class RegistrationListSerializer(serializers.ModelSerializer):
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
+    """Registration serializer"""
     information_fields = None
 
     class Meta:

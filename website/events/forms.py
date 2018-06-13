@@ -5,6 +5,10 @@ from .models import RegistrationInformationField, Event
 
 
 class RegistrationInformationFieldForm(forms.ModelForm):
+    """
+    Custom form for the registration information fields
+    that adds an order field
+    """
     order = forms.IntegerField(label=_('order'), initial=0)
 
     def __init__(self, *args, **kwargs):
@@ -26,6 +30,7 @@ class RegistrationInformationFieldForm(forms.ModelForm):
 
 
 class FieldsForm(forms.Form):
+    """Form that outputs the correct widgets for the information fields"""
     def __init__(self, *args, **kwargs):
         self.information_fields = kwargs.pop('fields')
         super(FieldsForm, self).__init__(*args, **kwargs)
