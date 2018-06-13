@@ -31,11 +31,13 @@ class LectureYearFilter(admin.SimpleListFilter):
     parameter_name = 'lecture_year'
 
     def lookups(self, request, model_admin):
-        first_year = AnnualDocument.objects.order_by('year').first().year
-        last_year = AnnualDocument.objects.order_by('year').last().year
+        if AnnualDocument.objects.count() > 0:
+            first_year = AnnualDocument.objects.order_by('year').first().year
+            last_year = AnnualDocument.objects.order_by('year').last().year
 
-        return [(year, '{}-{}'.format(year, year+1))
-                for year in range(last_year, first_year-1, -1)]
+            return [(year, '{}-{}'.format(year, year+1))
+                    for year in range(last_year, first_year-1, -1)]
+        return []
 
     def queryset(self, request, queryset):
         if not self.value():
