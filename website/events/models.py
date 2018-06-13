@@ -193,7 +193,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def cancellation_allowed(self):
         now = timezone.now()
         return ((self.registration_start or self.registration_end)
-                and now >= self.registration_start)
+                and self.registration_start <= now < self.start)
 
     def is_pizza_event(self):
         try:

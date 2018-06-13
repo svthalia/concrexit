@@ -207,58 +207,69 @@ class EventTest(TestCase):
             self.event.clean()
 
     def test_cancellation_allowed(self):
-        # Open
-        self.event.registration_start = (timezone.now() -
-                                         datetime.timedelta(hours=1))
-        self.event.registration_end = (timezone.now() +
-                                       datetime.timedelta(hours=1))
-        self.event.cancel_deadline = (timezone.now() +
-                                      datetime.timedelta(hours=1))
-        self.assertTrue(self.event.cancellation_allowed)
+        with self.subTest("Open"):
+            self.event.registration_start = (timezone.now() -
+                                             datetime.timedelta(hours=1))
+            self.event.registration_end = (timezone.now() +
+                                           datetime.timedelta(hours=1))
+            self.event.cancel_deadline = (timezone.now() +
+                                          datetime.timedelta(hours=1))
+            self.assertTrue(self.event.cancellation_allowed)
 
-        # No cancel
-        self.event.registration_start = (timezone.now() -
-                                         datetime.timedelta(hours=2))
-        self.event.registration_end = (timezone.now() +
-                                       datetime.timedelta(hours=1))
-        self.event.cancel_deadline = (timezone.now() -
-                                      datetime.timedelta(hours=1))
-        # Allow since cancellation after deadline is possible
-        self.assertTrue(self.event.cancellation_allowed)
+        with self.subTest("No cancel"):
+            self.event.registration_start = (timezone.now() -
+                                             datetime.timedelta(hours=2))
+            self.event.registration_end = (timezone.now() +
+                                           datetime.timedelta(hours=1))
+            self.event.cancel_deadline = (timezone.now() -
+                                          datetime.timedelta(hours=1))
+            # Allow since cancellation after deadline is possible
+            self.assertTrue(self.event.cancellation_allowed)
 
-        # Not yet open
-        self.event.registration_start = (timezone.now() +
-                                         datetime.timedelta(hours=1))
-        self.event.registration_end = (timezone.now() +
-                                       datetime.timedelta(hours=2))
-        self.event.cancel_deadline = (timezone.now() +
-                                      datetime.timedelta(hours=1))
-        self.assertFalse(self.event.cancellation_allowed)
+        with self.subTest("Not yet open (now < registration start)"):
+            self.event.registration_start = (timezone.now() +
+                                             datetime.timedelta(hours=1))
+            self.event.registration_end = (timezone.now() +
+                                           datetime.timedelta(hours=2))
+            self.event.cancel_deadline = (timezone.now() +
+                                          datetime.timedelta(hours=1))
+            self.assertFalse(self.event.cancellation_allowed)
 
-        # Cancel only
-        self.event.registration_start = (timezone.now() -
-                                         datetime.timedelta(hours=2))
-        self.event.registration_end = (timezone.now() -
-                                       datetime.timedelta(hours=1))
-        self.event.cancel_deadline = (timezone.now() +
-                                      datetime.timedelta(hours=1))
-        self.assertTrue(self.event.cancellation_allowed)
+        with self.subTest("Cancel only"):
+            self.event.registration_start = (timezone.now() -
+                                             datetime.timedelta(hours=2))
+            self.event.registration_end = (timezone.now() -
+                                           datetime.timedelta(hours=1))
+            self.event.cancel_deadline = (timezone.now() +
+                                          datetime.timedelta(hours=1))
+            self.assertTrue(self.event.cancellation_allowed)
 
-        # Registration is closed
-        self.event.registration_start = (timezone.now() -
-                                         datetime.timedelta(hours=2))
-        self.event.registration_end = (timezone.now() -
-                                       datetime.timedelta(hours=1))
-        self.event.cancel_deadline = (timezone.now() -
-                                      datetime.timedelta(hours=1))
-        # Allow since cancellation after deadline is possible
-        self.assertTrue(self.event.cancellation_allowed)
+        with self.subTest("Registration is closed"):
+            self.event.registration_start = (timezone.now() -
+                                             datetime.timedelta(hours=2))
+            self.event.registration_end = (timezone.now() -
+                                           datetime.timedelta(hours=1))
+            self.event.cancel_deadline = (timezone.now() -
+                                          datetime.timedelta(hours=1))
+            # Allow since cancellation after deadline is possible
+            self.assertTrue(self.event.cancellation_allowed)
 
-        # Registration not needed
-        self.event.registration_start = None
-        self.event.registration_end = None
-        self.event.cancel_deadline = None
-        self.assertFalse(self.event.cancellation_allowed)
+        with self.subTest("After event start"):
+            self.event.registration_start = (timezone.now() -
+                                             datetime.timedelta(hours=4))
+            self.event.registration_end = (timezone.now() -
+                                           datetime.timedelta(hours=3))
+            self.event.cancel_deadline = (timezone.now() -
+                                          datetime.timedelta(hours=3))
+            self.event.start = timezone.now()
+            self.event.end = (timezone.now() + datetime.timedelta(hours=2))
+            self.assertFalse(self.event.cancellation_allowed)
+
+        with self.subTest("Registration not required"):
+            self.event.registration_start = None
+            self.event.registration_end = None
+            self.event.cancel_deadline = None
+            self.assertFalse(self.event.cancellation_allowed)
 
 
 class RegistrationTest(TestCase):
