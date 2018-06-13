@@ -1,7 +1,8 @@
 """Registers admin interfaces for the documents module"""
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
-from documents.forms import GeneralMeetingForm
+from documents.forms import AnnualDocumentForm, GeneralMeetingForm
 from documents.models import (AnnualDocument, AssociationDocument,
                               GeneralMeeting, Minutes,
                               MiscellaneousDocument)
@@ -24,11 +25,33 @@ class GeneralMeetingAdmin(TranslatedModelAdmin):
     list_filter = ('datetime',)
 
 
+class LectureYearFilter(admin.SimpleListFilter):
+    """Filter the memberships on those started or ended in a lecture year"""
+    title = _('lecture year')
+    parameter_name = 'lecture_year'
+
+    def lookups(self, request, model_admin):
+        first_year = AnnualDocument.objects.order_by('year').first().year
+        last_year = AnnualDocument.objects.order_by('year').last().year
+
+        return [(year, '{}-{}'.format(year, year+1))
+                for year in range(last_year, first_year-1, -1)]
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+
+        year = int(self.value())
+
+        return queryset.filter(year=year)
+
+
 @admin.register(AnnualDocument)
-class AnnualDocument(TranslatedModelAdmin):
+class AnnualDocumentAdmin(TranslatedModelAdmin):
     """Manage the annual documents"""
+    form = AnnualDocumentForm
     fields = ('file', 'subcategory', 'year', 'members_only',)
-    list_filter = ('year', 'created', 'last_updated',)
+    list_filter = (LectureYearFilter, 'created', 'last_updated',)
 
 
 @admin.register(AssociationDocument)
