@@ -3,7 +3,6 @@ This module registers admin pages for the models
 """
 import csv
 import datetime
-
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
@@ -12,6 +11,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from members.models import EmailChange
 from . import forms, models
 
 
@@ -144,6 +144,8 @@ class MemberAdmin(UserAdmin):
     def has_module_permission(self, reuqest):
         return False
 
+
+admin.site.register(EmailChange)
 
 # re-register User admin
 admin.site.unregister(User)

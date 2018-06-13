@@ -1,12 +1,12 @@
 from django.conf import settings
 from datetime import timedelta
-
 from django.core import mail
 from django.template import loader
+from django.template.defaultfilters import floatformat
+from django.urls import reverse
 from django.utils import translation
 from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
-from django.template.defaultfilters import floatformat
 
 from members.models import Member
 
@@ -92,7 +92,7 @@ def send_expiration_announcement(dry_run=False):
                         'members/email/expiration_announcement.txt',
                         {'name': member.get_full_name(),
                          'membership_price': floatformat(
-                            settings.MEMBERSHIP_PRICES['year'], 2
+                             settings.MEMBERSHIP_PRICES['year'], 2
                          )})
                     mail.EmailMessage(
                         _('Membership expiration announcement'),
@@ -125,3 +125,54 @@ def send_welcome_message(user, password, language):
         user.email_user(
             _('Welcome to Study Association Thalia'),
             email_body)
+
+
+def send_email_change_confirmation_messages(change_request):
+    member = change_request.member
+    with translation.override(member.profile.language):
+        mail.EmailMessage(
+            '[THALIA] {}'.format(_('Please confirm your email change')),
+            loader.render_to_string(
+                'members/email/email_change_confirm.txt',
+                {
+                    'confirm_link': '{}{}'.format(
+                        'https://thalia.nu',
+                        reverse(
+                            'members:email-change-confirm',
+                            args=[change_request.confirm_key]
+                        )),
+                    'name': member.first_name
+                }
+            ),
+            settings.WEBSITE_FROM_ADDRESS,
+            [change_request.email]
+        ).send()
+
+        mail.EmailMessage(
+            '[THALIA] {}'.format(_('Please verify your email address')),
+            loader.render_to_string(
+                'members/email/email_change_verify.txt',
+                {
+                    'confirm_link': '{}{}'.format(
+                        'https://thalia.nu',
+                        reverse(
+                            'members:email-change-verify',
+                            args=[change_request.verify_key]
+                        )),
+                    'name': member.first_name
+                }
+            ),
+            settings.WEBSITE_FROM_ADDRESS,
+            [change_request.email]
+        ).send()
+
+
+def send_email_change_completion_message(change_request):
+    change_request.member.email_user(
+        '[THALIA] {}'.format(_('Your email address has been changed')),
+        loader.render_to_string(
+            'members/email/email_change_completed.txt',
+            {
+                'name': change_request.member.first_name
+            }
+        ))

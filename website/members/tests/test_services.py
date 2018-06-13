@@ -1,9 +1,10 @@
 from datetime import timedelta, date
-
 from django.test import TestCase
 from django.utils import timezone
+from unittest import mock
 
-from members.models import Member, Membership, Profile
+from members import services
+from members.models import Member, Membership, Profile, EmailChange
 from members.services import gen_stats_year, gen_stats_member_type
 from utils.snippets import datetime_to_lectureyear
 
@@ -155,3 +156,61 @@ class StatisticsTest(TestCase):
 
         # one >5 year student
         self.assertEqual(1, result[5]['member'])
+
+
+class EmailChangeTest(TestCase):
+    fixtures = ['members.json']
+
+    @classmethod
+    def setUpTestData(cls):
+        # Add 10 members with default membership
+        cls.member = Member.objects.get(pk=2)
+
+    def setUp(self):
+        self.member.refresh_from_db()
+
+    def test_verify_email_change(self):
+        change_request = EmailChange(
+            member=self.member,
+            email='new@example.org'
+        )
+
+        with mock.patch('members.services.process_email_change') as proc:
+            services.verify_email_change(change_request)
+            self.assertTrue(change_request.verified)
+            proc.assert_called_once_with(change_request)
+
+    def test_confirm_email_change(self):
+        change_request = EmailChange(
+            member=self.member,
+            email='new@example.org'
+        )
+
+        with mock.patch('members.services.process_email_change') as proc:
+            services.confirm_email_change(change_request)
+            self.assertTrue(change_request.confirmed)
+            proc.assert_called_once_with(change_request)
+
+    @mock.patch('members.emails.send_email_change_completion_message')
+    def test_process_email_change(self, send_message_mock):
+        change_request = EmailChange(
+            member=self.member,
+            email='new@example.org'
+        )
+
+        original_email = self.member.email
+
+        with self.subTest('Uncompleted request'):
+            services.process_email_change(change_request)
+
+            self.assertEqual(self.member.email, original_email)
+            send_message_mock.assert_not_called()
+
+        with self.subTest('Completed request'):
+            change_request.verified = True
+            change_request.confirmed = True
+
+            services.process_email_change(change_request)
+
+            self.assertEqual(self.member.email, change_request.email)
+            send_message_mock.assert_called_once_with(change_request)

@@ -1,22 +1,26 @@
 import csv
 import json
 from datetime import date, datetime
-
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
+from django.template.response import TemplateResponse
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
+from django.views.generic import FormView
+from django.views.generic.base import TemplateResponseMixin, View
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
-from members import services
-from .services import member_achievements
-from . import models
-from .forms import ProfileForm
 import pizzas.services
+from members import services, emails
+from members.models import EmailChange
+from . import models
+from .forms import ProfileForm, EmailChangeForm
+from .services import member_achievements
 
 
 class ObtainThaliaAuthToken(ObtainAuthToken):
@@ -73,9 +77,9 @@ def filter_users(tab, keywords, year_range):
         memberships = models.Membership.objects.filter(memberships_query)
         members_query &= Q(pk__in=memberships.values('user__pk'))
     return (models.Member.objects
-                  .filter(members_query)
-                  .order_by('-profile__starting_year',
-                            'first_name'))
+            .filter(members_query)
+            .order_by('-profile__starting_year',
+                      'first_name'))
 
 
 @login_required
@@ -153,7 +157,7 @@ def profile(request, pk=None):
                       'achievements': achievements,
                       'member': member,
                       'membership_type': membership_type,
-                   })
+                  })
 
 
 @login_required
@@ -184,7 +188,7 @@ def iban_export(request):
     rows = []
 
     members = models.Member.current_members.filter(
-            profile__direct_debit_authorized=True)
+        profile__direct_debit_authorized=True)
 
     for member in members:
         if member.current_membership.type != 'honorary':
@@ -225,3 +229,64 @@ def statistics(request):
     }
 
     return render(request, 'members/statistics.html', context)
+
+
+@method_decorator(login_required, name='dispatch')
+class EmailChangeFormView(FormView):
+    """
+    View that renders the email change form
+    """
+    form_class = EmailChangeForm
+    template_name = 'members/email_change.html'
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['email'] = self.request.member.email
+        return initial
+
+    def post(self, request, *args, **kwargs):
+        request.POST = request.POST.dict()
+        request.POST['member'] = request.member.pk
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        change_request = form.save()
+        emails.send_email_change_confirmation_messages(change_request)
+        return TemplateResponse(request=self.request,
+                                template='members/email_change_requested.html')
+
+
+@method_decorator(login_required, name='dispatch')
+class EmailChangeConfirmView(View, TemplateResponseMixin):
+    """
+    View that renders an HTML template and confirms the old email address
+    """
+    template_name = 'members/email_change_confirmed.html'
+
+    def get(self, request, *args, **kwargs):
+        if not EmailChange.objects.filter(confirm_key=kwargs['key']).exists():
+            raise Http404
+
+        change_request = EmailChange.objects.get(confirm_key=kwargs['key'])
+
+        services.confirm_email_change(change_request)
+
+        return self.render_to_response({})
+
+
+@method_decorator(login_required, name='dispatch')
+class EmailChangeVerifyView(View, TemplateResponseMixin):
+    """
+    View that renders an HTML template and verifies the new email address
+    """
+    template_name = 'members/email_change_verified.html'
+
+    def get(self, request, *args, **kwargs):
+        if not EmailChange.objects.filter(verify_key=kwargs['key']).exists():
+            raise Http404
+
+        change_request = EmailChange.objects.get(verify_key=kwargs['key'])
+
+        services.verify_email_change(change_request)
+
+        return self.render_to_response({})

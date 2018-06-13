@@ -1,14 +1,13 @@
 from base64 import b64encode
-
 from django.contrib.staticfiles.finders import find as find_static_file
 from django.templatetags.static import static
 from django.urls import reverse
 from rest_framework import serializers
 
-from thaliawebsite.api.services import create_image_thumbnail_dict
 from events.api.serializers import CalenderJSSerializer
 from members.models import Member
 from members.services import member_achievements
+from thaliawebsite.api.services import create_image_thumbnail_dict
 from utils.templatetags.thumbnail import thumbnail
 
 

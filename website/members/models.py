@@ -1,10 +1,9 @@
+import logging
 import operator
 import os
-import logging
-from datetime import timedelta
-from functools import reduce
-
+import uuid
 from PIL import Image
+from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.core import validators
@@ -14,11 +13,11 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from functools import reduce
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
 from activemembers.models import Committee, CommitteeMembership
-
 
 logger = logging.getLogger(__name__)
 
@@ -537,3 +536,40 @@ class Membership(models.Model):
 
     def is_active(self):
         return not self.until or self.until > timezone.now().date()
+
+
+class EmailChange(models.Model):
+    created_at = models.DateTimeField(_('created at'), default=timezone.now)
+
+    member = models.ForeignKey(
+        'members.Member',
+        on_delete=models.CASCADE,
+        verbose_name=_('member'),
+    )
+
+    email = models.EmailField(_('email'), max_length=254)
+
+    verify_key = models.UUIDField(unique=True, default=uuid.uuid4,
+                                  editable=False)
+    confirm_key = models.UUIDField(unique=True, default=uuid.uuid4,
+                                   editable=False)
+
+    verified = models.BooleanField(
+        _('verified'), default=False,
+        help_text=_('the new email address is valid')
+    )
+    confirmed = models.BooleanField(
+        _('confirmed'), default=False,
+        help_text=_('the old email address was checked')
+    )
+
+    @property
+    def completed(self):
+        return self.verified and self.confirmed
+
+    def clean(self):
+        super().clean()
+
+        if self.email == self.member.email:
+            raise ValidationError(
+                {'email': _("Please enter a new email address.")})
