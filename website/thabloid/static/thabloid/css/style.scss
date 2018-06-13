@@ -1,0 +1,18 @@
+.thimbus-page .thabloids .post-inner img {
+    min-width: 220px;
+    min-height: 310px;
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .thimbus-page .thabloids .post-inner img {
+        min-width: 352px;
+        min-height: 496px;
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+    .thimbus-page .thabloids .post-inner img {
+        min-width: 0;
+    }
+}

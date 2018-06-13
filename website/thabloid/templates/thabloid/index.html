@@ -1,8 +1,15 @@
 {% extends 'base.html' %}
-{% load i18n thumbnail %}
+{% load i18n thumbnail staticfiles compress %}
 
 {% block title %}{% trans "Thabloid" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Thabloid" %} — {{ block.super }}{% endblock %}
+
+{% block css_head %}
+    {{ block.super }}
+    {% compress css %}
+    <link href="{% static 'thabloid/css/style.scss' %}" rel="stylesheet" type="text/x-scss">
+    {% endcompress %}
+{% endblock %}
 
 {% block body %}
 <h1>{% trans "Thabloid" %}</h1>
@@ -19,10 +26,10 @@
         </ul>
     </div>
 
-    <ul class="portfolio-posts row isotope" style="position: relative; overflow: hidden; height: 1195px;">
+    <ul class="thabloids portfolio-posts row isotope" style="position: relative; overflow: hidden; height: 1195px;">
     {% for thabloid in thabloids %}
         <li data-filter="{% if thabloid.year < year|add:-3 %}older{% else %}{{ thabloid.year }}{% endif %}" class="post span3 has-overlay isotope-item" style="position: absolute; left: 0px; top: 0px;">
-            <div class="post-inner  ">
+            <div class="post-inner">
                 <div class="post-header">
                     <img alt="{{ thabloid.year }}-{{ thabloid.year|add:1 }}, #{{ thabloid.issue }}" src="{% thumbnail thabloid.cover '220x310' %}">
                 </div>
