@@ -1,3 +1,4 @@
+"""Views provided by the documents package"""
 import os
 
 from django.conf import settings
@@ -13,6 +14,11 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def index(request):
+    """
+    View that renders the documents index page
+    :param request: the request object
+    :return: HttpResponse 200 containing the page HTML
+    """
     lectureyear = datetime_to_lectureyear(timezone.now())
 
     years = {x: {} for x in range(1990, lectureyear + 1)}
@@ -46,6 +52,13 @@ def index(request):
 # TODO verify if we need to check a permission instead.
 # This depends on how we're dealing with ex-members.
 def get_document(request, pk):
+    """
+    View that allows you to download a specific document based on it's and your
+    permissions settings
+    :param request: the request object
+    :param pk: primary key of the document
+    :return: either a 302 redirect to the login page or a 200 with the document
+    """
     document = get_object_or_404(Document, pk=int(pk))
 
     if document.members_only and not request.user.is_authenticated:
