@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from sendfile import sendfile
 
+from members.decorators import membership_required
 from .forms import AddExamForm, AddSummaryForm
 from .models import Category, Course, Exam, Summary
 
@@ -60,6 +61,7 @@ def course(request, id):
 
 
 @login_required
+@membership_required
 def exam(request, id):
     """
     Fetches and outputs the specified exam
@@ -79,6 +81,7 @@ def exam(request, id):
 
 
 @login_required
+@membership_required
 def summary(request, id):
     """
     Fetches and outputs the specified summary
