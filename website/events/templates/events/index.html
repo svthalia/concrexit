@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static compress %}}
+{% load i18n static compress personal_feed %}}
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -19,14 +19,24 @@
         <span class="title-meta clearfix">
             <span>
                 <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}"
-                   id="collectionButton"
                    target="_blank"
                    class="calendar"
-                   title="iCal feed"
+                   title="{% trans 'iCal feed (all events)' %}"
                 >
                     <i class="fa fa-calendar"></i>
                 </a>
             </span>
+            {% if request.user.is_authenticated %}
+                <span>
+                    <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}?u={% personal_feed %}"
+                       target="_blank"
+                       class="calendar"
+                       title="{% trans 'iCal feed (personal)' %}"
+                    >
+                        <i class="fa fa-calendar"></i>
+                    </a>
+                </span>
+            {% endif %}
         </span>
     </h1>
 

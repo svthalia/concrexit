@@ -1,11 +1,12 @@
 """The feeds defined by the events package"""
+from django.db.models.query_utils import Q
 from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.utils.translation import activate
 from django_ical.views import ICalFeed
 
-from events.models import Event
+from events.models import Event, FeedToken
 
 
 class EventFeed(ICalFeed):
@@ -13,6 +14,15 @@ class EventFeed(ICalFeed):
     def __init__(self, lang='en'):
         super().__init__()
         self.lang = lang
+        self.user = None
+
+    def __call__(self, request, *args, **kwargs):
+        if 'u' in request.GET:
+            self.user = FeedToken.get_member(request.GET['u'])
+        else:
+            self.user = None
+
+        return super().__call__(request, args, kwargs)
 
     def product_id(self):
         return '-//thalia.nu//EventCalendar//' + self.lang.upper()
@@ -25,7 +35,13 @@ class EventFeed(ICalFeed):
         return _('Study Association Thalia event calendar')
 
     def items(self):
-        return Event.objects.filter(published=True).order_by('-start')
+        query = Q(published=True)
+
+        if self.user:
+            query &= (Q(registration_start__isnull=True) |
+                      Q(registration__member=self.user))
+
+        return Event.objects.filter(query).order_by('-start')
 
     def item_title(self, item):
         return item.title
