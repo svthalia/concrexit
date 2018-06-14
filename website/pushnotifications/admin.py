@@ -52,3 +52,28 @@ class MessageAdmin(TranslatedModelAdmin):
         obj = Message.objects.filter(id=object_id)[0]
         return super(MessageAdmin, self).change_view(
             request, object_id, form_url, {'message': obj})
+
+
+@admin.register(models.ScheduledMessage)
+class ScheduledMessageAdmin(TranslatedModelAdmin):
+    list_display = ('title', 'body', 'time', 'category', 'sent', 'success',
+                    'failure')
+    date_hierarchy = 'time'
+    filter_horizontal = ('users',)
+    list_filter = ('sent', 'category')
+
+    def get_fields(self, request, obj=None):
+        if obj and obj.sent:
+            return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
+                    'category', 'success', 'failure', 'time', 'task_id')
+        return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
+                'category', 'time', 'task_id')
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.sent:
+            return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
+                    'category', 'success', 'failure', 'time', 'task_id')
+        return 'task_id',
+
+    def has_add_permission(self, request):
+        return False

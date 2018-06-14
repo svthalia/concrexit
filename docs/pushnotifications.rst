@@ -40,6 +40,14 @@ pushnotifications\.models module
     :undoc-members:
     :show-inheritance:
 
+pushnotifications\.tasks module
+-------------------------------
+
+.. automodule:: pushnotifications.tasks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pushnotifications\.urls module
 ------------------------------
 
