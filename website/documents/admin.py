@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from documents.forms import AnnualDocumentForm, GeneralMeetingForm
+from documents import forms
 from documents.models import (AnnualDocument, AssociationDocument,
                               GeneralMeeting, Minutes,
                               MiscellaneousDocument)
@@ -12,13 +12,13 @@ from utils.translation import TranslatedModelAdmin
 class MinutesInline(admin.StackedInline):
     """Inline for minutes of a general meeting"""
     model = Minutes
-    fields = ('file_nl', 'file_en', 'members_only',)
+    form = forms.MinutesForm
 
 
 @admin.register(GeneralMeeting)
 class GeneralMeetingAdmin(TranslatedModelAdmin):
     """Manage the general meetings"""
-    form = GeneralMeetingForm
+    form = forms.GeneralMeetingForm
     inlines = [
         MinutesInline,
     ]
@@ -51,20 +51,19 @@ class LectureYearFilter(admin.SimpleListFilter):
 @admin.register(AnnualDocument)
 class AnnualDocumentAdmin(TranslatedModelAdmin):
     """Manage the annual documents"""
-    form = AnnualDocumentForm
-    fields = ('file', 'subcategory', 'year', 'members_only',)
+    form = forms.AnnualDocumentForm
     list_filter = (LectureYearFilter, 'created', 'last_updated',)
 
 
 @admin.register(AssociationDocument)
 class AssociationDocumentAdmin(TranslatedModelAdmin):
     """Manage the association documents"""
-    fields = ('name', 'file', 'members_only',)
+    form = forms.AssociationDocumentForm
     list_filter = ('created', 'last_updated',)
 
 
 @admin.register(MiscellaneousDocument)
 class MiscellaneousDocumentAdmin(TranslatedModelAdmin):
     """Manage the miscellaneous documents"""
-    fields = ('name', 'file', 'members_only',)
+    form = forms.MiscellaneousDocumentForm
     list_filter = ('created', 'last_updated',)
