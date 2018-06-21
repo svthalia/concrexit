@@ -145,7 +145,7 @@ def send_email_change_confirmation_messages(change_request):
                 }
             ),
             settings.WEBSITE_FROM_ADDRESS,
-            [change_request.email]
+            [member.email]
         ).send()
 
         mail.EmailMessage(
