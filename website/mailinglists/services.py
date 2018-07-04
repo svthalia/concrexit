@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils import timezone
 
-from activemembers.models import CommitteeMembership, Mentorship
+from activemembers.models import CommitteeMembership, Mentorship, Board
 from members.models import Member
 from utils.snippets import datetime_to_lectureyear
 
@@ -51,6 +51,20 @@ def get_automatic_lists():
         ['optin'], '[THALIA] [OPTIN]', Member.current_members.filter(
             profile__receive_optin=True),
         multilingual=True)
+
+    for year in range(Board.objects.earliest('since').since.year, lectureyear):
+        board = Board.objects.get(since__year=year)
+        if board is not None:
+            lists += _create_automatic_list(
+                ['bestuur'
+                 + str(board.since.year)[-2:] + str(board.until.year)[-2:],
+                 'board'
+                 + str(board.since.year)[-2:] + str(board.until.year)[-2:]],
+                '',
+                [x.member for x in CommitteeMembership.objects
+                    .filter(committee=board).prefetch_related('member')],
+                archived=False, moderated=False, multilingual=False
+            )
 
     return lists
 
