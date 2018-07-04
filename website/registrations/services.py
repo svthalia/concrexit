@@ -223,7 +223,9 @@ def _create_member_from_registration(registration):
         address_city=registration.address_city,
         phone_number=registration.phone_number,
         birthday=registration.birthday,
-        language=registration.language
+        language=registration.language,
+        show_birthday=registration.optin_birthday,
+        receive_optin=registration.optin_mailinglist
     )
 
     # Send welcome message to new member
