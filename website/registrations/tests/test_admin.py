@@ -164,7 +164,8 @@ class RegistrationAdminTest(TestCase):
                                        'programme', 'starting_year',
                                        'address_street', 'address_street2',
                                        'address_postal_code', 'address_city',
-                                       'payment', 'membership'])
+                                       'payment', 'membership',
+                                       'optin_mailinglist', 'optin_birthday'])
 
         fields = self.admin.get_readonly_fields(request, Registration(
             status=Entry.STATUS_ACCEPTED
@@ -178,7 +179,8 @@ class RegistrationAdminTest(TestCase):
                                        'programme', 'starting_year',
                                        'address_street', 'address_street2',
                                        'address_postal_code', 'address_city',
-                                       'payment', 'membership'])
+                                       'payment', 'membership',
+                                       'optin_mailinglist', 'optin_birthday'])
 
     def test_get_actions(self):
         actions = self.admin.get_actions(_get_mock_request([]))

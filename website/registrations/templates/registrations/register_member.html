@@ -35,12 +35,32 @@
         {% csrf_token %}
 
         <fieldset>
+            {% form_field form 'length' %}
+        </fieldset>
+
+        <fieldset>
             {% form_field form 'first_name' %}
             {% form_field form 'last_name' %}
             <span class="birthday-field">
             {% form_field form 'birthday' %}
             </span>
+            <div class="control-group row">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="optin_birthday" required id="id_optin_birthday">
+                        {% trans "Display birthday in calendar" %}.
+                    </label>
+                </div>
+            </div>
             {% form_field form 'email' %}
+            <div class="control-group row">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="optin_mailinglist" required id="id_optin_mailinglist">
+                        {% trans "Receive emails about (amongst others) job opportunities and in-house days from sponsors of Thalia." %}.
+                    </label>
+                </div>
+            </div>
             {% form_field form 'phone_number' %}
         </fieldset>
 
@@ -58,8 +78,6 @@
         </fieldset>
 
         <fieldset>
-            {% form_field form 'length' %}
-
             <div class="control-group row">
                 <div class="controls">
                     <label class="checkbox">
