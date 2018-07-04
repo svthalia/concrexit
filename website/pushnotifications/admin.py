@@ -74,6 +74,3 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
             return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
                     'category', 'success', 'failure', 'time', 'task_id')
         return 'task_id',
-
-    def has_add_permission(self, request):
-        return False
