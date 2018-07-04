@@ -9,7 +9,6 @@ from pyfcm import FCMNotification
 from utils.tasks import revoke_task, schedule_task
 from utils.translation import MultilingualField, ModelTranslateMeta
 from .tasks import send_message
-from thaliawebsite import celery_app
 
 
 class Category(models.Model, metaclass=ModelTranslateMeta):
@@ -231,5 +230,5 @@ class ScheduledMessage(Message, metaclass=ModelTranslateMeta):
 
     def delete(self, using=None, keep_parents=False):
         if self.task_id:
-            celery_app.control.revoke(self.task_id)
+            revoke_task(self.task_id)
         return super().delete(using, keep_parents)
