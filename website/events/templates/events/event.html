@@ -89,30 +89,32 @@
                             </td>
                         </tr>
                     {% endif %}
-                {% endif %}
-                {% if registration and event.start < date_now %}
-                    <tr>
-                        <th>{% trans "presence"|capfirst %}</th>
-                        <td>
-                            {% if registration.present %}
-                                {% trans "You were present" %}
-                            {% else %}
-                                {% trans "You were not present" %}
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endif %}
-                {% if event.price > 0 %}
-                    <tr>
-                        <th>{% trans "payment status"|capfirst %}</th>
-                        <td>
-                            {% if registration.is_paid %}
-                                {% trans "You have paid" %}
-                            {% else %}
-                                {% trans "You have not paid yet" %}
-                            {% endif %}
-                        </td>
-                    </tr>
+                    {% if registration.is_invited %}
+                        {% if event.start < date_now %}
+                            <tr>
+                                <th>{% trans "presence"|capfirst %}</th>
+                                <td>
+                                    {% if registration.present %}
+                                        {% trans "You were present" %}
+                                    {% else %}
+                                        {% trans "You were not present" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if event.price > 0 %}
+                            <tr>
+                                <th>{% trans "payment status"|capfirst %}</th>
+                                <td>
+                                    {% if registration.is_paid %}
+                                        {% trans "You have paid" %}
+                                    {% else %}
+                                        {% trans "You have not paid yet" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
                 <tr>
                     <td></td>

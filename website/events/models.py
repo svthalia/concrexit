@@ -354,6 +354,11 @@ class Registration(models.Model):
                 pass
         return 0
 
+    @property
+    def is_invited(self):
+        return (self.is_registered and
+                self.queue_position == 0)
+
     def is_external(self):
         return bool(self.name)
 
