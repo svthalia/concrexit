@@ -64,12 +64,18 @@ def get_document(request, pk):
     if document.members_only and not request.user.is_authenticated:
         return redirect('{}?next={}'.format(settings.LOGIN_URL, request.path))
 
+    lang = request.GET.get('language')
     try:
-        file = document.file
+        if lang == 'nl':
+            file = document.file_nl
+        elif lang == 'en':
+            file = document.file_en
+        else:  # Fall back on language detection
+            file = document.file
     except ValueError:
         raise Http404('This document does not exist.')
 
     ext = os.path.splitext(file.path)[1]
 
-    return sendfile(request, document.file.path, attachment=True,
+    return sendfile(request, file.path, attachment=True,
                     attachment_filename=slugify(document.name) + ext)
