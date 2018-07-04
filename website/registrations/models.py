@@ -164,7 +164,8 @@ class Registration(Entry):
             regex=r'^\+?\d+$',
             message=_('please enter a valid phone number'),
         )],
-        blank=False,
+        blank=True,
+        null=True,
     )
 
     # ---- University information -----
