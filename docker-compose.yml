@@ -32,6 +32,7 @@ services:
     celery:
         image: registry.gitlab.com/thaliawww/concrexit
         build: .
+        user: nobody
         entrypoint: /usr/local/bin/entrypoint_celery.sh
         volumes:
             - ./website:/usr/src/app/website/
