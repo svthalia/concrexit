@@ -1,4 +1,5 @@
-version: '2'
+version: '3.5'
+
 services:
     postgres:
         image: postgres
@@ -19,7 +20,7 @@ services:
             - 8000:8000
         depends_on:
             - postgres
-            - celery
+            - redis
         volumes:
             - ./website:/usr/src/app/website/
             - concrexit:/concrexit/
@@ -31,6 +32,7 @@ services:
     celery:
         image: registry.gitlab.com/thaliawww/concrexit
         build: .
+        user: nobody
         entrypoint: /usr/local/bin/entrypoint_celery.sh
         volumes:
             - ./website:/usr/src/app/website/
