@@ -127,9 +127,7 @@ if os.environ.get('DJANGO_EMAIL_HOST'):
     EMAIL_TIMEOUT = 10
 
 # Celery settings
-CELERY_BROKER_URL = 'redis://{}:6379/0'.format(
-    os.environ.get('CELERY_REDIS_HOST')
-)
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 CELERY_ENABLED = True
 
 # Secure headers
