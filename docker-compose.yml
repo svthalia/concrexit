@@ -28,7 +28,7 @@ services:
             <<: *postgresvars
             DJANGO_DEBUG: 'True'
             DJANGO_POSTGRES_HOST: postgres
-            CELERY_REDIS_HOST: redis
+            CELERY_BROKER_URL: "redis://redis:6379/0"
     celery:
         image: registry.gitlab.com/thaliawww/concrexit
         build: .
