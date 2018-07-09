@@ -280,43 +280,55 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return reverse('events:event', args=[str(self.pk)])
 
     def save(self, *args, **kwargs):
-        if self.registration_required:
-            registration_reminder = ScheduledMessage()
-            if self.registration_reminder is not None:
-                registration_reminder = self.registration_reminder
-            registration_reminder.title_en = 'Event registration'
-            registration_reminder.title_nl = 'Evenement registratie'
-            registration_reminder.body_en = ('Registration for \'{}\' '
-                                             'starts in 1 hour'
-                                             .format(self.title_en))
-            registration_reminder.body_nl = ('Registratie voor \'{}\' '
-                                             'start in 1 uur'
-                                             .format(self.title_nl))
-            registration_reminder.category = Category.objects.get(key='event')
-            registration_reminder.time = (self.registration_start -
-                                          timezone.timedelta(hours=1))
-            registration_reminder.save()
-            self.registration_reminder = registration_reminder
-            self.registration_reminder.users.set(Member.active_members.all())
+        if self.published:
+            if self.registration_required:
+                registration_reminder = ScheduledMessage()
+                if (self.registration_reminder is not None
+                        and not self.registration_reminder.sent):
+                    registration_reminder = self.registration_reminder
+                registration_reminder.title_en = 'Event registration'
+                registration_reminder.title_nl = 'Evenement registratie'
+                registration_reminder.body_en = ('Registration for \'{}\' '
+                                                 'starts in 1 hour'
+                                                 .format(self.title_en))
+                registration_reminder.body_nl = ('Registratie voor \'{}\' '
+                                                 'start in 1 uur'
+                                                 .format(self.title_nl))
+                registration_reminder.category = Category.objects.get(
+                    key='event')
+                registration_reminder.time = (self.registration_start -
+                                              timezone.timedelta(hours=1))
+                registration_reminder.save()
+                self.registration_reminder = registration_reminder
+                self.registration_reminder.users.set(
+                    Member.active_members.all())
 
-        start_reminder = ScheduledMessage()
-        if self.start_reminder is not None:
-            start_reminder = self.start_reminder
-        start_reminder.title_en = 'Event'
-        start_reminder.title_nl = 'Evenement'
-        start_reminder.body_en = ('\'{}\' starts in '
-                                  '1 hour'.format(self.title_en))
-        start_reminder.body_nl = ('\'{}\' begint over '
-                                  '1 uur'.format(self.title_nl))
-        start_reminder.category = Category.objects.get(key='event')
-        start_reminder.time = (self.start - timezone.timedelta(hours=1))
-        start_reminder.save()
-        self.start_reminder = start_reminder
-        if self.registration_required:
-            self.start_reminder.users.set(self.participants.values_list(
-                'member', flat=True))
+            start_reminder = ScheduledMessage()
+            if (self.start_reminder is not None
+                    and not self.start_reminder.sent):
+                start_reminder = self.start_reminder
+            start_reminder.title_en = 'Event'
+            start_reminder.title_nl = 'Evenement'
+            start_reminder.body_en = ('\'{}\' starts in '
+                                      '1 hour'.format(self.title_en))
+            start_reminder.body_nl = ('\'{}\' begint over '
+                                      '1 uur'.format(self.title_nl))
+            start_reminder.category = Category.objects.get(key='event')
+            start_reminder.time = (self.start - timezone.timedelta(hours=1))
+            start_reminder.save()
+            self.start_reminder = start_reminder
+            if self.registration_required:
+                self.start_reminder.users.set(self.participants.values_list(
+                    'member', flat=True))
+            else:
+                self.start_reminder.users.set(Member.active_members.all())
         else:
-            self.start_reminder.users.set(Member.active_members.all())
+            if (self.registration_reminder is not None
+                    and not self.registration_reminder.sent):
+                self.registration_reminder.delete()
+            if (self.start_reminder is not None
+                    and not self.start_reminder.sent):
+                self.start_reminder.delete()
 
         super().save(*args, **kwargs)
 
