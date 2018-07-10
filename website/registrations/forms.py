@@ -28,6 +28,12 @@ class MemberRegistrationForm(forms.ModelForm):
 
 class MemberRenewalForm(forms.ModelForm):
     """Form for membership renewals"""
+
+    privacy_policy = forms.BooleanField(
+        required=True,
+        label=_('I accept the privacy policy')
+    )
+
     class Meta:
         model = Renewal
         fields = '__all__'

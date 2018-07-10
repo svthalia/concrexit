@@ -75,6 +75,15 @@
 
         {% form_field form 'length' %}
 
+        <div class="control-group row">
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" name="privacy_policy" required="" id="id_privacy_policy">
+                    {% blocktrans trimmed %}I accept the <a target="_blank" href="{{ privacy_policy_url }}">privacy policy</a>{% endblocktrans %}.
+                </label>
+            </div>
+        </div>
+
         <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-style1 pull-right login" />
     </form>
     {% endif %}
