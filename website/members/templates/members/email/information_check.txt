@@ -17,7 +17,7 @@ Cohort:                 {{ member.profile.starting_year }}
 Programme:              {{ member.profile.programme }}
 
 You can change this data by logging into the website and using the 'edit profile' page.
-Unable to edit the incorrect information? Then send an email: info@thaliagit.nu.
+Unable to edit the incorrect information? Then send an email: info@thalia.nu.
 
 With kind regards,
 
