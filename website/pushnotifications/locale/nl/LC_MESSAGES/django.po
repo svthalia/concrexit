@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2017-12-17 18:01+0100\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"PO-Revision-Date: 2018-07-11 20:27+0200\n"
+"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.8\n"
 
 #: pushnotifications/admin.py
 msgid "Enable selected devices"
@@ -31,7 +31,7 @@ msgstr "Pushnotificaties"
 
 #: pushnotifications/models.py
 msgid "name"
-msgstr ""
+msgstr "naam"
 
 #: pushnotifications/models.py
 msgid "registration token"
@@ -91,7 +91,7 @@ msgstr "bericht"
 
 #: pushnotifications/models.py
 msgid "category"
-msgstr ""
+msgstr "categorie"
 
 #: pushnotifications/models.py
 msgid "sent"

@@ -8,19 +8,19 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2018-06-13 21:00+0200\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"PO-Revision-Date: 2018-07-11 20:26+0200\n"
+"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.8\n"
 
 #: events/admin.py
 msgid "lecture year"
-msgstr ""
+msgstr "collegejaar"
 
 #: events/admin.py
 msgid "Event Date"
