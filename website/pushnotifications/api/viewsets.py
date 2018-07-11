@@ -31,7 +31,7 @@ class DeviceViewSet(ModelViewSet):
             pass
         data = serializer.validated_data
         if 'receive_category' in data and len(data['receive_category']) > 0:
-            categories = data['receive_catogory'] + ['general']
+            categories = data['receive_category'] + ['general']
             serializer.save(user=self.request.user, language=language,
                             receive_category=categories)
         else:
