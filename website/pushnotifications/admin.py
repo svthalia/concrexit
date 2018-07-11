@@ -34,21 +34,22 @@ class DeviceAdmin(admin.ModelAdmin):
 @admin.register(models.Message)
 class MessageAdmin(TranslatedModelAdmin):
     """Manage normal messages"""
-    list_display = ('title', 'body', 'category', 'sent', 'success', 'failure')
+    list_display = ('title', 'body', 'category', 'url',
+                    'sent', 'success', 'failure')
     filter_horizontal = ('users',)
     list_filter = ('sent', 'category')
 
     def get_fields(self, request, obj=None):
         if obj and obj.sent:
             return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                    'category', 'success', 'failure')
+                    'url', 'category', 'success', 'failure')
         return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                'category')
+                'url', 'category')
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.sent:
             return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                    'category', 'success', 'failure')
+                    'url', 'category', 'success', 'failure')
         return super().get_readonly_fields(request, obj)
 
     def change_view(self, request, object_id, form_url='', **kwargs):
@@ -69,12 +70,12 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
     def get_fields(self, request, obj=None):
         if obj and obj.sent:
             return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                    'category', 'success', 'failure', 'time', 'task_id')
+                    'url', 'category', 'success', 'failure', 'time', 'task_id')
         return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                'category', 'time', 'task_id')
+                'url', 'category', 'time', 'task_id')
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.sent:
             return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                    'category', 'success', 'failure', 'time', 'task_id')
+                    'url', 'category', 'success', 'failure', 'time', 'task_id')
         return 'task_id',
