@@ -117,7 +117,7 @@ msgstr ""
 "programmeerwedstrijden. Verder organiseren wij ook lunchlezingen, workshops "
 "en brengen we elk kwartaal studieblad de Thabloid uit. Als u benieuwd bent "
 "naar samenwerkingsmogelijkheden, kunt u een e-mail sturen naar de "
-"commissaris externe betrekkingen, die te bereiken is via <<a href=\"mailto:"
+"commissaris externe betrekkingen, die te bereiken is via <a href=\"mailto:"
 "samenwerking@thalia.nu\" target=\"_blank\">samenwerking@thalia.nu</a>."
 
 #: partners/templates/partners/index.html
