@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """Registers admin interfaces for the events module"""
 from django.contrib import admin
+from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.datetime_safe import date
 from django.utils.html import format_html
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
@@ -13,6 +15,7 @@ from activemembers.models import Committee
 from events import services
 from members.models import Member
 from pizzas.models import PizzaEvent
+from utils.snippets import datetime_to_lectureyear
 from utils.translation import TranslatedModelAdmin
 from . import forms, models
 
@@ -65,6 +68,34 @@ class PizzaEventInline(admin.StackedInline):
     max_num = 1
 
 
+class LectureYearFilter(admin.SimpleListFilter):
+    """Filter the events on those started or ended in a lecture year"""
+    title = _('lecture year')
+    parameter_name = 'lecture_year'
+
+    def lookups(self, request, model_admin):
+        objects_end = models.Event.objects.aggregate(Max('end'))
+        objects_start = models.Event.objects.aggregate(Min('start'))
+
+        if objects_end['end__max'] and objects_start['start__min']:
+            year_end = datetime_to_lectureyear(objects_end['end__max'])
+            year_start = datetime_to_lectureyear(objects_start['start__min'])
+
+            return [(year, '{}-{}'.format(year, year+1))
+                    for year in range(year_end, year_start-1, -1)]
+        return []
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+
+        year = int(self.value())
+        year_start = date(year=year, month=9, day=1)
+        year_end = date(year=year + 1, month=9, day=1)
+
+        return queryset.filter(start__gte=year_start, end__lte=year_end)
+
+
 @admin.register(models.Event)
 class EventAdmin(DoNextModelAdmin):
     """Manage the events"""
@@ -77,7 +108,7 @@ class EventAdmin(DoNextModelAdmin):
                     'num_participants', 'organiser', 'category', 'published',
                     'edit_link')
     list_display_links = ('edit_link',)
-    list_filter = ('start', 'published', 'category')
+    list_filter = (LectureYearFilter, 'start', 'published', 'category')
     actions = ('make_published', 'make_unpublished')
     date_hierarchy = 'start'
     search_fields = ('title', 'description')
