@@ -183,6 +183,11 @@ class ServicesTest(TestCase):
         rows_updated = services.accept_entries(Entry.objects.all())
 
         self.e2.refresh_from_db()
+        self.e3.refresh_from_db()
+
+        self.assertNotEqual(self.e2.payment, None)
+        self.assertNotEqual(self.e3.payment, None)
+
         self.assertEqual(self.e2.username, 'ptest')
 
         self.assertEqual(rows_updated, 3)
