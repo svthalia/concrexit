@@ -145,12 +145,14 @@ class RegistrationAdminTest(TestCase):
         request = _get_mock_request([])
 
         fields = self.admin.get_readonly_fields(request)
-        self.assertEqual(fields, ['status', 'created_at', 'updated_at'])
+        self.assertEqual(fields, ['status', 'created_at',
+                                  'updated_at', 'payment'])
 
         fields = self.admin.get_readonly_fields(request, Registration(
             status=Entry.STATUS_CONFIRM
         ))
-        self.assertEqual(fields, ['status', 'created_at', 'updated_at'])
+        self.assertEqual(fields, ['status', 'created_at',
+                                  'updated_at', 'payment'])
 
         fields = self.admin.get_readonly_fields(request, Registration(
             status=Entry.STATUS_REJECTED
@@ -282,13 +284,14 @@ class RenewalAdminTest(TestCase):
         request = _get_mock_request([])
 
         fields = self.admin.get_readonly_fields(request)
-        self.assertEqual(fields, ['status', 'created_at', 'updated_at'])
+        self.assertEqual(fields, ['status', 'created_at',
+                                  'updated_at', 'payment'])
 
         fields = self.admin.get_readonly_fields(request, Renewal(
             status=Entry.STATUS_CONFIRM
         ))
         self.assertEqual(fields, ['status', 'created_at',
-                                  'updated_at', 'member'])
+                                  'updated_at', 'payment', 'member'])
 
         fields = self.admin.get_readonly_fields(request, Renewal(
             status=Entry.STATUS_REJECTED

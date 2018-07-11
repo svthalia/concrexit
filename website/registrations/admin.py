@@ -38,13 +38,16 @@ class RegistrationAdmin(admin.ModelAdmin):
                        'length',
                        'membership_type',
                        'status',
-                       'remarks',)
+                       'payment',
+                       'remarks')
         }),
         (_('Personal information'), {
             'fields': ('first_name',
                        'last_name',
                        'birthday',
+                       'optin_birthday',
                        'email',
+                       'optin_mailinglist',
                        'phone_number',)
         }),
         (_('Address'), {
@@ -90,7 +93,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         if obj is None or not (obj.status == Entry.STATUS_REJECTED or
                                obj.status == Entry.STATUS_ACCEPTED):
-            return ['status', 'created_at', 'updated_at']
+            return ['status', 'created_at', 'updated_at', 'payment']
         else:
             return [field.name for field in self.model._meta.get_fields()
                     if field.editable]
