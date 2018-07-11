@@ -4,9 +4,9 @@
         <thead>
             <tr>
                 <th scope="col">{% trans "name"|capfirst %} <span class="toggle"></span></th>
-                <th scope="col">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" data-meta="{sorter: 'date'}">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
                 {% if cancellations %}
-                <th scope="col">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" data-meta="{sorter: 'date'}">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
                 {% for field in fields %}
                 <th scope="col">{{ field.name }} <span class="toggle"></span></th>
@@ -37,9 +37,9 @@
                 {% else %}
                 <td>{{ registration.name }}</td>
                 {% endif %}
-                <td>{{ registration.date }}</td>
+                <td data-sortval="{{ registration.date|date:'c' }}">{{ registration.date }}</td>
                 {% if cancellations %}
-                <td>{{ registration.date_cancelled }}</td>
+                <td data-sortval="{{ registration.date|date:'c' }}">{{ registration.date_cancelled }}</td>
                 {% endif %}
                 {% for field in registration.information_fields %}
                     {% if not field.value %}

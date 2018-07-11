@@ -57,6 +57,17 @@ django.jQuery(function () {
         type: "numeric"
     });
 
+    $.tablesorter.addParser({
+        id: "date",
+        is: function(s) {
+            return false;
+        },
+        format: function(s, t, node) {
+            return $(node).attr("data-sortval");
+        },
+        type: "text"
+    });
+
     $("table").tablesorter({
 		sortList: [[1,0]],
         cssHeader: 'sortable',
