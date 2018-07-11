@@ -157,6 +157,7 @@ class RenewalFormView(FormView):
         if context['membership'] is not None:
             context['membership_type'] = (context['membership']
                                           .get_type_display())
+        context['privacy_policy_url'] = reverse('privacy-policy')
         return context
 
     def get_form(self, form_class=None):

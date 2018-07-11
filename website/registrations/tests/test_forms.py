@@ -29,8 +29,13 @@ class MemberRegistrationFormTest(TestCase):
         }
 
     def test_is_valid(self):
-        form = forms.MemberRegistrationForm(self.data)
-        self.assertTrue(form.is_valid(), msg=dict(form.errors))
+        with self.subTest("Form is valid"):
+            form = forms.MemberRegistrationForm(self.data)
+            self.assertTrue(form.is_valid(), msg=dict(form.errors))
+        with self.subTest("Form is not valid"):
+            self.data['privacy_policy'] = 0
+            form = forms.MemberRegistrationForm(self.data)
+            self.assertFalse(form.is_valid(), msg=dict(form.errors))
 
     def test_has_privacy_policy_field(self):
         form = forms.MemberRegistrationForm(self.data)
@@ -46,9 +51,19 @@ class MemberRenewalFormTest(TestCase):
             'member': self.member.pk,
             'length': Entry.MEMBERSHIP_STUDY,
             'membership_type': Membership.MEMBER,
+            'privacy_policy': 1,
         }
 
     def test_is_valid(self):
         self.member.membership_set.all().delete()
+        with self.subTest("Form is valid"):
+            form = forms.MemberRenewalForm(self.data)
+            self.assertTrue(form.is_valid(), msg=dict(form.errors))
+        with self.subTest("Form is not valid"):
+            self.data['privacy_policy'] = 0
+            form = forms.MemberRenewalForm(self.data)
+            self.assertFalse(form.is_valid(), msg=dict(form.errors))
+
+    def test_has_privacy_policy_field(self):
         form = forms.MemberRenewalForm(self.data)
-        self.assertTrue(form.is_valid(), msg=dict(form.errors))
+        self.assertTrue(form.fields['privacy_policy'] is not None)
