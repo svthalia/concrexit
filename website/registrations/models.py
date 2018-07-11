@@ -225,6 +225,18 @@ class Registration(Entry):
         blank=False,
     )
 
+    # ---- Opt-ins -----
+
+    optin_mailinglist = models.BooleanField(
+        verbose_name=_('mailinglist opt-in'),
+        default=False
+    )
+
+    optin_birthday = models.BooleanField(
+        verbose_name=_('birthday calendar opt-in'),
+        default=False
+    )
+
     def get_full_name(self):
         full_name = '{} {}'.format(self.first_name, self.last_name)
         return full_name.strip()
