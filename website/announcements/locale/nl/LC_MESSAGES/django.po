@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-12 14:06+0100\n"
+"POT-Creation-Date: 2018-07-11 20:07+0200\n"
 "PO-Revision-Date: 2018-02-12 13:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,58 +18,58 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: apps.py:7
+#: announcements/apps.py
 msgid "Site header announcements"
 msgstr "Site kop aankondigingen"
 
-#: models.py:12 models.py:66
+#: announcements/models.py
 msgid "Content"
 msgstr "Inhoud"
 
-#: models.py:13
+#: announcements/models.py
 msgid "The content of the announcement; what text to display."
 msgstr "De inhoud van de aankondiging; welke tekst weer te geven."
 
-#: models.py:19 models.py:73
+#: announcements/models.py
 msgid "Display since"
 msgstr "Geef weer vanaf"
 
-#: models.py:20
+#: announcements/models.py
 msgid "Hide this announcement before this time."
 msgstr "Verberg deze aankondiging voor dit tijdstip."
 
-#: models.py:25 models.py:79
+#: announcements/models.py
 msgid "Display until"
 msgstr "Laat zien tot"
 
-#: models.py:26
+#: announcements/models.py
 msgid "Hide this announcement after this time."
 msgstr "Verberg de aankondiging na dit tijdstip."
 
-#: models.py:32
+#: announcements/models.py
 msgid "Font Awesome icon"
 msgstr "Font Awesome-icoon"
 
-#: models.py:33
+#: announcements/models.py
 msgid "Font Awesome abbreviation for icon to use."
 msgstr "Font Awesome afkorting voor het te gebruiken icoon."
 
-#: models.py:58
+#: announcements/models.py
 msgid "Title"
 msgstr "Titel"
 
-#: models.py:59
+#: announcements/models.py
 msgid "The title of the article; what goes in the header"
 msgstr "De tekst van het artikel; wat er in de kop moet"
 
-#: models.py:67
+#: announcements/models.py
 msgid "The content of the article; what text to display."
 msgstr "De inhoud van het artikel; welke tekst weer te geven."
 
-#: models.py:74
+#: announcements/models.py
 msgid "Hide this article before this time."
 msgstr "Verberg dit artikel voor dit tijdstip."
 
-#: models.py:80
+#: announcements/models.py
 msgid "Hide this article after this time."
 msgstr "Verberg dit artikel na dit tijdstip."

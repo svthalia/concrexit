@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-21 20:03+0100\n"
+"POT-Creation-Date: 2018-07-11 20:07+0200\n"
 "PO-Revision-Date: 2018-03-21 20:03+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
@@ -18,44 +18,42 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: admin.py:22
+#: pizzas/admin.py
 #, python-brace-format
 msgid "<strong><a href=\"{link}\">Orders</a></strong>"
 msgstr "<strong><a href=\"{link}\">Bestellingen</a></strong>"
 
-#: api/serializers.py:38 api/serializers.py:39 models.py:125 models.py:126
+#: pizzas/api/serializers.py pizzas/models.py
 msgid "Either specify a member or a name"
 msgstr "Specificeer een lid of vul een naam in"
 
-#: apps.py:7 templates/pizzas/add_order.html:4
-#: templates/pizzas/add_order.html:5 templates/pizzas/index.html:4
-#: templates/pizzas/index.html:5 templates/pizzas/orders.html:5
-#: templates/pizzas/orders.html:6 templates/pizzas/overview.html:4
-#: templates/pizzas/overview.html:5
+#: pizzas/apps.py pizzas/templates/pizzas/add_order.html
+#: pizzas/templates/pizzas/index.html pizzas/templates/pizzas/orders.html
+#: pizzas/templates/pizzas/overview.html
 msgid "Pizzas"
 msgstr "Pizza's"
 
-#: models.py:12
+#: pizzas/models.py
 msgid "Order from"
 msgstr "Bestel vanaf"
 
-#: models.py:13
+#: pizzas/models.py
 msgid "Order until"
 msgstr "Bestel tot"
 
-#: models.py:55
+#: pizzas/models.py
 msgid "The start is after the end of this event."
 msgstr "Het begin is voor het einde van dit evenement."
 
-#: models.py:56
+#: pizzas/models.py
 msgid "The end is before the start of this event."
 msgstr "Het einde is voor het begin van dit evenement."
 
-#: models.py:62 models.py:64
+#: pizzas/models.py
 msgid "This event cannot overlap with {}."
 msgstr "Dit evenement kan niet overlappen met {}."
 
-#: models.py:88
+#: pizzas/models.py
 msgid ""
 "Only allow to be ordered by people with the 'order restricted products' "
 "permission."
@@ -63,38 +61,38 @@ msgstr ""
 "Laat alleen bestellen door mensen die de 'bestel beperkte producten' "
 "permissie hebben."
 
-#: models.py:97
+#: pizzas/models.py
 msgid "Order restricted products"
 msgstr "Bestel beperkte producten"
 
-#: models.py:113
+#: pizzas/models.py
 msgid "Use this for non-members"
 msgstr "Vul dit in voor niet-leden"
 
-#: templates/pizzas/add_order.html:4 templates/pizzas/add_order.html:5
+#: pizzas/templates/pizzas/add_order.html
 msgid "Add order"
 msgstr "Nieuwe bestelling toevoegen"
 
-#: templates/pizzas/add_order.html:8
+#: pizzas/templates/pizzas/add_order.html
 #, python-format
 msgid "Add order for %(title)s"
 msgstr "Bestelling toevoegen voor %(title)s"
 
-#: templates/pizzas/add_order.html:13 templates/pizzas/index.html:82
-#: templates/pizzas/index.html:116 templates/pizzas/orders.html:23
+#: pizzas/templates/pizzas/add_order.html pizzas/templates/pizzas/index.html
+#: pizzas/templates/pizzas/orders.html
 msgid "Name"
 msgstr "Naam"
 
-#: templates/pizzas/add_order.html:22 templates/pizzas/orders.html:24
-#: templates/pizzas/overview.html:21
+#: pizzas/templates/pizzas/add_order.html pizzas/templates/pizzas/orders.html
+#: pizzas/templates/pizzas/overview.html
 msgid "Product"
 msgstr "Product"
 
-#: templates/pizzas/add_order.html:28
+#: pizzas/templates/pizzas/add_order.html
 msgid "Add"
 msgstr "Toevoegen"
 
-#: templates/pizzas/add_order.html:34
+#: pizzas/templates/pizzas/add_order.html
 #, python-format
 msgid ""
 "A more generic version of this form is<br>also available in the <a href="
@@ -103,150 +101,149 @@ msgstr ""
 "Een meer generieke versie van dit formulier<br>is ook beschikbaar in de <a "
 "href=\"%(url_pizzas_order_add)s\">back-end</a>."
 
-#: templates/pizzas/index.html:8 templates/pizzas/index.html:38
+#: pizzas/templates/pizzas/index.html
 #, python-format
 msgid "Order food for %(title)s"
 msgstr "Bestel eten voor %(title)s"
 
-#: templates/pizzas/index.html:10 templates/pizzas/index.html:42
+#: pizzas/templates/pizzas/index.html
 msgid "There is no current event for which you can order food"
 msgstr "Er is nu geen evenement waar je eten voor kunt bestellen"
 
-#: templates/pizzas/index.html:47
+#: pizzas/templates/pizzas/index.html
 msgid "All products"
 msgstr "Alle producten"
 
-#: templates/pizzas/index.html:50 templates/pizzas/orders.html:15
+#: pizzas/templates/pizzas/index.html pizzas/templates/pizzas/orders.html
 msgid "All events"
 msgstr "Alle evenementen"
 
-#: templates/pizzas/index.html:53
+#: pizzas/templates/pizzas/index.html
 msgid "All orders"
 msgstr "Alle bestellingen"
 
-#: templates/pizzas/index.html:60
+#: pizzas/templates/pizzas/index.html
 #, python-format
 msgid "It will be possible to order from %(start)s."
 msgstr "Je kan bestellen vanaf %(start)s."
 
-#: templates/pizzas/index.html:65
+#: pizzas/templates/pizzas/index.html
 #, python-format
 msgid "It was possible to order until %(end)s."
 msgstr "Je kon bestellen tot %(end)s."
 
-#: templates/pizzas/index.html:69
+#: pizzas/templates/pizzas/index.html
 #, python-format
 msgid "It is possible to order until %(end)s."
 msgstr "Je kan bestellen tot %(end)s."
 
-#: templates/pizzas/index.html:74
+#: pizzas/templates/pizzas/index.html
 msgid "The order has been paid for."
 msgstr "De bestelling is betaald."
 
-#: templates/pizzas/index.html:76
+#: pizzas/templates/pizzas/index.html
 msgid "The order has not yet been paid for."
 msgstr "De bestelling is nog niet betaald."
 
-#: templates/pizzas/index.html:78
+#: pizzas/templates/pizzas/index.html
 msgid "Current order"
 msgstr "Huidige bestelling"
 
-#: templates/pizzas/index.html:83 templates/pizzas/index.html:117
+#: pizzas/templates/pizzas/index.html
 msgid "Description"
 msgstr "Omschrijving"
 
-#: templates/pizzas/index.html:84 templates/pizzas/index.html:118
-#: templates/pizzas/overview.html:22
+#: pizzas/templates/pizzas/index.html pizzas/templates/pizzas/overview.html
 msgid "Price"
 msgstr "Prijs"
 
-#: templates/pizzas/index.html:85 templates/pizzas/index.html:98
+#: pizzas/templates/pizzas/index.html
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: templates/pizzas/index.html:93 views.py:95
+#: pizzas/templates/pizzas/index.html pizzas/views.py
 msgid "You can no longer cancel."
 msgstr "Je kunt niet meer annuleren."
 
-#: templates/pizzas/index.html:98
+#: pizzas/templates/pizzas/index.html
 msgid "Are you sure you want to cancel your order?"
 msgstr "Weet je zeker dat je de bestelling wilt annuleren?"
 
-#: templates/pizzas/index.html:106
+#: pizzas/templates/pizzas/index.html
 msgid "Changing your order"
 msgstr "Bestelling bewerken"
 
-#: templates/pizzas/index.html:109
+#: pizzas/templates/pizzas/index.html
 msgid "You did not place an order."
 msgstr "Je hebt geen bestelling geplaatst."
 
-#: templates/pizzas/index.html:119 templates/pizzas/index.html:130
+#: pizzas/templates/pizzas/index.html
 msgid "Modify"
 msgstr "Bewerken"
 
-#: templates/pizzas/index.html:119 templates/pizzas/index.html:130
+#: pizzas/templates/pizzas/index.html
 msgctxt "pizzas"
 msgid "Order"
 msgstr "Bestellen"
 
-#: templates/pizzas/index.html:130
+#: pizzas/templates/pizzas/index.html
 msgid "Are you sure you want to modify your order?"
 msgstr "Weet je zeker dat je de bestelling aan wilt passen?"
 
-#: templates/pizzas/orders.html:10 templates/pizzas/overview.html:10
+#: pizzas/templates/pizzas/orders.html pizzas/templates/pizzas/overview.html
 #, python-format
 msgid "Orders for %(title)s"
 msgstr "Bestellingen voor %(title)s"
 
-#: templates/pizzas/orders.html:14
+#: pizzas/templates/pizzas/orders.html
 msgid "Add a new order"
 msgstr "Nieuwe bestelling toevoegen"
 
-#: templates/pizzas/orders.html:16
+#: pizzas/templates/pizzas/orders.html
 msgid "Overview"
 msgstr "Overzicht"
 
-#: templates/pizzas/orders.html:25
+#: pizzas/templates/pizzas/orders.html
 msgid "Paid"
 msgstr "Betaald"
 
-#: templates/pizzas/orders.html:39 templates/pizzas/overview.html:71
+#: pizzas/templates/pizzas/orders.html pizzas/templates/pizzas/overview.html
 msgid "Yes"
 msgstr "Ja"
 
-#: templates/pizzas/orders.html:39 templates/pizzas/overview.html:71
+#: pizzas/templates/pizzas/orders.html pizzas/templates/pizzas/overview.html
 msgid "No"
 msgstr "Nee"
 
-#: templates/pizzas/orders.html:45
+#: pizzas/templates/pizzas/orders.html
 msgid "Are you sure you want to delete this order?"
 msgstr "Weet je zeker dat je de bestelling wilt verwijderen?"
 
-#: templates/pizzas/orders.html:53 templates/pizzas/overview.html:45
+#: pizzas/templates/pizzas/orders.html pizzas/templates/pizzas/overview.html
 msgid "Nobody ordered yet"
 msgstr "Nog geen bestellingen"
 
-#: templates/pizzas/overview.html:14
+#: pizzas/templates/pizzas/overview.html
 msgid "Back"
 msgstr "Terug"
 
-#: templates/pizzas/overview.html:23
+#: pizzas/templates/pizzas/overview.html
 msgid "Amount"
 msgstr "Aantal"
 
-#: templates/pizzas/overview.html:24
+#: pizzas/templates/pizzas/overview.html
 msgid "Total"
 msgstr "Totaal"
 
-#: views.py:81 views.py:100
+#: pizzas/views.py
 msgid "Your order could not be found."
 msgstr "Je bestelling kont niet worden gevonden."
 
-#: views.py:98
+#: pizzas/views.py
 msgid "Your order has been cancelled."
 msgstr "Je bestelling is geannuleerd."
 
-#: views.py:112
+#: pizzas/views.py
 msgid "Your order was successful."
 msgstr "Je bestelling is succesvol."
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-12 14:06+0100\n"
+"POT-Creation-Date: 2018-07-11 20:07+0200\n"
 "PO-Revision-Date: 2017-12-17 18:01+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -13,90 +13,98 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.4\n"
 
-#: admin.py:19
+#: pushnotifications/admin.py
 msgid "Enable selected devices"
 msgstr "Activeer geselecteerde apparaten"
 
-#: admin.py:23
+#: pushnotifications/admin.py
 msgid "Disable selected devices"
 msgstr "Deactiveer geselecteerde apparaten"
 
-#: admin.py:27
+#: pushnotifications/admin.py
 msgid "Name"
 msgstr "Naam"
 
-#: apps.py:7
+#: pushnotifications/apps.py
 msgid "Push Notifications"
 msgstr "Pushnotificaties"
 
-#: models.py:17
+#: pushnotifications/models.py
+msgid "name"
+msgstr ""
+
+#: pushnotifications/models.py
 msgid "registration token"
 msgstr "registratie token"
 
-#: models.py:20
+#: pushnotifications/models.py
 msgid "active"
 msgstr "actief"
 
-#: models.py:21
+#: pushnotifications/models.py
 msgid "Inactive devices will not be sent notifications"
 msgstr "Inactieve apparaten zullen geen notificaties ontvangen"
 
-#: models.py:28
+#: pushnotifications/models.py
 msgid "registration date"
 msgstr "registratiedatum"
 
-#: models.py:31
+#: pushnotifications/models.py
 msgid "language"
 msgstr "taal"
 
-#: models.py:50
+#: pushnotifications/models.py
 msgid "General"
 msgstr "Algemeen"
 
-#: models.py:51
+#: pushnotifications/models.py
 msgid "Pizza"
 msgstr "Pizza"
 
-#: models.py:52
+#: pushnotifications/models.py
 msgid "Events"
 msgstr "Evenementen"
 
-#: models.py:53
+#: pushnotifications/models.py
 msgid "Newsletter"
 msgstr "Nieuwsbrief"
 
-#: models.py:54
+#: pushnotifications/models.py
 msgid "Sponsored messages"
 msgstr "Gesponsorde berichten"
 
-#: models.py:55
+#: pushnotifications/models.py
 msgid "Photos"
 msgstr "Foto's"
 
-#: models.py:56
+#: pushnotifications/models.py
 msgid "Board"
 msgstr "Bestuur"
 
-#: models.py:62
+#: pushnotifications/models.py
 msgid "title"
 msgstr "titel"
 
-#: models.py:65
+#: pushnotifications/models.py
 msgid "body"
 msgstr "bericht"
 
-#: models.py:75
+#: pushnotifications/models.py
+msgid "category"
+msgstr ""
+
+#: pushnotifications/models.py
 msgid "sent"
 msgstr "verzonden"
 
-#: models.py:79
+#: pushnotifications/models.py
 msgid "failure"
 msgstr "mislukt"
 
-#: models.py:84
+#: pushnotifications/models.py
 msgid "success"
 msgstr "succesvol"
 
-#: templates/admin/pushnotifications/change_form.html:14
+#: pushnotifications/templates/admin/pushnotifications/change_form.html
 msgid "Send message"
 msgstr "Verstuur bericht"

@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 
 import os
 
+from django.core.management.commands import makemessages
 from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -311,3 +312,7 @@ TINYMCE_DEFAULT_CONFIG = {
 
 DEFAULT_EXCEPTION_REPORTER_FILTER = (
     'utils.exception_filter.ThaliaSafeExceptionReporterFilter')
+
+
+# Make sure the locations in django.po files don't include line nrs.
+makemessages.Command.xgettext_options.append('--add-location=file')
