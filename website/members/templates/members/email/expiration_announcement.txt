@@ -6,13 +6,15 @@ end on the 1st of September.
 
 If you still want to enjoy all the benefits a membership gives you the coming year
 then you'll have to renew it. This'll give you access to activities, the book sale,
-our exam collection and a symposium. Come by the board room and we'll help you
-to extend your membership.
+our exam collection and a symposium.
 
-Note that if you upgrade your yearly membership to a study membership this year,
+Renewing your membership is easy. Open the renewal page on the website and
+select the right option: {{ renewal_url }}.
+
+Note that if you upgrade your yearly membership to a study membership before August 31,
 you will get a discount of €{{ membership_price }}.
 
-Are you not able to come by? Then just send us an email: info@thalia.nu.
+Are you unable to renew your membership via the website? Then send us an email: info@thalia.nu.
 
 With kind regards,
 

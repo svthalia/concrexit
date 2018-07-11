@@ -90,10 +90,13 @@ def send_expiration_announcement(dry_run=False):
                 with translation.override(member.language):
                     email_body = loader.render_to_string(
                         'members/email/expiration_announcement.txt',
-                        {'name': member.get_full_name(),
-                         'membership_price': floatformat(
-                             settings.MEMBERSHIP_PRICES['year'], 2
-                         )})
+                        {
+                            'name': member.get_full_name(),
+                            'membership_price': floatformat(
+                                 settings.MEMBERSHIP_PRICES['year'], 2
+                            ),
+                            'renewal_url': reverse('registrations:renew')
+                        })
                     mail.EmailMessage(
                         _('Membership expiration announcement'),
                         email_body,
