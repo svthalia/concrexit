@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-16 20:01+0200\n"
+"POT-Creation-Date: 2018-07-11 20:07+0200\n"
 "PO-Revision-Date: 2018-05-16 20:03+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -18,184 +18,183 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
-#: admin.py:38
+#: education/admin.py
 msgid "Mark exams as accepted"
 msgstr "Markeer tentamens als geaccepteerd"
 
-#: admin.py:43
+#: education/admin.py
 msgid "Mark exams as rejected"
 msgstr "Markeer tentamens als afgekeurd"
 
-#: admin.py:48
+#: education/admin.py
 msgid "Reset the marked exams download count"
 msgstr "Reset download aantal van gemarkeerde tentamens"
 
-#: admin.py:67 admin.py:111
+#: education/admin.py
 msgid "Download marked as csv"
 msgstr "Download gemarkeerde tentamens als csv"
 
-#: admin.py:82
+#: education/admin.py
 msgid "Mark summaries as accepted"
 msgstr "Markeer samenvattingen als geaccepteerd"
 
-#: admin.py:87
+#: education/admin.py
 msgid "Mark summaries as rejected"
 msgstr "Markeer samenvattingen als afgekeurd"
 
-#: admin.py:92
+#: education/admin.py
 msgid "Reset the marked summaries download count"
 msgstr "Reset download aantal van gemarkeerde samenvattingen"
 
-#: apps.py:7
+#: education/apps.py
 msgid "Education"
 msgstr "Onderwijs"
 
-#: models.py:24
+#: education/models.py
 msgid "category"
 msgstr "categorie"
 
-#: models.py:25 models.py:36
+#: education/models.py
 msgid "categories"
 msgstr "categorieën"
 
-#: models.py:43
+#: education/models.py
 msgid "old courses"
 msgstr "oude vakken"
 
-#: models.py:57 templates/education/course.html:73
+#: education/models.py education/templates/education/course.html
 msgid "EC"
 msgstr "EC"
 
-#: models.py:67
+#: education/models.py
 msgid "period"
 msgstr "periode"
 
-#: models.py:77 models.py:132 models.py:186
+#: education/models.py
 msgid "course"
 msgstr "vak"
 
-#: models.py:78
+#: education/models.py
 msgid "courses"
 msgstr "vakken"
 
-#: models.py:83
+#: education/models.py
 msgid "Document"
 msgstr "Document"
 
-#: models.py:84
+#: education/models.py
 msgid "Exam"
 msgstr "Tentamen"
 
-#: models.py:85
+#: education/models.py
 msgid "Partial Exam"
 msgstr "Deeltentamen"
 
-#: models.py:86
+#: education/models.py
 msgid "Resit"
 msgstr "Hertentamen"
 
-#: models.py:87
+#: education/models.py
 msgid "Practice Exam"
 msgstr "Oefententamen"
 
-#: models.py:88
+#: education/models.py
 msgid "Exam Answers"
 msgstr "Antwoorden tentamen"
 
-#: models.py:89
+#: education/models.py
 msgid "Partial Exam Answers"
 msgstr "Antwoorden deeltentamen"
 
-#: models.py:90
+#: education/models.py
 msgid "Resit Answers"
 msgstr "Antwoorden hertentamen"
 
-#: models.py:91
+#: education/models.py
 msgid "Practice Exam Answers"
 msgstr "Antwoorden oefententamen"
 
-#: models.py:96
+#: education/models.py
 msgid "exam type"
 msgstr "type tentamen"
 
-#: models.py:101
+#: education/models.py
 msgid "exam name"
 msgstr "naam tentamen"
 
-#: models.py:107 models.py:169
+#: education/models.py
 msgid "uploader"
 msgstr "uploader"
 
-#: models.py:116 models.py:191
+#: education/models.py
 msgid "accepted"
 msgstr "geaccepteerd"
 
-#: models.py:121
+#: education/models.py
 msgid "exam date"
 msgstr "tentamendatum"
 
-#: models.py:126 models.py:197
+#: education/models.py
 msgid "Use the 'View on site' button to download the file for inspection."
 msgstr ""
 "Gebruik de ‘Toon op site’ knop om het bestand te downloaden voor controle."
 
-#: models.py:137 models.py:202
+#: education/models.py
 msgid "amount of downloads"
 msgstr "Hoeveelheid downloads"
 
-#: models.py:157
+#: education/models.py
 msgid "exam"
 msgstr "tentamen"
 
-#: models.py:158
+#: education/models.py
 msgid "exams"
 msgstr "tentamens"
 
-#: models.py:164
+#: education/models.py
 msgid "summary name"
 msgstr "naam samenvatting"
 
-#: models.py:181
+#: education/models.py
 msgid "author"
 msgstr "auteur"
 
-#: models.py:215
+#: education/models.py
 msgid "summary"
 msgstr "samenvatting"
 
-#: models.py:216
+#: education/models.py
 msgid "summaries"
 msgstr "samenvattingen"
 
-#: templates/education/add_exam.html:4 templates/education/add_exam.html:5
-#: templates/education/add_exam.html:8 templates/education/course.html:79
+#: education/templates/education/add_exam.html
+#: education/templates/education/course.html
 msgid "Submit Exam"
 msgstr "Tentamen Insturen"
 
-#: templates/education/add_exam.html:12
+#: education/templates/education/add_exam.html
 msgid "Exam submitted successfully."
 msgstr "Tentamen succesvol ingestuurd."
 
-#: templates/education/add_exam.html:34 templates/education/add_summary.html:34
+#: education/templates/education/add_exam.html
+#: education/templates/education/add_summary.html
 msgid "submit"
 msgstr "insturen"
 
-#: templates/education/add_summary.html:4
-#: templates/education/add_summary.html:5
-#: templates/education/add_summary.html:8 templates/education/course.html:82
+#: education/templates/education/add_summary.html
+#: education/templates/education/course.html
 msgid "Submit Summary"
 msgstr "Samenvatting Insturen"
 
-#: templates/education/add_summary.html:12
+#: education/templates/education/add_summary.html
 msgid "Summary submitted successfully."
 msgstr "Samenvatting succesvol ingestuurd."
 
-#: templates/education/books.html:4 templates/education/books.html:5
-#: templates/education/books.html:8
+#: education/templates/education/books.html
 msgid "Book Sale"
 msgstr "Boekverkoop"
 
-#: templates/education/books.html:10
+#: education/templates/education/books.html
 #, python-format
 msgid ""
 "As of this year, Thalia's book sale goes through Bol.com. As a member of "
@@ -212,11 +211,11 @@ msgstr ""
 "aankoop doet krijgt Thalia tot 8%% commissie over de producten die je "
 "besteld hebt."
 
-#: templates/education/books.html:16
+#: education/templates/education/books.html
 msgid "How does it work?"
 msgstr "Hoe werkt het?"
 
-#: templates/education/books.html:18
+#: education/templates/education/books.html
 msgid ""
 "Below, you can find an overview for all courses that require a book in the "
 "first semester. You can also choose to view all books for an entire period. "
@@ -233,7 +232,7 @@ msgstr ""
 "kun je onderstaande generator gebruiken. Daar komt een code uit die je bij "
 "het afronden van je bestelling in kunt vullen."
 
-#: templates/education/books.html:24
+#: education/templates/education/books.html
 msgid ""
 "This generator creates a unique code for each user. If you use the generator "
 "again after a few days, it will produce the same code. If you have already "
@@ -245,7 +244,7 @@ msgstr ""
 "je code al een keer hebt gebruikt en je wil een nieuwe genereren, kun je je "
 "cookies verwijderen om een nieuwe code te krijgen."
 
-#: templates/education/books.html:30
+#: education/templates/education/books.html
 msgid ""
 "This discount is also valid for books that are not included in the list "
 "below. In case books are missing from the catalog, or if you discover any "
@@ -257,59 +256,51 @@ msgstr ""
 "stuur gerust een e-mail naar <a href=\"mailto:onderwijs@thalia.nu"
 "\">onderwijs@thalia.nu</a>."
 
-#: templates/education/books.html:39
+#: education/templates/education/books.html
 msgid "first year bachelor courses"
 msgstr "eerstejaars bachelorvakken"
 
-#: templates/education/books.html:42 templates/education/books.html:71
-#: templates/education/books.html:108 templates/education/books.html:127
+#: education/templates/education/books.html
 msgid "third quarter"
 msgstr "derde kwartaal"
 
-#: templates/education/books.html:46 templates/education/books.html:50
-#: templates/education/books.html:60 templates/education/books.html:75
-#: templates/education/books.html:79 templates/education/books.html:83
-#: templates/education/books.html:93 templates/education/books.html:97
-#: templates/education/books.html:112 templates/education/books.html:131
-#: templates/education/books.html:135
+#: education/templates/education/books.html
 msgid "View and order"
 msgstr "Bekijk en bestel"
 
-#: templates/education/books.html:53 templates/education/books.html:86
-#: templates/education/books.html:115 templates/education/books.html:138
+#: education/templates/education/books.html
 msgid "View all books for the third quarter"
 msgstr "Bekijk alle boeken voor het derde kwartaal"
 
-#: templates/education/books.html:56 templates/education/books.html:89
-#: templates/education/books.html:118 templates/education/books.html:141
+#: education/templates/education/books.html
 msgid "fourth quarter"
 msgstr "vierde kwartaal"
 
-#: templates/education/books.html:63 templates/education/books.html:100
+#: education/templates/education/books.html
 msgid "View all books for the fourth quarter"
 msgstr "Bekijk alle boeken voor het vierde kwartaal"
 
-#: templates/education/books.html:68
+#: education/templates/education/books.html
 msgid "second year bachelor courses"
 msgstr "tweedejaars bachelorvakken"
 
-#: templates/education/books.html:105
+#: education/templates/education/books.html
 msgid "third year bachelor courses"
 msgstr "derdejaars bachelorvakken"
 
-#: templates/education/books.html:119 templates/education/books.html:142
+#: education/templates/education/books.html
 msgid "No books found for the fourth quarter"
 msgstr "Geen boeken gevonden voor het vierde kwartaal"
 
-#: templates/education/books.html:124
+#: education/templates/education/books.html
 msgid "master courses"
 msgstr "mastervakken"
 
-#: templates/education/course.html:4 templates/education/course.html:5
+#: education/templates/education/course.html
 msgid "Course"
 msgstr "Vak"
 
-#: templates/education/course.html:15
+#: education/templates/education/course.html
 msgid ""
 "Thalia does not have any documents for this course, unfortunately. Are you "
 "in possession of exams or summaries for this course? Then let us know or add "
@@ -318,15 +309,15 @@ msgstr ""
 "Er zijn bij Thalia helaas geen documenten bekend over dit vak. Ben jij in "
 "het bezit van tentamens of samenvattingen over dit vak? Laat het ons weten!"
 
-#: templates/education/course.html:30
+#: education/templates/education/course.html
 msgid "Exams"
 msgstr "Tentamens"
 
-#: templates/education/course.html:30
+#: education/templates/education/course.html
 msgid "Summaries"
 msgstr "Samenvattingen"
 
-#: templates/education/course.html:46
+#: education/templates/education/course.html
 #, python-format
 msgid ""
 "These documents were collected for <a href=\"%(course_url)s\">"
@@ -335,7 +326,7 @@ msgstr ""
 "Deze documenten zijn van de cursus <a href=\"%(course_url)s\">"
 "%(course_name)s</a>, een voorloper van dit vak."
 
-#: templates/education/course.html:60
+#: education/templates/education/course.html
 #, python-format
 msgid ""
 "This is the overview for <b>%(name)s</b>. You can find all the exams and "
@@ -344,7 +335,7 @@ msgstr ""
 "Dit is de overzichtspagina voor <b>%(name)s</b>. Hier kun je per jaar alle "
 "bij Thalia bekende tentamens en samenvattingen terugvinden."
 
-#: templates/education/course.html:65
+#: education/templates/education/course.html
 msgid ""
 "Keep in mind that old exams and summaries may not always test the same "
 "material as this year."
@@ -352,20 +343,19 @@ msgstr ""
 "Houd er rekening mee dat oude tentamens en samenvattingen niet altijd "
 "representatief zijn voor wat er dit jaar wordt getoetst."
 
-#: templates/education/course.html:72
+#: education/templates/education/course.html
 msgid "Course code"
 msgstr "Cursus code"
 
-#: templates/education/course.html:74
+#: education/templates/education/course.html
 msgid "Period"
 msgstr "Periode"
 
-#: templates/education/courses.html:4 templates/education/courses.html:5
-#: templates/education/courses.html:8
+#: education/templates/education/courses.html
 msgid "Course overview"
 msgstr "Vakkenoverzicht"
 
-#: templates/education/courses.html:10
+#: education/templates/education/courses.html
 msgid ""
 "This overview contains all courses for which Thalia has exams, summaries or "
 "other documents. Select a course to find out more.<br/> Can't find a course? "
@@ -376,20 +366,19 @@ msgstr ""
 "er een vak niet tussen? Laat dat dan weten aan de <a href=\"mailto:"
 "educacie@thalia.nu\">educatiecommissie</a>."
 
-#: templates/education/courses.html:22
+#: education/templates/education/courses.html
 msgid "all courses"
 msgstr "alle vakken"
 
-#: templates/education/student_participation.html:5
-#: templates/education/student_participation.html:6
+#: education/templates/education/student_participation.html
 msgid "Student Participation"
 msgstr "Medezeggenschap"
 
-#: templates/education/student_participation.html:10
+#: education/templates/education/student_participation.html
 msgid "Education Program Committee"
 msgstr "De Opleidingscommisie"
 
-#: templates/education/student_participation.html:12
+#: education/templates/education/student_participation.html
 msgid ""
 "<p>The Education Program Committee (EPC) is responsible for giving advice "
 "concerning education and exam regulations, that have to be approved every "
@@ -417,11 +406,11 @@ msgstr ""
 "kan je meer lezen over de studenten die in de OLC zitten op hun <a href="
 "\"http://olc.cs.ru.nl/\">eigen pagina</a>.</p>"
 
-#: templates/education/student_participation.html:20
+#: education/templates/education/student_participation.html
 msgid "Faculty Student Council"
 msgstr "De Facultaire Studentenraad"
 
-#: templates/education/student_participation.html:22
+#: education/templates/education/student_participation.html
 msgid ""
 "<p>The Faculty of Science has their own student participation organ that "
 "concerns itself with matters that are important to our faculty. This ranges "
@@ -447,11 +436,11 @@ msgstr ""
 "blijven. Je kan  <a href=\"ḧttp://www.ru.nl/fnwi/fsr/\">hier</a> meer over "
 "de FSR lezen.</p>"
 
-#: templates/education/student_participation.html:31
+#: education/templates/education/student_participation.html
 msgid "University Student Council"
 msgstr "De Universitaire Studentenraad"
 
-#: templates/education/student_participation.html:33
+#: education/templates/education/student_participation.html
 msgid ""
 "<p>The University Student Council (USC) is concerned with all issues that "
 "concern the entire university. One could think of the opening hours of the "
@@ -467,7 +456,7 @@ msgstr ""
 "de andere zes representeren verschillende studentenorganisaties. Je kan <a "
 "href=\"http://www.ru.nl/usr/\">hier</a> meer lezen over de USR."
 
-#: views.py:32
+#: education/views.py
 msgid "Summary"
 msgstr "Samenvatting"
 
