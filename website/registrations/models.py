@@ -271,7 +271,7 @@ class Registration(Entry):
         if (self.starting_year is None and
                 self.membership_type is not Membership.SUPPORTER):
             errors.update({
-                'username': _('This field is required.')})
+                'starting_year': _('This field is required.')})
 
         if (self.programme is None and
                 self.membership_type is not Membership.SUPPORTER):
