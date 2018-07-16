@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-16 10:35+0200\n"
-"PO-Revision-Date: 2018-07-16 10:36+0200\n"
+"POT-Creation-Date: 2018-07-23 18:05+0200\n"
+"PO-Revision-Date: 2018-07-23 18:05+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -469,6 +469,185 @@ msgid ""
 msgstr ""
 "Onder dit menu vind je alle pagina's die exclusief voor jou, Thalia-lid, "
 "toegankelijk zijn."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Version"
+msgstr "Versie"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"This document was created to clarify how Thalia uses your personal data. By "
+"becoming a member or patron of the association, you agree to these terms and "
+"conditions. To change any data provided you have to contact the board."
+msgstr ""
+"Dit document is opgesteld om duidelijk te maken waar je gegevens voor worden "
+"gebruikt. Door lid/begunstiger te worden van de vereniging geef je aan deze "
+"privacyvoorwaarden te accepteren. Voor alle gegevens geldt dat als je ze wil "
+"wijzigen je dat zelf aan kan geven bij het bestuur."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Registration"
+msgstr "Inschrijving"
+
+#: templates/singlepages/privacy_policy.html
+msgid "Name"
+msgstr "Naam"
+
+#: templates/singlepages/privacy_policy.html
+msgid "Used to address the member by name."
+msgstr "Zodat de vereniging het lid kan aanspreken."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Street, house number, postal code and city"
+msgstr "Straat, huisnummer, postcode en woonplaats"
+
+#: templates/singlepages/privacy_policy.html
+msgid "Used for delivery of our association magazine, the Thabloid."
+msgstr "Voor het rondsturen van ons verenigingsblad, de Thabloid."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Email address"
+msgstr "E-mailadres"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"Used for delivery of planned mail such as GM announcements, sending the opt-"
+"out newsletter and sending the opt-in sponsorship mail. In addition, this "
+"will be used to send personal messages with login credentials for the "
+"website and messages with event-specific information after registering for "
+"an event."
+msgstr ""
+"Voor het versturen van plenaire mailing zoals ALV-aankondigingen, het "
+"versturen van de opt-out nieuwsbrief en het versturen van opt-in spon- "
+"sormailings. Daarnaast voor het versturen persoonlijke berichten met "
+"inloggegevens voor de website en berichten met evenementspecifieke in- "
+"formatie, nadat je je geregistreerd hebt voor dit evenement."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Phone number"
+msgstr "Telefoonnummer"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"Used for personal contact with regards to events, such as last minute "
+"changes, being late for an event and similar."
+msgstr ""
+"Voor persoonlijk contact naar aanleiding van evenementen. Bv. Er is op het "
+"laatste moment iets verandert, je bent te laat, etc..."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Birth Date"
+msgstr "Geboortedatum"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"Ensures no alcohol can be dispensed to underaged members and used in an opt-"
+"out function on the website when showing or hiding your birthday from other "
+"members and patrons."
+msgstr ""
+"Om te garanderen dat er geen alcohol geschonken wordt aan minderjarigen. "
+"Wordt ook gebruikt voor een opt-out functie op de website waarbij je "
+"verjaardag zichtbaar is aan andere leden/begunstigers."
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"Furthermore, there are several things that are only requested from members:"
+msgstr "Verder zijn er nog enkele zaken die enkel gevraagd worden aan leden:"
+
+#: templates/singlepages/privacy_policy.html
+msgid "Student Number"
+msgstr "Studentnummer"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"Used to check whether you're still studying. This is key for the requisition "
+"of board subsidies."
+msgstr ""
+"Om te controleren of je nog studeert. Dit is belangrijk voor het aanvragen "
+"van bestuursbeurzen die als subsidie dienen voor het bestuur."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Study"
+msgstr "Studierichting"
+
+#: templates/singlepages/privacy_policy.html
+msgid "Used to chart member interests."
+msgstr "Ter schetsing van de interessegebieden van de leden."
+
+#: templates/singlepages/privacy_policy.html
+msgid "There are also several things that are only requested from patrons:"
+msgstr "En enkele zaken die enkel aan begunstigers gevraagd worden:"
+
+#: templates/singlepages/privacy_policy.html
+msgid "History"
+msgstr "Historie"
+
+#: templates/singlepages/privacy_policy.html
+msgid "Used to decide whether the admittance procedure is to be followed."
+msgstr "Om te bepalen of de extra toelatingsprocedure gevolgd moet worden."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Additional admittance procedure"
+msgstr "Extratoelatingsprocedure"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"This is a voucher with a signature and a motivation to confirm you're "
+"familiar to and close with Thalia."
+msgstr ""
+"Vouchers met naam en handtekening en een motivatie ter bevestiging dat je "
+"veel met Thalia te maken hebt."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Finally, if relevant:"
+msgstr "Tot slot, indien van toepassing:"
+
+#: templates/singlepages/privacy_policy.html
+msgid "Bank Account Number"
+msgstr "Bankrekeningnummer"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"When you pay or declare costs with a bank account, we retain the account "
+"number and payments/declarations to simplify future payments."
+msgstr ""
+"Wanneer je betaalt of declareert met een bankrekeningnummer, onthouden we "
+"het bankrekeningnummer om betalingen/declaraties in de toekomst makkelijker "
+"te laten verlopen."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Member List"
+msgstr "Ledenlijst"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"The website keeps track of a list of members where you have your own profile "
+"page. This list and profile page can only be visited by other members or "
+"patrons. The profile page mentions the name and if the owner is a member, "
+"the study and the cohort the member belongs to. The profile page can be "
+"extended with further information."
+msgstr ""
+"Er wordt op de website een ledenlijst bijgehouden waarbij je een eigen "
+"profiel- pagina hebt. Deze ledenlijst en profielpagina kunnen enkel bezocht "
+"worden door andere leden/begunstigers. Op deze profielpagina worden naam en, "
+"indien lid, studierichting en cohort vermeld. Er bestaat de mogelijkheid om "
+"informatie aan deze profielpagina toe te voegen."
+
+#: templates/singlepages/privacy_policy.html
+msgid "Photographs"
+msgstr "Foto's"
+
+#: templates/singlepages/privacy_policy.html
+msgid ""
+"During events, pictures are taken to portray the atmosphere. In addition, "
+"committees are photographed for the website. If prefer to not be present on "
+"such a picture, you can tell the photographer, usually recognizable by their "
+"committee shirt and the camera."
+msgstr ""
+"Op evenementen worden foto’s gemaakt ter sfeerimpressie en van commissies "
+"worden foto’s gemaakt voor op de website. Wil je niet op zo’n foto staan? "
+"Zeg het even tegen de fotograaf, meestal herkenbaar aan zijn commissieshirt "
+"en zijn camera."
 
 #: templates/singlepages/sister_associations.html
 msgid "Associations of the Radboud University Science Faculty"
