@@ -155,7 +155,7 @@ msgid "400: Bad request"
 msgstr "400: Verkeerde request"
 
 #: templates/403.html:4
-msgid "403: Permission denied."
+msgid "403: Permission denied"
 msgstr "403: Verboden toegang"
 
 #: templates/404.html:4
@@ -735,7 +735,7 @@ msgid "Always use 2 or 3 lines. No more, no less."
 msgstr "Er zijn maximaal 3 regels, minimaal 2."
 
 #: templates/singlepages/styleguide.html:138
-msgid "The text is vertically centered relative to the T"
+msgid "The text is vertically centered relative to the T."
 msgstr "De tekst is verticaal gecentreerd ten opzichte van de T."
 
 #: templates/singlepages/styleguide.html:139
