@@ -105,7 +105,7 @@ class PizzaEventTestCase(TestCase):
             minutes=10)
 
         with self.subTest(msg="saving works"):
-            self.pizzaEvent.clean()
+            self.pizzaEvent.validate_unique()
 
         new = PizzaEvent(
             event=self.event2,
@@ -114,7 +114,7 @@ class PizzaEventTestCase(TestCase):
         )
         with self.subTest(msg="overlapping event"):
             with self.assertRaises(ValidationError):
-                new.clean()
+                new.validate_unique()
 
     def test_clean(self):
         """Check if clean method works"""
