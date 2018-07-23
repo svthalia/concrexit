@@ -32,7 +32,7 @@ Testing and linting
 
 1. In the root folder of the project, run `tox`.
 
-You may get errors about missing interpreters. That is normal and can be 
+You may get errors about missing interpreters. That is normal and can be
 ignored. If you want to run a specific check, you can do the following:
 
     tox -e flake8           # Runs the flake8 linter
