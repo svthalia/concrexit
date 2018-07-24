@@ -121,6 +121,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'partners.context_processors.showcased_partners',
                 'announcements.context_processors.announcements',
+                'thaliawebsite.context_processors.source_commit',
             ],
         },
     },
