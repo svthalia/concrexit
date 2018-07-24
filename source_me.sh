@@ -9,6 +9,6 @@ fi
 if [ -d venv ]; then
     source venv/bin/activate
 else
-    pyvenv venv
+    python3 -m venv venv
     source venv/bin/activate
 fi
