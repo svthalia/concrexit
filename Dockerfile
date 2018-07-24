@@ -4,6 +4,7 @@ LABEL description="Contains the Thaliawebsite Django application"
 
 # Arguments
 ARG install_dev_requirements=1
+ARG source_commit="unknown"
 
 # Try to keep static operation on top to maximise Docker cache utilisation
 
@@ -11,6 +12,7 @@ ARG install_dev_requirements=1
 ENV DJANGO_PRODUCTION 1
 ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND=noninteractive
+ENV SOURCE_COMMIT=${source_commit}
 
 # Set up entrypoint and command
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

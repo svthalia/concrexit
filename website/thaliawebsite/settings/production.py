@@ -10,14 +10,11 @@ See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
 
 import os
-from copy import deepcopy
-
-from django.utils.log import DEFAULT_LOGGING
 
 from . import settings
 
 INSTALLED_APPS = settings.INSTALLED_APPS
-INSTALLED_APPS.append('django_slack')
+INSTALLED_APPS.append('raven.contrib.django.raven_compat')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(os.path.join(
@@ -130,17 +127,57 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
-# Slack configuration
-SLACK_TOKEN = os.environ.get('DJANGO_SLACK_TOKEN')
-SLACK_CHANNEL = '#django-errors'
-SLACK_USERNAME = 'Concrexit'
-SLACK_ICON_EMOJI = ':pingu:'
-SLACK_FAIL_SILENTLY = True
-
-LOGGING = deepcopy(DEFAULT_LOGGING)
-LOGGING['handlers']['slack-error'] = {
-    'level': 'ERROR',
-    'class': 'django_slack.log.SlackExceptionHandler',
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['sentry'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s '
+                      '%(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'sentry': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'raven.contrib.django.raven_compat.'
+                     'handlers.SentryHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
 }
-LOGGING['loggers']['django']['handlers'].append('slack-error')
-LOGGING['loggers']['django']['handlers'].remove('mail_admins')
+
+
+RAVEN_CONFIG = {
+    'dsn': os.environ.get('SENTRY_DSN'),
+    'release': os.environ.get('SOURCE_COMMIT'),
+}
