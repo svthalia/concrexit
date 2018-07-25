@@ -1,6 +1,3 @@
-from unittest import mock
-from unittest.mock import MagicMock, Mock
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
@@ -14,6 +11,8 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from unittest import mock
+from unittest.mock import MagicMock, Mock
 
 from members.models import Membership
 from registrations import views
@@ -270,6 +269,7 @@ class ConfirmEmailViewTest(TestCase):
         )
 
     def setUp(self):
+        self.client = Client()
         self.view = views.ConfirmEmailView()
 
     @mock.patch('registrations.services.confirm_entry')
@@ -281,39 +281,60 @@ class ConfirmEmailViewTest(TestCase):
             qs_mock.return_value = entry_qs
             qs_mock.get = Mock(return_value=entry_qs.get())
 
-            request = _get_mock_request()
-            self.view.request = request
+            with self.subTest('Successful email confirmation'):
+                response = self.client.get(reverse(
+                    'registrations:confirm-email', args=(self.entry.pk,)))
 
-            response = self.view.get(request, pk=self.entry.pk)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(
+                    response.template_name,
+                    ['registrations/confirm_email.html']
+                )
 
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(
-                response.template_name,
-                ['registrations/confirm_email.html']
-            )
+                confirm_entry.assert_called_once_with(entry_qs)
+                board_mail.assert_called_once_with(entry_qs.get())
 
-            confirm_entry.assert_called_once_with(entry_qs)
-            board_mail.assert_called_once_with(entry_qs.get())
+            with self.subTest('Redirect when nothing was processed'):
+                confirm_entry.return_value = 0
 
-            confirm_entry.return_value = None
+                response = self.client.get(reverse(
+                    'registrations:confirm-email', args=(self.entry.pk,)))
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(response.url, '/registration/register/')
 
-            response = self.view.get(request, pk=self.entry.pk)
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, '/registration/register/')
+            with self.subTest('Redirect when registration does not exist'):
+                confirm_entry.side_effect = ValidationError(message='Error')
+                board_mail.side_effect = Registration.DoesNotExist
 
-            confirm_entry.side_effect = ValidationError(message='Error')
-            board_mail.side_effect = Registration.DoesNotExist
+                response = self.client.get(reverse(
+                    'registrations:confirm-email', args=(self.entry.pk,)))
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(response.url, '/registration/register/')
 
-            response = self.view.get(request, pk=self.entry.pk)
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, '/registration/register/')
+            with self.subTest('Redirect when entry does not exist'):
+                confirm_entry.return_value = 0
+                qs_mock.get.side_effect = Entry.DoesNotExist
+
+                response = self.client.get(reverse(
+                    'registrations:confirm-email',
+                    args=('00000000-0000-0000-0000-000000000000',)
+                ))
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(response.url, '/registration/register/')
+
+            with self.subTest('Redirect when no entries were processed'):
+                confirm_entry.return_value = 0
+
+                response = self.client.get(reverse(
+                    'registrations:confirm-email',
+                    args=('00000000-0000-0000-0000-000000000000',)
+                ))
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(response.url, '/registration/register/')
 
     def test_get_no_mocks(self):
-        request = _get_mock_request()
-        self.view.request = request
-
-        response = self.view.get(request, pk=self.entry.pk)
-
+        response = self.client.get(reverse(
+            'registrations:confirm-email', args=(self.entry.pk,)))
         self.assertEqual(response.status_code, 200)
 
 
