@@ -9,107 +9,128 @@
 {% block body %}
     <h1>{% trans "privacy policy"|capfirst %}</h1>
 
-    <h3>Versie 1.0, 12-06-2017</h3>
+    <h3>{% trans "Version" %} 1.0, 12-06-2017</h3>
 
     <p>
-        Dit document is opgesteld om duidelijk te maken waar je gegevens voor
-        worden gebruikt. Door lid/begunstiger te worden van de vereniging geef
-        je aan deze privacyvoorwaarden te accepteren. Voor alle gegevens geldt
-        dat als je ze wil wijzigen je dat zelf aan kan geven bij het bestuur.
+        {% blocktrans trimmed %}
+        This document was created to clarify how Thalia uses your personal data.
+        By becoming a member or patron of the association, you agree to these
+        terms and conditions. To change any data provided you have to contact
+        the board.
+        {% endblocktrans %}
     </p>
 
-    <h2>1. Registratie</h2>
+    <h2>1. {% trans "Registration" %}</h2>
 
     <ul>
         <li>
-            Naam<br/>
-            Zodat de vereniging het lid kan aanspreken.
+            {% trans "Name" %}<br/>
+            {% trans "Used to address the member by name." %}
         </li>
         <li>
-            Straat, huisnummer, postcode en woonplaats<br/>
-            Voor het rondsturen van ons verenigingsblad, de Thabloid.
+            {% trans "Street, house number, postal code and city" %}<br/>
+            {% blocktrans trimmed %}
+            Used for delivery of our association magazine, the Thabloid.
+            {% endblocktrans %}
         </li>
         <li>
-            E-mailadres<br/>
-            Voor het versturen van plenaire mailing zoals ALV-aankondigingen,
-            het versturen van de opt-out nieuwsbrief en het versturen van
-            opt-in spon- sormailings. Daarnaast voor het versturen persoonlijke
-            berichten met inloggegevens voor de website en berichten met
-            evenementspecifieke in- formatie, nadat je je geregistreerd hebt
-            voor dit evenement.
+            {% trans "Email address" %}<br/>
+            {% blocktrans trimmed %}
+            Used for delivery of planned mail such as GM announcements,
+            sending the opt-out newsletter and sending the opt-in sponsorship mail.
+            In addition, this will be used to send personal messages with login
+            credentials for the website and messages with event-specific information
+            after registering for an event.
+            {% endblocktrans %}
         </li>
         <li>
-            Telefoonnummer<br/>
-            Voor persoonlijk contact naar aanleiding van evenementen. Bv. Er is
-            op het laatste moment iets verandert, je bent te laat, etc...
+            {% trans "Phone number" %}<br/>
+            {% blocktrans trimmed %}
+            Used for personal contact with regards to events,
+            such as last minute changes, being late for an
+            event and similar.
+            {% endblocktrans %}
         </li>
         <li>
-            Geboortedatum<br/>
-            Om te garanderen dat er geen alcohol geschonken wordt aan
-            minderjarigen. Wordt ook gebruikt voor een opt-out functie op de
-            website waarbij je verjaardag zichtbaar is aan andere
-            leden/begunstigers.
+            {% trans "Birth Date" %}<br/>
+            {% blocktrans trimmed %}
+            Ensures no alcohol can be dispensed to underaged members
+            and used in an opt-out function on the website when showing
+            or hiding your birthday from other members and patrons.
+            {% endblocktrans %}
         </li>
     </ul>
 
-    <p>Verder zijn er nog enkele zaken die enkel gevraagd worden aan leden:</p>
+    <p>{% trans "Furthermore, there are several things that are only requested from members:" %}</p>
 
     <ul>
         <li>
-            Studentnummer<br/>
-            Om te controleren of je nog studeert. Dit is belangrijk voor het
-            aanvragen van bestuursbeurzen die als subsidie dienen voor het
-            bestuur.
+            {% trans "Student Number" %}<br/>
+            {% blocktrans trimmed %}
+            Used to check whether you're still studying.
+            This is key for the requisition of board subsidies.
+            {% endblocktrans %}
         </li>
         <li>
-            Studierichting<br/>
-            Ter schetsing van de interessegebieden van de leden.
+            {% trans "Study" %}<br/>
+            {% blocktrans trimmed %}
+            Used to chart member interests.
+            {% endblocktrans %}
         </li>
     </ul>
 
-    <p>En enkele zaken die enkel aan begunstigers gevraagd worden:</p>
+    <p>{% trans "There are also several things that are only requested from patrons:" %}</p>
 
     <ul>
         <li>
-            Historie<br/>
-            Om te bepalen of de extra toelatingsprocedure gevolgd moet worden.
+            {% trans "History" %}<br/>
+            {% blocktrans trimmed %}
+            Used to decide whether the admittance procedure is to be followed.
+            {% endblocktrans %}
         </li>
 
         <li>
-            Extratoelatingsprocedure<br/>
-            Vouchers met naam en handtekening en een motivatie ter bevestiging
-            dat je veel met Thalia te maken hebt.
+            {% trans "Additional admittance procedure" %}<br/>
+            {% blocktrans trimmed %}
+            This is a voucher with a signature and a motivation
+            to confirm you're familiar to and close with Thalia.
+            {% endblocktrans %}
         </li>
     </ul>
 
-    <p>Tot slot, indien van toepassing:</p>
+    <p>{% trans "Finally, if relevant:" %}</p>
 
     <ul>
         <li>
-            Bankrekeningnummer<br/>
-            Wanneer je betaalt of declareert met een bankrekeningnummer,
-            onthouden we het bankrekeningnummer om betalingen/declaraties in de
-            toekomst makkelijker te laten verlopen.
+            {% trans "Bank Account Number" %}<br/>
+            {% blocktrans trimmed %}
+            When you pay or declare costs with a bank account,
+            we retain the account number and payments/declarations
+            to simplify future payments.
+            {% endblocktrans %}
         </li>
     </ul>
 
-    <h2>2. Ledenlijst</h2>
+    <h2>2. {% trans "Member List" %}</h2>
 
     <p>
-        Er wordt op de website een ledenlijst bijgehouden waarbij je een eigen
-        profiel- pagina hebt. Deze ledenlijst en profielpagina kunnen enkel
-        bezocht worden door andere leden/begunstigers. Op deze profielpagina
-        worden naam en, indien lid, studierichting en cohort vermeld. Er
-        bestaat de mogelijkheid om informatie aan deze profielpagina toe te
-        voegen.
+        {% blocktrans trimmed %}
+        The website keeps track of a list of members where you have your own
+        profile page. This list and profile page can only be visited by other
+        members or patrons. The profile page mentions the name and if the owner
+        is a member, the study and the cohort the member belongs to. The profile
+        page can be extended with further information.
+        {% endblocktrans %}
     </p>
 
-    <h2>3. Foto's</h2>
+    <h2>3. {% trans "Photographs" %}</h2>
 
     <p>
-        Op evenementen worden foto’s gemaakt ter sfeerimpressie en van
-        commissies worden foto’s gemaakt voor op de website. Wil je niet op
-        zo’n foto staan? Zeg het even tegen de fotograaf, meestal herkenbaar
-        aan zijn commissieshirt en zijn camera.
+        {% blocktrans trimmed %}
+        During events, pictures are taken to portray the atmosphere. In addition,
+        committees are photographed for the website. If prefer to not be present
+        on such a picture, you can tell the photographer, usually recognizable
+        by their committee shirt and the camera.
+        {% endblocktrans %}
     </p>
 {% endblock %}
