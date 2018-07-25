@@ -34,6 +34,14 @@ thaliawebsite\.celery module
     :undoc-members:
     :show-inheritance:
 
+thaliawebsite\.context\_processors module
+-----------------------------------------
+
+.. automodule:: thaliawebsite.context_processors
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thaliawebsite\.forms module
 ---------------------------
 
