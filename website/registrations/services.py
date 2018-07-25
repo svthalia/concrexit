@@ -122,6 +122,9 @@ def accept_entries(queryset):
             continue
 
         payment = _create_payment_for_entry(entry)
+
+        entry.refresh_from_db()
+
         try:
             if entry.registration.username is None:
                 entry.registration.username = _generate_username(
