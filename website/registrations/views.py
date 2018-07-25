@@ -90,19 +90,19 @@ class ConfirmEmailView(View, TemplateResponseMixin):
     def get(self, request, *args, **kwargs):
         entry = Entry.objects.filter(pk=kwargs['pk'])
 
-        processed = None
+        processed = 0
         try:
             processed = services.confirm_entry(entry)
         except ValidationError:
             pass
 
+        if processed == 0:
+            return redirect('registrations:register')
+
         try:
             emails.send_new_registration_board_message(entry.get())
-        except Registration.DoesNotExist:
+        except Entry.DoesNotExist:
             pass
-
-        if processed is None:
-            return redirect('registrations:register')
 
         return self.render_to_response({})
 
