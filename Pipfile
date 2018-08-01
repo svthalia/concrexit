@@ -1,0 +1,44 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django-localflavor = "*"
+django-sendfile = "*"
+freezegun = "*"
+bleach = "*"
+"django-tinymce4-lite" = "*"
+rcssmin = "*"
+djangorestframework = "*"
+django-ical = "*"
+django-libsass = "*"
+django-cors-headers = "*"
+python-magic = "*"
+pyfcm = "*"
+celery = "*"
+redis = "*"
+raven = "*"
+Django = ">=2.0,<2.1"
+Pillow = "*"
+django_compressor = "*"
+django_celery_results = "*"
+"psycopg2-binary" = "*"
+bcrypt = "*"
+django-slack = "!=5.7.2"
+"argon2_cffi" = "*"
+uWSGI = "*"
+
+[dev-packages]
+django-template-check = "*"
+"flake8" = "*"
+pydenticon = "*"
+pylint = "*"
+pylint-django = "*"
+tox = "*"
+Faker = "*"
+factory_boy = "*"
+coverage = "*"
+
+[requires]
+python_version = "3.6"
