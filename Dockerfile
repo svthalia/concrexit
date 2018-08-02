@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /usr/src/app/website/
 # install python requirements
+COPY docs/requirements.txt /usr/src/app/docs/
 COPY Pipfile /usr/src/app/website/
 COPY Pipfile.lock /usr/src/app/website/
 RUN pipenv install --system --deploy
@@ -46,8 +47,8 @@ RUN pip install --no-cache-dir \
     -r ../docs/requirements.txt
 
 RUN if [ "$install_dev_requirements" -eq 1 ]; then \
-    pipenv install --system --dev \
-fi
+        pipenv install --system --dev; \
+    fi
 
 
 # Create entry points
