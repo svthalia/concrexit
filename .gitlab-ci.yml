@@ -6,7 +6,7 @@ variables:
   # https://github.com/thaliawww/python-thalia
   # Should get auto-updated with the official 'python' repository
   # Installs:
-  #  - pip: tox, coverage
+  #  - pip: tox, coverage, pipenv
   #  - apt: ghostscript
   PY35_IMAGE: thalia/python-thalia:3.5
   PY36_IMAGE: thalia/python-thalia:3.6
@@ -19,7 +19,6 @@ stages:
 pep8:
   stage: test
   image: $PY35_IMAGE
-  before_script:
   script:
     - tox -e flake8
 
