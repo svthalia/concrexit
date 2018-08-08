@@ -2,12 +2,11 @@ variables:
   POSTGRES_DB: thalia
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: ""
-  CI_DEPS: psycopg2-binary
-  # https://hub.docker.com/r/twiggers/python-thalia/
-  # https://github.com/thomwiggers/python-thalia
+  # https://hub.docker.com/r/thalia/python-thalia/
+  # https://github.com/thaliawww/python-thalia
   # Should get auto-updated with the official 'python' repository
   # Installs:
-  #  - pip: tox, coverage
+  #  - pip: tox, coverage, pipenv
   #  - apt: ghostscript
   PY35_IMAGE: thalia/python-thalia:3.5
   PY36_IMAGE: thalia/python-thalia:3.6
@@ -20,7 +19,6 @@ stages:
 pep8:
   stage: test
   image: $PY35_IMAGE
-  before_script:
   script:
     - tox -e flake8
 
@@ -54,17 +52,16 @@ docs:
   image: $PY35_IMAGE
   before_script:
     # install django deps
-    - pip install -r requirements.txt
-    - pip install -r dev-requirements.txt
-    - cd docs
+    - pipenv --bare install --dev --ignore-pipfile
     # install doc deps
-    - pip install -r requirements.txt
+    - cd docs
+    - pipenv run pip install -r requirements.txt
   script:
     - echo "Building current docs"
-    - env -u GITLAB_CI make doctest
-    - env -u GITLAB_CI sphinx-build -M html "." "_build" -W -j $(nproc)
+    - env -u GITLAB_CI pipenv run make doctest
+    - env -u GITLAB_CI pipenv run sphinx-build -M html "." "_build" -W -j $(nproc)
     - echo "Checking if there are changes"
-    - ./generate-apidocs.sh
+    - pipenv run ./generate-apidocs.sh
     - git diff --exit-code
 
 build docker image:

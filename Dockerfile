@@ -37,21 +37,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript && \
     rm -rf /var/lib/apt
 
+RUN pip install --no-cache-dir pipenv
+
 WORKDIR /usr/src/app/website/
 # install python requirements
-COPY requirements.txt /usr/src/app/website/
-COPY production-requirements.txt /usr/src/app/website/
-COPY dev-requirements.txt /usr/src/app/website/
 COPY docs/requirements.txt /usr/src/app/docs/
-RUN pip install --no-cache-dir \
-    -r requirements.txt \
-    -r production-requirements.txt \
-    -r ../docs/requirements.txt
-
+COPY Pipfile /usr/src/app/website/
+COPY Pipfile.lock /usr/src/app/website/
 RUN if [ "$install_dev_requirements" -eq 1 ]; then \
-    pip install --no-cache-dir -r dev-requirements.txt; \
+        pipenv install --system --dev; \
+    else \
+        echo "This will fail if the dependencies are out of date"; \
+        pipenv install --system --deploy; \
     fi
-
+RUN pip install --no-cache-dir \
+    -r ../docs/requirements.txt
 
 # Create entry points
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh

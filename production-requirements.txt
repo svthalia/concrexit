@@ -1,5 +1,0 @@
-psycopg2-binary
-argon2-cffi
-bcrypt
-uwsgi
-django-slack!=5.7.2

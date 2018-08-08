@@ -17,11 +17,10 @@ Getting started
 
 If you use Docker, please look at [this part](#docker) of the README.
 
-0. Get at least Python 3.5 and install the Pillow requirements as per below.
+0. Get at least Python 3.5 and install pipenv and the Pillow requirements as per below.
 1. Clone this repository
-2. Run `source ./source_me.sh` or `source venv/bin/activate` (or what you do for your own favourite virtualenv solution)
-3. Run `pip install -r requirements.txt`
-4. Run `pip install -r dev-requirements.txt`
+2. Run `pipenv install --dev`
+3. Run `pipenv shell`
 5. `cd website`
 6. `./manage.py migrate` to initialise the database
 7. `./manage.py createsuperuser` to create the first user (note that this user won't be a member!)
@@ -40,6 +39,13 @@ ignored. If you want to run a specific check, you can do the following:
     tox -e py36-django20    # runs the tests with python 3.6 and Django 2.0
 
 You can run `tox -l` to see the available environments.
+
+Pipenv
+------
+
+Install Pipenv per the [pipenv documentation][pipenv install]
+
+[pipenv install]: https://docs.pipenv.org/install/#installing-pipenv
 
 Pillow dependencies
 -------------------
