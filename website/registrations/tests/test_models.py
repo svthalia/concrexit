@@ -129,14 +129,20 @@ class RegistrationTest(TestCase):
 
     def test_require_programme_members(self):
         self.registration.programme = None
-        with self.assertRaises(ValidationError):
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'programme': ['Dit veld is vereist.']}"
+        ):
             self.registration.clean()
         self.registration.membership_type = Membership.SUPPORTER
         self.registration.clean()
 
     def test_require_starting_year_members(self):
         self.registration.starting_year = None
-        with self.assertRaises(ValidationError):
+        with self.assertRaisesMessage(
+                ValidationError,
+                "{'starting_year': ['Dit veld is vereist.']}"
+        ):
             self.registration.clean()
         self.registration.membership_type = Membership.SUPPORTER
         self.registration.clean()

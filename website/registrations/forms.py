@@ -35,7 +35,8 @@ class MemberRegistrationForm(forms.ModelForm):
     class Meta:
         model = Registration
         fields = '__all__'
-        exclude = ['created_at', 'updated_at', 'status', 'username', 'remarks']
+        exclude = ['created_at', 'updated_at', 'status', 'username', 'remarks',
+                   'payment', 'membership']
 
 
 class MemberRenewalForm(forms.ModelForm):
