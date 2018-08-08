@@ -44,14 +44,14 @@ WORKDIR /usr/src/app/website/
 COPY docs/requirements.txt /usr/src/app/docs/
 COPY Pipfile /usr/src/app/website/
 COPY Pipfile.lock /usr/src/app/website/
-RUN pipenv install --system --deploy
-RUN pip install --no-cache-dir \
-    -r ../docs/requirements.txt
-
 RUN if [ "$install_dev_requirements" -eq 1 ]; then \
         pipenv install --system --dev; \
+    else \
+        echo "This will fail if the dependencies are out of date" \
+        pipenv install --system --deploy; \
     fi
-
+RUN pip install --no-cache-dir \
+    -r ../docs/requirements.txt
 
 # Create entry points
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh
