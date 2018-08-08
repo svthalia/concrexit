@@ -47,7 +47,7 @@ COPY Pipfile.lock /usr/src/app/website/
 RUN if [ "$install_dev_requirements" -eq 1 ]; then \
         pipenv install --system --dev; \
     else \
-        echo "This will fail if the dependencies are out of date" \
+        echo "This will fail if the dependencies are out of date"; \
         pipenv install --system --deploy; \
     fi
 RUN pip install --no-cache-dir \
