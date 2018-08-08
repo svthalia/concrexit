@@ -37,6 +37,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript && \
     rm -rf /var/lib/apt
 
+RUN pip install --no-cache-dir pipenv
+
 WORKDIR /usr/src/app/website/
 # install python requirements
 COPY docs/requirements.txt /usr/src/app/docs/
