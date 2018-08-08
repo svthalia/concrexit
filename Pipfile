@@ -39,6 +39,3 @@ tox = "*"
 Faker = "*"
 factory_boy = "*"
 coverage = "*"
-
-[requires]
-python_version = "3.6"
