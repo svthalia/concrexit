@@ -52,7 +52,7 @@ docs:
   image: $PY35_IMAGE
   before_script:
     # install django deps
-    - pipenv install --dev
+    - pipenv --bare install --dev --ignore-pipfile
     # install doc deps
     - cd docs
     - pipenv run pip install -r requirements.txt
