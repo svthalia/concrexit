@@ -50,21 +50,26 @@ class PizzaEvent(models.Model):
         except PizzaEvent.DoesNotExist:
             return None
 
+    def validate_unique(self, exclude=None):
+        super().validate_unique(exclude)
+        for other in PizzaEvent.objects.filter(
+                Q(end__gte=self.start, end__lte=self.end) |
+                Q(start=self.start, start__lte=self.start)):
+            if other.pk == self.pk:
+                continue
+            raise ValidationError({
+                'start': _(
+                    'This event cannot overlap with {}.').format(other),
+                'end': _(
+                    'This event cannot overlap with {}.').format(other),
+            })
+
     def clean(self):
         if self.start >= self.end:
             raise ValidationError({
                 'start': _('The start is after the end of this event.'),
                 'end': _('The end is before the start of this event.'),
             })
-        for other in PizzaEvent.objects.filter(
-                Q(end__gte=self.start, end__lte=self.end) |
-                Q(start=self.start, start__lte=self.start)):
-            raise ValidationError({
-                    'start': _(
-                        'This event cannot overlap with {}.').format(other),
-                    'end': _(
-                        'This event cannot overlap with {}.').format(other),
-                })
 
     def __str__(self):
         return 'Pizzas for ' + str(self.event)
