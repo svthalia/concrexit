@@ -78,6 +78,9 @@ class Member(User):
     class Meta:
         proxy = True
         ordering = ('first_name', 'last_name')
+        permissions = (
+            ('sentry_access', _("Access the Sentry backend")),
+        )
 
     objects = MemberManager()
     current_members = CurrentMemberManager()
