@@ -99,8 +99,14 @@ class PizzaEventTestCase(TestCase):
         with self.subTest(msg="two events, within 8 hours, first ended"):
             self.assertEqual(second_pizzaevent, PizzaEvent.current())
 
-    def test_clean(self):
-        """Check if clean method works"""
+    def test_validate_unique(self):
+        """Check if uniqueness validation is correct"""
+        self.pizzaEvent.start = self.pizzaEvent.start + datetime.timedelta(
+            minutes=10)
+
+        with self.subTest(msg="saving works"):
+            self.pizzaEvent.validate_unique()
+
         new = PizzaEvent(
             event=self.event2,
             start=self.pizzaEvent.start + datetime.timedelta(minutes=10),
@@ -108,9 +114,15 @@ class PizzaEventTestCase(TestCase):
         )
         with self.subTest(msg="overlapping event"):
             with self.assertRaises(ValidationError):
-                new.clean()
+                new.validate_unique()
 
-        new.end = timezone.now() - datetime.timedelta(hours=100)
+    def test_clean(self):
+        """Check if clean method works"""
+        new = PizzaEvent(
+            event=self.event2,
+            start=self.pizzaEvent.start + datetime.timedelta(minutes=10),
+            end=timezone.now() - datetime.timedelta(hours=100),
+        )
         with self.subTest(msg="end before start"):
             with self.assertRaises(ValidationError):
                 new.clean()
