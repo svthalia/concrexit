@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-08-15 15:26+0200\n"
-"PO-Revision-Date: 2018-08-15 15:27+0200\n"
+"PO-Revision-Date: 2018-08-15 15:29+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -136,7 +136,7 @@ msgstr "E-mailadres"
 
 #: models.py
 msgid "Access the Sentry backend"
-msgstr ""
+msgstr "Toegang tot the Sentry backend"
 
 #: models.py
 msgid "Is this user currently active"
