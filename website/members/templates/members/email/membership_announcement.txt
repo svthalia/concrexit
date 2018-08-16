@@ -1,7 +1,7 @@
 {% load i18n %}{% blocktrans %}Dear {{ name }},
 
 You're a study member of Thalia. This means that you'll be a member as long
-as you're enrolled in either a computer science or an information science programme.
+as you're enrolled in either a Computing Science or an Information Sciences programme.
 
 Are you still studying? Then you don't have to do anything at all!
 Did you graduate or stop with your studies for any other reason? Then please
