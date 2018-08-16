@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2018-05-16 20:03+0200\n"
+"POT-Creation-Date: 2018-08-16 14:21+0200\n"
+"PO-Revision-Date: 2018-08-16 14:25+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,291 +16,208 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
-#: education/admin.py
+#: admin.py
 msgid "Mark exams as accepted"
 msgstr "Markeer tentamens als geaccepteerd"
 
-#: education/admin.py
+#: admin.py
 msgid "Mark exams as rejected"
 msgstr "Markeer tentamens als afgekeurd"
 
-#: education/admin.py
+#: admin.py
 msgid "Reset the marked exams download count"
 msgstr "Reset download aantal van gemarkeerde tentamens"
 
-#: education/admin.py
+#: admin.py
 msgid "Download marked as csv"
 msgstr "Download gemarkeerde tentamens als csv"
 
-#: education/admin.py
+#: admin.py
 msgid "Mark summaries as accepted"
 msgstr "Markeer samenvattingen als geaccepteerd"
 
-#: education/admin.py
+#: admin.py
 msgid "Mark summaries as rejected"
 msgstr "Markeer samenvattingen als afgekeurd"
 
-#: education/admin.py
+#: admin.py
 msgid "Reset the marked summaries download count"
 msgstr "Reset download aantal van gemarkeerde samenvattingen"
 
-#: education/apps.py
+#: apps.py
 msgid "Education"
 msgstr "Onderwijs"
 
-#: education/models.py
+#: models.py
 msgid "category"
 msgstr "categorie"
 
-#: education/models.py
+#: models.py
 msgid "categories"
 msgstr "categorieën"
 
-#: education/models.py
+#: models.py
 msgid "old courses"
 msgstr "oude vakken"
 
-#: education/models.py education/templates/education/course.html
+#: models.py templates/education/course.html
 msgid "EC"
 msgstr "EC"
 
-#: education/models.py
+#: models.py
 msgid "period"
 msgstr "periode"
 
-#: education/models.py
+#: models.py
 msgid "course"
 msgstr "vak"
 
-#: education/models.py
+#: models.py
 msgid "courses"
 msgstr "vakken"
 
-#: education/models.py
+#: models.py
 msgid "Document"
 msgstr "Document"
 
-#: education/models.py
+#: models.py
 msgid "Exam"
 msgstr "Tentamen"
 
-#: education/models.py
+#: models.py
 msgid "Partial Exam"
 msgstr "Deeltentamen"
 
-#: education/models.py
+#: models.py
 msgid "Resit"
 msgstr "Hertentamen"
 
-#: education/models.py
+#: models.py
 msgid "Practice Exam"
 msgstr "Oefententamen"
 
-#: education/models.py
+#: models.py
 msgid "Exam Answers"
 msgstr "Antwoorden tentamen"
 
-#: education/models.py
+#: models.py
 msgid "Partial Exam Answers"
 msgstr "Antwoorden deeltentamen"
 
-#: education/models.py
+#: models.py
 msgid "Resit Answers"
 msgstr "Antwoorden hertentamen"
 
-#: education/models.py
+#: models.py
 msgid "Practice Exam Answers"
 msgstr "Antwoorden oefententamen"
 
-#: education/models.py
+#: models.py
 msgid "exam type"
 msgstr "type tentamen"
 
-#: education/models.py
+#: models.py
 msgid "exam name"
 msgstr "naam tentamen"
 
-#: education/models.py
+#: models.py
 msgid "uploader"
 msgstr "uploader"
 
-#: education/models.py
+#: models.py
 msgid "accepted"
 msgstr "geaccepteerd"
 
-#: education/models.py
+#: models.py
 msgid "exam date"
 msgstr "tentamendatum"
 
-#: education/models.py
+#: models.py
 msgid "Use the 'View on site' button to download the file for inspection."
 msgstr ""
 "Gebruik de ‘Toon op site’ knop om het bestand te downloaden voor controle."
 
-#: education/models.py
+#: models.py
 msgid "amount of downloads"
 msgstr "Hoeveelheid downloads"
 
-#: education/models.py
+#: models.py
 msgid "exam"
 msgstr "tentamen"
 
-#: education/models.py
+#: models.py
 msgid "exams"
 msgstr "tentamens"
 
-#: education/models.py
+#: models.py
 msgid "summary name"
 msgstr "naam samenvatting"
 
-#: education/models.py
+#: models.py
 msgid "author"
 msgstr "auteur"
 
-#: education/models.py
+#: models.py
 msgid "summary"
 msgstr "samenvatting"
 
-#: education/models.py
+#: models.py
 msgid "summaries"
 msgstr "samenvattingen"
 
-#: education/templates/education/add_exam.html
-#: education/templates/education/course.html
+#: templates/education/add_exam.html templates/education/course.html
 msgid "Submit Exam"
 msgstr "Tentamen Insturen"
 
-#: education/templates/education/add_exam.html
+#: templates/education/add_exam.html
 msgid "Exam submitted successfully."
 msgstr "Tentamen succesvol ingestuurd."
 
-#: education/templates/education/add_exam.html
-#: education/templates/education/add_summary.html
+#: templates/education/add_exam.html templates/education/add_summary.html
 msgid "submit"
 msgstr "insturen"
 
-#: education/templates/education/add_summary.html
-#: education/templates/education/course.html
+#: templates/education/add_summary.html templates/education/course.html
 msgid "Submit Summary"
 msgstr "Samenvatting Insturen"
 
-#: education/templates/education/add_summary.html
+#: templates/education/add_summary.html
 msgid "Summary submitted successfully."
 msgstr "Samenvatting succesvol ingestuurd."
 
-#: education/templates/education/books.html
+#: templates/education/books.html
 msgid "Book Sale"
 msgstr "Boekverkoop"
 
-#: education/templates/education/books.html
+#: templates/education/books.html
 #, python-format
 msgid ""
-"As of this year, Thalia's book sale goes through Bol.com. As a member of "
-"Thalia you get a 5%% discount on study books sold by Bol.com. Furthermore, "
-"every time you use one of the links below to visit Bol.com, your browser "
-"will receive a cookie for the next few days. Whenever you make a purchase "
-"during this period, Thalia receives up to 8%% commission on the products you "
-"ordered."
+"Thalia's book sale goes through Studystore. You can find the personalized "
+"webshop <a href=\"https://betabooks.itdepartment.nl/en\" target=\"_blank"
+"\">here</a>. As a member of Thalia you receive a 15%% discount on study "
+"books ordered at this webshop."
 msgstr ""
-"Vanaf dit jaar gaat de boekverkoop van Thalia via Bol.com. Als lid van "
-"Thalia krijg je 5%% korting op studieboeken die door Bol.com verkocht "
-"worden. Daarnaast krijgt je browser de eerstvolgende paar dagen een cookie "
-"als je Bol.com via een van de onderstaande links bezoekt. Als je dan een een "
-"aankoop doet krijgt Thalia tot 8%% commissie over de producten die je "
-"besteld hebt."
+"Thalia's boekverkoop wordt geregeld door Studystore. Je kunt de "
+"gepersonaliseerde webshop <a href=\"https://betabooks.itdepartment.nl/\" "
+"target=\"_blank\">hier</a> vinden. Als lid van Thalia krijg je 15%% korting "
+"op de studieboeken die je via deze webshop bestelt."
 
-#: education/templates/education/books.html
-msgid "How does it work?"
-msgstr "Hoe werkt het?"
-
-#: education/templates/education/books.html
+#: templates/education/books.html
 msgid ""
-"Below, you can find an overview for all courses that require a book in the "
-"first semester. You can also choose to view all books for an entire period. "
-"Upon selecting a course or period, you will be taken to Bol.com where you "
-"can select which books you want to purchase, and finish your order as usual. "
-"To use the discount, you can use the generator below. It will produce a code "
-"you can enter during your checkout at Bol.com."
+"If you cannot find a certain book or you find another error, please contact "
+"the board at <a href=\"mailto:books@thalia.nu\">books@thalia.nu</a>."
 msgstr ""
-"Hieronder vind je een overzicht van alle vakken waarbij een boek nodig is. "
-"Ook kun je ervoor kiezen om alle boeken van een gehele periode te bekijken. "
-"Als je een vak of periode kiest word je naar Bol.com genomen waar je een "
-"selectie kan maken van de boeken die je wil hebben. Daarna kun je je "
-"bestelling afmaken zoals elke andere bestelling. Om de korting te gebruiken "
-"kun je onderstaande generator gebruiken. Daar komt een code uit die je bij "
-"het afronden van je bestelling in kunt vullen."
+"Als je een bepaald boek niet kunt vinden of een andere fout tegenkomt, neem "
+"contact op met het bestuur via <a href=\"mailto:boekverkoop@thalia.nu"
+"\">boekverkoop@thalia.nu</a>."
 
-#: education/templates/education/books.html
-msgid ""
-"This generator creates a unique code for each user. If you use the generator "
-"again after a few days, it will produce the same code. If you have already "
-"used the code once and you want to generate a new one, you can remove your "
-"cookies and you will be given a new code."
-msgstr ""
-"Deze generator creëert een unieke kortingscode voor elke gebruiker. Als je "
-"hem opnieuw gebruikt na een paar dagen zal hij dezelfde code produceren. Als "
-"je code al een keer hebt gebruikt en je wil een nieuwe genereren, kun je je "
-"cookies verwijderen om een nieuwe code te krijgen."
-
-#: education/templates/education/books.html
-msgid ""
-"This discount is also valid for books that are not included in the list "
-"below. In case books are missing from the catalog, or if you discover any "
-"other problems with the books, send an email to <a href=\"mailto:"
-"onderwijs@thalia.nu\">onderwijs@thalia.nu</a>."
-msgstr ""
-"De korting is ook geldig voor boeken die niet in onderstaande lijst staan. "
-"Mocht er een boek ontbreken of er een ander probleem met de boeken zijn, "
-"stuur gerust een e-mail naar <a href=\"mailto:onderwijs@thalia.nu"
-"\">onderwijs@thalia.nu</a>."
-
-#: education/templates/education/books.html
-msgid "first year bachelor courses"
-msgstr "eerstejaars bachelorvakken"
-
-#: education/templates/education/books.html
-msgid "third quarter"
-msgstr "derde kwartaal"
-
-#: education/templates/education/books.html
-msgid "View and order"
-msgstr "Bekijk en bestel"
-
-#: education/templates/education/books.html
-msgid "View all books for the third quarter"
-msgstr "Bekijk alle boeken voor het derde kwartaal"
-
-#: education/templates/education/books.html
-msgid "fourth quarter"
-msgstr "vierde kwartaal"
-
-#: education/templates/education/books.html
-msgid "View all books for the fourth quarter"
-msgstr "Bekijk alle boeken voor het vierde kwartaal"
-
-#: education/templates/education/books.html
-msgid "second year bachelor courses"
-msgstr "tweedejaars bachelorvakken"
-
-#: education/templates/education/books.html
-msgid "third year bachelor courses"
-msgstr "derdejaars bachelorvakken"
-
-#: education/templates/education/books.html
-msgid "No books found for the fourth quarter"
-msgstr "Geen boeken gevonden voor het vierde kwartaal"
-
-#: education/templates/education/books.html
-msgid "master courses"
-msgstr "mastervakken"
-
-#: education/templates/education/course.html
+#: templates/education/course.html
 msgid "Course"
 msgstr "Vak"
 
-#: education/templates/education/course.html
+#: templates/education/course.html
 msgid ""
 "Thalia does not have any documents for this course, unfortunately. Are you "
 "in possession of exams or summaries for this course? Then let us know or add "
@@ -309,15 +226,15 @@ msgstr ""
 "Er zijn bij Thalia helaas geen documenten bekend over dit vak. Ben jij in "
 "het bezit van tentamens of samenvattingen over dit vak? Laat het ons weten!"
 
-#: education/templates/education/course.html
+#: templates/education/course.html
 msgid "Exams"
 msgstr "Tentamens"
 
-#: education/templates/education/course.html
+#: templates/education/course.html
 msgid "Summaries"
 msgstr "Samenvattingen"
 
-#: education/templates/education/course.html
+#: templates/education/course.html
 #, python-format
 msgid ""
 "These documents were collected for <a href=\"%(course_url)s\">"
@@ -326,7 +243,7 @@ msgstr ""
 "Deze documenten zijn van de cursus <a href=\"%(course_url)s\">"
 "%(course_name)s</a>, een voorloper van dit vak."
 
-#: education/templates/education/course.html
+#: templates/education/course.html
 #, python-format
 msgid ""
 "This is the overview for <b>%(name)s</b>. You can find all the exams and "
@@ -335,7 +252,7 @@ msgstr ""
 "Dit is de overzichtspagina voor <b>%(name)s</b>. Hier kun je per jaar alle "
 "bij Thalia bekende tentamens en samenvattingen terugvinden."
 
-#: education/templates/education/course.html
+#: templates/education/course.html
 msgid ""
 "Keep in mind that old exams and summaries may not always test the same "
 "material as this year."
@@ -343,19 +260,19 @@ msgstr ""
 "Houd er rekening mee dat oude tentamens en samenvattingen niet altijd "
 "representatief zijn voor wat er dit jaar wordt getoetst."
 
-#: education/templates/education/course.html
+#: templates/education/course.html
 msgid "Course code"
 msgstr "Cursus code"
 
-#: education/templates/education/course.html
+#: templates/education/course.html
 msgid "Period"
 msgstr "Periode"
 
-#: education/templates/education/courses.html
+#: templates/education/courses.html
 msgid "Course overview"
 msgstr "Vakkenoverzicht"
 
-#: education/templates/education/courses.html
+#: templates/education/courses.html
 msgid ""
 "This overview contains all courses for which Thalia has exams, summaries or "
 "other documents. Select a course to find out more.<br/> Can't find a course? "
@@ -366,19 +283,19 @@ msgstr ""
 "er een vak niet tussen? Laat dat dan weten aan de <a href=\"mailto:"
 "educacie@thalia.nu\">educatiecommissie</a>."
 
-#: education/templates/education/courses.html
+#: templates/education/courses.html
 msgid "all courses"
 msgstr "alle vakken"
 
-#: education/templates/education/student_participation.html
+#: templates/education/student_participation.html
 msgid "Student Participation"
 msgstr "Medezeggenschap"
 
-#: education/templates/education/student_participation.html
+#: templates/education/student_participation.html
 msgid "Education Program Committee"
 msgstr "De Opleidingscommisie"
 
-#: education/templates/education/student_participation.html
+#: templates/education/student_participation.html
 msgid ""
 "<p>The Education Program Committee (EPC) is responsible for giving advice "
 "concerning education and exam regulations, that have to be approved every "
@@ -406,11 +323,11 @@ msgstr ""
 "kan je meer lezen over de studenten die in de OLC zitten op hun <a href="
 "\"http://olc.cs.ru.nl/\">eigen pagina</a>.</p>"
 
-#: education/templates/education/student_participation.html
+#: templates/education/student_participation.html
 msgid "Faculty Student Council"
 msgstr "De Facultaire Studentenraad"
 
-#: education/templates/education/student_participation.html
+#: templates/education/student_participation.html
 msgid ""
 "<p>The Faculty of Science has their own student participation organ that "
 "concerns itself with matters that are important to our faculty. This ranges "
@@ -436,11 +353,11 @@ msgstr ""
 "blijven. Je kan  <a href=\"ḧttp://www.ru.nl/fnwi/fsr/\">hier</a> meer over "
 "de FSR lezen.</p>"
 
-#: education/templates/education/student_participation.html
+#: templates/education/student_participation.html
 msgid "University Student Council"
 msgstr "De Universitaire Studentenraad"
 
-#: education/templates/education/student_participation.html
+#: templates/education/student_participation.html
 msgid ""
 "<p>The University Student Council (USC) is concerned with all issues that "
 "concern the entire university. One could think of the opening hours of the "
@@ -456,29 +373,6 @@ msgstr ""
 "de andere zes representeren verschillende studentenorganisaties. Je kan <a "
 "href=\"http://www.ru.nl/usr/\">hier</a> meer lezen over de USR."
 
-#: education/views.py
+#: views.py
 msgid "Summary"
 msgstr "Samenvatting"
-
-#~ msgid "second quarter"
-#~ msgstr "tweede kwartaal"
-
-#~ msgid "View all books for the second quarter"
-#~ msgstr "Bekijk alle boeken voor het tweede kwartaal"
-
-#~ msgid ""
-#~ "Thalia's book sale goes through bookstore Roelants. As a member of Thalia "
-#~ "you get 10%% discount on your order. So how does the ordering work? "
-#~ "Simple: visit the Roelants webstore using <a href=\"https://www.roelants."
-#~ "nl/studenten/products/alle-producten/3543/p.product_price/asc.html?"
-#~ "r=sawqllhrjzy4dq3ui8pf\">this link</a>. Then choose the books you need "
-#~ "and use the code 'THALIAkorting' to activate the discount."
-#~ msgstr ""
-#~ "De boekenverkoop van Thalia gaat via boekhandel Roelants. Via deze "
-#~ "boekhandel krijg je als Thaliaan 10%% korting op je bestelling. Hoe gaat "
-#~ "dat bestellen nou in zijn werk? Simpel: ga naar de Roelants webwinkel via "
-#~ "<a href=\"https://www.roelants.nl/studenten/products/alle-producten/3543/"
-#~ "p.product_price/asc.html?r=sawqllhrjzy4dq3ui8pf\">deze link</a>. "
-#~ "Vervolgens kies je de boeken uit die jij voor je vakken nodig hebt. Als "
-#~ "je klaar bent gebruik je tijdens het afrekenen de code \"THALIAkorting\" "
-#~ "om de korting op je bestelling te krijgen."
