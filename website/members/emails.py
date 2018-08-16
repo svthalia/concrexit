@@ -21,7 +21,7 @@ def send_membership_announcement(dry_run=False):
             print("Send email to {} ({})".format(member.get_full_name(),
                                                  member.email))
             if not dry_run:
-                with translation.override(member.language):
+                with translation.override(member.profile.language):
                     email_body = loader.render_to_string(
                         'members/email/membership_announcement.txt',
                         {'name': member.get_full_name()})
@@ -52,7 +52,7 @@ def send_information_request(dry_run=False):
             print("Send email to {} ({})".format(member.get_full_name(),
                                                  member.email))
             if not dry_run:
-                with translation.override(member.language):
+                with translation.override(member.profile.language):
                     email_body = loader.render_to_string(
                         'members/email/information_check.txt',
                         {'name': member.get_full_name(),
@@ -87,7 +87,7 @@ def send_expiration_announcement(dry_run=False):
             print("Send email to {} ({})".format(member.get_full_name(),
                                                  member.email))
             if not dry_run:
-                with translation.override(member.language):
+                with translation.override(member.profile.language):
                     email_body = loader.render_to_string(
                         'members/email/expiration_announcement.txt',
                         {
