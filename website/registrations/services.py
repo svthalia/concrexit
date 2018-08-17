@@ -1,7 +1,6 @@
 """The services defined by the registrations package"""
 import string
 import unicodedata
-from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
