@@ -265,7 +265,7 @@ def _create_membership_from_entry(entry, member=None):
                 if membership.until is None:
                     raise ValueError('This member already has a never ending '
                                      'membership')
-                since = membership.until + timedelta(days=1)
+                since = membership.until
         except Renewal.DoesNotExist:
             pass
         until = timezone.datetime(year=lecture_year + 1,
