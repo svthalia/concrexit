@@ -403,7 +403,7 @@ class ServicesTest(TestCase):
             self.e3.length = Entry.MEMBERSHIP_YEAR
             membership3 = services._create_membership_from_entry(self.e3)
             self.assertEqual(membership3.since,
-                             existing_membership.until + timedelta(days=1))
+                             existing_membership.until)
             self.assertEqual(membership3.until, timezone.datetime(
                 year=2017, month=9, day=1).date())
             self.assertEqual(membership3.user, self.e3.member)
