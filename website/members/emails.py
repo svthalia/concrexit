@@ -8,12 +8,13 @@ from django.utils import translation
 from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
 
-from members.models import Member
+from members.models import Member, Membership
 
 
 def send_membership_announcement(dry_run=False):
     members = (Member.current_members
                .filter(membership__until__isnull=True)
+               .exclude(membership__type=Membership.HONORARY)
                .distinct())
 
     with mail.get_connection() as connection:
@@ -26,7 +27,8 @@ def send_membership_announcement(dry_run=False):
                         'members/email/membership_announcement.txt',
                         {'name': member.get_full_name()})
                     mail.EmailMessage(
-                        _('Membership announcement'),
+                        '[THALIA] {}'.format(
+                            _('Membership announcement')),
                         email_body,
                         settings.WEBSITE_FROM_ADDRESS,
                         [member.email],
@@ -58,7 +60,8 @@ def send_information_request(dry_run=False):
                         {'name': member.get_full_name(),
                          'member': member})
                     mail.EmailMessage(
-                        _('Membership information check'),
+                        '[THALIA] {}'.format(
+                            _('Membership information check')),
                         email_body,
                         settings.WEBSITE_FROM_ADDRESS,
                         [member.email],
@@ -80,6 +83,7 @@ def send_expiration_announcement(dry_run=False):
     expiry_date = datetime.now() + timedelta(days=31)
     members = (Member.current_members
                .filter(membership__until__lte=expiry_date)
+               .exclude(membership__until__isnull=True)
                .distinct())
 
     with mail.get_connection() as connection:
@@ -93,12 +97,16 @@ def send_expiration_announcement(dry_run=False):
                         {
                             'name': member.get_full_name(),
                             'membership_price': floatformat(
-                                 settings.MEMBERSHIP_PRICES['year'], 2
+                                settings.MEMBERSHIP_PRICES['year'], 2
                             ),
-                            'renewal_url': reverse('registrations:renew')
+                            'renewal_url': '{}{}'.format(
+                                'https://thalia.nu',
+                                reverse('registrations:renew')
+                            )
                         })
                     mail.EmailMessage(
-                        _('Membership expiration announcement'),
+                        '[THALIA] {}'.format(
+                            _('Membership expiration announcement')),
                         email_body,
                         settings.WEBSITE_FROM_ADDRESS,
                         [member.email],
