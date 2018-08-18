@@ -1,5 +1,5 @@
-utils\.management\.commands package
-===================================
+utils.management.commands package
+=================================
 
 .. automodule:: utils.management.commands
     :members:
@@ -9,8 +9,8 @@ utils\.management\.commands package
 Submodules
 ----------
 
-utils\.management\.commands\.createfixtures module
---------------------------------------------------
+utils.management.commands.createfixtures module
+-----------------------------------------------
 
 .. automodule:: utils.management.commands.createfixtures
     :members:

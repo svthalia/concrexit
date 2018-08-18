@@ -103,6 +103,7 @@ def gen_stats_year(member_types):
 def verify_email_change(change_request):
     """
     Mark the email change request as verified
+
     :param change_request: the email change request
     """
     change_request.verified = True
@@ -114,6 +115,7 @@ def verify_email_change(change_request):
 def confirm_email_change(change_request):
     """
     Mark the email change request as verified
+
     :param change_request: the email change request
     """
     change_request.confirmed = True
@@ -126,6 +128,7 @@ def process_email_change(change_request):
     """
     Change the user's email address if the request was completed and
     send the completion email
+
     :param change_request: the email change request
     """
     if not change_request.completed:

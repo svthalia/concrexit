@@ -17,56 +17,56 @@ Subpackages
 Submodules
 ----------
 
-utils\.exception\_filter module
--------------------------------
+utils.exception\_filter module
+------------------------------
 
 .. automodule:: utils.exception_filter
     :members:
     :undoc-members:
     :show-inheritance:
 
-utils\.snippets module
-----------------------
+utils.snippets module
+---------------------
 
 .. automodule:: utils.snippets
     :members:
     :undoc-members:
     :show-inheritance:
 
-utils\.tasks module
--------------------
+utils.tasks module
+------------------
 
 .. automodule:: utils.tasks
     :members:
     :undoc-members:
     :show-inheritance:
 
-utils\.threading module
------------------------
+utils.threading module
+----------------------
 
 .. automodule:: utils.threading
     :members:
     :undoc-members:
     :show-inheritance:
 
-utils\.translation module
--------------------------
+utils.translation module
+------------------------
 
 .. automodule:: utils.translation
     :members:
     :undoc-members:
     :show-inheritance:
 
-utils\.validators module
-------------------------
+utils.validators module
+-----------------------
 
 .. automodule:: utils.validators
     :members:
     :undoc-members:
     :show-inheritance:
 
-utils\.views module
--------------------
+utils.views module
+------------------
 
 .. automodule:: utils.views
     :members:

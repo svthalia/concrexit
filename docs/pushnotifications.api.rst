@@ -1,5 +1,5 @@
-pushnotifications\.api package
-==============================
+pushnotifications.api package
+=============================
 
 .. automodule:: pushnotifications.api
     :members:
@@ -9,32 +9,32 @@ pushnotifications\.api package
 Submodules
 ----------
 
-pushnotifications\.api\.permissions module
-------------------------------------------
+pushnotifications.api.permissions module
+----------------------------------------
 
 .. automodule:: pushnotifications.api.permissions
     :members:
     :undoc-members:
     :show-inheritance:
 
-pushnotifications\.api\.serializers module
-------------------------------------------
+pushnotifications.api.serializers module
+----------------------------------------
 
 .. automodule:: pushnotifications.api.serializers
     :members:
     :undoc-members:
     :show-inheritance:
 
-pushnotifications\.api\.urls module
------------------------------------
+pushnotifications.api.urls module
+---------------------------------
 
 .. automodule:: pushnotifications.api.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-pushnotifications\.api\.viewsets module
----------------------------------------
+pushnotifications.api.viewsets module
+-------------------------------------
 
 .. automodule:: pushnotifications.api.viewsets
     :members:

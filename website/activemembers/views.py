@@ -8,6 +8,7 @@ from .models import Board, Committee, CommitteeMembership
 def committee_index(request):
     """
     View that renders the committee overview page
+
     :param request: the request object
     :return: response containing the HTML
     """
@@ -21,6 +22,7 @@ def committee_index(request):
 def committee_detail(request, pk):
     """
     View that renders the page of one selected committee
+
     :param request: the request object
     :param pk: pk of the selected committee
     :return:
@@ -49,6 +51,7 @@ def committee_detail(request, pk):
 def board_index(request):
     """
     View that renders the board overview page
+
     :param request: the request object
     :return: response containing the HTML
     """
@@ -66,6 +69,7 @@ def board_index(request):
 def board_detail(request, since, until=None):
     """
     View that renders the board for a specific lecture year
+
     :param request: the request object
     :param since: xxxx in xxxx-yyyy of the lecture year
     :param until: yyyy in xxxx-yyyy of the lecture year

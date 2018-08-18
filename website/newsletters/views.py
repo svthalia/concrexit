@@ -14,6 +14,7 @@ from partners.models import Partner
 def preview(request, pk, lang=None):
     """
     View that renders the newsletter as HTML
+
     :param request: the request object
     :param pk: the newsletter's primary key
     :param lang: the language of the render
@@ -46,6 +47,7 @@ def legacy_redirect(request, year, week):
     """
     View that redirect you to the right newsletter by
     using the previously used URL format of /{year}/{week}
+
     :param request: the request object
     :param year: the year of the newsletter
     :param week: the week of the newsletter
@@ -68,6 +70,7 @@ def admin_send(request, pk):
     If this is a GET request this view will render a confirmation
     page for the administrator. If it is a POST request the newsletter
     will be sent to all recipients
+
     :param request: the request object
     :param pk: the newsletter's primary key
     :return: 302 RedirectResponse if POST else 200 with the

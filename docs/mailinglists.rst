@@ -16,32 +16,32 @@ Subpackages
 Submodules
 ----------
 
-mailinglists\.admin module
---------------------------
+mailinglists.admin module
+-------------------------
 
 .. automodule:: mailinglists.admin
     :members:
     :undoc-members:
     :show-inheritance:
 
-mailinglists\.apps module
--------------------------
+mailinglists.apps module
+------------------------
 
 .. automodule:: mailinglists.apps
     :members:
     :undoc-members:
     :show-inheritance:
 
-mailinglists\.models module
----------------------------
+mailinglists.models module
+--------------------------
 
 .. automodule:: mailinglists.models
     :members:
     :undoc-members:
     :show-inheritance:
 
-mailinglists\.services module
------------------------------
+mailinglists.services module
+----------------------------
 
 .. automodule:: mailinglists.services
     :members:

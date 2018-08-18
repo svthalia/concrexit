@@ -1,5 +1,5 @@
-utils\.management package
-=========================
+utils.management package
+========================
 
 .. automodule:: utils.management
     :members:
