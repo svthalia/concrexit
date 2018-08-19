@@ -320,6 +320,3 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append('--add-location=file')
-
-# Remove unused translations.
-makemessages.Command.xgettext_options.append('--no-obsolete')
