@@ -9,7 +9,7 @@ def showcased_partners(request):
 
     For each user we generate a sequence of banners. This sequence
     is then stored for that user, because doing it randomly creates
-    a feel of an artificial 'bias' towards certain sponsors. Doing
+    a feel of an artificial 'bias' towards certain partners. Doing
     it this way ensures that everyone gets an exactly fair number of
     views.
     """

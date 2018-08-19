@@ -84,7 +84,7 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
     PIZZA = 'pizza'
     EVENT = 'event'
     NEWSLETTER = 'newsletter'
-    SPONSOR = 'sponsor'
+    PARTNER = 'partner'
     PHOTO = 'photo'
     BOARD = 'board'
 
@@ -93,7 +93,7 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
         (PIZZA, _("Pizza")),
         (EVENT, _("Events")),
         (NEWSLETTER, _("Newsletter")),
-        (SPONSOR, _("Sponsored messages")),
+        (PARTNER, _("Messages from partners")),
         (PHOTO, _("Photos")),
         (BOARD, _("Board")),
     )
