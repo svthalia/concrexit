@@ -347,7 +347,7 @@ class Profile(models.Model):
     receive_optin = models.BooleanField(
         verbose_name=_('Receive opt-in mailings'),
         help_text=_("Receive mailings about vacancies and events from Thalia's"
-                    " sponsors."),
+                    " partners."),
         default=True,
     )
 

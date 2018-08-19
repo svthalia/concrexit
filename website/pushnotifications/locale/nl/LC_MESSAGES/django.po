@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2018-07-11 20:27+0200\n"
+"POT-Creation-Date: 2018-08-19 15:30+0200\n"
+"PO-Revision-Date: 2018-08-19 15:30+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -11,100 +11,100 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.8\n"
+"X-Generator: Poedit 2.1.1\n"
 
-#: pushnotifications/admin.py
+#: admin.py
 msgid "Enable selected devices"
 msgstr "Activeer geselecteerde apparaten"
 
-#: pushnotifications/admin.py
+#: admin.py
 msgid "Disable selected devices"
 msgstr "Deactiveer geselecteerde apparaten"
 
-#: pushnotifications/admin.py
+#: admin.py
 msgid "Name"
 msgstr "Naam"
 
-#: pushnotifications/apps.py
+#: apps.py
 msgid "Push Notifications"
 msgstr "Pushnotificaties"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "name"
 msgstr "naam"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "registration token"
 msgstr "registratie token"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "active"
 msgstr "actief"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "Inactive devices will not be sent notifications"
 msgstr "Inactieve apparaten zullen geen notificaties ontvangen"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "registration date"
 msgstr "registratiedatum"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "language"
 msgstr "taal"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "General"
 msgstr "Algemeen"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "Pizza"
 msgstr "Pizza"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "Events"
 msgstr "Evenementen"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "Newsletter"
 msgstr "Nieuwsbrief"
 
-#: pushnotifications/models.py
-msgid "Sponsored messages"
-msgstr "Gesponsorde berichten"
+#: models.py
+msgid "Messages from partners"
+msgstr "Berichten van partners"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "Photos"
 msgstr "Foto's"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "Board"
 msgstr "Bestuur"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "title"
 msgstr "titel"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "body"
 msgstr "bericht"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "category"
 msgstr "categorie"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "sent"
 msgstr "verzonden"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "failure"
 msgstr "mislukt"
 
-#: pushnotifications/models.py
+#: models.py
 msgid "success"
 msgstr "succesvol"
 
-#: pushnotifications/templates/admin/pushnotifications/change_form.html
+#: templates/admin/pushnotifications/change_form.html
 msgid "Send message"
 msgstr "Verstuur bericht"

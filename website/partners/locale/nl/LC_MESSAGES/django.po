@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2018-06-07 16:19+0200\n"
+"PO-Revision-Date: 2018-08-19 15:24+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: partners/apps.py partners/templates/partners/index.html
 #: partners/templates/partners/partner.html
@@ -123,7 +123,7 @@ msgstr ""
 #: partners/templates/partners/index.html
 #: partners/templates/partners/partner.html
 msgid "Main Partner"
-msgstr "Hoofdsponsor"
+msgstr "Hoofdpartner"
 
 #: partners/templates/partners/index.html
 #: partners/templates/partners/partner.html

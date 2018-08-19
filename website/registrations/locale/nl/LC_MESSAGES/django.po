@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2018-08-19 16:21+0200\n"
+"POT-Creation-Date: 2018-08-19 16:41+0200\n"
+"PO-Revision-Date: 2018-08-19 16:42+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -18,157 +18,157 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.1.1\n"
 
-#: registrations/admin.py
+#: admin.py
 msgid "Application information"
 msgstr "Registratieinformatie"
 
-#: registrations/admin.py
+#: admin.py
 msgid "Personal information"
 msgstr "Persoonlijke informatie"
 
-#: registrations/admin.py
+#: admin.py
 msgid "Address"
 msgstr "Adres"
 
-#: registrations/admin.py
+#: admin.py
 msgid "University information"
 msgstr "Unversiteitsinformatie"
 
-#: registrations/admin.py registrations/tests/test_admin.py
+#: admin.py tests/test_admin.py
 msgid "Processed"
 msgstr "Verwerkt"
 
-#: registrations/admin.py registrations/tests/test_admin.py
+#: admin.py tests/test_admin.py
 msgid "Unprocessed"
 msgstr "Onverwerkt"
 
-#: registrations/admin.py registrations/tests/test_admin.py
+#: admin.py tests/test_admin.py
 #, python-format
 msgid "Successfully rejected %(count)d %(items)s."
 msgstr "%(count)d %(items)s succesvol afgekeurd."
 
-#: registrations/admin.py
+#: admin.py
 msgid "The selected registration(s) could not be rejected."
 msgstr "De geselecteerde registratie(s) konden niet worden afgekeurd."
 
-#: registrations/admin.py
+#: admin.py
 msgid "Reject selected registrations"
 msgstr "Keur geselecteerde registraties af"
 
-#: registrations/admin.py registrations/tests/test_admin.py
+#: admin.py tests/test_admin.py
 #, python-format
 msgid "Successfully accepted %(count)d %(items)s."
 msgstr "%(count)d %(items)s succesvol goedgekeurd."
 
-#: registrations/admin.py
+#: admin.py
 msgid "The selected registration(s) could not be accepted."
 msgstr "De geselecteerde registratie(s) konden niet worden goedgekeurd."
 
-#: registrations/admin.py
+#: admin.py
 msgid "Accept selected registrations"
 msgstr "Keur geselecteerde registraties goed"
 
-#: registrations/apps.py
+#: apps.py
 msgid "Registrations"
 msgstr "Registraties"
 
-#: registrations/emails.py registrations/tests/test_emails.py
+#: emails.py tests/test_emails.py
 msgid "Confirm email address"
 msgstr "Bevestig e-mailadres"
 
-#: registrations/emails.py registrations/tests/test_emails.py
+#: emails.py tests/test_emails.py
 msgid "Registration accepted"
 msgstr "Registratie goedgekeurd"
 
-#: registrations/emails.py registrations/tests/test_emails.py
+#: emails.py tests/test_emails.py
 msgid "Registration rejected"
 msgstr "Registratie afgekeurd"
 
-#: registrations/emails.py registrations/tests/test_emails.py
+#: emails.py tests/test_emails.py
 msgid "Renewal accepted"
 msgstr "Verlenging goedgekeurd"
 
-#: registrations/emails.py registrations/tests/test_emails.py
+#: emails.py tests/test_emails.py
 msgid "Renewal successful"
 msgstr "Verlenging afgekeurd"
 
-#: registrations/forms.py registrations/models.py
+#: forms.py models.py
 msgid "birthday"
 msgstr "verjaardag"
 
-#: registrations/forms.py
+#: forms.py
 msgid "I accept the privacy policy"
 msgstr "Ik accepteer het privacybeleid"
 
-#: registrations/models.py
+#: models.py
 msgid "created at"
 msgstr "aangemaakt op"
 
-#: registrations/models.py
+#: models.py
 msgid "updated at"
 msgstr "bijgewerkt op"
 
-#: registrations/models.py
+#: models.py
 msgid "Awaiting email confirmation"
 msgstr "In afwachting van e-mail confirmatie"
 
-#: registrations/models.py
+#: models.py
 msgid "Ready for review"
 msgstr "Klaar voor beoordeling"
 
-#: registrations/models.py
+#: models.py
 msgid "Rejected"
 msgstr "Afgekeurd"
 
-#: registrations/models.py
+#: models.py
 msgid "Accepted"
 msgstr "Goedgekeurd"
 
-#: registrations/models.py
+#: models.py
 msgid "Completed"
 msgstr "Voltooid"
 
-#: registrations/models.py
+#: models.py
 msgid "status"
 msgstr "status"
 
-#: registrations/models.py
+#: models.py
 msgid "One year"
 msgstr "Één jaar"
 
-#: registrations/models.py
+#: models.py
 msgid "Until graduation"
 msgstr "Tot afstuderen"
 
-#: registrations/models.py
+#: models.py
 msgid "membership length"
 msgstr "lengte lidmaatschap"
 
-#: registrations/models.py registrations/templates/registrations/renewal.html
+#: models.py templates/registrations/renewal.html
 msgid "membership type"
 msgstr "soort lidmaatschap"
 
-#: registrations/models.py
+#: models.py
 msgid "remarks"
 msgstr "opmerkingen"
 
-#: registrations/models.py
+#: models.py
 msgid "entry"
 msgstr "invoer"
 
-#: registrations/models.py
+#: models.py
 msgid "entries"
 msgstr "invoeren"
 
-#: registrations/models.py
+#: models.py
 msgid "Review registration and renewal entries"
 msgstr "Beoordeel registraties en verlengingen"
 
-#: registrations/models.py
+#: models.py
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: registrations/models.py
+#: models.py
 msgid ""
 "Enter value to override the auto-generated username (e.g. if it is not "
 "unique)"
@@ -176,75 +176,75 @@ msgstr ""
 "Voer waarde in om de automatisch gegenereerde gebruikersnaam te "
 "overschrijven (bijv. als deze niet uniek is)"
 
-#: registrations/models.py
+#: models.py
 msgid "First name"
 msgstr "Voornaam"
 
-#: registrations/models.py
+#: models.py
 msgid "Last name"
 msgstr "Achternaam"
 
-#: registrations/models.py
+#: models.py
 msgid "language"
 msgstr "taal"
 
-#: registrations/models.py
+#: models.py
 msgid "Email address"
 msgstr "E-mailadres"
 
-#: registrations/models.py
+#: models.py
 msgid "phone number"
 msgstr "telefoonnummer"
 
-#: registrations/models.py
+#: models.py
 msgid "please enter a valid phone number"
 msgstr "voer alstublieft een geldig telefoonnummer in"
 
-#: registrations/models.py
+#: models.py
 msgid "student number"
 msgstr "studentnummer"
 
-#: registrations/models.py
+#: models.py
 msgid "enter a valid student- or e/z/u-number."
 msgstr "voer een geldig student- of e/z/u-nummer in."
 
-#: registrations/models.py
+#: models.py
 msgid "study programme"
 msgstr "studie"
 
-#: registrations/models.py
+#: models.py
 msgid "starting year"
 msgstr "startjaar"
 
-#: registrations/models.py
+#: models.py
 msgid "include the house number"
 msgstr "inclusief huisnummer"
 
-#: registrations/models.py
+#: models.py
 msgid "street and house number"
 msgstr "straat en huisnummer"
 
-#: registrations/models.py
+#: models.py
 msgid "second address line"
 msgstr "tweede adresregel"
 
-#: registrations/models.py
+#: models.py
 msgid "postal code"
 msgstr "postcode"
 
-#: registrations/models.py
+#: models.py
 msgid "city"
 msgstr "stad"
 
-#: registrations/models.py
+#: models.py
 msgid "mailinglist opt-in"
 msgstr "mailinglijst opt-in"
 
-#: registrations/models.py
+#: models.py
 msgid "birthday calendar opt-in"
 msgstr "verjaardagskalender opt-in"
 
-#: registrations/models.py
+#: models.py
 msgid ""
 "A user with that email address already exists. Login using the existing "
 "account and renew the membership by visiting the account settings."
@@ -252,7 +252,7 @@ msgstr ""
 "Er bestaat al een gebruiker met dit e-mailadres. Login met het bestaande "
 "account en vernieuw het lidmaatschap in de accountinstellingen."
 
-#: registrations/models.py
+#: models.py
 msgid ""
 "A user with that student number already exists. Login using the existing "
 "account and renew the membership by visiting the account settings."
@@ -260,65 +260,65 @@ msgstr ""
 "Er bestaat al een gebruiker met dit studentnummer. Login met het bestaande "
 "account en vernieuw het lidmaatschap in de accountinstellingen."
 
-#: registrations/models.py
+#: models.py
 msgid "A user with that username already exists."
 msgstr "Er bestaat al een gebruiker met deze gebruikersnaam."
 
-#: registrations/models.py
+#: models.py
 msgid "This field is required."
 msgstr "Dit veld is verplicht."
 
-#: registrations/models.py
+#: models.py
 msgid "registation"
 msgstr "registratie"
 
-#: registrations/models.py
+#: models.py
 msgid "registrations"
 msgstr "registraties"
 
-#: registrations/models.py
+#: models.py
 msgid "member"
 msgstr "lid"
 
-#: registrations/models.py registrations/tests/test_models.py
+#: models.py tests/test_models.py
 msgid "You already have a renewal request queued for review."
 msgstr "Je hebt al een aanvraag tot verlenging openstaan."
 
-#: registrations/models.py
+#: models.py
 msgid "You currently have an active membership."
 msgstr "Je hebt op dit moment een actief lidmaatschap."
 
-#: registrations/models.py
+#: models.py
 msgid "You cannot renew your membership at this moment."
 msgstr "Je kunt je lidmaatschap op dit moment niet verlengen."
 
-#: registrations/models.py
+#: models.py
 msgid ""
 "Supporters cannot have a membership that lasts their entire study duration."
 msgstr "Begunstigers kunnen geen lidmaatschap hebben dat loopt tot afstuderen."
 
-#: registrations/models.py registrations/templates/registrations/renewal.html
-#: registrations/templates/registrations/renewal_success.html
+#: models.py templates/registrations/renewal.html
+#: templates/registrations/renewal_success.html
 msgid "renewal"
 msgstr "verlenging"
 
-#: registrations/models.py
+#: models.py
 msgid "renewals"
 msgstr "verlenging"
 
-#: registrations/templates/admin/registrations/change_form.html
+#: templates/admin/registrations/change_form.html
 msgid "Accept"
 msgstr "Goedkeuren"
 
-#: registrations/templates/admin/registrations/change_form.html
+#: templates/admin/registrations/change_form.html
 msgid "Reject"
 msgstr "Afkeuren"
 
-#: registrations/templates/registrations/become_a_member.html
+#: templates/registrations/become_a_member.html
 msgid "Become a Member"
 msgstr "Lid worden"
 
-#: registrations/templates/registrations/become_a_member.html
+#: templates/registrations/become_a_member.html
 msgid ""
 "Thalia is the study association for Computing Science and Information "
 "Sciences students at the Radboud University in Nijmegen. Thalia organises a "
@@ -334,11 +334,11 @@ msgstr ""
 "en kun je met korting je studieboeken bestellen. Kortom, geen reden om niet "
 "lid te worden!"
 
-#: registrations/templates/registrations/become_a_member.html
+#: templates/registrations/become_a_member.html
 msgid "How do I become a member?"
 msgstr "Hoe kan ik lid worden?"
 
-#: registrations/templates/registrations/become_a_member.html
+#: templates/registrations/become_a_member.html
 #, python-format
 msgid ""
 "You can become a member of Thalia at any time during the year. A membership "
@@ -353,11 +353,11 @@ msgstr ""
 "gaan. Let wel op: Je kunt alleen lid worden wanneer je informatica of "
 "informatiekunde studeert aan de Radboud Universiteit."
 
-#: registrations/templates/registrations/become_a_member.html
+#: templates/registrations/become_a_member.html
 msgid "Register now"
 msgstr "Nu registreren"
 
-#: registrations/templates/registrations/become_a_member.html
+#: templates/registrations/become_a_member.html
 msgid ""
 "I'm not a Computing Science and Information Sciences student at the Radboud "
 "University, but I do want to attend your events. Now what?"
@@ -365,7 +365,7 @@ msgstr ""
 "Ik studeer geen Informatica of Informatiekunde (aan de Radboud "
 "Universiteit), maar ik wil wel naar jullie activiteiten gaan. Wat nu?"
 
-#: registrations/templates/registrations/become_a_member.html
+#: templates/registrations/become_a_member.html
 #, python-format
 msgid ""
 "It is still possible to be associated with Thalia, even if you do not study "
@@ -386,7 +386,7 @@ msgstr ""
 "te geven. Dit kun je allemaal invullen op het begunstigerformulier, dat af "
 "te halen is in de bestuurskamer (M1.0.08, begane grond Mercator 1)."
 
-#: registrations/templates/registrations/become_a_member.html
+#: templates/registrations/become_a_member.html
 msgid ""
 "Payment can be made both in cash or by card. If you have any other questions "
 "about Thalia and/or your membership, feel free to email <a href=\"mailto:"
@@ -396,17 +396,17 @@ msgstr ""
 "pin. Mocht je nog verdere vragen hebben over Thalia en/of je lidmaatschap "
 "dan kun je altijd mailen naar info@thalia.nu!"
 
-#: registrations/templates/registrations/confirm_email.html
+#: templates/registrations/confirm_email.html
 msgid "confirm email address"
 msgstr "bevestig e-mailadres"
 
-#: registrations/templates/registrations/confirm_email.html
-#: registrations/templates/registrations/register_member.html
-#: registrations/templates/registrations/register_success.html
+#: templates/registrations/confirm_email.html
+#: templates/registrations/register_member.html
+#: templates/registrations/register_success.html
 msgid "registration"
 msgstr "registratie"
 
-#: registrations/templates/registrations/confirm_email.html
+#: templates/registrations/confirm_email.html
 msgid ""
 "\n"
 "        Your email address has been confirmed.\n"
@@ -420,7 +420,7 @@ msgstr ""
 "        Mocht je vragen hebben, stuur dan een mailtje naar info@thalia.nu.\n"
 "    "
 
-#: registrations/templates/registrations/email/registration_accepted.txt
+#: templates/registrations/email/registration_accepted.txt
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -474,7 +474,7 @@ msgstr ""
 "\n"
 "Deze e-mail is automatisch gegenereerd."
 
-#: registrations/templates/registrations/email/registration_confirm_mail.txt
+#: templates/registrations/email/registration_confirm_mail.txt
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -515,7 +515,7 @@ msgstr ""
 "\n"
 "Deze e-mail is automatisch gegenereerd."
 
-#: registrations/templates/registrations/email/registration_rejected.txt
+#: templates/registrations/email/registration_rejected.txt
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -554,7 +554,7 @@ msgstr ""
 "\n"
 "Deze e-mail is automatisch gegenereerd."
 
-#: registrations/templates/registrations/email/renewal_accepted.txt
+#: templates/registrations/email/renewal_accepted.txt
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -608,7 +608,7 @@ msgstr ""
 "\n"
 "Deze e-mail is automatisch gegenereerd."
 
-#: registrations/templates/registrations/email/renewal_complete.txt
+#: templates/registrations/email/renewal_complete.txt
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -640,7 +640,7 @@ msgstr ""
 "\n"
 "Deze e-mail is automatisch gegenereerd."
 
-#: registrations/templates/registrations/email/renewal_rejected.txt
+#: templates/registrations/email/renewal_rejected.txt
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -680,7 +680,7 @@ msgstr ""
 "\n"
 "Deze e-mail is automatisch gegenereerd."
 
-#: registrations/templates/registrations/register_member.html
+#: templates/registrations/register_member.html
 #, python-format
 msgid ""
 "A membership costs € %(year_fees)s per year, or € %(study_fees)s for your "
@@ -703,7 +703,7 @@ msgstr ""
 "alleen gebruikt kan worden voor registratie van leden. Neem contact op met "
 "het bestuur als je begunstiger wilt worden.</em>"
 
-#: registrations/templates/registrations/register_member.html
+#: templates/registrations/register_member.html
 msgid ""
 "If you've been a member before you should login using your existing account "
 "and renew your membership by visiting the account settings. You'll be unable "
@@ -713,20 +713,20 @@ msgstr ""
 "en vernieuw je lidmaatschap in de accountinstellingen. Je kunt je niet "
 "opnieuw registreren via dit formulier."
 
-#: registrations/templates/registrations/register_member.html
+#: templates/registrations/register_member.html
 msgid "Display birthday in calendar"
 msgstr "Toon verjaardag in de kalender"
 
-#: registrations/templates/registrations/register_member.html
+#: templates/registrations/register_member.html
 msgid ""
 "Receive emails about (amongst others) job opportunities and in-house days "
-"from sponsors of Thalia."
+"from partners of Thalia."
 msgstr ""
 "Ik wil e-mails ontvangen over (onder andere) baankansen en in-house dagen "
-"van sponsoren van Thalia."
+"van partners van Thalia."
 
-#: registrations/templates/registrations/register_member.html
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/register_member.html
+#: templates/registrations/renewal.html
 #, python-format
 msgid ""
 "I accept the <a target=\"_blank\" href=\"%(privacy_policy_url)s\">privacy "
@@ -735,16 +735,16 @@ msgstr ""
 "Ik ga akkoord met het <a target=\"_blank\" href=\"%(privacy_policy_url)s"
 "\">privacybeleid</a>"
 
-#: registrations/templates/registrations/register_member.html
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/register_member.html
+#: templates/registrations/renewal.html
 msgid "send"
 msgstr "verstuur"
 
-#: registrations/templates/registrations/register_success.html
+#: templates/registrations/register_success.html
 msgid "registration success"
 msgstr "registratie gelukt"
 
-#: registrations/templates/registrations/register_success.html
+#: templates/registrations/register_success.html
 msgid ""
 "\n"
 "        Thank you!\n"
@@ -762,7 +762,7 @@ msgstr ""
 "        Controleer je inbox voor de verificatie e-mail.\n"
 "    "
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 #, python-format
 msgid ""
 "A membership costs € %(year_fees)s per year, or € %(study_fees)s for your "
@@ -781,7 +781,7 @@ msgstr ""
 "Thalia worden. Voor minimaal € %(year_fees)s per jaar kun je ook genieten "
 "van alles wat Thalia je te bieden heeft."
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid ""
 "Are you currently paying per year for your membership? During the lecture "
 "year you're allowed to change your membership to one for your entire study "
@@ -798,23 +798,23 @@ msgstr ""
 "afloopt of net is afgelopen kun je het vanaf één maand voor aflopen "
 "verlengen."
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid "Membership information"
 msgstr "Lidmaatschapsinformatie"
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid "since"
 msgstr "sinds"
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid "until"
 msgstr "tot"
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid "active"
 msgstr "actief"
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid ""
 "We do not have any previous memberships in our system. Contact the board to "
 "renew your membership."
@@ -822,7 +822,7 @@ msgstr ""
 "Je bent een begunstiger. Neem contact op met het bestuur om je lidmaatschap "
 "te verlengen."
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid ""
 "You're a honorary member. That means that you never have to renew your "
 "membership."
@@ -830,13 +830,13 @@ msgstr ""
 "Je bent een erelid. Dat betekent dat je je lidmaatschap nooit hoeft te "
 "verlengen."
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid "You're a supporter. Contact the board to renew your membership."
 msgstr ""
 "Je bent een begunstiger. Neem contact op met het bestuur om je lidmaatschap "
 "te verlengen."
 
-#: registrations/templates/registrations/renewal.html
+#: templates/registrations/renewal.html
 msgid ""
 "You currently have an active membership for your entire study duration.<br/> "
 "Did you graduate or stop with your studies for some other reason?<br/> "
@@ -847,11 +847,11 @@ msgstr ""
 "gestopt?<br/>Laat ons dat alsjeblieft weten door een mail te sturen naar "
 "info@thalia.nu."
 
-#: registrations/templates/registrations/renewal_success.html
+#: templates/registrations/renewal_success.html
 msgid "success"
 msgstr "gelukt"
 
-#: registrations/templates/registrations/renewal_success.html
+#: templates/registrations/renewal_success.html
 msgid ""
 "\n"
 "        Thank you!\n"
@@ -863,31 +863,31 @@ msgstr ""
 "        We beoordelen je verzoek zo snel mogelijk.\n"
 "    "
 
-#: registrations/tests/test_views.py registrations/views.py
+#: tests/test_views.py views.py
 #, python-format
 msgid "Successfully accepted %s."
 msgstr "%s succesvol goedgekeurd."
 
-#: registrations/tests/test_views.py registrations/views.py
+#: tests/test_views.py views.py
 #, python-format
 msgid "Could not accept %s."
 msgstr "%s kon niet worden goedgekeurd."
 
-#: registrations/tests/test_views.py registrations/views.py
+#: tests/test_views.py views.py
 #, python-format
 msgid "Could not accept %s. Username is not unique."
 msgstr "%s kon niet worden goedgekeurd. De gebruikersnaam is niet uniek."
 
-#: registrations/tests/test_views.py registrations/views.py
+#: tests/test_views.py views.py
 #, python-format
 msgid "Successfully rejected %s."
 msgstr "%s succesvol afgekeurd."
 
-#: registrations/tests/test_views.py registrations/views.py
+#: tests/test_views.py views.py
 #, python-format
 msgid "Could not reject %s."
 msgstr "%s kon niet worden afgekeurd."
 
-#: registrations/tests/test_views.py
+#: tests/test_views.py
 msgid "Member"
 msgstr "Lid"
