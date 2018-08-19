@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2018-07-09 11:35+0200\n"
+"PO-Revision-Date: 2018-08-19 16:21+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: registrations/admin.py
 msgid "Application information"
@@ -238,11 +238,11 @@ msgstr "stad"
 
 #: registrations/models.py
 msgid "mailinglist opt-in"
-msgstr "Mailinglijst opt-in"
+msgstr "mailinglijst opt-in"
 
 #: registrations/models.py
 msgid "birthday calendar opt-in"
-msgstr "Verjaardagskalender opt-in"
+msgstr "verjaardagskalender opt-in"
 
 #: registrations/models.py
 msgid ""
