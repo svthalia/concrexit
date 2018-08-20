@@ -1,4 +1,4 @@
-FROM python:3.5
+FROM python:3.6
 MAINTAINER Thom Wiggers <thom@thomwiggers.nl>
 LABEL description="Contains the Thaliawebsite Django application"
 
