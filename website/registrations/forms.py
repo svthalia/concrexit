@@ -24,7 +24,7 @@ class MemberRegistrationForm(forms.ModelForm):
 
     this_year = datetime_to_lectureyear(timezone.now())
     years = reversed([(x, "{} - {}".format(x, x + 1)) for x in
-                      range(this_year - 20, this_year + 1)])
+                      range(this_year - 20, this_year + 2)])
 
     starting_year = TypedChoiceField(
         choices=years,
