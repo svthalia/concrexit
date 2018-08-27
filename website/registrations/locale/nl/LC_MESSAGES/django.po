@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-08-19 16:41+0200\n"
-"PO-Revision-Date: 2018-08-19 16:42+0200\n"
+"PO-Revision-Date: 2018-08-24 20:50+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -90,7 +90,7 @@ msgstr "Verlenging goedgekeurd"
 
 #: emails.py tests/test_emails.py
 msgid "Renewal successful"
-msgstr "Verlenging afgekeurd"
+msgstr "Verlenging succesvol"
 
 #: forms.py models.py
 msgid "birthday"
