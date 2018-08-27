@@ -11,6 +11,21 @@ class EmailsTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        cls.member_no_mail = Member.objects.create(
+            username='no_mail_test',
+            first_name='Nomail',
+            last_name='Example'
+        )
+        Profile.objects.create(
+            user=cls.member_no_mail,
+            language='en',
+        )
+        Membership.objects.create(
+            user=cls.member_no_mail,
+            type=Membership.MEMBER,
+            since=timezone.now().replace(year=2017, month=9, day=1),
+            until=timezone.now().replace(year=2018, month=9, day=1)
+        )
         cls.year_member_nl = Member.objects.create(
             username='test1',
             first_name='Test1',
