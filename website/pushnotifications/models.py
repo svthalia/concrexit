@@ -80,24 +80,6 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
 
     objects = MessageManager()
 
-    GENERAL = 'general'
-    PIZZA = 'pizza'
-    EVENT = 'event'
-    NEWSLETTER = 'newsletter'
-    PARTNER = 'partner'
-    PHOTO = 'photo'
-    BOARD = 'board'
-
-    CATEGORIES = (
-        (GENERAL, _("General")),
-        (PIZZA, _("Pizza")),
-        (EVENT, _("Events")),
-        (NEWSLETTER, _("Newsletter")),
-        (PARTNER, _("Messages from partners")),
-        (PHOTO, _("Photos")),
-        (BOARD, _("Board")),
-    )
-
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     title = MultilingualField(
         models.CharField,
