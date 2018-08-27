@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-19 16:41+0200\n"
-"PO-Revision-Date: 2018-08-24 20:50+0200\n"
+"POT-Creation-Date: 2018-08-27 17:19+0200\n"
+"PO-Revision-Date: 2018-08-27 17:19+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: admin.py
 msgid "Application information"
@@ -87,6 +87,10 @@ msgstr "Registratie afgekeurd"
 #: emails.py tests/test_emails.py
 msgid "Renewal accepted"
 msgstr "Verlenging goedgekeurd"
+
+#: emails.py
+msgid "Renewal rejected"
+msgstr "Verlenging afgekeurd"
 
 #: emails.py tests/test_emails.py
 msgid "Renewal successful"

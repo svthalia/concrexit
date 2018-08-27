@@ -111,7 +111,7 @@ def send_renewal_rejected_message(renewal):
     with translation.override(renewal.member.profile.language):
         _send_email(
             renewal.member.email,
-            _('Registration rejected'),
+            _('Renewal rejected'),
             'registrations/email/renewal_rejected.txt',
             {
                 'name': renewal.member.get_full_name()
