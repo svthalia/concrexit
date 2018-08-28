@@ -176,7 +176,7 @@ class EmailsTest(TestCase):
         with translation.override(renewal.member.profile.language):
             send_email.assert_called_once_with(
                 renewal.member.email,
-                _('Registration rejected'),
+                _('Renewal rejected'),
                 'registrations/email/renewal_rejected.txt',
                 {
                     'name': renewal.member.get_full_name()
