@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="readonly">
+  {% if widget.value %}
+    <a href="{{ url }}">
+    {% if processed %}
+      {% trans "Processed" %}
+      {% else %}
+      {% trans "Unprocessed" %}
+      {% endif %}
+    </a>
+  {% else %}
+    -
+  {% endif %}
+</div>
