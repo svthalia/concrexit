@@ -291,7 +291,7 @@ class Registration(Entry):
         return '{} {} ({})'.format(self.first_name, self.last_name, self.email)
 
     class Meta:
-        verbose_name = _('registation')
+        verbose_name = _('registration')
         verbose_name_plural = _('registrations')
 
 
