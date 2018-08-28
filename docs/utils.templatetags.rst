@@ -1,5 +1,5 @@
-utils\.templatetags package
-===========================
+utils.templatetags package
+==========================
 
 .. automodule:: utils.templatetags
     :members:
@@ -9,8 +9,8 @@ utils\.templatetags package
 Submodules
 ----------
 
-utils\.templatetags\.thumbnail module
--------------------------------------
+utils.templatetags.thumbnail module
+-----------------------------------
 
 .. automodule:: utils.templatetags.thumbnail
     :members:

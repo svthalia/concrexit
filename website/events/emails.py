@@ -13,6 +13,7 @@ def notify_first_waiting(request, event):
     """
     Send an email to the first person on the waiting list
     when someone cancels their registration
+
     :param request: the request object
     :param event: the event
     """
@@ -55,6 +56,7 @@ def notify_organiser(event, registration):
     """
     Send an email to the organiser of the event if
     someone cancels their registration
+
     :param event: the event
     :param registration: the registration that was cancelled
     """

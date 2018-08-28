@@ -1,5 +1,5 @@
-pizzas\.api package
-===================
+pizzas.api package
+==================
 
 .. automodule:: pizzas.api
     :members:
@@ -9,24 +9,24 @@ pizzas\.api package
 Submodules
 ----------
 
-pizzas\.api\.serializers module
--------------------------------
+pizzas.api.serializers module
+-----------------------------
 
 .. automodule:: pizzas.api.serializers
     :members:
     :undoc-members:
     :show-inheritance:
 
-pizzas\.api\.urls module
-------------------------
+pizzas.api.urls module
+----------------------
 
 .. automodule:: pizzas.api.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-pizzas\.api\.viewsets module
-----------------------------
+pizzas.api.viewsets module
+--------------------------
 
 .. automodule:: pizzas.api.viewsets
     :members:

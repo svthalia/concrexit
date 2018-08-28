@@ -1,5 +1,5 @@
-thaliawebsite\.api package
-==========================
+thaliawebsite.api package
+=========================
 
 .. automodule:: thaliawebsite.api
     :members:
@@ -9,8 +9,8 @@ thaliawebsite\.api package
 Submodules
 ----------
 
-thaliawebsite\.api\.services module
------------------------------------
+thaliawebsite.api.services module
+---------------------------------
 
 .. automodule:: thaliawebsite.api.services
     :members:

@@ -9,48 +9,48 @@ merchandise package
 Submodules
 ----------
 
-merchandise\.admin module
--------------------------
+merchandise.admin module
+------------------------
 
 .. automodule:: merchandise.admin
     :members:
     :undoc-members:
     :show-inheritance:
 
-merchandise\.apps module
-------------------------
+merchandise.apps module
+-----------------------
 
 .. automodule:: merchandise.apps
     :members:
     :undoc-members:
     :show-inheritance:
 
-merchandise\.models module
---------------------------
+merchandise.models module
+-------------------------
 
 .. automodule:: merchandise.models
     :members:
     :undoc-members:
     :show-inheritance:
 
-merchandise\.sitemaps module
-----------------------------
+merchandise.sitemaps module
+---------------------------
 
 .. automodule:: merchandise.sitemaps
     :members:
     :undoc-members:
     :show-inheritance:
 
-merchandise\.urls module
-------------------------
+merchandise.urls module
+-----------------------
 
 .. automodule:: merchandise.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-merchandise\.views module
--------------------------
+merchandise.views module
+------------------------
 
 .. automodule:: merchandise.views
     :members:

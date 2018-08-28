@@ -11,6 +11,7 @@ from partners.models import Partner
 def send_newsletter(request, newsletter):
     """
     Sends the newsletter as HTML and plaintext email
+
     :param request: the request object
     :param newsletter: the newsletter to be send
     """

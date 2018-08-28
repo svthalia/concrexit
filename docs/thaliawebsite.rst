@@ -18,72 +18,72 @@ Subpackages
 Submodules
 ----------
 
-thaliawebsite\.admin module
----------------------------
+thaliawebsite.admin module
+--------------------------
 
 .. automodule:: thaliawebsite.admin
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite\.celery module
-----------------------------
+thaliawebsite.celery module
+---------------------------
 
 .. automodule:: thaliawebsite.celery
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite\.context\_processors module
------------------------------------------
+thaliawebsite.context\_processors module
+----------------------------------------
 
 .. automodule:: thaliawebsite.context_processors
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite\.forms module
----------------------------
+thaliawebsite.forms module
+--------------------------
 
 .. automodule:: thaliawebsite.forms
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite\.menus module
----------------------------
+thaliawebsite.menus module
+--------------------------
 
 .. automodule:: thaliawebsite.menus
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite\.sitemaps module
-------------------------------
+thaliawebsite.sitemaps module
+-----------------------------
 
 .. automodule:: thaliawebsite.sitemaps
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite\.urls module
---------------------------
+thaliawebsite.urls module
+-------------------------
 
 .. automodule:: thaliawebsite.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite\.views module
----------------------------
+thaliawebsite.views module
+--------------------------
 
 .. automodule:: thaliawebsite.views
     :members:
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite\.wsgi module
---------------------------
+thaliawebsite.wsgi module
+-------------------------
 
 .. automodule:: thaliawebsite.wsgi
     :members:

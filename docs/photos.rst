@@ -9,48 +9,48 @@ photos package
 Submodules
 ----------
 
-photos\.admin module
---------------------
+photos.admin module
+-------------------
 
 .. automodule:: photos.admin
     :members:
     :undoc-members:
     :show-inheritance:
 
-photos\.apps module
--------------------
+photos.apps module
+------------------
 
 .. automodule:: photos.apps
     :members:
     :undoc-members:
     :show-inheritance:
 
-photos\.models module
----------------------
+photos.models module
+--------------------
 
 .. automodule:: photos.models
     :members:
     :undoc-members:
     :show-inheritance:
 
-photos\.services module
------------------------
+photos.services module
+----------------------
 
 .. automodule:: photos.services
     :members:
     :undoc-members:
     :show-inheritance:
 
-photos\.urls module
--------------------
+photos.urls module
+------------------
 
 .. automodule:: photos.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-photos\.views module
---------------------
+photos.views module
+-------------------
 
 .. automodule:: photos.views
     :members:

@@ -11,6 +11,7 @@ from events.models import Registration, RegistrationInformationField
 def is_user_registered(member, event):
     """
     Returns if the user is registered for the specified event
+
     :param member: the user
     :param event: the event
     :return: None if registration is not required or no member else True/False
@@ -26,6 +27,7 @@ def is_user_registered(member, event):
 def event_permissions(member, event):
     """
     Returns a dictionary with the available event permissions of the user
+
     :param member: the user
     :param event: the event
     :return: the permission dictionary
@@ -78,6 +80,7 @@ def is_organiser(member, event):
 def create_registration(member, event):
     """
     Creates a new user registration for an event
+
     :param member: the user
     :param event: the event
     :return: returns the registration if successful
@@ -117,6 +120,7 @@ def create_registration(member, event):
 def cancel_registration(request, member, event):
     """
     Cancel a user registration for an event
+
     :param request: the request object
     :param member: the user
     :param event: the event
@@ -152,6 +156,7 @@ def cancel_registration(request, member, event):
 def update_registration(member, event, field_values):
     """
     Updates a user registration of an event
+
     :param member: the user
     :param event: the event
     :param field_values: values for the information fields
@@ -191,6 +196,7 @@ def update_registration(member, event, field_values):
 def registration_fields(member, event):
     """
     Returns information about the registration fields of a registration
+
     :param member: the user
     :param event: the event
     :return: the fields

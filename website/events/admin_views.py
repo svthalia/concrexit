@@ -21,6 +21,7 @@ from .models import Event, Registration
 def details(request, event_id):
     """
     Renders an overview of registration for the specified event
+
     :param request: the request object
     :param event_id: the primary key of the event
     :return: HttpResponse 200 with the page HTML
@@ -39,6 +40,7 @@ def details(request, event_id):
 def change_registration(request, event_id, action=None):
     """
     JSON call to change the status of a registration
+
     :param request: the request object
     :param event_id: the primary key of the event
     :param action: specifies what should be changed
@@ -72,6 +74,7 @@ def change_registration(request, event_id, action=None):
 def export(request, event_id):
     """
     Export the registration of a specified event
+
     :param request: the request object
     :param event_id: the primary key of the event
     :return: A CSV containing all registrations for the event
@@ -162,6 +165,7 @@ def export_email(request, event_id):
     """
     Renders a page that outputs all email addresses of registered members
     for an event
+
     :param request: the request object
     :param event_id: the primary key of the event
     :return: HttpResponse 200 with the HTML of the page
@@ -183,6 +187,7 @@ def export_email(request, event_id):
 def all_present(request, event_id):
     """
     Mark all registrations of an event as present
+
     :param request: the request object
     :param event_id: the primary key of the event
     :return: HttpResponse 302 to the event admin page

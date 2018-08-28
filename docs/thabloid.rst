@@ -9,48 +9,48 @@ thabloid package
 Submodules
 ----------
 
-thabloid\.admin module
-----------------------
+thabloid.admin module
+---------------------
 
 .. automodule:: thabloid.admin
     :members:
     :undoc-members:
     :show-inheritance:
 
-thabloid\.apps module
----------------------
+thabloid.apps module
+--------------------
 
 .. automodule:: thabloid.apps
     :members:
     :undoc-members:
     :show-inheritance:
 
-thabloid\.models module
------------------------
+thabloid.models module
+----------------------
 
 .. automodule:: thabloid.models
     :members:
     :undoc-members:
     :show-inheritance:
 
-thabloid\.sitemaps module
--------------------------
+thabloid.sitemaps module
+------------------------
 
 .. automodule:: thabloid.sitemaps
     :members:
     :undoc-members:
     :show-inheritance:
 
-thabloid\.urls module
----------------------
+thabloid.urls module
+--------------------
 
 .. automodule:: thabloid.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-thabloid\.views module
-----------------------
+thabloid.views module
+---------------------
 
 .. automodule:: thabloid.views
     :members:

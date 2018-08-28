@@ -16,6 +16,7 @@ from utils.snippets import datetime_to_lectureyear
 def index(request):
     """
     View that renders the documents index page
+
     :param request: the request object
     :return: HttpResponse 200 containing the page HTML
     """
@@ -55,6 +56,7 @@ def get_document(request, pk):
     """
     View that allows you to download a specific document based on it's and your
     permissions settings
+
     :param request: the request object
     :param pk: primary key of the document
     :return: either a 302 redirect to the login page or a 200 with the document

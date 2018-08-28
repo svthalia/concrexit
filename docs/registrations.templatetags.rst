@@ -1,5 +1,5 @@
-registrations\.templatetags package
-===================================
+registrations.templatetags package
+==================================
 
 .. automodule:: registrations.templatetags
     :members:
@@ -9,8 +9,8 @@ registrations\.templatetags package
 Submodules
 ----------
 
-registrations\.templatetags\.form\_field module
------------------------------------------------
+registrations.templatetags.form\_field module
+---------------------------------------------
 
 .. automodule:: registrations.templatetags.form_field
     :members:

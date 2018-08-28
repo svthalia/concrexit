@@ -94,6 +94,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         """
         Defines a custom route for the event's registrations,
         can filter on registration status if the user is an organiser
+
         :param request: the request object
         :param pk: the primary key of the event
         :return: the registrations of the event
@@ -142,6 +143,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         Defines a custom route that outputs the correctly formatted
         events information for CalendarJS, published events only
         :param request: the request object
+
         :return: response containing the data
         """
         end, start = _extract_date_range(request)
@@ -161,6 +163,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         """
         Defines a custom route that outputs the correctly formatted
         events information for CalendarJS, unpublished events only
+
         :param request: the request object
         :return: response containing the data
         """

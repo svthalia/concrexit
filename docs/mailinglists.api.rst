@@ -1,5 +1,5 @@
-mailinglists\.api package
-=========================
+mailinglists.api package
+========================
 
 .. automodule:: mailinglists.api
     :members:
@@ -9,32 +9,32 @@ mailinglists\.api package
 Submodules
 ----------
 
-mailinglists\.api\.permissions module
--------------------------------------
+mailinglists.api.permissions module
+-----------------------------------
 
 .. automodule:: mailinglists.api.permissions
     :members:
     :undoc-members:
     :show-inheritance:
 
-mailinglists\.api\.serializers module
--------------------------------------
+mailinglists.api.serializers module
+-----------------------------------
 
 .. automodule:: mailinglists.api.serializers
     :members:
     :undoc-members:
     :show-inheritance:
 
-mailinglists\.api\.urls module
-------------------------------
+mailinglists.api.urls module
+----------------------------
 
 .. automodule:: mailinglists.api.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-mailinglists\.api\.viewsets module
-----------------------------------
+mailinglists.api.viewsets module
+--------------------------------
 
 .. automodule:: mailinglists.api.viewsets
     :members:

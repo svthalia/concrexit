@@ -18,6 +18,7 @@ from .models import Category, Course, Exam, Summary
 def courses(request):
     """
     Renders an overview of the courses
+
     :param request: the request object
     :return: HttpResponse 200 containing the HTML as body
     """
@@ -31,6 +32,7 @@ def courses(request):
 def course(request, id):
     """
     Renders the detail page of one specific course
+
     :param request: the request object
     :param id: the primary key of the selected course
     :return: HttpResponse 200 containing the HTML as body
@@ -65,6 +67,7 @@ def course(request, id):
 def exam(request, id):
     """
     Fetches and outputs the specified exam
+
     :param request: the request object
     :param id: the id of the exam
     :return: 302 if not authenticated else 200 with the file as body
@@ -85,6 +88,7 @@ def exam(request, id):
 def summary(request, id):
     """
     Fetches and outputs the specified summary
+
     :param request: the request object
     :param id: the id of the summary
     :return: 302 if not authenticated else 200 with the file as body
@@ -104,6 +108,7 @@ def summary(request, id):
 def submit_exam(request, id=None):
     """
     Renders the form to submit a new exam
+
     :param request: the request object
     :param id: the course id (optional)
     :return: 302 if not authenticated else 200 with the form HTML as body
@@ -135,6 +140,7 @@ def submit_exam(request, id=None):
 def submit_summary(request, id=None):
     """
     Renders the form to submit a new summary
+
     :param request: the request object
     :param id: the course id (optional)
     :return: 302 if not authenticated else 200 with the form HTML as body
@@ -169,6 +175,7 @@ def books(request):
     """
     Renders a page with information about book sale
     Only available to members and to-be members
+
     :param request: the request object
     :return: 403 if no active membership else 200 with the page HTML as body
     """
