@@ -146,7 +146,7 @@ class RegistrationAdminTest(TestCase):
 
         fields = self.admin.get_readonly_fields(request)
         self.assertEqual(fields, ['status', 'created_at',
-                                  'updated_at', 'payment'])
+                                  'updated_at'])
 
         fields = self.admin.get_readonly_fields(request, Registration(
             status=Entry.STATUS_CONFIRM
@@ -285,7 +285,7 @@ class RenewalAdminTest(TestCase):
 
         fields = self.admin.get_readonly_fields(request)
         self.assertEqual(fields, ['status', 'created_at',
-                                  'updated_at', 'payment'])
+                                  'updated_at'])
 
         fields = self.admin.get_readonly_fields(request, Renewal(
             status=Entry.STATUS_CONFIRM
