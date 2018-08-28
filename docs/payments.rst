@@ -57,8 +57,8 @@ payments.views module
     :undoc-members:
     :show-inheritance:
 
-payments\.widgets module
-------------------------
+payments.widgets module
+-----------------------
 
 .. automodule:: payments.widgets
     :members:

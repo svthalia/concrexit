@@ -21,6 +21,7 @@ def send_membership_announcement(dry_run=False):
     members = (Member.current_members
                .filter(membership__until__isnull=True)
                .exclude(membership__type=Membership.HONORARY)
+               .exclude(email='')
                .distinct())
 
     with mail.get_connection() as connection:
@@ -58,7 +59,7 @@ def send_information_request(dry_run=False):
 
     :param dry_run: does not really send emails if True
     """
-    members = Member.current_members.all()
+    members = Member.current_members.all().exclude(email='')
 
     with mail.get_connection() as connection:
         for member in members:
@@ -101,6 +102,7 @@ def send_expiration_announcement(dry_run=False):
     members = (Member.current_members
                .filter(membership__until__lte=expiry_date)
                .exclude(membership__until__isnull=True)
+               .exclude(email='')
                .distinct())
 
     with mail.get_connection() as connection:
