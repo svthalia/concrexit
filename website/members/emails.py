@@ -12,6 +12,12 @@ from members.models import Member, Membership
 
 
 def send_membership_announcement(dry_run=False):
+    """
+    Sends an email to all members with a never ending membership
+    excluding honorary members
+
+    :param dry_run: does not really send emails if True
+    """
     members = (Member.current_members
                .filter(membership__until__isnull=True)
                .exclude(membership__type=Membership.HONORARY)
@@ -47,6 +53,11 @@ def send_membership_announcement(dry_run=False):
 
 
 def send_information_request(dry_run=False):
+    """
+    Sends an email to all members to have them check their personal information
+
+    :param dry_run: does not really send emails if True
+    """
     members = Member.current_members.all()
 
     with mail.get_connection() as connection:
@@ -80,6 +91,12 @@ def send_information_request(dry_run=False):
 
 
 def send_expiration_announcement(dry_run=False):
+    """
+    Sends an email to all members whose membership will end in the next 31 days
+    to warn them about this
+
+    :param dry_run: does not really send emails if True
+    """
     expiry_date = datetime.now() + timedelta(days=31)
     members = (Member.current_members
                .filter(membership__until__lte=expiry_date)
@@ -125,6 +142,13 @@ def send_expiration_announcement(dry_run=False):
 
 
 def send_welcome_message(user, password, language):
+    """
+    Sends an email to a new mail welcoming them
+
+    :param user: the new user
+    :param password: randomly generated password
+    :param language: selected language during registration
+    """
     with translation.override(language):
         email_body = loader.render_to_string(
             'members/email/welcome.txt',
@@ -139,6 +163,12 @@ def send_welcome_message(user, password, language):
 
 
 def send_email_change_confirmation_messages(change_request):
+    """
+    Sends emails to the old and new email address of a member to
+    confirm the email change
+
+    :param change_request the email change request entered by the user
+    """
     member = change_request.member
     with translation.override(member.profile.language):
         mail.EmailMessage(
@@ -179,6 +209,11 @@ def send_email_change_confirmation_messages(change_request):
 
 
 def send_email_change_completion_message(change_request):
+    """
+    Sends email to the member to confirm the email change
+
+    :param change_request the email change request entered by the user
+    """
     change_request.member.email_user(
         '[THALIA] {}'.format(_('Your email address has been changed')),
         loader.render_to_string(
