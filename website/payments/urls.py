@@ -6,6 +6,6 @@ from .views import PaymentAdminView
 app_name = 'payments'
 
 urlpatterns = [
-    path('admin/process/<uuid:pk>/<type>/',
+    path('admin/process/<uuid:pk>/',
          PaymentAdminView.as_view(), name='admin-process'),
 ]

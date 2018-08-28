@@ -41,16 +41,20 @@ class PaymentAdminViewTest(TestCase):
         self.client.force_login(self.user)
 
     def test_permissions(self):
-        url = '/payment/admin/process/{}/cash_payment/'.format(
+        url = '/payment/admin/process/{}/'.format(
             self.payment.pk)
-        response = self.client.get(url)
+        response = self.client.post(url, {
+            'type': 'cash_payment',
+        })
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 
         self._give_user_permissions()
 
-        url = '/payment/admin/process/{}/cash_payment/'.format(
+        url = '/payment/admin/process/{}/'.format(
             self.payment.pk)
-        response = self.client.get(url)
+        response = self.client.post(url, {
+            'type': 'cash_payment',
+        })
         self.assertRedirects(
             response,
             '/admin/payments/payment/%s/change/' % self.payment.pk
@@ -59,7 +63,7 @@ class PaymentAdminViewTest(TestCase):
     @mock.patch('django.contrib.messages.error')
     @mock.patch('django.contrib.messages.success')
     @mock.patch('payments.services.process_payment')
-    def test_get(self, process_payment, messages_success, messages_error):
+    def test_post(self, process_payment, messages_success, messages_error):
         process_payment.return_value = [self.payment]
         payment_qs = Payment.objects.filter(pk=self.payment.pk)
 
@@ -69,28 +73,48 @@ class PaymentAdminViewTest(TestCase):
 
             self._give_user_permissions()
 
-            type = 'cash_payment'
-            response = self.client.get('/payment/admin/process/{}/{}/'
-                                       .format(self.payment.pk, type))
+            with self.subTest('Send post without payload'):
+                response = self.client.post('/payment/admin/process/{}/'
+                                            .format(self.payment.pk))
 
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(
-                response.url,
-                '/admin/payments/payment/%s/change/' % self.payment.pk
-            )
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(
+                    response.url,
+                    '/admin/payments/payment/%s/change/' % self.payment.pk
+                )
 
-            process_payment.assert_called_once_with(payment_qs, type)
+                process_payment.assert_not_called()
+                messages_error.assert_not_called()
+                messages_success.assert_not_called()
 
-            messages_success.assert_called_once_with(
-                response.wsgi_request, _('Successfully processed %s.') %
-                model_ngettext(self.payment, 1)
-            )
+            with self.subTest('Send post with successful processing'):
+                payment_type = 'cash_payment'
+                response = self.client.post('/payment/admin/process/{}/'
+                                            .format(self.payment.pk), {
+                                                'type': payment_type,
+                                            })
 
-            process_payment.return_value = []
-            response = self.client.get('/payment/admin/process/{}/{}/'
-                                       .format(self.payment.pk, type))
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(
+                    response.url,
+                    '/admin/payments/payment/%s/change/' % self.payment.pk
+                )
 
-            messages_error.assert_called_once_with(
-                response.wsgi_request, _('Could not process %s.') %
-                model_ngettext(self.payment, 1)
-            )
+                process_payment.assert_called_once_with(payment_qs, payment_type)
+
+                messages_success.assert_called_once_with(
+                    response.wsgi_request, _('Successfully processed %s.') %
+                                           model_ngettext(self.payment, 1)
+                )
+
+            with self.subTest('Send post with failed processing'):
+                process_payment.return_value = []
+                response = self.client.post('/payment/admin/process/{}/'
+                                            .format(self.payment.pk), {
+                                                'type': payment_type,
+                                            })
+
+                messages_error.assert_called_once_with(
+                    response.wsgi_request, _('Could not process %s.') %
+                                           model_ngettext(self.payment, 1)
+                )
