@@ -42,16 +42,16 @@ class EntryAdminView(View):
     """
     View that handles the review processing of entries
     """
-    action = None
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get('action')
         entry_qs = Entry.objects.filter(pk=kwargs['pk'])
         try:
             entry = entry_qs.get()
         except Entry.DoesNotExist:
             return redirect('admin:index')
 
-        if self.action == 'accept':
+        if action == 'accept':
             if not services.check_unique_user(entry):
                 messages.error(request, _('Could not accept %s. '
                                           'Username is not unique.') %
@@ -62,7 +62,7 @@ class EntryAdminView(View):
             else:
                 messages.error(request, _('Could not accept %s.') %
                                model_ngettext(entry, 1))
-        elif self.action == 'reject':
+        elif action == 'reject':
             if services.reject_entries(entry_qs) > 0:
                 messages.success(request, _('Successfully rejected %s.') %
                                  model_ngettext(entry, 1))

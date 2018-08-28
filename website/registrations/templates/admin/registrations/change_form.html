@@ -14,8 +14,8 @@
 {% block submit_buttons_bottom %}
     {% if entry %}
     <div class="submit-row registrations-row">
-        <a href="{% url 'registrations:admin-accept' pk=entry.pk %}" class="button accept" onclick="return confirmRegChange();">{% trans "Accept" %}</a>
-        <a href="{% url 'registrations:admin-reject' pk=entry.pk %}" class="button reject" onclick="return confirmRegChange()">{% trans "Reject" %}</a>
+        <a data-href="{% url 'registrations:admin-process' pk=entry.pk %}" class="button accept" data-action="accept">{% trans "Accept" %}</a>
+        <a data-href="{% url 'registrations:admin-process' pk=entry.pk %}" class="button reject" data-action="reject">{% trans "Reject" %}</a>
     </div>
     {% endif %}
 
