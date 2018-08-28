@@ -90,14 +90,14 @@ class EntryAdminViewTest(TestCase):
         self.client.force_login(self.user)
 
     def test_permissions(self):
-        url = '/registration/admin/accept/{}/'.format(self.entry1.pk)
-        response = self.client.get(url)
+        url = '/registration/admin/process/{}/'.format(self.entry1.pk)
+        response = self.client.post(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 
         self._give_user_permissions()
 
-        url = '/registration/admin/accept/{}/'.format(self.entry1.pk)
-        response = self.client.get(url)
+        url = '/registration/admin/process/{}/'.format(self.entry1.pk)
+        response = self.client.post(url)
         self.assertRedirects(
             response,
             '/admin/registrations/registration/%s/change/' % self.entry1.pk
@@ -126,7 +126,10 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
                 request = _get_mock_request()
-                response = self.view.get(request, pk=entry.pk)
+                request.POST = {
+                    'action': 'accept',
+                }
+                response = self.view.post(request, pk=entry.pk)
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
@@ -142,7 +145,7 @@ class EntryAdminViewTest(TestCase):
                     model_ngettext(entry_qs.all()[0], 1), '')
 
                 accept_entries.return_value = 0
-                self.view.get(request, pk=entry.pk)
+                self.view.post(request, pk=entry.pk)
 
                 request._messages.add.assert_any_call(
                     messages.ERROR, _('Could not accept %s.') %
@@ -150,7 +153,7 @@ class EntryAdminViewTest(TestCase):
 
                 accept_entries.return_value = 1
                 check_unique_user.return_value = False
-                self.view.get(request, pk=entry.pk)
+                self.view.post(request, pk=entry.pk)
 
                 request._messages.add.assert_any_call(
                     messages.ERROR, _('Could not accept %s. '
@@ -176,7 +179,10 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
                 request = _get_mock_request()
-                response = self.view.get(request, pk=entry.pk)
+                request.POST = {
+                    'action': 'reject',
+                }
+                response = self.view.post(request, pk=entry.pk)
 
                 self.assertEqual(response.status_code, 302)
 
@@ -193,7 +199,7 @@ class EntryAdminViewTest(TestCase):
                     model_ngettext(entry_qs.all()[0], 1), '')
 
                 reject_entries.return_value = 0
-                self.view.get(request, pk=entry.pk)
+                self.view.post(request, pk=entry.pk)
 
                 request._messages.add.assert_any_call(
                     messages.ERROR, _('Could not reject %s.') %
@@ -209,7 +215,7 @@ class EntryAdminViewTest(TestCase):
         )
 
         request = _get_mock_request()
-        response = self.view.get(request, pk=4)
+        response = self.view.post(request, pk=4)
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('admin:index'))
@@ -233,7 +239,7 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
                 request = _get_mock_request()
-                response = self.view.get(request, pk=entry.pk)
+                response = self.view.post(request, pk=entry.pk)
 
                 self.assertFalse(reject_entries.called)
                 self.assertFalse(accept_entries.called)

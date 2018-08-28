@@ -18,12 +18,8 @@ urlpatterns = [
     path('renew/success/', TemplateView.as_view(
          template_name='registrations/renewal_success.html'),
          name='renew-success'),
-    path('admin/accept/<uuid:pk>/',
-         EntryAdminView.as_view(action='accept'),
-         name='admin-accept'),
-    path('admin/reject/<uuid:pk>/',
-         EntryAdminView.as_view(action='reject'),
-         name='admin-reject'),
+    path('admin/process/<uuid:pk>/', EntryAdminView.as_view(),
+         name='admin-process'),
     path('confirm-email/<uuid:pk>/',
          ConfirmEmailView.as_view(), name='confirm-email'),
 ]
