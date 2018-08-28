@@ -19,10 +19,14 @@ class PaymentAdminView(View):
     """
     View that processes a payment
     """
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         payment = Payment.objects.filter(pk=kwargs['pk'])
+
+        if not ('type' in request.POST):
+            return redirect('admin:payments_payment_change', kwargs['pk'])
+
         result = services.process_payment(
-            payment, kwargs['type']
+            payment, request.POST['type']
         )
 
         if len(result) > 0:
