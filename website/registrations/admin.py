@@ -1,9 +1,11 @@
 """Registers admin interfaces for the registrations module"""
 from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
+from django.forms import Field
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
+from payments.widgets import PaymentWidget
 from . import services
 from .models import Entry, Registration, Renewal
 
@@ -64,6 +66,14 @@ class RegistrationAdmin(admin.ModelAdmin):
     )
     actions = ['accept_selected', 'reject_selected']
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == 'payment':
+            return Field(widget=PaymentWidget,
+                         initial=field.initial,
+                         required=False)
+        return field
+
     def changeform_view(self, request, object_id=None, form_url='',
                         extra_context=None):
         """
@@ -93,10 +103,10 @@ class RegistrationAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         if obj is None or not (obj.status == Entry.STATUS_REJECTED or
                                obj.status == Entry.STATUS_ACCEPTED):
-            return ['status', 'created_at', 'updated_at', 'payment']
+            return ['status', 'created_at', 'updated_at']
         else:
             return [field.name for field in self.model._meta.get_fields()
-                    if field.editable]
+                    if field.editable and not field.name == 'payment']
 
     @staticmethod
     def name(obj):
@@ -155,6 +165,7 @@ class RenewalAdmin(RegistrationAdmin):
                             'length',
                             'membership_type',
                             'status',
+                            'payment',
                             'remarks',
                             'member',)
                     }),
