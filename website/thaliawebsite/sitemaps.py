@@ -10,6 +10,10 @@ class StaticViewSitemap(sitemaps.Sitemap):
         """
         The items of the site map.
 
+        >>> sitemap = StaticViewSitemap()
+        >>> sitemap.items()[0]
+        'index'
+
         :return: the items in the site map
         :rtype: [str]
         """
@@ -28,7 +32,8 @@ class StaticViewSitemap(sitemaps.Sitemap):
         Example::
 
             >>> sitemap = StaticViewSitemap()
-            >>> sitemap.location(sitemap.items()[0])
+            >>> sitemap.location('index')
+            '/'
 
         :param obj: the item to reverse.
         :type obj: str
