@@ -8,8 +8,8 @@ variables:
   # Installs:
   #  - pip: tox, coverage, pipenv
   #  - apt: ghostscript
-  PY35_IMAGE: thalia/python-thalia:3.5
   PY36_IMAGE: thalia/python-thalia:3.6
+  PY37_IMAGE: thalia/python-thalia:3.7
   PIP_CACHE_DIR: "${CI_PROJECT_DIR}/pip-cache"
 
 stages:
@@ -18,7 +18,7 @@ stages:
 
 pep8:
   stage: test
-  image: $PY35_IMAGE
+  image: $PY36_IMAGE
   script:
     - tox -e flake8
 
@@ -33,13 +33,6 @@ pep8:
     - cd website
     - coverage report
 
-python35-django20:
-  <<: *djangotest
-  image: $PY35_IMAGE
-  variables:
-    PYTHON_VERSION: py35
-    DJANGO_VERSION: django20
-
 python36-django20:
   <<: *djangotest
   image: $PY36_IMAGE
@@ -47,9 +40,16 @@ python36-django20:
     PYTHON_VERSION: py36
     DJANGO_VERSION: django20
 
+python37-django20:
+  <<: *djangotest
+  image: $PY37_IMAGE
+  variables:
+    PYTHON_VERSION: py37
+    DJANGO_VERSION: django20
+
 docs:
   stage: test
-  image: $PY35_IMAGE
+  image: $PY36_IMAGE
   before_script:
     # install django deps
     - pipenv --bare install --dev --ignore-pipfile
