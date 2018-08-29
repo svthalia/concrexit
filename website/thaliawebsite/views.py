@@ -1,3 +1,4 @@
+"""General views for the website"""
 import os.path
 
 from django.conf import settings
@@ -17,6 +18,7 @@ from sendfile import sendfile
 
 @login_required
 def styleguide(request):
+    """Static page with the style guide"""
     return render(request, 'singlepages/styleguide.html')
 
 
@@ -25,6 +27,9 @@ def styleguide(request):
 @require_POST
 @csrf_exempt
 def wiki_login(request):
+    """
+    Provides an API endpoint to the wiki to authenticate Thalia members
+    """
     apikey = request.POST.get('apikey')
     user = request.POST.get('user')
     password = request.POST.get('password')
@@ -39,11 +44,12 @@ def wiki_login(request):
 
     user = authenticate(username=user, password=password)
     if user is not None:
-        memberships = [cmm.committee.wiki_namespace for cmm in
-                       user.committeemembership_set
-                           .exclude(until__lt=timezone.now().date())
-                           .select_related('committee')
-                       if cmm.committee.wiki_namespace is not None]
+        memberships = [
+            cmm.committee.wiki_namespace for cmm in
+            user.committeemembership_set
+            .exclude(until__lt=timezone.now().date())
+            .select_related('committee')
+            if cmm.committee.wiki_namespace is not None]
 
         if user.has_perm('activemembers.board_wiki'):
             memberships.append('bestuur')
@@ -61,6 +67,7 @@ def wiki_login(request):
 
 @login_required
 def styleguide_file(request, filename):
+    """Obtain the styleguide files"""
     path = os.path.join(settings.MEDIA_ROOT, 'styleguide')
     filepath = os.path.join(path, filename)
     if not (os.path.commonpath([path, filepath]) == path and
@@ -71,6 +78,7 @@ def styleguide_file(request, filename):
 
 @staff_member_required
 def crash(request):
+    """Intentionally crash to test the error handling."""
     if not request.user.is_superuser:
         return HttpResponseForbidden("This is not for you")
     raise Exception("Test exception")

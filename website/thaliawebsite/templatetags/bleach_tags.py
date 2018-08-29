@@ -1,17 +1,29 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
+"""
+Bleach allows to clean up user input to make it safe to display, but
+allow some HTML.
+"""
 from bleach import clean
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 
-register = template.Library()
+register = template.Library()  # pylint: disable=invalid-name
 
 
 def _allow_iframe_attrs(tag, name, value):
+    """
+    Filter to allow certain attributes for tags
+
+    :param tag: the tag
+    :param name: the attribute name
+    :param value: the value of the item.
+    """
+    # these are fine
     if name in ('class', 'width', 'height', 'frameborder', 'allowfullscreen'):
         return True
-    elif tag == 'iframe' and name == 'src':
+
+    # youtube is allowed to have `src`
+    if tag == 'iframe' and name == 'src':
         return (value.startswith('https://www.youtube.com/embed/') or
                 value.startswith('https://www.youtube-nocookie.com/embed/'))
 

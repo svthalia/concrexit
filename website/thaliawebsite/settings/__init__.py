@@ -6,27 +6,26 @@ This file controls what settings are loaded.
 Using environment variables you can control the loading of various
 overrides.
 """
-# flake8: noqa
+import os
 
 # Load all default settings because we need to use settings.configure
 # for sphinx documentation generation.
-from django.conf.global_settings import *
+from django.conf.global_settings import *  # pylint: disable=wildcard-import
 
-import os
 
 # Load base settings
-from .settings import *
+from .settings import *  # pylint: disable=wildcard-import
 
 # Attempt to load local overrides
 try:
-    from .localsettings import *
+    from .localsettings import *  # pylint: disable=wildcard-import
 except ImportError:
     pass
 
 # Load production settings if DJANGO_PRODUCTION is set
 if os.environ.get('DJANGO_PRODUCTION'):  # pragma: nocover
-    from .production import *
+    from .production import *  # pylint: disable=wildcard-import
 
 # Load testing settings if GITLAB_CI is set
 if os.environ.get('GITLAB_CI'):  # pragma: nocover
-    from .testing import *
+    from .testing import *  # pylint: disable=wildcard-import

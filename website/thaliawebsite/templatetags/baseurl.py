@@ -1,12 +1,13 @@
+"""Obtain the base url"""
 from django.template import Library
 
-register = Library()
+register = Library()  # pylint: disable=invalid-name
 
 
 @register.simple_tag(takes_context=True)
 def baseurl(context):
     """
-    Return a BASE_URL template context for the current request.
+    :return: a BASE_URL template context for the current request.
     """
 
     request = context['request']

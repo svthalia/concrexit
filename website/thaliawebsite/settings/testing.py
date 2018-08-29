@@ -30,12 +30,12 @@ PASSWORD_HASHERS = (
 )
 
 # Strip unneeded apps
-[INSTALLED_APPS.remove(x) for x in (
+_ = [INSTALLED_APPS.remove(x) for x in (
     'corsheaders',
 )]
 
 # Strip unneeded middlewares
-[MIDDLEWARE.remove(x) for x in (
+_ = [MIDDLEWARE.remove(x) for x in (
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
