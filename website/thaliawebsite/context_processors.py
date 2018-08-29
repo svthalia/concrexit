@@ -6,4 +6,5 @@ import os
 
 
 def source_commit(_):
+    """Get the SOURCE_COMMIT environment variable"""
     return {'SOURCE_COMMIT': os.environ.get('SOURCE_COMMIT', 'unknown')}

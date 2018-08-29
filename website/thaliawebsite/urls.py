@@ -40,30 +40,34 @@ from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
 
 import members
+from members.sitemaps import sitemap as members_sitemap
+from members.views import ObtainThaliaAuthToken
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from events.sitemaps import sitemap as events_sitemap
-from members.sitemaps import sitemap as members_sitemap
-from members.views import ObtainAuthToken, ObtainThaliaAuthToken
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
-from utils.views import private_thumbnails, generate_thumbnail, \
-    private_thumbnails_api
+from utils.views import (generate_thumbnail, private_thumbnails,
+                         private_thumbnails_api)
+
 from . import views
 from .sitemaps import StaticViewSitemap
 
-thalia_sitemap = {
+__all__ = ['urlpatterns']
+
+THALIA_SITEMAP = {
     'main-static': StaticViewSitemap,
 }
-thalia_sitemap.update(activemembers_sitemap)
-thalia_sitemap.update(members_sitemap)
-thalia_sitemap.update(documents_sitemap)
-thalia_sitemap.update(thabloid_sitemap)
-thalia_sitemap.update(partners_sitemap)
-thalia_sitemap.update(events_sitemap)
+THALIA_SITEMAP.update(activemembers_sitemap)
+THALIA_SITEMAP.update(members_sitemap)
+THALIA_SITEMAP.update(documents_sitemap)
+THALIA_SITEMAP.update(thabloid_sitemap)
+THALIA_SITEMAP.update(partners_sitemap)
+THALIA_SITEMAP.update(events_sitemap)
 
-urlpatterns = [
+# pragma pylint: disable=line-too-long
+urlpatterns = [  # pylint: disable=invalid-name
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^privacy-policy/', TemplateView.as_view(template_name='singlepages/privacy_policy.html'), name='privacy-policy'),
     url(r'^event-registration-terms/', TemplateView.as_view(template_name='singlepages/event_registration_terms.html'), name='event-registration-terms'),
@@ -122,13 +126,13 @@ urlpatterns = [
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     # Sitemap
-    url(r'^sitemap\.xml$', sitemap, {'sitemaps': thalia_sitemap},
+    url(r'^sitemap\.xml$', sitemap, {'sitemaps': THALIA_SITEMAP},
         name='django.contrib.sitemaps.views.sitemap'),
     # Dependencies
     url(r'^tinymce/', include('tinymce.urls')),
     # Javascript translation catalog
     url(r'jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    # XXX
+    # Provide something to test error handling. Limited to admins.
     url(r'crash/$', views.crash),
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))
