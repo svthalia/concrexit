@@ -282,9 +282,12 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def save(self, *args, **kwargs):
         if self.published:
             if self.registration_required:
+                registration_reminder_time = (self.registration_start -
+                                     timezone.timedelta(hours=1))
                 registration_reminder = ScheduledMessage()
                 if (self.registration_reminder is not None
-                        and not self.registration_reminder.sent):
+                        and not self.registration_reminder.sent
+                        and registration_reminder_time > timezone.now()):
                     registration_reminder = self.registration_reminder
                 registration_reminder.title_en = 'Event registration'
                 registration_reminder.title_nl = 'Evenement registratie'
@@ -296,16 +299,17 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                                                  .format(self.title_nl))
                 registration_reminder.category = Category.objects.get(
                     key='event')
-                registration_reminder.time = (self.registration_start -
-                                              timezone.timedelta(hours=1))
+                registration_reminder.time = registration_reminder_time
                 registration_reminder.save()
                 self.registration_reminder = registration_reminder
                 self.registration_reminder.users.set(
                     Member.active_members.all())
 
+            start_reminder_time = (self.start - timezone.timedelta(hours=1))
             start_reminder = ScheduledMessage()
             if (self.start_reminder is not None
-                    and not self.start_reminder.sent):
+                    and not self.start_reminder.sent
+                    and start_reminder_time > timezone.now()):
                 start_reminder = self.start_reminder
             start_reminder.title_en = 'Event'
             start_reminder.title_nl = 'Evenement'
@@ -314,7 +318,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             start_reminder.body_nl = ('\'{}\' begint over '
                                       '1 uur'.format(self.title_nl))
             start_reminder.category = Category.objects.get(key='event')
-            start_reminder.time = (self.start - timezone.timedelta(hours=1))
+            start_reminder.time = start_reminder_time
             start_reminder.save()
             self.start_reminder = start_reminder
             if self.registration_required:
