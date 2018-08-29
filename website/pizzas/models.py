@@ -6,6 +6,10 @@ from django.utils.translation import ugettext_lazy as _
 
 import events
 import members
+from members.models import Member
+from .tasks import create_send_message
+from pushnotifications.models import ScheduledMessage, Category
+from utils.tasks import schedule_task, revoke_task
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
@@ -13,6 +17,12 @@ class PizzaEvent(models.Model):
     start = models.DateTimeField(_("Order from"))
     end = models.DateTimeField(_("Order until"))
     event = models.OneToOneField(events.models.Event, on_delete=models.CASCADE)
+
+    send_notification = models.BooleanField(
+        _("Send an order notification"),
+        default=True
+    )
+    task_id = models.CharField(max_length=50, blank=True, null=True)
 
     @property
     def title(self):
@@ -50,6 +60,10 @@ class PizzaEvent(models.Model):
         except PizzaEvent.DoesNotExist:
             return None
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._end = self.end
+
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
         for other in PizzaEvent.objects.filter(
@@ -70,6 +84,29 @@ class PizzaEvent(models.Model):
                 'start': _('The start is after the end of this event.'),
                 'end': _('The end is before the start of this event.'),
             })
+
+    def schedule(self):
+        """Schedules a Celery task to send this message"""
+        return schedule_task(
+            create_send_message,
+            args=(self.pk,),
+            eta=self.end - timezone.timedelta(minutes=10)
+        )
+
+    def save(self, *args, **kwargs):
+        if not (self._end == self.end):
+            if self.task_id:
+                # Revoke that task in case its time has changed
+                revoke_task(self.task_id)
+            super().save(*args, **kwargs)
+            self.task_id = self.schedule()
+
+        super().save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        if self.task_id:
+            revoke_task(self.task_id)
+        return super().delete(using, keep_parents)
 
     def __str__(self):
         return 'Pizzas for ' + str(self.event)
