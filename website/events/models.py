@@ -304,7 +304,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     registration_reminder.save()
                     self.registration_reminder = registration_reminder
                     self.registration_reminder.users.set(
-                        Member.active_members.all())
+                        Member.current_members.all())
                 elif registration_reminder.pk is not None:
                     self.registration_reminder = None
                     registration_reminder.delete()
@@ -330,7 +330,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     self.start_reminder.users.set(self.participants.values_list(
                         'member', flat=True))
                 else:
-                    self.start_reminder.users.set(Member.active_members.all())
+                    self.start_reminder.users.set(Member.current_members.all())
             elif start_reminder.pk is not None:
                 self.start_reminder = None
                 start_reminder.delete()
