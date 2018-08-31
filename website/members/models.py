@@ -12,7 +12,7 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import pgettext_lazy, gettext_lazy as _
 from functools import reduce
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
@@ -470,7 +470,7 @@ class Profile(models.Model):
             logging.warning("We already had this image")
 
     def __str__(self):
-        return str(self.user)
+        return _("Profile for {}").format(self.user)
 
 
 class Membership(models.Model):
@@ -508,6 +508,16 @@ class Membership(models.Model):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        s = _("Membership of type {} for {} ({}) starting {}").format(
+                self.get_type_display(), self.user.get_full_name(),
+                self.user.username, self.since,
+            )
+        if self.until is not None:
+            s += pgettext_lazy("Membership until x", " until {}").format(
+                    self.until)
+        return s
 
     def clean(self):
         super().clean()
@@ -565,6 +575,16 @@ class EmailChange(models.Model):
         _('confirmed'), default=False,
         help_text=_('the old email address was checked')
     )
+
+    def __str__(self):
+        return _(
+            "Email change request for {} to {} "
+            "created at {} "
+            "(confirmed: {}, verified: {})."
+        ).format(
+            self.member, self.email, self.created_at, self.confirmed,
+            self.verified
+        )
 
     @property
     def completed(self):
