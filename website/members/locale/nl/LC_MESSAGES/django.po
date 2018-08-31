@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-19 15:27+0200\n"
-"PO-Revision-Date: 2018-08-19 15:27+0200\n"
+"POT-Creation-Date: 2018-08-31 17:06+0200\n"
+"PO-Revision-Date: 2018-08-31 17:10+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -365,6 +365,10 @@ msgid "A birthday cannot be in the future."
 msgstr "Een verjaardag kan niet in de toekomst liggen."
 
 #: models.py
+msgid "Profile for {}"
+msgstr "Profiel voor {}"
+
+#: models.py
 msgid "Member"
 msgstr "Lid"
 
@@ -401,6 +405,15 @@ msgid "The date the member stops holding this membership."
 msgstr "De datum waarop het lid dit lidmaatschap beëindigd."
 
 #: models.py
+msgid "Membership of type {} for {} ({}) starting {}"
+msgstr "Lidmaatschap van type {} van {} ({}) gestart {}"
+
+#: models.py
+msgctxt "Membership until x"
+msgid " until {}"
+msgstr " tot {}"
+
+#: models.py
 msgid "End date can't be before start date"
 msgstr "De einddatum kan niet eerder zijn dan de startdatum"
 
@@ -435,6 +448,14 @@ msgstr "bevestigd"
 #: models.py
 msgid "the old email address was checked"
 msgstr "het oude e-mailadres is gecontroleerd"
+
+#: models.py
+msgid ""
+"Email change request for {} to {} created at {} (confirmed: {}, verified: "
+"{})."
+msgstr ""
+"E-mail wijzigingsverzoek voor {} naar {} gemaakt op {} (bevestigd: {}, "
+"geverifieerd: {})."
 
 #: models.py
 msgid "Please enter a new email address."
