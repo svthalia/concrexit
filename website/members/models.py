@@ -30,7 +30,7 @@ class MemberManager(UserManager):
 
 
 class ActiveMemberManager(MemberManager):
-    """Get all active members"""
+    """Get all active members, i.e. who have a committee membership"""
 
     def get_queryset(self):
         active_memberships = (CommitteeMembership
