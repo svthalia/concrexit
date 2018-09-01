@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 
-from activemembers.models import Committee, CommitteeMembership
+from activemembers.models import Committee, MemberGroupMembership
 from events import services
 from events.exceptions import RegistrationError
 from events.models import Event, Registration, RegistrationInformationField
@@ -160,8 +160,8 @@ class ServicesTest(TestCase):
 
         self._toggle_event_change_perm(True)
         self.assertFalse(services.is_organiser(self.member, self.event))
-        membership = CommitteeMembership.objects.create(
-            member=self.member, committee=self.committee)
+        membership = MemberGroupMembership.objects.create(
+            member=self.member, group=self.committee)
         self.assertTrue(services.is_organiser(self.member, self.event))
         self.assertFalse(services.is_organiser(self.member, None))
         self._toggle_event_change_perm(False)

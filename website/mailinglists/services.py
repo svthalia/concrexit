@@ -1,22 +1,22 @@
 from django.conf import settings
 from django.utils import timezone
 
-from activemembers.models import CommitteeMembership, Mentorship, Board
+from activemembers.models import MemberGroupMembership, Mentorship, Board
 from members.models import Member
 from utils.snippets import datetime_to_lectureyear
 
 
 def get_automatic_lists():
-    memberships = (CommitteeMembership.active_memberships
-                   .filter(committee__board=None)
+    memberships = (MemberGroupMembership.active_memberships
+                   .filter(group__board=None)
                    .filter(chair=True)
                    .prefetch_related('member'))
     committee_chairs = [x.member for x in memberships] + [
         Member(email='intern@thalia.nu')
     ]
 
-    active_committee_memberships = (CommitteeMembership.active_memberships
-                                    .exclude(committee__board__is_board=True)
+    active_committee_memberships = (MemberGroupMembership.active_memberships
+                                    .filter(group__board=None)
                                     .prefetch_related('member'))
     active_members = [x.member for x in active_committee_memberships]
 
@@ -61,8 +61,8 @@ def get_automatic_lists():
                  'board'
                  + str(board.since.year)[-2:] + str(board.until.year)[-2:]],
                 '',
-                [x.member for x in CommitteeMembership.objects
-                    .filter(committee=board).prefetch_related('member')],
+                [x.member for x in MemberGroupMembership.objects
+                    .filter(group=board).prefetch_related('member')],
                 archived=False, moderated=False, multilingual=False
             )
 

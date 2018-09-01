@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
-from activemembers.models import Committee, CommitteeMembership, Board
+from activemembers.models import Committee, MemberGroupMembership, Board
 from mailinglists.models import MailingList
 from members.models import Member
 
@@ -16,8 +16,8 @@ class CommitteeMembersTest(TestCase):
     def setUpTestData(cls):
         cls.testcie = Committee.objects.get(pk=1)
         cls.testuser = Member.objects.get(pk=1)
-        cls.m = CommitteeMembership.objects.create(
-            committee=cls.testcie,
+        cls.m = MemberGroupMembership.objects.create(
+            group=cls.testcie,
             member=cls.testuser,
             chair=False)
 
@@ -36,48 +36,48 @@ class CommitteeMembersTest(TestCase):
 
     def test_join(self):
         testuser2 = Member.objects.get(pk=2)
-        m = CommitteeMembership(committee=self.testcie,
-                                member=testuser2)
+        m = MemberGroupMembership(group=self.testcie,
+                                  member=testuser2)
         m.full_clean()
         m.save()
 
     def test_join_unique(self):
-        m = CommitteeMembership(committee=self.testcie,
-                                member=self.testuser)
+        m = MemberGroupMembership(group=self.testcie,
+                                  member=self.testuser)
         with self.assertRaises(ValidationError):
             m.full_clean()
 
     def test_join_unique2(self):
-        m = CommitteeMembership(committee=self.testcie,
-                                member=self.testuser,
-                                since=timezone.now().date().replace(
+        m = MemberGroupMembership(group=self.testcie,
+                                  member=self.testuser,
+                                  since=timezone.now().date().replace(
                                      year=2014, month=1))
         with self.assertRaises(ValidationError):
             m.full_clean()
 
     def test_join_unique_period(self):
-        m1 = CommitteeMembership(committee=self.testcie,
-                                 member=self.testuser,
-                                 since=timezone.now().date().replace(
+        m1 = MemberGroupMembership(group=self.testcie,
+                                   member=self.testuser,
+                                   since=timezone.now().date().replace(
                                      year=2014, month=1, day=1),
-                                 until=timezone.now().date().replace(
+                                   until=timezone.now().date().replace(
                                      year=2014, month=3, day=1))
         m1.save()
 
-        m2 = CommitteeMembership(committee=self.testcie,
-                                 member=self.testuser,
-                                 since=timezone.now().date().replace(
+        m2 = MemberGroupMembership(group=self.testcie,
+                                   member=self.testuser,
+                                   since=timezone.now().date().replace(
                                      year=2014, month=1, day=1),
-                                 until=timezone.now().date().replace(
+                                   until=timezone.now().date().replace(
                                      year=2014, month=2, day=1))
         with self.assertRaises(ValidationError):
             m2.full_clean()
 
     def test_until_date(self):
-        m = CommitteeMembership(committee=self.testcie,
-                                member=self.testuser,
-                                until=timezone.now().date().replace(year=2000),
-                                chair=False)
+        m = MemberGroupMembership(group=self.testcie,
+                                  member=self.testuser,
+                                  until=timezone.now().date().replace(year=2000),
+                                  chair=False)
         with self.assertRaises(ValidationError):
             m.clean()
         m.since = timezone.now().date().replace(year=1900)
@@ -99,19 +99,19 @@ class CommitteeMembersChairTest(TestCase):
         cls.testuser2 = Member.objects.get(pk=2)
 
     def setUp(self):
-        self.m1 = CommitteeMembership(committee=self.testcie,
-                                      since=timezone.now().date().replace(
+        self.m1 = MemberGroupMembership(group=self.testcie,
+                                        since=timezone.now().date().replace(
                                           day=1,
                                           year=1900),
-                                      member=self.testuser,
-                                      chair=True)
+                                        member=self.testuser,
+                                        chair=True)
         self.m1.full_clean()
         self.m1.save()
 
     def test_second_chair_fails(self):
-        m = CommitteeMembership(committee=self.testcie,
-                                member=self.testuser2,
-                                chair=True)
+        m = MemberGroupMembership(group=self.testcie,
+                                  member=self.testuser2,
+                                  chair=True)
         with self.assertRaises(ValidationError):
             m.full_clean()
 
@@ -119,9 +119,9 @@ class CommitteeMembersChairTest(TestCase):
         self.m1.until = timezone.now().date().replace(day=1, year=1900)
         self.m1.save()
 
-        m = CommitteeMembership(committee=self.testcie,
-                                member=self.testuser2,
-                                chair=True)
+        m = MemberGroupMembership(group=self.testcie,
+                                  member=self.testuser2,
+                                  chair=True)
         m.full_clean()
 
     def test_clean_self_chair(self):
@@ -141,10 +141,10 @@ class PermissionsBackendTest(TestCase):
         cls.u3 = Member.objects.get(pk=3)
         cls.c1 = Committee.objects.get(pk=1)
         cls.c2 = Committee.objects.get(pk=2)
-        cls.m1 = CommitteeMembership.objects.create(committee=cls.c1,
-                                                    member=cls.u1)
-        cls.m2 = CommitteeMembership.objects.create(committee=cls.c2,
-                                                    member=cls.u2)
+        cls.m1 = MemberGroupMembership.objects.create(group=cls.c1,
+                                                      member=cls.u1)
+        cls.m2 = MemberGroupMembership.objects.create(group=cls.c2,
+                                                      member=cls.u2)
 
     def test_permissions(self):
         self.assertEqual(3, len(self.u1.get_all_permissions()))

@@ -211,7 +211,7 @@ class EventAdmin(DoNextModelAdmin):
                     kwargs['queryset'] = (
                         Committee.active_committees.all() |
                         Committee.unfiltered_objects
-                        .exclude(board__is_board=False)
+                        .filter(board=None)
                         .exclude(until__lt=(timezone.now() -
                                  timezone.timedelta(weeks=1)))
                     )

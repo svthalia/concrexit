@@ -7,7 +7,7 @@ from django.test import TestCase, RequestFactory, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
-from activemembers.models import Committee, CommitteeMembership
+from activemembers.models import Committee, MemberGroupMembership
 from events.admin import (
     DoNextModelAdmin,
     RegistrationInformationFieldInline,
@@ -97,9 +97,9 @@ class RegistrationInformationFieldInlineTest(TestCase):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.member.is_superuser = True
         cls.member.save()
-        CommitteeMembership.objects.create(
+        MemberGroupMembership.objects.create(
             member=cls.member,
-            committee=cls.committee
+            group=cls.committee
         )
 
         RegistrationInformationField.objects.create(

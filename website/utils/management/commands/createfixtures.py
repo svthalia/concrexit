@@ -13,7 +13,7 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from activemembers.models import Board, Committee, CommitteeMembership
+from activemembers.models import Board, Committee, MemberGroupMembership
 from events.models import Event
 from members.models import Profile, Member, Membership
 from partners.models import Partner, Vacancy, VacancyCategory
@@ -137,7 +137,7 @@ class Command(BaseCommand):
             self.create_committee_membership(member, board)
 
         # Make one member the chair
-        chair = random.choice(board.committeemembership_set.all())
+        chair = random.choice(board.membergroupmembership_set.all())
         chair.until = None
         chair.chair = True
         chair.save()
@@ -183,7 +183,7 @@ class Command(BaseCommand):
             self.create_committee_membership(member, committee)
 
         # Make one member the chair
-        chair = random.choice(committee.committeemembership_set.all())
+        chair = random.choice(committee.membergroupmembership_set.all())
         chair.until = None
         chair.chair = True
         chair.save()
@@ -195,10 +195,10 @@ class Command(BaseCommand):
         :param member: the member to add to the committee
         :param committee: the committee to add the member to
         """
-        membership = CommitteeMembership()
+        membership = MemberGroupMembership()
 
         membership.member = member
-        membership.committee = committee
+        membership.group = committee
 
         today = date.today()
         month = timedelta(days=30)

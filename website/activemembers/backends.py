@@ -28,8 +28,8 @@ class CommitteeBackend(object):
             return set()
 
         committees = member.committee_set.filter(
-            Q(committeemembership__until=None) |
-            Q(committeemembership__until__gte=timezone.now())
+            Q(membergroupmembership__until=None) |
+            Q(membergroupmembership__until__gte=timezone.now())
         )
 
         perm_cache_name = '_committee_perm_cache'

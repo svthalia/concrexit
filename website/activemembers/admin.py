@@ -11,30 +11,30 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from activemembers import models
-from activemembers.forms import CommitteeMembershipForm
+from activemembers.forms import MemberGroupMembershipForm
 from utils.translation import TranslatedModelAdmin
 from utils.snippets import datetime_to_lectureyear
 
 
-class CommitteeMembershipInlineFormSet(forms.BaseInlineFormSet):
+class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
     """
     Solely here for performance reasons.
 
-    Needed because the `__str__()` of `CommitteeMembership` (which is displayed
+    Needed because the `__str__()` of `MemberGroupMembership` (which is displayed
     above each inline form) uses the username, name of the member and name of
-    the committee.
+    the group.
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.queryset = self.queryset.select_related(
-            'member', 'committee').filter(until=None)
+            'member', 'group').filter(until=None)
 
 
-class CommitteeMembershipInline(admin.StackedInline):
-    """Inline for committee memberships"""
-    model = models.CommitteeMembership
-    formset = CommitteeMembershipInlineFormSet
+class MemberGroupMembershipInline(admin.StackedInline):
+    """Inline for group memberships"""
+    model = models.MemberGroupMembership
+    formset = MemberGroupMembershipInlineFormSet
     can_delete = False
     ordering = ('since',)
     extra = 0
@@ -60,7 +60,7 @@ class CommitteeForm(forms.ModelForm):
 @admin.register(models.Committee)
 class CommitteeAdmin(TranslatedModelAdmin):
     """Manage the committees"""
-    inlines = (CommitteeMembershipInline,)
+    inlines = (MemberGroupMembershipInline,)
     form = CommitteeForm
     list_display = ('name', 'since', 'until', 'active', 'email')
     list_filter = ('until', 'active',)
@@ -80,13 +80,13 @@ class CommitteeAdmin(TranslatedModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.exclude(board__is_board=True)
+        return qs.exclude(board=None)
 
 
 @admin.register(models.Board)
 class BoardAdmin(TranslatedModelAdmin):
     """Manage the board"""
-    inlines = (CommitteeMembershipInline,)
+    inlines = (MemberGroupMembershipInline,)
     form = CommitteeForm
     exclude = ('is_board',)
     filter_horizontal = ('permissions',)
@@ -108,9 +108,9 @@ class BoardFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value() == 'only':
-            return queryset.filter(committee__board__is_board=True)
+            return queryset.exclude(group__board=None)
         elif self.value() == 'none':
-            return queryset.exclude(committee__board__is_board=True)
+            return queryset.filter(group__board=None)
 
         return queryset
 
@@ -123,7 +123,7 @@ class LectureYearFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         current_year = datetime_to_lectureyear(timezone.now())
         first_year = datetime_to_lectureyear(
-                models.CommitteeMembership.objects.earliest('since').since
+                models.MemberGroupMembership.objects.earliest('since').since
         )
 
         return [(year, '{}-{}'.format(year, year+1))
@@ -161,14 +161,14 @@ class ActiveMembershipsFilter(admin.SimpleListFilter):
             return queryset.filter(until__lt=now)
 
 
-@admin.register(models.CommitteeMembership)
-class CommitteeMembershipAdmin(TranslatedModelAdmin):
-    """Manage the committee memberships"""
-    form = CommitteeMembershipForm
-    list_display = ('member', 'committee', 'since', 'until', 'chair', 'role')
-    list_filter = ('committee', BoardFilter, LectureYearFilter,
+@admin.register(models.MemberGroupMembership)
+class MemberGroupMembershipAdmin(TranslatedModelAdmin):
+    """Manage the group memberships"""
+    form = MemberGroupMembershipForm
+    list_display = ('member', 'group', 'since', 'until', 'chair', 'role')
+    list_filter = ('group', BoardFilter, LectureYearFilter,
                    ActiveMembershipsFilter)
-    list_select_related = ('member', 'committee',)
+    list_select_related = ('member', 'group',)
     search_fields = ('member__first_name', 'member__last_name',
                      'member__email')
 
@@ -176,8 +176,8 @@ class CommitteeMembershipAdmin(TranslatedModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         self.message_user(request, _('Do not edit existing memberships if the '
-                                     'chair of a committee has changed, add a '
-                                     'new committeemembership instead.'),
+                                     'chair of a group has changed, add a '
+                                     'new membership instead.'),
                           messages.WARNING)
         return super().changelist_view(request, extra_context)
 
@@ -185,16 +185,16 @@ class CommitteeMembershipAdmin(TranslatedModelAdmin):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = ('attachment;'
                                            'filename='
-                                           '"committee_memberships.csv"')
+                                           '"group_memberships.csv"')
         writer = csv.writer(response)
         writer.writerow([
             _('First name'),
             _('Last name'),
             _('Email'),
-            _('Committee'),
-            _('Committee member since'),
-            _('Committee member until'),
-            _('Chair of the committee'),
+            _('Group'),
+            _('Member since'),
+            _('Member until'),
+            _('Chair of the group'),
             _('Role'),
         ])
 
@@ -203,7 +203,7 @@ class CommitteeMembershipAdmin(TranslatedModelAdmin):
                 membership.member.first_name,
                 membership.member.last_name,
                 membership.member.email,
-                membership.committee,
+                membership.group,
                 membership.since,
                 membership.until,
                 membership.chair,

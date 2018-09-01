@@ -5,7 +5,7 @@ from django.core import mail
 from django.test import Client, TestCase
 from django.utils import timezone
 
-from activemembers.models import Committee, CommitteeMembership
+from activemembers.models import Committee, MemberGroupMembership
 from events.models import (Event, Registration,
                            RegistrationInformationField,
                            BooleanRegistrationInformation,
@@ -70,9 +70,9 @@ class AdminTest(TestCase):
         self.assertEqual(403, response.status_code)
 
     def test_admin_details_organiser_allowed(self):
-        CommitteeMembership.objects.create(
+        MemberGroupMembership.objects.create(
             member=self.member,
-            committee=self.committee)
+            group=self.committee)
         response = self.client.get('/events/admin/1/')
         self.assertEqual(200, response.status_code)
 
@@ -86,9 +86,9 @@ class AdminTest(TestCase):
 
         If I'm an organiser I should be allowed access
         """
-        CommitteeMembership.objects.create(
+        MemberGroupMembership.objects.create(
             member=self.member,
-            committee=self.committee)
+            group=self.committee)
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
 
@@ -108,9 +108,9 @@ class AdminTest(TestCase):
         be allowed access
         """
         self._remove_event_permission()
-        CommitteeMembership.objects.create(
+        MemberGroupMembership.objects.create(
             member=self.member,
-            committee=self.committee)
+            group=self.committee)
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(403, response.status_code)
 

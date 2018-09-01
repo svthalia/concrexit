@@ -46,9 +46,9 @@ def wiki_login(request):
     if user is not None:
         memberships = [
             cmm.committee.wiki_namespace for cmm in
-            user.committeemembership_set
+            user.membergroupmembership_set
             .exclude(until__lt=timezone.now().date())
-            .select_related('committee')
+            .select_related('group')
             if cmm.committee.wiki_namespace is not None]
 
         if user.has_perm('activemembers.board_wiki'):

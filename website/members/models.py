@@ -17,7 +17,7 @@ from functools import reduce
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
-from activemembers.models import Committee, CommitteeMembership
+from activemembers.models import Committee, MemberGroupMembership
 
 logger = logging.getLogger(__name__)
 
@@ -34,12 +34,12 @@ class ActiveMemberManager(MemberManager):
 
     def get_queryset(self):
         """Select all committee members"""
-        active_memberships = (CommitteeMembership
+        active_memberships = (MemberGroupMembership
                               .active_memberships
-                              .exclude(committee__board__is_board=True))
+                              .filter(group__board=None))
 
         return (super().get_queryset()
-                .filter(committeemembership__in=active_memberships)
+                .filter(membergroupmembership__in=active_memberships)
                 .distinct())
 
 
@@ -178,10 +178,10 @@ class Member(User):
     def get_committees(self):
         """Get the committees this user is a member of"""
         return Committee.unfiltered_objects.filter(
-            Q(committeemembership__member=self) &
+            Q(membergroupmembership__member=self) &
             (
-                Q(committeemembership__until=None) |
-                Q(committeemembership__until__gt=timezone.now())
+                Q(membergroupmembership__until=None) |
+                Q(membergroupmembership__until__gt=timezone.now())
             )).exclude(active=False)
 
     def get_absolute_url(self):

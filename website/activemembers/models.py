@@ -30,7 +30,7 @@ class CommitteeManager(models.Manager):
 
     def get_queryset(self):
         return (super().get_queryset()
-                .exclude(board__is_board=True)
+                .filter(board=None)
                 .order_by(localize_attr_name('name')))
 
 
@@ -39,7 +39,7 @@ class ActiveCommitteeManager(models.Manager):
 
     def get_queryset(self):
         return (super().get_queryset()
-                .exclude(board__is_board=True)
+                .filter(board=None)
                 .exclude(active=False)
                 .order_by(localize_attr_name('name')))
 
@@ -72,7 +72,7 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
 
     members = models.ManyToManyField(
         'members.Member',
-        through='CommitteeMembership'
+        through='activemembers.MemberGroupMembership'
     )
 
     permissions = models.ManyToManyField(
@@ -210,8 +210,8 @@ class ActiveMembershipManager(models.Manager):
         return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
-class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a committee membership"""
+class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
+    """Describes a group membership"""
     objects = models.Manager()
     active_memberships = ActiveMembershipManager()
 
@@ -221,21 +221,21 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         verbose_name=_('Member'),
     )
 
-    committee = models.ForeignKey(
+    group = models.ForeignKey(
         Committee,
         on_delete=models.CASCADE,
         verbose_name=_('Committee'),
     )
 
     since = models.DateField(
-        verbose_name=_('Committee member since'),
-        help_text=_('The date this member joined the committee in this role'),
+        verbose_name=_('Member since'),
+        help_text=_('The date this member joined in this role'),
         default=datetime.date.today
     )
 
     until = models.DateField(
-        verbose_name=_('Committee member until'),
-        help_text=_("A member of this committee until this time "
+        verbose_name=_('Member until'),
+        help_text=_("A member until this time "
                     "(can't be in the future)."),
         blank=True,
         null=True,
@@ -259,8 +259,8 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
     @property
     def initial_connected_membership(self):
         """Find the oldest membership directly connected to the current one"""
-        qs = CommitteeMembership.objects.filter(
-            committee=self.committee,
+        qs = MemberGroupMembership.objects.filter(
+            group=self.group,
             member=self.member,
             until__lte=self.since,
             until__gte=self.since - datetime.timedelta(days=1))
@@ -282,18 +282,18 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
             raise ValidationError(
                 {'until': _("End date can't be in the future")})
 
-        if (self.since and self.committee.since and
-                self.since < self.committee.since):
+        if (self.since and self.group.since and
+                self.since < self.group.since):
             raise ValidationError(
                 {'since': _("Start date can't be before committee start date")}
                 )
-        if (self.since and self.committee.until and
-                self.since > self.committee.until):
+        if (self.since and self.group.until and
+                self.since > self.group.until):
             raise ValidationError(
                 {'since': _("Start date can't be after committee end date")})
 
         try:
-            if self.until and self.committee.board:
+            if self.until and self.group.board:
                 raise ValidationError(
                     {'until': _("End date cannot be set for boards")})
         except Board.DoesNotExist:
@@ -303,8 +303,8 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
         super().validate_unique(*args, **kwargs)
         # Check if a committee has more than one chair
         if self.chair:
-            chairs = (CommitteeMembership.objects
-                      .filter(committee=self.committee,
+            chairs = (MemberGroupMembership.objects
+                      .filter(group=self.group,
                               chair=True))
             for chair in chairs:
                 if chair.pk == self.pk:
@@ -321,8 +321,8 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
                               'chair for this time period')})
 
         # check if this member is already in the committee in this period
-        memberships = (CommitteeMembership.objects
-                       .filter(committee=self.committee,
+        memberships = (MemberGroupMembership.objects
+                       .filter(group=self.group,
                                member=self.member))
         for mship in memberships:
             if mship.pk == self.pk:
@@ -334,26 +334,26 @@ class CommitteeMembership(models.Model, metaclass=ModelTranslateMeta):
                         self.since < mship.until and
                         self.until > mship.since)):
                 raise ValidationError({
-                    'member': _('This member is already in the committee for '
+                    'member': _('This member is already in the group for '
                                 'this period')})
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.member.is_staff = (self.member
-                                .committeemembership_set
+                                .membergroupmembership_set
                                 .exclude(until__lte=timezone.now().date())
                                 .count()) >= 1
         self.member.save()
 
     def __str__(self):
         return "{} membership of {} since {}, until {}".format(self.member,
-                                                               self.committee,
+                                                               self.group,
                                                                self.since,
                                                                self.until)
 
     class Meta:
-        verbose_name = _('committee membership')
-        verbose_name_plural = _('committee memberships')
+        verbose_name = _('group membership')
+        verbose_name_plural = _('group memberships')
 
 
 class Mentorship(models.Model):
