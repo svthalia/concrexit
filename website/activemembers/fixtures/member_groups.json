@@ -1,6 +1,6 @@
 [
 {
-    "model": "activemembers.committee",
+    "model": "activemembers.membergroup",
     "pk": 1,
     "fields": {
         "name_nl": "testcie1",
@@ -17,7 +17,7 @@
     }
 },
 {
-    "model": "activemembers.committee",
+    "model": "activemembers.membergroup",
     "pk": 2,
     "fields": {
         "name_nl": "testcie2",
@@ -30,7 +30,7 @@
     }
 },
 {
-    "model": "activemembers.committee",
+    "model": "activemembers.membergroup",
     "pk": 3,
     "fields": {
         "name_nl": "testbestuur1",
@@ -43,10 +43,40 @@
     }
 },
 {
+    "model": "activemembers.membergroup",
+    "pk": 4,
+    "fields": {
+        "name_nl": "testsoc1",
+        "name_en": "testsoc1",
+        "active": "True",
+        "description_nl": "testdesc1",
+        "description_en": "testdesc1",
+        "since": "1990-09-01",
+        "until": "1991-09-01"
+    }
+},
+{
+    "model": "activemembers.committee",
+    "pk": 1,
+    "fields": {
+    }
+},
+{
+    "model": "activemembers.committee",
+    "pk": 2,
+    "fields": {
+    }
+},
+{
     "model": "activemembers.board",
     "pk": 3,
     "fields": {
-        "is_board": true
+    }
+},
+{
+    "model": "activemembers.society",
+    "pk": 4,
+    "fields": {
     }
 }
 ]

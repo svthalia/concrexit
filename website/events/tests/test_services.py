@@ -15,7 +15,7 @@ from members.models import Member
 
 @freeze_time('2017-01-01')
 class ServicesTest(TestCase):
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):

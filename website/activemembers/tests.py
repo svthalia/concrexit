@@ -10,7 +10,7 @@ from members.models import Member
 
 
 class CommitteeMembersTest(TestCase):
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -90,7 +90,7 @@ class CommitteeMembersTest(TestCase):
 
 
 class CommitteeMembersChairTest(TestCase):
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -130,7 +130,7 @@ class CommitteeMembersChairTest(TestCase):
 
 
 class PermissionsBackendTest(TestCase):
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -157,7 +157,7 @@ class PermissionsBackendTest(TestCase):
 
 
 class CommitteeMailingListTest(TestCase):
-    fixtures = ['mailinglists.json', 'committees.json']
+    fixtures = ['mailinglists.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -206,7 +206,7 @@ class CommitteeMailingListTest(TestCase):
 
 
 class BoardTest(TestCase):
-    fixtures = ['committees.json']
+    fixtures = ['member_groups.json']
 
     def setUp(self):
         self.testboard = Board.objects.get(pk=3)

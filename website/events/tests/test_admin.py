@@ -73,7 +73,7 @@ class DoNextModelAdminTest(TestCase):
 
 @freeze_time('2017-01-01')
 class RegistrationInformationFieldInlineTest(TestCase):
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -148,7 +148,7 @@ class RegistrationInformationFieldInlineTest(TestCase):
 
 @freeze_time('2017-01-01')
 class EventAdminTest(TestCase):
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):

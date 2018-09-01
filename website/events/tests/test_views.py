@@ -18,7 +18,7 @@ from members.models import Member
 class AdminTest(TestCase):
     """Tests for admin views"""
 
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -130,7 +130,7 @@ class AdminTest(TestCase):
 class RegistrationTest(TestCase):
     """Tests for registration view"""
 
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):

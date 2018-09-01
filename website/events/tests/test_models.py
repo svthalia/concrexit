@@ -275,7 +275,7 @@ class EventTest(TestCase):
 class RegistrationTest(TestCase):
     """Tests event registrations"""
 
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):
