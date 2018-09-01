@@ -71,7 +71,7 @@ def is_organiser(member, event):
             return True
 
         if event and member.has_perm('events.change_event'):
-            return member.get_committees().filter(
+            return member.get_member_groups().filter(
                     pk=event.organiser.pk).count() != 0
 
     return False

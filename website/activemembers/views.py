@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect, reverse
 import datetime
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import localize_attr_name
-from .models import Board, MemberGroup, MemberGroupMembership
+from .models import Board, MemberGroup, MemberGroupMembership, Committee
 
 
 def committee_index(request):
@@ -12,7 +12,7 @@ def committee_index(request):
     :param request: the request object
     :return: response containing the HTML
     """
-    committees = MemberGroup.active_objects.all().order_by(
+    committees = Committee.active_objects.all().order_by(
         localize_attr_name('name'))
 
     return render(request, 'activemembers/committee_index.html',
@@ -27,11 +27,11 @@ def committee_detail(request, pk):
     :param pk: pk of the selected committee
     :return:
     """
-    committee = get_object_or_404(MemberGroup, pk=pk)
+    committee = get_object_or_404(Committee, pk=pk)
 
     members = []
     memberships = (MemberGroupMembership
-                   .active_memberships
+                   .active_objects
                    .filter(group=committee)
                    .prefetch_related('member__membergroupmembership_set'))
     for membership in memberships:

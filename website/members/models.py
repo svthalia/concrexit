@@ -35,8 +35,9 @@ class ActiveMemberManager(MemberManager):
     def get_queryset(self):
         """Select all committee members"""
         active_memberships = (MemberGroupMembership
-                              .active_memberships
-                              .filter(group__board=None))
+                              .active_objects
+                              .filter(group__board=None)
+                              .filter(group__society=None))
 
         return (super().get_queryset()
                 .filter(membergroupmembership__in=active_memberships)
@@ -175,9 +176,9 @@ class Member(User):
                 self.profile.event_permissions == 'no_drinks') and
                 self.current_membership is not None)
 
-    def get_committees(self):
-        """Get the committees this user is a member of"""
-        return MemberGroup.unfiltered_objects.filter(
+    def get_member_groups(self):
+        """Get the groups this user is a member of"""
+        return MemberGroup.objects.filter(
             Q(membergroupmembership__member=self) &
             (
                 Q(membergroupmembership__until=None) |

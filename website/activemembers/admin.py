@@ -3,17 +3,16 @@ import csv
 import datetime
 
 from django import forms
-from django.db.models import Q
 from django.contrib import admin, messages
-from django.contrib.auth.models import Permission
+from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from activemembers import models
-from activemembers.forms import MemberGroupMembershipForm
-from utils.translation import TranslatedModelAdmin
+from activemembers.forms import MemberGroupMembershipForm, MemberGroupForm
 from utils.snippets import datetime_to_lectureyear
+from utils.translation import TranslatedModelAdmin
 
 
 class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
@@ -41,27 +40,11 @@ class MemberGroupMembershipInline(admin.StackedInline):
     autocomplete_fields = ('member',)
 
 
-class CommitteeForm(forms.ModelForm):
-    """
-    Solely here for performance reasons.
-
-    Needed because the `__str__()` of `Permission` (which is displayed in the
-    permissions selection box) also prints the corresponding app and
-    `content_type` for each permission.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['permissions'].queryset = (Permission
-                                               .objects
-                                               .select_related('content_type'))
-
-
 @admin.register(models.Committee)
 class CommitteeAdmin(TranslatedModelAdmin):
     """Manage the committees"""
     inlines = (MemberGroupMembershipInline,)
-    form = CommitteeForm
+    form = MemberGroupForm
     list_display = ('name', 'since', 'until', 'active', 'email')
     list_filter = ('until', 'active',)
     search_fields = ('name', 'description')
@@ -78,16 +61,33 @@ class CommitteeAdmin(TranslatedModelAdmin):
             return instance.contact_mailinglist.name + '@thalia.nu'
         return None
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.exclude(board=None)
+
+@admin.register(models.Society)
+class CommitteeAdmin(TranslatedModelAdmin):
+    """Manage the societies"""
+    inlines = (MemberGroupMembershipInline,)
+    form = MemberGroupForm
+    list_display = ('name', 'since', 'until', 'active', 'email')
+    list_filter = ('until', 'active',)
+    search_fields = ('name', 'description')
+    filter_horizontal = ('permissions',)
+
+    fields = ('name', 'description', 'photo', 'permissions', 'since',
+              'until', 'contact_mailinglist', 'contact_email', 'active')
+
+    def email(self, instance):
+        if instance.contact_email:
+            return instance.contact_email
+        elif instance.contact_mailinglist:
+            return instance.contact_mailinglist.name + '@thalia.nu'
+        return None
 
 
 @admin.register(models.Board)
 class BoardAdmin(TranslatedModelAdmin):
     """Manage the board"""
     inlines = (MemberGroupMembershipInline,)
-    form = CommitteeForm
+    form = MemberGroupForm
     exclude = ('is_board',)
     filter_horizontal = ('permissions',)
 
@@ -95,22 +95,25 @@ class BoardAdmin(TranslatedModelAdmin):
               'contact_mailinglist', 'contact_email', 'since', 'until',)
 
 
-class BoardFilter(admin.SimpleListFilter):
+class TypeFilter(admin.SimpleListFilter):
     """Filter memberships on board-only"""
-    title = _('board memberships')
-    parameter_name = 'board'
+    title = _('group memberships')
+    parameter_name = 'group_type'
 
     def lookups(self, request, model_admin):
         return [
-            ('only', _('Only board memberships')),
-            ('none', _('No board memberships')),
+            ('boards', _('Only boards')),
+            ('committees', _('Only committees')),
+            ('societies', _('Only societies')),
         ]
 
     def queryset(self, request, queryset):
-        if self.value() == 'only':
+        if self.value() == 'boards':
             return queryset.exclude(group__board=None)
-        elif self.value() == 'none':
-            return queryset.filter(group__board=None)
+        elif self.value() == 'committees':
+            return queryset.exclude(group__committee=None)
+        elif self.value() == 'societies':
+            return queryset.exclude(group__society=None)
 
         return queryset
 
@@ -166,7 +169,7 @@ class MemberGroupMembershipAdmin(TranslatedModelAdmin):
     """Manage the group memberships"""
     form = MemberGroupMembershipForm
     list_display = ('member', 'group', 'since', 'until', 'chair', 'role')
-    list_filter = ('group', BoardFilter, LectureYearFilter,
+    list_filter = ('group', TypeFilter, LectureYearFilter,
                    ActiveMembershipsFilter)
     list_select_related = ('member', 'group',)
     search_fields = ('member__first_name', 'member__last_name',

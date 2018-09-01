@@ -7,16 +7,18 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def get_automatic_lists():
-    memberships = (MemberGroupMembership.active_memberships
-                   .filter(group__board=None)
-                   .filter(chair=True)
-                   .prefetch_related('member'))
-    committee_chairs = [x.member for x in memberships] + [
+    current_committee_chairs = (MemberGroupMembership.active_objects
+                                .filter(group__board=None)
+                                .filter(group__society=None)
+                                .filter(chair=True)
+                                .prefetch_related('member'))
+    committee_chair_emails = [x.member for x in current_committee_chairs] + [
         Member(email='intern@thalia.nu')
     ]
 
-    active_committee_memberships = (MemberGroupMembership.active_memberships
+    active_committee_memberships = (MemberGroupMembership.active_objects
                                     .filter(group__board=None)
+                                    .filter(group__society=None)
                                     .prefetch_related('member'))
     active_members = [x.member for x in active_committee_memberships]
 
@@ -46,7 +48,7 @@ def get_automatic_lists():
         active_members)
     lists += _create_automatic_list(
         ['commissievoorzitters', 'committeechairs'], '[THALIA] [CHAIRS]',
-        committee_chairs, moderated=False)
+        committee_chair_emails, moderated=False)
     lists += _create_automatic_list(
         ['optin'], '[THALIA] [OPTIN]', Member.current_members.filter(
             profile__receive_optin=True),

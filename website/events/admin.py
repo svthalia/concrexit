@@ -168,7 +168,7 @@ class EventAdmin(DoNextModelAdmin):
     def _change_published(request, queryset, published):
         if not request.user.is_superuser:
             queryset = queryset.filter(
-                organiser__in=request.member.get_committees())
+                organiser__in=request.member.get_member_groups())
         queryset.update(published=published)
 
     def save_formset(self, request, form, formset, change):
@@ -204,13 +204,13 @@ class EventAdmin(DoNextModelAdmin):
             # Only get the current active committees the user is a member of
             if not (request.user.is_superuser or
                     request.user.has_perm('events.override_organiser')):
-                kwargs['queryset'] = request.member.get_committees()
+                kwargs['queryset'] = request.member.get_member_groups()
             else:
                 # Hide old boards and inactive committees for new events
                 if 'add' in request.path:
                     kwargs['queryset'] = (
                         MemberGroup.active_objects.all() |
-                        MemberGroup.unfiltered_objects
+                        MemberGroup.objects
                         .filter(board=None)
                         .exclude(until__lt=(timezone.now() -
                                  timezone.timedelta(weeks=1)))

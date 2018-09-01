@@ -17,8 +17,8 @@ from utils.translation import (ModelTranslateMeta, MultilingualField,
 logger = logging.getLogger(__name__)
 
 
-class ActiveMemberGroupsManager(models.Manager):
-    """Returns active committees only"""
+class ActiveMemberGroupManager(models.Manager):
+    """Returns active objects only sorted by the localized name"""
 
     def get_queryset(self):
         return (super().get_queryset()
@@ -27,10 +27,10 @@ class ActiveMemberGroupsManager(models.Manager):
 
 
 class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a committee"""
+    """Describes a groups of members"""
 
     objects = models.Manager()
-    active_objects = ActiveMemberGroupsManager()
+    active_objects = ActiveMemberGroupManager()
 
     name = MultilingualField(
         models.CharField,
@@ -117,6 +117,11 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Committee(MemberGroup):
+    """Describes a committee, which is a type of MemberGroup"""
+
+    objects = models.Manager()
+    active_objects = ActiveMemberGroupManager()
+
     wiki_namespace = models.CharField(
         _('Wiki namespace'),
         null=True,
@@ -130,6 +135,11 @@ class Committee(MemberGroup):
 
 
 class Society(MemberGroup):
+    """Describes a society, which is a type of MemberGroup"""
+
+    objects = models.Manager()
+    active_objects = ActiveMemberGroupManager()
+
     class Meta:
         verbose_name = _('society')
         verbose_name_plural = _('societies')
@@ -137,6 +147,8 @@ class Society(MemberGroup):
 
 
 class Board(MemberGroup):
+    """Describes a board, which is a type of MemberGroup"""
+
     class Meta:
         verbose_name = _('board')
         verbose_name_plural = _('boards')
@@ -173,7 +185,7 @@ class Board(MemberGroup):
 
 class ActiveMembershipManager(models.Manager):
     """
-    Customs manager that gets the currently active committee memberships
+    Custom manager that gets the currently active membergroup memberships
     """
 
     def get_queryset(self):
@@ -183,7 +195,7 @@ class ActiveMembershipManager(models.Manager):
 class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
     """Describes a group membership"""
     objects = models.Manager()
-    active_memberships = ActiveMembershipManager()
+    active_objects = ActiveMembershipManager()
 
     member = models.ForeignKey(
         'members.Member',
