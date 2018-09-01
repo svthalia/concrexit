@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
         migrations.AlterModelManagers(
             name='board',
             managers=[
-                ('objects', activemembers.models.BoardManager()),
+                ('objects', models.manager.Manager()),
             ],
         ),
         migrations.RunPython(remove_enddates),

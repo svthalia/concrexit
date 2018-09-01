@@ -11,7 +11,7 @@ from django.utils.html import format_html
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
 
-from activemembers.models import Committee
+from activemembers.models import MemberGroup
 from events import services
 from members.models import Member
 from pizzas.models import PizzaEvent
@@ -209,8 +209,8 @@ class EventAdmin(DoNextModelAdmin):
                 # Hide old boards and inactive committees for new events
                 if 'add' in request.path:
                     kwargs['queryset'] = (
-                        Committee.active_committees.all() |
-                        Committee.unfiltered_objects
+                        MemberGroup.active_objects.all() |
+                        MemberGroup.unfiltered_objects
                         .filter(board=None)
                         .exclude(until__lt=(timezone.now() -
                                  timezone.timedelta(weeks=1)))

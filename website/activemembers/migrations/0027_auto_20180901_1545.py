@@ -9,6 +9,10 @@ class Migration(migrations.Migration):
     dependencies = [
         ('members', '0023_auto_20180819_1542'),
         ('activemembers', '0026_auto_20180203_2151'),
+        ('mailinglists', '0012_auto_20180203_2304'),
+        ('auth', '0009_alter_user_last_name_max_length'),
+        ('events', '0027_merge_20180618_1438'),
+        ('members', '0023_auto_20180819_1542'),
     ]
 
     operations = [

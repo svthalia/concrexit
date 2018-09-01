@@ -17,7 +17,7 @@ from functools import reduce
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
-from activemembers.models import Committee, MemberGroupMembership
+from activemembers.models import MemberGroup, MemberGroupMembership
 
 logger = logging.getLogger(__name__)
 
@@ -177,7 +177,7 @@ class Member(User):
 
     def get_committees(self):
         """Get the committees this user is a member of"""
-        return Committee.unfiltered_objects.filter(
+        return MemberGroup.unfiltered_objects.filter(
             Q(membergroupmembership__member=self) &
             (
                 Q(membergroupmembership__until=None) |

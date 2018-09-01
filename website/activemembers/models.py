@@ -17,39 +17,20 @@ from utils.translation import (ModelTranslateMeta, MultilingualField,
 logger = logging.getLogger(__name__)
 
 
-class UnfilteredSortedManager(models.Manager):
-    """Returns committees and boards, sorted by name"""
-
-    def get_queryset(self):
-        return (super().get_queryset()
-                .order_by(localize_attr_name('name')))
-
-
-class CommitteeManager(models.Manager):
-    """Returns committees only"""
-
-    def get_queryset(self):
-        return (super().get_queryset()
-                .filter(board=None)
-                .order_by(localize_attr_name('name')))
-
-
-class ActiveCommitteeManager(models.Manager):
+class ActiveMemberGroupsManager(models.Manager):
     """Returns active committees only"""
 
     def get_queryset(self):
         return (super().get_queryset()
-                .filter(board=None)
                 .exclude(active=False)
                 .order_by(localize_attr_name('name')))
 
 
-class Committee(models.Model, metaclass=ModelTranslateMeta):
+class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
     """Describes a committee"""
 
-    unfiltered_objects = UnfilteredSortedManager()
-    objects = CommitteeManager()
-    active_committees = ActiveCommitteeManager()
+    objects = models.Manager()
+    active_objects = ActiveMemberGroupsManager()
 
     name = MultilingualField(
         models.CharField,
@@ -109,12 +90,6 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
         on_delete=models.SET_NULL,
     )
 
-    wiki_namespace = models.CharField(
-        _('Wiki namespace'),
-        null=True,
-        blank=True,
-        max_length=50)
-
     def clean(self):
         if ((self.contact_email is not None and
                 self.contact_mailinglist is not None) or
@@ -136,40 +111,35 @@ class Committee(models.Model, metaclass=ModelTranslateMeta):
         return reverse('activemembers:committee', args=[str(self.pk)])
 
     class Meta:
+        verbose_name = _('member group')
+        verbose_name_plural = _('member groups')
+        # ordering is done in the manager, to sort on a translated field
+
+
+class Committee(MemberGroup):
+    wiki_namespace = models.CharField(
+        _('Wiki namespace'),
+        null=True,
+        blank=True,
+        max_length=50)
+
+    class Meta:
         verbose_name = _('committee')
         verbose_name_plural = _('committees')
         # ordering is done in the manager, to sort on a translated field
 
 
-class BoardManager(models.Manager):
-    """
-    Custom manager that filters out
-    instances of Committee that are not boards
-    """
-
-    use_in_migrations = True
-
-    def get_queryset(self):
-        # sorting by descending order by default makes more sense for boards
-        return (super().get_queryset()
-                .filter(is_board=True)
-                .order_by(localize_attr_name('-name')))
-
-
-class Board(Committee):
-    """ Because Board inherits from Committee, Django creates a OneToOneField
-    linking the two models together. This can be accessed as usual;
-    given a Committee or Board b, one can access b.board, which will either
-    return the object b if b is a Board, or a Board.DoesNotExist exception.
-    """
-    objects = BoardManager()
-
-    is_board = models.BooleanField(
-        verbose_name=_('Is this a board'),
-        default=True,
-    )
-
+class Society(MemberGroup):
     class Meta:
+        verbose_name = _('society')
+        verbose_name_plural = _('societies')
+        # ordering is done in the manager, to sort on a translated field
+
+
+class Board(MemberGroup):
+    class Meta:
+        verbose_name = _('board')
+        verbose_name_plural = _('boards')
         ordering = ['-since']
         permissions = (
             ('board_wiki', _("Access the board wiki")),
@@ -222,7 +192,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
     )
 
     group = models.ForeignKey(
-        Committee,
+        MemberGroup,
         on_delete=models.CASCADE,
         verbose_name=_('Committee'),
     )

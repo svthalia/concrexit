@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from activemembers.models import Committee
+from activemembers.models import MemberGroup
 from members.models import Member
 
 
@@ -48,7 +48,7 @@ class MailingList(models.Model):
     )
 
     committees = models.ManyToManyField(
-        Committee,
+        MemberGroup,
         verbose_name=_("Committees"),
         help_text=_('Select entire committees to include in the list.'),
         blank=True,
