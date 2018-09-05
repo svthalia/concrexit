@@ -269,12 +269,12 @@ class Registration(Entry):
                 'username': _('A user with that username already exists.')})
 
         if (self.starting_year is None and
-                self.membership_type is not Membership.SUPPORTER):
+                self.membership_type != Membership.SUPPORTER):
             errors.update({
                 'starting_year': _('This field is required.')})
 
         if (self.programme is None and
-                self.membership_type is not Membership.SUPPORTER):
+                self.membership_type != Membership.SUPPORTER):
             errors.update({
                 'programme': _('This field is required.')})
 
