@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-01 20:29+0200\n"
-"PO-Revision-Date: 2018-09-01 20:30+0200\n"
+"POT-Creation-Date: 2018-09-06 16:13+0200\n"
+"PO-Revision-Date: 2018-09-06 16:12+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -158,7 +158,8 @@ msgstr "commissies"
 msgid "society"
 msgstr "gezelschap"
 
-#: models.py
+#: models.py templates/activemembers/society_detail.html
+#: templates/activemembers/society_index.html
 msgid "societies"
 msgstr "gezelschappen"
 
@@ -270,6 +271,7 @@ msgstr "Bestuursleden"
 
 #: templates/activemembers/board_detail.html
 #: templates/activemembers/committee_detail.html
+#: templates/activemembers/society_detail.html
 msgid "Chair"
 msgstr "Voorzitter"
 
@@ -300,6 +302,7 @@ msgstr "Oude besturen"
 
 #: templates/activemembers/board_index.html
 #: templates/activemembers/committee_detail.html
+#: templates/activemembers/society_detail.html
 #, python-format
 msgid "Photo of %(name)s"
 msgstr "Foto van %(name)s"
@@ -314,6 +317,7 @@ msgid "Committees"
 msgstr "Commissies"
 
 #: templates/activemembers/committee_detail.html
+#: templates/activemembers/society_detail.html
 #, python-format
 msgid "About the %(name)s"
 msgstr "Over de %(name)s"
@@ -339,23 +343,23 @@ msgstr "Deze commissie heeft geen leden?"
 msgid "There are no committees!"
 msgstr "Er zijn geen commissies!"
 
-#~ msgid "Only board memberships"
-#~ msgstr "Alleen bestuurslidmaatschappen"
+#: templates/activemembers/society_detail.html
+msgid "Society members"
+msgstr "Leden van het gezelschap"
 
-#~ msgid "No board memberships"
-#~ msgstr "Geen bestuurslidmaatschappen"
+#: templates/activemembers/society_detail.html
+msgid "Society member since: ?"
+msgstr "Lid van het gezelschap sinds: ?"
 
-#~ msgid "Committee member since"
-#~ msgstr "Commissielid sinds"
+#: templates/activemembers/society_detail.html
+#, python-format
+msgid "Society member since: %(since)s"
+msgstr "Lid van het gezelschap sinds: %(since)s"
 
-#~ msgid "Committee member until"
-#~ msgstr "Commissielid tot"
+#: templates/activemembers/society_detail.html
+msgid "This society doesn't have any members?"
+msgstr "Dit gezelschap heeft geen leden?"
 
-#~ msgid "Is this a board"
-#~ msgstr "Is dit een bestuur"
-
-#~ msgid "committee membership"
-#~ msgstr "commissielidmaatschap"
-
-#~ msgid "committee memberships"
-#~ msgstr "commissielidmaatschappen"
+#: templates/activemembers/society_index.html
+msgid "There are no societies!"
+msgstr "Er zijn geen gezelschappen!"
