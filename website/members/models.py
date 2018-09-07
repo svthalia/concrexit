@@ -411,6 +411,7 @@ class Profile(models.Model):
         help_text=_('Bank account for direct debit'),
         include_countries=IBAN_SEPA_COUNTRIES,
         blank=True,
+        null=True,
     )
 
     def display_name(self):

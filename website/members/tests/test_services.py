@@ -1,7 +1,10 @@
+
 from datetime import timedelta, date
 from django.test import TestCase
 from django.utils import timezone
 from unittest import mock
+
+from freezegun import freeze_time
 
 from members import services
 from members.models import Member, Membership, Profile, EmailChange
@@ -214,3 +217,63 @@ class EmailChangeTest(TestCase):
 
             self.assertEqual(self.member.email, change_request.email)
             send_message_mock.assert_called_once_with(change_request)
+
+
+class DataMinimalisationTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.member = Member.objects.create(
+            username='test1',
+            first_name='Test1',
+            last_name='Example',
+            email='test1@example.org'
+        )
+        Profile.objects.create(
+            user=cls.member,
+            language='nl',
+            student_number='s1234567'
+        )
+        cls.membership = Membership.objects.create(
+            user=cls.member,
+            type=Membership.MEMBER,
+            since=timezone.now().replace(year=2017, month=9, day=1),
+            until=timezone.now().replace(year=2018, month=9, day=1)
+        )
+
+    @freeze_time('2018-10-2')
+    def test_removes_after_31_days(self):
+        processed = services.execute_data_minimisation(True)
+        self.assertEqual(len(processed), 1)
+        self.assertEqual(processed[0], self.member)
+
+        self.membership.until = timezone.now().replace(
+            year=2018, month=11, day=1)
+        self.membership.save()
+        processed = services.execute_data_minimisation(True)
+        self.assertEqual(len(processed), 0)
+
+    @freeze_time('2018-10-2')
+    def test_dry_run(self):
+        with self.subTest('With dry_run=True'):
+            services.execute_data_minimisation(True)
+            self.member.refresh_from_db()
+            self.assertEqual(self.member.profile.student_number, 's1234567')
+        with self.subTest('With dry_run=False'):
+            services.execute_data_minimisation(False)
+            self.member.refresh_from_db()
+            self.assertIsNone(self.member.profile.student_number)
+
+    @freeze_time('2018-10-2')
+    def test_does_not_affect_current_members(self):
+        with self.subTest('Membership ends in future'):
+            self.membership.until = timezone.now().replace(
+                year=2019, month=9, day=1)
+            self.membership.save()
+            processed = services.execute_data_minimisation(True)
+            self.assertEqual(len(processed), 0)
+        with self.subTest('Never ending membership'):
+            self.membership.until = None
+            self.membership.save()
+            processed = services.execute_data_minimisation(True)
+            self.assertEqual(len(processed), 0)
