@@ -10,9 +10,9 @@ from django.utils import timezone
 import members
 from members.models import Membership, Profile
 from payments.models import Payment
-from utils.snippets import datetime_to_lectureyear
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
+from utils.snippets import datetime_to_lectureyear
 
 
 def _generate_username(registration):
@@ -120,9 +120,9 @@ def accept_entries(queryset):
             # User is not unique, do not proceed
             continue
 
-        payment = _create_payment_for_entry(entry)
-
-        entry.refresh_from_db()
+        entry.status = Entry.STATUS_ACCEPTED
+        entry.updated_at = timezone.now()
+        entry.payment = _create_payment_for_entry(entry)
 
         try:
             if entry.registration.username is None:
@@ -130,18 +130,18 @@ def accept_entries(queryset):
                     entry.registration)
                 entry.registration.save()
             emails.send_registration_accepted_message(entry.registration,
-                                                      payment)
+                                                      entry.payment)
         except Registration.DoesNotExist:
             try:
-                emails.send_renewal_accepted_message(entry.renewal, payment)
+                emails.send_renewal_accepted_message(entry.renewal,
+                                                     entry.payment)
             except Renewal.DoesNotExist:
                 pass
 
+        entry.save()
         updated_entries.append(entry.pk)
 
-    return Entry.objects.filter(
-        pk__in=updated_entries).update(status=Entry.STATUS_ACCEPTED,
-                                       updated_at=timezone.now())
+    return len(updated_entries)
 
 
 def _create_payment_for_entry(entry):
@@ -177,13 +177,9 @@ def _create_payment_for_entry(entry):
     except Renewal.DoesNotExist:
         pass
 
-    payment = Payment.objects.create(
+    return Payment.objects.create(
         amount=amount,
     )
-    entry.payment = payment
-    entry.save()
-
-    return payment
 
 
 def _create_member_from_registration(registration):
