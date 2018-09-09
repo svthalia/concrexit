@@ -9,6 +9,9 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Payment(models.Model):
+    """
+    Describes a payment
+    """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 

@@ -1,9 +1,13 @@
+"""Widgets provided by the payments package"""
 from django.forms import Widget
 
 from payments.models import Payment
 
 
 class PaymentWidget(Widget):
+    """
+    Custom widget for the Payment object, used in registrations
+    """
     template_name = 'payments/widget.html'
 
     def value_from_datadict(self, data, files, name):
