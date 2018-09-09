@@ -1,10 +1,11 @@
+"""The celery tasks defined by the pushnotifications package"""
 from celery import shared_task
 from django.apps import apps
 
 
 @shared_task
 def send_message(message_id):
-    """Send a push notification"""
+    """Send a scheduled push notification"""
 
     print('Sending push notification {}'.format(message_id))
 

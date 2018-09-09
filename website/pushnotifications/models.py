@@ -1,3 +1,4 @@
+"""The models defined by the pushnotifications package"""
 from django.conf import settings
 from django.db import models
 from django.utils.translation import override
