@@ -177,7 +177,7 @@ PASSWORD_HASHERS = (
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'activemembers.backends.CommitteeBackend',
+    'activemembers.backends.MemberGroupBackend',
 ]
 
 REST_FRAMEWORK = {

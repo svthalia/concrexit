@@ -21,6 +21,7 @@ MAIN_MENU = [
         'submenu': [
             {'title': _('Board'), 'name': 'activemembers:boards'},
             {'title': _('Committees'), 'name': 'activemembers:committees'},
+            {'title': _('Societies'), 'name': 'activemembers:societies'},
             {'title': _('Documents'), 'name': 'documents:index'},
             {'title': _('Merchandise'), 'name': 'merchandise:index'},
             {'title': _('Sister Associations'), 'name': 'sister-associations'},

@@ -7,7 +7,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def member_achievements(member):
-    memberships = member.committeemembership_set.all()
+    memberships = member.membergroupmembership_set.all()
     achievements = {}
     for membership in memberships:
         period = {

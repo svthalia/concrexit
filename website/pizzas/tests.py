@@ -15,7 +15,7 @@ from pizzas.models import PizzaEvent
 @freeze_time('2018-03-21')
 class PizzaEventTestCase(TestCase):
     """Test the pizzaevent class"""
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):

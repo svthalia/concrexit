@@ -2,7 +2,8 @@ from django.shortcuts import get_object_or_404, render, redirect, reverse
 import datetime
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import localize_attr_name
-from .models import Board, Committee, CommitteeMembership
+from .models import Board, MemberGroup, MemberGroupMembership, Committee, \
+    Society
 
 
 def committee_index(request):
@@ -12,7 +13,7 @@ def committee_index(request):
     :param request: the request object
     :return: response containing the HTML
     """
-    committees = Committee.active_committees.all().order_by(
+    committees = Committee.active_objects.all().order_by(
         localize_attr_name('name'))
 
     return render(request, 'activemembers/committee_index.html',
@@ -29,19 +30,18 @@ def committee_detail(request, pk):
     """
     committee = get_object_or_404(Committee, pk=pk)
 
-    members = []
-    memberships = (CommitteeMembership
-                   .active_memberships
-                   .filter(committee=committee)
-                   .prefetch_related('member__committeemembership_set'))
-    for membership in memberships:
-        member = membership.member
-        member.chair = membership.chair
-        member.role = membership.role
-        member.committee_since = membership.initial_connected_membership.since
-        members.append(member)  # list comprehension would be more pythonic?
+    memberships = (MemberGroupMembership
+                   .active_objects
+                   .filter(group=committee)
+                   .prefetch_related('member__membergroupmembership_set'))
+    members = [{
+        'profile': x.member.profile,
+        'chair': x.chair,
+        'role': x.role,
+        'member_since': x.initial_connected_membership.since
+    } for x in memberships]
 
-    members.sort(key=lambda x: x.committee_since)
+    members.sort(key=lambda x: x['member_since'])
 
     return render(request, 'activemembers/committee_detail.html',
                   {'committee': committee,
@@ -81,9 +81,9 @@ def board_detail(request, since, until=None):
                                         'until': int(since) + 1}))
     board = get_object_or_404(Board, since__year=since, until__year=until)
     members = []
-    memberships = (CommitteeMembership
+    memberships = (MemberGroupMembership
                    .objects
-                   .filter(committee=board)
+                   .filter(group=board)
                    .prefetch_related('member'))
 
     for membership in memberships:
@@ -94,4 +94,46 @@ def board_detail(request, since, until=None):
 
     return render(request, 'activemembers/board_detail.html',
                   {'board': board,
+                   'members': members})
+
+
+def society_index(request):
+    """
+    View that renders the committee overview page
+
+    :param request: the request object
+    :return: response containing the HTML
+    """
+    societies = Society.active_objects.all().order_by(
+        localize_attr_name('name'))
+
+    return render(request, 'activemembers/society_index.html',
+                  {'societies': societies})
+
+
+def society_detail(request, pk):
+    """
+    View that renders the page of one selected committee
+
+    :param request: the request object
+    :param pk: pk of the selected committee
+    :return:
+    """
+    society = get_object_or_404(Society, pk=pk)
+
+    memberships = (MemberGroupMembership
+                   .active_objects
+                   .filter(group=society)
+                   .prefetch_related('member__membergroupmembership_set'))
+    members = [{
+        'profile': x.member.profile,
+        'chair': x.chair,
+        'role': x.role,
+        'member_since': x.initial_connected_membership.since
+    } for x in memberships]
+
+    members.sort(key=lambda x: x['member_since'])
+
+    return render(request, 'activemembers/committee_detail.html',
+                  {'committee': society,
                    'members': members})

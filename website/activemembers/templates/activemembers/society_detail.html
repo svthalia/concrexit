@@ -1,32 +1,32 @@
 {% extends "base.html" %}
 {% load i18n static thumbnail bleach_tags %}
-{% block title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
+{% block title %}{{ society.name }} — {% trans 'societies'|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ society.name }} — {% trans 'societies'|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>{{ committee.name }}
+<h1>{{ society.name }}
   <span class="title-meta clearfix">
     <span>
-      <a class="back" href="{% url 'activemembers:committees' %}" id="collectionButton"></a>
+      <a class="back" href="{% url 'activemembers:societies' %}" id="collectionButton"></a>
     </span>
   </span>
 </h1>
 <div class="portfolio"></div>
 <div class="clearfix portfolio">
-  <div id="committee-div">
+  <div id="society-div">
     <div class="row">
-      {% if committee.photo %}
-      <img alt="{% blocktrans with name=committee.name %}Photo of {{ name }}{% endblocktrans %}" class="span12" src="{% thumbnail committee.photo '1024x683' fit=False %}">
+      {% if society.photo %}
+      <img alt="{% blocktrans with name=society.name %}Photo of {{ name }}{% endblocktrans %}" class="span12" src="{% thumbnail society.photo '1024x683' fit=False %}">
       {% else %}
-      <img alt="{% blocktrans with name=committee.name %}Photo of {{ name }}{% endblocktrans %}" class="span12" src="{% static 'activemembers/images/placeholder.png' %}">
+      <img alt="{% blocktrans with name=society.name %}Photo of {{ name }}{% endblocktrans %}" class="span12" src="{% static 'activemembers/images/placeholder.png' %}">
       {% endif %}
     </div>
     <div class="text-center">
-      <h1 class="midhead">{% blocktrans with name=committee.name %}About the {{ name }}{% endblocktrans %}</h1>
-      {{ committee.description|bleach }}
+      <h1 class="midhead">{% blocktrans with name=society.name %}About the {{ name }}{% endblocktrans %}</h1>
+      {{ society.description|bleach }}
     </div>
     <div class="clearfix member-directory">
-      <h1 class="midhead">{% trans 'Committee members' %}</h1>
+      <h1 class="midhead">{% trans 'Society members' %}</h1>
       <ul class="row" id="members">
         {% for member in members %}
         <li class="post member-item span3 has-overlay">
@@ -51,9 +51,9 @@
                   <h2>{{ member.profile.display_name }}</h2>
                   <p>
                   {% if member.member_since.year == 1970 %}
-                  {% blocktrans %}Committee member since: ?{% endblocktrans %}
+                  {% blocktrans %}Society member since: ?{% endblocktrans %}
                   {% else %}
-                  {% blocktrans with since=member.member_since|date:"Y" %}Committee member since: {{ since }}{% endblocktrans %}
+                  {% blocktrans with since=member.member_since|date:"Y" %}Society member since: {{ since }}{% endblocktrans %}
                   {% endif %}
                   </p>
                   {% if member.role %}
@@ -68,7 +68,7 @@
           </a>
         </li>
         {% empty %}
-        <li>{% trans "This committee doesn't have any members?" %}</li>
+        <li>{% trans "This society doesn't have any members?" %}</li>
         {% endfor %}
       </ul>
     </div>

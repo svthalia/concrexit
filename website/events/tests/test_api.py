@@ -16,7 +16,7 @@ from members.models import Member
 class RegistrationApiTest(TestCase):
     """Tests for registration view"""
 
-    fixtures = ['members.json', 'committees.json']
+    fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
     def setUpTestData(cls):

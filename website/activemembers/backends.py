@@ -8,8 +8,8 @@ from django.utils import timezone
 from members.models import Member
 
 
-class CommitteeBackend(object):
-    """Check permissions against committees"""
+class MemberGroupBackend(object):
+    """Check permissions against MemberGroups"""
 
     def authenticate(self, *args, **kwargs):
         """Not implemented in this backend"""
@@ -27,15 +27,15 @@ class CommitteeBackend(object):
         except Member.DoesNotExist:
             return set()
 
-        committees = member.committee_set.filter(
-            Q(committeemembership__until=None) |
-            Q(committeemembership__until__gte=timezone.now())
+        groups = member.membergroup_set.filter(
+            Q(membergroupmembership__until=None) |
+            Q(membergroupmembership__until__gte=timezone.now())
         )
 
-        perm_cache_name = '_committee_perm_cache'
+        perm_cache_name = '_membergroup_perm_cache'
         if not hasattr(user, perm_cache_name):
             perms = (Permission.objects
-                     .filter(committee__in=committees)
+                     .filter(membergroup__in=groups)
                      .values_list('content_type__app_label', 'codename')
                      .order_by())
             setattr(user, perm_cache_name,
