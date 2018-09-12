@@ -265,21 +265,16 @@ class ServicesTest(TestCase):
         p5 = services._create_payment_for_entry(self.e5)
 
         self.assertEqual(p1.amount, settings.MEMBERSHIP_PRICES['year'])
-        self.assertEqual(p1.registrations_entry, self.e1)
         self.assertEqual(p1.processed, False)
         self.assertEqual(p2.amount, settings.MEMBERSHIP_PRICES['study'])
-        self.assertEqual(p2.registrations_entry, self.e2)
         self.assertEqual(p2.processed, False)
         self.assertEqual(p3.amount, settings.MEMBERSHIP_PRICES['study'] -
                          settings.MEMBERSHIP_PRICES['year'])
-        self.assertEqual(p3.registrations_entry, self.e3)
         self.assertEqual(p3.processed, False)
         self.assertEqual(p4.amount, settings.MEMBERSHIP_PRICES['year'])
-        self.assertEqual(p4.registrations_entry, self.e4)
         self.assertEqual(p4.processed, False)
         self.assertEqual(p5.amount, settings.MEMBERSHIP_PRICES['study'] -
                          settings.MEMBERSHIP_PRICES['year'])
-        self.assertEqual(p5.registrations_entry, self.e5)
         self.assertEqual(p5.processed, False)
 
     @mock.patch('registrations.services.check_unique_user')
@@ -461,9 +456,17 @@ class ServicesTest(TestCase):
         services.process_payment(p)
 
         p0 = services._create_payment_for_entry(self.e0)
+        self.e0.payment = p0
+        self.e0.save()
         p1 = services._create_payment_for_entry(self.e1)
+        self.e1.payment = p1
+        self.e1.save()
         p2 = services._create_payment_for_entry(self.e2)
+        self.e2.payment = p2
+        self.e2.save()
         p3 = services._create_payment_for_entry(self.e3)
+        self.e3.payment = p3
+        self.e3.save()
 
         Entry.objects.filter(
             pk__in=[self.e1.pk, self.e2.pk, self.e3.pk]
