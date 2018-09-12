@@ -19,7 +19,7 @@ If you use Docker, please look at [this part](#docker) of the README.
 
 0. Get at least Python 3.5 and install pipenv and the Pillow requirements as per below.
 1. Clone this repository
-2. Run `pipenv install --dev`
+2. Run `pipenv install --python 3 --dev`
 3. Run `pipenv shell`
 5. `cd website`
 6. `./manage.py migrate` to initialise the database
