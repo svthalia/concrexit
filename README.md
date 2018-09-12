@@ -20,7 +20,7 @@ If you use Docker, please look at [this part](#docker) of the README.
 0. Get at least Python 3.5 and install pipenv and the Pillow requirements as per below.
 1. Clone this repository
 2. Run `pipenv install --python 3 --dev`
-3. Run `pipenv shell --python 3`
+3. Run `pipenv shell`
 5. `cd website`
 6. `./manage.py migrate` to initialise the database
 7. `./manage.py createsuperuser` to create the first user (note that this user won't be a member!)
