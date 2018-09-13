@@ -11,9 +11,17 @@ def migrate_to(apps, schema_editor):
     for board in boards:
         TemporaryBoard.objects.create(parent=board.committee_ptr_id)
 
+
 def migrate_back(apps, schema_editor):
-    # Reverse is not imported, objects will be deleted
-    pass
+    TemporaryBoard = apps.get_model("activemembers", "TemporaryBoard")
+
+    boards = TemporaryBoard.objects.all()
+    for temp_board in boards:
+        schema_editor.execute(
+            'INSERT INTO activemembers_board (committee_ptr_id, is_board)'
+            ' VALUES ({}, 1);'
+            .format(temp_board.parent))
+
 
 class Migration(migrations.Migration):
 

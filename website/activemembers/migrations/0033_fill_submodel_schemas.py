@@ -23,7 +23,6 @@ def migrate_to(apps, schema_editor):
 
 
 def migrate_back(apps, schema_editor):
-    schema_editor.execute('DELETE FROM activemembers_board;')
     Committee = apps.get_model("activemembers", "Committee")
     committees = Committee.objects.all()
     for committee in committees:
@@ -32,6 +31,14 @@ def migrate_back(apps, schema_editor):
             'SET wiki_namespace_old=\'{}\' WHERE id={}'
             .format(committee.wiki_namespace if committee.wiki_namespace else 'NULL', committee.membergroup_ptr_id))
     schema_editor.execute('DELETE FROM activemembers_committee;')
+
+    Board = apps.get_model("activemembers", "Board")
+    TemporaryBoard = apps.get_model("activemembers", "TemporaryBoard")
+
+    boards = Board.objects.all()
+    for board in boards:
+        TemporaryBoard.objects.create(parent=board.membergroup_ptr_id)
+    schema_editor.execute('DELETE FROM activemembers_board;')
 
 
 class Migration(migrations.Migration):
