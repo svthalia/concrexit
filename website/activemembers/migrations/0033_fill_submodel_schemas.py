@@ -18,7 +18,7 @@ def migrate_to(apps, schema_editor):
         if not TemporaryBoard.objects.filter(parent=group.pk).exists():
             schema_editor.execute(
                 'INSERT INTO activemembers_committee '
-                '(membergroup_ptr_id, wiki_namespace) VALUES ({}, {});'
+                '(membergroup_ptr_id, wiki_namespace) VALUES ({}, \'{}\');'
                 .format(group.pk, group.wiki_namespace_old if group.wiki_namespace_old else 'NULL'))
 
 
@@ -29,7 +29,7 @@ def migrate_back(apps, schema_editor):
     for committee in committees:
         schema_editor.execute(
             'UPDATE activemembers_membergroup '
-            'SET wiki_namespace_old={} WHERE id={}'
+            'SET wiki_namespace_old=\'{}\' WHERE id={}'
             .format(committee.wiki_namespace if committee.wiki_namespace else 'NULL', committee.membergroup_ptr_id))
     schema_editor.execute('DELETE FROM activemembers_committee;')
 
