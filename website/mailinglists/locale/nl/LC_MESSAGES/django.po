@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-17 10:02+0200\n"
-"PO-Revision-Date: 2018-09-17 10:03+0200\n"
+"PO-Revision-Date: 2018-09-17 10:58+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -75,15 +75,12 @@ msgid "Select individual members to include in the list."
 msgstr "Selecteer individuele leden die aan de lijst moeten worden toegevoegd."
 
 #: models.py
-#, fuzzy
 msgid "Member groups"
-msgstr "Leden"
+msgstr "Ledengroepen"
 
 #: models.py
-#, fuzzy
-#| msgid "Select entire committees to include in the list."
 msgid "Select entire groups to include in the list."
-msgstr "Selecteer commissies die aan de lijst moeten worden toegevoegd."
+msgstr "Selecteer groepen die aan de lijst moeten worden toegevoegd."
 
 #: models.py
 msgid "Automatic response enabled"
