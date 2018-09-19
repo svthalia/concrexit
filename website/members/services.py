@@ -1,8 +1,10 @@
 from datetime import date
+
 from django.db.models import Q
+from django.utils import timezone
 
 from members import emails
-from members.models import Membership
+from members.models import Membership, Member
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -139,3 +141,40 @@ def process_email_change(change_request):
     member.save()
 
     emails.send_email_change_completion_message(change_request)
+
+
+def execute_data_minimisation(dry_run=False):
+    """
+    Clean the profiles of members/users of whom the last membership ended
+    at least 31 days ago
+
+    :param dry_run: does not really remove data if True
+    :return list of processed members
+    """
+    members = (Member.objects
+               .filter(Q(membership__until__isnull=False) |
+                       Q(membership__until__lte=timezone.now().date()))
+               .distinct()
+               .prefetch_related('membership_set', 'profile'))
+    deletion_period = timezone.now().date() - timezone.timedelta(days=31)
+    processed_members = []
+    for member in members:
+        if (member.latest_membership is None or
+                member.latest_membership.until <= deletion_period):
+            processed_members.append(member)
+            profile = member.profile
+            profile.student_number = None
+            profile.phone_number = None
+            profile.address_street = None
+            profile.address_street2 = None
+            profile.address_postal_code = None
+            profile.address_city = None
+            profile.birthday = None
+            profile.emergency_contact_phone_number = None
+            profile.emergency_contact = None
+            profile.website = None
+            profile.bank_account = None
+            if not dry_run:
+                profile.save()
+
+    return processed_members
