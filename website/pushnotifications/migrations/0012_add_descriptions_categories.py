@@ -9,21 +9,21 @@ def forwards_func(apps, schema_editor):
 
     cat = category.objects.using(db_alias).get(key='general')
     cat.description_en = "General association oriented notifications"
-    cat.description_nl = "Algemene vereneging gerelateerde notificaties"
+    cat.description_nl = "Algemene vereniging gerelateerde notificaties"
     cat.save()
 
     cat = category.objects.using(db_alias).get(key='pizza')
-    cat.description_en = "Notifications related to the ordering and " \
-                         "eating pizza's"
-    cat.description_nl = "Notificaties die gerelateerd zijn aan het " \
-                         "bestellen en eten van pizza's"
+    cat.description_en = ("Notifications related to the ordering and "
+                          "eating pizzas")
+    cat.description_nl = ("Notificaties die gerelateerd zijn aan het "
+                          "bestellen en eten van pizza's")
     cat.save()
 
     cat = category.objects.using(db_alias).get(key='event')
-    cat.description_en = "Notifications related to registering and " \
-                         "events in general"
-    cat.description_nl = "Notificaties gerelateerd aan het registreren van " \
-                         "evenementen en evenementen in het algemeneen"
+    cat.description_en = ("Notifications related to registering and "
+                          "events in general")
+    cat.description_nl = ("Notificaties gerelateerd aan het registreren van "
+                          "evenementen en evenementen in het algemeneen")
     cat.save()
 
     cat = category.objects.using(db_alias).get(key='newsletter')
@@ -37,7 +37,7 @@ def forwards_func(apps, schema_editor):
     cat.save()
 
     cat = category.objects.using(db_alias).get(key='photo')
-    cat.description_en = "Notifications about when new photo's are uploaded"
+    cat.description_en = "Notifications about when new photos are uploaded"
     cat.description_nl = "Notificaties voor wanneer foto's zijn geupload"
     cat.save()
 
