@@ -98,7 +98,8 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
     url = models.CharField(
         verbose_name=_('url'),
         max_length=256,
-        null=True
+        null=True,
+        blank=True,
     )
     category = models.ForeignKey(
         Category,
