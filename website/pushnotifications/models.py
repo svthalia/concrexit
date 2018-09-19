@@ -89,6 +89,11 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
         models.TextField,
         verbose_name=_('body')
     )
+    url = models.CharField(
+        verbose_name=_('url'),
+        max_length=256,
+        null=True
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -135,6 +140,10 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
 
                     any_reg_ids = True
 
+                    data = {}
+                    if self.url is not None:
+                        data['url'] = self.url
+
                     result = FCMNotification(
                         api_key=settings.PUSH_NOTIFICATIONS_API_KEY
                     ).notify_multiple_devices(
@@ -143,6 +152,7 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                         message_body=str(self.body),
                         color='#E62272',
                         sound='default',
+                        data_message=data,
                         **kwargs
                     )
 

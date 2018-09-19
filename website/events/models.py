@@ -301,6 +301,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     registration_reminder.category = Category.objects.get(
                         key='event')
                     registration_reminder.time = registration_reminder_time
+                    registration_reminder.url = reverse("events:event",
+                                                        args=[self.id])
+
                     registration_reminder.save()
                     self.registration_reminder = registration_reminder
                     self.registration_reminder.users.set(
