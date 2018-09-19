@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pushnotifications', '0008_scheduledmessage'),
+        ('pushnotifications', '0010_rename_partner_category'),
     ]
 
     operations = [
