@@ -21,6 +21,12 @@ class Category(models.Model, metaclass=ModelTranslateMeta):
         max_length=32,
     )
 
+    description = MultilingualField(
+        models.TextField,
+        _("description"),
+        default=""
+    )
+
     def __str__(self):
         return self.name_en
 
