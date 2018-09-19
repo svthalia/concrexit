@@ -177,8 +177,12 @@ class EventAdminTest(TestCase):
         self.rf = RequestFactory()
 
     def test_overview_link(self):
+        """
+        Check the overview link goes to the correct event and
+        contains the name.
+        """
         self.assertEqual(self.admin.overview_link(self.event),
-                         '<a href="/events/admin/1/">testevenement</a>')
+                         '<a href="/events/admin/1/">testevent</a>')
 
     @mock.patch('events.admin.DoNextModelAdmin.has_change_permission')
     @mock.patch('events.services.is_organiser')
