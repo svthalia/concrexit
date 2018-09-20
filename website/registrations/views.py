@@ -40,7 +40,7 @@ class BecomeAMemberView(TemplateView):
                   name='dispatch', )
 class EntryAdminView(View):
     """
-    View that handles the review processing of entries
+    View that handles the processing of entries
     """
 
     def post(self, request, *args, **kwargs):
@@ -69,6 +69,11 @@ class EntryAdminView(View):
             else:
                 messages.error(request, _('Could not reject %s.') %
                                model_ngettext(entry, 1))
+        elif action == 'resend':
+            try:
+                emails.send_registration_email_confirmation(entry.registration)
+            except Registration.DoesNotExist:
+                pass
 
         if entry_qs.filter(renewal=None).exists():
             content_type = ContentType.objects.get_for_model(Registration)

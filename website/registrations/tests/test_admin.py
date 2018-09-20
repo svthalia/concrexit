@@ -6,6 +6,7 @@ from django.contrib.admin import AdminSite
 from django.contrib.admin.utils import model_ngettext
 from django.http import HttpRequest
 from django.test import SimpleTestCase, TestCase
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member
@@ -45,6 +46,7 @@ class GlobalAdminTest(SimpleTestCase):
 
 
 class RegistrationAdminTest(TestCase):
+    fixtures = ['members.json']
 
     def setUp(self):
         self.site = AdminSite()
@@ -58,40 +60,90 @@ class RegistrationAdminTest(TestCase):
         object_id = None
         form_url = 'form://url'
 
-        entry = Entry(status=Entry.STATUS_REVIEW)
+        registration = Registration.objects.create(
+            status=Entry.STATUS_REVIEW,
+            birthday=timezone.now()
+        )
+        entry = registration.entry_ptr
         entry_get.return_value = entry
 
         self.admin.changeform_view(request, object_id, form_url)
         self.assertFalse(entry_get.called)
         super_method.assert_called_once_with(request, object_id, form_url, {
-            'entry': None
+            'entry': None,
+            'can_review': False,
+            'can_resend': False,
         })
 
         super_method.reset_mock()
+        entry_get.reset_mock()
         request = _get_mock_request(perms=['registrations.review_entries'])
 
         self.admin.changeform_view(request, object_id, form_url)
         self.assertFalse(entry_get.called)
         super_method.assert_called_once_with(request, object_id, form_url, {
-            'entry': None
+            'entry': None,
+            'can_review': False,
+            'can_resend': False,
         })
 
         super_method.reset_mock()
-        object_id = 1
+        entry_get.reset_mock()
+        object_id = entry.pk
 
         self.admin.changeform_view(request, object_id, form_url)
         self.assertTrue(entry_get.called)
         super_method.assert_called_once_with(request, object_id, form_url, {
-            'entry': entry
+            'entry': entry,
+            'can_review': True,
+            'can_resend': False,
         })
 
         super_method.reset_mock()
-        entry.status = Entry.STATUS_ACCEPTED
+        entry_get.reset_mock()
+        registration.status = Entry.STATUS_CONFIRM
+        registration.save()
+        entry = registration.entry_ptr
+        entry_get.return_value = entry
 
         self.admin.changeform_view(request, object_id, form_url)
         self.assertTrue(entry_get.called)
         super_method.assert_called_once_with(request, object_id, form_url, {
-            'entry': None
+            'entry': entry,
+            'can_review': False,
+            'can_resend': True,
+        })
+
+        super_method.reset_mock()
+        entry_get.reset_mock()
+        registration.status = Entry.STATUS_ACCEPTED
+        registration.save()
+        entry = registration.entry_ptr
+        entry_get.return_value = entry
+
+        self.admin.changeform_view(request, object_id, form_url)
+        self.assertTrue(entry_get.called)
+        super_method.assert_called_once_with(request, object_id, form_url, {
+            'entry': entry,
+            'can_review': False,
+            'can_resend': False,
+        })
+
+        super_method.reset_mock()
+        renewal = Renewal.objects.create(
+            status=Entry.STATUS_REVIEW,
+            member=Member.objects.filter(last_name="Wiggers").first()
+        )
+        entry = renewal.entry_ptr
+        entry_get.return_value = entry
+        object_id = entry.pk
+
+        self.admin.changeform_view(request, object_id, form_url)
+        self.assertTrue(entry_get.called)
+        super_method.assert_called_once_with(request, object_id, form_url, {
+            'entry': entry,
+            'can_review': True,
+            'can_resend': False,
         })
 
     @mock.patch('registrations.services.accept_entries')
