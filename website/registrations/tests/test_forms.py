@@ -28,7 +28,7 @@ class MemberRegistrationFormTest(TestCase):
             'privacy_policy': 1,
         }
 
-    def test_is_valid(self):
+    def test_privacy_policy_checked(self):
         with self.subTest("Form is valid"):
             form = forms.MemberRegistrationForm(self.data)
             self.assertTrue(form.is_valid(), msg=dict(form.errors))

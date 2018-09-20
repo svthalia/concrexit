@@ -264,6 +264,10 @@ class Registration(Entry):
                     _('A user with that student number already exists. '
                       'Login using the existing account and renew the '
                       'membership by visiting the account settings.')})
+        elif (self.student_number is None and
+                self.membership_type != Membership.SUPPORTER):
+            errors.update({
+                'student_number': _('This field is required.')})
 
         if self.username is not None and get_user_model().objects.filter(
                 username=self.username).exists():
