@@ -102,7 +102,8 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj is None or not (obj.status == Entry.STATUS_REJECTED or
-                               obj.status == Entry.STATUS_ACCEPTED):
+                               obj.status == Entry.STATUS_ACCEPTED or
+                               obj.status == Entry.STATUS_COMPLETED):
             return ['status', 'created_at', 'updated_at']
         else:
             return [field.name for field in self.model._meta.get_fields()
