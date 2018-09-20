@@ -99,10 +99,7 @@ class ConfirmEmailView(View, TemplateResponseMixin):
         if processed == 0:
             return redirect('registrations:register')
 
-        try:
-            emails.send_new_registration_board_message(entry.get())
-        except Entry.DoesNotExist:
-            pass
+        emails.send_new_registration_board_message(entry.get())
 
         return self.render_to_response({})
 

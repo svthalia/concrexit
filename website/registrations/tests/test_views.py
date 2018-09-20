@@ -308,23 +308,11 @@ class ConfirmEmailViewTest(TestCase):
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(response.url, '/registration/register/')
 
-            with self.subTest('Redirect when registration does not exist'):
+            with self.subTest('Redirect when registration confirm gives error'):
                 confirm_entry.side_effect = ValidationError(message='Error')
-                board_mail.side_effect = Registration.DoesNotExist
 
                 response = self.client.get(reverse(
                     'registrations:confirm-email', args=(self.entry.pk,)))
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, '/registration/register/')
-
-            with self.subTest('Redirect when entry does not exist'):
-                confirm_entry.return_value = 0
-                qs_mock.get.side_effect = Entry.DoesNotExist
-
-                response = self.client.get(reverse(
-                    'registrations:confirm-email',
-                    args=('00000000-0000-0000-0000-000000000000',)
-                ))
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(response.url, '/registration/register/')
 

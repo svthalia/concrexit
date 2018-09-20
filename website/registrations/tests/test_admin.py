@@ -184,6 +184,21 @@ class RegistrationAdminTest(TestCase):
                                        'membership', 'optin_mailinglist',
                                        'optin_birthday'])
 
+        fields = self.admin.get_readonly_fields(request, Registration(
+            status=Entry.STATUS_COMPLETED
+        ))
+        self.assertCountEqual(fields, ['created_at', 'updated_at', 'status',
+                                       'length', 'membership_type', 'remarks',
+                                       'entry_ptr', 'username',
+                                       'first_name', 'last_name',
+                                       'birthday', 'language', 'email',
+                                       'phone_number', 'student_number',
+                                       'programme', 'starting_year',
+                                       'address_street', 'address_street2',
+                                       'address_postal_code', 'address_city',
+                                       'membership', 'optin_mailinglist',
+                                       'optin_birthday'])
+
     def test_get_actions(self):
         actions = self.admin.get_actions(_get_mock_request([]))
         self.assertCountEqual(actions, ['delete_selected'])
