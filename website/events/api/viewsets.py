@@ -2,8 +2,9 @@
 from datetime import datetime
 
 from django.utils import timezone
+from pytz.exceptions import InvalidTimeError
 from rest_framework import viewsets, filters
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError, PermissionDenied, NotFound
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
@@ -14,7 +15,6 @@ from rest_framework.permissions import (
 )
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from pytz.exceptions import InvalidTimeError
 
 from events import services
 from events.api.permissions import UnpublishedEventPermissions
@@ -89,7 +89,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
     def get_serializer_context(self):
         return super().get_serializer_context()
 
-    @detail_route(methods=['get', 'post'])
+    @action(detail=True, methods=['get', 'post'])
     def registrations(self, request, pk):
         """
         Defines a custom route for the event's registrations,
@@ -137,7 +137,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
         return Response(serializer.data)
 
-    @list_route(permission_classes=(IsAuthenticatedOrReadOnly,))
+    @action(detail=False, permission_classes=(IsAuthenticatedOrReadOnly,))
     def calendarjs(self, request):
         """
         Defines a custom route that outputs the correctly formatted
@@ -158,7 +158,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
                 queryset, many=True, context={'member': request.member})
         return Response(serializer.data)
 
-    @list_route(permission_classes=(IsAdminUser, UnpublishedEventPermissions,))
+    @action(detail=False, permission_classes=(IsAdminUser, UnpublishedEventPermissions,))
     def unpublished(self, request):
         """
         Defines a custom route that outputs the correctly formatted

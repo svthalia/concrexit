@@ -1,6 +1,6 @@
 from django.utils.translation import get_language_from_request
 from rest_framework import permissions
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -42,7 +42,7 @@ class DeviceViewSet(ModelViewSet):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
 
-    @list_route()
+    @action(detail=False)
     def categories(self, request):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)

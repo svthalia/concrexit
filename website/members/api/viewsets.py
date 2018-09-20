@@ -1,10 +1,11 @@
 import copy
 from datetime import datetime
+
 from django.utils import timezone
 from pytz.exceptions import InvalidTimeError
 from rest_framework import permissions
 from rest_framework import viewsets, filters
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 
@@ -53,7 +54,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
                 birthdays.append(bday)
         return birthdays
 
-    @list_route()
+    @action(detail=False)
     def birthdays(self, request):
         try:
             start = timezone.make_aware(
@@ -81,7 +82,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
         serializer = MemberBirthdaySerializer(birthdays, many=True)
         return Response(serializer.data)
 
-    @list_route()
+    @action(detail=False)
     def me(self, request):
         kwargs = {
             'context': self.get_serializer_context(),

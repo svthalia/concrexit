@@ -1,16 +1,15 @@
 from django.db import IntegrityError
-
 from rest_framework import permissions
-from rest_framework.generics import get_object_or_404
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from rest_framework.mixins import ListModelMixin
-from rest_framework.decorators import list_route
-from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.exceptions import (ValidationError, NotFound,
                                        PermissionDenied)
+from rest_framework.generics import get_object_or_404
+from rest_framework.mixins import ListModelMixin
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from pizzas.models import Product, PizzaEvent, Order
 from pizzas.api import serializers
+from pizzas.models import Product, PizzaEvent, Order
 
 
 class PizzaViewset(GenericViewSet, ListModelMixin):
@@ -28,7 +27,7 @@ class PizzaViewset(GenericViewSet, ListModelMixin):
             return Response(serializer.data)
         raise PermissionDenied
 
-    @list_route()
+    @action(detail=False)
     def event(self, request):
         event = PizzaEvent.current()
 
