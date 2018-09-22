@@ -7,19 +7,24 @@
     <h1>{% trans "renewal" %}</h1>
 
     <p class="tcenter">
-    {% blocktrans trimmed %}
-        A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.<br/>
-        Note: Only Computing Science and Information Sciences students at the Radboud University can become a member.<br/><br/>
-        It is still possible to be associated with Thalia, even if you do not study Computing Science or Information Sciences (anymore): You can become a supporter. For at least € {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.
-    {% endblocktrans %}
+        {% blocktrans trimmed %}
+            A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.<br/>
+            Note: Only Computing Science and Information Sciences students at the Radboud University can become a member.<br/>
+            <br/>
+            It is still possible to be associated with Thalia, even if you do not study Computing Science or Information
+            Sciences (anymore): You can become a supporter. For at least € {{ year_fees }} per year, you too can enjoy
+            everything Thalia has to offer.
+        {% endblocktrans %}
     </p>
 
     <p class="tcenter">
-    {% blocktrans trimmed %}
-        Are you currently paying per year for your membership? During the lecture year you're allowed to change your membership to one for your entire study duration without paying a double fee.
-        Choose 'until graduation' option in the form below and click send. Just make you currently have an active membership.<br/><br/>
-        If your membership is almost expiring or has expired you can renew it starting one month before expiration.
-    {% endblocktrans %}
+        {% blocktrans trimmed %}
+            Are you currently paying per year for your membership? During the lecture year you're allowed to change your
+            membership to one for your entire study duration without paying a double fee.
+            Choose 'until graduation' option in the form below and click send. Just make you currently have an active
+            membership.<br/><br/>
+            If your membership is almost expiring or has expired you can renew it starting one month before expiration.
+        {% endblocktrans %}
     </p>
 
     <hr/>
@@ -36,55 +41,73 @@
     <hr/>
 
     {% if membership is None %}
-    <p class="tcenter">
-    {% blocktrans trimmed %}
-        We do not have any previous memberships in our system. Contact the board to renew your membership.
-    {% endblocktrans %}
-    </p>
+        <p class="tcenter">
+            {% blocktrans trimmed %}
+                We do not have any previous memberships in our system. Contact the board to renew your membership.
+            {% endblocktrans %}
+        </p>
     {% elif membership.type == 'honorary' %}
-    <p class="tcenter">
-    {% blocktrans trimmed %}
-        You're a honorary member. That means that you never have to renew your membership.
-    {% endblocktrans %}
-    </p>
-    {% elif membership.type == 'supporter' %}
-    <p class="tcenter">
-    {% blocktrans trimmed %}
-        You're a supporter. Contact the board to renew your membership.
-    {% endblocktrans %}
-    </p>
+        <p class="tcenter">
+            {% blocktrans trimmed %}
+                You're a honorary member. That means that you never have to renew your membership.
+            {% endblocktrans %}
+        </p>
+    {% elif membership.type == 'supporter' and not was_member %}
+        <p class="tcenter">
+            {% blocktrans trimmed %}
+                You're a supporter. Contact the board to renew your membership.
+            {% endblocktrans %}
+        </p>
     {% elif membership.until is None %}
-    <p class="tcenter">
-    {% blocktrans trimmed %}
-        You currently have an active membership for your entire study duration.<br/>
-        Did you graduate or stop with your studies for some other reason?<br/>
-        Please let us know by sending an email to info@thalia.nu.
-    {% endblocktrans %}
-    </p>
+        <p class="tcenter">
+            {% blocktrans trimmed %}
+                You currently have an active membership for your entire study duration.<br/>
+                Did you graduate or stop with your studies for some other reason?<br/>
+                Please let us know by sending an email to info@thalia.nu.
+            {% endblocktrans %}
+        </p>
     {% else %}
-    {% for error in form.errors.items %}
-        {% for message in error.1 %}
-        <div class="alert alert-error">
-            {{ message }}
-            <button type="button" class="close"><span class="alert-icon-close"></span></button>
-        </div>
+        {% for error in form.errors.items %}
+            {% for message in error.1 %}
+                <div class="alert alert-error">
+                    {{ message }}
+                    <button type="button" class="close"><span class="alert-icon-close"></span></button>
+                </div>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
-    <form method="post" enctype="multipart/form-data" class="form-horizontal span8 offset2">
-        {% csrf_token %}
+        <form method="post" enctype="multipart/form-data" class="form-horizontal span8 offset2">
+            {% csrf_token %}
 
-        {% form_field form 'length' %}
+            {% if not membership.type == 'supporter' %}
+                {% form_field form 'membership_type' %}
+                {% form_field form 'length' %}
+            {% else %}
+                <div class="control-group row">
+                    <label class="control-label" for="id_membership_type">{% trans 'membership type'|capfirst %}:</label>
+                    <div class="controls">
+                        <input type="text" readonly disabled value="{% trans 'Supporter' %}"/>
+                    </div>
+                </div>
+                <div class="control-group row">
+                    <label class="control-label" for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
+                    <div class="controls">
+                        <input type="text" readonly disabled value="{% trans 'One year' %}"/>
+                    </div>
+                </div>
+            {% endif %}
 
-        <div class="control-group row">
-            <div class="controls">
-                <label class="checkbox">
-                    <input type="checkbox" name="privacy_policy" required="" id="id_privacy_policy">
-                    {% blocktrans trimmed %}I accept the <a target="_blank" href="{{ privacy_policy_url }}">privacy policy</a>{% endblocktrans %}.
-                </label>
+            <div class="control-group row">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="privacy_policy" required="" id="id_privacy_policy">
+                        {% blocktrans trimmed %}
+                            I accept the <a target="_blank" href="{{ privacy_policy_url }}">privacy policy</a>
+                        {% endblocktrans %}.
+                    </label>
+                </div>
             </div>
-        </div>
 
-        <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-style1 pull-right login" />
-    </form>
+            <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-style1 pull-right login"/>
+        </form>
     {% endif %}
 {% endblock %}

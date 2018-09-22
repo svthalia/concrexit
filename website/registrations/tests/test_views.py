@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, QueryDict
 from django.template.defaultfilters import floatformat
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -425,28 +425,35 @@ class RenewalFormViewTest(TestCase):
         )
         self.view.request = MagicMock()
 
-        context = self.view.get_context_data(form=MagicMock())
-        self.assertEqual(len(context), 7)
-        self.assertEqual(context['year_fees'], floatformat(
-            settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2))
-        self.assertEqual(context['study_fees'], floatformat(
-            settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2))
-
-        with self.subTest("With latest membership"):
-            self.view.request.member.latest_membership = membership
-
+        with mock.patch('members.models.Membership.objects') as qs_mock:
+            Membership.objects.filter().exists.return_value = True
             context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(context['membership'], membership)
-            self.assertEqual(context['membership_type'], _('Member'))
-            self.assertEqual(context['privacy_policy_url'],
-                             reverse('privacy-policy'))
+            self.assertEqual(len(context), 8)
+            self.assertEqual(context['year_fees'], floatformat(
+                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2))
+            self.assertEqual(context['study_fees'], floatformat(
+                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2))
+            self.assertEqual(context['was_member'], True)
 
-        with self.subTest('Without latest membership'):
-            self.view.request.member.latest_membership = None
-
+            Membership.objects.filter().exists.return_value = False
             context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(context['membership'], None)
-            self.assertFalse('membership_type' in context)
+            self.assertEqual(context['was_member'], False)
+
+            with self.subTest("With latest membership"):
+                self.view.request.member.latest_membership = membership
+
+                context = self.view.get_context_data(form=MagicMock())
+                self.assertEqual(context['membership'], membership)
+                self.assertEqual(context['membership_type'], _('Member'))
+                self.assertEqual(context['privacy_policy_url'],
+                                 reverse('privacy-policy'))
+
+            with self.subTest('Without latest membership'):
+                self.view.request.member.latest_membership = None
+
+                context = self.view.get_context_data(form=MagicMock())
+                self.assertEqual(context['membership'], None)
+                self.assertFalse('membership_type' in context)
 
     def test_get_form(self):
         self.view.request = _get_mock_request()
@@ -479,14 +486,32 @@ class RenewalFormViewTest(TestCase):
     @mock.patch('django.views.generic.FormView.post')
     def test_post(self, super_post):
         request = _get_mock_request()
+        request.member = MagicMock()
         request.member.pk = 2
+        request.member.latest_membership = Membership(
+            until=timezone.now().date(),
+            type=Membership.MEMBER
+        )
         self.view.request = request
 
-        self.view.post(request)
+        with self.subTest('Member type'):
+            request.POST = QueryDict()
+            request.member.latest_membership.type = Membership.MEMBER
+            self.view.post(request)
 
-        request = super_post.call_args[0][0]
-        self.assertEqual(request.POST['member'], 2)
-        self.assertEqual(request.POST['membership_type'], Membership.MEMBER)
+            request = super_post.call_args[0][0]
+            self.assertEqual(request.POST['member'], 2)
+            self.assertFalse('membership_type' in request.POST)
+
+        with self.subTest('Benefactor type'):
+            request.POST = QueryDict()
+            request.member.latest_membership.type = Membership.SUPPORTER
+            self.view.post(request)
+
+            request = super_post.call_args[0][0]
+            self.assertEqual(request.POST['member'], 2)
+            self.assertEqual(request.POST['membership_type'], Membership.SUPPORTER)
+            self.assertEqual(request.POST['length'], Entry.MEMBERSHIP_YEAR)
 
     @mock.patch('registrations.emails.send_new_renewal_board_message')
     def test_form_valid(self, board_mail):

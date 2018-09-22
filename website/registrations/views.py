@@ -154,6 +154,8 @@ class RenewalFormView(FormView):
         context['study_fees'] = floatformat(settings.MEMBERSHIP_PRICES[
                                                 Entry.MEMBERSHIP_STUDY], 2)
         context['membership'] = self.request.member.latest_membership
+        context['was_member'] = (Membership.objects.filter(user=self.request.member,
+                                                           type=Membership.MEMBER).exists())
         if context['membership'] is not None:
             context['membership_type'] = (context['membership']
                                           .get_type_display())
@@ -182,8 +184,10 @@ class RenewalFormView(FormView):
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
+        if request.member.latest_membership.type == Membership.SUPPORTER:
+            request.POST['membership_type'] = Membership.SUPPORTER
+            request.POST['length'] = Entry.MEMBERSHIP_YEAR
         request.POST['member'] = request.member.pk
-        request.POST['membership_type'] = Membership.MEMBER
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
