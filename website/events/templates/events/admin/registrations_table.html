@@ -39,7 +39,7 @@
                 {% endif %}
                 <td data-sortval="{{ registration.date|date:'c' }}">{{ registration.date }}</td>
                 {% if cancellations %}
-                <td data-sortval="{{ registration.date|date:'c' }}">{{ registration.date_cancelled }}</td>
+                <td data-sortval="{{ registration.date_cancelled|date:'c' }}">{{ registration.date_cancelled }}</td>
                 {% endif %}
                 {% for field in registration.information_fields %}
                     {% if not field.value %}
