@@ -5,7 +5,7 @@ from django.core import mail
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import timezone, translation
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member, Membership, Profile
@@ -83,6 +83,7 @@ class RegistrationTest(TestCase):
         )
 
     def setUp(self):
+        translation.activate('en')
         self.registration.refresh_from_db()
 
     def test_str(self):
@@ -156,7 +157,7 @@ class RegistrationTest(TestCase):
         self.registration.programme = None
         with self.assertRaisesMessage(
                 ValidationError,
-                "{'programme': ['Dit veld is vereist.']}"
+                "{'programme': ['This field is required.']}"
         ):
             self.registration.clean()
         self.registration.membership_type = Membership.SUPPORTER
@@ -166,7 +167,7 @@ class RegistrationTest(TestCase):
         self.registration.starting_year = None
         with self.assertRaisesMessage(
                 ValidationError,
-                "{'starting_year': ['Dit veld is vereist.']}"
+                "{'starting_year': ['This field is required.']}"
         ):
             self.registration.clean()
         self.registration.membership_type = Membership.SUPPORTER
