@@ -131,6 +131,7 @@ class EventAdmin(DoNextModelAdmin):
         event_date = timezone.make_naive(obj.start)
         return _date(event_date, "l d b Y, G:i")
     event_date.short_description = _('Event Date')
+    event_date.admin_order_field = 'start'
 
     def registration_date(self, obj):
         if obj.registration_start is not None:
@@ -140,6 +141,7 @@ class EventAdmin(DoNextModelAdmin):
 
         return _date(start_date, "l d b Y, G:i")
     registration_date.short_description = _('Registration Start')
+    registration_date.admin_order_field = 'registration_start'
 
     def edit_link(self, obj):
         return _('Edit')
