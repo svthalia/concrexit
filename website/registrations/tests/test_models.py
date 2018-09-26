@@ -97,8 +97,21 @@ class RegistrationTest(TestCase):
         self.registration.clean()
 
     def test_unique_email_user(self):
-        get_user_model().objects.create_user('johnnydoe',
-                                             'johndoe@example.com')
+        self.registration.clean()
+        user = get_user_model().objects.create_user('johnnydoe',
+                                                    'johndoe@example.com')
+
+        with self.assertRaises(ValidationError):
+            self.registration.clean()
+
+        user.delete()
+        self.registration.clean()
+        Registration.objects.create(
+            first_name='John',
+            last_name='Doe',
+            birthday=timezone.now().replace(year=1990),
+            email='johndoe@example.com',
+        )
 
         with self.assertRaises(ValidationError):
             self.registration.clean()
@@ -111,6 +124,18 @@ class RegistrationTest(TestCase):
             'johnnydoe', 'johndoe2@example.com')
         Profile.objects.create(
             user=user,
+            student_number='s1234567'
+        )
+
+        with self.assertRaises(ValidationError):
+            self.registration.clean()
+
+        user.delete()
+        self.registration.clean()
+        Registration.objects.create(
+            first_name='John',
+            last_name='Doe',
+            birthday=timezone.now().replace(year=1990),
             student_number='s1234567'
         )
 

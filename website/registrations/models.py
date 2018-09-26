@@ -245,7 +245,9 @@ class Registration(Entry):
         super().clean()
         errors = {}
 
-        if get_user_model().objects.filter(email=self.email).exists():
+        if (get_user_model().objects.filter(email=self.email).exists() or
+            Registration.objects.filter(email=self.email)
+                .exclude(pk=self.pk).exists()):
             errors.update({
                 'email': _('A user with that email address already exists. '
                            'Login using the existing account and renew the '
