@@ -1,4 +1,10 @@
 """Views provided by the events package"""
+from hashlib import sha1
+import hmac
+from base64 import decodebytes, encodebytes, urlsafe_b64decode, \
+    urlsafe_b64encode
+from urllib.parse import quote
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
@@ -12,6 +18,7 @@ from events import services
 from events.exceptions import RegistrationError
 from .forms import FieldsForm
 from .models import Event, Registration
+from thaliawebsite import settings
 
 
 class EventIndex(TemplateView):
@@ -62,6 +69,8 @@ class EventDetail(DetailView):
                 self.request.member, event)
 
         context['date_now'] = timezone.now()
+
+        context['maps_url'] = services.create_google_maps_url(event)
 
         return context
 

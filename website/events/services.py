@@ -1,11 +1,16 @@
+import hmac
+from hashlib import sha1
+from base64 import urlsafe_b64decode, urlsafe_b64encode
 from collections import OrderedDict
 
+from django.template.defaultfilters import urlencode
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, get_language
 
 from events import emails
 from events.exceptions import RegistrationError
 from events.models import Registration, RegistrationInformationField
+from thaliawebsite.settings import settings
 
 
 def is_user_registered(member, event):
@@ -232,3 +237,22 @@ def registration_fields(member, event):
     else:
         raise RegistrationError(
             _("You are not allowed to update this registration."))
+
+
+def create_google_maps_url(event):
+    maps_url = (f"/maps/api/staticmap?"
+                f"center={ urlencode(event.map_location) }&"
+                f"zoom=13&size=450x250&"
+                f"markers={ urlencode(event.map_location) }&"
+                f"key={ settings.GOOGLE_MAPS_API_KEY }")
+
+    decoded_key = urlsafe_b64decode(settings.GOOGLE_MAPS_API_SECRET)
+    print(type(decoded_key))
+
+    signature = hmac.new(decoded_key, maps_url.encode(), sha1)
+
+    encoded_signature = urlsafe_b64encode(signature.digest())
+
+    maps_url += f"&signature={encoded_signature.decode('utf-8')}"
+
+    return "https://maps.googleapis.com" + maps_url
