@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _, get_language
 from events import emails
 from events.exceptions import RegistrationError
 from events.models import Registration, RegistrationInformationField
-from thaliawebsite.settings import settings
+from django.conf import settings
 
 
 def is_user_registered(member, event):
@@ -247,7 +247,6 @@ def create_google_maps_url(event):
                 f"key={ settings.GOOGLE_MAPS_API_KEY }")
 
     decoded_key = urlsafe_b64decode(settings.GOOGLE_MAPS_API_SECRET)
-    print(type(decoded_key))
 
     signature = hmac.new(decoded_key, maps_url.encode(), sha1)
 
