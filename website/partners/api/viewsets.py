@@ -1,13 +1,13 @@
 from datetime import datetime
 
 from django.utils import timezone
+from pytz.exceptions import InvalidTimeError
 from rest_framework import viewsets, filters
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, \
     IsAuthenticated
 from rest_framework.response import Response
-from pytz.exceptions import InvalidTimeError
 
 from partners.api.serializers import PartnerEventCalendarJSSerializer, \
     PartnerEventSerializer, PartnerSerializer
@@ -31,7 +31,7 @@ class PartnerViewset(viewsets.ReadOnlyModelViewSet):
     serializer_class = PartnerSerializer
     queryset = Partner.objects.filter(is_active=True)
 
-    @list_route(permission_classes=(IsAuthenticatedOrReadOnly,))
+    @action(detail=False, permission_classes=(IsAuthenticatedOrReadOnly,))
     def calendarjs(self, request):
         end, start = _extract_date_range(request)
 
