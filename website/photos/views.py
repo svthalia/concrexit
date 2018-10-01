@@ -36,18 +36,19 @@ def index(request):
         albums = paginator.page(paginator.num_pages)
         page = paginator.num_pages
 
-    page_range = range(1, paginator.num_pages + 1)
-    if paginator.num_pages > 7:
-        if page > 3:
-            page_range_end = paginator.num_pages
-            if page + 3 <= paginator.num_pages:
-                page_range_end = page + 3
+    # Show the two pages before and after the current page
+    page_range_start = max(1, page - 2)
+    page_range_stop = min(page + 3, paginator.num_pages + 1)
 
-            page_range = range(page - 2, page_range_end)
-            while page_range.stop - page_range.start < 5:
-                page_range = range(page_range.start - 1, page_range.stop)
-        else:
-            page_range = range(1, 6)
+    # Add extra pages if we show less than 5 pages
+    page_range_start = min(page_range_start, page_range_stop - 5)
+    page_range_start = max(1, page_range_start)
+
+    # Add extra pages if we still show less than 5 pages
+    page_range_stop = max(page_range_stop, page_range_start + 5)
+    page_range_stop = min(page_range_stop, paginator.num_pages + 1)
+
+    page_range = range(page_range_start, page_range_stop)
 
     return render(request, 'photos/index.html', {'albums': albums,
                                                  'page_range': page_range})

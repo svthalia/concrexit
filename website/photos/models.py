@@ -9,22 +9,13 @@ from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from PIL import Image, ExifTags
+from PIL import Image
 
+from photos.services import photo_determine_rotation
 from utils.translation import ModelTranslateMeta, MultilingualField
 
-COVER_FILENAME = 'cover.jpg'
 
-EXIF_ORIENTATION = {
-    1: 0,
-    2: 0,
-    3: 180,
-    4: 180,
-    5: 90,
-    6: 90,
-    7: 270,
-    8: 270,
-}
+COVER_FILENAME = 'cover.jpg'
 
 
 logger = logging.getLogger(__name__)
@@ -35,18 +26,6 @@ def photo_uploadto(instance, filename):
     extension = os.path.splitext(filename)[1]
     new_filename = str(num).zfill(4) + extension
     return os.path.join(Album.photosdir, instance.album.dirname, new_filename)
-
-
-def determine_rotation(pil_image):
-    if isinstance(pil_image, JpegImageFile) and pil_image._getexif():
-        exif = {
-            ExifTags.TAGS[k]: v
-            for k, v in pil_image._getexif().items()
-            if k in ExifTags.TAGS
-        }
-        if exif.get('Orientation'):
-            return EXIF_ORIENTATION[exif.get('Orientation')]
-    return 0
 
 
 class Photo(models.Model):
@@ -98,7 +77,7 @@ class Photo(models.Model):
             image_path, _ext = os.path.splitext(image_path)
             image_path = "{}.jpg".format(image_path)
 
-            self.rotation = determine_rotation(image)
+            self.rotation = photo_determine_rotation(image)
 
             # Image.thumbnail does not upscale an image that is smaller
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
