@@ -493,12 +493,12 @@ class RenewalFormViewTest(TestCase):
 
         with self.subTest('Benefactor type'):
             request.POST = QueryDict()
-            request.member.latest_membership.type = Membership.SUPPORTER
+            request.member.latest_membership.type = Membership.BENEFACTOR
             self.view.post(request)
 
             request = super_post.call_args[0][0]
             self.assertEqual(request.POST['member'], 2)
-            self.assertEqual(request.POST['membership_type'], Membership.SUPPORTER)
+            self.assertEqual(request.POST['membership_type'], Membership.BENEFACTOR)
             self.assertEqual(request.POST['length'], Entry.MEMBERSHIP_YEAR)
 
     @mock.patch('registrations.emails.send_new_renewal_board_message')

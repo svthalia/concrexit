@@ -112,20 +112,20 @@ class EmailsTest(TestCase):
             since=timezone.now().replace(year=2017, month=9, day=6),
             until=None
         )
-        cls.supporter = Member.objects.create(
+        cls.benefactor = Member.objects.create(
             username='test6',
             first_name='Test6',
             last_name='Example',
             email='test6@example.org'
         )
         Membership.objects.create(
-            user=cls.supporter,
-            type=Membership.SUPPORTER,
+            user=cls.benefactor,
+            type=Membership.BENEFACTOR,
             since=timezone.now().replace(year=2017, month=9, day=1),
             until=timezone.now().replace(year=2018, month=9, day=1)
         )
         Profile.objects.create(
-            user=cls.supporter,
+            user=cls.benefactor,
             language='nl',
         )
         cls.honorary_member = Member.objects.create(

@@ -181,8 +181,8 @@ class RenewalFormView(FormView):
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
-        if request.member.latest_membership.type == Membership.SUPPORTER:
-            request.POST['membership_type'] = Membership.SUPPORTER
+        if request.member.latest_membership.type == Membership.BENEFACTOR:
+            request.POST['membership_type'] = Membership.BENEFACTOR
             request.POST['length'] = Entry.MEMBERSHIP_YEAR
         request.POST['member'] = request.member.pk
         return super().post(request, *args, **kwargs)

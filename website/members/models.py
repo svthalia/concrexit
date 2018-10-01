@@ -513,12 +513,12 @@ class Profile(models.Model):
 class Membership(models.Model):
 
     MEMBER = 'member'
-    SUPPORTER = 'supporter'
+    BENEFACTOR = 'supporter'
     HONORARY = 'honorary'
 
     MEMBERSHIP_TYPES = (
         (MEMBER, _('Member')),
-        (SUPPORTER, _('Supporter')),
+        (BENEFACTOR, _('Benefactor')),
         (HONORARY, _('Honorary Member')))
 
     type = models.CharField(

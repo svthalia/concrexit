@@ -156,26 +156,26 @@ class MembershipFilterTest(TestCase):
         profiles = [Profile(user_id=i) for i in range(7)]
         Profile.objects.bulk_create(profiles)
 
-        Membership(user_id=0, type='honorary',
+        Membership(user_id=0, type=Membership.HONORARY,
                    until=date.today() + timedelta(days=1)).save()
 
-        Membership(user_id=1, type='supporter',
+        Membership(user_id=1, type=Membership.BENEFACTOR,
                    until=date.today() + timedelta(days=1)).save()
 
-        Membership(user_id=2, type='member',
+        Membership(user_id=2, type=Membership.MEMBER,
                    until=date.today() + timedelta(days=1)).save()
 
-        Membership(user_id=3, type='member',
+        Membership(user_id=3, type=Membership.MEMBER,
                    until=date.today() + timedelta(days=1)).save()
-        Membership(user_id=3, type='member',
+        Membership(user_id=3, type=Membership.MEMBER,
                    until=date.today() - timedelta(days=365*10)).save()
 
-        Membership(user_id=4, type='supporter',
+        Membership(user_id=4, type=Membership.BENEFACTOR,
                    until=date.today() + timedelta(days=1)).save()
-        Membership(user_id=4, type='member',
+        Membership(user_id=4, type=Membership.MEMBER,
                    until=date.today() - timedelta(days=365*10)).save()
 
-        Membership(user_id=5, type='member',
+        Membership(user_id=5, type=Membership.MEMBER,
                    until=date.today() - timedelta(days=365*10)).save()
 
         # user_id=6 has no memberships at all

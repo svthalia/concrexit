@@ -17,7 +17,7 @@ from rest_framework.response import Response
 
 import pizzas.services
 from members import services, emails
-from members.models import EmailChange
+from members.models import EmailChange, Membership
 from . import models
 from .forms import ProfileForm, EmailChangeForm
 from .services import member_achievements
@@ -150,7 +150,7 @@ def profile(request, pk=None):
     elif member.has_been_member():
         membership_type = _("Former member")
     elif member.latest_membership:
-        membership_type = _("Former supporter")
+        membership_type = _("Former benefactor")
 
     return render(request, 'members/profile.html',
                   {
@@ -212,7 +212,7 @@ def iban_export(request):
 
 @login_required
 def statistics(request):
-    member_types = ("member", "supporter", "honorary")
+    member_types = (t[0] for t in Membership.MEMBERSHIP_TYPES)
 
     # The numbers
     total = models.Member.current_members.count()

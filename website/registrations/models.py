@@ -271,12 +271,12 @@ class Registration(Entry):
                 'username': _('A user with that username already exists.')})
 
         if (self.starting_year is None and
-                self.membership_type != Membership.SUPPORTER):
+                self.membership_type != Membership.BENEFACTOR):
             errors.update({
                 'starting_year': _('This field is required.')})
 
         if (self.programme is None and
-                self.membership_type != Membership.SUPPORTER):
+                self.membership_type != Membership.BENEFACTOR):
             errors.update({
                 'programme': _('This field is required.')})
 
@@ -344,10 +344,10 @@ class Renewal(Entry):
                 'length': _('You cannot renew your membership at this moment.')
             })
 
-        if (self.membership_type == Membership.SUPPORTER and
+        if (self.membership_type == Membership.BENEFACTOR and
                 self.length == Entry.MEMBERSHIP_STUDY):
             errors.update({
-                'length': _('Supporters cannot have a membership '
+                'length': _('Benefactors cannot have a membership '
                             'that lasts their entire study duration.')
             })
 

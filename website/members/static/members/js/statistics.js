@@ -59,7 +59,7 @@ $(function () {
                 name: gettext('Members'),
                 y: total_stats_member_type.member
             },{
-                name: gettext('Supporters'),
+                name: gettext('Benefactors'),
                 y: total_stats_member_type.supporter
             },{
                 name: gettext('Honorary Members'),
@@ -139,12 +139,12 @@ $(function () {
     });
 
 
-    $('#supportersYearChart').highcharts({
+    $('#benefactorsYearChart').highcharts({
         chart: {
             type: 'pie'
         },
         title: {
-            text: gettext("Supporters per year"),
+            text: gettext("Benefactors per year"),
         },
         plotOptions: {
             pie: pieOptions

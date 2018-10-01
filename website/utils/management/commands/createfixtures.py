@@ -333,7 +333,7 @@ class Command(BaseCommand):
         membership.until = random.choice([_faker.date_time_between(
             start_date='-2y', end_date='+2y', tzinfo=None), None])
         membership.type = random.choice(
-            ['member', 'supporter', 'honorary'])
+            [t[0] for t in Membership.MEMBERSHIP_TYPES])
 
         user.save()
         profile.save()
