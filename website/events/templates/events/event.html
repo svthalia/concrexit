@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bleach_tags thumbnail %}
+{% load i18n static bleach_tags thumbnail google_map_url %}
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -200,7 +200,7 @@
 
     <div class="span6">
         <div class="location-map">
-            <img src="{{ maps_url }}"/>
+            <img src="{% google_map_url event.location %}" alt="{{ event.location }}" />
         </div>
     </div>
 </div>
