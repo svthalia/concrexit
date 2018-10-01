@@ -212,7 +212,7 @@ def iban_export(request):
 
 @login_required
 def statistics(request):
-    member_types = (t[0] for t in Membership.MEMBERSHIP_TYPES)
+    member_types = [t[0] for t in Membership.MEMBERSHIP_TYPES]
 
     # The numbers
     total = models.Member.current_members.count()
