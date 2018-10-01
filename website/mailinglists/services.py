@@ -2,7 +2,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from activemembers.models import MemberGroupMembership, Mentorship, Board
-from members.models import Member
+from members.models import Member, Membership
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -36,8 +36,8 @@ def get_automatic_lists():
         ['leden', 'members'], '[THALIA]',
         Member.all_with_membership('member'), True, True, True)
     lists += _create_automatic_list(
-        ['begunstigers', 'supporters'], '[THALIA]', Member.all_with_membership(
-            'supporter'), multilingual=True)
+        ['begunstigers', 'benefactors'], '[THALIA]', Member.all_with_membership(
+            Membership.BENEFACTOR), multilingual=True)
     lists += _create_automatic_list(
         ['ereleden', 'honorary'], '[THALIA]', Member.all_with_membership(
             'honorary'), multilingual=True)

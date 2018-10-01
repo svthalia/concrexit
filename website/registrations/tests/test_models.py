@@ -160,7 +160,7 @@ class RegistrationTest(TestCase):
                 "{'programme': ['This field is required.']}"
         ):
             self.registration.clean()
-        self.registration.membership_type = Membership.SUPPORTER
+        self.registration.membership_type = Membership.BENEFACTOR
         self.registration.clean()
 
     def test_require_starting_year_members(self):
@@ -170,7 +170,7 @@ class RegistrationTest(TestCase):
                 "{'starting_year': ['This field is required.']}"
         ):
             self.registration.clean()
-        self.registration.membership_type = Membership.SUPPORTER
+        self.registration.membership_type = Membership.BENEFACTOR
         self.registration.clean()
 
     def test_save(self):
@@ -269,9 +269,9 @@ class RenewalTest(TestCase):
 
         self.renewal.clean()
 
-    def test_supporter_no_study_length(self):
+    def test_benefactor_no_study_length(self):
         self.renewal.length = Entry.MEMBERSHIP_STUDY
-        self.renewal.membership_type = Membership.SUPPORTER
+        self.renewal.membership_type = Membership.BENEFACTOR
         membership = self.member.latest_membership
         membership.until = timezone.now()
         membership.save()
@@ -283,7 +283,7 @@ class RenewalTest(TestCase):
             self.renewal.clean()
         except ValidationError as e:
             self.assertCountEqual(e.error_dict, {
-                'length': 'Supporters cannot have a membership '
+                'length': 'Benefactors cannot have a membership '
                           'that lasts their entire study duration.',
             })
 

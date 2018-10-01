@@ -12,7 +12,7 @@
             Note: Only Computing Science and Information Sciences students at the Radboud University can become a member.<br/>
             <br/>
             It is still possible to be associated with Thalia, even if you do not study Computing Science or Information
-            Sciences (anymore): You can become a supporter. For at least € {{ year_fees }} per year, you too can enjoy
+            Sciences (anymore): You can become a benefactor. For at least € {{ year_fees }} per year, you too can enjoy
             everything Thalia has to offer.
         {% endblocktrans %}
     </p>
@@ -55,7 +55,7 @@
     {% elif membership.type == 'supporter' and not was_member %}
         <p class="tcenter">
             {% blocktrans trimmed %}
-                You're a supporter. Contact the board to renew your membership.
+                You're a benefactor. Contact the board to renew your membership.
             {% endblocktrans %}
         </p>
     {% elif membership.until is None %}
@@ -85,7 +85,7 @@
                 <div class="control-group row">
                     <label class="control-label" for="id_membership_type">{% trans 'membership type'|capfirst %}:</label>
                     <div class="controls">
-                        <input type="text" readonly disabled value="{% trans 'Supporter' %}"/>
+                        <input type="text" readonly disabled value="{% trans 'Benefactor' %}"/>
                     </div>
                 </div>
                 <div class="control-group row">
