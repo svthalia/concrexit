@@ -1,6 +1,6 @@
 {% load static i18n thumbnail bootstrap4 %}
 <div class="grid-item {{ class_name }}">
-    <a class="d-flex" href="{{ url }}">
+    <a class="d-flex" href="{{ url }}" {{ anchor_attrs|safe }}>
         <div class="image">
             <img alt="{{ title }}" src="{{ image_url }}"/>
         </div>

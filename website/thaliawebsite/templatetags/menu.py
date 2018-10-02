@@ -25,7 +25,10 @@ def render_main_menu(context):
     Accounts for logged-in status and locale.
     """
 
-    path = context.get('request').path
+    path = None
+    if 'request' in context:
+        path = context.get('request').path
+
     for item in MAIN_MENU:
         active = 'name' in item and reverse(item['name']) == path
         if not active and 'submenu' in item:

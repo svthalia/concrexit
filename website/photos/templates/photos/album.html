@@ -1,59 +1,47 @@
-{% extends 'old-base.html' %}
-{% load staticfiles i18n thumbnail shared_thumbnail compress %}
+{% extends 'base.html' %}
+{% load staticfiles i18n compress photos_cards %}
 
 {% block title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 
-{% block css_head %}
-    {{ block.super }}
-    {% compress css %}
-    <link href="{% static "photos/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
-{% endblock %}
-
 {% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock %}
 
 {% block body %}
-<h1>{{ album.title }}
-<span class="title-meta clearfix">
-        <span><a href="{% url 'photos:album-download' album.slug %}" class="download"></a></span>
-        <span><a href="{% url 'photos:index' %}" class="back"></a></span>
-    </span>
-<span class="title-meta clearfix">
-</h1>
-<h2>{{ album.date|date:"d-m-Y" }}</h2>
-{% if album.shareable %}
-<p class="tcenter">
-    {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>
-    <small><a href="{% url 'photos:shared_album' album.slug album.access_token %}">
-        {{ request.get_host }}{% url 'photos:shared_album' album.slug album.access_token %}
-    </a></small>
-</p>
-{% endif %}
-<div class="gallery">
-  <ul class="gallery-photos row">
-    {% for photo in photos %}
-    <li class="post gallery-photo span3 has-overlay">
-      <a data-fancybox-rotation="{{ photo.rotation }}" class="gallery-box" rel="gallery"
-        {% if album.shareable %}
-        data-download="{% url 'photos:shared-download' album.slug album.access_token photo %}" href="{% shared_thumbnail album.slug album.access_token photo.file '1024x768' fit=False %}"
-        {% else %}
-        data-download="{% url 'photos:download' photo %}" href="{% thumbnail photo.file '1024x768' fit=False %}"
-        {% endif %}>
-        <span class="post-inner">
-          <span class="inner-img">
+    <section id="photos-album" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {{ album.title }}
+                <a href="{% url 'photos:album-download' album.slug %}"
+                   target="_blank"
+                   class="btn btn-primary btn-first"
+                >
+                    <i class="fas fa-download"></i>
+                </a>
+            </h1>
+            <h2 class="text-center mt-2">{{ album.date|date:"d-m-Y" }}</h2>
             {% if album.shareable %}
-            <img class="rotate{{ photo.rotation }}" src="{% shared_thumbnail album.slug album.access_token photo.file '220x220' %}" alt="" />
-            {% else %}
-            <img class="rotate{{ photo.rotation }}" src="{% thumbnail photo.file '220x220' %}" alt="" />
+                <p class="text-center">
+                    {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>
+                    <small><a href="{% url 'photos:shared_album' album.slug album.access_token %}">
+                        {{ request.get_host }}{% url 'photos:shared_album' album.slug album.access_token %}
+                    </a></small>
+                </p>
             {% endif %}
-          </span>
-          <span class="post-overlay">
-          </span>
-        </span>
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
+
+            <div class="row">
+                {% for photo in photos %}
+                    <div class="col-4 col-md-3 my-3">
+                        {% photo_card photo %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+        {% compress js %}
+            <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
+        {% endcompress %}
 {% endblock %}

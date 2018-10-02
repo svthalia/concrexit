@@ -103,6 +103,7 @@
         height: 100%;
         background-size: cover;
         background-repeat: no-repeat;
+        background-position: center center;
     }
 }
 
@@ -134,6 +135,19 @@
                 height: 5px;
                 width: 80px;
                 top: -1px;
+            }
+
+            .btn {
+                position: absolute;
+                top: 15px;
+
+                &.btn-first {
+                    right: 0;
+                }
+
+                &.btn-second {
+                    right: 50px
+                }
             }
         }
     }
