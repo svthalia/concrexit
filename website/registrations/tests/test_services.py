@@ -228,6 +228,41 @@ class ServicesTest(TestCase):
             status=Entry.STATUS_ACCEPTED).count(), 2)
         self.assertEqual(len(mail.outbox), 0)
 
+    def test_revert_entry(self):
+        with self.subTest("Revert accepted entry"):
+            self.e2.status = Entry.STATUS_ACCEPTED
+            self.e2.payment = services._create_payment_for_entry(self.e2)
+            self.e2.save()
+
+            services.revert_entry(self.e2)
+
+            self.e2.refresh_from_db()
+
+            self.assertEqual(self.e2.status, Entry.STATUS_REVIEW)
+            self.assertIsNone(self.e2.payment)
+
+        with self.subTest("Revert rejected entry"):
+            self.e2.status = Entry.STATUS_REJECTED
+            self.e2.save()
+
+            services.revert_entry(self.e2)
+
+            self.e2.refresh_from_db()
+
+            self.assertEqual(self.e2.status, Entry.STATUS_REVIEW)
+
+        with self.subTest("Does not revert completed entry"):
+            self.e2.status = Entry.STATUS_COMPLETED
+            self.e2.payment = services._create_payment_for_entry(self.e2)
+            self.e2.save()
+
+            services.revert_entry(self.e2)
+
+            self.e2.refresh_from_db()
+
+            self.assertEqual(self.e2.status, Entry.STATUS_COMPLETED)
+            self.assertIsNotNone(self.e2.payment)
+
     def test_create_payment_for_entry(self):
         self.e1.username = 'jdoe'
         self.e1.save()

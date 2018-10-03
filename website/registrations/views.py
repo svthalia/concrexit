@@ -74,6 +74,8 @@ class EntryAdminView(View):
                 emails.send_registration_email_confirmation(entry.registration)
             except Registration.DoesNotExist:
                 pass
+        elif action == 'revert':
+            services.revert_entry(entry)
 
         if entry_qs.filter(renewal=None).exists():
             content_type = ContentType.objects.get_for_model(Registration)

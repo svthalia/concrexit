@@ -236,6 +236,34 @@ class EntryAdminViewTest(TestCase):
                 elif type == 'renewal':
                     send_email.assert_not_called()
 
+    @mock.patch('registrations.services.revert_entry')
+    def test_post_revert(self, revert):
+        self.view.action = 'revert'
+        for type, entry in {
+            'registration': self.entry1,
+            'renewal': self.entry2
+        }.items():
+            entry_qs = Entry.objects.filter(pk=entry.pk)
+            revert.reset_mock()
+            revert.return_value = None
+            with mock.patch('registrations.models.Entry.objects.filter') as qs_mock:
+                qs_mock.return_value = entry_qs
+                qs_mock.get = Mock(return_value=entry_qs.get())
+
+                request = _get_mock_request()
+                request.POST = {
+                    'action': 'revert',
+                }
+                response = self.view.post(request, pk=entry.pk)
+
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(
+                    response.url,
+                    '/admin/registrations/%s/%s/change/' % (type, entry.pk)
+                )
+
+                revert.assert_called_once_with(entry.entry_ptr)
+
     @mock.patch('registrations.models.Entry.objects.filter')
     def test_post_not_exists(self, qs_mock):
         qs_mock.return_value = MagicMock(

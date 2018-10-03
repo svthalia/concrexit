@@ -73,6 +73,7 @@ class RegistrationAdminTest(TestCase):
             'entry': None,
             'can_review': False,
             'can_resend': False,
+            'can_revert': False,
         })
 
         super_method.reset_mock()
@@ -85,6 +86,7 @@ class RegistrationAdminTest(TestCase):
             'entry': None,
             'can_review': False,
             'can_resend': False,
+            'can_revert': False,
         })
 
         super_method.reset_mock()
@@ -97,6 +99,7 @@ class RegistrationAdminTest(TestCase):
             'entry': entry,
             'can_review': True,
             'can_resend': False,
+            'can_revert': False,
         })
 
         super_method.reset_mock()
@@ -112,6 +115,7 @@ class RegistrationAdminTest(TestCase):
             'entry': entry,
             'can_review': False,
             'can_resend': True,
+            'can_revert': False,
         })
 
         super_method.reset_mock()
@@ -127,6 +131,7 @@ class RegistrationAdminTest(TestCase):
             'entry': entry,
             'can_review': False,
             'can_resend': False,
+            'can_revert': True,
         })
 
         super_method.reset_mock()
@@ -144,6 +149,7 @@ class RegistrationAdminTest(TestCase):
             'entry': entry,
             'can_review': True,
             'can_resend': False,
+            'can_revert': False,
         })
 
     @mock.patch('registrations.services.accept_entries')
