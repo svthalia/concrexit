@@ -11,7 +11,7 @@ register = template.Library()
 
 @register.inclusion_tag('includes/grid_item.html')
 def membergroup_card(group):
-    image_url = static('activemembers/images/placeholder.png')
+    image_url = static('activemembers/images/placeholder_overview.png')
     if group.photo:
         image_url = thumbnail(group.photo, '220x220')
 

@@ -125,14 +125,14 @@ def society_detail(request, pk):
                    .filter(group=society)
                    .prefetch_related('member__membergroupmembership_set'))
     members = [{
-        'profile': x.member.profile,
+        'member': x.member,
         'chair': x.chair,
         'role': x.role,
         'since': x.initial_connected_membership.since
     } for x in memberships]
 
-    members.sort(key=lambda x: x['member_since'])
+    members.sort(key=lambda x: x['since'])
 
     return render(request, 'activemembers/society_detail.html',
-                  {'committee': society,
+                  {'membergroup': society,
                    'members': members})
