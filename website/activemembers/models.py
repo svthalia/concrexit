@@ -107,9 +107,6 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse('activemembers:committee', args=[str(self.pk)])
-
     class Meta:
         verbose_name = _('member group')
         verbose_name_plural = _('member groups')
@@ -128,6 +125,9 @@ class Committee(MemberGroup):
         blank=True,
         max_length=50)
 
+    def get_absolute_url(self):
+        return reverse('activemembers:committee', args=[str(self.pk)])
+
     class Meta:
         verbose_name = _('committee')
         verbose_name_plural = _('committees')
@@ -139,6 +139,9 @@ class Society(MemberGroup):
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
+
+    def get_absolute_url(self):
+        return reverse('activemembers:society', args=[str(self.pk)])
 
     class Meta:
         verbose_name = _('society')
