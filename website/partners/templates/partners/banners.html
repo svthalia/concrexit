@@ -1,0 +1,14 @@
+<section id="partner-banners">
+    <div class="container">
+        <div class="row">
+            {% for partner in partners %}
+                <div class="banner col-6 col-md-4 col-lg-3">
+                    <a href="{% url "partners:partner" partner.slug %}">
+                        <div class="animated zoomIn image text-hide"
+                             style="background-image: url({{ partner.logo.url }});">Logo {{ partner.name }}</div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

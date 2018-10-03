@@ -8,163 +8,194 @@
 {% block css_head %}
     {{ block.super }}
     {% compress css %}
-    <link href="{% static "events/css/fullcalendar.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "events/css/override_fullcalendar.css" %}" rel="stylesheet" type="text/css">
+        <link href="{% static "events/css/fullcalendar.css" %}" rel="stylesheet" type="text/css">
     {% endcompress %}
 {% endblock %}
 
 {% block body %}
-    <h1>
-        {% trans "Calendar" %}
-        <span class="title-meta clearfix">
-            <span>
+    <section class="page-section" id="events-index">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {% trans "Calendar" %}
+
                 <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}"
                    target="_blank"
-                   class="calendar"
+                   class="btn btn-primary btn-first"
+                   data-toggle="tooltip"
+                   data-placement="top"
                    title="{% trans 'iCal feed (all events)' %}"
                 >
-                    <i class="fa fa-calendar"></i>
+                    <i class="fas fa-calendar"></i>
                 </a>
-            </span>
-            {% if request.user.is_authenticated %}
-                <span>
+                {% if request.user.is_authenticated %}
                     <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}?u={% personal_feed %}"
                        target="_blank"
-                       class="calendar"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       class="btn btn-primary btn-second"
                        title="{% trans 'iCal feed (personal)' %}"
                     >
-                        <i class="fa fa-calendar"></i>
+                        <i class="fas fa-calendar"></i>
                     </a>
-                </span>
-            {% endif %}
-        </span>
-    </h1>
-
-    <div id="calendar"></div>
-
-    <script>
-        $(document).ready(function() {
-            var sources = {
-                events:     "/api/v1/events/calendarjs",
-                birthdays:  "/api/v1/members/birthdays",
-                partners:   "/api/v1/partners/calendarjs",
-                unpublishedEvents: "/api/v1/events/unpublished"
-            };
-
-
-            var eventSources = [sources.events, sources.partners];
-            {% if perms.events.change_event %}
-                eventSources.push(sources.unpublishedEvents);
-            {% endif %}
-            if (Cookies.get('showbirthdays')) {
-                eventSources.push(sources.birthdays);
-            }
-
-            // History idea and code parts from
-            // https://github.com/fullcalendar/fullcalendar/issues/659#issuecomment-132535804
-            // and https://github.com/fullcalendar/fullcalendar/issues/659#issuecomment-245544401
-            {% if upcoming_activity %}
-                var startDate = new Date('{{ upcoming_activity.start|date:'Y-m-d' }}');
-            {% else %}
-                var startDate = new Date();
-            {% endif %}
-            var tmpYear = startDate.getFullYear();
-            var tmpMonth = startDate.getMonth();
-            var tmpDay = startDate.getDate();
-            var tmpView = ($(window).width() < 979) ? 'list' : 'agendaWeek';
-            var vars = window.location.hash.split("&");
-            for (var i = 0; i < vars.length; i++) {
-                if (vars[i].match("^#year")) tmpYear = vars[i].substring(6);
-                if (vars[i].match("^month")) tmpMonth = vars[i].substring(6) - 1;
-                if (vars[i].match("^day")) tmpDay = vars[i].substring(4);
-                if (vars[i].match("^view")) tmpView = vars[i].substring(5);
-            }
-            var calendarDiv = $('#calendar');
-            calendarDiv.fullCalendar({
-                defaultDate:
-                {% spaceless %}
-                    {% if upcoming_activity %}
-                        "{{ upcoming_activity.start|date:'Y-m-d' }}"
-                    {% else %}
-                        "{% now 'Y-m-d' %}"
-                    {% endif %}
-                {% endspaceless %},
-                customButtons: {
-                {% if request.user.is_authenticated %}
-                    showBirthdays: {
-                        text: Cookies.get('showbirthdays') ? '{% trans "hide birthdays" %}' : '{% trans "show birthdays" %}',
-                        click: function(e) {
-                            if(e.target.innerHTML == '{% trans "hide birthdays" %}') {
-                                e.target.innerHTML = '{% trans 'show birthdays' %}';
-                                Cookies.remove('showbirthdays');
-                                $('#calendar').fullCalendar('removeEventSource', sources.birthdays);
-                            }
-                            else {
-                                e.target.innerHTML = '{% trans "hide birthdays" %}';
-                                Cookies.set('showbirthdays', 1);
-                                $('#calendar').fullCalendar('addEventSource', sources.birthdays);
-                            }
-                        }
-                    }
                 {% endif %}
-                },
-                header: {
-                    right: 'showBirthdays, list,agendaWeek,month prev,next today'
-                },
-                views: {
-                    list: {
-                        buttonText: '{% trans "list" %}'
-                    }
-                },
-                firstDay: 1,
-                scrollTime: '14:00:00',
-                defaultView: tmpView,
-                editable: false,
-                lang: '{{ LANGUAGE_CODE }}',
-                titleRangeSeparator: ' - ',
-                timeFormat: 'H:mm',
-                eventLimit: true, // allow "more" link when too many events
-                eventSources: eventSources,
-                eventClick: function(event) {
-                    if(event.url && event.blank) {
-                        window.open(event.url, '_blank');
-                        return false;
-                    } else if (event.url) {
-                        window.replace(event.url);
-                        return false;
-                    }
-                },
-                eventRender: function(event, element) {
-                    element.attr('title', event.description);
-                },
-                viewRender: function(view) {
-                    var moment = calendarDiv.fullCalendar('getDate');
-                    if (moment && moment.isValid()) {
-                        window.location.hash = 'year=' + moment.format('YYYY') + '&month=' + (moment.format('M')) + '&day=' + moment.format('DD') + '&view=' + view.name;
-                    }
-                }
-            });
+            </h1>
 
-            var date = new Date(tmpYear, tmpMonth, tmpDay, 0, 0, 0);
-            var moment = calendarDiv.fullCalendar('getDate');
-            var view = calendarDiv.fullCalendar('getView');
-            if (date.getFullYear() != moment.format('YYYY') ||
-                    date.getMonth() != moment.format('M') ||
-                    date.getDate() != moment.format('DD')) {
-                calendarDiv.fullCalendar('gotoDate', date);
-            }
-            if (view.name != tmpView) {
-                calendarDiv.fullCalendar('changeView', tmpView);
-            }
-        });
-    </script>
+            <div id="calendar"></div>
+        </div>
+    </section>
 {% endblock body %}
 
 {% block js_body %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static "events/js/moment.js" %}"></script>
-    <script type="text/javascript" src="{% static "events/js/fullcalendar.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "events/js/fullcalendar-nl.js" %}"></script>
-    <script type="text/javascript" src="{% static "events/js/js.cookie.js" %}"></script>
-    <script type="text/javascript" src="{% static "events/js/calendarlistview.js" %}"></script>
+    {% compress js %}
+        <script type="text/javascript">
+            $(function () {
+                var calendarElement = $('#calendar');
+                var sources = {
+                    events: "/api/v1/events/calendarjs",
+                    birthdays: "/api/v1/members/birthdays",
+                    partners: "/api/v1/partners/calendarjs",
+                    unpublishedEvents: "/api/v1/events/unpublished"
+                };
+
+                var eventSources = [sources.events, sources.partners];
+                {% if perms.events.change_event %}
+                    eventSources.push(sources.unpublishedEvents);
+                {% endif %}
+                if (Cookies.get('showbirthdays')) {
+                    eventSources.push(sources.birthdays);
+                }
+                var tmpView = ($(window).width() < 979) ? 'list' : 'agendaWeek';
+                if (Cookies.get('agendaview') !== undefined) {
+                    tmpView = Cookies.get('agendaview');
+                    console.log(tmpView);
+                }
+
+                // History idea and code parts from
+                // https://github.com/fullcalendar/fullcalendar/issues/659#issuecomment-132535804
+                // and https://github.com/fullcalendar/fullcalendar/issues/659#issuecomment-245544401
+                {% if upcoming_activity %}
+                    var startDate = new Date('{{ upcoming_activity.start|date:'Y-m-d' }}');
+                {% else %}
+                    var startDate = new Date();
+                {% endif %}
+                var tmpYear = startDate.getFullYear();
+                var tmpMonth = startDate.getMonth();
+                var tmpDay = startDate.getDate();
+                var vars = window.location.hash.split("&");
+                for (var i = 0; i < vars.length; i++) {
+                    if (vars[i].match("^#year")) tmpYear = vars[i].substring(6);
+                    if (vars[i].match("^month")) tmpMonth = vars[i].substring(6) - 1;
+                    if (vars[i].match("^day")) tmpDay = vars[i].substring(4);
+                    if (vars[i].match("^view")) tmpView = vars[i].substring(5);
+                }
+
+                calendarElement.fullCalendar({
+                    theme: 'bootstrap4',
+                    eventSources: eventSources,
+                    defaultView: tmpView,
+                    firstDay: 1,
+                    scrollTime: '14:00:00',
+                    timeFormat: 'HH:mm',
+                    eventLimit: true,
+                    locale: '{{ LANGUAGE_CODE }}',
+                    views: {
+                        list: {
+                            buttonText: '{% trans "list" %}',
+                            duration: {years: 1}
+                        }
+                    },
+                    defaultDate:
+                        {% spaceless %}
+                            {% if upcoming_activity %}
+                                "{{ upcoming_activity.start|date:'Y-m-d' }}"
+                            {% else %}
+                                "{% now 'Y-m-d' %}"
+                            {% endif %}
+                        {% endspaceless %},
+                    customButtons: {
+                        {% if request.user.is_authenticated %}
+                            showBirthdays: {
+                                text: Cookies.get('showbirthdays') ? '{% trans "hide birthdays" %}' : '{% trans "show birthdays" %}',
+                                click: function (e) {
+                                    if (e.target.innerHTML == '{% trans "hide birthdays" %}') {
+                                        e.target.innerHTML = '{% trans 'show birthdays' %}';
+                                        Cookies.remove('showbirthdays');
+                                        calendarElement.fullCalendar('removeEventSource', sources.birthdays);
+                                    }
+                                    else {
+                                        e.target.innerHTML = '{% trans "hide birthdays" %}';
+                                        Cookies.set('showbirthdays', 1);
+                                        calendarElement.fullCalendar('addEventSource', sources.birthdays);
+                                    }
+                                }
+                            }
+                        {% endif %}
+                    },
+                    header: {
+                        right: 'showBirthdays, list,agendaWeek,month prev,next today'
+                    },
+                    eventClick: function (event) {
+                        if (event.url && event.blank) {
+                            window.open(event.url, '_blank');
+                            return false;
+                        } else if (event.url) {
+                            window.replace(event.url);
+                            return false;
+                        }
+                    },
+                    eventRender: function (event, element) {
+                        element.attr('title', event.description);
+                    },
+                    viewRender: function (view) {
+                        var prevView = Cookies.get('agendaview');
+                        var moment = calendarElement.fullCalendar('getDate');
+                        if (moment && moment.isValid()) {
+                            window.location.hash = 'year=' + moment.format('YYYY') + '&month=' + (moment.format('M')) + '&day=' + moment.format('DD') + '&view=' + view.name;
+                        }
+
+                        if (view.name !== prevView) {
+                            Cookies.set('agendaview', view.name);
+                            if (view.name === 'list') {
+                                calendarElement.fullCalendar('option', 'header', {
+                                    right: 'list,agendaWeek,month prev,next today'
+                                });
+                            } else {
+                                calendarElement.fullCalendar('option', 'header', {
+                                    right: 'showBirthdays, list,agendaWeek,month prev,next today'
+                                });
+                            }
+                        }
+                    }
+                });
+
+                var date = new Date(tmpYear, tmpMonth, tmpDay, 0, 0, 0);
+                var moment = calendarElement.fullCalendar('getDate');
+                var view = calendarElement.fullCalendar('getView');
+                if (date.getFullYear() !== moment.format('YYYY') ||
+                    date.getMonth() !== moment.format('M') ||
+                    date.getDate() !== moment.format('DD')) {
+                    calendarElement.fullCalendar('gotoDate', date);
+                }
+                if (view.name !== tmpView) {
+                    calendarElement.fullCalendar('changeView', tmpView);
+                }
+
+                if (view.name === 'list') {
+                    calendarElement.fullCalendar('option', 'header', {
+                        right: 'list,agendaWeek,month prev,next today'
+                    });
+                } else {
+                    calendarElement.fullCalendar('option', 'header', {
+                        right: 'showBirthdays, list,agendaWeek,month prev,next today'
+                    });
+                }
+            });
+        </script>
+
+        <script type="text/javascript" src="{% static "events/js/moment.js" %}"></script>
+        <script type="text/javascript" src="{% static "events/js/fullcalendar.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "events/js/fullcalendar-nl.js" %}"></script>
+        <script type="text/javascript" src="{% static "events/js/calendarlistview.js" %}"></script>
+    {% endcompress %}
 {% endblock js_body %}

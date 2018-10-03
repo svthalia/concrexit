@@ -1,0 +1,73 @@
+#partner-banners {
+    background-color: $grey;
+    height: 140px;
+    overflow: hidden;
+
+    .container {
+        max-height: 100%;
+        height: 100%;
+
+        .row {
+            max-height: 100%;
+            height: 100%;
+
+            .banner {
+                max-height: 100%;
+                height: 100%;
+                text-align: center;
+                padding: 2rem 1rem;
+            }
+        }
+
+        a {
+            display: block;
+            max-height: 100%;
+            height: 100%;
+            -moz-transition: 0.2s ease-in-out 0s;
+            -o-transition: 0.2s ease-in-out 0s;
+            -webkit-transition: 0.2s ease-in-out 0s;
+            -ms-transition: 0.2s ease-in-out 0s;
+            transition: 0.2s ease-in-out 0s;
+
+            .image {
+                height: 100%;
+                width: 100%;
+                -moz-transition: 0.2s ease-in-out 0s;
+                -o-transition: 0.2s ease-in-out 0s;
+                -webkit-transition: 0.2s ease-in-out 0s;
+                -ms-transition: 0.2s ease-in-out 0s;
+                transition: 0.2s ease-in-out 0s;
+
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: center center;
+                
+                -webkit-filter: grayscale(1);
+                filter: grayscale(1);
+            }
+
+            &:hover {
+                padding: 2px;
+                
+                .image {
+                    -webkit-filter: grayscale(0);
+                    filter: grayscale(0);
+                }
+            }
+        }
+    }
+}
+
+@media(max-width: 1023px) {
+    #partner-banners {
+        height: 90px;
+
+        .container {
+            .row {
+                .banner {
+                    padding: 1rem .5rem;
+                }
+            }
+        }
+    }
+}

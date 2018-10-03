@@ -33,6 +33,14 @@ thaliawebsite.templatetags.fieldtype module
     :undoc-members:
     :show-inheritance:
 
+thaliawebsite.templatetags.grid\_item module
+--------------------------------------------
+
+.. automodule:: thaliawebsite.templatetags.grid_item
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thaliawebsite.templatetags.menu module
 --------------------------------------
 

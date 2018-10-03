@@ -1,32 +1,23 @@
 {% extends "base.html" %}
 
-{% load static i18n fieldtype form_field %}
+{% load static i18n fieldtype form_field bootstrap4 %}
 
 {% block title %}{% trans "change email"|capfirst %} — {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% trans "change email"|capfirst %} — {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "change email"|capfirst %} — {% trans "members"|capfirst %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>{% trans "change email"|capfirst %}</h1>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "change email"|capfirst %}</h1>
 
-<form method="post" enctype="multipart/form-data" class="form-horizontal span8 offset2">
-    {% csrf_token %}
+            <form method="post" enctype="multipart/form-data" class="col-lg-8 offset-lg-2">
+                {% csrf_token %}
 
-    <div class="control-group row {% if form.email.errors %}error{% endif %}">
-      <label class="control-label" for="id_{{ form.email.name }}">{{ form.email.label }}:</label>
-        <div class="controls">
-            {{ form.email }}
+                {% bootstrap_field form.email %}
 
-            {% for error in form.email.errors %}
-                <span class="help-block">{{ error|escape }}</span>
-            {% endfor %}
-
-            {% if field.help_text %}
-            <span class="help-block">{{ form.email.help_text|safe }}</span>
-            {% endif %}
+                <input type="submit" value="{% trans 'change'|capfirst %}" class="btn btn-primary float-right"/>
+            </form>
         </div>
-    </div>
-
-
-    <input type="submit" value="{% trans 'change'|capfirst %}" class="btn btn-style1 pull-right login" />
-</form>
+    </section>
 {% endblock %}

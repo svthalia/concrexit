@@ -1,0 +1,94 @@
+body {
+    font-family: $primary-font;
+    font-size: 14px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: $title-color;
+    font-family: $header-font;
+    font-weight: $regular;
+    letter-spacing: $letter-spacing;
+    margin-top: 0;
+    text-transform: uppercase;
+}
+
+h1 {
+    font-size: 26px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 22px;
+}
+
+h4 {
+    font-size: 20px;
+}
+
+h5 {
+    font-size: 18px;
+}
+
+h6 {
+    font-size: 16px;
+}
+
+a {
+    color: $preset;
+    @include transition(.2s);
+    &:hover, &:active, &:focus {
+        color: $preset-hover;
+        text-decoration: none;
+    }
+    letter-spacing: $letter-spacing;
+    outline: 0 !important;
+}
+
+p {
+    font-family: $primary-font;
+    font-weight: $regular;
+    font-size: 14px;
+    line-height: 25px;
+    color: $text-color;
+    letter-spacing: $letter-spacing;
+    margin-bottom: 10px;
+}
+
+.bg-default {
+    color: $text-color;
+    background: $preset;
+    padding: 3px 4px;
+}
+
+.bg-primary {
+    color: $white;
+    background: $preset;
+    padding: 3px 4px;
+}
+
+.bg-success {
+    color: $white;
+    background: $success;
+    padding: 3px 4px;
+}
+
+.bg-info {
+    color: $white;
+    background: $info;
+    padding: 3px 4px;
+}
+
+.bg-warning {
+    color: $white;
+    background: $warning;
+    padding: 3px 4px;
+}
+
+.bg-danger {
+    color: $white;
+    background: $danger;
+    padding: 3px 4px;
+}

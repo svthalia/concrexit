@@ -1,70 +1,65 @@
 {% extends "base.html" %}
 
-{% load static i18n fieldtype %}
+{% load static i18n fieldtype bootstrap4 %}
 
 {% block title %}{% trans "edit profile"|capfirst %} — {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% trans "edit profile"|capfirst %} — {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "edit profile"|capfirst %} — {% trans "members"|capfirst %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>{% trans "edit profile"|capfirst %}</h1>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "edit profile"|capfirst %}</h1>
 
-{% if saved %}
-<div class="alert alert-success">
-    {% trans "Your profile has been updated successfully." %}
-    <button class="close" type="button"><span class="alert-icon-close"></span></button>
-</div>
-{% endif %}
+            {% if saved %}
+                <div class="alert alert-success alert-dismissable">
+                    {% trans "Your profile has been updated successfully." %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
 
-{% if form.errors %}
-<div class="alert alert-error">
-    {% trans "Please check your profile for errors." %}
-    <button type="button" class="close"><span class="alert-icon-close"></span></button>
-</div>
-{% endif %}
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissable">
+                    {% trans "Please check your profile for errors." %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
 
-<form method="post" enctype="multipart/form-data" class="form-horizontal span8 offset2">
-    {% csrf_token %}
+            <form method="post" enctype="multipart/form-data" class="col-lg-8 offset-lg-2">
+                {% csrf_token %}
 
-    <div class="control-group row">
-        <label class="control-label">{% trans "First Name" %}</label>
-        <div class="controls">
-            <input type="text" readonly="readonly" value="{{ request.member.first_name }}" />
-        </div>
-    </div>
+                <div class="form-group">
+                    <label>{% trans "First Name" %}</label>
+                    <input type="text" class="form-control" readonly="readonly"
+                           value="{{ request.member.first_name }}"/>
+                </div>
 
-    <div class="control-group row">
-        <label class="control-label">{% trans "Last Name" %}</label>
-        <div class="controls">
-            <input type="text" readonly="readonly" value="{{ request.member.last_name }}" />
-        </div>
-    </div>
+                <div class="form-group">
+                    <label>{% trans "Last Name" %}</label>
+                    <input type="text" class="form-control" readonly="readonly"
+                           value="{{ request.member.last_name }}"/>
+                </div>
 
-    <div class="control-group row">
-        <label class="control-label">{% trans "Email Address" %}</label>
-        <div class="controls">
-            <input type="text" readonly="readonly" value="{{ request.member.email }}" />
-            <span class="help-block"><a href="{% url 'members:email-change' %}">{% trans "Click here to change your email address." %}</a></span>
-        </div>
-    </div>
+                <div class="form-group">
+                    <label>{% trans "Email Address" %}</label>
+                    <input type="text" class="form-control" readonly="readonly" value="{{ request.member.email }}"/>
+                    <span class="form-text">
+                        <a href="{% url 'members:email-change' %}">
+                            {% trans "Click here to change your email address." %}
+                        </a>
+                    </span>
+                </div>
 
-    {% for field in form %}
-        <div class="control-group row {% if field.errors %}error{% endif %}">
-            <label class="control-label" for="{{ field.name }}">{{ field.label_tag }}</label>
-            <div class="controls">
-                {{ field }}
-
-                {% for error in field.errors %}
-                    <span class="help-block">{{ error|escape }}</span>
+                {% for field in form %}
+                    {% bootstrap_field field %}
                 {% endfor %}
 
-                {% if field.help_text and field|fieldtype != 'CheckboxInput' %}
-                <span class="help-block">{{ field.help_text|safe }}</span>
-                {% endif %}
-            </div>
+                <input type="submit" value="{% trans 'save'|capfirst %}" class="btn btn-primary float-right"/>
+            </form>
         </div>
-    {% endfor %}
-
-
-    <input type="submit" value="{% trans 'save'|capfirst %}" class="btn btn-style1 pull-right login" />
-</form>
+    </section>
 {% endblock %}

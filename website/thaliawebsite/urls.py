@@ -69,6 +69,7 @@ THALIA_SITEMAP.update(events_sitemap)
 # pragma pylint: disable=line-too-long
 urlpatterns = [  # pylint: disable=invalid-name
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
+    url(r'^error/', TemplateView.as_view(template_name='403.html'), name='error'),
     url(r'^privacy-policy/', TemplateView.as_view(template_name='singlepages/privacy_policy.html'), name='privacy-policy'),
     url(r'^event-registration-terms/', TemplateView.as_view(template_name='singlepages/event_registration_terms.html'), name='event-registration-terms'),
     url(r'^admin/', admin.site.urls),
@@ -80,8 +81,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^pizzas/', include('pizzas.urls')),
     url(r'^newsletters/', include('newsletters.urls')),
     url(r'^nieuwsbrief/', include('newsletters.urls', namespace='newsletters-legacy'),),  # for legacy reasons
-    url(r'^association$', TemplateView.as_view(
-        template_name='singlepages/association.html'), name='association'),
     url(r'^', include([  # 'association' menu
         url(r'^', include('activemembers.urls')),
         url(r'^merchandise/', include('merchandise.urls')),
@@ -89,8 +88,6 @@ urlpatterns = [  # pylint: disable=invalid-name
         url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
         url(r'^thabloid/', include('thabloid.urls')),
     ])),
-    url(r'^for-members$', TemplateView.as_view(
-        template_name='singlepages/for_members.html'), name='for-members'),
     url(r'^', include([  # 'for members' menu
         url(r'^become-active/', login_required(TemplateView.as_view(template_name='singlepages/become_active.html')), name='become-active'),
         url(r'^photos/', include('photos.urls')),

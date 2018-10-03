@@ -25,7 +25,7 @@ def showcased_partners(request):
         request.session['partner_sequence'] = sample(ids, len(ids))
 
     sequence = request.session['partner_sequence']
-    chosen, rest = sequence[:2], sequence[2:]
+    chosen, rest = sequence[:4], sequence[4:]
     request.session['partner_sequence'] = rest + chosen
 
     return {

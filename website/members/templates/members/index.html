@@ -1,113 +1,115 @@
 {% extends "base.html" %}
-
-{% load static %}
-{% load i18n %}
-{% load thumbnail %}
+{% load static i18n thumbnail bootstrap4 member_card %}
 
 {% block title %}{% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-{% with keys=keywords|join:" " %}
-<h1>{% trans "members"|capfirst %}</h1>
+    {% with keys=keywords|join:" " %}
+        <section class="page-section" id="members-directory">
+            <div class="container">
+                <h1 class="text-center section-title">{% trans "members"|capfirst %}</h1>
 
-<p class="text-center">
-    {% blocktrans trimmed %}
-    Ever wondered what the name of that person in the back row of the lecture room is? There is a high probability that this person is a member of Thalia, and thus you can use this directory to find him or her.
-    {% endblocktrans %}
-</p>
+                <p class="text-center">
+                    {% blocktrans trimmed %}
+                        Ever wondered what the name of that person in the back row of the lecture room is?
+                        There is a high probability that this person is a member of Thalia,
+                        and thus you can use this directory to find him or her.
+                    {% endblocktrans %}
+                </p>
 
-<div class="portfolio member-directory">
+                <form class="search-form form-inline col-lg-6 offset-lg-3 row" method="get"
+                      action="{% url 'members:index' %}#members-directory">
+                    <input type="hidden" name="filter" value="{{ filter }}"/>
+                    <input class="form-control col-9" name="keywords" type="text" value="{{ keys }}"
+                           placeholder="{% trans "Who are you looking for?" %}"/>
+                    <input class="btn btn-lg btn-primary col-3" name="submit" type="submit"
+                           value="{% trans "Search" %}"/>
+                </form>
 
-    <form method="get" action="{% url 'members:index' %}">
-        <input type="hidden" name="filter" value="{{ filter }}"/>
-        <div class="row">
-            <div class="member-search">
-                <input name="keywords" type="text" value="{{ keys }}" placeholder="{% trans "Who are you looking for?" %}"/>
-                <input class="btn-large btn-style1" name="submit" type="submit" value="{% trans "Search" %}"/>
-            </div>
+                <ul class="nav nav-tabs justify-content-center mt-4">
+                    <li class="nav-item">
+                        <a class="nav-link{% if not filter or filter == "all" %} active{% endif %}"
+                           href="{% url 'members:index' %}?filter=all{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                            {% trans "All members" %}
+                        </a>
+                    </li>
+                    {% for year in year_range %}
+                        <li class="nav-item">
+                            <a class="nav-link{% if filter == year|stringformat:"i" %} active{% endif %}"
+                               href="{% url 'members:index' %}?filter={{ year }}{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                                {{ year }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    <li class="nav-item">
+                        <a class="nav-link{% if filter == "old" %}active{% endif %}"
+                           href="{% url 'members:index' %}?filter=old{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                            {% trans "Older" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if filter == "honor" %} active{% endif %}"
+                           href="{% url 'members:index' %}?filter=honor{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                            {% trans "Honorary Members" %}
+                            </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if filter == "ex" %} active{% endif %}"
+                           href="{% url 'members:index' %}?filter=ex{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                            {% trans "Former Members" %}
+                        </a>
+                    </li>
+                </ul>
 
-        </div>
-    </form>
-
-    <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
-        <ul class="link-tabs">
-            <li {% if not filter or filter == "all" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=all{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "All members" %}</a></li>
-            {% for year in year_range %}
-                <li {% if filter == year|stringformat:"i" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter={{ year }}{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{{ year }}</a></li>
-            {% endfor %}
-            <li {% if filter == "old" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=old{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Older" %}</a></li>
-            <li {% if filter == "honor" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=honor{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Honorary Members" %}</a></li>
-            <li {% if filter == "ex" %} class="current"{% endif %}><a href="{% url 'members:index' %}?filter=ex{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}">{% trans "Former Members" %}</a></li>
-        </ul>
-    </div>
-
-    {% if not members %}
-    <div class="alert alert-success2">
-	    {% trans "No members found" %}
-	    <button class="close" type="button"><span class="alert-icon-close"></span></button>
-    </div>
-    {% endif %}
-
-    <ul class="member-directory portfolio-posts row">
-		{% for member in members %}
-		<li class="post member-item span3 has-overlay">
-			<a href="{% url 'members:profile' pk=member.pk %}">
-				<div class="post-inner">
-					<div class="inner-img">
-                        {% if not member.profile.photo %}
-                        <img alt="{{ member.profile.display_name }}" src="{% static 'members/images/default-avatar.jpg' %}" height="220" width="220" />
-                        {% else %}
-                        <img alt="{{ member.profile.display_name }}" src="{% thumbnail member.profile.photo '220x220' %}" width="220" height="220" />
-                        {% endif %}
+                {% if not members %}
+                    <div class="alert alert-info alert-dismissable mt-4">
+                        {% trans "No members found" %}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-					<div class="post-overlay">
-						<div class="post-overlay-meta">
-							<h2>{{ member.profile.display_name }}</h2>
-                                                        {% if member.profile.starting_year %}
-                                                        <p>{% trans "Cohort" %}: {{ member.profile.starting_year }}</p>
-                                                        {% endif %}
-						</div>
-					</div>
-					<div class="post-body avatar-subtitle">
-					    {{ member.profile.display_name }}
-					</div>
-				</div>
-			</a>
-		</li>
-        {% endfor %}
-	</ul>
-</div>
+                {% else %}
+                    <div class="row mt-4">
+                        {% for member in members %}
+                            <div class="col-4 col-md-3 my-3">
+                                {% member_card member %}
+                            </div>
+                        {% endfor %}
+                    </div>
 
-<div class='clearfix'></div>
-
-<div class="pagination-wrapper row">
-    <ul class="pagination">
-        {% if members.has_previous %}
-        <li>
-            <a class="page-prev" href="{% url 'members:index' %}?page={{ members.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}">Previous</a>
-        </li>
-        {% endif %}
-
-        {% for page in page_range %}
-            {% if page == members.number %}
-            <li class="current">
-                <span class="page-number">
-                    {{ page }}
-                </span>
-            </li>
-            {% else %}
-            <li><a href="{% url 'members:index' %}?page={{ page }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}" class="page-number button">{{ page }}</a></li>
-            {% endif %}
-        {% endfor %}
-
-        {% if members.has_next %}
-        <li>
-            <a class="page-next" href="{% url 'members:index' %}?page={{ members.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}">{% trans "Next" %}</a>
-        </li>
-        {% endif %}
-    </ul>
-</div>
-
-{% endwith %}
+                    <nav>
+                        <ul class="pagination justify-content-center mt-4">
+                            {% if members.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="{% url 'members:index' %}?page={{ members.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}#members-directory">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% for page in page_range %}
+                                <li class="page-item{% if page == members.number %} active{% endif %}">
+                                    <a class="page-link"
+                                       href="{% url 'members:index' %}?page={{ page }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}#members-director">
+                                        {{ page }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            {% if members.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="{% url 'members:index' %}?page={{ members.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            </div>
+        </section>
+    {% endwith %}
 {% endblock %}

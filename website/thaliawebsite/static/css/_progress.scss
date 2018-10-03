@@ -1,0 +1,13 @@
+.progress {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    background-color: $grey;
+
+    .progress-bar {
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+        background-color: $preset;
+    }
+}

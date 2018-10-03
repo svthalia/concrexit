@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
-{% load i18n event_cards frontpage_articles %}
+{% load i18n frontpage_events frontpage_articles partner_banners %}
+
+{% block pre-body %}
+    {% render_partner_banners %}
+{% endblock %}
 
 {% block body %}
-<h1>{% trans "Thalia, the study association of Computing Science and Information Sciences" %}</h1>
+    <section id="thaliawebsite-frontpage" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "Study Association Thalia" %}</h1>
+            <p class="text-center">{% blocktrans %}Thalia is the study association for the Computing Science and Information Sciences students at Radboud University in Nijmegen. Thalia provides you the necessary distractions during your studies. And via Thalia students can easily connect with teachers and students from other years.{% endblocktrans %}</p>
+        </div>
+    </section>
 
-<p class="text-center">
-{% blocktrans %}Thalia is the study association for the Computing Science and Information Sciences students at Radboud University in Nijmegen. Thalia provides you the necessary distractions during your studies. And via Thalia students can easily connect with teachers and students from other years.{% endblocktrans %}
-</p>
-
-{% render_frontpage_articles %}
-
-<h1>{% trans "Upcoming events" %}</h1>
-
-{% show_cards %}
-
-<p class="text-center">{% trans "Searching for another event?" %} <a href="{% url "events:index" %}">{% trans "Take a look at the entire agenda" %}</a>.  </p>
+    {% render_frontpage_articles %}
+    {% render_frontpage_events %}
 {% endblock %}

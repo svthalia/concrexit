@@ -15,6 +15,26 @@ from members.api.serializers import (MemberBirthdaySerializer,
 from members.models import Member
 
 
+def _extract_date(param):
+    """Extract the date from an arbitrary string"""
+    if param is None:
+        return None
+    try:
+        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
+    except ValueError:
+        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
+
+
+def _extract_date_range(request):
+    """Extract a date range from an arbitrary string"""
+    try:
+        start = _extract_date(request.query_params['start'])
+        end = _extract_date(request.query_params['end'])
+    except (ValueError, KeyError, InvalidTimeError) as e:
+        raise ParseError(detail='start or end query parameters invalid') from e
+    return end, start
+
+
 class MemberViewset(viewsets.ReadOnlyModelViewSet):
     queryset = Member.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
@@ -60,9 +80,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
             start = timezone.make_aware(
                 datetime.strptime(request.query_params['start'], '%Y-%m-%d')
             )
-            end = timezone.make_aware(
-                datetime.strptime(request.query_params['end'], '%Y-%m-%d')
-            )
+            end = _extract_date(request.query_params['end'])
         except (ValueError, KeyError, InvalidTimeError) as e:
             raise ParseError(
                 detail='start or end query parameters invalid') from e

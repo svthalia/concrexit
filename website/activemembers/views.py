@@ -35,16 +35,16 @@ def committee_detail(request, pk):
                    .filter(group=committee)
                    .prefetch_related('member__membergroupmembership_set'))
     members = [{
-        'profile': x.member.profile,
+        'member': x.member,
         'chair': x.chair,
         'role': x.role,
-        'member_since': x.initial_connected_membership.since
+        'since': x.initial_connected_membership.since
     } for x in memberships]
 
-    members.sort(key=lambda x: x['member_since'])
+    members.sort(key=lambda x: x['since'])
 
     return render(request, 'activemembers/committee_detail.html',
-                  {'committee': committee,
+                  {'membergroup': committee,
                    'members': members})
 
 
@@ -80,20 +80,19 @@ def board_detail(request, since, until=None):
                                 kwargs={'since': since,
                                         'until': int(since) + 1}))
     board = get_object_or_404(Board, since__year=since, until__year=until)
-    members = []
     memberships = (MemberGroupMembership
                    .objects
                    .filter(group=board)
                    .prefetch_related('member'))
 
-    for membership in memberships:
-        member = membership.member
-        member.chair = membership.chair
-        member.role = membership.role
-        members.append(member)  # list comprehension would be more pythonic?
+    members = [{
+        'member': x.member,
+        'chair': x.chair,
+        'role': x.role,
+    } for x in memberships]
 
     return render(request, 'activemembers/board_detail.html',
-                  {'board': board,
+                  {'membergroup': board,
                    'members': members})
 
 
@@ -129,11 +128,11 @@ def society_detail(request, pk):
         'profile': x.member.profile,
         'chair': x.chair,
         'role': x.role,
-        'member_since': x.initial_connected_membership.since
+        'since': x.initial_connected_membership.since
     } for x in memberships]
 
     members.sort(key=lambda x: x['member_since'])
 
-    return render(request, 'activemembers/committee_detail.html',
+    return render(request, 'activemembers/society_detail.html',
                   {'committee': society,
                    'members': members})
