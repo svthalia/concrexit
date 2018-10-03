@@ -1,0 +1,157 @@
+#events-frontpage {
+    .card {
+        -moz-transition: 0.2s ease-in;
+        -o-transition: 0.2s ease-in;
+        -webkit-transition: 0.2s ease-in;
+        -ms-transition: 0.2s ease-in;
+        transition: 0.2s ease-in;
+
+        height: calc(100% - 15px);
+
+        &:hover {
+            background-color: $grey;
+        }
+
+        .card-date {
+            color: $preset;
+            margin-bottom: .7rem;
+        }
+
+        .event-indication {
+            float: right;
+            position: absolute;
+            right: 1.25rem;
+            top: 1.25rem;
+
+            .no-registration, .has-registration {
+                border-radius: 20px;
+                width: 12px;
+                height: 12px;
+            }
+
+            .no-registration {
+                background-color: $dark-grey;
+            }
+
+            .has-registration {
+                background-color: $preset;
+            }
+        }
+    }
+}
+
+#events-index {
+    .section-title {
+        .btn {
+            position: absolute;
+            top: 15px;
+
+            &.btn-first {
+                right: 0;
+            }
+
+            &.btn-second {
+                right: 50px
+            }
+        }
+    }
+
+    .fc-bootstrap4 .fc-today {
+        background: #fff9fc;
+    }
+
+    .fc-list-view {
+        border: 1px solid rgba(0,0,0,.125);
+
+        .card-header {
+            display: flex;
+            align-items: center;
+
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 1.25rem;
+            color: $preset;
+            background-color: $grey;
+            border-radius: 0;
+
+            transition: all 300ms ease-in-out 0s;
+            -moz-transition: all 300ms ease-in-out 0s;
+            -webkit-transition: all 300ms ease-in-out 0s;
+            -o-transition: all 300ms ease-in-out 0s;
+
+            &.collapsed {
+                color: $black;
+                background-color: $light-grey;
+
+                &:hover {
+                    color: $preset;
+                    background-color: $grey;
+                }
+            }
+
+            .event-indication {
+                width: 12px;
+                height: 12px;
+                border-radius: 20px;
+                margin-right: 1rem;
+                flex-shrink: 0;
+            }
+        }
+
+        .show {
+            .card-body {
+                border-bottom: 1px solid rgba(0, 0, 0, .125);
+            }
+        }
+    }
+
+    .fc-event-dot {
+        background-color: #616161;
+    }
+
+    .fc-event {
+        background-color: #616161;
+        border-radius: 0;
+        border: none;
+
+        .fc-content {
+            padding: 5px;
+
+            transition: all 300ms ease-in-out 0s;
+            -moz-transition: all 300ms ease-in-out 0s;
+            -webkit-transition: all 300ms ease-in-out 0s;
+            -o-transition: all 300ms ease-in-out 0s;
+        }
+
+        .fc-bg {
+            opacity: 0;
+        }
+
+        &:active, &:hover {
+            .fc-content {
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+@media(max-width: 575px) {
+    #events-index {
+        .fc-right {
+            > div {
+                margin-bottom: 1rem;
+                float: right;
+                clear: both;
+            }
+            > button {
+                float: right;
+            }
+        }
+    }
+}
+
+#page-content .page-section#events-registrations {
+    padding-top: 0;
+}

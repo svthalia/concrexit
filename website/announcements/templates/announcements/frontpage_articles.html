@@ -1,5 +1,9 @@
-{% load bleach_tags %}
-{% for article in articles %}
-<h1>{{ article.title }}</h1>
-<p class="text-center">{{ article.content | bleach }}</p>
-{% endfor %}
+{% load i18n bleach_tags %}
+<section id="announcements-frontpage" class="page-section">
+    <div class="container">
+        {% for article in articles %}
+            <h1 class="text-center section-title">{{ article.title }}</h1>
+            <p class="text-center">{{ article.content | bleach }}</p>
+        {% endfor %}
+    </div>
+</section>

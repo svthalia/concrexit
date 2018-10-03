@@ -1,0 +1,22 @@
+{% load static i18n thumbnail bootstrap4 %}
+<div class="grid-item {{ class_name }}">
+    <a class="d-flex" href="{{ url }}">
+        <div class="image">
+            <img alt="{{ title }}" src="{{ image_url }}"/>
+        </div>
+        <div class="name">
+            <span>{{ title }}</span>
+        </div>
+        {% if ribbon %}
+        <div class="ribbon-wrapper">
+            <div class="ribbon">
+                {{ ribbon }}
+            </div>
+        </div>
+        {% endif %}
+        <div class="overlay d-flex justify-content-center flex-column text-center">
+            <h5 class="px-2">{{ title }}</h5>
+            {{ meta_text|safe }}
+        </div>
+    </a>
+</div>

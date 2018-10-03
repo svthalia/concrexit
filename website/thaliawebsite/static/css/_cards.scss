@@ -1,0 +1,42 @@
+.card {
+  position: relative;
+  display: block;
+  margin-bottom: 15px;
+  background-color: $light-grey;
+  border-radius: 0;
+  border: 0;
+  width: 100%;
+
+  img {
+    width: 100%;
+  }
+
+  .card-img-top {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  }
+
+  .card-img-inside {
+    margin-bottom: 15px;
+  }
+
+  .card-block {
+    padding: 15px;
+  }
+
+  .card-title {
+    color: $sub-title-color;
+    font-size: 1.3rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+
+  .card-text {
+    font-size: .9rem;
+    color: #444;
+  }
+
+  .card-btn {
+    margin-top: 5px;
+  }
+}

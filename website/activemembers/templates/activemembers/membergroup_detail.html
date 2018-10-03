@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n static thumbnail bleach_tags activemembers_cards %}
+{% block title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <section id="activemembers-membergroup" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {{ membergroup.name }}
+            </h1>
+
+            <div class="row">
+                {% if membergroup.photo %}
+                    <img alt="{{ membergroup.name }}" class="col-12"
+                         src="{% thumbnail membergroup.photo '1024x683' fit=False %}">
+                {% else %}
+                    <img alt="{{ membergroup.name }}" class="col-12"
+                         src="{% static 'activemembers/images/placeholder.png' %}">
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section id="activemembers-membergroup-members" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {% trans 'Members' %}
+            </h1>
+
+            <div class="row">
+                {% for member in members %}
+                    <div class="col-4 col-md-3 my-3">
+                        {% membergroup_member_card member %}
+                    </div>
+
+                {% empty %}
+                    <div class="alert alert-danger col-10 offset-1">
+                        {% trans "This group doesn't have any members?" %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

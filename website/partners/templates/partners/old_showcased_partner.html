@@ -1,0 +1,5 @@
+<div id="partner-{{ position }}" class="partner-header">
+    <a href="{% url "partners:partner" partner.slug %}">
+        <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name }}"/>
+    </a>
+</div>

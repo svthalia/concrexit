@@ -7,45 +7,53 @@
 {% block opengraph_title %}{% trans "Login" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>{% trans "Log in" %}</h1>
-{% if next %}
-<p class="text-center">
-{% if user.is_authenticated %}
-{% blocktrans trimmed %}
-Your account does not have access to this page. To proceed, please log in with an account that has access.
-{% endblocktrans %}
-{% else %}
-{% blocktrans trimmed %}
-Please log in to see this page.
-{% endblocktrans %}
-{% endif %}
-</p>
-{% endif %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "Log in" %}</h1>
+            {% if next %}
+                <p class="text-center">
+                    {% if user.is_authenticated %}
+                        {% blocktrans trimmed %}
+                            Your account does not have access to this page. To proceed, please log in with an account
+                            that has access.
+                        {% endblocktrans %}
+                    {% else %}
+                        {% blocktrans trimmed %}
+                            Please log in to see this page.
+                        {% endblocktrans %}
+                    {% endif %}
+                </p>
+            {% endif %}
 
-{% if form.errors %}
-<div class="alert alert-error">
-    {% trans "Invalid username or password." %}
-    <button type="button" class="close"><span class="alert-icon-close"></span></button>
-</div>
-{% endif %}
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible">
+                    {% trans "Invalid username or password." %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
 
-<div class="row">
-        <form method="post" action="{% url 'login' %}" class="span6 offset3 form-horizontal">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ next }}">
+            <form method="post" action="{% url 'login' %}" class="col-lg-6 offset-lg-3">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
 
-            <div class="control-group">
-                <input name="{{ form.username.name }}" autofocus class="form-control" placeholder="{% trans "Username" %}">
-            </div>
+                <div class="form-group">
+                    <input name="{{ form.username.name }}" autofocus class="form-control"
+                           placeholder="{% trans "Username" %}">
+                </div>
 
-            <div class="control-group">
-                <input name="{{ form.password.name }}" class="form-control" type="password" placeholder="{% trans "Password" %}">
-            </div>
+                <div class="form-group">
+                    <input name="{{ form.password.name }}" class="form-control" type="password"
+                           placeholder="{% trans "Password" %}">
+                </div>
 
-            <div class="control-group">
-                <input type="submit" value="{% trans "Login" %}" class="btn btn-primary btn-style1 pull-right login">
-                <a href="{% url 'password_reset' %}" class="forgot btn pull-left btn-style2">{% trans "Forgot password" %}</a>
-            </div>
-        </form>
-    </div>
+                <div class="form-group">
+                    <input type="submit" value="{% trans "Login" %}" class="btn btn-primary float-right">
+                    <a href="{% url 'password_reset' %}"
+                       class="forgot btn float-left btn-secondary">{% trans "Forgot password" %}</a>
+                </div>
+            </form>
+        </div>
+    </section>
 {% endblock %}

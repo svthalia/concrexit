@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     # Dependencies
+    'bootstrap4',
     'tinymce',
     'rest_framework',
     'rest_framework.authtoken',

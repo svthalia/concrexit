@@ -4,77 +4,90 @@
 {% load i18n %}
 
 {% block title %}{% trans "profile"|capfirst %} — {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% trans "profile"|capfirst %} — {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "profile"|capfirst %} — {% trans "members"|capfirst %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>
-    {{ member.display_name }}
+    <section id="members-profile" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {{ member.profile.display_name }}
+            </h1>
 
-    <span class="title-meta clearfix">
-        <span><a href="{% url 'members:index' %}" class="back"></a></span>
-    </span>
-</h1>
+            <div class="row">
+                <div class="col-12 col-lg-7 text-center">
+                    {% if not member.profile.photo %}
+                        <img src="{% static "members/images/default-avatar.jpg" %}"
+                             alt="{{ member.display_name }}"/>
+                    {% else %}
+                        <img src="{{ member.profile.photo.url }}"
+                             alt="{{ member.display_name }}"/>
+                    {% endif %}
+                </div>
+                <div class="col-12 col-lg-5">
+                    <h4>{% trans "About" %} {{ member.profile.short_display_name }}</h4>
 
-<div class="clearfix"></div>
+                    {% if not member.profile.profile_description %}
+                        <p>
+                            <i>{% trans "This member has not written a description yet." %}</i>
+                        </p>
+                    {% else %}
+                        {{ member.profile.profile_description }}
+                    {% endif %}
 
-<div class="type-portfolio type-portfolio-half clearfix user-page">
-    <div class="row">
-        <div class="span8">
-            <img src="{% if not member.profile.photo %}{% static "members/images/default-avatar.jpg" %}{% else %}{{ member.profile.photo.url }}{% endif %}" alt="{{ member.username }}" />
-        </div>
-        <div class="span4 row">
-            <h4>{% trans "About" %} {{ member.profile.short_display_name }}</h4>
+                    <hr class="separator">
 
-            {% if not member.profile.profile_description %}
-            <i>{% trans "This member has not written a description yet." %}</i>
-            {% else %}
-            {{ member.profile.profile_description }}
-            {% endif %}
+                    <h4>{% trans "Personal information" %}</h4>
+                    <ul class="list-unstyled">
+                        <li><strong>{% trans "Membership type" %}: </strong> {{ membership_type }}<br></li>
 
-            <hr class="separator">
-            <h4>{% trans "Personal information" %}</h4>
-            <ul class="post-meta">
-                <li><span>{% trans "Membership type" %}: </span> {{ membership_type }}<br></li>
-
-                {% if member.profile.starting_year %}
-                <li><span>{% trans "Cohort" %}: </span> {{ member.profile.starting_year }}<br></li>
-                {% endif %}
-
-                {% if member.profile.programme %}
-                <li><span>{% trans "Study programme" %}: </span> {{ member.profile.get_programme_display }}<br></li>
-                {% endif %}
-
-                {% if member.profile.website %}
-                <li><span>{% trans "Website" %}: </span> <a rel="nofollow,noopener" href="{{ member.profile.website }}">{{ member.profile.website }}</a></li>
-                {% endif %}
-
-                {% if member.profile.show_birthday %}
-                <li><span>{% trans "Birthday" %}: </span> {{ member.profile.birthday }}</li>
-                {% endif %}
-            </ul>
-
-            <hr class="separator">
-
-            <h4>{% trans "Achievements for Thalia" %}</h4>
-            <ul class="post-meta">
-                {% for achievement in achievements %}
-                <li style="margin-bottom:10px;">
-                    <span>{{ achievement.name }}</span>
-                    <br>
-                    {% for period in achievement.periods %}
-                        {% if period.role %}
-                        <span style="text-transform:inherit;">{{ period.role }}: </span>
-                        {% elif period.chair %}
-                        <span style="text-transform:inherit;">{% trans "Chair" %}: </span>
+                        {% if member.profile.starting_year %}
+                            <li><strong>{% trans "Cohort" %}: </strong> {{ member.profile.starting_year }}<br></li>
                         {% endif %}
-                        <i>{% if period.since|date:'Y m d' == '1970 01 01' %}?{% else %}{{ period.since }}{% endif %} - {% if period.until %}{{ period.until }}{% else %}{% trans "today" %}{% endif %}</i>
-                    <br>
-                    {% endfor %}
-                </li>
-                {% endfor %}
-            </ul>
+
+                        {% if member.profile.programme %}
+                            <li>
+                                <strong>{% trans "Study programme" %}: </strong> {{ member.profile.get_programme_display }}<br>
+                            </li>
+                        {% endif %}
+
+                        {% if member.profile.website %}
+                            <li><strong>{% trans "Website" %}: </strong> <a rel="nofollow,noopener"
+                                                                        href="{{ member.profile.website }}">{{ member.profile.website }}</a>
+                            </li>
+                        {% endif %}
+
+                        {% if member.profile.show_birthday %}
+                            <li><strong>{% trans "Birthday" %}: </strong> {{ member.profile.birthday }}</li>
+                        {% endif %}
+                    </ul>
+
+                    <hr class="separator">
+
+                    <h4>{% trans "Achievements for Thalia" %}</h4>
+                    <ul class="list-unstyled">
+                        {% for achievement in achievements %}
+                            <li class="mb-1">
+                                <strong>{{ achievement.name }}</strong>
+                                <br>
+                                {% for period in achievement.periods %}
+                                    {% if period.role %}
+                                        <span style="text-transform:inherit;">{{ period.role }}: </span>
+                                    {% elif period.chair %}
+                                        <span style="text-transform:inherit;">{% trans "Chair" %}: </span>
+                                    {% endif %}
+                                    <i>{% if period.since|date:'Y m d' == '1970 01 01' %}?{% else %}
+                                        {{ period.since }}{% endif %} -
+                                        {% if period.until %}{{ period.until }}{% else %}
+                                            {% trans "today" %}{% endif %}</i>
+                                    <br>
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-    <!-- /portfolio single content -->
-</div>
+        </div>
+    </section>
 {% endblock %}

@@ -1,0 +1,103 @@
+/* Buttons */
+.btn {
+    font-weight: $regular;
+    font-size: 14px;
+    letter-spacing: $letter-spacing;
+    -moz-transition: 0.2s ease-in;
+    -o-transition: 0.2s ease-in;
+    -webkit-transition: 0.2s ease-in;
+    -ms-transition: 0.2s ease-in;
+    transition: 0.2s ease-in;
+    border-radius: 0;
+    text-transform: uppercase;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:focus {
+        -webkit-box-shadow: none !important;
+        -moz-box-shadow: none !important;;
+        box-shadow: none !important;;
+    }
+}
+
+.btn-link {
+    color: $preset;
+
+    &:hover {
+        color: $preset-hover;
+        text-decoration: none;
+    }
+
+    &:focus {
+        color: $preset-hover;
+        text-decoration: none;
+    }
+}
+
+.btn-primary, .btn-primary:active, .btn-primary:focus {
+    background: $preset !important;
+    border-color: $preset !important;
+    color: $white !important;
+
+    &:hover, &.active {
+        background: $preset-hover !important;
+        border-color: $preset-hover !important;
+    }
+}
+
+.btn-secondary, .btn-secondary:active, .btn-secondary:focus {
+    background: $secondary !important;
+    border-color: $secondary !important;
+    color: $white !important;
+
+    &:hover {
+        background: $secondary-hover !important;
+        border-color: $secondary-hover !important;
+    }
+}
+
+.btn-success, .btn-success:active, .btn-success:focus {
+    background: $success !important;
+    border-color: $success !important;
+    color: $white !important;
+
+    &:hover {
+        background: $success-hover !important;
+        border-color: $success-hover !important;
+    }
+}
+
+.btn-info, .btn-info:active, .btn-info:focus {
+    background: $info !important;
+    border-color: $info !important;
+    color: $white !important;
+
+    &:hover {
+        background: $info-hover !important;
+        border-color: $info-hover !important;
+    }
+}
+
+.btn-warning, .btn-warning:active, .btn-warning:focus {
+    background: $warning !important;
+    border-color: $warning !important;
+    color: $white !important;
+
+    &:hover {
+        background: $warning-hover !important;
+        border-color: $warning-hover !important;
+    }
+}
+
+.btn-danger, .btn-danger:active, .btn-danger:focus {
+    background: $danger !important;
+    border-color: $danger !important;
+    color: $white !important;
+
+    &:hover {
+        background: $danger-hover !important;
+        border-color: $danger-hover !important;
+    }
+}

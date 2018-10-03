@@ -18,19 +18,19 @@ $(function () {
         title: {
             style: {
                 color: '#000',
-                font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+                font: 'bold 16px "Open Sans"'
             }
         },
         subtitle: {
             style: {
                 color: '#666666',
-                font: 'bold 12px "Trebuchet MS", Verdana, sans-serif'
+                font: 'bold 12px "Open Sans"'
             }
         },
         credits: false,  // Free for non-profit
         legend: {
             itemStyle: {
-                font: '9pt Trebuchet MS, Verdana, sans-serif',
+                font: '9pt "Open Sans"',
                 color: 'black'
             },
             itemHoverStyle: {
@@ -73,31 +73,31 @@ $(function () {
             type: 'pie'
         },
         title: {
-            text: gettext("Total members per year"),
+            text: gettext("Total number of (honary) members and benefactors per cohort"),
         },
         plotOptions: {
             pie: pieOptions
         },
         series: [{
-            name: 'Thalianen',
+            name: gettext("People"),
             colorByPoint: true,
             data : [{
-                name: gettext("1st year"),
+                name: total_stats_year[0].cohort,
                 y: total_stats_year[0].member + total_stats_year[0].supporter + total_stats_year[0].honorary
             },{
-                name: gettext("2nd year"),
+                name: total_stats_year[1].cohort,
                 y: total_stats_year[1].member + total_stats_year[1].supporter + total_stats_year[1].honorary
             },{
-                name: gettext("3rd year"),
+                name: total_stats_year[2].cohort,
                 y: total_stats_year[2].member + total_stats_year[2].supporter + total_stats_year[2].honorary
             },{
-                name: gettext("4th year"),
+                name: total_stats_year[3].cohort,
                 y: total_stats_year[3].member + total_stats_year[3].supporter + total_stats_year[3].honorary
             },{
-                name: gettext("5th year"),
+                name: total_stats_year[4].cohort,
                 y: total_stats_year[4].member + total_stats_year[4].supporter + total_stats_year[4].honorary
             },{
-                name: gettext(">5th year"),
+                name: total_stats_year[5].cohort,
                 y: total_stats_year[5].member + total_stats_year[5].supporter + total_stats_year[5].honorary
             }]
         }]
@@ -108,31 +108,31 @@ $(function () {
             type: 'pie'
         },
         title: {
-            text: gettext("Members per year"),
+            text: gettext("Members per cohort (honorary excluded)"),
         },
         plotOptions: {
             pie: pieOptions
         },
         series: [{
-            name: 'Thalianen',
+            name: gettext("Members"),
             colorByPoint: true,
             data : [{
-                name: gettext("1st year"),
+                name: total_stats_year[0].cohort,
                 y: total_stats_year[0].member
             },{
-                name: gettext("2nd year"),
+                name: total_stats_year[1].cohort,
                 y: total_stats_year[1].member
             },{
-                name: gettext("3rd year"),
+                name: total_stats_year[2].cohort,
                 y: total_stats_year[2].member
             },{
-                name: gettext("4th year"),
+                name: total_stats_year[3].cohort,
                 y: total_stats_year[3].member
             },{
-                name: gettext("5th year"),
+                name: total_stats_year[4].cohort,
                 y: total_stats_year[4].member
             },{
-                name: gettext(">5th year"),
+                name: total_stats_year[5].cohort,
                 y: total_stats_year[5].member
             }]
         }]
@@ -144,31 +144,31 @@ $(function () {
             type: 'pie'
         },
         title: {
-            text: gettext("Benefactors per year"),
+            text: gettext("Benefactors per cohort"),
         },
         plotOptions: {
             pie: pieOptions
         },
         series: [{
-            name: 'Thalianen',
+            name: gettext("Benefactors"),
             colorByPoint: true,
             data : [{
-                name: gettext("1st year"),
+                name: total_stats_year[0].cohort,
                 y: total_stats_year[0].supporter
             },{
-                name: gettext("2nd year"),
+                name: total_stats_year[1].cohort,
                 y: total_stats_year[1].supporter
             },{
-                name: gettext("3rd year"),
+                name: total_stats_year[2].cohort,
                 y: total_stats_year[2].supporter
             },{
-                name: gettext("4th year"),
+                name: total_stats_year[3].cohort,
                 y: total_stats_year[3].supporter
             },{
-                name: gettext("5th year"),
+                name: total_stats_year[4].cohort,
                 y: total_stats_year[4].supporter
             },{
-                name: gettext(">5th year"),
+                name: total_stats_year[5].cohort,
                 y: total_stats_year[5].supporter
             }]
         }]

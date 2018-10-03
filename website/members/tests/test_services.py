@@ -27,7 +27,7 @@ class StatisticsTest(TestCase):
 
     def sum_members(self, members, type=None):
         if type is None:
-            return sum(sum(i.values()) for i in members)
+            return sum(sum(list(i.values())[1:]) for i in members)
         else:
             return sum(map(lambda x: x[type], members))
 

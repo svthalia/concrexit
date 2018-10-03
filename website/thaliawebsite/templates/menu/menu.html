@@ -1,24 +1,35 @@
-<div id="primary-navigation" class="container fullwidth">
-    <!-- .menu-responsive -->
-    <a class="menu-responsive"><span class="menu-icon-nav"></span><span class="menu-title">Home</span></a>
-    <!-- /.menu-responsive -->
-
-    <!-- menu -->
-    <ul class="nav">
-        {% for item in menu %}
-            {% if not item.authenticated or request.user.is_authenticated %}
+<ul class="navbar-nav">
+    {% for item in menu %}
+        {% if not item.authenticated or request.user.is_authenticated %}
             {% url item.name as path %}
-            <li {% if request.path == path %}class="nav-path-selected"{% endif %}>
-                <a href="{% if path %}{{ path }}{% else %}{{ item.url }}{% endif %}"
-                    target="_self" {% if request.path == path %}class="nav-path-selected"{% endif %}>
-                    {{ item.title }}
-                </a>
-                {% if 'submenu' in item %}
-                    {% include 'menu/submenu.html' with submenu=item.submenu %}
-                {% endif %}
-            </li>
+            {% if 'submenu' in item %}
+                <li class="nav-item dropdown{% if item.active %} active{% endif %}">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-toggle="dropdown">
+                        {{ item.title }}
+                    </a>
+
+                    <div class="dropdown-menu">
+                        {% for subitem in item.submenu %}
+                            {% if not subitem.authenticated or request.user.is_authenticated %}
+                                {% url subitem.name as path %}
+                                <a href="{% if path %}{{ path }}{% else %}{{ subitem.url }}{% endif %}"
+                                   target="_self"
+                                   class="dropdown-item{% if subitem.active %} active{% endif %}">
+                                    {{ subitem.title }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </li>
+            {% else %}
+                <li class="nav-item{% if item.active %} active{% endif %}">
+                    <a href="{% if path %}{{ path }}{% else %}{{ item.url }}{% endif %}"
+                       target="_self" class="nav-link">
+                        {{ item.title }}
+                    </a>
+                </li>
             {% endif %}
-        {% endfor %}
-    </ul>
-    <!-- /menu -->
-</div>
+        {% endif %}
+    {% endfor %}
+</ul>

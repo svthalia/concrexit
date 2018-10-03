@@ -32,7 +32,10 @@ def _extract_date(param):
     """Extract the date from an arbitrary string"""
     if param is None:
         return None
-    return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
+    try:
+        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
+    except ValueError:
+        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
 
 
 def _extract_date_range(request):

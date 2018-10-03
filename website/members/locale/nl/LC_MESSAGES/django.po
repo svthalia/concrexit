@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-28 13:58+0200\n"
-"PO-Revision-Date: 2018-09-28 13:58+0200\n"
+"POT-Creation-Date: 2018-10-01 13:33+0200\n"
+"PO-Revision-Date: 2018-10-01 13:34+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -460,6 +460,10 @@ msgstr ""
 #: models.py
 msgid "Please enter a new email address."
 msgstr "Vul een nieuw e-mailadres in."
+
+#: services.py templates/members/index.html
+msgid "Older"
+msgstr "Ouder"
 
 #: templates/admin/members/change_list.html
 msgid "Export IBANs for Direct Debit"
@@ -948,10 +952,6 @@ msgid "All members"
 msgstr "Alle leden"
 
 #: templates/members/index.html
-msgid "Older"
-msgstr "Ouder"
-
-#: templates/members/index.html
 msgid "Honorary Members"
 msgstr "Ere-leden"
 
@@ -962,14 +962,6 @@ msgstr "Oud-leden"
 #: templates/members/index.html
 msgid "No members found"
 msgstr "Geen leden gevonden"
-
-#: templates/members/index.html templates/members/profile.html
-msgid "Cohort"
-msgstr "Cohort"
-
-#: templates/members/index.html
-msgid "Next"
-msgstr "Volgende"
 
 #: templates/members/profile.html
 msgid "profile"
@@ -986,6 +978,10 @@ msgstr "Dit lid heeft nog geen beschrijving geschreven."
 #: templates/members/profile.html
 msgid "Personal information"
 msgstr "Persoonlijke gegevens"
+
+#: templates/members/profile.html templatetags/member_card.py
+msgid "Cohort"
+msgstr "Cohort"
 
 #: templates/members/profile.html
 msgid "Achievements for Thalia"

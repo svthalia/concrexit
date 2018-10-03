@@ -4,10 +4,15 @@
 {% block title %}{% trans "change email"|capfirst %} - {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-    <h1>{% trans "change email" %}</h1>
-    <p class="tcenter">
-    {% blocktrans trimmed %}
-      The verification of your email change was successful. Check your old inbox for the confirmation email.
-    {% endblocktrans %}
-    </p>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "change email" %}</h1>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    The verification of your email change was successful. Check your old inbox for the confirmation
+                    email.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </section>
 {% endblock %}

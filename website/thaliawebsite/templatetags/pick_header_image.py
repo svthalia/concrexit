@@ -11,7 +11,7 @@ from django.contrib.staticfiles import finders
 
 
 register = template.Library()  # pylint: disable=invalid-name
-BANNERDIR = 'images/header_banners'
+BANNERDIR = 'img/headers'
 
 
 @functools.lru_cache()

@@ -27,6 +27,7 @@ django_celery_results = "*"
 bcrypt = "*"
 "argon2_cffi" = "*"
 uWSGI = "*"
+"django-bootstrap4" = "*"
 
 [dev-packages]
 django-template-check = "*"

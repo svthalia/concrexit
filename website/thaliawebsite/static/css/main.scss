@@ -1,0 +1,23 @@
+@import "./bootstrap.min.css";
+@import "./animate.min.css";
+
+@import "fonts";
+@import "variables";
+@import "mixins";
+@import "typography";
+@import "buttons";
+@import "cards";
+@import "forms";
+@import "alerts";
+@import "navs";
+@import "progress";
+
+@import "./base.scss";
+@import "../../announcements/static/announcements/css/style.scss";
+@import "../../partners/static/partners/css/style.scss";
+@import "../../events/static/events/css/style.scss";
+@import "../../members/static/members/css/style.scss";
+
+@import "./fontawesome/fontawesome.scss";
+@import "./fontawesome/solid.scss";
+@import "./fontawesome/brands.scss";

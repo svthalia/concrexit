@@ -1,65 +1,50 @@
 {% extends "base.html" %}
-{% load i18n thumbnail static %}
+{% load i18n thumbnail static activemembers_cards %}
 {% block title %}{% trans 'Boards' %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans 'Boards' %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>{% trans 'The board' %}</h1>
+    <section id="activemembers-boards" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {% trans 'The board' %}
+            </h1>
 
-<p style="text-align: center;">
-{% blocktrans trimmed %}
-  Thalia's board makes sure all operations during the academic year are taken care of, in front or behind the scenes. If you have any questions then you can address them during the day or, if you're not always on the campus, you're always welcome to <a href="mailto:info@thalia.nu">send them an email</a>.
-{% endblocktrans %}
-</p>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    Thalia's board makes sure all operations during the academic year are taken care of, in front or
+                    behind the scenes. If you have any questions then you can address them during the day or, if you're
+                    not always on the campus, you're always welcome to
+                    <a href="mailto:info@thalia.nu">send them an email</a>.
+                {% endblocktrans %}
+            </p>
 
-<div class="clearfix portfolio">
-  <div id="committee-div">
-    <a href="{{ board.get_absolute_url }}">
-        <div class="row">
-          {% if board.photo %}
-          <img alt="{{ board.name }}" class="span12" src="{% thumbnail board.photo '1024x683' fit=False %}">
-          {% else %}
-          <img alt="{{ board.name }}" class="span12" src="{% static 'activemembers/images/placeholder.png' %}">
-          {% endif %}
+            <div class="row">
+                <a href="{{ board.get_absolute_url }}" class="current-board col-12 text-center">
+                    {% if board.photo %}
+                        <img alt="{{ board.name }}"
+                             src="{% thumbnail board.photo '1024x683' fit=False %}">
+                    {% else %}
+                        <img alt="{{ board.name }}"
+                             src="{% static 'activemembers/images/placeholder.png' %}">
+                    {% endif %}
+                </a>
+            </div>
         </div>
-    </a>
+    </section>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {% trans 'Old boards' %}
+            </h1>
 
-    <div class="clearfix">
-      <h1 class="midhead">{% trans 'Old boards' %}</h1>
-      <div id="committees">
-        <ul class="row committees">
-          {% for board in old_boards %}
-          <li class="post member-item span3 has-overlay">
-            <a href="{{ board.get_absolute_url }}">
-
-              <div class="post-inner">
-                <div class="inner-img">
-                  {% if board.photo %}
-                  <img src="{% thumbnail board.photo '220x220' fit=False %}" alt="{% blocktrans with name=board.name %}Photo of {{ name }}{% endblocktrans %}">
-                  {% else %}
-                  <img height="220" width="220" src="{% static 'activemembers/images/placeholder.png' %}">
-                  {% endif %}
-                </div>
-
-                <div class="post-overlay">
-                  <div class="post-overlay-meta">
-                    <h2>{% trans "Board" %} {{ board.since.year }}-{{ board.until.year }}</h2>
-                  </div>
-                </div>
-
-                <div class="post-body avatar-subtitle">
-                  {% trans "Board" %} {{ board.since.year }}-{{ board.until.year }}
-                </div>
-              </div>
-            </a>
-          </li>
-
-          {% empty %}
-          {% trans 'There are no boards!' %}
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+            <div class="row mt-4">
+                {% for board in old_boards %}
+                    <div class="col-4 col-md-3 my-3">
+                        {% membergroup_card board %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 {% endblock %}

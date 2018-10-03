@@ -2,6 +2,7 @@ from datetime import date
 
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext
 
 from members import emails
 from members.models import Membership, Member
@@ -75,6 +76,7 @@ def gen_stats_year(member_types):
 
     for i in range(5):
         new = dict()
+        new['cohort'] = current_year - i
         for member_type in member_types:
             new[member_type] = (
                 Membership.objects
@@ -88,6 +90,7 @@ def gen_stats_year(member_types):
 
     # Add multi year members
     new = dict()
+    new['cohort'] = gettext('Older')
     for member_type in member_types:
         new[member_type] = (
             Membership.objects

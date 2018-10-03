@@ -1,28 +1,37 @@
-.announcement {
-    background: #E62272;
-    color: #FFFFFF;
-    font-weight: bold;
-    text-align:center;
-    padding: 10px;
+#announcements-alerts {
+  .announcement {
+    background: $preset;
+    color: $white;
+    text-align: center;
+    padding: 0.5rem 1rem;
     position: relative;
 
     .close {
-        color: #FFFFFF;
+      color: $white;
     }
 
     p {
-        display: inline;
-        margin-left: 5px;
+      display: inline;
+      margin-left: 0.5rem;
+      color: $white;
+      font-size: 0.9rem;
+      font-weight: $bold;
     }
 
     a {
-        color: white;
-        text-decoration: underline;
+      color: $white;
+      text-decoration: underline;
     }
 
     a:hover {
-        color: #F0F0EE;
-        text-decoration: underline;
-        cursor: pointer;
+      color: $light-grey;
     }
+
+    button {
+      line-height: 0.8;
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
 }

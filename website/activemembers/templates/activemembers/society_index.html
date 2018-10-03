@@ -1,45 +1,26 @@
 {% extends "base.html" %}
-{% load i18n thumbnail static %}
+{% load i18n thumbnail static activemembers_cards %}
 {% block title %}{% trans 'societies'|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans 'societies'|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>{% trans 'societies'|capfirst %}</h1>
+    <section id="activemembers-committees" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {% trans 'societies'|capfirst %}
+            </h1>
 
-<div class="clearfix portfolio">
-  <div id="societies">
-    <ul class="row societies">
-      {% for society in societies %}
-      <li class="post member-item span3 has-overlay">
-        <a href="{{ society.get_absolute_url }}">
-
-          <div class="post-inner">
-            <div class="inner-img">
-              {% if society.photo %}
-              <img src="{% thumbnail society.photo '220x220' fit=False %}" alt="Photo of {{ society.name }}">
-              {% else %}
-              <img height="220" width="220" src="{% static 'activemembers/images/placeholder.png' %}">
-              {% endif %}
+            <div class="row mt-4">
+                {% for society in societies %}
+                    <div class="col-4 col-md-3 my-3">
+                        {% membergroup_card society %}
+                    </div>
+                {% empty %}
+                    <div class="alert alert-danger col-10 offset-1">
+                        {% trans 'There are no societies!' %}
+                    </div>
+                {% endfor %}
             </div>
-
-            <div class="post-overlay">
-              <div class="post-overlay-meta">
-                <h2>{{ society.name }}</h2>
-              </div>
-            </div>
-
-            <div class="post-body avatar-subtitle">
-              {{ society.name }}
-            </div>
-          </div>
-        </a>
-      </li>
-
-
-      {% empty %}
-      {% trans 'There are no societies!' %}
-      {% endfor %}
-    </ul>
-  </div>
-</div>
+        </div>
+    </section>
 {% endblock %}

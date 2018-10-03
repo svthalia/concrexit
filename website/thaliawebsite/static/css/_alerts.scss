@@ -1,0 +1,54 @@
+.alert {
+    border: 2px solid transparent;
+    border-radius: 0px;
+}
+
+.alert-success {
+    color: $white;
+    background-color: $success;
+    border-color: $success-hover;
+}
+
+.alert-success .close:hover {
+    color: $success-hover;
+}
+
+.alert-info {
+    color: $white;
+    background-color: $info;
+    border-color: $info-hover;
+}
+
+.alert-info .close:hover {
+    color: $info-hover;
+}
+
+.alert-warning {
+    color: $white;
+    background-color: $warning;
+    border-color: $warning-hover;
+}
+
+.alert-warning .close:hover {
+    color: $warning-hover;
+}
+
+.alert-danger, .alert-error {
+    color: $white;
+    background-color: $danger;
+    border-color: $danger-hover;
+}
+
+.alert-danger .close:hover, .alert-error .close:hover {
+    color: $danger-hover;
+}
+
+.alert-dismissible .close {
+    font-size: 21px;
+    text-shadow: none;
+    opacity: 1;
+}
+
+.alert-dismissible .close:hover {
+    opacity: 0.8;
+}

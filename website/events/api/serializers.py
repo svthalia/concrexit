@@ -23,8 +23,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
         fields = (
             'start', 'end', 'all_day', 'is_birthday',
             'url', 'title', 'description',
-            'backgroundColor', 'textColor', 'blank',
-            'registered'
+            'backgroundColor', 'textColor', 'blank'
         )
 
     start = serializers.SerializerMethodField('_start')
@@ -37,7 +36,6 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     backgroundColor = serializers.SerializerMethodField('_background_color')
     textColor = serializers.SerializerMethodField('_text_color')
     blank = serializers.SerializerMethodField('_target_blank')
-    registered = serializers.SerializerMethodField('_registered')
 
     def _start(self, instance):
         return timezone.localtime(instance.start)
@@ -69,9 +67,6 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     def _target_blank(self, instance):
         return False
 
-    def _registered(self, instance):
-        return None
-
 
 class EventCalenderJSSerializer(CalenderJSSerializer):
     class Meta(CalenderJSSerializer.Meta):
@@ -80,12 +75,14 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
     def _url(self, instance):
         return reverse('events:event', kwargs={'pk': instance.id})
 
-    def _registered(self, instance):
+    def _background_color(self, instance):
         try:
-            return services.is_user_registered(self.context['member'],
-                                               instance)
+            if services.is_user_registered(self.context['member'],
+                                           instance):
+                return "#E62272"
         except AttributeError:
-            return None
+            pass
+        return "#616161"
 
 
 class UnpublishedEventSerializer(CalenderJSSerializer):
@@ -96,10 +93,10 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
         model = Event
 
     def _background_color(self, instance):
-        return "#888888"
+        return "rgba(255,0,0,0.3)"
 
     def _text_color(self, instance):
-        return "white"
+        return "black"
 
     def _url(self, instance):
         return reverse('events:admin-details', kwargs={
