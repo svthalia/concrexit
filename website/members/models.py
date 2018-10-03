@@ -222,6 +222,7 @@ class Profile(models.Model):
             message=_('Enter a valid student- or e/z/u-number.'))],
         blank=True,
         null=True,
+        unique=True,
     )
 
     starting_year = models.IntegerField(
