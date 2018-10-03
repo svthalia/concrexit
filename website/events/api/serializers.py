@@ -13,6 +13,7 @@ from events.exceptions import RegistrationError
 from events.models import Event, Registration, RegistrationInformationField
 from pizzas.models import PizzaEvent
 from thaliawebsite.templatetags.bleach_tags import bleach
+from utils.snippets import create_google_maps_url
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
@@ -117,7 +118,8 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
                   'cancel_deadline', 'location', 'map_location', 'price',
                   'fine', 'max_participants', 'num_participants', 'status',
                   'user_registration', 'registration_allowed',
-                  'no_registration_message', 'has_fields', 'is_pizza_event')
+                  'no_registration_message', 'has_fields', 'is_pizza_event',
+                  'google_maps_url')
 
     description = serializers.SerializerMethodField('_description')
     user_registration = serializers.SerializerMethodField('_user_registration')
@@ -126,6 +128,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         '_registration_allowed')
     has_fields = serializers.SerializerMethodField('_has_fields')
     is_pizza_event = serializers.SerializerMethodField('_is_pizza_event')
+    google_maps_url = serializers.SerializerMethodField('_google_maps_url')
     status = serializers.SerializerMethodField('_status')  # DEPRECATED
 
     REGISTRATION_NOT_NEEDED = -1
@@ -183,6 +186,9 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
 
     def _is_pizza_event(self, instance):
         return instance.is_pizza_event()
+
+    def _google_maps_url(self, instance):
+        return create_google_maps_url(instance.map_location, zoom=13, size='450x250')
 
 
 class EventListSerializer(serializers.ModelSerializer):
