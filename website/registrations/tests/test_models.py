@@ -155,7 +155,7 @@ class RegistrationTest(TestCase):
 
         with self.subTest('Type is benefactor'):
             self.registration.student_number = None
-            self.registration.membership_type = Membership.SUPPORTER
+            self.registration.membership_type = Membership.BENEFACTOR
             self.registration.clean()
 
     def test_unique_username_user(self):
