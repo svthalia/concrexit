@@ -9,6 +9,14 @@ utils.templatetags package
 Submodules
 ----------
 
+utils.templatetags.google\_map\_url module
+------------------------------------------
+
+.. automodule:: utils.templatetags.google_map_url
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 utils.templatetags.thumbnail module
 -----------------------------------
 

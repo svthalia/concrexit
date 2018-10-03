@@ -1,5 +1,11 @@
 """Provides various utilities that are useful across the project"""
+import hmac
+from _sha1 import sha1
+from base64 import urlsafe_b64decode, urlsafe_b64encode
+
+from django.conf import settings
 from django.utils import timezone
+from django.template.defaultfilters import urlencode
 
 
 def datetime_to_lectureyear(date):
@@ -26,3 +32,21 @@ def datetime_to_lectureyear(date):
     if date < sept_1.date():
         return date.year - 1
     return date.year
+
+
+def create_google_maps_url(location, zoom, size):
+    maps_url = (f"/maps/api/staticmap?"
+                f"center={ urlencode(location) }&"
+                f"zoom={ zoom }&size={ size }&"
+                f"markers={ urlencode(location) }&"
+                f"key={ settings.GOOGLE_MAPS_API_KEY }")
+
+    decoded_key = urlsafe_b64decode(settings.GOOGLE_MAPS_API_SECRET)
+
+    signature = hmac.new(decoded_key, maps_url.encode(), sha1)
+
+    encoded_signature = urlsafe_b64encode(signature.digest())
+
+    maps_url += f"&signature={encoded_signature.decode('utf-8')}"
+
+    return "https://maps.googleapis.com" + maps_url
