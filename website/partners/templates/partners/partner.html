@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n bleach_tags %}
+{% load i18n bleach_tags google_map_url %}
 
 {% block title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
@@ -69,7 +69,9 @@
             {% endif %}
         </div>
         <div class="span7 offset1">
-            <img src="https://maps.google.com/maps/api/staticmap?center={{ partner.address|urlize }}%20{{ partner.zip_code|urlize }}%20{{ partner.city|urlize }},the+netherlands&zoom=10&size=620x200&maptype=roadmap&markers=color:0xE62272%7Clabel:%7C{{ partner.address|urlize }}%20{{ partner.zip_code|urlize }}%20{{ partner.city|urlize }},the+netherlands&sensor=false" />
+            {% with partner.address|add:" "|add:partner.zip_code|add:" "|add:partner.city|add:",The Netherlands"|urlize as location %}
+                <img src="{% google_map_url location zoom=10 size='650x200' %}" />
+            {% endwith %}
         </div>
     </div>
 
