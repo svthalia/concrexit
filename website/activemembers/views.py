@@ -134,6 +134,6 @@ def society_detail(request, pk):
 
     members.sort(key=lambda x: x['member_since'])
 
-    return render(request, 'activemembers/committee_detail.html',
-                  {'committee': society,
+    return render(request, 'activemembers/society_detail.html',
+                  {'society': society,
                    'members': members})
