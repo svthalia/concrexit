@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-28 14:01+0200\n"
-"PO-Revision-Date: 2018-09-28 14:02+0200\n"
+"POT-Creation-Date: 2018-10-03 19:39+0200\n"
+"PO-Revision-Date: 2018-10-03 19:40+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -265,12 +265,12 @@ msgstr ""
 "account en vernieuw het lidmaatschap in de accountinstellingen."
 
 #: models.py
-msgid "A user with that username already exists."
-msgstr "Er bestaat al een gebruiker met deze gebruikersnaam."
-
-#: models.py
 msgid "This field is required."
 msgstr "Dit veld is verplicht."
+
+#: models.py
+msgid "A user with that username already exists."
+msgstr "Er bestaat al een gebruiker met deze gebruikersnaam."
 
 #: models.py templates/registrations/confirm_email.html
 #: templates/registrations/register_member.html
@@ -311,6 +311,10 @@ msgstr "verlenging"
 #: models.py
 msgid "renewals"
 msgstr "verlenging"
+
+#: templates/admin/registrations/change_form.html
+msgid "Resend confirmation email"
+msgstr "Verstuur bevestigingsmail opnieuw"
 
 #: templates/admin/registrations/change_form.html
 msgid "Accept"

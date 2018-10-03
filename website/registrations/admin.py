@@ -5,6 +5,7 @@ from django.forms import Field
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
+from members.models import Membership
 from payments.widgets import PaymentWidget
 from . import services
 from .models import Entry, Registration, Renewal
@@ -81,13 +82,22 @@ class RegistrationAdmin(admin.ModelAdmin):
         Only allow when the entry has not been processed yet
         """
         obj = None
+        can_review = False
+        can_resend = False
         if (object_id is not None and
                 request.user.has_perm('registrations.review_entries')):
             obj = Entry.objects.get(id=object_id)
-            if not (obj.status == Entry.STATUS_REVIEW):
-                obj = None
+            can_review = obj.status == Entry.STATUS_REVIEW
+            try:
+                can_resend = obj.registration.status == Entry.STATUS_CONFIRM
+            except Registration.DoesNotExist:
+                pass
         return super().changeform_view(
-            request, object_id, form_url, {'entry': obj})
+            request, object_id, form_url, {
+                'entry': obj,
+                'can_review': can_review,
+                'can_resend': can_resend,
+            })
 
     def get_actions(self, request):
         """

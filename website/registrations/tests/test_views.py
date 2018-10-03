@@ -106,7 +106,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch('registrations.services.check_unique_user')
     @mock.patch('registrations.services.accept_entries')
     @mock.patch('registrations.services.reject_entries')
-    def test_get_accept(self, reject_entries, accept_entries,
+    def test_post_accept(self, reject_entries, accept_entries,
                         check_unique_user):
         self.view.action = 'accept'
         for type, entry in {
@@ -162,7 +162,7 @@ class EntryAdminViewTest(TestCase):
 
     @mock.patch('registrations.services.accept_entries')
     @mock.patch('registrations.services.reject_entries')
-    def test_get_reject(self, reject_entries, accept_entries):
+    def test_post_reject(self, reject_entries, accept_entries):
         self.view.action = 'reject'
         for type, entry in {
             'registration': self.entry1,
@@ -205,8 +205,39 @@ class EntryAdminViewTest(TestCase):
                     messages.ERROR, _('Could not reject %s.') %
                     model_ngettext(entry_qs.all()[0], 1), '')
 
+    @mock.patch('registrations.emails.send_registration_email_confirmation')
+    def test_post_resend(self, send_email):
+        self.view.action = 'resend'
+        for type, entry in {
+            'registration': self.entry1,
+            'renewal': self.entry2
+        }.items():
+            entry_qs = Entry.objects.filter(pk=entry.pk)
+            send_email.reset_mock()
+            send_email.return_value = None
+            with mock.patch('registrations.models.Entry.objects.filter') as qs_mock:
+                qs_mock.return_value = entry_qs
+                qs_mock.get = Mock(return_value=entry_qs.get())
+
+                request = _get_mock_request()
+                request.POST = {
+                    'action': 'resend',
+                }
+                response = self.view.post(request, pk=entry.pk)
+
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(
+                    response.url,
+                    '/admin/registrations/%s/%s/change/' % (type, entry.pk)
+                )
+
+                if type == 'registration':
+                    send_email.assert_called_once_with(entry)
+                elif type == 'renewal':
+                    send_email.assert_not_called()
+
     @mock.patch('registrations.models.Entry.objects.filter')
-    def test_get_not_exists(self, qs_mock):
+    def test_post_not_exists(self, qs_mock):
         qs_mock.return_value = MagicMock(
             get=Mock(
                 side_effect=Entry.DoesNotExist,
@@ -222,7 +253,7 @@ class EntryAdminViewTest(TestCase):
 
     @mock.patch('registrations.services.accept_entries')
     @mock.patch('registrations.services.reject_entries')
-    def test_get_no_action(self, reject_entries, accept_entries):
+    def test_post_no_action(self, reject_entries, accept_entries):
         self.view.action = None
         for type, entry in {
             'registration': self.entry1,
