@@ -4,7 +4,7 @@ Registrations
 This document explains how the registrations module behaviour is defined.
 The behaviour of upgrading an existing 'year' membership to a 'study' membership (until graduation) is taken from the HR. If the HR ever changes this behaviour should be changed to reflect those changes.
 
-_Note that registrations and renewals for supporters are implemented in the models, there are simply no views providing this functionality. If we ever want to implement this then it would be best to create a complete new form just for supporter registrations._
+_Note that registrations and renewals for benefactors are implemented in the models, there are simply no views providing this functionality. If we ever want to implement this then it would be best to create a complete new form just for benefactors registrations._
 
 ## New member registration
 
