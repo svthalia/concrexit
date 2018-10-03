@@ -11,6 +11,7 @@ from .models import Registration, Renewal
 
 class MemberRegistrationForm(forms.ModelForm):
     """Form for membership registrations"""
+
     birthday = forms.DateField(
         widget=forms.widgets.SelectDateWidget(years=[
             year for year in range(timezone.now().year - 50,
