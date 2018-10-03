@@ -18,14 +18,14 @@ def member_achievements(member):
             'chair': membership.chair
         }
 
-        if hasattr(membership.committee, 'board'):
+        if hasattr(membership.group, 'board'):
             period['role'] = membership.role
 
         if (membership.until is None and
-                hasattr(membership.committee, 'board')):
-            period['until'] = membership.committee.board.until
+                hasattr(membership.group, 'board')):
+            period['until'] = membership.group.board.until
 
-        name = membership.committee.name
+        name = membership.group.name
         if achievements.get(name):
             achievements[name]['periods'].append(period)
             if achievements[name]['earliest'] > membership.since:
