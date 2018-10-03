@@ -75,6 +75,7 @@ class RegistrationTest(TestCase):
             address_postal_code='6525AJ',
             address_city='Nijmegen',
             phone_number='06123456789',
+            student_number='s1234567',
             birthday=timezone.now().replace(year=1990),
             language='en',
             length=Entry.MEMBERSHIP_YEAR,
@@ -141,6 +142,20 @@ class RegistrationTest(TestCase):
         )
 
         with self.assertRaises(ValidationError):
+            self.registration.clean()
+
+    def test_require_student_number_members(self):
+        with self.subTest('No student number entered'):
+            self.registration.student_number = None
+            with self.assertRaisesMessage(
+                    ValidationError,
+                    "{'student_number': ['This field is required.']}"
+            ):
+                self.registration.clean()
+
+        with self.subTest('Type is benefactor'):
+            self.registration.student_number = None
+            self.registration.membership_type = Membership.SUPPORTER
             self.registration.clean()
 
     def test_unique_username_user(self):
