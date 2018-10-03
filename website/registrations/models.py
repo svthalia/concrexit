@@ -265,7 +265,7 @@ class Registration(Entry):
                       'Login using the existing account and renew the '
                       'membership by visiting the account settings.')})
         elif (self.student_number is None and
-                self.membership_type != Membership.SUPPORTER):
+                self.membership_type != Membership.BENEFACTOR):
             errors.update({
                 'student_number': _('This field is required.')})
 
