@@ -84,10 +84,12 @@ class RegistrationAdmin(admin.ModelAdmin):
         obj = None
         can_review = False
         can_resend = False
+        can_revert = False
         if (object_id is not None and
                 request.user.has_perm('registrations.review_entries')):
             obj = Entry.objects.get(id=object_id)
             can_review = obj.status == Entry.STATUS_REVIEW
+            can_revert = obj.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]
             try:
                 can_resend = obj.registration.status == Entry.STATUS_CONFIRM
             except Registration.DoesNotExist:
@@ -97,6 +99,7 @@ class RegistrationAdmin(admin.ModelAdmin):
                 'entry': obj,
                 'can_review': can_review,
                 'can_resend': can_resend,
+                'can_revert': can_revert,
             })
 
     def get_actions(self, request):

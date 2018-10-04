@@ -144,6 +144,22 @@ def accept_entries(queryset):
     return len(updated_entries)
 
 
+def revert_entry(entry):
+    """
+    Revert status of entry to review so that it can be corrected
+
+    :param entry: Entry that should be reverted
+    """
+    if not (entry.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]):
+        return
+
+    entry.status = Entry.STATUS_REVIEW
+    entry.updated_at = timezone.now()
+    entry.save()
+    if entry.payment is not None:
+        entry.payment.delete()
+
+
 def _create_payment_for_entry(entry):
     """
     Create payment model for entry

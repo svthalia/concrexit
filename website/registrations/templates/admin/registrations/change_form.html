@@ -12,10 +12,13 @@
 {% endblock %}
 
 {% block submit_buttons_bottom %}
-    {% if can_resend or can_review %}
+    {% if can_resend or can_review or can_revert %}
     <div class="submit-row registrations-row">
         {% if can_resend %}
             <a data-href="{% url 'registrations:admin-process' pk=entry.pk %}" class="button" data-action="resend">{% trans "Resend confirmation email" %}</a>
+        {% endif %}
+        {% if can_revert %}
+            <a data-href="{% url 'registrations:admin-process' pk=entry.pk %}" class="button" data-action="revert">{% trans "Revert review" %}</a>
         {% endif %}
         {% if can_review %}
             <a data-href="{% url 'registrations:admin-process' pk=entry.pk %}" class="button accept" data-action="accept">{% trans "Accept" %}</a>
