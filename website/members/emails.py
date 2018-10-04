@@ -1,5 +1,7 @@
-from django.conf import settings
 from datetime import timedelta
+import logging
+
+from django.conf import settings
 from django.core import mail
 from django.template import loader
 from django.template.defaultfilters import floatformat
@@ -9,6 +11,9 @@ from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
 
 from members.models import Member, Membership
+
+
+logger = logging.getLogger(__name__)
 
 
 def send_membership_announcement(dry_run=False):
@@ -26,8 +31,9 @@ def send_membership_announcement(dry_run=False):
 
     with mail.get_connection() as connection:
         for member in members:
-            print("Send email to {} ({})".format(member.get_full_name(),
-                                                 member.email))
+            logger.info("Sent email to %s (%s)",
+                        member.get_full_name(),
+                        member.email)
             if not dry_run:
                 with translation.override(member.profile.language):
                     email_body = loader.render_to_string(
@@ -63,8 +69,9 @@ def send_information_request(dry_run=False):
 
     with mail.get_connection() as connection:
         for member in members:
-            print("Send email to {} ({})".format(member.get_full_name(),
-                                                 member.email))
+            logger.info("Sent email to %s (%s)",
+                        member.get_full_name(),
+                        member.email)
             if not dry_run:
                 with translation.override(member.profile.language):
                     email_body = loader.render_to_string(
@@ -107,8 +114,9 @@ def send_expiration_announcement(dry_run=False):
 
     with mail.get_connection() as connection:
         for member in members:
-            print("Send email to {} ({})".format(member.get_full_name(),
-                                                 member.email))
+            logger.info("Sent email to %s (%s)",
+                        member.get_full_name(),
+                        member.email)
             if not dry_run:
                 with translation.override(member.profile.language):
                     email_body = loader.render_to_string(
