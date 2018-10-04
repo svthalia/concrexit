@@ -1,8 +1,9 @@
-{% extends "old-base.html" %}
-{% load i18n bleach_tags google_map_url %}
+{% extends "base.html" %}
+{% load i18n bleach_tags google_map_url compress %}
 
 {% block title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} —
+    {{ block.super }}{% endblock %}
 
 {% block header_image %}{% spaceless %}
     {% if partner.site_header %}
@@ -13,100 +14,82 @@
 {% endspaceless %}{% endblock header_image %}
 
 {% block body %}
-
-    <h1>{{ partner.name }}</h1>
-
-    <h3>{% blocktrans with name=partner.name %}About {{ name }}{% endblocktrans %}</h3>
-
-    <div class="row">
-        <div class="span8">
-            <div id="bedrijfsomschrijving">
-                {{ partner.company_profile|bleach }}
-            </div>
-        </div>
-        <div class="span4">
-            <div id="partner_images">
-                <div class="partner_image_item possibly_main_partner">
-                    {% if partner.logo %}
-                        {% if partner.is_main_partner %}
-                            <div class="ribbon-wrapper-basiskleur">
-                                <div class="ribbon-basiskleur">{% trans "Main Partner" %}</div>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                    <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name }}" />
-                </div>
-                {% for image in partner.images.all %}
-                    <div class="partner_image_item">
-                        <a class="gallery-box"
-                           data-download="{{ image.image.url }}"
-                           href="{{ image.image.url }}"
-                           rel="partner-images"
-                        >
-                            <img src="{{ image.image.url }}" />
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="span4">
-            <h3>{% trans "Information" %}</h3>
-            <span class="partner_informatie_omschrijving">{% trans "Street" %}: </span>
-            {{ partner.address }}<br />
-            <span class="partner_informatie_omschrijving">{% trans "Zip Code" %}:</span>
-            {{ partner.zip_code }}<br />
-            <span class="partner_informatie_omschrijving">{% trans "City" %}:</span>
-            {{ partner.city }}<br /><br />
-
-            {% if partner.link %}
-            <div id="partner_informatie_website">
-                <span class="partner_informatie_omschrijving">{% trans "Website" %}: </span>
-                <a href="{{ partner.link }}">{{ partner.link }}</a>
-            </div>
-            {% endif %}
-        </div>
-        <div class="span7 offset1">
-            {% with partner.address|add:" "|add:partner.zip_code|add:" "|add:partner.city|add:",The Netherlands"|urlize as location %}
-                <img src="{% google_map_url location zoom=10 size='650x200' %}" />
-            {% endwith %}
-        </div>
-    </div>
-
-    {% if vacancies.all|length > 0 %}
-        <div id="partner_vacatures">
-            <h3>{% trans "Vacancies" %}</h3>
+    <section class="page-section" id="partners-index">
+        <div class="container">
+            <h1 class="text-center section-title">{{ partner.name }}</h1>
 
             <div class="row">
-                <div class="span12">
-                    <ul class="toggles">
-                        {% for vacancy in vacancies %}
-                            <li id="vacancy-{{ vacancy.id }}">
-                                <div class="toggle-title"><a href="#"><span></span>{{ vacancy.title }}</a></div>
-                                <div class="toggle-content">
-                                    {{ vacancy.description|bleach }}
+                <div class="col-12 col-md-4">
+                    <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name }}"/>
 
+                    <h4 class="mt-4 text-center text-md-left">{% trans "Address" %}</h4>
+                    <p class="text-center text-md-left">
+                        {{ partner.address }}<br/>
+                        {{ partner.zip_code }}<br/>
+                        {{ partner.city }}
+                    </p>
+
+                    {% if partner.link %}
+                        <h4 class="text-center text-md-left">{% trans "Website" %}</h4>
+                        <p class="text-center text-md-left">
+                            <a href="{{ partner.link }}" target="_blank">{{ partner.link }}</a>
+                        </p>
+                    {% endif %}
+
+                    <p class="text-center">
+                        {% with partner.address|add:" "|add:partner.zip_code|add:" "|add:partner.city|add:",The Netherlands"|urlize as location %}
+                            <img src="{% google_map_url location zoom=10 size='400x300' %}"/>
+                        {% endwith %}
+                    </p>
+                </div>
+                <div class="col-12 col-md-8">
+                    {{ partner.company_profile|bleach }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if vacancies.all|length > 0 %}
+        <section class="page-section" id="partners-index">
+            <div class="container">
+                <h1 class="text-center section-title">{% trans 'Vancancies' %}</h1>
+                <div class="accordion bordered">
+                    {% for vacancy in vacancies %}
+                        <div class="card mb-0">
+                            <div class="card-header collapsed" data-toggle="collapse"
+                                 data-target="#vacancy-content-{{ forloop.counter }}">
+                                <a href="#vacancy-content-{{ forloop.counter }}">{{ vacancy.title }}</a>
+                            </div>
+                            <div class="collapse" id="vacancy-content-{{ forloop.counter }}">
+                                <div class="card-body">
+                                    {{ vacancy.description|bleach }}
                                     {% if vacancy.link %}
-                                        <br /><br />
-                                        <a href="{{ vacancy.link }}" target="_blank" rel="noopener">
-                                            <button type="button" class="btn-large btn-style2">{% trans "Learn more" %}</button>
+                                        <a class="btn btn-primary" href="{{ vacancy.link }}" target="_blank">
+                                            {% trans "Learn more" %}
                                         </a>
                                     {% endif %}
                                 </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-        </div>
-
-        <script type="text/javascript">
-            $(document).ready(function(){
-                var windowhash = window.location.hash;
-                $(windowhash).children('.toggle-title').click();
-            });
-        </script>
+        </section>
     {% endif %}
 {% endblock body %}
+
+{% block js_body %}
+    {{ block.super }}
+        {% compress js %}
+            <script type="text/javascript">
+                $(function () {
+                    var windowhash = window.location.hash;
+                    $('[data-target="' + windowhash + '"]').click();
+
+                    $('.card-header a').click(function(e) {
+                        e.preventDefault();
+                    });
+                });
+            </script>
+        {% endcompress %}
+{% endblock %}

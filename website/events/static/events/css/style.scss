@@ -46,36 +46,9 @@
     }
 
     .fc-list-view {
-        border: 1px solid rgba(0,0,0,.125);
+        border: none;
 
         .card-header {
-            display: flex;
-            align-items: center;
-
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 1.25rem;
-            color: $preset;
-            background-color: $grey;
-            border-radius: 0;
-
-            transition: all 300ms ease-in-out 0s;
-            -moz-transition: all 300ms ease-in-out 0s;
-            -webkit-transition: all 300ms ease-in-out 0s;
-            -o-transition: all 300ms ease-in-out 0s;
-
-            &.collapsed {
-                color: $black;
-                background-color: $light-grey;
-
-                &:hover {
-                    color: $preset;
-                    background-color: $grey;
-                }
-            }
-
             .event-indication {
                 width: 12px;
                 height: 12px;

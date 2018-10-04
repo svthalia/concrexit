@@ -1,68 +1,44 @@
-{% extends 'old-base.html' %}
-{% load i18n bleach_tags %}
+{% extends 'base.html' %}
+{% load i18n bleach_tags partner_card %}
 
 {% block title %}{% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
+    <section class="page-section" id="partners-index">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "Our partners" %}</h1>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    A brief introduction about our study association for Computer and Information Sciences, Thalia. As a
+                    study association we put great effort in entertaining our members with a lot of activities. These
+                    activities range from educational events to informal activities. Examples of these events are
+                    lectures, workshops, get togethers and programming competitions. We also produce a magazine called
+                    the Thabloid. We are always looking to create new partnerships. If your company is interessed in
+                    creating such a partnership or are you interested in what such a partnership can do for you, please
+                    contact us at <a href="mailto:samenwerking@thalia.nu" target="_blank">samenwerking@thalia.nu</a>.
+                {% endblocktrans %}
+            </p>
 
-    <h1>{% trans "Our partners" %}</h1>
-    <p class="tcenter">
-        {% blocktrans trimmed %}
-        A brief introduction about our study association for Computer and Information Sciences, Thalia. As a study association we put great effort in entertaining our members with a lot of activities. These activities range from educational events to informal activities. Examples of these events are lectures, workshops, get togethers and programming competitions. We also produce a magazine called the Thabloid. We are always looking to create new partnerships. If your company is interessed in creating such a partnership or are you interested in what such a partnership can do for you, please contact us at <a href="mailto:samenwerking@thalia.nu" target="_blank">samenwerking@thalia.nu</a>.
-        {% endblocktrans %}
-    </p>
-    <div id="careerpage">
-        <div>
-            <h3>{% trans "Main Partner" %}</h3>
-
-            {% if main_partner %}
-            <div class="th_hoofdpartner_wrapper">
-                <div class="th_hoofdpartner_logo alignleft">
-                    <img src="{{ main_partner.logo.url }}" />
+            <div class="row mt-4">
+                <div class="col-12 col-md-4 d-flex align-items-center">
+                    <img src="{{ main_partner.logo.url }}"/>
                 </div>
-                <h4>{{ main_partner.name }}</h4>
-
-                <p>{{ main_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
-
-                <p>
-                    <a href="{% url "partners:partner" main_partner.slug %}" class="link-style3">
-                        {% trans "Learn more" %} &raquo;
-                    </a>
-                </p>
+                <div class="col-12 col-md-8">
+                    <h2>{% trans "Main Partner" %}</h2>
+                    <h3>{{ main_partner.name }}</h3>
+                    <p>{{ main_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
+                    <a href="{{ main_partner.get_absolute_url }}" class="btn btn-secondary">{% trans "Learn more" %}</a>
+                </div>
             </div>
-            {% endif %}
-        </div>
 
-        <!-- .portfolio-posts -->
-        <div class="portfolio portfolio-isotope">
-            <ul class="portfolio-posts row">
+            <div class="row mt-4">
                 {% for partner in partners %}
-                    <li class="post span4 has-overlay">
-                        <div class="post-inner">
-                            <div class="th_partner_logo">
-                                {% if partner.logo %}
-                                    <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name }}"/>
-                                {% else %}
-                                    <h2>{{ partner.name }}</h2>
-                                {% endif %}
-                            </div>
-                            <div class="post-body"></div>
-                            <div class="post-overlay">
-                                <a href="{% url 'partners:partner' partner.slug %}">
-                                    <div class="post-overlay-meta">
-                                        <h2>{{ partner.name }}</h2>
-                                        <p>{{ partner.company_profile|striptags|bleach|truncatechars:180 }}</p>
-                                        <span class="partner-logo-overlay-readmore">{% trans "Learn more" %} &raquo; </span>
-                                    </div>
-                                    <div class="klikbaar"></div>
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <div class="col-4 col-md-3 my-3">
+                        {% partner_card partner %}
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
-
-    </div>
+    </section>
 {% endblock body %}
