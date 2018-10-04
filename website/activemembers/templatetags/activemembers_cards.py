@@ -1,4 +1,5 @@
 from django import template
+from django.conf import settings
 from django.templatetags.static import static
 from django.utils.translation import ugettext_lazy as _
 
@@ -13,7 +14,7 @@ register = template.Library()
 def membergroup_card(group):
     image_url = static('activemembers/images/placeholder_overview.png')
     if group.photo:
-        image_url = thumbnail(group.photo, '220x220')
+        image_url = thumbnail(group.photo, settings.THUMBNAIL_SIZES['medium'])
 
     return grid_item(
         title=group.name,
@@ -31,9 +32,9 @@ def membergroup_member_card(membership):
         since_text = _('Committee member since: ') + '?'
         if membership['since'].year > 1970:
             since_text = _('Committee member since: ') + str(membership['since'].year)
-        meta_text += '<p>{}</p>'.format(since_text)
+        meta_text += '<p class="px-1">{}</p>'.format(since_text)
     if 'role' in membership and membership['role']:
-        meta_text += '<p>{}</p>'.format(membership['role'])
+        meta_text += '<p class="px-1">{}</p>'.format(membership['role'])
     ribbon = None
     if membership['chair']:
         ribbon = _('Chair')

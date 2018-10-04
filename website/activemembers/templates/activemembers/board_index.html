@@ -23,7 +23,7 @@
                 <a href="{{ board.get_absolute_url }}" class="current-board col-12 text-center">
                     {% if board.photo %}
                         <img alt="{{ board.name }}"
-                             src="{% thumbnail board.photo '1024x683' fit=False %}">
+                             src="{% thumbnail board.photo THUMBNAIL_SIZE_LARGE fit=False %}">
                     {% else %}
                         <img alt="{{ board.name }}"
                              src="{% static 'activemembers/images/placeholder.png' %}">

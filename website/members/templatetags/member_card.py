@@ -1,4 +1,5 @@
 from django import template
+from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -12,15 +13,15 @@ register = template.Library()
 @register.inclusion_tag('includes/grid_item.html')
 def member_card(member, meta_text=None, ribbon=None):
     if meta_text is None and member.profile.starting_year:
-        meta_text = "{}: {}".format(_('Cohort'), member.profile.starting_year)
+        meta_text = '<p class="px-1">{}: {}</p>'.format(_('Cohort'), member.profile.starting_year)
 
     image_url = static('members/images/default-avatar.jpg')
     if member.profile.photo:
-        image_url = thumbnail(member.profile.photo, '220x220')
+        image_url = thumbnail(member.profile.photo, settings.THUMBNAIL_SIZES['medium'])
 
     return grid_item(
         title=member.profile.display_name(),
-        meta_text='<p>{}<p/>'.format(meta_text),
+        meta_text=meta_text,
         url=reverse('members:profile', kwargs={'pk': member.pk}),
         image_url=image_url,
         ribbon=ribbon,
