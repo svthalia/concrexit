@@ -77,7 +77,7 @@
     "fields": {
         "user": 1,
         "programme": null,
-        "student_number": "",
+        "student_number": null,
         "address_street": "Heyendaalseweg 135",
         "address_street2": "",
         "address_postal_code": "1245 TG",
@@ -103,7 +103,7 @@
     "fields": {
         "user": 2,
         "programme": null,
-        "student_number": "",
+        "student_number": null,
         "address_street": "testuserv 2",
         "address_street2": "",
         "address_postal_code": "2545 TG",
@@ -129,7 +129,7 @@
     "fields": {
         "user": 3,
         "programme": null,
-        "student_number": "",
+        "student_number": null,
         "address_street": "testuser 2",
         "address_street2": "",
         "address_postal_code": "6525 TE",
@@ -155,7 +155,7 @@
     "fields": {
         "user": 4,
         "programme": null,
-        "student_number": "",
+        "student_number": null,
         "address_street": "testuser 3",
         "address_street2": "",
         "address_postal_code": "6525 TE",
