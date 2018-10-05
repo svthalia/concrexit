@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n bleach_tags google_map_url compress %}
+{% load i18n bleach_tags google_map_url compress partner_cards static %}
 
 {% block title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} —
@@ -46,6 +46,14 @@
                     {{ partner.company_profile|bleach }}
                 </div>
             </div>
+
+            <div class="row">
+                {% for obj in partner.images.all %}
+                    <div class="col-4 col-md-3 my-3">
+                        {% partner_image_card obj.image %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </section>
 
@@ -80,16 +88,7 @@
 
 {% block js_body %}
     {{ block.super }}
-        {% compress js %}
-            <script type="text/javascript">
-                $(function () {
-                    var windowhash = window.location.hash;
-                    $('[data-target="' + windowhash + '"]').click();
-
-                    $('.card-header a').click(function(e) {
-                        e.preventDefault();
-                    });
-                });
-            </script>
-        {% endcompress %}
+    {% compress js %}
+        <script type="text/javascript" src="{% static 'partners/js/main.js' %}"></script>
+    {% endcompress %}
 {% endblock %}

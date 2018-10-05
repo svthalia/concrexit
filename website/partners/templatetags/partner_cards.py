@@ -1,8 +1,10 @@
 from django import template
+from django.conf import settings
 from django.template.defaultfilters import striptags, truncatechars
 
 from thaliawebsite.templatetags.bleach_tags import bleach
 from thaliawebsite.templatetags.grid_item import grid_item
+from utils.templatetags.thumbnail import thumbnail
 
 register = template.Library()
 
@@ -21,4 +23,18 @@ def partner_card(partner):
         url=partner.get_absolute_url,
         image_url=image_url,
         class_name='partner-card',
+    )
+
+
+@register.inclusion_tag('includes/grid_item.html')
+def partner_image_card(image):
+    class_name = 'partner-image-card'
+    image_url = thumbnail(image, '220x220')
+
+    return grid_item(
+        title='',
+        url=thumbnail(image, settings.THUMBNAIL_SIZES['large'], fit=False),
+        image_url=image_url,
+        class_name=class_name,
+        anchor_attrs='rel="gallery"'
     )
