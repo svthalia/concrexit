@@ -18,4 +18,5 @@ sleep 10
 
 cd /usr/src/app/website/
 >&2 echo "Starting celery worker"
-celery worker -A thaliawebsite
+celery worker --app thaliawebsite --statedb /celery/state.db
+
