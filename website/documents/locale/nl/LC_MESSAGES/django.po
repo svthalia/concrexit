@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
+"POT-Creation-Date: 2018-10-05 15:12+0200\n"
 "PO-Revision-Date: 2018-06-13 21:48+0200\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
@@ -18,116 +18,115 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: documents/admin.py
+#: admin.py
 msgid "lecture year"
 msgstr "college jaar"
 
-#: documents/apps.py documents/models.py
-#: documents/templates/documents/index.html
+#: apps.py models.py templates/documents/index.html
 msgid "Documents"
 msgstr "Documenten"
 
-#: documents/models.py
+#: models.py
 msgid "Document"
 msgstr "Document"
 
-#: documents/models.py
+#: models.py
 msgid "Annual document"
 msgstr "Jaarlijks document"
 
-#: documents/models.py
+#: models.py
 msgid "Association document"
 msgstr "Verenigingsdocument"
 
-#: documents/models.py documents/templates/documents/meetingyear.html
+#: models.py templates/documents/meetingyear.html
 msgid "Minutes"
 msgstr "Notulen"
 
-#: documents/models.py
+#: models.py
 msgid "Miscellaneous document"
 msgstr "Overig document"
 
-#: documents/models.py
+#: models.py
 msgid "name"
 msgstr "naam"
 
-#: documents/models.py
+#: models.py
 msgid "created"
 msgstr "aangemaakt op"
 
-#: documents/models.py
+#: models.py
 msgid "last updated"
 msgstr "laatst aangemaakt op"
 
-#: documents/models.py
+#: models.py
 msgid "category"
 msgstr "categorie"
 
-#: documents/models.py
+#: models.py
 msgid "file"
 msgstr "bestand"
 
-#: documents/models.py
+#: models.py
 msgid "members only"
 msgstr "alleen voor leden"
 
-#: documents/models.py
+#: models.py
 msgid "Annual documents"
 msgstr "Jaarlijkse documenten"
 
-#: documents/models.py documents/templates/documents/index.html
+#: models.py templates/documents/index.html
 msgid "Annual report"
 msgstr "Jaarverslag"
 
-#: documents/models.py
+#: models.py
 msgid "Financial report"
 msgstr "Financieel jaarverslag"
 
-#: documents/models.py
+#: models.py
 msgid "Policy document"
 msgstr "Beleidsdocument"
 
-#: documents/models.py
+#: models.py
 msgid "year"
 msgstr "jaar"
 
-#: documents/models.py
+#: models.py
 msgid "Miscellaneous association document"
 msgstr "Overig verenigingsdocument"
 
-#: documents/models.py
+#: models.py
 msgid "Miscellaneous association documents"
 msgstr "Overige verenigingsdocumenten"
 
-#: documents/models.py
+#: models.py
 msgid "Miscellaneous documents"
 msgstr "Overig documenten"
 
-#: documents/models.py
+#: models.py
 msgid "General meeting"
 msgstr "Algemene ledenvergadering"
 
-#: documents/models.py
+#: models.py
 msgid "General meetings"
 msgstr "Algemene ledenvergaderingen"
 
-#: documents/models.py
+#: models.py
 msgid "documents"
 msgstr "documenten"
 
-#: documents/models.py
+#: models.py
 msgid "datetime"
 msgstr "tijdstip"
 
-#: documents/models.py
+#: models.py
 msgid "location"
 msgstr "locatie"
 
-#: documents/templates/documents/index.html
+#: templates/documents/index.html
 msgid "Miscellaneous Association Documents"
 msgstr "Overige Verenigingsdocumenten"
 
-#: documents/templates/documents/index.html
+#: templates/documents/index.html
 msgid ""
 "Thalia was officially founded on November 7th, 1990. The relevant statutes "
 "and internal rules can be accessed here. The statues have last been amended "
@@ -145,11 +144,11 @@ msgstr ""
 "\"https://olympus.science.ru.nl\">de website van koepelvereniging Olympus</"
 "a>."
 
-#: documents/templates/documents/index.html
+#: templates/documents/index.html
 msgid "Policy Documents &amp; Annual Reports"
 msgstr "Beleidsdocumenten &amp; Jaarverslagen"
 
-#: documents/templates/documents/index.html
+#: templates/documents/index.html
 msgid ""
 "Every candidate board of Thalia drafts a policy document before being "
 "installed, to detail their plans for the next year. This also includes a "
@@ -170,15 +169,15 @@ msgstr ""
 "er zijn georganiseerd. In het onderstaande overzicht zijn de afgelopen "
 "beleidsplannen en jaarverslagen terug te vinden."
 
-#: documents/templates/documents/index.html
+#: templates/documents/index.html
 msgid "Policy"
 msgstr "Beleidsdocument"
 
-#: documents/templates/documents/index.html
+#: templates/documents/index.html
 msgid "General Meetings"
 msgstr "Algemene Ledenvergaderingen"
 
-#: documents/templates/documents/index.html
+#: templates/documents/index.html
 msgid ""
 "The General Meetings (ALVs) can be attended by all members, honorary members "
 "and donors. Thalia organizes at least two general meetings each year. "
@@ -193,34 +192,28 @@ msgstr ""
 "en begunstigers die niet aanwezig waren teruglezen wat er allemaal besproken "
 "is."
 
-#: documents/templates/documents/index.html
+#: templates/documents/index.html
 msgid "Earlier.."
 msgstr "Eerder.."
 
-#: documents/templates/documents/meetingyear.html
+#: templates/documents/meetingyear.html
 #, python-format
 msgid "General Meetings of %(year)s-%(nextyear)s:"
 msgstr "ALV's van %(year)s-%(nextyear)s:"
 
-#: documents/templates/documents/meetingyear.html
+#: templates/documents/meetingyear.html
 msgid "Meeting"
 msgstr "ALV"
 
-#: documents/templates/documents/meetingyear.html
+#: templates/documents/meetingyear.html
 msgid "No minutes<br>available"
 msgstr "Geen notulen<br>beschikbaar"
 
-#: documents/templates/documents/meetingyear.html
+#: templates/documents/meetingyear.html
 msgid "Only signed-in users can view<br>General Meeting documents."
 msgstr "ALV-stukken zijn alleen in te zien<br>door ingelogde gebruikers."
 
-#: documents/templates/documents/meetingyear.html
+#: templates/documents/meetingyear.html
 #, python-format
 msgid "There are no General Meetings available for %(year)s-%(nextyear)s"
 msgstr "Er zijn geen ALV's beschikbaar van %(year)s-%(nextyear)s"
-
-#~ msgid "the website of umbrella association Olympus"
-#~ msgstr "de website van koepelvereniging Olympus"
-
-#~ msgid "General Meetings of"
-#~ msgstr "ALV's van"

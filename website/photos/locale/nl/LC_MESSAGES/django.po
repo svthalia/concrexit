@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
+"POT-Creation-Date: 2018-10-05 15:13+0200\n"
 "PO-Revision-Date: 2018-01-24 20:44+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -18,79 +18,78 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.4\n"
 
-#: photos/admin.py
+#: admin.py
 msgid "Uploading a zip or tar file adds all contained images as photos."
 msgstr ""
 "Indien je een zip of tar file upload worden alle afbeeldingen in het bestand "
 "als foto’s toegevoegd."
 
-#: photos/admin.py
+#: admin.py
 msgid "Ignoring {}"
 msgstr "{} wordt genegeerd"
 
-#: photos/admin.py
+#: admin.py
 msgid "{} is duplicate."
 msgstr "{} is dubbel."
 
-#: photos/admin.py
+#: admin.py
 msgid "The uploaded file is not a zip or tar file."
 msgstr "Het geüploade bestand is geen als zip of tar archief."
 
-#: photos/admin.py
+#: admin.py
 msgid "Full-sized photos will not be saved on the Thalia-website."
 msgstr ""
 "De foto’s op de Thalia-website worden niet opgeslagen in originele grootte."
 
-#: photos/apps.py photos/templates/photos/album.html
-#: photos/templates/photos/index.html
+#: apps.py templates/photos/album.html templates/photos/index.html
 msgid "Photos"
 msgstr "Foto's"
 
-#: photos/models.py
+#: models.py
 msgid "album"
 msgstr "album"
 
-#: photos/models.py
+#: models.py
 msgid "file"
 msgstr "bestand"
 
-#: photos/models.py
+#: models.py
 msgid "rotation"
 msgstr "rotatie"
 
-#: photos/models.py
+#: models.py
 msgid "This does not modify the original image file."
 msgstr "Dit verandert het originele bestand niet."
 
-#: photos/models.py
+#: models.py
 msgid "hidden"
 msgstr "verborgen"
 
-#: photos/models.py
+#: models.py
 msgid "title"
 msgstr "titel"
 
-#: photos/models.py
+#: models.py
 msgid "directory name"
 msgstr "mapnaam"
 
-#: photos/models.py
+#: models.py
 msgid "date"
 msgstr "datum"
 
-#: photos/models.py
+#: models.py
 msgid "slug"
 msgstr "slug"
 
-#: photos/models.py
+#: models.py
 msgid "cover image"
 msgstr "coverafbeelding"
 
-#: photos/models.py
+#: models.py
 msgid "shareable"
 msgstr "deelbaar"
 
-#: photos/templates/photos/album.html
+#: templates/photos/album.html
 msgid ""
 "Note: This album can be shared with people outside the association by "
 "sending them the following link:"
@@ -98,7 +97,7 @@ msgstr ""
 "Let op: Dit album kan gedeeld worden met mensen buiten de vereniging via de "
 "volgende link:"
 
-#: photos/templates/photos/index.html
+#: templates/photos/index.html
 msgid ""
 "Interested in a full resolution version of a photo? Send your request to <a "
 "href=\"mailto:media@thalia.nu\">media@thalia.nu</a>."
@@ -106,14 +105,6 @@ msgstr ""
 "Wil je graag een foto in de volledige resolutie? Stuur je verzoek naar <a "
 "href=“mailto:media@thalia.nu”>media@thalia.nu</a>."
 
-#: photos/templates/photos/index.html
+#: templates/photos/index.html
 msgid "Next"
 msgstr "Volgende"
-
-#, fuzzy
-#~| msgid "The uploaded file is not a zip or tar file."
-#~ msgid "The uploaded file is not azip or tar file."
-#~ msgstr "Het geüploade bestand is geen als zip of tar archief."
-
-#~ msgid "The uploaded file is not recognised as zip or tar."
-#~ msgstr "Het geüploade bestand wordt niet herkend als zip of tar."
