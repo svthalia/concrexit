@@ -1,5 +1,5 @@
-{% extends 'old-base.html' %}
-{% load i18n bleach_tags %}
+{% extends 'base.html' %}
+{% load i18n bleach_tags thumbnail partner_cards compress static %}
 
 {% block title %}{% trans "Vacancies" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Vacancies" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
@@ -8,7 +8,8 @@
     <section class="page-section" id="partners-vacancies">
         <div class="container">
             <h1 class="text-center section-title">{% trans "Vacancies" %}</h1>
-            <p class="tcenter">
+
+            <p class="text-center">
                 {% blocktrans trimmed %}
                     If you want to work besides studying or when you are (almost) graduated you can look here for
                     interesting vacancies. When you want to post a vacancy on this page as a company you can contact us
@@ -16,50 +17,47 @@
                 {% endblocktrans %}
             </p>
 
-            <div class="isotope" id="vacanciespage">
-                <!-- .portfolio-filter -->
-                <div class="isotope-filter tabs-wrapper tabs-centered clearfix">
-                    <ul class="tabs">
-                        <li class="{% if not preselected_category %}current{% endif %}" id="tab-everything">
-                            <a href="#">{% trans "Everything" %}</a>
-                        </li>
-                        {% for category in categories %}
-                            <li
-                                data-filter="category-{{ category.id }}"
-                                class="{% if preselected_category and preselected_category.id == category.id %}current{% endif %}">
-                                <a href="#">{{ category.name }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            <ul class="nav nav-tabs justify-content-center mt-4">
+                <li class="nav-item">
+                    <a class="nav-link" data-filter="all" href="#">
+                        {% trans "Everything" %}
+                    </a>
+                </li>
+                {% for category in categories %}
+                    <li class="nav-item">
+                        <a class="nav-link" data-filter=".category-{{ category.id }}" href="#">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
 
-                <!-- /.portfolio-filter -->
-                <div class="row isotope-items">
+            <div class="row">
+                {% for vacancy in vacancies %}
+                <div class="col-6 col-md-4 my-3 mix {% for cat in vacancy.categories.all %}category-{{ cat.id }} {% endfor %}">
+                    {% vacancy_card vacancy %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {% if vacancies.all|length > 0 %}
+        <section class="page-section" id="partners-partner-vacancies">
+            <div class="container">
+                <h1 class="text-center section-title">{% trans 'All vancancies' %}</h1>
+                <div class="accordion bordered">
                     {% for vacancy in vacancies %}
-                        <div class="team span4 clearfix isotope-item"
-                             data-filter="{% for cat in vacancy.categories.all %}category-{{ cat.id }} {% endfor %}"
-                             data-vacancy="{{ vacancy.id }}"
-                        >
-                            <div class="team-header">
-                                {% if vacancy.get_company_logo %}
-                                    <img src="{{ vacancy.get_company_logo.url }}" alt="">
-                                {% endif %}
+                        <div class="card mb-0">
+                            <div class="card-header collapsed" data-toggle="collapse"
+                                 data-target="#vacancy-{{ vacancy.id }}">
+                                <a href="#vacancy-{{ vacancy.id }}">{{ vacancy.get_company_name }} | {{ vacancy.title }}</a>
                             </div>
-                            <div class="team-content">
-                                <h5 class="tcenter">
-                                    {{ vacancy.get_company_name }}
-                                    <small>{{ vacancy.title }}</small>
-                                </h5>
-                                {# First do bleach to translate HTML entities, then strip all HTML tags since we're truncating this #}
-                                <p>{{ vacancy.description|bleach|striptags|truncatechars:150 }}</p>
-                                <div class="team-readmore">
-                                    {% if vacancy.partner %}
-                                        <a href="{% url 'partners:partner' slug=vacancy.partner.slug %}#vacancy-{{ vacancy.id }}">
-                                            {% trans "Learn more" %}
-                                        </a>
-                                    {% else %}
-                                        <a href="#vacancy-{{ vacancy.id }}"
-                                           class="vacancy-external" data-vacancy="{{ vacancy.id }}">
+                            <div class="collapse" id="vacancy-{{ vacancy.id }}">
+                                <div class="card-body">
+                                    <p>{{ vacancy.description|bleach }}</p>
+                                    {% if vacancy.link %}
+                                        <a class="btn btn-primary" href="{{ vacancy.link }}" target="_blank">
                                             {% trans "Learn more" %}
                                         </a>
                                     {% endif %}
@@ -68,88 +66,15 @@
                         </div>
                     {% endfor %}
                 </div>
-
-                {% if vacancies|length > 0 %}
-                    <div>
-                        <h3>{% trans "All vacancies" %}</h3>
-
-                        <div class="row">
-                            <div class="span12">
-                                <ul class="toggles">
-                                    {% for vacancy in vacancies %}
-                                        <li id="vacancy-{{ vacancy.id }}">
-                                            <div class="toggle-title">
-                                                <a href="#">
-                                                    <span></span>
-                                                    {{ vacancy.get_company_name }} | {{ vacancy.title }}
-                                                </a>
-                                            </div>
-                                            <div class="toggle-content">
-                                                {{ vacancy.description|bleach }}
-
-                                                {% if vacancy.link %}
-                                                    <br/><br/>
-                                                    <a href="{{ vacancy.link }}" target="_blank" rel="noopener">
-                                                        <button type="button" class="btn-large btn-style2">
-                                                            {% trans "Learn more" %}
-                                                        </button>
-                                                    </a>
-                                                {% endif %}
-                                            </div>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
             </div>
-        </div>
-    </section>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var body = $('body');
-
-            var isotope = body.find('.isotope'),
-                isotopeFilter = isotope.find('.isotope-filter'),
-                isotopePosts = isotope.find('.isotope-items');
-
-            var windowhash = window.location.hash;
-
-            if (jQuery().isotope) {
-                isotopeFilter.delegate('li', 'click', function (e) {
-                    var filter;
-
-                    if (windowhash !== '' && windowhash.substr(0, 9) === '#vacancy-') {
-                        filter = '[data-vacancy*="' + windowhash.replace('#vacancy-', '') + '"]';
-                        $('#tab-everything').removeClass('current');
-                        windowhash = '';
-                    } else if ($(this).data('filter') == undefined) {
-                        filter = '*';
-                    } else {
-                        filter = '[data-filter*="' + $(this).data('filter') + '"]';
-                    }
-                    setTimeout(function () {
-                        isotopePosts.isotope({filter: filter});
-                    }, 100);
-                });
-            }
-
-            $(window).on('load', function () {
-                $(window).resize(function () {
-                    if (isotopeFilter.find('li.current').length) {
-                        isotopeFilter.find('li.current').trigger('click');
-                    } else {
-                        isotopeFilter.find('li:first').trigger('click');
-                    }
-                });
-            });
-
-            $('.vacancy-external').click(function () {
-                var id = $(this).attr('data-vacancy');
-                $('#vacancy-' + id).children('.toggle-title').click();
-            });
-        });
-    </script>
+        </section>
+    {% endif %}
 {% endblock body %}
+
+{% block js_body %}
+    {{ block.super }}
+    {% compress js %}
+        <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'partners/js/main.js' %}"></script>
+    {% endcompress %}
+{% endblock %}

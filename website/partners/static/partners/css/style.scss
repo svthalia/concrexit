@@ -41,14 +41,14 @@
                 background-repeat: no-repeat;
                 background-size: contain;
                 background-position: center center;
-                
+
                 -webkit-filter: grayscale(1);
                 filter: grayscale(1);
             }
 
             &:hover {
                 padding: 2px;
-                
+
                 .image {
                     -webkit-filter: grayscale(0);
                     filter: grayscale(0);
@@ -69,5 +69,48 @@
                 }
             }
         }
+    }
+}
+
+#partners-vacancies {
+    .card {
+        height: 100%;
+
+        .card-top {
+            position: relative;
+            overflow: hidden;
+
+            &:after {
+                content: "";
+                display: block;
+                padding-bottom: 100%;
+            }
+
+            .card-image {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+
+                display: flex;
+                align-items: center;
+                text-align: center;
+                flex-direction: column;
+                justify-content: center;
+
+                background-color: $grey;
+
+                img {
+                    width: auto;
+                    height: auto;
+                    max-width: 100%;
+                    max-height: 100%;
+                }
+            }
+        }
+    }
+
+    .mixitup-control-active {
+        color: #E62272;
+        border-color: #dee2e6 #dee2e6 #fff;
     }
 }

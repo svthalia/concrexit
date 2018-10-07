@@ -24,7 +24,7 @@
                 <div class="col-12 col-md-4 d-flex align-items-center">
                     <img src="{{ main_partner.logo.url }}"/>
                 </div>
-                <div class="col-12 col-md-8">
+                <div class="col-12 col-md-8 mt-3 mt-md-0">
                     <h2>{% trans "Main Partner" %}</h2>
                     <h3>{{ main_partner.name }}</h3>
                     <p>{{ main_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>

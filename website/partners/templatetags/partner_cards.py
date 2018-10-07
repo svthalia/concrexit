@@ -15,11 +15,11 @@ def partner_card(partner):
     if partner.logo:
         image_url = partner.logo.url
 
-    meta_text = truncatechars(bleach(striptags(partner.company_profile)), 180)
+    meta_text = truncatechars(bleach(striptags(partner.company_profile)), 80)
 
     return grid_item(
         title=partner.name,
-        meta_text='<p class="px-1">{}</p>'.format(meta_text),
+        meta_text='<p class="px-2 d-none d-md-block">{}</p>'.format(meta_text),
         url=partner.get_absolute_url,
         image_url=image_url,
         class_name='partner-card',
@@ -29,7 +29,7 @@ def partner_card(partner):
 @register.inclusion_tag('includes/grid_item.html')
 def partner_image_card(image):
     class_name = 'partner-image-card'
-    image_url = thumbnail(image, '220x220')
+    image_url = thumbnail(image, settings.THUMBNAIL_SIZES['medium'])
 
     return grid_item(
         title='',
@@ -38,3 +38,26 @@ def partner_image_card(image):
         class_name=class_name,
         anchor_attrs='rel="gallery"'
     )
+
+
+@register.inclusion_tag('partners/vacancy_card.html')
+def vacancy_card(vacancy):
+    image_url = ''
+    if vacancy.get_company_logo:
+        image_url = thumbnail(vacancy.get_company_logo(), settings.THUMBNAIL_SIZES['medium'], fit=False)
+
+    description = truncatechars(bleach(striptags(vacancy.description)), 150)
+    extra_class = 'external-vacancy'
+    url = '#vacancy-{}'.format(vacancy.id)
+    if vacancy.partner:
+        url = '{}#vacancy-{}'.format(vacancy.partner.get_absolute_url(), vacancy.id)
+        extra_class = ''
+
+    return {
+        'title': vacancy.title,
+        'company_name': vacancy.get_company_name(),
+        'image_url': image_url,
+        'description': description,
+        'url': url,
+        'extra_class': extra_class,
+    }

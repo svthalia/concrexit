@@ -58,19 +58,19 @@
     </section>
 
     {% if vacancies.all|length > 0 %}
-        <section class="page-section" id="partners-index">
+        <section class="page-section" id="partners-partner-vacancies">
             <div class="container">
                 <h1 class="text-center section-title">{% trans 'Vancancies' %}</h1>
                 <div class="accordion bordered">
                     {% for vacancy in vacancies %}
                         <div class="card mb-0">
                             <div class="card-header collapsed" data-toggle="collapse"
-                                 data-target="#vacancy-content-{{ forloop.counter }}">
-                                <a href="#vacancy-content-{{ forloop.counter }}">{{ vacancy.title }}</a>
+                                 data-target="#vacancy-{{ vacancy.id }}">
+                                <a href="#vacancy-{{ vacancy.id }}">{{ vacancy.title }}</a>
                             </div>
-                            <div class="collapse" id="vacancy-content-{{ forloop.counter }}">
+                            <div class="collapse" id="vacancy-{{ vacancy.id }}">
                                 <div class="card-body">
-                                    {{ vacancy.description|bleach }}
+                                    <p>{{ vacancy.description|bleach }}</p>
                                     {% if vacancy.link %}
                                         <a class="btn btn-primary" href="{{ vacancy.link }}" target="_blank">
                                             {% trans "Learn more" %}

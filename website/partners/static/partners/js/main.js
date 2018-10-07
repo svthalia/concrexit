@@ -1,5 +1,4 @@
 $(function () {
-    console.log('hello');
     $(".partner-image-card a").fancybox({
         helpers: {
             title: {
@@ -10,9 +9,27 @@ $(function () {
     });
 
     var windowhash = window.location.hash;
-    $('[data-target="' + windowhash + '"]').click();
+    if (windowhash) {
+        var element = $('[data-target="' + windowhash + '"]');
+        element.click();
+        $([document.documentElement, document.body]).scrollTop(element.offset().top);
+    }
 
     $('.card-header a').click(function (e) {
         e.preventDefault();
+    });
+
+    $('.external-vacancy').click(function (e) {
+        e.preventDefault();
+        var href = $(e.target).attr('href');
+        var element = $('[data-target="' + href + '"]');
+        element.click();
+        $([document.documentElement, document.body]).scrollTop(element.offset().top);
+    });
+
+    mixitup('#partners-vacancies', {
+        selectors: {
+            control: '.nav-link'
+        }
     });
 });
