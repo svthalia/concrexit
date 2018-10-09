@@ -13,7 +13,7 @@
             <div class="row">
                 {% if membergroup.photo %}
                     <img alt="{{ membergroup.name }}" class="col-12"
-                         src="{% thumbnail membergroup.photo '1024x683' fit=False %}">
+                         src="{% thumbnail membergroup.photo THUMBNAIL_SIZE_LARGE fit=False %}">
                 {% else %}
                     <img alt="{{ membergroup.name }}" class="col-12"
                          src="{% static 'activemembers/images/placeholder.png' %}">

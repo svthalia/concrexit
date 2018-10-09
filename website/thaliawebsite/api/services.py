@@ -3,8 +3,9 @@ from utils.templatetags.thumbnail import thumbnail
 
 
 def create_image_thumbnail_dict(request, file, placeholder='',
-                                size_small='110x110', size_medium='220x220',
-                                size_large='1024x768'):
+                                size_small=settings.THUMBNAIL_SIZES['small'],
+                                size_medium=settings.THUMBNAIL_SIZES['medium'],
+                                size_large=settings.THUMBNAIL_SIZES['large']):
     if file:
         return {
             'full': request.build_absolute_uri('{}{}'.format(

@@ -123,6 +123,7 @@ TEMPLATES = [
                 'partners.context_processors.showcased_partners',
                 'announcements.context_processors.announcements',
                 'thaliawebsite.context_processors.source_commit',
+                'thaliawebsite.context_processors.thumbnail_sizes',
             ],
         },
     },
@@ -256,6 +257,12 @@ CELERY_ENABLED = False
 MEMBERSHIP_PRICES = {
     'year': 7.5,
     'study': 30,
+}
+
+THUMBNAIL_SIZES = {
+    'small': '150x150',
+    'medium': '300x300',
+    'large': '1024x768',
 }
 
 # Default FROM email

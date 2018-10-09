@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bleach_tags thumbnail member_card google_map_url %}
+{% load i18n static bleach_tags thumbnail member_card google_map_url grid_item %}
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -233,7 +233,8 @@
                     {% for registration in event.participants %}
                         <div class="col-4 col-md-3 my-3">
                             {% if registration.is_external %}
-
+                                {% static 'members/images/default-avatar.jpg' as image %}
+                                {% grid_item title=registration.name image_url=image %}
                             {% else %}
                                 {% member_card registration.member %}
                             {% endif %}
