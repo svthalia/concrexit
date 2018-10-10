@@ -1,82 +1,56 @@
-{% extends 'old-base.html' %}
-{% load i18n thumbnail staticfiles compress %}
+{% extends 'base.html' %}
+{% load i18n staticfiles compress photos_cards %}
 
 {% block title %}{% trans "Photos" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Photos" %} — {{ block.super }}{% endblock %}
 
-{% block css_head %}
-    {{ block.super }}
-    {% compress css %}
-    <link href="{% static 'photos/css/style.scss' %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
-{% endblock %}
-
-{% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock header_image%}
+{% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock header_image %}
 
 {% block body %}
-<h1>{% trans "Photos" %}</h1>
+    <section id="photos-index" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "Photos" %}</h1>
 
-<p class="tcenter">
-  {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
-</p>
+            <p class="text-center">
+                {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
+            </p>
 
-<div class="gallery">
-  <ul class="gallery-albums row">
-    {% for album in albums %}
-    <li class="post gallery-album span3 has-overlay">
-      {% if album.accessible %}
-      <a href="{% url 'photos:album' album.slug %}">
-      {% endif %}
-        <span class="post-inner">
-          <span class="inner-img">
-            {% if album.cover is not None %}
-            <img class="rotate{{ album.cover.rotation }} {{ album.accessible|yesno:",grayscale" }}" src="{% thumbnail album.cover.file '220x220' %}" alt=""/>
-            {% endif %}
-          </span>
-          <span class="post-overlay {{ album.accessible|yesno:",grayscale" }}">
-            <span class="post-overlay-meta">
-              <h2>{{ album.title }}</h2>
-              <p>{{ album.date|date:"d-m-Y" }}</p>
-            </span>
-          </span>
-        </span>
-      {% if album.accessible %}
-      </a>
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
-</div>
+            <div class="row">
+                {% for album in albums %}
+                    <div class="col-4 col-md-3 my-3">
+                        {% album_card album %}
+                    </div>
+                {% endfor %}
+            </div>
 
-<div class="clearfix"></div>
-
-<div class="pagination-wrapper row">
-  <ul class="pagination">
-  {% if albums.has_previous %}
-  <li>
-    <a class="page-prev" href="{% url 'photos:index' %}?page={{ albums.previous_page_number }}">Previous</a>
-  </li>
-  {% endif %}
-
-  {% for page in page_range %}
-    {% if page == albums.number %}
-    <li class="current">
-      <span class="page-number">
-      {{ page }}
-      </span>
-    </li>
-    {% else %}
-    <li>
-      <a href="{% url 'photos:index' %}?page={{ page }}" class="page-number button">{{ page }}</a>
-    </li>
-    {% endif %}
-  {% endfor %}
-
-  {% if albums.has_next %}
-  <li>
-    <a class="page-next" href="{% url 'photos:index' %}?page={{ albums.next_page_number }}">{% trans "Next" %}</a>
-  </li>
-  {% endif %}
-  </ul>
-</div>
+            <nav>
+                <ul class="pagination justify-content-center mt-4">
+                    {% if albums.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{% url 'photos:index' %}?page={{ albums.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}#albums-directory">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for page in page_range %}
+                        <li class="page-item{% if page == albums.number %} active{% endif %}">
+                            <a class="page-link" href="{% url 'photos:index' %}?page={{ page }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}#albums-director">{{ page }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    {% if albums.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{% url 'photos:index' %}?page={{ albums.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if keywords %}&keywords={{ keys }}{% endif %}">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </section>
 {% endblock %}
