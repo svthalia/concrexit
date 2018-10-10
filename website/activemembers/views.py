@@ -2,8 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect, reverse
 import datetime
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import localize_attr_name
-from .models import Board, MemberGroup, MemberGroupMembership, Committee, \
-    Society
+from .models import Board, MemberGroupMembership, Committee, Society
 
 
 def committee_index(request):

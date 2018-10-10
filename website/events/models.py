@@ -330,8 +330,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 start_reminder.save()
                 self.start_reminder = start_reminder
                 if self.registration_required:
-                    self.start_reminder.users.set(self.participants.values_list(
-                        'member', flat=True))
+                    self.start_reminder.users.set(
+                            self.participants.values_list('member', flat=True))
                 else:
                     self.start_reminder.users.set(Member.current_members.all())
             elif start_reminder.pk is not None:

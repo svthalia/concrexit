@@ -185,7 +185,10 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         return instance.is_pizza_event()
 
     def _google_maps_url(self, instance):
-        return create_google_maps_url(instance.map_location, zoom=13, size='450x250')
+        return create_google_maps_url(
+                instance.map_location,
+                zoom=13,
+                size='450x250')
 
 
 class EventListSerializer(serializers.ModelSerializer):

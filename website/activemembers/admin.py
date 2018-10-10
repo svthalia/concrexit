@@ -19,9 +19,9 @@ class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
     """
     Solely here for performance reasons.
 
-    Needed because the `__str__()` of `MemberGroupMembership` (which is displayed
-    above each inline form) uses the username, name of the member and name of
-    the group.
+    Needed because the `__str__()` of `MemberGroupMembership` (which is
+    displayed above each inline form) uses the username, name of the member
+    and name of the group.
     """
 
     def __init__(self, *args, **kwargs):
@@ -38,28 +38,6 @@ class MemberGroupMembershipInline(admin.StackedInline):
     ordering = ('since',)
     extra = 0
     autocomplete_fields = ('member',)
-
-
-@admin.register(models.Committee)
-class CommitteeAdmin(TranslatedModelAdmin):
-    """Manage the committees"""
-    inlines = (MemberGroupMembershipInline,)
-    form = MemberGroupForm
-    list_display = ('name', 'since', 'until', 'active', 'email')
-    list_filter = ('until', 'active',)
-    search_fields = ('name', 'description')
-    filter_horizontal = ('permissions',)
-
-    fields = ('name', 'description', 'photo', 'permissions', 'since',
-              'until', 'contact_mailinglist', 'contact_email',
-              'wiki_namespace', 'active')
-
-    def email(self, instance):
-        if instance.contact_email:
-            return instance.contact_email
-        elif instance.contact_mailinglist:
-            return instance.contact_mailinglist.name + '@thalia.nu'
-        return None
 
 
 @admin.register(models.Society)

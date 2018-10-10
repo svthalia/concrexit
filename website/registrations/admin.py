@@ -5,7 +5,6 @@ from django.forms import Field
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from members.models import Membership
 from payments.widgets import PaymentWidget
 from . import services
 from .models import Entry, Registration, Renewal
@@ -89,7 +88,8 @@ class RegistrationAdmin(admin.ModelAdmin):
                 request.user.has_perm('registrations.review_entries')):
             obj = Entry.objects.get(id=object_id)
             can_review = obj.status == Entry.STATUS_REVIEW
-            can_revert = obj.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]
+            can_revert = obj.status in [
+                    Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]
             try:
                 can_resend = obj.registration.status == Entry.STATUS_CONFIRM
             except Registration.DoesNotExist:

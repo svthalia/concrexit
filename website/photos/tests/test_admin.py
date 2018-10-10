@@ -1,7 +1,7 @@
 from io import BytesIO
 from zipfile import ZipFile
 
-from django.test import Client, TestCase, RequestFactory
+from django.test import Client, TestCase
 
 from members.models import Member
 from photos.models import Album, Photo

@@ -13,11 +13,13 @@ register = template.Library()
 @register.inclusion_tag('includes/grid_item.html')
 def member_card(member, meta_text=None, ribbon=None):
     if meta_text is None and member.profile.starting_year:
-        meta_text = '<p class="px-1">{}: {}</p>'.format(_('Cohort'), member.profile.starting_year)
+        meta_text = '<p class="px-1">{}: {}</p>'.format(
+                _('Cohort'), member.profile.starting_year)
 
     image_url = static('members/images/default-avatar.jpg')
     if member.profile.photo:
-        image_url = thumbnail(member.profile.photo, settings.THUMBNAIL_SIZES['medium'])
+        image_url = thumbnail(member.profile.photo,
+                              settings.THUMBNAIL_SIZES['medium'])
 
     return grid_item(
         title=member.profile.display_name(),

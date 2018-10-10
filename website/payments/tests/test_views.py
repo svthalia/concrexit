@@ -100,11 +100,13 @@ class PaymentAdminViewTest(TestCase):
                     '/admin/payments/payment/%s/change/' % self.payment.pk
                 )
 
-                process_payment.assert_called_once_with(payment_qs, payment_type)
+                process_payment.assert_called_once_with(
+                        payment_qs, payment_type)
 
                 messages_success.assert_called_once_with(
-                    response.wsgi_request, _('Successfully processed %s.') %
-                                           model_ngettext(self.payment, 1)
+                    response.wsgi_request,
+                    _('Successfully processed %s.') %
+                    model_ngettext(self.payment, 1)
                 )
 
             with self.subTest('Send post with failed processing'):
@@ -115,6 +117,7 @@ class PaymentAdminViewTest(TestCase):
                                             })
 
                 messages_error.assert_called_once_with(
-                    response.wsgi_request, _('Could not process %s.') %
-                                           model_ngettext(self.payment, 1)
+                    response.wsgi_request,
+                    _('Could not process %s.') %
+                    model_ngettext(self.payment, 1)
                 )

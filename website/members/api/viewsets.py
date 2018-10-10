@@ -20,7 +20,8 @@ def _extract_date(param):
     if param is None:
         return None
     try:
-        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
+        return timezone.make_aware(
+                datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
     except ValueError:
         return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
 

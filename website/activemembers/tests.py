@@ -59,25 +59,26 @@ class CommitteeMembersTest(TestCase):
         m1 = MemberGroupMembership(group=self.testcie,
                                    member=self.testuser,
                                    since=timezone.now().date().replace(
-                                     year=2014, month=1, day=1),
+                                       year=2014, month=1, day=1),
                                    until=timezone.now().date().replace(
-                                     year=2014, month=3, day=1))
+                                       year=2014, month=3, day=1))
         m1.save()
 
         m2 = MemberGroupMembership(group=self.testcie,
                                    member=self.testuser,
                                    since=timezone.now().date().replace(
-                                     year=2014, month=1, day=1),
+                                       year=2014, month=1, day=1),
                                    until=timezone.now().date().replace(
-                                     year=2014, month=2, day=1))
+                                       year=2014, month=2, day=1))
         with self.assertRaises(ValidationError):
             m2.full_clean()
 
     def test_until_date(self):
-        m = MemberGroupMembership(group=self.testcie,
-                                  member=self.testuser,
-                                  until=timezone.now().date().replace(year=2000),
-                                  chair=False)
+        m = MemberGroupMembership(
+                group=self.testcie,
+                member=self.testuser,
+                until=timezone.now().date().replace(year=2000),
+                chair=False)
         with self.assertRaises(ValidationError):
             m.clean()
         m.since = timezone.now().date().replace(year=1900)

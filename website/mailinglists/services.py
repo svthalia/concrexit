@@ -36,8 +36,10 @@ def get_automatic_lists():
         ['leden', 'members'], '[THALIA]',
         Member.all_with_membership('member'), True, True, True)
     lists += _create_automatic_list(
-        ['begunstigers', 'benefactors'], '[THALIA]', Member.all_with_membership(
-            Membership.BENEFACTOR), multilingual=True)
+        ['begunstigers', 'benefactors'],
+        '[THALIA]',
+        Member.all_with_membership(Membership.BENEFACTOR),
+        multilingual=True)
     lists += _create_automatic_list(
         ['ereleden', 'honorary'], '[THALIA]', Member.all_with_membership(
             'honorary'), multilingual=True)

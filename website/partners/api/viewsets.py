@@ -5,12 +5,15 @@ from pytz.exceptions import InvalidTimeError
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, \
-    IsAuthenticated
+from rest_framework.permissions import (
+        IsAuthenticatedOrReadOnly, IsAuthenticated
+)
 from rest_framework.response import Response
 
-from partners.api.serializers import PartnerEventCalendarJSSerializer, \
-    PartnerEventSerializer, PartnerSerializer
+from partners.api.serializers import (
+        PartnerEventCalendarJSSerializer, PartnerEventSerializer,
+        PartnerSerializer
+)
 from partners.models import Partner, PartnerEvent
 
 
@@ -19,7 +22,8 @@ def _extract_date(param):
     if param is None:
         return None
     try:
-        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
+        return timezone.make_aware(
+                datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
     except ValueError:
         return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
 

@@ -158,8 +158,8 @@ class RenewalFormView(FormView):
         context['study_fees'] = floatformat(settings.MEMBERSHIP_PRICES[
                                                 Entry.MEMBERSHIP_STUDY], 2)
         context['membership'] = self.request.member.latest_membership
-        context['was_member'] = (Membership.objects.filter(user=self.request.member,
-                                                           type=Membership.MEMBER).exists())
+        context['was_member'] = Membership.objects.filter(
+            user=self.request.member, type=Membership.MEMBER).exists()
         if context['membership'] is not None:
             context['membership_type'] = (context['membership']
                                           .get_type_display())

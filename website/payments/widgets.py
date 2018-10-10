@@ -20,5 +20,3 @@ class PaymentWidget(Widget):
             context['url'] = payment.get_admin_url()
             context['processed'] = payment.processed
         return context
-
-
