@@ -364,7 +364,8 @@ class Command(BaseCommand):
                 padding=(10, 10, 10, 10),
                 output_format='jpeg',
             )  # 620x620 pixels, with 10 pixels padding on each side
-            vacancy.company_logo.save(vacancy.company_name + '.jpeg', ContentFile(icon))
+            vacancy.company_logo.save(vacancy.company_name + '.jpeg',
+                                      ContentFile(icon))
 
         if random.random() < 0.5:
             vacancy.expiration_date = _faker.date_time_between("-1y", "+1y")

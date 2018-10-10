@@ -44,13 +44,15 @@ def partner_image_card(image):
 def vacancy_card(vacancy):
     image_url = ''
     if vacancy.get_company_logo:
-        image_url = thumbnail(vacancy.get_company_logo(), settings.THUMBNAIL_SIZES['medium'], fit=False)
+        image_url = thumbnail(vacancy.get_company_logo(),
+                              settings.THUMBNAIL_SIZES['medium'], fit=False)
 
     description = truncatechars(bleach(striptags(vacancy.description)), 150)
     extra_class = 'external-vacancy'
     url = '#vacancy-{}'.format(vacancy.id)
     if vacancy.partner:
-        url = '{}#vacancy-{}'.format(vacancy.partner.get_absolute_url(), vacancy.id)
+        url = '{}#vacancy-{}'.format(vacancy.partner.get_absolute_url(),
+                                     vacancy.id)
         extra_class = ''
 
     return {
