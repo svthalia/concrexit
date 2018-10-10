@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 {% load i18n static thumbnail bleach_tags activemembers_cards %}
-{% block title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{{ committee.name }} — {% trans 'Committees' %} — {{ block.super }}{% endblock %}
 
 {% block body %}
     <section id="activemembers-membergroup" class="page-section">
