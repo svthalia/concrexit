@@ -114,8 +114,7 @@ def export(request, event_id):
             status = pgettext_lazy('registration status', 'waiting')
         data = {
             _('Name'): name,
-            _('Date'): timezone.localtime(
-                            registration.date).strftime("%Y-%m-%d %H:%m"),
+            _('Date'): timezone.localtime(registration.date),
             _('Present'): _('Yes') if registration.present else '',
             _('Phone number'): (registration.member.profile.phone_number
                                 if registration.member
