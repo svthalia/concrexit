@@ -120,8 +120,8 @@ def export(request, event_id):
                                 if registration.member
                                 else ''),
             _('Email'): (registration.member.email
-                                if registration.member
-                                else ''),
+                         if registration.member
+                         else ''),
             _('Status'): status,
             _('Date cancelled'): cancelled,
         }
