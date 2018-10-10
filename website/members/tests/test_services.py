@@ -219,7 +219,8 @@ class EmailChangeTest(TestCase):
             send_message_mock.assert_called_once_with(change_request)
 
 
-class DataMinimalisationTest(TestCase):
+@freeze_time('2018-10-2')
+class DataMinimisationTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
@@ -241,7 +242,6 @@ class DataMinimalisationTest(TestCase):
             until=timezone.now().replace(year=2018, month=9, day=1)
         )
 
-    @freeze_time('2018-10-2')
     def test_removes_after_31_days(self):
         processed = services.execute_data_minimisation(True)
         self.assertEqual(len(processed), 1)
@@ -253,7 +253,6 @@ class DataMinimalisationTest(TestCase):
         processed = services.execute_data_minimisation(True)
         self.assertEqual(len(processed), 0)
 
-    @freeze_time('2018-10-2')
     def test_dry_run(self):
         with self.subTest('With dry_run=True'):
             services.execute_data_minimisation(True)
@@ -264,7 +263,6 @@ class DataMinimalisationTest(TestCase):
             self.member.refresh_from_db()
             self.assertIsNone(self.member.profile.student_number)
 
-    @freeze_time('2018-10-2')
     def test_does_not_affect_current_members(self):
         with self.subTest('Membership ends in future'):
             self.membership.until = timezone.now().replace(
