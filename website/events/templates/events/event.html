@@ -157,7 +157,7 @@
                                         {% if registration.would_cancel_after_deadline %}
                                             <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Cancel registration" %}"
-                                                   onclick="return confirm('{% blocktrans with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');"/>
+                                                   onclick="return confirm('{% blocktrans trimmed with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');"/>
                                         {% else %}
                                             <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Cancel registration" %}"
@@ -185,15 +185,18 @@
                                                 {% trans "No registration required" %}
                                             {% endif %}
                                         {% elif not event.registration_started %}
-                                            {% blocktrans with datetime=event.registration_start %}Registration will
-                                                open {{ datetime }}{% endblocktrans %}
+                                            {% blocktrans trimmed with datetime=event.registration_start  %}
+                                                Registration will open {{ datetime }}
+                                            {% endblocktrans %}
                                         {% elif not event.registration_allowed %}
-                                            {% blocktrans %}Registration is not possible anymore.{% endblocktrans %}
+                                            {% blocktrans trimmed %}
+                                                Registration is not possible anymore.
+                                            {% endblocktrans %}
                                         {% endif %}
                                         {% if event.after_cancel_deadline and permissions.cancel_registration %}
-                                            {% blocktrans with costs=event.fine %}Cancellation isn't possible anymore
-                                                without having to pay the full costs of €{{ costs }}. Also note that you
-                                                will be unable to re-register.{% endblocktrans %}
+                                            {% blocktrans trimmed with costs=event.fine %}
+                                                Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}.
+                                                Also note that you will be unable to re-register.{% endblocktrans %}
                                         {% endif %}
                                     {% endif %}
                                 </em>
