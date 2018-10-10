@@ -1,113 +1,121 @@
-{% extends "old-base.html" %}
-{% load i18n form_field %}
+{% extends "base.html" %}
+{% load i18n bootstrap4 %}
 
 {% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-    <h1>{% trans "renewal" %}</h1>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "renewal" %}</h1>
 
-    <p class="tcenter">
-        {% blocktrans trimmed %}
-            A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.<br/>
-            Note: Only Computing Science and Information Sciences students at the Radboud University can become a member.<br/>
-            <br/>
-            It is still possible to be associated with Thalia, even if you do not study Computing Science or Information
-            Sciences (anymore): You can become a benefactor. For at least € {{ year_fees }} per year, you too can enjoy
-            everything Thalia has to offer.
-        {% endblocktrans %}
-    </p>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.
+                    <br/>
+                    Note: Only Computing Science and Information Sciences students at the Radboud University can become
+                    a member.
+                    <br/><br/>
+                    It is still possible to be associated with Thalia, even if you do not study Computing Science or
+                    Information Sciences (anymore): You can become a benefactor. For at least € {{ year_fees }}
+                    per year, you too can enjoy everything Thalia has to offer.
+                {% endblocktrans %}
+            </p>
 
-    <p class="tcenter">
-        {% blocktrans trimmed %}
-            Are you currently paying per year for your membership? During the lecture year you're allowed to change your
-            membership to one for your entire study duration without paying a double fee.
-            Choose 'until graduation' option in the form below and click send. Just make you currently have an active
-            membership.<br/><br/>
-            If your membership is almost expiring or has expired you can renew it starting one month before expiration.
-        {% endblocktrans %}
-    </p>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    Are you currently paying per year for your membership? During the lecture year you're allowed to
+                    change your membership to one for your entire study duration without paying a double fee.
+                    Choose 'until graduation' option in the form below and click send. Just make you currently have an
+                    active membership.
+                    <br/><br/>
+                    If your membership is almost expiring or has expired you can renew it starting one month before
+                    expiration.
+                {% endblocktrans %}
+            </p>
 
-    <hr/>
+            <hr/>
 
-    <h2 class="tcenter">{% trans "Membership information" %}</h2>
+            <h2 class="text-center">{% trans "Membership information" %}</h2>
 
-    <p class="tcenter">
-        {% trans "membership type"|capfirst %}: {{ membership_type }}<br/>
-        {% trans "since"|capfirst %}: {{ membership.since }}<br/>
-        {% trans "until"|capfirst %}: {% if membership.until is not None %}{{ membership.until }}{% else %}-{% endif %}<br/>
-        {% trans "active"|capfirst %}: {{ membership.is_active|yesno }}
-    </p>
+            <p class="text-center">
+                {% trans "membership type"|capfirst %}: {{ membership_type }}<br/>
+                {% trans "since"|capfirst %}: {{ membership.since }}<br/>
+                {% trans "until"|capfirst %}:
+                {% if membership.until is not None %}{{ membership.until }}{% else %}-{% endif %}<br/>
+                {% trans "active"|capfirst %}: {{ membership.is_active|yesno }}
+            </p>
 
-    <hr/>
+            <hr/>
 
-    {% if membership is None %}
-        <p class="tcenter">
-            {% blocktrans trimmed %}
-                We do not have any previous memberships in our system. Contact the board to renew your membership.
-            {% endblocktrans %}
-        </p>
-    {% elif membership.type == 'honorary' %}
-        <p class="tcenter">
-            {% blocktrans trimmed %}
-                You're a honorary member. That means that you never have to renew your membership.
-            {% endblocktrans %}
-        </p>
-    {% elif membership.type == 'supporter' and not was_member %}
-        <p class="tcenter">
-            {% blocktrans trimmed %}
-                You're a benefactor. Contact the board to renew your membership.
-            {% endblocktrans %}
-        </p>
-    {% elif membership.until is None %}
-        <p class="tcenter">
-            {% blocktrans trimmed %}
-                You currently have an active membership for your entire study duration.<br/>
-                Did you graduate or stop with your studies for some other reason?<br/>
-                Please let us know by sending an email to info@thalia.nu.
-            {% endblocktrans %}
-        </p>
-    {% else %}
-        {% for error in form.errors.items %}
-            {% for message in error.1 %}
-                <div class="alert alert-error">
-                    {{ message }}
-                    <button type="button" class="close"><span class="alert-icon-close"></span></button>
-                </div>
-            {% endfor %}
-        {% endfor %}
-        <form method="post" enctype="multipart/form-data" class="form-horizontal span8 offset2">
-            {% csrf_token %}
-
-            {% if not membership.type == 'supporter' %}
-                {% form_field form 'membership_type' %}
-                {% form_field form 'length' %}
+            {% if membership is None %}
+                <p class="text-center">
+                    {% blocktrans trimmed %}
+                        We do not have any previous memberships in our system. Contact the board to renew your
+                        membership.
+                    {% endblocktrans %}
+                </p>
+            {% elif membership.type == 'honorary' %}
+                <p class="text-center">
+                    {% blocktrans trimmed %}
+                        You're a honorary member. That means that you never have to renew your membership.
+                    {% endblocktrans %}
+                </p>
+            {% elif membership.type == 'supporter' and not was_member %}
+                <p class="text-center">
+                    {% blocktrans trimmed %}
+                        You're a benefactor. Contact the board to renew your membership.
+                    {% endblocktrans %}
+                </p>
+            {% elif membership.until is None %}
+                <p class="text-center">
+                    {% blocktrans trimmed %}
+                        You currently have an active membership for your entire study duration.<br/>
+                        Did you graduate or stop with your studies for some other reason?<br/>
+                        Please let us know by sending an email to info@thalia.nu.
+                    {% endblocktrans %}
+                </p>
             {% else %}
-                <div class="control-group row">
-                    <label class="control-label" for="id_membership_type">{% trans 'membership type'|capfirst %}:</label>
-                    <div class="controls">
-                        <input type="text" readonly disabled value="{% trans 'Benefactor' %}"/>
-                    </div>
-                </div>
-                <div class="control-group row">
-                    <label class="control-label" for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
-                    <div class="controls">
-                        <input type="text" readonly disabled value="{% trans 'One year' %}"/>
-                    </div>
-                </div>
+                {% for error in form.errors.items %}
+                    {% for message in error.1 %}
+                        <div class="alert alert-error">
+                            {{ message }}
+                            <button type="button" class="close"><span class="alert-icon-close"></span></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                <form method="post" enctype="multipart/form-data" class="col-lg-6 offset-lg-3">
+                    {% csrf_token %}
+
+                    {% if not membership.type == 'supporter' %}
+                        {% bootstrap_field form.membership_type %}
+                        {% bootstrap_field form.length %}
+                    {% else %}
+                        <div class="form-group">
+                            <label for="id_membership_type">{% trans 'membership type'|capfirst %}</label>
+                            <input readonly disabled value="{% trans 'Benefactor' %}" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
+                            <input readonly disabled value="{% trans 'One year' %}" type="text">
+                        </div>
+                    {% endif %}
+
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input name="privacy_policy" class="form-check-input" id="id_privacy_policy"
+                                       type="checkbox">
+                                <label class="form-check-label"
+                                       for="id_privacy_policy">{% blocktrans trimmed %}I accept the
+                                    <a target="_blank" href="{{ privacy_policy_url }}">privacy
+                                        policy</a>{% endblocktrans %}.</label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-primary float-right"/>
+                </form>
             {% endif %}
-
-            <div class="control-group row">
-                <div class="controls">
-                    <label class="checkbox">
-                        <input type="checkbox" name="privacy_policy" required="" id="id_privacy_policy">
-                        {% blocktrans trimmed %}
-                            I accept the <a target="_blank" href="{{ privacy_policy_url }}">privacy policy</a>
-                        {% endblocktrans %}.
-                    </label>
-                </div>
-            </div>
-
-            <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-style1 pull-right login"/>
-        </form>
-    {% endif %}
+        </div>
+    </section>
 {% endblock %}

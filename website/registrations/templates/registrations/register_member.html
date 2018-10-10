@@ -1,93 +1,100 @@
-{% extends "old-base.html" %}
-{% load i18n form_field static compress %}
+{% extends "base.html" %}
+{% load i18n static compress bootstrap4 %}
 
 {% block title %}{% trans "registration"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block css_head %}
-    {{ block.super }}
-    {% compress css %}
-    <link href="{% static 'registrations/css/style.scss' %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
-{% endblock %}
-
 {% block body %}
-    <h1>{% trans "registration" %}</h1>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "registration" %}</h1>
 
-    <p class="tcenter">
-    {% blocktrans trimmed %}
-        A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.<br/>
-        Note: Only Computing Science and Information Sciences students at the Radboud University can become a member.<br/><br/>
-        It is still possible to be associated with Thalia, even if you do not study Computing Science or Information Sciences (anymore): You can become a benefactor. For at least € {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.<br />
-        <em>Note that this form is only for member registration. Please visit the board room if you want to become a benefactor.</em>
-    {% endblocktrans %}
-    </p>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.
+                    <br/>
+                    Note: Only Computing Science and Information Sciences students at the Radboud University can become
+                    a member.<br/><br/>
+                    It is still possible to be associated with Thalia, even if you do not study Computing Science or
+                    Information Sciences (anymore): You can become a benefactor. For at least € {{ year_fees }} per
+                    year, you too can enjoy everything Thalia has to offer.<br/>
+                    <em>Note that this form is only for member registration. Please visit the board room if you want to
+                        become a benefactor.</em>
+                {% endblocktrans %}
+            </p>
 
-    <p class="tcenter">
-    {% blocktrans trimmed %}
-        If you've been a member before you should login using your existing account and renew your membership by visiting the account settings.
-        You'll be unable to re-register using this form.
-    {% endblocktrans %}
-    </p>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    If you've been a member before you should login using your existing account and renew your
+                    membership by visiting the account settings.
+                    You'll be unable to re-register using this form.
+                {% endblocktrans %}
+            </p>
 
-    <hr/>
+            <hr/>
 
-    <form method="post" enctype="multipart/form-data" class="form-horizontal span8 offset2">
-        {% csrf_token %}
+            <form method="post" enctype="multipart/form-data" class="col-lg-6 offset-lg-3">
+                {% csrf_token %}
 
-        <fieldset>
-            {% form_field form 'length' %}
-        </fieldset>
+                <fieldset>
+                    {% bootstrap_field form.length %}
+                </fieldset>
 
-        <fieldset>
-            {% form_field form 'first_name' %}
-            {% form_field form 'last_name' %}
-            <span class="birthday-field">
-            {% form_field form 'birthday' %}
-            </span>
-            <div class="control-group row">
-                <div class="controls">
-                    <label class="checkbox">
-                        <input type="checkbox" name="optin_birthday" id="id_optin_birthday">
-                        {% trans "Display birthday in calendar" %}.
-                    </label>
-                </div>
-            </div>
-            {% form_field form 'email' %}
-            <div class="control-group row">
-                <div class="controls">
-                    <label class="checkbox">
-                        <input type="checkbox" name="optin_mailinglist" id="id_optin_mailinglist">
-                        {% trans "Receive emails about (amongst others) job opportunities and in-house days from partners of Thalia." %}.
-                    </label>
-                </div>
-            </div>
-            {% form_field form 'phone_number' %}
-        </fieldset>
+                <fieldset>
+                    {% bootstrap_field form.first_name %}
+                    {% bootstrap_field form.last_name %}
+                    {% bootstrap_field form.birthday %}
 
-        <fieldset>
-            {% form_field form 'address_street' %}
-            {% form_field form 'address_street2' %}
-            {% form_field form 'address_postal_code' %}
-            {% form_field form 'address_city' %}
-        </fieldset>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input name="optin_birthday" class="form-check-input" id="id_optin_birthday"
+                                   type="checkbox">
+                            <label class="form-check-label"
+                                   for="id_optin_birthday">{% trans "Display birthday in calendar" %}</label>
+                        </div>
+                    </div>
 
-        <fieldset>
-            {% form_field form 'student_number' %}
-            {% form_field form 'programme' %}
-            {% form_field form 'starting_year' %}
-        </fieldset>
+                    {% bootstrap_field form.email %}
 
-        <fieldset>
-            <div class="control-group row">
-                <div class="controls">
-                    <label class="checkbox">
-                        <input type="checkbox" name="privacy_policy" required="" id="id_privacy_policy">
-                        {% blocktrans trimmed %}I accept the <a target="_blank" href="{{ privacy_policy_url }}">privacy policy</a>{% endblocktrans %}.
-                    </label>
-                </div>
-            </div>
-        </fieldset>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input name="optin_mailinglist" class="form-check-input" id="id_optin_mailinglist"
+                                   type="checkbox">
+                            <label class="form-check-label"
+                                   for="id_optin_mailinglist">{% trans "Receive emails about (amongst others) job opportunities and in-house days from partners of Thalia." %}</label>
+                        </div>
+                    </div>
 
-        <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-style1 pull-right login" />
-    </form>
+                    {% bootstrap_field form.phone_number %}
+                </fieldset>
+
+                <fieldset>
+                    {% bootstrap_field form.address_street %}
+                    {% bootstrap_field form.address_street2 %}
+                    {% bootstrap_field form.address_postal_code %}
+                    {% bootstrap_field form.address_city %}
+                </fieldset>
+
+                <fieldset>
+                    {% bootstrap_field form.student_number %}
+                    {% bootstrap_field form.programme %}
+                    {% bootstrap_field form.starting_year %}
+                </fieldset>
+
+                <fieldset>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input name="privacy_policy" class="form-check-input" id="id_privacy_policy"
+                                   type="checkbox">
+                            <label class="form-check-label"
+                                   for="id_privacy_policy">{% blocktrans trimmed %}I accept the
+                                <a target="_blank" href="{{ privacy_policy_url }}">privacy
+                                    policy</a>{% endblocktrans %}.</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-primary float-right"/>
+            </form>
+        </div>
+    </section>
 {% endblock %}

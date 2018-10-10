@@ -1,15 +1,20 @@
-{% extends "old-base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "confirm email address"|capfirst %} - {% trans "registration"|capfirst %} — {{ block.super }}{% endblock %}
+{% block title %}{% trans "confirm email address"|capfirst %} - {% trans "registration"|capfirst %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
-    <h1>{% trans "registration" %}</h1>
-    <p class="tcenter">
-    {% blocktrans %}
-        Your email address has been confirmed.
-        We'll review your membership registration as soon as possible.
-        Please send us an email (info@thalia.nu) if you have any questions.
-    {% endblocktrans %}
-    </p>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "registration" %}</h1>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    Your email address has been confirmed.
+                    We'll review your membership registration as soon as possible.
+                    Please send us an email (info@thalia.nu) if you have any questions.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </section>
 {% endblock %}

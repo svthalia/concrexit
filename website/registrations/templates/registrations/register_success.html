@@ -1,15 +1,21 @@
-{% extends "old-base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "registration success"|capfirst %} - {% trans "registration"|capfirst %} — {{ block.super }}{% endblock %}
+{% block title %}{% trans "registration success"|capfirst %} - {% trans "registration"|capfirst %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
-    <h1>{% trans "registration" %}</h1>
-    <p class="tcenter">
-    {% blocktrans %}
-        Thank you!
-        Before we can review your membership registration we need confirmation that the email address you entered during the registration process is valid.
-        Please check your mailbox for the confirmation email.
-    {% endblocktrans %}
-    </p>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "registration" %}</h1>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    Thank you!
+                    Before we can review your membership registration we need confirmation that the email address you
+                    entered during the registration process is valid.
+                    Please check your mailbox for the confirmation email.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </section>
 {% endblock %}
