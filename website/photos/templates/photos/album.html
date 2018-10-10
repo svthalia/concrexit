@@ -11,19 +11,25 @@
         <div class="container">
             <h1 class="text-center section-title">
                 {{ album.title }}
-                <a href="{% url 'photos:album-download' album.slug %}"
+                <a 
+                   {% if album.shareable %}
+                   href="{% url 'photos:shared-album-download' album.slug album.access_token %}"
+                   {% else %}
+                   href="{% url 'photos:album-download' album.slug %}"
+                   {% endif %}
                    target="_blank"
                    class="btn btn-primary btn-first"
                 >
                     <i class="fas fa-download"></i>
                 </a>
             </h1>
+
             <h2 class="text-center mt-2">{{ album.date|date:"d-m-Y" }}</h2>
             {% if album.shareable %}
                 <p class="text-center">
                     {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>
-                    <small><a href="{% url 'photos:shared_album' album.slug album.access_token %}">
-                        {{ request.get_host }}{% url 'photos:shared_album' album.slug album.access_token %}
+                    <small><a href="{% url 'photos:shared-album' album.slug album.access_token %}">
+                        {{ request.get_host }}{% url 'photos:shared-album' album.slug album.access_token %}
                     </a></small>
                 </p>
             {% endif %}

@@ -192,7 +192,7 @@ class SharedAlbumTest(TestCase):
                 photo.save()
 
         response = self.client.get(reverse(
-            'photos:shared_album',
+            'photos:shared-album',
             args=(self.album.slug, self.album.access_token,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['album'], self.album)
@@ -229,13 +229,13 @@ class DownloadTest(TestCase):
         self.client.force_login(self.member)
 
         response = self.client.get(reverse(
-            'photos:download', args=(self.photo,)))
+            'photos:download', args=(self.album.slug, self.photo,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'image/jpeg')
 
     def test_logged_out(self):
         response = self.client.get(reverse(
-            'photos:download', args=(self.photo,)))
+            'photos:download', args=(self.album.slug, self.photo,)))
         self.assertEqual(response.status_code, 302)
 
 
@@ -269,7 +269,8 @@ class SharedDownloadTest(TestCase):
         with self.subTest():
             response = self.client.get(reverse(
                 'photos:shared-download',
-                args=(self.album.slug, self.album.access_token, self.photo,)))
+                args=(self.album.slug, self.album.access_token,
+                      self.photo,)))
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response['Content-Type'], 'image/jpeg')
 
@@ -278,7 +279,8 @@ class SharedDownloadTest(TestCase):
         with self.subTest():
             response = self.client.get(reverse(
                 'photos:shared-download',
-                args=(self.album.slug, self.album.access_token, self.photo,)))
+                args=(self.album.slug, self.album.access_token,
+                      self.photo,)))
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response['Content-Type'], 'image/jpeg')
 

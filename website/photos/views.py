@@ -2,17 +2,17 @@ import os
 from tempfile import gettempdir
 from zipfile import ZipFile
 
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import SuspiciousFileOperation
 from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from sendfile import sendfile
 
-from photos import services
+from photos.models import Album, Photo
+from photos.services import (check_shared_album_token,
+                             get_annotated_accessible_albums,
+                             is_album_accessible)
 from utils.views import _private_thumbnails_unauthed
-from .models import Album
 
 COVER_FILENAME = 'cover.jpg'
 
@@ -22,7 +22,7 @@ def index(request):
     # Only show published albums
     albums = Album.objects.filter(hidden=False)
 
-    albums = services.get_annotated_accessible_albums(request, albums)
+    albums = get_annotated_accessible_albums(request, albums)
 
     albums = albums.order_by('-date')
     paginator = Paginator(albums, 12)
@@ -65,78 +65,77 @@ def _render_album_page(request, album):
 @login_required
 def album(request, slug):
     album = get_object_or_404(Album, slug=slug)
-    if services.is_album_accessible(request, album):
+    if is_album_accessible(request, album):
         return _render_album_page(request, album)
     raise Http404("Sorry, you're not allowed to view this album")
 
 
-def _checked_shared_album(slug, token):
-    album = get_object_or_404(Album, slug=slug)
-    if token != album.access_token:
-        raise Http404("Invalid token.")
-    return album
-
-
 def shared_album(request, slug, token):
-    album = _checked_shared_album(slug, token)
+    album = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(album, token)
     return _render_album_page(request, album)
 
 
-def _download(request, original_path):
-    """This function provides a layer of indirection for shared albums
-
-    Checks for some path traversal:
-
-    >>> from django.test import RequestFactory
-    >>> r = RequestFactory().get('/photos/download/../../../../../etc/passwd')
-    >>> _download(r, '../../../../../../../etc/passwd')  #doctest: +ELLIPSIS
-    Traceback (most recent call last):
-        ...
-    django.core.exceptions.SuspiciousFileOperation: ...
-    """
-    photopath = os.path.join(settings.MEDIA_ROOT, 'photos')
-
-    path = os.path.normpath(
-        os.path.join(photopath, *original_path.split('/')[1:]))
-
-    if not os.path.commonpath([photopath, path]) == photopath:
-        raise SuspiciousFileOperation(
-            "Path traversal detected: someone tried to download "
-            "{}, input: {}".format(path, original_path))
-    if not os.path.isfile(path):
-        raise Http404("Photo not found.")
-    return sendfile(request, path, attachment=True)
+def _photo_path(album, filename):
+    photoname = os.path.basename(filename)
+    albumpath = os.path.join(album.photosdir, album.dirname)
+    photopath = os.path.join(albumpath, photoname)
+    get_object_or_404(Photo.objects.filter(album=album, file=photopath))
+    return photopath
 
 
-def _album_download(request, slug):
+def _download(request, album, filename):
     """This function provides a layer of indirection for shared albums"""
-    album = get_object_or_404(Album, slug=slug)
+    photopath = _photo_path(album, filename)
+    photo = get_object_or_404(
+            Photo.objects.filter(album=album, file=photopath))
+    return sendfile(request, photo.file.path, attachment=True)
+
+
+def _album_download(request, album):
+    """This function provides a layer of indirection for shared albums"""
     albumpath = os.path.join(album.photospath, album.dirname)
-    pictures = [os.path.join(albumpath, x) for x in os.listdir(albumpath)]
     zipfilename = os.path.join(gettempdir(),
                                '{}.zip'.format(album.dirname))
     if not os.path.exists(zipfilename):
         with ZipFile(zipfilename, 'w') as f:
+            pictures = [os.path.join(albumpath, x)
+                        for x in os.listdir(albumpath)]
             for picture in pictures:
                 f.write(picture, arcname=os.path.basename(picture))
     return sendfile(request, zipfilename, attachment=True)
 
 
 @login_required
-def download(request, path):
-    return _download(request, path)
+def download(request, slug, filename):
+    album = get_object_or_404(Album, slug=slug)
+    if is_album_accessible(request, album):
+        return _download(request, album, filename)
+    raise Http404("Sorry, you're not allowed to view this album")
 
 
 @login_required
 def album_download(request, slug):
-    return _album_download(request, slug)
+    album = get_object_or_404(Album, slug=slug)
+    if is_album_accessible(request, album):
+        return _album_download(request, album)
+    raise Http404("Sorry, you're not allowed to view this album")
 
 
-def shared_download(request, slug, token, path):
-    _checked_shared_album(slug, token)
-    return _download(request, path)
+def shared_download(request, slug, token, filename):
+    album = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(album, token)
+    return _download(request, album, filename)
 
 
-def shared_thumbnail(request, slug, token, size_fit, path):
-    _checked_shared_album(slug, token)
-    return _private_thumbnails_unauthed(request, size_fit, path)
+def shared_album_download(request, slug, token):
+    album = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(album, token)
+    return _album_download(request, album)
+
+
+def shared_thumbnail(request, slug, size_fit, token, filename):
+    album = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(album, token)
+    photopath = _photo_path(album, filename)
+    return _private_thumbnails_unauthed(request, size_fit, photopath)

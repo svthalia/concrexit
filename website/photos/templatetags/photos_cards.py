@@ -45,7 +45,7 @@ def photo_card(photo):
                     args=[photo.album.slug, photo.album.access_token, photo]))
     else:
         anchor_attrs += ' data-download={}'.format(
-            reverse('photos:download', args=[photo]))
+            reverse('photos:download', args=[photo.album.slug, photo]))
 
     image_url = thumbnail(photo.file, settings.THUMBNAIL_SIZES['medium'])
     if photo.album.shareable:
