@@ -6,6 +6,8 @@ This file controls what settings are loaded.
 Using environment variables you can control the loading of various
 overrides.
 """
+# flake8: noqa: ignore F403
+
 import os
 
 # Load all default settings because we need to use settings.configure

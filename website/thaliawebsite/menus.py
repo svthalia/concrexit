@@ -57,7 +57,8 @@ MAIN_MENU = [
             {
                 'title': _('Summaries & Exams'),
                 'name': 'education:courses',
-                # TODO: Remove submenu when the new template is implemented everywhere
+                # TODO: Remove submenu when the new template is implemented
+                # everywhere
                 'submenu': [
                     {
                         'title': _('Submit Exam'),

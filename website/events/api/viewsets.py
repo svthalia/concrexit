@@ -33,7 +33,8 @@ def _extract_date(param):
     if param is None:
         return None
     try:
-        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
+        return timezone.make_aware(
+            datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
     except ValueError:
         return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
 
@@ -161,7 +162,8 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
                 queryset, many=True, context={'member': request.member})
         return Response(serializer.data)
 
-    @action(detail=False, permission_classes=(IsAdminUser, UnpublishedEventPermissions,))
+    @action(detail=False,
+            permission_classes=(IsAdminUser, UnpublishedEventPermissions,))
     def unpublished(self, request):
         """
         Defines a custom route that outputs the correctly formatted

@@ -107,7 +107,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch('registrations.services.accept_entries')
     @mock.patch('registrations.services.reject_entries')
     def test_post_accept(self, reject_entries, accept_entries,
-                        check_unique_user):
+                         check_unique_user):
         self.view.action = 'accept'
         for type, entry in {
             'registration': self.entry1,
@@ -215,7 +215,8 @@ class EntryAdminViewTest(TestCase):
             entry_qs = Entry.objects.filter(pk=entry.pk)
             send_email.reset_mock()
             send_email.return_value = None
-            with mock.patch('registrations.models.Entry.objects.filter') as qs_mock:
+            with mock.patch(
+                    'registrations.models.Entry.objects.filter') as qs_mock:
                 qs_mock.return_value = entry_qs
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
@@ -246,7 +247,8 @@ class EntryAdminViewTest(TestCase):
             entry_qs = Entry.objects.filter(pk=entry.pk)
             revert.reset_mock()
             revert.return_value = None
-            with mock.patch('registrations.models.Entry.objects.filter') as qs_mock:
+            with mock.patch(
+                    'registrations.models.Entry.objects.filter') as qs_mock:
                 qs_mock.return_value = entry_qs
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
@@ -367,7 +369,7 @@ class ConfirmEmailViewTest(TestCase):
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(response.url, '/registration/register/')
 
-            with self.subTest('Redirect when registration confirm gives error'):
+            with self.subTest('Redirect when registration confirm errors'):
                 confirm_entry.side_effect = ValidationError(message='Error')
 
                 response = self.client.get(reverse(
@@ -472,7 +474,8 @@ class RenewalFormViewTest(TestCase):
         )
         self.view.request = MagicMock()
 
-        with mock.patch('members.models.Membership.objects') as qs_mock:
+        with mock.patch('members.models.Membership.objects'
+                ) as _qs:  # noqa: F841
             Membership.objects.filter().exists.return_value = True
             context = self.view.get_context_data(form=MagicMock())
             self.assertEqual(len(context), 8)
@@ -557,7 +560,8 @@ class RenewalFormViewTest(TestCase):
 
             request = super_post.call_args[0][0]
             self.assertEqual(request.POST['member'], 2)
-            self.assertEqual(request.POST['membership_type'], Membership.BENEFACTOR)
+            self.assertEqual(request.POST['membership_type'],
+                             Membership.BENEFACTOR)
             self.assertEqual(request.POST['length'], Entry.MEMBERSHIP_YEAR)
 
     @mock.patch('registrations.emails.send_new_renewal_board_message')

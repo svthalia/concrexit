@@ -4,7 +4,6 @@ from django.forms import TypedChoiceField
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from payments.widgets import PaymentWidget
 from utils.snippets import datetime_to_lectureyear
 from .models import Registration, Renewal
 

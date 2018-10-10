@@ -138,7 +138,9 @@ class MemberListSerializer(serializers.ModelSerializer):
     def _photo(self, instance):
         if instance.profile.photo:
             return self.context['request'].build_absolute_uri(
-                thumbnail(instance.profile.photo, settings.THUMBNAIL_SIZES['medium'], 1))
+                thumbnail(instance.profile.photo,
+                          settings.THUMBNAIL_SIZES['medium'],
+                          1))
         else:
             return self.context['request'].build_absolute_uri(
                 static('members/images/default-avatar.jpg'))

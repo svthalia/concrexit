@@ -16,19 +16,13 @@ stages:
   - test
   - deploy
 
-obsolete-translations:
-  stage: test
-  image: $PY37_IMAGE
-  cache: {}
-  script:
-    # Check for obsolete translations in .po files (starting with `#~`).
-    - (grep --include="*.po" --quiet --recursive --regexp "^#~" website && exit 1) || exit 0
-
-pep8:
+codestyle:
   stage: test
   image: $PY36_IMAGE
   script:
     - tox -e flake8
+    # Check for obsolete translations in .po files (starting with `#~`).
+    - (grep --include="*.po" --quiet --recursive --regexp "^#~" website && exit 1) || exit 0
 
 .djangotest: &djangotest
   stage: test

@@ -31,7 +31,8 @@ def membergroup_member_card(membership):
     if 'since' in membership:
         since_text = _('Committee member since: ') + '?'
         if membership['since'].year > 1970:
-            since_text = _('Committee member since: ') + str(membership['since'].year)
+            since_text = _('Committee member since: {}').format(
+                membership['since'].year)
         meta_text += '<p class="px-1">{}</p>'.format(since_text)
     if 'role' in membership and membership['role']:
         meta_text += '<p class="px-1">{}</p>'.format(membership['role'])

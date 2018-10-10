@@ -3,7 +3,6 @@ import os
 import random
 import logging
 
-from PIL.JpegImagePlugin import JpegImageFile
 from django.conf import settings
 from django.db import models
 from django.urls import reverse

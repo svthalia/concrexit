@@ -127,7 +127,6 @@ class AlbumTest(TestCase):
                 since=date(year=2015, month=1, day=1),
                 until=None)
 
-
         for i in range(10):
             with open("photos/fixtures/thom_assessor.png", "rb") as f:
                 fi = SimpleUploadedFile(name='photo{}.png'.format(i),
@@ -150,7 +149,7 @@ class AlbumTest(TestCase):
                 until=date(year=2018, month=1, day=1))
 
         with self.subTest():
-            self.album.date=date(year=2017, month=1, day=1)
+            self.album.date = date(year=2017, month=1, day=1)
             self.album.save()
 
             response = self.client.get(reverse(
@@ -158,7 +157,7 @@ class AlbumTest(TestCase):
             self.assertEqual(response.status_code, 200)
 
         with self.subTest():
-            self.album.date=date(year=2018, month=9, day=5)
+            self.album.date = date(year=2018, month=9, day=5)
             self.album.save()
 
             response = self.client.get(reverse(
