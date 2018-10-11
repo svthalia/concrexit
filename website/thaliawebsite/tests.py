@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase, override_settings
 
+from activemembers.models import Committee, MemberGroupMembership, Society
 from members.models import Profile
 from thaliawebsite.templatetags import bleach_tags
 from thaliawebsite import sitemaps
@@ -22,6 +23,7 @@ def load_tests(_loader, tests, _ignore):
 
 class WikiLoginTestCase(TestCase):
     """Tests event registrations"""
+    fixtures = ['member_groups.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -69,6 +71,50 @@ class WikiLoginTestCase(TestCase):
         Profile.objects.create(
             user=self.user,
             student_number='s1234567'
+        )
+
+        response = self.client.post('/api/wikilogin',
+                                    {'apikey': 'key',
+                                     'user': 'testuser',
+                                     'password': 'top secret'})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'admin': False,
+                                           'committees': [],
+                                           'msg': 'Logged in',
+                                           'mail': 'foo@bar.com',
+                                           'name': 'first last_name',
+                                           'status': 'ok'})
+
+    @override_settings(WIKI_API_KEY='key')
+    def test_login_with_committee_group_membership(self):
+        """A user that has a profile should be able to log in"""
+        committee = Committee.objects.get(pk=1)
+        MemberGroupMembership.objects.create(
+            member=self.user,
+            group=committee
+        )
+
+        response = self.client.post('/api/wikilogin',
+                                    {'apikey': 'key',
+                                     'user': 'testuser',
+                                     'password': 'top secret'})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'admin': False,
+                                           'committees': ['testcie1:ns'],
+                                           'msg': 'Logged in',
+                                           'mail': 'foo@bar.com',
+                                           'name': 'first last_name',
+                                           'status': 'ok'})
+
+    @override_settings(WIKI_API_KEY='key')
+    def test_login_with_society_group_membership(self):
+        """A user that has a profile should be able to log in"""
+        society = Society.objects.get(pk=4)
+        MemberGroupMembership.objects.create(
+            member=self.user,
+            group=society
         )
 
         response = self.client.post('/api/wikilogin',
