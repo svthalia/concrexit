@@ -45,11 +45,12 @@ def wiki_login(request):
     user = authenticate(username=user, password=password)
     if user is not None:
         memberships = [
-            cmm.committee.wiki_namespace for cmm in
+            x.group.committee.wiki_namespace for x in
             user.membergroupmembership_set
             .exclude(until__lt=timezone.now().date())
             .select_related('group')
-            if cmm.committee.wiki_namespace is not None]
+            if hasattr(x.group, 'committee') and
+            x.group.committee.wiki_namespace is not None]
 
         if user.has_perm('activemembers.board_wiki'):
             memberships.append('bestuur')
