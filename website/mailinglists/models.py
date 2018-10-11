@@ -72,7 +72,7 @@ class MailingList(models.Model):
 
         for group in self.member_groups.all().prefetch_related("members"):
             for member in group.members.exclude(
-                    committeemembership__until__lt=timezone.now().date()):
+                    membergroupmembership__until__lt=timezone.now().date()):
                 yield member.email
 
         for verbatimaddress in self.addresses.all():
