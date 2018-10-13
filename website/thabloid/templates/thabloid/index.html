@@ -1,73 +1,77 @@
-{% extends 'old-base.html' %}
-{% load i18n thumbnail staticfiles compress %}
+{% extends 'base.html' %}
+{% load i18n static compress thabloid_cards %}
 
 {% block title %}{% trans "Thabloid" %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% trans "Thabloid" %} — {{ block.super }}{% endblock %}
-
-{% block css_head %}
-    {{ block.super }}
-    {% compress css %}
-    <link href="{% static 'thabloid/css/style.scss' %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
-{% endblock %}
+{% block opengraph_title %}{% trans "Thabloid" %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>{% trans "Thabloid" %}</h1>
+    <section class="page-section" id="thabloid-index">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "Thabloid" %}</h1>
 
-<div class="portfolio portfolio-isotope">
-    <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
-        <ul class="tabs">
-            <li class="current"><a href="#">{% trans "All Thabloids" %}</a></li>
-            <li data-filter="{{ year|add:0 }}"><a href="#">{{ year|add:0 }}-{{ year|add:1 }}</a></li>
-            <li data-filter="{{ year|add:-1 }}"><a href="#">{{ year|add:-1 }}-{{ year|add:0 }}</a></li>
-            <li data-filter="{{ year|add:-2 }}"><a href="#">{{ year|add:-2 }}-{{ year|add:-1 }}</a></li>
-            <li data-filter="{{ year|add:-3 }}"><a href="#">{{ year|add:-3 }}-{{ year|add:-2 }}</a></li>
-            <li data-filter="older"><a href="#">{% trans "Older" %}</a></li>
-        </ul>
-    </div>
+            <ul class="nav nav-tabs justify-content-center mt-4">
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#all"
+                       data-filter="all">
+                        {% trans "All Thabloids" %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-{{ year }}"
+                       data-filter=".year-{{ year }}">
+                        {{ year }}-{{ year|add:1 }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-{{ year|add:-1 }}"
+                       data-filter=".year-{{ year|add:-1 }}">
+                        {{ year|add:-1 }}-{{ year }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-{{ year|add:-2 }}"
+                       data-filter=".year-{{ year|add:-2 }}">
+                        {{ year|add:-2 }}-{{ year|add:-1 }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-{{ year|add:-3 }}"
+                       data-filter=".year-{{ year|add:-3 }}">
+                        {{ year|add:-3 }}-{{ year|add:-2 }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-older"
+                       data-filter=".year-older">
+                        {% trans "Older" %}
+                    </a>
+                </li>
+            </ul>
 
-    <ul class="thabloids portfolio-posts row isotope" style="position: relative; overflow: hidden; height: 1195px;">
-    {% for thabloid in thabloids %}
-        <li data-filter="{% if thabloid.year < year|add:-3 %}older{% else %}{{ thabloid.year }}{% endif %}" class="post span3 has-overlay isotope-item" style="position: absolute; left: 0px; top: 0px;">
-            <div class="post-inner">
-                <div class="post-header">
-                    <img alt="{{ thabloid.year }}-{{ thabloid.year|add:1 }}, #{{ thabloid.issue }}" src="{% thumbnail thabloid.cover '220x310' %}">
-                </div>
-                <div class="post-overlay">
-                    <div class="post-overlay-meta">
-                        <h2>{{ thabloid.year }}-{{ thabloid.year|add:1 }}, #{{ thabloid.issue }}</h2>
+            <div class="row">
+                {% for thabloid in thabloids %}
+                    <div class="col-6 col-md-3 my-3">
+                        {% thabloid_card year thabloid %}
                     </div>
-                    <ul class="post-overlay-icons">
-                        <li><span></span><a class="overlay-icon-open open-thabloid" href="{% url 'thabloid:pages' thabloid.year thabloid.issue %}"></a></li>
-                        <li><span></span><a class="overlay-icon-link" href="{{ thabloid.file.url }}" target="_blank"></a></li>
-                    </ul>
-                </div>
+                {% endfor %}
             </div>
-        </li>
-    {% endfor %}
-    </ul>
-</div>
+        </div>
+    </section>
 {% endblock %}
 
-{% block js_footer %}
-<script>
-    $('.open-thabloid').on('click', function(event) {
-        event.preventDefault();
-        $.ajax(this.href).success(function(data) {
-            $.fancybox(data,
-            {
-                padding: 0,
-                loop: false,
-                openEffect: 'elastic',
-                closeEffect: 'elastic',
-                helpers: {
-                    overlay: {
-                        css: {'background-color': 'rgba(0, 0, 0, 0.9)'},
-                        locked: true
-                    }
-                }
-            });
-        });
-    });
-</script>
+{% block js_body %}
+    {{ block.super }}
+    {% compress js %}
+        <script type="text/javascript"
+                src="{% static 'js/mixitup.min.js' %}"></script>
+        <script type="text/javascript"
+                src="{% static 'thabloid/js/main.js' %}"></script>
+    {% endcompress %}
 {% endblock %}
