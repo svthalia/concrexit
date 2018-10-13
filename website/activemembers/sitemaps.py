@@ -9,7 +9,8 @@ class StaticViewSitemap(sitemaps.Sitemap):
     changefreq = 'daily'
 
     def items(self):
-        return ['activemembers:committees', 'activemembers:boards']
+        return ['activemembers:committees', 'activemembers:societies',
+                'activemembers:boards']
 
     def location(self, item):
         return reverse(item)
@@ -18,7 +19,16 @@ class StaticViewSitemap(sitemaps.Sitemap):
 class CommitteeSitemap(sitemaps.Sitemap):
 
     def items(self):
-        return models.Committee.active_committees.all()
+        return models.Committee.active_objects.all()
+
+    def location(self, item):
+        return item.get_absolute_url()
+
+
+class SocietySitemap(sitemaps.Sitemap):
+
+    def items(self):
+        return models.Society.active_objects.all()
 
     def location(self, item):
         return item.get_absolute_url()
@@ -37,5 +47,6 @@ class BoardSitemap(sitemaps.Sitemap):
 sitemap = {
     'activemembers-static': StaticViewSitemap,
     'activemembers-committees': CommitteeSitemap,
+    'activemembers-societies': SocietySitemap,
     'activemembers-boards': BoardSitemap,
 }
