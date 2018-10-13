@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-01 10:31+0200\n"
-"PO-Revision-Date: 2018-10-01 10:31+0200\n"
+"POT-Creation-Date: 2018-10-11 00:53+0200\n"
+"PO-Revision-Date: 2018-10-11 00:55+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -681,10 +681,6 @@ msgstr "Bestellen"
 #: templates/events/event.html
 msgid "Registrations"
 msgstr "Aanmeldingen"
-
-#: templates/events/event.html
-msgid "cohort"
-msgstr "cohort"
 
 #: templates/events/frontpage.html
 msgid "Upcoming events"
