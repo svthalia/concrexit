@@ -9,7 +9,7 @@ $(function() {
         return parseInt($(td).html().replace('€', ''));
     });
 
-    $('input.paid-button').click(function() {
+    $('a.paid-button').click(function() {
         var id = $(this).data('id');
         var paid = $(this).data('paid');
         var button = $(this);
@@ -22,19 +22,19 @@ $(function() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).success(function(data, status) {
+        }).done(function(data) {
             button.data('paid', data.paid);
             if (data.paid) {
-                button.addClass('btn-style3');
-                button.removeClass('btn-style4');
-                button.val(gettext('Yes'));
+                button.addClass('btn-success');
+                button.removeClass('btn-danger');
+                button.html(gettext('Yes'));
             } else {
-                button.addClass('btn-style4');
-                button.removeClass('btn-style3');
-                button.val(gettext('No'));
+                button.addClass('btn-danger');
+                button.removeClass('btn-success');
+                button.html(gettext('No'));
             }
             button.blur();
-        }).fail(function(xhr, status) {
+        }).fail(function(xhr) {
             var data = $.parseJSON(xhr.responseText);
             if (data.message !== undefined) {
                 alert(data.message);
