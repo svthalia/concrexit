@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-06 16:13+0200\n"
-"PO-Revision-Date: 2018-09-06 16:12+0200\n"
+"POT-Creation-Date: 2018-10-11 00:47+0200\n"
+"PO-Revision-Date: 2018-10-11 00:48+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: admin.py models.py
 msgid "group memberships"
@@ -70,11 +70,11 @@ msgstr "Achernaam"
 msgid "Email"
 msgstr "Email"
 
-#: admin.py
+#: admin.py models.py
 msgid "Group"
 msgstr "Groep"
 
-#: admin.py models.py
+#: admin.py models.py templatetags/activemembers_cards.py
 msgid "Member since"
 msgstr "Lid sinds"
 
@@ -82,7 +82,7 @@ msgstr "Lid sinds"
 msgid "Member until"
 msgstr "Lid tot"
 
-#: admin.py
+#: admin.py models.py
 msgid "Chair of the group"
 msgstr "Voorzitter van de groep"
 
@@ -99,8 +99,8 @@ msgid "Active members"
 msgstr "Actieve leden"
 
 #: models.py
-msgid "Committee name"
-msgstr "Commissienaam"
+msgid "Name"
+msgstr "Naam"
 
 #: models.py
 msgid "Description"
@@ -150,7 +150,8 @@ msgstr "Wiki namespace"
 msgid "committee"
 msgstr "commissie"
 
-#: models.py templates/activemembers/committee_index.html
+#: models.py templates/activemembers/committee_detail.html
+#: templates/activemembers/committee_index.html
 msgid "committees"
 msgstr "commissies"
 
@@ -167,7 +168,8 @@ msgstr "gezelschappen"
 msgid "board"
 msgstr "bestuur"
 
-#: models.py
+#: models.py templates/activemembers/board_detail.html
+#: templates/activemembers/board_index.html
 msgid "boards"
 msgstr "besturen"
 
@@ -184,10 +186,6 @@ msgid "Member"
 msgstr "Lid"
 
 #: models.py
-msgid "Committee"
-msgstr "Commissie"
-
-#: models.py
 msgid "The date this member joined in this role"
 msgstr "De datum waarop deze persoon lid werd in deze rol"
 
@@ -196,10 +194,6 @@ msgid "A member until this time (can't be in the future)."
 msgstr ""
 "De datum waarop deze persoon de groep verliet (kan niet in de toekomst "
 "liggen)"
-
-#: models.py
-msgid "Chair of the committee"
-msgstr "Voorzitter van de commissie"
 
 #: models.py
 msgid "There can only be one chair at a time!"
@@ -211,7 +205,7 @@ msgstr "rol"
 
 #: models.py
 msgid "The role of this member"
-msgstr "De rol van dit lid binnen de commissie"
+msgstr "De rol van dit lid"
 
 #: models.py
 msgid "End date can't be before start date"
@@ -222,12 +216,12 @@ msgid "End date can't be in the future"
 msgstr "De einddatum kan niet in de toekomst liggen"
 
 #: models.py
-msgid "Start date can't be before committee start date"
-msgstr "De begindatum kan niet voor de begindatum van de commissie liggen"
+msgid "Start date can't be before group start date"
+msgstr "De begindatum kan niet voor de begindatum van de groep liggen"
 
 #: models.py
-msgid "Start date can't be after committee end date"
-msgstr "De begindatum kan niet na de einddatum van de commissie liggen"
+msgid "Start date can't be after group end date"
+msgstr "De begindatum kan niet na de einddatum van de groep liggen"
 
 #: models.py
 msgid "End date cannot be set for boards"
@@ -250,35 +244,6 @@ msgstr "groepslidmaatschap"
 msgid "{name} mentor in {year}"
 msgstr "{name} mentor in {year}"
 
-#: templates/activemembers/board_detail.html
-#: templates/activemembers/board_index.html
-msgid "Board"
-msgstr "Bestuur"
-
-#: templates/activemembers/board_detail.html
-#: templates/activemembers/board_index.html
-msgid "Boards"
-msgstr "Besturen"
-
-#: templates/activemembers/board_detail.html
-#, python-format
-msgid "About %(name)s"
-msgstr "Over %(name)s"
-
-#: templates/activemembers/board_detail.html
-msgid "Board members"
-msgstr "Bestuursleden"
-
-#: templates/activemembers/board_detail.html
-#: templates/activemembers/committee_detail.html
-#: templates/activemembers/society_detail.html
-msgid "Chair"
-msgstr "Voorzitter"
-
-#: templates/activemembers/board_detail.html
-msgid "This board doesn't have any members?"
-msgstr "Dit bestuur heeft geen leden?"
-
 #: templates/activemembers/board_index.html
 msgid "The board"
 msgstr "Het bestuur"
@@ -300,66 +265,22 @@ msgstr ""
 msgid "Old boards"
 msgstr "Oude besturen"
 
-#: templates/activemembers/board_index.html
-#: templates/activemembers/committee_detail.html
-#: templates/activemembers/society_detail.html
-#, python-format
-msgid "Photo of %(name)s"
-msgstr "Foto van %(name)s"
-
-#: templates/activemembers/board_index.html
-msgid "There are no boards!"
-msgstr "Er zijn geen besturen!"
-
-#: templates/activemembers/committee_detail.html
-#: templates/activemembers/committee_index.html
-msgid "Committees"
-msgstr "Commissies"
-
-#: templates/activemembers/committee_detail.html
-#: templates/activemembers/society_detail.html
-#, python-format
-msgid "About the %(name)s"
-msgstr "Over de %(name)s"
-
-#: templates/activemembers/committee_detail.html
-msgid "Committee members"
-msgstr "Commissieleden"
-
-#: templates/activemembers/committee_detail.html
-msgid "Committee member since: ?"
-msgstr "Commissielid sinds: ?"
-
-#: templates/activemembers/committee_detail.html
-#, python-format
-msgid "Committee member since: %(since)s"
-msgstr "Commissielid sinds: %(since)s"
-
-#: templates/activemembers/committee_detail.html
-msgid "This committee doesn't have any members?"
-msgstr "Deze commissie heeft geen leden?"
-
 #: templates/activemembers/committee_index.html
 msgid "There are no committees!"
 msgstr "Er zijn geen commissies!"
 
-#: templates/activemembers/society_detail.html
-msgid "Society members"
-msgstr "Leden van het gezelschap"
+#: templates/activemembers/membergroup_detail.html
+msgid "Members"
+msgstr "Leden"
 
-#: templates/activemembers/society_detail.html
-msgid "Society member since: ?"
-msgstr "Lid van het gezelschap sinds: ?"
-
-#: templates/activemembers/society_detail.html
-#, python-format
-msgid "Society member since: %(since)s"
-msgstr "Lid van het gezelschap sinds: %(since)s"
-
-#: templates/activemembers/society_detail.html
-msgid "This society doesn't have any members?"
-msgstr "Dit gezelschap heeft geen leden?"
+#: templates/activemembers/membergroup_detail.html
+msgid "This group doesn't have any members?"
+msgstr "Deze groep heeft geen leden?"
 
 #: templates/activemembers/society_index.html
 msgid "There are no societies!"
 msgstr "Er zijn geen gezelschappen!"
+
+#: templatetags/activemembers_cards.py
+msgid "Chair"
+msgstr "Voorzitter"

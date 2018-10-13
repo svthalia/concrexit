@@ -1,5 +1,5 @@
 {% extends 'activemembers/membergroup_detail.html' %}
 {% load i18n %}
 
-{% block title %}{{ membergroup.name }} — {% trans "Boards" %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{{ membergroup.name }} — {% trans "Boards" %} — {{ block.super }}{% endblock %}
+{% block title %}{{ membergroup.name }} — {% trans "boards"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ membergroup.name }} — {% trans "boards"|capfirst %} — {{ block.super }}{% endblock %}

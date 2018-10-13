@@ -35,7 +35,7 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
     name = MultilingualField(
         models.CharField,
         max_length=40,
-        verbose_name=_('Committee name'),
+        verbose_name=_('Name'),
         unique=True,
     )
 
@@ -209,7 +209,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
     group = models.ForeignKey(
         MemberGroup,
         on_delete=models.CASCADE,
-        verbose_name=_('Committee'),
+        verbose_name=_('Group'),
     )
 
     since = models.DateField(
@@ -227,7 +227,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
     )
 
     chair = models.BooleanField(
-        verbose_name=_('Chair of the committee'),
+        verbose_name=_('Chair of the group'),
         help_text=_('There can only be one chair at a time!'),
         default=False,
     )
@@ -270,12 +270,12 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
         if (self.since and self.group.since and
                 self.since < self.group.since):
             raise ValidationError(
-                {'since': _("Start date can't be before committee start date")}
+                {'since': _("Start date can't be before group start date")}
                 )
         if (self.since and self.group.until and
                 self.since > self.group.until):
             raise ValidationError(
-                {'since': _("Start date can't be after committee end date")})
+                {'since': _("Start date can't be after group end date")})
 
         try:
             if self.until and self.group.board:
@@ -286,7 +286,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
 
     def validate_unique(self, *args, **kwargs):
         super().validate_unique(*args, **kwargs)
-        # Check if a committee has more than one chair
+        # Check if a group has more than one chair
         if self.chair:
             chairs = (MemberGroupMembership.objects
                       .filter(group=self.group,
@@ -305,7 +305,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
                             _('There already is a '
                               'chair for this time period')})
 
-        # check if this member is already in the committee in this period
+        # check if this member is already in the group in this period
         memberships = (MemberGroupMembership.objects
                        .filter(group=self.group,
                                member=self.member))
