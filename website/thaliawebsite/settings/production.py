@@ -131,11 +131,6 @@ if os.environ.get('DJANGO_EMAIL_HOST'):
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 CELERY_ENABLED = True
 
-# Secure headers
-X_FRAME_OPTIONS = 'DENY'
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_BROWSER_XSS_FILTER = True
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
