@@ -26,6 +26,11 @@
             &:hover {
                 color: $preset-hover;
             }
+
+            &.mixitup-control-active {
+                color: #E62272;
+                border-color: #dee2e6 #dee2e6 #fff;
+            }
         }
 
         .nav-select {
