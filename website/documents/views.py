@@ -22,31 +22,31 @@ def index(request):
     """
     lectureyear = datetime_to_lectureyear(timezone.now())
 
-    years = {x: {} for x in range(1990, lectureyear + 1)}
-    for policy in AnnualDocument.objects.filter(subcategory='policy'):
-        years[policy.year]['policy'] = policy
-    for report in AnnualDocument.objects.filter(subcategory='report'):
-        if 'report' not in years[report.year]:
-            years[report.year]['report'] = {}
-        years[report.year]['report']['annual'] = report
-    for financial in AnnualDocument.objects.filter(subcategory='financial'):
-        if 'report' not in years[financial.year]:
-            years[financial.year]['report'] = {}
-        years[financial.year]['report']['financial'] = financial
+    years = {x: {} for x in reversed(range(1990, lectureyear + 1))}
+    for year in years:
+        years[year] = {
+            'documents': {
+                'policy': None,
+                'report': None,
+                'financial': None
+            },
+            'general_meetings': []
+        }
 
-    meeting_years = {x: [] for x in range(1990, lectureyear + 1)}
+    for document in AnnualDocument.objects.filter(subcategory='policy'):
+        years[document.year]['documents']['policy'] = document
+    for document in AnnualDocument.objects.filter(subcategory='report'):
+        years[document.year]['documents']['report'] = document
+    for document in AnnualDocument.objects.filter(subcategory='financial'):
+        years[document.year]['documents']['financial'] = document
+
     for obj in GeneralMeeting.objects.all():
         meeting_year = datetime_to_lectureyear(obj.datetime)
-        if meeting_year not in meeting_years:
-            meeting_years[meeting_year] = []
-        meeting_years[meeting_year].append(obj)
+        years[meeting_year]['general_meetings'].append(obj)
 
     return render(request, 'documents/index.html', {
         'association_documents': AssociationDocument.objects.all(),
-        'annual_reports': sorted(years.items(), reverse=True),
-        # TODO ideally we want to do this dynamically in CSS
-        'annual_docs_width': (220 + 20) * len(years),
-        'meeting_years': sorted(meeting_years.items(), reverse=True)
+        'years': list(years.items())
     })
 
 

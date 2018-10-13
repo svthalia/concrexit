@@ -9,6 +9,14 @@ documents.templatetags package
 Submodules
 ----------
 
+documents.templatetags.document\_cards module
+---------------------------------------------
+
+.. automodule:: documents.templatetags.document_cards
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 documents.templatetags.filename module
 --------------------------------------
 

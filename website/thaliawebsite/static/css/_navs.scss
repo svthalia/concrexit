@@ -27,16 +27,27 @@
                 color: $preset-hover;
             }
         }
+
+        .nav-select {
+            color: $black;
+            font-family: $header-font;
+            font-size: 16px;
+            line-height: 18px;
+            padding: 4px 15px 0px 15px;
+            text-transform: uppercase;
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+            border: 1px solid transparent;
+
+            &.active {
+                color: #E62272;
+            }
+        }
     }
 
     &.no-border {
         border-bottom: none;
     }
-}
-
-.tab-content {
-    padding: 15px;
-    border: 1px solid #ddd;
 }
 
 .pagination {
@@ -66,4 +77,5 @@
 
 .accordion.bordered {
     border: 1px solid rgba(0, 0, 0, 0.125);
+    border-bottom: 0;
 }
