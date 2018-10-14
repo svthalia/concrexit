@@ -17,7 +17,7 @@ Getting started
 
 If you use Docker, please look at [this part](#docker) of the README.
 
-0. Get at least Python 3.5 and install pipenv and the Pillow requirements as per below.
+0. Get at least Python 3.6 and install pipenv and the Pillow requirements as per below.
 1. Clone this repository
 2. Run `pipenv install --python 3 --dev`
 3. Run `pipenv shell`
@@ -35,8 +35,8 @@ You may get errors about missing interpreters. That is normal and can be
 ignored. If you want to run a specific check, you can do the following:
 
     tox -e flake8           # Runs the flake8 linter
-    tox -e py35-django20    # runs the tests with python 3.5 and Django 2.0
     tox -e py36-django20    # runs the tests with python 3.6 and Django 2.0
+    tox -e py37-django20    # runs the tests with python 3.7 and Django 2.0
 
 You can run `tox -l` to see the available environments.
 
@@ -50,9 +50,9 @@ Install Pipenv per the [pipenv documentation][pipenv install]
 Pillow dependencies
 -------------------
 
-For Ubuntu 16.04, use:
+For Ubuntu 18.04, use:
 
-    apt-get install python3-dev gettext gcc build-essential libtiff5-dev libjpeg62-turbo-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+    apt-get install python3-dev gettext gcc build-essential libtiff5-dev libjpeg-turbo8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
 
 Or try:
 
