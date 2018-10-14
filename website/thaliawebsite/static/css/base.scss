@@ -1,13 +1,14 @@
 #accentbar {
     background: $preset;
     height: 5px;
-    position: relative;
+    z-index: 1020;
 }
 
 .navbar {
     font-size: 16px;
     background-color: $white;
     border-bottom: 1px solid $grey;
+    top: 5px;
 
     > .container {
         justify-content: end;

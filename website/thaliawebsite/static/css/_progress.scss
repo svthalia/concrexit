@@ -9,5 +9,11 @@
         -moz-border-radius: 0;
         border-radius: 0;
         background-color: $preset;
+
+        @for $i from 1 through 100 {
+            &.progress#{$i} {
+                width: #{percentage($i/100)};
+            }
+        }
     }
 }
