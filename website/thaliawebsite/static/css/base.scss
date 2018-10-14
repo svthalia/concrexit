@@ -98,13 +98,13 @@
 #page-header {
     height: 360px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
 
     .image {
-        width: 100%;
+        width: auto;
         height: 100%;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
+        max-width: none;
     }
 }
 

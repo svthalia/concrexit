@@ -104,11 +104,7 @@
 
 <header id="page-header">
     {% block header_image_container %}
-        <div
-            class="image"
-            style="background-image: url('{% block header_image %}{% pick_header_image %}{% endblock header_image %}')"
-        >
-        </div>
+        <img src="{% block header_image %}{% pick_header_image %}{% endblock header_image %}" class="image" />
     {% endblock header_image_container %}
 </header>
 
