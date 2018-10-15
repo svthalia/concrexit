@@ -76,8 +76,21 @@ def send_information_request(dry_run=False):
                 with translation.override(member.profile.language):
                     email_body = loader.render_to_string(
                         'members/email/information_check.txt',
-                        {'name': member.get_full_name(),
-                         'member': member})
+                        {'name': member.first_name,
+                         'username': member.username,
+                         'full_name': member.get_full_name(),
+                         'address_street': member.profile.address_street,
+                         'address_street2': member.profile.address_street2,
+                         'address_postal_code':
+                             member.profile.address_postal_code,
+                         'address_city': member.profile.address_city,
+                         'phone_number': member.profile.phone_number,
+                         'birthday': member.profile.birthday,
+                         'email': member.email,
+                         'student_number': member.profile.student_number,
+                         'starting_year': member.profile.starting_year,
+                         'programme': member.profile.programme,
+                         })
                     mail.EmailMessage(
                         '[THALIA] {}'.format(
                             _('Membership information check')),
