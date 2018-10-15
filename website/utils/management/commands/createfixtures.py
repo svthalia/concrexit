@@ -28,7 +28,6 @@ except ImportError as error:
     raise Exception("Have you installed the dev-requirements? "
                     "Failed importing {}".format(error)) from error
 
-
 _faker = FakerFactory.create('nl_NL')
 _pizza_name_faker = FakerFactory.create('it_IT')
 _current_tz = timezone.get_current_timezone()
@@ -349,17 +348,32 @@ class Command(BaseCommand):
         vacancy = Vacancy()
 
         vacancy.title = _faker.job()
-        vacancy.description = _faker.paragraph()
+        vacancy.description = _faker.paragraph(nb_sentences=10)
         vacancy.link = _faker.uri()
-        vacancy.partner = random.choice(partners)
+
+        if random.random() < 0.75:
+            vacancy.partner = random.choice(partners)
+        else:
+            vacancy.company_name = '{} {}'.format(
+                _faker.company(),
+                _faker.company_suffix()
+            )
+            igen = IconGenerator(5, 5)  # 5x5 blocks
+            icon = igen.generate(
+                vacancy.company_name, 480, 480,
+                padding=(10, 10, 10, 10),
+                output_format='jpeg',
+            )  # 620x620 pixels, with 10 pixels padding on each side
+            vacancy.company_logo.save(vacancy.company_name + '.jpeg',
+                                      ContentFile(icon))
 
         if random.random() < 0.5:
             vacancy.expiration_date = _faker.date_time_between("-1y", "+1y")
 
         vacancy.save()
 
-        vacancy.categories = random.sample(list(categories),
-                                           random.randint(0, 3))
+        vacancy.categories.set(random.sample(list(categories),
+                                             random.randint(0, 3)))
 
     def create_vacancy_category(self):
         """Create new random vacancy categories"""

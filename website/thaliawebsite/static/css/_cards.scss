@@ -1,42 +1,83 @@
 .card {
-  position: relative;
-  display: block;
-  margin-bottom: 15px;
-  background-color: $light-grey;
-  border-radius: 0;
-  border: 0;
-  width: 100%;
-
-  img {
+    position: relative;
+    display: block;
+    margin-bottom: 15px;
+    background-color: $light-grey;
+    border-radius: 0;
+    border: 0;
     width: 100%;
-  }
 
-  .card-img-top {
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-  }
+    img {
+        width: 100%;
+    }
 
-  .card-img-inside {
-    margin-bottom: 15px;
-  }
+    .card-img-top {
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+    }
 
-  .card-block {
-    padding: 15px;
-  }
+    .card-img-inside {
+        margin-bottom: 15px;
+    }
 
-  .card-title {
-    color: $sub-title-color;
-    font-size: 1.3rem;
-    margin-top: 0;
-    margin-bottom: 15px;
-  }
+    .card-block {
+        padding: 15px;
+    }
 
-  .card-text {
-    font-size: .9rem;
-    color: #444;
-  }
+    .card-title {
+        color: $sub-title-color;
+        font-size: 1.3rem;
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
 
-  .card-btn {
-    margin-top: 5px;
-  }
+    .card-text {
+        font-size: .9rem;
+        color: #444;
+    }
+
+    .card-btn {
+        margin-top: 5px;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 1.25rem;
+        color: $preset;
+        background-color: $grey;
+        border-radius: 0;
+
+        transition: all 300ms ease-in-out 0s;
+        -moz-transition: all 300ms ease-in-out 0s;
+        -webkit-transition: all 300ms ease-in-out 0s;
+        -o-transition: all 300ms ease-in-out 0s;
+
+        a {
+            color: $preset;
+        }
+
+        &.collapsed {
+            color: $black;
+            background-color: $light-grey;
+
+            a {
+                color: $black;
+            }
+
+            &:hover {
+                color: $preset;
+                background-color: $grey;
+
+                a {
+                    color: $preset;
+                }
+            }
+        }
+    }
 }

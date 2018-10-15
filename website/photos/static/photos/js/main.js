@@ -7,7 +7,7 @@ $(function() {
 		},
 		afterShow: function() {
 			var downloadUrl = $(this.element).attr('data-download');
-			if(downloadUrl != undefined) {
+			if(downloadUrl !== undefined) {
 				$('<a class="btn btn-primary fancybox-download" href="' + downloadUrl + '"><i class="fas fa-download"></i></a>').appendTo(this.outer);
 			}
 		},
