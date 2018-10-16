@@ -478,7 +478,7 @@ class RenewalFormViewTest(TestCase):
                 ) as _qs:  # noqa: F841
             Membership.objects.filter().exists.return_value = True
             context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(len(context), 8)
+            self.assertEqual(len(context), 7)
             self.assertEqual(context['year_fees'], floatformat(
                 settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2))
             self.assertEqual(context['study_fees'], floatformat(
@@ -493,8 +493,7 @@ class RenewalFormViewTest(TestCase):
                 self.view.request.member.latest_membership = membership
 
                 context = self.view.get_context_data(form=MagicMock())
-                self.assertEqual(context['membership'], membership)
-                self.assertEqual(context['membership_type'], _('Member'))
+                self.assertEqual(context['latest_membership'], membership)
                 self.assertEqual(context['privacy_policy_url'],
                                  reverse('privacy-policy'))
 
@@ -502,8 +501,7 @@ class RenewalFormViewTest(TestCase):
                 self.view.request.member.latest_membership = None
 
                 context = self.view.get_context_data(form=MagicMock())
-                self.assertEqual(context['membership'], None)
-                self.assertFalse('membership_type' in context)
+                self.assertEqual(context['latest_membership'], None)
 
     def test_get_form(self):
         self.view.request = _get_mock_request()

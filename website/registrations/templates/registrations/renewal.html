@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load i18n bootstrap4 %}
 
-{% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
+{% block title %}{% trans "renewal"|capfirst %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
     <section class="page-section">
@@ -10,25 +11,33 @@
 
             <p class="text-center">
                 {% blocktrans trimmed %}
-                    A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.
+                    A membership costs € {{ year_fees }} per year, or €
+                    {{ study_fees }} for your entire study duration.
                     <br/>
-                    Note: Only Computing Science and Information Sciences students at the Radboud University can become
+                    Note: Only Computing Science and Information Sciences
+                    students at the Radboud University can become
                     a member.
                     <br/><br/>
-                    It is still possible to be associated with Thalia, even if you do not study Computing Science or
-                    Information Sciences (anymore): You can become a benefactor. For at least € {{ year_fees }}
+                    It is still possible to be associated with Thalia, even if
+                    you do not study Computing Science or
+                    Information Sciences (anymore): You can become a
+                    benefactor. For at least € {{ year_fees }}
                     per year, you too can enjoy everything Thalia has to offer.
                 {% endblocktrans %}
             </p>
 
             <p class="text-center">
                 {% blocktrans trimmed %}
-                    Are you currently paying per year for your membership? During the lecture year you're allowed to
-                    change your membership to one for your entire study duration without paying a double fee.
-                    Choose 'until graduation' option in the form below and click send. Just make you currently have an
+                    Are you currently paying per year for your membership?
+                    During the lecture year you're allowed to
+                    change your membership to one for your entire study
+                    duration without paying a double fee.
+                    Choose 'until graduation' option in the form below and
+                    click send. Just make you currently have an
                     active membership.
                     <br/><br/>
-                    If your membership is almost expiring or has expired you can renew it starting one month before
+                    If your membership is almost expiring or has expired you
+                    can renew it starting one month before
                     expiration.
                 {% endblocktrans %}
             </p>
@@ -37,41 +46,85 @@
 
             <h2 class="text-center">{% trans "Membership information" %}</h2>
 
-            <p class="text-center">
-                {% trans "membership type"|capfirst %}: {{ membership_type }}<br/>
-                {% trans "since"|capfirst %}: {{ membership.since }}<br/>
-                {% trans "until"|capfirst %}:
-                {% if membership.until is not None %}{{ membership.until }}{% else %}-{% endif %}<br/>
-                {% trans "active"|capfirst %}: {{ membership.is_active|yesno }}
-            </p>
+            <div class="row mt-3">
+                <div class="col-12 col-md-6 offset-md-3">
+                    <div class="accordion bordered">
+                        {% for membership in request.member.membership_set.all %}
+                            <div class="card mb-0">
+                                <div
+                                    class="card-header {% if forloop.counter0 == 0 %}show{% else %}collapsed{% endif %}"
+                                    data-toggle="collapse"
+                                    data-target="#membership-{{ membership.pk }}">
+                                    <a href="#membership-{{ membership.id }}">
+                                        {% if not membership.until %}
+                                            {% blocktrans trimmed with type=membership.get_type_display since=membership.since %}
+                                                Membership of type {{ type }}
+                                                starting {{ since }}
+                                            {% endblocktrans %}
+                                        {% else %}
+                                            {% blocktrans trimmed with type=membership.get_type_display since=membership.since until=membership.until %}
+                                                Membership of type {{ type }}
+                                                from {{ since }} to {{ until }}
+                                            {% endblocktrans %}
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div
+                                    class="collapse{% if forloop.counter0 == 0 %} show{% endif %}"
+                                    id="membership-{{ membership.id }}">
+                                    <div class="card-body">
+                                        <p>
+                                            <strong>{% trans "membership type"|capfirst %}:</strong>
+                                            {{ membership.get_type_display }}<br/>
+                                            <strong>{% trans "since"|capfirst %}:</strong>
+                                            {{ membership.since }}<br/>
+                                            {% if membership.until is not None %}
+                                                <strong>{% trans "until"|capfirst %}:</strong>
+                                                {{ membership.until }}<br/>
+                                            {% endif %}
+                                            <strong>{% trans "active"|capfirst %}:</strong> {{ membership.is_active|yesno }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
             <hr/>
 
-            {% if membership is None %}
+            {% if latest_membership is None %}
                 <p class="text-center">
                     {% blocktrans trimmed %}
-                        We do not have any previous memberships in our system. Contact the board to renew your
+                        We do not have any previous memberships in our system.
+                        Contact the board to renew your
                         membership.
                     {% endblocktrans %}
                 </p>
-            {% elif membership.type == 'honorary' %}
+            {% elif latest_membership.type == 'honorary' %}
                 <p class="text-center">
                     {% blocktrans trimmed %}
-                        You're a honorary member. That means that you never have to renew your membership.
+                        You're a honorary member. That means that you never
+                        have to renew your membership.
                     {% endblocktrans %}
                 </p>
-            {% elif membership.type == 'supporter' and not was_member %}
+            {% elif latest_membership.type == 'supporter' and not was_member %}
                 <p class="text-center">
                     {% blocktrans trimmed %}
-                        You're a benefactor. Contact the board to renew your membership.
+                        You're a benefactor. Contact the board to renew your
+                        membership.
                     {% endblocktrans %}
                 </p>
-            {% elif membership.until is None %}
+            {% elif latest_membership.until is None %}
                 <p class="text-center">
                     {% blocktrans trimmed %}
-                        You currently have an active membership for your entire study duration.<br/>
-                        Did you graduate or stop with your studies for some other reason?<br/>
-                        Please let us know by sending an email to info@thalia.nu.
+                        You currently have an active membership for your entire
+                        study duration.<br/>
+                        Did you graduate or stop with your studies for some
+                        other reason?<br/>
+                        Please let us know by sending an email to
+                        info@thalia.nu.
                     {% endblocktrans %}
                 </p>
             {% else %}
@@ -79,41 +132,54 @@
                     {% for message in error.1 %}
                         <div class="alert alert-error">
                             {{ message }}
-                            <button type="button" class="close"><span class="alert-icon-close"></span></button>
+                            <button type="button" class="close"><span
+                                class="alert-icon-close"></span></button>
                         </div>
                     {% endfor %}
                 {% endfor %}
-                <form method="post" enctype="multipart/form-data" class="col-lg-6 offset-lg-3">
+                <form method="post" enctype="multipart/form-data"
+                      class="col-lg-6 offset-lg-3">
                     {% csrf_token %}
 
-                    {% if not membership.type == 'supporter' %}
+                    {% if not latest_membership.type == 'supporter' %}
                         {% bootstrap_field form.membership_type %}
                         {% bootstrap_field form.length %}
                     {% else %}
                         <div class="form-group">
-                            <label for="id_membership_type">{% trans 'membership type'|capfirst %}</label>
-                            <input readonly disabled value="{% trans 'Benefactor' %}" type="text">
+                            <label
+                                for="id_membership_type">{% trans 'membership type'|capfirst %}</label>
+                            <input readonly disabled
+                                   value="{% trans 'Benefactor' %}"
+                                   type="text">
                         </div>
                         <div class="form-group">
-                            <label for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
-                            <input readonly disabled value="{% trans 'One year' %}" type="text">
+                            <label
+                                for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
+                            <input readonly disabled
+                                   value="{% trans 'One year' %}" type="text">
                         </div>
                     {% endif %}
 
                     <fieldset>
                         <div class="form-group">
                             <div class="form-check">
-                                <input name="privacy_policy" class="form-check-input" id="id_privacy_policy"
+                                <input name="privacy_policy"
+                                       class="form-check-input"
+                                       id="id_privacy_policy"
                                        type="checkbox">
                                 <label class="form-check-label"
-                                       for="id_privacy_policy">{% blocktrans trimmed %}I accept the
-                                    <a target="_blank" href="{{ privacy_policy_url }}">privacy
-                                        policy</a>{% endblocktrans %}.</label>
+                                       for="id_privacy_policy">
+                                    {% blocktrans trimmed %}I accept the
+                                        <a target="_blank"
+                                           href="{{ privacy_policy_url }}">privacy
+                                            policy</a>{% endblocktrans %}
+                                    .</label>
                             </div>
                         </div>
                     </fieldset>
 
-                    <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-primary float-right"/>
+                    <input type="submit" value="{% trans 'send'|capfirst %}"
+                           class="btn btn-primary float-right"/>
                 </form>
             {% endif %}
         </div>
