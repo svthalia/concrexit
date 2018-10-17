@@ -42,7 +42,7 @@ class MemberGroupMembershipInline(admin.StackedInline):
 
 @admin.register(models.Committee)
 class CommitteeAdmin(TranslatedModelAdmin):
-    """Manage the societies"""
+    """Manage the committees"""
     inlines = (MemberGroupMembershipInline,)
     form = MemberGroupForm
     list_display = ('name', 'since', 'until', 'active', 'email')
