@@ -157,12 +157,9 @@ class RenewalFormView(FormView):
                                                Entry.MEMBERSHIP_YEAR], 2)
         context['study_fees'] = floatformat(settings.MEMBERSHIP_PRICES[
                                                 Entry.MEMBERSHIP_STUDY], 2)
-        context['membership'] = self.request.member.latest_membership
+        context['latest_membership'] = self.request.member.latest_membership
         context['was_member'] = Membership.objects.filter(
             user=self.request.member, type=Membership.MEMBER).exists()
-        if context['membership'] is not None:
-            context['membership_type'] = (context['membership']
-                                          .get_type_display())
         context['privacy_policy_url'] = reverse('privacy-policy')
         return context
 
