@@ -1,37 +1,69 @@
 #announcements-alerts {
-  .announcement {
-    background: $preset;
-    color: $white;
-    text-align: center;
-    padding: 0.5rem 1rem;
-    position: relative;
+    .announcement {
+        background: $preset;
+        color: $white;
+        text-align: center;
+        padding: 0.5rem 1rem;
+        position: relative;
 
-    .close {
-      color: $white;
+        .close {
+            color: $white;
+        }
+
+        p {
+            display: inline;
+            margin-left: 0.5rem;
+            color: $white;
+            font-size: 0.9rem;
+            font-weight: $bold;
+        }
+
+        a {
+            color: $white;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: $light-grey;
+        }
+
+        button {
+            line-height: 0.8;
+            i {
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+#announcements-slider {
+    .carousel-indicators {
+        opacity: 0;
+        transition: all 300ms ease-in-out 0s;
+        -moz-transition: all 300ms ease-in-out 0s;
+        -webkit-transition: all 300ms ease-in-out 0s;
+        -o-transition: all 300ms ease-in-out 0s;
     }
 
-    p {
-      display: inline;
-      margin-left: 0.5rem;
-      color: $white;
-      font-size: 0.9rem;
-      font-weight: $bold;
+    .carousel-control-next, .carousel-control-prev {
+        width: 7%;
+        font-size: 1.5rem;
+        opacity: 0;
+        transition: all 300ms ease-in-out 0s;
+        -moz-transition: all 300ms ease-in-out 0s;
+        -webkit-transition: all 300ms ease-in-out 0s;
+        -o-transition: all 300ms ease-in-out 0s;
     }
 
-    a {
-      color: $white;
-      text-decoration: underline;
+    &:hover {
+        .carousel-control-next, .carousel-control-prev {
+            opacity: 0.5;
+            &:hover {
+                opacity: .9;
+            }
+        }
+        .carousel-indicators {
+            opacity: 1;
+        }
     }
-
-    a:hover {
-      color: $light-grey;
-    }
-
-    button {
-      line-height: 0.8;
-      i {
-        font-size: 1rem;
-      }
-    }
-  }
 }

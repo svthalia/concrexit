@@ -1,7 +1,8 @@
 """The models defined by the announcement package"""
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.db.models import ImageField, CharField
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from tinymce.models import HTMLField
 
 from utils.translation import ModelTranslateMeta, MultilingualField
@@ -95,5 +96,71 @@ class FrontpageArticle(models.Model, metaclass=ModelTranslateMeta):
     @property
     def is_visible(self):
         """Is this announcement currently visible"""
+        return ((self.until is None or self.until > timezone.now()) and
+                (self.since is None or self.since <= timezone.now()))
+
+
+class Slide(models.Model, metaclass=ModelTranslateMeta):
+    """Describes an announcement"""
+
+    title = CharField(
+        verbose_name=_('Title'),
+        help_text=_('The title of the slide; just for the admin.'),
+        blank=False,
+        max_length=100,
+    )
+
+    content = MultilingualField(
+        ImageField,
+        verbose_name=_('Content'),
+        help_text=_('The content of the slide; what image to display.'),
+        blank=False,
+        upload_to='public/announcements/slides/'
+    )
+
+    since = models.DateTimeField(
+        verbose_name=_('Display since'),
+        help_text=_("Hide this slide before this time."),
+        default=timezone.now,
+    )
+
+    until = models.DateTimeField(
+        verbose_name=_('Display until'),
+        help_text=_("Hide this slide after this time."),
+        blank=True,
+        null=True,
+    )
+
+    order = models.PositiveIntegerField(
+        verbose_name=_('Order'),
+        help_text=_("Approximately where this slide "
+                    "should appear in the order"),
+        default=0
+    )
+
+    members_only = models.BooleanField(
+        verbose_name=_('Display only for authenticated members'),
+        default=False
+    )
+
+    url = models.URLField(
+        verbose_name=_('Link'),
+        help_text=_('Place the user is taken to when clicking the slide'),
+        blank=True,
+        null=True,
+    )
+
+    url_blank = models.BooleanField(
+        verbose_name=_('Link outside thalia.nu'),
+        help_text=_('Clicking the slide will open a new tab'),
+        default=False
+    )
+
+    class Meta:
+        ordering = ('-since', )
+
+    @property
+    def is_visible(self):
+        """Is this slide currently visible"""
         return ((self.until is None or self.until > timezone.now()) and
                 (self.since is None or self.since <= timezone.now()))

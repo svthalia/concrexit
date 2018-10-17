@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
-{% load i18n frontpage_events frontpage_articles partner_banners %}
+{% load i18n frontpage_events frontpage_articles partner_banners slider %}
+
+{% block header_image_container %}
+    {% render_slider %}
+{% endblock header_image_container %}
 
 {% block pre-body %}
     {% render_partner_banners %}

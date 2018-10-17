@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2018-02-12 13:49+0100\n"
+"POT-Creation-Date: 2018-10-18 10:54+0200\n"
+"PO-Revision-Date: 2018-10-18 10:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,60 +16,104 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.1.1\n"
 
-#: announcements/apps.py
-msgid "Site header announcements"
+#: apps.py
+msgid "Site announcements"
 msgstr "Site kop aankondigingen"
 
-#: announcements/models.py
+#: models.py
 msgid "Content"
 msgstr "Inhoud"
 
-#: announcements/models.py
+#: models.py
 msgid "The content of the announcement; what text to display."
 msgstr "De inhoud van de aankondiging; welke tekst weer te geven."
 
-#: announcements/models.py
+#: models.py
 msgid "Display since"
 msgstr "Geef weer vanaf"
 
-#: announcements/models.py
+#: models.py
 msgid "Hide this announcement before this time."
 msgstr "Verberg deze aankondiging voor dit tijdstip."
 
-#: announcements/models.py
+#: models.py
 msgid "Display until"
 msgstr "Laat zien tot"
 
-#: announcements/models.py
+#: models.py
 msgid "Hide this announcement after this time."
 msgstr "Verberg de aankondiging na dit tijdstip."
 
-#: announcements/models.py
+#: models.py
 msgid "Font Awesome icon"
 msgstr "Font Awesome-icoon"
 
-#: announcements/models.py
+#: models.py
 msgid "Font Awesome abbreviation for icon to use."
 msgstr "Font Awesome afkorting voor het te gebruiken icoon."
 
-#: announcements/models.py
+#: models.py
 msgid "Title"
 msgstr "Titel"
 
-#: announcements/models.py
+#: models.py
 msgid "The title of the article; what goes in the header"
 msgstr "De tekst van het artikel; wat er in de kop moet"
 
-#: announcements/models.py
+#: models.py
 msgid "The content of the article; what text to display."
 msgstr "De inhoud van het artikel; welke tekst weer te geven."
 
-#: announcements/models.py
+#: models.py
 msgid "Hide this article before this time."
 msgstr "Verberg dit artikel voor dit tijdstip."
 
-#: announcements/models.py
+#: models.py
 msgid "Hide this article after this time."
 msgstr "Verberg dit artikel na dit tijdstip."
+
+#: models.py
+msgid "The title of the slide; just for the admin."
+msgstr "De titel van de slide; alleen voor in de admin."
+
+#: models.py
+msgid "The content of the slide; what image to display."
+msgstr "De inhoud van de slide; welke afbeelding weer te geven."
+
+#: models.py
+msgid "Hide this slide before this time."
+msgstr "Verberg deze slide voor dit tijdstip."
+
+#: models.py
+msgid "Hide this slide after this time."
+msgstr "Verberg deze slide na dit tijdstip."
+
+#: models.py
+msgid "Order"
+msgstr "Volgorde"
+
+#: models.py
+msgid "Approximately where this slide should appear in the order"
+msgstr "Ongeveer waar in de volgorde deze slide weergegeven wordt"
+
+#: models.py
+msgid "Display only for authenticated members"
+msgstr "Alleen tonen aan ingelogde leden"
+
+#: models.py
+msgid "Link"
+msgstr "Link"
+
+#: models.py
+msgid "Place the user is taken to when clicking the slide"
+msgstr "Plek waar naartoe wordt genavigeerd als er op de slide wordt geklikt"
+
+#: models.py
+msgid "Link outside thalia.nu"
+msgstr "Link buiten thalia.nu"
+
+#: models.py
+msgid "Clicking the slide will open a new tab"
+msgstr "Op de slide klikken opent een nieuwe tab"

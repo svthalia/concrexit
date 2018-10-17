@@ -115,13 +115,13 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'thaliawebsite.context_processors.source_commit',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'announcements.context_processors.announcements',
-                'thaliawebsite.context_processors.source_commit',
                 'thaliawebsite.context_processors.thumbnail_sizes',
             ],
         },
@@ -262,6 +262,7 @@ THUMBNAIL_SIZES = {
     'small': '150x150',
     'medium': '300x300',
     'large': '1024x768',
+    'slide': '2000x430'
 }
 
 # Default FROM email
