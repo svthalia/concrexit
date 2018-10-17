@@ -1,89 +1,136 @@
 {% extends 'education/base.html' %}
 {% load i18n %}
 
-{% block title %}{{ course.name }} — {% trans "Course" %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{{ course.name }} — {% trans "Course" %} — {{ block.super }}{% endblock %}
+{% block title %}{{ course.name }} — {% trans "Course" %} —
+    {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ course.name }} — {% trans "Course" %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
-    <h1>{{ course.name }}</h1>
-    <div class="type-portfolio type-portfolio-half clearfix">
-        <div class="post">
+    <section class="page-section" id="education-course">
+        <div class="container">
+            <h1 class="text-center section-title">{{ course.name }}</h1>
+
             <div class="row">
-                <div class="post-body span8">
-                    {% regroup items|dictsortreversed:"year" by year as year_list %}
-                    {% if year_list|length  == 0 %}
-                        <p><i>{% blocktrans %}Thalia does not have any documents for this course, unfortunately. Are you in possession of exams or summaries for this course? Then let us know or add them to the catalog using the submission page!{% endblocktrans %}</i></p>
+                <div class="col-12 col-md-8">
+                    {% if items|length  == 0 %}
+                        <p class="text-center">
+                            <i>
+                                {% blocktrans trimmed %}
+                                    Thalia does not have any documents for this
+                                    course, unfortunately. Are you in
+                                    possession of
+                                    exams or summaries for this course? Then
+                                    let us
+                                    know or add them to the catalog using the
+                                    submission page!
+                                {% endblocktrans %}
+                            </i>
+                        </p>
                     {% else %}
-                        <ul class="toggles">
-                            {% for year in year_list %}
-                            {% with next_year=year.grouper|add:1|stringformat:"s" %}
-                            {% with indicator=year.grouper|stringformat:"s"|add:"-"|add:next_year %}
-                                <li id="{{ year.grouper }}">
-                                    <div class="toggle-title">
-                                        <a name="{{ indicator }}" href="#"><span></span>{{ year.grouper }} - {{ next_year }}</a>
+                        <div class="accordion bordered">
+                            {% for year, data in items %}
+                                <div class="card mb-0">
+                                    <div class="card-header collapsed"
+                                         data-toggle="collapse"
+                                         data-target="#year-{{ year }}">
+                                        <a href="#year-{{ year }}">
+                                            {{ year }} - {{ year|add:1 }}
+                                        </a>
                                     </div>
-                                    <div class="toggle-content">
-                                        {% regroup year.list by course as course_list %}
-                                        {% for course_item in course_list %}
-                                        {% regroup course_item.list by type as type_list %}
-                                            {% for type in type_list %}
-                                            <h5>{% if type.grouper == 'exam' %}{% trans "Exams" %}{% else %}{% trans "Summaries" %}{% endif %}</h5>
-                                            <ul class="list-dot">
-                                            {% for item in type.list %}
-                                                <li>
-                                                    {% if item.type == 'exam' %}
-                                                        <a href="{% url 'education:exam' item.id %}" target="_blank">{{ item.name }}</a>
-                                                    {% else %}
-                                                        <a href="{% url 'education:summary' item.id %}" target="_blank">{{ item.name }}</a>
-                                                    {% endif %}
-                                                </li>
-                                            {% endfor %}
-                                            </ul>
-                                            <br />
-                                            {% endfor %}
-                                        {% if course_item.grouper != course %}
-                                        <div class="alert alert-info1">
-                                            <i>{% blocktrans with course_url=course_item.grouper.get_absolute_url course_name=course_item.grouper %}These documents were collected for <a href="{{ course_url }}">{{ course_name }}</a>, a predecessor of this course.{% endblocktrans %}</i>
+                                    <div
+                                        class="collapse"
+                                        id="year-{{ year }}"
+                                    >
+                                        <div class="card-body">
+                                            {% if data.legacy %}
+                                                <div
+                                                    class="alert alert-warning">
+                                                    {% blocktrans trimmed with course_url=data.legacy.get_absolute_url course_name=data.legacy.name %}
+                                                        These documents were collected for <a href="{{ course_url }}">{{ course_name }}</a>, a
+                                                        predecessor of this course.
+                                                    {% endblocktrans %}
+                                                </div>
+                                            {% endif %}
+
+                                            {% if data.exams|length != 0 %}
+                                                <h5>{% trans "Exams" %}</h5>
+                                                <ul
+                                                    {% if data.summaries|length == 0 %}
+                                                        class="mb-0"{% endif %}>
+                                                    {% for item in data.exams %}
+                                                        <li>
+                                                            <a href="{% url 'education:exam' item.id %}"
+                                                               target="_blank">{{ item.name }}</a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+
+                                            {% if data.summaries|length != 0 %}
+                                                <h5>{% trans "Summaries" %}</h5>
+                                                <ul class="mb-0">
+                                                    {% for item in data.summaries %}
+                                                        <li>
+                                                            <a href="{% url 'education:summary' item.id %}"
+                                                               target="_blank">
+                                                                {{ item.name }}
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
-                                        {% endif %}
-                                        {% endfor %}
                                     </div>
-                                </li>
-                            {% endwith %}
-                            {% endwith %}
+                                </div>
                             {% endfor %}
-                        </ul>
+                        </div>
                     {% endif %}
                 </div>
-                <div class="post-body span4 row">
+                <div class="col-12 col-md-4">
                     <p>
-                        {% blocktrans with name=course.name trimmed %}
-                        This is the overview for <b>{{ name }}</b>. You can find all the exams and summaries that Thalia has here.
+                        {% blocktrans trimmed with name=course.name %}
+                            This is the overview for <b>{{ name }}</b>. You can
+                            find all the exams and summaries that Thalia has
+                            here.
                         {% endblocktrans %}
                     </p>
                     <p>
                         {% blocktrans trimmed %}
-                        Keep in mind that old exams and summaries may not always test the same material as this year.
+                            Keep in mind that old exams and summaries may not
+                            always test the same material as this year.
                         {% endblocktrans %}
                     </p>
 
-                    <hr class="separator">
-                    <ul class="post-meta">
-                        <li><span>{% trans "Course code" %}: </span>{{ course.course_code }}</li>
-                        <li><span>{% trans "EC" %}: </span>{{ course.ec }}</li>
-                        <li><span>{% trans "Period" %}: </span>{{ course.period }}</li>
+                    <hr/>
+
+                    <ul class="list-unstyled">
+                        <li>
+                            <strong>{% trans "Course code" %}: </strong>
+                            {{ course.course_code }}
+                        </li>
+                        <li><strong>{% trans "EC" %}: </strong>
+                            {{ course.ec }}
+                        </li>
+                        <li>
+                            <strong>{% trans "Period" %}: </strong>
+                            {{ course.period }}
+                        </li>
                     </ul>
+
                     {% if request.user.is_authenticated %}
-                    <hr class="separator">
-                    <p>
-                        <a href="{% url 'education:submit-exam' course.id %}"><button type="button" class="btn-large btn-style1">{% trans "Submit Exam" %}</button></a>
-                    </p>
-                    <p>
-                        <a href="{% url 'education:submit-summary' course.id %}"><button type="button" class="btn-large btn-style1">{% trans "Submit Summary" %}</button></a>
-                    </p>
+                        <hr>
+                        <a href="{% url 'education:submit-exam' course.id %}"
+                           class="btn btn-primary">
+                            {% trans "Submit Exam" %}
+                        </a>
+                        <a href="{% url 'education:submit-summary' course.id %}"
+                           class="btn btn-primary">
+                            {% trans "Submit Summary" %}
+                        </a>
                     {% endif %}
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 {% endblock %}

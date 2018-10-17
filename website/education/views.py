@@ -1,5 +1,4 @@
 """Views provided by the education package"""
-import itertools
 import os
 from datetime import datetime, date
 
@@ -23,10 +22,25 @@ def courses(request):
     :return: HttpResponse 200 containing the HTML as body
     """
     categories = Category.objects.all()
-    objects = Course.objects.order_by('name_' + request.LANGUAGE_CODE).filter(
-        until=None)
+    courses = [
+        {
+            'course_code': x.course_code,
+            'name': x.name,
+            'categories': x.categories.all(),
+            'document_count': sum([x.summary_set.filter(accepted=True).count(),
+                                   x.exam_set.filter(accepted=True).count()] +
+                                  [c.summary_set.filter(accepted=True).count()
+                                   + c.exam_set.filter(accepted=True).count()
+                                   for c in
+                                   x.old_courses.all()]),
+            'url': x.get_absolute_url()
+        } for x in
+        Course.objects.order_by('name_' + request.LANGUAGE_CODE).filter(
+            until=None)
+    ]
+
     return render(request, 'education/courses.html',
-                  {'courses': objects, 'categories': categories})
+                  {'courses': courses, 'categories': categories})
 
 
 def course(request, id):
@@ -40,26 +54,33 @@ def course(request, id):
     obj = get_object_or_404(Course, pk=id)
     courses = list(obj.old_courses.all())
     courses.append(obj)
-    items = []
+    items = {}
     for course in courses:
-        items = itertools.chain(items,
-                                ({"type": "summary", "year": x.year,
-                                  "name": "{} {}".format(_("Summary"),
-                                                         x.name),
-                                  "id": x.id,
-                                  "course": course}
-                                 for x in course.summary_set.filter(
-                                    accepted=True)))
-        items = itertools.chain(items,
-                                ({"type": "exam", "year": x.year, "name":
-                                    "{} {}".format(
-                                        dict(Exam.EXAM_TYPES)[x.type], x.name),
-                                  "id": x.id, "course": course}
-                                 for x in
-                                 course.exam_set.filter(accepted=True)))
+        for summary in course.summary_set.filter(accepted=True):
+            if summary.year not in items:
+                items[summary.year] = {'summaries': [], 'exams': [],
+                                       'legacy': course if course.pk != obj.pk
+                                       else None}
+            items[summary.year]['summaries'].append({
+                "year": summary.year,
+                "name": "{} {}".format(_("Summary"), summary.name),
+                "id": summary.id
+            })
+        for exam in course.exam_set.filter(accepted=True):
+            if exam.year not in items:
+                items[exam.year] = {'summaries': [], 'exams': [],
+                                    'legacy': course if course.pk != obj.pk
+                                    else None}
+            items[exam.year]['exams'].append({
+                "type": "exam",
+                "year": exam.year, "name":
+                    "{} {}".format(dict(Exam.EXAM_TYPES)[exam.type],
+                                   exam.name),
+                "id": exam.id
+            })
 
     return render(request, 'education/course.html',
-                  {'course': obj, 'items': items})
+                  {'course': obj, 'items': items.items()})
 
 
 @login_required
@@ -180,9 +201,9 @@ def books(request):
     :return: 403 if no active membership else 200 with the page HTML as body
     """
     if (request.member and request.member.is_authenticated and
-            (request.member.current_membership or
-             (request.member.earliest_membership and
-              request.member.earliest_membership.since > timezone.now().date())
-             )):
+        (request.member.current_membership or
+         (request.member.earliest_membership and
+          request.member.earliest_membership.since > timezone.now().date())
+         )):
         return render(request, 'education/books.html')
     raise PermissionDenied

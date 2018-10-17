@@ -65,6 +65,16 @@
     }
 }
 
+.table-clickable {
+    tbody tr {
+        &:hover {
+            cursor: pointer;
+            color: $preset;
+            background-color: $light-grey;
+        }
+    }
+}
+
 @media(min-width: 992px) {
     .navbar {
         .navbar-nav {

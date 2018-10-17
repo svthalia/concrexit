@@ -1,69 +1,93 @@
 {% extends 'education/base.html' %}
-{% load i18n %}
+{% load i18n compress static %}
 
-{% block title %}{% trans "Course overview" %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% trans "Course overview" %} — {{ block.super }}{% endblock %}
+{% block title %}{% trans "Course overview" %} —
+    {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Course overview" %} —
+    {{ block.super }}{% endblock %}
 
 {% block body %}
-    <h1 class="main-title">{% trans "Course overview" %}</h1>
-    <p class="text-center">
-        {% blocktrans trimmed %}
-        This overview contains all courses for which Thalia has exams, summaries or other documents. Select a course to find out more.<br/>
-        Can't find a course? Let the <a href="mailto:educacie@thalia.nu">education committee</a> know.
-        {% endblocktrans %}
-    </p>
+    <section class="page-section" id="education-courses">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "Course overview" %}</h1>
 
-    <div class="portfolio gallery portfolio-isotope">
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    This overview contains all courses for which Thalia has
+                    exams, summaries or other documents. Select a course to
+                    find out more.<br/>
+                    Can't find a course? Let the
+                    <a href="mailto:educacie@thalia.nu">education committee</a>
+                    know.
+                {% endblocktrans %}
+            </p>
 
-        <div class="portfolio-filter tabs-wrapper tabs-centered clearfix">
-            <ul class="tabs">
-                <li class="current">
-                    <a href="#">
+            <p class="text-center">
+                <a class="btn btn-primary d-inline"
+                   href="{% url 'education:submit-exam' %}">{% trans "Submit Exam" %}</a>
+                <a class="btn btn-primary d-inline"
+                   href="{% url 'education:submit-summary' %}">{% trans "Submit Summary" %}</a>
+            </p>
+
+            <ul class="nav nav-tabs justify-content-center mt-4 border-bottom-0">
+                <li class="nav-item">
+                    <a class="nav-link" data-filter="all" href="#all">
                         {% trans "all courses"|upper %}
                     </a>
                 </li>
                 {% for category in categories %}
-                    <li data-filter="{{ category.name }}">
-                        <a href="#">
-                            {{ category.name|upper }}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           data-filter=".category-{{ category.id }}"
+                           href="#category-{{ category.id }}">
+                            {{ category.name }}
                         </a>
                     </li>
                 {% endfor %}
             </ul>
+
+            <div class="table-responsive">
+                <table class="table text-center table-clickable">
+                    <thead>
+                    <tr>
+                        <th scope="col">{% trans "Course code" %}</th>
+                        <th scope="col">{% trans "Name" %}</th>
+                        <th scope="col"
+                            class="d-md-table-cell d-none">{% trans "Categories" %}</th>
+                        <th scope="col" class="d-md-table-cell d-none">
+                            {% trans "Available documents" %}
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for course in courses %}
+                        <tr class="mix {% for cat in course.categories %}category-{{ cat.id }} {% endfor %}"
+                            data-link="{{ course.url }}">
+                            <td>{{ course.course_code }}</td>
+                            <td>{{ course.name }}</td>
+                            <td class="d-md-table-cell d-none">
+                                {% for category in course.categories %}
+                                    {{ category.name }}
+                                    {% if not forloop.last %},
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="d-md-table-cell d-none">{{ course.document_count }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
+    </section>
+{% endblock %}
 
-        <ul class="portfolio-posts row isotope">
-
-            {% for course in courses %}
-                <li class="post span3 has-overlay isotope-item"
-                    data-filter="{% for category in course.categories.all %}{{ category.name }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                    <a href="{{ course.get_absolute_url }}">
-                        <span class="post-inner">
-                            <span class="post-header">
-                                <div class="course-name-depiction-box">
-                                    <p class="course-name-shorthand-box course-name-shorthand-title">
-                                        {{ course.shorthand }}
-                                    </p>
-                                </div>
-                            </span>
-                            <span class="post-body">
-                                <h2>{{ course.name }}</h2>
-                            </span>
-                            <span class="post-overlay">
-                                <span class="post-overlay-meta course-overlay">
-                                    <h2>{{ course.name }}</h2>
-                                        <p class="course-cat">
-                                            {% for category in course.categories.all %}
-                                                {{ category.name }}{% if not forloop.last %},{% endif %}
-                                            {% endfor %}
-                                        </p>
-                                </span>
-                            </span>
-                        </span>
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-
-    </div>
+{% block js_body %}
+    {{ block.super }}
+    {% compress js %}
+        <script type="text/javascript"
+                src="{% static 'js/mixitup.min.js' %}"></script>
+        <script type="text/javascript"
+                src="{% static 'education/js/main.js' %}"></script>
+    {% endcompress %}
 {% endblock %}

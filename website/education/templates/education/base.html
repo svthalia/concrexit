@@ -1,11 +1,4 @@
-{% extends 'old-base.html' %}
+{% extends 'base.html' %}
 {% load staticfiles compress %}
-
-{% block css_head %}
-    {{ block.super }}
-    {% compress css %}
-    <link href="{% static "education/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
-{% endblock %}
 
 {% block header_image %}{% static "img/headers/fixed/banner3.jpg" %}{% endblock header_image%}
