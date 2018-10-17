@@ -1,9 +1,0 @@
-{% extends 'old-base.html' %}
-{% load staticfiles compress %}
-
-{% block css_head %}
-    {{ block.super }}
-    {% compress css %}
-    <link href="{% static "pizzas/css/style.css" %}" rel="stylesheet" type="text/css">
-    {% endcompress %}
-{% endblock %}

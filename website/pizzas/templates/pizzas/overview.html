@@ -1,73 +1,97 @@
-{% extends "pizzas/base.html" %}
-{% load i18n staticfiles %}
+{% extends "base.html" %}
+{% load i18n staticfiles compress %}
 
-{% block title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{{ event.title }} — {% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
+{% block title %}{{ event.title }} — {% trans "pizzas"|capfirst %} —
+    {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ event.title }} — {% trans "pizzas"|capfirst %} —
+    {{ block.super }}{% endblock %}
 
 
 {% block body %}
-<h1>
-    {% blocktrans with title=event.title %}Orders for {{ title }}{% endblocktrans %}
-</h1>
+    <section class="page-section" id="events-detail">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {% blocktrans trimmed with title=event.title %}
+                    Orders for {{ title }}
+                {% endblocktrans %}
+            </h1>
 
-<div id="button-container">
-    <a href="{% url 'pizzas:orders' event.pk %}" class="btn btn-style1 pull-right">{% trans "Back" %}</a>
-    <br><br>
-</div>
-<div style="overflow-x: auto;">
-    <table class="category table table-striped table-bordered table-hover">
-        <thead>
-            <tr>
-                <th scope="col">{% trans "Product" %}</th>
-                <th class='numeric-title' scope="col">{% trans "Price" %}</th>
-                <th class="numeric-title" scope="col">{% trans "Amount" %}</th>
-                <th class="numeric-title" scope="col">{% trans "Total" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in product_list %}
-                <tr>
-                    <td>
-                        {{ product.name }}
-                    </td>
-                    <td>
-                        &euro; {{ product.price }}
-                    </td>
-                    <td>
-                        {{ product.amount }}
-                    </td>
-                    <td>
-                        &euro; {{ product.total }}
-                    </td>
-                </tr>
-            {% empty %}
-            <tr class="model-events">
-                <th scope="row" colspan="4">{% trans "Nobody ordered yet" %}</th>
-            </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="2"></td>
-                <td>
-                    {{ total_products }}
-                </td>
-                <td>
-                    &euro; {{ total_money }}
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
+            <a href="{% url 'pizzas:orders' event.pk %}"
+               class="btn btn-primary float-right mb-3">
+                {% trans "Back" %}
+            </a>
+
+            <div class="table-responsive">
+                <table
+                    class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">
+                            {% trans "Product" %}
+                        </th>
+                        <th scope="col">
+                            {% trans "Price" %}
+                        </th>
+                        <th scope="col">
+                            {% trans "Amount" %}
+                        </th>
+                        <th scope="col">
+                            {% trans "Total" %}
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product in product_list %}
+                        <tr>
+                            <td>
+                                {{ product.name }}
+                            </td>
+                            <td>
+                                &euro;&nbsp;{{ product.price }}
+                            </td>
+                            <td>
+                                {{ product.amount }}
+                            </td>
+                            <td>
+                                &euro;&nbsp;{{ product.total }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <th colspan="4">
+                                {% trans "Nobody ordered yet" %}
+                            </th>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>
+                            {{ total_products }}
+                        </td>
+                        <td>
+                            &euro;&nbsp;{{ total_money }}
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </section>
 {% endblock %}
 
 {% block js_body %}
-{{ block.super }}
-<script type="text/javascript" src="{% static "pizzas/js/jquery.tablesort.min.js" %}"></script>
-<script type="text/javascript" src="{% static "pizzas/js/orders.js" %}"></script>
+    {{ block.super }}
+    {% compress js %}
+        <script type="text/javascript"
+                src="{% static "pizzas/js/jquery.tablesort.min.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "pizzas/js/main.js" %}"></script>
 
-<script type="text/javascript">
-var csrf_token = '{{ csrf_token }}';
-var trans = { 'yes': '{% trans 'Yes' %}', 'no': '{% trans 'No' %}' };
-</script>
+        <script type="text/javascript">
+            var csrf_token = '{{ csrf_token }}';
+            var trans = {'yes': '{% trans 'Yes' %}', 'no': '{% trans 'No' %}'};
+        </script>
+    {% endcompress %}
 {% endblock %}

@@ -1,19 +1,31 @@
-{% extends "pizzas/base.html" %}
-{% load i18n staticfiles %}
+{% extends "base.html" %}
+{% load i18n static %}
 
-{% block title %}{% if event %}{{ event.title }} — {% endif %}{% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% if event %}{{ event.title }} — {% endif %}{% trans "Pizzas"|capfirst %} — {{ block.super }}{% endblock %}
+{% block title %}{% if event %}{{ event.title }}
+    — {% endif %}{% trans "pizzas"|capfirst %} —
+    {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% if event %}{{ event.title }}
+    — {% endif %}{% trans "pizzas"|capfirst %} —
+    {{ block.super }}{% endblock %}
 {% block opengraph %}
     {% if event %}
-    <meta property="og:description" content="{% blocktrans with title=event.title %}Order food for {{ title }}{% endblocktrans %}" />
+        <meta property="og:description"
+              content="{% blocktrans with title=event.title %}Order food for {{ title }}{% endblocktrans %}"/>
     {% else %}
-    <meta property="og:description" content="{% trans "There is no current event for which you can order food" %}" />
+        <meta property="og:description"
+              content="{% trans "There is no current event for which you can order food" %}"/>
     {% endif %}
 {% endblock %}
 
 {% block header_image_container %}
-    {% if event.just_ended %}
-        <div class="header-image container {{ order.paid|yesno:'paid,unpaid' }}">
+    {% if event.just_ended and order %}
+        <div class="image pizza-header {{ order.paid|yesno:'paid,unpaid' }}">
+            <h1>
+                {{ order.product.name }}
+            </h1>
+            <h2>
+                {{ request.member.get_full_name }}
+            </h2>
         </div>
     {% else %}
         {{ block.super }}
@@ -21,121 +33,181 @@
 {% endblock %}
 
 {% block body %}
-{% if event %}
-    {% if event.just_ended and order %}
-    <div class="text-center">
-        <span class="product-name">
-            {{ order.product.name }}
-        </span>
-        <br>
-        <br>
-        <span style="font-size: 24px;">
-            {{ member.get_full_name }}
-        </span>
-    </div>
-    {% endif %}
-    <h1>
-        {% blocktrans with title=event.title %}Order food for {{ title }}{% endblocktrans %}
-    </h1>
-{% else %}
-    <h1>
-        {% trans "There is no current event for which you can order food" %}
-    </h1>
-{% endif %}
-<div id="button-container">
-    {% if perms.pizzas.change_product %}
-        <a href="{% url 'admin:pizzas_product_changelist' %}" class="btn btn-style1 pull-right">{% trans "All products" %}</a>
-    {% endif %}
-    {% if perms.pizzas.change_pizzaevent %}
-        <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}" class="btn btn-style1 pull-right">{% trans "All events" %}</a>
-    {% endif %}
-    {% if perms.pizzas.change_order and event %}
-        <a href="{% url 'pizzas:orders' event.pk %}" class="btn btn-style1 pull-right">{% trans "All orders" %}</a>
-    {% endif %}
-    <br><br>
-</div>
-{% if event %}
-    {% if event.in_the_future %}
-        <h2>
-            {% blocktrans with start=event.start|date:"Y-m-d H:i:s" %}It will be possible to order from {{ start }}.{% endblocktrans %}
-        </h2>
-    {% else %}
-        {% if event.just_ended %}
-        <h2>
-            {% blocktrans with end=event.end|date:"Y-m-d H:i:s" %}It was possible to order until {{ end }}.{% endblocktrans %}
-        </h2>
-        {% else %}
-        <h2>
-            {% blocktrans with end=event.end|date:"Y-m-d H:i:s" %}It is possible to order until {{ end }}.{% endblocktrans %}
-        </h2>
-        {% endif %}
-        {% if order %}
-            {% if order.paid %}
-            <div class="alert alert-success">{% trans "The order has been paid for." %}</div>
-            {% else %}
-            <div class="alert alert-error">{% trans "The order has not yet been paid for." %}</div>
-            {% endif %}
-            <h4>{% trans "Current order" %}</h4>
-            <div style="overflow-x: auto;">
-                <table class="table table-striped table-bordered table-hover">
-                    <tr>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "Description" %}</th>
-                        <th>{% trans "Price" %}</th>
-                        <th>{% trans "Cancel" %}</th>
-                    </tr>
-                    <tr>
-                        <td>{{ order.product.name }}</td>
-                        <td>{{ order.product.description }}</td>
-                        <td>&euro;&nbsp;{{ order.product.price }}</td>
-                        <td>
-                            {% if not order.can_be_changed %}
-                                {% trans "You can no longer cancel." %}
-                            {% else %}
-                                <form class="form-horizontal pizza-order-form" method="post" action="{% url 'pizzas:cancel-order' %}">
-                                    {% csrf_token %}
-                                    <input type='hidden' name='order' value='{{ order.pk }}' />
-                                    <input type='submit' value='{% trans "Cancel" %}' class='btn btn-style1' onclick="return confirm('{% trans "Are you sure you want to cancel your order?" %}')" />
-                                </form>
-                            {% endif %}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            {% if not event.just_ended %}
-                <h4>{% trans "Changing your order" %}</h4>
-            {% endif %}
-        {% elif event.just_ended %}
-            {% trans "You did not place an order." %}
-        {% endif %}
-        {% if not event.has_ended %}
-            {% if order == None or order.can_be_changed %}
-                <div style="overflow-x: auto;">
-                    <table class="category table table-striped table-bordered table-hover">
-                        <tr>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Description" %}</th>
-                            <th>{% trans "Price" %}</th>
-                            <th>{% if order %}{% trans "Modify" %}{% else %}{% trans "Order" context "pizzas" %}{% endif %}</th>
-                        </tr>
-                        {% for product in products %}
-                            <tr>
-                                <td>{{ product.name }}</td>
-                                <td>{{ product.description }}</td>
-                                <td>&euro;&nbsp;{{ product.price }}</td>
-                                <td>
-                                    <form class="form-horizontal pizza-order-form" method="post" action="{% url 'pizzas:order' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="product" value="{{ product.pk }}" />
-                                        <input type="submit" class="btn btn-style1" {% if order %}value='{% trans "Modify" %}' onclick="return confirm('{% trans "Are you sure you want to modify your order?" %}')"{% else %}value='{% trans "Order" context "pizzas" %}'{% endif %} />
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+    {% if event %}
+        <section class="page-section" id="pizzas-index">
+            <div class="container">
+                <h1 class="text-center section-title">
+                    {% blocktrans trimmed with title=event.title %}
+                        Order food for {{ title }}
+                    {% endblocktrans %}
+                </h1>
+
+                <div class="mb-3 row">
+                    {% if perms.pizzas.change_product %}
+                        <div class="col-12 col-md-4 my-1">
+                            <a href="{% url 'admin:pizzas_product_changelist' %}"
+                               class="btn btn-primary d-block">
+                                {% trans "All products" %}
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if perms.pizzas.change_pizzaevent %}
+                        <div class="col-12 col-md-4 my-1">
+                            <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}"
+                               class="btn btn-primary d-block">
+                                {% trans "All events" %}
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if perms.pizzas.change_order and event %}
+                        <div class="col-12 col-md-4 my-1">
+                            <a href="{% url 'pizzas:orders' event.pk %}"
+                               class="btn btn-primary d-block">
+                                {% trans "All orders" %}
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-        {% endif %}
+
+                {% if event.in_the_future %}
+                    <h3 class="text-center">
+                        {% blocktrans trimmed with start=event.start|date:"Y-m-d H:i:s" %}
+                            It will be possible to order from {{ start }}.
+                        {% endblocktrans %}
+                    </h3>
+                {% else %}
+                    {% if event.just_ended %}
+                        <h3 class="text-center">
+                            {% blocktrans trimmed with end=event.end|date:"Y-m-d H:i:s" %}
+                                It was possible to order until {{ end }}.
+                            {% endblocktrans %}
+                        </h3>
+                    {% else %}
+                        <h3 class="text-center">
+                            {% blocktrans trimmed with end=event.end|date:"Y-m-d H:i:s" %}
+                                It is possible to order until {{ end }}.
+                            {% endblocktrans %}
+                        </h3>
+                    {% endif %}
+                    {% if order %}
+                        {% if order.paid %}
+                            <div class="alert alert-success mt-3">
+                                {% trans "The order has been paid for." %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger mt-3">
+                                {% trans "The order has not yet been paid for." %}
+                            </div>
+                        {% endif %}
+                        <h4 class="text-center">{% trans "Current order" %}</h4>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>{% trans "Name" %}</th>
+                                    <th class="d-none d-md-table d-none d-md-table-cell">{% trans "Description" %}</th>
+                                    <th>{% trans "Price" %}</th>
+                                    <th>{% trans "Cancel" %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="align-middle">{{ order.product.name }}</td>
+                                    <td class="align-middle d-none d-md-table-cell">{{ order.product.description }}</td>
+                                    <td class="align-middle">
+                                        &euro;&nbsp;{{ order.product.price }}
+                                    </td>
+                                    <td class="align-middle">
+                                        {% if not order.can_be_changed %}
+                                            {% trans "You can no longer cancel." %}
+                                        {% else %}
+                                            <form
+                                                class="d-inline-block"
+                                                method="post"
+                                                action="{% url 'pizzas:cancel-order' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden"
+                                                       name="order"
+                                                       value="{{ order.pk }}"/>
+                                                <input type="submit"
+                                                       value="{% trans "Cancel" %}"
+                                                       class="btn btn-primary"
+                                                       onclick="return confirm('{% trans "Are you sure you want to cancel your order?" %}')"/>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if not event.just_ended %}
+                            <h4 class="text-center">{% trans "Changing your order" %}</h4>
+                        {% endif %}
+                    {% elif event.just_ended %}
+                        <p class="text-center">
+                            {% trans "You did not place an order." %}
+                        </p>
+                    {% endif %}
+                    {% if not event.has_ended %}
+                        {% if order == None or order.can_be_changed %}
+                            <div class="table-responsive mt-3">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>{% trans "Name" %}</th>
+                                        <th class="d-none d-md-table-cell">{% trans "Description" %}</th>
+                                        <th>{% trans "Price" %}</th>
+                                        <th>{% if order %}
+                                            {% trans "Modify" %}{% else %}
+                                            {% trans "Order" context "pizzas" %}{% endif %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in products %}
+                                        <tr>
+                                            <td class="align-middle">
+                                                {{ product.name }}
+                                            </td>
+                                            <td class="align-middle d-none d-md-table-cell">
+                                                {{ product.description }}
+                                            </td>
+                                            <td class="align-middle">
+                                                &euro;&nbsp;{{ product.price }}
+                                            </td>
+                                            <td class="align-middle">
+                                                <form
+                                                    class="d-inline-block"
+                                                    method="post"
+                                                    action="{% url 'pizzas:order' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden"
+                                                           name="product"
+                                                           value="{{ product.pk }}"/>
+                                                    <input type="submit"
+                                                           class="btn btn-primary"
+                                                           {% if order %}value="{% trans "Modify" %}"
+                                                           onclick="return confirm('{% trans "Are you sure you want to modify your order?" %}')"
+                                                           {% else %}value="{% trans "Order" context "pizzas" %}"{% endif %}/>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </section>
+    {% else %}
+        <section class="page-section" id="pizzas-index">
+            <div class="container">
+                <h1 class="text-center section-title">{% trans 'pizzas'|capfirst %}</h1>
+                <p class="text-center">
+                    {% trans "There is no current event for which you can order food" %}l
+                </p>
+            </div>
+        </section>
     {% endif %}
-{% endif %}
 {% endblock %}

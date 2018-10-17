@@ -1,0 +1,25 @@
+.pizza-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    h1 {
+        font-size: 2rem;
+        text-align: center;
+        color: $white;
+    }
+
+    h2 {
+        text-align: center;
+        color: $white;
+    }
+
+    &.paid {
+        background-color: $success;
+    }
+
+    &.unpaid {
+        background-color: $danger;
+    }
+}
