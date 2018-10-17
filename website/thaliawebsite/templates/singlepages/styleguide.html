@@ -112,12 +112,11 @@
             <h2>Basis</h2>
 
             <p>
-                {% url 'styleguide-file' 'font.zip' as font_url %}
                 {% blocktrans trimmed %}
                     Thalia's logo consists of a 'T' formed by the pieces of a
                     <a href="https://en.wikipedia.org/wiki/Tangram" target="_blank">tangram</a> and the text 'Study
                     Association Thalia'. The font that was used for this text is '
-                    <a href="{{ font_url }}">Gill Sans MT Condensed</a>'.
+                    <a href="https://drive.google.com/drive/folders/1ngaQc481MbZAXwbvs85NW07exwM7_Bfo">Gill Sans MT Condensed</a>'.
                 {% endblocktrans %}
             </p>
 
@@ -139,10 +138,9 @@
             </p>
 
             <p>
-                {% url 'styleguide-file' 'logo.zip' as logo_url %}
                 {% blocktrans trimmed %}
                     You can download the archive with all versions of the logo in PNG, SVG and Illustrator
-                    <a href="{{ logo_url }}">here</a>.
+                    <a href="https://drive.google.com/drive/folders/1RlkLn2Rqk4ETWd4CUUHlU-gaKC7iVU9k">here</a>.
                 {% endblocktrans %}
             </p>
 
@@ -168,10 +166,9 @@
             </p>
 
             <p>
-                {% url 'styleguide-file' 'variant-logo.zip' as variant_logo_url %}
                 {% blocktrans trimmed %}
                     You can download the archive with the Illustrator and EPS files to create a variant
-                    <a href="{{ variant_logo_url }}">here</a>.
+                    <a href="https://drive.google.com/drive/folders/1RlkLn2Rqk4ETWd4CUUHlU-gaKC7iVU9k">here</a>.
                 {% endblocktrans %}
             </p>
         </div>
@@ -194,21 +191,18 @@
                 <li>{% trans "Registration forms" %}</li>
                 <li>{% trans "Declarations" %}</li>
             </ul>
-            {% url 'styleguide-file' 'documents.zip' as documents_url %}
-            {% url 'styleguide-file' 'latex.zip' as latex_url %}
             {% blocktrans trimmed %}
-                You can download these template as <a href="{{ documents_url }}">here</a> as archive. We've also
+                You can download these template as <a href="https://drive.google.com/drive/folders/13jGBucdXpkw2BA0_Z8TFFhlVW_8umFKW">here</a> as archive. We've also
                 included PDF
                 examples.
-                In case you prefer LaTeX then you can download the <a href="{{ latex_url }}">template</a>.
+                In case you prefer LaTeX then you can download the <a href="https://drive.google.com/drive/folders/1KQVG7i7e146YOQ9h_6mO3RqbLC9539lG">template</a>.
             {% endblocktrans %}
             </p>
 
             <p>
-                {% url 'styleguide-file' 'presentations.zip' as presentations_url %}
                 {% blocktrans trimmed %}
                     Templates for PowerPoint, Keynote and LibreOffice are available
-                    <a href="{{ presentations_url }}">here</a>.
+                    <a href="https://drive.google.com/drive/folders/1CL4eVSqlvYcqP_u99y6mgGJpqWWG_q7Z">here</a>.
                 {% endblocktrans %}
             </p>
         </div>
@@ -236,9 +230,8 @@
             </p>
 
             <p>
-                {% url 'styleguide-file' 'posters-banners.zip' as posters_url %}
                 {% blocktrans trimmed %}
-                    The templates are available for download <a href="{{ posters_url }}">here</a>.
+                    The templates are available for download <a href="https://drive.google.com/drive/folders/1oPxLJ20AURaLjgYNSMuf9I-LarSQWjzC">here</a>.
                     Although, it's the task of the media committee to create the posters and banners.
                     So you're always welcome to send an email to <a href="mailto:media@thalia.nu">media@thalia.nu</a> to
                     get
@@ -349,13 +342,12 @@
             <h1 class="section-title text-center" id="downloads">{% trans "Downloads" %}</h1>
 
             <ul>
-                <li><a href="{{ font_url }}">{% trans "Font" %}</a></li>
-                <li><a href="{{ logo_url }}">{% trans "Logos" %}</a></li>
-                <li><a href="{{ variant_logo_url }}">{% trans "Logo variant template" %}</a></li>
-                <li><a href="{{ documents_url }}">{% trans "Word documents" %}</a></li>
-                <li><a href="{{ latex_url }}">{% trans "LaTeX template" %}</a></li>
-                <li><a href="{{ presentations_url }}">{% trans "Presentation templates" %}</a></li>
-                <li><a href="{{ posters_url }}">{% trans "Poster templates" %}</a></li>
+                <li><a href="https://drive.google.com/drive/folders/1ngaQc481MbZAXwbvs85NW07exwM7_Bfo">{% trans "Font" %}</a></li>
+                <li><a href="https://drive.google.com/drive/folders/1RlkLn2Rqk4ETWd4CUUHlU-gaKC7iVU9k">{% trans "Logos" %}</a></li>
+                <li><a href="https://drive.google.com/drive/folders/13jGBucdXpkw2BA0_Z8TFFhlVW_8umFKW">{% trans "Word documents" %}</a></li>
+                <li><a href="https://drive.google.com/drive/folders/1KQVG7i7e146YOQ9h_6mO3RqbLC9539lG">{% trans "LaTeX template" %}</a></li>
+                <li><a href="https://drive.google.com/drive/folders/1CL4eVSqlvYcqP_u99y6mgGJpqWWG_q7Z">{% trans "Presentation templates" %}</a></li>
+                <li><a href="https://drive.google.com/drive/folders/1oPxLJ20AURaLjgYNSMuf9I-LarSQWjzC">{% trans "Poster templates" %}</a></li>
                 <li><a href="{{ introshirt_url }}">{% trans "Introshirts" %}</a></li>
             </ul>
 
