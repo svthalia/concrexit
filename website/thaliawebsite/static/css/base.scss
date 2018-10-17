@@ -1,13 +1,14 @@
 #accentbar {
     background: $preset;
     height: 5px;
-    position: relative;
+    z-index: 1020;
 }
 
 .navbar {
     font-size: 16px;
     background-color: $white;
     border-bottom: 1px solid $grey;
+    top: 5px;
 
     > .container {
         justify-content: end;
@@ -97,13 +98,13 @@
 #page-header {
     height: 360px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
 
     .image {
-        width: 100%;
+        width: auto;
         height: 100%;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
+        max-width: none;
     }
 }
 

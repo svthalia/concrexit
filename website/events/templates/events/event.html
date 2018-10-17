@@ -71,7 +71,7 @@
                                         <i>({{ event.max_participants }} {% trans "max" %})</i>
                                         {% with prc=registration_percentage %}
                                             <div class="progress mt-1">
-                                                <div class="progress-bar" style="width: {{ prc|floatformat:"0" }}%"></div>
+                                                <div class="progress-bar progress{{ prc|floatformat:"0" }}"></div>
                                             </div>
                                         {% endwith %}
                                     {% endif %}

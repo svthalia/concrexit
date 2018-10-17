@@ -43,13 +43,17 @@
     {% if request.member and request.member.current_membership is None %}
         <div class="announcement">
             <i class="fas fa-id-card"></i>
-            <p><a href="{% url 'registrations:renew' %}">{% trans "You're currently not a member of Thalia. Renew your membership to get access to all parts of the website." %}</a></p>
+            <p>
+                <a href="{% url 'registrations:renew' %}">
+                    {% trans "You're currently not a member of Thalia. Renew your membership to get access to all parts of the website." %}
+                </a>
+            </p>
         </div>
     {% endif %}
     {% include "announcements/announcement.html" with announcements=announcements %}
 </section>
 
-<div id="accentbar"></div>
+<div id="accentbar" class="sticky-top"></div>
 
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
@@ -100,11 +104,7 @@
 
 <header id="page-header">
     {% block header_image_container %}
-        <div
-            class="image"
-            style="background-image: url('{% block header_image %}{% pick_header_image %}{% endblock header_image %}')"
-        >
-        </div>
+        <img src="{% block header_image %}{% pick_header_image %}{% endblock header_image %}" class="image" />
     {% endblock header_image_container %}
 </header>
 
