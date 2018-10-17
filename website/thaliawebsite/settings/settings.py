@@ -120,7 +120,6 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'partners.context_processors.showcased_partners',
                 'announcements.context_processors.announcements',
                 'thaliawebsite.context_processors.source_commit',
                 'thaliawebsite.context_processors.thumbnail_sizes',
