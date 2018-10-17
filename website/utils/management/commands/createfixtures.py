@@ -14,6 +14,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from activemembers.models import Board, Committee, MemberGroupMembership
+from documents.models import Document
 from events.models import Event
 from members.models import Profile, Member, Membership
 from partners.models import Partner, Vacancy, VacancyCategory
@@ -100,6 +101,11 @@ class Command(BaseCommand):
             "--vacancy",
             type=int,
             help="The amount of fake vacancies to add")
+        parser.add_argument(
+            "-d",
+            "--document",
+            type=int,
+            help="The amount of fake miscellaneous documents to add")
 
     def create_board(self, lecture_year, members):
         """
@@ -385,6 +391,20 @@ class Command(BaseCommand):
 
         category.save()
 
+    def create_document(self):
+        """Creates new random documents"""
+        doc = Document()
+
+        doc.name_nl = _faker.text(max_nb_chars=30)
+        doc.name_en = _faker.text(max_nb_chars=30)
+        doc.category = random.choice([c[0] for c in
+                                      Document.DOCUMENT_CATEGORIES])
+        doc.members_only = random.random() < 0.75
+        doc.file_en.save('{}.txt'.format(doc.name_en), ContentFile(
+            _faker.text(max_nb_chars=120)))
+        doc.file_nl = doc.file_en
+        doc.save()
+
     def handle(self, *args, **options):  # pylint: disable=too-many-branches
         """
         Handle the command being executed
@@ -392,7 +412,7 @@ class Command(BaseCommand):
         :param options: the passed-in options
         """
         opts = ['board', 'committee', 'event', 'partner', 'pizza', 'user',
-                'vacancy']
+                'vacancy', 'document']
 
         if all([not options[opt] for opt in opts]):
             print("Use ./manage.py help createfixtures to find out how to call"
@@ -453,3 +473,7 @@ class Command(BaseCommand):
             num_pastas = options['pizza'] - num_pizzas
             for __ in range(num_pastas):
                 self.create_pizza('Pasta')
+
+        if options['document']:
+            for __ in range(options['document']):
+                self.create_document()

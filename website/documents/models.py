@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -54,6 +55,9 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         verbose_name=_('members only'),
         default=False
     )
+
+    def get_absolute_url(self):
+        return reverse('documents:document', kwargs={'pk': self.pk})
 
     def __str__(self):
         return '%s (%s)' % (self.name, str(self.created.date()))

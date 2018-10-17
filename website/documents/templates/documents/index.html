@@ -1,93 +1,146 @@
-{% extends 'old-base.html' %}
-{% load staticfiles %}
-{% load i18n %}
-{% load compress %}
+{% extends 'base.html' %}
+{% load static i18n compress document_cards %}
 
 {% block title %}{% trans 'Documents' %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% trans 'Documents' %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans 'Documents' %} —
+    {{ block.super }}{% endblock %}
 
 {% block css_head %}
     {{ block.super }}
     {% compress css %}
-    <link href="{% static "documents/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
+        <link href="{% static "documents/css/style.scss" %}" rel="stylesheet"
+              type="text/x-scss">
     {% endcompress %}
 {% endblock %}
 
 {% block body %}
-<h1>{% trans "Miscellaneous Association Documents" %}</h1>
+    <section class="page-section" id="documents-misc">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "Miscellaneous Association Documents" %}</h1>
 
-<p class="text-center">
-    {% blocktrans trimmed %}
-    Thalia was officially founded on November 7th, 1990. The relevant statutes and internal rules can be accessed here. The statues have last been amended in September 2007; the internal rules have been changed on several occasions. Other miscellaneous documents can be found here as well, such as the expanse form. The documents regarding the canteens can be found on <a href="https://olympus.science.ru.nl">the website of umbrella association Olympus</a>.
-    {% endblocktrans %}
-</p>
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    Thalia was officially founded on November 7th, 1990. The
+                    relevant statutes and internal rules can be
+                    accessed here. The statues have last been amended in
+                    September 2007; the internal rules have been
+                    changed on several occasions. Other miscellaneous documents
+                    can be found here as well, such as the
+                    expanse form. The documents regarding the canteens can be
+                    found on
+                    <a href="https://olympus.science.ru.nl">the website of
+                        umbrella association Olympus</a>.
+                {% endblocktrans %}
+            </p>
 
-<div class="portfolio">
-    <div class="misc-wrapper">
-        <ul class="portfolio-posts row" style="padding-top:20px;">
-            {% for association_document in association_documents %}
-                {% include 'documents/association.html' with document=association_document %}
-            {% endfor %}
+            <div class="row">
+                {% for doc in association_documents %}
+                    <div class="col-6 col-md-2 my-3">
+                        {% association_document_card doc %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="documents-annual">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "Annual documents" %}</h1>
+
+            <p class="text-center">
+                {% trans "Every candidate board of Thalia drafts a policy document before being installed, to detail their plans for the next year. This also includes a general planning of all activities, as well as the budget for that year. Furthermore, the association is obliged to deliver an annual report and provide a financial overview. These documents show the financial developments over the year, what contacts Thalia maintained and what activities were organized. All historical policy documents and reports are made available, below." %}
+            </p>
+
+            <p class="text-center">
+                {% trans "The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well." %}
+            </p>
+
+            <ul class="nav nav-tabs justify-content-center mt-4">
+                {% for year, data in years|slice:":6" %}
+                    <li class="nav-item">
+                        <a class="nav-link{% if forloop.counter0 == 0 %} active{% endif %}"
+                           href="#tab-{{ year }}" data-toggle="tab">
+                            {{ year }}-{{ year|add:1 }}
+                        </a>
+                    </li>
+                {% endfor %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown"
+                       href="#" role="button">{% trans "Older" %}</a>
+                    <div class="dropdown-menu dropdown-years">
+                        {% for year, data in years|slice:"6:" %}
+                            <a class="dropdown-item" href="#tab-{{ year }}" data-toggle="tab">{{ year }}-{{ year|add:1 }}</a>
+                        {% endfor %}
+                    </div>
+                </li>
         </ul>
-    </div>
-</div>
 
-<h1>{% trans "Policy Documents &amp; Annual Reports" %}</h1>
-
-<p class="text-center">
-{% trans "Every candidate board of Thalia drafts a policy document before being installed, to detail their plans for the next year. This also includes a general planning of all activities, as well as the budget for that year. Furthermore, the association is obliged to deliver an annual report and provide a financial overview. These documents show the financial developments over the year, what contacts Thalia maintained and what activities were organized. All historical policy documents and reports are made available, below." %}
-</p>
-
-<div class="portfolio slider">
-    <div class="policy-wrapper">
-        <ul class="portfolio-posts row" style='width:{{ annual_docs_width }}px'>
-            {% for year, docs in annual_reports %}
-                {% include 'documents/policydocument.html' with documents=docs.policy name=_("Policy") %}
+        <div class="tab-content">
+            {% for year, data in years %}
+                <div
+                    class="tab-pane fade{% if forloop.counter0 == 0 %} show active{% endif %}"
+                    id="tab-{{ year }}" role="tabpanel">
+                    <div class="row">
+                        {% if data.general_meetings %}
+                            <div class="col-12 col-md-6 my-3">
+                                <div class="accordion bordered">
+                                    {% for gm in data.general_meetings %}
+                                        <div class="card mb-0">
+                                            <div
+                                                class="card-header collapsed"
+                                                data-toggle="collapse"
+                                                data-target="#event-content-0">
+                                                <div class="title">
+                                                    {% trans "GM" %} {{ forloop.counter }}: {{ gm.datetime }}
+                                                </div>
+                                            </div>
+                                            <div class="collapse"
+                                                 id="event-content-0">
+                                                <div class="card-body">
+                                                    <p>
+                                                        Locatie: {{ gm.location }}<br/>
+                                                        {% trans "documents"|capfirst %}:<br/>
+                                                    <ol>
+                                                        {% for doc in gm.documents.all %}
+                                                            <li>
+                                                                <a href="{{ doc.get_absolute_url }}">
+                                                                    {{ doc.name }}
+                                                                </a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ol>
+                                                    </p>
+                                                    {% if gm.minutes %}
+                                                        <p>
+                                                            <a href="{{ gm.minutes.get_absolute_url }}"
+                                                               class="btn btn-primary">
+                                                                {% trans "Minutes" %}
+                                                            </a>
+                                                        </p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div
+                                class="col-12 col-md-6 my-3 d-flex justify-content-center align-items-center">
+                                <div class="text-center">
+                                    {% trans "There have not been any general meetings yet." %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% for type, doc in data.documents.items %}
+                            <div class="col-4 col-md-2 my-3">
+                                {% annual_document_card type doc %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
-        <ul class="portfolio-posts row" style='width:{{ annual_docs_width }}px'>
-            {% for year, docs in annual_reports %}
-                {% include 'documents/report.html' with documents=docs.report name=_("Annual report") %}
-            {% endfor %}
-        </ul>
-    </div>
-    <a class="slider-control-prev"></a>
-    <a class="slider-control-next"></a>
-</div>
-
-
-<h1>{% trans "General Meetings" %}</h1>
-
-<p class="text-center">
-{% trans "The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well." %}
-</p>
-
-<div class="tcenter" style="margin-bottom:20px;"">
-{% for year, meetings in meeting_years|slice:"5" %}
-    <button class="meeting-btn btn-large btn-style2" data-year="{{ year }}">{{ year }}-{{ year|add:1 }}</button>
-{% endfor %}
-    <select id="alvselect" name="alvselect" class="btn-large btn-style2">
-    <option selected disabled hidden>{% trans "Earlier.." %}</option>
-    {% for year, meetings in meeting_years|slice:"5:" %}
-        <option value="{{ year }}">{{ year }}-{{ year|add:1 }}</option>
-    {% endfor %}
-    </select>
-</div>
-
-<div id='meetingcontainer'>
-{% for year, meetings in meeting_years %}
-    <div id='meeting-{{ year }}'>
-    {% include 'documents/meetingyear.html' %}
-    </div>
-{% endfor %}
-</div>
-
-{% endblock %}
-
-{% block js_body %}
-    {{ block.super }}
-    {% compress js %}
-    <script type="text/javascript" src="{% static "documents/js/policydocuments.js" %}"></script>
-    <script type="text/javascript" src="{% static "documents/js/generalmeetings.js" %}"></script>
-    {% endcompress %}
+        </div>
+        </div>
+    </section>
 {% endblock %}
