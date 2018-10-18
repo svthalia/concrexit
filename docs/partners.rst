@@ -25,14 +25,6 @@ partners.apps module
     :undoc-members:
     :show-inheritance:
 
-partners.context\_processors module
------------------------------------
-
-.. automodule:: partners.context_processors
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 partners.emails module
 ----------------------
 
