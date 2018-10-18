@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static thumbnail bleach_tags activemembers_cards %}
+{% load i18n static thumbnail bleach_tags activemembers_cards alert %}
 
 {% block body %}
     <section id="activemembers-membergroup" class="page-section">
@@ -31,11 +31,9 @@
                     <div class="col-4 col-md-3 my-3">
                         {% membergroup_member_card member %}
                     </div>
-
                 {% empty %}
-                    <div class="alert alert-danger col-10 offset-1">
-                        {% trans "This group doesn't have any members?" %}
-                    </div>
+                    {% trans "This group doesn't have any members?" as empty %}
+                    {% alert 'danger' empty extra_classes='col-10 offset-1' %}
                 {% endfor %}
             </div>
         </div>

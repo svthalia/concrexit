@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static %}
+{% load i18n static alert %}
 
 {% block title %}{% if event %}{{ event.title }}
     — {% endif %}{% trans "pizzas"|capfirst %} —
@@ -91,13 +91,11 @@
                     {% endif %}
                     {% if order %}
                         {% if order.paid %}
-                            <div class="alert alert-success mt-3">
-                                {% trans "The order has been paid for." %}
-                            </div>
+                            {% trans "The order has been paid for." as success_text %}
+                            {% alert 'success' success_text extra_classes="mt-3" %}
                         {% else %}
-                            <div class="alert alert-danger mt-3">
-                                {% trans "The order has not yet been paid for." %}
-                            </div>
+                            {% trans "The order has not yet been paid for." as danger_text %}
+                            {% alert 'danger' danger_text extra_classes="mt-3" %}
                         {% endif %}
                         <h4 class="text-center">{% trans "Current order" %}</h4>
                         <div class="table-responsive mt-3">

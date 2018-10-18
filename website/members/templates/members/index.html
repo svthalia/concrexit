@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static i18n thumbnail bootstrap4 member_card %}
+{% load static i18n thumbnail bootstrap4 member_card alert %}
 
 {% block title %}{% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
@@ -63,12 +63,8 @@
                 </ul>
 
                 {% if not members %}
-                    <div class="alert alert-info alert-dismissable mt-4">
-                        {% trans "No members found" %}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                    {% trans 'No members found' as info_text %}
+                    {% alert 'info' info_text dismissable=True %}
                 {% else %}
                     <div class="row mt-4">
                         {% for member in members %}

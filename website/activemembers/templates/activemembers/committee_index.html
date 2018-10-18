@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n thumbnail static activemembers_cards %}
+{% load i18n thumbnail static activemembers_cards alert %}
 {% block title %}{% trans 'committees'|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans 'committees'|capfirst %} — {{ block.super }}{% endblock %}
 
@@ -16,9 +16,8 @@
                         {% membergroup_card committee %}
                     </div>
                 {% empty %}
-                    <div class="alert alert-danger col-10 offset-1">
-                        {% trans 'There are no committees!' %}
-                    </div>
+                    {% trans 'There are no committees!' as no_committees %}
+                    {% alert 'danger' no_committees extra_classes='col-10 offset-1' %}
                 {% endfor %}
             </div>
         </div>
