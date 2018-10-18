@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n bootstrap4 %}
+{% load i18n bootstrap4 alert %}
 
 {% block title %}{% trans "renewal"|capfirst %} —
     {{ block.super }}{% endblock %}
@@ -130,11 +130,7 @@
             {% else %}
                 {% for error in form.errors.items %}
                     {% for message in error.1 %}
-                        <div class="alert alert-error">
-                            {{ message }}
-                            <button type="button" class="close"><span
-                                class="alert-icon-close"></span></button>
-                        </div>
+                        {% alert 'danger' message dismissable=True %}
                     {% endfor %}
                 {% endfor %}
                 <form method="post" enctype="multipart/form-data"

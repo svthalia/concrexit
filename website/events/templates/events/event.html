@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bleach_tags thumbnail member_card google_map_url grid_item %}
+{% load i18n static bleach_tags thumbnail member_card google_map_url grid_item alert %}
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -15,12 +15,7 @@
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissable">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                    {% alert message.tags message dismissable=True %}
                 {% endfor %}
             {% endif %}
 

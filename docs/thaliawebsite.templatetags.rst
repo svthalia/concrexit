@@ -9,6 +9,14 @@ thaliawebsite.templatetags package
 Submodules
 ----------
 
+thaliawebsite.templatetags.alert module
+---------------------------------------
+
+.. automodule:: thaliawebsite.templatetags.alert
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 thaliawebsite.templatetags.baseurl module
 -----------------------------------------
 

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bootstrap4 %}
+{% load i18n static bootstrap4 alert %}
 
 {% block title %}{% trans "Registration" %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Registration" %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
@@ -10,12 +10,7 @@
             <h1 class="text-center section-title">{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}</h1>
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissable">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                    {% alert message.tags message dismissable=True %}
                 {% endfor %}
             {% endif %}
 
