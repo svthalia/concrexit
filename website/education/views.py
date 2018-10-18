@@ -80,7 +80,8 @@ def course(request, id):
             })
 
     return render(request, 'education/course.html',
-                  {'course': obj, 'items': items.items()})
+                  {'course': obj, 'items': sorted(items.items(),
+                                                  key=lambda x: x[0])})
 
 
 @login_required
