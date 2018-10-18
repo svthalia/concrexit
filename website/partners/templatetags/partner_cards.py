@@ -42,10 +42,11 @@ def partner_image_card(image):
 
 @register.inclusion_tag('partners/vacancy_card.html')
 def vacancy_card(vacancy):
-    image_url = ''
-    if vacancy.get_company_logo:
+    image_url = None
+    if vacancy.get_company_logo():
         image_url = thumbnail(vacancy.get_company_logo(),
-                              settings.THUMBNAIL_SIZES['medium'], fit=False)
+                              settings.THUMBNAIL_SIZES['medium'],
+                              fit=False)
 
     description = truncatechars(bleach(striptags(vacancy.description)), 150)
     extra_class = 'external-vacancy'

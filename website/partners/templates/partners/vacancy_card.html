@@ -2,13 +2,18 @@
 <div class="card">
     <div class="card-top">
         <div class="card-image">
-            <img alt="{{ title }}" src="{{ image_url }}">
+            {% if image_url %}
+                <img alt="{{ title }}" src="{{ image_url }}">
+            {% endif %}
         </div>
     </div>
     <div class="card-block">
         <h4 class="card-title mb-1">{{ title }}</h4>
         <h5 class="mt-0">{{ company_name }}</h5>
         <p class="card-text">{{ description }}</p>
-        <a href="{{ url }}" class="btn card-btn btn-primary {{ extra_class }}">{% trans "Learn more" %}</a>
+        <a href="{{ url }}"
+           class="btn card-btn btn-primary {{ extra_class }}">
+            {% trans "Learn more" %}
+        </a>
     </div>
 </div>
