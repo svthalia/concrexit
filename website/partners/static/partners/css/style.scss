@@ -38,12 +38,10 @@
                 -ms-transition: 0.2s ease-in-out 0s;
                 transition: 0.2s ease-in-out 0s;
 
-                background-repeat: no-repeat;
-                background-size: contain;
-                background-position: center center;
-
                 -webkit-filter: grayscale(1);
                 filter: grayscale(1);
+
+                object-fit: contain;
             }
 
             &:hover {
