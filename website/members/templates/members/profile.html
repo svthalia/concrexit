@@ -18,10 +18,10 @@
                 <div class="col-12 col-lg-7 text-center">
                     {% if not member.profile.photo %}
                         <img src="{% static "members/images/default-avatar.jpg" %}"
-                             alt="{{ member.display_name }}"/>
+                             alt="{{ member.profile.display_name }}"/>
                     {% else %}
                         <img src="{{ member.profile.photo.url }}"
-                             alt="{{ member.display_name }}"/>
+                             alt="{{ member.profile.display_name }}"/>
                     {% endif %}
                 </div>
                 <div class="col-12 col-lg-5">
