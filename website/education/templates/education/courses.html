@@ -67,9 +67,7 @@
                             <td>{{ course.name }}</td>
                             <td class="d-md-table-cell d-none">
                                 {% for category in course.categories %}
-                                    {{ category.name }}
-                                    {% if not forloop.last %},
-                                    {% endif %}
+                                    {{ category.name }}{% if not forloop.last %},{% endif %}
                                 {% endfor %}
                             </td>
                             <td class="d-md-table-cell d-none">{{ course.document_count }}</td>

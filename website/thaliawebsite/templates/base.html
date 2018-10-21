@@ -6,29 +6,40 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>{% block title %}{% trans "Study Association Thalia" %}{% endblock %}</title>
+    <title>{% block title %}
+        {% trans "Study Association Thalia" %}{% endblock %}</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="theme-color" content="#E62272"/>
 
-    <link rel="icon" href="{% static "img/browser/favicon.ico" %}" type="image/png">
-    <link rel="icon" sizes="192x192" href="{% static "img/browser/icon.png" %}">
+    <link rel="icon" href="{% static "img/browser/favicon.ico" %}"
+          type="image/png">
+    <link rel="icon" sizes="192x192"
+          href="{% static "img/browser/icon.png" %}">
     <link rel="apple-touch-icon" href="{% static "img/browser/icon.png" %}">
-    <meta name="msapplication-square70x70logo" content="{% static "img/browser/icon-smalltile.png" %}">
-    <meta name="msapplication-square150x150logo" content="{% static "img/browser/icon-mediumtile.png" %}">
-    <meta name="msapplication-wide310x150logo" content="{% static "img/browser/icon-widetile.png" %}">
-    <meta name="msapplication-square310x310logo" content="{% static "img/browser/icon-largetile.png" %}">
+    <meta name="msapplication-square70x70logo"
+          content="{% static "img/browser/icon-smalltile.png" %}">
+    <meta name="msapplication-square150x150logo"
+          content="{% static "img/browser/icon-mediumtile.png" %}">
+    <meta name="msapplication-wide310x150logo"
+          content="{% static "img/browser/icon-widetile.png" %}">
+    <meta name="msapplication-square310x310logo"
+          content="{% static "img/browser/icon-largetile.png" %}">
 
     <meta property="og:image"
           content="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{% static "img/browser/icon-largetile.png" %}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:title"
-          content="{% block opengraph_title %}{% trans 'Study Association Thalia' %}{% endblock %}"/>
+          content="
+
+              {% block opengraph_title %}{% trans 'Study Association Thalia' %}{% endblock %}"/>
     {% block opengraph %}{% endblock %}
 
     {% block css_head %}
         {% compress css %}
-            <link href="{% static "css/main.scss" %}" rel="stylesheet" type="text/x-scss">
+            <link href="{% static "css/main.scss" %}" rel="stylesheet"
+                  type="text/x-scss">
         {% endcompress %}
     {% endblock %}
 
@@ -67,36 +78,50 @@
         <div class="flex-grow-1"></div>
         <div class="navbar-user order-1 d-flex">
             {% if LANGUAGE_CODE == 'nl' %}
-                <a href="#lang" data-next="{{ redirect_to }}" data-lang="en" data-href="{% url 'set_language' %}"
-                   class="btn btn-link" id="language-switcher"><img src="{% static 'img/flags/gb.svg' %}"/></a>
+                <a href="#lang" data-next="{{ redirect_to }}" data-lang="en"
+                   data-href="{% url 'set_language' %}"
+                   class="btn btn-link" id="language-switcher"><img
+                    src="{% static 'img/flags/gb.svg' %}"/></a>
             {% else %}
-                <a href="#lang" data-next="{{ redirect_to }}" data-lang="nl" data-href="{% url 'set_language' %}"
-                   class="btn btn-link" id="language-switcher"><img src="{% static 'img/flags/nl.svg' %}"/></a>
+                <a href="#lang" data-next="{{ redirect_to }}" data-lang="nl"
+                   data-href="{% url 'set_language' %}"
+                   class="btn btn-link" id="language-switcher"><img
+                    src="{% static 'img/flags/nl.svg' %}"/></a>
             {% endif %}
             <div class="btn-group">
                 {% if not user.is_authenticated %}
-                    <a href="{% url 'login' %}" class="btn btn-primary"><i class="fas fa-user"></i></a>
+                    <a href="{% url 'login' %}" class="btn btn-primary"><i
+                        class="fas fa-user"></i></a>
                 {% else %}
-                    <a href="{% url 'account' %}" class="btn btn-primary"><i class="fas fa-user"></i></a>
-                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                    <a href="{% url 'account' %}" class="btn btn-primary"><i
+                        class="fas fa-user"></i></a>
+                    <button type="button"
+                            class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                            data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"></button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item"
                            href="{% url 'members:edit-profile' %}">{% trans "edit profile"|capfirst %}</a>
                         <a class="dropdown-item"
                            href="{% url 'password_change' %}">{% trans "change password"|capfirst %}</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'admin:index' %}">{% trans "Site administration" %}</a>
-                        <a class="dropdown-item" href="{% url 'logout' %}">{% trans "Log Out" %}</a>
+                        <a class="dropdown-item"
+                           href="{% url 'admin:index' %}">{% trans "Site administration" %}</a>
+                        <a class="dropdown-item"
+                           href="{% url 'logout' %}">{% trans "Log Out" %}</a>
                     </div>
                 {% endif %}
             </div>
         </div>
-        <button class="navbar-toggler order-0 justify-content-end" type="button" data-toggle="collapse"
-                data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+        <button class="navbar-toggler order-0 justify-content-end"
+                type="button" data-toggle="collapse"
+                data-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false"
                 aria-label="Toggle navigation"><i class="fa fa-bars"></i>
         </button>
-        <div class="collapse navbar-collapse justify-content-end order-lg-0 order-2" id="navbarCollapse">
+        <div
+            class="collapse navbar-collapse justify-content-end order-lg-0 order-2"
+            id="navbarCollapse">
             {% render_main_menu %}
         </div>
     </div>
@@ -104,7 +129,10 @@
 
 <header id="page-header">
     {% block header_image_container %}
-        <img src="{% block header_image %}{% pick_header_image %}{% endblock header_image %}" class="image" />
+        <img src="
+
+            {% block header_image %}{% pick_header_image %}{% endblock header_image %}"
+             class="image"/>
     {% endblock header_image_container %}
 </header>
 
@@ -117,31 +145,51 @@
 {% block post-body %}{% endblock post-body %}
 
 <footer>
-    <div class="container d-flex justify-content-md-between align-items-center flex-md-row flex-column">
+    <div
+        class="container d-flex justify-content-md-between align-items-center flex-md-row flex-column">
         <div class="copyright">
             <strong>Copyright {% now "Y" %} {% trans 'Study Association Thalia' %}</strong>
             <span class="divider">&#9679;</span>
             <a href="{% url 'privacy-policy' %}">{% trans "privacy policy"|capfirst %}</a>
         </div>
         <div class="social float-right">
-            <a target="_blank" href="https://www.facebook.com/svThalia"><i class="fab fa-facebook"></i></a>
-            <a target="_blank" href="https://twitter.com/svThalia"><i class="fab fa-twitter"></i></a>
+            <a target="_blank" href="https://www.facebook.com/svThalia"><i
+                class="fab fa-facebook"></i></a>
+            <a target="_blank" href="https://twitter.com/svThalia"><i
+                class="fab fa-twitter"></i></a>
             <a target="_blank" href="http://www.linkedin.com/groups?gid=54887"><i
                 class="fab fa-linkedin"></i></a>
-            <a target="_blank" href="https://gitlab.science.ru.nl/thalia/"><i class="fab fa-gitlab"></i></a>
+            <a target="_blank" href="https://gitlab.science.ru.nl/thalia/"><i
+                class="fab fa-gitlab"></i></a>
         </div>
     </div>
 </footer>
 
+<form method="post" action="{% url 'set_language' %}" class="d-none"
+      id="change-language-form">
+    {% csrf_token %}
+    <input type="hidden" value="{{ redirect_to }}" name="next"/>
+    <input type="hidden"
+           value="{% if LANGUAGE_CODE == 'nl' %}en{% else %}nl{% endif %}"
+           name="language"/>
+</form>
+
 {% block js_body %}
-    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    <script type="text/javascript"
+            src="{% url 'javascript-catalog' %}"></script>
     {% compress js %}
-        <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "js/js.cookie.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "js/bootstrap.bundle.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "js/jquery.fancybox.js" %}"></script>
-        <script type="text/javascript" src="{% static "js/main.js" %}"></script>
-        <script type="text/javascript" src="{% static "announcements/js/announcements.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "js/jquery.min.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "js/js.cookie.min.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "js/jquery.fancybox.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "js/main.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "announcements/js/announcements.js" %}"></script>
     {% endcompress %}
 {% endblock %}
 </body>

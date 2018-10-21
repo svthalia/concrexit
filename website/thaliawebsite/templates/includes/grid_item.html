@@ -18,7 +18,7 @@
     {% endif %}
     <div class="overlay d-flex justify-content-center flex-column text-center">
         <h5 class="px-2">{{ title }}</h5>
-        {{ meta_text|safe }}
+        {{ meta_text|default:''|safe }}
     </div>
     {% if url %}
         </a>

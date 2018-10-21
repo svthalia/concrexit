@@ -4,8 +4,9 @@
             {% for partner in partners %}
                 <div class="banner col-6 col-md-4 col-lg-3">
                     <a href="{% url "partners:partner" partner.slug %}">
-                        <div class="animated zoomIn image text-hide"
-                             style="background-image: url({{ partner.logo.url }});">Logo {{ partner.name }}</div>
+                        <img class="animated zoomIn image text-hide"
+                             alt="Logo {{ partner.name }}"
+                             src="{{ partner.logo.url }}"/>
                     </a>
                 </div>
             {% endfor %}

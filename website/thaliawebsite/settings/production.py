@@ -101,6 +101,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'announcements.context_processors.announcements',
+                'thaliawebsite.context_processors.source_commit',
+                'thaliawebsite.context_processors.thumbnail_sizes',
             ],
             'loaders': [
                 ('django.template.loaders.cached.Loader', [

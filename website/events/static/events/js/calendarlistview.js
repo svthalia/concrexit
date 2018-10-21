@@ -10,6 +10,10 @@ ListView = View.extend({
             return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
         });
 
+        if (events.length === 0) {
+            this.el.html('<div class="alert alert-info">' + gettext('No events planned in the selected period.') +'</div>');
+        }
+
         for (var i = 0; i < events.length; i++) {
             var e = events[i];
             if (e.is_birthday) {
@@ -29,7 +33,7 @@ ListView = View.extend({
 
             cardHead.append(eventIndicator);
             cardHead.append("<div class=\"title\">" + e.title + " " +
-                            "(<span class=\"date\">" + date + "</span>)</div>");
+                "(<span class=\"date\">" + date + "</span>)</div>");
 
             var cardContent = $("<div>")
                 .addClass("collapse")

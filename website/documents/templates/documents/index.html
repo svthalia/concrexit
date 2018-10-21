@@ -89,13 +89,13 @@
                                             <div
                                                 class="card-header collapsed"
                                                 data-toggle="collapse"
-                                                data-target="#event-content-0">
+                                                data-target="#gm-content-{{ forloop.counter0 }}">
                                                 <div class="title">
                                                     {% trans "GM" %} {{ forloop.counter }}: {{ gm.datetime }}
                                                 </div>
                                             </div>
                                             <div class="collapse"
-                                                 id="event-content-0">
+                                                 id="gm-content-{{ forloop.counter0 }}">
                                                 <div class="card-body">
                                                     <p>
                                                         Locatie: {{ gm.location }}<br/>
