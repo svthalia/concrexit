@@ -2,19 +2,19 @@
 
 We currently have the following information about you in our database.
 Via this email we'd like to ask you to check the accuracy of this data.
-{{ member }}
-Username:               {{ username|default_if_none:"" }}
-Name:                   {{ name|default_if_none:"" }}
-Address:                {{ address_street|default_if_none:"" }}
-                        {{ address_street2|default_if_none:"" }}
-                        {{ address_postal_code|default_if_none:"" }}
-                        {{ address_city|default_if_none:"" }}
-Phone:                  {{ phone_number|default_if_none:"" }}
-Date of birth:          {{ birthday|default_if_none:"" }}
-Email address:          {{ email|default_if_none:"" }}
-Student number:         {{ student_number|default_if_none:"" }}
-Cohort:                 {{ starting_year|default_if_none:"" }}
-Programme:              {{ programme|default_if_none:"" }}
+
+Username:               {{ username }}
+Name:                   {{ full_name }}
+Address:                {{ address_street }}
+                        {{ address_street2 }}
+                        {{ address_postal_code }}
+                        {{ address_city }}
+Phone:                  {{ phone_number }}
+Date of birth:          {{ birthday }}
+Email address:          {{ email }}
+Student number:         {{ student_number }}
+Cohort:                 {{ starting_year }}
+Programme:              {{ programme }}
 
 You can change this data by logging into the website and using the 'edit profile' page.
 Unable to edit the incorrect information? Then send an email: info@thalia.nu.

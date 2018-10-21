@@ -12,7 +12,6 @@ from django.utils.translation import ugettext as _
 
 from members.models import Member, Membership
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -74,23 +73,27 @@ def send_information_request(dry_run=False):
                         member.email)
             if not dry_run:
                 with translation.override(member.profile.language):
+                    email_context = {
+                        k: x if x else '' for k, x in {
+                            'name': member.first_name,
+                            'username': member.username,
+                            'full_name': member.get_full_name(),
+                            'address_street': member.profile.address_street,
+                            'address_street2': member.profile.address_street2,
+                            'address_postal_code':
+                                member.profile.address_postal_code,
+                            'address_city': member.profile.address_city,
+                            'phone_number': member.profile.phone_number,
+                            'birthday': member.profile.birthday,
+                            'email': member.email,
+                            'student_number': member.profile.student_number,
+                            'starting_year': member.profile.starting_year,
+                            'programme': member.profile.get_programme_display()
+                        }.items()
+                    }
                     email_body = loader.render_to_string(
                         'members/email/information_check.txt',
-                        {'name': member.first_name,
-                         'username': member.username,
-                         'full_name': member.get_full_name(),
-                         'address_street': member.profile.address_street,
-                         'address_street2': member.profile.address_street2,
-                         'address_postal_code':
-                             member.profile.address_postal_code,
-                         'address_city': member.profile.address_city,
-                         'phone_number': member.profile.phone_number,
-                         'birthday': member.profile.birthday,
-                         'email': member.email,
-                         'student_number': member.profile.student_number,
-                         'starting_year': member.profile.starting_year,
-                         'programme': member.profile.programme,
-                         })
+                        email_context)
                     mail.EmailMessage(
                         '[THALIA] {}'.format(
                             _('Membership information check')),
