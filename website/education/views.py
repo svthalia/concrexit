@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
 from sendfile import sendfile
 
 from members.decorators import membership_required
@@ -35,7 +35,7 @@ def courses(request):
                                    x.old_courses.all()]),
             'url': x.get_absolute_url()
         } for x in
-        Course.objects.order_by('name_' + request.LANGUAGE_CODE).filter(
+        Course.objects.order_by(f'name_{ get_language() }').filter(
             until=None)
     ]
 
@@ -63,7 +63,7 @@ def course(request, id):
                                        else None}
             items[summary.year]['summaries'].append({
                 "year": summary.year,
-                "name": "{} {}".format(_("Summary"), summary.name),
+                "name": f'{ _("Summary") } { summary.name }',
                 "id": summary.id
             })
         for exam in course.exam_set.filter(accepted=True):
@@ -74,8 +74,7 @@ def course(request, id):
             items[exam.year]['exams'].append({
                 "type": "exam",
                 "year": exam.year, "name":
-                    "{} {}".format(dict(Exam.EXAM_TYPES)[exam.type],
-                                   exam.name),
+                    f"{ exam.get_type_display() } { exam.name }",
                 "id": exam.id
             })
 
@@ -100,7 +99,7 @@ def exam(request, id):
     exam.save()
 
     ext = os.path.splitext(exam.file.path)[1]
-    filename = '{}-exam{}{}'.format(exam.course.name, exam.year, ext)
+    filename = f'{ exam.course.name }-exam{ exam.year }{ ext }'
     return sendfile(request, exam.file.path,
                     attachment=True, attachment_filename=filename)
 
@@ -121,7 +120,7 @@ def summary(request, id):
     obj.save()
 
     ext = os.path.splitext(obj.file.path)[1]
-    filename = '{}-summary{}{}'.format(obj.course.name, obj.year, ext)
+    filename = f'{ obj.course.name }-summary{ obj.year }{ ext }'
     return sendfile(request, obj.file.path,
                     attachment=True, attachment_filename=filename)
 
