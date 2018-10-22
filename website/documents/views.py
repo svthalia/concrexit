@@ -6,6 +6,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.translation import get_language
 from sendfile import sendfile
 
 from documents.models import (AnnualDocument, AssociationDocument,
@@ -45,7 +46,11 @@ def index(request):
         years[meeting_year]['general_meetings'].append(obj)
 
     return render(request, 'documents/index.html', {
-        'association_documents': AssociationDocument.objects.all(),
+        'association_documents':
+            AssociationDocument
+            .objects
+            .order_by(f'name_{ get_language() }')
+            .all(),
         'years': list(years.items())
     })
 
