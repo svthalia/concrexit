@@ -5,7 +5,7 @@ from django.template.defaultfilters import striptags
 from thaliawebsite.templatetags.bleach_tags import bleach
 from utils.translation import TranslatedModelAdmin
 
-from .models import Announcement, FrontpageArticle
+from .models import Announcement, FrontpageArticle, Slide
 
 
 @admin.register(Announcement)
@@ -38,6 +38,20 @@ class FrontpageArticleAdmin(TranslatedModelAdmin):
     """Manage front page articles"""
 
     #: available fields in the admin overview list
+    list_display = ('title', 'since', 'until', 'visible')
+
+    def visible(self, obj):  # pylint: disable=no-self-use
+        """Is the object visible"""
+        return obj.is_visible
+    visible.boolean = True
+
+
+@admin.register(Slide)
+class SlideAdmin(TranslatedModelAdmin):
+    """Manage the admin pages for the slides"""
+
+    #: show these fields in the admin overview list
+    #: see :py:method:visible for the visible field
     list_display = ('title', 'since', 'until', 'visible')
 
     def visible(self, obj):  # pylint: disable=no-self-use

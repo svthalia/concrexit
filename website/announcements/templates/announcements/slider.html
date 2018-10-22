@@ -1,0 +1,47 @@
+{% load thumbnail pick_header_image %}
+
+{% if slides|length > 0 %}
+    <div id="announcements-slider" class="carousel slide w-100 h-100"
+         data-ride="carousel">
+        <div class="carousel-inner h-100">
+            {% for slide in slides %}
+                <div
+                    class="carousel-item{% if forloop.counter0 == 0 %} active{% endif %} h-100">
+                    {% if slide.url %}
+                        <a href="{{ slide.url }}"
+                           class="w-100 h-100"
+                           {% if slide.url_blank %}target="_blank"{% endif %}
+                        >
+                    {% endif %}
+                    <img class="image"
+                         src="{% thumbnail slide.content slide_size %}"
+                         alt="{{ slide.title }}">
+                    {% if slide.url %}</a>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        {% if slides|length > 1 %}
+            <ol class="carousel-indicators">
+                {% for slide in slides %}
+                    <li
+                        data-target="#announcements-slider"
+                        data-slide-to="{{ forloop.counter0 }}"
+                        {% if forloop.counter0 == 0 %}class="active"{% endif %}
+                    ></li>
+                {% endfor %}
+            </ol>
+            <a class="carousel-control-prev"
+               href="#announcements-slider"
+               role="button" data-slide="prev">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            <a class="carousel-control-next"
+               href="#announcements-slider"
+               role="button" data-slide="next">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+{% else %}
+    <img src="{% block header_image %}{% pick_header_image %}{% endblock header_image %}" class="image"/>
+{% endif %}
