@@ -146,6 +146,11 @@ class ListAlias(models.Model):
                 }
             })
 
+    def __str__(self):
+        return (_("List alias {alias} for {list}")
+                .format(alias=self.alias,
+                        list=self.mailinglist.name))
+
     class Meta:
         verbose_name = _("List alias")
         verbose_name_plural = _("List aliasses")
