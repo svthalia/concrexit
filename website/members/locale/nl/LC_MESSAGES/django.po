@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-19 16:15+0200\n"
-"PO-Revision-Date: 2018-10-19 16:15+0200\n"
+"PO-Revision-Date: 2018-10-25 00:01+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -256,7 +256,7 @@ msgstr "Volledige naam"
 
 #: models.py
 msgid "Show only nickname"
-msgstr "Alleen initialen"
+msgstr "Alleen bijnaam"
 
 #: models.py
 msgid "Show only first name"
