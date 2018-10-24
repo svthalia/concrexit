@@ -40,7 +40,7 @@ def notify_first_waiting(request, event):
                 event.title)
             text_message = text_template.render({
                 'event': event,
-                'reg': first_waiting,
+                'registration': first_waiting,
                 'member': first_waiting_member,
                 'base_url': baseurl.baseurl(context={'request': request})
             })
