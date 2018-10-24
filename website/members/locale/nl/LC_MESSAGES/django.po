@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-31 00:27+0100\n"
-"PO-Revision-Date: 2018-10-31 00:27+0100\n"
+"POT-Creation-Date: 2018-10-31 19:21+0100\n"
+"PO-Revision-Date: 2018-10-31 19:20+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -167,8 +167,8 @@ msgid "The year this member started studying."
 msgstr "Het jaar waarop dit lid begon met studeren."
 
 #: models.py
-msgid "Include the house number"
-msgstr "Inclusief huisnummer"
+msgid "please use the format <street> <number>"
+msgstr "specificeer als <straat> <nummer>"
 
 #: models.py
 msgid "Street and house number"

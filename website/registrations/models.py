@@ -200,7 +200,7 @@ class Registration(Entry):
         max_length=100,
         validators=[validators.RegexValidator(
             regex=r'^.+ \d+.*',
-            message=_('include the house number'),
+            message=_('please use the format <street> <number>'),
         )],
         verbose_name=_('street and house number'),
         blank=False,
