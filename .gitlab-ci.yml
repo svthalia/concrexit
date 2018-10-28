@@ -22,7 +22,7 @@ codestyle:
   script:
     - tox -e flake8
     # Check for obsolete translations in .po files (starting with `#~`).
-    - (grep --include="*.po" --quiet --recursive --regexp "^#~" website && exit 1) || exit 0
+    - grep --include="*.po" --files-with-matches --recursive "^#~" && exit 1 || echo "No obsolete translations found."
 
 .djangotest: &djangotest
   stage: test
