@@ -43,17 +43,22 @@ def filter_users(tab, keywords, year_range):
 
     if tab and tab.isdigit():
         members_query &= Q(profile__starting_year=int(tab))
-    elif tab == 'old':
+        memberships_query &= Q(type=Membership.MEMBER)
+    elif tab == 'older':
         members_query &= Q(profile__starting_year__lt=year_range[-1])
-    elif tab == 'ex':
+        memberships_query &= Q(type=Membership.MEMBER)
+    elif tab == 'former':
         # Filter out all current active memberships
-        memberships_query &= Q(type='member') | Q(type='honorary')
+        memberships_query &= (Q(type=Membership.MEMBER) |
+                              Q(type=Membership.HONORARY))
         memberships = models.Membership.objects.filter(memberships_query)
         members_query &= ~Q(pk__in=memberships.values('user__pk'))
         # Members_query contains users that are not currently (honorary)member
-    elif tab == 'honor':
+    elif tab == 'benefactors':
+        memberships_query &= Q(type=Membership.BENEFACTOR)
+    elif tab == 'honorary':
         memberships_query = Q(until__gt=datetime.now().date()) | Q(until=None)
-        memberships_query &= Q(type='honorary')
+        memberships_query &= Q(type=Membership.HONORARY)
 
     if keywords:
         for key in keywords:
@@ -65,8 +70,9 @@ def filter_users(tab, keywords, year_range):
                 Q(last_name__icontains=key) |
                 Q(username__icontains=key))
 
-    if tab == 'ex':
-        memberships_query = Q(type='member') | Q(type='honorary')
+    if tab == 'former':
+        memberships_query = (Q(type=Membership.MEMBER) |
+                             Q(type=Membership.HONORARY))
         memberships = models.Membership.objects.filter(memberships_query)
         all_memberships = models.Membership.objects.all()
         # Only keep members that were once members, or are legacy users that
