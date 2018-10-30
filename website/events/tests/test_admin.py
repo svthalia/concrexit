@@ -2,6 +2,7 @@ import datetime
 from unittest import mock
 
 from django.contrib.admin import AdminSite
+from django.core.exceptions import DisallowedRedirect
 from django.http import HttpResponseRedirect
 from django.test import TestCase, RequestFactory, override_settings
 from django.utils import timezone
@@ -32,20 +33,25 @@ class DoNextModelAdminTest(TestCase):
         response = self.admin.response_add(request, None)
         self.assertIsNone(response, "Should return the original response")
 
-        request = self.rf.get('/admin/events/event/1', data={
-            'next': 'http://example.org',
-        })
-        response = self.admin.response_add(request, None)
-        self.assertNotIsInstance(response, HttpResponseRedirect,
-                                 "Should not redirect")
+        request = self.rf.post('/admin/events/event/1?next=http://example.org',
+                               data={
+                                   '_save': True
+                               })
+        with self.assertRaises(DisallowedRedirect):
+            self.admin.response_add(request, None)
 
-        request = self.rf.get('/admin/events/event/1', data={
-            'next': '/test',
+        request = self.rf.post('/admin/events/event/1?next=/test', data={
+            '_save': True
         })
         response = self.admin.response_add(request, None)
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual('/test', response.url,
                          "Should return the url in the next parameter.")
+
+        request = self.rf.post('/admin/events/event/1?next=/test')
+        response = self.admin.response_add(request, None)
+        self.assertNotIsInstance(response, HttpResponseRedirect,
+                                 "Should not redirect")
 
     @mock.patch('utils.translation.TranslatedModelAdmin.response_change')
     def test_response_change(self, super_mock):
@@ -55,20 +61,25 @@ class DoNextModelAdminTest(TestCase):
         response = self.admin.response_change(request, None)
         self.assertIsNone(response, "Should return the original response")
 
-        request = self.rf.get('/admin/events/event/1', data={
-            'next': 'http://example.org',
-        })
-        response = self.admin.response_change(request, None)
-        self.assertNotIsInstance(response, HttpResponseRedirect,
-                                 "Should not redirect")
+        request = self.rf.post('/admin/events/event/1?next=http://example.org',
+                               data={
+                                   '_save': True
+                               })
+        with self.assertRaises(DisallowedRedirect):
+            self.admin.response_change(request, None)
 
-        request = self.rf.get('/admin/events/event/1', data={
-            'next': '/test',
+        request = self.rf.post('/admin/events/event/1?next=/test', data={
+            '_save': True
         })
         response = self.admin.response_change(request, None)
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual('/test', response.url,
                          "Should return the url in the next parameter.")
+
+        request = self.rf.post('/admin/events/event/1?next=/test')
+        response = self.admin.response_change(request, None)
+        self.assertNotIsInstance(response, HttpResponseRedirect,
+                                 "Should not redirect")
 
 
 @freeze_time('2017-01-01')
