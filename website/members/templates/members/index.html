@@ -44,27 +44,35 @@
                     {% endfor %}
                     <li class="nav-item">
                         <a class="nav-link{% if filter == "old" %}active{% endif %}"
-                           href="{% url 'members:index' %}?filter=old{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                           href="{% url 'members:index' %}?filter=older{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
                             {% trans "Older" %}
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link{% if filter == "benefactors" %} active{% endif %}"
+                           href="{% url 'members:index' %}?filter=benefactors{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                            {% trans "Benefactors" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link{% if filter == "honor" %} active{% endif %}"
-                           href="{% url 'members:index' %}?filter=honor{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                           href="{% url 'members:index' %}?filter=honorary{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
                             {% trans "Honorary Members" %}
                             </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if filter == "ex" %} active{% endif %}"
-                           href="{% url 'members:index' %}?filter=ex{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
+                           href="{% url 'members:index' %}?filter=former{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
                             {% trans "Former Members" %}
                         </a>
                     </li>
                 </ul>
 
                 {% if not members %}
-                    {% trans 'No members found' as info_text %}
-                    {% alert 'info' info_text dismissable=True %}
+                    <div class="mt-4">
+                        {% trans 'No members found' as info_text %}
+                        {% alert 'info' info_text dismissable=False %}
+                    </div>
                 {% else %}
                     <div class="row mt-4">
                         {% for member in members %}

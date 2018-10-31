@@ -181,14 +181,14 @@ class MembershipFilterTest(TestCase):
         # user_id=6 has no memberships at all
 
     def test_honorary(self):
-        members = filter_users('honor', '', [date.today().year])
+        members = filter_users('honorary', '', [date.today().year])
         self.assertEqual(len(members), 1)
         self.assertEqual(members[0].id, 0)
 
-    def test_ex(self):
-        members = filter_users('ex', '', [date.today().year])
+    def test_former(self):
+        members = filter_users('former', '', [date.today().year])
         self.assertEqual(len(members), 3)
         for member in members:
             self.assertIn(member.id, {4, 5, 6})
 
-    # TODO more tests for other cases
+    # TODO more tests for other cases and move to services
