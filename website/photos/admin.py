@@ -27,7 +27,7 @@ class AlbumForm(forms.ModelForm):
     # https://stackoverflow.com/questions/4391776/django-admin-inline-forms-limit-foreign-key-queryset-to-a-set-of-values#4392047
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'instance' in kwargs:
+        if 'instance' in kwargs and '_cover' in self.fields:
             self.fields['_cover'].queryset = Photo.objects.filter(
                 album=self.instance)
 

@@ -258,11 +258,13 @@ class RegistrationAdminTest(TestCase):
                                        'optin_birthday'])
 
     def test_get_actions(self):
-        actions = self.admin.get_actions(_get_mock_request([]))
+        actions = self.admin.get_actions(_get_mock_request(
+            ['registrations.delete_registration']))
         self.assertCountEqual(actions, ['delete_selected'])
 
         actions = self.admin.get_actions(
-            _get_mock_request(['registrations.review_entries']))
+            _get_mock_request(['registrations.review_entries',
+                               'registrations.delete_registration']))
         self.assertCountEqual(actions, ['delete_selected', 'accept_selected',
                                         'reject_selected'])
 
@@ -383,11 +385,13 @@ class RenewalAdminTest(TestCase):
                                        'membership'])
 
     def test_get_actions(self):
-        actions = self.admin.get_actions(_get_mock_request([]))
+        actions = self.admin.get_actions(_get_mock_request(
+            ['registrations.delete_renewal']))
         self.assertCountEqual(actions, ['delete_selected'])
 
         actions = self.admin.get_actions(
-            _get_mock_request(['registrations.review_entries']))
+            _get_mock_request(['registrations.delete_renewal',
+                               'registrations.review_entries']))
         self.assertCountEqual(actions, ['delete_selected', 'accept_selected',
                                         'reject_selected'])
 
