@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Registers admin interfaces for the events module"""
 from django.contrib import admin
+from django.core.exceptions import DisallowedRedirect
 from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
@@ -22,10 +23,15 @@ from . import forms, models
 
 def _do_next(request, response):
     """See DoNextModelAdmin"""
-    if 'next' in request.GET and is_safe_url(request.GET['next']):
-        return HttpResponseRedirect(request.GET['next'])
-    else:
-        return response
+    if 'next' in request.GET:
+        if not is_safe_url(request.GET['next']):
+            raise DisallowedRedirect
+        elif '_save' in request.POST:
+            return HttpResponseRedirect(request.GET['next'])
+        elif response is not None:
+            return HttpResponseRedirect('{}?{}'.format(
+                response.url, request.GET.urlencode()))
+    return response
 
 
 class DoNextModelAdmin(TranslatedModelAdmin):
