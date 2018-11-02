@@ -45,6 +45,28 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
     def get_absolute_url(self):
         return reverse('newsletters:preview', args=(self.pk,))
 
+    def clean(self):
+        super().clean()
+
+        errors = {}
+        url = 'admin/newsletters/'
+        if url in self.description_nl:
+            errors.update({
+                'description_nl': _('Please make sure all urls are absolute '
+                                    'and contain http(s)://.')
+            })
+        if url in self.description_en:
+            errors.update({
+                'description_en': _('Please make sure all urls are absolute '
+                                    'and contain http(s)://.')
+            })
+
+        if errors:
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
     class Meta:
         permissions = (
             ("send_newsletter", "Can send newsletter"),
@@ -70,6 +92,25 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
     )
 
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
+
+    def clean(self):
+        super().clean()
+
+        errors = {}
+        url = 'admin/newsletters/'
+        if url in self.description_nl:
+            errors.update({
+                'description_nl': _('Please make sure all urls are absolute '
+                                    'and contain http(s)://.')
+            })
+        if url in self.description_en:
+            errors.update({
+                'description_en': _('Please make sure all urls are absolute '
+                                    'and contain http(s)://.')
+            })
+
+        if errors:
+            raise ValidationError(errors)
 
     class Meta:
         order_with_respect_to = 'newsletter'
