@@ -193,6 +193,7 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
                                      registration.event,
                                      serializer.field_values())
         serializer.information_fields = services.registration_fields(
+            serializer.context['request'],
             registration.member, registration.event)
 
     def destroy(self, request, pk=None, **kwargs):

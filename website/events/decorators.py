@@ -13,7 +13,7 @@ def organiser_only(view_function):
 class OrganiserOnly(object):
     """
     Decorator that denies access to the page if:
-    1. There is no `event_id` in the request
+    1. There is no `pk` in the request
     2. The specified event does not exist
     3. The user is no organiser of the specified event
     """
@@ -21,11 +21,11 @@ class OrganiserOnly(object):
         self.view_function = view_function
 
     def __call__(self, request, *args, **kwargs):
-        event_id = kwargs.get('event_id')
-        if event_id:
+        pk = kwargs.get('pk')
+        if pk:
             event = None
             try:
-                event = Event.objects.get(pk=event_id)
+                event = Event.objects.get(pk=pk)
             except Event.DoesNotExist:
                 pass
 

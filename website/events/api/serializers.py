@@ -100,8 +100,8 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
         return "black"
 
     def _url(self, instance):
-        return reverse('events:admin-details', kwargs={
-            'event_id': instance.id})
+        return reverse('admin:events_events_details', kwargs={
+            'pk': instance.id})
 
 
 class EventRetrieveSerializer(serializers.ModelSerializer):
@@ -222,7 +222,8 @@ class RegistrationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
         fields = ('pk', 'member', 'name', 'photo', 'avatar', 'registered_on',
-                  'is_late_cancellation', 'is_cancelled', 'queue_position')
+                  'is_late_cancellation', 'is_cancelled', 'queue_position',
+                  'payment', 'present')
 
     name = serializers.SerializerMethodField('_name')
     photo = serializers.SerializerMethodField('_photo')
@@ -282,7 +283,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = Registration
         fields = ('pk', 'member', 'name', 'photo', 'avatar', 'registered_on',
                   'is_late_cancellation', 'is_cancelled',
-                  'queue_position', 'fields')
+                  'queue_position', 'fields',
+                  'payment', 'present')
 
     name = serializers.SerializerMethodField('_name')
     photo = serializers.SerializerMethodField('_photo')
@@ -340,6 +342,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         try:
             if instance:
                 self.information_fields = services.registration_fields(
+                    kwargs['context']['request'],
                     instance.member, instance.event)
         except RegistrationError:
             pass

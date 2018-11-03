@@ -193,7 +193,7 @@ def update_registration(member, event, field_values):
         field.set_value_for(registration, field_value)
 
 
-def registration_fields(member, event):
+def registration_fields(request, member, event):
     """
     Returns information about the registration fields of a registration
 
@@ -210,8 +210,9 @@ def registration_fields(member, event):
         raise RegistrationError(
             _("You are not registered for this event.")) from error
 
-    if (event_permissions(member, event)["update_registration"] and
-            registration):
+    perms = (event_permissions(member, event)["update_registration"] or
+             is_organiser(request.member, event))
+    if perms and registration:
         information_fields = registration.information_fields
         fields = OrderedDict()
 

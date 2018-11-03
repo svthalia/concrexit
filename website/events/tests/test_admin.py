@@ -193,7 +193,8 @@ class EventAdminTest(TestCase):
         contains the name.
         """
         self.assertEqual(self.admin.overview_link(self.event),
-                         '<a href="/events/admin/1/">testevent</a>')
+                         '<a href="/admin/events/event/1/details/">'
+                         'testevent</a>')
 
     @mock.patch('events.admin.DoNextModelAdmin.has_change_permission')
     @mock.patch('events.services.is_organiser')
