@@ -8,12 +8,11 @@ overrides.
 """
 # flake8: noqa: ignore F403
 
-import os
+from firebase_admin import initialize_app, credentials
 
 # Load all default settings because we need to use settings.configure
 # for sphinx documentation generation.
 from django.conf.global_settings import *  # pylint: disable=wildcard-import
-
 
 # Load base settings
 from .settings import *  # pylint: disable=wildcard-import
@@ -31,3 +30,9 @@ if os.environ.get('DJANGO_PRODUCTION'):  # pragma: nocover
 # Load testing settings if GITLAB_CI is set
 if os.environ.get('GITLAB_CI'):  # pragma: nocover
     from .testing import *  # pylint: disable=wildcard-import
+
+try:
+    initialize_app(
+        credential=credentials.Certificate(FIREBASE_CREDENTIALS))
+except ValueError as e:
+    print('Firebase application failed to initialise')

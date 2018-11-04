@@ -265,6 +265,9 @@ THUMBNAIL_SIZES = {
     'slide': '2000x430'
 }
 
+# Placeholder Firebase config
+FIREBASE_CREDENTIALS = {}
+
 # Default FROM email
 DEFAULT_FROM_EMAIL = 'noreply@thalia.nu'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
@@ -280,9 +283,6 @@ BOARD_NOTIFICATION_ADDRESS = 'info@thalia.nu'
 
 # Partners notification email
 PARTNER_EMAIL = "samenwerking@thalia.nu"
-
-# Push notifications API key
-PUSH_NOTIFICATIONS_API_KEY = ''
 
 # Mailinglist API key
 MAILINGLIST_API_SECRET = ''

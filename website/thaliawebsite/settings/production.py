@@ -8,7 +8,7 @@ This file is loaded by __init__.py if the environment variable
 
 See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
-
+import json
 import os
 
 from . import settings
@@ -76,12 +76,14 @@ PASSWORD_HASHERS = [
 
 WIKI_API_KEY = os.environ.get('WIKI_API_KEY', 'changeme')
 MIGRATION_KEY = os.environ.get('MIGRATION_KEY')
-PUSH_NOTIFICATIONS_API_KEY = os.environ.get('PUSH_NOTIFICATIONS_API_KEY', '')
 MAILINGLIST_API_SECRET = os.environ.get('MAILINGLIST_API_SECRET', '')
 MEMBERS_SENTRY_API_SECRET = os.environ.get('MEMBERS_SENTRY_API_SECRET', '')
 
 GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
 GOOGLE_MAPS_API_SECRET = os.environ.get('GOOGLE_MAPS_API_SECRET', '')
+FIREBASE_CREDENTIALS = os.environ.get('FIREBASE_CREDENTIALS', '{}')
+if FIREBASE_CREDENTIALS.startswith('{'):
+    FIREBASE_CREDENTIALS = json.loads(FIREBASE_CREDENTIALS)
 
 if os.environ.get('DJANGO_SSLONLY'):
     SECURE_SSL_REDIRECT = True
