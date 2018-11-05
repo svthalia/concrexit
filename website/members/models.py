@@ -238,7 +238,7 @@ class Profile(models.Model):
         max_length=100,
         validators=[validators.RegexValidator(
             regex=r'^.+ \d+.*',
-            message=_('Include the house number'),
+            message=_('please use the format <street> <number>'),
         )],
         verbose_name=_('Street and house number'),
         null=True,

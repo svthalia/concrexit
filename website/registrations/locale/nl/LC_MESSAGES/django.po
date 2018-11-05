@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-10 12:55+0200\n"
-"PO-Revision-Date: 2018-10-10 12:56+0200\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"POT-Creation-Date: 2018-10-31 19:22+0100\n"
+"PO-Revision-Date: 2018-10-31 19:20+0100\n"
+"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: admin.py
 msgid "Application information"
@@ -221,8 +221,8 @@ msgid "starting year"
 msgstr "startjaar"
 
 #: models.py
-msgid "include the house number"
-msgstr "inclusief huisnummer"
+msgid "please use the format <street> <number>"
+msgstr "specificeer als <straat> <nummer>"
 
 #: models.py
 msgid "street and house number"
@@ -799,6 +799,16 @@ msgid "Membership information"
 msgstr "Lidmaatschapsinformatie"
 
 #: templates/registrations/renewal.html
+#, python-format
+msgid "Membership of type %(type)s starting %(since)s"
+msgstr "Lidmaatschap van type %(type)s sinds %(since)s"
+
+#: templates/registrations/renewal.html
+#, python-format
+msgid "Membership of type %(type)s from %(since)s to %(until)s"
+msgstr "Lidmaatschap van type %(type)s van %(since)s tot %(until)s"
+
+#: templates/registrations/renewal.html
 msgid "since"
 msgstr "sinds"
 
@@ -879,7 +889,3 @@ msgstr "%s succesvol afgekeurd."
 #, python-format
 msgid "Could not reject %s."
 msgstr "%s kon niet worden afgekeurd."
-
-#: tests/test_views.py
-msgid "Member"
-msgstr "Lid"
