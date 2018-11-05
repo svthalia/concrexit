@@ -68,7 +68,6 @@
                 var tmpView = ($(window).width() < 979) ? 'list' : 'agendaWeek';
                 if (Cookies.get('agendaview') !== undefined) {
                     tmpView = Cookies.get('agendaview');
-                    console.log(tmpView);
                 }
 
                 // History idea and code parts from
@@ -91,6 +90,7 @@
                 }
 
                 calendarElement.fullCalendar({
+                    aspectRatio: 1.8,
                     theme: 'bootstrap4',
                     eventSources: eventSources,
                     defaultView: tmpView,
@@ -155,8 +155,37 @@
                         }
 
                         if (view.name !== prevView) {
+                            var windowWidth = $(window).width();
                             Cookies.set('agendaview', view.name);
-                            if (view.name === 'list') {
+                            if (windowWidth <= 768) {
+                                calendarElement.fullCalendar('option', 'header', {
+                                    right: 'prev,next today'
+                                });
+                            } else {
+                                if (view.name === 'list') {
+                                    calendarElement.fullCalendar('option', 'header', {
+                                        right: 'list,agendaWeek,month prev,next today'
+                                    });
+                                } else {
+                                    calendarElement.fullCalendar('option', 'header', {
+                                        right: 'showBirthdays, list,agendaWeek,month prev,next today'
+                                    });
+                                }
+                            }
+                        }
+                    },
+                    windowResize: function () {
+                        var windowWidth = $(window).width();
+                        var view = (windowWidth <= 768) ? 'list' : Cookies.get('agendaview');
+                        var currentView = $('#calendar').fullCalendar('getView');
+                        if (view !== currentView.name) {
+                            calendarElement.fullCalendar('changeView', view);
+                        } else if (windowWidth <= 768) {
+                            calendarElement.fullCalendar('option', 'header', {
+                                right: 'prev,next today'
+                            });
+                        } else {
+                            if (currentView.name === 'list') {
                                 calendarElement.fullCalendar('option', 'header', {
                                     right: 'list,agendaWeek,month prev,next today'
                                 });
@@ -177,18 +206,26 @@
                     date.getDate() !== moment.format('DD')) {
                     calendarElement.fullCalendar('gotoDate', date);
                 }
+
                 if (view.name !== tmpView) {
                     calendarElement.fullCalendar('changeView', tmpView);
                 }
 
-                if (view.name === 'list') {
+                var windowWidth = $(window).width();
+                if (windowWidth <= 768) {
                     calendarElement.fullCalendar('option', 'header', {
-                        right: 'list,agendaWeek,month prev,next today'
+                        right: 'prev,next today'
                     });
                 } else {
-                    calendarElement.fullCalendar('option', 'header', {
-                        right: 'showBirthdays, list,agendaWeek,month prev,next today'
-                    });
+                    if (view.name === 'list') {
+                        calendarElement.fullCalendar('option', 'header', {
+                            right: 'list,agendaWeek,month prev,next today'
+                        });
+                    } else {
+                        calendarElement.fullCalendar('option', 'header', {
+                            right: 'showBirthdays, list,agendaWeek,month prev,next today'
+                        });
+                    }
                 }
             });
         </script>

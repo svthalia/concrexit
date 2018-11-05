@@ -1,4 +1,20 @@
 .association-document-card, .annual-document-card {
+    .name {
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+    }
+
+    .overlay {
+        h5 {
+            -webkit-hyphens: auto;
+            -moz-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
+        }
+    }
+
     &:after {
         padding-bottom: 141%;
     }
@@ -27,8 +43,8 @@
 }
 
 #documents-annual {
-     .dropdown-years {
-         max-height: 200px;
-         overflow-y: scroll;
-     }
+    .dropdown-years {
+        max-height: 200px;
+        overflow-y: scroll;
+    }
 }
