@@ -11,10 +11,10 @@ See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 import json
 import os
 
-from . import settings
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
-INSTALLED_APPS = settings.INSTALLED_APPS
-INSTALLED_APPS.append('raven.contrib.django.raven_compat')
+from . import settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(os.path.join(
@@ -138,10 +138,6 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugFalse',
         },
     },
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry'],
-    },
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s '
@@ -154,33 +150,18 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
-        'sentry': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'raven.contrib.django.raven_compat.'
-                     'handlers.SentryHandler',
-        },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
         },
-        'raven': {
-            'level': 'INFO',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'INFO',
-            'handlers': ['console'],
-            'propagate': False,
-        },
     },
 }
 
-
-RAVEN_CONFIG = {
-    'dsn': os.environ.get('SENTRY_DSN'),
-    'release': os.environ.get('SOURCE_COMMIT'),
-}
+sentry_sdk.init(
+    dsn=os.environ.get('SENTRY_DSN'),
+    integrations=[DjangoIntegration()],
+    release=os.environ.get('SOURCE_COMMIT'),
+    send_default_pii=True
+)
