@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 00:47+0200\n"
-"PO-Revision-Date: 2018-10-11 00:48+0200\n"
-"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
+"POT-Creation-Date: 2018-10-31 19:25+0100\n"
+"PO-Revision-Date: 2018-10-31 19:27+0100\n"
+"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: admin.py models.py
 msgid "group memberships"
@@ -121,6 +121,14 @@ msgstr "opgericht in"
 #: models.py
 msgid "existed until"
 msgstr "bestond tot"
+
+#: models.py
+msgid ""
+"This should only be unchecked if the committee has been dissolved. The "
+"websites assumes that any committees on it existed at some point."
+msgstr ""
+"Dit moet alleen uitgevinkt worden als de commissie is opgeheven. De website "
+"gaat er vanuit dat de commissies op de site op enig moment bestonden."
 
 #: models.py
 msgid "contact email address"

@@ -74,7 +74,12 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
         blank=True,
     )
 
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(
+        default=False,
+        help_text=_("This should only be unchecked if the committee has been "
+                    "dissolved. The websites assumes that any committees on it"
+                    " existed at some point."),
+    )
 
     contact_email = models.EmailField(
         _('contact email address'),
