@@ -6,18 +6,11 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    replaces = [('members', '0027_auto_20181024_2000'), ('members', '0028_auto_20181031_1915')]
-
     dependencies = [
         ('members', '0026_auto_20181003_1906'),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='profile',
-            name='address_street',
-            field=models.CharField(max_length=100, null=True, validators=[django.core.validators.RegexValidator(message='Include the house number after the street name', regex='^.+ \\d+.*')], verbose_name='Street and house number'),
-        ),
         migrations.AlterField(
             model_name='profile',
             name='address_street',
