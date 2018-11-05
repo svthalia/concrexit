@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
+from django.utils.translation import get_language
 from sendfile import sendfile
 
 from photos.models import Album, Photo
@@ -19,13 +20,19 @@ COVER_FILENAME = 'cover.jpg'
 
 @login_required
 def index(request):
+    keywords = request.GET.get('keywords', '').split()
+
     # Only show published albums
     albums = Album.objects.filter(hidden=False)
+    for key in keywords:
+        albums = albums.filter(**{
+            f'title_{get_language()}__icontains': key
+        })
 
     albums = get_annotated_accessible_albums(request, albums)
 
     albums = albums.order_by('-date')
-    paginator = Paginator(albums, 12)
+    paginator = Paginator(albums, 16)
 
     page = request.GET.get('page')
     page = 1 if page is None or not page.isdigit() else int(page)
@@ -50,8 +57,11 @@ def index(request):
 
     page_range = range(page_range_start, page_range_stop)
 
-    return render(request, 'photos/index.html', {'albums': albums,
-                                                 'page_range': page_range})
+    return render(request, 'photos/index.html', {
+        'albums': albums,
+        'page_range': page_range,
+        'keywords': keywords
+    })
 
 
 def _render_album_page(request, album):

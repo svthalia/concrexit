@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 15:13+0200\n"
-"PO-Revision-Date: 2018-01-24 20:44+0100\n"
+"POT-Creation-Date: 2018-11-05 21:01+0100\n"
+"PO-Revision-Date: 2018-11-05 21:02+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.2\n"
 
 #: admin.py
 msgid "Uploading a zip or tar file adds all contained images as photos."
@@ -106,5 +106,13 @@ msgstr ""
 "href=“mailto:media@thalia.nu”>media@thalia.nu</a>."
 
 #: templates/photos/index.html
-msgid "Next"
-msgstr "Volgende"
+msgid "What are you looking for?"
+msgstr "Waar ben je naar op zoek?"
+
+#: templates/photos/index.html
+msgid "Search"
+msgstr "Zoeken"
+
+#: templates/photos/index.html
+msgid "No albums found"
+msgstr "Geen albums gevonden"

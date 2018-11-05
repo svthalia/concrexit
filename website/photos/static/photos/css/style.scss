@@ -1,4 +1,3 @@
-/* Solving this with dynamic a data attribute (i.e. attr(data-rotation)) does not work, as that's a string. */
 #page-content {
     #photos-index, #photos-album {
         .rotate90 {
@@ -30,6 +29,12 @@
 
         h1.section-title {
             padding: 20px 40px 0 40px;
+        }
+    }
+
+    .search-form {
+        .btn {
+            height: 50px;
         }
     }
 }
