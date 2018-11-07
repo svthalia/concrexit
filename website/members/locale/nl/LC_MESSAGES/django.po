@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-12 19:36+0100\n"
-"PO-Revision-Date: 2018-11-12 19:37+0100\n"
+"POT-Creation-Date: 2018-11-14 19:57+0100\n"
+"PO-Revision-Date: 2018-11-14 19:58+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -49,6 +49,14 @@ msgstr "Voornaam"
 #: admin.py forms.py
 msgid "Last name"
 msgstr "Achternaam"
+
+#: admin.py
+msgid "Email"
+msgstr "E-mail"
+
+#: admin.py
+msgid "Download email addresses for selected users"
+msgstr "Download e-mailadressen voor geselecteerde gebruikers"
 
 #: admin.py
 msgid "Address"
@@ -1002,6 +1010,10 @@ msgstr "Voorzitter"
 #: templates/members/profile.html
 msgid "today"
 msgstr "heden"
+
+#: templates/members/profile.html
+msgid "Societies"
+msgstr "Gezelschappen"
 
 #: templates/members/statistics.html
 msgid "Statistics"

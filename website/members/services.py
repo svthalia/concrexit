@@ -12,7 +12,10 @@ from utils.snippets import datetime_to_lectureyear
 def member_achievements(member):
     memberships = member.membergroupmembership_set.all()
     achievements = {}
+
     for membership in memberships:
+        if hasattr(membership.group, 'society'):
+            continue
         period = {
             'since': membership.since,
             'until': membership.until,
@@ -28,6 +31,7 @@ def member_achievements(member):
 
         name = membership.group.name
         if achievements.get(name):
+
             achievements[name]['periods'].append(period)
             if achievements[name]['earliest'] > membership.since:
                 achievements[name]['earliest'] = membership.since
@@ -38,6 +42,7 @@ def member_achievements(member):
                 'periods': [period],
                 'earliest': membership.since,
             }
+
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
         name = "Mentor in {}".format(mentor_year.year)
@@ -50,6 +55,35 @@ def member_achievements(member):
                 'earliest': earliest,
             }
     return sorted(achievements.values(), key=lambda x: x['earliest'])
+
+
+def member_societies(member):
+    memberships = member.membergroupmembership_set.all()
+    societies = {}
+
+    for membership in memberships:
+        period = {
+            'since': membership.since,
+            'until': membership.until,
+            'chair': membership.chair
+        }
+
+        if hasattr(membership.group, 'society'):
+
+            name = membership.group.name
+            if societies.get(name):
+
+                societies[name]['periods'].append(period)
+                if societies[name]['earliest'] > membership.since:
+                    societies[name]['earliest'] = membership.since
+                societies[name]['periods'].sort(key=lambda x: x['since'])
+            else:
+                societies[name] = {
+                    'name': name,
+                    'periods': [period],
+                    'earliest': membership.since,
+                }
+    return sorted(societies.values(), key=lambda x: x['earliest'])
 
 
 def gen_stats_member_type(member_types):

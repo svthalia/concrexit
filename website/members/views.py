@@ -21,6 +21,7 @@ from members.models import EmailChange, Membership
 from . import models
 from .forms import ProfileForm, EmailChangeForm
 from .services import member_achievements
+from .services import member_societies
 
 
 class ObtainThaliaAuthToken(ObtainAuthToken):
@@ -147,6 +148,7 @@ def profile(request, pk=None):
 
     # Group the memberships under the committees for easier template rendering
     achievements = member_achievements(member)
+    societies = member_societies(member)
 
     membership = member.current_membership
     membership_type = _("Unknown membership history")
@@ -162,6 +164,7 @@ def profile(request, pk=None):
     return render(request, 'members/profile.html',
                   {
                       'achievements': achievements,
+                      'societies': societies,
                       'member': member,
                       'membership_type': membership_type,
                   })
