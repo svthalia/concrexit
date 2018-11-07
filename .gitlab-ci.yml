@@ -22,7 +22,14 @@ codestyle:
   script:
     - tox -e flake8
     # Check for obsolete translations in .po files (starting with `#~`).
+    - cd website
     - grep --include="*.po" --files-with-matches --recursive "^#~" && exit 1 || echo "No obsolete translations found."
+    # Check for untranslated strings in .po files
+    - empty_strings=$(sed '$a\\' **/locale/nl/LC_MESSAGES/django.po | tac | sed '/^$/N;/\nmsgstr ""$/,/^msgid/!d' | tac)
+    - empty_strings+=$(sed '$a\\' locale/nl/LC_MESSAGES/django.po | tac | sed '/^$/N;/\nmsgstr ""$/,/^msgid/!d' | tac)
+    - if [[ $empty_strings ]]; then echo $empty_strings && exit 1; else echo "No untranslated strings found."; fi
+    # Check for fuzzy translations in .po files
+    - grep --include="*.po" --files-with-matches --recursive "#, fuzzy" && exit 1 || echo "No fuzzy translations found."
 
 .djangotest: &djangotest
   stage: test
