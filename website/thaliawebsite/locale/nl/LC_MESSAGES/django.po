@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 15:12+0200\n"
-"PO-Revision-Date: 2018-10-01 13:36+0200\n"
+"POT-Creation-Date: 2018-11-07 20:12+0100\n"
+"PO-Revision-Date: 2018-11-07 19:06+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: admin.py
 msgid "Thalia administration"
@@ -161,11 +161,11 @@ msgstr ""
 "500: Interne fout in de server. Thalia's websitecommissie (de Technicie) is "
 "op de hoogte gesteld."
 
-#: templates/base.html templates/index.html templates/old-base.html
+#: templates/base.html templates/index.html
 msgid "Study Association Thalia"
 msgstr "Studievereniging Thalia"
 
-#: templates/base.html templates/old-base.html
+#: templates/base.html
 msgid ""
 "You're currently not a member of Thalia. Renew your membership to get access "
 "to all parts of the website."
@@ -173,24 +173,23 @@ msgstr ""
 "Je bent op dit moment geen lid van Thalia. Vernieuw je lidmaatschap om "
 "toegang te krijgen tot de gehele website."
 
-#: templates/base.html templates/old-base.html
+#: templates/base.html
 msgid "edit profile"
 msgstr "bewerk profiel"
 
-#: templates/base.html templates/old-base.html
+#: templates/base.html
 msgid "change password"
 msgstr "wijzig mijn wachtwoord"
 
-#: templates/base.html templates/old-base.html
+#: templates/base.html
 msgid "Site administration"
 msgstr "Sitebeheer"
 
-#: templates/base.html templates/old-base.html
+#: templates/base.html
 msgid "Log Out"
 msgstr "Uitloggen"
 
-#: templates/base.html templates/old-base.html
-#: templates/singlepages/privacy_policy.html
+#: templates/base.html templates/singlepages/privacy_policy.html
 msgid "privacy policy"
 msgstr "privacybeleid"
 
@@ -213,14 +212,6 @@ msgstr ""
 "van de Radboud Universiteit te Nijmegen. Thalia zorgt vooral voor de nodige "
 "ontspanning tijdens de studie. Via Thalia kunnen studenten gemakkelijk "
 "contacten onderhouden met docenten en studenten van andere jaren."
-
-#: templates/old-base.html
-msgid "Login"
-msgstr "Inloggen"
-
-#: templates/old-base.html
-msgid "My Account"
-msgstr "Mijn Account"
 
 #: templates/singlepages/become_active.html
 msgid "Become active"
@@ -865,6 +856,10 @@ msgid "Molecular Sciences"
 msgstr "Moleculaire Wetenschappen"
 
 #: templates/singlepages/sister_associations.html
+msgid "BBB Career Event"
+msgstr "Beta Bedrijven Beurs"
+
+#: templates/singlepages/sister_associations.html
 msgid "University of Twente"
 msgstr "Universiteit Twente"
 
@@ -980,12 +975,18 @@ msgid "Logo"
 msgstr "Logo"
 
 #: templates/singlepages/styleguide.html
-#, python-format
+#, fuzzy
+#| msgid ""
+#| "Thalia's logo consists of a 'T' formed by the pieces of a <a href="
+#| "\"https://en.wikipedia.org/wiki/Tangram\" target=\"_blank\">tangram</a> "
+#| "and the text 'Study Association Thalia'. The font that was used for this "
+#| "text is ' <a href=\"%(font_url)s\">Gill Sans MT Condensed</a>'."
 msgid ""
 "Thalia's logo consists of a 'T' formed by the pieces of a <a href=\"https://"
 "en.wikipedia.org/wiki/Tangram\" target=\"_blank\">tangram</a> and the text "
 "'Study Association Thalia'. The font that was used for this text is ' <a "
-"href=\"%(font_url)s\">Gill Sans MT Condensed</a>'."
+"href=\"https://drive.google.com/drive/"
+"folders/1ngaQc481MbZAXwbvs85NW07exwM7_Bfo\">Gill Sans MT Condensed</a>'."
 msgstr ""
 "Het logo van Thalia bestaat uit een 'T' gevormd uit de stukken van een <a "
 "href=\"https://en.wikipedia.org/wiki/Tangram\" target=\"_blank\">tangram</a> "
@@ -1024,10 +1025,14 @@ msgstr ""
 "achtergrond gebruikt."
 
 #: templates/singlepages/styleguide.html
-#, python-format
+#, fuzzy
+#| msgid ""
+#| "You can download the archive with all versions of the logo in PNG, SVG "
+#| "and Illustrator <a href=\"%(logo_url)s\">here</a>."
 msgid ""
 "You can download the archive with all versions of the logo in PNG, SVG and "
-"Illustrator <a href=\"%(logo_url)s\">here</a>."
+"Illustrator <a href=\"https://drive.google.com/drive/"
+"folders/1RlkLn2Rqk4ETWd4CUUHlU-gaKC7iVU9k\">here</a>."
 msgstr ""
 "Het zip-archief met alle versies in PNG en SVG formaat en een Illustrator "
 "bronbestand is <a href=\"%(logo_url)s\">hier</a> te downloaden."
@@ -1067,10 +1072,14 @@ msgid ""
 msgstr "De tekst staat altijd op dezelfde afstand van de T."
 
 #: templates/singlepages/styleguide.html
-#, python-format
+#, fuzzy
+#| msgid ""
+#| "You can download the archive with the Illustrator and EPS files to create "
+#| "a variant <a href=\"%(variant_logo_url)s\">here</a>."
 msgid ""
 "You can download the archive with the Illustrator and EPS files to create a "
-"variant <a href=\"%(variant_logo_url)s\">here</a>."
+"variant <a href=\"https://drive.google.com/drive/"
+"folders/1RlkLn2Rqk4ETWd4CUUHlU-gaKC7iVU9k\">here</a>."
 msgstr ""
 "Het zip-archief met Illustrator bestanden om een variatie op het logo te "
 "maken kun je <a href=\"%(variant_logo_url)s\">hier</a> vinden."
@@ -1112,11 +1121,17 @@ msgid "Declarations"
 msgstr "Declaraties"
 
 #: templates/singlepages/styleguide.html
-#, python-format
+#, fuzzy
+#| msgid ""
+#| "You can download these template as <a href=\"%(documents_url)s\">here</a> "
+#| "as archive. We've also included PDF examples. In case you prefer LaTeX "
+#| "then you can download the <a href=\"%(latex_url)s\">template</a>."
 msgid ""
-"You can download these template as <a href=\"%(documents_url)s\">here</a> as "
-"archive. We've also included PDF examples. In case you prefer LaTeX then you "
-"can download the <a href=\"%(latex_url)s\">template</a>."
+"You can download these template as <a href=\"https://drive.google.com/drive/"
+"folders/13jGBucdXpkw2BA0_Z8TFFhlVW_8umFKW\">here</a> as archive. We've also "
+"included PDF examples. In case you prefer LaTeX then you can download the <a "
+"href=\"https://drive.google.com/drive/"
+"folders/1KQVG7i7e146YOQ9h_6mO3RqbLC9539lG\">template</a>."
 msgstr ""
 "Deze templates kun je <a href=\"%(documents_url)s\">hier</a> gezipt "
 "downloaden. Inclusief voorbeelden in PDF. Daarnaast is er een <a href="
@@ -1124,10 +1139,14 @@ msgstr ""
 "nog wat."
 
 #: templates/singlepages/styleguide.html
-#, python-format
+#, fuzzy
+#| msgid ""
+#| "Templates for PowerPoint, Keynote and LibreOffice are available <a href="
+#| "\"%(presentations_url)s\">here</a>."
 msgid ""
 "Templates for PowerPoint, Keynote and LibreOffice are available <a href="
-"\"%(presentations_url)s\">here</a>."
+"\"https://drive.google.com/drive/folders/1CL4eVSqlvYcqP_u99y6mgGJpqWWG_q7Z"
+"\">here</a>."
 msgstr ""
 "Templates voor presentaties vind je <a href=\"%(presentations_url)s\">hier</"
 "a> voor PowerPoint, Keynote en LibreOffice."
@@ -1165,13 +1184,19 @@ msgstr ""
 "varianten van zwart, wit en magenta."
 
 #: templates/singlepages/styleguide.html
-#, python-format
+#, fuzzy
+#| msgid ""
+#| "The templates are available for download <a href=\"%(posters_url)s"
+#| "\">here</a>. Although, it's the task of the media committee to create the "
+#| "posters and banners. So you're always welcome to send an email to <a href="
+#| "\"mailto:media@thalia.nu\">media@thalia.nu</a> to get yourself a sleek "
+#| "poster for your event."
 msgid ""
-"The templates are available for download <a href=\"%(posters_url)s\">here</"
-"a>. Although, it's the task of the media committee to create the posters and "
-"banners. So you're always welcome to send an email to <a href=\"mailto:"
-"media@thalia.nu\">media@thalia.nu</a> to get yourself a sleek poster for "
-"your event."
+"The templates are available for download <a href=\"https://drive.google.com/"
+"drive/folders/1oPxLJ20AURaLjgYNSMuf9I-LarSQWjzC\">here</a>. Although, it's "
+"the task of the media committee to create the posters and banners. So you're "
+"always welcome to send an email to <a href=\"mailto:media@thalia.nu"
+"\">media@thalia.nu</a> to get yourself a sleek poster for your event."
 msgstr ""
 "Je kunt de templates <a href=\"%(posters_url)s\">hier</a> vinden. Het is "
 "echter in principe de taak van de Mediacommissie om deze posters & banners "
@@ -1206,12 +1231,17 @@ msgid "Introshirts"
 msgstr "Introshirts"
 
 #: templates/singlepages/styleguide.html
-#, python-format
+#, fuzzy
+#| msgid ""
+#| "The introshirts too are an exception. These shirts are in different "
+#| "colours every year. The templates for the shirts can be found <a href="
+#| "\"%(introshirt_url)s\">here</a>. The partner logos and texts can be "
+#| "changed to those you prefer."
 msgid ""
 "The introshirts too are an exception. These shirts are in different colours "
-"every year. The templates for the shirts can be found <a href="
-"\"%(introshirt_url)s\">here</a>. The partner logos and texts can be changed "
-"to those you prefer."
+"every year. The templates for the shirts can be found <a href=\"https://"
+"drive.google.com/drive/folders/1MdrSb0G-MjV2hfJt92ZXo5MSXWFcO3L7\">here</a>. "
+"The partner logos and texts can be changed to those you prefer."
 msgstr ""
 "Ook de introshirts zijn een uitzondering op het kleurenpalet. Het is "
 "toegestaan om elke kleur te gebruiken die je maar wilt, zolang het maar niet "
@@ -1281,10 +1311,6 @@ msgstr "Lettertype"
 #: templates/singlepages/styleguide.html
 msgid "Logos"
 msgstr "Logo’s"
-
-#: templates/singlepages/styleguide.html
-msgid "Logo variant template"
-msgstr "Templates logo varianten"
 
 #: templates/singlepages/styleguide.html
 msgid "Word documents"
