@@ -7,7 +7,7 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from events.api.serializers import CalenderJSSerializer
-from members.models import Member
+from members.models import Member, Profile
 from members.services import member_achievements
 from thaliawebsite.api.services import create_image_thumbnail_dict
 from utils.templatetags.thumbnail import thumbnail
@@ -154,6 +154,30 @@ class MemberListSerializer(serializers.ModelSerializer):
         return create_image_thumbnail_dict(
             self.context['request'], file, placeholder=placeholder,
             size_large='800x800')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('email', 'first_name', 'last_name', 'address_street',
+                  'address_street2', 'address_postal_code', 'address_city',
+                  'phone_number', 'show_birthday', 'website', 'photo',
+                  'emergency_contact', 'emergency_contact_phone_number',
+                  'profile_description', 'nickname', 'display_name_preference',
+                  'language', 'receive_optin', 'receive_newsletter')
+
+    email = serializers.SerializerMethodField('_email')
+    first_name = serializers.SerializerMethodField('_first_name')
+    last_name = serializers.SerializerMethodField('_last_name')
+
+    def _email(self, instance):
+        return instance.user.email
+
+    def _first_name(self, instance):
+        return instance.user.first_name
+
+    def _last_name(self, instance):
+        return instance.user.last_name
 
 
 class SentryIdentitySerializer(serializers.ModelSerializer):

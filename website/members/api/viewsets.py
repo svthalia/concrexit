@@ -7,14 +7,15 @@ from rest_framework.response import Response
 
 from members.api.serializers import (MemberBirthdaySerializer,
                                      MemberRetrieveSerializer,
-                                     MemberListSerializer)
+                                     MemberListSerializer,
+                                     ProfileSerializer)
 from members.models import Member
 from utils.snippets import extract_date_range
 
 
-class MemberViewset(viewsets.ReadOnlyModelViewSet):
+class MemberViewset(viewsets.ReadOnlyModelViewSet,
+                    viewsets.mixins.UpdateModelMixin):
     queryset = Member.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,)
     ordering_fields = ('profile__starting_year', 'first_name', 'last_name')
     search_fields = ('profile__nickname', 'first_name', 'last_name',
@@ -22,14 +23,39 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'pk'
 
     def get_serializer_class(self):
-        if self.action == 'retrieve' or self.action == 'me':
+        if self.action == 'retrieve':
             return MemberRetrieveSerializer
+        elif self.action.endswith('update'):
+            return ProfileSerializer
         return MemberListSerializer
 
     def get_queryset(self):
         if self.action == 'list':
             return Member.current_members.get_queryset()
         return Member.objects.all()
+
+    def is_self_reference(self):
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        lookup_arg = self.kwargs.get(lookup_url_kwarg)
+
+        return (self.request.user.is_authenticated and
+                lookup_arg in ('me', str(self.request.member.pk)))
+
+    def get_permissions(self):
+        if not self.action.endswith('update') or self.is_self_reference():
+            return [permissions.IsAuthenticated()]
+        else:
+            return [permissions.DjangoModelPermissions()]
+
+    def get_object(self):
+        if self.is_self_reference():
+            member = self.request.member
+        else:
+            member = super().get_object()
+
+        if self.action.endswith('update'):
+            return member.profile
+        return member
 
     def _get_birthdays(self, member, start, end):
         birthdays = []
@@ -68,12 +94,4 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet):
         birthdays = [x for sublist in all_birthdays for x in sublist]
 
         serializer = MemberBirthdaySerializer(birthdays, many=True)
-        return Response(serializer.data)
-
-    @action(detail=False)
-    def me(self, request):
-        kwargs = {
-            'context': self.get_serializer_context(),
-        }
-        serializer = self.get_serializer_class()(request.member, **kwargs)
         return Response(serializer.data)
