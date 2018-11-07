@@ -100,7 +100,6 @@ def send_information_request(dry_run=False):
                         email_body,
                         settings.WEBSITE_FROM_ADDRESS,
                         [member.email],
-                        bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                         connection=connection
                     ).send()
 
