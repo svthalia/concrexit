@@ -117,14 +117,12 @@
                     {% endblocktrans %}
                 </p>
             {% elif latest_membership.until is None %}
-                <p class="text-center">
+                <p class="col-12 col-md-6 offset-md-3 text-center">
                     {% blocktrans trimmed %}
                         You currently have an active membership for your entire
-                        study duration.<br/>
-                        Did you graduate or stop with your studies for some
-                        other reason?<br/>
-                        Please let us know by sending an email to
-                        info@thalia.nu.
+                        study duration. Did you graduate or stop with your
+                        studies for some other reason? Please let us know by
+                        sending an email to info@thalia.nu.
                     {% endblocktrans %}
                 </p>
             {% else %}

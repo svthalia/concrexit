@@ -19,12 +19,12 @@
                 {% endfor %}
             {% endif %}
 
-            <div class="m-4">
+            <div class="mx-4 m-lg-4">
                 {{ event.description|bleach }}
             </div>
 
             <div class="clearfix row">
-                <div class="col-6">
+                <div class="col-12 col-md-6 order-1">
                     <table class="table table-borderless">
                         <tbody>
                         <tr>
@@ -214,7 +214,7 @@
                     </table>
                 </div>
 
-                <div class="col-6">
+                <div class="col-12 col-md-6 order-0 order-md-1 mb-4 mb-md-0">
                     <div class="location-map">
                         <img src="{% google_map_url event.map_location %}" alt="{{ event.location }}" />
                     </div>

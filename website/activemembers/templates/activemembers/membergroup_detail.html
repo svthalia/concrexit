@@ -20,6 +20,20 @@
         </div>
     </section>
 
+    {% if membergroup.description %}
+    <section id="activemembers-membergroup-description" class="page-section">
+        <div class="container">
+            <h1 class="text-center section-title">
+                {% trans 'Description' %}
+            </h1>
+
+            <div class="text-center">
+                {{ membergroup.description|safe }}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
     <section id="activemembers-membergroup-members" class="page-section">
         <div class="container">
             <h1 class="text-center section-title">
