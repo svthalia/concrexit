@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 15:13+0200\n"
-"PO-Revision-Date: 2018-08-19 15:24+0200\n"
+"POT-Creation-Date: 2018-11-07 20:41+0100\n"
+"PO-Revision-Date: 2018-11-07 20:42+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: apps.py templates/partners/index.html templates/partners/partner.html
 msgid "Partners"
@@ -117,35 +117,18 @@ msgstr ""
 "commissaris externe betrekkingen, die te bereiken is via <a href=\"mailto:"
 "samenwerking@thalia.nu\" target=\"_blank\">samenwerking@thalia.nu</a>."
 
-#: templates/partners/index.html templates/partners/partner.html
+#: templates/partners/index.html
 msgid "Main Partner"
 msgstr "Hoofdpartner"
 
 #: templates/partners/index.html templates/partners/partner.html
-#: templates/partners/vacancies.html
+#: templates/partners/vacancies.html templates/partners/vacancy_card.html
 msgid "Learn more"
 msgstr "Lees meer"
 
 #: templates/partners/partner.html
-#, python-format
-msgid "About %(name)s"
-msgstr "Over %(name)s"
-
-#: templates/partners/partner.html
-msgid "Information"
-msgstr "Informatie"
-
-#: templates/partners/partner.html
-msgid "Street"
-msgstr "Straatnaam"
-
-#: templates/partners/partner.html
-msgid "Zip Code"
-msgstr "Postcode"
-
-#: templates/partners/partner.html
-msgid "City"
-msgstr "Plaatsnaam"
+msgid "Address"
+msgstr "Adres"
 
 #: templates/partners/partner.html
 msgid "Website"
