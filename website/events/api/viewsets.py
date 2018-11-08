@@ -1,11 +1,9 @@
 """Defines the viewsets of the events package"""
-from datetime import datetime
 
 from django.utils import timezone
-from pytz.exceptions import InvalidTimeError
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
-from rest_framework.exceptions import ParseError, PermissionDenied, NotFound
+from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import (
@@ -26,27 +24,7 @@ from events.api.serializers import (
     RegistrationListSerializer, RegistrationSerializer)
 from events.exceptions import RegistrationError
 from events.models import Event, Registration
-
-
-def _extract_date(param):
-    """Extract the date from an arbitrary string"""
-    if param is None:
-        return None
-    try:
-        return timezone.make_aware(
-            datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
-    except ValueError:
-        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
-
-
-def _extract_date_range(request):
-    """Extract a date range from an arbitrary string"""
-    try:
-        start = _extract_date(request.query_params['start'])
-        end = _extract_date(request.query_params['end'])
-    except (ValueError, KeyError, InvalidTimeError) as e:
-        raise ParseError(detail='start or end query parameters invalid') from e
-    return end, start
+from utils.snippets import extract_date_range
 
 
 class EventViewset(viewsets.ReadOnlyModelViewSet):
@@ -65,14 +43,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         if self.action == 'retrieve':
             return queryset
 
-        try:
-            start = _extract_date(self.request.query_params.get('start', None))
-        except (ValueError, InvalidTimeError) as e:
-            raise ParseError(detail='start query parameter invalid') from e
-        try:
-            end = _extract_date(self.request.query_params.get('end', None))
-        except (ValueError, InvalidTimeError) as e:
-            raise ParseError(detail='end query parameter invalid') from e
+        start, end = extract_date_range(self.request, allow_empty=True)
 
         if start is not None:
             queryset = queryset.filter(start__gte=start)
@@ -150,7 +121,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
         :return: response containing the data
         """
-        end, start = _extract_date_range(request)
+        start, end = extract_date_range(request)
 
         queryset = Event.objects.filter(
             end__gte=start,
@@ -172,7 +143,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         :param request: the request object
         :return: response containing the data
         """
-        end, start = _extract_date_range(request)
+        start, end = extract_date_range(request)
 
         queryset = Event.objects.filter(
             end__gte=start,

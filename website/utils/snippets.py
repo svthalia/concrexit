@@ -2,10 +2,13 @@
 import hmac
 from _sha1 import sha1
 from base64 import urlsafe_b64decode, urlsafe_b64encode
+from datetime import datetime
 
 from django.conf import settings
 from django.utils import timezone
 from django.template.defaultfilters import urlencode
+from pytz import InvalidTimeError
+from rest_framework.exceptions import ParseError
 
 
 def datetime_to_lectureyear(date):
@@ -50,3 +53,34 @@ def create_google_maps_url(location, zoom, size):
     maps_url += f"&signature={encoded_signature.decode('utf-8')}"
 
     return "https://maps.googleapis.com" + maps_url
+
+
+def _extract_date(param):
+    """Extract the date from an arbitrary string"""
+    if param is None:
+        return None
+    try:
+        return timezone.make_aware(
+                datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
+    except ValueError:
+        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
+
+
+def extract_date_range(request, allow_empty=False):
+    """Extract a date range from an arbitrary string"""
+
+    default_value = ''
+    if allow_empty:
+        default_value = None
+
+    try:
+        start = _extract_date(request.query_params.get('start', default_value))
+    except (ValueError, InvalidTimeError) as e:
+        raise ParseError(detail='start query parameter invalid') from e
+
+    try:
+        end = _extract_date(request.query_params.get('end', default_value))
+    except (ValueError, InvalidTimeError) as e:
+        raise ParseError(detail='end query parameter invalid') from e
+
+    return start, end
