@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n frontpage_events frontpage_articles partner_banners slider %}
 
+{% block body_class %}home{% endblock %}
+
 {% block header_image_container %}
     {% render_slider %}
 {% endblock header_image_container %}
