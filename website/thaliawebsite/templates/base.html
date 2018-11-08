@@ -48,7 +48,7 @@
 
     <!-- build commit: {{ SOURCE_COMMIT }} -->
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
 <section id="announcements-alerts">
     {% if request.member and request.member.current_membership is None %}
