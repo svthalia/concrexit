@@ -226,13 +226,14 @@ def statistics(request):
 
     context = {
         "total_members": total,
-        "total_stats_year": json.dumps(services.gen_stats_year(member_types)),
-        "total_stats_member_type": json.dumps(
-            services.gen_stats_member_type(member_types)),
-        "total_pizza_orders": json.dumps(
-            pizzas.services.gen_stats_pizza_orders()),
-        "current_pizza_orders": json.dumps(
-            pizzas.services.gen_stats_current_pizza_orders()),
+        "statistics": json.dumps({
+            "cohort_sizes": services.gen_stats_year(member_types),
+            "member_type_distribution":
+                services.gen_stats_member_type(member_types),
+            "total_pizza_orders": pizzas.services.gen_stats_pizza_orders(),
+            "current_pizza_orders":
+                pizzas.services.gen_stats_current_pizza_orders(),
+        })
     }
 
     return render(request, 'members/statistics.html', context)
