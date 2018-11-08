@@ -91,7 +91,7 @@ class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
 
 class Vacancy(models.Model):
     title = models.CharField(max_length=255)
-    description = HTMLField(blank=True)
+    description = HTMLField()
     link = models.CharField(
         max_length=255,
         blank=True,
@@ -142,6 +142,35 @@ class Vacancy(models.Model):
         if self.partner:
             url = reverse('partners:partner', args=(self.partner.slug,))
         return '{}#vacancy-{}'.format(url, self.pk)
+
+    def clean(self):
+        super().clean()
+        errors = {}
+
+        msg = _('If no partner is used then both a company name and logo are '
+                'required.')
+        if not self.partner and self.company_name and not self.company_logo:
+            errors.update({'company_logo': msg})
+        if not self.partner and not self.company_name and self.company_logo:
+            errors.update({'company_name': msg})
+
+        msg = _('Either select a partner or provide a company name and logo.')
+        if self.partner and (self.company_name or self.company_logo):
+            errors.update({'partner': msg})
+            if self.company_name:
+                errors.update({'company_name': msg})
+            if self.company_logo:
+                errors.update({'company_logo': msg})
+        if (not self.partner and not self.company_name and
+                not self.company_logo):
+            errors.update({
+                'partner': msg,
+                'company_name': msg,
+                'company_logo': msg,
+            })
+
+        if errors:
+            raise ValidationError(errors)
 
 
 class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
