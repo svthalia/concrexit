@@ -1,14 +1,21 @@
 #accentbar {
+    position: -webkit-sticky;
+    position: sticky;
     background: $preset;
     height: 5px;
+    top: 0;
     z-index: 1020;
 }
 
 .navbar {
+    position: -webkit-sticky;
+    position: sticky;
     font-size: 16px;
     background-color: $white;
     border-bottom: 1px solid $grey;
     top: 5px;
+    z-index: 1020;
+
 
     > .container {
         justify-content: end;
@@ -95,11 +102,28 @@
     }
 }
 
-@media(max-width: 1200px) {
+@media(max-width: 1199px) {
     .navbar {
         .navbar-brand {
             img {
                 max-height: 4rem;
+            }
+        }
+    }
+}
+
+@media(max-width: 767px) {
+    #accentbar, .navbar {
+        position: relative;
+        top: 0;
+    }
+}
+
+@media(max-width: 359px) {
+    .navbar {
+        .navbar-brand {
+            img {
+                max-height: 3rem;
             }
         }
     }
