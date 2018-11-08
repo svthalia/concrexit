@@ -5,7 +5,7 @@
 {% block opengraph_title %}{% trans "Statistics" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-    <section class="page-section">
+    <section class="page-section" id="members-statistics" data-statistics="{{ statistics }}">
         <div class="container">
             <h1 class="text-center section-title">{% trans "Statistics" %}</h1>
 
@@ -27,17 +27,7 @@
 
 {% block js_body %}
     {{ block.super }}
-
     {% compress js %}
-        <script type="text/javascript">
-            {% autoescape off %}
-                var total_stats_year = {{ total_stats_year }};
-                var total_stats_member_type = {{ total_stats_member_type }};
-                var total_pizza_orders = {{ total_pizza_orders }};
-                var current_pizza_orders = {{ current_pizza_orders }};
-            {% endautoescape %}
-        </script>
-
         <script type="text/javascript" src="{% static 'members/js/highcharts.js' %}"></script>
         <script type="text/javascript" src="{% static 'members/js/statistics.js' %}"></script>
     {% endcompress %}

@@ -39,6 +39,12 @@ $(function () {
         }
     };
 
+    var statistics = $('#members-statistics').data('statistics');
+    var cohortSizes = statistics.cohort_sizes;
+    var memberTypeDistribution = statistics.member_type_distribution;
+    var pizzaOrders = statistics.total_pizza_orders;
+    var currentPizzaOrders = statistics.current_pizza_orders;
+
     // Apply the theme
     Highcharts.setOptions(Highcharts.theme);
 
@@ -57,13 +63,13 @@ $(function () {
             colorByPoint: true,
             data : [{
                 name: gettext('Members'),
-                y: total_stats_member_type.member
+                y: memberTypeDistribution.member
             },{
                 name: gettext('Benefactors'),
-                y: total_stats_member_type.supporter
+                y: memberTypeDistribution.supporter
             },{
                 name: gettext('Honorary Members'),
-                y: total_stats_member_type.honorary
+                y: memberTypeDistribution.honorary
             }]
         }]
     });
@@ -82,23 +88,23 @@ $(function () {
             name: gettext("People"),
             colorByPoint: true,
             data : [{
-                name: total_stats_year[0].cohort,
-                y: total_stats_year[0].member + total_stats_year[0].supporter + total_stats_year[0].honorary
+                name: cohortSizes[0].cohort,
+                y: cohortSizes[0].member + cohortSizes[0].supporter + cohortSizes[0].honorary
             },{
-                name: total_stats_year[1].cohort,
-                y: total_stats_year[1].member + total_stats_year[1].supporter + total_stats_year[1].honorary
+                name: cohortSizes[1].cohort,
+                y: cohortSizes[1].member + cohortSizes[1].supporter + cohortSizes[1].honorary
             },{
-                name: total_stats_year[2].cohort,
-                y: total_stats_year[2].member + total_stats_year[2].supporter + total_stats_year[2].honorary
+                name: cohortSizes[2].cohort,
+                y: cohortSizes[2].member + cohortSizes[2].supporter + cohortSizes[2].honorary
             },{
-                name: total_stats_year[3].cohort,
-                y: total_stats_year[3].member + total_stats_year[3].supporter + total_stats_year[3].honorary
+                name: cohortSizes[3].cohort,
+                y: cohortSizes[3].member + cohortSizes[3].supporter + cohortSizes[3].honorary
             },{
-                name: total_stats_year[4].cohort,
-                y: total_stats_year[4].member + total_stats_year[4].supporter + total_stats_year[4].honorary
+                name: cohortSizes[4].cohort,
+                y: cohortSizes[4].member + cohortSizes[4].supporter + cohortSizes[4].honorary
             },{
-                name: total_stats_year[5].cohort,
-                y: total_stats_year[5].member + total_stats_year[5].supporter + total_stats_year[5].honorary
+                name: cohortSizes[5].cohort,
+                y: cohortSizes[5].member + cohortSizes[5].supporter + cohortSizes[5].honorary
             }]
         }]
     });
@@ -117,23 +123,23 @@ $(function () {
             name: gettext("Members"),
             colorByPoint: true,
             data : [{
-                name: total_stats_year[0].cohort,
-                y: total_stats_year[0].member
+                name: cohortSizes[0].cohort,
+                y: cohortSizes[0].member
             },{
-                name: total_stats_year[1].cohort,
-                y: total_stats_year[1].member
+                name: cohortSizes[1].cohort,
+                y: cohortSizes[1].member
             },{
-                name: total_stats_year[2].cohort,
-                y: total_stats_year[2].member
+                name: cohortSizes[2].cohort,
+                y: cohortSizes[2].member
             },{
-                name: total_stats_year[3].cohort,
-                y: total_stats_year[3].member
+                name: cohortSizes[3].cohort,
+                y: cohortSizes[3].member
             },{
-                name: total_stats_year[4].cohort,
-                y: total_stats_year[4].member
+                name: cohortSizes[4].cohort,
+                y: cohortSizes[4].member
             },{
-                name: total_stats_year[5].cohort,
-                y: total_stats_year[5].member
+                name: cohortSizes[5].cohort,
+                y: cohortSizes[5].member
             }]
         }]
     });
@@ -153,23 +159,23 @@ $(function () {
             name: gettext("Benefactors"),
             colorByPoint: true,
             data : [{
-                name: total_stats_year[0].cohort,
-                y: total_stats_year[0].supporter
+                name: cohortSizes[0].cohort,
+                y: cohortSizes[0].supporter
             },{
-                name: total_stats_year[1].cohort,
-                y: total_stats_year[1].supporter
+                name: cohortSizes[1].cohort,
+                y: cohortSizes[1].supporter
             },{
-                name: total_stats_year[2].cohort,
-                y: total_stats_year[2].supporter
+                name: cohortSizes[2].cohort,
+                y: cohortSizes[2].supporter
             },{
-                name: total_stats_year[3].cohort,
-                y: total_stats_year[3].supporter
+                name: cohortSizes[3].cohort,
+                y: cohortSizes[3].supporter
             },{
-                name: total_stats_year[4].cohort,
-                y: total_stats_year[4].supporter
+                name: cohortSizes[4].cohort,
+                y: cohortSizes[4].supporter
             },{
-                name: total_stats_year[5].cohort,
-                y: total_stats_year[5].supporter
+                name: cohortSizes[5].cohort,
+                y: cohortSizes[5].supporter
             }]
         }]
     });
@@ -188,28 +194,28 @@ $(function () {
             name: 'Pizzas',
             colorByPoint: true,
             data : [{
-                name: total_pizza_orders[0].name,
-                y: total_pizza_orders[0].total
+                name: pizzaOrders[0].name,
+                y: pizzaOrders[0].total
             },{
-                name: total_pizza_orders[1].name,
-                y: total_pizza_orders[1].total
+                name: pizzaOrders[1].name,
+                y: pizzaOrders[1].total
             },{
-                name: total_pizza_orders[2].name,
-                y: total_pizza_orders[2].total
+                name: pizzaOrders[2].name,
+                y: pizzaOrders[2].total
             },{
-                name: total_pizza_orders[3].name,
-                y: total_pizza_orders[3].total
+                name: pizzaOrders[3].name,
+                y: pizzaOrders[3].total
             },{
-                name: total_pizza_orders[4].name,
-                y: total_pizza_orders[4].total
+                name: pizzaOrders[4].name,
+                y: pizzaOrders[4].total
             },{
-                name: total_pizza_orders[5].name,
-                y: total_pizza_orders[5].total
+                name: pizzaOrders[5].name,
+                y: pizzaOrders[5].total
             }]
         }]
     });
 
-    if (current_pizza_orders != null) {
+    if (currentPizzaOrders != null) {
         $('#pizzaCurrentTypeChart').highcharts({
             chart: {
                 type: 'pie'
@@ -224,23 +230,23 @@ $(function () {
                 name: 'Pizzas',
                 colorByPoint: true,
                 data : [{
-                    name: current_pizza_orders[0].name,
-                    y: current_pizza_orders[0].total
+                    name: currentPizzaOrders[0].name,
+                    y: currentPizzaOrders[0].total
                 },{
-                    name: current_pizza_orders[1].name,
-                    y: current_pizza_orders[1].total
+                    name: currentPizzaOrders[1].name,
+                    y: currentPizzaOrders[1].total
                 },{
-                    name: current_pizza_orders[2].name,
-                    y: current_pizza_orders[2].total
+                    name: currentPizzaOrders[2].name,
+                    y: currentPizzaOrders[2].total
                 },{
-                    name: current_pizza_orders[3].name,
-                    y: current_pizza_orders[3].total
+                    name: currentPizzaOrders[3].name,
+                    y: currentPizzaOrders[3].total
                 },{
-                    name: current_pizza_orders[4].name,
-                    y: current_pizza_orders[4].total
+                    name: currentPizzaOrders[4].name,
+                    y: currentPizzaOrders[4].total
                 },{
-                    name: current_pizza_orders[5].name,
-                    y: current_pizza_orders[5].total
+                    name: currentPizzaOrders[5].name,
+                    y: currentPizzaOrders[5].total
                 }]
             }]
         });
