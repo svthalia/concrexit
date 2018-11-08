@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 00:53+0200\n"
-"PO-Revision-Date: 2018-10-11 00:55+0200\n"
+"POT-Creation-Date: 2018-11-08 13:43+0100\n"
+"PO-Revision-Date: 2018-11-08 13:45+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: admin.py
 msgid "lecture year"
@@ -693,6 +693,15 @@ msgstr "Aangemeld voor dit evenement"
 #: templates/events/frontpage.html
 msgid "Not registered for this event"
 msgstr "Niet aangemeld voor dit evenement"
+
+#: templates/events/frontpage.html
+#, python-format
+msgid ""
+"Searching for another event? <a href=\"%(events_index)s\">Take a look at the "
+"entire agenda.</a>"
+msgstr ""
+"Op zoek naar een andere evenement? <a href=\"%(events_index)s\">Bekijk de hele "
+"agenda.</a>"
 
 #: templates/events/index.html
 msgid "iCal feed (all events)"

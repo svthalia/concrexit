@@ -32,7 +32,10 @@
             {% endfor %}
         </div>
         <p class="text-center">
-            Searching for another event? <a href="{% url 'events:index' %}">Take a look at the entire agenda.</a>
+            {% url 'events:index' as events_index %}
+            {% blocktrans trimmed %}
+                Searching for another event? <a href="{{ events_index }}">Take a look at the entire agenda.</a>
+            {% endblocktrans %}
         </p>
     </div>
 </section>
