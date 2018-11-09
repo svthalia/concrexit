@@ -294,12 +294,6 @@ msgid "Name"
 msgstr "Naam"
 
 #: templates/education/courses.html
-#, fuzzy
-#| msgid "categories"
-msgid "Categories"
-msgstr "categorieën"
-
-#: templates/education/courses.html
 msgid "Available documents"
 msgstr "Beschikbare documenten"
 
