@@ -32,5 +32,5 @@ def thabloid_card(year, thabloid):
         meta_text=buttons,
         url=None,
         image_url=thumbnail(thabloid.cover, '255x360'),
-        class_name='thabloid-card mix {}'.format(class_name),
+        class_name=f'thabloid-card mix {class_name}',
     )
