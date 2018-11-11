@@ -24,7 +24,7 @@ def send_registration_email_confirmation(registration):
             {
                 'name': registration.get_full_name(),
                 'confirm_link': '{}{}'.format(
-                    'https://thalia.nu',
+                    settings.BASE_URL,
                     reverse('registrations:confirm-email',
                             args=[registration.pk])
                 )

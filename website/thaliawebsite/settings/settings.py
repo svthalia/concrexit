@@ -35,6 +35,7 @@ if not DEBUG:  # Django 1.10.3 security release changed behaviour
     ALLOWED_HOSTS = []
 
 SITE_ID = 1
+BASE_URL = 'https://thalia.nu'
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000  # Useful for managing members
 

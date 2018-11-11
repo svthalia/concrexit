@@ -301,8 +301,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     registration_reminder.category = Category.objects.get(
                         key='event')
                     registration_reminder.time = registration_reminder_time
-                    registration_reminder.url = reverse("events:event",
-                                                        args=[self.id])
+                    registration_reminder.url = (
+                        f'{settings.BASE_URL}'
+                        f'{reverse("events:event", args=[self.id])}')
 
                     registration_reminder.save()
                     self.registration_reminder = registration_reminder
@@ -321,10 +322,10 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             if start_reminder_time > timezone.now():
                 start_reminder.title_en = 'Event'
                 start_reminder.title_nl = 'Evenement'
-                start_reminder.body_en = ('\'{}\' starts in '
-                                          '1 hour'.format(self.title_en))
-                start_reminder.body_nl = ('\'{}\' begint over '
-                                          '1 uur'.format(self.title_nl))
+                start_reminder.body_en = (f'\'{self.title_en}\' starts in '
+                                          '1 hour')
+                start_reminder.body_nl = (f'\'{self.title_nl}\' begint over '
+                                          '1 uur')
                 start_reminder.category = Category.objects.get(key='event')
                 start_reminder.time = start_reminder_time
                 start_reminder.save()
