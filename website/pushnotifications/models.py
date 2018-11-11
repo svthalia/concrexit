@@ -77,7 +77,7 @@ class MessageManager(models.Manager):
 
     def get_queryset(self):
         return (super().get_queryset()
-                .filter(scheduledmessage__task_id=None))
+                .filter(scheduledmessage__scheduled=None))
 
 
 class Message(models.Model, metaclass=ModelTranslateMeta):
@@ -164,7 +164,7 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                     for reg_id in reg_ids:
                         message.token = reg_id
                         try:
-                            messaging.send(message,dry_run=kwargs.get(
+                            messaging.send(message, dry_run=kwargs.get(
                                 'dry_run', False))
                             success_total += 1
                         except messaging.ApiCallError as e:
@@ -196,5 +196,6 @@ class ScheduledMessage(Message, metaclass=ModelTranslateMeta):
 
     objects = ScheduledMessageManager()
 
+    scheduled = models.BooleanField(default=True)
     time = models.DateTimeField()
     executed = models.DateTimeField(null=True)

@@ -15,7 +15,6 @@ services:
             - 8000:8000
         depends_on:
             - postgres
-            - redis
         volumes:
             - ./website:/usr/src/app/website/
             - concrexit:/concrexit/
@@ -26,6 +25,4 @@ services:
 
 volumes:
     concrexit:
-        driver: local
-    redis:
         driver: local
