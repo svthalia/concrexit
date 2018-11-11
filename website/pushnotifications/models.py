@@ -7,9 +7,7 @@ from django.utils.translation import override
 from django.utils.translation import ugettext_lazy as _
 from firebase_admin import messaging
 
-from utils.tasks import revoke_task, schedule_task
 from utils.translation import MultilingualField, ModelTranslateMeta
-from .tasks import send_message
 
 
 class Category(models.Model, metaclass=ModelTranslateMeta):
@@ -166,7 +164,8 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                     for reg_id in reg_ids:
                         message.token = reg_id
                         try:
-                            messaging.send(message)
+                            messaging.send(message,dry_run=kwargs.get(
+                                'dry_run', False))
                             success_total += 1
                         except messaging.ApiCallError as e:
                             failure_total += 1
@@ -178,11 +177,10 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                                     or e.code == 'invalid-registration-token'):
                                 d.update(active=False)
 
-            if success_total > 0 or failure_total > 0:
-                self.sent = True
-                self.success = success_total
-                self.failure = failure_total
-                self.save()
+            self.sent = True
+            self.success = success_total
+            self.failure = failure_total
+            self.save()
         return None
 
 
@@ -198,30 +196,5 @@ class ScheduledMessage(Message, metaclass=ModelTranslateMeta):
 
     objects = ScheduledMessageManager()
 
-    task_id = models.CharField(max_length=50, blank=True, null=True)
     time = models.DateTimeField()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._time = self.time
-
-    def schedule(self):
-        """Schedules a Celery task to send this message"""
-        return schedule_task(send_message, args=(self.pk,), eta=self.time)
-
-    def save(self, *args, **kwargs):
-        """Custom save method which also schedules the task"""
-
-        if not (self._time == self.time):
-            if self.task_id:
-                # Revoke that task in case its time has changed
-                revoke_task(self.task_id)
-            super().save(*args, **kwargs)
-            self.task_id = self.schedule()
-
-        super().save(*args, **kwargs)
-
-    def delete(self, using=None, keep_parents=False):
-        if self.task_id:
-            revoke_task(self.task_id)
-        return super().delete(using, keep_parents)
+    executed = models.DateTimeField(null=True)

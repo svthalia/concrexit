@@ -7,7 +7,7 @@ Using environment variables you can control the loading of various
 overrides.
 """
 # flake8: noqa: ignore F403
-
+import logging
 from firebase_admin import initialize_app, credentials
 
 # Load all default settings because we need to use settings.configure
@@ -16,6 +16,8 @@ from django.conf.global_settings import *  # pylint: disable=wildcard-import
 
 # Load base settings
 from .settings import *  # pylint: disable=wildcard-import
+
+logger = logging.getLogger(__name__)
 
 # Attempt to load local overrides
 try:
@@ -35,4 +37,4 @@ try:
     initialize_app(
         credential=credentials.Certificate(FIREBASE_CREDENTIALS))
 except ValueError as e:
-    print('Firebase application failed to initialise')
+    logger.error('Firebase application failed to initialise')

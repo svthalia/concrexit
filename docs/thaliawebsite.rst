@@ -26,14 +26,6 @@ thaliawebsite.admin module
     :undoc-members:
     :show-inheritance:
 
-thaliawebsite.celery module
----------------------------
-
-.. automodule:: thaliawebsite.celery
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 thaliawebsite.context\_processors module
 ----------------------------------------
 

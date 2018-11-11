@@ -130,10 +130,6 @@ if os.environ.get('DJANGO_EMAIL_HOST'):
     EMAIL_USE_SSL = os.environ.get('DJANGO_EMAIL_USE_SSL', False) == 'True'
     EMAIL_TIMEOUT = 10
 
-# Celery settings
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
-CELERY_ENABLED = True
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'compressor',
     'corsheaders',
-    'django_celery_results',
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
@@ -243,14 +242,6 @@ COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
 
 # Precompiler settings
 STATIC_PRECOMPILER_LIST_FILES = True
-
-# Celery settings
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# Checkout caveats for the timeout config below:
-# http://docs.celeryproject.org/en/latest/getting-started/brokers/redis.html#id1
-CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 15778800}
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_ENABLED = False
 
 # Membership prices
 MEMBERSHIP_PRICES = {
