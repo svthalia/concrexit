@@ -65,7 +65,7 @@ class Photo(models.Model):
             self._orig_file = ""
 
     def __str__(self):
-        return self.file.name
+        return os.path.basename(self.file.name)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

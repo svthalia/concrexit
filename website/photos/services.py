@@ -1,5 +1,6 @@
-from django.db.models import When, Value, BooleanField, ExpressionWrapper, Q, \
-    Case
+from django.db.models import (When, Value, BooleanField, ExpressionWrapper, Q,
+                              Case)
+from django.http import Http404
 
 from PIL.JpegImagePlugin import JpegImageFile
 from PIL import ExifTags
@@ -26,6 +27,11 @@ def photo_determine_rotation(pil_image):
         if exif.get('Orientation'):
             return EXIF_ORIENTATION[exif.get('Orientation')]
     return 0
+
+
+def check_shared_album_token(album, token):
+    if token != album.access_token:
+        raise Http404("Invalid token.")
 
 
 def is_album_accessible(request, album):
