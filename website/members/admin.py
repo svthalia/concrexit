@@ -95,12 +95,11 @@ class UserAdmin(BaseUserAdmin):
     actions = ['address_csv_export', 'student_number_csv_export']
 
     inlines = (ProfileInline, MembershipInline,)
-    # FIXME include proper filter for expiration
-    # https://docs.djangoproject.com/en/1.9/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
     list_filter = (MembershipTypeListFilter,
                    'is_superuser',
                    AgeListFilter,
-                   'profile__event_permissions',)
+                   'profile__event_permissions',
+                   'profile__starting_year')
 
     add_fieldsets = (
         (None, {
