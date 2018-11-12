@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-31 19:21+0100\n"
-"PO-Revision-Date: 2018-10-31 19:20+0100\n"
+"POT-Creation-Date: 2018-11-12 19:36+0100\n"
+"PO-Revision-Date: 2018-11-12 19:37+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -19,8 +19,12 @@ msgstr ""
 "X-Generator: Poedit 2.2\n"
 
 #: admin.py
-msgid "membership type"
-msgstr "lidtype"
+msgid "current membership type"
+msgstr "huidig lidtype"
+
+#: admin.py
+msgid "None"
+msgstr "Geen"
 
 #: admin.py
 msgid "Age"

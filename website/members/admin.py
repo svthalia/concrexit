@@ -36,15 +36,21 @@ class ProfileInline(admin.StackedInline):
 
 
 class MembershipTypeListFilter(admin.SimpleListFilter):
-    title = _('membership type')
+    title = _('current membership type')
     parameter_name = 'membership'
 
     def lookups(self, request, model_admin):
-        return models.Membership.MEMBERSHIP_TYPES
+        return models.Membership.MEMBERSHIP_TYPES + (('none', _('None')),)
 
     def queryset(self, request, queryset):
         if not self.value():
             return queryset
+        if self.value() == 'none':
+            return queryset.exclude(
+                ~Q(membership=None) & (
+                    Q(membership__until__isnull=True) |
+                    Q(membership__until__gt=timezone.now().date())
+                ))
 
         return (queryset
                 .exclude(membership=None)
