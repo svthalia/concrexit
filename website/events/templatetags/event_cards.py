@@ -7,23 +7,24 @@ from events.models import Event
 register = template.Library()
 
 
-@register.inclusion_tag('events/frontpage.html', takes_context=True)
-def render_frontpage_events(context):
-    upcoming_events = Event.objects.filter(
-        published=True,
-        end__gte=timezone.now()
-    ).order_by('end')
+@register.inclusion_tag('events/event_cards.html', takes_context=True)
+def render_event_cards(context, events=None):
+    if events is None:
+        events = Event.objects.filter(
+            published=True,
+            end__gte=timezone.now()
+        ).order_by('end')[:6]
 
     try:
-        upcoming = [{
+        cards = [{
                 'event': x,
                 'current_user_registration': services.is_user_registered(
                     context['user'], x),
-            } for x in upcoming_events[:6]]
+            } for x in events]
     except AttributeError:
-        upcoming = [{
+        cards = [{
                 'event': x,
                 'current_user_registration': None
-            } for x in upcoming_events[:6]]
+            } for x in events]
 
-    return {'upcoming': upcoming}
+    return {'events': cards}

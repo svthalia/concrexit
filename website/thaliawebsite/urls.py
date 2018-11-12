@@ -45,6 +45,7 @@ from members.views import ObtainThaliaAuthToken
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from events.sitemaps import sitemap as events_sitemap
+from events.views import AlumniEventsView
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
@@ -73,6 +74,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^privacy-policy/', TemplateView.as_view(template_name='singlepages/privacy_policy.html'), name='privacy-policy'),
     url(r'^event-registration-terms/', TemplateView.as_view(template_name='singlepages/event_registration_terms.html'), name='event-registration-terms'),
     url(r'^admin/', admin.site.urls),
+    url(r'^alumni/$', AlumniEventsView.as_view(), name='alumni'),
     url(r'^members/', include('members.urls')),
     url(r'^registration/', include('registrations.urls')),
     url(r'^payment/', include('payments.urls')),

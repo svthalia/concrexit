@@ -19,13 +19,24 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 class Event(models.Model, metaclass=ModelTranslateMeta):
     """Describes an event"""
 
+    CATEGORY_DRINKS = 'drinks'
+    CATEGORY_ACTIVITY = 'activity'
+    CATEGORY_LUNCH = 'lunchlecture'
+    CATEGORY_MEETING = 'generalmeeting'
+    CAGTEGORY_WORKSHOP = 'workshop'
+    CATEGORY_ALUMNI = 'alumni'
+    CATEGORY_PARTY = 'party'
+    CATEGORY_OTHER = 'other'
+
     EVENT_CATEGORIES = (
-        ('drinks', _('Drinks')),
-        ('activity', _('Activity')),
-        ('lunchlecture', _('Lunch Lecture')),
-        ('generalmeeting', _('General Meeting')),
-        ('workshop', _('Workshop')),
-        ('other', _('Other')))
+        (CATEGORY_DRINKS, _('Drinks')),
+        (CATEGORY_ACTIVITY, _('Activity')),
+        (CATEGORY_LUNCH, _('Lunch Lecture')),
+        (CATEGORY_MEETING, _('General Meeting')),
+        (CAGTEGORY_WORKSHOP, _('Workshop')),
+        (CATEGORY_ALUMNI, _('Alumni')),
+        (CATEGORY_PARTY, _('Party')),
+        (CATEGORY_OTHER, _('Other')))
 
     DEFAULT_NO_REGISTRATION_MESSAGE = _('No registration required')
 

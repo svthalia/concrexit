@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 20:54+0100\n"
-"PO-Revision-Date: 2018-11-14 20:54+0100\n"
+"POT-Creation-Date: 2018-11-14 22:31+0100\n"
+"PO-Revision-Date: 2018-11-14 22:33+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -149,6 +149,14 @@ msgstr "Algemene ledenvergadering"
 #: models.py
 msgid "Workshop"
 msgstr "Workshop"
+
+#: models.py templates/events/alumni.html
+msgid "Alumni"
+msgstr "Alumni"
+
+#: models.py
+msgid "Party"
+msgstr "Feest"
 
 #: models.py
 msgid "Other"
@@ -544,6 +552,35 @@ msgstr "aangemeld"
 msgid "Nobody %(verb)s yet"
 msgstr "Niemand heeft zich %(verb)s"
 
+#: templates/events/alumni.html
+msgid ""
+"Thalia's Alumni committee, together with <a href=\"https://ninja4ru."
+"wordpress.com/\">Ninja</a>, organizes several events each year. We welcome "
+"anyone who studies or has studied Computing Science or Information Sciences "
+"at Radboud University. The main purpose of the events we organize is to "
+"relive moments from the past in an informal way and to compare the "
+"atmospheres of today and the past. We hope to form a bridge between alumni "
+"and students. In addition, there is the possibility to speak with old "
+"friends again while enjoying a snack and a drink. At the bottom of this page "
+"you can follow our agenda, indicating where and when these events take place "
+"and what they are exactly. You can also register for the events on the "
+"regarding pages. Questions, comments or suggestions? We can be reached at <a "
+"href=\"mailto:alumni@thalia.nu\">alumni@thalia.nu</a>."
+msgstr ""
+"De alumnicommissie van Thalia organiseert samen met <a href=\"https://"
+"ninja4ru.wordpress.com/\">Ninja</a> jaarlijks een aantal evenementen, "
+"toegankelijk voor iedereen die informatica of informatiekunde aan de Radboud "
+"Universiteit studeert of heeft gestudeerd. De evenementen die we organiseren "
+"hebben als voornaamste doel op een informele wijze zowel momenten uit het "
+"verleden te herbeleven, als de sfeer van nu te proeven in vergelijking met "
+"die van vroeger. We hopen zo een brug te slaan tussen alumni en studenten. "
+"Daarnaast is er de mogelijkheid onder het genot van een hapje en een drankje "
+"kennissen van toen weer te spreken. Onderaan deze pagina kan je via onze "
+"agenda volgen wanneer deze evenementen plaatsvinden en wat ze inhouden. Ook "
+"kan je je daar aanmelden voor het betreffende evenement. Vragen, opmerkingen "
+"of suggesties? Wij zijn te bereiken op <a href=\"alumni@thalia.nu"
+"\">alumni@thalia.nu<a/>."
+
 #: templates/events/event.html templates/events/index.html
 #: templates/events/registration.html
 msgid "Calendar"
@@ -690,19 +727,23 @@ msgstr "Bestellen"
 msgid "Registrations"
 msgstr "Aanmeldingen"
 
-#: templates/events/frontpage.html
+#: templates/events/event_cards.html
 msgid "Upcoming events"
 msgstr "Aanstaande evenementen"
 
-#: templates/events/frontpage.html
+#: templates/events/event_cards.html
+msgid "There are currently no events planned"
+msgstr "Er zijn op het moment geen geplande evenementen"
+
+#: templates/events/event_cards.html
 msgid "Registered for this event"
 msgstr "Aangemeld voor dit evenement"
 
-#: templates/events/frontpage.html
+#: templates/events/event_cards.html
 msgid "Not registered for this event"
 msgstr "Niet aangemeld voor dit evenement"
 
-#: templates/events/frontpage.html
+#: templates/events/event_cards.html
 #, python-format
 msgid ""
 "Searching for another event? <a href=\"%(events_index)s\">Take a look at the "
