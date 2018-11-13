@@ -7,7 +7,7 @@
     {{ block.super }}{% endblock %}
 
 {% block body %}
-    <section class="page-section" id="pizzas-orders">
+    <section class="page-section" id="pizzas-orders" data-csrf="{{ csrf_token }}">
         <div class="container">
             <h1 class="text-center section-title">
                 {% blocktrans trimmed with title=event.title %}
@@ -106,9 +106,5 @@
             src="{% static "pizzas/js/jquery.tablesort.min.js" %}"></script>
     <script type="text/javascript"
             src="{% static "pizzas/js/main.js" %}"></script>
-
-    <script type="text/javascript">
-        var csrf_token = '{{ csrf_token }}';
-    </script>
     {% endcompress %}
 {% endblock %}

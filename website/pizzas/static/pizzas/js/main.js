@@ -1,4 +1,5 @@
 $(function() {
+    var csrfToken = $('#pizzas-orders').data('csrf');
     $('table').tablesort();
 
     $('thead th.paid-title, thead th.collected-title').data('sortBy', function (th, td, tablesort) {
@@ -18,7 +19,7 @@ $(function() {
             type: 'PATCH',
             data: JSON.stringify({paid: !paid}),
             headers : {
-                'X-CSRFToken': csrf_token,
+                'X-CSRFToken': csrfToken,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
