@@ -80,18 +80,3 @@
         </div>
     </section>
 {% endblock %}
-
-{% block js_body %}
-    {{ block.super }}
-    {% compress js %}
-        <script type="text/javascript"
-                src="{% static "pizzas/js/jquery.tablesort.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "pizzas/js/main.js" %}"></script>
-
-        <script type="text/javascript">
-            var csrf_token = '{{ csrf_token }}';
-            var trans = {'yes': '{% trans 'Yes' %}', 'no': '{% trans 'No' %}'};
-        </script>
-    {% endcompress %}
-{% endblock %}
