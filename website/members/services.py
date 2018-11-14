@@ -9,12 +9,12 @@ from members.models import Membership, Member
 from utils.snippets import datetime_to_lectureyear
 
 
-def member_achievements(member):
+def _member_group_memberships(member, skip_condition):
     memberships = member.membergroupmembership_set.all()
-    achievements = {}
+    data = {}
 
     for membership in memberships:
-        if hasattr(membership.group, 'society'):
+        if skip_condition(membership):
             continue
         period = {
             'since': membership.since,
@@ -30,18 +30,23 @@ def member_achievements(member):
             period['until'] = membership.group.board.until
 
         name = membership.group.name
-        if achievements.get(name):
-
-            achievements[name]['periods'].append(period)
-            if achievements[name]['earliest'] > membership.since:
-                achievements[name]['earliest'] = membership.since
-            achievements[name]['periods'].sort(key=lambda x: x['since'])
+        if data.get(name):
+            data[name]['periods'].append(period)
+            if data[name]['earliest'] > membership.since:
+                data[name]['earliest'] = membership.since
+            data[name]['periods'].sort(key=lambda x: x['since'])
         else:
-            achievements[name] = {
+            data[name] = {
                 'name': name,
                 'periods': [period],
                 'earliest': membership.since,
             }
+    return data
+
+
+def member_achievements(member):
+    achievements = _member_group_memberships(
+        member, lambda membership: hasattr(membership.group, 'society'))
 
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
@@ -58,31 +63,9 @@ def member_achievements(member):
 
 
 def member_societies(member):
-    memberships = member.membergroupmembership_set.all()
-    societies = {}
-
-    for membership in memberships:
-        period = {
-            'since': membership.since,
-            'until': membership.until,
-            'chair': membership.chair
-        }
-
-        if hasattr(membership.group, 'society'):
-
-            name = membership.group.name
-            if societies.get(name):
-
-                societies[name]['periods'].append(period)
-                if societies[name]['earliest'] > membership.since:
-                    societies[name]['earliest'] = membership.since
-                societies[name]['periods'].sort(key=lambda x: x['since'])
-            else:
-                societies[name] = {
-                    'name': name,
-                    'periods': [period],
-                    'earliest': membership.since,
-                }
+    societies = _member_group_memberships(member, lambda membership: (
+        hasattr(membership.group, 'board') or
+        hasattr(membership.group, 'committee')))
     return sorted(societies.values(), key=lambda x: x['earliest'])
 
 
