@@ -85,7 +85,7 @@ urlpatterns = [  # pylint: disable=invalid-name
         url(r'^', include('activemembers.urls')),
         url(r'^merchandise/', include('merchandise.urls')),
         url(r'^documents/', include('documents.urls')),
-        url(r'^sister-associations', TemplateView.as_view(template_name='singlepages/sister_associations.html'), name='sister-associations'),
+        url(r'^sibling-associations', TemplateView.as_view(template_name='singlepages/sibling_associations.html'), name='sibling-associations'),
         url(r'^thabloid/', include('thabloid.urls')),
     ])),
     url(r'^', include([  # 'for members' menu
