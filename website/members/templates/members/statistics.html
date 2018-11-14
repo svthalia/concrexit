@@ -13,25 +13,25 @@
 
             <div class="row">
                 <div class="col-sm-6 col-lg-4">
-                    <canvas id="membersTypeChart"></canvas>
+                    <canvas id="members-type-chart"></canvas>
                 </div>
                 <div class="col-sm-6 col-lg-4">
-                    <canvas id="totalYearChart"></canvas>
+                    <canvas id="total-year-chart"></canvas>
                 </div>
                 <div class="col-sm-6 col-lg-4">
-                    <canvas id="membersYearChart"></canvas>
+                    <canvas id="members-year-chart"></canvas>
                 </div>
                 <div class="col-sm-6 col-lg-4">
-                    <canvas id="benefactorsYearChart"></canvas>
+                    <canvas id="benefactors-year-chart"></canvas>
                 </div>
                 <div class="col-sm-6 col-lg-4">
-                    <canvas id="pizzaTotalTypeChart"></canvas>
+                    <canvas id="pizza-total-type-chart"></canvas>
                 </div>
 
                 {% if current_pizza_orders != 'null' %} {# None is json-serialized to 'null' #}
-                <div class="col-sm-6 col-lg-4">
-                        <canvas id="pizzaCurrentTypeChart"></canvas>
-                </div>
+                    <div class="col-sm-6 col-lg-4">
+                            <canvas id="pizza-current-type-chart"></canvas>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -41,7 +41,8 @@
 {% block js_body %}
     {{ block.super }}
     {% compress js %}
-        <script type="text/javascript" src="{% static 'members/js/highcharts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'members/js/chart.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'members/js/chartjs-plugin-labels.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'members/js/statistics.js' %}"></script>
     {% endcompress %}
 {% endblock %}
