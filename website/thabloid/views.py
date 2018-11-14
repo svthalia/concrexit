@@ -15,5 +15,6 @@ def index(request):
 
 def pages(request, year, issue):
     thabloid = get_object_or_404(Thabloid, year=int(year), issue=int(issue))
-    pages = ['{}{}'.format(settings.MEDIA_URL, p) for p in thabloid.pages]
+    pages = [{'src': '{}{}'.format(settings.MEDIA_URL, p)} for p in
+             thabloid.pages]
     return JsonResponse(pages, safe=False)

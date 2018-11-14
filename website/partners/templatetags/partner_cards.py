@@ -36,7 +36,7 @@ def partner_image_card(image):
         url=thumbnail(image, settings.THUMBNAIL_SIZES['large'], fit=False),
         image_url=image_url,
         class_name=class_name,
-        anchor_attrs='rel="gallery"'
+        anchor_attrs='data-fancybox="gallery"'
     )
 
 

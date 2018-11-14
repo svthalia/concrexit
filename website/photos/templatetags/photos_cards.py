@@ -36,8 +36,8 @@ def album_card(album):
 @register.inclusion_tag('includes/grid_item.html')
 def photo_card(photo):
     class_name = 'photo-card rotate{}'.format(photo.rotation)
-    anchor_attrs = 'data-fancybox-rotation="{}" rel="gallery"'.format(
-        photo.rotation)
+    anchor_attrs = (f'data-fancybox-rotation="{photo.rotation}" '
+                    f'data-fancybox="gallery"')
 
     if photo.album.shareable:
         anchor_attrs += ' data-download={}'.format(
