@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-13 20:58+0100\n"
-"PO-Revision-Date: 2018-11-08 13:45+0100\n"
+"POT-Creation-Date: 2018-11-14 20:54+0100\n"
+"PO-Revision-Date: 2018-11-14 20:54+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -165,6 +165,14 @@ msgstr "titel"
 #: models.py
 msgid "description"
 msgstr "beschrijving"
+
+#: models.py
+msgid ""
+"Please fill in both of the description boxes (EN/NL), even if your event is "
+"Dutch only! Fill in the English description in Dutch then."
+msgstr ""
+"Vul alsjeblieft beide beschrijvingen (EN/NL) in, ook al is het evenement "
+"alleen Nederlands! Vul dan de Engelse omschrijving in het Nederlands in."
 
 #: models.py
 msgid "start time"
