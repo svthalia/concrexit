@@ -495,7 +495,7 @@ class Registration(models.Model):
 
     class Meta:
         ordering = ('date',)
-        unique_together = (('member', 'event', 'name', 'date_cancelled'),)
+        unique_together = (('member', 'event'),)
 
 
 class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):

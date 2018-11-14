@@ -292,11 +292,12 @@ class RegistrationTest(TestCase):
             map_location='test map location',
             price=0.00,
             fine=0.00)
-        cls.member = Member.objects.first()
+        cls.member1 = Member.objects.first()
+        cls.member2 = Member.objects.all()[1]
         cls.r1 = Registration.objects.create(event=cls.event,
-                                             member=cls.member)
+                                             member=cls.member1)
         cls.r2 = Registration.objects.create(event=cls.event,
-                                             member=cls.member)
+                                             member=cls.member2)
 
     def setUp(self):
         self.r1.refresh_from_db()
@@ -328,13 +329,14 @@ class RegistrationTest(TestCase):
         self.assertEqual(self.r2.queue_position, 1)
 
     def test_registration_either_name_or_member(self):
+        self.r2.delete()
         self.r1.clean()
         r2 = Registration.objects.create(event=self.event, name='test name')
         r2.clean()
         with self.assertRaises(ValidationError):
             r3 = Registration.objects.create(event=self.event,
                                              name='test name',
-                                             member=self.member)
+                                             member=self.member2)
             r3.clean()
 
     def test_would_cancel_after_deadline(self):
