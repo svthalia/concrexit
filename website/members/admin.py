@@ -92,7 +92,8 @@ class UserAdmin(BaseUserAdmin):
     form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 
-    actions = ['address_csv_export', 'student_number_csv_export']
+    actions = ['address_csv_export', 'student_number_csv_export',
+               'email_csv_export']
 
     inlines = (ProfileInline, MembershipInline,)
     list_filter = (MembershipTypeListFilter,
@@ -108,6 +109,21 @@ class UserAdmin(BaseUserAdmin):
                        'send_welcome_email')
         }),
     )
+
+    def email_csv_export(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment;\
+                                           filename="email.csv"'
+        writer = csv.writer(response)
+        writer.writerow([_('First name'), _('Last name'), _('Email')])
+        for user in queryset:
+            writer.writerow([user.first_name,
+                             user.last_name,
+                             user.email,
+                             ])
+        return response
+    email_csv_export.short_description = _('Download email addresses for '
+                                           'selected users')
 
     def address_csv_export(self, request, queryset):
         response = HttpResponse(content_type='text/csv')
