@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-11 19:17+0100\n"
-"PO-Revision-Date: 2018-11-07 20:51+0100\n"
+"POT-Creation-Date: 2018-11-14 21:52+0100\n"
+"PO-Revision-Date: 2018-11-14 21:53+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -50,9 +50,9 @@ msgstr "Documenten"
 msgid "Merchandise"
 msgstr "Merchandise"
 
-#: menus.py templates/singlepages/sister_associations.html
-msgid "Sister Associations"
-msgstr "Zusterverenigingen"
+#: menus.py templates/singlepages/sibling_associations.html
+msgid "Sibling Associations"
+msgstr "Verwante Verenigingen"
 
 #: menus.py
 msgid "Become a Member"
@@ -823,71 +823,75 @@ msgstr ""
 "nieuwe verwerkingen op grondslag van toestemming geïntroduceerd worden zal "
 "deze toestemming (opnieuw) gevraagd worden."
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Associations of the Radboud University Science Faculty"
 msgstr "Bètaverenigingen van de Radboud Universiteit"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "(Medical) Biology"
 msgstr "(Medische) Biologie"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Artificial Intelligence"
 msgstr "Kunstmatige Intelligentie"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Mathematics"
 msgstr "Wiskunde"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Science"
 msgstr "Science"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Physics and Astronomy"
 msgstr "Natuur- en Sterrekunde"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Science faculty umbrella association"
 msgstr "Overkoepelende bètavereniging"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Molecular Sciences"
 msgstr "Moleculaire Wetenschappen"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "BBB Career Event"
 msgstr "Beta Bedrijven Beurs"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
+msgid "Sister Associations"
+msgstr "Zusterverenigingen"
+
+#: templates/singlepages/sibling_associations.html
 msgid "University of Twente"
 msgstr "Universiteit Twente"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Utrecht University"
 msgstr "Universiteit Utrecht"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Delft University of Technology"
 msgstr "Technische Universiteit Delft"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "University of Groningen"
 msgstr "Rijksuniversiteit Groningen"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Leiden University"
 msgstr "Universiteit Leiden"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "Eindhoven University of Technology"
 msgstr "Technische Universiteit Eindhoven"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "University of Amsterdam"
 msgstr "Universiteit van Amsterdam"
 
-#: templates/singlepages/sister_associations.html
+#: templates/singlepages/sibling_associations.html
 msgid "VU University Amsterdam"
 msgstr "Vrije Universiteit Amsterdam"
 
