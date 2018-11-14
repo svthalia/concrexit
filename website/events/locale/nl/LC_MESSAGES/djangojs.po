@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 14:35+0200\n"
-"PO-Revision-Date: 2018-10-18 14:36+0200\n"
+"POT-Creation-Date: 2018-11-13 20:59+0100\n"
+"PO-Revision-Date: 2018-11-13 20:59+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -25,3 +25,15 @@ msgstr "Er zijn geen evenementen gepland in de geselecteerde periode."
 #: static/events/js/calendarlistview.js
 msgid "Go to event"
 msgstr "Naar de evenementpagina"
+
+#: static/events/js/main.js
+msgid "list"
+msgstr "lijst"
+
+#: static/events/js/main.js
+msgid "hide birthdays"
+msgstr "verberg verjaardagen"
+
+#: static/events/js/main.js
+msgid "show birthdays"
+msgstr "toon verjaardagen"

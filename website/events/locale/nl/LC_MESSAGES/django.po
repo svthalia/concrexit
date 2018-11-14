@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-08 13:43+0100\n"
+"POT-Creation-Date: 2018-11-13 20:58+0100\n"
 "PO-Revision-Date: 2018-11-08 13:45+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
@@ -700,8 +700,8 @@ msgid ""
 "Searching for another event? <a href=\"%(events_index)s\">Take a look at the "
 "entire agenda.</a>"
 msgstr ""
-"Op zoek naar een andere evenement? <a href=\"%(events_index)s\">Bekijk de hele "
-"agenda.</a>"
+"Op zoek naar een andere evenement? <a href=\"%(events_index)s\">Bekijk de "
+"hele agenda.</a>"
 
 #: templates/events/index.html
 msgid "iCal feed (all events)"
@@ -710,18 +710,6 @@ msgstr "iCal feed (alle evenementen)"
 #: templates/events/index.html
 msgid "iCal feed (personal)"
 msgstr "iCal feed (persoonlijk)"
-
-#: templates/events/index.html
-msgid "list"
-msgstr "lijst"
-
-#: templates/events/index.html
-msgid "hide birthdays"
-msgstr "verberg verjaardagen"
-
-#: templates/events/index.html
-msgid "show birthdays"
-msgstr "toon verjaardagen"
 
 #: templates/events/member_email.txt
 #, python-format
