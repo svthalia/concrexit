@@ -9,8 +9,8 @@ register = template.Library()
 
 @register.inclusion_tag('includes/grid_item.html')
 def thabloid_card(year, thabloid):
-    class_name = 'older'
-    if thabloid.year - 3 < year:
+    class_name = 'year-older'
+    if thabloid.year >= year - 3:
         class_name = 'year-{}'.format(thabloid.year)
 
     view_url = reverse('thabloid:pages', args=[thabloid.year, thabloid.issue])
