@@ -42,19 +42,19 @@ codestyle:
     - cd website
     - coverage report
 
-python36-django20:
+python36-django21:
   <<: *djangotest
   image: $PY36_IMAGE
   variables:
     PYTHON_VERSION: py36
-    DJANGO_VERSION: django20
+    DJANGO_VERSION: django21
 
-python37-django20:
+python37-django21:
   <<: *djangotest
   image: $PY37_IMAGE
   variables:
     PYTHON_VERSION: py37
-    DJANGO_VERSION: django20
+    DJANGO_VERSION: django21
 
 docs:
   stage: test

@@ -24,7 +24,8 @@ from . import forms, models
 def _do_next(request, response):
     """See DoNextModelAdmin"""
     if 'next' in request.GET:
-        if not is_safe_url(request.GET['next']):
+        if not is_safe_url(request.GET['next'],
+                           allowed_hosts={request.get_host()}):
             raise DisallowedRedirect
         elif '_save' in request.POST:
             return HttpResponseRedirect(request.GET['next'])
@@ -118,7 +119,6 @@ class EventAdmin(DoNextModelAdmin):
     actions = ('make_published', 'make_unpublished')
     date_hierarchy = 'start'
     search_fields = ('title', 'description')
-    prepopulated_fields = {'map_location': ('location',)}
 
     def overview_link(self, obj):
         return format_html('<a href="{link}">{title}</a>',
@@ -229,6 +229,19 @@ class EventAdmin(DoNextModelAdmin):
         actions = super(EventAdmin, self).get_actions(request)
         del actions['delete_selected']
         return actions
+
+    def get_prepopulated_fields(self, request, obj):
+        # FIXME(Django bug) move this back to a normal ``prepopulated_fields``
+        # class field when bug https://code.djangoproject.com/ticket/29929 gets
+        # fixed
+        if self.has_change_permission(request, obj):
+            return {'map_location': (f'location_en',)}
+        return super().get_prepopulated_fields(request, obj)
+
+    def get_formsets_with_inlines(self, request, obj=None):
+        for inline in self.get_inline_instances(request, obj):
+            if self.has_change_permission(request, obj) or obj is None:
+                yield inline.get_formset(request, obj), inline
 
 
 @admin.register(models.Registration)

@@ -120,11 +120,13 @@ class AdminTest(TestCase):
         self.member.save()
         response = self.client.get('/admin/events/event/1/change/')
         self.assertEqual(200, response.status_code)
+        self.assertIn('Change event', str(response.content))
 
     def test_modeladmin_change_organiser_denied(self):
         """If I'm not an organiser I should not be allowed access"""
         response = self.client.get('/admin/events/event/1/change/')
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(200, response.status_code)
+        self.assertIn('View event', str(response.content))
 
 
 class RegistrationTest(TestCase):

@@ -308,23 +308,25 @@ class RegistrationTest(TestCase):
         self.r1.date_cancelled = timezone.now()
         self.assertFalse(self.r1.is_late_cancellation())
 
-        self.event.cancel_deadline = (timezone.now() +
-                                      datetime.timedelta(hours=1))
+        self.r1.event.cancel_deadline = (timezone.now() +
+                                         datetime.timedelta(hours=1))
         self.assertFalse(self.r1.is_late_cancellation())
 
-        self.event.cancel_deadline = (timezone.now() -
-                                      datetime.timedelta(hours=1))
+        self.r1.event.cancel_deadline = (timezone.now() -
+                                         datetime.timedelta(hours=1))
         self.assertTrue(self.r1.is_late_cancellation())
 
     def test_queue_position(self):
         self.assertEqual(self.r1.queue_position, 0)
         self.assertEqual(self.r2.queue_position, 0)
 
-        self.event.max_participants = 0
+        self.r1.event.max_participants = 0
+        self.r2.event = self.r1.event
         self.assertEqual(self.r1.queue_position, 1)
         self.assertEqual(self.r2.queue_position, 2)
 
-        self.event.max_participants = 1
+        self.r1.event.max_participants = 1
+        self.r2.event = self.r1.event
         self.assertEqual(self.r1.queue_position, 0)
         self.assertEqual(self.r2.queue_position, 1)
 
@@ -340,18 +342,20 @@ class RegistrationTest(TestCase):
             r3.clean()
 
     def test_would_cancel_after_deadline(self):
-        self.event.registration_start = (timezone.now() -
+        self.r1.event.registration_start = (timezone.now() -
+                                            datetime.timedelta(hours=1))
+        self.r1.event.registration_end = (timezone.now() -
+                                          datetime.timedelta(hours=1))
+        self.r1.event.cancel_deadline = (timezone.now() -
                                          datetime.timedelta(hours=1))
-        self.event.registration_end = (timezone.now() -
-                                       datetime.timedelta(hours=1))
-        self.event.cancel_deadline = (timezone.now() -
-                                      datetime.timedelta(hours=1))
 
         # Test situation where the event status is REGISTRATION_CLOSED
-        self.assertEqual(self.r1.would_cancel_after_deadline(), True)
+        self.assertFalse(self.r1.event.registration_allowed)
+        self.assertTrue(self.r1.would_cancel_after_deadline())
 
-        self.event.registration_end = (timezone.now() +
-                                       datetime.timedelta(hours=2))
+        self.r1.event.registration_end = (timezone.now() +
+                                          datetime.timedelta(hours=2))
 
         # Test situation where the event status is REGISTRATION_OPEN_NO_CANCEL
-        self.assertEqual(self.r1.would_cancel_after_deadline(), True)
+        self.assertTrue(self.r1.event.registration_allowed)
+        self.assertTrue(self.r1.would_cancel_after_deadline())

@@ -102,17 +102,6 @@ class RegistrationAdmin(admin.ModelAdmin):
                 'can_revert': can_revert,
             })
 
-    def get_actions(self, request):
-        """
-        Get the actions for the entries
-        Hide the reviewing actions if the right permissions are missing
-        """
-        actions = super().get_actions(request)
-        if not request.user.has_perm('registrations.review_entries'):
-            del(actions['accept_selected'])
-            del(actions['reject_selected'])
-        return actions
-
     def get_readonly_fields(self, request, obj=None):
         if obj is None or not (obj.status == Entry.STATUS_REJECTED or
                                obj.status == Entry.STATUS_ACCEPTED or
@@ -147,6 +136,7 @@ class RegistrationAdmin(admin.ModelAdmin):
                 error=_('The selected registration(s) could not be rejected.')
             )
     reject_selected.short_description = _('Reject selected registrations')
+    reject_selected.allowed_permissions = ('review',)
 
     def accept_selected(self, request, queryset):
         """Accept the selected entries"""
@@ -158,6 +148,11 @@ class RegistrationAdmin(admin.ModelAdmin):
                 error=_('The selected registration(s) could not be accepted.')
             )
     accept_selected.short_description = _('Accept selected registrations')
+    accept_selected.allowed_permissions = ('review',)
+
+    def has_review_permission(self, request):
+        """Does the user have the review permission?"""
+        return request.user.has_perm('registrations.review_entries')
 
 
 @admin.register(Renewal)
