@@ -37,7 +37,10 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     description = MultilingualField(
         HTMLField,
-        _("description")
+        _("description"),
+        help_text=_("Please fill in both of the description boxes (EN/NL),"
+                    " even if your event is Dutch only! Fill in the English "
+                    "description in Dutch then.")
     )
 
     start = models.DateTimeField(_("start time"))
