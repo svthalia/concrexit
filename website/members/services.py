@@ -9,10 +9,13 @@ from members.models import Membership, Member
 from utils.snippets import datetime_to_lectureyear
 
 
-def member_achievements(member):
+def _member_group_memberships(member, skip_condition):
     memberships = member.membergroupmembership_set.all()
-    achievements = {}
+    data = {}
+
     for membership in memberships:
+        if skip_condition(membership):
+            continue
         period = {
             'since': membership.since,
             'until': membership.until,
@@ -27,17 +30,24 @@ def member_achievements(member):
             period['until'] = membership.group.board.until
 
         name = membership.group.name
-        if achievements.get(name):
-            achievements[name]['periods'].append(period)
-            if achievements[name]['earliest'] > membership.since:
-                achievements[name]['earliest'] = membership.since
-            achievements[name]['periods'].sort(key=lambda x: x['since'])
+        if data.get(name):
+            data[name]['periods'].append(period)
+            if data[name]['earliest'] > membership.since:
+                data[name]['earliest'] = membership.since
+            data[name]['periods'].sort(key=lambda x: x['since'])
         else:
-            achievements[name] = {
+            data[name] = {
                 'name': name,
                 'periods': [period],
                 'earliest': membership.since,
             }
+    return data
+
+
+def member_achievements(member):
+    achievements = _member_group_memberships(
+        member, lambda membership: hasattr(membership.group, 'society'))
+
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
         name = "Mentor in {}".format(mentor_year.year)
@@ -50,6 +60,13 @@ def member_achievements(member):
                 'earliest': earliest,
             }
     return sorted(achievements.values(), key=lambda x: x['earliest'])
+
+
+def member_societies(member):
+    societies = _member_group_memberships(member, lambda membership: (
+        hasattr(membership.group, 'board') or
+        hasattr(membership.group, 'committee')))
+    return sorted(societies.values(), key=lambda x: x['earliest'])
 
 
 def gen_stats_member_type(member_types):
