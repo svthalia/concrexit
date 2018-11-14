@@ -12,13 +12,26 @@
             <h2 class="text-center mb-4">{% trans "Total amount of Thalia members" %}: {{ total_members }}</h2>
 
             <div class="row">
-                <div class="col-sm-6 col-lg-4" id="membersTypeChart"></div>
-                <div class="col-sm-6 col-lg-4" id="totalYearChart"></div>
-                <div class="col-sm-6 col-lg-4" id="membersYearChart"></div>
-                <div class="col-sm-6 col-lg-4" id="benefactorsYearChart"></div>
-                <div class="col-sm-6 col-lg-4" id="pizzaTotalTypeChart"></div>
+                <div class="col-sm-6 col-lg-4">
+                    <canvas id="members-type-chart"></canvas>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <canvas id="total-year-chart"></canvas>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <canvas id="members-year-chart"></canvas>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <canvas id="benefactors-year-chart"></canvas>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <canvas id="pizza-total-type-chart"></canvas>
+                </div>
+
                 {% if current_pizza_orders != 'null' %} {# None is json-serialized to 'null' #}
-                    <div class="col-sm-6 col-lg-4" id="pizzaCurrentTypeChart"></div>
+                    <div class="col-sm-6 col-lg-4">
+                            <canvas id="pizza-current-type-chart"></canvas>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -28,7 +41,8 @@
 {% block js_body %}
     {{ block.super }}
     {% compress js %}
-        <script type="text/javascript" src="{% static 'members/js/highcharts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'members/js/chart.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'members/js/chartjs-plugin-labels.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'members/js/statistics.js' %}"></script>
     {% endcompress %}
 {% endblock %}
