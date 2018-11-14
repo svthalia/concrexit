@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.template.defaultfilters import floatformat
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -45,8 +46,10 @@ class Entry(models.Model):
     MEMBERSHIP_STUDY = 'study'
 
     MEMBERSHIP_LENGTHS = (
-        (MEMBERSHIP_YEAR, _('One year')),
-        (MEMBERSHIP_STUDY, _('Until graduation')),
+        (MEMBERSHIP_YEAR, _('One year') +
+         f" -- €{floatformat(settings.MEMBERSHIP_PRICES['year'], 2)}"),
+        (MEMBERSHIP_STUDY, _('Until graduation') +
+         f" -- €{floatformat(settings.MEMBERSHIP_PRICES['study'], 2)}"),
     )
 
     length = models.CharField(
