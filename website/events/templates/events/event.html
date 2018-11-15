@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bleach_tags thumbnail member_card google_map_url grid_item alert %}
+{% load i18n static bleach_tags thumbnail member_card google_map_url grid_item alert document_cards %}
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -222,6 +222,22 @@
             </div>
         </div>
     </section>
+
+    {% if event.documents.exists %}
+        <section class="page-section" id="events-documents">
+            <div class="container">
+                <h1 class="text-center section-title">{% trans "Documents" %}</h1>
+
+                <div class="row mt-4">
+                    {% for doc in event.documents.all %}
+                        <div class="col-6 col-md-2 my-3">
+                            {% event_document_card doc %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
 
     {% if user.is_authenticated and event.participants|length > 0 %}
         <section class="page-section" id="events-registrations">

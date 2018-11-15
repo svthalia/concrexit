@@ -4,8 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from documents import forms
 from documents.models import (AnnualDocument, AssociationDocument,
-                              GeneralMeeting, Minutes,
+                              EventDocument, GeneralMeeting, Minutes,
                               MiscellaneousDocument)
+from documents.services import is_owner
 from utils.translation import TranslatedModelAdmin
 
 
@@ -60,6 +61,27 @@ class AssociationDocumentAdmin(TranslatedModelAdmin):
     """Manage the association documents"""
     form = forms.AssociationDocumentForm
     list_filter = ('created', 'last_updated',)
+
+
+@admin.register(EventDocument)
+class EventDocumentAdmin(TranslatedModelAdmin):
+    """Manage the event documents"""
+    form = forms.EventDocumentForm
+    list_filter = ('created', 'last_updated',)
+
+    def has_change_permission(self, request, document=None):
+        """Only allow access to the change form if the user is an owner"""
+        if (document is not None and
+                not is_owner(request.member, document)):
+            return False
+        return super().has_change_permission(request, document)
+
+    def has_delete_permission(self, request, document=None):
+        """Only allow delete access if the user is an owner"""
+        if (document is not None and
+                not is_owner(request.member, document)):
+            return False
+        return super().has_delete_permission(request, document)
 
 
 @admin.register(MiscellaneousDocument)

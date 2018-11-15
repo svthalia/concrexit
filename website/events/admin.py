@@ -111,7 +111,8 @@ class EventAdmin(DoNextModelAdmin):
     fields = ('title', 'description', 'start', 'end', 'organiser', 'category',
               'registration_start', 'registration_end', 'cancel_deadline',
               'send_cancel_email', 'location', 'map_location', 'price', 'fine',
-              'max_participants', 'no_registration_message', 'published')
+              'max_participants', 'no_registration_message', 'published',
+              'documents',)
     list_display = ('overview_link', 'event_date', 'registration_date',
                     'num_participants', 'organiser', 'category', 'published',
                     'edit_link')
@@ -121,6 +122,7 @@ class EventAdmin(DoNextModelAdmin):
     date_hierarchy = 'start'
     search_fields = ('title', 'description')
     prepopulated_fields = {'map_location': ('location',)}
+    filter_horizontal = ('documents',)
 
     def overview_link(self, obj):
         return format_html('<a href="{link}">{title}</a>',

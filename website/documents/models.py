@@ -17,6 +17,7 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
     DOCUMENT_CATEGORIES = (
         ('annual', _('Annual document')),
         ('association', _('Association document')),
+        ('event', _('Event document')),
         ('minutes', _('Minutes')),
         ('misc', _('Miscellaneous document')),
     )
@@ -119,6 +120,23 @@ class AssociationDocument(Document):
 
     def save(self, *args, **kwargs):
         self.category = 'association'
+        super().save(*args, **kwargs)
+
+
+class EventDocument(Document):
+    """Describes a document for events"""
+    class Meta:
+        verbose_name = _('event document')
+        verbose_name_plural = _('event documents')
+
+    owner = models.ForeignKey(
+        'activemembers.MemberGroup',
+        verbose_name=_('owner'),
+        on_delete=models.CASCADE,
+    )
+
+    def save(self, *args, **kwargs):
+        self.category = 'event'
         super().save(*args, **kwargs)
 
 

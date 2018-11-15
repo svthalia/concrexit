@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 15:12+0200\n"
-"PO-Revision-Date: 2018-06-13 21:48+0200\n"
+"POT-Creation-Date: 2018-12-12 20:01+0100\n"
+"PO-Revision-Date: 2018-12-12 20:02+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -38,7 +38,11 @@ msgstr "Jaarlijks document"
 msgid "Association document"
 msgstr "Verenigingsdocument"
 
-#: models.py templates/documents/meetingyear.html
+#: models.py
+msgid "Event document"
+msgstr "Evenementdocument"
+
+#: models.py templates/documents/index.html
 msgid "Minutes"
 msgstr "Notulen"
 
@@ -70,11 +74,11 @@ msgstr "bestand"
 msgid "members only"
 msgstr "alleen voor leden"
 
-#: models.py
+#: models.py templates/documents/index.html
 msgid "Annual documents"
 msgstr "Jaarlijkse documenten"
 
-#: models.py templates/documents/index.html
+#: models.py
 msgid "Annual report"
 msgstr "Jaarverslag"
 
@@ -99,6 +103,18 @@ msgid "Miscellaneous association documents"
 msgstr "Overige verenigingsdocumenten"
 
 #: models.py
+msgid "event document"
+msgstr "evenementdocument"
+
+#: models.py
+msgid "event documents"
+msgstr "evenementdocumenten"
+
+#: models.py
+msgid "owner"
+msgstr "eigenaar"
+
+#: models.py
 msgid "Miscellaneous documents"
 msgstr "Overig documenten"
 
@@ -110,7 +126,7 @@ msgstr "Algemene ledenvergadering"
 msgid "General meetings"
 msgstr "Algemene ledenvergaderingen"
 
-#: models.py
+#: models.py templates/documents/index.html
 msgid "documents"
 msgstr "documenten"
 
@@ -145,10 +161,6 @@ msgstr ""
 "a>."
 
 #: templates/documents/index.html
-msgid "Policy Documents &amp; Annual Reports"
-msgstr "Beleidsdocumenten &amp; Jaarverslagen"
-
-#: templates/documents/index.html
 msgid ""
 "Every candidate board of Thalia drafts a policy document before being "
 "installed, to detail their plans for the next year. This also includes a "
@@ -170,14 +182,6 @@ msgstr ""
 "beleidsplannen en jaarverslagen terug te vinden."
 
 #: templates/documents/index.html
-msgid "Policy"
-msgstr "Beleidsdocument"
-
-#: templates/documents/index.html
-msgid "General Meetings"
-msgstr "Algemene Ledenvergaderingen"
-
-#: templates/documents/index.html
 msgid ""
 "The General Meetings (ALVs) can be attended by all members, honorary members "
 "and donors. Thalia organizes at least two general meetings each year. "
@@ -193,27 +197,13 @@ msgstr ""
 "is."
 
 #: templates/documents/index.html
-msgid "Earlier.."
-msgstr "Eerder.."
+msgid "Older"
+msgstr "Ouder"
 
-#: templates/documents/meetingyear.html
-#, python-format
-msgid "General Meetings of %(year)s-%(nextyear)s:"
-msgstr "ALV's van %(year)s-%(nextyear)s:"
-
-#: templates/documents/meetingyear.html
-msgid "Meeting"
+#: templates/documents/index.html
+msgid "GM"
 msgstr "ALV"
 
-#: templates/documents/meetingyear.html
-msgid "No minutes<br>available"
-msgstr "Geen notulen<br>beschikbaar"
-
-#: templates/documents/meetingyear.html
-msgid "Only signed-in users can view<br>General Meeting documents."
-msgstr "ALV-stukken zijn alleen in te zien<br>door ingelogde gebruikers."
-
-#: templates/documents/meetingyear.html
-#, python-format
-msgid "There are no General Meetings available for %(year)s-%(nextyear)s"
-msgstr "Er zijn geen ALV's beschikbaar van %(year)s-%(nextyear)s"
+#: templates/documents/index.html
+msgid "There have not been any general meetings yet."
+msgstr "Er zijn nog geen algemene ledenvergadering geweest."
