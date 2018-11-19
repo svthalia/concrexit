@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('members', '0027_auto_20181024_2000'),
-        ('events', '0027_merge_20180618_1438'),
+        ('events', '0028_auto_20181112_2002'),
     ]
 
     operations = [

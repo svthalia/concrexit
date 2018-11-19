@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 21:52+0100\n"
-"PO-Revision-Date: 2018-11-14 21:53+0100\n"
+"POT-Creation-Date: 2018-11-14 22:34+0100\n"
+"PO-Revision-Date: 2018-11-14 22:34+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -61,6 +61,10 @@ msgstr "Lid Worden"
 #: menus.py
 msgid "Thabloid"
 msgstr "Thabloid"
+
+#: menus.py
+msgid "Alumni"
+msgstr "Alumni"
 
 #: menus.py
 msgid "For Members"

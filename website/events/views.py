@@ -67,6 +67,25 @@ class EventDetail(DetailView):
         return context
 
 
+class AlumniEventsView(TemplateView):
+    """
+    Renders the alumni events page
+    """
+    template_name = 'events/alumni.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        events = Event.objects.filter(
+            published=True,
+            category=Event.CATEGORY_ALUMNI,
+            end__gte=timezone.now()
+        ).order_by('end')[:3]
+        context['events'] = events
+
+        return context
+
+
 @method_decorator(login_required, name='dispatch')
 class EventRegisterView(View):
     """

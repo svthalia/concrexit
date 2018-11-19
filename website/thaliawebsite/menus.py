@@ -28,6 +28,7 @@ MAIN_MENU = [
              'name': 'sibling-associations'},
             {'title': _('Become a Member'), 'name': 'registrations:index'},
             {'title': _('Thabloid'), 'name': 'thabloid:index'},
+            {'title': _('Alumni'), 'name': 'alumni'},
         ],
     },
     {
