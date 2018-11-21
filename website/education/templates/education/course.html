@@ -121,7 +121,7 @@
                     {% if request.user.is_authenticated %}
                         <hr>
                         <a href="{% url 'education:submit-exam' course.id %}"
-                           class="btn btn-primary">
+                           class="btn btn-primary mt-2">
                             {% trans "Submit Exam" %}
                         </a>
                         <a href="{% url 'education:submit-summary' course.id %}"
