@@ -177,7 +177,7 @@ class Registration(Entry):
         verbose_name=_('student number'),
         max_length=8,
         validators=[validators.RegexValidator(
-            regex=r'(s\d{7}|[ezu]\d{6,7})',
+            regex=r'([Ss]\d{7}|[EZUezu]\d{6,7})',
             message=_('enter a valid student- or e/z/u-number.'))],
         blank=True,
         null=True,
@@ -256,14 +256,15 @@ class Registration(Entry):
                            'Login using the existing account and renew the '
                            'membership by visiting the account settings.')})
 
-        if (self.student_number is not None and (
-            Profile.objects.filter(
+        if self.student_number is not None:
+            self.student_number = self.student_number.lower()
+            if (Profile.objects.filter(
                 student_number=self.student_number).exists()
-            or
-            Registration.objects.filter(student_number=self.student_number)
-                .exclude(pk=self.pk).exists())):
-            errors.update({
-                'student_number':
+                or
+                Registration.objects.filter(student_number=self.student_number)
+                    .exclude(pk=self.pk).exists()):
+                errors.update({
+                    'student_number':
                     _('A user with that student number already exists. '
                       'Login using the existing account and renew the '
                       'membership by visiting the account settings.')})
