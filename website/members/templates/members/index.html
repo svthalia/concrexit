@@ -18,12 +18,12 @@
                     {% endblocktrans %}
                 </p>
 
-                <form class="search-form form-inline col-lg-6 offset-lg-3 row" method="get"
+                <form class="search-form form-inline col-12 col-lg-6 offset-lg-3 row" method="get"
                       action="{% url 'members:index' %}#members-directory">
                     <input type="hidden" name="filter" value="{{ filter }}"/>
-                    <input class="form-control col-9" name="keywords" type="text" value="{{ keys }}"
+                    <input class="form-control col-12 col-md-9" name="keywords" type="text" value="{{ keys }}"
                            placeholder="{% trans "Who are you looking for?" %}"/>
-                    <input class="btn btn-lg btn-primary col-3" name="submit" type="submit"
+                    <input class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3" name="submit" type="submit"
                            value="{% trans "Search" %}"/>
                 </form>
 
