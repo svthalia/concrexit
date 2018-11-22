@@ -33,8 +33,9 @@ if os.environ.get('DJANGO_PRODUCTION'):  # pragma: nocover
 if os.environ.get('GITLAB_CI'):  # pragma: nocover
     from .testing import *  # pylint: disable=wildcard-import
 
-try:
-    initialize_app(
-        credential=credentials.Certificate(FIREBASE_CREDENTIALS))
-except ValueError as e:
-    logger.error('Firebase application failed to initialise')
+if FIREBASE_CREDENTIALS != {}:
+    try:
+        initialize_app(
+            credential=credentials.Certificate(FIREBASE_CREDENTIALS))
+    except ValueError as e:
+        logger.error('Firebase application failed to initialise')
