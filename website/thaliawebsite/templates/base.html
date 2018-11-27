@@ -12,11 +12,11 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="theme-color" content="#E62272"/>
-
-    <link rel="icon" href="{% static "img/browser/favicon.ico" %}"
-          type="image/png">
-    <link rel="icon" sizes="192x192"
-          href="{% static "img/browser/icon.png" %}">
+    {% if debug %}
+        <link rel="icon" href="{% static "img/browser/icon-debug.png" %}">
+    {% else %}
+        <link rel="icon" href="{% static "img/browser/icon.png" %}">
+    {% endif %}
     <link rel="apple-touch-icon" href="{% static "img/browser/icon.png" %}">
     <meta name="msapplication-square70x70logo"
           content="{% static "img/browser/icon-smalltile.png" %}">
@@ -31,9 +31,7 @@
           content="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{% static "img/browser/icon-largetile.png" %}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:title"
-          content="
-
-              {% block opengraph_title %}{% trans 'Study Association Thalia' %}{% endblock %}"/>
+          content="{% block opengraph_title %}{% trans 'Study Association Thalia' %}{% endblock %}"/>
     {% block opengraph %}{% endblock %}
 
     {% block css_head %}
