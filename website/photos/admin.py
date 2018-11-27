@@ -17,7 +17,7 @@ from .models import Album, Photo
 def validate_uploaded_archive(uploaded_file):
     types = ['application/gzip', 'application/zip',
              'application/x-gzip']
-    if magic.from_buffer(uploaded_file.read(), mime=True) not in types:
+    if magic.from_buffer(uploaded_file.read(1024), mime=True) not in types:
         raise ValidationError("Only zip and tar files are allowed.")
 
 
