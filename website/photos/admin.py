@@ -7,7 +7,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile
+from django.core.files.base import File
 from django.utils.translation import ugettext_lazy as _
 
 from utils.translation import TranslatedModelAdmin
@@ -17,7 +17,7 @@ from .models import Album, Photo
 def validate_uploaded_archive(uploaded_file):
     types = ['application/gzip', 'application/zip',
              'application/x-gzip']
-    if magic.from_buffer(uploaded_file.read(), mime=True) not in types:
+    if magic.from_buffer(uploaded_file.read(1024), mime=True) not in types:
         raise ValidationError("Only zip and tar files are allowed.")
 
 
@@ -66,7 +66,7 @@ def save_photo(request, archive_file, photo, album):
     photo_obj.album = album
     try:
         with extract_file(photo) as f:
-            photo_obj.file.save(new_filename, ContentFile(f.read()))
+            photo_obj.file.save(new_filename, File(f))
     except (OSError, AttributeError):
         messages.add_message(request, messages.WARNING,
                              _("Ignoring {}").format(photo_filename))
