@@ -77,7 +77,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^alumni/$', AlumniEventsView.as_view(), name='alumni'),
     url(r'^members/', include('members.urls')),
     url(r'^registration/', include('registrations.urls')),
-    url(r'^payment/', include('payments.urls')),
     url(r'^account/$', members.views.account, name='account'),
     url(r'^events/', include('events.urls')),
     url(r'^pizzas/', include('pizzas.urls')),

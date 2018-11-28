@@ -1,4 +1,4 @@
-"""Views provided by the payments package"""
+"""Admin views provided by the payments package"""
 from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.admin.views.decorators import staff_member_required
@@ -26,7 +26,7 @@ class PaymentAdminView(View):
             return redirect('admin:payments_payment_change', kwargs['pk'])
 
         result = services.process_payment(
-            payment, request.POST['type']
+            payment, request.member, request.POST['type']
         )
 
         if len(result) > 0:
@@ -35,5 +35,8 @@ class PaymentAdminView(View):
         else:
             messages.error(request, _('Could not process %s.') %
                            model_ngettext(payment, 1))
+
+        if 'next' in request.POST:
+            return redirect(request.POST['next'])
 
         return redirect('admin:payments_payment_change', kwargs['pk'])

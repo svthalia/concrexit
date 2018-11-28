@@ -18,5 +18,8 @@ class PaymentWidget(Widget):
         if value:
             payment = Payment.objects.get(pk=value)
             context['url'] = payment.get_admin_url()
-            context['processed'] = payment.processed
+            context['payment'] = payment
         return context
+
+    class Media:
+        js = ('admin/payments/js/payments.js',)

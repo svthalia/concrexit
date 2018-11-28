@@ -1,14 +1,27 @@
 {% load i18n %}
-<div class="readonly">
-  {% if widget.value %}
-    <a href="{{ url }}">
-    {% if processed %}
-      {% trans "Processed" %}
-      {% else %}
-      {% trans "Unprocessed" %}
-      {% endif %}
-    </a>
-  {% else %}
-    -
-  {% endif %}
+<div class="readonly payments-row">
+    {% if widget.value %}
+        {% if not payment.processed %}
+            <a href="{{ url }}">
+                {% trans "Unprocessed" %}
+            </a>
+             -
+            € {{ payment.amount }}
+             -
+            <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
+               data-next="true" data-type="cash_payment"
+               class="button process">{% trans "Process (cash payment)" %}</a>
+            <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
+               data-next="true" data-type="card_payment"
+               class="button process">{% trans "Process (card payment)" %}</a>
+        {% else %}
+            <a href="{{ url }}">
+                {% trans "Processed" %}
+            </a>
+             -
+            {{ payment.processing_date }} - {{ payment.get_type_display }}
+        {% endif %}
+    {% else %}
+        -
+    {% endif %}
 </div>

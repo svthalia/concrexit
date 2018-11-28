@@ -153,11 +153,13 @@ def revert_entry(entry):
     if not (entry.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]):
         return
 
+    payment = entry.payment
     entry.status = Entry.STATUS_REVIEW
     entry.updated_at = timezone.now()
+    entry.payment = None
     entry.save()
-    if entry.payment is not None:
-        entry.payment.delete()
+    if payment is not None:
+        payment.delete()
 
 
 def _create_payment_for_entry(entry):
@@ -170,10 +172,12 @@ def _create_payment_for_entry(entry):
     :rtype: Payment
     """
     amount = settings.MEMBERSHIP_PRICES[entry.length]
+    notes = 'Membership registration'
 
     try:
         renewal = entry.renewal
         membership = renewal.member.latest_membership
+        notes = 'Membership renewal'
         # Having a latest membership which has an until date implies that this
         # membership lasts/lasted till the end of the lecture year
         # This means it's possible to renew the 'year' membership
@@ -195,6 +199,7 @@ def _create_payment_for_entry(entry):
 
     return Payment.objects.create(
         amount=amount,
+        notes=notes
     )
 
 
@@ -352,6 +357,7 @@ def process_payment(payment):
 
     # If member was retrieved, then create a new membership
     if member is not None:
+        Payment.objects.filter(pk=payment.pk).update(paid_by=member)
         membership = _create_membership_from_entry(entry, member)
         entry.membership = membership
         entry.status = Entry.STATUS_COMPLETED

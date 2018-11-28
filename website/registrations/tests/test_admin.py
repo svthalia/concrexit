@@ -280,7 +280,6 @@ class RegistrationAdminTest(TestCase):
             username='johnnytest',
             payment=Payment(
                 pk='123',
-                processed=False
             )
         )
 
@@ -290,7 +289,7 @@ class RegistrationAdminTest(TestCase):
                 '/admin/payments/payment/123/change/',
                 _('Unprocessed')))
 
-        reg.payment.processed = True
+        reg.payment.type = Payment.CARD
 
         self.assertEqual(
             self.admin.payment_status(reg),
