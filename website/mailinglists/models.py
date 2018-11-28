@@ -4,8 +4,24 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from activemembers.models import MemberGroup
+from activemembers.models import MemberGroup, Board
 from members.models import Member
+from utils.snippets import datetime_to_lectureyear
+
+
+def get_automatic_mailinglists():
+    lectureyear = datetime_to_lectureyear(timezone.now())
+    list_names = ['leden', 'members', 'begunstigers', 'benefactors',
+                  'ereleden', 'honorary', 'mentors', 'activemembers',
+                  'commissievoorzitters', 'optin']
+    if Board.objects.exists():
+        for year in range(Board.objects.earliest('since').since.year,
+                          lectureyear):
+            board = Board.objects.get(since__year=year)
+            if board is not None:
+                years = str(board.since.year)[-2:] + str(board.until.year)[-2:]
+                list_names += [f'bestuur{years}', f'board{years}']
+    return list_names
 
 
 class MailingList(models.Model):
@@ -81,7 +97,8 @@ class MailingList(models.Model):
     def clean(self):
         super().clean()
         if (ListAlias.objects
-                .filter(alias=self.name).count() > 0):
+                .filter(alias=self.name).count() > 0 or
+                self.name in get_automatic_mailinglists()):
             raise ValidationError({
                 'name': _("%(model_name)s with this "
                           "%(field_label)s already exists.") % {
@@ -137,7 +154,8 @@ class ListAlias(models.Model):
     def clean(self):
         super().clean()
         if (MailingList.objects
-                .filter(name=self.alias).count() > 0):
+                .filter(name=self.alias).count() > 0 or
+                self.alias in get_automatic_mailinglists()):
             raise ValidationError({
                 'alias': _("%(model_name)s with this "
                            "%(field_label)s already exists.") % {

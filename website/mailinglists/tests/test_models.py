@@ -31,6 +31,17 @@ class MailingListTest(TestCase):
         listalias.alias = "mailalias"
         listalias.clean()
 
+    def test_no_automatic_list(self):
+        mailinglist = MailingList(
+            name="activemembers"
+        )
+
+        with self.assertRaises(ValidationError):
+            mailinglist.clean()
+
+        mailinglist.name = "activemembers1"
+        mailinglist.clean()
+
     def test_autoresponse_has_text(self):
         self.mailinglist.autoresponse_enabled = True
 
@@ -60,6 +71,15 @@ class ListAliasTest(TestCase):
 
     def test_clean_works(self):
         self.listalias.clean()
+
+    def test_no_automatic_list(self):
+        listalias = ListAlias(
+            alias="activemembers",
+            mailinglist=self.mailinglist
+        )
+
+        with self.assertRaises(ValidationError):
+            listalias.clean()
 
     def test_no_mailinglist_duplicates(self):
         m1 = MailingList(
