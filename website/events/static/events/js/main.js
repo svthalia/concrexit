@@ -1,4 +1,14 @@
+var BIRTHDAYS_COOKIE = 'showbirthdays';
+var SOURCES = {
+    events: "/api/v1/events/calendarjs",
+    birthdays: "/api/v1/members/birthdays",
+    partners: "/api/v1/partners/calendarjs",
+    unpublishedEvents: "/api/v1/events/unpublished"
+};
+
 function checkResponsiveState(calendarElement, windowWidth, view) {
+    var buttonText = gettext('show birthdays');
+    calendarElement.fullCalendar('removeEventSource', SOURCES.birthdays);
     if (windowWidth <= 768) {
         calendarElement.fullCalendar('option', 'header', {
             right: 'prev,next today'
@@ -9,33 +19,32 @@ function checkResponsiveState(calendarElement, windowWidth, view) {
                 right: 'list,agendaWeek,month prev,next today'
             });
         } else {
+            if (Cookies.get(BIRTHDAYS_COOKIE)) {
+                calendarElement.fullCalendar('addEventSource', SOURCES.birthdays);
+                buttonText = gettext('hide birthdays');
+            }
             calendarElement.fullCalendar('option', 'header', {
                 right: 'showBirthdays, list,agendaWeek,month prev,next today'
             });
         }
     }
+    $('.fc-showBirthdays-button').html(buttonText);
 }
 
 $(function () {
     var calendarElement = $('#calendar');
-    var sources = {
-        events: "/api/v1/events/calendarjs",
-        birthdays: "/api/v1/members/birthdays",
-        partners: "/api/v1/partners/calendarjs",
-        unpublishedEvents: "/api/v1/events/unpublished"
-    };
 
     var showUnpublished = calendarElement.data('show-unpublished');
     var defaultDate = calendarElement.data('default-date');
     var isAuthenticated = calendarElement.data('authenticated');
     var language = calendarElement.data('language');
 
-    var eventSources = [sources.events, sources.partners];
+    var eventSources = [SOURCES.events, SOURCES.partners];
     if (showUnpublished) {
-        eventSources.push(sources.unpublishedEvents);
+        eventSources.push(SOURCES.unpublishedEvents);
     }
-    if (Cookies.get('showbirthdays')) {
-        eventSources.push(sources.birthdays);
+    if (Cookies.get(BIRTHDAYS_COOKIE)) {
+        eventSources.push(SOURCES.birthdays);
     }
     var tmpView = ($(window).width() < 979) ? 'list' : 'agendaWeek';
     if (Cookies.get('agendaview') !== undefined) {
@@ -77,16 +86,16 @@ $(function () {
         customButtons:
             isAuthenticated ? {
                 showBirthdays: {
-                    text: Cookies.get('showbirthdays') ? gettext('hide birthdays') : gettext('show birthdays'),
+                    text: Cookies.get(BIRTHDAYS_COOKIE) ? gettext('hide birthdays') : gettext('show birthdays'),
                     click: function (e) {
-                        if (e.target.innerHTML == gettext('hide birthdays')) {
+                        if (Cookies.get(BIRTHDAYS_COOKIE)) {
                             e.target.innerHTML = gettext('show birthdays');
-                            Cookies.remove('showbirthdays');
-                            calendarElement.fullCalendar('removeEventSource', sources.birthdays);
+                            Cookies.remove(BIRTHDAYS_COOKIE);
+                            calendarElement.fullCalendar('removeEventSource', SOURCES.birthdays);
                         } else {
                             e.target.innerHTML = gettext('hide birthdays');
-                            Cookies.set('showbirthdays', 1);
-                            calendarElement.fullCalendar('addEventSource', sources.birthdays);
+                            Cookies.set(BIRTHDAYS_COOKIE, 1);
+                            calendarElement.fullCalendar('addEventSource', SOURCES.birthdays);
                         }
                     }
                 }
@@ -117,7 +126,7 @@ $(function () {
             if (view.name !== prevView) {
                 var windowWidth = $(window).width();
                 Cookies.set('agendaview', view.name);
-                checkResponsiveState(calendarElement, windowWidth, view.name);
+                checkResponsiveState(calendarElement, windowWidth, view);
             }
         }
         ,
@@ -128,7 +137,7 @@ $(function () {
             if (view !== currentView.name) {
                 calendarElement.fullCalendar('changeView', view);
             } else {
-                checkResponsiveState(calendarElement, windowWidth, currentView.name);
+                checkResponsiveState(calendarElement, windowWidth, currentView);
             }
         }
     })
