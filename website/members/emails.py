@@ -142,7 +142,7 @@ def send_expiration_announcement(dry_run=False):
                                 settings.MEMBERSHIP_PRICES['year'], 2
                             ),
                             'renewal_url': '{}{}'.format(
-                                'https://thalia.nu',
+                                settings.BASE_URL,
                                 reverse('registrations:renew')
                             )
                         })
@@ -202,7 +202,7 @@ def send_email_change_confirmation_messages(change_request):
                 'members/email/email_change_confirm.txt',
                 {
                     'confirm_link': '{}{}'.format(
-                        'https://thalia.nu',
+                        settings.BASE_URL,
                         reverse(
                             'members:email-change-confirm',
                             args=[change_request.confirm_key]
@@ -220,7 +220,7 @@ def send_email_change_confirmation_messages(change_request):
                 'members/email/email_change_verify.txt',
                 {
                     'confirm_link': '{}{}'.format(
-                        'https://thalia.nu',
+                        settings.BASE_URL,
                         reverse(
                             'members:email-change-verify',
                             args=[change_request.verify_key]

@@ -41,6 +41,3 @@ _ = [MIDDLEWARE.remove(x) for x in (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )]
-
-# Celery not needed for testing
-CELERY_ENABLED = False

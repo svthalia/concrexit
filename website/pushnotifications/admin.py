@@ -70,12 +70,14 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
     def get_fields(self, request, obj=None):
         if obj and obj.sent:
             return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                    'url', 'category', 'success', 'failure', 'time', 'task_id')
+                    'url', 'category', 'success', 'failure', 'time',
+                    'executed')
         return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                'url', 'category', 'time', 'task_id')
+                'url', 'category', 'time')
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.sent:
             return ('users', 'title_nl', 'title_en', 'body_nl', 'body_en',
-                    'url', 'category', 'success', 'failure', 'time', 'task_id')
-        return 'task_id',
+                    'url', 'category', 'success', 'failure', 'time',
+                    'executed')
+        return 'executed',

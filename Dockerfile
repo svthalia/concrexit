@@ -56,10 +56,8 @@ RUN pip install --no-cache-dir \
 # Create entry points
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY resources/entrypoint_production.sh /usr/local/bin/entrypoint_production.sh
-COPY resources/entrypoint_celery.sh /usr/local/bin/entrypoint_celery.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh && \
-    chmod +x /usr/local/bin/entrypoint_production.sh && \
-    chmod +x /usr/local/bin/entrypoint_celery.sh
+    chmod +x /usr/local/bin/entrypoint_production.sh
 
 # copy app source
 COPY website /usr/src/app/website/

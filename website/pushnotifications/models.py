@@ -1,13 +1,13 @@
 """The models defined by the pushnotifications package"""
+import datetime
+
 from django.conf import settings
 from django.db import models
 from django.utils.translation import override
 from django.utils.translation import ugettext_lazy as _
-from pyfcm import FCMNotification
+from firebase_admin import messaging
 
-from utils.tasks import revoke_task, schedule_task
 from utils.translation import MultilingualField, ModelTranslateMeta
-from .tasks import send_message
 
 
 class Category(models.Model, metaclass=ModelTranslateMeta):
@@ -77,7 +77,7 @@ class MessageManager(models.Manager):
 
     def get_queryset(self):
         return (super().get_queryset()
-                .filter(scheduledmessage__task_id=None))
+                .filter(scheduledmessage__scheduled=None))
 
 
 class Message(models.Model, metaclass=ModelTranslateMeta):
@@ -127,10 +127,9 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
 
     def send(self, **kwargs):
         if self:
-            any_reg_ids = False
             success_total = 0
             failure_total = 0
-            result_list = []
+            ttl = kwargs.get('ttl', 3600)
 
             for lang in settings.LANGUAGES:
                 with override(lang[0]):
@@ -142,52 +141,46 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                             language=lang[0]
                         ).values_list('registration_id', flat=True))
 
-                    if len(reg_ids) == 0:
-                        continue
-
-                    any_reg_ids = True
-
-                    data = {}
+                    data = kwargs.get('data', {})
                     if self.url is not None:
                         data['url'] = self.url
 
-                    result = FCMNotification(
-                        api_key=settings.PUSH_NOTIFICATIONS_API_KEY
-                    ).notify_multiple_devices(
-                        registration_ids=reg_ids,
-                        message_title=self.title,
-                        message_body=str(self.body),
-                        color='#E62272',
-                        sound='default',
-                        data_message=data,
-                        **kwargs
+                    message = messaging.Message(
+                        notification=messaging.Notification(
+                            title=self.title,
+                            body=str(self.body),
+                        ),
+                        data=data,
+                        android=messaging.AndroidConfig(
+                            ttl=datetime.timedelta(seconds=ttl),
+                            priority='normal',
+                            notification=messaging.AndroidNotification(
+                                color='#E62272',
+                                sound='default',
+                            ),
+                        ),
                     )
 
-                    results = result['results']
-                    for (index, item) in enumerate(results):
-                        if 'error' in item:
-                            reg_id = reg_ids[index]
+                    for reg_id in reg_ids:
+                        message.token = reg_id
+                        try:
+                            messaging.send(message, dry_run=kwargs.get(
+                                'dry_run', False))
+                            success_total += 1
+                        except messaging.ApiCallError as e:
+                            failure_total += 1
+                            d = Device.objects.filter(registration_id=reg_id)
+                            if e.code == 'registration-token-not-registered':
+                                d.delete()
+                            elif (e.code == 'invalid-argument'
+                                    or e.code == 'invalid-recipient'
+                                    or e.code == 'invalid-registration-token'):
+                                d.update(active=False)
 
-                            if (item['error'] == 'NotRegistered'
-                                    or item['error'] == 'InvalidRegistration'):
-                                Device.objects.filter(
-                                    registration_id=reg_id).delete()
-                            else:
-                                Device.objects.filter(
-                                    registration_id=reg_id
-                                ).update(active=False)
-
-                    success_total += result['success']
-                    failure_total += result['failure']
-                    result_list.append(result)
-
-            if any_reg_ids:
-                self.sent = True
-                self.success = success_total
-                self.failure = failure_total
-                self.save()
-
-            return result_list
+            self.sent = True
+            self.success = success_total
+            self.failure = failure_total
+            self.save()
         return None
 
 
@@ -203,30 +196,6 @@ class ScheduledMessage(Message, metaclass=ModelTranslateMeta):
 
     objects = ScheduledMessageManager()
 
-    task_id = models.CharField(max_length=50, blank=True, null=True)
+    scheduled = models.BooleanField(default=True)
     time = models.DateTimeField()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._time = self.time
-
-    def schedule(self):
-        """Schedules a Celery task to send this message"""
-        return schedule_task(send_message, args=(self.pk,), eta=self.time)
-
-    def save(self, *args, **kwargs):
-        """Custom save method which also schedules the task"""
-
-        if not (self._time == self.time):
-            if self.task_id:
-                # Revoke that task in case its time has changed
-                revoke_task(self.task_id)
-            super().save(*args, **kwargs)
-            self.task_id = self.schedule()
-
-        super().save(*args, **kwargs)
-
-    def delete(self, using=None, keep_parents=False):
-        if self.task_id:
-            revoke_task(self.task_id)
-        return super().delete(using, keep_parents)
+    executed = models.DateTimeField(null=True)
