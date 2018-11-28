@@ -30,6 +30,7 @@ SECRET_KEY = '#o-0d1q5&^&06tn@8pr1f(n3$crafd++^%sacao7hj*ea@c)^t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+INTERNAL_IPS = ['127.0.0.1']
 
 if not DEBUG:  # Django 1.10.3 security release changed behaviour
     ALLOWED_HOSTS = []
