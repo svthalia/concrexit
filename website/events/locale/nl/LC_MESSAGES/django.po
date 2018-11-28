@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 22:31+0100\n"
-"PO-Revision-Date: 2018-11-14 22:33+0100\n"
+"POT-Creation-Date: 2018-11-28 19:43+0100\n"
+"PO-Revision-Date: 2018-11-28 19:45+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -162,9 +162,9 @@ msgstr "Feest"
 msgid "Other"
 msgstr "Overig"
 
-#: models.py templates/events/event.html
-msgid "No registration required"
-msgstr "Geen aanmelding vereist"
+#: models.py
+msgid "No registration required / Geen aanmelding vereist"
+msgstr "No registration required / Geen aanmelding vereist"
 
 #: models.py templates/events/admin/details.html
 msgid "title"
@@ -699,6 +699,10 @@ msgstr "Login"
 #: templates/events/event.html
 msgid "You have to log in before you can register for this event."
 msgstr "Je moet inloggen voordat je jezelf kunt aanmelden."
+
+#: templates/events/event.html
+msgid "No registration required"
+msgstr "Geen aanmelding vereist"
 
 #: templates/events/event.html
 #, python-format
