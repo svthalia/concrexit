@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2018-02-12 14:08+0100\n"
+"POT-Creation-Date: 2018-11-27 18:25+0100\n"
+"PO-Revision-Date: 2018-11-27 18:26+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,79 +16,87 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2\n"
 
-#: payments/admin.py
+#: admin.py
 msgid "Process selected payments (cash)"
 msgstr "Verwerk geselecteerde betalingen (contant)"
 
-#: payments/admin.py
+#: admin.py
 msgid "Process selected payments (card)"
 msgstr "Verwerk geselecteerde betalingen (pin)"
 
-#: payments/admin.py payments/tests/test_admin.py
+#: admin.py tests/test_admin.py
 #, python-format
 msgid "Successfully processed %(count)d %(items)s."
 msgstr "%(count)d %(items)s succesvol verwerkt."
 
-#: payments/admin.py
+#: admin.py
 msgid "The selected payment(s) could not be processed."
 msgstr "De geselecteerde betaling(en) konden niet worden verwerkt."
 
-#: payments/apps.py
-msgid "Payments"
-msgstr "Betalingen"
-
-#: payments/models.py
-msgid "created at"
-msgstr "aangemaakt op"
-
-#: payments/models.py
-msgid "Cash payment"
-msgstr "Contante betaling"
-
-#: payments/models.py
-msgid "Card payment"
-msgstr "Pin betaling"
-
-#: payments/models.py
-msgid "type"
-msgstr "type"
-
-#: payments/models.py
-msgid "processed"
-msgstr "verwerkt"
-
-#: payments/models.py
-msgid "processing date"
-msgstr "verwerkingsdatum"
-
-#: payments/models.py
-msgid "payment"
-msgstr "betaling"
-
-#: payments/models.py
-msgid "payments"
-msgstr "betalingen"
-
-#: payments/models.py
-msgid "Process payments"
-msgstr "Verwerk betalingen"
-
-#: payments/templates/admin/payments/change_form.html
-msgid "Process (cash payment)"
-msgstr "Verwerk (contant)"
-
-#: payments/templates/admin/payments/change_form.html
-msgid "Process (card payment)"
-msgstr "Verwerk (pin)"
-
-#: payments/tests/test_views.py payments/views.py
+#: admin_views.py tests/test_admin_views.py
 #, python-format
 msgid "Successfully processed %s."
 msgstr "%s succesvol verwerkt."
 
-#: payments/tests/test_views.py payments/views.py
+#: admin_views.py tests/test_admin_views.py
 #, python-format
 msgid "Could not process %s."
 msgstr "%s kon niet worden verwerkt."
+
+#: apps.py
+msgid "Payments"
+msgstr "Betalingen"
+
+#: models.py
+msgid "created at"
+msgstr "aangemaakt op"
+
+#: models.py
+msgid "No payment"
+msgstr "Geen betaling"
+
+#: models.py
+msgid "Cash payment"
+msgstr "Contante betaling"
+
+#: models.py
+msgid "Card payment"
+msgstr "Pin betaling"
+
+#: models.py
+msgid "type"
+msgstr "type"
+
+#: models.py
+msgid "processing date"
+msgstr "verwerkingsdatum"
+
+#: models.py
+msgid "payment"
+msgstr "betaling"
+
+#: models.py
+msgid "payments"
+msgstr "betalingen"
+
+#: models.py
+msgid "Process payments"
+msgstr "Verwerk betalingen"
+
+#: templates/admin/payments/change_form.html templates/payments/widget.html
+msgid "Process (cash payment)"
+msgstr "Verwerk (contant)"
+
+#: templates/admin/payments/change_form.html templates/payments/widget.html
+msgid "Process (card payment)"
+msgstr "Verwerk (pin)"
+
+#: templates/payments/widget.html
+msgid "Unprocessed"
+msgstr "Onverwerkt"
+
+#: templates/payments/widget.html
+msgid "Processed"
+msgstr "Verwerkt"

@@ -17,6 +17,14 @@ payments.admin module
     :undoc-members:
     :show-inheritance:
 
+payments.admin\_views module
+----------------------------
+
+.. automodule:: payments.admin_views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 payments.apps module
 --------------------
 
@@ -37,22 +45,6 @@ payments.services module
 ------------------------
 
 .. automodule:: payments.services
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-payments.urls module
---------------------
-
-.. automodule:: payments.urls
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-payments.views module
----------------------
-
-.. automodule:: payments.views
     :members:
     :undoc-members:
     :show-inheritance:

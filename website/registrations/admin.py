@@ -27,7 +27,7 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'email', 'status',
                     'created_at', 'payment_status')
-    list_filter = ('status', 'programme', 'payment__processed',
+    list_filter = ('status', 'programme', 'payment__type',
                    'payment__amount')
     search_fields = ('first_name', 'last_name', 'email', 'phone_number',
                      'student_number',)
@@ -161,7 +161,7 @@ class RenewalAdmin(RegistrationAdmin):
 
     list_display = ('name', 'email', 'status',
                     'created_at', 'payment_status',)
-    list_filter = ('status', 'payment__processed', 'payment__amount')
+    list_filter = ('status', 'payment__type', 'payment__amount')
     search_fields = ('member__first_name', 'member__last_name',
                      'member__email', 'member__profile__phone_number',
                      'member__profile__student_number',)

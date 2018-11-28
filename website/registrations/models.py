@@ -77,7 +77,7 @@ class Entry(models.Model):
     payment = models.OneToOneField(
         'payments.Payment',
         related_name='registrations_entry',
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         blank=True,
         null=True,
     )

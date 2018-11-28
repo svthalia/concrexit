@@ -14,8 +14,8 @@
 {% block submit_buttons_bottom %}
     {% if payment %}
     <div class="submit-row payments-row">
-        <a data-href="{% url 'payments:admin-process' pk=payment.pk %}" data-type="cash_payment" class="button process">{% trans "Process (cash payment)" %}</a>
-        <a data-href="{% url 'payments:admin-process' pk=payment.pk %}" data-type="card_payment" class="button process">{% trans "Process (card payment)" %}</a>
+        <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}" data-type="cash_payment" class="button process">{% trans "Process (cash payment)" %}</a>
+        <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}" data-type="card_payment" class="button process">{% trans "Process (card payment)" %}</a>
     </div>
     {% endif %}
 

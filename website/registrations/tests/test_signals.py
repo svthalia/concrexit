@@ -16,7 +16,7 @@ class ServicesTest(TestCase):
 
     @mock.patch('registrations.services.process_payment')
     def test_post_payment_save(self, process_payment):
-        self.payment.processed = True
+        self.payment.type = Payment.CARD
         self.payment.save()
 
         process_payment.assert_called_with(self.payment)

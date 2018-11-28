@@ -4,7 +4,6 @@ from unittest.mock import Mock
 from django.contrib import messages
 from django.contrib.admin import AdminSite
 from django.contrib.admin.utils import model_ngettext
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpRequest
@@ -12,6 +11,7 @@ from django.test import TestCase, SimpleTestCase, Client, RequestFactory
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from members.models import Member, Profile
 from payments import admin
 from payments.models import Payment
 
@@ -36,10 +36,14 @@ class PaymentAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = get_user_model().objects.create_user(
-            username='username',
-            is_staff=True,
-        )
+        cls.user = Member.objects.create(
+                username='test1',
+                first_name='Test1',
+                last_name='Example',
+                email='test1@example.org',
+                is_staff=True,
+            )
+        Profile.objects.create(user=cls.user)
 
     def setUp(self):
         self.client = Client()
@@ -72,7 +76,6 @@ class PaymentAdminTest(TestCase):
     def test_changeform_view(self, payment_get):
         object_id = 'c85ea333-3508-46f1-8cbb-254f8c138020'
         payment = Payment.objects.create(pk=object_id,
-                                         processed=False,
                                          amount=7.5)
         payment_get.return_value = payment
 
@@ -94,7 +97,7 @@ class PaymentAdminTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['payment'], payment)
 
-        payment.processed = True
+        payment.type = Payment.CARD
 
         response = self.client.get('/admin/payments/payment/{}/change/'
                                    .format(object_id))
@@ -107,7 +110,6 @@ class PaymentAdminTest(TestCase):
     def test_process_cash(self, process_payment, message_user):
         object_id = 'c85ea333-3508-46f1-8cbb-254f8c138020'
         payment = Payment.objects.create(pk=object_id,
-                                         processed=False,
                                          amount=7.5)
         queryset = Payment.objects.filter(pk=object_id)
         process_payment.return_value = [payment]
@@ -132,7 +134,8 @@ class PaymentAdminTest(TestCase):
         process_payment.assert_not_called()
 
         self.admin.process_cash_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, Payment.CASH)
+        process_payment.assert_called_once_with(queryset,
+                                                self.user, Payment.CASH)
         message_user.assert_called_once_with(
             request_hasperms,
             _('Successfully processed %(count)d %(items)s.')
@@ -147,7 +150,6 @@ class PaymentAdminTest(TestCase):
     def test_process_card(self, process_payment, message_user):
         object_id = 'c85ea333-3508-46f1-8cbb-254f8c138020'
         payment = Payment.objects.create(pk=object_id,
-                                         processed=False,
                                          amount=7.5)
         queryset = Payment.objects.filter(pk=object_id)
         process_payment.return_value = [payment]
@@ -172,7 +174,8 @@ class PaymentAdminTest(TestCase):
         process_payment.assert_not_called()
 
         self.admin.process_card_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, Payment.CARD)
+        process_payment.assert_called_once_with(queryset,
+                                                self.user, Payment.CARD)
         message_user.assert_called_once_with(
             request_hasperms,
             _('Successfully processed %(count)d %(items)s.')
@@ -197,3 +200,7 @@ class PaymentAdminTest(TestCase):
         self.assertCountEqual(actions, ['delete_selected',
                                         'process_cash_selected',
                                         'process_card_selected'])
+
+    def test_get_urls(self):
+        urls = self.admin.get_urls()
+        self.assertEqual(urls[0].name, 'payments_payment_process')
