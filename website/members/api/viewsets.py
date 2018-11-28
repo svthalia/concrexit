@@ -6,9 +6,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from members.api.serializers import (MemberBirthdaySerializer,
-                                     MemberRetrieveSerializer,
                                      MemberListSerializer,
-                                     ProfileSerializer)
+                                     ProfileRetrieveSerializer,
+                                     ProfileEditSerializer)
 from members.models import Member
 from utils.snippets import extract_date_range
 
@@ -24,9 +24,12 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet,
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
-            return MemberRetrieveSerializer
+            if (self.is_self_reference() or
+                    self.request.user.has_perm('members.change_profile')):
+                return ProfileEditSerializer
+            return ProfileRetrieveSerializer
         elif self.action.endswith('update'):
-            return ProfileSerializer
+            return ProfileEditSerializer
         return MemberListSerializer
 
     def get_queryset(self):
@@ -42,20 +45,17 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet,
                 lookup_arg in ('me', str(self.request.member.pk)))
 
     def get_permissions(self):
-        if not self.action.endswith('update') or self.is_self_reference():
+        if (self.action and (not self.action.endswith('update')
+                             or self.is_self_reference())):
             return [permissions.IsAuthenticated()]
         else:
             return [permissions.DjangoModelPermissions()]
 
     def get_object(self):
         if self.is_self_reference():
-            member = self.request.member
+            return self.request.member.profile
         else:
-            member = super().get_object()
-
-        if self.action.endswith('update'):
-            return member.profile
-        return member
+            return super().get_object().profile
 
     def _get_birthdays(self, member, start, end):
         birthdays = []
