@@ -16,4 +16,9 @@ class Migration(migrations.Migration):
             name='payment',
             field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='registrations_entry', to='payments.Payment'),
         ),
+        migrations.AlterField(
+            model_name='registration',
+            name='student_number',
+            field=models.CharField(blank=True, max_length=8, null=True, validators=[django.core.validators.RegexValidator(message='enter a valid student- or e/z/u-number.', regex='([Ss]\\d{7}|[EZUezu]\\d{6,7})')], verbose_name='student number'),
+        ),
     ]
