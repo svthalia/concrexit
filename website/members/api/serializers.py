@@ -8,7 +8,7 @@ from rest_framework import serializers
 
 from events.api.serializers import CalenderJSSerializer
 from members.models import Member, Profile
-from members.services import member_achievements
+from members.services import member_achievements, member_societies
 from thaliawebsite.api.services import create_image_thumbnail_dict
 from utils.templatetags.thumbnail import thumbnail
 
@@ -56,7 +56,8 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
         model = Member
         fields = ('pk', 'display_name', 'photo', 'avatar',
                   'profile_description', 'birthday', 'starting_year',
-                  'programme', 'website', 'membership_type', 'achievements')
+                  'programme', 'website', 'membership_type', 'achievements',
+                  'societies')
 
     display_name = serializers.SerializerMethodField('_display_name')
     photo = serializers.SerializerMethodField('_b64_photo')
@@ -69,6 +70,7 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
     website = serializers.SerializerMethodField('_website')
     membership_type = serializers.SerializerMethodField('_membership_type')
     achievements = serializers.SerializerMethodField('_achievements')
+    societies = serializers.SerializerMethodField('_societies')
 
     def _display_name(self, instance):
         return instance.profile.display_name()
@@ -98,6 +100,9 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
 
     def _achievements(self, instance):
         return member_achievements(instance)
+
+    def _societies(self, instance):
+        return member_societies(instance)
 
     def _b64_photo(self, instance):
         if instance.profile.photo:
