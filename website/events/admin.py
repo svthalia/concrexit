@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Registers admin interfaces for the events module"""
 from django.contrib import admin
-from django.core.exceptions import DisallowedRedirect
+from django.core.exceptions import DisallowedRedirect, PermissionDenied
 from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
@@ -248,6 +248,25 @@ class EventAdmin(DoNextModelAdmin):
 class RegistrationAdmin(DoNextModelAdmin):
     """Custom admin for registrations"""
 
+    def save_model(self, request, registration, form, change):
+        if not services.is_organiser(request.member, registration.event):
+            raise PermissionDenied
+        return super().save_model(request, registration, form, change)
+
+    def has_change_permission(self, request, registration=None):
+        """Only give change permission if the user is an organiser"""
+        if (registration is not None and
+                not services.is_organiser(request.member, registration.event)):
+            return False
+        return super().has_change_permission(request, registration)
+
+    def has_delete_permission(self, request, registration=None):
+        """Only give delete permission if the user is an organiser"""
+        if (registration is not None and
+                not services.is_organiser(request.member, registration.event)):
+            return False
+        return super().has_delete_permission(request, registration)
+
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         """Customise the formfields of event and member"""
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
@@ -265,6 +284,13 @@ class RegistrationAdmin(DoNextModelAdmin):
             if request.GET.get('event_pk'):
                 kwargs['queryset'] = models.Event.objects.filter(
                     pk=int(request.GET['event_pk']))
+            else:
+                kwargs['queryset'] = models.Event.objects
+            # restrict to events organised by user
+            if not (request.user.is_superuser or
+                    request.user.has_perm('events.override_organiser')):
+                kwargs['queryset'] = kwargs['queryset'].filter(
+                        organiser__in=request.member.get_member_groups())
         elif db_field.name == 'member':
             # Filter the queryset to current members only
             kwargs['queryset'] = Member.current_members.all()
