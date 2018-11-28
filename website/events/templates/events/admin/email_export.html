@@ -1,20 +1,8 @@
-{% extends 'admin/index.html' %}
+{% extends 'admin/base_site.html' %}
 {% load i18n admin_urls static admin_modify %}
 
-{% block title %}{{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
-{% block opengraph_title %}{{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
-
-{% block extrastyle %}
-    {{ block.super }}
-    <link href="{% static "events/css/admin.css" %}" rel="stylesheet" type="text/css">
-{% endblock %}
-
-{% block extrahead %}
-    {{ block.super }}
-    <script type="text/javascript" src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
-    <script type="text/javascript" src="{% static "events/js/admin.js" %}"></script>
-{% endblock %}
+{% block title %}{% trans "Export email addresses of registrants" %} | {{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
+{% block opengraph_title %}{% trans "Export email addresses of registrants" %} | {{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
 
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Thalia administration') }}</a></h1>
@@ -24,8 +12,8 @@
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'home'|capfirst %}</a>
     &rsaquo; <a href="{% url 'admin:app_list' app_label='events' %}">{% trans 'events'|capfirst %}</a>
-    &rsaquo; <a href="/admin/events/event/">{% trans 'events'|capfirst %}</a>
-    &rsaquo; <a href="{%  url 'events:admin-details' event.pk %}">{{ event.title }}</a>
+    &rsaquo; <a href="{% url 'admin:events_event_changelist' %}">{% trans 'events'|capfirst %}</a>
+    &rsaquo; <a href="{% url 'admin:events_event_details' event.pk %}">{{ event.title }}</a>
     &rsaquo; {% trans "Export email addresses of registrants" %}
 </div>
 {% endblock %}

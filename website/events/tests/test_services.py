@@ -2,6 +2,7 @@ from datetime import timedelta, datetime
 from unittest import mock
 
 from django.contrib.auth.models import AnonymousUser, Permission
+from django.http import HttpRequest
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
@@ -349,8 +350,11 @@ class ServicesTest(TestCase):
             "update_registration": False,
         }
 
+        mock_request = HttpRequest()
+        mock_request.member = self.member
+
         with self.assertRaises(RegistrationError):
-            services.registration_fields(self.member, self.event)
+            services.registration_fields(mock_request, self.member, self.event)
 
         Registration.objects.create(
             event=self.event,
@@ -358,7 +362,7 @@ class ServicesTest(TestCase):
         )
 
         with self.assertRaises(RegistrationError):
-            services.registration_fields(self.member, self.event)
+            services.registration_fields(mock_request, self.member, self.event)
 
         perms_mock.return_value["update_registration"] = True
 
@@ -391,7 +395,8 @@ class ServicesTest(TestCase):
         # set order
         self.event.set_registrationinformationfield_order([1, 2, 3])
 
-        fields = services.registration_fields(self.member, self.event)
+        fields = services.registration_fields(
+            mock_request, self.member, self.event)
 
         self.assertEqual(fields['info_field_1'], {
             'type': 'integer',

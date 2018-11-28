@@ -5,7 +5,7 @@ from django.core.exceptions import DisallowedRedirect
 from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
-from django.urls import reverse
+from django.urls import reverse, path
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.html import format_html
@@ -19,6 +19,7 @@ from pizzas.models import PizzaEvent
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import TranslatedModelAdmin
 from . import forms, models
+import events.admin_views as admin_views
 
 
 def _do_next(request, response):
@@ -122,8 +123,8 @@ class EventAdmin(DoNextModelAdmin):
 
     def overview_link(self, obj):
         return format_html('<a href="{link}">{title}</a>',
-                           link=reverse('events:admin-details',
-                                        kwargs={'event_id': obj.pk}),
+                           link=reverse('admin:events_event_details',
+                                        kwargs={'pk': obj.pk}),
                            title=obj.title)
 
     def has_change_permission(self, request, event=None):
@@ -242,6 +243,28 @@ class EventAdmin(DoNextModelAdmin):
         for inline in self.get_inline_instances(request, obj):
             if self.has_change_permission(request, obj) or obj is None:
                 yield inline.get_formset(request, obj), inline
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:pk>/details/',
+                 self.admin_site.admin_view(
+                     admin_views.EventAdminDetails.as_view()),
+                 name='events_event_details'),
+            path('<int:pk>/export/',
+                 self.admin_site.admin_view(
+                     admin_views.EventRegistrationsExport.as_view()),
+                 name='events_event_export'),
+            path('<int:pk>/export-email/',
+                 self.admin_site.admin_view(
+                     admin_views.EventRegistrationEmailsExport.as_view()),
+                 name='events_event_export_email'),
+            path('<int:pk>/all-present/',
+                 self.admin_site.admin_view(
+                     admin_views.EventRegistrationsMarkPresent.as_view()),
+                 name='events_event_all_present'),
+        ]
+        return custom_urls + urls
 
 
 @admin.register(models.Registration)

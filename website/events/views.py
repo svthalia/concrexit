@@ -148,8 +148,8 @@ class RegistrationView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["fields"] = services.registration_fields(self.request.member,
-                                                        self.event)
+        kwargs["fields"] = services.registration_fields(
+            self.request, self.request.member, self.event)
         return kwargs
 
     def form_valid(self, form):

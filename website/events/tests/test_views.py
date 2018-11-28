@@ -61,24 +61,23 @@ class AdminTest(TestCase):
     def test_admin_details_need_change_event_access(self):
         """I need the event.change_event permission to do stuff"""
         self._remove_event_permission()
-        response = self.client.get('/events/admin/1/')
-        self.assertEqual(302, response.status_code)
-        self.assertTrue(response.url.startswith('/login/'))
+        response = self.client.get('/admin/events/event/1/details/')
+        self.assertEqual(403, response.status_code)
 
     def test_admin_details_organiser_denied(self):
-        response = self.client.get('/events/admin/1/')
+        response = self.client.get('/admin/events/event/1/details/')
         self.assertEqual(403, response.status_code)
 
     def test_admin_details_organiser_allowed(self):
         MemberGroupMembership.objects.create(
             member=self.member,
             group=self.committee)
-        response = self.client.get('/events/admin/1/')
+        response = self.client.get('/admin/events/event/1/details/')
         self.assertEqual(200, response.status_code)
 
     def test_admin_details_override_organiser_allowed(self):
         self._add_override_organiser_permission()
-        response = self.client.get('/events/admin/1/')
+        response = self.client.get('/admin/events/event/1/details/')
         self.assertEqual(200, response.status_code)
 
     def test_modeladmin_change_organiser_allowed(self):
