@@ -64,6 +64,7 @@ def course(request, id):
             items[summary.year]['summaries'].append({
                 "year": summary.year,
                 "name": f'{ _("Summary") } { summary.name }',
+                "language": summary.language,
                 "id": summary.id
             })
         for exam in course.exam_set.filter(accepted=True):
@@ -75,6 +76,7 @@ def course(request, id):
                 "type": "exam",
                 "year": exam.year, "name":
                     f"{ exam.get_type_display() } { exam.name }",
+                "language": exam.language,
                 "id": exam.id
             })
 
