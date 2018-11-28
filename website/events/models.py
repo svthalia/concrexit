@@ -38,7 +38,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         (CATEGORY_PARTY, _('Party')),
         (CATEGORY_OTHER, _('Other')))
 
-    DEFAULT_NO_REGISTRATION_MESSAGE = _('No registration required')
+    DEFAULT_NO_REGISTRATION_MESSAGE = _('No registration required / '
+                                        'Geen aanmelding vereist')
 
     title = MultilingualField(
         models.CharField,
