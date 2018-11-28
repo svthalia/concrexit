@@ -1,7 +1,4 @@
-from base64 import b64encode
-
 from django.conf import settings
-from django.contrib.staticfiles.finders import find as find_static_file
 from django.templatetags.static import static
 from django.urls import reverse
 from rest_framework import serializers
@@ -54,13 +51,11 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
 class MemberRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
-        fields = ('pk', 'display_name', 'photo', 'avatar',
-                  'profile_description', 'birthday', 'starting_year',
-                  'programme', 'website', 'membership_type', 'achievements',
-                  'societies')
+        fields = ('pk', 'display_name', 'avatar', 'profile_description',
+                  'birthday', 'starting_year', 'programme', 'website',
+                  'membership_type', 'achievements', 'societies')
 
     display_name = serializers.SerializerMethodField('_display_name')
-    photo = serializers.SerializerMethodField('_b64_photo')
     avatar = serializers.SerializerMethodField('_avatar')
     profile_description = serializers.SerializerMethodField(
             '_profile_description')
@@ -103,19 +98,6 @@ class MemberRetrieveSerializer(serializers.ModelSerializer):
 
     def _societies(self, instance):
         return member_societies(instance)
-
-    def _b64_photo(self, instance):
-        if instance.profile.photo:
-            photo = ''.join(
-                    ['data:image/jpeg;base64,',
-                     b64encode(instance.profile.photo.file.read()).decode()])
-        else:
-            filename = find_static_file('members/images/default-avatar.jpg')
-            with open(filename, 'rb') as f:
-                photo = ''.join(['data:image/jpeg;base64,',
-                                 b64encode(f.read()).decode()])
-
-        return photo
 
     def _avatar(self, instance):
         placeholder = self.context['request'].build_absolute_uri(
