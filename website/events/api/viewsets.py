@@ -187,8 +187,14 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
         return super().get_serializer(*args, **kwargs)
 
     def perform_update(self, serializer):
-        super().perform_update(serializer)
         registration = serializer.instance
+
+        if services.is_organiser(self.request.member, registration.event):
+            services.update_registration_by_organiser(
+                registration,
+                self.request.member,
+                serializer.validated_data)
+
         services.update_registration(registration.member,
                                      registration.event,
                                      serializer.field_values())
