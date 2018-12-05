@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-28 13:44+0200\n"
-"PO-Revision-Date: 2018-09-28 13:45+0200\n"
+"POT-Creation-Date: 2018-12-05 19:46+0100\n"
+"PO-Revision-Date: 2018-12-05 19:47+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: admin.py models.py
 msgid "List aliasses"
@@ -136,6 +136,11 @@ msgstr "Alternatieve naam"
 msgid "Enter an alternative name for the list."
 msgstr "Vul een alternatieve naam voor de lijst in."
 
+#: models.py
+#, python-brace-format
+msgid "List alias {alias} for {list}"
+msgstr "Lijstalias {alias} voor {list}"
+
 #: templates/admin/mailinglists/change_list.html
 msgid "Automatically generated mailing lists"
 msgstr "Automatisch gegenereerde mailinglijsten"
@@ -213,6 +218,14 @@ msgstr ""
 "Alle oud besturen krijgen een eigen niet gearchiveerde, niet gemodereerde "
 "lijst. Bijvoorbeeld, het bestuur van het collegejaar 2014 - 2015 heeft "
 "bestuur1415 en board1415."
+
+#: templates/admin/mailinglists/change_list.html
+msgid ""
+"Archived moderated list that can be used to send mail to all previous board "
+"members."
+msgstr ""
+"Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
+"alle oud-bestuursleden."
 
 #: templates/admin/mailinglists/change_list.html
 msgid ""

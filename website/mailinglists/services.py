@@ -56,19 +56,28 @@ def get_automatic_lists():
             profile__receive_optin=True),
         multilingual=True)
 
+    all_previous_board_members = []
+
     for year in range(Board.objects.earliest('since').since.year, lectureyear):
         board = Board.objects.get(since__year=year)
         if board is not None:
+            board_members = [x.member for x in
+                             MemberGroupMembership.objects.filter
+                             (group=board).prefetch_related('member')]
+            all_previous_board_members += board_members
             lists += _create_automatic_list(
                 ['bestuur'
                  + str(board.since.year)[-2:] + str(board.until.year)[-2:],
                  'board'
                  + str(board.since.year)[-2:] + str(board.until.year)[-2:]],
                 '',
-                [x.member for x in MemberGroupMembership.objects
-                    .filter(group=board).prefetch_related('member')],
+                board_members,
                 archived=False, moderated=False, multilingual=False
             )
+    lists += _create_automatic_list(
+        ['oldboards', 'oudbesturen'], '',
+        all_previous_board_members
+    )
 
     return lists
 
