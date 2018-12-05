@@ -233,3 +233,17 @@ def registration_fields(request, member, event):
     else:
         raise RegistrationError(
             _("You are not allowed to update this registration."))
+
+
+def update_registration_by_organiser(registration, member, data):
+    if not is_organiser(member, registration.event):
+        raise RegistrationError(
+            _("You are not allowed to update this registration."))
+
+    if 'payment' in data:
+        registration.payment = data['payment']
+
+    if 'present' in data:
+        registration.present = data['present']
+
+    registration.save()
