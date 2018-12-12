@@ -8,6 +8,7 @@ This file is loaded by __init__.py if the environment variable
 
 See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
+import base64
 import json
 import os
 
@@ -81,9 +82,11 @@ MEMBERS_SENTRY_API_SECRET = os.environ.get('MEMBERS_SENTRY_API_SECRET', '')
 
 GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
 GOOGLE_MAPS_API_SECRET = os.environ.get('GOOGLE_MAPS_API_SECRET', '')
+
 FIREBASE_CREDENTIALS = os.environ.get('FIREBASE_CREDENTIALS', '{}')
-if FIREBASE_CREDENTIALS.startswith('{'):
-    FIREBASE_CREDENTIALS = json.loads(FIREBASE_CREDENTIALS)
+if not (FIREBASE_CREDENTIALS == '{}'):
+    FIREBASE_CREDENTIALS = base64.urlsafe_b64decode(FIREBASE_CREDENTIALS)
+FIREBASE_CREDENTIALS = json.loads(FIREBASE_CREDENTIALS)
 
 if os.environ.get('DJANGO_SSLONLY'):
     SECURE_SSL_REDIRECT = True
