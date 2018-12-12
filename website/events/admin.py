@@ -276,6 +276,13 @@ class RegistrationAdmin(DoNextModelAdmin):
             raise PermissionDenied
         return super().save_model(request, registration, form, change)
 
+    def has_view_permission(self, request, registration=None):
+        """Only give view permission if the user is an organiser"""
+        if (registration is not None and
+                not services.is_organiser(request.member, registration.event)):
+            return False
+        return super().has_view_permission(request, registration)
+
     def has_change_permission(self, request, registration=None):
         """Only give change permission if the user is an organiser"""
         if (registration is not None and
