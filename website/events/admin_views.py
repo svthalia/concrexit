@@ -24,7 +24,6 @@ class EventAdminDetails(DetailView):
     """
     template_name = 'events/admin/details.html'
     model = Event
-    queryset = Event.objects.filter(published=True)
     context_object_name = 'event'
 
 
