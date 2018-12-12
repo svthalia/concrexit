@@ -3,6 +3,12 @@ var View = FC.View;      // the class that all views must inherit from
 var ListView;          // our subclass
 
 ListView = View.extend({
+    title: gettext("Upcoming Events"),
+
+    computeTitle: function (d) {
+        return this.title;
+    },
+
     renderEvents: function (events) {
         var root = $("<div>").addClass("accordion bordered");
 

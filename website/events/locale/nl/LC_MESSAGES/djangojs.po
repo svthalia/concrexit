@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-13 20:59+0100\n"
-"PO-Revision-Date: 2018-11-13 20:59+0100\n"
+"POT-Creation-Date: 2018-12-12 20:13+0100\n"
+"PO-Revision-Date: 2018-12-12 20:13+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -19,6 +19,10 @@ msgstr ""
 "X-Generator: Poedit 2.2\n"
 
 #: static/events/js/calendarlistview.js
+msgid "Upcoming Events"
+msgstr "Aankomende Evenementen"
+
+#: static/events/js/calendarlistview.js
 msgid "No events planned in the selected period."
 msgstr "Er zijn geen evenementen gepland in de geselecteerde periode."
 
@@ -27,13 +31,13 @@ msgid "Go to event"
 msgstr "Naar de evenementpagina"
 
 #: static/events/js/main.js
-msgid "list"
-msgstr "lijst"
+msgid "show birthdays"
+msgstr "toon verjaardagen"
 
 #: static/events/js/main.js
 msgid "hide birthdays"
 msgstr "verberg verjaardagen"
 
 #: static/events/js/main.js
-msgid "show birthdays"
-msgstr "toon verjaardagen"
+msgid "list"
+msgstr "lijst"
