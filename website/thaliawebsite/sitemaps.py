@@ -21,7 +21,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             'index',
             'become-active',
-            'sister-associations',
+            'sibling-associations',
             'contact',
         ]
 
