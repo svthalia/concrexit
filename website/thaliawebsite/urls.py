@@ -104,6 +104,7 @@ urlpatterns = [  # pylint: disable=invalid-name
         url(r'wikilogin', views.wiki_login),
         url(r'^v1/', include([
             url(r'^token-auth', ObtainThaliaAuthToken.as_view()),
+            url(r'^', include('activemembers.api.urls')),
             url(r'^', include('events.api.urls')),
             url(r'^', include('members.api.urls')),
             url(r'^', include('partners.api.urls')),

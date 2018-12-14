@@ -6,5 +6,5 @@ from members.api import viewsets, views
 router = routers.SimpleRouter()
 router.register(r'members', viewsets.MemberViewset)
 urlpatterns = router.urls + [
-    path('sentry-access/', views.SentryIdentityView.as_view())
+    path('sentry-access/', views.SentryIdentityView.as_view()),
 ]
