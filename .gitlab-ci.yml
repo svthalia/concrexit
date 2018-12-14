@@ -81,16 +81,17 @@ build docker image:
   tags:
     - docker
   before_script:
-    - echo $GITLAB_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.gitlab.com
+    - echo $DOCKER_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.hub.docker.com
   script:
     - docker-compose config -q
     - docker-compose build --build-arg install_dev_requirements=0 --build-arg source_commit=$(git rev-parse HEAD) web
     - docker-compose run --rm web test
     - docker tag $DOCKER_LATEST $DOCKER_TAG
+    - docker push $DOCKER_LATEST
     - docker push $DOCKER_TAG
   variables:
-    DOCKER_LATEST: registry.gitlab.com/thaliawww/concrexit:latest
-    DOCKER_TAG: registry.gitlab.com/thaliawww/concrexit:$CI_COMMIT_SHA
+    DOCKER_LATEST: registry.hub.docker.com/thalia/concrexit:latest
+    DOCKER_TAG: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_SHA
 
 tag docker image:
   stage: deploy
@@ -104,14 +105,14 @@ tag docker image:
   dependencies:
     - build docker image
   before_script:
-    - echo $GITLAB_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.gitlab.com
+    - echo $DOCKER_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.hub.docker.com
   script:
     - docker pull $DOCKER_TAG
     - docker tag $DOCKER_TAG $DOCKER_TAG_PRODUCTION
     - docker push $DOCKER_TAG_PRODUCTION
   variables:
-    DOCKER_TAG: registry.gitlab.com/thaliawww/concrexit:$CI_COMMIT_SHA
-    DOCKER_TAG_PRODUCTION: registry.gitlab.com/thaliawww/concrexit:$CI_COMMIT_TAG
+    DOCKER_TAG: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_SHA
+    DOCKER_TAG_PRODUCTION: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_TAG
 
 
 cache:
