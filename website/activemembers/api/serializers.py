@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from activemembers.models import MemberGroup
+from activemembers.models import MemberGroup, MemberGroupMembership
 from members.models import Member
 
 
@@ -16,8 +16,8 @@ class NextCloudGroupSerializer(serializers.ModelSerializer):
         model = MemberGroup
         fields = ('pk', 'name', 'members')
 
-    members = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='username'
-    )
+    members = serializers.SerializerMethodField()
+
+    def get_members(self, obj):
+        return (MemberGroupMembership.active_objects.filter(group=obj)
+                .values_list('member__username', flat=True))
