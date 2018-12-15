@@ -11,7 +11,7 @@ from members.models import Member
 
 class NextCloudUsersView(ListAPIView):
     permission_classes = [NextCloudPermission]
-    queryset = Member.objects.filter(
+    queryset = Member.current_members.filter(
         pk__in=MemberGroupMembership.active_objects.values_list(
             'member_id', flat=True)
     )
