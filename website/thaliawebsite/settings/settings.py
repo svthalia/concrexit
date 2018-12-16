@@ -283,6 +283,9 @@ MAILINGLIST_API_SECRET = ''
 # Members Sentry API key
 MEMBERS_SENTRY_API_SECRET = ''
 
+# Activemembers NextCloud API key
+ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = ''
+
 # Google maps API key and secrets
 GOOGLE_MAPS_API_KEY = ''
 GOOGLE_MAPS_API_SECRET = ''
