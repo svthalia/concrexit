@@ -150,7 +150,35 @@ body {
 
 .home {
     #page-header {
-        height: 360px;
+        height: 0;
+        padding-bottom: 21.5%;
+        position: relative;
+
+        #announcements-slider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    }
+}
+
+@media(max-width: 991px) {
+    .home {
+        #page-header {
+            height: 0;
+            padding-bottom: 40%;
+            position: relative;
+
+            #announcements-slider {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+        }
     }
 }
 
