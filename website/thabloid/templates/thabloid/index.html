@@ -57,9 +57,7 @@
 
             <div class="row">
                 {% for thabloid in thabloids %}
-                    <div class="col-6 col-md-3 my-3">
-                        {% thabloid_card year thabloid %}
-                    </div>
+                    {% thabloid_card year thabloid %}
                 {% endfor %}
             </div>
         </div>
