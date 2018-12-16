@@ -295,6 +295,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return reverse('events:event', args=[str(self.pk)])
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            super().save(*args, **kwargs)
+
         if self.published:
             if self.registration_required:
                 registration_reminder_time = (self.registration_start -
@@ -361,7 +364,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     and not self.start_reminder.sent):
                 self.start_reminder.delete()
 
-        super().save(*args, **kwargs)
+        super().save()
 
     def __str__(self):
         return '{}: {}'.format(
