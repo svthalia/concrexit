@@ -32,7 +32,7 @@
                     {% if partner.link %}
                         <h4 class="text-center text-md-left">{% trans "Website" %}</h4>
                         <p class="text-center text-md-left">
-                            <a href="{{ partner.link }}" target="_blank">{{ partner.link }}</a>
+                            <a href="{{ partner.link }}" rel="noopener" target="_blank">{{ partner.link }}</a>
                         </p>
                     {% endif %}
 
@@ -72,7 +72,7 @@
                                 <div class="card-body">
                                     <p>{{ vacancy.description|bleach }}</p>
                                     {% if vacancy.link %}
-                                        <a class="btn btn-primary" href="{{ vacancy.link }}" target="_blank">
+                                        <a class="btn btn-primary" href="{{ vacancy.link }}" rel="noopener" target="_blank">
                                             {% trans "Learn more" %}
                                         </a>
                                     {% endif %}

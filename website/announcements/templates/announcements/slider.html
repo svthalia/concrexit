@@ -10,7 +10,7 @@
                     {% if slide.url %}
                         <a href="{{ slide.url }}"
                            class="w-100 h-100"
-                           {% if slide.url_blank %}target="_blank"{% endif %}
+                           {% if slide.url_blank %}target="_blank" rel="noopener"{% endif %}
                         >
                     {% endif %}
                     <img class="image"

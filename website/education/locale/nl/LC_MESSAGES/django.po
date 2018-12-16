@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-13 16:20+0200\n"
-"PO-Revision-Date: 2018-10-13 16:22+0200\n"
+"POT-Creation-Date: 2018-12-12 22:21+0100\n"
+"PO-Revision-Date: 2018-12-12 22:24+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: admin.py
 msgid "Mark exams as accepted"
@@ -197,23 +197,24 @@ msgstr "Boekverkoop"
 #, python-format
 msgid ""
 "Thalia's book sale goes through Studystore. You can find the personalized "
-"webshop <a href=\"https://betabooks.itdepartment.nl/en\" target=\"_blank"
-"\">here</a>. As a member of Thalia you receive a 15%% discount on study "
-"books ordered at this webshop."
+"webshop <a href=\"https://betabooks.itdepartment.nl/en\" target=\"_blank\" "
+"rel=\"noopener\">here</a>. As a member of Thalia you receive a 15%% discount "
+"on study books ordered at this webshop."
 msgstr ""
 "Thalia's boekverkoop wordt geregeld door Studystore. Je kunt de "
 "gepersonaliseerde webshop <a href=\"https://betabooks.itdepartment.nl/\" "
-"target=\"_blank\">hier</a> vinden. Als lid van Thalia krijg je 15%% korting "
-"op de studieboeken die je via deze webshop bestelt."
+"target=\"_blank\" rel=\"noopener\">hier</a> vinden. Als lid van Thalia krijg "
+"je 15%% korting op de studieboeken die je via deze webshop bestelt."
 
 #: templates/education/books.html
 msgid ""
 "If you cannot find a certain book or you find another error, please contact "
-"the board at <a href=\"mailto:books@thalia.nu\">books@thalia.nu</a>."
+"the board at <a href=\"mailto:books@thalia.nu\" rel=\"noopener\" target="
+"\"_blank\">books@thalia.nu</a>."
 msgstr ""
 "Als je een bepaald boek niet kunt vinden of een andere fout tegenkomt, neem "
-"contact op met het bestuur via <a href=\"mailto:boekverkoop@thalia.nu"
-"\">boekverkoop@thalia.nu</a>."
+"contact op met het bestuur via <a href=\"mailto:boekverkoop@thalia.nu\" rel="
+"\"noopener\" target=\"_blank\">boekverkoop@thalia.nu</a>."
 
 #: templates/education/course.html
 msgid "Course"
@@ -292,6 +293,10 @@ msgstr "alle vakken"
 #: templates/education/courses.html
 msgid "Name"
 msgstr "Naam"
+
+#: templates/education/courses.html
+msgid "Categories"
+msgstr "Categorieën"
 
 #: templates/education/courses.html
 msgid "Available documents"
@@ -386,7 +391,3 @@ msgstr ""
 "veertien leden. Acht daarvan worden gekozen door de studenten en de andere "
 "zes representeren verschillende studentenorganisaties. Je kan <a href="
 "\"http://www.ru.nl/usr/\">hier</a> meer lezen over de USR."
-
-#: views.py
-msgid "Summary"
-msgstr "Samenvatting"
