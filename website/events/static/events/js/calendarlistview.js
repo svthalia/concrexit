@@ -9,6 +9,16 @@ ListView = View.extend({
         return this.title;
     },
 
+    fetchInitialEvents: function (dateProfile) {
+        var calendar = this.calendar;
+        var today = new Date();
+
+        return calendar.requestEvents(
+            calendar.msToMoment(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0), false),
+            calendar.msToMoment(Date.UTC(today.getFullYear() + 2, today.getMonth(), today.getDate(), 0, 0, 0), false)
+        );
+    },
+
     renderEvents: function (events) {
         var root = $("<div>").addClass("accordion bordered");
 
