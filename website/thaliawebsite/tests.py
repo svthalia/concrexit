@@ -172,3 +172,11 @@ class WikiLoginTestCase(TestCase):
                                      'password': 'wrong secret'})
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()['status'], 'error')
+
+
+class SitemapTest(TestCase):
+    fixtures = ['members.json', 'member_groups.json']
+
+    def test_sitemap_success(self):
+        response = self.client.get('/sitemap.xml')
+        self.assertEqual(response.status_code, 200)
