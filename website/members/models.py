@@ -2,8 +2,10 @@ import logging
 import operator
 import os
 import uuid
-from PIL import Image
 from datetime import timedelta
+from functools import reduce
+
+from PIL import Image
 from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.core import validators
@@ -13,7 +15,6 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, gettext_lazy as _
-from functools import reduce
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
@@ -97,6 +98,7 @@ class Member(User):
         ordering = ('first_name', 'last_name')
         permissions = (
             ('sentry_access', _("Access the Sentry backend")),
+            ('nextcloud_admin', _("Access NextCloud as admin")),
         )
 
     objects = MemberManager()

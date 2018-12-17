@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 19:57+0100\n"
-"PO-Revision-Date: 2018-11-14 19:58+0100\n"
+"POT-Creation-Date: 2018-12-17 15:31+0100\n"
+"PO-Revision-Date: 2018-12-17 15:32+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -149,6 +149,10 @@ msgstr "E-mailadres"
 #: models.py
 msgid "Access the Sentry backend"
 msgstr "Toegang tot the Sentry backend"
+
+#: models.py
+msgid "Access NextCloud as admin"
+msgstr "Toegang tot NextCloud als admin"
 
 #: models.py
 msgid "Is this user currently active"
