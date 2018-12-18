@@ -34,7 +34,8 @@ class NextCloudUsersView(ListAPIView):
 
 class NextCloudGroupsView(ListAPIView):
     permission_classes = [NextCloudPermission]
-    queryset = MemberGroup.objects.all()
+    queryset = MemberGroup.objects.exclude(
+        name_en='admin', name_nl='admin').all()
     serializer_class = NextCloudGroupSerializer
 
     def list(self, request, *args, **kwargs):
