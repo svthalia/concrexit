@@ -100,7 +100,7 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
         return "black"
 
     def _url(self, instance):
-        return reverse('admin:events_events_details', kwargs={
+        return reverse('admin:events_event_details', kwargs={
             'pk': instance.id})
 
 
