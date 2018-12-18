@@ -161,6 +161,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         ScheduledMessage, on_delete=models.deletion.SET_NULL,
         related_name='start_event', blank=True, null=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._price = self.price
+        self._registration_start = self.registration_start
+
     @property
     def after_cancel_deadline(self):
         return self.cancel_deadline and self.cancel_deadline <= timezone.now()
@@ -287,6 +292,18 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             errors.update(
                 {'send_cancel_email': _("This organiser does not "
                                         "have a contact mailinglist.")})
+        if self.published:
+            if (self.price != self._price
+                    and self._registration_start <= timezone.now()):
+                errors.update(
+                    {'price': _("You cannot change this field after "
+                                "the registration has started.")})
+            if (self.registration_start != self._registration_start
+                    and self._registration_start <= timezone.now()):
+                errors.update(
+                    {'registration_start':
+                     _("You cannot change this field after "
+                       "the registration has started.")})
 
         if errors:
             raise ValidationError(errors)
