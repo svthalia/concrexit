@@ -216,7 +216,7 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
         max_length=2,
         choices=settings.LANGUAGES,
         blank=False,
-        default=settings.LANGUAGE_CODE,
+        null=True
     )
 
     download_count = models.IntegerField(
