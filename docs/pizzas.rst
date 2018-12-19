@@ -56,22 +56,6 @@ pizzas.services module
     :undoc-members:
     :show-inheritance:
 
-pizzas.tasks module
--------------------
-
-.. automodule:: pizzas.tasks
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pizzas.tasks module
--------------------
-
-.. automodule:: pizzas.tasks
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pizzas.urls module
 ------------------
 

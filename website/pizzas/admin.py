@@ -17,7 +17,7 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(PizzaEvent)
 class PizzaEventAdmin(admin.ModelAdmin):
     list_display = ('title', 'orders')
-    readonly_fields = ('task_id',)
+    # readonly_fields = ('task_id',)
 
     def orders(self, obj):
         return format_html(_('<strong><a href="{link}">Orders</a></strong>'),

@@ -4,25 +4,27 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-import events
+from events.models import Event
 import members
 from members.models import Member
-from .tasks import create_send_message
 from pushnotifications.models import ScheduledMessage, Category
-from utils.tasks import schedule_task, revoke_task
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class PizzaEvent(models.Model):
     start = models.DateTimeField(_("Order from"))
     end = models.DateTimeField(_("Order until"))
-    event = models.OneToOneField(events.models.Event, on_delete=models.CASCADE)
+    event = models.OneToOneField(Event, on_delete=models.CASCADE)
 
     send_notification = models.BooleanField(
         _("Send an order notification"),
         default=True
     )
-    task_id = models.CharField(max_length=50, blank=True, null=True)
+    end_reminder = models.OneToOneField(
+        ScheduledMessage,
+        models.CASCADE,
+        null=True
+    )
 
     @property
     def title(self):
@@ -85,28 +87,29 @@ class PizzaEvent(models.Model):
                 'end': _('The end is before the start of this event.'),
             })
 
-    def schedule(self):
-        """Schedules a Celery task to send this message"""
-        return schedule_task(
-            create_send_message,
-            args=(self.pk,),
-            eta=self.end - timezone.timedelta(minutes=10)
-        )
-
     def save(self, *args, **kwargs):
-        if not (self._end == self.end):
-            if self.task_id:
-                # Revoke that task in case its time has changed
-                revoke_task(self.task_id)
-            super().save(*args, **kwargs)
-            self.task_id = self.schedule()
+        if not self.end_reminder:
+            end_reminder = ScheduledMessage()
+            end_reminder.title_en = 'Order pizza'
+            end_reminder.title_nl = 'Pizza bestellen'
+            end_reminder.body_en = 'You can order pizzas for 10 more minutes'
+            end_reminder.body_nl = "Je kan nog 10 minuten pizza's bestellen"
+            end_reminder.category = Category.objects.get(key='pizza')
+            end_reminder.time = self.end
+            end_reminder.save()
+
+            if self.event.registration_required:
+                end_reminder.users.set(self.event.registrations)
+            else:
+                end_reminder.users.set(Member.active_members.all())
+
+            self.end_reminder = end_reminder
+
+        if self._end != self.end:
+            self.end_reminder.time = self.end
+            self.end_reminder.save()
 
         super().save(*args, **kwargs)
-
-    def delete(self, using=None, keep_parents=False):
-        if self.task_id:
-            revoke_task(self.task_id)
-        return super().delete(using, keep_parents)
 
     def __str__(self):
         return 'Pizzas for ' + str(self.event)
@@ -169,6 +172,18 @@ class Order(models.Model):
                 'member': _('Either specify a member or a name'),
                 'name': _('Either specify a member or a name'),
             })
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.pizza_event.end_reminder.users.remove(self.member)
+
+        super().save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        if not self.id:
+            self.pizza_event.end_reminder.users.add(self.member)
+
+        super().delete(using, keep_parents)
 
     @property
     def member_name(self):
