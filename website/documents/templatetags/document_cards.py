@@ -19,6 +19,17 @@ def association_document_card(document):
 
 
 @register.inclusion_tag('includes/grid_item.html')
+def event_document_card(document):
+    return grid_item(
+        title=document.name,
+        meta_text='',
+        url=document.get_absolute_url(),
+        image_url=static("documents/images/thumb.png"),
+        class_name='event-document-card',
+    )
+
+
+@register.inclusion_tag('includes/grid_item.html')
 def annual_document_card(type, document):
     name = ''
     class_name = 'annual-document-card'

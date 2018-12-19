@@ -48,6 +48,14 @@ documents.models module
     :undoc-members:
     :show-inheritance:
 
+documents.services module
+-------------------------
+
+.. automodule:: documents.services
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 documents.sitemaps module
 -------------------------
 

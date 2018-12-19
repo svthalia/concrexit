@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-28 19:43+0100\n"
-"PO-Revision-Date: 2018-11-28 19:45+0100\n"
+"POT-Creation-Date: 2018-12-12 19:42+0100\n"
+"PO-Revision-Date: 2018-12-12 19:42+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: admin.py
 msgid "lecture year"
@@ -273,6 +273,10 @@ msgstr "Standaard:"
 #: models.py
 msgid "published"
 msgstr "gepubliceerd"
+
+#: models.py
+msgid "documents"
+msgstr "documenten"
 
 #: models.py
 msgid "Start cannot have an empty date or time field"
@@ -726,6 +730,10 @@ msgstr ""
 msgctxt "pizzas"
 msgid "Order"
 msgstr "Bestellen"
+
+#: templates/events/event.html
+msgid "Documents"
+msgstr "Documenten"
 
 #: templates/events/event.html
 msgid "Registrations"

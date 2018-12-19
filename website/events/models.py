@@ -161,6 +161,12 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         ScheduledMessage, on_delete=models.deletion.SET_NULL,
         related_name='start_event', blank=True, null=True)
 
+    documents = models.ManyToManyField(
+        'documents.Document',
+        verbose_name=_("documents"),
+        blank=True,
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._price = self.price
