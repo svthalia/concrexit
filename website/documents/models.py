@@ -128,6 +128,9 @@ class EventDocument(Document):
     class Meta:
         verbose_name = _('event document')
         verbose_name_plural = _('event documents')
+        permissions = (
+            ("override_owner", "Can access event document as if owner"),
+        )
 
     owner = models.ForeignKey(
         'activemembers.MemberGroup',
