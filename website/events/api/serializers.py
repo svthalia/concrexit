@@ -113,10 +113,10 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         fields = ('pk', 'title', 'description', 'start', 'end', 'organiser',
                   'category', 'registration_start', 'registration_end',
                   'cancel_deadline', 'location', 'map_location', 'price',
-                  'fine', 'max_participants', 'num_participants', 'status',
+                  'fine', 'max_participants', 'num_participants',
                   'user_registration', 'registration_allowed',
                   'no_registration_message', 'has_fields', 'is_pizza_event',
-                  'google_maps_url')
+                  'google_maps_url', 'is_admin')
 
     description = serializers.SerializerMethodField('_description')
     user_registration = serializers.SerializerMethodField('_user_registration')
@@ -126,35 +126,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     has_fields = serializers.SerializerMethodField('_has_fields')
     is_pizza_event = serializers.SerializerMethodField('_is_pizza_event')
     google_maps_url = serializers.SerializerMethodField('_google_maps_url')
-    status = serializers.SerializerMethodField('_status')  # DEPRECATED
-
-    REGISTRATION_NOT_NEEDED = -1
-    REGISTRATION_NOT_YET_OPEN = 0
-    REGISTRATION_OPEN = 1
-    REGISTRATION_OPEN_NO_CANCEL = 2
-    REGISTRATION_CLOSED = 3
-    REGISTRATION_CLOSED_CANCEL_ONLY = 4
-
-    """ DEPRECATED """
-
-    def _status(self, instance):
-        now = timezone.now()
-        if instance.registration_start or instance.registration_end:
-            if now <= instance.registration_start:
-                return self.REGISTRATION_NOT_YET_OPEN
-            elif (instance.registration_end <= now
-                    < instance.cancel_deadline):
-                return self.REGISTRATION_CLOSED_CANCEL_ONLY
-            elif (instance.cancel_deadline <= now <
-                    instance.registration_end):
-                return self.REGISTRATION_OPEN_NO_CANCEL
-            elif (now >= instance.registration_end and
-                    now >= instance.cancel_deadline):
-                return self.REGISTRATION_CLOSED
-            else:
-                return self.REGISTRATION_OPEN
-        else:
-            return self.REGISTRATION_NOT_NEEDED
+    is_admin = serializers.SerializerMethodField('_is_admin')
 
     def _description(self, instance):
         return strip_spaces_between_tags(bleach(instance.description))
@@ -169,7 +141,8 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         try:
             reg = instance.registration_set.get(
                 member=self.context['request'].member)
-            return RegistrationListSerializer(reg, context=self.context).data
+            return RegistrationAdminListSerializer(reg,
+                                                   context=self.context).data
         except Registration.DoesNotExist:
             return None
 
@@ -189,6 +162,10 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
                 instance.map_location,
                 zoom=13,
                 size='450x250')
+
+    def _is_admin(self, instance):
+        member = self.context['request'].member
+        return services.is_organiser(member, instance)
 
 
 class EventListSerializer(serializers.ModelSerializer):
@@ -221,30 +198,11 @@ class RegistrationListSerializer(serializers.ModelSerializer):
     """Custom registration list serializer"""
     class Meta:
         model = Registration
-        fields = ('pk', 'member', 'name', 'photo', 'avatar', 'registered_on',
-                  'is_late_cancellation', 'is_cancelled', 'queue_position',
-                  'payment', 'present')
+        fields = ('pk', 'member', 'name', 'avatar')
 
     name = serializers.SerializerMethodField('_name')
-    photo = serializers.SerializerMethodField('_photo')
     avatar = serializers.SerializerMethodField('_avatar')
     member = serializers.SerializerMethodField('_member')
-    registered_on = serializers.DateTimeField(source='date')
-    is_cancelled = serializers.SerializerMethodField('_is_cancelled')
-    is_late_cancellation = serializers.SerializerMethodField(
-        '_is_late_cancellation')
-    queue_position = serializers.SerializerMethodField(
-        '_queue_position', read_only=False)
-
-    def _is_late_cancellation(self, instance):
-        return instance.is_late_cancellation()
-
-    def _queue_position(self, instance):
-        pos = instance.queue_position
-        return pos if pos > 0 else None
-
-    def _is_cancelled(self, instance):
-        return instance.date_cancelled is not None
 
     def _member(self, instance):
         if instance.member:
@@ -256,14 +214,6 @@ class RegistrationListSerializer(serializers.ModelSerializer):
             return instance.member.profile.display_name()
         return instance.name
 
-    def _photo(self, instance):
-        if instance.member and instance.member.profile.photo:
-            return self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.member.profile.photo))
-        else:
-            return self.context['request'].build_absolute_uri(
-                static('members/images/default-avatar.jpg'))
-
     def _avatar(self, instance):
         placeholder = self.context['request'].build_absolute_uri(
             static('members/images/default-avatar.jpg'))
@@ -273,6 +223,36 @@ class RegistrationListSerializer(serializers.ModelSerializer):
         return create_image_thumbnail_dict(
             self.context['request'], file, placeholder=placeholder,
             size_large='800x800')
+
+
+class RegistrationAdminListSerializer(RegistrationListSerializer):
+    """Custom registration admin list serializer"""
+    class Meta:
+        model = Registration
+        fields = ('pk', 'member', 'name', 'registered_on', 'is_cancelled',
+                  'is_late_cancellation', 'queue_position', 'payment',
+                  'present', 'avatar')
+
+    registered_on = serializers.DateTimeField(source='date')
+    is_cancelled = serializers.SerializerMethodField('_is_cancelled')
+    is_late_cancellation = serializers.SerializerMethodField(
+        '_is_late_cancellation')
+    queue_position = serializers.SerializerMethodField('_queue_position')
+
+    def _is_late_cancellation(self, instance):
+        return instance.is_late_cancellation()
+
+    def _queue_position(self, instance):
+        pos = instance.queue_position
+        return pos if pos > 0 else None
+
+    def _is_cancelled(self, instance):
+        return instance.date_cancelled is not None
+
+    def _name(self, instance):
+        if instance.member:
+            return instance.member.get_full_name()
+        return instance.name
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

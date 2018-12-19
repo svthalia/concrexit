@@ -21,7 +21,10 @@ from events.api.serializers import (
     UnpublishedEventSerializer,
     EventRetrieveSerializer,
     EventListSerializer,
-    RegistrationListSerializer, RegistrationSerializer)
+    RegistrationListSerializer,
+    RegistrationAdminListSerializer,
+    RegistrationSerializer
+)
 from events.exceptions import RegistrationError
 from events.models import Event, Registration
 from utils.snippets import extract_date_range
@@ -107,8 +110,13 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
                 queryset = Registration.objects.filter(
                     event=pk, date_cancelled=None)[:event.max_participants]
 
-        serializer = RegistrationListSerializer(queryset, many=True,
-                                                context={'request': request})
+        context = {'request': request}
+        if services.is_organiser(self.request.member, event):
+            serializer = RegistrationAdminListSerializer(queryset, many=True,
+                                                         context=context)
+        else:
+            serializer = RegistrationListSerializer(queryset, many=True,
+                                                    context=context)
 
         return Response(serializer.data)
 
