@@ -113,7 +113,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         fields = ('pk', 'title', 'description', 'start', 'end', 'organiser',
                   'category', 'registration_start', 'registration_end',
                   'cancel_deadline', 'location', 'map_location', 'price',
-                  'fine', 'max_participants', 'num_participants', 'status',
+                  'fine', 'max_participants', 'num_participants',
                   'user_registration', 'registration_allowed',
                   'no_registration_message', 'has_fields', 'is_pizza_event',
                   'google_maps_url')
@@ -126,35 +126,6 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     has_fields = serializers.SerializerMethodField('_has_fields')
     is_pizza_event = serializers.SerializerMethodField('_is_pizza_event')
     google_maps_url = serializers.SerializerMethodField('_google_maps_url')
-    status = serializers.SerializerMethodField('_status')  # DEPRECATED
-
-    REGISTRATION_NOT_NEEDED = -1
-    REGISTRATION_NOT_YET_OPEN = 0
-    REGISTRATION_OPEN = 1
-    REGISTRATION_OPEN_NO_CANCEL = 2
-    REGISTRATION_CLOSED = 3
-    REGISTRATION_CLOSED_CANCEL_ONLY = 4
-
-    """ DEPRECATED """
-
-    def _status(self, instance):
-        now = timezone.now()
-        if instance.registration_start or instance.registration_end:
-            if now <= instance.registration_start:
-                return self.REGISTRATION_NOT_YET_OPEN
-            elif (instance.registration_end <= now
-                    < instance.cancel_deadline):
-                return self.REGISTRATION_CLOSED_CANCEL_ONLY
-            elif (instance.cancel_deadline <= now <
-                    instance.registration_end):
-                return self.REGISTRATION_OPEN_NO_CANCEL
-            elif (now >= instance.registration_end and
-                    now >= instance.cancel_deadline):
-                return self.REGISTRATION_CLOSED
-            else:
-                return self.REGISTRATION_OPEN
-        else:
-            return self.REGISTRATION_NOT_NEEDED
 
     def _description(self, instance):
         return strip_spaces_between_tags(bleach(instance.description))
