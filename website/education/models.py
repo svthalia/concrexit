@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member
+from thaliawebsite.settings import settings
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -138,6 +139,13 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
         on_delete=models.CASCADE,
     )
 
+    language = models.CharField(
+        max_length=2,
+        choices=settings.LANGUAGES,
+        blank=False,
+        null=True
+    )
+
     download_count = models.IntegerField(
         verbose_name=_('amount of downloads'),
         default=0,
@@ -202,6 +210,13 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
         upload_to="education/files/summary/",
         help_text=_('Use the \'View on site\' button to download '
                     'the file for inspection.')
+    )
+
+    language = models.CharField(
+        max_length=2,
+        choices=settings.LANGUAGES,
+        blank=False,
+        null=True
     )
 
     download_count = models.IntegerField(

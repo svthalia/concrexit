@@ -25,11 +25,11 @@ class CourseAdmin(TranslatedModelAdmin):
 @admin.register(models.Exam)
 class ExamAdmin(TranslatedModelAdmin):
     list_display = ('type', 'course', 'exam_date', 'uploader',
-                    'accepted', 'download_count')
+                    'accepted', 'language', 'download_count')
     readonly_fields = ('download_count',)
-    list_filter = ('accepted', 'exam_date', 'type',)
+    list_filter = ('accepted', 'exam_date', 'type', 'language')
     search_fields = ('name', 'uploader__first_name', 'uploader__last_name',
-                     'course__name_nl', 'course__name_en',)
+                     'course__name_nl', 'course__name_en')
     actions = ['accept', 'reject', 'reset_download_count', 'download_csv']
 
     def accept(self, request, queryset):
@@ -68,9 +68,10 @@ class ExamAdmin(TranslatedModelAdmin):
 
 @admin.register(models.Summary)
 class SummaryAdmin(TranslatedModelAdmin):
-    list_display = ('name', 'course', 'uploader', 'accepted', 'download_count')
+    list_display = ('name', 'course', 'uploader', 'accepted', 'language',
+                    'download_count')
     readonly_fields = ('download_count',)
-    list_filter = ('accepted',)
+    list_filter = ('accepted', 'language')
     search_fields = ('name', 'uploader__first_name', 'uploader__last_name',
                      'course__name_nl', 'course__name_en',)
     actions = ['accept', 'reject', 'reset_download_count', 'download_csv']

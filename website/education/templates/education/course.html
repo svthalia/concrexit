@@ -1,5 +1,5 @@
 {% extends 'education/base.html' %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block title %}{{ course.name }} — {% trans "Course" %} —
     {{ block.super }}{% endblock %}
@@ -61,7 +61,12 @@
                                                     {% for item in data.exams %}
                                                         <li>
                                                             <a href="{% url 'education:exam' item.id %}"
-                                                               target="_blank">{{ item.name }}</a>
+                                                               target="_blank">
+                                                                {{ item.name }}
+                                                                {% if item.language != '' %}
+                                                                    <img class="lang-flag" src="{% static 'img/flags/'|add:item.language|add:'.svg' %}"/>
+                                                                {% endif %}
+                                                            </a>
                                                         </li>
                                                     {% endfor %}
                                                 </ul>
@@ -75,6 +80,9 @@
                                                             <a href="{% url 'education:summary' item.id %}"
                                                                target="_blank">
                                                                 {{ item.name }}
+                                                                {% if item.language != '' %}
+                                                                    <img class="lang-flag" src="{% static 'img/flags/'|add:item.language|add:'.svg' %}"/>
+                                                                {% endif %}
                                                             </a>
                                                         </li>
                                                     {% endfor %}
