@@ -6,7 +6,7 @@ from django.core import mail
 from django.template import loader
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
-from django.utils import translation
+from django.utils import timezone, translation
 from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
 
@@ -23,6 +23,7 @@ def send_membership_announcement(dry_run=False):
     :param dry_run: does not really send emails if True
     """
     members = (Member.current_members
+               .filter(membership__since__lt=timezone.now())
                .filter(membership__until__isnull=True)
                .exclude(membership__type=Membership.HONORARY)
                .exclude(email='')

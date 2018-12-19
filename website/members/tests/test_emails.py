@@ -166,6 +166,22 @@ class EmailsTest(TestCase):
             since=timezone.now().replace(year=2016, month=12, day=6),
             until=timezone.now().replace(year=2017, month=6, day=12),
         )
+        cls.future_member = Member.objects.create(
+            username='test9',
+            first_name='Test9',
+            last_name='Example',
+            email='test9@example.org'
+        )
+        Profile.objects.create(
+            user=cls.future_member,
+            language='nl',
+        )
+        Membership.objects.create(
+            user=cls.future_member,
+            type=Membership.MEMBER,
+            since=timezone.now().replace(year=2018, month=9, day=1),
+            until=None,
+        )
 
     @freeze_time('2017-10-01')
     def test_send_membership_announcement(self):
@@ -179,7 +195,7 @@ class EmailsTest(TestCase):
     def test_send_information_request(self):
         emails.send_information_request()
 
-        self.assertEqual(len(mail.outbox), 7)
+        self.assertEqual(len(mail.outbox), 8)
         self.assertEqual(mail.outbox[0].to, ['test1@example.org'])
         self.assertEqual(mail.outbox[0].subject,
                          '[THALIA] Controle gegevens lidmaatschap')
@@ -191,6 +207,7 @@ class EmailsTest(TestCase):
         self.assertEqual(mail.outbox[4].to, ['test5@example.org'])
         self.assertEqual(mail.outbox[5].to, ['test6@example.org'])
         self.assertEqual(mail.outbox[6].to, ['test7@example.org'])
+        self.assertEqual(mail.outbox[7].to, ['test9@example.org'])
 
     @freeze_time('2018-08-15')
     def test_send_expiration_announcement(self):
