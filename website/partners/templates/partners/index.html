@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n bleach_tags partner_cards %}
+{% load i18n bleach_tags partner_cards thumbnail %}
 
 {% block title %}{% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
@@ -22,7 +22,7 @@
 
             <div class="row mt-4">
                 <div class="col-12 col-md-4 d-flex align-items-center">
-                    <img src="{{ main_partner.logo.url }}"/>
+                    <img src="{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
                 </div>
                 <div class="col-12 col-md-8 mt-3 mt-md-0">
                     <h2>{% trans "Main Partner" %}</h2>

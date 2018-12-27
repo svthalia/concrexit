@@ -1,6 +1,7 @@
 from random import sample
 
 from django import template
+from django.conf import settings
 
 from partners.models import Partner
 
@@ -26,5 +27,6 @@ def render_partner_banners(context):
     request.session['partner_sequence'] = rest + chosen
 
     return {
-        'partners': [p for p in all_partners if p.id in chosen]
+        'partners': [p for p in all_partners if p.id in chosen],
+        'thumb_size': settings.THUMBNAIL_SIZES['small']
     }

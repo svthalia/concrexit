@@ -13,7 +13,8 @@ register = template.Library()
 def partner_card(partner):
     image_url = ''
     if partner.logo:
-        image_url = partner.logo.url
+        image_url = thumbnail(partner.logo, settings.THUMBNAIL_SIZES['medium'],
+                              fit=False)
 
     meta_text = truncatechars(bleach(striptags(partner.company_profile)), 80)
 
