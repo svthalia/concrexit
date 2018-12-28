@@ -252,7 +252,7 @@ def update_registration_by_organiser(registration, member, data):
               and registration.payment is not None):
             registration.payment.type = data['payment']['type']
             registration.payment.save()
-        elif (data['payment']['type'] == Payment.NONE
+        elif (data['payment']['type'] != Payment.NONE
               and registration.payment is None):
             registration.payment = Payment.objects.create(
                 amount=registration.event.price,
