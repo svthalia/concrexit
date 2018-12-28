@@ -7,6 +7,7 @@ from html import unescape
 from rest_framework import serializers
 from rest_framework.fields import empty
 
+from payments.models import Payment
 from thaliawebsite.api.services import create_image_thumbnail_dict
 from events import services
 from events.exceptions import RegistrationError
@@ -255,9 +256,18 @@ class RegistrationAdminListSerializer(RegistrationListSerializer):
         return instance.name
 
 
+class PaymentTypeField(serializers.ChoiceField):
+
+    def get_attribute(self, instance):
+        if not instance.payment:
+            return Payment.NONE
+        return super().get_attribute(instance)
+
+
 class RegistrationSerializer(serializers.ModelSerializer):
     """Registration serializer"""
     information_fields = None
+    requesting_user = None
 
     class Meta:
         model = Registration
@@ -270,6 +280,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     photo = serializers.SerializerMethodField('_photo')
     avatar = serializers.SerializerMethodField('_avatar')
     member = serializers.SerializerMethodField('_member')
+    payment = PaymentTypeField(source='payment.type',
+                               choices=Payment.PAYMENT_TYPE)
     registered_on = serializers.DateTimeField(source='date', read_only=True)
     is_cancelled = serializers.SerializerMethodField('_is_cancelled')
     is_late_cancellation = serializers.SerializerMethodField(
@@ -317,8 +329,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
             self.context['request'], file, placeholder=placeholder,
             size_large='800x800')
 
+    def _payment(self, instance):
+        if instance.payment:
+            return instance.payment.type
+        return Registration.PAYMENT_NONE
+
     def __init__(self, instance=None, data=empty, **kwargs):
         super().__init__(instance, data, **kwargs)
+        self.requesting_user = kwargs['context']['request'].member
         try:
             if instance:
                 self.information_fields = services.registration_fields(

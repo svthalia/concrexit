@@ -50,10 +50,12 @@
                     <td>{{ field.value }}</td>
                     {% endif %}
                 {% endfor %}
-                <td><input type="checkbox" {{ registration.present|yesno:'checked="checked",' }} class="present-check" /></td>
-                <td><input type="radio" name="payment-{{ registration.id }}" {% if registration.payment == registration.PAYMENT_NONE %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_NONE }}" class="payment-radio" /></td>
-                <td><input type="radio" name="payment-{{ registration.id }}" {% if registration.payment == registration.PAYMENT_CASH %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_CASH }}" class="payment-radio" /></td>
-                <td><input type="radio" name="payment-{{ registration.id }}" {% if registration.payment == registration.PAYMENT_CARD %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_CARD }}" class="payment-radio" /></td>
+                <td><input type="checkbox" {{ registration.present|yesno:'checked="checked",' }} data-id="{{ registration.id }}" class="present-check" /></td>
+
+                <td><input type="radio" name="payment-{{ registration.id }}" {% if not registration.payment %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_NONE }}" data-id="{{ registration.id }}" class="payment-radio" /></td>
+                <td><input type="radio" name="payment-{{ registration.id }}" {% if registration.payment and registration.payment.type == registration.PAYMENT_CASH %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_CASH }}" data-id="{{ registration.id }}" class="payment-radio" /></td>
+                <td><input type="radio" name="payment-{{ registration.id }}" {% if registration.payment and registration.payment.type == registration.PAYMENT_CARD %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_CARD }}" data-id="{{ registration.id }}" class="payment-radio" /></td>
+
                 {% if registration.date_cancelled is not None %}
                     <td>{{ registration.is_late_cancellation|yesno }}</td>
                 {% endif %}

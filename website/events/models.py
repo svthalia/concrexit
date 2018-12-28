@@ -12,6 +12,7 @@ from django.utils.text import format_lazy
 from tinymce.models import HTMLField
 
 from members.models import Member
+from payments.models import Payment
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -424,14 +425,9 @@ def registration_member_choices_limit():
 class Registration(models.Model):
     """Describes a registration for an Event"""
 
-    PAYMENT_CARD = 'card_payment'
-    PAYMENT_CASH = 'cash_payment'
-    PAYMENT_NONE = 'no_payment'
-
-    PAYMENT_TYPES = (
-        (PAYMENT_NONE, _('No payment')),
-        (PAYMENT_CASH, _('Paid with cash')),
-        (PAYMENT_CARD, _('Paid with card')))
+    PAYMENT_NONE = Payment.NONE
+    PAYMENT_CARD = Payment.CARD
+    PAYMENT_CASH = Payment.CASH
 
     event = models.ForeignKey(Event, models.CASCADE)
 
@@ -461,11 +457,12 @@ class Registration(models.Model):
         default=False,
     )
 
-    payment = models.CharField(
-        choices=PAYMENT_TYPES,
-        default='no_payment',
-        verbose_name=_('payment'),
-        max_length=20,
+    payment = models.OneToOneField(
+        'payments.Payment',
+        related_name='events_registration',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
     )
 
     @property
@@ -514,8 +511,7 @@ class Registration(models.Model):
                  ).count() < self.event.max_participants))
 
     def is_paid(self):
-        return self.payment in [Registration.PAYMENT_CARD,
-                                Registration.PAYMENT_CASH]
+        return self.payment and self.payment.processed
 
     def would_cancel_after_deadline(self):
         now = timezone.now()
