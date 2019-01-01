@@ -95,6 +95,12 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
         on_delete=models.SET_NULL,
     )
 
+    @property
+    def contact_address(self):
+        if self.contact_mailinglist:
+            return f"{self.contact_mailinglist.name}@thalia.nu"
+        return self.contact_email
+
     def clean(self):
         if ((self.contact_email is not None and
                 self.contact_mailinglist is not None) or
