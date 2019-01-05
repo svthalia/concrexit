@@ -1,3 +1,4 @@
+{% load thumbnail %}
 <section id="partner-banners">
     <div class="container">
         <div class="row">
@@ -6,7 +7,7 @@
                     <a href="{% url "partners:partner" partner.slug %}">
                         <img class="animated zoomIn image text-hide"
                              alt="Logo {{ partner.name }}"
-                             src="{{ partner.logo.url }}"/>
+                             src="{% thumbnail partner.logo thumb_size fit=False %}"/>
                     </a>
                 </div>
             {% endfor %}
