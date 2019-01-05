@@ -3,7 +3,7 @@ import json
 from datetime import date, datetime
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q, F
+from django.db.models import Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template.response import TemplateResponse
@@ -86,8 +86,7 @@ def filter_users(tab, keywords, year_range):
     return (models.Member.objects
             .filter(members_query)
             .annotate()
-            .order_by(F('profile__starting_year').desc(nulls_last=True),
-                      'first_name'))
+            .order_by('first_name'))
 
 
 @login_required
