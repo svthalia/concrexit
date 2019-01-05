@@ -2,8 +2,8 @@ $(function() {
     var csrfToken = $('#pizzas-orders').data('csrf');
     $('table').tablesort();
 
-    $('thead th.paid-title, thead th.collected-title').data('sortBy', function (th, td, tablesort) {
-        return $(td).find('.btn').val();
+    $('thead th.paid-title').data('sortBy', function (th, td, tablesort) {
+        return $(td).find('.btn').data('paid');
     });
 
     $('thead th.numeric-title').data('sortBy', function (th, td, tablesort) {
