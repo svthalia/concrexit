@@ -13,7 +13,8 @@ def get_automatic_mailinglists():
     lectureyear = datetime_to_lectureyear(timezone.now())
     list_names = ['leden', 'members', 'begunstigers', 'benefactors',
                   'ereleden', 'honorary', 'mentors', 'activemembers',
-                  'commissievoorzitters', 'optin']
+                  'commissievoorzitters', 'committeechairs',
+                  'optin', 'oldboards', 'oudbesturen']
     if Board.objects.exists():
         for year in range(Board.objects.earliest('since').since.year,
                           lectureyear):
