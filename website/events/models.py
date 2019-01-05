@@ -299,12 +299,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 {'send_cancel_email': _("This organiser does not "
                                         "have a contact mailinglist.")})
         if self.published:
-            if (self.price != self._price
+            if (self.price != self._price and self._registration_start
                     and self._registration_start <= timezone.now()):
                 errors.update(
                     {'price': _("You cannot change this field after "
                                 "the registration has started.")})
-            if (self.registration_start != self._registration_start
+            if (self._registration_start
+                    and self.registration_start != self._registration_start
                     and self._registration_start <= timezone.now()):
                 errors.update(
                     {'registration_start':
