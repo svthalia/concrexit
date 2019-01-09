@@ -4,15 +4,27 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-import events
+from events.models import Event
 import members
+from members.models import Member
+from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class PizzaEvent(models.Model):
     start = models.DateTimeField(_("Order from"))
     end = models.DateTimeField(_("Order until"))
-    event = models.OneToOneField(events.models.Event, on_delete=models.CASCADE)
+    event = models.OneToOneField(Event, on_delete=models.CASCADE)
+
+    send_notification = models.BooleanField(
+        _("Send an order notification"),
+        default=True
+    )
+    end_reminder = models.OneToOneField(
+        ScheduledMessage,
+        models.CASCADE,
+        null=True
+    )
 
     @property
     def title(self):
@@ -50,6 +62,10 @@ class PizzaEvent(models.Model):
         except PizzaEvent.DoesNotExist:
             return None
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._end = self.end
+
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
         for other in PizzaEvent.objects.filter(
@@ -70,6 +86,30 @@ class PizzaEvent(models.Model):
                 'start': _('The start is after the end of this event.'),
                 'end': _('The end is before the start of this event.'),
             })
+
+    def save(self, *args, **kwargs):
+        if not self.end_reminder:
+            end_reminder = ScheduledMessage()
+            end_reminder.title_en = 'Order pizza'
+            end_reminder.title_nl = 'Pizza bestellen'
+            end_reminder.body_en = 'You can order pizzas for 10 more minutes'
+            end_reminder.body_nl = "Je kan nog 10 minuten pizza's bestellen"
+            end_reminder.category = Category.objects.get(key='pizza')
+            end_reminder.time = self.end
+            end_reminder.save()
+
+            if self.event.registration_required:
+                end_reminder.users.set(self.event.registrations)
+            else:
+                end_reminder.users.set(Member.current_members.all())
+
+            self.end_reminder = end_reminder
+
+        if self._end != self.end:
+            self.end_reminder.time = self.end
+            self.end_reminder.save()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return 'Pizzas for ' + str(self.event)
@@ -132,6 +172,18 @@ class Order(models.Model):
                 'member': _('Either specify a member or a name'),
                 'name': _('Either specify a member or a name'),
             })
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.pizza_event.end_reminder.users.remove(self.member)
+
+        super().save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        if not self.id:
+            self.pizza_event.end_reminder.users.add(self.member)
+
+        super().delete(using, keep_parents)
 
     @property
     def member_name(self):
