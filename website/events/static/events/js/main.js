@@ -11,12 +11,12 @@ function checkResponsiveState(calendarElement, windowWidth, view) {
     calendarElement.fullCalendar('removeEventSource', SOURCES.birthdays);
     if (windowWidth <= 768) {
         calendarElement.fullCalendar('option', 'header', {
-            right: 'today'
+            right: ''
         });
     } else {
         if (view.name === 'list') {
             calendarElement.fullCalendar('option', 'header', {
-                right: 'list,agendaWeek,month today'
+                right: 'list,agendaWeek,month'
             });
         } else {
             if (Cookies.get(BIRTHDAYS_COOKIE)) {
