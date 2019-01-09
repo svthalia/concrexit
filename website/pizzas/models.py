@@ -101,7 +101,7 @@ class PizzaEvent(models.Model):
             if self.event.registration_required:
                 end_reminder.users.set(self.event.registrations)
             else:
-                end_reminder.users.set(Member.active_members.all())
+                end_reminder.users.set(Member.current_members.all())
 
             self.end_reminder = end_reminder
 
