@@ -65,6 +65,7 @@ class PizzaEvent(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._end = self.end
+        self._send_notification = self.send_notification
 
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
@@ -88,7 +89,9 @@ class PizzaEvent(models.Model):
             })
 
     def save(self, *args, **kwargs):
-        if not self.end_reminder:
+        if ((not self.end_reminder or
+                (not self._send_notification and self.send_notification))
+                and self.send_notification):
             end_reminder = ScheduledMessage()
             end_reminder.title_en = 'Order pizza'
             end_reminder.title_nl = 'Pizza bestellen'
@@ -105,9 +108,12 @@ class PizzaEvent(models.Model):
 
             self.end_reminder = end_reminder
 
-        if self._end != self.end:
+        if self._end != self.end and self.send_notification:
             self.end_reminder.time = self.end
             self.end_reminder.save()
+
+        if self._send_notification and not self.send_notification:
+            self.end_reminder.delete()
 
         super().save(*args, **kwargs)
 

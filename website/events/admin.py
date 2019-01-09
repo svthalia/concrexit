@@ -72,6 +72,7 @@ class RegistrationInformationFieldInline(admin.StackedInline):
 class PizzaEventInline(admin.StackedInline):
     """The inline for pizza events in the Event admin"""
     model = PizzaEvent
+    exclude = ('end_reminder',)
     extra = 0
     max_num = 1
 
