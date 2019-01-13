@@ -56,6 +56,14 @@ pizzas.services module
     :undoc-members:
     :show-inheritance:
 
+pizzas.signals module
+---------------------
+
+.. automodule:: pizzas.signals
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pizzas.urls module
 ------------------
 

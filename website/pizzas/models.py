@@ -65,7 +65,6 @@ class PizzaEvent(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._end = self.end
-        self._send_notification = self.send_notification
 
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
@@ -89,30 +88,29 @@ class PizzaEvent(models.Model):
             })
 
     def save(self, *args, **kwargs):
-        if ((not self.end_reminder or
-                (not self._send_notification and self.send_notification))
-                and self.send_notification):
+        if self.send_notification and not self.end_reminder:
             end_reminder = ScheduledMessage()
             end_reminder.title_en = 'Order pizza'
             end_reminder.title_nl = 'Pizza bestellen'
             end_reminder.body_en = 'You can order pizzas for 10 more minutes'
             end_reminder.body_nl = "Je kan nog 10 minuten pizza's bestellen"
             end_reminder.category = Category.objects.get(key='pizza')
-            end_reminder.time = self.end
+            end_reminder.time = self.end - timezone.timedelta(minutes=10)
             end_reminder.save()
 
             if self.event.registration_required:
-                end_reminder.users.set(self.event.registrations)
+                end_reminder.users.set(self.event.registrations
+                                       .select_related('member')
+                                       .values_list('member', flat=True))
             else:
                 end_reminder.users.set(Member.current_members.all())
 
             self.end_reminder = end_reminder
-
-        if self._end != self.end and self.send_notification:
+        elif (self.send_notification and self.end_reminder and
+                self._end != self.end):
             self.end_reminder.time = self.end
             self.end_reminder.save()
-
-        if self._send_notification and not self.send_notification:
+        elif not self.send_notification and self.end_reminder:
             self.end_reminder.delete()
 
         super().save(*args, **kwargs)
