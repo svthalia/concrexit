@@ -2,16 +2,14 @@
 
 set -e
 
->&2 echo "Creating Sphinx documentation"
-sphinx-build -b html /usr/src/app/docs/ /concrexit/docs/
+tar --extract --xz --file=/usr/src/app/docs.tar.xz --directory=/concrexit/docs/
+chown -R www-data:www-data /concrexit/
 
-until psql -h "$DJANGO_POSTGRES_HOST" -U "postgres" -c '\l' $POSTGRES_DB; do
+until psql -h "$DJANGO_POSTGRES_HOST" -U "postgres" -c '\l' "$POSTGRES_DB"; do
     >&2 echo "PostgreSQL is unavailable: Sleeping"
     sleep 5
 done
 >&2 echo "PostgreSQL is up"
-
-chown -R www-data:www-data /concrexit/
 
 cd /usr/src/app/website/
 >&2 echo "Running site with uwsgi"
