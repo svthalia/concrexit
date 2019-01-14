@@ -39,5 +39,4 @@ _ = [MIDDLEWARE.remove(x) for x in (
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )]
