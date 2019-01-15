@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-31 19:25+0100\n"
-"PO-Revision-Date: 2018-10-31 19:27+0100\n"
+"POT-Creation-Date: 2019-01-15 16:04+0100\n"
+"PO-Revision-Date: 2019-01-15 16:07+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -102,7 +102,7 @@ msgstr "Actieve leden"
 msgid "Name"
 msgstr "Naam"
 
-#: models.py
+#: models.py templates/activemembers/membergroup_detail.html
 msgid "Description"
 msgstr "Beschrijving"
 
@@ -284,6 +284,21 @@ msgstr "Leden"
 #: templates/activemembers/membergroup_detail.html
 msgid "This group doesn't have any members?"
 msgstr "Deze groep heeft geen leden?"
+
+#: templates/activemembers/society_index.html
+#, python-format
+msgid ""
+"Interested in forming a society? Read the Society policy and application "
+"form document, which can be found on <a href=\"%(documents_page)s\">the "
+"documents page</a>, carefully. The application form can be found at the "
+"bottom of the document. To request a society you must submit the filled in "
+"form to the board."
+msgstr ""
+"Gezelschap aanvragen? Lees het gezelschapppenbeleid en aanvraagformulier, "
+"dat je kan vinden op <a href=\"%(documents_page)s\">de documentenpagina</a>, "
+"goed door. Het aanvraagformulier kan onderaan het document worden gevonden. "
+"Om een gezelschap aan te vragen dien je het ingevulde formulier bij het "
+"bestuur aan te leveren."
 
 #: templates/activemembers/society_index.html
 msgid "There are no societies!"

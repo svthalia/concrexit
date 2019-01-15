@@ -10,6 +10,16 @@
                 {% trans 'societies'|capfirst %}
             </h1>
 
+            <p class="text-center">
+                {% url 'documents:index' as documents_page %}
+                {% blocktrans trimmed %}
+                    Interested in forming a society? Read the Society policy and application form document,
+                    which can be found on <a href="{{ documents_page }}">the documents page</a>, carefully.
+                    The application form can be found at the bottom of the document.
+                    To request a society you must submit the filled in form to the board.
+                {% endblocktrans %}
+            </p>
+
             <div class="row mt-4">
                 {% for society in societies %}
                     <div class="col-4 col-md-3 my-3">
