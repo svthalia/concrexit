@@ -74,7 +74,7 @@ def admin_send(request, pk):
     :param request: the request object
     :param pk: the newsletter's primary key
     :return: 302 RedirectResponse if POST else 200 with the
-    confirmation page HTML
+             confirmation page HTML
     """
     newsletter = get_object_or_404(Newsletter, pk=pk)
 

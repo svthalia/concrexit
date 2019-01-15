@@ -169,7 +169,7 @@ def execute_data_minimisation(dry_run=False):
     at least 31 days ago
 
     :param dry_run: does not really remove data if True
-    :return list of processed members
+    :return: list of processed members
     """
     members = (Member.objects
                .filter(Q(membership__until__isnull=False) |
