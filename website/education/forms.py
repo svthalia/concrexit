@@ -27,7 +27,7 @@ class AddExamForm(ModelForm):
 
     class Meta:
         model = Exam
-        fields = ('file', 'course', 'type', 'exam_date')
+        fields = ('file', 'course', 'type', 'language', 'exam_date')
 
 
 class AddSummaryForm(ModelForm):
@@ -47,4 +47,4 @@ class AddSummaryForm(ModelForm):
 
     class Meta:
         model = Summary
-        fields = ('name', 'year', 'file', 'course', 'author')
+        fields = ('name', 'year', 'language', 'file', 'course', 'author')

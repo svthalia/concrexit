@@ -63,7 +63,7 @@
                                                             <a href="{% url 'education:exam' item.id %}"
                                                                target="_blank">
                                                                 {{ item.name }}
-                                                                {% if item.language != '' %}
+                                                                {% if item.language %}
                                                                     <img class="lang-flag" src="{% static 'img/flags/'|add:item.language|add:'.svg' %}"/>
                                                                 {% endif %}
                                                             </a>
@@ -80,7 +80,7 @@
                                                             <a href="{% url 'education:summary' item.id %}"
                                                                target="_blank">
                                                                 {{ item.name }}
-                                                                {% if item.language != '' %}
+                                                                {% if item.language %}
                                                                     <img class="lang-flag" src="{% static 'img/flags/'|add:item.language|add:'.svg' %}"/>
                                                                 {% endif %}
                                                             </a>
