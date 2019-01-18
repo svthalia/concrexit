@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.utils import timezone
@@ -8,8 +10,9 @@ from activemembers.api.serializers import (
     NextCloudMemberSerializer,
     NextCloudGroupSerializer
 )
-from activemembers.models import MemberGroupMembership, MemberGroup
+from activemembers.models import MemberGroupMembership, MemberGroup, Board
 from members.models import Member
+from utils.snippets import datetime_to_lectureyear
 
 
 class NextCloudUsersView(ListAPIView):
@@ -42,7 +45,7 @@ class NextCloudGroupsView(ListAPIView):
         response = super().list(request, *args, **kwargs)
         perm = Permission.objects.get(content_type__app_label='auth',
                                       codename='nextcloud_admin')
-        users = Member.current_members.filter(
+        admin_users = Member.current_members.filter(
             Q(is_superuser=True) |
             Q(groups__permissions=perm) |
             Q(user_permissions=perm) |
@@ -51,12 +54,24 @@ class NextCloudGroupsView(ListAPIView):
               Q(membergroupmembership__until__gte=timezone.now())))
         ).distinct().values_list('username', flat=True)
 
-        if users.count() > 0:
-            response.data = list(response.data) + [
-                {
-                    'pk': -1,
-                    'name': 'admin',
-                    'members': users
-                }
-            ]
+        current_year = datetime_to_lectureyear(datetime.date.today())
+        try:
+            board = Board.objects.get(
+                since__year=current_year, until__year=current_year + 1)
+            board_users = board.members.values_list('username', flat=True)
+        except Board.DoesNotExist:
+            board_users = []
+
+        response.data = list(response.data) + [
+            {
+                'pk': -1,
+                'name': 'admin',
+                'members': admin_users
+            },
+            {
+                'pk': -2,
+                'name': 'Board',
+                'members': board_users
+            }
+        ]
         return response
