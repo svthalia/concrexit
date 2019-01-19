@@ -75,17 +75,15 @@
         </a>
         <div class="flex-grow-1"></div>
         <div class="navbar-user order-1 d-flex">
-            {% if LANGUAGE_CODE == 'nl' %}
-                <a href="#lang" data-next="{{ redirect_to }}" data-lang="en"
-                   data-href="{% url 'set_language' %}"
-                   class="btn btn-link" id="language-switcher"><img
-                    src="{% static 'img/flags/en.svg' %}"/></a>
-            {% else %}
-                <a href="#lang" data-next="{{ redirect_to }}" data-lang="nl"
-                   data-href="{% url 'set_language' %}"
-                   class="btn btn-link" id="language-switcher"><img
-                    src="{% static 'img/flags/nl.svg' %}"/></a>
-            {% endif %}
+            <a href="#lang" 
+               class="btn btn-link" 
+               id="language-switcher">
+                {% if LANGUAGE_CODE == 'nl' %}
+                    <img src="{% static 'img/flags/en.svg' %}"/>
+                {% else %}
+                    <img src="{% static 'img/flags/nl.svg' %}"/>
+                {% endif %}
+            </a>
             <div class="btn-group">
                 {% if not user.is_authenticated %}
                     <a href="{% url 'login' %}" class="btn btn-primary"><i
@@ -170,7 +168,7 @@
 <form method="post" action="{% url 'set_language' %}" class="d-none"
       id="change-language-form">
     {% csrf_token %}
-    <input type="hidden" value="{{ redirect_to }}" name="next"/>
+    <input type="hidden" value="{{ request.get_full_path }}" name="next"/>
     <input type="hidden"
            value="{% if LANGUAGE_CODE == 'nl' %}en{% else %}nl{% endif %}"
            name="language"/>
