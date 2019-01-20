@@ -76,6 +76,11 @@ class Command(BaseCommand):
                     code=code,
                 ))
 
+            replace_responses = api.multi_request(replace_commands)
+            for response in replace_responses:
+                if not response.success:
+                    logger.debug(response.notifications)
+
             delete_commands = []
             for website_id, code in current_relations.items():
                 delete_commands.append(ApiCommand(
@@ -87,41 +92,6 @@ class Command(BaseCommand):
 
             delete_responses = api.multi_request(delete_commands)
             for response in delete_responses:
-                if not response.success:
-                    logger.debug(response.notifications)
-                    website_id = delete_commands[
-                        response.request_sequence].data.get('website_id')
-                    code = delete_commands[
-                        response.request_sequence].data.get('code')
-                    member = Member.objects.get(pk=website_id)
-
-                    fields = {
-                        'website_id': member.pk,
-                        'voornaam': member.first_name,
-                        'naam': member.last_name,
-                        'einddatum_lidmaatschap':
-                            date(member.latest_membership.until, 'Y-m-d'),
-                        'e_mailadres': '',
-                        'straatnaam': '',
-                        'postcode': '',
-                        'plaats': '',
-                        'land': '',
-                        'bankrekeningnummer': {
-                            'name': '',
-                            'bic': '',
-                            'iban': '',
-                        },
-                    }
-
-                    replace_commands.append(ApiCommand(
-                        command='ReplaceRelation',
-                        entityType='lid',
-                        fields=fields,
-                        code=code,
-                    ))
-
-            replace_responses = api.multi_request(replace_commands)
-            for response in replace_responses:
                 if not response.success:
                     logger.debug(response.notifications)
         except HTTPError as e:
