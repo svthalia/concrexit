@@ -44,6 +44,7 @@ class Command(BaseCommand):
                 current_relations = {
                     int(r.get('website_id')): r.get('code', None)
                     for r in relations_response.get('relations').values()
+                    if r.get('website_id', '') != ''
                 }
 
             replace_commands = []
@@ -54,7 +55,7 @@ class Command(BaseCommand):
                 fields = {
                     'website_id': member.pk,
                     'voornaam': member.first_name,
-                    'naam': member.last_name,
+                    'naam': member.last_name[:100],  # Conscribo maxlength: 100
                     'einddatum_lidmaatschap':
                         date(member.current_membership.until, 'Y-m-d'),
                     'e_mailadres': member.email,
@@ -82,12 +83,11 @@ class Command(BaseCommand):
                     logger.debug(response.notifications)
 
             delete_commands = []
-            for website_id, code in current_relations.items():
+            for code in current_relations.values():
                 delete_commands.append(ApiCommand(
                     command='DeleteRelation',
                     entityType='lid',
                     code=code,
-                    website_id=website_id  # not used by server
                 ))
 
             delete_responses = api.multi_request(delete_commands)
