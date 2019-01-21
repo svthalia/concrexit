@@ -1,6 +1,6 @@
 import requests
 
-from utils.conscribo.objects import *
+from utils.conscribo.objects import Request, Result
 
 
 class ConscriboApi:

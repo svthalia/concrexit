@@ -11,6 +11,7 @@ Subpackages
 
 .. toctree::
 
+    utils.conscribo
     utils.management
     utils.templatetags
 

@@ -69,7 +69,6 @@ class Result(object):
             'notification': []
         }).get('notification')
 
-
     @staticmethod
     def single(data):
         return Result(data.get('result', {}))

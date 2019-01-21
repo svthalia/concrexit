@@ -6,8 +6,8 @@ from django.template.defaultfilters import date
 from requests import HTTPError
 
 from members.models import Member
-from utils.conscribo.api import ConscriboApi, ResultException
-from utils.conscribo.objects import Command as ApiCommand
+from utils.conscribo.api import ConscriboApi
+from utils.conscribo.objects import Command as ApiCommand, ResultException
 
 logger = logging.getLogger(__name__)
 
@@ -63,10 +63,10 @@ class Command(BaseCommand):
                     'plaats': profile.address_city,
                     'land': 'Nederland',
                     'bankrekeningnummer': {
-                        'name': '',
-                        'bic': '',
-                        'iban': profile.bank_account,
-                    },
+                            'name': '',
+                            'bic': '',
+                            'iban': profile.bank_account,
+                        },
                 }
 
                 replace_commands.append(ApiCommand(
