@@ -2,10 +2,6 @@
 
 The code by members of Thalia's Technicie is available under AGPL included below.
 
-# Theme
-
-The style files and theme may only be used by Thalia and is under licence from ThemeForest.
-
 # GNU AFFERO GENERAL PUBLIC LICENSE
 
 Version 3, 19 November 2007
