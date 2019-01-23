@@ -14,15 +14,6 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            '--dry-run',
-            action='store_true',
-            dest='dry-run',
-            default=False,
-            help='Dry run instead of syncing for real',
-        )
-
     def handle(self, *args, **options):
         api = ConscriboApi(settings.CONSCRIBO_ACCOUNT,
                            settings.CONSCRIBO_USER,
