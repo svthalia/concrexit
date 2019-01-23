@@ -59,12 +59,13 @@ class Command(BaseCommand):
                     'einddatum_lidmaatschap':
                         date(member.current_membership.until, 'Y-m-d'),
                     'e_mailadres': member.email,
-                    'straatnaam': profile.address_street,
+                    'eerste_adresregel': profile.address_street,
+                    'tweede_adresregel': profile.address_street2,
                     'postcode': profile.address_postal_code,
                     'plaats': profile.address_city,
                     'land': 'Nederland',
                     'bankrekeningnummer': {
-                            'name': '',
+                            'name': f'${member.initials} ${member.last_name}',
                             'bic': '',
                             'iban': profile.bank_account,
                         },
