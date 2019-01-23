@@ -98,6 +98,7 @@ class PizzaEvent(models.Model):
             end_reminder.body_nl = "Je kan nog 10 minuten pizza's bestellen"
             end_reminder.category = Category.objects.get(key='pizza')
             end_reminder.time = self.end - timezone.timedelta(minutes=10)
+            end_reminder.save()
 
             if self.event.registration_required:
                 end_reminder.users.set(self.event.registrations
@@ -105,8 +106,6 @@ class PizzaEvent(models.Model):
                                        .values_list('member', flat=True))
             else:
                 end_reminder.users.set(Member.current_members.all())
-
-            end_reminder.save()
 
             self.end_reminder = end_reminder
         elif (self.send_notification and self.end_reminder and
