@@ -115,6 +115,12 @@ class PizzaEvent(models.Model):
 
         super().save(*args, **kwargs)
 
+    def delete(self, using=None, keep_parents=False):
+        if (self.end_reminder is not None
+                and not self.end_reminder.sent):
+            self.end_reminder.delete()
+        return super().delete(using, keep_parents)
+
     def __str__(self):
         return 'Pizzas for ' + str(self.event)
 

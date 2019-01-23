@@ -390,6 +390,17 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
         super().save()
 
+    def delete(self, using=None, keep_parents=False):
+        if (self.registration_reminder is not None
+                and not self.registration_reminder.sent):
+            self.registration_reminder.delete()
+        if (self.start_reminder is not None
+                and not self.start_reminder.sent):
+            self.start_reminder.delete()
+        if self.is_pizza_event():
+            self.pizzaevent.delete()
+        return super().delete(using, keep_parents)
+
     def __str__(self):
         return '{}: {}'.format(
             self.title,
