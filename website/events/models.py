@@ -397,6 +397,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         if (self.start_reminder is not None
                 and not self.start_reminder.sent):
             self.start_reminder.delete()
+        if self.is_pizza_event():
+            self.pizzaevent.delete()
         return super().delete(using, keep_parents)
 
     def __str__(self):
