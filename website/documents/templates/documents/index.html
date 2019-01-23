@@ -98,7 +98,7 @@
                                                  id="gm-content-{{ forloop.counter0 }}">
                                                 <div class="card-body">
                                                     <p>
-                                                        Locatie: {{ gm.location }}<br/>
+                                                        {% trans "location"|capfirst %}: {{ gm.location }}<br/>
                                                         {% trans "documents"|capfirst %}:<br/>
                                                     <ol>
                                                         {% for doc in gm.documents.all %}
