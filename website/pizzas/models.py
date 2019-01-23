@@ -81,6 +81,8 @@ class PizzaEvent(models.Model):
             })
 
     def clean(self):
+        super().clean()
+
         if self.start >= self.end:
             raise ValidationError({
                 'start': _('The start is after the end of this event.'),
