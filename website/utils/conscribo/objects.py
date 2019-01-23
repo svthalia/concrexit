@@ -4,7 +4,7 @@ import json
 class _JsonSerializable(object):
     @property
     def data(self) -> object:
-        return 'not implemented'
+        raise NotImplementedError
 
     def json(self) -> str:
         return json.dumps(self.data)
