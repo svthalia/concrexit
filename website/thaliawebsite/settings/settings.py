@@ -276,6 +276,11 @@ BOARD_NOTIFICATION_ADDRESS = 'info@thalia.nu'
 # Partners notification email
 PARTNER_EMAIL = "samenwerking@thalia.nu"
 
+# Conscribo settings
+CONSCRIBO_ACCOUNT = ''
+CONSCRIBO_USER = ''
+CONSCRIBO_PASSWORD = ''
+
 # Mailinglist API key
 MAILINGLIST_API_SECRET = ''
 
