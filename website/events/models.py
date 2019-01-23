@@ -347,10 +347,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                         f'{settings.BASE_URL}'
                         f'{reverse("events:event", args=[self.id])}')
 
-                    registration_reminder.save()
                     self.registration_reminder = registration_reminder
                     self.registration_reminder.users.set(
                         Member.current_members.all())
+
+                    registration_reminder.save()
                 elif registration_reminder.pk is not None:
                     self.registration_reminder = None
                     registration_reminder.delete()
