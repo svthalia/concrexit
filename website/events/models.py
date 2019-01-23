@@ -384,9 +384,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             if (self.registration_reminder is not None
                     and not self.registration_reminder.sent):
                 self.registration_reminder.delete()
+                self.registration_reminder = None
             if (self.start_reminder is not None
                     and not self.start_reminder.sent):
                 self.start_reminder.delete()
+                self.start_reminder = None
 
         super().save()
 
