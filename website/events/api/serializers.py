@@ -226,6 +226,14 @@ class RegistrationListSerializer(serializers.ModelSerializer):
             size_large='800x800')
 
 
+class PaymentTypeField(serializers.ChoiceField):
+
+    def get_attribute(self, instance):
+        if not instance.payment:
+            return Payment.NONE
+        return super().get_attribute(instance)
+
+
 class RegistrationAdminListSerializer(RegistrationListSerializer):
     """Custom registration admin list serializer"""
     class Meta:
@@ -239,6 +247,8 @@ class RegistrationAdminListSerializer(RegistrationListSerializer):
     is_late_cancellation = serializers.SerializerMethodField(
         '_is_late_cancellation')
     queue_position = serializers.SerializerMethodField('_queue_position')
+    payment = PaymentTypeField(source='payment.type',
+                               choices=Payment.PAYMENT_TYPE)
 
     def _is_late_cancellation(self, instance):
         return instance.is_late_cancellation()
@@ -256,18 +266,9 @@ class RegistrationAdminListSerializer(RegistrationListSerializer):
         return instance.name
 
 
-class PaymentTypeField(serializers.ChoiceField):
-
-    def get_attribute(self, instance):
-        if not instance.payment:
-            return Payment.NONE
-        return super().get_attribute(instance)
-
-
 class RegistrationSerializer(serializers.ModelSerializer):
     """Registration serializer"""
     information_fields = None
-    requesting_user = None
 
     class Meta:
         model = Registration
@@ -329,14 +330,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             self.context['request'], file, placeholder=placeholder,
             size_large='800x800')
 
-    def _payment(self, instance):
-        if instance.payment:
-            return instance.payment.type
-        return Registration.PAYMENT_NONE
-
     def __init__(self, instance=None, data=empty, **kwargs):
         super().__init__(instance, data, **kwargs)
-        self.requesting_user = kwargs['context']['request'].member
         try:
             if instance:
                 self.information_fields = services.registration_fields(
