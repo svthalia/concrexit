@@ -19,7 +19,12 @@ $(function () {
                     afterShow: function (instance, current) {
                         $(instance.$refs.container)
                             .find("[data-fancybox-download]")
-                            .attr("href", downloadLink);
+                            .attr(
+                                {
+                                    "href": downloadLink,
+                                    "download": '',
+                                }
+                            );
                     }
                 });
         });
