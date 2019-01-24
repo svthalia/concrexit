@@ -22,7 +22,7 @@ class Command(BaseCommand):
         try:
             relations_response = api.single_request(
                 'listRelations',
-                entityType='lid',
+                entityType='lid_2',
                 requestedFields={
                     'fieldName': ['website_id', 'code']
                 },
