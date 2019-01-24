@@ -20,6 +20,7 @@ class MemberRegistrationFormTest(TestCase):
             'address_street2': '',
             'address_postal_code': '6525AJ',
             'address_city': 'Nijmegen',
+            'address_country': 'NL',
             'phone_number': '06123456789',
             'birthday': timezone.now().replace(year=1990, day=1),
             'language': 'en',

@@ -189,6 +189,7 @@ def execute_data_minimisation(dry_run=False):
             profile.address_street2 = None
             profile.address_postal_code = None
             profile.address_city = None
+            profile.address_country = None
             profile.birthday = None
             profile.emergency_contact_phone_number = None
             profile.emergency_contact = None

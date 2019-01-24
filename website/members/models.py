@@ -19,6 +19,7 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField
 
 from activemembers.models import MemberGroup, MemberGroupMembership
+from utils import countries
 
 logger = logging.getLogger(__name__)
 
@@ -262,6 +263,13 @@ class Profile(models.Model):
     address_city = models.CharField(
         max_length=40,
         verbose_name=_('City'),
+        null=True,
+    )
+
+    address_country = models.CharField(
+        max_length=2,
+        choices=countries.EUROPE,
+        verbose_name=_('Country'),
         null=True,
     )
 

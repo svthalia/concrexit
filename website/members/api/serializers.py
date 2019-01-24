@@ -118,9 +118,10 @@ class ProfileEditSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('pk', 'email', 'first_name', 'last_name', 'address_street',
                   'address_street2', 'address_postal_code', 'address_city',
-                  'phone_number', 'show_birthday', 'website', 'photo',
-                  'emergency_contact', 'emergency_contact_phone_number',
-                  'profile_description', 'nickname', 'display_name_preference',
+                  'address_country', 'phone_number', 'show_birthday',
+                  'website', 'photo', 'emergency_contact',
+                  'emergency_contact_phone_number', 'profile_description',
+                  'nickname', 'display_name_preference',
                   'language', 'receive_optin', 'receive_newsletter',
                   'display_name', 'avatar', 'birthday', 'starting_year',
                   'programme', 'membership_type', 'achievements', 'societies')

@@ -18,6 +18,14 @@ Subpackages
 Submodules
 ----------
 
+utils.countries module
+----------------------
+
+.. automodule:: utils.countries
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 utils.exception\_filter module
 ------------------------------
 

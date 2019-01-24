@@ -56,7 +56,8 @@ class RegistrationAdmin(admin.ModelAdmin):
             'fields': ('address_street',
                        'address_street2',
                        'address_postal_code',
-                       'address_city',)
+                       'address_city',
+                       'address_country',)
         }),
         (_('University information'), {
             'fields': ('student_number',

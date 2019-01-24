@@ -52,6 +52,7 @@ class _ProfileFactory(factory.Factory):
     address_street = factory.LazyAttribute(lambda x: _faker.street_address())
     address_postal_code = factory.LazyAttribute(lambda x: _faker.postcode())
     address_city = factory.LazyAttribute(lambda x: _faker.city())
+    address_country = random.choice(['NL', 'DE', 'BE'])
 
     phone_number = '+31{}'.format(_faker.numerify(text="##########"))
 

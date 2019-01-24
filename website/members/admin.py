@@ -23,11 +23,11 @@ class MembershipInline(admin.StackedInline):
 class ProfileInline(admin.StackedInline):
     fields = ('starting_year', 'programme', 'address_street',
               'address_street2', 'address_postal_code', 'address_city',
-              'student_number', 'phone_number', 'receive_optin',
-              'receive_newsletter', 'birthday', 'show_birthday',
-              'direct_debit_authorized', 'bank_account', 'initials',
-              'nickname', 'display_name_preference', 'profile_description',
-              'website', 'photo', 'emergency_contact',
+              'address_country', 'student_number', 'phone_number',
+              'receive_optin', 'receive_newsletter', 'birthday',
+              'show_birthday', 'direct_debit_authorized', 'bank_account',
+              'initials', 'nickname', 'display_name_preference',
+              'profile_description', 'website', 'photo', 'emergency_contact',
               'emergency_contact_phone_number', 'language',
               'event_permissions')
     model = models.Profile
@@ -131,7 +131,8 @@ class UserAdmin(BaseUserAdmin):
                                            filename="addresses.csv"'
         writer = csv.writer(response)
         writer.writerow([_('First name'), _('Last name'), _('Address'),
-                         _('Address line 2'), _('Postal code'), _('City')])
+                         _('Address line 2'), _('Postal code'), _('City'),
+                         _('Country')])
         for user in queryset.exclude(profile=None):
             writer.writerow([user.first_name,
                              user.last_name,
@@ -139,6 +140,7 @@ class UserAdmin(BaseUserAdmin):
                              user.profile.address_street2,
                              user.profile.address_postal_code,
                              user.profile.address_city,
+                             user.profile.get_address_country_display(),
                              ])
         return response
     address_csv_export.short_description = _('Download address label for '

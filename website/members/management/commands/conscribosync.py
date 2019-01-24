@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import date
+from django.utils import translation
 from requests import HTTPError
 
 from members.models import Member
@@ -39,35 +40,36 @@ class Command(BaseCommand):
                 }
 
             replace_commands = []
-            for member in Member.current_members.all():
-                code = current_relations.pop(member.pk, None)
-                profile = member.profile
+            with translation.override('nl'):
+                for member in Member.current_members.all():
+                    code = current_relations.pop(member.pk, None)
+                    profile = member.profile
 
-                fields = {
-                    'website_id': member.pk,
-                    'voornaam': member.first_name,
-                    'naam': member.last_name[:100],  # Conscribo maxlength: 100
-                    'einddatum_lidmaatschap':
-                        date(member.current_membership.until, 'Y-m-d'),
-                    'e_mailadres': member.email,
-                    'eerste_adresregel': profile.address_street,
-                    'tweede_adresregel': profile.address_street2,
-                    'postcode': profile.address_postal_code,
-                    'plaats': profile.address_city,
-                    'land': 'Nederland',
-                    'bankrekeningnummer': {
+                    fields = {
+                        'website_id': member.pk,
+                        'voornaam': member.first_name,
+                        'naam': member.last_name[:100],  # api maxlength: 100
+                        'einddatum_lidmaatschap':
+                            date(member.current_membership.until, 'Y-m-d'),
+                        'e_mailadres': member.email,
+                        'eerste_adresregel': profile.address_street,
+                        'tweede_adresregel': profile.address_street2,
+                        'postcode': profile.address_postal_code,
+                        'plaats': profile.address_city,
+                        'land': profile.get_address_country_display(),
+                        'bankrekeningnummer': {
                             'name': f'${profile.initials} ${member.last_name}',
                             'bic': '',
                             'iban': profile.bank_account,
                         },
-                }
+                    }
 
-                replace_commands.append(ApiCommand(
-                    command='ReplaceRelation',
-                    entityType='lid_2',
-                    fields=fields,
-                    code=code,
-                ))
+                    replace_commands.append(ApiCommand(
+                        command='ReplaceRelation',
+                        entityType='lid_2',
+                        fields=fields,
+                        code=code,
+                    ))
 
             replace_responses = api.multi_request(replace_commands)
             for response in replace_responses:

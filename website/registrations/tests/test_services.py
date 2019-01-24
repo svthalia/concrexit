@@ -36,6 +36,7 @@ class ServicesTest(TestCase):
             address_street2='',
             address_postal_code='6525AJ',
             address_city='Nijmegen',
+            address_country='NL',
             phone_number='06123456789',
             birthday=timezone.now().replace(year=1990, day=1).date(),
             language='en',
@@ -54,6 +55,7 @@ class ServicesTest(TestCase):
             address_street2='',
             address_postal_code='6525AJ',
             address_city='Nijmegen',
+            address_country='NL',
             phone_number='06098765432',
             birthday=timezone.now().replace(year=1992, day=2).date(),
             language='nl',
@@ -337,6 +339,7 @@ class ServicesTest(TestCase):
         self.assertEqual(member.profile.address_street2, '')
         self.assertEqual(member.profile.address_postal_code, '6525AJ')
         self.assertEqual(member.profile.address_city, 'Nijmegen')
+        self.assertEqual(member.profile.address_country, 'NL')
         self.assertEqual(member.profile.phone_number, '06123456789')
         self.assertEqual(member.profile.birthday, timezone.now()
                          .replace(year=1990, day=1).date())
