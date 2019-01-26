@@ -55,7 +55,7 @@ django.jQuery(function () {
             return false;
         },
         format: function(s, t, node) {
-            return $(node).attr("data-sortval");
+            return $(node).data("sortval");
         },
         type: "text"
     });

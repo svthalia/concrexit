@@ -91,6 +91,10 @@ body {
     }
 }
 
+.tablesorter-header {
+    outline: none;
+}
+
 @media(min-width: 992px) {
     .navbar {
         .navbar-nav {
