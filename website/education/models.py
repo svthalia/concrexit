@@ -111,7 +111,8 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
     uploader = models.ForeignKey(
         Member,
         verbose_name=_('uploader'),
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
     uploader_date = models.DateField(
@@ -181,7 +182,8 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
     uploader = models.ForeignKey(
         Member,
         verbose_name=_('uploader'),
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
     uploader_date = models.DateField(
