@@ -1,6 +1,12 @@
 $(function() {
     var csrfToken = $('#pizzas-orders').data('csrf');
-    $('table').tablesort();
+
+    $('table').tablesorter({
+        headerTemplate: '{content} {icon}',
+        cssIconNone: 'fas fa-sort',
+        cssIconAsc: 'fas fa-sort-up',
+        cssIconDesc: 'fas fa-sort-down'
+    });
 
     $('thead th.paid-title').data('sortBy', function (th, td, tablesort) {
         return $(td).find('.btn').data('paid');

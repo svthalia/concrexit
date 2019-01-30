@@ -4,21 +4,21 @@
         <thead>
             <tr>
                 <th scope="col">{% trans "name"|capfirst %} <span class="toggle"></span></th>
-                <th scope="col" data-meta="{sorter: 'date'}">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" class="sorter-date">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
                 {% if cancellations %}
-                <th scope="col" data-meta="{sorter: 'date'}">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" class="sorter-date">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
                 {% for field in fields %}
                 <th scope="col">{{ field.name }} <span class="toggle"></span></th>
                 {% endfor %}
-                <th data-meta="{sorter: 'checkbox'}">{% trans "present"|capfirst %} <span class="toggle"></span></th>
-                <th data-meta="{sorter: 'radio'}">{% trans "not paid"|capfirst %} <span class="toggle"></span></th>
-                <th data-meta="{sorter: 'radio'}">{% trans "paid cash"|capfirst %} <span class="toggle"></span></th>
-                <th data-meta="{sorter: 'radio'}">{% trans "paid card"|capfirst %} <span class="toggle"></span></th>
+                <th class="sorter-checkbox">{% trans "present"|capfirst %} <span class="toggle"></span></th>
+                <th class="sorter-radio">{% trans "not paid"|capfirst %} <span class="toggle"></span></th>
+                <th class="sorter-radio">{% trans "paid cash"|capfirst %} <span class="toggle"></span></th>
+                <th class="sorter-radio">{% trans "paid card"|capfirst %} <span class="toggle"></span></th>
                 {% if registrations|length > 0 and registrations.0.date_cancelled is not None %}
                     <th>{% trans "late"|capfirst %}</th>
                 {% endif %}
-                <th data-meta="{sorter: false}">
+                <th class="sorter-false">
                 {% if addlink != 0 %}
                     <a class="addlink" href="{% url 'admin:events_registration_add' %}?event_pk={{ event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans "add"|capfirst %}</a>
                 {% endif %}

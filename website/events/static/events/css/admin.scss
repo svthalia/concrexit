@@ -27,6 +27,8 @@
 }
 
 th.sortable {
+    outline: none;
+
     &:hover {
         background-color: #eee;
     }
@@ -39,7 +41,7 @@ th.sortable {
         background-size: 14px auto;
     }
 
-    &.headerSortDown {
+    &.tablesorter-headerAsc {
         background-color: #eee;
         .toggle {
             display: inline-block;
@@ -47,7 +49,7 @@ th.sortable {
         }
     }
 
-    &.headerSortUp {
+    &.tablesorter-headerDesc {
         background-color: #eee;
         .toggle {
             display: inline-block;

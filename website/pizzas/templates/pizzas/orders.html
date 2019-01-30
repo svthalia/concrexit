@@ -48,7 +48,7 @@
                         <th scope="col">{% trans "Product" %}</th>
                         <th class="paid-title"
                             scope="col">{% trans "Paid" %}</th>
-                        <th class="no-sort"><i class="fas fa-trash"></i></th>
+                        <th class="sorter-false"><i class="fas fa-trash"></i></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -103,7 +103,7 @@
     {{ block.super }}
     {% compress js %}
     <script type="text/javascript"
-            src="{% static "pizzas/js/jquery.tablesort.min.js" %}"></script>
+            src="{% static "js/jquery.tablesorter.min.js" %}"></script>
     <script type="text/javascript"
             src="{% static "pizzas/js/main.js" %}"></script>
     {% endcompress %}
