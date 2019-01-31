@@ -64,7 +64,7 @@ class Command(BaseCommand):
 
                 replace_commands.append(ApiCommand(
                     command='ReplaceRelation',
-                    entityType='lid',
+                    entityType='lid_2',
                     fields=fields,
                     code=code,
                 ))
@@ -78,7 +78,7 @@ class Command(BaseCommand):
             for code in current_relations.values():
                 delete_commands.append(ApiCommand(
                     command='DeleteRelation',
-                    entityType='lid',
+                    entityType='lid_2',
                     code=code,
                 ))
 
