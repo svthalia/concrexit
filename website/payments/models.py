@@ -20,11 +20,13 @@ class Payment(models.Model):
     NONE = 'no_payment'
     CASH = 'cash_payment'
     CARD = 'card_payment'
+    WIRE = 'wire_payment'
 
     PAYMENT_TYPE = (
         (NONE, _('No payment')),
         (CASH, _('Cash payment')),
         (CARD, _('Card payment')),
+        (WIRE, _('Wire payment')),
     )
 
     type = models.CharField(
