@@ -14,6 +14,9 @@
             <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
                data-next="true" data-type="card_payment"
                class="button process">{% trans "Process (card payment)" %}</a>
+            <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
+               data-next="true" data-type="wire_payment"
+               class="button process">{% trans "Process (wire payment)" %}</a>
         {% else %}
             <a href="{{ url }}">
                 {% trans "Processed" %}
