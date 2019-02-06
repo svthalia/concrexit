@@ -95,6 +95,10 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
         on_delete=models.SET_NULL,
     )
 
+    display_members = models.BooleanField(
+        default=False,
+    )
+
     @property
     def contact_address(self):
         if self.contact_mailinglist:

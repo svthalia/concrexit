@@ -51,7 +51,8 @@ class CommitteeAdmin(TranslatedModelAdmin):
     filter_horizontal = ('permissions',)
 
     fields = ('name', 'description', 'photo', 'permissions', 'since',
-              'until', 'contact_mailinglist', 'contact_email', 'active')
+              'until', 'contact_mailinglist', 'contact_email', 'active',
+              'display_members')
 
     def email(self, instance):
         if instance.contact_email:
@@ -72,7 +73,8 @@ class SocietyAdmin(TranslatedModelAdmin):
     filter_horizontal = ('permissions',)
 
     fields = ('name', 'description', 'photo', 'permissions', 'since',
-              'until', 'contact_mailinglist', 'contact_email', 'active')
+              'until', 'contact_mailinglist', 'contact_email', 'active',
+              'display_members')
 
     def email(self, instance):
         if instance.contact_email:
@@ -91,7 +93,8 @@ class BoardAdmin(TranslatedModelAdmin):
     filter_horizontal = ('permissions',)
 
     fields = ('name', 'description', 'photo', 'permissions',
-              'contact_mailinglist', 'contact_email', 'since', 'until',)
+              'contact_mailinglist', 'contact_email', 'since', 'until',
+              'display_members')
 
 
 class TypeFilter(admin.SimpleListFilter):
