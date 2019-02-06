@@ -22,6 +22,7 @@ services:
             <<: *postgresvars
             DJANGO_DEBUG: 'True'
             DJANGO_POSTGRES_HOST: postgres
+            DJANGO_SECRET: 'do_not_use_in_prod'
 
 volumes:
     concrexit:
