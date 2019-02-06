@@ -34,22 +34,24 @@
     </section>
     {% endif %}
 
-    <section id="activemembers-membergroup-members" class="page-section">
-        <div class="container">
-            <h1 class="text-center section-title">
-                {% trans 'Members' %}
-            </h1>
+	{% if membergroup.display_members %}
+		<section id="activemembers-membergroup-members" class="page-section">
+			<div class="container">
+				<h1 class="text-center section-title">
+					{% trans 'Members' %}
+				</h1>
 
-            <div class="row">
-                {% for member in members %}
-                    <div class="col-4 col-md-3 my-3">
-                        {% membergroup_member_card member %}
-                    </div>
-                {% empty %}
-                    {% trans "This group doesn't have any members?" as empty %}
-                    {% alert 'danger' empty extra_classes='col-10 offset-1' %}
-                {% endfor %}
-            </div>
-        </div>
-    </section>
+				<div class="row">
+					{% for member in members %}
+						<div class="col-4 col-md-3 my-3">
+							{% membergroup_member_card member %}
+						</div>
+					{% empty %}
+						{% trans "This group doesn't have any members?" as empty %}
+						{% alert 'danger' empty extra_classes='col-10 offset-1' %}
+					{% endfor %}
+				</div>
+			</div>
+		</section>
+	{% endif %}
 {% endblock %}
