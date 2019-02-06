@@ -240,6 +240,7 @@ def _create_member_from_registration(registration):
         address_street2=registration.address_street2,
         address_postal_code=registration.address_postal_code,
         address_city=registration.address_city,
+        address_country=registration.address_country,
         phone_number=registration.phone_number,
         birthday=registration.birthday,
         language=registration.language,

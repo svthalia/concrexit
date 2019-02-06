@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from members.models import Membership, Profile
 from registrations import emails
+from utils import countries
 
 
 class Entry(models.Model):
@@ -226,6 +227,13 @@ class Registration(Entry):
         max_length=40,
         verbose_name=_('city'),
         blank=False,
+    )
+
+    address_country = models.CharField(
+        max_length=2,
+        choices=countries.EUROPE,
+        verbose_name=_('Country'),
+        null=True,
     )
 
     # ---- Opt-ins -----

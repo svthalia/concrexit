@@ -11,8 +11,9 @@ from .models import Profile
 class ProfileForm(forms.ModelForm):
     class Meta:
         fields = ['address_street', 'address_street2',
-                  'address_postal_code', 'address_city', 'phone_number',
-                  'emergency_contact', 'emergency_contact_phone_number',
+                  'address_postal_code', 'address_city', 'address_country',
+                  'phone_number', 'emergency_contact',
+                  'emergency_contact_phone_number',
                   'show_birthday', 'website',
                   'profile_description', 'nickname',
                   'display_name_preference', 'photo', 'language',

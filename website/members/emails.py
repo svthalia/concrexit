@@ -84,6 +84,8 @@ def send_information_request(dry_run=False):
                             'address_postal_code':
                                 member.profile.address_postal_code,
                             'address_city': member.profile.address_city,
+                            'address_country':
+                                member.profile.get_address_country_display(),
                             'phone_number': member.profile.phone_number,
                             'birthday': member.profile.birthday,
                             'email': member.email,

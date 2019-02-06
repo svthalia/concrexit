@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
-"PO-Revision-Date: 2016-11-14 22:05+0100\n"
+"POT-Creation-Date: 2019-01-24 22:35+0100\n"
+"PO-Revision-Date: 2019-01-24 22:44+0100\n"
 "Last-Translator: Joost Rijneveld <joost@joostrijneveld.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2\n"
 
 #: templates/registration/logged_out.html
 msgid "Logout"
@@ -180,3 +181,207 @@ msgstr "Wachtwoord vergeten"
 #: templates/registration/password_reset_subject.txt
 msgid "[THALIA] Password reset request"
 msgstr "[THALIA] Verzoek tot wachtwoordherstel"
+
+#: utils/countries.py
+msgid "Åland Islands"
+msgstr "Aland-eilanden"
+
+#: utils/countries.py
+msgid "Albania"
+msgstr "Albanië"
+
+#: utils/countries.py
+msgid "Andorra"
+msgstr "Andorra"
+
+#: utils/countries.py
+msgid "Austria"
+msgstr "Oostenrijk"
+
+#: utils/countries.py
+msgid "Belarus"
+msgstr "Wit-Rusland"
+
+#: utils/countries.py
+msgid "Belgium"
+msgstr "België"
+
+#: utils/countries.py
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnië en Herzegovina"
+
+#: utils/countries.py
+msgid "Bulgaria"
+msgstr "Bulgarije"
+
+#: utils/countries.py
+msgid "Croatia"
+msgstr "Kroatië"
+
+#: utils/countries.py
+msgid "Czechia"
+msgstr "Tsjechië"
+
+#: utils/countries.py
+msgid "Denmark"
+msgstr "Denemarken"
+
+#: utils/countries.py
+msgid "Estonia"
+msgstr "Estland"
+
+#: utils/countries.py
+msgid "Faroe Islands"
+msgstr "Faeröer"
+
+#: utils/countries.py
+msgid "Finland"
+msgstr "Finland"
+
+#: utils/countries.py
+msgid "France"
+msgstr "Frankrijk"
+
+#: utils/countries.py
+msgid "Germany"
+msgstr "Duitsland"
+
+#: utils/countries.py
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+#: utils/countries.py
+msgid "Greece"
+msgstr "Griekenland"
+
+#: utils/countries.py
+msgid "Guernsey"
+msgstr "Guernsey"
+
+#: utils/countries.py
+msgid "Vatican City"
+msgstr "Vaticaanstad"
+
+#: utils/countries.py
+msgid "Hungary"
+msgstr "Hongarije"
+
+#: utils/countries.py
+msgid "Iceland"
+msgstr "IJsland"
+
+#: utils/countries.py
+msgid "Ireland"
+msgstr "Ierland"
+
+#: utils/countries.py
+msgid "Isle of Man"
+msgstr "Man (eiland)"
+
+#: utils/countries.py
+msgid "Italy"
+msgstr "Italië"
+
+#: utils/countries.py
+msgid "Jersey"
+msgstr "Jersey"
+
+#: utils/countries.py
+msgid "Latvia"
+msgstr "Letland"
+
+#: utils/countries.py
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+#: utils/countries.py
+msgid "Lithuania"
+msgstr "Litouwen"
+
+#: utils/countries.py
+msgid "Luxembourg"
+msgstr "Luxemburg"
+
+#: utils/countries.py
+msgid "Macedonia (FYROM)"
+msgstr "Macedonië (VJRM)"
+
+#: utils/countries.py
+msgid "Malta"
+msgstr "Malta"
+
+#: utils/countries.py
+msgid "Moldova"
+msgstr "Moldavië"
+
+#: utils/countries.py
+msgid "Monaco"
+msgstr "Monaco"
+
+#: utils/countries.py
+msgid "Montenegro"
+msgstr "Montenegro"
+
+#: utils/countries.py
+msgid "Netherlands"
+msgstr "Nederland"
+
+#: utils/countries.py
+msgid "Norway"
+msgstr "Noorwegen"
+
+#: utils/countries.py
+msgid "Poland"
+msgstr "Polen"
+
+#: utils/countries.py
+msgid "Portugal"
+msgstr "Portugal"
+
+#: utils/countries.py
+msgid "Romania"
+msgstr "Roemenië"
+
+#: utils/countries.py
+msgid "Russian Federation"
+msgstr "Rusland"
+
+#: utils/countries.py
+msgid "San Marino"
+msgstr "San Marino"
+
+#: utils/countries.py
+msgid "Serbia"
+msgstr "Servië"
+
+#: utils/countries.py
+msgid "Slovakia"
+msgstr "Slowakije"
+
+#: utils/countries.py
+msgid "Slovenia"
+msgstr "Slovenië"
+
+#: utils/countries.py
+msgid "Spain"
+msgstr "Spanje"
+
+#: utils/countries.py
+msgid "Svalbard and Jan Mayen"
+msgstr "Spitsbergen en Jan Mayen"
+
+#: utils/countries.py
+msgid "Sweden"
+msgstr "Zweden"
+
+#: utils/countries.py
+msgid "Switzerland"
+msgstr "Zwitserland"
+
+#: utils/countries.py
+msgid "Ukraine"
+msgstr "Oekraïne"
+
+#: utils/countries.py
+msgid "United Kingdom"
+msgstr "Verenigd Koninkrijk"
