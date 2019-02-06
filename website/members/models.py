@@ -524,7 +524,7 @@ class Profile(models.Model):
 class Membership(models.Model):
 
     MEMBER = 'member'
-    BENEFACTOR = 'supporter'
+    BENEFACTOR = 'benefactor'
     HONORARY = 'honorary'
 
     MEMBERSHIP_TYPES = (

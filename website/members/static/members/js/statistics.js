@@ -27,7 +27,7 @@ $(function () {
             labels:
                 [
                     gettext('Members'),
-                    gettext('Supporters'),
+                    gettext('Benefactors'),
                     gettext('Honorary Members'),
                 ],
             datasets: [{
@@ -39,7 +39,7 @@ $(function () {
                 data:
                     [
                         memberTypeDistribution.member,
-                        memberTypeDistribution.supporter,
+                        memberTypeDistribution.benefactor,
                         memberTypeDistribution.honorary
                     ],
             }]
@@ -75,18 +75,18 @@ $(function () {
                 ],
                 data:
                     [
-                        cohortSizes[0].member + cohortSizes[0].supporter + cohortSizes[0].honorary,
-                        cohortSizes[1].member + cohortSizes[1].supporter + cohortSizes[1].honorary,
-                        cohortSizes[2].member + cohortSizes[2].supporter + cohortSizes[2].honorary,
-                        cohortSizes[3].member + cohortSizes[3].supporter + cohortSizes[3].honorary,
-                        cohortSizes[4].member + cohortSizes[4].supporter + cohortSizes[4].honorary,
-                        cohortSizes[5].member + cohortSizes[5].supporter + cohortSizes[5].honorary,
+                        cohortSizes[0].member + cohortSizes[0].benefactor + cohortSizes[0].honorary,
+                        cohortSizes[1].member + cohortSizes[1].benefactor + cohortSizes[1].honorary,
+                        cohortSizes[2].member + cohortSizes[2].benefactor + cohortSizes[2].honorary,
+                        cohortSizes[3].member + cohortSizes[3].benefactor + cohortSizes[3].honorary,
+                        cohortSizes[4].member + cohortSizes[4].benefactor + cohortSizes[4].honorary,
+                        cohortSizes[5].member + cohortSizes[5].benefactor + cohortSizes[5].honorary,
                     ],
             }]
         },
         options: {
             title: {
-                text: gettext("Total number of (honary) members and supporters per cohort"),
+                text: gettext("Total number of (honary) members and benefactors per cohort"),
             },
             plugins: pluginOptions,
         }
@@ -155,18 +155,18 @@ $(function () {
                 ],
                 data:
                     [
-                        cohortSizes[0].supporter,
-                        cohortSizes[1].supporter,
-                        cohortSizes[2].supporter,
-                        cohortSizes[3].supporter,
-                        cohortSizes[4].supporter,
-                        cohortSizes[5].supporter,
+                        cohortSizes[0].benefactor,
+                        cohortSizes[1].benefactor,
+                        cohortSizes[2].benefactor,
+                        cohortSizes[3].benefactor,
+                        cohortSizes[4].benefactor,
+                        cohortSizes[5].benefactor,
                     ],
             }]
         },
         options: {
             title: {
-                text: gettext("Supporters per cohort"),
+                text: gettext("Benefactors per cohort"),
             },
             plugins: pluginOptions,
         }

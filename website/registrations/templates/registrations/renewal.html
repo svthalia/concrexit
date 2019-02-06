@@ -109,7 +109,7 @@
                         have to renew your membership.
                     {% endblocktrans %}
                 </p>
-            {% elif latest_membership.type == 'supporter' and not was_member %}
+            {% elif latest_membership.type == 'benefactor' and not was_member %}
                 <p class="text-center">
                     {% blocktrans trimmed %}
                         You're a benefactor. Contact the board to renew your
@@ -135,7 +135,7 @@
                       class="col-lg-6 offset-lg-3">
                     {% csrf_token %}
 
-                    {% if not latest_membership.type == 'supporter' %}
+                    {% if not latest_membership.type == 'benefactor' %}
                         {% bootstrap_field form.membership_type %}
                         {% bootstrap_field form.length %}
                     {% else %}
