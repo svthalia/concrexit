@@ -3,6 +3,7 @@
 from django.contrib import admin
 from django.core.exceptions import DisallowedRedirect, PermissionDenied
 from django.db.models import Max, Min
+from django.forms import Field
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
 from django.urls import reverse, path
@@ -15,6 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from activemembers.models import MemberGroup
 from events import services
 from members.models import Member
+from payments.widgets import PaymentWidget
 from pizzas.models import PizzaEvent
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import TranslatedModelAdmin
@@ -301,6 +303,10 @@ class RegistrationAdmin(DoNextModelAdmin):
             field.widget.can_add_related = False
             field.widget.can_change_related = False
             field.widget.can_delete_related = False
+        elif db_field.name == 'payment':
+            return Field(widget=PaymentWidget,
+                         initial=field.initial,
+                         required=False)
         return field
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

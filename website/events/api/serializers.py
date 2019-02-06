@@ -7,6 +7,7 @@ from html import unescape
 from rest_framework import serializers
 from rest_framework.fields import empty
 
+from payments.models import Payment
 from thaliawebsite.api.services import create_image_thumbnail_dict
 from events import services
 from events.exceptions import RegistrationError
@@ -225,6 +226,14 @@ class RegistrationListSerializer(serializers.ModelSerializer):
             size_large='800x800')
 
 
+class PaymentTypeField(serializers.ChoiceField):
+
+    def get_attribute(self, instance):
+        if not instance.payment:
+            return Payment.NONE
+        return super().get_attribute(instance)
+
+
 class RegistrationAdminListSerializer(RegistrationListSerializer):
     """Custom registration admin list serializer"""
     class Meta:
@@ -238,6 +247,8 @@ class RegistrationAdminListSerializer(RegistrationListSerializer):
     is_late_cancellation = serializers.SerializerMethodField(
         '_is_late_cancellation')
     queue_position = serializers.SerializerMethodField('_queue_position')
+    payment = PaymentTypeField(source='payment.type',
+                               choices=Payment.PAYMENT_TYPE)
 
     def _is_late_cancellation(self, instance):
         return instance.is_late_cancellation()
@@ -270,6 +281,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     photo = serializers.SerializerMethodField('_photo')
     avatar = serializers.SerializerMethodField('_avatar')
     member = serializers.SerializerMethodField('_member')
+    payment = PaymentTypeField(source='payment.type',
+                               choices=Payment.PAYMENT_TYPE)
     registered_on = serializers.DateTimeField(source='date', read_only=True)
     is_cancelled = serializers.SerializerMethodField('_is_cancelled')
     is_late_cancellation = serializers.SerializerMethodField(

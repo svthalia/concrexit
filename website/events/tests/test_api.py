@@ -316,7 +316,7 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(field2.get_value_for(registration), None)
         self.assertEqual(field3.get_value_for(registration), None)
 
-        response = self.client.put(
+        response = self.client.patch(
             '/api/v1/registrations/{}/'.format(registration.pk), {
                 'fields[info_field_1]': True,
                 'fields[info_field_2]': 1337,

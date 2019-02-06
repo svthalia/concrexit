@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _, get_language
 from events import emails
 from events.exceptions import RegistrationError
 from events.models import Registration, RegistrationInformationField
+from payments.models import Payment
 
 
 def is_user_registered(member, event):
@@ -241,7 +242,26 @@ def update_registration_by_organiser(registration, member, data):
             _("You are not allowed to update this registration."))
 
     if 'payment' in data:
-        registration.payment = data['payment']
+        if (data['payment']['type'] == Payment.NONE
+                and registration.payment is not None):
+            p = registration.payment
+            registration.payment = None
+            registration.save()
+            p.delete()
+        elif (data['payment']['type'] != Payment.NONE
+              and registration.payment is not None):
+            registration.payment.type = data['payment']['type']
+            registration.payment.save()
+        elif (data['payment']['type'] != Payment.NONE
+              and registration.payment is None):
+            registration.payment = Payment.objects.create(
+                amount=registration.event.price,
+                paid_by=registration.member,
+                notes=(f'Event registration {registration.event.title_en}. '
+                       f'Registration date: {registration.date}'),
+                processed_by=member,
+                type=data['payment']['type']
+            )
 
     if 'present' in data:
         registration.present = data['present']
