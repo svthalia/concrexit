@@ -428,6 +428,15 @@ img {
 
 @media(max-width: 991px) {
     .grid-item {
+        .ribbon-wrapper {
+            display: none;
+        }
+
+        .name {
+            font-size: 13px;
+            padding: .8rem;
+        }
+
         .overlay {
             h5 {
                 margin-bottom: 0;
