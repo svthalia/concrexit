@@ -58,7 +58,7 @@ class Command(BaseCommand):
                         'plaats': profile.address_city,
                         'land': profile.get_address_country_display(),
                         'bankrekeningnummer': {
-                            'name': f'${profile.initials} ${member.last_name}',
+                            'name': f'{profile.initials} {member.last_name}',
                             'bic': '',
                             'iban': profile.bank_account,
                         },
