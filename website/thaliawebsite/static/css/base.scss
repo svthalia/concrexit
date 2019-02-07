@@ -282,6 +282,7 @@ img {
 }
 
 .grid-item {
+    hyphens: auto;
     position: relative;
     cursor: pointer;
     overflow: hidden;
@@ -428,6 +429,7 @@ img {
 
 @media(max-width: 991px) {
     .grid-item {
+        hyphens: auto;
         .ribbon-wrapper {
             display: none;
         }
@@ -453,6 +455,7 @@ img {
 
 @media(max-width: 767px) {
     .grid-item {
+        hyphens: auto;
         .ribbon-wrapper {
             display: none;
         }
