@@ -257,8 +257,9 @@ def update_registration_by_organiser(registration, member, data):
             registration.payment = Payment.objects.create(
                 amount=registration.event.price,
                 paid_by=registration.member,
-                notes=(f'Event registration {registration.event.title_en}. '
-                       f'Registration date: {registration.date}'),
+                notes=(f'Event registration {registration.event.title_en}'
+                       f'{registration.event.start}. '
+                       f'Registration date: {registration.date}.'),
                 processed_by=member,
                 type=data['payment']['type']
             )
