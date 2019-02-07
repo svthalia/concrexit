@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 django-localflavor = "*"
-django-sendfile = "*"
 freezegun = "*"
 bleach = "*"
 "django-tinymce4-lite" = "*"
@@ -26,6 +25,7 @@ uWSGI = "*"
 "django-bootstrap4" = "*"
 firebase-admin = "*"
 sentry-sdk = "*"
+django-sendfile2 = "*"
 
 [dev-packages]
 django-template-check = "*"

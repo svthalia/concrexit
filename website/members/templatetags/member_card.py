@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from thaliawebsite.templatetags.grid_item import grid_item
-from utils.templatetags.thumbnail import thumbnail
+from utils.media.services import get_thumbnail_url
 
 register = template.Library()
 
@@ -18,8 +18,8 @@ def member_card(member, meta_text=None, ribbon=None):
 
     image_url = static('members/images/default-avatar.jpg')
     if member.profile.photo:
-        image_url = thumbnail(member.profile.photo,
-                              settings.THUMBNAIL_SIZES['medium'])
+        image_url = get_thumbnail_url(member.profile.photo,
+                                      settings.THUMBNAIL_SIZES['medium'])
 
     return grid_item(
         title=member.profile.display_name(),

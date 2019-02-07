@@ -2,7 +2,7 @@ from django import template
 from django.urls import reverse
 
 from thaliawebsite.templatetags.grid_item import grid_item
-from utils.templatetags.thumbnail import thumbnail
+from utils.media.services import get_thumbnail_url
 
 register = template.Library()
 
@@ -32,6 +32,6 @@ def thabloid_card(year, thabloid):
         ),
         meta_text=buttons,
         url=None,
-        image_url=thumbnail(thabloid.cover, '255x360'),
+        image_url=get_thumbnail_url(thabloid.cover, '255x360'),
         class_name=f'thabloid-card mix {class_name} col-6 col-md-3 my-3',
     )
