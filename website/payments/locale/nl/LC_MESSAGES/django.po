@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-27 18:25+0100\n"
-"PO-Revision-Date: 2018-11-27 18:26+0100\n"
+"POT-Creation-Date: 2019-02-08 11:51+0100\n"
+"PO-Revision-Date: 2019-02-08 11:52+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -26,6 +26,10 @@ msgstr "Verwerk geselecteerde betalingen (contant)"
 msgid "Process selected payments (card)"
 msgstr "Verwerk geselecteerde betalingen (pin)"
 
+#: admin.py
+msgid "Process selected payments (wire)"
+msgstr "Verwerk geselecteerde betalingen (overboeking)"
+
 #: admin.py tests/test_admin.py
 #, python-format
 msgid "Successfully processed %(count)d %(items)s."
@@ -34,6 +38,42 @@ msgstr "%(count)d %(items)s succesvol verwerkt."
 #: admin.py
 msgid "The selected payment(s) could not be processed."
 msgstr "De geselecteerde betaling(en) konden niet worden verwerkt."
+
+#: admin.py
+msgid "created"
+msgstr "aangemaakt"
+
+#: admin.py
+msgid "processed"
+msgstr "verwerkt"
+
+#: admin.py
+msgid "amount"
+msgstr "bedrag"
+
+#: admin.py models.py
+msgid "type"
+msgstr "type"
+
+#: admin.py
+msgid "processor"
+msgstr "verwerker"
+
+#: admin.py
+msgid "payer id"
+msgstr "id betaler"
+
+#: admin.py
+msgid "payer name"
+msgstr "naam betaler"
+
+#: admin.py
+msgid "notes"
+msgstr "notities"
+
+#: admin.py
+msgid "Export"
+msgstr "Export"
 
 #: admin_views.py tests/test_admin_views.py
 #, python-format
@@ -66,8 +106,8 @@ msgid "Card payment"
 msgstr "Pin betaling"
 
 #: models.py
-msgid "type"
-msgstr "type"
+msgid "Wire payment"
+msgstr "Pin betaling"
 
 #: models.py
 msgid "processing date"
@@ -92,6 +132,10 @@ msgstr "Verwerk (contant)"
 #: templates/admin/payments/change_form.html templates/payments/widget.html
 msgid "Process (card payment)"
 msgstr "Verwerk (pin)"
+
+#: templates/admin/payments/change_form.html templates/payments/widget.html
+msgid "Process (wire payment)"
+msgstr "Verwerk (overboeking)"
 
 #: templates/payments/widget.html
 msgid "Unprocessed"

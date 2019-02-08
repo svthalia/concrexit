@@ -1,7 +1,12 @@
 """Registers admin interfaces for the payments module"""
+import csv
+
 from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
+from django.http import HttpResponse
 from django.urls import path
+from django.utils.html import format_html
+from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from payments import services, admin_views
@@ -22,17 +27,39 @@ def _show_message(admin, request, n, message, error):
 class PaymentAdmin(admin.ModelAdmin):
     """Manage the payments"""
 
-    list_display = ('created_at', 'amount',  'processing_date', 'type')
-    list_filter = ('type', 'amount',)
+    list_display = ('created_at', 'amount',  'processing_date', 'type',
+                    'paid_by_link', 'processed_by_link', 'notes')
+    list_filter = ('type',)
+    list_select_related = ('paid_by', 'processed_by',)
     date_hierarchy = 'created_at'
     fields = ('created_at', 'amount', 'type', 'processing_date',
               'paid_by', 'processed_by', 'notes')
     readonly_fields = ('created_at', 'amount', 'type',
                        'processing_date', 'paid_by', 'processed_by',
                        'notes')
+    search_fields = ('notes', 'paid_by__username', 'paid_by__first_name',
+                     'paid_by__last_name', 'processed_by__username',
+                     'processed_by__first_name', 'processed_by__last_name',
+                     'amount')
     ordering = ('-created_at', 'processing_date')
     autocomplete_fields = ('paid_by', 'processed_by')
-    actions = ['process_cash_selected', 'process_card_selected']
+    actions = ['process_cash_selected', 'process_card_selected',
+               'process_wire_selected', 'export_csv']
+
+    @staticmethod
+    def _member_link(member):
+        return format_html("<a href='{}'>{}</a>", member.get_absolute_url(),
+                           member.get_full_name())
+
+    def paid_by_link(self, obj):
+        return self._member_link(obj.paid_by)
+    paid_by_link.admin_order_field = 'paid_by'
+    paid_by_link.short_description = 'paid_by'
+
+    def processed_by_link(self, obj):
+        return self._member_link(obj.processed_by)
+    processed_by_link.admin_order_field = 'processed_by'
+    processed_by_link.short_description = 'paid_by'
 
     def changeform_view(self, request, object_id=None, form_url='',
                         extra_context=None):
@@ -51,7 +78,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if not obj:
-            return ('created_at', 'type', 'processing_date', 'processed_by')
+            return 'created_at', 'type', 'processing_date', 'processed_by'
         return super().get_readonly_fields(request, obj)
 
     def get_actions(self, request):
@@ -61,6 +88,7 @@ class PaymentAdmin(admin.ModelAdmin):
         if not request.user.has_perm('payments.process_payments'):
             del(actions['process_cash_selected'])
             del(actions['process_card_selected'])
+            del(actions['process_wire_selected'])
         return actions
 
     def process_cash_selected(self, request, queryset):
@@ -83,6 +111,16 @@ class PaymentAdmin(admin.ModelAdmin):
     process_card_selected.short_description = _(
         'Process selected payments (card)')
 
+    def process_wire_selected(self, request, queryset):
+        """Process the selected payment as wire"""
+        if request.user.has_perm('payments.process_payments'):
+            updated_payments = services.process_payment(
+                queryset, request.member, Payment.WIRE
+            )
+            self._process_feedback(request, updated_payments)
+    process_wire_selected.short_description = _(
+        'Process selected payments (wire)')
+
     def _process_feedback(self, request, updated_payments):
         """Show a feedback message for the processing result"""
         rows_updated = len(updated_payments)
@@ -101,3 +139,26 @@ class PaymentAdmin(admin.ModelAdmin):
                  name='payments_payment_process'),
         ]
         return custom_urls + urls
+
+    def export_csv(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment;\
+                                           filename="payments.csv"'
+        writer = csv.writer(response)
+        headers = [_('created'), _('processed'), _('amount'), _('type'),
+                   _('processor'), _('payer id'), _('payer name'),
+                   _('notes')]
+        writer.writerow([capfirst(x) for x in headers])
+        for payment in queryset:
+            writer.writerow([
+                payment.created_at,
+                payment.processing_date,
+                payment.amount,
+                payment.get_type_display(),
+                payment.processed_by.get_full_name(),
+                payment.paid_by.pk,
+                payment.paid_by.get_full_name(),
+                payment.notes
+            ])
+        return response
+    export_csv.short_description = _('Export')
