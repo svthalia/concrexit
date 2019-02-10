@@ -18,6 +18,7 @@ from rest_framework.response import Response
 import pizzas.services
 from members import services, emails
 from members.models import EmailChange, Membership
+from utils.snippets import datetime_to_lectureyear
 from . import models
 from .forms import ProfileForm, EmailChangeForm
 from .services import member_achievements
@@ -99,12 +100,9 @@ def index(request):
     page = request.GET.get('page')
     page = 1 if page is None or not page.isdigit() else int(page)
 
-    start_year = date.today().year - 4
-    # If language is English show one year less
-    # since the width is smaller than needed for the translations to fit
-    if request.LANGUAGE_CODE == 'en':
-        start_year += 1
-    year_range = list(reversed(range(start_year, date.today().year + 1)))
+    current_lectureyear = datetime_to_lectureyear(date.today())
+    year_range = list(reversed(range(current_lectureyear - 5,
+                                     current_lectureyear + 1)))
 
     members = filter_users(query_filter, keywords, year_range)
 
