@@ -40,18 +40,16 @@ from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
 
 import members
-from members.sitemaps import sitemap as members_sitemap
-from members.views import ObtainThaliaAuthToken
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from events.sitemaps import sitemap as events_sitemap
 from events.views import AlumniEventsView
+from members.sitemaps import sitemap as members_sitemap
+from members.views import ObtainThaliaAuthToken
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
-from utils.views import (generate_thumbnail, private_thumbnails,
-                         private_thumbnails_api)
-
+from utils.media.views import (generate_thumbnail, private_media)
 from . import views
 from .sitemaps import StaticViewSitemap
 
@@ -98,8 +96,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     ])),
     url(r'^career/', include('partners.urls')),
     url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
-    url(r'^private-thumbnails/(?P<size_fit>\d+x\d+_[01])/(?P<path>.*)', private_thumbnails, name='private-thumbnails'),
-    url(r'^generate-thumbnail/(?P<size_fit>\d+x\d+_[01])/(?P<path>[^/]+)/(?P<thumbpath>[^/]+)', generate_thumbnail, name='generate-thumbnail'),
     url(r'^api/', include([
         url(r'wikilogin', views.wiki_login),
         url(r'^v1/', include([
@@ -112,8 +108,6 @@ urlpatterns = [  # pylint: disable=invalid-name
             url(r'^', include('pizzas.api.urls')),
             url(r'^', include('photos.api.urls')),
             url(r'^', include('pushnotifications.api.urls')),
-            url(r'^generate-thumbnail/(?P<size_fit>\d+x\d+_[01])/(?P<path>[^/]+)/(?P<thumbpath>[^/]+)', generate_thumbnail, {'api': True}, name='generate-thumbnail-api'),
-            url(r'^private-thumbnails/(?P<size_fit>\d+x\d+_[01])/(?P<path>.*)', private_thumbnails_api, name='private-thumbnails-api'),
         ])),
     ])),
     url(r'^education/', include('education.urls')),
@@ -133,5 +127,8 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     # Provide something to test error handling. Limited to admins.
     url(r'crash/$', views.crash),
+    # Custom media paths
+    url(r'^media/(public|private)/generate-thumbnail/(?P<request_path>.*)', generate_thumbnail, name='generate-thumbnail'),
+    url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media')
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))

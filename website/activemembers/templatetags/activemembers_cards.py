@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from members.templatetags.member_card import member_card
 from thaliawebsite.templatetags.grid_item import grid_item
-from utils.templatetags.thumbnail import thumbnail
+from utils.media.services import get_thumbnail_url
 
 register = template.Library()
 
@@ -14,7 +14,8 @@ register = template.Library()
 def membergroup_card(group):
     image_url = static('activemembers/images/placeholder_overview.png')
     if group.photo:
-        image_url = thumbnail(group.photo, settings.THUMBNAIL_SIZES['medium'])
+        image_url = get_thumbnail_url(group.photo,
+                                      settings.THUMBNAIL_SIZES['medium'])
 
     return grid_item(
         title=group.name,

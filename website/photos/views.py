@@ -13,7 +13,6 @@ from photos.models import Album, Photo
 from photos.services import (check_shared_album_token,
                              get_annotated_accessible_albums,
                              is_album_accessible)
-from utils.views import _private_thumbnails_unauthed
 
 COVER_FILENAME = 'cover.jpg'
 
@@ -142,10 +141,3 @@ def shared_album_download(request, slug, token):
     album = get_object_or_404(Album, slug=slug)
     check_shared_album_token(album, token)
     return _album_download(request, album)
-
-
-def shared_thumbnail(request, slug, size_fit, token, filename):
-    album = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(album, token)
-    photopath = _photo_path(album, filename)
-    return _private_thumbnails_unauthed(request, size_fit, photopath)

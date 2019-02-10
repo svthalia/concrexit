@@ -13,7 +13,7 @@ class PhotoRetrieveSerializer(serializers.ModelSerializer):
         if obj:
             file = obj.file
         return create_image_thumbnail_dict(
-            self.context['request'], file)
+            self.context['request'], file, fit_large=False)
 
     class Meta:
         model = Photo

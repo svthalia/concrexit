@@ -13,6 +13,7 @@ Subpackages
 
     utils.conscribo
     utils.management
+    utils.media
     utils.templatetags
 
 Submodules
@@ -62,14 +63,6 @@ utils.validators module
 -----------------------
 
 .. automodule:: utils.validators
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-utils.views module
-------------------
-
-.. automodule:: utils.views
     :members:
     :undoc-members:
     :show-inheritance:

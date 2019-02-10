@@ -4,7 +4,7 @@ from django.template.defaultfilters import striptags, truncatechars
 
 from thaliawebsite.templatetags.bleach_tags import bleach
 from thaliawebsite.templatetags.grid_item import grid_item
-from utils.templatetags.thumbnail import thumbnail
+from utils.media.services import get_thumbnail_url
 
 register = template.Library()
 
@@ -13,8 +13,9 @@ register = template.Library()
 def partner_card(partner):
     image_url = ''
     if partner.logo:
-        image_url = thumbnail(partner.logo, settings.THUMBNAIL_SIZES['medium'],
-                              fit=False)
+        image_url = get_thumbnail_url(partner.logo,
+                                      settings.THUMBNAIL_SIZES['medium'],
+                                      fit=False)
 
     meta_text = truncatechars(bleach(striptags(partner.company_profile)), 80)
 
@@ -30,11 +31,12 @@ def partner_card(partner):
 @register.inclusion_tag('includes/grid_item.html')
 def partner_image_card(image):
     class_name = 'partner-image-card'
-    image_url = thumbnail(image, settings.THUMBNAIL_SIZES['medium'])
+    image_url = get_thumbnail_url(image, settings.THUMBNAIL_SIZES['medium'])
 
     return grid_item(
         title='',
-        url=thumbnail(image, settings.THUMBNAIL_SIZES['large'], fit=False),
+        url=get_thumbnail_url(image, settings.THUMBNAIL_SIZES['large'],
+                              fit=False),
         image_url=image_url,
         class_name=class_name,
         anchor_attrs='data-fancybox="gallery"'
@@ -45,9 +47,9 @@ def partner_image_card(image):
 def vacancy_card(vacancy):
     image_url = None
     if vacancy.get_company_logo():
-        image_url = thumbnail(vacancy.get_company_logo(),
-                              settings.THUMBNAIL_SIZES['medium'],
-                              fit=False)
+        image_url = get_thumbnail_url(vacancy.get_company_logo(),
+                                      settings.THUMBNAIL_SIZES['medium'],
+                                      fit=False)
 
     description = truncatechars(bleach(striptags(vacancy.description)), 150)
     extra_class = 'external-vacancy'

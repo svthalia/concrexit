@@ -16,11 +16,6 @@ urlpatterns = [
                 path('<filename>', views.shared_download, name='shared-download'),
             ])),
         ])),
-        path('thumbnail/', include([
-            re_path(r'(?P<size_fit>\d+x\d+_[01])/', include([
-                path('<token>/<filename>/', views.shared_thumbnail, name='shared-thumbnail'),
-            ])),
-        ])),
         path('<token>/', views.shared_album, name='shared-album'),
     ])),
 ]
