@@ -3,6 +3,9 @@
 <!--
     This template is for changes that do not affect the behaviour of the website.
 
+    ** If you are not in the Technicie, there is a very high chance that you
+       should not use this template
+
     Examples:
 
      * Changes in CI
