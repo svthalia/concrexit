@@ -40,7 +40,7 @@ Backend
     - Payment model is created (processed: False)
         - Amount is calculated based on the selected length ('study' or 'year')
             - Values are located in thaliawebsite.settings
-        - Email is sent as acceptance confirmation containg instructions for :ref:`Payment processing`
+        - Email is sent as acceptance confirmation containg instructions for `Payment processing`_
 2. Admin rejects registration
     - Email is sent as rejection message
 
@@ -66,7 +66,7 @@ Backend
             - Values are located in thaliawebsite.settings
             - If the current membership has not ended yet and an until date is present for that membership and
              the selected length is 'study' the amount will be `price['study'] - price['year']`
-        - Email is sent as acceptance confirmation containg instructions for :ref:`Payment processing`
+        - Email is sent as acceptance confirmation containg instructions for `Payment processing`_
 2. Admin rejects renewal
     - Email is sent as rejection message
 
