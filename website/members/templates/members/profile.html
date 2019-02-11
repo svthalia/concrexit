@@ -69,7 +69,11 @@
                     <ul class="list-unstyled">
                         {% for achievement in achievements %}
                             <li class="mb-1">
-                                <strong>{{ achievement.name }}</strong>
+                                <strong>
+                                        <a href="{{ achievement.url }}">
+                                            {{ achievement.name }}
+                                        </a>
+                                </strong>
                                 <br>
                                 {% for period in achievement.periods %}
                                     {% if period.role %}
@@ -94,7 +98,11 @@
                     <ul class="list-unstyled">
                         {% for society in societies %}
                             <li class="mb-1">
-                                <strong>{{ society.name }}</strong>
+                                <strong>
+                                    <a href="{{ society.url }}">
+                                        {{ society.name }}
+                                    </a>
+                                </strong>
                                 <br>
                                 {% for period in society.periods %}
                                     {% if period.role %}

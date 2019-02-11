@@ -39,6 +39,7 @@ def _member_group_memberships(member, skip_condition):
             data[name] = {
                 'name': name,
                 'periods': [period],
+                'url': membership.group.get_absolute_url(),
                 'earliest': membership.since,
             }
     return data
