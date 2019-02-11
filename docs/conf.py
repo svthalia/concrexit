@@ -49,6 +49,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.graphviz',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -149,7 +150,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Concrexit.tex', 'Concrexit Documentation',
-     'Thom Wiggers, Luuk Scholten, Joost Rijneveld', 'manual'),
+     'Thalia Technicie', 'manual'),
 ]
 
 
@@ -189,9 +190,9 @@ doctest_test_doctest_blocks = ''
 
 # -- intersphinx ---
 intersphinx_mapping = {
-        'python': ('https://docs.python.org/3.6', None),
-        'django': ('https://docs.djangoproject.com/en/2.0/',
-                   'https://docs.djangoproject.com/en/2.0/_objects/'),
+        'python': ('https://docs.python.org/3.7', None),
+        'django': ('https://docs.djangoproject.com/en/2.1/',
+                   'https://docs.djangoproject.com/en/2.1/_objects/'),
 }
 
 # -- Supress warnings  ---

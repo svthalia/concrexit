@@ -1,25 +1,30 @@
+******
 Media & Thumbnailing
-=====
+******
 
 This document explains how the `utils.media` package enables us to serve public
 and private media (user-uploaded) files. We also give an outline of the
 workings of our thumbnailing implementation.
 
-## Media types
+Media types
+===========
 
 We differentiate between two types of media: public and private. Public means
 that the files can be served without any kind of authentication. Requests for
 private files have to be checked by Django first before we offload serving
 the file using [django-sendfile2](https://github.com/moggers87/django-sendfile2). 
 
-### Public
+Public
+------
+
 
 The public files are saved in `MEDIA_ROOT/public/`.
 These files can be served by nginx like one would with a regular
 [`MEDIA_ROOT`](https://docs.djangoproject.com/en/2.1/ref/settings/#media-root).
 The files should be served at `MEDIA_URL/public/`.
 
-### Private
+Private
+-------
 
 The private files are saved in `MEDIA_ROOT` where the `public` folder is
 the exception. This is a legacy implementation from our previous thumbnailing
@@ -29,7 +34,8 @@ are located at `MEDIA_URL/private/`. This path should be available to concrexit
 so that the media files can be served correctly: the signature
 (more on that below) should be valid and match the path.
 
-#### Signatures
+Signatures
+----------
 
 To make sure the private media files stay private we have implemented a
 signature-based security mechanism based on the idea behind the
@@ -44,23 +50,24 @@ matches the path in the url the file will be made available to the user.
 A second, optional, key is `attachment` which is used by the sendfile backend
 to force a download if the value is `True`.
 
-```python
-sig_info = { 'serve_path': f'{settings.MEDIA_ROOT}/<image location>' }
-print(signing.dumps(sig_info))
-'eyJzZXJ2ZV9wYXRoIjoiL21lZGlhLzxpbWFnZSBsb2NhdGlvbj4ifQ:1gsbnC:QJTqFUWY6HxMBTEIxYPl9V1yf48'
-```
+.. code-block:: python
+
+    sig_info = { 'serve_path': f'{settings.MEDIA_ROOT}/<image location>' }
+    print(signing.dumps(sig_info))
+    'eyJzZXJ2ZV9wYXRoIjoiL21lZGlhLzxpbWFnZSBsb2NhdGlvbj4ifQ:1gsbnC:QJTqFUWY6HxMBTEIxYPl9V1yf48'
 
 The signature is appended to the location using a query parameter with
 the key `sig` and is valid for 3 hours as implemented by
 `utils.media.views._get_image_information`.
 
-```
-https://<base url>/media/private/<image location>?sig=eyJzZXJ2ZV9wYXRoIjoiL21lZGlhLzx...
-```
+.. code-block::
+
+    https://<base url>/media/private/<image location>?sig=eyJzZXJ2ZV9wYXRoIjoiL21lZGlhLzx...
 
 To get the url of a media item you can use `utils.media.services.get_media_url()`. **Never use this to get a url directly from user input!**
 
-## Thumbnails
+Thumbnails
+==========
 
 To make sure we do not have to serve full-size images to users every time they
 open a page we decided to thumbnail our images. This functionality is provided
@@ -86,37 +93,38 @@ input directly!** They do not protect against directory traversel and assume
 the path is correct. They are meant to be used with a path from an `ImageField`
 or similar.
 
-```mermaid
-graph TB
-    get[get_thumbnail_url]
-    generate[generate_thumbnail]
-    public[serve thumbnail as public media file]
-    private[serve thumbnail as private media file]
-    
-    get-->|no thumbnail|generate
-    get-->|thumbnail exists\n& is public|public
-    generate-->|redirects|public
-    generate-->|redirects|private
-    get-->|thumbnail exists\n& is private|private
-```
+.. graphviz::
+
+   digraph thumbnails {
+        get[label="get_thumbnail_url"]
+        generate[label="generate_thumbnail"]
+        public[label="serve thumbnail as public media file"]
+        private[label="serve thumbnail as private media file"]
+        get -> generate [label="no thumbnail"]
+        get -> public [label="thumbnail exists & is public"]
+        get -> private [label="thumbnail exists & is private"]
+        generate -> public [label="redirects"]
+        generate -> private [label="redirects"]
+   }
 
 
-### Signatures
+Signatures
+----------
 
 The signature used for the generation of thumbnails extends the signature to
 load a private media file with keys used for the generation. The signature
 contains all information required to generate the thumbnail.
 
-```python
-{
-    'visibility': 'public',
-    'size': '300x300',
-    'fit': 0,
-    'path': 'image.jpeg',
-    'thumb_path': 'thumbnails/300x300_0/image.jpeg',
-    'serve_path': '/media/public/thumbnails/300x300_0/image.jpeg'
-}
-```
+.. code-block:: python
+
+    {
+        'visibility': 'public',
+        'size': '300x300',
+        'fit': 0,
+        'path': 'image.jpeg',
+        'thumb_path': 'thumbnails/300x300_0/image.jpeg',
+        'serve_path': '/media/public/thumbnails/300x300_0/image.jpeg'
+    }
 
 The signature protects us against path tampering and thus path traversal and
 DDoS attacks. We also know that a user can only get a valid signature if
