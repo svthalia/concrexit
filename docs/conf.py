@@ -129,6 +129,7 @@ htmlhelp_basename = 'Concrexitdoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
+    'maxlistdepth': '10'
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
