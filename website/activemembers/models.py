@@ -122,6 +122,18 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        try:
+            return self.board.get_absolute_url()
+        except self.DoesNotExist:
+            try:
+                return self.committee.get_absolute_url()
+            except self.DoesNotExist:
+                try:
+                    return self.society.get_absolute_url()
+                except self.DoesNotExist:
+                    pass
+
     class Meta:
         verbose_name = _('member group')
         verbose_name_plural = _('member groups')
