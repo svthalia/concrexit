@@ -10,6 +10,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from pizzas.api import serializers
 from pizzas.models import Product, PizzaEvent, Order
+from pizzas.services import can_change_order
 
 
 class PizzaViewset(GenericViewSet, ListModelMixin):
@@ -32,7 +33,9 @@ class PizzaViewset(GenericViewSet, ListModelMixin):
         event = PizzaEvent.current()
 
         if event:
-            serializer = serializers.PizzaEventSerializer(event)
+            context = {'request': request}
+            serializer = serializers.PizzaEventSerializer(event,
+                                                          context=context)
             return Response(serializer.data)
 
         raise NotFound
@@ -44,7 +47,7 @@ class OrderViewset(ModelViewSet):
 
     def get_queryset(self):
         event = PizzaEvent.current()
-        if self.request.user.has_perm('pizzas.change_order'):
+        if can_change_order(self.request.user, event):
             return Order.objects.filter(pizza_event=event)
         if self.action == 'update' or self.action == 'destroy':
             if not event or event.has_ended:
@@ -57,7 +60,9 @@ class OrderViewset(ModelViewSet):
                                     pizza_event=event)
 
     def get_serializer_class(self):
-        if self.request.member.has_perm('pizzas.change_order'):
+        if (can_change_order(self.request.member,
+                             self.get_object().pizza_event) and
+                self.action.endswith('update')):
             return serializers.AdminOrderSerializer
         return serializers.OrderSerializer
 
