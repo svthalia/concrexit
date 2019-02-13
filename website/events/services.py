@@ -254,12 +254,17 @@ def update_registration_by_organiser(registration, member, data):
             registration.payment.save()
         elif (data['payment']['type'] != Payment.NONE
               and registration.payment is None):
+
+            note = f'Event registration {registration.event.title_en}. '
+            if registration.name:
+                note += f'Paid by {registration.name}. '
+            note += (f'{registration.event.start}. '
+                     f'Registration date: {registration.date}.')
+
             registration.payment = Payment.objects.create(
                 amount=registration.event.price,
                 paid_by=registration.member,
-                notes=(f'Event registration {registration.event.title_en}'
-                       f'{registration.event.start}. '
-                       f'Registration date: {registration.date}.'),
+                notes=note,
                 processed_by=member,
                 type=data['payment']['type']
             )

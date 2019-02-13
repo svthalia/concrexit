@@ -48,8 +48,12 @@ class PaymentAdmin(admin.ModelAdmin):
 
     @staticmethod
     def _member_link(member):
-        return format_html("<a href='{}'>{}</a>", member.get_absolute_url(),
-                           member.get_full_name())
+        if member:
+            return format_html("<a href='{}'>{}</a>",
+                               member.get_absolute_url(),
+                               member.get_full_name())
+        else:
+            return "-"
 
     def paid_by_link(self, obj):
         return self._member_link(obj.paid_by)
