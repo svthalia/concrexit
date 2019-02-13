@@ -186,13 +186,13 @@ class Order(models.Model):
             })
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.id and self.pizza_event.end_reminder:
             self.pizza_event.end_reminder.users.remove(self.member)
 
         super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False):
-        if not self.id:
+        if not self.id and self.pizza_event.end_reminder:
             self.pizza_event.end_reminder.users.add(self.member)
 
         super().delete(using, keep_parents)
