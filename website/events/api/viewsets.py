@@ -181,7 +181,7 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
 
     def get_object(self):
         instance = super().get_object()
-        if (instance.member.pk != self.request.member.pk and
+        if ((instance.name or instance.member.pk != self.request.member.pk) and
                 not services.is_organiser(self.request.member,
                                           instance.event)):
             raise NotFound()
