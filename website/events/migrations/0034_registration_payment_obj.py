@@ -22,8 +22,9 @@ class Migration(migrations.Migration):
                     amount=reg.event.price,
                     paid_by=reg.member,
                     processing_date=reg.event.start,
-                    notes=f'Event registration {reg.event}. '
-                          f'Registration: {reg}'
+                    notes=f'Event registration {reg.event.title_en}'
+                          f'{reg.event.start}. '
+                          f'Registration: {reg.date}'
                 )
                 reg.save()
 
