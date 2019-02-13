@@ -172,12 +172,12 @@ def _create_payment_for_entry(entry):
     :rtype: Payment
     """
     amount = settings.MEMBERSHIP_PRICES[entry.length]
-    notes = 'Membership registration'
+    notes = f'Membership registration. {entry.get_membership_type_display()}.'
 
     try:
         renewal = entry.renewal
         membership = renewal.member.latest_membership
-        notes = 'Membership renewal'
+        notes = f'Membership renewal. {entry.get_membership_type_display()}.'
         # Having a latest membership which has an until date implies that this
         # membership lasts/lasted till the end of the lecture year
         # This means it's possible to renew the 'year' membership
