@@ -36,7 +36,7 @@ ListView = View.extend({
                 break;
             }
 
-            var date = e.start.format('YYYY-MM-DD HH:mm');
+            var date = e.start.format('LLLL');
 
             var eventCard = $("<div>").addClass("card mb-0");
 
