@@ -129,9 +129,10 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
             try:
                 return self.committee.get_absolute_url()
             except self.DoesNotExist:
-                return self.society.get_absolute_url()
-            except self.DoesNotExist:
-                pass
+                try:
+                    return self.society.get_absolute_url()
+                except self.DoesNotExist:
+                    pass
 
     class Meta:
         verbose_name = _('member group')
