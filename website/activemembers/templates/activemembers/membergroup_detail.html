@@ -34,7 +34,7 @@
     </section>
     {% endif %}
 
-	{% if membergroup.display_members %}
+	{% if membergroup.display_members or request.user.is_authenticated %}
 		<section id="activemembers-membergroup-members" class="page-section">
 			<div class="container">
 				<h1 class="text-center section-title">
