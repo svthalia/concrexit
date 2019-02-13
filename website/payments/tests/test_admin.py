@@ -105,6 +105,26 @@ class PaymentAdminTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['payment'], None)
 
+    def test_paid_by_link(self):
+        object_id = 'c85ea333-3508-46f1-8cbb-254f8c138020'
+        payment = Payment.objects.create(pk=object_id,
+                                         amount=7.5,
+                                         paid_by=self.user)
+
+        self.assertEqual(self.admin.paid_by_link(payment),
+                         f"<a href='/members/profile/{self.user.pk}'>"
+                         f"Test1 Example</a>")
+
+    def test_processed_by_link(self):
+        object_id = 'c85ea333-3508-46f1-8cbb-254f8c138020'
+        payment = Payment.objects.create(pk=object_id,
+                                         amount=7.5,
+                                         processed_by=self.user)
+
+        self.assertEqual(self.admin.processed_by_link(payment),
+                         f"<a href='/members/profile/{self.user.pk}'>"
+                         f"Test1 Example</a>")
+
     @mock.patch('django.contrib.admin.ModelAdmin.message_user')
     @mock.patch('payments.services.process_payment')
     def test_process_cash(self, process_payment, message_user):
@@ -185,12 +205,52 @@ class PaymentAdminTest(TestCase):
             }, messages.SUCCESS
         )
 
+    @mock.patch('django.contrib.admin.ModelAdmin.message_user')
+    @mock.patch('payments.services.process_payment')
+    def test_process_wire(self, process_payment, message_user):
+        object_id = 'c85ea333-3508-46f1-8cbb-254f8c138020'
+        payment = Payment.objects.create(pk=object_id,
+                                         amount=7.5)
+        queryset = Payment.objects.filter(pk=object_id)
+        process_payment.return_value = [payment]
+        change_url = reverse('admin:payments_payment_changelist')
+
+        request_noperms = self.client.post(
+            change_url,
+            {'action': 'process_wire_selected',
+             'index': 1,
+             '_selected_action': [object_id]}).wsgi_request
+        self._give_user_permissions()
+        request_hasperms = self.client.post(
+            change_url,
+            {'action': 'process_wire_selected',
+             'index': 1,
+             '_selected_action': [object_id]}).wsgi_request
+
+        process_payment.reset_mock()
+        message_user.reset_mock()
+
+        self.admin.process_wire_selected(request_noperms, queryset)
+        process_payment.assert_not_called()
+
+        self.admin.process_wire_selected(request_hasperms, queryset)
+        process_payment.assert_called_once_with(queryset,
+                                                self.user, Payment.WIRE)
+        message_user.assert_called_once_with(
+            request_hasperms,
+            _('Successfully processed %(count)d %(items)s.')
+            % {
+                "count": 1,
+                "items": model_ngettext(Payment(), 1)
+            }, messages.SUCCESS
+        )
+
     def test_get_actions(self):
         response = self.client.get(
             reverse('admin:payments_payment_changelist'))
 
         actions = self.admin.get_actions(response.wsgi_request)
-        self.assertCountEqual(actions, ['delete_selected'])
+        self.assertCountEqual(actions, ['delete_selected', 'export_csv'])
 
         self._give_user_permissions()
         response = self.client.get(
@@ -199,7 +259,9 @@ class PaymentAdminTest(TestCase):
         actions = self.admin.get_actions(response.wsgi_request)
         self.assertCountEqual(actions, ['delete_selected',
                                         'process_cash_selected',
-                                        'process_card_selected'])
+                                        'process_card_selected',
+                                        'process_wire_selected',
+                                        'export_csv'])
 
     def test_get_urls(self):
         urls = self.admin.get_urls()
