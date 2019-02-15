@@ -64,6 +64,12 @@ class NextCloudGroupsView(ListAPIView):
         except Board.DoesNotExist:
             board_users = []
 
+        committee_chair_users = (MemberGroupMembership.active_objects
+                                 .filter(group__board=None)
+                                 .filter(group__society=None)
+                                 .filter(chair=True)
+                                 .values_list('member__username', flat=True))
+
         response.data = list(response.data) + [
             {
                 'pk': -1,
@@ -74,6 +80,11 @@ class NextCloudGroupsView(ListAPIView):
                 'pk': -2,
                 'name': 'Board',
                 'members': board_users
+            },
+            {
+                'pk': -3,
+                'name': 'Committee Chairs',
+                'members': committee_chair_users
             }
         ]
         return response
