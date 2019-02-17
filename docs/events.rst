@@ -120,4 +120,12 @@ events.views module
     :undoc-members:
     :show-inheritance:
 
+events.widgets module
+---------------------
+
+.. automodule:: events.widgets
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 

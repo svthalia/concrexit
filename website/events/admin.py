@@ -15,6 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from activemembers.models import MemberGroup
 from events import services
+from events.forms import RegistrationAdminForm
 from members.models import Member
 from payments.widgets import PaymentWidget
 from pizzas.models import PizzaEvent
@@ -268,6 +269,7 @@ class EventAdmin(DoNextModelAdmin):
 @admin.register(models.Registration)
 class RegistrationAdmin(DoNextModelAdmin):
     """Custom admin for registrations"""
+    form = RegistrationAdminForm
 
     def save_model(self, request, registration, form, change):
         if not services.is_organiser(request.member, registration.event):
@@ -327,3 +329,13 @@ class RegistrationAdmin(DoNextModelAdmin):
             # Filter the queryset to current members only
             kwargs['queryset'] = Member.current_members.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:pk>/fields/',
+                 self.admin_site.admin_view(
+                     admin_views.RegistrationAdminFields.as_view(admin=self)),
+                 name='events_registration_fields'),
+        ]
+        return custom_urls + urls
