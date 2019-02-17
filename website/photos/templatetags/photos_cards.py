@@ -48,9 +48,6 @@ def photo_card(photo):
 
     image_url = get_thumbnail_url(photo.file,
                                   settings.THUMBNAIL_SIZES['medium'])
-    if photo.album.shareable:
-        image_url = get_thumbnail_url(photo.file,
-                                      settings.THUMBNAIL_SIZES['medium'])
 
     if photo.rotation > 0:
         class_name += ' rotate{}'.format(photo.rotation)
