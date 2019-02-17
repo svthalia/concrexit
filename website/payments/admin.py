@@ -159,9 +159,12 @@ class PaymentAdmin(admin.ModelAdmin):
                 payment.processing_date,
                 payment.amount,
                 payment.get_type_display(),
-                payment.processed_by.get_full_name(),
-                payment.paid_by.pk,
-                payment.paid_by.get_full_name(),
+                payment.processed_by.get_full_name()
+                if payment.processed_by else '-',
+                payment.paid_by.pk
+                if payment.paid_by else '-',
+                payment.paid_by.get_full_name()
+                if payment.paid_by else '-',
                 payment.notes
             ])
         return response
