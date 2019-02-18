@@ -49,10 +49,5 @@ def is_organiser(member, pizza_event):
 
 
 def can_change_order(member, pizza_event):
-    if member and member.is_authenticated:
-        if member.is_superuser:
-            return True
-
-        return (member.has_perm('pizzas.change_order') and
-                is_organiser(member, pizza_event))
-    return False
+    return (member.has_perm('pizzas.change_order') and
+            is_organiser(member, pizza_event))
