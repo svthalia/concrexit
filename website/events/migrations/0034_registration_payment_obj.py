@@ -16,15 +16,18 @@ class Migration(migrations.Migration):
         db_alias = schema_editor.connection.alias
         for reg in Registration.objects.using(db_alias).all():
             if reg.event.price > 0 and reg.payment_str != 'no_payment':
+                notes = f'Event registration {reg.event.title_en}. '
+                if reg.name:
+                    notes += f'Paid by {reg.name}. '
+                notes += (f'{reg.event.start}. '
+                          f'Registration date: {reg.date}.')
                 reg.payment = Payment.objects.create(
                     created_at=reg.date,
                     type=reg.payment_str,
                     amount=reg.event.price,
                     paid_by=reg.member,
                     processing_date=reg.event.start,
-                    notes=f'Event registration {reg.event.title_en}'
-                          f'{reg.event.start}. '
-                          f'Registration: {reg.date}'
+                    notes=notes
                 )
                 reg.save()
 
