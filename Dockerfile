@@ -37,21 +37,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript && \
     rm -rf /var/lib/apt
 
-RUN pip install --no-cache-dir pipenv
+RUN pip install --no-cache-dir poetry && \
+    poetry config settings.virtualenvs.create false
 
 WORKDIR /usr/src/app/website/
 # install python requirements
-COPY docs/requirements.txt /usr/src/app/docs/
-COPY Pipfile /usr/src/app/website/
-COPY Pipfile.lock /usr/src/app/website/
+COPY pyproject.toml /usr/src/app/website/
+COPY poetry.lock /usr/src/app/website/
 RUN if [ "$install_dev_requirements" -eq 1 ]; then \
-        pipenv install --system --dev; \
+        poetry install --no-interaction --extras "docs"; \
     else \
         echo "This will fail if the dependencies are out of date"; \
-        pipenv install --system --deploy; \
-    fi
-RUN pip install --no-cache-dir \
-    -r ../docs/requirements.txt
+        poetry install --no-interaction --extras "docs" --no-dev; \
+    fi; \
+    poetry cache:clear --all --no-interaction pypi
 
 # Create entry points
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh

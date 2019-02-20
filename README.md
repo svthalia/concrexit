@@ -11,10 +11,11 @@ Getting started
 
 If you use Docker, please look at [this part](#docker) of the README.
 
-0. Get at least Python 3.6 and install pipenv and the Pillow requirements as per below.
+0. Get at least Python 3.6 and install poetry and the Pillow requirements as per below.
 1. Clone this repository
-2. Run `pipenv install --python 3 --dev`
-3. Run `pipenv shell`
+2. Make sure `poetry` uses your python 3 installation: `poetry env use python3`
+3. Run `poetry install`
+4. Run `poetry shell`
 5. `cd website`
 6. `./manage.py migrate` to initialise the database
 7. `./manage.py createsuperuser` to create the first user (note that this user won't be a member!)
@@ -23,23 +24,27 @@ If you use Docker, please look at [this part](#docker) of the README.
 Testing and linting
 -------------------
 
-1. In the root folder of the project, run `tox`.
+You can use [`pyenv`](https://github.com/pyenv/pyenv) (on Unix systems) to test in different python
+environments.
 
-You may get errors about missing interpreters. That is normal and can be
-ignored. If you want to run a specific check, you can do the following:
+The linter can be run in the `poetry shell` or by running
 
-    tox -e flake8           # Runs the flake8 linter
-    tox -e py36-django20    # runs the tests with python 3.6 and Django 2.0
-    tox -e py37-django20    # runs the tests with python 3.7 and Django 2.0
+    poetry run flake8 website
 
-You can run `tox -l` to see the available environments.
+There are a range of tests that can be run:
 
-Pipenv
+    poetry run python manage.py check
+    poetry run python manage.py templatecheck --project-only
+    poetry run python manage.py makemigrations --no-input --check --dry-run
+    poetry run python -mcoverage run --branch --source '.' manage.py test
+    coverage report
+
+poetry
 ------
 
-Install Pipenv per the [pipenv documentation][pipenv install]
+Install poetry per the [poetry documentation][poetry install]
 
-[pipenv install]: https://docs.pipenv.org/install/#installing-pipenv
+[poetry install]: https://github.com/sdispater/poetry#installation
 
 Pillow dependencies
 -------------------

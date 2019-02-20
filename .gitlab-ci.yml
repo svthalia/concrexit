@@ -6,7 +6,7 @@ variables:
   # https://github.com/thaliawww/python-thalia
   # Should get auto-updated with the official 'python' repository
   # Installs:
-  #  - pip: tox, coverage, pipenv
+  #  - pip: coverage, poetry
   #  - apt: ghostscript
   PY36_IMAGE: thalia/python-thalia:3.6
   PY37_IMAGE: thalia/python-thalia:3.7
@@ -19,8 +19,10 @@ stages:
 codestyle:
   stage: test
   image: $PY36_IMAGE
+  before_script:
+    - poetry install --no-interaction
   script:
-    - tox -e flake8
+    - poetry run flake8 website
     # Check for obsolete translations in .po files (starting with `#~`).
     - cd website
     - grep --include="*.po" --files-with-matches --recursive "^#~" && exit 1 || echo "No obsolete translations found."
@@ -37,40 +39,42 @@ codestyle:
     - postgres:latest
   before_script:
     - git log -1
+    - poetry install --no-interaction
   script:
-    - tox -e ${PYTHON_VERSION}-${DJANGO_VERSION}
     - cd website
+    - poetry run python manage.py check
+    - poetry run python manage.py templatecheck --project-only
+    - poetry run python manage.py makemigrations --no-input --check --dry-run
+    - >
+      poetry run
+      python -Wall -mcoverage run
+      --omit="manage.py,thaliawebsite/wsgi.py,*/migrations/*"
+      --branch
+      --source '.'
+      manage.py test
     - coverage report
 
 python36-django21:
   <<: *djangotest
   image: $PY36_IMAGE
-  variables:
-    PYTHON_VERSION: py36
-    DJANGO_VERSION: django21
 
 python37-django21:
   <<: *djangotest
   image: $PY37_IMAGE
-  variables:
-    PYTHON_VERSION: py37
-    DJANGO_VERSION: django21
 
 docs:
   stage: test
   image: $PY36_IMAGE
   before_script:
     # install django deps
-    - pipenv --bare install --dev --ignore-pipfile
-    # install doc deps
-    - cd docs
-    - pipenv run pip install -r requirements.txt
+    - poetry install --no-interaction --extras "docs"
   script:
     - echo "Building current docs"
-    - env -u GITLAB_CI pipenv run make doctest
-    - env -u GITLAB_CI pipenv run sphinx-build -W . _build
+    - cd docs
+    - env -u GITLAB_CI poetry run make doctest
+    - env -u GITLAB_CI poetry run sphinx-build -W . _build
     - echo "Checking if there are changes"
-    - pipenv run ./generate-apidocs.sh
+    - poetry run ./generate-apidocs.sh
     - git diff --exit-code
 
 build docker image:
