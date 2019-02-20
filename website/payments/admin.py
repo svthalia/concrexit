@@ -58,12 +58,12 @@ class PaymentAdmin(admin.ModelAdmin):
     def paid_by_link(self, obj):
         return self._member_link(obj.paid_by)
     paid_by_link.admin_order_field = 'paid_by'
-    paid_by_link.short_description = 'paid_by'
+    paid_by_link.short_description = _('paid by')
 
     def processed_by_link(self, obj):
         return self._member_link(obj.processed_by)
     processed_by_link.admin_order_field = 'processed_by'
-    processed_by_link.short_description = 'paid_by'
+    processed_by_link.short_description = _('processed by')
 
     def changeform_view(self, request, object_id=None, form_url='',
                         extra_context=None):
