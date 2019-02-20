@@ -56,7 +56,7 @@ MEDIA_URL = '/media/'  # Public is included by the db fields
 
 if not settings.DEBUG:
     SENDFILE_BACKEND = 'sendfile.backends.nginx'
-SENDFILE_URL = '/media/'
+SENDFILE_URL = '/media/sendfile/'
 SENDFILE_ROOT = '/concrexit/media/'
 
 STATIC_URL = '/static/'
