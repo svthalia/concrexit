@@ -128,7 +128,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # Provide something to test error handling. Limited to admins.
     url(r'crash/$', views.crash),
     # Custom media paths
-    url(r'^media/(public|private)/generate-thumbnail/(?P<request_path>.*)', generate_thumbnail, name='generate-thumbnail'),
+    url(r'^media/generate-thumbnail/(?P<request_path>.*)', generate_thumbnail, name='generate-thumbnail'),
     url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media')
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))
