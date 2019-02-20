@@ -95,8 +95,7 @@ def get_thumbnail_url(path, size, fit=True):
         # it means kicking off a new GET request. If we would generate all
         # thumbnails inline, loading an album overview would have high latency.
         return reverse('generate-thumbnail',
-                       args=[sig_info['visibility'],
-                             os.path.join(size_fit, sig_info["path"])]) + query
+                       args=[os.path.join(size_fit, sig_info["path"])]) + query
 
     if sig_info['visibility'] == 'private':
         # Put all image info in signature for serve view
