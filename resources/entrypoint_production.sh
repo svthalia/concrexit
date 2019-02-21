@@ -12,6 +12,11 @@ done
 >&2 echo "PostgreSQL is up"
 
 cd /usr/src/app/website/
+
+./manage.py collectstatic --no-input
+./manage.py migrate --no-input
+./manage.py compress --force
+
 >&2 echo "Running site with uwsgi"
 uwsgi --chdir /usr/src/app/website \
     --socket :8000 \
