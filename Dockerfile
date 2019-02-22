@@ -16,7 +16,6 @@ ENV SOURCE_COMMIT=${source_commit}
 
 # Set up entrypoint and command
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["--help"]
 
 # Create /concrexit dir
 # Create log dir and log file
