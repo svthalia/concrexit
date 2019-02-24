@@ -18,7 +18,8 @@ If you use Docker, please look at [this part](#docker) of the README.
 5. `cd website`
 6. `./manage.py migrate` to initialise the database
 7. `./manage.py createsuperuser` to create the first user (note that this user won't be a member!)
-8. `./manage.py runserver` to run a testing server
+8. `./manage.py createfixtures -a` to generate a bunch of test data
+9. `./manage.py runserver` to run a testing server
 
 Testing and linting
 -------------------
