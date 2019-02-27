@@ -197,7 +197,9 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
     def perform_update(self, serializer):
         registration = serializer.instance
 
-        if services.is_organiser(self.request.member, registration.event):
+        member = self.request.member
+        if (member and member.has_perm('events.change_registration') and
+                services.is_organiser(member, registration.event)):
             services.update_registration_by_organiser(
                 registration,
                 self.request.member,

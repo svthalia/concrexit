@@ -1,6 +1,7 @@
 import csv
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -18,22 +19,24 @@ from .models import Event, Registration
 
 @method_decorator([staff_member_required, ], name='dispatch')
 @method_decorator(organiser_only, name='dispatch')
-class EventAdminDetails(DetailView):
+class EventAdminDetails(DetailView, PermissionRequiredMixin):
     """
     Renders an overview of registrations for the specified event
     """
     template_name = 'events/admin/details.html'
     model = Event
     context_object_name = 'event'
+    permission_required = 'events.change_event'
 
 
 @method_decorator([staff_member_required, ], name='dispatch')
 @method_decorator(organiser_only, name='dispatch')
-class EventRegistrationsExport(View):
+class EventRegistrationsExport(View, PermissionRequiredMixin):
     """
     View to export registrations
     """
     template_name = 'events/admin/details.html'
+    permission_required = 'events.change_event'
 
     def get(self, request, pk):
         """
@@ -124,12 +127,13 @@ class EventRegistrationsExport(View):
 
 @method_decorator([staff_member_required, ], name='dispatch')
 @method_decorator(organiser_only, name='dispatch')
-class EventRegistrationEmailsExport(TemplateView):
+class EventRegistrationEmailsExport(TemplateView, PermissionRequiredMixin):
     """
     Renders a page that outputs all email addresses of registered members
     for an event
     """
     template_name = 'events/admin/email_export.html'
+    permission_required = 'events.view_event'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -147,12 +151,13 @@ class EventRegistrationEmailsExport(TemplateView):
 
 @method_decorator([staff_member_required, ], name='dispatch')
 @method_decorator(organiser_only, name='dispatch')
-class EventRegistrationsMarkPresent(View):
+class EventRegistrationsMarkPresent(View, PermissionRequiredMixin):
     """
     Renders a page that outputs all email addresses of registered members
     for an event
     """
     template_name = 'events/admin/email_export.html'
+    permission_required = 'events.change_registration'
 
     def get(self, request, pk):
         """

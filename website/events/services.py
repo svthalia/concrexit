@@ -71,7 +71,7 @@ def is_organiser(member, event):
         if member.is_superuser or member.has_perm("events.override_organiser"):
             return True
 
-        if event and member.has_perm('events.change_event'):
+        if event:
             return member.get_member_groups().filter(
                     pk=event.organiser.pk).count() != 0
 
