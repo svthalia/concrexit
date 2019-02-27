@@ -304,13 +304,6 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
             raise ValidationError(
                 {'since': _("Start date can't be after group end date")})
 
-        try:
-            if self.until and self.group.board:
-                raise ValidationError(
-                    {'until': _("End date cannot be set for boards")})
-        except Board.DoesNotExist:
-            pass
-
     def validate_unique(self, *args, **kwargs):
         super().validate_unique(*args, **kwargs)
         # Check if a group has more than one chair
