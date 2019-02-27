@@ -39,7 +39,8 @@ MAIN_MENU = [
             {'title': _('Statistics'), 'name': 'statistics'},
             {'title': _('Styleguide'), 'name': 'styleguide'},
             {'title': _('Become Active'), 'name': 'become-active'},
-            {'title': _('Wiki'), 'url': '/wiki/', 'authenticated': True},
+            {'title': _('Nextcloud'), 'url': 'https://cloud.thalia.nu/',
+             'authenticated': True},
         ],
     },
     {
