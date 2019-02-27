@@ -13,10 +13,12 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from activemembers.models import Board, Committee, MemberGroupMembership
+from activemembers.models import (Board, Committee, MemberGroupMembership,
+                                  Society, MemberGroup)
 from documents.models import Document
 from events.models import Event
 from members.models import Profile, Member, Membership
+from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
@@ -68,6 +70,11 @@ class Command(BaseCommand):
         :param parser: the argument parser
         """
         parser.add_argument(
+            "-a",
+            "--all",
+            action='store_true',
+            help="Fully populate a database with fixtures")
+        parser.add_argument(
             "-b",
             "--board",
             type=int,
@@ -78,10 +85,20 @@ class Command(BaseCommand):
             type=int,
             help="The amount of fake committees to add")
         parser.add_argument(
+            "-d",
+            "--document",
+            type=int,
+            help="The amount of fake miscellaneous documents to add")
+        parser.add_argument(
             "-e",
             "--event",
             type=int,
             help="The amount of fake events to add")
+        parser.add_argument(
+            "-n",
+            "--newsletter",
+            type=int,
+            help="The amount of fake newsletters to add")
         parser.add_argument(
             "-p",
             "--partner",
@@ -93,6 +110,11 @@ class Command(BaseCommand):
             type=int,
             help="The amount of fake pizzas to add")
         parser.add_argument(
+            "-s",
+            "--society",
+            type=int,
+            help="The amount of fake societies to add")
+        parser.add_argument(
             "-u",
             "--user",
             type=int,
@@ -102,19 +124,20 @@ class Command(BaseCommand):
             "--vacancy",
             type=int,
             help="The amount of fake vacancies to add")
-        parser.add_argument(
-            "-d",
-            "--document",
-            type=int,
-            help="The amount of fake miscellaneous documents to add")
 
-    def create_board(self, lecture_year, members):
+    def create_board(self, lecture_year):
         """
         Create a new board
 
         :param int lecture_year: the  lecture year this board was active
-        :param members: the members to add to the board
         """
+        members = Member.objects.all()
+        if len(members) < 6:
+            print('Your database does not contain 6 users.')
+            print(f'Creating {6 - len(members)} more users.')
+            for __ in range(6 - len(members)):
+                self.create_user()
+
         board = Board()
 
         board.name_nl = "Bestuur {}-{}".format(lecture_year, lecture_year + 1)
@@ -140,7 +163,7 @@ class Command(BaseCommand):
         # Add members
         board_members = random.sample(list(members), random.randint(5, 6))
         for member in board_members:
-            self.create_committee_membership(member, board)
+            self.create_member_group_membership(member, board)
 
         # Make one member the chair
         chair = random.choice(board.membergroupmembership_set.all())
@@ -148,67 +171,73 @@ class Command(BaseCommand):
         chair.chair = True
         chair.save()
 
-    def create_committee(self, members):
+    def create_member_group(self, group_model):
         """
-        Create a committee
-
-        :param members: the committee members
+        Create a MemberGroup
         """
-        committee = Committee()
+        members = Member.objects.all()
+        if len(members) < 6:
+            print('Your database does not contain 6 users.')
+            print(f'Creating {6 - len(members)} more users.')
+            for __ in range(6 - len(members)):
+                self.create_user()
+            members = Member.objects.all()
 
-        committee.name_nl = _generate_title()
-        committee.name_en = committee.name_nl
-        committee.description_nl = _faker.paragraph()
-        committee.description_en = _faker.paragraph()
+        member_group = group_model()
+
+        member_group.name_nl = _generate_title()
+        member_group.name_en = member_group.name_nl
+        member_group.description_nl = _faker.paragraph()
+        member_group.description_en = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            committee.name_nl, 480, 480,
+            member_group.name_nl, 480, 480,
             padding=(10, 10, 10, 10),
             output_format='jpeg',
         )  # 620x620 pixels, with 10 pixels padding on each side
-        committee.photo.save(committee.name_nl + '.jpeg', ContentFile(icon))
+        member_group.photo.save(
+            member_group.name_nl + '.jpeg', ContentFile(icon))
 
-        committee.since = _faker.date_time_between("-10y", "+30d")
+        member_group.since = _faker.date_time_between("-10y", "+30d")
 
         if random.random() < 0.1:
             now = date.today()
             month = timedelta(days=30)
-            committee.until = _faker.date_time_between_dates(committee.since,
-                                                             now + 2 *
-                                                             month).date()
+            member_group.until = _faker.date_time_between_dates(
+                member_group.since, now + 2 * month).date()
 
-        committee.active = random.random() < 0.9
-        committee.contact_email = _faker.email()
+        member_group.active = random.random() < 0.9
+        member_group.contact_email = _faker.email()
 
-        committee.save()
+        member_group.save()
 
         # Add members
-        committee_members = random.sample(list(members), random.randint(5, 20))
+        committee_members = random.sample(list(members), random.randint(2, 6))
         for member in committee_members:
-            self.create_committee_membership(member, committee)
+            self.create_member_group_membership(member, member_group)
 
         # Make one member the chair
-        chair = random.choice(committee.membergroupmembership_set.all())
+        chair = random.choice(member_group.membergroupmembership_set.all())
         chair.until = None
         chair.chair = True
         chair.save()
 
-    def create_committee_membership(self, member, committee):
+    def create_member_group_membership(self, member, group):
         """
-        Create committee membership
+        Create member group membership
 
         :param member: the member to add to the committee
-        :param committee: the committee to add the member to
+        :param group: the group to add the member to
         """
         membership = MemberGroupMembership()
 
         membership.member = member
-        membership.group = committee
+        membership.group = group
 
         today = date.today()
         month = timedelta(days=30)
-        membership.since = _faker.date_time_between_dates(committee.since,
+        membership.since = _faker.date_time_between_dates(group.since,
                                                           today + month).date()
 
         if random.random() < 0.2 and membership.since < today:
@@ -217,22 +246,26 @@ class Command(BaseCommand):
 
         membership.save()
 
-    def create_event(self, committees):
+    def create_event(self):
         """
         Create an event
-
-        :param committees: the committees to pick the organiser from
         """
+        groups = MemberGroup.objects.all()
+        if len(groups) == 0:
+            print('Your database does not contain any member groups.')
+            print('Creating a committee.')
+            self.create_member_group(Committee)
+            groups = MemberGroup.objects.all()
         event = Event()
 
         event.title_nl = _generate_title()
         event.title_en = event.title_nl
         event.description_nl = _faker.paragraph()
         event.description_en = _faker.paragraph()
-        event.start = _faker.date_time_between("-1y", "+3m", _current_tz)
+        event.start = _faker.date_time_between("-30d", "+120d", _current_tz)
         duration = math.ceil(random.expovariate(0.2))
         event.end = event.start + timedelta(hours=duration)
-        event.organiser = random.choice(committees)
+        event.organiser = random.choice(groups)
         event.category = random.choice(Event.EVENT_CATEGORIES)
 
         if random.random() < 0.5:
@@ -253,6 +286,7 @@ class Command(BaseCommand):
         event.location_nl = _faker.street_address()
         event.location_en = event.location_nl
         event.map_location = event.location_nl
+        event.send_cancel_email = False
 
         if random.random() < 0.5:
             event.price = random.randint(100, 2500) / 100
@@ -294,11 +328,11 @@ class Command(BaseCommand):
 
         partner.save()
 
-    def create_pizza(self, prod_type):
+    def create_pizza(self):
         """Create a new random pizza product"""
         product = Product()
 
-        product.name = prod_type + ' ' + _pizza_name_faker.last_name()
+        product.name = f'Pizza {_pizza_name_faker.last_name()}'
         product.description_nl = _faker.sentence()
         product.description_nl = _faker.sentence()
         product.price = random.randint(250, 1000) / 100
@@ -406,18 +440,79 @@ class Command(BaseCommand):
         doc.file_nl = doc.file_en
         doc.save()
 
+    def create_newsletter(self):
+        newsletter = Newsletter()
+
+        newsletter.title_en = _generate_title()
+        newsletter.title_nl = newsletter.title_en
+        newsletter.description_nl = _faker.paragraph()
+        newsletter.description_en = _faker.paragraph()
+        newsletter.date = _faker.date_time_between("-3m", "+3m", _current_tz)
+
+        newsletter.save()
+
+        for i in range(random.randint(1, 5)):
+            item = NewsletterItem()
+            item.title_en = _generate_title()
+            item.title_nl = item.title_en
+            item.description_nl = _faker.paragraph()
+            item.description_en = _faker.paragraph()
+            item.newsletter = newsletter
+            item.save()
+
+        for i in range(random.randint(1, 5)):
+            item = NewsletterEvent()
+            item.title_en = _generate_title()
+            item.title_nl = item.title_en
+            item.description_nl = _faker.paragraph()
+            item.description_en = _faker.paragraph()
+            item.newsletter = newsletter
+
+            item.what_en = item.title_en
+            item.what_nl = item.what_en
+            item.where_en = _faker.city()
+            item.where_nl = item.where_en
+            item.start_datetime = _faker.date_time_between("-1y", "+3m",
+                                                           _current_tz)
+            duration = math.ceil(random.expovariate(0.2))
+            item.end_datetime = item.start_datetime + timedelta(hours=duration)
+
+            if random.random() < 0.5:
+                item.show_costs_warning = True
+                item.price = random.randint(100, 2500) / 100
+                item.penalty_costs = max(
+                    5.0, random.randint(round(100 * item.price),
+                                        round(500 * item.price)) / 100)
+
+            item.save()
+
     def handle(self, *args, **options):  # pylint: disable=too-many-branches
         """
         Handle the command being executed
 
         :param options: the passed-in options
         """
-        opts = ['board', 'committee', 'event', 'partner', 'pizza', 'user',
-                'vacancy', 'document']
+        opts = ['all', 'board', 'committee', 'event', 'partner', 'pizza',
+                'user', 'vacancy', 'document', 'newsletter']
 
         if all([not options[opt] for opt in opts]):
             print("Use ./manage.py help createfixtures to find out how to call"
                   " this command")
+
+        if options['all']:
+            print('all argument given, overwriting all other inputs')
+            options = {
+                'user': 20,
+                'board': 3,
+                'committee': 3,
+                'society': 3,
+                'event': 20,
+                'partner': 6,
+                'vacancy': 4,
+                'pizza': 5,
+                'newsletter': 2,
+                'document': 8
+            }
 
         # Users need to be generated before boards and committees
         if options['user']:
@@ -425,21 +520,22 @@ class Command(BaseCommand):
                 self.create_user()
 
         if options['board']:
-            members = Member.objects.all()
             lecture_year = datetime_to_lectureyear(date.today())
             for i in range(options['board']):
-                self.create_board(lecture_year - i, members)
+                self.create_board(lecture_year - i)
 
-        # Committees need to be generated before events
+        # Member groups need to be generated before events
         if options['committee']:
-            members = Member.objects.all()
             for __ in range(options['committee']):
-                self.create_committee(members)
+                self.create_member_group(Committee)
+
+        if options['society']:
+            for __ in range(options['society']):
+                self.create_member_group(Society)
 
         if options['event']:
-            committees = Committee.objects.all()
             for __ in range(options['event']):
-                self.create_event(committees)
+                self.create_event()
 
         # Partners need to be generated before vacancies
         if options['partner']:
@@ -458,6 +554,7 @@ class Command(BaseCommand):
         if options['vacancy']:
             categories = VacancyCategory.objects.all()
             if not categories:
+                print('No vacancy categories found. Creating 5 categories.')
                 for __ in range(5):
                     self.create_vacancy_category()
                 categories = VacancyCategory.objects.all()
@@ -467,13 +564,12 @@ class Command(BaseCommand):
                 self.create_vacancy(partners, categories)
 
         if options['pizza']:
-            num_pizzas = random.randint(0, options['pizza'])
-            for __ in range(num_pizzas):
-                self.create_pizza('Pizza')
+            for __ in range(options['pizza']):
+                self.create_pizza()
 
-            num_pastas = options['pizza'] - num_pizzas
-            for __ in range(num_pastas):
-                self.create_pizza('Pasta')
+        if options['newsletter']:
+            for __ in range(options['newsletter']):
+                self.create_newsletter()
 
         if options['document']:
             for __ in range(options['document']):
