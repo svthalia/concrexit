@@ -1,2 +1,0 @@
-recommonmark
-sphinx==1.8.3
