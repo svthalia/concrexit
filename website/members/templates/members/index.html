@@ -43,7 +43,7 @@
                         </li>
                     {% endfor %}
                     <li class="nav-item">
-                        <a class="nav-link{% if filter == "old" %}active{% endif %}"
+                        <a class="nav-link{% if filter == "older" %}active{% endif %}"
                            href="{% url 'members:index' %}?filter=older{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
                             {% trans "Older" %}
                         </a>
@@ -55,13 +55,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link{% if filter == "honor" %} active{% endif %}"
+                        <a class="nav-link{% if filter == "honorary" %} active{% endif %}"
                            href="{% url 'members:index' %}?filter=honorary{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
                             {% trans "Honorary Members" %}
                             </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link{% if filter == "ex" %} active{% endif %}"
+                        <a class="nav-link{% if filter == "former" %} active{% endif %}"
                            href="{% url 'members:index' %}?filter=former{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
                             {% trans "Former Members" %}
                         </a>
