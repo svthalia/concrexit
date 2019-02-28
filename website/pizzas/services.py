@@ -1,3 +1,4 @@
+from events.services import is_organiser
 from . models import Product, Order, PizzaEvent
 
 
@@ -36,18 +37,6 @@ def gen_stats_current_pizza_orders():
     return total
 
 
-def is_organiser(member, pizza_event):
-    if member and member.is_authenticated:
-        if member.is_superuser or member.has_perm('events.override_organiser'):
-            return True
-
-        if pizza_event:
-            return member.get_member_groups().filter(
-                    pk=pizza_event.event.organiser.pk).count() != 0
-
-    return False
-
-
 def can_change_order(member, pizza_event):
     return (member.has_perm('pizzas.change_order') and
-            is_organiser(member, pizza_event))
+            is_organiser(member, pizza_event.event))
