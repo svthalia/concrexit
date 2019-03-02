@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-19 15:30+0200\n"
-"PO-Revision-Date: 2018-08-19 15:30+0200\n"
+"POT-Creation-Date: 2019-03-02 16:51+0100\n"
+"PO-Revision-Date: 2019-03-02 16:52+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: admin.py
 msgid "Enable selected devices"
@@ -34,6 +34,10 @@ msgid "name"
 msgstr "naam"
 
 #: models.py
+msgid "description"
+msgstr "beschrijving"
+
+#: models.py
 msgid "registration token"
 msgstr "registratie token"
 
@@ -54,32 +58,9 @@ msgid "language"
 msgstr "taal"
 
 #: models.py
-msgid "General"
-msgstr "Algemeen"
-
-#: models.py
-msgid "Pizza"
-msgstr "Pizza"
-
-#: models.py
-msgid "Events"
-msgstr "Evenementen"
-
-#: models.py
-msgid "Newsletter"
-msgstr "Nieuwsbrief"
-
-#: models.py
-msgid "Messages from partners"
-msgstr "Berichten van partners"
-
-#: models.py
-msgid "Photos"
-msgstr "Foto's"
-
-#: models.py
-msgid "Board"
-msgstr "Bestuur"
+#, python-brace-format
+msgid "{user}s {device_type} device"
+msgstr "{user}s {device_type} apparaat"
 
 #: models.py
 msgid "title"
@@ -88,6 +69,10 @@ msgstr "titel"
 #: models.py
 msgid "body"
 msgstr "bericht"
+
+#: models.py
+msgid "url"
+msgstr "url"
 
 #: models.py
 msgid "category"

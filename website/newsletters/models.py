@@ -72,6 +72,9 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
             ("send_newsletter", "Can send newsletter"),
         )
 
+    def __str__(self):
+        return self.title
+
 
 class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
     """Describes one piece of basic content of a newsletter"""
@@ -114,6 +117,9 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
 
     class Meta:
         order_with_respect_to = 'newsletter'
+
+    def __str__(self):
+        return self.title
 
 
 class NewsletterItem(NewsletterContent):

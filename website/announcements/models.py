@@ -164,3 +164,6 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
         """Is this slide currently visible"""
         return ((self.until is None or self.until > timezone.now()) and
                 (self.since is None or self.since <= timezone.now()))
+
+    def __str__(self):
+        return self.title

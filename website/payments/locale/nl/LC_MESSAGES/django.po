@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-20 21:27+0100\n"
-"PO-Revision-Date: 2019-02-20 21:27+0100\n"
+"POT-Creation-Date: 2019-03-02 16:50+0100\n"
+"PO-Revision-Date: 2019-03-02 16:51+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -132,6 +132,11 @@ msgstr "betalingen"
 #: models.py
 msgid "Process payments"
 msgstr "Verwerk betalingen"
+
+#: models.py
+#, python-brace-format
+msgid "Payment of {amount}"
+msgstr "Betaling van {amount}"
 
 #: templates/admin/payments/change_form.html templates/payments/widget.html
 msgid "Process (cash payment)"

@@ -209,3 +209,9 @@ class Order(models.Model):
 
     class Meta:
         unique_together = ('pizza_event', 'member',)
+
+    def __str__(self):
+        return _("Order by {member_name}: {product}").format(
+            member_name=self.member_name,
+            product=self.product
+        )
