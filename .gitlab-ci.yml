@@ -45,13 +45,7 @@ codestyle:
     - poetry run python manage.py check
     - poetry run python manage.py templatecheck --project-only
     - poetry run python manage.py makemigrations --no-input --check --dry-run
-    - >
-      poetry run
-      python -Wall -mcoverage run
-      --omit="manage.py,thaliawebsite/wsgi.py,*/migrations/*"
-      --branch
-      --source '.'
-      manage.py test
+    - poetry run python -Wall -mcoverage run manage.py test
     - coverage report
 
 python36-django21:
