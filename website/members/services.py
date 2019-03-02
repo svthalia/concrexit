@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils import timezone
 from django.utils.translation import gettext
 
@@ -164,17 +164,21 @@ def process_email_change(change_request):
     emails.send_email_change_completion_message(change_request)
 
 
-def execute_data_minimisation(dry_run=False):
+def execute_data_minimisation(dry_run=False, members=None):
     """
     Clean the profiles of members/users of whom the last membership ended
     at least 31 days ago
 
     :param dry_run: does not really remove data if True
+    :param members: queryset of members to process, optional
     :return: list of processed members
     """
-    members = (Member.objects
-               .exclude(Q(membership__until__isnull=True) |
-                        Q(membership__until__gt=timezone.now().date()))
+    if not members:
+        members = Member.objects
+    members = (members.annotate(membership_count=Count('membership'))
+               .exclude((Q(membership__until__isnull=True) |
+                         Q(membership__until__gt=timezone.now().date())) &
+                        Q(membership_count__gt=0))
                .distinct()
                .prefetch_related('membership_set', 'profile'))
     deletion_period = timezone.now().date() - timezone.timedelta(days=31)
