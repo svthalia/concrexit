@@ -351,10 +351,11 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
         self.member.save()
 
     def __str__(self):
-        return "{} membership of {} since {}, until {}".format(self.member,
-                                                               self.group,
-                                                               self.since,
-                                                               self.until)
+        return _("{member} membership of {group} "
+                 "since {since}, until {until}").format(member=self.member,
+                                                        group=self.group,
+                                                        since=self.since,
+                                                        until=self.until)
 
     class Meta:
         verbose_name = _('group membership')

@@ -1,5 +1,3 @@
-from unittest import mock
-
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.core.exceptions import ValidationError
@@ -42,8 +40,7 @@ class EntryTest(TestCase):
             membership_type=Membership.MEMBER,
         )
 
-    @mock.patch('django.db.models.Model.__str__')
-    def test_str(self, str_mock):
+    def test_str(self):
         entry = Entry(registration=self.registration)
         self.assertEqual(str(entry), '{} {} ({})'.format(
             self.registration.first_name, self.registration.last_name,
@@ -53,11 +50,6 @@ class EntryTest(TestCase):
         self.assertEqual(str(entry), '{} {} ({})'.format(
             self.member.first_name, self.member.last_name,
             self.member.email))
-
-        str_mock.return_value = 'return str'
-        entry = Entry()
-        str(entry)
-        str_mock.assert_called_once_with()
 
 
 class RegistrationTest(TestCase):

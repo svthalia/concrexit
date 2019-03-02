@@ -71,6 +71,11 @@ class Device(models.Model):
     class Meta:
         unique_together = ('registration_id', 'user',)
 
+    def __str__(self):
+        return _(
+            "{user}s {device_type} device"
+        ).format(user=self.user, device_type=self.type)
+
 
 class MessageManager(models.Manager):
     """Returns manual messages only"""

@@ -107,7 +107,7 @@ class Entry(models.Model):
             return self.renewal.__str__()
         except Renewal.DoesNotExist:
             pass
-        return super().__str__()
+        return _("Registration entry")
 
     class Meta:
         verbose_name = _('entry')

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 15:13+0200\n"
-"PO-Revision-Date: 2018-03-21 20:03+0100\n"
+"POT-Creation-Date: 2019-03-02 16:51+0100\n"
+"PO-Revision-Date: 2019-03-02 16:51+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: admin.py
 #, python-brace-format
@@ -27,8 +27,7 @@ msgstr "<strong><a href=\"{link}\">Bestellingen</a></strong>"
 msgid "Either specify a member or a name"
 msgstr "Specificeer een lid of vul een naam in"
 
-#: apps.py templates/pizzas/add_order.html templates/pizzas/index.html
-#: templates/pizzas/orders.html templates/pizzas/overview.html
+#: apps.py
 msgid "Pizzas"
 msgstr "Pizza's"
 
@@ -39,6 +38,10 @@ msgstr "Bestel vanaf"
 #: models.py
 msgid "Order until"
 msgstr "Bestel tot"
+
+#: models.py
+msgid "Send an order notification"
+msgstr "Stuur een bestellingsherinnering"
 
 #: models.py
 msgid "This event cannot overlap with {}."
@@ -68,9 +71,19 @@ msgstr "Bestel beperkte producten"
 msgid "Use this for non-members"
 msgstr "Vul dit in voor niet-leden"
 
+#: models.py
+#, python-brace-format
+msgid "Order by {member_name}: {product}"
+msgstr "Bestelling van {member_name}: {product}"
+
 #: templates/pizzas/add_order.html
 msgid "Add order"
 msgstr "Nieuwe bestelling toevoegen"
+
+#: templates/pizzas/add_order.html templates/pizzas/index.html
+#: templates/pizzas/orders.html templates/pizzas/overview.html
+msgid "pizzas"
+msgstr "pizza's"
 
 #: templates/pizzas/add_order.html
 #, python-format
@@ -109,7 +122,7 @@ msgstr "Bestel eten voor %(title)s"
 msgid "There is no current event for which you can order food"
 msgstr "Er is nu geen evenement waar je eten voor kunt bestellen"
 
-#: templates/pizzas/index.html
+#: templates/pizzas/index.html templates/pizzas/orders.html
 msgid "All products"
 msgstr "Alle producten"
 
@@ -195,10 +208,6 @@ msgid "Orders for %(title)s"
 msgstr "Bestellingen voor %(title)s"
 
 #: templates/pizzas/orders.html
-msgid "Add a new order"
-msgstr "Nieuwe bestelling toevoegen"
-
-#: templates/pizzas/orders.html
 msgid "Overview"
 msgstr "Overzicht"
 
@@ -206,11 +215,11 @@ msgstr "Overzicht"
 msgid "Paid"
 msgstr "Betaald"
 
-#: templates/pizzas/orders.html templates/pizzas/overview.html
+#: templates/pizzas/orders.html
 msgid "Yes"
 msgstr "Ja"
 
-#: templates/pizzas/orders.html templates/pizzas/overview.html
+#: templates/pizzas/orders.html
 msgid "No"
 msgstr "Nee"
 
