@@ -275,3 +275,26 @@ class DataMinimisationTest(TestCase):
             self.membership.save()
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 0)
+            self.membership.until = timezone.now().replace(
+                year=2018, month=9, day=1)
+            self.membership.save()
+        with self.subTest('Newer year membership after expired one'):
+            m = Membership.objects.create(
+                user=self.member,
+                type=Membership.MEMBER,
+                since=timezone.now().replace(year=2018, month=9, day=10),
+                until=timezone.now().replace(year=2019, month=8, day=31),
+            )
+            processed = services.execute_data_minimisation(True)
+            self.assertEqual(len(processed), 0)
+            m.delete()
+        with self.subTest('Newer study membership after expired one'):
+            m = Membership.objects.create(
+                user=self.member,
+                type=Membership.MEMBER,
+                since=timezone.now().replace(year=2018, month=9, day=10),
+                until=None
+            )
+            processed = services.execute_data_minimisation(True)
+            self.assertEqual(len(processed), 0)
+            m.delete()

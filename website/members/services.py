@@ -173,8 +173,8 @@ def execute_data_minimisation(dry_run=False):
     :return: list of processed members
     """
     members = (Member.objects
-               .filter(Q(membership__until__isnull=False) |
-                       Q(membership__until__lte=timezone.now().date()))
+               .exclude(Q(membership__until__isnull=True) |
+                        Q(membership__until__gt=timezone.now().date()))
                .distinct()
                .prefetch_related('membership_set', 'profile'))
     deletion_period = timezone.now().date() - timezone.timedelta(days=31)
