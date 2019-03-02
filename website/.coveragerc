@@ -5,7 +5,13 @@ omit =
     */tests.py
     */tests_*
     */tests/*
+    */urls.py
+    */settings/*
+    */wsgi.py
+    manage.py
+source = .
 
 [report]
 precision = 2
 skip_covered = True
+show_missing = True
