@@ -1,4 +1,4 @@
-Thalia Website
+Thalia Website [![coverage report](https://gitlab.science.ru.nl/thalia/concrexit/badges/master/coverage.svg)](https://gitlab.science.ru.nl/thalia/concrexit/commits/master)
 ==============
 
 New new Thalia website, now with extra Django.
