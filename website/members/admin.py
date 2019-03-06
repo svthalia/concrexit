@@ -3,7 +3,7 @@ This module registers admin pages for the models
 """
 import csv
 import datetime
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -11,7 +11,8 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from members.models import EmailChange
+from members import services
+from members.models import EmailChange, Member
 from . import forms, models
 
 
@@ -93,7 +94,7 @@ class UserAdmin(BaseUserAdmin):
     add_form = forms.UserCreationForm
 
     actions = ['address_csv_export', 'student_number_csv_export',
-               'email_csv_export']
+               'email_csv_export', 'minimise_data']
 
     inlines = (ProfileInline, MembershipInline,)
     list_filter = (MembershipTypeListFilter,
@@ -160,6 +161,25 @@ class UserAdmin(BaseUserAdmin):
         return response
     student_number_csv_export.short_description = _('Download student number '
                                                     'label for selected users')
+
+    def minimise_data(self, request, queryset):
+        processed = len(services.execute_data_minimisation(
+            members=Member.objects.filter(pk__in=queryset)))
+        if processed == 0:
+            self.message_user(
+                request,
+                _('Data minimisation could not be executed '
+                  'for the selected user(s).'),
+                messages.ERROR
+            )
+        else:
+            self.message_user(
+                request,
+                _('Data minimisation was executed '
+                  'for {} user(s).').format(processed),
+                messages.SUCCESS
+            )
+    minimise_data.short_description = _('Minimise data for the selected users')
 
 
 @admin.register(models.Member)
