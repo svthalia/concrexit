@@ -55,6 +55,56 @@ python36-django21:
 python37-django21:
   <<: *djangotest
   image: $PY37_IMAGE
+  after_script:
+    - cd website
+    - coverage html --directory=covhtml --title="${CI_COMMIT_REF_SLUG} Coverage Report"
+  artifacts:
+    paths:
+      - website/covhtml/
+
+.sshsetup: &sshsetup
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$IVO_KNOWN_HOST" > ~/.ssh/known_hosts
+    - echo "$COVERAGE_DEPLOY_SSH_KEY" > ~/.ssh/id_coverage
+    - chmod 0600 ~/.ssh/id_coverage
+    - apt-get update
+    - apt-get install -y openssh-client
+
+coverage deploy:
+  stage: deploy
+  image: debian:stretch
+  dependencies:
+    - python37-django21
+  environment:
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://coverage.technicie.nl/${CI_COMMIT_REF_SLUG}/
+    on_stop: coverage remove
+  <<: *sshsetup
+  script:
+    - |
+      sftp -i ~/.ssh/id_coverage coveragewww@ivo.thalia.nu -b <<EOF
+      -rm ${CI_COMMIT_REF_SLUG}/*
+      -rmdir ${CI_COMMIT_REF_SLUG}
+      put -r website/covhtml ${CI_COMMIT_REF_SLUG}
+      EOF
+
+coverage remove:
+    stage: deploy
+    when: manual
+    image: debian:stretch
+    environment:
+        name: review/${CI_COMMIT_REF_NAME}
+        action: stop
+    variables:
+        GIT_STRATEGY: none
+    <<: *sshsetup
+    script:
+      - |
+        sftp -i ~/.ssh/id_coverage coveragewww@ivo.thalia.nu -b <<EOF
+        rm ${CI_COMMIT_REF_SLUG}/*
+        rmdir ${CI_COMMIT_REF_SLUG}
+        EOF
 
 docs:
   stage: test
