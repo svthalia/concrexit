@@ -155,8 +155,9 @@ class RegistrationView(FormView):
     def form_valid(self, form):
         values = form.field_values()
         try:
-            services.update_registration(self.request.member, self.event,
-                                         values)
+            services.update_registration(self.request.member,
+                                         self.event,
+                                         field_values=values)
             messages.success(self.request,
                              _("Registration successfully saved."))
             return redirect(self.event)

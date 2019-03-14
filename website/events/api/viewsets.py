@@ -205,12 +205,11 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
                 self.request.member,
                 serializer.validated_data)
 
-        services.update_registration(registration.member,
-                                     registration.event,
-                                     serializer.field_values())
+        services.update_registration(registration=registration,
+                                     field_values=serializer.field_values())
         serializer.information_fields = services.registration_fields(
             serializer.context['request'],
-            registration.member, registration.event)
+            registration=registration)
 
     def destroy(self, request, pk=None, **kwargs):
         registration = self.get_object()

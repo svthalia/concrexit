@@ -333,9 +333,13 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(field3.get_value_for(registration), 'no text')
 
     def test_registration_organiser(self):
-        reg0 = Registration.objects.create(event=self.event, member=self.member)
+        reg0 = Registration.objects.create(event=self.event,
+                                           member=self.member)
         reg1 = Registration.objects.create(event=self.event, name="Test 1")
         reg2 = Registration.objects.create(event=self.event, name="Test 2")
+
+        self.member.is_superuser = True
+        self.member.save()
 
         response = self.client.patch(
             '/api/v1/registrations/{}/'.format(reg0.pk), {
@@ -356,7 +360,7 @@ class RegistrationApiTest(TestCase):
                 'payment': 'card_payment'
             }, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['member'], '')
+        self.assertEqual(response.data['member'], None)
         self.assertEqual(response.data['name'], 'Test 1')
         reg1.refresh_from_db()
         self.assertEqual(reg1.payment.type, 'card_payment')
@@ -369,7 +373,7 @@ class RegistrationApiTest(TestCase):
                 'payment': 'cash_payment'
             }, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['member'], '')
+        self.assertEqual(response.data['member'], None)
         self.assertEqual(response.data['name'], 'Test 2')
         reg2.refresh_from_db()
         self.assertEqual(reg2.payment.type, 'cash_payment')

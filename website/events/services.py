@@ -154,27 +154,32 @@ def cancel_registration(request, member, event):
         raise RegistrationError(_("You are not registered for this event."))
 
 
-def update_registration(member, event, field_values):
+def update_registration(member=None, event=None,
+                        registration=None, field_values=None):
     """
     Updates a user registration of an event
 
+    :param request: http request
     :param member: the user
     :param event: the event
+    :param registration: the registration
     :param field_values: values for the information fields
     """
-    registration = None
-    try:
-        registration = Registration.objects.get(
-            event=event,
-            member=member
-        )
-    except Registration.DoesNotExist:
-        pass
-
     if not registration:
-        raise RegistrationError(_("You are not registered for this event."))
+        try:
+            registration = Registration.objects.get(
+                event=event,
+                member=member
+            )
+        except Registration.DoesNotExist as error:
+            raise RegistrationError(
+                _("You are not registered for this event.")) from error
+    else:
+        member = registration.member
+        event = registration.event
 
-    if not event_permissions(member, event)["update_registration"]:
+    if (not event_permissions(member, event)["update_registration"] or
+            not field_values):
         return
 
     for field_id, field_value in field_values:
@@ -194,22 +199,31 @@ def update_registration(member, event, field_values):
         field.set_value_for(registration, field_value)
 
 
-def registration_fields(request, member, event):
+def registration_fields(request, member=None, event=None, registration=None):
     """
     Returns information about the registration fields of a registration
 
-    :param member: the user
-    :param event: the event
+    :param member: the user (optional if registration provided)
+    :param event: the event (optional if registration provided)
+    :param registration: the registration (optional if member & event provided)
     :return: the fields
     """
-    try:
-        registration = Registration.objects.get(
-            event=event,
-            member=member
-        )
-    except Registration.DoesNotExist as error:
-        raise RegistrationError(
-            _("You are not registered for this event.")) from error
+
+    if registration is None:
+        try:
+            registration = Registration.objects.get(
+                event=event,
+                member=member
+            )
+        except Registration.DoesNotExist as error:
+            raise RegistrationError(
+                _("You are not registered for this event.")) from error
+        except Registration.MultipleObjectsReturned as error:
+            raise RegistrationError(
+                _("Unable to find the right registration.")) from error
+    else:
+        member = registration.member
+        event = registration.event
 
     perms = (event_permissions(member, event)["update_registration"] or
              is_organiser(request.member, event))
