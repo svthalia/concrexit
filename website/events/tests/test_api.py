@@ -331,3 +331,46 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(field1.get_value_for(registration), True)
         self.assertEqual(field2.get_value_for(registration), 1337)
         self.assertEqual(field3.get_value_for(registration), 'no text')
+
+    def test_registration_organiser(self):
+        reg0 = Registration.objects.create(event=self.event, member=self.member)
+        reg1 = Registration.objects.create(event=self.event, name="Test 1")
+        reg2 = Registration.objects.create(event=self.event, name="Test 2")
+
+        response = self.client.patch(
+            '/api/v1/registrations/{}/'.format(reg0.pk), {
+                'csrf': 'random',
+                'present': True,
+                'payment': 'cash_payment'
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['member'], self.member.pk)
+        reg0.refresh_from_db()
+        self.assertIsNotNone(reg0.payment_id)
+        self.assertTrue(reg0.present)
+
+        response = self.client.patch(
+            '/api/v1/registrations/{}/'.format(reg1.pk), {
+                'csrf': 'random',
+                'present': True,
+                'payment': 'card_payment'
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['member'], '')
+        self.assertEqual(response.data['name'], 'Test 1')
+        reg1.refresh_from_db()
+        self.assertEqual(reg1.payment.type, 'card_payment')
+        self.assertTrue(reg1.present)
+
+        response = self.client.patch(
+            '/api/v1/registrations/{}/'.format(reg2.pk), {
+                'csrf': 'random',
+                'present': False,
+                'payment': 'cash_payment'
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['member'], '')
+        self.assertEqual(response.data['name'], 'Test 2')
+        reg2.refresh_from_db()
+        self.assertEqual(reg2.payment.type, 'cash_payment')
+        self.assertFalse(reg2.present)
