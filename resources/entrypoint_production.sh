@@ -2,7 +2,6 @@
 
 set -e
 
-tar --extract --xz --file=/usr/src/app/docs.tar.xz --directory=/concrexit/docs/
 chown -R www-data:www-data /concrexit/
 
 until psql -h "$DJANGO_POSTGRES_HOST" -U "postgres" -c '\l' "$POSTGRES_DB"; do
