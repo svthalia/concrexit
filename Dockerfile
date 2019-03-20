@@ -23,11 +23,9 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 RUN mkdir /concrexit && \
     mkdir -p /concrexit/log/ && \
     touch /concrexit/log/uwsgi.log && \
-    mkdir -p /concrexit/docs/ && \
     chown -R www-data:www-data /concrexit && \
     mkdir -p /usr/src/app && \
-    mkdir -p /usr/src/app/website && \
-    mkdir -p /usr/src/app/docs
+    mkdir -p /usr/src/app/website
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -44,10 +42,10 @@ WORKDIR /usr/src/app/website/
 COPY pyproject.toml /usr/src/app/website/
 COPY poetry.lock /usr/src/app/website/
 RUN if [ "$install_dev_requirements" -eq 1 ]; then \
-        poetry install --no-interaction --extras "docs"; \
+        poetry install --no-interaction; \
     else \
         echo "This will fail if the dependencies are out of date"; \
-        poetry install --no-interaction --extras "docs" --no-dev; \
+        poetry install --no-interaction --no-dev; \
     fi; \
     poetry cache:clear --all --no-interaction pypi
 
@@ -59,15 +57,5 @@ RUN chmod +x /usr/local/bin/entrypoint.sh && \
 
 # copy app source
 COPY website /usr/src/app/website/
-
-# Copy files for Sphinx documentation
-COPY README.md /usr/src/app/
-COPY docs /usr/src/app/docs
-RUN sphinx-build -c /usr/src/app/docs/ /usr/src/app/docs/ /usr/src/app/docs/_build && \
-    tar --create --xz --file=/usr/src/app/docs.tar.xz --directory=/usr/src/app/docs/_build/ . && \
-    rm --recursive /usr/src/app/docs/
-
-# Cache docs between builds if not mounting to FS
-VOLUME /concrexit/docs
 
 RUN echo "Don't build releases yourself, let CI do it!"

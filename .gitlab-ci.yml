@@ -67,7 +67,8 @@ python37-django21:
     - mkdir -p ~/.ssh
     - echo "$IVO_KNOWN_HOST" > ~/.ssh/known_hosts
     - echo "$COVERAGE_DEPLOY_SSH_KEY" > ~/.ssh/id_coverage
-    - chmod 0600 ~/.ssh/id_coverage
+    - echo "$DOCS_DEPLOY_SSH_KEY" > ~/.ssh/id_docs
+    - chmod 0600 ~/.ssh/id_*
     - apt-get update
     - apt-get install -y openssh-client
 
@@ -77,7 +78,7 @@ coverage deploy:
   dependencies:
     - python37-django21
   environment:
-    name: review/${CI_COMMIT_REF_NAME}
+    name: coverage/${CI_COMMIT_REF_NAME}
     url: https://coverage.technicie.nl/${CI_COMMIT_REF_SLUG}/
     on_stop: coverage remove
   <<: *sshsetup
@@ -94,7 +95,7 @@ coverage remove:
     when: manual
     image: debian:stretch
     environment:
-        name: review/${CI_COMMIT_REF_NAME}
+        name: coverage/${CI_COMMIT_REF_NAME}
         action: stop
     variables:
         GIT_STRATEGY: none
@@ -106,7 +107,7 @@ coverage remove:
         rmdir ${CI_COMMIT_REF_SLUG}
         EOF
 
-docs:
+docs tests:
   stage: test
   image: $PY36_IMAGE
   before_script:
@@ -120,6 +121,59 @@ docs:
     - echo "Checking if there are changes"
     - poetry run ./generate-apidocs.sh
     - git diff --exit-code
+  artifacts:
+    paths:
+      - docs/_build
+
+docs deploy:
+  stage: deploy
+  image: debian:stretch
+  dependencies:
+    - docs tests
+  environment:
+    name: docs/${CI_COMMIT_REF_NAME}
+    url: https://docs.technicie.nl/${CI_COMMIT_REF_SLUG}/
+    on_stop: docs remove
+  <<: *sshsetup
+  script:
+    - |
+      sftp -i ~/.ssh/id_docs docswww@ivo.thalia.nu -b <<EOF
+      -rm ${CI_COMMIT_REF_SLUG}/*/*
+      -rm ${CI_COMMIT_REF_SLUG}/*
+      -rmdir ${CI_COMMIT_REF_SLUG}/_images
+      -rmdir ${CI_COMMIT_REF_SLUG}/_modules
+      -rmdir ${CI_COMMIT_REF_SLUG}/_sources
+      -rmdir ${CI_COMMIT_REF_SLUG}/_static
+      -rmdir ${CI_COMMIT_REF_SLUG}/doctest
+      -rmdir ${CI_COMMIT_REF_SLUG}/doctrees
+      -rmdir ${CI_COMMIT_REF_SLUG}
+      -mkdir ${CI_COMMIT_REF_SLUG}
+      put -r docs/_build/* ${CI_COMMIT_REF_SLUG}
+      EOF
+
+docs remove:
+  stage: deploy
+  when: manual
+  image: debian:stretch
+  environment:
+    name: docs/${CI_COMMIT_REF_NAME}
+    action: stop
+  variables:
+    GIT_STRATEGY: none
+  <<: *sshsetup
+  script:
+    - |
+      sftp -i ~/.ssh/id_docs docswww@ivo.thalia.nu -b <<EOF
+      rm ${CI_COMMIT_REF_SLUG}/*/*
+      rm ${CI_COMMIT_REF_SLUG}/*
+      rmdir ${CI_COMMIT_REF_SLUG}/_images
+      rmdir ${CI_COMMIT_REF_SLUG}/_modules
+      rmdir ${CI_COMMIT_REF_SLUG}/_sources
+      rmdir ${CI_COMMIT_REF_SLUG}/_static
+      rmdir ${CI_COMMIT_REF_SLUG}/doctest
+      rmdir ${CI_COMMIT_REF_SLUG}/doctrees
+      rmdir ${CI_COMMIT_REF_SLUG}
+      EOF
 
 build docker image:
   stage: test
