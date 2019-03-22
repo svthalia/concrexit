@@ -202,17 +202,20 @@ class RegistrationTest(TestCase):
             membership_type=Membership.MEMBER,
         )
 
-        self.assertEqual(len(mail.outbox), 1)
-        confirm_url = '{}{}'.format('https://thalia.nu',
-                                    reverse('registrations:confirm-email',
-                                            args=[registration.pk]))
-        self.assertTrue(confirm_url in mail.outbox[0].body)
-        mail.outbox.clear()
+        with self.subTest(f'Create confirmation mail'
+                          f'on save with status confirm'):
+            self.assertEqual(len(mail.outbox), 1)
+            confirm_url = '{}{}'.format('https://thalia.nu',
+                                        reverse('registrations:confirm-email',
+                                                args=[registration.pk]))
+            self.assertTrue(confirm_url in mail.outbox[0].body)
+            mail.outbox.clear()
 
-        registration.status = Entry.STATUS_REVIEW
-        registration.save()
+        with self.subTest('No emails in outbox when status is not confirm'):
+            registration.status = Entry.STATUS_REVIEW
+            registration.save()
 
-        self.assertEqual(len(mail.outbox), 0)
+            self.assertEqual(len(mail.outbox), 0)
 
 
 class RenewalTest(TestCase):

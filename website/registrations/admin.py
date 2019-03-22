@@ -155,6 +155,11 @@ class RegistrationAdmin(admin.ModelAdmin):
         """Does the user have the review permission?"""
         return request.user.has_perm('registrations.review_entries')
 
+    def has_change_permission(self, request, obj=None):
+        if (obj and obj.status == Registration.STATUS_REVIEW) or not obj:
+            return super().has_change_permission(request, obj)
+        return False
+
 
 @admin.register(Renewal)
 class RenewalAdmin(RegistrationAdmin):
