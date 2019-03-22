@@ -169,7 +169,7 @@ class ServicesTest(TestCase):
         self.e3.status = Entry.STATUS_REVIEW
         self.e3.save()
 
-        rows_updated = services.reject_entries(Entry.objects.all())
+        rows_updated = services.reject_entries(1, Entry.objects.all())
 
         self.assertEqual(rows_updated, 3)
         self.assertEqual(Entry.objects
@@ -182,7 +182,7 @@ class ServicesTest(TestCase):
         self.e3.status = Entry.STATUS_REVIEW
         self.e3.save()
 
-        rows_updated = services.accept_entries(Entry.objects.all())
+        rows_updated = services.accept_entries(1, Entry.objects.all())
 
         self.e2.refresh_from_db()
         self.e3.refresh_from_db()
@@ -204,7 +204,7 @@ class ServicesTest(TestCase):
         self.e3.status = Entry.STATUS_REVIEW
         self.e3.save()
 
-        rows_updated = services.accept_entries(Entry.objects.all())
+        rows_updated = services.accept_entries(1, Entry.objects.all())
 
         self.e2.refresh_from_db()
         self.assertEqual(self.e2.username, 'manual_username')
@@ -223,7 +223,7 @@ class ServicesTest(TestCase):
         self.e3.status = Entry.STATUS_REVIEW
         self.e3.save()
 
-        rows_updated = services.accept_entries(Entry.objects.all())
+        rows_updated = services.accept_entries(1, Entry.objects.all())
 
         self.assertEqual(rows_updated, 0)
         self.assertEqual(Entry.objects.filter(
@@ -236,7 +236,7 @@ class ServicesTest(TestCase):
             self.e2.payment = services._create_payment_for_entry(self.e2)
             self.e2.save()
 
-            services.revert_entry(self.e2)
+            services.revert_entry(1, self.e2)
 
             self.e2.refresh_from_db()
 
@@ -244,21 +244,32 @@ class ServicesTest(TestCase):
             self.assertIsNone(self.e2.payment)
 
         with self.subTest("Revert rejected entry"):
-            self.e2.status = Entry.STATUS_REJECTED
-            self.e2.save()
+            self.e3.status = Entry.STATUS_REJECTED
+            self.e3.save()
 
-            services.revert_entry(self.e2)
+            services.revert_entry(1, self.e3)
 
-            self.e2.refresh_from_db()
+            self.e3.refresh_from_db()
 
-            self.assertEqual(self.e2.status, Entry.STATUS_REVIEW)
+            self.assertEqual(self.e3.status, Entry.STATUS_REVIEW)
+
+        with self.subTest("Revert another rejected entry"):
+            self.e0.status = Entry.STATUS_REJECTED
+            self.e0.payment = services._create_payment_for_entry(self.e0)
+            self.e0.save()
+
+            services.revert_entry(1, self.e0)
+
+            self.e0.refresh_from_db()
+
+            self.assertEqual(self.e0.status, Entry.STATUS_REVIEW)
 
         with self.subTest("Does not revert completed entry"):
             self.e2.status = Entry.STATUS_COMPLETED
             self.e2.payment = services._create_payment_for_entry(self.e2)
             self.e2.save()
 
-            services.revert_entry(self.e2)
+            services.revert_entry(1, self.e0)
 
             self.e2.refresh_from_db()
 

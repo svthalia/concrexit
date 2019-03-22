@@ -102,12 +102,7 @@ class Entry(models.Model):
         try:
             return self.registration.__str__()
         except Registration.DoesNotExist:
-            pass
-        try:
             return self.renewal.__str__()
-        except Renewal.DoesNotExist:
-            pass
-        return _("Registration entry")
 
     class Meta:
         verbose_name = _('entry')

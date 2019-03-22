@@ -23,6 +23,7 @@ def _get_mock_request(perms=None):
     mock_request = HttpRequest()
     mock_request.META = mock.Mock(return_value={})
     mock_request.user = mock.MagicMock()
+    mock_request.user.pk = 1
     mock_request.user.is_superuser = False
     mock_request.user.user_permissions = perms
     mock_request.user.has_perm = lambda x: x in perms
@@ -167,7 +168,7 @@ class RegistrationAdminTest(TestCase):
         request = _get_mock_request(['registrations.review_entries'])
         self.admin.accept_selected(request, queryset)
 
-        accept_entries.assert_called_once_with(queryset)
+        accept_entries.assert_called_once_with(1, queryset)
 
         request._messages.add.assert_called_once_with(
             messages.SUCCESS,
@@ -190,7 +191,7 @@ class RegistrationAdminTest(TestCase):
 
         request = _get_mock_request(['registrations.review_entries'])
         self.admin.reject_selected(request, queryset)
-        reject_entries.assert_called_once_with(queryset)
+        reject_entries.assert_called_once_with(1, queryset)
 
         request._messages.add.assert_called_once_with(
             messages.SUCCESS,
@@ -366,7 +367,7 @@ class RenewalAdminTest(TestCase):
         request = _get_mock_request(['registrations.review_entries'])
         self.admin.accept_selected(request, queryset)
 
-        accept_entries.assert_called_once_with(queryset)
+        accept_entries.assert_called_once_with(1, queryset)
 
         request._messages.add.assert_called_once_with(
             messages.SUCCESS,
@@ -389,7 +390,7 @@ class RenewalAdminTest(TestCase):
 
         request = _get_mock_request(['registrations.review_entries'])
         self.admin.reject_selected(request, queryset)
-        reject_entries.assert_called_once_with(queryset)
+        reject_entries.assert_called_once_with(1, queryset)
 
         request._messages.add.assert_called_once_with(
             messages.SUCCESS,
