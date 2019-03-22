@@ -155,10 +155,11 @@ class RegistrationAdmin(admin.ModelAdmin):
         """Does the user have the review permission?"""
         return request.user.has_perm('registrations.review_entries')
 
-    def has_change_permission(self, request, obj=None):
-        if (obj and obj.status == Registration.STATUS_REVIEW) or not obj:
-            return super().has_change_permission(request, obj)
-        return False
+    def save_model(self, request, obj, form, change):
+        if not (obj.status == Entry.STATUS_REJECTED or
+                obj.status == Entry.STATUS_ACCEPTED or
+                obj.status == Entry.STATUS_COMPLETED):
+            super().save_model(request, obj, form, change)
 
 
 @admin.register(Renewal)
@@ -185,6 +186,7 @@ class RenewalAdmin(RegistrationAdmin):
                             'member',)
                     }),
     )
+    actions = RegistrationAdmin.actions
 
     def get_readonly_fields(self, request, obj=None):
         """Make all fields read-only and add member if needed"""
