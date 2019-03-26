@@ -1,11 +1,10 @@
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from utils.translation import ModelTranslateMeta, MultilingualField
-from utils.validators import validate_file_extension
 
 
 class Document(models.Model, metaclass=ModelTranslateMeta):
@@ -49,7 +48,8 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         models.FileField,
         verbose_name=_('file'),
         upload_to='documents/',
-        validators=[validate_file_extension],
+        validators=[FileExtensionValidator(
+            ['.txt', '.pdf', '.jpg', '.jpeg', '.png'])],
     )
 
     members_only = models.BooleanField(

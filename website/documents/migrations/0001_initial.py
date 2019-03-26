@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
-import utils.validators
 
 
 class Migration(migrations.Migration):
@@ -20,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('year', models.IntegerField()),
-                ('file', models.FileField(upload_to='documents/association/', validators=[utils.validators.validate_file_extension])),
+                ('file', models.FileField(upload_to='documents/association/', validators=[])),
                 ('filetype', models.CharField(choices=[('policy-document', 'Policy document'), ('annual-report', 'Annual report'), ('financial-report', 'Financial report')], max_length=16)),
             ],
         ),
@@ -28,7 +27,7 @@ class Migration(migrations.Migration):
             name='GeneralMeeting',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('minutes', models.FileField(upload_to='documents/meetings/minutes/', validators=[utils.validators.validate_file_extension])),
+                ('minutes', models.FileField(upload_to='documents/meetings/minutes/', validators=[])),
                 ('datetime', models.DateTimeField()),
                 ('location', models.CharField(max_length=200)),
             ],
@@ -37,7 +36,7 @@ class Migration(migrations.Migration):
             name='GeneralMeetingDocument',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to='documents/meetings/files/', validators=[utils.validators.validate_file_extension])),
+                ('file', models.FileField(upload_to='documents/meetings/files/', validators=[])),
                 ('meeting', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='documents.GeneralMeeting')),
             ],
         ),
@@ -46,7 +45,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
-                ('file', models.FileField(upload_to='documents/generic/', validators=[utils.validators.validate_file_extension])),
+                ('file', models.FileField(upload_to='documents/generic/', validators=[])),
                 ('members_only', models.BooleanField(default=False)),
             ],
         ),

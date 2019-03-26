@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
-import utils.validators
 
 
 class Migration(migrations.Migration):
@@ -22,8 +21,8 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='created')),
                 ('last_updated', models.DateTimeField(auto_now=True, verbose_name='last updated')),
                 ('category', models.CharField(choices=[('annual', 'Annual document'), ('association', 'Association document'), ('minutes', 'Minutes'), ('misc', 'Miscellaneous document')], default='misc', max_length=40, verbose_name='category')),
-                ('file_en', models.FileField(upload_to='documents/', validators=[utils.validators.validate_file_extension], verbose_name='file (EN)')),
-                ('file_nl', models.FileField(upload_to='documents/', validators=[utils.validators.validate_file_extension], verbose_name='file (NL)')),
+                ('file_en', models.FileField(upload_to='documents/', validators=[], verbose_name='file (EN)')),
+                ('file_nl', models.FileField(upload_to='documents/', validators=[], verbose_name='file (NL)')),
                 ('members_only', models.BooleanField(default=False, verbose_name='members only')),
             ],
             options={
