@@ -20,13 +20,15 @@ def album_card(album):
         if album.cover.rotation > 0:
             class_name += ' rotate{}'.format(album.cover.rotation)
 
+    url = album.get_absolute_url
     if not album.accessible:
         class_name += ' grayscale'
+        url = None
 
     return grid_item(
         title=album.title,
         meta_text='<p>{}</p>'.format(date(album.date, 'Y-m-d')),
-        url=album.get_absolute_url,
+        url=url,
         image_url=image_url,
         class_name=class_name,
     )
