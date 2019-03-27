@@ -1,6 +1,10 @@
 """Views provided by the newsletters package"""
 from datetime import datetime, timedelta, date
 
+import os
+
+from django.conf import settings
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,6 +13,8 @@ from django.utils.translation import activate, get_language_info
 from newsletters import emails
 from newsletters.models import Newsletter
 from partners.models import Partner
+
+from sendfile import sendfile
 
 
 def preview(request, pk, lang=None):
@@ -20,9 +26,6 @@ def preview(request, pk, lang=None):
     :param lang: the language of the render
     :return: HttpResponse 200 containing the newsletter HTML
     """
-    newsletter = get_object_or_404(Newsletter, pk=pk)
-    partners = Partner.objects.filter(is_main_partner=True)
-    main_partner = partners[0] if len(partners) > 0 else None
     lang_code = request.LANGUAGE_CODE
 
     if lang is not None:
@@ -33,6 +36,19 @@ def preview(request, pk, lang=None):
         except KeyError:
             # Language code not recognised by get_language_info
             pass
+
+    # Send cached file, if it exists
+    file_path = os.path.join(
+        settings.MEDIA_ROOT,
+        'newsletters',
+        f'{pk}_{lang_code}.html'
+    )
+    if os.path.isfile(file_path):
+        return sendfile(request, file_path)
+
+    newsletter = get_object_or_404(Newsletter, pk=pk)
+    partners = Partner.objects.filter(is_main_partner=True)
+    main_partner = partners[0] if len(partners) > 0 else None
 
     return render(request, 'newsletters/email.html', {
         'newsletter': newsletter,

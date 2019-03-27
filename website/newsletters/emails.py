@@ -7,6 +7,8 @@ from django.utils import translation
 from members.models import Member
 from partners.models import Partner
 
+from newsletters import services
+
 
 def send_newsletter(request, newsletter):
     """
@@ -54,5 +56,7 @@ def send_newsletter(request, newsletter):
                                      from_email=from_email)
         msg.attach_alternative(html_message, "text/html")
         msg.send()
+
+        services.write_to_file(newsletter.pk, language[0], html_message)
 
         translation.deactivate()

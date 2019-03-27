@@ -49,6 +49,14 @@ newsletters.models module
     :undoc-members:
     :show-inheritance:
 
+newsletters.services module
+---------------------------
+
+.. automodule:: newsletters.services
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 newsletters.urls module
 -----------------------
 
