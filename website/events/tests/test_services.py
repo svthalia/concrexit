@@ -285,14 +285,16 @@ class ServicesTest(TestCase):
         }
 
         with self.assertRaises(RegistrationError):
-            services.update_registration(self.member, self.event, None)
+            services.update_registration(self.member, self.event,
+                                         field_values=None)
 
         registration = Registration.objects.create(
             event=self.event,
             member=self.member,
         )
 
-        services.update_registration(self.member, self.event, None)
+        services.update_registration(self.member, self.event,
+                                     field_values=None)
 
         perms_mock.return_value["update_registration"] = True
 
@@ -320,7 +322,8 @@ class ServicesTest(TestCase):
             ('info_field_{}'.format(field3.id), None),
         ]
 
-        services.update_registration(self.member, self.event, fields)
+        services.update_registration(self.member, self.event,
+                                     field_values=fields)
 
         self.assertEqual(field1.get_value_for(registration), 0)
         self.assertEqual(field2.get_value_for(registration), False)
@@ -332,7 +335,8 @@ class ServicesTest(TestCase):
             ('info_field_{}'.format(field3.id), 'text'),
         ]
 
-        services.update_registration(self.member, self.event, fields)
+        services.update_registration(self.member, self.event,
+                                     field_values=fields)
 
         self.assertEqual(field1.get_value_for(registration), 2)
         self.assertEqual(field2.get_value_for(registration), True)
@@ -356,13 +360,16 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.registration_fields(mock_request, self.member, self.event)
 
-        Registration.objects.create(
+        registration = Registration.objects.create(
             event=self.event,
             member=self.member,
         )
 
         with self.assertRaises(RegistrationError):
             services.registration_fields(mock_request, self.member, self.event)
+        with self.assertRaises(RegistrationError):
+            services.registration_fields(mock_request,
+                                         registration=registration)
 
         perms_mock.return_value["update_registration"] = True
 
@@ -395,34 +402,39 @@ class ServicesTest(TestCase):
         # set order
         self.event.set_registrationinformationfield_order([1, 2, 3])
 
-        fields = services.registration_fields(
-            mock_request, self.member, self.event)
+        fields_list = [
+            services.registration_fields(mock_request,
+                                         self.member, self.event),
+            services.registration_fields(mock_request,
+                                         registration=registration),
+        ]
 
-        self.assertEqual(fields['info_field_1'], {
-            'type': 'integer',
-            'label': '1',
-            'description': None,
-            'value': None,
-            'required': False
-        })
+        for fields in fields_list:
+            self.assertEqual(fields['info_field_1'], {
+                'type': 'integer',
+                'label': '1',
+                'description': None,
+                'value': None,
+                'required': False
+            })
 
-        self.assertEqual(fields['info_field_2'], {
-            'type': 'boolean',
-            'label': '2',
-            'description': None,
-            'value': None,
-            'required': True
-        })
+            self.assertEqual(fields['info_field_2'], {
+                'type': 'boolean',
+                'label': '2',
+                'description': None,
+                'value': None,
+                'required': True
+            })
 
-        self.assertEqual(fields['info_field_3'], {
-            'type': 'text',
-            'label': '3',
-            'description': None,
-            'value': None,
-            'required': False
-        })
+            self.assertEqual(fields['info_field_3'], {
+                'type': 'text',
+                'label': '3',
+                'description': None,
+                'value': None,
+                'required': False
+            })
 
-        self.assertEqual(len(fields), 3)
-        # Test that the ordering is correct
-        labels = [field['label'] for field in fields.values()]
-        self.assertEqual(labels, sorted(labels))
+            self.assertEqual(len(fields), 3)
+            # Test that the ordering is correct
+            labels = [field['label'] for field in fields.values()]
+            self.assertEqual(labels, sorted(labels))

@@ -336,7 +336,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             if instance:
                 self.information_fields = services.registration_fields(
                     kwargs['context']['request'],
-                    instance.member, instance.event)
+                    registration=instance)
         except RegistrationError:
             pass
 
