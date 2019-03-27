@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from pizzas.models import Product, PizzaEvent, Order
+from pizzas.services import can_change_order
 
 
 class PizzaSerializer(serializers.ModelSerializer):
@@ -12,12 +13,16 @@ class PizzaSerializer(serializers.ModelSerializer):
 
 
 class PizzaEventSerializer(serializers.ModelSerializer):
-
-    event = serializers.PrimaryKeyRelatedField(read_only=True)
-
     class Meta:
         model = PizzaEvent
-        fields = ('start', 'end', 'event', 'title')
+        fields = ('start', 'end', 'event', 'title', 'is_admin')
+
+    event = serializers.PrimaryKeyRelatedField(read_only=True)
+    is_admin = serializers.SerializerMethodField('_is_admin')
+
+    def _is_admin(self, instance):
+        member = self.context['request'].member
+        return can_change_order(member, instance)
 
 
 class OrderSerializer(serializers.ModelSerializer):

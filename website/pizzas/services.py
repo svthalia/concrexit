@@ -1,3 +1,4 @@
+from events.services import is_organiser
 from . models import Product, Order, PizzaEvent
 
 
@@ -34,3 +35,8 @@ def gen_stats_current_pizza_orders():
     total.sort(key=lambda prod: prod['total'], reverse=True)
 
     return total
+
+
+def can_change_order(member, pizza_event):
+    return (member.has_perm('pizzas.change_order') and
+            is_organiser(member, pizza_event.event))
