@@ -138,7 +138,7 @@ class EntryAdminViewTest(TestCase):
                     '/admin/registrations/%s/%s/change/' % (type, entry.pk)
                 )
 
-                accept_entries.assert_called_once_with(entry_qs)
+                accept_entries.assert_called_once_with(1, entry_qs)
                 self.assertFalse(reject_entries.called)
 
                 request._messages.add.assert_called_once_with(
@@ -192,7 +192,7 @@ class EntryAdminViewTest(TestCase):
                     '/admin/registrations/%s/%s/change/' % (type, entry.pk)
                 )
 
-                reject_entries.assert_called_once_with(entry_qs)
+                reject_entries.assert_called_once_with(1, entry_qs)
                 self.assertFalse(accept_entries.called)
 
                 request._messages.add.assert_called_once_with(
@@ -265,7 +265,7 @@ class EntryAdminViewTest(TestCase):
                     '/admin/registrations/%s/%s/change/' % (type, entry.pk)
                 )
 
-                revert.assert_called_once_with(entry.entry_ptr)
+                revert.assert_called_once_with(1, entry.entry_ptr)
 
     @mock.patch('registrations.models.Entry.objects.filter')
     def test_post_not_exists(self, qs_mock):

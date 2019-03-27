@@ -130,7 +130,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     def reject_selected(self, request, queryset):
         """Reject the selected entries"""
         if request.user.has_perm('registrations.review_entries'):
-            rows_updated = services.reject_entries(queryset)
+            rows_updated = services.reject_entries(request.user.pk, queryset)
             _show_message(
                 self, request, rows_updated,
                 message=_("Successfully rejected %(count)d %(items)s."),
@@ -142,7 +142,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     def accept_selected(self, request, queryset):
         """Accept the selected entries"""
         if request.user.has_perm('registrations.review_entries'):
-            rows_updated = services.accept_entries(queryset)
+            rows_updated = services.accept_entries(request.user.pk, queryset)
             _show_message(
                 self, request, rows_updated,
                 message=_("Successfully accepted %(count)d %(items)s."),
@@ -154,6 +154,12 @@ class RegistrationAdmin(admin.ModelAdmin):
     def has_review_permission(self, request):
         """Does the user have the review permission?"""
         return request.user.has_perm('registrations.review_entries')
+
+    def save_model(self, request, obj, form, change):
+        if not (obj.status == Entry.STATUS_REJECTED or
+                obj.status == Entry.STATUS_ACCEPTED or
+                obj.status == Entry.STATUS_COMPLETED):
+            super().save_model(request, obj, form, change)
 
 
 @admin.register(Renewal)
@@ -180,6 +186,7 @@ class RenewalAdmin(RegistrationAdmin):
                             'member',)
                     }),
     )
+    actions = RegistrationAdmin.actions
 
     def get_readonly_fields(self, request, obj=None):
         """Make all fields read-only and add member if needed"""

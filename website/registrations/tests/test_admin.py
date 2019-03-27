@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member
 from payments.models import Payment
+from payments.widgets import PaymentWidget
 from registrations import admin
 from registrations.models import Entry, Registration, Renewal
 
@@ -22,6 +23,7 @@ def _get_mock_request(perms=None):
     mock_request = HttpRequest()
     mock_request.META = mock.Mock(return_value={})
     mock_request.user = mock.MagicMock()
+    mock_request.user.pk = 1
     mock_request.user.is_superuser = False
     mock_request.user.user_permissions = perms
     mock_request.user.has_perm = lambda x: x in perms
@@ -166,7 +168,7 @@ class RegistrationAdminTest(TestCase):
         request = _get_mock_request(['registrations.review_entries'])
         self.admin.accept_selected(request, queryset)
 
-        accept_entries.assert_called_once_with(queryset)
+        accept_entries.assert_called_once_with(1, queryset)
 
         request._messages.add.assert_called_once_with(
             messages.SUCCESS,
@@ -189,7 +191,7 @@ class RegistrationAdminTest(TestCase):
 
         request = _get_mock_request(['registrations.review_entries'])
         self.admin.reject_selected(request, queryset)
-        reject_entries.assert_called_once_with(queryset)
+        reject_entries.assert_called_once_with(1, queryset)
 
         request._messages.add.assert_called_once_with(
             messages.SUCCESS,
@@ -300,6 +302,50 @@ class RegistrationAdminTest(TestCase):
         reg.payment = None
         self.assertEqual(self.admin.payment_status(reg), '-')
 
+    def test_formfield_for_dbfield(self):
+        with self.subTest('Payment field'):
+            field = self.admin.formfield_for_dbfield(
+                Registration._meta.get_field('payment'), request=None)
+            self.assertIsInstance(field.widget, PaymentWidget)
+        with self.subTest('Other field'):
+            field = self.admin.formfield_for_dbfield(
+                Registration._meta.get_field('first_name'), request=None)
+            self.assertNotIsInstance(field.widget, PaymentWidget)
+            self.assertIsNotNone(field.widget)
+
+    def test_save_model(self):
+        reg = Registration(
+            status=Registration.STATUS_REVIEW,
+            birthday=timezone.now()
+        )
+
+        with self.subTest('Status review saves'):
+            reg.first_name = 'Test1'
+            self.admin.save_model({}, reg, None, True)
+            self.assertTrue(
+                Registration.objects.filter(first_name='Test1').exists())
+
+        with self.subTest('Status accepted, no save'):
+            reg.first_name = 'Test2'
+            reg.status = Registration.STATUS_ACCEPTED
+            self.admin.save_model({}, reg, None, True)
+            self.assertFalse(
+                Registration.objects.filter(first_name='Test2').exists())
+
+        with self.subTest('Status reject, no save'):
+            reg.first_name = 'Test2'
+            reg.status = Registration.STATUS_REJECTED
+            self.admin.save_model({}, reg, None, True)
+            self.assertFalse(
+                Registration.objects.filter(first_name='Test2').exists())
+
+        with self.subTest('Status completed, no save'):
+            reg.first_name = 'Test2'
+            reg.status = Registration.STATUS_COMPLETED
+            self.admin.save_model({}, reg, None, True)
+            self.assertFalse(
+                Registration.objects.filter(first_name='Test2').exists())
+
 
 class RenewalAdminTest(TestCase):
 
@@ -321,7 +367,7 @@ class RenewalAdminTest(TestCase):
         request = _get_mock_request(['registrations.review_entries'])
         self.admin.accept_selected(request, queryset)
 
-        accept_entries.assert_called_once_with(queryset)
+        accept_entries.assert_called_once_with(1, queryset)
 
         request._messages.add.assert_called_once_with(
             messages.SUCCESS,
@@ -344,7 +390,7 @@ class RenewalAdminTest(TestCase):
 
         request = _get_mock_request(['registrations.review_entries'])
         self.admin.reject_selected(request, queryset)
-        reject_entries.assert_called_once_with(queryset)
+        reject_entries.assert_called_once_with(1, queryset)
 
         request._messages.add.assert_called_once_with(
             messages.SUCCESS,

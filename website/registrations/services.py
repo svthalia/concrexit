@@ -3,6 +3,8 @@ import string
 import unicodedata
 
 from django.conf import settings
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils import timezone
@@ -75,7 +77,7 @@ def confirm_entry(queryset):
     return rows_updated
 
 
-def reject_entries(queryset):
+def reject_entries(user_id, queryset):
     """
     Reject all entries in the queryset
 
@@ -90,18 +92,32 @@ def reject_entries(queryset):
                                    updated_at=timezone.now())
 
     for entry in entries:
+        log_obj = None
+
         try:
             emails.send_registration_rejected_message(entry.registration)
+            log_obj = entry.registration
         except Registration.DoesNotExist:
             try:
                 emails.send_renewal_rejected_message(entry.renewal)
+                log_obj = entry.renewal
             except Renewal.DoesNotExist:
                 pass
+
+        if log_obj:
+            LogEntry.objects.log_action(
+                user_id=user_id,
+                content_type_id=get_content_type_for_model(log_obj).pk,
+                object_id=log_obj.pk,
+                object_repr=str(log_obj),
+                action_flag=CHANGE,
+                change_message='Changed status to rejected',
+            )
 
     return rows_updated
 
 
-def accept_entries(queryset):
+def accept_entries(user_id, queryset):
     """
     Accept all entries in the queryset
 
@@ -124,6 +140,8 @@ def accept_entries(queryset):
         entry.updated_at = timezone.now()
         entry.payment = _create_payment_for_entry(entry)
 
+        log_obj = None
+
         try:
             if entry.registration.username is None:
                 entry.registration.username = _generate_username(
@@ -131,12 +149,24 @@ def accept_entries(queryset):
                 entry.registration.save()
             emails.send_registration_accepted_message(entry.registration,
                                                       entry.payment)
+            log_obj = entry.registration
         except Registration.DoesNotExist:
             try:
                 emails.send_renewal_accepted_message(entry.renewal,
                                                      entry.payment)
+                log_obj = entry.renewal
             except Renewal.DoesNotExist:
                 pass
+
+        if log_obj:
+            LogEntry.objects.log_action(
+                user_id=user_id,
+                content_type_id=get_content_type_for_model(log_obj).pk,
+                object_id=log_obj.pk,
+                object_repr=str(log_obj),
+                action_flag=CHANGE,
+                change_message='Change status to approved',
+            )
 
         entry.save()
         updated_entries.append(entry.pk)
@@ -144,7 +174,7 @@ def accept_entries(queryset):
     return len(updated_entries)
 
 
-def revert_entry(entry):
+def revert_entry(user_id, entry):
     """
     Revert status of entry to review so that it can be corrected
 
@@ -160,6 +190,28 @@ def revert_entry(entry):
     entry.save()
     if payment is not None:
         payment.delete()
+
+    log_obj = None
+
+    try:
+        log_obj = entry.registration
+    except Registration.DoesNotExist:
+        try:
+            log_obj = entry.renewal
+        except Renewal.DoesNotExist:
+            pass
+
+    print(log_obj)
+
+    if log_obj:
+        LogEntry.objects.log_action(
+            user_id=user_id,
+            content_type_id=get_content_type_for_model(log_obj).pk,
+            object_id=log_obj.pk,
+            object_repr=str(log_obj),
+            action_flag=CHANGE,
+            change_message='Revert status to review',
+        )
 
 
 def _create_payment_for_entry(entry):

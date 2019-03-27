@@ -56,14 +56,14 @@ class EntryAdminView(View):
                 messages.error(request, _('Could not accept %s. '
                                           'Username is not unique.') %
                                model_ngettext(entry, 1))
-            elif services.accept_entries(entry_qs) > 0:
+            elif services.accept_entries(request.user.pk, entry_qs) > 0:
                 messages.success(request, _('Successfully accepted %s.') %
                                  model_ngettext(entry, 1))
             else:
                 messages.error(request, _('Could not accept %s.') %
                                model_ngettext(entry, 1))
         elif action == 'reject':
-            if services.reject_entries(entry_qs) > 0:
+            if services.reject_entries(request.user.pk, entry_qs) > 0:
                 messages.success(request, _('Successfully rejected %s.') %
                                  model_ngettext(entry, 1))
             else:
@@ -75,7 +75,7 @@ class EntryAdminView(View):
             except Registration.DoesNotExist:
                 pass
         elif action == 'revert':
-            services.revert_entry(entry)
+            services.revert_entry(request.user.pk, entry)
 
         if entry_qs.filter(renewal=None).exists():
             content_type = ContentType.objects.get_for_model(Registration)
