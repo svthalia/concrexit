@@ -59,12 +59,4 @@ utils.translation module
     :undoc-members:
     :show-inheritance:
 
-utils.validators module
------------------------
-
-.. automodule:: utils.validators
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 

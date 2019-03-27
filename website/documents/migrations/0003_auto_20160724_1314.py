@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import utils.validators
 
 
 class Migration(migrations.Migration):
@@ -18,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
-                ('file', models.FileField(upload_to='documents/miscellaneous/', validators=[utils.validators.validate_file_extension])),
+                ('file', models.FileField(upload_to='documents/miscellaneous/', validators=[])),
                 ('members_only', models.BooleanField(default=False)),
             ],
         ),

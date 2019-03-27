@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 from django.utils import translation
 
 from utils.translation import ModelTranslateMeta, MultilingualField
-from utils import snippets, validators
+from utils import snippets
 
 LANGUAGES = [
     ('en', 'English'),
@@ -23,8 +23,6 @@ def load_tests(_loader, tests, _ignore):
     """
     # Adds the doctests in snippets
     tests.addTests(doctest.DocTestSuite(snippets))
-    # Adds the doctests in validators
-    tests.addTests(doctest.DocTestSuite(validators))
     return tests
 
 

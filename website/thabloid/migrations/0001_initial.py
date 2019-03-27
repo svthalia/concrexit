@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 import django.core.validators
 from django.db import migrations, models
 import thabloid.models
-import utils.validators
 
 
 class Migration(migrations.Migration):
@@ -22,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('year', models.IntegerField(validators=[django.core.validators.MinValueValidator(1990)])),
                 ('issue', models.IntegerField()),
-                ('file', models.FileField(upload_to=thabloid.models.thabloid_filename, validators=[utils.validators.validate_file_extension])),
+                ('file', models.FileField(upload_to=thabloid.models.thabloid_filename, validators=[])),
             ],
         ),
         migrations.AlterUniqueTogether(

@@ -5,13 +5,12 @@ from itertools import zip_longest
 
 from PIL import Image
 from django.conf import settings
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
 from utils.threading import PopenAndCall
-from utils.validators import validate_file_extension
 
 
 def thabloid_filename(instance, filename):
@@ -29,7 +28,8 @@ class Thabloid(models.Model):
 
     file = models.FileField(
         upload_to=thabloid_filename,
-        validators=[validate_file_extension],
+        validators=[FileExtensionValidator(
+            ['.txt', '.pdf', '.jpg', '.jpeg', '.png'])],
     )
 
     class Meta:

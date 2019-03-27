@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import utils.validators
 
 def meetingdocument_upload_to(instance, filename):
     return 'documents/meetings/{}/files/{}'.format(instance.meeting.pk,
@@ -20,6 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='generalmeetingdocument',
             name='file',
-            field=models.FileField(upload_to=meetingdocument_upload_to, validators=[utils.validators.validate_file_extension]),
+            field=models.FileField(upload_to=meetingdocument_upload_to, validators=[]),
         ),
     ]
