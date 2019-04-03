@@ -1,7 +1,9 @@
 """The forms defined by the newsletters package"""
 from django import forms
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from events.models import Event
 from .models import NewsletterItem, NewsletterEvent, Newsletter
 
 
@@ -25,7 +27,31 @@ class NewsletterItemForm(forms.ModelForm):
 
 
 class NewsletterEventForm(NewsletterItemForm):
-    """Custom ModelForm for the NewsletterEvent model to add the order field"""
+    """
+    Custom ModelForm for the NewsletterEvent model to
+    add the order field and javascript for automatic field filling
+    """
+    event = forms.ChoiceField(
+        label=_('Event')
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['event'].choices = [(None, '-----')] + [
+            (e.pk, e.title_nl) for e in
+            Event.objects.filter(published=True, start__gt=timezone.now())
+        ]
+
     class Meta:
-        fields = '__all__'
+        fields = ('event', 'title_en', 'title_nl',
+                  'description_en', 'description_nl', 'what_en', 'what_nl',
+                  'where_en', 'where_nl', 'start_datetime', 'end_datetime',
+                  'show_costs_warning', 'price', 'penalty_costs')
         model = NewsletterEvent
+
+    class Media:
+        js = (
+            'js/js.cookie.min.js',
+            'admin/newsletters/js/forms.js',
+        )
