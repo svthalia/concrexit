@@ -39,10 +39,14 @@
 
                     <h4>{% trans "Personal information" %}</h4>
                     <ul class="list-unstyled">
-                        <li><strong>{% trans "Membership type" %}: </strong> {{ membership_type }}<br></li>
+                        <li>
+                            <strong>{% trans "Membership type" %}: </strong> {{ membership_type }}<br>
+                        </li>
 
                         {% if member.profile.starting_year %}
-                            <li><strong>{% trans "Cohort" %}: </strong> {{ member.profile.starting_year }}<br></li>
+                            <li>
+                                <strong>{% trans "Cohort" %}: </strong> {{ member.profile.starting_year }}<br>
+                            </li>
                         {% endif %}
 
                         {% if member.profile.programme %}
@@ -52,8 +56,11 @@
                         {% endif %}
 
                         {% if member.profile.website %}
-                            <li><strong>{% trans "Website" %}: </strong> <a rel="nofollow,noopener"
-                                                                        href="{{ member.profile.website }}">{{ member.profile.website }}</a>
+                            <li>
+                                <strong>{% trans "Website" %}: </strong>
+                                <a rel="nofollow,noopener" href="{{ member.profile.website }}">
+                                    {{ member.profile.website }}
+                                </a>
                             </li>
                         {% endif %}
 
@@ -63,62 +70,83 @@
                     </ul>
 
                     {% if achievements %}
-                    <hr class="separator">
-
-                    <h4>{% trans "Achievements for Thalia" %}</h4>
-                    <ul class="list-unstyled">
-                        {% for achievement in achievements %}
-                            <li class="mb-1">
-                                <strong>
-                                        <a href="{{ achievement.url }}">
+                        <hr class="separator">
+                        <h4>{% trans "Achievements for Thalia" %}</h4>
+                        <ul class="list-unstyled">
+                            {% for achievement in achievements %}
+                                <li class="mb-1">
+                                    <strong>
+                                        {% if achievement.url %}
+                                            <a href="{{ achievement.url }}">
+                                                {{ achievement.name }}
+                                            </a>
+                                        {% else %}
                                             {{ achievement.name }}
-                                        </a>
-                                </strong>
-                                <br>
-                                {% for period in achievement.periods %}
-                                    {% if period.role %}
-                                        <span>{{ period.role }}: </span>
-                                    {% elif period.chair %}
-                                        <span>{% trans "Chair" %}: </span>
-                                    {% endif %}
-                                    <i>{% if period.since|date:'Y m d' == '1970 01 01' %}?{% else %}
-                                        {{ period.since }}{% endif %} -
-                                        {% if period.until %}{{ period.until }}{% else %}
-                                            {% trans "today" %}{% endif %}</i>
+                                        {% endif %}
+                                    </strong>
                                     <br>
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul>
+                                    {% for period in achievement.periods %}
+                                        {% if period.role %}
+                                            <span>{{ period.role }}: </span>
+                                        {% elif period.chair %}
+                                            <span>{% trans "Chair" %}: </span>
+                                        {% endif %}
+                                        <i>
+                                            {% if period.since|date:'Y m d' == '1970 01 01' %}
+                                                ?
+                                            {% else %}
+                                                {{ period.since }}
+                                            {% endif %}
+                                            -
+                                            {% if period.until %}
+                                                {{ period.until }}
+                                            {% else %}
+                                                {% trans "today" %}
+                                            {% endif %}
+                                        </i>
+                                        <br>
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul>
                     {% endif %}
 
                     {% if societies %}
-                    <hr class="separator">
-                    <h4>{% trans "Societies" %}</h4>
-                    <ul class="list-unstyled">
-                        {% for society in societies %}
-                            <li class="mb-1">
-                                <strong>
-                                    <a href="{{ society.url }}">
-                                        {{ society.name }}
-                                    </a>
-                                </strong>
-                                <br>
-                                {% for period in society.periods %}
-                                    {% if period.role %}
-                                        <span>{{ period.role }}: </span>
-                                    {% elif period.chair %}
-                                        <span>{% trans "Chair" %}: </span>
-                                    {% endif %}
-                                    <i>{% if period.since|date:'Y m d' == '1970 01 01' %}?{% else %}
-                                        {{ period.since }}{% endif %} -
-                                        {% if period.until %}{{ period.until }}{% else %}
-                                            {% trans "today" %}{% endif %}</i>
+                        <hr class="separator">
+                        <h4>{% trans "Societies" %}</h4>
+                        <ul class="list-unstyled">
+                            {% for society in societies %}
+                                <li class="mb-1">
+                                    <strong>
+                                        <a href="{{ society.url }}">
+                                            {{ society.name }}
+                                        </a>
+                                    </strong>
                                     <br>
-                                {% endfor %}
-                            </li>
-                        {% endfor %}
-                    </ul>
+                                    {% for period in society.periods %}
+                                        {% if period.role %}
+                                            <span>{{ period.role }}: </span>
+                                        {% elif period.chair %}
+                                            <span>{% trans "Chair" %}: </span>
+                                        {% endif %}
+                                        <i>
+                                            {% if period.since|date:'Y m d' == '1970 01 01' %}
+                                                ?
+                                            {% else %}
+                                                {{ period.since }}
+                                            {% endif %}
+                                            -
+                                            {% if period.until %}
+                                                {{ period.until }}
+                                            {% else %}
+                                                {% trans "today" %}
+                                            {% endif %}
+                                        </i>
+                                        <br>
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul>
                     {% endif %}
                 </div>
             </div>
