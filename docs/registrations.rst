@@ -6,6 +6,13 @@ registrations package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    registrations.management
+
 Submodules
 ----------
 

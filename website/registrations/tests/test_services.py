@@ -569,3 +569,39 @@ class ServicesTest(TestCase):
                 for payment in Payment.objects.filter(pk__in=[p1.pk, p2.pk]):
                     services.process_payment(payment)
                     self.assertFalse(create_membership.called)
+
+    @freeze_time('2019-01-01')
+    def test_execute_data_minimisation(self):
+        with self.subTest('No processed entries'):
+            self.assertEqual(services.execute_data_minimisation(), 0)
+
+        with freeze_time('2018-09-01'):
+            self.e0.status = Entry.STATUS_COMPLETED
+            self.e0.save()
+
+        with self.subTest('Has processed entries when completed'):
+            self.assertEqual(services.execute_data_minimisation(), 1)
+
+        with freeze_time('2018-09-01'):
+            self.e0.status = Entry.STATUS_REJECTED
+            self.e0.save()
+
+        with self.subTest('Has processed entries when rejected'):
+            self.assertEqual(services.execute_data_minimisation(), 1)
+
+        with freeze_time('2018-09-01'):
+            self.e0.status = Entry.STATUS_COMPLETED
+            self.e0.save()
+
+        with self.subTest('Has processed entries when '
+                          'rejected with dry-run'):
+            self.assertEqual(services.execute_data_minimisation(True), 1)
+
+        self.e0.status = Entry.STATUS_COMPLETED
+        self.e0.save()
+
+        with self.subTest('No processed entries when inside 31 days'):
+            self.assertEqual(services.execute_data_minimisation(), 0)
+
+        self.e0.status = Entry.STATUS_REVIEW
+        self.e0.save()
