@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-24 22:37+0100\n"
-"PO-Revision-Date: 2019-01-24 22:45+0100\n"
+"POT-Creation-Date: 2019-04-03 19:25+0200\n"
+"PO-Revision-Date: 2019-04-03 19:30+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: admin.py
 msgid "current membership type"
@@ -164,11 +164,11 @@ msgstr "Is deze user op dit moment actief"
 
 #: models.py
 msgid "Computing Science"
-msgstr "Informatica"
+msgstr "Informatica (Computing Science)"
 
 #: models.py
 msgid "Information Sciences"
-msgstr "Informatiekunde"
+msgstr "Informatiekunde (Information Sciences)"
 
 #: models.py templates/members/profile.html
 msgid "Study programme"
