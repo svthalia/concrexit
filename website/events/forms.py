@@ -1,7 +1,31 @@
 from django import forms
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from .models import RegistrationInformationField, Event
+from .models import RegistrationInformationField, Event, Registration
+from .widgets import FieldsWidget
+
+
+class RegistrationAdminForm(forms.ModelForm):
+    """
+    Custom admin form to add a link to the registration information
+    fields admin
+    """
+    fields = forms.URLField(widget=FieldsWidget)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.event.has_fields():
+            self.fields['fields'].initial = (
+                reverse('admin:events_registration_fields',
+                        args=[self.instance.pk]))
+        else:
+            self.fields['fields'].widget = self.fields[
+                'fields'].hidden_widget()
+
+    class Meta:
+        fields = '__all__'
+        model = Registration
 
 
 class RegistrationInformationFieldForm(forms.ModelForm):

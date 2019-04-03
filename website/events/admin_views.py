@@ -1,5 +1,7 @@
 import csv
 
+from django.contrib import messages
+from django.contrib.admin import helpers
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
@@ -11,13 +13,16 @@ from django.utils.text import slugify
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views import View
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView, FormView
 
+from events import services
 from events.decorators import organiser_only
+from events.exceptions import RegistrationError
+from events.forms import FieldsForm
 from .models import Event, Registration
 
 
-@method_decorator([staff_member_required, ], name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 @method_decorator(organiser_only, name='dispatch')
 class EventAdminDetails(DetailView, PermissionRequiredMixin):
     """
@@ -29,7 +34,83 @@ class EventAdminDetails(DetailView, PermissionRequiredMixin):
     permission_required = 'events.change_event'
 
 
-@method_decorator([staff_member_required, ], name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(organiser_only, name='dispatch')
+class RegistrationAdminFields(FormView):
+    """
+    Renders a form that allows the user to change the details of their
+    registration. The user should be authenticated.
+    """
+    form_class = FieldsForm
+    template_name = 'admin/change_form.html'
+    registration = None
+    admin = None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            **self.admin.admin_site.each_context(self.request),
+            'add': False,
+            'change': True,
+            'has_view_permission': True,
+            'has_add_permission': False,
+            'has_change_permission':
+                self.request.user.has_perms('events.change_registration'),
+            'has_delete_permission': False,
+            'has_editable_inline_admin_formsets': False,
+            'app_label': 'events',
+            'opts': self.registration._meta,
+            'is_popup': False,
+            'save_as': False,
+            'save_on_top': False,
+            'original': self.registration,
+            'obj_id': self.registration.pk,
+            'title': _('Change registration fields'),
+            'adminform': helpers.AdminForm(context['form'], (
+                (None, {
+                    'fields': [f for f in context['form'].fields.keys()]
+                }),
+            ), {})
+        })
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["fields"] = services.registration_fields(
+            self.request, registration=self.registration)
+        return kwargs
+
+    def form_valid(self, form):
+        values = form.field_values()
+        try:
+            services.update_registration(registration=self.registration,
+                                         field_values=values)
+            messages.success(self.request,
+                             _("Registration successfully saved."))
+            if '_save' in self.request.POST:
+                return HttpResponseRedirect(reverse(
+                    'admin:events_registration_change',
+                    args=[str(self.registration.pk)]
+                ))
+        except RegistrationError as e:
+            messages.error(self.request, e)
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def dispatch(self, request, *args, **kwargs):
+        self.registration = get_object_or_404(
+            Registration, pk=self.kwargs['pk'])
+        try:
+            if self.registration.event.has_fields():
+                return super().dispatch(request, *args, **kwargs)
+        except RegistrationError:
+            pass
+        return HttpResponseRedirect(reverse(
+            'admin:events_registration_change',
+            args=[str(self.registration.pk)]
+        ))
+
+
+@method_decorator(staff_member_required, name='dispatch')
 @method_decorator(organiser_only, name='dispatch')
 class EventRegistrationsExport(View, PermissionRequiredMixin):
     """
@@ -125,7 +206,7 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
         return response
 
 
-@method_decorator([staff_member_required, ], name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 @method_decorator(organiser_only, name='dispatch')
 class EventRegistrationEmailsExport(TemplateView, PermissionRequiredMixin):
     """
@@ -149,7 +230,7 @@ class EventRegistrationEmailsExport(TemplateView, PermissionRequiredMixin):
         return context
 
 
-@method_decorator([staff_member_required, ], name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 @method_decorator(organiser_only, name='dispatch')
 class EventRegistrationsMarkPresent(View, PermissionRequiredMixin):
     """
