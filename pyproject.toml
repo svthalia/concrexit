@@ -29,6 +29,7 @@ django-bootstrap4 = "^0.0.7"
 firebase-admin = "^2.15"
 sentry-sdk = "^0.7.3"
 django-sendfile2 = "^0.4.2"
+factory_boy = "^2.11"
 
 # docs requirements
 recommonmark = { version = "^0.5.0", optional = true }
@@ -44,7 +45,6 @@ pydenticon = "^0.3.1"
 pylint = "^2.2"
 pylint-django = "^2.0"
 Faker = "^1.0"
-factory_boy = "^2.11"
 coverage = "^4.5"
 
 [build-system]
