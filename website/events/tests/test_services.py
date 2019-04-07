@@ -234,7 +234,7 @@ class ServicesTest(TestCase):
         }
 
         with self.assertRaises(RegistrationError):
-            services.cancel_registration(None, self.member, self.event)
+            services.cancel_registration(self.member, self.event)
 
         registration = Registration.objects.create(
             event=self.event,
@@ -242,22 +242,22 @@ class ServicesTest(TestCase):
         )
 
         with self.assertRaises(RegistrationError):
-            services.cancel_registration(None, self.member, self.event)
+            services.cancel_registration(self.member, self.event)
 
         perms_mock.return_value["cancel_registration"] = True
 
-        services.cancel_registration(None, self.member, self.event)
-        notify_first_mock.assert_called_once_with(None, self.event)
+        services.cancel_registration(self.member, self.event)
+        notify_first_mock.assert_called_once_with(self.event)
 
         self.event.send_cancel_email = True
         self.event.save()
 
-        services.cancel_registration(None, self.member, self.event)
+        services.cancel_registration(self.member, self.event)
 
         self.event.cancel_deadline = timezone.make_aware(datetime(2017, 1, 1))
         self.event.save()
 
-        services.cancel_registration(None, self.member, self.event)
+        services.cancel_registration(self.member, self.event)
         notify_organiser_mock.assert_called_once_with(self.event, registration)
 
         registration.refresh_from_db()
@@ -271,7 +271,7 @@ class ServicesTest(TestCase):
             date=timezone.make_aware(datetime(2017, 9, 1))
         )
 
-        services.cancel_registration(None, self.member, self.event)
+        services.cancel_registration(self.member, self.event)
 
     @mock.patch('events.services.event_permissions')
     def test_update_registration(self, perms_mock):

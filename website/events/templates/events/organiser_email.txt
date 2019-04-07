@@ -1,4 +1,4 @@
-{% load baseurl %}Hi,
+Hi,
 
 A member that was registered for the event '{{ event.title }}' that you're organising has cancelled their registration after the deadline.
 

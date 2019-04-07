@@ -106,7 +106,7 @@ def admin_send(request, pk):
         return redirect(newsletter)
 
     if request.POST:
-        emails.send_newsletter(request, newsletter)
+        emails.send_newsletter(newsletter)
         newsletter.sent = True
         newsletter.save()
 

@@ -1,19 +1,14 @@
 """Obtain the base url"""
+from django.conf import settings
 from django.template import Library
 
 register = Library()  # pylint: disable=invalid-name
 
 
-@register.simple_tag(takes_context=True)
-def baseurl(context):
+@register.simple_tag()
+def baseurl():
     """
-    :return: a BASE_URL template context for the current request.
+    :return: the BASE_URL defined in the settings
     """
 
-    request = context['request']
-    if request.is_secure():
-        scheme = 'https://'
-    else:
-        scheme = 'http://'
-
-    return scheme + request.get_host()
+    return settings.BASE_URL

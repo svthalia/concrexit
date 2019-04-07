@@ -118,11 +118,10 @@ def create_registration(member, event):
         raise RegistrationError(_("You may not register."))
 
 
-def cancel_registration(request, member, event):
+def cancel_registration(member, event):
     """
     Cancel a user registration for an event
 
-    :param request: the request object
     :param member: the user
     :param event: the event
     """
@@ -138,7 +137,7 @@ def cancel_registration(request, member, event):
     if (event_permissions(member, event)["cancel_registration"] and
             registration):
         if registration.queue_position == 0:
-            emails.notify_first_waiting(request, event)
+            emails.notify_first_waiting(event)
 
             if (event.send_cancel_email and
                     event.after_cancel_deadline):

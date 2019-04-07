@@ -122,7 +122,7 @@ class EventCancelView(View):
     def post(self, request, *args, **kwargs):
         event = get_object_or_404(Event, pk=kwargs['pk'])
         try:
-            services.cancel_registration(request, request.member, event)
+            services.cancel_registration(request.member, event)
             messages.success(request,
                              _("Registration successfully cancelled."))
         except RegistrationError as e:
