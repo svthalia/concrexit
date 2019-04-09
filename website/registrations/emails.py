@@ -81,8 +81,9 @@ def send_new_registration_board_message(entry):
             'registrations/email/registration_board.txt',
             {
                 'name': entry.registration.get_full_name(),
-                'url': reverse('admin:registrations_registration_change',
-                               args=[entry.registration.pk])
+                'url': settings.BASE_URL
+                + reverse('admin:registrations_registration_change',
+                          args=[entry.registration.pk])
             }
         )
     except models.Registration.DoesNotExist:
@@ -154,8 +155,9 @@ def send_new_renewal_board_message(renewal):
         'registrations/email/renewal_board.txt',
         {
             'name': renewal.member.get_full_name(),
-            'url': reverse('admin:registrations_renewal_change',
-                           args=[renewal.pk])
+            'url': settings.BASE_URL
+            + reverse('admin:registrations_renewal_change',
+                      args=[renewal.pk])
         }
     )
 

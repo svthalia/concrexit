@@ -183,7 +183,8 @@ def send_welcome_message(user, password, language):
             {
                 'full_name': user.get_full_name(),
                 'username': user.username,
-                'password': password
+                'password': password,
+                'url': settings.BASE_URL
             })
         user.email_user(
             _('Welcome to Study Association Thalia'),
