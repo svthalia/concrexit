@@ -172,6 +172,6 @@ def _send_email(to, subject, body_template, context):
     mail.EmailMessage(
         '[THALIA] {}'.format(subject),
         loader.render_to_string(body_template, context),
-        settings.WEBSITE_FROM_ADDRESS,
+        settings.DEFAULT_FROM_EMAIL,
         [to]
     ).send()

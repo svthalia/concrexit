@@ -43,7 +43,7 @@ def send_membership_announcement(dry_run=False):
                         '[THALIA] {}'.format(
                             _('Membership announcement')),
                         email_body,
-                        settings.WEBSITE_FROM_ADDRESS,
+                        settings.DEFAULT_FROM_EMAIL,
                         [member.email],
                         bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                         connection=connection
@@ -101,7 +101,7 @@ def send_information_request(dry_run=False):
                         '[THALIA] {}'.format(
                             _('Membership information check')),
                         email_body,
-                        settings.WEBSITE_FROM_ADDRESS,
+                        settings.DEFAULT_FROM_EMAIL,
                         [member.email],
                         connection=connection
                     ).send()
@@ -153,7 +153,7 @@ def send_expiration_announcement(dry_run=False):
                         '[THALIA] {}'.format(
                             _('Membership expiration announcement')),
                         email_body,
-                        settings.WEBSITE_FROM_ADDRESS,
+                        settings.DEFAULT_FROM_EMAIL,
                         [member.email],
                         bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                         connection=connection
@@ -213,7 +213,7 @@ def send_email_change_confirmation_messages(change_request):
                     'name': member.first_name
                 }
             ),
-            settings.WEBSITE_FROM_ADDRESS,
+            settings.DEFAULT_FROM_EMAIL,
             [member.email]
         ).send()
 
@@ -231,7 +231,7 @@ def send_email_change_confirmation_messages(change_request):
                     'name': member.first_name
                 }
             ),
-            settings.WEBSITE_FROM_ADDRESS,
+            settings.DEFAULT_FROM_EMAIL,
             [change_request.email]
         ).send()
 

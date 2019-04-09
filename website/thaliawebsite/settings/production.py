@@ -29,8 +29,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG') == 'True'
 
-if 'DJANGO_HOSTS' in os.environ:
-    ALLOWED_HOSTS = os.environ.get('DJANGO_HOSTS').split(',')
+if 'SITE_DOMAIN' in os.environ:
+    ALLOWED_HOSTS = [os.environ.get('SITE_DOMAIN')]
 
 # Database settings
 DATABASES = {
@@ -73,25 +73,10 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
 
-WIKI_API_KEY = os.environ.get('WIKI_API_KEY', 'changeme')
-MIGRATION_KEY = os.environ.get('MIGRATION_KEY')
-MAILINGLIST_API_SECRET = os.environ.get('MAILINGLIST_API_SECRET', '')
-MEMBERS_SENTRY_API_SECRET = os.environ.get('MEMBERS_SENTRY_API_SECRET', '')
-ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
-    'ACTIVEMEMBERS_NEXTCLOUD_API_SECRET', '')
-
-GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
-GOOGLE_MAPS_API_SECRET = os.environ.get('GOOGLE_MAPS_API_SECRET', '')
-
 FIREBASE_CREDENTIALS = os.environ.get('FIREBASE_CREDENTIALS', '{}')
 if not (FIREBASE_CREDENTIALS == '{}'):
     FIREBASE_CREDENTIALS = base64.urlsafe_b64decode(FIREBASE_CREDENTIALS)
 FIREBASE_CREDENTIALS = json.loads(FIREBASE_CREDENTIALS)
-
-# Conscribo settings
-CONSCRIBO_ACCOUNT = os.environ.get('CONSCRIBO_ACCOUNT', '')
-CONSCRIBO_USER = os.environ.get('CONSCRIBO_USER', '')
-CONSCRIBO_PASSWORD = os.environ.get('CONSCRIBO_PASSWORD', '')
 
 if os.environ.get('DJANGO_SSLONLY'):
     SECURE_SSL_REDIRECT = True
