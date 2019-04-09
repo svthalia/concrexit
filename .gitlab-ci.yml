@@ -182,42 +182,33 @@ build docker image:
   image: thalia/docker-compose
   tags:
     - docker
+  except:
+    - tags
   before_script:
     - echo $DOCKER_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.hub.docker.com
   script:
     - docker-compose config -q
-    - docker-compose build --build-arg install_dev_requirements=0 --build-arg source_commit=$(git rev-parse HEAD) web
+    - docker-compose build --build-arg install_dev_requirements=$DEV_REQUIREMENTS --build-arg source_commit=$(git rev-parse HEAD) web
     - docker-compose run --rm web test
     - docker tag $DOCKER_LATEST $DOCKER_TAG
     - docker push $DOCKER_TAG
   variables:
+    DEV_REQUIREMENTS: 1
     DOCKER_LATEST: registry.hub.docker.com/thalia/concrexit:latest
     DOCKER_TAG: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_SHA
 
-tag docker image:
-  stage: deploy
-  services:
-    - docker:dind
-  image: docker:git
-  tags:
-    - docker
+build production docker image:
+  extends: build docker image
   only:
     - tags
-  dependencies:
-    - build docker image
-  before_script:
-    - echo $DOCKER_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.hub.docker.com
-  script:
-    - docker pull $DOCKER_TAG
+  after_script:
     - docker tag $DOCKER_TAG $DOCKER_TAG_PRODUCTION
     - docker tag $DOCKER_TAG $DOCKER_LATEST
     - docker push $DOCKER_TAG_PRODUCTION
-    - docker push $DOCKER_LATEST
+    - docker push $DOCKER_LATEST    
   variables:
-    DOCKER_TAG: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_SHA
     DOCKER_TAG_PRODUCTION: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_TAG
-    DOCKER_LATEST: registry.hub.docker.com/thalia/concrexit:latest
-
+    DEV_REQUIREMENTS: 0
 
 cache:
   key: "$CI_JOB_NAME"
