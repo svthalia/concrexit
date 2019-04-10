@@ -15,11 +15,15 @@ class RegistrationAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.event.has_fields():
-            self.fields['fields'].initial = (
-                reverse('admin:events_registration_fields',
-                        args=[self.instance.pk]))
-        else:
+        try:
+            if self.instance.event.has_fields():
+                self.fields['fields'].initial = (
+                    reverse('admin:events_registration_fields',
+                            args=[self.instance.pk]))
+            else:
+                self.fields['fields'].widget = self.fields[
+                    'fields'].hidden_widget()
+        except Event.DoesNotExist:
             self.fields['fields'].widget = self.fields[
                 'fields'].hidden_widget()
 
