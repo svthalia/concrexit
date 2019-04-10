@@ -42,6 +42,7 @@ class NewsletterEventForm(NewsletterItemForm):
             (e.pk, e.title_nl) for e in
             Event.objects.filter(published=True, start__gt=timezone.now())
         ]
+        self.fields['event'].required = False
 
     class Meta:
         fields = ('event', 'title_en', 'title_nl',
