@@ -269,12 +269,10 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 NEWSLETTER_FROM_ADDRESS = f'newsletter@{SITE_DOMAIN}'
 
 # Board notification address
-BOARD_NOTIFICATION_ADDRESS = os.environ.get(
-    'BOARD_NOTIFICATION_ADDRESS', 'info@thalia.nu')
+BOARD_NOTIFICATION_ADDRESS = f'info@{SITE_DOMAIN}'
 
 # Partners notification email
-PARTNER_NOTIFICATION_ADDRESS = os.environ.get(
-    'PARTNER_NOTIFICATION_ADDRESS', 'samenwerking@thalia.nu')
+PARTNER_NOTIFICATION_ADDRESS = f'samenwerking@{SITE_DOMAIN}'
 
 # Conscribo settings
 CONSCRIBO_ACCOUNT = os.environ.get('CONSCRIBO_ACCOUNT', '')
