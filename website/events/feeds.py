@@ -1,9 +1,9 @@
 """The feeds defined by the events package"""
+from django.conf import settings
 from django.db.models.query_utils import Q
-from django.contrib.sites.models import Site
 from django.urls import reverse
-from django.utils.translation import ugettext as _
 from django.utils.translation import activate
+from django.utils.translation import ugettext as _
 from django_ical.views import ICalFeed
 
 from events.models import Event, FeedToken
@@ -25,7 +25,7 @@ class EventFeed(ICalFeed):
         return super().__call__(request, args, kwargs)
 
     def product_id(self):
-        return '-//thalia.nu//EventCalendar//' + self.lang.upper()
+        return f'-//{settings.SITE_DOMAIN}//EventCalendar//{self.lang.upper()}'
 
     def file_name(self):
         return "thalia_{}.ics".format(self.lang)
@@ -47,10 +47,8 @@ class EventFeed(ICalFeed):
         return item.title
 
     def item_description(self, item):
-        return (item.description +
-                ' <a href="https://%s%s">Website</a>' %
-                (Site.objects.get_current().domain,
-                 self.item_link(item)))
+        return (f'{item.description} <a href="https://'
+                f'{self.item_link(item)}">Website</a>')
 
     def item_start_datetime(self, item):
         return item.start
@@ -59,7 +57,10 @@ class EventFeed(ICalFeed):
         return item.end
 
     def item_link(self, item):
-        return reverse('events:event', kwargs={'pk': item.id})
+        return (
+            settings.BASE_URL +
+            reverse('events:event', kwargs={'pk': item.id})
+        )
 
     def item_location(self, item):
         return "{} - {}".format(item.location, item.map_location)

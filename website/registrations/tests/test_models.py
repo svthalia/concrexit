@@ -205,9 +205,11 @@ class RegistrationTest(TestCase):
         with self.subTest(f'Create confirmation mail'
                           f'on save with status confirm'):
             self.assertEqual(len(mail.outbox), 1)
-            confirm_url = '{}{}'.format('https://thalia.nu',
-                                        reverse('registrations:confirm-email',
-                                                args=[registration.pk]))
+            confirm_url = (
+                'https://thalia.localhost' +
+                reverse('registrations:confirm-email',
+                        args=[registration.pk])
+            )
             self.assertTrue(confirm_url in mail.outbox[0].body)
             mail.outbox.clear()
 
