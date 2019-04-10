@@ -40,12 +40,12 @@ django.jQuery(function () {
         var seconds = date.getSeconds();
 
         if (format === 'time') {
-            return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+            return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
         }
         if (currentLang === 'nl') {
-            return pad(day) + '-' + pad(month) + '-' + pad(year);
+            return pad(day, 2) + '-' + pad(month, 2) + '-' + year;
         }
-        return pad(year) + '-' + pad(month) + '-' + pad(day);
+        return year + '-' + pad(month, 2) + '-' + day;
     }
 
     function setFields(id, data, lang) {

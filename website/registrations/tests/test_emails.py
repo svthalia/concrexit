@@ -38,10 +38,10 @@ class EmailsTest(TestCase):
                 'registrations/email/registration_confirm_mail.txt',
                 {
                     'name': reg.get_full_name(),
-                    'confirm_link': '{}{}'.format(
-                        'https://thalia.nu',
-                        reverse('registrations:confirm-email',
-                                args=[reg.pk])
+                    'confirm_link': (
+                        'https://thalia.localhost'
+                        + reverse("registrations:confirm-email",
+                                  args=[reg.pk])
                     )
                 }
             )
@@ -114,8 +114,11 @@ class EmailsTest(TestCase):
             'registrations/email/registration_board.txt',
             {
                 'name': entry.registration.get_full_name(),
-                'url': reverse('admin:registrations_registration_change',
-                               args=[entry.registration.pk])
+                'url': (
+                    'https://thalia.localhost'
+                    + reverse('admin:registrations_registration_change',
+                              args=[entry.registration.pk])
+                )
             }
         )
 
@@ -235,8 +238,11 @@ class EmailsTest(TestCase):
             'registrations/email/renewal_board.txt',
             {
                 'name': renewal.member.get_full_name(),
-                'url': reverse('admin:registrations_renewal_change',
-                               args=[renewal.pk])
+                'url': (
+                    'https://thalia.localhost'
+                    + reverse('admin:registrations_renewal_change',
+                              args=[renewal.pk])
+                )
             }
         )
 
