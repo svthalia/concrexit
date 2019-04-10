@@ -11,7 +11,7 @@ class RegistrationAdminForm(forms.ModelForm):
     Custom admin form to add a link to the registration information
     fields admin
     """
-    fields = forms.URLField(widget=FieldsWidget)
+    fields = forms.URLField(widget=FieldsWidget, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
