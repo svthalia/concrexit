@@ -47,7 +47,7 @@ class OrderViewset(ModelViewSet):
 
     def get_queryset(self):
         event = PizzaEvent.current()
-        if can_change_order(self.request.user, event):
+        if can_change_order(self.request.member, event):
             return Order.objects.filter(pizza_event=event)
         if self.action == 'update' or self.action == 'destroy':
             if not event or event.has_ended:
