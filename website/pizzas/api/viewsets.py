@@ -47,7 +47,7 @@ class OrderViewset(ModelViewSet):
 
     def get_queryset(self):
         event = PizzaEvent.current()
-        if can_change_order(self.request.user, event):
+        if can_change_order(self.request.member, event):
             return Order.objects.filter(pizza_event=event)
         if self.action == 'update' or self.action == 'destroy':
             if not event or event.has_ended:
@@ -80,7 +80,9 @@ class OrderViewset(ModelViewSet):
             if serializer.validated_data.get('name'):
                 serializer.save(pizza_event=PizzaEvent.current())
             else:
-                if self.request.user.has_perm('pizzas.change_order'):
+                if (self.action.endswith('update') and
+                    can_change_order(self.request.member,
+                                     PizzaEvent.current())):
                     serializer.save(pizza_event=PizzaEvent.current())
                 else:
                     serializer.save(member=self.request.member,
