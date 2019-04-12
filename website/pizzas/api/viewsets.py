@@ -80,7 +80,9 @@ class OrderViewset(ModelViewSet):
             if serializer.validated_data.get('name'):
                 serializer.save(pizza_event=PizzaEvent.current())
             else:
-                if self.request.user.has_perm('pizzas.change_order'):
+                if (self.action.endswith('update') and
+                    can_change_order(self.request.member,
+                                     PizzaEvent.current())):
                     serializer.save(pizza_event=PizzaEvent.current())
                 else:
                     serializer.save(member=self.request.member,
