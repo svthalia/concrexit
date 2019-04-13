@@ -19,6 +19,14 @@ Subpackages
 Submodules
 ----------
 
+utils.admin module
+------------------
+
+.. automodule:: utils.admin
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 utils.countries module
 ----------------------
 

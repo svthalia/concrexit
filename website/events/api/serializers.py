@@ -7,6 +7,7 @@ from html import unescape
 from rest_framework import serializers
 from rest_framework.fields import empty
 
+from payments.api.fields import PaymentTypeField
 from payments.models import Payment
 from thaliawebsite.api.services import create_image_thumbnail_dict
 from events import services
@@ -224,14 +225,6 @@ class RegistrationListSerializer(serializers.ModelSerializer):
         return create_image_thumbnail_dict(
             self.context['request'], file, placeholder=placeholder,
             size_large='800x800')
-
-
-class PaymentTypeField(serializers.ChoiceField):
-
-    def get_attribute(self, instance):
-        if not instance.payment:
-            return Payment.NONE
-        return super().get_attribute(instance)
 
 
 class RegistrationAdminListSerializer(RegistrationListSerializer):

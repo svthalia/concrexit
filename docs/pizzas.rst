@@ -24,18 +24,18 @@ pizzas.admin module
     :undoc-members:
     :show-inheritance:
 
-pizzas.apps module
-------------------
+pizzas.admin\_views module
+--------------------------
 
-.. automodule:: pizzas.apps
+.. automodule:: pizzas.admin_views
     :members:
     :undoc-members:
     :show-inheritance:
 
-pizzas.forms module
--------------------
+pizzas.apps module
+------------------
 
-.. automodule:: pizzas.forms
+.. automodule:: pizzas.apps
     :members:
     :undoc-members:
     :show-inheritance:

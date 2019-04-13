@@ -1,0 +1,76 @@
+@import "../../thaliawebsite/static/css/variables";
+
+#changelist table {
+    width: 100%;
+
+    tr {
+        &:nth-child(even) {
+            background: #f9f9f9;
+        }
+        &:nth-child(odd) {
+            background: #fff;
+        }
+    }
+
+    td {
+        vertical-align: middle;
+    }
+
+    thead {
+        th {
+            padding: 8px 10px;
+
+            @media(max-width: 767px) {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+
+            &.sortable {
+                outline: none;
+
+                &:not(.sorter-false):hover {
+                    background-color: #eee;
+                }
+
+                .toggle {
+                    width: 14px;
+                    height: 14px;
+                    display: none;
+                    background: url('/static/admin/img/sorting-icons.svg') no-repeat 0 0;
+                    background-size: 14px auto;
+                }
+
+                &.tablesorter-headerAsc {
+                    background-color: #eee;
+
+                    .toggle {
+                        display: inline-block;
+                        background-position: 0 -56px;
+                    }
+                }
+
+                &.tablesorter-headerDesc {
+                    background-color: #eee;
+
+                    .toggle {
+                        display: inline-block;
+                        background-position: 0 -28px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+select[name=payment] {
+    background: $danger;
+    color: white;
+
+    &.paid {
+        background: $success;
+    }
+
+    @media(max-width: 767px) {
+        height: 40px;
+    }
+}

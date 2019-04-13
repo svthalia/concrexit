@@ -1,58 +1,26 @@
 # -*- coding: utf-8 -*-
 """Registers admin interfaces for the events module"""
 from django.contrib import admin
-from django.core.exceptions import DisallowedRedirect, PermissionDenied
+from django.core.exceptions import PermissionDenied
 from django.db.models import Max, Min
 from django.forms import Field
-from django.http import HttpResponseRedirect
 from django.template.defaultfilters import date as _date
 from django.urls import reverse, path
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.html import format_html
-from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
 
+import events.admin_views as admin_views
 from activemembers.models import MemberGroup
 from events import services
 from events.forms import RegistrationAdminForm
 from members.models import Member
 from payments.widgets import PaymentWidget
 from pizzas.models import PizzaEvent
+from utils.admin import DoNextTranslatedModelAdmin
 from utils.snippets import datetime_to_lectureyear
-from utils.translation import TranslatedModelAdmin
 from . import forms, models
-import events.admin_views as admin_views
-
-
-def _do_next(request, response):
-    """See DoNextModelAdmin"""
-    if 'next' in request.GET:
-        if not is_safe_url(request.GET['next'],
-                           allowed_hosts={request.get_host()}):
-            raise DisallowedRedirect
-        elif '_save' in request.POST:
-            return HttpResponseRedirect(request.GET['next'])
-        elif response is not None:
-            return HttpResponseRedirect('{}?{}'.format(
-                response.url, request.GET.urlencode()))
-    return response
-
-
-class DoNextModelAdmin(TranslatedModelAdmin):
-    """
-    This class adds processing of a `next` parameter in the urls
-    of the add and change admin forms. If it is set and safe this
-    override will redirect the user to the provided url.
-    """
-
-    def response_add(self, request, obj):
-        res = super().response_add(request, obj)
-        return _do_next(request, res)
-
-    def response_change(self, request, obj):
-        res = super().response_change(request, obj)
-        return _do_next(request, res)
 
 
 class RegistrationInformationFieldInline(admin.StackedInline):
@@ -109,7 +77,7 @@ class LectureYearFilter(admin.SimpleListFilter):
 
 
 @admin.register(models.Event)
-class EventAdmin(DoNextModelAdmin):
+class EventAdmin(DoNextTranslatedModelAdmin):
     """Manage the events"""
     inlines = (RegistrationInformationFieldInline, PizzaEventInline,)
     fields = ('title', 'description', 'start', 'end', 'organiser', 'category',
@@ -267,7 +235,7 @@ class EventAdmin(DoNextModelAdmin):
 
 
 @admin.register(models.Registration)
-class RegistrationAdmin(DoNextModelAdmin):
+class RegistrationAdmin(DoNextTranslatedModelAdmin):
     """Custom admin for registrations"""
     form = RegistrationAdminForm
 
