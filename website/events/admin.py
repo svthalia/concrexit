@@ -333,7 +333,7 @@ class RegistrationAdmin(DoNextModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path('<int:pk>/fields/',
+            path('<int:registration>/fields/',
                  self.admin_site.admin_view(
                      admin_views.RegistrationAdminFields.as_view(admin=self)),
                  name='events_registration_fields'),
