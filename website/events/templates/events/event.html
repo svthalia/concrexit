@@ -39,6 +39,10 @@
                             <th>{% trans "location"|capfirst %}</th>
                             <td>{{ event.location }}</td>
                         </tr>
+                        <tr>
+                            <th>{% trans "organiser"|capfirst %}</th>
+                            <td><a href={{ event.organiser.get_absolute_url }}>{{ event.organiser }}</a></td>
+                        </tr>
                         {% if event.price > 0 %}
                             <tr>
                                 <th>{% trans "price"|capfirst %}</th>

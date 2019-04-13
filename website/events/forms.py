@@ -11,15 +11,19 @@ class RegistrationAdminForm(forms.ModelForm):
     Custom admin form to add a link to the registration information
     fields admin
     """
-    fields = forms.URLField(widget=FieldsWidget)
+    fields = forms.URLField(widget=FieldsWidget, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.event.has_fields():
-            self.fields['fields'].initial = (
-                reverse('admin:events_registration_fields',
-                        args=[self.instance.pk]))
-        else:
+        try:
+            if self.instance.event.has_fields():
+                self.fields['fields'].initial = (
+                    reverse('admin:events_registration_fields',
+                            args=[self.instance.pk]))
+            else:
+                self.fields['fields'].widget = self.fields[
+                    'fields'].hidden_widget()
+        except Event.DoesNotExist:
             self.fields['fields'].widget = self.fields[
                 'fields'].hidden_widget()
 

@@ -36,7 +36,8 @@ if not DEBUG:  # Django 1.10.3 security release changed behaviour
     ALLOWED_HOSTS = []
 
 SITE_ID = 1
-BASE_URL = 'https://thalia.nu'
+SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'thalia.localhost')
+BASE_URL = f'https://{SITE_DOMAIN}'
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000  # Useful for managing members
 
@@ -261,44 +262,44 @@ THUMBNAIL_SIZES = {
 FIREBASE_CREDENTIALS = {}
 
 # Default FROM email
-DEFAULT_FROM_EMAIL = 'noreply@thalia.nu'
+DEFAULT_FROM_EMAIL = f'noreply@{SITE_DOMAIN}'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Newsletter settings
-NEWSLETTER_FROM_ADDRESS = 'nieuwsbrief@thalia.nu'
-
-# Website FROM address
-WEBSITE_FROM_ADDRESS = 'noreply@thalia.nu'
+NEWSLETTER_FROM_ADDRESS = f'newsletter@{SITE_DOMAIN}'
 
 # Board notification address
-BOARD_NOTIFICATION_ADDRESS = 'info@thalia.nu'
+BOARD_NOTIFICATION_ADDRESS = os.environ.get(
+    'BOARD_NOTIFICATION_ADDRESS', 'info@thalia.nu')
 
 # Partners notification email
-PARTNER_EMAIL = "samenwerking@thalia.nu"
+PARTNER_NOTIFICATION_ADDRESS = os.environ.get(
+    'PARTNER_NOTIFICATION_ADDRESS', 'samenwerking@thalia.nu')
 
 # Conscribo settings
-CONSCRIBO_ACCOUNT = ''
-CONSCRIBO_USER = ''
-CONSCRIBO_PASSWORD = ''
+CONSCRIBO_ACCOUNT = os.environ.get('CONSCRIBO_ACCOUNT', '')
+CONSCRIBO_USER = os.environ.get('CONSCRIBO_USER', '')
+CONSCRIBO_PASSWORD = os.environ.get('CONSCRIBO_PASSWORD', '')
 
 # Mailinglist API key
-MAILINGLIST_API_SECRET = ''
+MAILINGLIST_API_SECRET = os.environ.get('MAILINGLIST_API_SECRET', '')
 
 # Members Sentry API key
-MEMBERS_SENTRY_API_SECRET = ''
+MEMBERS_SENTRY_API_SECRET = os.environ.get('MEMBERS_SENTRY_API_SECRET', '')
 
 # Activemembers NextCloud API key
-ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = ''
+ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
+    'ACTIVEMEMBERS_NEXTCLOUD_API_SECRET', '')
 
 # Google maps API key and secrets
-GOOGLE_MAPS_API_KEY = ''
-GOOGLE_MAPS_API_SECRET = ''
+GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
+GOOGLE_MAPS_API_SECRET = os.environ.get('GOOGLE_MAPS_API_SECRET', '')
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
 
 # API key for wiki
-WIKI_API_KEY = 'debug'
+WIKI_API_KEY = os.environ.get('WIKI_API_KEY', 'debug')
 
 # CORS config
 CORS_ORIGIN_ALLOW_ALL = True

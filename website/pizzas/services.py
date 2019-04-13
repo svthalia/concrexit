@@ -38,5 +38,5 @@ def gen_stats_current_pizza_orders():
 
 
 def can_change_order(member, pizza_event):
-    return (member.has_perm('pizzas.change_order') and
+    return (pizza_event and member.has_perm('pizzas.change_order') and
             is_organiser(member, pizza_event.event))

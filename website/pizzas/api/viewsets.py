@@ -47,7 +47,7 @@ class OrderViewset(ModelViewSet):
 
     def get_queryset(self):
         event = PizzaEvent.current()
-        if can_change_order(self.request.user, event):
+        if can_change_order(self.request.member, event):
             return Order.objects.filter(pizza_event=event)
         if self.action == 'update' or self.action == 'destroy':
             if not event or event.has_ended:
@@ -60,14 +60,14 @@ class OrderViewset(ModelViewSet):
                                     pizza_event=event)
 
     def get_serializer_class(self):
-        if (can_change_order(self.request.member,
-                             self.get_object().pizza_event) and
-                self.action.endswith('update')):
+        if (self.action.endswith('update') and
+                can_change_order(self.request.member,
+                                 self.get_object().pizza_event)):
             return serializers.AdminOrderSerializer
         return serializers.OrderSerializer
 
     def get_object(self):
-        if self.kwargs[self.lookup_field] == 'me':
+        if self.kwargs.get(self.lookup_field) == 'me':
             order = get_object_or_404(self.get_queryset(),
                                       member=self.request.member,
                                       pizza_event=PizzaEvent.current())
@@ -80,7 +80,9 @@ class OrderViewset(ModelViewSet):
             if serializer.validated_data.get('name'):
                 serializer.save(pizza_event=PizzaEvent.current())
             else:
-                if self.request.user.has_perm('pizzas.change_order'):
+                if (self.action.endswith('update') and
+                    can_change_order(self.request.member,
+                                     PizzaEvent.current())):
                     serializer.save(pizza_event=PizzaEvent.current())
                 else:
                     serializer.save(member=self.request.member,

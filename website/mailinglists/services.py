@@ -20,7 +20,8 @@ def get_automatic_lists():
                                     .filter(group__board=None)
                                     .filter(group__society=None)
                                     .prefetch_related('member'))
-    active_members = [x.member for x in active_committee_memberships]
+    active_members = list(set(
+        [x.member for x in active_committee_memberships]))
 
     lectureyear = datetime_to_lectureyear(timezone.now())
     # Change to next lecture year after December

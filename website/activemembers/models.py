@@ -2,6 +2,7 @@
 import datetime
 import logging
 
+from django.conf import settings
 from django.contrib.auth.models import Permission
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.core.validators import MinValueValidator
@@ -102,7 +103,7 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
     @property
     def contact_address(self):
         if self.contact_mailinglist:
-            return f"{self.contact_mailinglist.name}@thalia.nu"
+            return f"{self.contact_mailinglist.name}@{settings.SITE_DOMAIN}"
         return self.contact_email
 
     def clean(self):
