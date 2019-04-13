@@ -8,5 +8,8 @@
   ],
   "poetry": {
     "enabled": true
+  },
+  "docker": {
+    "enabled": false
   }
 }
