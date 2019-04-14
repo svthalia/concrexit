@@ -39,7 +39,7 @@ class NewsletterEventForm(NewsletterItemForm):
         super().__init__(*args, **kwargs)
 
         self.fields['event'].choices = [(None, '-----')] + [
-            (e.pk, e.title_nl) for e in
+            (e.pk, e.title) for e in
             Event.objects.filter(published=True, start__gt=timezone.now())
         ]
         self.fields['event'].required = False
