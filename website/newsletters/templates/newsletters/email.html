@@ -60,7 +60,7 @@
                     {{ newsletter.description|safe }}
                 </td>
             </tr>
-
+            {% if agenda_events %}
             <tr>
                 <td colspan="2" style="{{ item_tr_style }}">
                     <h2 style="{{ item_h2_style }}">{% trans "agenda"|upper %}</h2>
@@ -74,7 +74,7 @@
                             {% for row in agenda_events|rows_distributed:2 %}
                              <td style="vertical-align: top;">
                                 {% for item in row %}
-                                <li style="font-family: Arial, sans-serif;"><i>{{ item.title }} - {{ item.newsletterevent.start_datetime|date:"d F" }}</i></li>
+                                <li style="font-family: Arial, sans-serif;"><i>{{ item.title }} - {{ item.start|date:"d F" }}</i></li>
                                 {% endfor %}
                              </td>
                             {% endfor %}
@@ -83,7 +83,7 @@
                     </table>
                 </td>
             </tr>
-
+            {% endif %}
             {% for item in newsletter.newslettercontent_set.all %}
             <tr>
                 <td colspan="2" style="{{ item_tr_style }}">

@@ -2,8 +2,9 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from django.utils import translation
+from django.utils import translation, timezone
 
+from events.models import Event
 from members.models import Member
 from partners.models import Partner
 
@@ -19,6 +20,13 @@ def send_newsletter(request, newsletter):
     """
     partners = Partner.objects.filter(is_main_partner=True)
     main_partner = partners[0] if len(partners) > 0 else None
+    events = None
+
+    if newsletter.date:
+        start_date = newsletter.date
+        end_date = start_date + timezone.timedelta(weeks=1)
+        events = Event.objects.filter(
+            start__gte=start_date, end__lt=end_date).order_by('start')
 
     from_email = settings.NEWSLETTER_FROM_ADDRESS
     html_template = get_template('newsletters/email.html')
@@ -37,11 +45,7 @@ def send_newsletter(request, newsletter):
 
         context = {
             'newsletter': newsletter,
-            'agenda_events': (
-                newsletter.newslettercontent_set
-                .filter(newsletteritem=None)
-                .order_by('newsletterevent__start_datetime')
-            ),
+            'agenda_events': events,
             'main_partner': main_partner,
             'lang_code': language[0],
             'request': request

@@ -6,7 +6,7 @@
 
 
 {% trans "agenda"|upper %}:
-{% for item in agenda_events %} {{ item.title }} - {{ item.start_datetime|date:"d F" }}
+{% for item in agenda_events %} {{ item.title }} - {{ item.start|date:"d F" }}
 {% endfor %}
 
 {% for item in newsletter.newslettercontent_set.all %}{{ item.title|upper }}:
