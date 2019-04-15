@@ -96,7 +96,7 @@
                     <td style="{{ item_tr_style }}">
                         {{ item.description|safe }}
 
-                        {% if item.newsletterevent.price != 0 and item.newsletterevent.show_costs_warning %}
+                        {% if item.newsletterevent.show_costs_warning %}
                             <p style="font-family: Arial, sans-serif">
                                 <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
                                 {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
