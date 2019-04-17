@@ -68,7 +68,7 @@ django.jQuery(function () {
             $('#id_newsletterevent_set-' +  id + '-start_datetime_1')
                 .val(formatDate(data['start'], 'time'));
             $('#id_newsletterevent_set-' +  id + '-end_datetime_0')
-                .val(formatDate(data['start'], 'date'));
+                .val(formatDate(data['end'], 'date'));
             $('#id_newsletterevent_set-' +  id + '-end_datetime_1')
                 .val(formatDate(data['end'], 'time'));
         }

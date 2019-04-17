@@ -100,8 +100,8 @@
                             <p style="font-family: Arial, sans-serif">
                                 <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
                                 {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
-                                {% if event.penalty_costs and item.newsletterevent.penalty_costs > 0 %}
-                                    {% trans "These costs are" %}: <b>€{{ event.penalty_costs }}.</b>
+                                {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}
+                                    {% trans "These costs are" %}: <b>€{{ item.newsletterevent.penalty_costs }}.</b>
                                 {% endif %}
                                 </i>
                             </p>
