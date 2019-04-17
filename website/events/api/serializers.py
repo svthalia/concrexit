@@ -140,16 +140,19 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
 
     def _user_registration(self, instance):
         try:
-            reg = instance.registration_set.get(
-                member=self.context['request'].member)
-            return RegistrationAdminListSerializer(reg,
-                                                   context=self.context).data
+            if self.context['request'].member:
+                reg = instance.registration_set.get(
+                    member=self.context['request'].member)
+                return RegistrationAdminListSerializer(
+                    reg, context=self.context).data
         except Registration.DoesNotExist:
-            return None
+            pass
+        return None
 
     def _registration_allowed(self, instance):
         member = self.context['request'].member
-        return (member.has_active_membership and
+        return (self.context['request'].user.is_authenticated and
+                member.has_active_membership and
                 member.can_attend_events)
 
     def _has_fields(self, instance):

@@ -36,7 +36,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
     and enables ordering on the event start/end.
     """
     queryset = Event.objects.filter(published=True)
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('start', 'end')
 
@@ -67,7 +67,8 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
     def get_serializer_context(self):
         return super().get_serializer_context()
 
-    @action(detail=True, methods=['get', 'post'])
+    @action(detail=True, methods=['get', 'post'],
+            permission_classes=(IsAuthenticated,))
     def registrations(self, request, pk):
         """
         Defines a custom route for the event's registrations,
