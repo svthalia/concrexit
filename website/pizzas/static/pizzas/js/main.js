@@ -12,10 +12,6 @@ $(function() {
         return $(td).find('.btn').data('paid');
     });
 
-    $('thead th.numeric-title').data('sortBy', function (th, td, tablesort) {
-        return parseInt($(td).html().replace('€', ''));
-    });
-
     $('a.paid-button').click(function() {
         var id = $(this).data('id');
         var paid = $(this).data('paid');

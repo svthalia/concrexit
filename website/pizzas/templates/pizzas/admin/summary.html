@@ -1,0 +1,95 @@
+{% extends 'admin/change_list.html' %}
+{% load i18n admin_urls static %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a
+        href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+        &rsaquo; <a
+        href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+        &rsaquo; <a
+        href="{% url opts|admin_urlname:'change' pizza_event.pk %}">{{ pizza_event }}</a>
+        &rsaquo; <a
+        href="{% url opts|admin_urlname:'details' pizza_event.pk %}">{% trans 'Orders' %}</a>
+        &rsaquo; {{ original }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <ul class="object-tools">
+            <li>
+                <a href="{% url opts|admin_urlname:'details' pizza_event.pk %}"
+                   class="back">{% trans 'back'|capfirst %}</a>
+            </li>
+        </ul>
+        <div id="changelist" class="module">
+            <div class="results">
+                <table id="result_list">
+                    <thead>
+                    <tr>
+                        <th scope="col">
+                            <div class="text">
+                                <span>{% trans 'product'|capfirst %}</span>
+                            </div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col">
+                            <div class="text">
+                                <span>{% trans 'price'|capfirst %}</span>
+                            </div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col">
+                            <div class="text">
+                                <span>{% trans 'amount'|capfirst %}</span>
+                            </div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col">
+                            <div class="text">
+                                <span>{% trans 'total'|capfirst %}</span>
+                            </div>
+                            <div class="clear"></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product in product_list %}
+                        <tr class="{% cycle 'row1' 'row2' %}">
+                            <td>
+                                {{ product.name }}
+                            </td>
+                            <td>
+                                &euro;&nbsp;{{ product.price }}
+                            </td>
+                            <td>
+                                {{ product.amount }}
+                            </td>
+                            <td>
+                                &euro;&nbsp;{{ product.total }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <th colspan="4">
+                                {% trans "Nobody ordered yet" %}
+                            </th>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>
+                            {{ total_products }}
+                        </td>
+                        <td>
+                            &euro;&nbsp;{{ total_money }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

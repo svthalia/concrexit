@@ -1,0 +1,134 @@
+{% extends 'admin/change_list.html' %}
+{% load i18n admin_urls static compress %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a
+        href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+        &rsaquo; <a
+        href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+        &rsaquo; <a
+        href="{% url opts|admin_urlname:'change' pizza_event.pk %}">{{ pizza_event }}</a>
+        &rsaquo; {{ title }}
+    </div>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {% compress css %}
+        <link href="{% static "pizzas/css/admin.scss" %}" rel="stylesheet"
+              type="text/x-scss">
+    {% endcompress %}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript"
+            src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "admin/js/jquery.init.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/jquery.tablesorter.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% url 'javascript-catalog' %}"></script>
+    <script type="text/javascript"
+            src="{% static "pizzas/js/admin.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main" data-csrf="{{ csrf_token }}">
+        <ul class="object-tools">
+            <li>
+                <a href="{% url opts|admin_urlname:'overview' pizza_event.pk %}"
+                   class="back">{% trans 'overview'|capfirst %}</a>
+            </li>
+            <li>
+                <a href="{% url 'admin:pizzas_product_changelist' %}"
+                   class="back">{% trans 'all products'|capfirst %}</a>
+            </li>
+            <li>
+                <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}"
+                   class="back">{% trans 'all events'|capfirst %}</a>
+            </li>
+        </ul>
+        <div id="changelist" class="module">
+            <div id="toolbar">
+                <form id="changelist-search" onsubmit="return false;">
+                    <div><!-- DIV needed for valid HTML -->
+                        <label for="searchbar"><img
+                            src="/static/admin/img/search.svg"
+                            alt="Search"></label>
+                        <input type="text" size="40" name="q" value=""
+                               id="searchbar" autofocus="">
+                    </div>
+                </form>
+            </div>
+            <div id="changelist-form">
+                <div class="results">
+                    <table id="result_list">
+                        <thead>
+                        <tr>
+                            <th scope="col">
+                                {% trans 'first name'|capfirst %}
+                                <span class="toggle"></span>
+                            </th>
+                            <th scope="col">
+                                {% trans 'last name'|capfirst %}
+                                <span class="toggle"></span>
+                            </th>
+                            <th scope="col">
+                                {% trans 'product'|capfirst %}
+                                <span class="toggle"></span>
+                            </th>
+                            <th scope="col" class="sorter-payment">
+                                {% trans 'payment'|capfirst %}
+                                <span class="toggle"></span>
+                            </th>
+                            <th scope="col" class="sorter-false">
+                                <a class="addlink"
+                                   href="{% url 'admin:pizzas_order_add' %}?pizza_event={{ pizza_event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans 'add'|capfirst %}</a>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in orders %}
+                            <tr data-id="{{ order.pk }}">
+                                <td>
+                                    <a href="{% url 'admin:pizzas_order_change' order.pk %}?next={{ request.get_full_path | urlencode }}">{{ order.member_first_name }}</a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'admin:pizzas_order_change' order.pk %}?next={{ request.get_full_path | urlencode }}">{{ order.member_last_name }}</a>
+                                </td>
+                                <td>
+                                    {{ order.product }}
+                                </td>
+                                <td>
+                                    <select name="payment"
+                                            data-none="{{ payment.NONE }}"
+                                            {% if order.payment.type != payment.NONE %}class="paid"{% endif %}>
+                                        <option value="{{ payment.NONE }}"
+                                                {% if order.payment.type == payment.NONE %}selected{% endif %}>{% trans 'None' %}</option>
+                                        <option value="{{ payment.CARD }}"
+                                                {% if order.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
+                                        <option value="{{ payment.CASH }}"
+                                                {% if order.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <a href="#delete"
+                                       class="deletelink">Delete</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr class="model-events">
+                                <th colspan="4">{% trans "Nobody ordered yet" %}</th>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -10,19 +10,19 @@ from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership
 from events.admin import (
-    DoNextModelAdmin,
     RegistrationInformationFieldInline,
     EventAdmin
 )
 from events.models import Event, RegistrationInformationField
 from members.models import Member
+from utils.admin import DoNextTranslatedModelAdmin
 
 
 class DoNextModelAdminTest(TestCase):
 
     def setUp(self):
         self.site = AdminSite()
-        self.admin = DoNextModelAdmin(Event, admin_site=self.site)
+        self.admin = DoNextTranslatedModelAdmin(Event, admin_site=self.site)
         self.rf = RequestFactory()
 
     @mock.patch('utils.translation.TranslatedModelAdmin.response_add')
@@ -196,7 +196,7 @@ class EventAdminTest(TestCase):
                          '<a href="/admin/events/event/1/details/">'
                          'testevent</a>')
 
-    @mock.patch('events.admin.DoNextModelAdmin.has_change_permission')
+    @mock.patch('utils.admin.DoNextTranslatedModelAdmin.has_change_permission')
     @mock.patch('events.services.is_organiser')
     def test_has_change_permission(self, organiser_mock, permission_mock):
         permission_mock.return_value = None

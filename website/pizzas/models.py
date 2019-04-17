@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from events.models import Event
 import members
 from members.models import Member
+from payments.models import Payment
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -165,17 +166,32 @@ class Order(models.Model):
         null=True,
     )
 
-    paid = models.BooleanField(default=False)
-
     name = models.CharField(
+        verbose_name=_('name'),
         max_length=50,
         help_text=_('Use this for non-members'),
         null=True,
         blank=True,
     )
 
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    pizza_event = models.ForeignKey(PizzaEvent, on_delete=models.CASCADE)
+    payment = models.OneToOneField(
+        verbose_name=_('payment'),
+        to='payments.Payment',
+        related_name='pizzas_order',
+        on_delete=models.CASCADE,
+    )
+
+    product = models.ForeignKey(
+        verbose_name=_('product'),
+        to=Product,
+        on_delete=models.PROTECT,
+    )
+
+    pizza_event = models.ForeignKey(
+        verbose_name=_('event'),
+        to=PizzaEvent,
+        on_delete=models.CASCADE
+    )
 
     def clean(self):
         if ((self.member is None and not self.name) or
@@ -189,13 +205,29 @@ class Order(models.Model):
         if not self.id and self.pizza_event.end_reminder:
             self.pizza_event.end_reminder.users.remove(self.member)
 
+        notes = (f'Pizza order by {self.member_name} '
+                 f'for {self.pizza_event.event.title_en}')
+        try:
+            self.payment.notes = notes
+            self.payment.paid_by = self.member
+            self.payment.amount = self.product.price
+            self.payment.save()
+        except ObjectDoesNotExist:
+            self.payment = Payment.objects.create(
+                amount=self.product.price,
+                notes=notes,
+                paid_by=self.member
+            )
+
         super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False):
         if not self.id and self.pizza_event.end_reminder:
             self.pizza_event.end_reminder.users.add(self.member)
 
+        payment = self.payment
         super().delete(using, keep_parents)
+        payment.delete()
 
     @property
     def member_name(self):
@@ -204,8 +236,24 @@ class Order(models.Model):
         return self.name
 
     @property
+    def member_last_name(self):
+        if self.member is not None:
+            return self.member.last_name
+        return ' '.join(self.name.split(' ')[1:])
+
+    @property
+    def member_first_name(self):
+        if self.member is not None:
+            return self.member.first_name
+        return self.name.strip(' ').split(' ')[0]
+
+    @property
     def can_be_changed(self):
-        return not self.paid and not self.pizza_event.has_ended
+        try:
+            return (self.payment and not self.payment.processed
+                    and not self.pizza_event.has_ended)
+        except ObjectDoesNotExist:
+            return False
 
     class Meta:
         unique_together = ('pizza_event', 'member',)

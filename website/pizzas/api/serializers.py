@@ -1,7 +1,12 @@
+from typing import Any
+
+from django.db.models import Model
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from payments.api.fields import PaymentTypeField
+from payments.models import Payment
 from pizzas.models import Product, PizzaEvent, Order
 from pizzas.services import can_change_order
 
@@ -28,14 +33,20 @@ class PizzaEventSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('pk', 'paid', 'product', 'name', 'member')
-        read_only_fields = ('pk', 'paid', 'name', 'member')
+        fields = ('pk', 'payment', 'product', 'name', 'member')
+        read_only_fields = ('pk', 'payment', 'name', 'member')
+
+    payment = PaymentTypeField(source='payment.type',
+                               choices=Payment.PAYMENT_TYPE)
 
 
 class AdminOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('pk', 'paid', 'product', 'name', 'member')
+        fields = ('pk', 'payment', 'product', 'name', 'member')
+
+    payment = PaymentTypeField(source='payment.type',
+                               choices=Payment.PAYMENT_TYPE)
 
     def validate(self, attrs):
         if attrs.get('member') and attrs.get('name'):
@@ -46,3 +57,12 @@ class AdminOrderSerializer(serializers.ModelSerializer):
         if not (attrs.get('member') or attrs.get('name')) and not self.partial:
             attrs['member'] = self.context['request'].member
         return super().validate(attrs)
+
+    def update(self, instance: Model, validated_data: Any) -> Any:
+        if validated_data.get(
+            'payment', {}
+        ).get('type', instance.payment.type) != instance.payment.type:
+            instance.payment.type = validated_data['payment']['type']
+            instance.payment.save()
+        del validated_data['payment']
+        return super().update(instance, validated_data)

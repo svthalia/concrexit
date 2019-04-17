@@ -6,7 +6,6 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
-from .forms import AddOrderForm
 from .models import Order, PizzaEvent, Product
 
 
@@ -79,9 +78,6 @@ def delete_order(request):
             order.delete()
         except Http404:
             messages.error(request, _("Your order could not be found."))
-    event = PizzaEvent.current()
-    if event:
-        return HttpResponseRedirect(reverse('pizzas:orders', args=[event.pk]))
     return HttpResponseRedirect(reverse('pizzas:index'))
 
 
@@ -99,23 +95,6 @@ def cancel_order(request):
         except Http404:
             messages.error(request, _("Your order could not be found."))
     return HttpResponseRedirect(reverse('pizzas:index'))
-
-
-@permission_required('pizzas.change_order')
-def add_order(request, event_pk):
-    event = get_object_or_404(PizzaEvent, pk=event_pk)
-    if request.POST:
-        form = AddOrderForm(request.POST)
-        order = form.save(commit=False)
-        order.pizza_event = event
-        order.save()
-        messages.success(request, _("Your order was successful."))
-        return HttpResponseRedirect(reverse('pizzas:orders', args=[event.pk]))
-    context = {
-        'event': event,
-        'form': AddOrderForm(),
-    }
-    return render(request, 'pizzas/add_order.html', context)
 
 
 @login_required
