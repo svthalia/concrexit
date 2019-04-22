@@ -1,5 +1,5 @@
-django.jQuery(function () {
-    var $ = django.jQuery;
+(django.jQuery || jQuery)(function () {
+    var $ = django.jQuery || jQuery;
     $(".payments-row a.process").click(function(e) {
         e.preventDefault();
         var type = $(e.target).data('type');

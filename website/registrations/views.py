@@ -6,19 +6,21 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.shortcuts import redirect
+from django.http import Http404
+from django.shortcuts import redirect, get_object_or_404
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import View
-from django.views.generic import FormView
+from django.views.generic import FormView, CreateView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
+from members.decorators import membership_required
 from members.models import Membership
 from . import emails, forms, services
-from .models import Entry, Registration, Renewal
+from .models import Entry, Registration, Renewal, Reference
 
 
 class BecomeAMemberView(TemplateView):
@@ -31,7 +33,6 @@ class BecomeAMemberView(TemplateView):
                                                Entry.MEMBERSHIP_YEAR], 2)
         context['study_fees'] = floatformat(settings.MEMBERSHIP_PRICES[
                                                 Entry.MEMBERSHIP_STUDY], 2)
-        context['member_form_url'] = reverse('registrations:register')
         return context
 
 
@@ -95,25 +96,31 @@ class ConfirmEmailView(View, TemplateResponseMixin):
     template_name = 'registrations/confirm_email.html'
 
     def get(self, request, *args, **kwargs):
-        entry = Entry.objects.filter(pk=kwargs['pk'])
+        queryset = Registration.objects.filter(pk=kwargs['pk'])
 
         processed = 0
         try:
-            processed = services.confirm_entry(entry)
+            processed = services.confirm_entry(queryset)
         except ValidationError:
             pass
 
         if processed == 0:
-            return redirect('registrations:register')
+            return redirect('registrations:register-member')
 
-        emails.send_new_registration_board_message(entry.get())
+        registration = queryset.get()
+
+        if (registration.membership_type == Membership.BENEFACTOR
+                and not registration.no_references):
+            emails.send_references_information_message(registration)
+
+        emails.send_new_registration_board_message(registration)
 
         return self.render_to_response({})
 
 
-class MemberRegistrationFormView(FormView):
+class BaseRegistrationFormView(FormView):
     """
-    View that renders the membership registration form
+    View that renders a membership registration form
     """
     form_class = forms.MemberRegistrationForm
     template_name = 'registrations/register_member.html'
@@ -124,13 +131,24 @@ class MemberRegistrationFormView(FormView):
                                                Entry.MEMBERSHIP_YEAR], 2)
         context['study_fees'] = floatformat(settings.MEMBERSHIP_PRICES[
                                                 Entry.MEMBERSHIP_STUDY], 2)
-        context['privacy_policy_url'] = reverse('privacy-policy')
         return context
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('registrations:renew')
         return super().get(request, args, kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('registrations:register-success')
+
+
+class MemberRegistrationFormView(BaseRegistrationFormView):
+    """
+    View that renders the `member` membership registration form
+    """
+    form_class = forms.MemberRegistrationForm
+    template_name = 'registrations/register_member.html'
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
@@ -139,8 +157,27 @@ class MemberRegistrationFormView(FormView):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        form.save()
-        return redirect('registrations:register-success')
+        response = super().form_valid(form)
+        emails.send_registration_email_confirmation(form.instance)
+        return response
+
+
+class BenefactorRegistrationFormView(BaseRegistrationFormView):
+    """
+    View that renders the `benefactor` membership registration form
+    """
+    form_class = forms.BenefactorRegistrationForm
+    template_name = 'registrations/register_benefactor.html'
+
+    def post(self, request, *args, **kwargs):
+        request.POST = request.POST.dict()
+        request.POST['language'] = request.LANGUAGE_CODE
+        request.POST['membership_type'] = Membership.BENEFACTOR
+        request.POST['length'] = Entry.MEMBERSHIP_YEAR
+        request.POST['remarks'] = ('Registered as iCIS employee'
+                                   if 'icis_employee' in request.POST else '')
+        request.POST['no_references'] = 'icis_employee' in request.POST
+        return super().post(request, *args, **kwargs)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -148,7 +185,7 @@ class RenewalFormView(FormView):
     """
     View that renders the membership renewal form
     """
-    form_class = forms.MemberRenewalForm
+    form_class = forms.RenewalForm
     template_name = 'registrations/renewal.html'
 
     def get_context_data(self, **kwargs):
@@ -160,7 +197,7 @@ class RenewalFormView(FormView):
         context['latest_membership'] = self.request.member.latest_membership
         context['was_member'] = Membership.objects.filter(
             user=self.request.member, type=Membership.MEMBER).exists()
-        context['privacy_policy_url'] = reverse('privacy-policy')
+        context['benefactor_type'] = Membership.BENEFACTOR
         return context
 
     def get_form(self, form_class=None):
@@ -189,9 +226,66 @@ class RenewalFormView(FormView):
             request.POST['membership_type'] = Membership.BENEFACTOR
             request.POST['length'] = Entry.MEMBERSHIP_YEAR
         request.POST['member'] = request.member.pk
+        request.POST['remarks'] = ''
+        request.POST['no_references'] = False
+
+        if request.POST['membership_type'] == Membership.BENEFACTOR:
+            if Membership.objects.filter(user=request.member,
+                                         type=Membership.MEMBER).exists():
+                request.POST['remarks'] = 'Was a Thalia member in the past.'
+                request.POST['no_references'] = True
+            if 'icis_employee' in request.POST:
+                request.POST['remarks'] = 'Registered as iCIS employee.'
+                request.POST['no_references'] = True
+
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         renewal = form.save()
+        if not renewal.no_references:
+            emails.send_references_information_message(renewal)
         emails.send_new_renewal_board_message(renewal)
         return redirect('registrations:renew-success')
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(membership_required, name='dispatch')
+class ReferenceCreateView(CreateView):
+    """
+    View that renders a reference creation form
+    """
+    model = Reference
+    fields = '__all__'
+    template_name = 'registrations/reference.html'
+    entry = None
+    success = False
+
+    def get_success_url(self):
+        return reverse('registrations:reference-success',
+                       args=(self.entry.pk,))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['success'] = self.success
+        try:
+            context['name'] = self.entry.registration.get_full_name()
+        except Registration.DoesNotExist:
+            context['name'] = self.entry.renewal.member.get_full_name()
+
+        return context
+
+    def dispatch(self, request, *args, **kwargs):
+        self.entry = get_object_or_404(Entry, pk=kwargs.get('pk'))
+
+        if (self.entry.no_references or
+                self.entry.membership_type != Membership.BENEFACTOR):
+            raise Http404
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        request.POST = request.POST.dict()
+        request.POST['member'] = request.member.pk
+        request.POST['entry'] = kwargs['pk']
+        return super().post(request, *args, **kwargs)

@@ -1,8 +1,14 @@
 {% extends "base.html" %}
-{% load i18n bootstrap4 alert %}
+{% load i18n bootstrap4 alert compress static %}
 
-{% block title %}{% trans "renewal"|capfirst %} —
-    {{ block.super }}{% endblock %}
+{% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+    {% compress js %}
+        <script type="text/javascript" src="{% static 'registrations/js/main.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 {% block body %}
     <section class="page-section">
@@ -109,13 +115,6 @@
                         have to renew your membership.
                     {% endblocktrans %}
                 </p>
-            {% elif latest_membership.type == 'benefactor' and not was_member %}
-                <p class="text-center">
-                    {% blocktrans trimmed %}
-                        You're a benefactor. Contact the board to renew your
-                        membership.
-                    {% endblocktrans %}
-                </p>
             {% elif latest_membership.until is None %}
                 <p class="col-12 col-md-6 offset-md-3 text-center">
                     {% blocktrans trimmed %}
@@ -132,44 +131,41 @@
                     {% endfor %}
                 {% endfor %}
                 <form method="post" enctype="multipart/form-data"
-                      class="col-lg-6 offset-lg-3">
+                      class="col-lg-6 offset-lg-3" data-benefactor-type="{{ benefactor_type }}">
                     {% csrf_token %}
 
+                    <fieldset>
                     {% if not latest_membership.type == 'benefactor' %}
                         {% bootstrap_field form.membership_type %}
                         {% bootstrap_field form.length %}
+                        {% bootstrap_field form.contribution form_group_class='form-group required-field d-none' %}
                     {% else %}
                         <div class="form-group">
                             <label
                                 for="id_membership_type">{% trans 'membership type'|capfirst %}</label>
                             <input readonly disabled
                                    value="{% trans 'Benefactor' %}"
-                                   type="text">
+                                   id="id_membership_type"
+                                   type="text" class="form-control" />
                         </div>
                         <div class="form-group">
                             <label
                                 for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
                             <input readonly disabled
-                                   value="{% trans 'One year' %}" type="text">
+                                   value="{% trans 'One year' %}"
+                                   type="text"
+                                   id="id_membership_length"
+                                   class="form-control" />
                         </div>
+                        {% bootstrap_field form.contribution %}
                     {% endif %}
+                    </fieldset>
 
                     <fieldset>
-                        <div class="form-group">
-                            <div class="form-check">
-                                <input name="privacy_policy"
-                                       class="form-check-input"
-                                       id="id_privacy_policy"
-                                       type="checkbox">
-                                <label class="form-check-label"
-                                       for="id_privacy_policy">
-                                    {% blocktrans trimmed %}I accept the
-                                        <a target="_blank"
-                                           href="{{ privacy_policy_url }}">privacy
-                                            policy</a>{% endblocktrans %}
-                                    .</label>
-                            </div>
-                        </div>
+                        {% bootstrap_field form.privacy_policy %}
+                        {% if latest_membership.type == 'benefactor' %}
+                        {% bootstrap_field form.icis_employee %}
+                        {% endif %}
                     </fieldset>
 
                     <input type="submit" value="{% trans 'send'|capfirst %}"

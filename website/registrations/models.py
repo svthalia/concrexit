@@ -5,13 +5,13 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.template.defaultfilters import floatformat
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Membership, Profile
-from registrations import emails
 from utils import countries
 
 
@@ -62,6 +62,19 @@ class Entry(models.Model):
     MEMBERSHIP_TYPES = [m for m in Membership.MEMBERSHIP_TYPES
                         if m[0] != Membership.HONORARY]
 
+    contribution = models.FloatField(
+        verbose_name=_('contribution'),
+        validators=[MinValueValidator(settings.MEMBERSHIP_PRICES['year'])],
+        default=settings.MEMBERSHIP_PRICES['year'],
+        blank=True,
+        null=True,
+    )
+
+    no_references = models.BooleanField(
+        verbose_name=_('no references required'),
+        default=False
+    )
+
     membership_type = models.CharField(
         verbose_name=_('membership type'),
         choices=MEMBERSHIP_TYPES,
@@ -96,7 +109,27 @@ class Entry(models.Model):
                 self.status != self.STATUS_REJECTED):
             self.updated_at = timezone.now()
 
+        if (self.contribution is not None and
+                self.membership_type != Membership.BENEFACTOR):
+            self.contribution = None
+        elif self.membership_type == Membership.BENEFACTOR:
+            self.length = self.MEMBERSHIP_YEAR
+
         super().save(force_insert, force_update, using, update_fields)
+
+    def clean(self):
+        super().clean()
+        errors = {}
+
+        if (self.contribution is None and
+                self.membership_type == Membership.BENEFACTOR):
+            errors.update({
+                'contribution':
+                    _('This field is required for benefactors.')
+            })
+
+        if errors:
+            raise ValidationError(errors)
 
     def __str__(self):
         try:
@@ -294,12 +327,6 @@ class Registration(Entry):
         if errors:
             raise ValidationError(errors)
 
-    def save(self, *args, **kwargs):
-        send_confirm_email = self.pk is None
-        super().save(*args, **kwargs)
-        if send_confirm_email:
-            emails.send_registration_email_confirmation(self)
-
     def __str__(self):
         return '{} {} ({})'.format(self.first_name, self.last_name, self.email)
 
@@ -329,7 +356,8 @@ class Renewal(Entry):
         errors = {}
 
         if Renewal.objects.filter(
-                member=self.member, status=Entry.STATUS_REVIEW).exists():
+                member=self.member, status=Entry.STATUS_REVIEW
+        ).exclude(pk=self.pk).exists():
             raise ValidationError(_('You already have a renewal '
                                     'request queued for review.'))
 
@@ -373,3 +401,28 @@ class Renewal(Entry):
     class Meta:
         verbose_name = _('renewal')
         verbose_name_plural = _('renewals')
+
+
+class Reference(models.Model):
+    """Describes a reference of a member for a potential member"""
+    member = models.ForeignKey(
+        'members.Member',
+        on_delete=models.CASCADE,
+        verbose_name=_('member'),
+        blank=False,
+        null=False,
+    )
+
+    entry = models.ForeignKey(
+        'registrations.Entry',
+        on_delete=models.CASCADE,
+        verbose_name=_('entry'),
+        blank=False,
+        null=False
+    )
+
+    def __str__(self):
+        return f'Reference from {self.member} for {self.entry}'
+
+    class Meta:
+        unique_together = ('member', 'entry')

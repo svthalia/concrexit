@@ -328,6 +328,10 @@ TINYMCE_DEFAULT_CONFIG = {
     'remove_script_host': False,
 }
 
+BOOTSTRAP4 = {
+    'required_css_class': 'required-field'
+}
+
 
 DEFAULT_EXCEPTION_REPORTER_FILTER = (
     'utils.exception_filter.ThaliaSafeExceptionReporterFilter')

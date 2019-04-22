@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-02 16:52+0100\n"
-"PO-Revision-Date: 2019-03-02 16:33+0100\n"
+"POT-Creation-Date: 2019-04-25 13:34+0200\n"
+"PO-Revision-Date: 2019-04-25 13:36+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -96,13 +96,21 @@ msgstr "Verlenging afgekeurd"
 msgid "Renewal successful"
 msgstr "Verlenging succesvol"
 
+#: emails.py
+msgid "Information about references"
+msgstr "Informatie over referenties"
+
 #: forms.py models.py
 msgid "birthday"
 msgstr "verjaardag"
 
 #: forms.py
-msgid "I accept the privacy policy"
-msgstr "Ik accepteer het privacybeleid"
+msgid "I accept the <a href=\"{}\">privacy policy</a>."
+msgstr "Ik accepteer het <a href=\"{}\">privacybeleid</a>."
+
+#: forms.py
+msgid "I am an employee of iCIS"
+msgstr "Ik ben een medewerker van iCIS"
 
 #: models.py
 msgid "created at"
@@ -148,6 +156,14 @@ msgstr "Tot afstuderen"
 msgid "membership length"
 msgstr "lengte lidmaatschap"
 
+#: models.py
+msgid "contribution"
+msgstr "contributie"
+
+#: models.py
+msgid "no references required"
+msgstr "geen referenties benodigd"
+
 #: models.py templates/registrations/renewal.html
 msgid "membership type"
 msgstr "soort lidmaatschap"
@@ -157,8 +173,8 @@ msgid "remarks"
 msgstr "opmerkingen"
 
 #: models.py
-msgid "Registration entry"
-msgstr "Registratie"
+msgid "This field is required for benefactors."
+msgstr "Dit veld is verplicht voor begunstigers."
 
 #: models.py
 msgid "entry"
@@ -281,6 +297,7 @@ msgid "A user with that username already exists."
 msgstr "Er bestaat al een gebruiker met deze gebruikersnaam."
 
 #: models.py templates/registrations/confirm_email.html
+#: templates/registrations/register_benefactor.html
 #: templates/registrations/register_member.html
 #: templates/registrations/register_success.html
 msgid "registration"
@@ -357,8 +374,10 @@ msgstr ""
 "lid te worden!"
 
 #: templates/registrations/become_a_member.html
-msgid "How do I become a member?"
-msgstr "Hoe kan ik lid worden?"
+msgid ""
+"I'm a Computing Science or Information Sciences student at the Radboud "
+"University"
+msgstr "Ik studeer Informatica of Informatiekunde aan de Radboud Universiteit"
 
 #: templates/registrations/become_a_member.html
 #, python-format
@@ -376,37 +395,37 @@ msgstr ""
 "informatiekunde studeert aan de Radboud Universiteit."
 
 #: templates/registrations/become_a_member.html
-msgid "Register now"
-msgstr "Nu registreren"
+msgid "Become a member"
+msgstr "Lid worden"
 
 #: templates/registrations/become_a_member.html
 msgid ""
 "I'm not a Computing Science and Information Sciences student at the Radboud "
-"University, but I do want to attend your events. Now what?"
+"University"
 msgstr ""
-"Ik studeer geen Informatica of Informatiekunde (aan de Radboud "
-"Universiteit), maar ik wil wel naar jullie activiteiten gaan. Wat nu?"
+"Ik studeer geen Informatica of Informatiekunde aan de Radboud Universiteit"
 
 #: templates/registrations/become_a_member.html
+#: templates/registrations/register_benefactor.html
 #, python-format
 msgid ""
 "It is still possible to be associated with Thalia, even if you do not study "
 "Computing Science or Information Sciences (anymore): You can become a "
 "benefactor. For at least € %(year_fees)s per year, you too can enjoy "
-"everything Thalia has to offer. If you are not a former Thalia member, ICIS "
-"staff member or alumni, you must submit a written along with two signatures "
-"of current Thalia members. You can fill all of this in on the benefactor "
-"form, which you can get at the board room (M1.0.08, ground floor of Mercator "
-"1)."
+"everything Thalia has to offer. If you are not a former Thalia member, iCIS "
+"staff member or alumni, you must collect two references of current Thalia "
+"members."
 msgstr ""
 "Mocht je nu geen Informatica of Informatiekunde (meer) studeren, maar toch "
 "verbonden willen zijn, dan kan dat ook. Hiervoor kun je begunstiger van "
 "Thalia worden. Voor minimaal € %(year_fees)s per jaar kun je ook genieten "
-"van alles wat Thalia je te bieden heeft. Ben je geen oud-Thaliaan, ex-"
-"Informaticus of -Informatiekundige, dan dien je twee handtekeningen van "
-"leden van Thalia samen met een motivatie waarom je begunstiger wil worden af "
-"te geven. Dit kun je allemaal invullen op het begunstigerformulier, dat af "
-"te halen is in de bestuurskamer (M1.0.08, begane grond Mercator 1)."
+"van alles wat Thalia je te bieden heeft. Ben je geen oud-Thaliaan, iCIS "
+"medewerker of alumni, dan dien je twee referenties van leden van Thalia te "
+"verzamelen."
+
+#: templates/registrations/become_a_member.html
+msgid "Become a benefactor"
+msgstr "Begunstiger worden"
 
 #: templates/registrations/become_a_member.html
 msgid ""
@@ -432,6 +451,52 @@ msgstr ""
 "Je e-mailadres is bevestigd. We bekijken je registratie zo snel mogelijk "
 "beoordelen. Mocht je vragen hebben, stuur dan een mailtje naar info@thalia."
 "nu."
+
+#: templates/registrations/email/references_information.txt
+#, python-format
+msgid ""
+"Dear %(name)s,\n"
+"\n"
+"Our information indicates that you're not an iCIS employee or\n"
+"a former Thalia member.\n"
+"\n"
+"This means that before we can review your membership registration we\n"
+"need to receive two references of current Thalia members.\n"
+"\n"
+"Share the following link with them to obtain their reference:\n"
+"%(reference_link)s\n"
+"\n"
+"If you have any questions, then don't hesitate and send an email to "
+"info@thalia.nu.\n"
+"\n"
+"With kind regards,\n"
+"\n"
+"The board of Study Association Thalia\n"
+"\n"
+"————\n"
+"\n"
+"This email was automatically generated."
+msgstr ""
+"Beste %(name)s,\n"
+"\n"
+"Volgens onze informatie ben je geen medewerker van iCIS\n"
+"of een voormalig lid van Thalia.\n"
+"\n"
+"Dit betekent dat we twee referenties van Thalia leden moeten ontvangen\n"
+"Voordat we je aanmelding kunnen behandelen.\n"
+"\n"
+"Deel de volgende link met een Thalia lid om een referentie te verkrijgen:\n"
+"%(reference_link)s\n"
+"\n"
+"Mocht je vragen hebben, stuur dan vooral een mailtje naar info@thalia.nu.\n"
+"\n"
+"Met vriendelijke groet,\n"
+"\n"
+"Het bestuur der Studievereniging Thalia\n"
+"\n"
+"————\n"
+"\n"
+"Deze e-mail is automatisch gegenereerd."
 
 #: templates/registrations/email/registration_accepted.txt
 #, python-format
@@ -693,29 +758,49 @@ msgstr ""
 "\n"
 "Deze e-mail is automatisch gegenereerd."
 
-#: templates/registrations/register_member.html
+#: templates/registrations/reference.html
+#: templates/registrations/reference_success.html
+msgid "reference"
+msgstr "referentie"
+
+#: templates/registrations/reference.html
+#: templates/registrations/reference_success.html
+msgid "give reference"
+msgstr "geef referentie"
+
+#: templates/registrations/reference.html
+#: templates/registrations/reference_success.html
 #, python-format
 msgid ""
-"A membership costs € %(year_fees)s per year, or € %(study_fees)s for your "
-"entire study duration. <br/> Note: Only Computing Science and Information "
-"Sciences students at the Radboud University can become a member.<br/><br/> "
 "It is still possible to be associated with Thalia, even if you do not study "
 "Computing Science or Information Sciences (anymore): You can become a "
-"benefactor. For at least € %(year_fees)s per year, you too can enjoy "
-"everything Thalia has to offer.<br/> <em>Note that this form is only for "
-"member registration. Please visit the board room if you want to become a "
-"benefactor.</em>"
+"benefactor. If you are not a former Thalia member, iCIS staff member or "
+"alumni, you must collect two references of current Thalia members. <br /"
+"><br /> <strong>%(name)s</strong> wants to become a benefactor of Thalia and "
+"needs such a reference and has asked you to give it to them."
 msgstr ""
-"Een lidmaatschap kost € %(year_fees)s per jaar, of € %(study_fees)s voor je "
-"hele studieperiode. <br/> Let wel op: Je kunt alleen lid worden wanneer je "
-"informatica of informatiekunde studeert aan de Radboud Universiteit.<br/><br/"
-">Mocht je nu geen Informatica of Informatiekunde (meer) studeren, maar toch "
+"Mocht je nu geen Informatica of Informatiekunde (meer) studeren, maar toch "
 "verbonden willen zijn, dan kan dat ook. Hiervoor kun je begunstiger van "
-"Thalia worden. Voor minimaal € %(year_fees)s per jaar kun je ook genieten "
-"van alles wat Thalia je te bieden heeft.<br/> <em>Let op dat dit formulier "
-"alleen gebruikt kan worden voor registratie van leden. Neem contact op met "
-"het bestuur als je begunstiger wilt worden.</em>"
+"Thalia worden. Ben je geen oud-Thaliaan, iCIS medewerker of alumni, dan dien "
+"je twee referenties van leden van Thalia te verzamelen.<br /><br /> <strong>"
+"%(name)s</strong> wil graag begunstiger van Thalia worden en heeft jouw "
+"gevraagd om een deze te geven."
 
+#: templates/registrations/reference.html
+msgid "Your reference has been saved."
+msgstr "Je referentie is opgeslagen."
+
+#: templates/registrations/reference.html
+#: templates/registrations/reference_success.html
+msgid "You've already given a reference for this person."
+msgstr "Je hebt deze persoon al een referentie gegeven."
+
+#: templates/registrations/register_benefactor.html
+#: templates/registrations/renewal.html
+msgid "Benefactor"
+msgstr "Begunstiger"
+
+#: templates/registrations/register_benefactor.html
 #: templates/registrations/register_member.html
 msgid ""
 "If you've been a member before you should login using your existing account "
@@ -726,10 +811,18 @@ msgstr ""
 "en vernieuw je lidmaatschap in de accountinstellingen. Je kunt je niet "
 "opnieuw registreren via dit formulier."
 
+#: templates/registrations/register_benefactor.html
 #: templates/registrations/register_member.html
-msgid "Display birthday in calendar"
-msgstr "Toon verjaardag in de kalender"
+msgid ""
+"If you have any other questions about Thalia and/or your membership, feel "
+"free to email <a href=\"mailto:info@thalia.nu\" rel=\"noopener\" target="
+"\"_blank\">info@thalia.nu</a>!"
+msgstr ""
+"Mocht je nog verdere vragen hebben over Thalia en/of je lidmaatschap dan kun "
+"je altijd mailen naar <a href=\"mailto:info@thalia.nu\" rel=\"noopener\" "
+"target=\"_blank\">info@thalia.nu</a>!"
 
+#: templates/registrations/register_benefactor.html
 #: templates/registrations/register_member.html
 msgid ""
 "Receive emails about (amongst others) job opportunities and in-house days "
@@ -738,20 +831,44 @@ msgstr ""
 "Ik wil e-mails ontvangen over (onder andere) baankansen en in-house dagen "
 "van partners van Thalia."
 
+#: templates/registrations/register_benefactor.html
 #: templates/registrations/register_member.html
-#: templates/registrations/renewal.html
-#, python-format
-msgid ""
-"I accept the <a target=\"_blank\" href=\"%(privacy_policy_url)s\">privacy "
-"policy</a>"
-msgstr ""
-"Ik ga akkoord met het <a target=\"_blank\" href=\"%(privacy_policy_url)s"
-"\">privacybeleid</a>"
+msgid "Display birthday in calendar"
+msgstr "Toon verjaardag in de kalender"
 
+#: templates/registrations/register_benefactor.html
 #: templates/registrations/register_member.html
 #: templates/registrations/renewal.html
 msgid "send"
 msgstr "verstuur"
+
+#: templates/registrations/register_member.html
+msgid "Member"
+msgstr "Lid"
+
+#: templates/registrations/register_member.html
+#, python-format
+msgid ""
+"A membership costs € %(year_fees)s per year, or € %(study_fees)s for your "
+"entire study duration. <br/> Note: Only Computing Science and Information "
+"Sciences students at the Radboud University can become a member.<br/><br/> "
+"It is still possible to be associated with Thalia, even if you do not study "
+"Computing Science or Information Sciences (anymore): You can become a "
+"benefactor. For at least € %(year_fees)s per year, you too can enjoy "
+"everything Thalia has to offer.<br/> <em> Note that this form is only for "
+"member registration. Please use the <a href=\"%(benefactor_register)s"
+"\">benefactor registration page</a> if you want to become a benefactor. </em>"
+msgstr ""
+"Een lidmaatschap kost € %(year_fees)s per jaar, of € %(study_fees)s voor je "
+"hele studieperiode. <br/> Let wel op: Je kunt alleen lid worden wanneer je "
+"informatica of informatiekunde studeert aan de Radboud Universiteit.<br/><br/"
+">Mocht je nu geen Informatica of Informatiekunde (meer) studeren, maar toch "
+"verbonden willen zijn, dan kan dat ook. Hiervoor kun je begunstiger van "
+"Thalia worden. Voor minimaal € %(year_fees)s per jaar kun je ook genieten "
+"van alles wat Thalia je te bieden heeft.<br/> <em>Let op dat dit formulier "
+"alleen gebruikt kan worden voor registratie van leden. Gebruik de <a href="
+"\"%(benefactor_register)s\">registratiepagina voor begunstigers</a> als je "
+"een begunstiger wilt worden.</em>"
 
 #: templates/registrations/register_success.html
 msgid "registration success"
@@ -846,12 +963,6 @@ msgstr ""
 "verlengen."
 
 #: templates/registrations/renewal.html
-msgid "You're a benefactor. Contact the board to renew your membership."
-msgstr ""
-"Je bent een begunstiger. Neem contact op met het bestuur om je lidmaatschap "
-"te verlengen."
-
-#: templates/registrations/renewal.html
 msgid ""
 "You currently have an active membership for your entire study duration. Did "
 "you graduate or stop with your studies for some other reason? Please let us "
@@ -860,10 +971,6 @@ msgstr ""
 "Je hebt op dit moment een actief lidmaatschap dat geldig is totdat je "
 "afstudeert. Ben je klaar met studeren of ben je om een andere reden gestopt? "
 "Laat ons dat alsjeblieft weten door een mail te sturen naar info@thalia.nu."
-
-#: templates/registrations/renewal.html
-msgid "Benefactor"
-msgstr "Begunstiger"
 
 #: templates/registrations/renewal_success.html
 msgid "success"

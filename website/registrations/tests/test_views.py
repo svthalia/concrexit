@@ -1,3 +1,6 @@
+from unittest import mock
+from unittest.mock import MagicMock, Mock
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
@@ -5,40 +8,30 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.http import HttpRequest, HttpResponse, QueryDict
+from django.http import HttpResponse
 from django.template.defaultfilters import floatformat
-from django.test import Client, TestCase
+from django.test import Client, TestCase, RequestFactory
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from unittest import mock
-from unittest.mock import MagicMock, Mock
 
-from members.models import Membership
+from members.models import Membership, Profile, Member
 from registrations import views
-from registrations.models import Entry, Registration, Renewal
+from registrations.models import Entry, Registration, Renewal, Reference
 from registrations.views import RenewalFormView
 
 
-def _get_mock_request(method='GET', is_staff=False,
-                      is_authenticated=False, perms=None):
-    if perms is None:
-        perms = []
+def _get_mock_user(is_staff=False, is_authenticated=False, perms=None):
+    user = mock.MagicMock()
+    user.pk = 1
+    user.is_staff = is_staff
+    user.is_authenticated = is_authenticated
 
-    mock_request = HttpRequest()
-    mock_request.method = method
-    mock_request.META = mock.Mock(return_value={})
-    mock_request.user = mock.MagicMock()
-    mock_request.user.pk = 1
-    mock_request.user.is_staff = is_staff
-    mock_request.user.is_authenticated = is_authenticated
+    user.is_superuser = False
+    user.user_permissions = perms
+    user.has_perm = lambda x: x in perms
 
-    mock_request.user.is_superuser = False
-    mock_request.user.user_permissions = perms
-    mock_request.user.has_perm = lambda x: x in perms
-    mock_request.member = mock_request.user
-    mock_request._messages = mock.Mock()
-    return mock_request
+    return user
 
 
 class EntryAdminViewTest(TestCase):
@@ -73,6 +66,7 @@ class EntryAdminViewTest(TestCase):
         )
 
     def setUp(self):
+        self.rf = RequestFactory()
         self.client = Client()
         self.client.force_login(self.user)
         self.view = views.EntryAdminView()
@@ -126,10 +120,15 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.return_value = entry_qs
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
-                request = _get_mock_request()
-                request.POST = {
-                    'action': 'accept',
-                }
+                request = self.rf.post(
+                    f'/registration/admin/process/{entry.pk}/',
+                    {
+                        'action': 'accept',
+                    }
+                )
+                request.user = _get_mock_user()
+                request.member = request.user
+                request._messages = Mock()
                 response = self.view.post(request, pk=entry.pk)
 
                 self.assertEqual(response.status_code, 302)
@@ -179,10 +178,15 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.return_value = entry_qs
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
-                request = _get_mock_request()
-                request.POST = {
-                    'action': 'reject',
-                }
+                request = self.rf.post(
+                    f'/registration/admin/process/{entry.pk}/',
+                    {
+                        'action': 'reject',
+                    }
+                )
+                request.user = _get_mock_user()
+                request.member = request.user
+                request._messages = Mock()
                 response = self.view.post(request, pk=entry.pk)
 
                 self.assertEqual(response.status_code, 302)
@@ -221,10 +225,15 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.return_value = entry_qs
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
-                request = _get_mock_request()
-                request.POST = {
-                    'action': 'resend',
-                }
+                request = self.rf.post(
+                    f'/registration/admin/process/{entry.pk}/',
+                    {
+                        'action': 'resend',
+                    }
+                )
+                request.user = _get_mock_user()
+                request.member = request.user
+                request._messages = Mock()
                 response = self.view.post(request, pk=entry.pk)
 
                 self.assertEqual(response.status_code, 302)
@@ -253,10 +262,15 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.return_value = entry_qs
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
-                request = _get_mock_request()
-                request.POST = {
-                    'action': 'revert',
-                }
+                request = self.rf.post(
+                    f'/registration/admin/process/{entry.pk}/',
+                    {
+                        'action': 'revert',
+                    }
+                )
+                request.user = _get_mock_user()
+                request.member = request.user
+                request._messages = Mock()
                 response = self.view.post(request, pk=entry.pk)
 
                 self.assertEqual(response.status_code, 302)
@@ -276,7 +290,15 @@ class EntryAdminViewTest(TestCase):
             )
         )
 
-        request = _get_mock_request()
+        request = self.rf.post(
+            f'/registration/admin/process/1234/',
+            {
+                'action': 'accept',
+            }
+        )
+        request.user = _get_mock_user()
+        request.member = request.user
+        request._messages = Mock()
         response = self.view.post(request, pk=4)
 
         self.assertEqual(response.status_code, 302)
@@ -300,7 +322,12 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.return_value = entry_qs
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
-                request = _get_mock_request()
+                request = self.rf.post(
+                    f'/registration/admin/process/{entry.pk}/',
+                )
+                request.user = _get_mock_user()
+                request.member = request.user
+                request._messages = Mock()
                 response = self.view.post(request, pk=entry.pk)
 
                 self.assertFalse(reject_entries.called)
@@ -342,13 +369,14 @@ class ConfirmEmailViewTest(TestCase):
         self.view = views.ConfirmEmailView()
 
     @mock.patch('registrations.services.confirm_entry')
+    @mock.patch('registrations.emails.send_references_information_message')
     @mock.patch('registrations.emails.send_new_registration_board_message')
-    def test_get(self, board_mail, confirm_entry):
-        entry_qs = Entry.objects.filter(pk=self.entry.pk)
+    def test_get(self, board_mail, references_email, confirm_entry):
+        reg_qs = Entry.objects.filter(pk=self.entry.pk)
         with mock.patch(
-                'registrations.models.Entry.objects.filter') as qs_mock:
-            qs_mock.return_value = entry_qs
-            qs_mock.get = Mock(return_value=entry_qs.get())
+                'registrations.models.Registration.objects.filter') as qs_mock:
+            qs_mock.return_value = reg_qs
+            qs_mock.get = Mock(return_value=reg_qs.get())
 
             with self.subTest('Successful email confirmation'):
                 response = self.client.get(reverse(
@@ -360,8 +388,25 @@ class ConfirmEmailViewTest(TestCase):
                     ['registrations/confirm_email.html']
                 )
 
-                confirm_entry.assert_called_once_with(entry_qs)
-                board_mail.assert_called_once_with(entry_qs.get())
+                confirm_entry.assert_called_once_with(reg_qs)
+                board_mail.assert_called_once_with(reg_qs.get())
+                self.assertFalse(references_email.called)
+
+            with self.subTest('Successful voucher information'):
+                self.entry.membership_type = Membership.BENEFACTOR
+                self.entry.no_references = False
+                self.entry.save()
+
+                response = self.client.get(reverse(
+                    'registrations:confirm-email', args=(self.entry.pk,)))
+
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(
+                    response.template_name,
+                    ['registrations/confirm_email.html']
+                )
+
+                references_email.assert_called_once_with(reg_qs.get())
 
             with self.subTest('Redirect when nothing was processed'):
                 confirm_entry.return_value = 0
@@ -369,7 +414,8 @@ class ConfirmEmailViewTest(TestCase):
                 response = self.client.get(reverse(
                     'registrations:confirm-email', args=(self.entry.pk,)))
                 self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, '/registration/register/')
+                self.assertEqual(response.url,
+                                 '/registration/register/member/')
 
             with self.subTest('Redirect when registration confirm errors'):
                 confirm_entry.side_effect = ValidationError(message='Error')
@@ -377,7 +423,8 @@ class ConfirmEmailViewTest(TestCase):
                 response = self.client.get(reverse(
                     'registrations:confirm-email', args=(self.entry.pk,)))
                 self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, '/registration/register/')
+                self.assertEqual(response.url,
+                                 '/registration/register/member/')
 
             with self.subTest('Redirect when no entries were processed'):
                 confirm_entry.return_value = 0
@@ -387,7 +434,8 @@ class ConfirmEmailViewTest(TestCase):
                     args=('00000000-0000-0000-0000-000000000000',)
                 ))
                 self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, '/registration/register/')
+                self.assertEqual(response.url,
+                                 '/registration/register/member/')
 
     def test_get_no_mocks(self):
         response = self.client.get(reverse(
@@ -402,56 +450,44 @@ class BecomeAMemberViewTest(TestCase):
 
     def test_get_context_data(self):
         context = self.view.get_context_data()
+        self.assertEqual(len(context), 3)
+        self.assertEqual(context['year_fees'], floatformat(
+            settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2))
+        self.assertEqual(context['study_fees'], floatformat(
+            settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2))
+
+
+class BaseRegistrationFormViewTest(TestCase):
+
+    def setUp(self):
+        self.rf = RequestFactory()
+        self.view = views.BaseRegistrationFormView()
+
+    def test_get_context_data(self):
+        self.view.request = self.rf.post('/')
+        context = self.view.get_context_data()
         self.assertEqual(len(context), 4)
         self.assertEqual(context['year_fees'], floatformat(
             settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2))
         self.assertEqual(context['study_fees'], floatformat(
             settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2))
-        self.assertEqual(context['member_form_url'],
-                         reverse('registrations:register'))
-
-
-class MemberRegistrationFormViewTest(TestCase):
-
-    def setUp(self):
-        self.view = views.MemberRegistrationFormView()
-
-    def test_get_context_data(self):
-        self.view.request = _get_mock_request()
-        context = self.view.get_context_data()
-        self.assertEqual(len(context), 5)
-        self.assertEqual(context['year_fees'], floatformat(
-            settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2))
-        self.assertEqual(context['study_fees'], floatformat(
-            settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2))
-        self.assertEqual(context['privacy_policy_url'],
-                         reverse('privacy-policy'))
 
     @mock.patch('django.views.generic.FormView.get')
     def test_get(self, super_get):
         super_get.return_value = HttpResponse(status=200)
 
-        request = _get_mock_request(is_authenticated=False)
+        request = self.rf.get('/')
+        request.user = _get_mock_user(is_authenticated=False)
+        request.member = request.user
         response = self.view.get(request)
         self.assertEqual(response.status_code, 200)
 
-        request = _get_mock_request(is_authenticated=True)
+        request = self.rf.get('/')
+        request.user = _get_mock_user(is_authenticated=True)
+        request.member = request.user
         response = self.view.get(request)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('registrations:renew'))
-
-    @mock.patch('django.views.generic.FormView.post')
-    def test_post(self, super_post):
-        request = _get_mock_request()
-        request.LANGUAGE_CODE = 'nl'
-        request.member.pk = 2
-        self.view.request = request
-
-        self.view.post(request)
-
-        request = super_post.call_args[0][0]
-        self.assertEqual(request.POST['language'], 'nl')
-        self.assertEqual(request.POST['membership_type'], Membership.MEMBER)
 
     def test_form_valid(self):
         mock_form = MagicMock()
@@ -464,9 +500,94 @@ class MemberRegistrationFormViewTest(TestCase):
                          reverse('registrations:register-success'))
 
 
+class MemberRegistrationFormViewTest(TestCase):
+
+    def setUp(self):
+        self.rf = RequestFactory()
+        self.view = views.MemberRegistrationFormView()
+
+    @mock.patch('django.views.generic.FormView.post')
+    def test_post(self, super_post):
+        request = self.rf.post('/')
+        request.LANGUAGE_CODE = 'nl'
+        request.user = _get_mock_user()
+        request.member = request.user
+        request.member.pk = 2
+        self.view.request = request
+
+        self.view.post(request)
+
+        request = super_post.call_args[0][0]
+        self.assertEqual(request.POST['language'], 'nl')
+        self.assertEqual(request.POST['membership_type'], Membership.MEMBER)
+
+    @mock.patch('registrations.emails.send_registration_email_confirmation')
+    def test_form_valid(self, send_email):
+        mock_form = MagicMock()
+        mock_form.instance = {
+            'hello': 'world'
+        }
+
+        return_value = self.view.form_valid(mock_form)
+
+        mock_form.save.assert_called_once_with()
+        self.assertEqual(return_value.status_code, 302)
+        self.assertEqual(return_value.url,
+                         reverse('registrations:register-success'))
+
+        send_email.assert_called_once_with(mock_form.instance)
+
+
+class BenefactorRegistrationFormViewTest(TestCase):
+
+    def setUp(self):
+        self.rf = RequestFactory()
+        self.view = views.BenefactorRegistrationFormView()
+
+    @mock.patch('django.views.generic.FormView.post')
+    def test_post(self, super_post):
+        request = self.rf.post('/', {})
+        request.LANGUAGE_CODE = 'nl'
+        request.user = _get_mock_user()
+        request.member = request.user
+        request.member.pk = 2
+        self.view.request = request
+
+        with self.subTest('No iCIS employee'):
+            self.view.post(request)
+
+            request = super_post.call_args[0][0]
+            self.assertEqual(request.POST['language'], 'nl')
+            self.assertEqual(request.POST['membership_type'],
+                             Membership.BENEFACTOR)
+            self.assertEqual(request.POST['length'], Entry.MEMBERSHIP_YEAR)
+            self.assertEqual(request.POST['remarks'], '')
+
+        request = self.rf.post('/', {
+            'icis_employee': True
+        })
+        request.LANGUAGE_CODE = 'nl'
+        request.user = _get_mock_user()
+        request.member = request.user
+        request.member.pk = 2
+        self.view.request = request
+
+        with self.subTest('An iCIS employee'):
+            self.view.post(request)
+
+            request = super_post.call_args[0][0]
+            self.assertEqual(request.POST['language'], 'nl')
+            self.assertEqual(request.POST['membership_type'],
+                             Membership.BENEFACTOR)
+            self.assertEqual(request.POST['length'], Entry.MEMBERSHIP_YEAR)
+            self.assertEqual(request.POST['remarks'],
+                             'Registered as iCIS employee')
+
+
 class RenewalFormViewTest(TestCase):
 
     def setUp(self):
+        self.rf = RequestFactory()
         self.view = views.RenewalFormView()
 
     def test_get_context_data(self):
@@ -477,7 +598,7 @@ class RenewalFormViewTest(TestCase):
         self.view.request = MagicMock()
 
         with mock.patch('members.models.Membership.objects'
-                ) as _qs:  # noqa: F841
+                        ) as _qs:  # noqa: F841
             Membership.objects.filter().exists.return_value = True
             context = self.view.get_context_data(form=MagicMock())
             self.assertEqual(len(context), 7)
@@ -496,8 +617,6 @@ class RenewalFormViewTest(TestCase):
 
                 context = self.view.get_context_data(form=MagicMock())
                 self.assertEqual(context['latest_membership'], membership)
-                self.assertEqual(context['privacy_policy_url'],
-                                 reverse('privacy-policy'))
 
             with self.subTest('Without latest membership'):
                 self.view.request.member.latest_membership = None
@@ -506,7 +625,7 @@ class RenewalFormViewTest(TestCase):
                 self.assertEqual(context['latest_membership'], None)
 
     def test_get_form(self):
-        self.view.request = _get_mock_request()
+        self.view.request = self.rf.get('/')
 
         self.view.request.member = None
         form = self.view.get_form()
@@ -535,46 +654,304 @@ class RenewalFormViewTest(TestCase):
 
     @mock.patch('django.views.generic.FormView.post')
     def test_post(self, super_post):
-        request = _get_mock_request()
-        request.member = MagicMock()
-        request.member.pk = 2
-        request.member.latest_membership = Membership(
-            until=timezone.now().date(),
-            type=Membership.MEMBER
-        )
-        self.view.request = request
+        with mock.patch('members.models.Membership.objects'):
+            Membership.objects.filter().exists.return_value = False
+            with self.subTest('Member type'):
+                request = self.rf.post('/', {
+                    'membership_type': Membership.MEMBER
+                })
+                request.member = MagicMock()
+                request.member.pk = 2
+                self.view.request = request
 
-        with self.subTest('Member type'):
-            request.POST = QueryDict()
-            request.member.latest_membership.type = Membership.MEMBER
-            self.view.post(request)
+                request.member.latest_membership.type = Membership.MEMBER
+                self.view.post(request)
 
-            request = super_post.call_args[0][0]
-            self.assertEqual(request.POST['member'], 2)
-            self.assertFalse('membership_type' in request.POST)
+                request = super_post.call_args[0][0]
+                self.assertEqual(request.POST['member'], 2)
+                self.assertEqual(request.POST['remarks'], '')
 
-        with self.subTest('Benefactor type'):
-            request.POST = QueryDict()
-            request.member.latest_membership.type = Membership.BENEFACTOR
-            self.view.post(request)
+            with self.subTest('Forced benefactor type'):
+                request = self.rf.post('/', {
+                    'membership_type': Membership.MEMBER
+                })
+                request.member = MagicMock()
+                request.member.pk = 2
+                self.view.request = request
 
-            request = super_post.call_args[0][0]
-            self.assertEqual(request.POST['member'], 2)
-            self.assertEqual(request.POST['membership_type'],
-                             Membership.BENEFACTOR)
-            self.assertEqual(request.POST['length'], Entry.MEMBERSHIP_YEAR)
+                request.member.latest_membership.type = Membership.BENEFACTOR
+                self.view.post(request)
 
+                request = super_post.call_args[0][0]
+                self.assertEqual(request.POST['member'], 2)
+                self.assertEqual(request.POST['membership_type'],
+                                 Membership.BENEFACTOR)
+                self.assertEqual(request.POST['length'], Entry.MEMBERSHIP_YEAR)
+
+            with self.subTest('Detects old memberships'):
+                request = self.rf.post('/', {
+                    'membership_type': Membership.BENEFACTOR
+                })
+                request.member = MagicMock()
+                request.member.pk = 2
+                self.view.request = request
+
+                Membership.objects.filter().exists.return_value = True
+                self.view.post(request)
+                request = super_post.call_args[0][0]
+                self.assertEqual(request.POST['remarks'],
+                                 'Was a Thalia member in the past.')
+
+            with self.subTest('Adds iCIS remark'):
+                request = self.rf.post('/', {
+                    'membership_type': Membership.BENEFACTOR,
+                    'icis_employee': True
+                })
+                request.member = MagicMock()
+                request.member.pk = 2
+                self.view.request = request
+
+                Membership.objects.filter().exists.return_value = False
+                self.view.post(request)
+                request = super_post.call_args[0][0]
+                self.assertEqual(request.POST['remarks'],
+                                 'Registered as iCIS employee.')
+
+    @mock.patch('registrations.emails.send_references_information_message')
     @mock.patch('registrations.emails.send_new_renewal_board_message')
-    def test_form_valid(self, board_mail):
+    def test_form_valid(self, board_mail, references_mail):
         mock_form = Mock(spec=RenewalFormView)
+        member = Member(
+            email="test@example.org",
+            first_name='John',
+            last_name='Doe',
+            profile=Profile(
+                language='en'
+            )
+        )
+
         renewal = Renewal(
-            pk=2
+            pk=0,
+            member=member
         )
         mock_form.save = MagicMock(return_value=renewal)
 
-        return_value = self.view.form_valid(mock_form)
-        board_mail.assert_called_once_with(renewal)
+        with self.subTest('No references required'):
+            renewal.no_references = True
+            return_value = self.view.form_valid(mock_form)
+            board_mail.assert_called_once_with(renewal)
+            self.assertFalse(references_mail.called)
 
-        self.assertEqual(return_value.status_code, 302)
-        self.assertEqual(return_value.url,
-                         reverse('registrations:renew-success'))
+            self.assertEqual(return_value.status_code, 302)
+            self.assertEqual(return_value.url,
+                             reverse('registrations:renew-success'))
+
+        board_mail.reset_mock()
+
+        with self.subTest('References required'):
+            renewal.no_references = False
+            return_value = self.view.form_valid(mock_form)
+            board_mail.assert_called_once_with(renewal)
+            references_mail.assert_called_once_with(renewal)
+
+            self.assertEqual(return_value.status_code, 302)
+            self.assertEqual(return_value.url,
+                             reverse('registrations:renew-success'))
+
+
+class ReferenceCreateViewTest(TestCase):
+    """
+    Test for the ReferenceCreateView
+    """
+    fixtures = ['members.json']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.login_user = Member.objects.filter(last_name="Wiggers").first()
+        cls.registration = Registration.objects.create(
+            first_name='John',
+            last_name='Doe',
+            email='johndoe@example.com',
+            programme='computingscience',
+            student_number='s1234567',
+            starting_year=2014,
+            address_street='Heyendaalseweg 135',
+            address_street2='',
+            address_postal_code='6525AJ',
+            address_city='Nijmegen',
+            address_country='NL',
+            phone_number='06123456789',
+            birthday=timezone.now().replace(year=1990, day=1),
+            language='en',
+            length=Entry.MEMBERSHIP_YEAR,
+            membership_type=Membership.BENEFACTOR,
+            status=Entry.STATUS_CONFIRM,
+        )
+        cls.new_user = get_user_model().objects.create_user(
+            username='username',
+            first_name='Johnny',
+            last_name='Test'
+        )
+        cls.renewal = Renewal.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
+            membership_type=Membership.BENEFACTOR,
+            status=Entry.STATUS_CONFIRM,
+            member=cls.new_user
+        )
+
+    def setUp(self):
+        self.rf = RequestFactory()
+        self.view = views.ReferenceCreateView()
+        self.client = Client()
+        self.client.force_login(self.login_user)
+
+    def test_not_logged_in(self):
+        """
+        If there is no logged-in user they should redirect
+        to the authentication page
+        """
+        self.client.logout()
+
+        response = self.client.get(
+            reverse('registrations:reference',
+                    args=(self.registration.pk,)),
+            follow=True
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            [('/login/?next=' +
+              reverse('registrations:reference',
+                      args=(self.registration.pk,)), 302)],
+            response.redirect_chain
+        )
+
+    def test_not_a_current_member(self):
+        """
+        If the logged-in user is not a member they should not be able to visit
+        this page
+        """
+        self.client.logout()
+        self.client.force_login(self.new_user)
+
+        response = self.client.get(reverse('registrations:reference',
+                                           args=(self.registration.pk,)))
+        self.assertEqual(403, response.status_code)
+
+    def test_entry_does_not_exist(self):
+        """
+        If the registration/renewal does not exist a 404 should be shown
+        """
+        response = self.client.get(reverse(
+            'registrations:reference',
+            args=('00000000-0000-0000-0000-000000000000',)
+        ))
+        self.assertEqual(404, response.status_code)
+
+    def test_entry_no_references_required(self):
+        """
+        If the registration/renewal does not require references
+        a 404 should be shown
+        """
+        self.registration.no_references = True
+        self.registration.save()
+
+        response = self.client.get(reverse('registrations:reference',
+                                           args=(self.registration.pk,)))
+        self.assertEqual(404, response.status_code)
+
+    def test_entry_no_benefactor(self):
+        """
+        If the registration/renewal is not a the benefactor type
+        a 404 should be shown
+        """
+        self.registration.membership_type = Membership.MEMBER
+        self.registration.save()
+
+        response = self.client.get(reverse('registrations:reference',
+                                           args=(self.registration.pk,)))
+        self.assertEqual(404, response.status_code)
+
+    def test_entry_shows_info(self):
+        """
+        If everything is alright the info and submission buttons should
+        be shown
+        """
+        with self.subTest('Registration'):
+            response = self.client.get(reverse('registrations:reference',
+                                               args=(self.registration.pk,)))
+            self.assertEqual(200, response.status_code)
+            self.assertEqual('John Doe', response.context['name'])
+            self.assertEqual(False, response.context['success'])
+            self.assertContains(
+                response,
+                '<strong>John Doe</strong> wants to become a benefactor'
+            )
+
+        with self.subTest('Renewal'):
+            response = self.client.get(reverse('registrations:reference',
+                                               args=(self.renewal.pk,)))
+            self.assertEqual(200, response.status_code)
+            self.assertEqual('Johnny Test', response.context['name'])
+            self.assertEqual(False, response.context['success'])
+            self.assertContains(
+                response,
+                '<strong>Johnny Test</strong> wants to become a benefactor'
+            )
+
+    def test_entry_saves_correctly(self):
+        """
+        If a entry is saved it should redirect to the success page
+        which should show the right content. And the Reference object
+        should be saved.
+        """
+        response = self.client.post(
+            reverse('registrations:reference', args=(self.registration.pk,)),
+            follow=True
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            [(reverse('registrations:reference-success',
+                      args=(self.registration.pk,)), 302)],
+            response.redirect_chain
+        )
+        self.assertEqual('John Doe', response.context['name'])
+        self.assertEqual(True, response.context['success'])
+        self.assertContains(
+            response,
+            'Your reference has been saved.'
+        )
+
+        self.assertTrue(
+            Reference.objects.filter(
+                member=self.login_user,
+                entry=self.registration
+            ).exists()
+        )
+
+    def test_entry_reference_exists(self):
+        """
+        If there is already a reference for an entry then the page should
+        show an error and not redirect.
+        """
+        Reference.objects.create(
+            member=self.login_user,
+            entry=self.registration
+        )
+
+        response = self.client.post(
+            reverse('registrations:reference', args=(self.registration.pk,)),
+            follow=True
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            [],
+            response.redirect_chain
+        )
+        self.assertEqual({
+            '__all__': ['Reference with this Member and Entry already exists.']
+        }, response.context['form'].errors)
+        self.assertEqual(False, response.context['success'])
+        self.assertContains(
+            response,
+            'You\'ve already given a reference for this person.'
+        )
