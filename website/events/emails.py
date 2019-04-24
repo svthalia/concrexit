@@ -1,4 +1,5 @@
 """The emails defined by the events package"""
+from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils import translation
@@ -6,15 +7,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from events.models import Registration
 from members.models import Profile
-from thaliawebsite.templatetags import baseurl
 
 
-def notify_first_waiting(request, event):
+def notify_first_waiting(event):
     """
     Send an email to the first person on the waiting list
     when someone cancels their registration
 
-    :param request: the request object
     :param event: the event
     """
     if (event.max_participants is not None and
@@ -42,7 +41,7 @@ def notify_first_waiting(request, event):
                 'event': event,
                 'registration': first_waiting,
                 'member': first_waiting_member,
-                'base_url': baseurl.baseurl(context={'request': request})
+                'base_url': settings.BASE_URL
             })
 
             EmailMessage(

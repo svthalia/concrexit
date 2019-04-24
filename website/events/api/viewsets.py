@@ -215,8 +215,7 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
     def destroy(self, request, pk=None, **kwargs):
         registration = self.get_object()
         try:
-            services.cancel_registration(request,
-                                         registration.member,
+            services.cancel_registration(registration.member,
                                          registration.event)
             return Response(status=204)
         except RegistrationError as e:

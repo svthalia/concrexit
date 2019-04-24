@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.http import HttpRequest
 
-from newsletters import emails, models
+from newsletters import models, services
 
 
 class Command(BaseCommand):
@@ -32,4 +32,4 @@ class Command(BaseCommand):
         request.META['SERVER_PORT'] = options['server-port']
         for n in models.Newsletter.objects.all():
             if n.sent or options['include-unsent']:
-                emails.save_to_disk(n, request)
+                services.save_to_disk(n, request)

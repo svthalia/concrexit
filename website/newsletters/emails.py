@@ -11,11 +11,10 @@ from partners.models import Partner
 from newsletters import services
 
 
-def send_newsletter(request, newsletter):
+def send_newsletter(newsletter):
     """
     Sends the newsletter as HTML and plaintext email
 
-    :param request: the request object
     :param newsletter: the newsletter to be send
     """
     partners = Partner.objects.filter(is_main_partner=True)
@@ -47,8 +46,7 @@ def send_newsletter(request, newsletter):
             'newsletter': newsletter,
             'agenda_events': events,
             'main_partner': main_partner,
-            'lang_code': language[0],
-            'request': request
+            'lang_code': language[0]
         }
 
         html_message = html_template.render(context)

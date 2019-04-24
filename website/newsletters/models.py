@@ -2,6 +2,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from tinymce.models import HTMLField
 
@@ -27,6 +28,12 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
                     'for. If you leave it empty no week is shown.'),
         blank=True,
         null=True
+    )
+
+    send_date = models.DateTimeField(
+        verbose_name=_('Send date'),
+        blank=True,
+        null=True,
     )
 
     description = MultilingualField(
@@ -59,6 +66,11 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
             errors.update({
                 'description_en': _('Please make sure all urls are absolute '
                                     'and contain http(s)://.')
+            })
+        if self.send_date and self.send_date <= timezone.now():
+            errors.update({
+                'send_date': _('Please make sure the send date is '
+                               'not in the past.')
             })
 
         if errors:
