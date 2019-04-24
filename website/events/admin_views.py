@@ -98,7 +98,7 @@ class RegistrationAdminFields(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.registration = get_object_or_404(
-            Registration, pk=self.kwargs['pk'])
+            Registration, pk=self.kwargs['registration'])
         try:
             if self.registration.event.has_fields():
                 return super().dispatch(request, *args, **kwargs)
