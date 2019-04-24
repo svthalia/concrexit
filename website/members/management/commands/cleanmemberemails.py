@@ -23,8 +23,8 @@ class Command(BaseCommand):
             try:
                 validate_email(user.email)
             except ValidationError:
-                print("Email address for " + user.username +
-                      " invalid: " + user.email)
+                self.stdout.write("Email address for " + user.username +
+                                  " invalid: " + user.email)
                 if not options['dry-run']:
                     user.email = ""
                     user.save()

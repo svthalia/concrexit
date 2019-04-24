@@ -17,4 +17,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         processed = services.execute_data_minimisation(options['dry-run'])
         for p in processed:
-            print('Removed data for {}'.format(p))
+            self.stdout.write('Removed data for {}'.format(p))

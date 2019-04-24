@@ -26,11 +26,11 @@ class Command(BaseCommand):
         slug = slugify('-'.join([str(date), title]))
 
         if Album.objects.filter(title=title, date=date).exists():
-            print("An album with title ({}) and date ({}) already exists."
-                  .format(title, date))
+            self.stdout.write("An album with title ({}) and"
+                              " date ({}) already exists.".format(title, date))
             return
 
-        print("Importing album '{}' ({})".format(title, str(date)))
+        self.stdout.write("Importing album '{}' ({})".format(title, str(date)))
         album = Album(title=title, date=date, slug=slug)
         album.save()
 
@@ -43,6 +43,7 @@ class Command(BaseCommand):
                 photo.save()
                 n += 1
             except Exception:
-                print("Could not import {}".format(filename))
+                self.stdout.write("Could not import {}".format(filename))
 
-        print("Imported {} photos from {}".format(n, options['folder']))
+        self.stdout.write("Imported {} photos from {}"
+                          .format(n, options['folder']))
