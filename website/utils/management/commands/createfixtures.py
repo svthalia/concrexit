@@ -133,8 +133,8 @@ class Command(BaseCommand):
         """
         members = Member.objects.all()
         if len(members) < 6:
-            print('Your database does not contain 6 users.')
-            print(f'Creating {6 - len(members)} more users.')
+            self.stdout.write('Your database does not contain 6 users.')
+            self.stdout.write(f'Creating {6 - len(members)} more users.')
             for __ in range(6 - len(members)):
                 self.create_user()
 
@@ -177,8 +177,8 @@ class Command(BaseCommand):
         """
         members = Member.objects.all()
         if len(members) < 6:
-            print('Your database does not contain 6 users.')
-            print(f'Creating {6 - len(members)} more users.')
+            self.stdout.write('Your database does not contain 6 users.')
+            self.stdout.write(f'Creating {6 - len(members)} more users.')
             for __ in range(6 - len(members)):
                 self.create_user()
             members = Member.objects.all()
@@ -252,8 +252,9 @@ class Command(BaseCommand):
         """
         groups = MemberGroup.objects.all()
         if len(groups) == 0:
-            print('Your database does not contain any member groups.')
-            print('Creating a committee.')
+            self.stdout.write('Your database does not contain any '
+                              'member groups.')
+            self.stdout.write('Creating a committee.')
             self.create_member_group(Committee)
             groups = MemberGroup.objects.all()
         event = Event()
@@ -496,11 +497,12 @@ class Command(BaseCommand):
                 'user', 'vacancy', 'document', 'newsletter']
 
         if all([not options[opt] for opt in opts]):
-            print("Use ./manage.py help createfixtures to find out how to call"
-                  " this command")
+            self.stdout.write("Use ./manage.py help createfixtures to find out"
+                              " how to call this command")
 
         if options['all']:
-            print('all argument given, overwriting all other inputs')
+            self.stdout.write('all argument given, overwriting'
+                              ' all other inputs')
             options = {
                 'user': 20,
                 'board': 3,
@@ -554,7 +556,8 @@ class Command(BaseCommand):
         if options['vacancy']:
             categories = VacancyCategory.objects.all()
             if not categories:
-                print('No vacancy categories found. Creating 5 categories.')
+                self.stdout.write('No vacancy categories found. '
+                                  'Creating 5 categories.')
                 for __ in range(5):
                     self.create_vacancy_category()
                 categories = VacancyCategory.objects.all()
