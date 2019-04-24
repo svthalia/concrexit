@@ -8,8 +8,8 @@ variables:
   # Installs:
   #  - pip: coverage, poetry
   #  - apt: ghostscript
-  PY36_IMAGE: thalia/python-thalia:3.6
   PY37_IMAGE: thalia/python-thalia:3.7
+  PY38_IMAGE: thalia/python-thalia:3.8
   PIP_CACHE_DIR: "${CI_PROJECT_DIR}/pip-cache"
 
 stages:
@@ -18,7 +18,7 @@ stages:
 
 codestyle:
   stage: test
-  image: $PY36_IMAGE
+  image: $PY37_IMAGE
   before_script:
     - poetry install --no-interaction
   script:
@@ -48,11 +48,7 @@ codestyle:
     - poetry run python -Wall -mcoverage run manage.py test
     - coverage report
 
-python36-django21:
-  <<: *djangotest
-  image: $PY36_IMAGE
-
-python37-django21:
+python37-django22:
   <<: *djangotest
   image: $PY37_IMAGE
   after_script:
@@ -61,6 +57,11 @@ python37-django21:
   artifacts:
     paths:
       - website/covhtml/
+
+python38-django22:
+  <<: *djangotest
+  image: $PY38_IMAGE
+  allow_failure: true
 
 .sshsetup: &sshsetup
   before_script:
@@ -76,7 +77,7 @@ coverage deploy:
   stage: deploy
   image: debian:stretch
   dependencies:
-    - python37-django21
+    - python37-django22
   environment:
     name: coverage/${CI_COMMIT_REF_NAME}
     url: https://coverage.technicie.nl/${CI_COMMIT_REF_SLUG}/
@@ -109,7 +110,7 @@ coverage remove:
 
 docs tests:
   stage: test
-  image: $PY36_IMAGE
+  image: $PY37_IMAGE
   before_script:
     # install django deps
     - poetry install --no-interaction --extras "docs"

@@ -11,5 +11,5 @@ class SentryIdentityPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if 'secret' in request.GET:
             return (request.GET['secret'] == settings.MEMBERS_SENTRY_API_SECRET
-                    and request.user.has_perm('auth.sentry_access'))
+                    and request.user.has_perm('members.sentry_access'))
         return False

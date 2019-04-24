@@ -6,46 +6,46 @@ authors = ["Thalia Technicie <www@thalia.nu>"]
 license = "AGPL-3.0-or-later"
 
 [tool.poetry.dependencies]
-python = "^3.6"
-django-localflavor = "^2.1"
-freezegun = "^0.3.11"
-bleach = "^3.1"
-django-tinymce4-lite = "^1.7"
-rcssmin = "^1.0"
-djangorestframework = "^3.9"
-django-ical = "^1.5"
-django-libsass = "^0.7.0"
-django-cors-headers = "^2.4"
-python-magic = "^0.4.15"
-redis = "^3.2"
-Django = "^2.1"
-Pillow = "^5.4"
-django_compressor = "^2.2"
-psycopg2-binary = "^2.7"
-bcrypt = "^3.1"
-argon2_cffi = "^19.1"
-uWSGI = "^2.0"
-django-bootstrap4 = "^0.0.7"
-firebase-admin = "^2.15"
-sentry-sdk = "^0.7.3"
-django-sendfile2 = "^0.4.2"
+python = "^3.7"
+django-localflavor = "~2.1"
+freezegun = "~0.3.11"
+bleach = "~3.1"
+django-tinymce4-lite = "~1.7"
+rcssmin = "~1.0"
+djangorestframework = "~3.9"
+django-ical = "~1.5"
+django-libsass = "~0.7.0"
+django-cors-headers = "~2.5"
+python-magic = "~0.4.15"
+redis = "~3.2"
+Django = "~2.2"
+Pillow = "~5.4"
+django_compressor = "~2.2"
+psycopg2-binary = "~2.8"
+bcrypt = "~3.1"
+argon2_cffi = "~19.1"
+uWSGI = "~2.0"
+django-bootstrap4 = "~0.0.8"
+firebase-admin = "~2.15"
+sentry-sdk = "~0.7.3"
+django-sendfile2 = "~0.4.2"
 
 # docs requirements
-recommonmark = { version = "^0.5.0", optional = true }
-sphinx = { version = "^1.8", optional = true }
+recommonmark = { version = "~0.5.0", optional = true }
+sphinx = { version = "~1.8", optional = true }
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]
 
 [tool.poetry.dev-dependencies]
-django-template-check = "^0.3.1"
-factory_boy = "^2.11"
-flake8 = "^3.7"
-pydenticon = "^0.3.1"
-pylint = "^2.2"
-pylint-django = "^2.0"
-Faker = "^1.0"
-coverage = "^4.5"
+django-template-check = "~0.3.1"
+factory_boy = "~2.11"
+flake8 = "~3.7"
+pydenticon = "~0.3.1"
+pylint = "~2.3"
+pylint-django = "~2.0"
+Faker = "~1.0"
+coverage = "~4.5"
 
 [build-system]
 requires = ["poetry>=0.12"]
