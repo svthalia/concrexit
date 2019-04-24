@@ -21,7 +21,7 @@ class NextCloudUsersView(ListAPIView):
     serializer_class = NextCloudMemberSerializer
 
     def get_queryset(self):
-        perm = Permission.objects.get(content_type__app_label='auth',
+        perm = Permission.objects.get(content_type__app_label='members',
                                       codename='nextcloud_admin')
         return super().get_queryset().filter(
             Q(pk__in=MemberGroupMembership.active_objects.values_list(
@@ -45,7 +45,7 @@ class NextCloudGroupsView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
-        perm = Permission.objects.get(content_type__app_label='auth',
+        perm = Permission.objects.get(content_type__app_label='members',
                                       codename='nextcloud_admin')
         admin_users = Member.current_members.filter(
             Q(is_superuser=True) |
