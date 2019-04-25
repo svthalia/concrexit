@@ -1,7 +1,11 @@
 {
   "extends": [
-    "config:base",
-    "schedule:nonOfficeHours"
+    "config:base"
+  ],
+  "schedule": [
+      "every weekday except on Wednesday",
+      "every weekend",
+      "before 5pm on Wednesday"
   ],
   "poetry": {
     "enabled": true
