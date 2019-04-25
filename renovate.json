@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "config:base",
+    "schedule:nonOfficeHours"
+  ],
+  "poetry": {
+    "enabled": true
+  },
+  "docker": {
+    "enabled": false
+  }
+}
