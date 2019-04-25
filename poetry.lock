@@ -18,11 +18,6 @@ version = "19.1.0"
 cffi = ">=1.0.0"
 six = "*"
 
-[package.extras]
-dev = ["coverage", "hypothesis", "pytest", "sphinx", "wheel", "pre-commit"]
-docs = ["sphinx"]
-tests = ["coverage", "hypothesis", "pytest"]
-
 [[package]]
 category = "dev"
 description = "An abstract syntax tree for Python with inference support."
@@ -60,9 +55,6 @@ version = "3.1.6"
 cffi = ">=1.1"
 six = ">=1.4.1"
 
-[package.extras]
-tests = ["pytest (>=3.2.1,<3.3.0 || >3.3.0)"]
-
 [[package]]
 category = "main"
 description = "An easy safelist-based HTML-sanitizing tool."
@@ -86,10 +78,6 @@ version = "0.12.5"
 [package.dependencies]
 msgpack = "*"
 requests = "*"
-
-[package.extras]
-filecache = ["lockfile (>=0.9)"]
-redis = ["redis (>=2.10.5)"]
 
 [[package]]
 category = "main"
@@ -146,9 +134,6 @@ version = "0.8.1"
 [package.dependencies]
 future = "*"
 
-[package.extras]
-test = ["flake8 (3.5.0)", "hypothesis (3.55.3)", "hypothesislegacysupport"]
-
 [[package]]
 category = "dev"
 description = "Code coverage measurement for Python"
@@ -168,10 +153,6 @@ version = "2.2"
 [package.dependencies]
 pytz = "*"
 sqlparse = "*"
-
-[package.extras]
-argon2 = ["argon2-cffi (>=16.1.0)"]
-bcrypt = ["bcrypt"]
 
 [[package]]
 category = "main"
@@ -345,13 +326,10 @@ version = "2.15.1"
 
 [package.dependencies]
 cachecontrol = ">=0.12.4"
+google-api-core = ">=1.7.0,<2.0.0dev"
 google-cloud-firestore = ">=0.31.0"
 google-cloud-storage = ">=1.13.0"
 six = ">=1.6.1"
-
-[package.dependencies.google-api-core]
-extras = ["grpc"]
-version = ">=1.7.0,<2.0.0dev"
 
 [[package]]
 category = "dev"
@@ -398,16 +376,12 @@ version = "1.9.0"
 [package.dependencies]
 google-auth = ">=0.4.0,<2.0dev"
 googleapis-common-protos = ">=1.5.3,<1.5.4 || >1.5.4,<2.0dev"
+grpcio = ">=1.8.2"
 protobuf = ">=3.4.0"
 pytz = "*"
 requests = ">=2.18.0,<3.0.0dev"
 setuptools = ">=34.0.0"
 six = ">=1.10.0"
-
-[package.extras]
-grpc = ["grpcio (>=1.8.2)"]
-grpcgcp = ["grpcio-gcp (>=0.2.2)"]
-grpcio-gcp = ["grpcio-gcp (>=0.2.2)"]
 
 [[package]]
 category = "main"
@@ -434,9 +408,6 @@ version = "0.29.1"
 [package.dependencies]
 google-api-core = ">=1.0.0,<2.0.0dev"
 
-[package.extras]
-grpc = ["grpcio (>=1.8.2)"]
-
 [[package]]
 category = "main"
 description = "Google Cloud Firestore API client library"
@@ -447,12 +418,9 @@ python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
 version = "0.32.1"
 
 [package.dependencies]
+google-api-core = ">=1.9.0,<2.0.0dev"
 google-cloud-core = ">=0.29.0,<0.30dev"
 pytz = "*"
-
-[package.dependencies.google-api-core]
-extras = ["grpc"]
-version = ">=1.9.0,<2.0.0dev"
 
 [[package]]
 category = "main"
@@ -478,9 +446,6 @@ version = "0.3.2"
 [package.dependencies]
 six = "*"
 
-[package.extras]
-requests = ["requests (>=2.18.0,<3.0.0dev)"]
-
 [[package]]
 category = "main"
 description = "Common protobufs used in Google APIs"
@@ -492,8 +457,17 @@ version = "1.5.9"
 [package.dependencies]
 protobuf = ">=3.6.0"
 
-[package.extras]
-grpc = ["grpcio (>=1.0.0)"]
+[[package]]
+category = "main"
+description = "HTTP/2-based RPC framework"
+marker = "platform_python_implementation != \"PyPy\" and extra == \"grpc\""
+name = "grpcio"
+optional = false
+python-versions = "*"
+version = "1.20.0"
+
+[package.dependencies]
+six = ">=1.5.2"
 
 [[package]]
 category = "main"
@@ -531,12 +505,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "4.3.17"
 
-[package.extras]
-pipfile = ["pipreqs", "requirementslib"]
-pyproject = ["toml"]
-requirements = ["pip", "pipreqs"]
-xdg_home = ["appdirs (>=1.4.0)"]
-
 [[package]]
 category = "main"
 description = "A small but fast and easy to use stand-alone template engine written in pure python."
@@ -547,9 +515,6 @@ version = "2.10.1"
 
 [package.dependencies]
 MarkupSafe = ">=0.23"
-
-[package.extras]
-i18n = ["Babel (>=0.8)"]
 
 [[package]]
 category = "main"
@@ -577,9 +542,6 @@ version = "0.18.0"
 
 [package.dependencies]
 six = "*"
-
-[package.extras]
-upload_appveyor_builds = ["twine (1.11.0)"]
 
 [[package]]
 category = "main"
@@ -733,10 +695,6 @@ version = "2.0.8"
 pylint = ">=2.0"
 pylint-plugin-utils = ">=0.5"
 
-[package.extras]
-for_tests = ["coverage", "django-tables2", "factory-boy", "pytest"]
-with_django = ["django"]
-
 [[package]]
 category = "dev"
 description = "Utilities and helpers for writing Pylint plugins"
@@ -812,9 +770,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "3.2.1"
 
-[package.extras]
-hiredis = ["hiredis (>=0.1.3)"]
-
 [[package]]
 category = "main"
 description = "Python HTTP for Humans."
@@ -828,10 +783,6 @@ certifi = ">=2017.4.17"
 chardet = ">=3.0.2,<3.1.0"
 idna = ">=2.5,<2.9"
 urllib3 = ">=1.21.1,<1.25"
-
-[package.extras]
-security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)"]
-socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
 
 [[package]]
 category = "main"
@@ -864,11 +815,6 @@ version = "0.7.11"
 certifi = "*"
 urllib3 = "*"
 
-[package.extras]
-bottle = ["bottle (>=0.12.13)"]
-falcon = ["falcon (>=1.4)"]
-flask = ["flask (>=0.8)", "blinker (>=1.1)"]
-
 [[package]]
 category = "main"
 description = "Python 2 and 3 compatibility utilities"
@@ -890,8 +836,8 @@ category = "main"
 description = "Python documentation generator"
 name = "sphinx"
 optional = true
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.8.5"
+python-versions = ">=3.5"
+version = "2.0.1"
 
 [package.dependencies]
 Jinja2 = ">=2.3"
@@ -899,29 +845,66 @@ Pygments = ">=2.0"
 alabaster = ">=0.7,<0.8"
 babel = ">=1.3,<2.0 || >2.0"
 colorama = ">=0.3.5"
-docutils = ">=0.11"
+docutils = ">=0.12"
 imagesize = "*"
 packaging = "*"
-requests = ">=2.0.0"
+requests = ">=2.5.0"
 setuptools = "*"
-six = ">=1.5"
 snowballstemmer = ">=1.1"
-sphinxcontrib-websupport = "*"
-
-[package.extras]
-test = ["mock", "pytest", "pytest-cov", "html5lib", "flake8 (>=3.5.0)", "flake8-import-order", "enum34", "mypy", "typed-ast"]
-websupport = ["sqlalchemy (>=0.9)", "whoosh (>=2.0)"]
+sphinxcontrib-applehelp = "*"
+sphinxcontrib-devhelp = "*"
+sphinxcontrib-htmlhelp = "*"
+sphinxcontrib-jsmath = "*"
+sphinxcontrib-qthelp = "*"
+sphinxcontrib-serializinghtml = "*"
 
 [[package]]
 category = "main"
-description = "Sphinx API for Web Apps"
-name = "sphinxcontrib-websupport"
+description = ""
+name = "sphinxcontrib-applehelp"
 optional = true
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.1.0"
+python-versions = "*"
+version = "1.0.1"
 
-[package.extras]
-test = ["pytest", "mock"]
+[[package]]
+category = "main"
+description = ""
+name = "sphinxcontrib-devhelp"
+optional = true
+python-versions = "*"
+version = "1.0.1"
+
+[[package]]
+category = "main"
+description = ""
+name = "sphinxcontrib-htmlhelp"
+optional = true
+python-versions = "*"
+version = "1.0.2"
+
+[[package]]
+category = "main"
+description = "A sphinx extension which renders display math in HTML via JavaScript"
+name = "sphinxcontrib-jsmath"
+optional = true
+python-versions = ">=3.5"
+version = "1.0.1"
+
+[[package]]
+category = "main"
+description = ""
+name = "sphinxcontrib-qthelp"
+optional = true
+python-versions = "*"
+version = "1.0.2"
+
+[[package]]
+category = "main"
+description = ""
+name = "sphinxcontrib-serializinghtml"
+optional = true
+python-versions = "*"
+version = "1.1.3"
 
 [[package]]
 category = "main"
@@ -956,10 +939,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
 version = "1.24.2"
 
-[package.extras]
-secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
-socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
-
 [[package]]
 category = "main"
 description = "The uWSGI server"
@@ -988,7 +967,7 @@ version = "1.11.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "53ac65fbe4da87b850069b78acff3721380d463163b7425adff2916e1e09c1bd"
+content-hash = "1332625e6816bafc65af3d0350120d90694c089498e997e5689f6e12c8ff34d2"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1033,6 +1012,7 @@ google-cloud-firestore = ["4ae5a5568d65b9082759c352144e306fd4c4109bed9fc400844be
 google-cloud-storage = ["0e02039f37d3e4531090f72d1200ad78316625503644864f81c1d6b91516bfa7", "d66bfed1fd51f392ee361b5b7d84efd912f47db52a28722ee2e3994f0a54698d"]
 google-resumable-media = ["2dae98ee716efe799db3578a7b902fbf5592fc5c77d3c0906fc4ef9b1b930861", "3e38923493ca0d7de0ad91c31acfefc393c78586db89364e91cb4f11990e51ba"]
 googleapis-common-protos = ["627ec53fab43d06c1b5c950e217fa9819e169daf753111a7f244e94bf8fb3384"]
+grpcio = ["177fb72c6c8f89788d8065ee5dd239af7a7a26962a4d81777c156c4813ae87dc", "181c0066d0005f81f384cbeade9d5a41dee1e97dc9e6ba005122d4a753b1f056", "26860ffbb5830d3dca76955699996e59703a6b2d4f71c33617178817a6fea303", "277ab0a2c0eb503491300c89a34093caa33dbc5c05c5f49e3f01c65c5fbbeb83", "36719664bc1bf8db4027b576b0f65f36a6cbcea69fe522ea29ee9d02fb4191a5", "43caff66c30fcfcb59424ec121bac0db6b0831da1310e7ec7ec8ad847ecef30b", "4666caf3e642ece8119597482734ab16f14b5d842334b45267182aace0fb2dae", "48bb0526c612c0e5ae39d6e1f5d12eb75ee5e588560a86347dfc381717ed091d", "69d5bb14479be7d6c7097715c54eebbda2c0ba6a8e228aabc69f18e1fd6eaed4", "6aaf92894f12bc7d7c467e0b7f665a319a20b48d41297a3a77de95da8d03a73b", "739e97e7d25b5fb4ed3dc7daedd725a04e1caccce7bf7f2cbc6fa4efef975b05", "79977b7fd02f83ca1eb2489415509f13bf2ee16b49f53e1893547fa54a057242", "7ac4c298579015b84d612ac70ec7b7aeba44db7e87ac075402a3b20a4402553a", "7c0ebcbe5c52ca179fe3e47c3f12bb74d62227d762bb62a42d0fb6178a8b5845", "9207a8339078dc5558e5ae15a8e95012c31dcc317029224a159292c1cae382b2", "953a72d9f4f4f011789c6147fbe5e93419fdf3891d8ee5840fd9c7bd02960739", "9b93e74fceec8808e74a7cfde9f852d35f34283cf6441cdecbfbfb39611bd143", "9fe8d4d694b2ccb272473ac4b8813b3a649ea53448235b43759913c99fe5f0d0", "a4bde6b6800d82f772f72669d1772cf740d1aec5ca98c8edffa3dfd531ecf7c6", "a9d8f04e820dc20fa120e0af4f8e995155b8dcc475c34fb31be105c8eeac74c3", "bc26186dca4ee75dbe33a367217e7318f4fc135c5f02437e7f84fa853e9a877d", "ceaa0e4ea3259bea36d08f332e49bb28120669b651b1a50d64e553ac4add3a86", "d4fea86ed6c1585ac51cb15f2ae8d58feeebcdf11cb6de38807fffedb2e019b2", "d51a486a1cfdedb19d3f50e12c030841384f46fcb1ec0de216fc55a85e752321", "dc28b9ea5e6c2c75a54cd194c15a8a742a7ad710c1ccfca8e84d50420a2a1aef", "dd55e694ddd1c439fb933ac21c297a7e019c7db7b44178579822129cd28b8c44", "e20804844b4ce2db0f700762c352170a3957a80080703ee3a53cce2e72849d36", "ecbd9900d4237cdb166ab923a9c76ad16880d166494e04df58ae7f8e2a14a9dd", "f8c5c455e4a843500f236231fa250eb4e2e81c1e8f2280ae56f1ed3f25f8c332", "f9119f484a04ea1a006f4d7b4a9ca4a77ff91c5afd166a2aa0417e6bd5b4eb3b", "f936b811ecb44cf8a83c8b8fea7b9191e04f96d168681b2744a4b7c1b3812b34", "fa61afe6258f16efc4c6793a3a39bcd5a7eec43ea1789fa2d9e437a2e4dbeaf4"]
 icalendar = ["07c2447a1d44cbb27c90b8c6a5c98e890cc1853c6223e2a52195cddec26c6356", "83f7248b7485ddd29c7d69b706b21c441e34855d9c1d888939fd24aefdd9d19b"]
 idna = ["c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407", "ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"]
 imagesize = ["3f349de3eb99145973fefb7dbe38554414e5c30abd0c8e4b970a7c9d09f3a1d8", "f3832918bc3c66617f92e35f5d70729187676313caa60c187eb0f28b8fe5e3b5"]
@@ -1071,8 +1051,13 @@ rsa = ["14ba45700ff1ec9eeb206a2ce76b32814958a98e372006c8fb76ba820211be66", "1a83
 sentry-sdk = ["2d74844adbc960180b343c3e808a6afdde25a6ad9fdaaaac77e5d6c3bb1e041e", "b33ca986b7af24d3c306d42515319a6f1cf1c6081245ee5009ad47b79a809c3f"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 snowballstemmer = ["919f26a68b2c17a7634da993d91339e288964f93c274f1343e3bbbe2096e1128", "9f3bcd3c401c3e862ec0ebe6d2c069ebc012ce142cce209c098ccb5b09136e89"]
-sphinx = ["9f3e17c64b34afc653d7c5ec95766e03043cc6d80b0de224f59b6b6e19d37c3c", "c7658aab75c920288a8cf6f09f244c6cfdae30d82d803ac1634d9f223a80ca08"]
-sphinxcontrib-websupport = ["68ca7ff70785cbe1e7bccc71a48b5b6d965d79ca50629606c7861a21b206d9dd", "9de47f375baf1ea07cdb3436ff39d7a9c76042c10a769c52353ec46e4e8fc3b9"]
+sphinx = ["423280646fb37944dd3c85c58fb92a20d745793a9f6c511f59da82fa97cd404b", "de930f42600a4fef993587633984cc5027dedba2464bcf00ddace26b40f8d9ce"]
+sphinxcontrib-applehelp = ["edaa0ab2b2bc74403149cb0209d6775c96de797dfd5b5e2a71981309efab3897", "fb8dee85af95e5c30c91f10e7eb3c8967308518e0f7488a2828ef7bc191d0d5d"]
+sphinxcontrib-devhelp = ["6c64b077937330a9128a4da74586e8c2130262f014689b4b89e2d08ee7294a34", "9512ecb00a2b0821a146736b39f7aeb90759834b07e81e8cc23a9c70bacb9981"]
+sphinxcontrib-htmlhelp = ["4670f99f8951bd78cd4ad2ab962f798f5618b17675c35c5ac3b2132a14ea8422", "d4fd39a65a625c9df86d7fa8a2d9f3cd8299a3a4b15db63b50aac9e161d8eff7"]
+sphinxcontrib-jsmath = ["2ec2eaebfb78f3f2078e73666b1415417a116cc848b72e5172e596c871103178", "a9925e4a4587247ed2191a22df5f6970656cb8ca2bd6284309578f2153e0c4b8"]
+sphinxcontrib-qthelp = ["513049b93031beb1f57d4daea74068a4feb77aa5630f856fcff2e50de14e9a20", "79465ce11ae5694ff165becda529a600c754f4bc459778778c7017374d4d406f"]
+sphinxcontrib-serializinghtml = ["c0efb33f8052c04fd7a26c0a07f1678e8512e0faec19f4aa8f2473a8b81d5227", "db6615af393650bf1151a6cd39120c29abaf93cc60db8c48eb2dddbfdc3a9768"]
 sqlparse = ["40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177", "7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"]
 text-unidecode = ["5a1375bb2ba7968740508ae38d92e1f889a0832913cb1c447d5e2046061a396d", "801e38bd550b943563660a91de8d4b6fa5df60a542be9093f7abf819f86050cc"]
 typed-ast = ["04894d268ba6eab7e093d43107869ad49e7b5ef40d1a94243ea49b352061b200", "16616ece19daddc586e499a3d2f560302c11f122b9c692bc216e821ae32aa0d0", "252fdae740964b2d3cdfb3f84dcb4d6247a48a6abe2579e8029ab3be3cdc026c", "2af80a373af123d0b9f44941a46df67ef0ff7a60f95872412a145f4500a7fc99", "2c88d0a913229a06282b285f42a31e063c3bf9071ff65c5ea4c12acb6977c6a7", "2ea99c029ebd4b5a308d915cc7fb95b8e1201d60b065450d5d26deb65d3f2bc1", "3d2e3ab175fc097d2a51c7a0d3fda442f35ebcc93bb1d7bd9b95ad893e44c04d", "4766dd695548a15ee766927bf883fb90c6ac8321be5a60c141f18628fb7f8da8", "56b6978798502ef66625a2e0f80cf923da64e328da8bbe16c1ff928c70c873de", "5cddb6f8bce14325b2863f9d5ac5c51e07b71b462361fd815d1d7706d3a9d682", "644ee788222d81555af543b70a1098f2025db38eaa99226f3a75a6854924d4db", "64cf762049fc4775efe6b27161467e76d0ba145862802a65eefc8879086fc6f8", "68c362848d9fb71d3c3e5f43c09974a0ae319144634e7a47db62f0f2a54a7fa7", "6c1f3c6f6635e611d58e467bf4371883568f0de9ccc4606f17048142dec14a1f", "b213d4a02eec4ddf622f4d2fbc539f062af3788d1f332f028a2e19c42da53f15", "bb27d4e7805a7de0e35bd0cb1411bc85f807968b2b0539597a49a23b00a622ae", "c9d414512eaa417aadae7758bc118868cd2396b0e6138c1dd4fda96679c079d3", "f0937165d1e25477b01081c4763d2d9cdc3b18af69cb259dd4f640c9b900fe5e", "fb96a6e2c11059ecf84e6741a319f93f683e440e341d4489c9b161eca251cf2a", "fc71d2d6ae56a091a8d94f33ec9d0f2001d1cb1db423d8b4355debfe9ce689b7"]
