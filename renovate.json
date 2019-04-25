@@ -3,9 +3,6 @@
     "config:base",
     "schedule:nonOfficeHours"
   ],
-  "schedule": [
-    "on wednesday"
-  ],
   "poetry": {
     "enabled": true
   },
