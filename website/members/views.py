@@ -168,8 +168,8 @@ def profile(request, pk=None):
 
 
 @login_required
-def account(request):
-    return render(request, 'members/account.html')
+def user(request):
+    return render(request, 'members/user.html')
 
 
 @login_required
@@ -191,18 +191,21 @@ def edit_profile(request):
 
 @permission_required('auth.change_user')
 def iban_export(request):
-    header_fields = ['name', 'username', 'iban']
+    header_fields = ['name', 'username', 'iban', 'bic']
     rows = []
 
     members = models.Member.current_members.filter(
-        profile__direct_debit_authorized=True)
+        profile__auto_renew=True)
 
     for member in members:
-        if member.current_membership.type != 'honorary':
+        if (member.current_membership.type != 'honorary' and
+                member.bank_accounts.exists()):
+            bank_account = member.bank_accounts.last()
             rows.append({
-                'name': member.get_full_name(),
+                'name': bank_account.name,
                 'username': member.username,
-                'iban': member.profile.bank_account
+                'iban': bank_account.iban,
+                'bic': bank_account.bic
             })
 
     response = HttpResponse(content_type='text/csv')

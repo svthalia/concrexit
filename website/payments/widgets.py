@@ -1,5 +1,4 @@
 """Widgets provided by the payments package"""
-import base64
 
 from django.forms import Widget
 

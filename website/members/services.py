@@ -199,7 +199,7 @@ def execute_data_minimisation(dry_run=False, members=None):
             profile.emergency_contact_phone_number = None
             profile.emergency_contact = None
             profile.website = None
-            profile.bank_account = None
+            member.bank_accounts.all().delete()
             if not dry_run:
                 profile.save()
 

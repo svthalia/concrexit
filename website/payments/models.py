@@ -214,17 +214,11 @@ class BankAccount(models.Model):
     @property
     def valid(self):
         if self.valid_from and self.valid_until:
-            return self.valid_from < timezone.now().date() < self.valid_until
-        return self.valid_from and self.valid_from < timezone.now().date()
+            return self.valid_from <= timezone.now().date() < self.valid_until
+        return self.valid_from and self.valid_from <= timezone.now().date()
 
     def __str__(self):
         return f'{self.iban} - {self.owner.get_full_name()}'
 
     class Meta:
         ordering = ('created_at',)
-
-
-
-
-
-

@@ -47,10 +47,11 @@ class BankAccountCreateView(SuccessMessageMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        BankAccount.objects.filter(mandate_no=None).delete()
-        BankAccount.objects.exclude(mandate_no=None).update(
-            valid_until=timezone.now()
-        )
+        BankAccount.objects.filter(
+            owner=self.request.member, mandate_no=None).delete()
+        BankAccount.objects.filter(
+            owner=self.request.member
+        ).exclude(mandate_no=None).update(valid_until=timezone.now())
         return super().form_valid(form)
 
 
@@ -63,7 +64,7 @@ class BankAccountRevokeView(SuccessMessageMixin, UpdateView):
 
     def get_queryset(self):
         return super().get_queryset().filter(owner=self.request.member)
-    
+
     def get(self, **kwargs):
         raise Http404
 
