@@ -1,0 +1,11 @@
+.signature-row .signature-container {
+    float: left;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.signature-row:after {
+    content: "";
+    display: table;
+    clear: both;
+}

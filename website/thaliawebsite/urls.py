@@ -36,6 +36,7 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
+from django.urls import path
 from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
 
@@ -75,7 +76,10 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^alumni/$', AlumniEventsView.as_view(), name='alumni'),
     url(r'^members/', include('members.urls')),
     url(r'^registration/', include('registrations.urls')),
-    url(r'^account/$', members.views.account, name='account'),
+    url(r'^account/', include([
+        url(r'^$', members.views.account, name='account'),
+        url(r'^finance/', include('payments.urls'))
+    ])),
     url(r'^events/', include('events.urls')),
     url(r'^pizzas/', include('pizzas.urls')),
     url(r'^newsletters/', include('newsletters.urls')),

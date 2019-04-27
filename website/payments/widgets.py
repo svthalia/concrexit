@@ -1,4 +1,6 @@
 """Widgets provided by the payments package"""
+import base64
+
 from django.forms import Widget
 
 from payments.models import Payment
@@ -8,10 +10,7 @@ class PaymentWidget(Widget):
     """
     Custom widget for the Payment object, used in registrations
     """
-    template_name = 'payments/widget.html'
-
-    def value_from_datadict(self, data, files, name):
-        return super().value_from_datadict(data, files, name)
+    template_name = 'payments/widgets/payment.html'
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
@@ -23,3 +22,15 @@ class PaymentWidget(Widget):
 
     class Media:
         js = ('admin/payments/js/payments.js',)
+
+
+class SignatureWidget(Widget):
+    """
+    Widget for signature image
+    """
+    template_name = 'payments/widgets/signature.html'
+
+    class Media:
+        css = {
+            'all': ('admin/payments/css/signature.css',)
+        }

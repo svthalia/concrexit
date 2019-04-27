@@ -3,14 +3,17 @@ import csv
 
 from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
+from django.db.models.query_utils import Q
 from django.http import HttpResponse
-from django.urls import path
+from django.urls import path, reverse
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from payments import services, admin_views
-from .models import Payment
+from payments.forms import BankAccountAdminForm
+from .models import Payment, BankAccount
 
 
 def _show_message(admin, request, n, message, error):
@@ -169,3 +172,55 @@ class PaymentAdmin(admin.ModelAdmin):
             ])
         return response
     export_csv.short_description = _('Export')
+
+
+class ValidAccountFilter(admin.SimpleListFilter):
+    """Filter the memberships by whether they are active or not"""
+    title = _('mandates')
+    parameter_name = 'active'
+
+    def lookups(self, request, model_name):
+        return (
+            ('valid', _('Valid')),
+            ('invalid', _('Invalid')),
+            ('none', _('None')),
+        )
+
+    def queryset(self, request, queryset):
+        now = timezone.now()
+
+        if self.value() == 'valid':
+            return queryset.filter(Q(valid_from__gte=now) &
+                                   Q(valid_until=None) |
+                                   Q(valid_until__lt=now))
+
+        if self.value() == 'invalid':
+            return queryset.filter(valid_until__gte=now)
+
+        if self.value() == 'none':
+            return queryset.filter(valid_from=None)
+
+
+@admin.register(BankAccount)
+class BankAccountAdmin(admin.ModelAdmin):
+    """ Manage bank accounts """
+
+    list_display = ('iban', 'initials', 'last_name',
+                    'owner_link', 'valid_from', 'valid_until')
+    list_filter = (ValidAccountFilter,)
+    fields = ('created_at', 'owner', 'iban', 'bic', 'initials', 'last_name',
+              'mandate_no', 'valid_from', 'valid_until', 'signature')
+    readonly_fields = ('created_at',)
+    search_fields = ('owner__username', 'owner__first_name',
+                     'owner__last_name', 'iban')
+    form = BankAccountAdminForm
+
+    def owner_link(self, obj):
+        if obj.owner:
+            return format_html("<a href='{}'>{}</a>",
+                               reverse('admin:auth_user_change',
+                                       args=[obj.owner.pk]),
+                               obj.owner.get_full_name())
+        return ''
+    owner_link.admin_order_field = 'owner'
+    owner_link.short_description = _('owner')

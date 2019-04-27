@@ -1,0 +1,11 @@
+{% load i18n %}
+<div class="readonly signature-row">
+    {% if widget.value %}
+        <div class="signature-container">
+            <img src="{{ widget.value }}" alt="Signature" />
+        </div>
+    {% else %}
+        No signature found.
+    {% endif %}
+    <input type="hidden" value="{% if widget.value %}{{ widget.value }}{% endif %}" name="{{ widget.name }}" />
+</div>
