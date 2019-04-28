@@ -20,7 +20,8 @@ from payments.forms import BankAccountAdminForm
 from .models import Payment, BankAccount
 
 
-def _show_message(admin: ModelAdmin, request: HttpRequest, n: int, message: str, error: str) -> None:
+def _show_message(admin: ModelAdmin, request: HttpRequest,
+                  n: int, message: str, error: str) -> None:
     if n == 0:
         admin.message_user(request, error, messages.ERROR)
     else:

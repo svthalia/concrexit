@@ -2,7 +2,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import QuerySet
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -64,10 +65,15 @@ class BankAccountRevokeView(SuccessMessageMixin, UpdateView):
     success_message = _('Direct debit authorisation successfully revoked.')
 
     def get_queryset(self) -> QuerySet:
-        return super().get_queryset().filter(owner=self.request.member)
+        return super().get_queryset().filter(
+            owner=self.request.member,
+            valid_until=None,
+        ).exclude(
+            mandate_no=None
+        )
 
-    def get(self, **kwargs) -> HttpResponse:
-        raise Http404
+    def get(self, *args, **kwargs) -> HttpResponse:
+        return redirect('payments:bankaccount-list')
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
         request.POST = request.POST.dict()
