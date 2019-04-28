@@ -6,6 +6,13 @@ payments package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    payments.management
+
 Submodules
 ----------
 

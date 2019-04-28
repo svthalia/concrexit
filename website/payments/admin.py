@@ -222,14 +222,16 @@ class ValidAccountFilter(admin.SimpleListFilter):
 class BankAccountAdmin(admin.ModelAdmin):
     """Manage bank accounts"""
 
-    list_display = ('iban', 'initials', 'last_name',
-                    'owner_link', 'valid_from', 'valid_until')
+    list_display = ('iban', 'owner_link', 'last_used',
+                    'valid_from', 'valid_until')
     list_filter = (ValidAccountFilter,)
-    fields = ('created_at', 'owner', 'iban', 'bic', 'initials', 'last_name',
-              'mandate_no', 'valid_from', 'valid_until', 'signature')
+    fields = ('created_at', 'last_used', 'owner', 'iban', 'bic', 'initials',
+              'last_name', 'mandate_no', 'valid_from', 'valid_until',
+              'signature')
     readonly_fields = ('created_at',)
     search_fields = ('owner__username', 'owner__first_name',
                      'owner__last_name', 'iban')
+    actions = ['set_last_used']
     form = BankAccountAdminForm
 
     def owner_link(self, obj: BankAccount) -> str:
@@ -241,6 +243,18 @@ class BankAccountAdmin(admin.ModelAdmin):
         return ''
     owner_link.admin_order_field = 'owner'
     owner_link.short_description = _('owner')
+
+    def set_last_used(self, request: HttpRequest, queryset: QuerySet) -> None:
+        """Set the last used date of selected accounts"""
+        if request.user.has_perm('payments.change_bankaccount'):
+            updated = services.update_last_used(queryset)
+            _show_message(
+                self, request, updated,
+                message=_("Successfully updated %(count)d %(items)s."),
+                error=_('The selected account(s) could not be updated.')
+            )
+    set_last_used.short_description = _(
+        'Update the last used date')
 
     def export_csv(self, request: HttpRequest,
                    queryset: QuerySet) -> HttpResponse:

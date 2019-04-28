@@ -107,6 +107,12 @@ class BankAccount(models.Model):
 
     created_at = models.DateTimeField(_('created at'), default=timezone.now)
 
+    last_used = models.DateField(
+        verbose_name=_('last used'),
+        blank=True,
+        null=True,
+    )
+
     owner = models.ForeignKey(
         to='members.Member',
         verbose_name=_('owner'),

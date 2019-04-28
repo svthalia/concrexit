@@ -112,7 +112,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # Default login helpers
     url(r'^login/$', LoginView.as_view(), {'authentication_form': AuthenticationForm},
         name='login'),
-    url(r'^', include('django.contrib.auth.urls')),
+    url(r'^user/', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     # Sitemap
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': THALIA_SITEMAP},

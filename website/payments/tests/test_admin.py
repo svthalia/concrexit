@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 
 from django.contrib import messages
 from django.contrib.admin import AdminSite
@@ -40,6 +40,7 @@ class PaymentAdminTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user = Member.objects.create(
+                pk=1,
                 username='test1',
                 first_name='Test1',
                 last_name='Example',
@@ -300,7 +301,7 @@ class PaymentAdminTest(TestCase):
         self.assertEqual(urls[0].name, 'payments_payment_process')
 
     @freeze_time('2019-01-01')
-    def test_export_csv(self):
+    def test_export_csv(self) -> None:
         """
         Test that the CSV export of payments is correct
         """
@@ -324,13 +325,14 @@ class PaymentAdminTest(TestCase):
         response = self.admin.export_csv(HttpRequest(), Payment.objects.all())
 
         self.assertEqual(
-            b'Created,Processed,Amount,Type,Processor,Payer id,Payer name,'
-            b'Notes\r\n2019-01-01 00:00:00+00:00,2019-01-01 00:00:00+00:00,'
-            b'7.50,Card payment,Test1 Example,1,Test1 Example,\r\n2019-01-01 '
-            b'00:00:00+00:00,2019-01-01 00:00:00+00:00,17.50,Cash payment,'
-            b'Test1 Example,1,Test1 Example,\r\n2019-01-01 00:00:00+00:00,,'
-            b'9.00,No payment,-,-,-,This is a test\r\n',
-            response.content
+            f'Created,Processed,Amount,Type,Processor,Payer id,Payer name,'
+            f'Notes\r\n2019-01-01 00:00:00+00:00,2019-01-01 00:00:00+00:00,'
+            f'7.50,Card payment,Test1 Example,{self.user.pk},Test1 Example,'
+            f'\r\n2019-01-01 00:00:00+00:00,2019-01-01 00:00:00+00:00,17.50,'
+            f'Cash payment,Test1 Example,{self.user.pk},Test1 Example,'
+            f'\r\n2019-01-01 00:00:00+00:00,,9.00,No payment,-,-,-,This is a '
+            f'test\r\n',
+            response.content.decode('utf-8')
         )
 
 
@@ -377,7 +379,7 @@ class ValidAccountFilterTest(TestCase):
         self.site = AdminSite()
         self.admin = admin.BankAccountAdmin(BankAccount, admin_site=self.site)
 
-    def test_lookups(self):
+    def test_lookups(self) -> None:
         """
         Tests that the right options are implemented for lookups
         """
@@ -394,7 +396,7 @@ class ValidAccountFilterTest(TestCase):
             ('none', 'None'),
         ), account_filter.lookups(None, None))
 
-    def test_queryset(self):
+    def test_queryset(self) -> None:
         """
         Tests that the right results are returned
         """
@@ -445,12 +447,14 @@ class BankAccountAdminTest(TestCase):
                 last_name='Example',
                 email='test1@example.org',
                 is_staff=True,
+                is_superuser=True
             )
         Profile.objects.create(user=cls.user)
 
     def setUp(self) -> None:
         self.site = AdminSite()
         self.admin = admin.BankAccountAdmin(BankAccount, admin_site=self.site)
+        self.rf = RequestFactory()
 
     def test_owner_link(self) -> None:
         """
@@ -476,7 +480,7 @@ class BankAccountAdminTest(TestCase):
 
         self.assertEqual(self.admin.owner_link(bank_account2), '')
 
-    def test_export_csv(self):
+    def test_export_csv(self) -> None:
         """
         Test that the CSV export of accounts is correct
         """
@@ -526,4 +530,54 @@ class BankAccountAdminTest(TestCase):
             b'sig\r\n2019-01-01 00:00:00+00:00,J4 Test,11-1,'
             b'DE12500105170648489890,NBBEBEBB,2019-01-01,2019-01-06,sig\r\n',
             response.content
+        )
+
+    @mock.patch('django.contrib.admin.ModelAdmin.message_user')
+    @mock.patch('payments.services.update_last_used')
+    def test_set_last_used(self, update_last_used, message_user) -> None:
+        """
+        Tests that the last used value is updated
+        """
+        update_last_used.return_value = 1
+
+        request_noperms = self.rf.post(
+            '/',
+            {
+                'action': 'set_last_used',
+                'index': 1,
+                '_selected_action': ['bla']
+            }
+        )
+        request_noperms.user = MagicMock()
+        request_noperms.user.has_perm = lambda _: False
+
+        request_hasperms = self.rf.post(
+            '/',
+            {
+                'action': 'set_last_used',
+                'index': 1,
+                '_selected_action': ['bla']
+            }
+        )
+        request_hasperms.user = MagicMock()
+        request_hasperms.user.has_perm = lambda _: True
+
+        update_last_used.reset_mock()
+        message_user.reset_mock()
+
+        queryset_mock = MagicMock()
+
+        self.admin.set_last_used(request_noperms, queryset_mock)
+        update_last_used.assert_not_called()
+
+        self.admin.set_last_used(request_hasperms, queryset_mock)
+        update_last_used.assert_called_once_with(queryset_mock)
+
+        message_user.assert_called_once_with(
+            request_hasperms,
+            _('Successfully updated %(count)d %(items)s.')
+            % {
+                "count": 1,
+                "items": model_ngettext(BankAccount(), 1)
+            }, messages.SUCCESS
         )
