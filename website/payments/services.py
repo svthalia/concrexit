@@ -1,8 +1,12 @@
 """The services defined by the payments package"""
+from django.db.models import QuerySet
+
+from members.models import Member
 from .models import Payment
 
 
-def process_payment(queryset, processed_by, pay_type=Payment.CARD):
+def process_payment(queryset: QuerySet, processed_by: Member,
+                    pay_type: str = Payment.CARD) -> list:
     """
     Process the payment
 

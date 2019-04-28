@@ -1,22 +1,26 @@
 """Registers admin interfaces for the payments module"""
 import csv
+from collections import OrderedDict
 
 from django.contrib import admin, messages
+from django.contrib.admin import ModelAdmin
 from django.contrib.admin.utils import model_ngettext
+from django.db.models import QuerySet
 from django.db.models.query_utils import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
+from members.models import Member
 from payments import services, admin_views
 from payments.forms import BankAccountAdminForm
 from .models import Payment, BankAccount
 
 
-def _show_message(admin, request, n, message, error):
+def _show_message(admin: ModelAdmin, request: HttpRequest, n: int, message: str, error: str) -> None:
     if n == 0:
         admin.message_user(request, error, messages.ERROR)
     else:
@@ -50,7 +54,7 @@ class PaymentAdmin(admin.ModelAdmin):
                'process_wire_selected', 'export_csv']
 
     @staticmethod
-    def _member_link(member):
+    def _member_link(member: Member) -> str:
         if member:
             return format_html("<a href='{}'>{}</a>",
                                member.get_absolute_url(),
@@ -58,18 +62,19 @@ class PaymentAdmin(admin.ModelAdmin):
         else:
             return "-"
 
-    def paid_by_link(self, obj):
+    def paid_by_link(self, obj: Payment) -> str:
         return self._member_link(obj.paid_by)
     paid_by_link.admin_order_field = 'paid_by'
     paid_by_link.short_description = _('paid by')
 
-    def processed_by_link(self, obj):
+    def processed_by_link(self, obj: Payment) -> str:
         return self._member_link(obj.processed_by)
     processed_by_link.admin_order_field = 'processed_by'
     processed_by_link.short_description = _('processed by')
 
-    def changeform_view(self, request, object_id=None, form_url='',
-                        extra_context=None):
+    def changeform_view(self, request: HttpRequest, object_id: int = None,
+                        form_url: str = '', extra_context: dict = None
+                        ) -> HttpResponse:
         """
         Renders the change formview
         Only allow when the payment has not been processed yet
@@ -83,12 +88,12 @@ class PaymentAdmin(admin.ModelAdmin):
         return super().changeform_view(
             request, object_id, form_url, {'payment': obj})
 
-    def get_readonly_fields(self, request, obj=None):
+    def get_readonly_fields(self, request: HttpRequest, obj: Payment = None):
         if not obj:
             return 'created_at', 'type', 'processing_date', 'processed_by'
         return super().get_readonly_fields(request, obj)
 
-    def get_actions(self, request):
+    def get_actions(self, request: HttpRequest) -> OrderedDict:
         """Get the actions for the payments"""
         """Hide the processing actions if the right permissions are missing"""
         actions = super().get_actions(request)
@@ -98,7 +103,8 @@ class PaymentAdmin(admin.ModelAdmin):
             del(actions['process_wire_selected'])
         return actions
 
-    def process_cash_selected(self, request, queryset):
+    def process_cash_selected(self, request: HttpRequest,
+                              queryset: QuerySet) -> None:
         """Process the selected payment as cash"""
         if request.user.has_perm('payments.process_payments'):
             updated_payments = services.process_payment(
@@ -108,7 +114,8 @@ class PaymentAdmin(admin.ModelAdmin):
     process_cash_selected.short_description = _(
         'Process selected payments (cash)')
 
-    def process_card_selected(self, request, queryset):
+    def process_card_selected(self, request: HttpRequest,
+                              queryset: QuerySet) -> None:
         """Process the selected payment as card"""
         if request.user.has_perm('payments.process_payments'):
             updated_payments = services.process_payment(
@@ -118,7 +125,8 @@ class PaymentAdmin(admin.ModelAdmin):
     process_card_selected.short_description = _(
         'Process selected payments (card)')
 
-    def process_wire_selected(self, request, queryset):
+    def process_wire_selected(self, request: HttpRequest,
+                              queryset: QuerySet) -> None:
         """Process the selected payment as wire"""
         if request.user.has_perm('payments.process_payments'):
             updated_payments = services.process_payment(
@@ -128,7 +136,7 @@ class PaymentAdmin(admin.ModelAdmin):
     process_wire_selected.short_description = _(
         'Process selected payments (wire)')
 
-    def _process_feedback(self, request, updated_payments):
+    def _process_feedback(self, request, updated_payments: list) -> None:
         """Show a feedback message for the processing result"""
         rows_updated = len(updated_payments)
         _show_message(
@@ -137,7 +145,7 @@ class PaymentAdmin(admin.ModelAdmin):
             error=_('The selected payment(s) could not be processed.')
         )
 
-    def get_urls(self):
+    def get_urls(self) -> list:
         urls = super().get_urls()
         custom_urls = [
             path('<uuid:pk>/process/',
@@ -147,7 +155,13 @@ class PaymentAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
-    def export_csv(self, request, queryset):
+    def export_csv(self, request: HttpRequest,
+                   queryset: QuerySet) -> HttpResponse:
+        """
+        Export a CSV of payments
+        :param request: Request
+        :param queryset: Items to be exported
+        """
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment;\
                                            filename="payments.csv"'
@@ -179,18 +193,18 @@ class ValidAccountFilter(admin.SimpleListFilter):
     title = _('mandates')
     parameter_name = 'active'
 
-    def lookups(self, request, model_name):
+    def lookups(self, request, model_name) -> tuple:
         return (
             ('valid', _('Valid')),
             ('invalid', _('Invalid')),
             ('none', _('None')),
         )
 
-    def queryset(self, request, queryset):
+    def queryset(self, request, queryset) -> QuerySet:
         now = timezone.now()
 
         if self.value() == 'valid':
-            return queryset.filter(Q(valid_from__gte=now) &
+            return queryset.filter(Q(valid_from__lte=now) &
                                    Q(valid_until=None) |
                                    Q(valid_until__lt=now))
 
@@ -199,6 +213,8 @@ class ValidAccountFilter(admin.SimpleListFilter):
 
         if self.value() == 'none':
             return queryset.filter(valid_from=None)
+
+        return queryset
 
 
 @admin.register(BankAccount)
@@ -215,7 +231,7 @@ class BankAccountAdmin(admin.ModelAdmin):
                      'owner__last_name', 'iban')
     form = BankAccountAdminForm
 
-    def owner_link(self, obj):
+    def owner_link(self, obj: BankAccount) -> str:
         if obj.owner:
             return format_html("<a href='{}'>{}</a>",
                                reverse('admin:auth_user_change',
@@ -225,13 +241,14 @@ class BankAccountAdmin(admin.ModelAdmin):
     owner_link.admin_order_field = 'owner'
     owner_link.short_description = _('owner')
 
-    def export_csv(self, request, queryset):
+    def export_csv(self, request: HttpRequest,
+                   queryset: QuerySet) -> HttpResponse:
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment;\
                                            filename="accounts.csv"'
         writer = csv.writer(response)
-        headers = [_('created'), _('name'), _('reference'), _('iban'),
-                   _('bic'), _('valid from'), _('valid until'), _('signature')]
+        headers = [_('created'), _('name'), _('reference'), _('IBAN'),
+                   _('BIC'), _('valid from'), _('valid until'), _('signature')]
         writer.writerow([capfirst(x) for x in headers])
         for account in queryset:
             writer.writerow([
