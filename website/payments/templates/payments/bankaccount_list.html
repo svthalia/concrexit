@@ -9,7 +9,7 @@
 {% block body %}
     <section class="page-section" id="payments-account-overview">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "bank accounts" %}</h1>
+            <h1 class="text-center section-title">{% trans "bank accounts"|capfirst %}</h1>
 
             {% if messages %}
                 {% for message in messages %}
@@ -59,22 +59,22 @@
                             {% trans "IBAN" %}
                         </th>
                         <th scope="col">
-                            {% trans "Name" %}
+                            {% trans "name"|capfirst %}
                         </th>
                         <th scope="col">
-                            {% trans "Created" %}
+                            {% trans "created"|capfirst %}
                         </th>
                         <th scope="col">
-                            {% trans "Direct Debit" %}
+                            {% trans "direct debit"|capfirst %}
                         </th>
                         <th scope="col">
-                            {% trans "Reference" %}
+                            {% trans "reference"|capfirst %}
                         </th>
                         <th scope="col">
-                            {% trans "Valid from" %}
+                            {% trans "valid from"|capfirst %}
                         </th>
                         <th scope="col">
-                            {% trans "Valid until" %}
+                            {% trans "valid until"|capfirst %}
                         </th>
                         <th scope="col">
                         </th>

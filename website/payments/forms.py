@@ -20,9 +20,6 @@ class BankAccountForm(forms.ModelForm):
         fields = ('initials', 'last_name', 'iban', 'bic',
                   'signature', 'valid_from', 'mandate_no', 'owner')
         model = BankAccount
-        widgets = {
-            'signature': SignatureWidget(),
-        }
 
 
 class BankAccountAdminForm(forms.ModelForm):

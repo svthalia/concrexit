@@ -203,7 +203,7 @@ class ValidAccountFilter(admin.SimpleListFilter):
 
 @admin.register(BankAccount)
 class BankAccountAdmin(admin.ModelAdmin):
-    """ Manage bank accounts """
+    """Manage bank accounts"""
 
     list_display = ('iban', 'initials', 'last_name',
                     'owner_link', 'valid_from', 'valid_until')
@@ -224,3 +224,25 @@ class BankAccountAdmin(admin.ModelAdmin):
         return ''
     owner_link.admin_order_field = 'owner'
     owner_link.short_description = _('owner')
+
+    def export_csv(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment;\
+                                           filename="accounts.csv"'
+        writer = csv.writer(response)
+        headers = [_('created'), _('name'), _('reference'), _('iban'),
+                   _('bic'), _('valid from'), _('valid until'), _('signature')]
+        writer.writerow([capfirst(x) for x in headers])
+        for account in queryset:
+            writer.writerow([
+                account.created_at,
+                account.name,
+                account.mandate_no,
+                account.iban,
+                account.bic or '',
+                account.valid_from or '',
+                account.valid_until or '',
+                account.signature or ''
+            ])
+        return response
+    export_csv.short_description = _('Export')

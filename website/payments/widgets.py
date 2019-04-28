@@ -11,7 +11,7 @@ class PaymentWidget(Widget):
     """
     template_name = 'payments/widgets/payment.html'
 
-    def get_context(self, name, value, attrs):
+    def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
         if value:
             payment = Payment.objects.get(pk=value)
@@ -30,6 +30,7 @@ class SignatureWidget(Widget):
     template_name = 'payments/widgets/signature.html'
 
     class Media:
+        js = ('payments/js/signature_pad.min.js', 'payments/js/main.js',)
         css = {
             'all': ('admin/payments/css/signature.css',)
         }

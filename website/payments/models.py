@@ -218,7 +218,7 @@ class BankAccount(models.Model):
         return self.valid_from and self.valid_from <= timezone.now().date()
 
     def __str__(self):
-        return f'{self.iban} - {self.owner.get_full_name()}'
+        return f'{self.iban} - {self.name}'
 
     class Meta:
         ordering = ('created_at',)
