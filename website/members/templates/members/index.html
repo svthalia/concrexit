@@ -43,7 +43,7 @@
                         </li>
                     {% endfor %}
                     <li class="nav-item">
-                        <a class="nav-link{% if filter == "older" %}active{% endif %}"
+                        <a class="nav-link{% if filter == "older" %} active{% endif %}"
                            href="{% url 'members:index' %}?filter=older{% if keywords %}&keywords={{ keys }}{% endif %}{% if page %}&page={{ page }}{% endif %}#members-directory">
                             {% trans "Older" %}
                         </a>
