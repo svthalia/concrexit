@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.template.defaultfilters import floatformat
-from django.test import Client, TestCase, RequestFactory
+from django.test import Client, TestCase, RequestFactory, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -463,14 +463,16 @@ class BaseRegistrationFormViewTest(TestCase):
         self.rf = RequestFactory()
         self.view = views.BaseRegistrationFormView()
 
+    @override_settings(GOOGLE_PLACES_API_KEY='hello')
     def test_get_context_data(self):
         self.view.request = self.rf.post('/')
         context = self.view.get_context_data()
-        self.assertEqual(len(context), 4)
+        self.assertEqual(len(context), 5)
         self.assertEqual(context['year_fees'], floatformat(
             settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2))
         self.assertEqual(context['study_fees'], floatformat(
             settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2))
+        self.assertEqual(context['google_api_key'], 'hello')
 
     @mock.patch('django.views.generic.FormView.get')
     def test_get(self, super_get):

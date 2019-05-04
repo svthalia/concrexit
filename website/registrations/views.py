@@ -127,6 +127,7 @@ class BaseRegistrationFormView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['google_api_key'] = settings.GOOGLE_PLACES_API_KEY
         context['year_fees'] = floatformat(settings.MEMBERSHIP_PRICES[
                                                Entry.MEMBERSHIP_YEAR], 2)
         context['study_fees'] = floatformat(settings.MEMBERSHIP_PRICES[

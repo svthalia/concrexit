@@ -1,8 +1,16 @@
 {% extends "base.html" %}
 {% load i18n static compress bootstrap4 %}
 
-{% block title %}{% trans "registration"|capfirst %} —
-    {{ block.super }}{% endblock %}
+{% block title %}{% trans "registration"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&libraries=places"></script>
+    {% compress js %}
+        <script type="text/javascript" src="{% static 'registrations/js/main.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 {% block body %}
     <section class="page-section" id="registrations-form">
