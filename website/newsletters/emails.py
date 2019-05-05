@@ -1,14 +1,13 @@
 """The emails defined by the newsletters package"""
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from django.utils import translation, timezone
+from django.utils import translation
 
-from events.models import Event
 from members.models import Member
-from partners.models import Partner
-
 from newsletters import services
+from partners.models import Partner
 
 
 def send_newsletter(newsletter):
@@ -19,13 +18,7 @@ def send_newsletter(newsletter):
     """
     partners = Partner.objects.filter(is_main_partner=True)
     main_partner = partners[0] if len(partners) > 0 else None
-    events = None
-
-    if newsletter.date:
-        start_date = newsletter.date
-        end_date = start_date + timezone.timedelta(weeks=1)
-        events = Event.objects.filter(
-            start__gte=start_date, end__lt=end_date).order_by('start')
+    events = services.get_agenda(newsletter.date) if newsletter.date else None
 
     from_email = settings.NEWSLETTER_FROM_ADDRESS
     html_template = get_template('newsletters/email.html')
