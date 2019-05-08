@@ -5,13 +5,11 @@
     var signaturePad = new SignaturePad(signatureCanvas);
 
     function canvasToField() {
+        console.log('canvas field');
         if (signaturePad.toData().length) {
-            signatureField.val(signaturePad.toDataURL());
+            signatureField.val(signaturePad.toDataURL("image/svg+xml"));
         }
     }
-
-    signaturePad.fromDataURL(signatureField.val());
-    signaturePad.onEnd = canvasToField;
 
     function resizeCanvas() {
         var ratio = Math.max(window.devicePixelRatio || 1, 1);
@@ -23,6 +21,8 @@
 
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
+
+    signaturePad.onEnd = canvasToField;
 
     $('#canvas-undo-btn').click(function (e) {
         e.preventDefault();

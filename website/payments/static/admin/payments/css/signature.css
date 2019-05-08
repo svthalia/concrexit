@@ -43,3 +43,9 @@
 	display: table;
 	clear: both;
 }
+
+.signature-row #signature-img {
+    margin-left: 2rem;
+	height: 9rem;
+	width: 26rem;
+}

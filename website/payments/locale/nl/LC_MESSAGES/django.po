@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-02 16:50+0100\n"
-"PO-Revision-Date: 2019-03-02 16:51+0100\n"
+"POT-Creation-Date: 2019-05-08 20:07+0200\n"
+"PO-Revision-Date: 2019-05-08 20:47+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -47,7 +47,7 @@ msgstr "%(count)d %(items)s succesvol verwerkt."
 msgid "The selected payment(s) could not be processed."
 msgstr "De geselecteerde betaling(en) konden niet worden verwerkt."
 
-#: admin.py
+#: admin.py templates/payments/bankaccount_list.html
 msgid "created"
 msgstr "aangemaakt"
 
@@ -83,6 +83,67 @@ msgstr "notities"
 msgid "Export"
 msgstr "Export"
 
+#: admin.py
+msgid "mandates"
+msgstr "mandaten"
+
+#: admin.py
+msgid "Valid"
+msgstr "Geldig"
+
+#: admin.py
+msgid "Invalid"
+msgstr "Ongeldig"
+
+#: admin.py
+msgid "None"
+msgstr "Geen"
+
+#: admin.py models.py
+msgid "owner"
+msgstr "eigenaar"
+
+#: admin.py tests/test_admin.py
+#, python-format
+msgid "Successfully updated %(count)d %(items)s."
+msgstr "%(count)d %(items)s succesvol bijgewerkt."
+
+#: admin.py
+msgid "The selected account(s) could not be updated."
+msgstr "De geselecteerde account(s) konden niet worden bijgewerkt."
+
+#: admin.py
+msgid "Update the last used date"
+msgstr "Update de laatst gebruikt datum"
+
+#: admin.py templates/payments/bankaccount_list.html
+msgid "name"
+msgstr "naam"
+
+#: admin.py templates/payments/bankaccount_list.html
+msgid "reference"
+msgstr "referentie"
+
+#: admin.py models.py templates/payments/bankaccount_list.html
+msgid "IBAN"
+msgstr "IBAN"
+
+#: admin.py models.py
+msgid "BIC"
+msgstr "BIC"
+
+#: admin.py models.py templates/payments/bankaccount_list.html
+msgid "valid from"
+msgstr "geldig vanaf"
+
+#: admin.py models.py templates/payments/bankaccount_list.html
+msgid "valid until"
+msgstr "geldig tot"
+
+#: admin.py models.py
+msgid "signature"
+msgstr "handtekening"
+
 #: admin_views.py tests/test_admin_views.py
 #, python-format
 msgid "Successfully processed %s."
@@ -96,6 +157,10 @@ msgstr "%s kon niet worden verwerkt."
 #: apps.py
 msgid "Payments"
 msgstr "Betalingen"
+
+#: forms.py
+msgid "I want to use this account for direct debits"
+msgstr "Ik wil dit account gebruiken voor automatische incasso's"
 
 #: models.py
 msgid "created at"
@@ -138,22 +203,193 @@ msgstr "Verwerk betalingen"
 msgid "Payment of {amount}"
 msgstr "Betaling van {amount}"
 
-#: templates/admin/payments/change_form.html templates/payments/widget.html
+#: models.py
+msgid "last used"
+msgstr "laatst gebruikt"
+
+#: models.py
+msgid "initials"
+msgstr "initialen"
+
+#: models.py templates/payments/bankaccount_form.html
+msgid "last name"
+msgstr "achternaam"
+
+#: models.py
+msgid "This field is optional for Dutch bank accounts."
+msgstr "Dit veld is optioneel voor Nederlands bankrekeningen."
+
+#: models.py
+msgid "mandate number"
+msgstr "mandaatnummer"
+
+#: models.py
+msgid "This field is required for foreign bank accounts."
+msgstr "Dit veld is verplicht voor buitenlandse bankrekeningen."
+
+#: models.py
+msgid "This field is required."
+msgstr "Dit veld is verplicht."
+
+#: models.py
+msgid "This field is required to complete the mandate."
+msgstr "Dit veld is verplicht om het mandaat compleet te maken."
+
+#: models.py
+msgid "This date cannot be before the from date."
+msgstr "Deze datum kan niet voor de vanaf datum liggen."
+
+#: models.py
+msgid "This field cannot have a value."
+msgstr "Dit veld mag geen waarde hebben."
+
+#: templates/admin/payments/change_form.html
+#: templates/payments/widgets/payment.html
 msgid "Process (cash payment)"
 msgstr "Verwerk (contant)"
 
-#: templates/admin/payments/change_form.html templates/payments/widget.html
+#: templates/admin/payments/change_form.html
+#: templates/payments/widgets/payment.html
 msgid "Process (card payment)"
 msgstr "Verwerk (pin)"
 
-#: templates/admin/payments/change_form.html templates/payments/widget.html
+#: templates/admin/payments/change_form.html
+#: templates/payments/widgets/payment.html
 msgid "Process (wire payment)"
 msgstr "Verwerk (overboeking)"
 
-#: templates/payments/widget.html
+#: templates/payments/bankaccount_form.html
+#: templates/payments/bankaccount_list.html
+msgid "add bank account"
+msgstr "bankrekeningen toevoegen"
+
+#: templates/payments/bankaccount_form.html
+#: templates/payments/bankaccount_list.html
+msgid "finances"
+msgstr "financieën"
+
+#: templates/payments/bankaccount_form.html
+msgid "Initials"
+msgstr "Initialen"
+
+#: templates/payments/bankaccount_form.html
+msgid "Address"
+msgstr "Adres"
+
+#: templates/payments/bankaccount_form.html
+msgid "SEPA Direct Debit Mandate"
+msgstr "SEPA Incassomachtiging"
+
+#: templates/payments/bankaccount_form.html
+#, python-format
+msgid ""
+"Mandate Reference: %(mandate_no)s<br /> Creditor Identifier: "
+"%(creditor_id)s<br /> Creditor Address:<br /> Study Association Thalia<br/> "
+"Toernooiveld 212 M1.0.08<br/> 6525 EC Nijmegen<br/> Nederland"
+msgstr ""
+"Kenmerk machtiging: %(mandate_no)s<br /> Incassant ID: %(creditor_id)s<br /> "
+"Adres incassant:<br /> Studievereniging Thalia<br/> Toernooiveld 212 "
+"M1.0.08<br/> 6525 EC Nijmegen<br/> Nederland"
+
+#: templates/payments/bankaccount_form.html
+msgid ""
+"By signing this mandate form, you authorise Study Association Thalia to send "
+"instructions to your bank to debit your account in accordance with the "
+"instructions from Study Association Thalia."
+msgstr ""
+"Door ondertekening van dit formulier geeft u toestemming aan Studieverenging "
+"Thalia om doorlopende incasso-opdrachten te sturen naar uw bank om een "
+"bedrag van uw rekening af te schijven en aan uw bank om doorlopend eenbedrag "
+"van uw rekening af te schrijven overeenkomstig de opdracht van "
+"Studievereniging Thalia."
+
+#: templates/payments/bankaccount_form.html
+msgid ""
+"As part of your rights, you are entitled to a refund from your bank under "
+"the terms and conditions of your agreement with your bank. A refund must be "
+"claimed within 8 weeks starting from the date on which your account was "
+"debited."
+msgstr ""
+"Als u het niet eens bent met deze afschrijving kunt u deze laten "
+"terugboeken. Neem hiervoor binnen 8 weken na afschrijving contact op met uw "
+"bank. Vraag uw bank naar de voorwaarden."
+
+#: templates/payments/bankaccount_form.html
+msgid ""
+"Your rights are explained in a statement that you can obtain from your bank."
+msgstr ""
+"Uw rechten worden uitgelegd in een document dat u bij uw bank kunt "
+"verkrijgen."
+
+#: templates/payments/bankaccount_form.html
+msgid "submit"
+msgstr "versturen"
+
+#: templates/payments/bankaccount_list.html
+msgid "bank accounts"
+msgstr "bankrekeningen"
+
+#: templates/payments/bankaccount_list.html
+msgid ""
+"Thalia keeps your bank account saved to your profile to ease the processing "
+"of digital financial transactions like reimbursements or invoices. You can "
+"change the bank account saved to your profile and manage your authorisation "
+"for direct debit transactions."
+msgstr ""
+"Thalia slaat je bankrekening op in je profiel om de verwerking van digitale "
+"financiële transacties zoals terugboekingen of facturen te vergemakkelijken. "
+"Je kunt de opgeslagen bankrekening aanpassen en je autorisatie voor "
+"automatische incasso's beheren."
+
+#: templates/payments/bankaccount_list.html
+msgid ""
+"We only keep a history of bank accounts with a direct debit authorisation. "
+"Bank accounts that do not have such an authorisation are not kept when you "
+"change your account. Changing your bank account automatically revokes any "
+"previously given direct debit authorisations."
+msgstr ""
+"We houden alleen een historie bij van bankrekeningen met een autorisatie "
+"voor incasso's. Bankrekeningen zonder een dergelijke autorisatie worden niet "
+"bewaar als je je rekening aanpast. Het veranderen van je bankrekening trekt "
+"automatisch de in het verleden gegeven autorisaties voor automatische "
+"incasso's in."
+
+#: templates/payments/bankaccount_list.html
+msgid "direct debit"
+msgstr "automatisch incasso"
+
+#: templates/payments/bankaccount_list.html
+msgid "Revoke"
+msgstr "Intrekken"
+
+#: templates/payments/bankaccount_list.html
+msgid "Are you sure you want to revoke the mandate for this bank account?"
+msgstr "Weet je zeker dat je de machtiging voor deze rekening wilt intrekken?"
+
+#: templates/payments/bankaccount_list.html
+msgid "You don't have any saved accounts yet."
+msgstr "Je hebt nog geen opgeslagen rekeningen."
+
+#: templates/payments/includes/signature_canvas.html
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+#: templates/payments/includes/signature_canvas.html
+msgid "Clear"
+msgstr "Leegmaken"
+
+#: templates/payments/widgets/payment.html
 msgid "Unprocessed"
 msgstr "Onverwerkt"
 
-#: templates/payments/widget.html
+#: templates/payments/widgets/payment.html
 msgid "Processed"
 msgstr "Verwerkt"
+
+#: views.py
+msgid "Bank account saved successfully."
+msgstr "Bankrekening succesvol opgeslagen."
+
+#: views.py
+msgid "Direct debit authorisation successfully revoked."
+msgstr "Autorisatie voor automatisch incasso succesvol ingetrokken."
