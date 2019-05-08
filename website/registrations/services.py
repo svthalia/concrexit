@@ -415,3 +415,22 @@ def process_payment(payment):
         entry.membership = membership
         entry.status = Entry.STATUS_COMPLETED
         entry.save()
+
+
+def execute_data_minimisation(dry_run=False):
+    """
+    Delete completed or rejected registrations that were modified
+    at least 31 days ago
+
+    :param dry_run: does not really remove data if True
+    :return: number of removed registrations
+    """
+    deletion_period = timezone.now().date() - timezone.timedelta(days=31)
+    objects = (Entry.objects
+               .filter((Q(status=Entry.STATUS_COMPLETED)
+                        | Q(status=Entry.STATUS_REJECTED))
+                       & Q(updated_at__lt=deletion_period)))
+
+    if dry_run:
+        return objects.count()
+    return objects.delete()[0]
