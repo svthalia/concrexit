@@ -174,10 +174,8 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
                 _('Date cancelled'): cancelled,
             }
             if event.price > 0:
-                if registration.payment == registration.PAYMENT_CASH:
-                    data[_('Paid')] = _('Cash')
-                elif registration.payment == registration.PAYMENT_CARD:
-                    data[_('Paid')] = _('Pin')
+                if registration.is_paid():
+                    data[_('Paid')] = registration.payment.get_type_display()
                 else:
                     data[_('Paid')] = _('No')
 
