@@ -6,12 +6,15 @@ import logging
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from PIL import Image
 
+from members.models import Member
 from photos.services import photo_determine_rotation
 from utils.translation import ModelTranslateMeta, MultilingualField
+from pushnotifications.models import ScheduledMessage, Category
 
 
 COVER_FILENAME = 'cover.jpg'
@@ -126,6 +129,11 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
         default=False
     )
 
+    new_album_notification = models.ForeignKey(
+        ScheduledMessage, on_delete=models.deletion.SET_NULL,
+        blank=True, null=True
+    )
+
     _cover = models.OneToOneField(
         Photo,
         on_delete=models.SET_NULL,
@@ -163,6 +171,37 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
         # dirname is only set for new objects, to avoid ever changing it
         if self.pk is None:
             self.dirname = self.slug
+
+        if (not self.hidden and (self.new_album_notification is None
+                                 or not self.new_album_notification.sent)):
+            new_album_notification_time = (timezone.now() +
+                                           timezone.timedelta(hours=1))
+            new_album_notification = ScheduledMessage()
+
+            if (self.new_album_notification is not None
+                    and not self.new_album_notification.sent):
+                new_album_notification = self.new_album_notification
+
+            new_album_notification.title_en = 'New album uploaded'
+            new_album_notification.title_nl = 'Nieuw album geüpload'
+            new_album_notification.body_en = ('A new photo album \'{}\' has '
+                                              'just been uploaded'
+                                              .format(self.title_en))
+            new_album_notification.body_nl = ('Een nieuw fotoalbum \'{}\' is '
+                                              'zojuist geüpload'
+                                              .format(self.title_nl))
+            new_album_notification.category = Category.objects.get(key='photo')
+            new_album_notification.url = self.get_absolute_url()
+            new_album_notification.time = new_album_notification_time
+            new_album_notification.save()
+            self.new_album_notification = new_album_notification
+            self.new_album_notification.users.set(Member.current_members.all())
+        elif (self.hidden and self.new_album_notification is not None
+              and not self.new_album_notification.sent):
+            existing_notification = self.new_album_notification
+            self.new_album_notification = None
+            existing_notification.delete()
+
         super().save(*args, **kwargs)
 
     @property
