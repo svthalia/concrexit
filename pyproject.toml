@@ -39,7 +39,7 @@ docs = ["recommonmark", "sphinx"]
 
 [tool.poetry.dev-dependencies]
 django-template-check = "~0.3.1"
-factory_boy = "~2.11"
+factory_boy = "~2.12"
 flake8 = "~3.7"
 pydenticon = "~0.3.1"
 pylint = "~2.3"
