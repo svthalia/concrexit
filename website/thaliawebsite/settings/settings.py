@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'compressor',
-    'corsheaders',
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
@@ -95,7 +94,6 @@ except ImportError:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -303,11 +301,6 @@ PHOTO_UPLOAD_SIZE = 1920, 1080
 
 # API key for wiki
 WIKI_API_KEY = os.environ.get('WIKI_API_KEY', 'debug')
-
-# CORS config
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r'^/api/.*$'
-CORS_ALLOW_METHODS = ('GET', 'POST')
 
 # TinyMCE config
 TINYMCE_JS_URL = '/static/tinymce/js/tinymce/tinymce.min.js'
