@@ -230,6 +230,10 @@ class EventAdmin(DoNextTranslatedModelAdmin):
                  self.admin_site.admin_view(
                      admin_views.EventRegistrationsMarkPresent.as_view()),
                  name='events_event_all_present'),
+            path('<int:pk>/message/',
+                 self.admin_site.admin_view(
+                     admin_views.EventMessage.as_view(admin=self)),
+                 name='events_event_message'),
         ]
         return custom_urls + urls
 

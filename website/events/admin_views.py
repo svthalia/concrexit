@@ -18,7 +18,8 @@ from django.views.generic import DetailView, TemplateView, FormView
 from events import services
 from events.decorators import organiser_only
 from events.exceptions import RegistrationError
-from events.forms import FieldsForm
+from events.forms import FieldsForm, EventMessageForm
+from pushnotifications.models import Message, Category
 from .models import Event, Registration
 
 
@@ -108,6 +109,74 @@ class RegistrationAdminFields(FormView):
             'admin:events_registration_change',
             args=[str(self.registration.pk)]
         ))
+
+
+@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(organiser_only, name='dispatch')
+class EventMessage(FormView):
+    """
+    Renders a form that allows the user to create a push notification for all
+    users registers to the event.
+    """
+    form_class = EventMessageForm
+    template_name = 'events/admin/message_form.html'
+    admin = None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            **self.admin.admin_site.each_context(self.request),
+            'add': False,
+            'change': True,
+            'has_view_permission': True,
+            'has_add_permission': False,
+            'has_change_permission':
+                self.request.user.has_perms('events.change_event'),
+            'has_delete_permission': False,
+            'has_editable_inline_admin_formsets': False,
+            'app_label': 'events',
+            'opts': self.event._meta,
+            'is_popup': False,
+            'save_as': False,
+            'save_on_top': False,
+            'original': self.event,
+            'obj_id': self.event.pk,
+            'title': _('Send push notification'),
+            'adminform': helpers.AdminForm(context['form'], (
+                (None, {
+                    'fields': [f for f in context['form'].fields.keys()]
+                }),
+            ), {})
+        })
+        return context
+
+    def form_valid(self, form):
+        values = form.cleaned_data
+        message = Message(
+            title_nl=values['title_nl'],
+            title_en=values['title_en'],
+            body_nl=values['title_nl'],
+            body_en=values['title_en'],
+            url=values['url'],
+            category=Category.objects.get(key='event')
+        )
+        message.save()
+        message.users.set([r.member for r in self.event.participants
+                           if r.member])
+        message.send()
+        print(message)
+
+        messages.success(self.request,
+                         _("Message sent successfully."))
+        if '_save' in self.request.POST:
+            return HttpResponseRedirect(reverse(
+                'admin:events_event_details',
+                args=[str(self.event.pk)]
+            ))
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, pk=self.kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
 
 
 @method_decorator(staff_member_required, name='dispatch')
