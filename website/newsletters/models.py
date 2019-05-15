@@ -108,6 +108,13 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
 
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
 
+    order = models.PositiveIntegerField(
+        verbose_name=_('order'),
+        blank=False,
+        null=True,
+        default=0
+    )
+
     def clean(self):
         super().clean()
 
@@ -127,11 +134,11 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
         if errors:
             raise ValidationError(errors)
 
-    class Meta:
-        order_with_respect_to = 'newsletter'
-
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ('order',)
 
 
 class NewsletterItem(NewsletterContent):

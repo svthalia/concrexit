@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Thaliawebsite: nieuwsbrieven\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-24 23:55+0200\n"
-"PO-Revision-Date: 2018-10-24 23:56+0200\n"
+"POT-Creation-Date: 2019-04-13 16:03+0200\n"
+"PO-Revision-Date: 2019-04-13 16:00+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: Technicie <www@thalia.nu>\n"
 "Language: nl\n"
@@ -14,15 +14,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: apps.py
-msgid "News letters"
+msgid "Newsletters"
 msgstr "Nieuwsbrieven"
 
 #: forms.py
-msgid "order"
-msgstr "volgorde"
+msgid "Event"
+msgstr "Evenement"
 
 #: models.py
 msgid "Title"
@@ -65,6 +65,10 @@ msgstr "Controleer of alle links absoluut zijn en http(s):// bevatten."
 #: models.py
 msgid "Description"
 msgstr "Beschrijving"
+
+#: models.py
+msgid "order"
+msgstr "volgorde"
 
 #: models.py templates/newsletters/email.html templates/newsletters/email.txt
 msgid "What"
