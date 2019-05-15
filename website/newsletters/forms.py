@@ -4,29 +4,10 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from events.models import Event
-from .models import NewsletterItem, NewsletterEvent, Newsletter
+from .models import NewsletterEvent
 
 
-class NewsletterItemForm(forms.ModelForm):
-    """Custom ModelForm for the NewsletterItem model to add the order field"""
-    order = forms.IntegerField(label=_('order'), initial=0)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        try:
-            newsletter = self.instance.newsletter
-            order = newsletter.get_newslettercontent_order()
-            order_value = list(order).index(self.instance.pk)
-            self.fields['order'].initial = order_value
-        except Newsletter.DoesNotExist:
-            pass
-
-    class Meta:
-        fields = '__all__'
-        model = NewsletterItem
-
-
-class NewsletterEventForm(NewsletterItemForm):
+class NewsletterEventForm(forms.ModelForm):
     """
     Custom ModelForm for the NewsletterEvent model to
     add the order field and javascript for automatic field filling
@@ -45,7 +26,7 @@ class NewsletterEventForm(NewsletterItemForm):
         self.fields['event'].required = False
 
     class Meta:
-        fields = ('event', 'title_en', 'title_nl',
+        fields = ('order', 'event', 'title_en', 'title_nl',
                   'description_en', 'description_nl', 'what_en', 'what_nl',
                   'where_en', 'where_nl', 'start_datetime', 'end_datetime',
                   'show_costs_warning', 'price', 'penalty_costs')
