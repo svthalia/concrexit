@@ -293,12 +293,18 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     errors.update({
                         'registration_start': message,
                         'registration_end': message})
-        if (self.organiser is not None and
-                self.send_cancel_email and
-                self.organiser.contact_mailinglist is None):
-            errors.update(
-                {'send_cancel_email': _("This organiser does not "
-                                        "have a contact mailinglist.")})
+
+        try:
+            if (self.organiser is not None and
+                    self.send_cancel_email and
+                    self.organiser.contact_mailinglist is None):
+                errors.update(
+                    {'send_cancel_email': _(
+                        "This organiser does not "
+                        "have a contact mailinglist.")})
+        except ObjectDoesNotExist:
+            pass
+
         if self.published:
             if (self.price != self._price and self._registration_start
                     and self._registration_start <= timezone.now()):
