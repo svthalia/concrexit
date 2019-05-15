@@ -1,15 +1,17 @@
 """The forms defined by the registrations package"""
 from django import forms
 from django.forms import TypedChoiceField
+from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from utils.snippets import datetime_to_lectureyear
 from .models import Registration, Renewal
 
 
-class MemberRegistrationForm(forms.ModelForm):
-    """Form for membership registrations"""
+class BaseRegistrationForm(forms.ModelForm):
+    """Base form for membership registrations"""
 
     birthday = forms.DateField(
         widget=forms.widgets.SelectDateWidget(years=[
@@ -20,8 +22,17 @@ class MemberRegistrationForm(forms.ModelForm):
 
     privacy_policy = forms.BooleanField(
         required=True,
-        label=_('I accept the privacy policy')
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['privacy_policy'].label = mark_safe(_(
+            'I accept the <a href="{}">privacy policy</a>.').format(
+            reverse_lazy('privacy-policy')))
+
+
+class MemberRegistrationForm(BaseRegistrationForm):
+    """Form for member registrations"""
 
     this_year = datetime_to_lectureyear(timezone.now())
     years = reversed([(x, "{} - {}".format(x, x + 1)) for x in
@@ -30,25 +41,52 @@ class MemberRegistrationForm(forms.ModelForm):
     starting_year = TypedChoiceField(
         choices=years,
         coerce=int,
-        empty_value=this_year
+        empty_value=this_year,
+        required=False
     )
 
     class Meta:
         model = Registration
         fields = '__all__'
-        exclude = ['created_at', 'updated_at', 'status', 'username', 'remarks',
+        exclude = ['created_at', 'updated_at', 'status', 'username',
                    'payment', 'membership']
 
 
-class MemberRenewalForm(forms.ModelForm):
+class BenefactorRegistrationForm(BaseRegistrationForm):
+    """Form for benefactor registrations"""
+
+    icis_employee = forms.BooleanField(
+        required=False,
+        label=_('I am an employee of iCIS')
+    )
+
+    class Meta:
+        model = Registration
+        fields = '__all__'
+        exclude = ['created_at', 'updated_at', 'status', 'username',
+                   'starting_year', 'programme', 'payment', 'membership']
+
+
+class RenewalForm(forms.ModelForm):
     """Form for membership renewals"""
 
     privacy_policy = forms.BooleanField(
         required=True,
-        label=_('I accept the privacy policy')
     )
+
+    icis_employee = forms.BooleanField(
+        required=False,
+        label=_('I am an employee of iCIS')
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['privacy_policy'].label = mark_safe(_(
+            'I accept the <a href="{}">privacy policy</a>.').format(
+            reverse_lazy('privacy-policy')))
 
     class Meta:
         model = Renewal
         fields = '__all__'
-        exclude = ['created_at', 'updated_at', 'status', 'remarks']
+        exclude = ['created_at', 'updated_at', 'status',
+                   'payment', 'membership']

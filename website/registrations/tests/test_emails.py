@@ -19,6 +19,9 @@ from registrations.models import Registration, Renewal
 
 class EmailsTest(TestCase):
 
+    def setUp(self):
+        translation.activate('en')
+
     @mock.patch('registrations.emails._send_email')
     def test_send_registration_email_confirmation(self, send_email):
         reg = Registration(
@@ -97,33 +100,29 @@ class EmailsTest(TestCase):
 
     @mock.patch('registrations.emails._send_email')
     def test_send_new_registration_board_message(self, send_email):
-        entry = Registration(
+        registration = Registration(
             language='en',
             email='test@example.org',
             first_name='John',
             last_name='Doe',
             pk=0,
         )
-        entry.registration = entry
 
-        emails.send_new_registration_board_message(entry)
+        emails.send_new_registration_board_message(registration)
 
         send_email.assert_called_once_with(
             settings.BOARD_NOTIFICATION_ADDRESS,
             'New registration',
             'registrations/email/registration_board.txt',
             {
-                'name': entry.registration.get_full_name(),
+                'name': registration.get_full_name(),
                 'url': (
                     'https://thalia.localhost'
                     + reverse('admin:registrations_registration_change',
-                              args=[entry.registration.pk])
+                              args=[registration.pk])
                 )
             }
         )
-
-        entry.registration = None
-        emails.send_new_registration_board_message(entry)
 
     @mock.patch('registrations.emails._send_email')
     def test_send_renewal_accepted_message(self, send_email):
@@ -245,6 +244,65 @@ class EmailsTest(TestCase):
                 )
             }
         )
+
+    @mock.patch('registrations.emails._send_email')
+    def test_send_references_information_message(self, send_email):
+        with self.subTest('Registrations'):
+            registration = Registration(
+                language='en',
+                email='test@example.org',
+                first_name='John',
+                last_name='Doe',
+                pk=uuid.uuid4(),
+            )
+
+            emails.send_references_information_message(registration)
+
+            send_email.assert_called_once_with(
+                'test@example.org',
+                'Information about references',
+                'registrations/email/references_information.txt',
+                {
+                    'name': registration.get_full_name(),
+                    'reference_link': (
+                        'https://thalia.localhost' +
+                        reverse('registrations:reference',
+                                args=[registration.pk])
+                    )
+                }
+            )
+
+        send_email.reset_mock()
+
+        with self.subTest('Renewals'):
+            member = Member(
+                email="test@example.org",
+                first_name='John',
+                last_name='Doe',
+                profile=Profile(
+                    language='en'
+                )
+            )
+
+            renewal = Renewal(
+                pk=uuid.uuid4(),
+                member=member
+            )
+
+            emails.send_references_information_message(renewal)
+
+            send_email.assert_called_once_with(
+                'test@example.org',
+                'Information about references',
+                'registrations/email/references_information.txt',
+                {
+                    'name': renewal.member.get_full_name(),
+                    'reference_link': (
+                        'https://thalia.localhost' +
+                        reverse('registrations:reference', args=[renewal.pk])
+                    )
+                }
+            )
 
     def test_send_email(self):
         _send_email(

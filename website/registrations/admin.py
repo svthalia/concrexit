@@ -7,7 +7,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from payments.widgets import PaymentWidget
 from . import services
-from .models import Entry, Registration, Renewal
+from .models import Entry, Registration, Renewal, Reference
+
+
+class ReferenceInline(admin.StackedInline):
+    model = Reference
+    extra = 0
 
 
 def _show_message(admin, request, n, message, error):
@@ -29,6 +34,7 @@ class RegistrationAdmin(admin.ModelAdmin):
                     'created_at', 'payment_status')
     list_filter = ('status', 'programme', 'payment__type',
                    'payment__amount')
+    inlines = (ReferenceInline,)
     search_fields = ('first_name', 'last_name', 'email', 'phone_number',
                      'student_number',)
     date_hierarchy = 'created_at'
@@ -38,6 +44,7 @@ class RegistrationAdmin(admin.ModelAdmin):
                        'updated_at',
                        'username',
                        'length',
+                       'contribution',
                        'membership_type',
                        'status',
                        'payment',
@@ -109,8 +116,11 @@ class RegistrationAdmin(admin.ModelAdmin):
                                obj.status == Entry.STATUS_COMPLETED):
             return ['status', 'created_at', 'updated_at']
         else:
-            return [field.name for field in self.model._meta.get_fields()
-                    if field.editable and not field.name == 'payment']
+            return [
+                field.name for field in self.model._meta.get_fields()
+                if not field.name in['payment', 'no_references']
+                and field.editable
+            ]
 
     @staticmethod
     def name(obj):
@@ -179,6 +189,7 @@ class RenewalAdmin(RegistrationAdmin):
                             'created_at',
                             'updated_at',
                             'length',
+                            'contribution',
                             'membership_type',
                             'status',
                             'payment',

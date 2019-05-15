@@ -312,6 +312,10 @@ class ServicesTest(TestCase):
         # upgrade 'study' after membership end
         p5 = services._create_payment_for_entry(self.e5)
 
+        self.e1.membership_type = Membership.BENEFACTOR
+        self.e1.contribution = 10
+        p6 = services._create_payment_for_entry(self.e1)  # contribu payment
+
         self.assertEqual(p1.amount, settings.MEMBERSHIP_PRICES['year'])
         self.assertEqual(p1.processed, False)
         self.assertEqual(p2.amount, settings.MEMBERSHIP_PRICES['study'])
@@ -324,6 +328,8 @@ class ServicesTest(TestCase):
         self.assertEqual(p5.amount, settings.MEMBERSHIP_PRICES['study'] -
                          settings.MEMBERSHIP_PRICES['year'])
         self.assertEqual(p5.processed, False)
+        self.assertEqual(p6.amount, 10)
+        self.assertEqual(p6.processed, False)
 
     @mock.patch('registrations.services.check_unique_user')
     def test_create_member_from_registration(self, check_unique_user):

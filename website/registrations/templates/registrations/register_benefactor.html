@@ -15,23 +15,14 @@
 {% block body %}
     <section class="page-section" id="registrations-form">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "registration" %} {% trans "Member" %}</h1>
+            <h1 class="text-center section-title">{% trans "registration" %} {% trans "Benefactor" %}</h1>
 
             <p class="text-center">
-                {% url 'registrations:register-benefactor' as benefactor_register %}
                 {% blocktrans trimmed %}
-                    A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.
-                    <br/>
-                    Note: Only Computing Science and Information Sciences students at the Radboud University can become
-                    a member.<br/><br/>
-                    It is still possible to be associated with Thalia, even if you do not study Computing Science or
-                    Information Sciences (anymore): You can become a benefactor. For at least € {{ year_fees }} per
-                    year, you too can enjoy everything Thalia has to offer.<br/>
-                    <em>
-                        Note that this form is only for member registration.
-                        Please use the <a href="{{ benefactor_register }}">benefactor registration page</a>
-                        if you want to become a benefactor.
-                    </em>
+                    It is still possible to be associated with Thalia, even if you do not study Computing
+                    Science or Information Sciences (anymore): You can become a benefactor. For at least €
+                    {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.
+                    If you are not a former Thalia member, iCIS staff member or alumni, you must collect two references of current Thalia members.
                 {% endblocktrans %}
             </p>
 
@@ -56,8 +47,6 @@
                 {% csrf_token %}
 
                 <fieldset class="col-12 col-lg-6">
-                    {% bootstrap_field form.length %}
-
                     {% bootstrap_field form.first_name %}
                     {% bootstrap_field form.last_name %}
 
@@ -86,7 +75,9 @@
 
                     <div class="form-group">
                         <div class="form-check">
-                            <input name="optin_birthday" class="form-check-input" id="id_optin_birthday"
+                            <input name="optin_birthday"
+                                   class="form-check-input"
+                                   id="id_optin_birthday"
                                    type="checkbox">
                             <label class="form-check-label"
                                    for="id_optin_birthday">{% trans "Display birthday in calendar" %}</label>
@@ -94,9 +85,8 @@
                     </div>
 
                     {% bootstrap_field form.student_number %}
-                    {% bootstrap_field form.programme %}
-                    {% bootstrap_field form.starting_year %}
-
+                    {% bootstrap_field form.icis_employee %}
+                    {% bootstrap_field form.contribution %}
                     {% bootstrap_field form.privacy_policy %}
                 </fieldset>
 

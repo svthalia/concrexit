@@ -1,23 +1,24 @@
 """The services defined by the registrations package"""
 import string
 import unicodedata
+from typing import Union
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils import timezone
 
 import members
-from members.models import Membership, Profile
+from members.models import Membership, Profile, Member
 from payments.models import Payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
 
 
-def _generate_username(registration):
+def _generate_username(registration: Registration) -> str:
     """
     Create username from first and lastname
 
@@ -39,7 +40,7 @@ def _generate_username(registration):
     return username
 
 
-def check_unique_user(entry):
+def check_unique_user(entry: Entry) -> bool:
     """
     Check that the username and email address of the entry are unique.
 
@@ -62,7 +63,7 @@ def check_unique_user(entry):
     return True
 
 
-def confirm_entry(queryset):
+def confirm_entry(queryset: QuerySet) -> int:
     """
     Confirm all entries in the queryset
 
@@ -77,10 +78,11 @@ def confirm_entry(queryset):
     return rows_updated
 
 
-def reject_entries(user_id, queryset):
+def reject_entries(user_id: int, queryset: QuerySet) -> int:
     """
     Reject all entries in the queryset
 
+    :param user_id: Id of the user executing this action
     :param queryset: queryset of entries
     :type queryset: Queryset[Entry]
     :return: number of updated rows
@@ -117,10 +119,11 @@ def reject_entries(user_id, queryset):
     return rows_updated
 
 
-def accept_entries(user_id, queryset):
+def accept_entries(user_id: int, queryset: QuerySet) -> int:
     """
     Accept all entries in the queryset
 
+    :param user_id: Id of the user executing this action
     :param queryset: queryset of entries
     :type queryset: Queryset[Entry]
     :return: number of updated rows
@@ -174,10 +177,11 @@ def accept_entries(user_id, queryset):
     return len(updated_entries)
 
 
-def revert_entry(user_id, entry):
+def revert_entry(user_id: int, entry: Entry) -> None:
     """
     Revert status of entry to review so that it can be corrected
 
+    :param user_id: Id of the user executing this action
     :param entry: Entry that should be reverted
     """
     if not (entry.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]):
@@ -201,8 +205,6 @@ def revert_entry(user_id, entry):
         except Renewal.DoesNotExist:
             pass
 
-    print(log_obj)
-
     if log_obj:
         LogEntry.objects.log_action(
             user_id=user_id,
@@ -214,7 +216,7 @@ def revert_entry(user_id, entry):
         )
 
 
-def _create_payment_for_entry(entry):
+def _create_payment_for_entry(entry: Entry) -> Payment:
     """
     Create payment model for entry
 
@@ -224,6 +226,8 @@ def _create_payment_for_entry(entry):
     :rtype: Payment
     """
     amount = settings.MEMBERSHIP_PRICES[entry.length]
+    if entry.contribution and entry.membership_type == Membership.BENEFACTOR:
+        amount = entry.contribution
     notes = f'Membership registration. {entry.get_membership_type_display()}.'
 
     try:
@@ -242,7 +246,7 @@ def _create_payment_for_entry(entry):
         # we're checking if that is the case so that these members
         # still get the discount price
         if (membership is not None and membership.until is not None and
-                entry.created_at.date() < membership.until and
+            entry.created_at.date() < membership.until and
                 renewal.length == Entry.MEMBERSHIP_STUDY):
             amount = (settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY] -
                       settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR])
@@ -255,7 +259,7 @@ def _create_payment_for_entry(entry):
     )
 
 
-def _create_member_from_registration(registration):
+def _create_member_from_registration(registration: Registration) -> Member:
     """
     Create User and Member model from Registration
 
@@ -303,10 +307,11 @@ def _create_member_from_registration(registration):
     # Send welcome message to new member
     members.emails.send_welcome_message(user, password, registration.language)
 
-    return user
+    return Member.objects.get(pk=user.pk)
 
 
-def _create_membership_from_entry(entry, member=None):
+def _create_membership_from_entry(
+        entry: Entry, member: Member = None) -> Union[Membership, None]:
     """
     Create or update Membership model based on Entry model information
 
@@ -371,7 +376,7 @@ def _create_membership_from_entry(entry, member=None):
     )
 
 
-def process_payment(payment):
+def process_payment(payment: Payment) -> None:
     """
     Process the payment for the entry and send the right emails
 

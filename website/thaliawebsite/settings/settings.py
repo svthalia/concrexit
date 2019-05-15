@@ -296,6 +296,7 @@ ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
 # Google maps API key and secrets
 GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
 GOOGLE_MAPS_API_SECRET = os.environ.get('GOOGLE_MAPS_API_SECRET', '')
+GOOGLE_PLACES_API_KEY = os.environ.get('GOOGLE_PLACES_API_KEY', '')
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
@@ -326,6 +327,10 @@ TINYMCE_DEFAULT_CONFIG = {
     'paste_as_text': True,
     'relative_urls': False,
     'remove_script_host': False,
+}
+
+BOOTSTRAP4 = {
+    'required_css_class': 'required-field'
 }
 
 

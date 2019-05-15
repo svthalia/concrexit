@@ -9,39 +9,53 @@
         <div class="container">
             <h1 class="text-center section-title">{% trans "Become a Member" %}</h1>
 
-            <p>{% trans "Thalia is the study association for Computing Science and Information Sciences students at the Radboud University in Nijmegen. Thalia organises a wide variety of activities, such as bowling events, go cart racing, lunch lectures, drinks and much more! Furthermore, members get access to our tests and summaries database, as well as discounts on books. There's no reason not to become a member!" %}</p>
+            <p class="text-center">{% trans "Thalia is the study association for Computing Science and Information Sciences students at the Radboud University in Nijmegen. Thalia organises a wide variety of activities, such as bowling events, go cart racing, lunch lectures, drinks and much more! Furthermore, members get access to our tests and summaries database, as well as discounts on books. There's no reason not to become a member!" %}</p>
 
-            <h4>{% trans "How do I become a member?" %}</h4>
+            <div class="row">
+                <div class="col-12 col-lg-6 order-0">
+                    <h4>{% trans "I'm a Computing Science or Information Sciences student at the Radboud University" %}</h4>
 
-            <p>
-                {% blocktrans trimmed %}
-                    You can become a member of Thalia at any time during the year. A membership costs €
-                    {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration. Click on the button
-                    below to go to the registration form. Note: Only Computing Science and Information Sciences students
-                    at the Radboud University can become a member.
-                {% endblocktrans %}
-            </p>
+                    <p>
+                        {% blocktrans trimmed %}
+                            You can become a member of Thalia at any time during the year. A membership costs €
+                            {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration. Click on the button
+                            below to go to the registration form. Note: Only Computing Science and Information Sciences students
+                            at the Radboud University can become a member.
+                        {% endblocktrans %}
+                    </p>
+                </div>
 
-            <p class="text-center my-4">
-                <a href="{{ member_form_url }}" class="btn btn-primary btn-lg btn-block">
-                    {% trans "Register now" %}
-                </a>
-            </p>
+                <div class="col-12 col-lg-6 order-1 order-lg-3">
+                    <p class="text-center my-4">
+                        <a href="{% url 'registrations:register-member' %}" class="btn btn-primary btn-lg btn-block">
+                            {% trans "Become a member" %}
+                        </a>
+                    </p>
+                </div>
 
-            <h4>{% trans "I'm not a Computing Science and Information Sciences student at the Radboud University, but I do want to attend your events. Now what?" %}</h4>
+                <div class="col-12 col-lg-6 h-100 order-2 order-lg-2">
+                    <h4>{% trans "I'm not a Computing Science and Information Sciences student at the Radboud University" %}</h4>
 
-            <p>
-                {% blocktrans trimmed %}
-                    It is still possible to be associated with Thalia, even if you do not study Computing
-                    Science or Information Sciences (anymore): You can become a benefactor. For at least €
-                    {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.
-                    If you are not a former Thalia member, ICIS staff member or alumni, you must submit a written along
-                    with two signatures of current Thalia members. You can fill all of this in on the benefactor form,
-                    which you can get at the board room (M1.0.08, ground floor of Mercator 1).
-                {% endblocktrans %}
-            </p>
+                    <p>
+                        {% blocktrans trimmed %}
+                            It is still possible to be associated with Thalia, even if you do not study Computing
+                            Science or Information Sciences (anymore): You can become a benefactor. For at least €
+                            {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.
+                            If you are not a former Thalia member, iCIS staff member or alumni, you must collect two references of current Thalia members.
+                        {% endblocktrans %}
+                    </p>
+                </div>
 
-            <p>
+                <div class="col-12 col-lg-6 order-3">
+                    <p class="text-center my-4">
+                        <a href="{% url 'registrations:register-benefactor' %}" class="btn btn-primary btn-lg btn-block">
+                            {% trans "Become a benefactor" %}
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-center">
                 {% blocktrans trimmed %}
                     Payment can be made both in cash or by card. If you have any other questions about Thalia
                     and/or your membership, feel free to email

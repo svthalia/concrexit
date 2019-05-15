@@ -1,4 +1,6 @@
 """The emails defined by the registrations package"""
+from typing import Union
+
 from django.conf import settings
 from django.core import mail
 from django.template import loader
@@ -7,10 +9,11 @@ from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
-from . import models
+from payments.models import Payment
+from registrations.models import Registration, Renewal
 
 
-def send_registration_email_confirmation(registration):
+def send_registration_email_confirmation(registration: Registration) -> None:
     """
     Send the email confirmation message
 
@@ -23,8 +26,8 @@ def send_registration_email_confirmation(registration):
             'registrations/email/registration_confirm_mail.txt',
             {
                 'name': registration.get_full_name(),
-                'confirm_link': '{}{}'.format(
-                    settings.BASE_URL,
+                'confirm_link': (
+                    settings.BASE_URL +
                     reverse('registrations:confirm-email',
                             args=[registration.pk])
                 )
@@ -32,7 +35,8 @@ def send_registration_email_confirmation(registration):
         )
 
 
-def send_registration_accepted_message(registration, payment):
+def send_registration_accepted_message(registration: Registration,
+                                       payment: Payment) -> None:
     """
     Send the registration acceptance email
 
@@ -51,7 +55,7 @@ def send_registration_accepted_message(registration, payment):
         )
 
 
-def send_registration_rejected_message(registration):
+def send_registration_rejected_message(registration: Registration) -> None:
     """
     Send the registration rejection email
 
@@ -68,29 +72,28 @@ def send_registration_rejected_message(registration):
         )
 
 
-def send_new_registration_board_message(entry):
+def send_new_registration_board_message(registration: Registration) -> None:
     """
     Send a notification to the board about a new registration
 
-    :param entry: the registration entry
+    :param registration: the registration entry
     """
-    try:
-        _send_email(
-            settings.BOARD_NOTIFICATION_ADDRESS,
-            'New registration',
-            'registrations/email/registration_board.txt',
-            {
-                'name': entry.registration.get_full_name(),
-                'url': settings.BASE_URL
-                + reverse('admin:registrations_registration_change',
-                          args=[entry.registration.pk])
-            }
-        )
-    except models.Registration.DoesNotExist:
-        pass
+    _send_email(
+        settings.BOARD_NOTIFICATION_ADDRESS,
+        'New registration',
+        'registrations/email/registration_board.txt',
+        {
+            'name': registration.get_full_name(),
+            'url': (
+               settings.BASE_URL +
+               reverse('admin:registrations_registration_change',
+                       args=[registration.pk])
+            )
+        }
+    )
 
 
-def send_renewal_accepted_message(renewal, payment):
+def send_renewal_accepted_message(renewal: Renewal, payment: Payment) -> None:
     """
     Send the renewal acceptation email
 
@@ -109,7 +112,7 @@ def send_renewal_accepted_message(renewal, payment):
         )
 
 
-def send_renewal_rejected_message(renewal):
+def send_renewal_rejected_message(renewal: Renewal) -> None:
     """
     Send the renewal rejection email
 
@@ -126,7 +129,7 @@ def send_renewal_rejected_message(renewal):
         )
 
 
-def send_renewal_complete_message(renewal):
+def send_renewal_complete_message(renewal: Renewal) -> None:
     """
     Send the email completing the renewal
 
@@ -143,7 +146,7 @@ def send_renewal_complete_message(renewal):
         )
 
 
-def send_new_renewal_board_message(renewal):
+def send_new_renewal_board_message(renewal: Renewal) -> None:
     """
     Send a notification to the board about a new renewal
 
@@ -155,14 +158,53 @@ def send_new_renewal_board_message(renewal):
         'registrations/email/renewal_board.txt',
         {
             'name': renewal.member.get_full_name(),
-            'url': settings.BASE_URL
-            + reverse('admin:registrations_renewal_change',
-                      args=[renewal.pk])
+            'url': (
+                settings.BASE_URL +
+                reverse('admin:registrations_renewal_change',
+                        args=[renewal.pk])
+            )
         }
     )
 
 
-def _send_email(to, subject, body_template, context):
+def send_references_information_message(
+        entry: Union[Registration, Renewal]) -> None:
+    """
+    Send a notification to the user with information about references
+    These are required for benefactors who have not been a Thalia member
+    and do not work for iCIS
+
+    :param entry: the registration or renewal entry
+    """
+
+    if type(entry).__name__ == 'Registration':
+        email = entry.email
+        name = entry.get_full_name()
+        language = entry.language
+    else:
+        email = entry.member.email
+        name = entry.member.get_full_name()
+        language = entry.member.profile.language
+
+    print(language)
+
+    with translation.override(language):
+        _send_email(
+            email,
+            _('Information about references'),
+            'registrations/email/references_information.txt',
+            {
+                'name': name,
+                'reference_link': (
+                    settings.BASE_URL +
+                    reverse('registrations:reference', args=[entry.pk])
+                )
+            }
+        )
+
+
+def _send_email(to: str, subject: str,
+                body_template: str, context: dict) -> None:
     """
     Easily send an email with the right subject and a body template
 

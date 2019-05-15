@@ -1,13 +1,12 @@
 from django.contrib.auth import get_user_model
-from django.core import mail
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import ugettext_lazy as _
+from freezegun import freeze_time
 
 from members.models import Member, Membership, Profile
-from registrations.models import Entry, Registration, Renewal
+from registrations.models import Entry, Registration, Renewal, Reference
 
 
 class EntryTest(TestCase):
@@ -51,6 +50,71 @@ class EntryTest(TestCase):
             self.member.first_name, self.member.last_name,
             self.member.email))
 
+    @freeze_time('2019-01-01')
+    def test_save(self):
+        entry = Entry(registration=self.registration)
+
+        entry.status = Entry.STATUS_ACCEPTED
+        test_value = timezone.now().replace(year=1996)
+        entry.updated_at = test_value
+
+        with self.subTest('Accepted should not update `updated_at`'):
+            entry.save()
+            self.assertEqual(entry.updated_at, test_value)
+
+        entry.status = Entry.STATUS_REJECTED
+
+        with self.subTest('Rejected should not update `updated_at`'):
+            entry.save()
+            self.assertEqual(entry.updated_at, test_value)
+
+        entry.status = Entry.STATUS_REVIEW
+
+        with self.subTest('Review should update `updated_at`'):
+            entry.save()
+            self.assertNotEqual(entry.updated_at, test_value)
+
+        entry.length = Entry.MEMBERSHIP_STUDY
+
+        with self.subTest('Type `Member` should not change length'):
+            entry.save()
+            self.assertEqual(entry.length, Entry.MEMBERSHIP_STUDY)
+
+        entry.membership_type = Membership.BENEFACTOR
+
+        with self.subTest('Type `Benefactor` should set length to year'):
+            entry.save()
+            self.assertEqual(entry.length, Entry.MEMBERSHIP_YEAR)
+
+        entry.contribution = 9
+
+        with self.subTest('Type `Benefactor` keeps contribution value'):
+            entry.save()
+            self.assertEqual(entry.contribution, 9)
+
+        entry.membership_type = Membership.MEMBER
+
+        with self.subTest('Type `Member` should clear contribution'):
+            entry.save()
+            self.assertEqual(entry.contribution, None)
+
+    def test_clean(self):
+        entry = Entry(registration=self.registration)
+
+        entry.membership_type = Membership.MEMBER
+        entry.contribution = None
+
+        with self.subTest('Type `Member` should not require contribution'):
+            entry.clean()
+
+        entry.membership_type = Membership.BENEFACTOR
+
+        with self.subTest('Type `Benefactor` should require contribution'):
+            with self.assertRaises(ValidationError):
+                entry.clean()
+            entry.contribution = 7.5
+            entry.clean()
+
 
 class RegistrationTest(TestCase):
     """Tests registrations"""
@@ -75,6 +139,7 @@ class RegistrationTest(TestCase):
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
+            contribution=7.5
         )
 
     def setUp(self):
@@ -85,6 +150,10 @@ class RegistrationTest(TestCase):
         self.assertEqual(str(self.registration), '{} {} ({})'.format(
             self.registration.first_name, self.registration.last_name,
             self.registration.email))
+
+    def test_get_full_name(self):
+        self.assertEqual(self.registration.get_full_name(), '{} {}'.format(
+            self.registration.first_name, self.registration.last_name))
 
     def test_full_clean_works(self):
         self.registration.full_clean()
@@ -150,6 +219,7 @@ class RegistrationTest(TestCase):
         with self.subTest('Type is benefactor'):
             self.registration.student_number = None
             self.registration.membership_type = Membership.BENEFACTOR
+            self.registration.contribution = 7.5
             self.registration.clean()
 
     def test_unique_username_user(self):
@@ -170,6 +240,7 @@ class RegistrationTest(TestCase):
         ):
             self.registration.clean()
         self.registration.membership_type = Membership.BENEFACTOR
+        self.registration.contribution = 7.5
         self.registration.clean()
 
     def test_require_starting_year_members(self):
@@ -180,44 +251,8 @@ class RegistrationTest(TestCase):
         ):
             self.registration.clean()
         self.registration.membership_type = Membership.BENEFACTOR
+        self.registration.contribution = 7.5
         self.registration.clean()
-
-    def test_save(self):
-        registration = Registration.objects.create(
-            first_name='John',
-            last_name='Doe',
-            email='johndoe@example.com',
-            programme='computingscience',
-            student_number='s1234567',
-            starting_year=2014,
-            address_street='Heyendaalseweg 135',
-            address_street2='',
-            address_postal_code='6525AJ',
-            address_city='Nijmegen',
-            address_country='NL',
-            phone_number='06123456789',
-            birthday=timezone.now().replace(year=1990),
-            language='en',
-            length=Entry.MEMBERSHIP_YEAR,
-            membership_type=Membership.MEMBER,
-        )
-
-        with self.subTest(f'Create confirmation mail'
-                          f'on save with status confirm'):
-            self.assertEqual(len(mail.outbox), 1)
-            confirm_url = (
-                'https://thalia.localhost' +
-                reverse('registrations:confirm-email',
-                        args=[registration.pk])
-            )
-            self.assertTrue(confirm_url in mail.outbox[0].body)
-            mail.outbox.clear()
-
-        with self.subTest('No emails in outbox when status is not confirm'):
-            registration.status = Entry.STATUS_REVIEW
-            registration.save()
-
-            self.assertEqual(len(mail.outbox), 0)
 
 
 class RenewalTest(TestCase):
@@ -235,6 +270,18 @@ class RenewalTest(TestCase):
         self.assertEqual(str(self.renewal), '{} {} ({})'.format(
             self.member.first_name, self.member.last_name,
             self.member.email))
+
+    def test_save(self):
+        self.renewal.pk = 2
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
+
+        self.assertEqual(self.renewal.status, Entry.STATUS_ACCEPTED)
+
+        self.renewal.pk = None
+        self.renewal.save()
+
+        self.assertEqual(self.renewal.status, Entry.STATUS_REVIEW)
 
     def test_clean_works(self):
         self.member.membership_set.all().delete()
@@ -317,3 +364,21 @@ class RenewalTest(TestCase):
                 'length': 'You currently have an active membership.',
                 'membership_type': 'You currently have an active membership.',
             })
+
+
+class ReferenceTest(TestCase):
+    fixtures = ['members.json']
+
+    def test_str(self):
+        member = Member.objects.filter(last_name="Wiggers").first()
+        renewal = Renewal(
+            member=member,
+            length=Entry.MEMBERSHIP_YEAR,
+            membership_type=Membership.MEMBER,
+        )
+
+        ref = Reference(member=member, entry=renewal)
+        self.assertEqual(
+            str(ref),
+            'Reference from Thom Wiggers (thom) for Thom Wiggers ()'
+        )
