@@ -94,8 +94,7 @@
         "display_name_preference": "full",
         "language": "nl",
         "receive_optin": true,
-        "direct_debit_authorized": false,
-        "bank_account": ""
+        "auto_renew": false
     }
 },
 {
@@ -121,8 +120,7 @@
         "display_name_preference": "full",
         "language": "nl",
         "receive_optin": true,
-        "direct_debit_authorized": false,
-        "bank_account": ""
+        "auto_renew": false
     }
 },
 {
@@ -148,8 +146,7 @@
         "display_name_preference": "full",
         "language": "nl",
         "receive_optin": true,
-        "direct_debit_authorized": false,
-        "bank_account": ""
+        "auto_renew": false
     }
 },
 {
@@ -175,8 +172,7 @@
         "display_name_preference": "full",
         "language": "nl",
         "receive_optin": true,
-        "direct_debit_authorized": false,
-        "bank_account": ""
+        "auto_renew": false
     }
 },
 {

@@ -1,0 +1,42 @@
+#payments-account-form {
+    #id_initials {
+        flex: .3 1 auto;
+    }
+
+    #id_address_postal_code {
+        flex: .2 1 auto;
+    }
+
+    #id_signature_canvas {
+        height: 10rem;
+    }
+
+    #canvas-container {
+        position: relative;
+
+        .canvas-btn {
+            position: absolute;
+            height: 2rem;
+            width: 2rem;
+            top: 0.25rem;
+            color: $black;
+
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            font-size: 14px;
+            line-height: 2.5;
+
+
+            &#canvas-undo-btn {
+                right: 2.75rem;
+            }
+
+            &#canvas-clear-btn {
+                right: 0.5rem;
+            }
+        }
+    }
+}

@@ -36,7 +36,7 @@ MAIN_MENU = [
         'submenu': [
             {'title': _('Member list'), 'name': 'members:index'},
             {'title': _('Photos'), 'name': 'photos:index'},
-            {'title': _('Statistics'), 'name': 'statistics'},
+            {'title': _('Statistics'), 'name': 'members:statistics'},
             {'title': _('Styleguide'), 'name': 'styleguide'},
             {'title': _('Become Active'), 'name': 'become-active'},
             {'title': _('Nextcloud'), 'url': 'https://cloud.thalia.nu/',

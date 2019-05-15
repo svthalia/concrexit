@@ -15,8 +15,6 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, gettext_lazy as _
-from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
-from localflavor.generic.models import IBANField
 
 from activemembers.models import MemberGroup, MemberGroupMembership
 from utils import countries
@@ -404,25 +402,13 @@ class Profile(models.Model):
         default=True,
     )
 
-    # --- Direct debit information ----
+    # --- Membership preference ----
 
-    direct_debit_authorized = models.BooleanField(
-        choices=((True, _('Yes, I want Thalia to take the membership fees '
-                          'from my bank account through direct debit for '
-                          'each year.')),
-                 (False, _('No, I will pay the contribution myself'))),
-        verbose_name=_('Direct debit'),
-        help_text=_('Each year, have Thalia take the membership fees from my '
-                    'bank account'),
+    auto_renew = models.BooleanField(
+        choices=((True, _('Yes, enable auto renewal.')),
+                 (False, _('No, manual renewal required.'))),
+        verbose_name=_('Automatically renew membership'),
         default=False,
-    )
-
-    bank_account = IBANField(
-        verbose_name=_('Bank account'),
-        help_text=_('Bank account for direct debit'),
-        include_countries=IBAN_SEPA_COUNTRIES,
-        blank=True,
-        null=True,
     )
 
     def display_name(self):

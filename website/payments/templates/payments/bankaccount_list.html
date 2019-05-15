@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load i18n static bootstrap4 compress alert %}
+
+{% block title %}{% trans "bank accounts"|capfirst %} —
+    {% trans "finances"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "add bank account"|capfirst %} —
+    {% trans "finances"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <section class="page-section" id="payments-account-overview">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "bank accounts"|capfirst %}</h1>
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% alert message.tags message %}
+                {% endfor %}
+            {% endif %}
+
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    Thalia keeps your bank account saved to your profile to
+                    ease the processing of digital financial transactions like
+                    reimbursements or invoices. You can change the bank account
+                    saved to your profile and manage your authorisation for
+                    direct debit transactions.
+                {% endblocktrans %}
+            </p>
+
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    We only keep a history of bank accounts with a direct debit
+                    authorisation. Bank accounts that do not have such an
+                    authorisation are not kept when you change your account.
+                    Changing your bank account automatically revokes any
+                    previously given direct debit authorisations.
+                {% endblocktrans %}
+            </p>
+
+{#            TODO: Add a mention to payments functionality when we build it  #}
+{#            https://gitlab.science.ru.nl/thalia/concrexit/issues/632 #}
+{#            <p class="text-center">#}
+{#                {% blocktrans trimmed %}#}
+{#                    If you have a bank account with an authorisation for#}
+{#                    direct debit you can use it to pay digitally.#}
+{#                {% endblocktrans %}#}
+{#            </p>#}
+
+            {% if object_list %}
+                <p class="text-center mb-4">
+                    <a href="{% url 'payments:bankaccount-add' %}"
+                       class="btn btn-primary">Change bank account</a>
+                </p>
+
+                <table class="table text-center">
+                    <thead>
+                    <tr>
+                        <th scope="col">
+                            {% trans "IBAN" %}
+                        </th>
+                        <th scope="col">
+                            {% trans "name"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "created"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "direct debit"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "reference"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "valid from"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "valid until"|capfirst %}
+                        </th>
+                        <th scope="col">
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for account in object_list reversed %}
+                        <tr>
+                            <th scope="row">
+                                {{ account.iban }}
+                                {% if account.bic %}
+                                    ({{ account.bic }}
+                                {% endif %}
+                            </th>
+                            <td>
+                                {{ account.name }}
+                            </td>
+                            <td>
+                                {{ account.created_at }}
+                            </td>
+                            <td>
+                                <i class="fas fa-{{ account.valid|yesno:'check-circle,times-circle' }}"></i>
+                            </td>
+                            <td>
+                                {{ account.mandate_no|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ account.valid_from|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ account.valid_until|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {% if account.valid %}
+                                    <form
+                                        method="post"
+                                        action="{% url 'payments:bankaccount-revoke' account.pk %}"
+                                    >
+                                        {% csrf_token %}
+                                        <input
+                                            type="submit"
+                                            class="btn btn-secondary"
+                                            value="{% trans 'Revoke' %}"
+                                            onclick="return confirm('{% trans 'Are you sure you want to revoke the mandate for this bank account?' %}');"
+                                        />
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center mb-4">
+                    <a href="{% url 'payments:bankaccount-add' %}"
+                       class="btn btn-primary">Add bank account</a>
+                </p>
+
+                {% trans "You don't have any saved accounts yet." as no_accounts %}
+                {% alert 'info' no_accounts %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

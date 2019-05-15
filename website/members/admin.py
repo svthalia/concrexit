@@ -26,13 +26,12 @@ class ProfileInline(admin.StackedInline):
               'address_street2', 'address_postal_code', 'address_city',
               'address_country', 'student_number', 'phone_number',
               'receive_optin', 'receive_newsletter', 'birthday',
-              'show_birthday', 'direct_debit_authorized', 'bank_account',
-              'initials', 'nickname', 'display_name_preference',
-              'profile_description', 'website', 'photo', 'emergency_contact',
+              'show_birthday', 'auto_renew', 'initials',
+              'nickname', 'display_name_preference', 'profile_description',
+              'website', 'photo', 'emergency_contact',
               'emergency_contact_phone_number', 'language',
               'event_permissions')
     model = models.Profile
-    form = forms.ProfileForm
     can_delete = False
 
 
@@ -101,7 +100,8 @@ class UserAdmin(BaseUserAdmin):
                    'is_superuser',
                    AgeListFilter,
                    'profile__event_permissions',
-                   'profile__starting_year')
+                   'profile__starting_year',
+                   'profile__auto_renew')
 
     add_fieldsets = (
         (None, {

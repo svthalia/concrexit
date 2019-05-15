@@ -39,7 +39,6 @@ from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
 
-import members
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from events.sitemaps import sitemap as events_sitemap
@@ -73,9 +72,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^event-registration-terms/', TemplateView.as_view(template_name='singlepages/event_registration_terms.html'), name='event-registration-terms'),
     url(r'^admin/', admin.site.urls),
     url(r'^alumni/$', AlumniEventsView.as_view(), name='alumni'),
-    url(r'^members/', include('members.urls')),
     url(r'^registration/', include('registrations.urls')),
-    url(r'^account/$', members.views.account, name='account'),
     url(r'^events/', include('events.urls')),
     url(r'^pizzas/', include('pizzas.urls')),
     url(r'^newsletters/', include('newsletters.urls')),
@@ -90,7 +87,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^', include([  # 'for members' menu
         url(r'^become-active/', login_required(TemplateView.as_view(template_name='singlepages/become_active.html')), name='become-active'),
         url(r'^photos/', include('photos.urls')),
-        url(r'^statistics/$', members.views.statistics, name='statistics'),
         url(r'^styleguide/$', views.styleguide, name='styleguide'),
         url(r'^styleguide/file/(?P<filename>[\w\-_\.]+)$', views.styleguide_file, name='styleguide-file'),
     ])),
@@ -116,7 +112,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # Default login helpers
     url(r'^login/$', LoginView.as_view(), {'authentication_form': AuthenticationForm},
         name='login'),
-    url(r'^', include('django.contrib.auth.urls')),
+    url(r'^user/', include('django.contrib.auth.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     # Sitemap
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': THALIA_SITEMAP},
@@ -129,6 +125,8 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'crash/$', views.crash),
     # Custom media paths
     url(r'^media/generate-thumbnail/(?P<request_path>.*)', generate_thumbnail, name='generate-thumbnail'),
-    url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media')
+    url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media'),
+    url('', include('members.urls')),
+    url('', include('payments.urls')),
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))

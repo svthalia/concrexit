@@ -6,6 +6,13 @@ payments package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    payments.management
+
 Submodules
 ----------
 
@@ -33,6 +40,14 @@ payments.apps module
     :undoc-members:
     :show-inheritance:
 
+payments.forms module
+---------------------
+
+.. automodule:: payments.forms
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 payments.models module
 ----------------------
 
@@ -45,6 +60,22 @@ payments.services module
 ------------------------
 
 .. automodule:: payments.services
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+payments.urls module
+--------------------
+
+.. automodule:: payments.urls
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+payments.views module
+---------------------
+
+.. automodule:: payments.views
     :members:
     :undoc-members:
     :show-inheritance:

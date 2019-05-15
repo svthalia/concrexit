@@ -15,21 +15,10 @@ class ProfileForm(forms.ModelForm):
                   'phone_number', 'emergency_contact',
                   'emergency_contact_phone_number',
                   'show_birthday', 'website',
-                  'profile_description', 'nickname',
+                  'profile_description', 'nickname', 'initials',
                   'display_name_preference', 'photo', 'language',
                   'receive_optin', 'receive_newsletter']
         model = Profile
-
-    def clean(self):
-        super().clean()
-        errors = {}
-        direct_debit_authorized = self.cleaned_data\
-            .get('direct_debit_authorized')
-        bank_account = self.cleaned_data.get('bank_account')
-        if direct_debit_authorized and not bank_account:
-            errors.update({'bank_account': _('Please enter a bank account')})
-
-        raise forms.ValidationError(errors)
 
 
 class UserCreationForm(BaseUserCreationForm):

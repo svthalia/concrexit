@@ -2,10 +2,13 @@
 import uuid
 
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
+from localflavor.generic.models import IBANField, BICField
 
 
 class Payment(models.Model):
@@ -93,3 +96,135 @@ class Payment(models.Model):
 
     def __str__(self):
         return _("Payment of {amount}").format(amount=self.amount)
+
+
+class BankAccount(models.Model):
+    """
+    Describes a bank account
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    created_at = models.DateTimeField(_('created at'), default=timezone.now)
+
+    last_used = models.DateField(
+        verbose_name=_('last used'),
+        blank=True,
+        null=True,
+    )
+
+    owner = models.ForeignKey(
+        to='members.Member',
+        verbose_name=_('owner'),
+        related_name='bank_accounts',
+        on_delete=models.SET_NULL,
+        blank=False,
+        null=True,
+    )
+
+    initials = models.CharField(
+        verbose_name=_('initials'),
+        max_length=20,
+    )
+
+    last_name = models.CharField(
+        verbose_name=_('last name'),
+        max_length=255,
+    )
+
+    iban = IBANField(
+        verbose_name=_('IBAN'),
+        include_countries=IBAN_SEPA_COUNTRIES,
+    )
+
+    bic = BICField(
+        verbose_name=_('BIC'),
+        blank=True,
+        null=True,
+        help_text=_('This field is optional for Dutch bank accounts.')
+    )
+
+    valid_from = models.DateField(
+        verbose_name=_('valid from'),
+        blank=True,
+        null=True,
+    )
+
+    valid_until = models.DateField(
+        verbose_name=_('valid until'),
+        blank=True,
+        null=True,
+    )
+
+    signature = models.TextField(
+        verbose_name=_('signature'),
+        blank=True,
+        null=True,
+    )
+
+    mandate_no = models.CharField(
+        verbose_name=_('mandate number'),
+        max_length=255,
+        blank=True,
+        null=True,
+        unique=True
+    )
+
+    def clean(self):
+        super().clean()
+        errors = {}
+
+        if self.bic is None and self.iban[0:2] != 'NL':
+            errors.update({
+                'bic': _('This field is required for foreign bank accounts.')
+            })
+
+        if not self.owner:
+            errors.update({
+                'owner': _('This field is required.')
+            })
+
+        mandate_fields = [
+            ('valid_from', self.valid_from),
+            ('signature', self.signature),
+            ('mandate_no', self.mandate_no)
+        ]
+
+        if (any(not field[1] for field in mandate_fields) and any(
+                field[1] for field in mandate_fields)):
+            for field in mandate_fields:
+                if not field[1]:
+                    errors.update({
+                        field[0]: _('This field is required '
+                                    'to complete the mandate.')
+                    })
+
+        if (self.valid_from and self.valid_until and
+                self.valid_from > self.valid_until):
+            errors.update({
+                'valid_until': _('This date cannot be before the from date.')
+            })
+
+        if self.valid_until and not self.valid_from:
+            errors.update({
+                'valid_until': _('This field cannot have a value.')
+            })
+
+        if errors:
+            raise ValidationError(errors)
+
+    @property
+    def name(self):
+        return f'{self.initials} {self.last_name}'
+
+    @property
+    def valid(self):
+        if self.valid_from and self.valid_until:
+            return self.valid_from <= timezone.now().date() < self.valid_until
+        return self.valid_from and self.valid_from <= timezone.now().date()
+
+    def __str__(self):
+        return f'{self.iban} - {self.name}'
+
+    class Meta:
+        ordering = ('created_at',)

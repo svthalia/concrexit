@@ -44,6 +44,13 @@
                     <hr>
 
                     <div>
+                        <a href="{% url 'payments:bankaccount-list' %}">{% trans "manage bank account(s)"|capfirst %}</a>
+                        <p>{% blocktrans %}Change the financial information known to Thalia.{% endblocktrans %}</p>
+                    </div>
+
+                    <hr>
+
+                    <div>
                         <a href="{% url 'password_change' %}">{% trans "change password"|capfirst %}</a>
                         <p>{% blocktrans %}Change your accounts' password.{% endblocktrans %}</p>
                     </div>

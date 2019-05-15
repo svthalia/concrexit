@@ -45,6 +45,20 @@ class Command(BaseCommand):
                     code = current_relations.pop(member.pk, None)
                     profile = member.profile
 
+                    if member.bank_accounts.exists():
+                        account = member.bank_accounts.last()
+                        bank_account = {
+                            'name': account.name,
+                            'bic': account.bic or '',
+                            'iban': account.iban,
+                        }
+                    else:
+                        bank_account = {
+                            'name': '',
+                            'bic': '',
+                            'iban': '',
+                        }
+
                     fields = {
                         'website_id': member.pk,
                         'voornaam': member.first_name,
@@ -57,11 +71,7 @@ class Command(BaseCommand):
                         'postcode': profile.address_postal_code,
                         'plaats': profile.address_city,
                         'land': profile.get_address_country_display(),
-                        'bankrekeningnummer': {
-                            'name': f'{profile.initials} {member.last_name}',
-                            'bic': '',
-                            'iban': profile.bank_account,
-                        },
+                        'bankrekeningnummer': bank_account,
                     }
 
                     replace_commands.append(ApiCommand(
