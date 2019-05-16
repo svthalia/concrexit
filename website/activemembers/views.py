@@ -1,137 +1,118 @@
-from django.shortcuts import get_object_or_404, render, redirect, reverse
 import datetime
+
+from django.db.models import QuerySet
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView
+
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import localize_attr_name
 from .models import Board, MemberGroupMembership, Committee, Society
 
 
-def committee_index(request):
+class _MemberGroupDetailView(DetailView):
+    """
+    Base view for membergroup details
+    """
+    context_object_name = 'membergroup'
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        memberships = (MemberGroupMembership
+                       .active_objects
+                       .filter(group=context['membergroup'])
+                       .prefetch_related('member__membergroupmembership_set'))
+        members = [{
+            'member': x.member,
+            'chair': x.chair,
+            'role': x.role,
+            'since': x.initial_connected_membership.since
+        } for x in memberships]
+
+        members.sort(key=lambda x: x['since'])
+
+        context.update({'members': members})
+        return context
+
+
+class CommitteeIndexView(ListView):
     """
     View that renders the committee overview page
-
-    :param request: the request object
-    :return: response containing the HTML
     """
-    committees = Committee.active_objects.all().order_by(
-        localize_attr_name('name'))
+    template_name = 'activemembers/committee_index.html'
+    queryset = Committee.active_objects
+    context_object_name = 'committees'
 
-    return render(request, 'activemembers/committee_index.html',
-                  {'committees': committees})
+    def get_ordering(self) -> str:
+        return localize_attr_name('name')
 
 
-def committee_detail(request, pk):
+class CommitteeDetailView(_MemberGroupDetailView):
     """
     View that renders the page of one selected committee
-
-    :param request: the request object
-    :param pk: pk of the selected committee
-    :return:
     """
-    committee = get_object_or_404(Committee, pk=pk)
-
-    memberships = (MemberGroupMembership
-                   .active_objects
-                   .filter(group=committee)
-                   .prefetch_related('member__membergroupmembership_set'))
-    members = [{
-        'member': x.member,
-        'chair': x.chair,
-        'role': x.role,
-        'since': x.initial_connected_membership.since
-    } for x in memberships]
-
-    members.sort(key=lambda x: x['since'])
-
-    return render(request, 'activemembers/committee_detail.html',
-                  {'membergroup': committee,
-                   'members': members})
+    template_name = 'activemembers/committee_detail.html'
+    model = Committee
 
 
-def board_index(request):
+class SocietyIndexView(ListView):
+    """
+    View that renders the societies overview page
+    """
+    template_name = 'activemembers/society_index.html'
+    queryset = Society.active_objects
+    context_object_name = 'societies'
+
+    def get_ordering(self) -> str:
+        return localize_attr_name('name')
+
+
+class SocietyDetailView(DetailView):
+    """
+    View that renders the page of one selected society
+    """
+    template_name = 'activemembers/society_detail.html'
+    model = Society
+
+
+class BoardIndexView(ListView):
     """
     View that renders the board overview page
-
-    :param request: the request object
-    :return: response containing the HTML
     """
-    current_year = datetime_to_lectureyear(datetime.date.today())
-    board = get_object_or_404(
-        Board, since__year=current_year, until__year=current_year+1)
-    old_boards = Board.objects.all().exclude(pk=board.pk)
-    return render(request,
-                  'activemembers/board_index.html',
-                  {'old_boards': old_boards,
-                   'board': board
-                   })
+    template_name = 'activemembers/board_index.html'
+    context_object_name = 'old_boards'
+    current_board = None
+
+    def get_queryset(self) -> QuerySet:
+        if self.current_board:
+            return Board.objects.exclude(pk=self.current_board.pk)
+        return Board.objects.all()
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'current_board': self.current_board
+        })
+        return context
+
+    def dispatch(self, request, *args, **kwargs) -> HttpResponse:
+        lecture_year = datetime_to_lectureyear(datetime.date.today())
+        self.current_board = Board.objects.get(
+            since__year=lecture_year, until__year=lecture_year + 1)
+        return super().dispatch(request, *args, **kwargs)
 
 
-def board_detail(request, since, until=None):
+class BoardDetailView(_MemberGroupDetailView):
     """
-    View that renders the board for a specific lecture year
-
-    :param request: the request object
-    :param since: xxxx in xxxx-yyyy of the lecture year
-    :param until: yyyy in xxxx-yyyy of the lecture year
-    :return: response containing the HTML
+    View that renders the page of one selected board
     """
-    if not until:  # try to correct /board/2016 to /2016-2017
-        return redirect(reverse('activemembers:board',
-                                kwargs={'since': since,
-                                        'until': int(since) + 1}))
-    board = get_object_or_404(Board, since__year=since, until__year=until)
-    memberships = (MemberGroupMembership
-                   .objects
-                   .filter(group=board)
-                   .prefetch_related('member'))
+    template_name = 'activemembers/board_detail.html'
+    context_object_name = 'membergroup'
 
-    members = [{
-        'member': x.member,
-        'chair': x.chair,
-        'role': x.role,
-    } for x in memberships]
-
-    return render(request, 'activemembers/board_detail.html',
-                  {'membergroup': board,
-                   'members': members})
-
-
-def society_index(request):
-    """
-    View that renders the committee overview page
-
-    :param request: the request object
-    :return: response containing the HTML
-    """
-    societies = Society.active_objects.all().order_by(
-        localize_attr_name('name'))
-
-    return render(request, 'activemembers/society_index.html',
-                  {'societies': societies})
-
-
-def society_detail(request, pk):
-    """
-    View that renders the page of one selected committee
-
-    :param request: the request object
-    :param pk: pk of the selected committee
-    :return:
-    """
-    society = get_object_or_404(Society, pk=pk)
-
-    memberships = (MemberGroupMembership
-                   .active_objects
-                   .filter(group=society)
-                   .prefetch_related('member__membergroupmembership_set'))
-    members = [{
-        'member': x.member,
-        'chair': x.chair,
-        'role': x.role,
-        'since': x.initial_connected_membership.since
-    } for x in memberships]
-
-    members.sort(key=lambda x: x['since'])
-
-    return render(request, 'activemembers/society_detail.html',
-                  {'membergroup': society,
-                   'members': members})
+    def get_object(self, queryset=None) -> Board:
+        return get_object_or_404(
+            Board,
+            since__year=self.kwargs.get('since'),
+            until__year=self.kwargs.get('until')
+        )

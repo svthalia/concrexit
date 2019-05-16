@@ -78,7 +78,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^newsletters/', include('newsletters.urls')),
     url(r'^nieuwsbrief/', include('newsletters.urls', namespace='newsletters-legacy'),),  # for legacy reasons
     url(r'^', include([  # 'association' menu
-        url(r'^', include('activemembers.urls')),
         url(r'^merchandise/', include('merchandise.urls')),
         url(r'^documents/', include('documents.urls')),
         url(r'^sibling-associations', TemplateView.as_view(template_name='singlepages/sibling_associations.html'), name='sibling-associations'),
@@ -128,5 +127,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media'),
     url('', include('members.urls')),
     url('', include('payments.urls')),
+    url('', include('activemembers.urls')),
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))
