@@ -29,7 +29,7 @@ class Thabloid(models.Model):
     file = models.FileField(
         upload_to=thabloid_filename,
         validators=[FileExtensionValidator(
-            ['.txt', '.pdf', '.jpg', '.jpeg', '.png'])],
+            ['txt', 'pdf', 'jpg', 'jpeg', 'png'])],
     )
 
     class Meta:

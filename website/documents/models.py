@@ -49,7 +49,7 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         verbose_name=_('file'),
         upload_to='documents/',
         validators=[FileExtensionValidator(
-            ['.txt', '.pdf', '.jpg', '.jpeg', '.png'])],
+            ['txt', 'pdf', 'jpg', 'jpeg', 'png'])],
     )
 
     members_only = models.BooleanField(
