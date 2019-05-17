@@ -9,10 +9,6 @@ register = template.Library()
 
 @register.inclusion_tag('includes/grid_item.html')
 def thabloid_card(year, thabloid):
-    class_name = 'year-older'
-    if thabloid.year >= year - 3:
-        class_name = 'year-{}'.format(thabloid.year)
-
     view_url = reverse('thabloid:pages', args=[thabloid.year, thabloid.issue])
     buttons = (
         '<div class="text-center mt-2">'
@@ -33,5 +29,5 @@ def thabloid_card(year, thabloid):
         meta_text=buttons,
         url=None,
         image_url=get_thumbnail_url(thabloid.cover, '255x360'),
-        class_name=f'thabloid-card mix {class_name} col-6 col-md-3 my-3',
+        class_name=f'thabloid-card',
     )
