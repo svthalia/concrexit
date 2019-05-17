@@ -10,9 +10,10 @@
         <div class="container">
             <h1 class="text-center section-title">{% trans "edit profile"|capfirst %}</h1>
 
-            {% if saved %}
-                {% trans "Your profile has been updated successfully." as success_text %}
-                {% alert 'success' success_text dismissable=True %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% alert message.tags message %}
+                {% endfor %}
             {% endif %}
 
             {% if form.errors %}

@@ -1,9 +1,9 @@
-from datetime import date, datetime, timedelta
+from datetime import datetime
+
 from django.test import TestCase
 from django.utils import timezone
 
-from members.models import (Profile, Member, Membership)
-from members.views import filter_users
+from members.models import (Profile, Member)
 
 
 class MemberBirthdayTest(TestCase):
@@ -144,51 +144,3 @@ class MemberDisplayNameTest(TestCase):
         self.profile.nickname = 'John'
         self.assertEqual('\'John\' Test', self.profile.display_name())
         self.assertEqual('John', self.profile.short_display_name())
-
-
-class MembershipFilterTest(TestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        # Add 10 members with default membership
-        members = [Member(id=i, username=i) for i in range(7)]
-        Member.objects.bulk_create(members)
-        profiles = [Profile(user_id=i) for i in range(7)]
-        Profile.objects.bulk_create(profiles)
-
-        Membership(user_id=0, type=Membership.HONORARY,
-                   until=date.today() + timedelta(days=1)).save()
-
-        Membership(user_id=1, type=Membership.BENEFACTOR,
-                   until=date.today() + timedelta(days=1)).save()
-
-        Membership(user_id=2, type=Membership.MEMBER,
-                   until=date.today() + timedelta(days=1)).save()
-
-        Membership(user_id=3, type=Membership.MEMBER,
-                   until=date.today() + timedelta(days=1)).save()
-        Membership(user_id=3, type=Membership.MEMBER,
-                   until=date.today() - timedelta(days=365*10)).save()
-
-        Membership(user_id=4, type=Membership.BENEFACTOR,
-                   until=date.today() + timedelta(days=1)).save()
-        Membership(user_id=4, type=Membership.MEMBER,
-                   until=date.today() - timedelta(days=365*10)).save()
-
-        Membership(user_id=5, type=Membership.MEMBER,
-                   until=date.today() - timedelta(days=365*10)).save()
-
-        # user_id=6 has no memberships at all
-
-    def test_honorary(self):
-        members = filter_users('honorary', '', [date.today().year])
-        self.assertEqual(len(members), 1)
-        self.assertEqual(members[0].id, 0)
-
-    def test_former(self):
-        members = filter_users('former', '', [date.today().year])
-        self.assertEqual(len(members), 3)
-        for member in members:
-            self.assertIn(member.id, {4, 5, 6})
-
-    # TODO more tests for other cases and move to services

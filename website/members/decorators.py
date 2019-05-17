@@ -1,3 +1,4 @@
+"""Decorators provided by the members package"""
 from django.core.exceptions import PermissionDenied
 
 
@@ -6,6 +7,9 @@ def membership_required(view_function):
 
 
 class ActiveMembershipRequired(object):
+    """
+    Decorator that checks if the user has an active membership
+    """
     def __init__(self, view_function):
         self.view_function = view_function
 

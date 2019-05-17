@@ -24,6 +24,14 @@ members.admin module
    :undoc-members:
    :show-inheritance:
 
+members.admin\_views module
+---------------------------
+
+.. automodule:: members.admin_views
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 members.apps module
 -------------------
 
