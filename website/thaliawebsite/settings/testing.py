@@ -6,7 +6,7 @@ This file is loaded by __init__.py if GITLAB_CI is set in the environment
 
 import logging
 
-from .settings import INSTALLED_APPS, MIDDLEWARE
+from .settings import MIDDLEWARE
 
 DATABASES = {
     'default': {
@@ -29,14 +29,8 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
 )
 
-# Strip unneeded apps
-_ = [INSTALLED_APPS.remove(x) for x in (
-    'corsheaders',
-)]
-
 # Strip unneeded middlewares
 _ = [MIDDLEWARE.remove(x) for x in (
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
 )]

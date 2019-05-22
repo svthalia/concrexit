@@ -189,17 +189,6 @@ rjsmin = "1.0.12"
 
 [[package]]
 category = "main"
-description = "django-cors-headers is a Django application for handling the server headers required for Cross-Origin Resource Sharing (CORS)."
-name = "django-cors-headers"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.5.3"
-
-[package.dependencies]
-Django = ">=1.11"
-
-[[package]]
-category = "main"
 description = "iCal feeds for Django based on Django's syndication feed framework."
 name = "django-ical"
 optional = false
@@ -640,7 +629,7 @@ category = "main"
 description = "C parser in Python"
 name = "pycparser"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.19"
 
 [[package]]
@@ -968,7 +957,7 @@ version = "1.11.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "57ba616f44a664671af09814ced74a55fc66cb6379d79fbea96672ee3bd99d92"
+content-hash = "99e5d4cc52425e2f5a603269b55892ad05f6949bed3592096a250306d4d5b7e9"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -990,7 +979,6 @@ django = ["6fcc3cbd55b16f9a01f37de8bcbe286e0ea22e87096557f1511051780338eaea", "b
 django-appconf = ["35f13ca4d567f132b960e2cd4c832c2d03cb6543452d34e29b7ba10371ba80e3", "c98a7af40062e996b921f5962a1c4f3f0c979fa7885f7be4710cceb90ebe13a6"]
 django-bootstrap4 = ["9f115534ae8d052d397201f3d716c10d7c9832b422e44dd7382418c6f274df18"]
 django-compressor = ["7732676cfb9d58498dfb522b036f75f3f253f72ea1345ac036434fdc418c2e57", "9616570e5b08e92fa9eadc7a1b1b49639cce07ef392fc27c74230ab08075b30f"]
-django-cors-headers = ["c7987faa9aaef7f6a802b0f354a719e80a9158c284f530265ac792f1ee725e52", "ceacbd60dd5a65c95e65e74b5559bd4161aa3fe5713c44e1f3417a12bd41e7ba"]
 django-ical = ["80071168c7113d8ddf5907bd02bc32af017cf2bfb401d3e988d657819bce4756", "afdf3020e6f7ed5955a4fc4d500283714b80bed16fcc3724a24e1fdae2bff7ed"]
 django-libsass = ["49db3334b87e1f7955c4f9fb9945bc296f8bfd27a14d6d89706e4b0e5dc5de1c"]
 django-localflavor = ["0cee94c4b8f0214a5ba7be7e935019a8c062f4e7726d1df4b1e453cb812b2039", "12ce98b13adcd68bb4babcd937d0ae5a0fd5801f71acaf9a6bf1784c218ef53c"]
