@@ -33,12 +33,12 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
-from django.views.generic import TemplateView
+from django.urls import path
 from django.views.i18n import JavaScriptCatalog
 
+import members
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from events.sitemaps import sitemap as events_sitemap
@@ -48,8 +48,14 @@ from members.views import ObtainThaliaAuthToken
 from partners.sitemaps import sitemap as partners_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
+from thaliawebsite.views import (
+    PrivacyPolicyView, EventTermsView,
+    SiblingAssociationsView, TestCrashView,
+    ContactView, IndexView,
+    BecomeActiveView,
+    StyleGuideView
+)
 from utils.media.views import (generate_thumbnail, private_media)
-from . import views
 from .sitemaps import StaticViewSitemap
 
 __all__ = ['urlpatterns']
@@ -66,34 +72,31 @@ THALIA_SITEMAP.update(events_sitemap)
 
 # pragma pylint: disable=line-too-long
 urlpatterns = [  # pylint: disable=invalid-name
-    url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
-    url(r'^error/', TemplateView.as_view(template_name='403.html'), name='error'),
-    url(r'^privacy-policy/', TemplateView.as_view(template_name='singlepages/privacy_policy.html'), name='privacy-policy'),
-    url(r'^event-registration-terms/', TemplateView.as_view(template_name='singlepages/event_registration_terms.html'), name='event-registration-terms'),
     url(r'^admin/', admin.site.urls),
-    url(r'^alumni/$', AlumniEventsView.as_view(), name='alumni'),
+    path('', IndexView.as_view(), name='index'),
+    path('privacy-policy/', PrivacyPolicyView.as_view(), name='privacy-policy'),
+    path('event-registration-terms/', EventTermsView.as_view(), name='event-registration-terms'),
+    path('alumni/', AlumniEventsView.as_view(), name='alumni'),
     url(r'^registration/', include('registrations.urls')),
     url(r'^events/', include('events.urls')),
     url(r'^pizzas/', include('pizzas.urls')),
     url(r'^newsletters/', include('newsletters.urls')),
-    url(r'^nieuwsbrief/', include('newsletters.urls', namespace='newsletters-legacy'),),  # for legacy reasons
     url(r'^', include([  # 'association' menu
         url(r'^', include('activemembers.urls')),
         url(r'^merchandise/', include('merchandise.urls')),
         url(r'^documents/', include('documents.urls')),
-        url(r'^sibling-associations', TemplateView.as_view(template_name='singlepages/sibling_associations.html'), name='sibling-associations'),
+        path('sibling-associations/', SiblingAssociationsView.as_view(), name='sibling-associations'),
         url(r'^thabloid/', include('thabloid.urls')),
     ])),
     url(r'^', include([  # 'for members' menu
-        url(r'^become-active/', login_required(TemplateView.as_view(template_name='singlepages/become_active.html')), name='become-active'),
+        path('become-active/', BecomeActiveView.as_view(), name='become-active'),
         url(r'^photos/', include('photos.urls')),
-        url(r'^styleguide/$', views.styleguide, name='styleguide'),
-        url(r'^styleguide/file/(?P<filename>[\w\-_\.]+)$', views.styleguide_file, name='styleguide-file'),
+        path('statistics/', members.views.statistics, name='statistics'),
+        path('styleguide/', StyleGuideView.as_view(), name='styleguide'),
     ])),
     url(r'^career/', include('partners.urls')),
-    url(r'^contact$', TemplateView.as_view(template_name='singlepages/contact.html'), name='contact'),
+    url(r'^contact$', ContactView.as_view(), name='contact'),
     url(r'^api/', include([
-        url(r'wikilogin', views.wiki_login),
         url(r'^v1/', include([
             url(r'^token-auth', ObtainThaliaAuthToken.as_view()),
             url(r'^', include('activemembers.api.urls')),
@@ -122,7 +125,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # Javascript translation catalog
     url(r'jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     # Provide something to test error handling. Limited to admins.
-    url(r'crash/$', views.crash),
+    path('crash/', TestCrashView.as_view()),
     # Custom media paths
     url(r'^media/generate-thumbnail/(?P<request_path>.*)', generate_thumbnail, name='generate-thumbnail'),
     url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media'),
