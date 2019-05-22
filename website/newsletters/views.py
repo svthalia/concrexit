@@ -1,22 +1,17 @@
 """Views provided by the newsletters package"""
+import os
 from datetime import datetime, timedelta, date
 
-import os
-
 from django.conf import settings
-
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
 from django.utils.translation import activate, get_language_info
+from sendfile import sendfile
 
-from events.models import Event
-from newsletters import emails
+from newsletters import emails, services
 from newsletters.models import Newsletter
 from partners.models import Partner
-
-from sendfile import sendfile
 
 
 def preview(request, pk, lang=None):
@@ -51,13 +46,7 @@ def preview(request, pk, lang=None):
     newsletter = get_object_or_404(Newsletter, pk=pk)
     partners = Partner.objects.filter(is_main_partner=True)
     main_partner = partners[0] if len(partners) > 0 else None
-    events = None
-
-    if newsletter.date:
-        start_date = newsletter.date
-        end_date = start_date + timezone.timedelta(weeks=1)
-        events = Event.objects.filter(
-            start__gte=start_date, end__lt=end_date).order_by('start')
+    events = services.get_agenda(newsletter.date) if newsletter.date else None
 
     return render(request, 'newsletters/email.html', {
         'newsletter': newsletter,
