@@ -20,8 +20,8 @@ def get_automatic_lists():
                                     .filter(group__board=None)
                                     .filter(group__society=None)
                                     .prefetch_related('member'))
-    active_members = list(set(
-        [x.member for x in active_committee_memberships]))
+
+    active_members = [x.member for x in active_committee_memberships]
 
     lectureyear = datetime_to_lectureyear(timezone.now())
     # Change to next lecture year after December
@@ -93,7 +93,7 @@ def _create_automatic_list(names, prefix, members,
     }
 
     if multilingual:
-        data['addresses'] = [member.email for member in members]
+        data['addresses'] = set([member.email for member in members])
         yield data  # this is the complete list, e.g. leden@
         for language in settings.LANGUAGES:
             localized_data = data.copy()
@@ -104,5 +104,5 @@ def _create_automatic_list(names, prefix, members,
                 '{}-{}'.format(n, language[0]) for n in names]
             yield localized_data  # these are localized lists, e.g. leden-nl@
     else:
-        data['addresses'] = [member.email for member in members]
+        data['addresses'] = set([member.email for member in members])
         yield data
