@@ -169,10 +169,10 @@ class EventMessage(FormView):
         messages.success(self.request,
                          _("Message sent successfully."))
         if '_save' in self.request.POST:
-            return HttpResponseRedirect(reverse(
+            return redirect(
                 'admin:events_event_details',
                 args=[str(self.event.pk)]
-            ))
+            )
 
     def dispatch(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, pk=self.kwargs['pk'])
