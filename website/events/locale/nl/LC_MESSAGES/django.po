@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-16 12:15+0200\n"
-"PO-Revision-Date: 2019-05-16 12:19+0200\n"
+"POT-Creation-Date: 2019-05-22 20:11+0200\n"
+"PO-Revision-Date: 2019-05-22 20:13+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -472,7 +472,7 @@ msgid "Set all registered to paid and present"
 msgstr "Zet iedereen op betaald en present"
 
 #: templates/events/admin/details.html
-msgid "Send pushnotification to registerd users"
+msgid "Send pushnotification to registered users"
 msgstr "Stuur pushnotificatie naar participerende gebruikers"
 
 #: templates/events/admin/details.html
@@ -534,6 +534,10 @@ msgstr ""
 #: templates/events/admin/fields_widget.html
 msgid "Edit information fields"
 msgstr "Wijzig informatie velden"
+
+#: templates/events/admin/message_form.html
+msgid "Send message"
+msgstr "Stuur pushnotificatie"
 
 #: templates/events/admin/registrations_table.html
 msgid "not paid"

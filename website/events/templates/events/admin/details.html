@@ -42,7 +42,7 @@
         {% include 'events/admin/registrations_table.html' with registrations=event.participants %}
         <br>
         {% if event.queue.count > 0 %}
-        <h2>{% trans "waiting"|capfirst %}</h2>
+        <hregisterd2>{% trans "waiting"|capfirst %}</hregisterd2>
         {% trans "queued" as queued %}
         {% include 'events/admin/registrations_table.html' with registrations=event.queue verb=queued addlink=False %}
         <br>
@@ -55,7 +55,7 @@
         <a href="{% url 'admin:events_event_export' pk=event.pk %}" class="button">{% trans "Export registrations" %}</a>
         <a href="{% url 'admin:events_event_export_email' pk=event.pk %}" class="button">{% trans "Export email addresses of attendees" %}</a>
         <a href="{% url 'admin:events_event_all_present' pk=event.pk %}" class="button">{% trans "Set all registered to paid and present" %}</a>
-        <a href="{% url 'admin:events_event_message' pk=event.pk %}" class="button">{% trans "Send pushnotification to registerd users" %}</a>
+        <a href="{% url 'admin:events_event_message' pk=event.pk %}" class="button">{% trans "Send pushnotification to registered users" %}</a>
     </div>
 </div>
 {% endblock %}
