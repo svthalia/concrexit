@@ -7,9 +7,6 @@ from newsletters.models import Newsletter
 
 class Command(BaseCommand):
 
-    def add_arguments(self, parser):
-        parser.add_argument('pk')
-
     def handle(self, *args, **options):
         newsletters = Newsletter.objects.filter(
             send_date__lte=timezone.now(),
