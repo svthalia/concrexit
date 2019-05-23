@@ -86,3 +86,12 @@ class FieldsForm(forms.Form):
     def field_values(self):
         for key, field in self.information_fields.items():
             yield (key, self.cleaned_data[key])
+
+
+class EventMessageForm(forms.Form):
+    """Form that outputs a widget to get info to send a push notification"""
+    title_en = forms.CharField(required=True, max_length=150)
+    title_nl = forms.CharField(required=True, max_length=150)
+    body_en = forms.CharField(required=True)
+    body_nl = forms.CharField(required=True)
+    url = forms.CharField(max_length=256)

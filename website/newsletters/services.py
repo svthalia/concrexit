@@ -2,8 +2,9 @@ import os
 
 from django.conf import settings
 from django.template.loader import get_template
-from django.utils import translation
+from django.utils import translation, timezone
 
+from events.models import Event
 from partners.models import Partner
 
 
@@ -49,3 +50,13 @@ def save_to_disk(newsletter, request):
         html_message = html_template.render(context)
 
         write_to_file(newsletter.pk, language[0], html_message)
+
+
+def get_agenda(start_date):
+    end_date = start_date + timezone.timedelta(weeks=2)
+    base_events = Event.objects.filter(
+        start__gte=start_date, end__lt=end_date).order_by('start')
+    if base_events.count() < 10:
+        more_events = Event.objects.filter(end__gte=end_date).order_by('start')
+        return [*base_events, *more_events][:10]
+    return base_events

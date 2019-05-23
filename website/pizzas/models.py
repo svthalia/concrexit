@@ -114,7 +114,10 @@ class PizzaEvent(models.Model):
             self.end_reminder.time = self.end
             self.end_reminder.save()
         elif not self.send_notification and self.end_reminder:
-            self.end_reminder.delete()
+            end_reminder = self.end_reminder
+            self.end_reminder = None
+            if not end_reminder.sent:
+                end_reminder.delete()
 
         super().save(*args, **kwargs)
 

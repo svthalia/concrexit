@@ -98,7 +98,9 @@ django.jQuery(function () {
     }
 
     $(".field-event select").change(function() {
-        var id = $(this).attr('name').replace('newsletterevent_set-', '')[0];
+        var id = $(this).attr('name')
+            .replace('newsletterevent_set-', '')
+            .replace('-event', '');
         getEvent($(this).val(), function(data, lang) {
             setFields(id, data, lang);
         });

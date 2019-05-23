@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-01 15:30+0100\n"
-"PO-Revision-Date: 2019-01-01 15:33+0100\n"
+"POT-Creation-Date: 2019-05-22 20:11+0200\n"
+"PO-Revision-Date: 2019-05-22 20:13+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: admin.py
 msgid "lecture year"
@@ -45,6 +45,22 @@ msgstr "Publiceer geselecteerde evenementen"
 #: admin.py
 msgid "Unpublish selected events"
 msgstr "Publicatie van geselecteerde evenementen ongedaan maken"
+
+#: admin_views.py
+msgid "Change registration fields"
+msgstr "Verander registratie velden"
+
+#: admin_views.py views.py
+msgid "Registration successfully saved."
+msgstr "Je aanmelding is succesvol opgeslagen."
+
+#: admin_views.py
+msgid "Send push notification"
+msgstr "verstuur pushnotificatie"
+
+#: admin_views.py
+msgid "Message sent successfully."
+msgstr "Pushnotificatie succesvol verzonden."
 
 #: admin_views.py
 msgid "Name"
@@ -101,14 +117,6 @@ msgstr "wachtend"
 #: admin_views.py
 msgid "Yes"
 msgstr "Ja"
-
-#: admin_views.py
-msgid "Cash"
-msgstr "Contant"
-
-#: admin_views.py
-msgid "Pin"
-msgstr "Pin"
 
 #: admin_views.py
 msgid "No"
@@ -190,7 +198,7 @@ msgstr "starttijd"
 msgid "end time"
 msgstr "eindtijd"
 
-#: models.py templates/events/admin/details.html
+#: models.py templates/events/admin/details.html templates/events/event.html
 msgid "organiser"
 msgstr "organisator"
 
@@ -332,18 +340,6 @@ msgstr "De organisator heeft geen contact mailinglijst."
 msgid "You cannot change this field after the registration has started."
 msgstr "Je kunt dit veld niet aanpassen nadat de registratie is gestart."
 
-#: models.py
-msgid "No payment"
-msgstr "Niet betaald"
-
-#: models.py
-msgid "Paid with cash"
-msgstr "Contant betaald"
-
-#: models.py
-msgid "Paid with card"
-msgstr "Pin betaald"
-
 #: models.py templates/events/admin/registrations_table.html
 msgid "name"
 msgstr "naam"
@@ -363,10 +359,6 @@ msgstr "afmelddatum"
 #: models.py templates/events/admin/registrations_table.html
 msgid "present"
 msgstr "aanwezig"
-
-#: models.py
-msgid "payment"
-msgstr "betaling"
 
 #: models.py
 msgid "Either specify a member or a name"
@@ -417,6 +409,10 @@ msgstr "Je mag je niet aanmelden."
 #: services.py
 msgid "You are not registered for this event."
 msgstr "Je bent niet aangemeld voor dit evenement."
+
+#: services.py
+msgid "Unable to find the right registration."
+msgstr "De juiste registratie is niet gevonden."
 
 #: services.py
 msgid "You are not allowed to update this registration."
@@ -476,6 +472,10 @@ msgid "Set all registered to paid and present"
 msgstr "Zet iedereen op betaald en present"
 
 #: templates/events/admin/details.html
+msgid "Send pushnotification to registered users"
+msgstr "Stuur pushnotificatie naar participerende gebruikers"
+
+#: templates/events/admin/details.html
 msgid "Event properties"
 msgstr "Eigenschappen van evenement"
 
@@ -530,6 +530,14 @@ msgid ""
 msgstr ""
 "Sommige geregistreerden zijn met de hand toegevoegd, en komen dus niet in de "
 "bovenstaande lijst voor:"
+
+#: templates/events/admin/fields_widget.html
+msgid "Edit information fields"
+msgstr "Wijzig informatie velden"
+
+#: templates/events/admin/message_form.html
+msgid "Send message"
+msgstr "Stuur pushnotificatie"
 
 #: templates/events/admin/registrations_table.html
 msgid "not paid"
@@ -833,7 +841,3 @@ msgstr "Je aanmelding was succesvol."
 #: views.py
 msgid "Registration successfully cancelled."
 msgstr "Je afmelding was succesvol."
-
-#: views.py
-msgid "Registration successfully saved."
-msgstr "Je aanmelding is succesvol opgeslagen."

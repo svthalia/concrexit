@@ -57,7 +57,9 @@
 
             <div class="row">
                 {% for thabloid in thabloids %}
-                    {% thabloid_card year thabloid %}
+                    <div class="mix {% if thabloid.year >= year|add:-3 %}year-{{ thabloid.year }}{% else %}year-older{% endif %} col-6 col-md-3 my-3">
+                        {% thabloid_card year thabloid %}
+                    </div>
                 {% endfor %}
             </div>
         </div>
