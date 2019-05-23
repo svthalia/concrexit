@@ -87,8 +87,12 @@ def generate_thumbnail(request, request_path):
         if not sig_info['fit']:
             ratio = min([a / b for a, b in zip(size, image.size)])
             size = tuple(int(ratio * x) for x in image.size)
-        thumb = ImageOps.fit(image, size, Image.ANTIALIAS)
-        thumb.save(full_thumb_path)
+
+        if size[0] == image.size[0] and size[1] == image.size[1]:
+            image.save(full_thumb_path)
+        else:
+            thumb = ImageOps.fit(image, size, Image.ANTIALIAS)
+            thumb.save(full_thumb_path)
 
     if sig_info['visibility'] == 'private':
         query = f'?sig={request.GET["sig"]}'
