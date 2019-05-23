@@ -2,11 +2,13 @@
 import os
 
 from django.conf import settings
-from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect, render
+from django.core.exceptions import PermissionDenied
+from django.http import Http404, HttpResponse
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import get_language
+from django.views.generic import TemplateView, DetailView
 from sendfile import sendfile
 
 from documents.models import (AnnualDocument, AssociationDocument,
@@ -14,75 +16,81 @@ from documents.models import (AnnualDocument, AssociationDocument,
 from utils.snippets import datetime_to_lectureyear
 
 
-def index(request):
+class DocumentsIndexView(TemplateView):
     """
     View that renders the documents index page
-
-    :param request: the request object
-    :return: HttpResponse 200 containing the page HTML
     """
-    lectureyear = datetime_to_lectureyear(timezone.now())
+    template_name = 'documents/index.html'
 
-    years = {x: {} for x in reversed(range(1990, lectureyear + 1))}
-    for year in years:
-        years[year] = {
-            'documents': {
-                'policy': None,
-                'report': None,
-                'financial': None
-            },
-            'general_meetings': []
-        }
+    def get_context_data(self, **kwargs) -> dict:
+        lecture_year = datetime_to_lectureyear(timezone.now())
 
-    for document in AnnualDocument.objects.filter(subcategory='policy'):
-        years[document.year]['documents']['policy'] = document
-    for document in AnnualDocument.objects.filter(subcategory='report'):
-        years[document.year]['documents']['report'] = document
-    for document in AnnualDocument.objects.filter(subcategory='financial'):
-        years[document.year]['documents']['financial'] = document
+        years = {x: {} for x in reversed(range(1990, lecture_year + 1))}
+        for year in years:
+            years[year] = {
+                'documents': {
+                    'policy': None,
+                    'report': None,
+                    'financial': None
+                },
+                'general_meetings': []
+            }
 
-    for obj in GeneralMeeting.objects.all():
-        meeting_year = datetime_to_lectureyear(obj.datetime)
-        years[meeting_year]['general_meetings'].append(obj)
+        for document in AnnualDocument.objects.filter(subcategory='policy'):
+            years[document.year]['documents']['policy'] = document
+        for document in AnnualDocument.objects.filter(subcategory='report'):
+            years[document.year]['documents']['report'] = document
+        for document in AnnualDocument.objects.filter(subcategory='financial'):
+            years[document.year]['documents']['financial'] = document
 
-    return render(request, 'documents/index.html', {
-        'association_documents':
-            AssociationDocument
-            .objects
-            .order_by(f'name_{ get_language() }')
-            .all(),
-        'years': list(years.items())
-    })
+        for obj in GeneralMeeting.objects.all():
+            meeting_year = datetime_to_lectureyear(obj.datetime)
+            years[meeting_year]['general_meetings'].append(obj)
+
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'association_documents': AssociationDocument.objects.order_by(
+                f'name_{get_language()}').all(),
+            'years': list(years.items())
+        })
+        return context
 
 
-# TODO verify if we need to check a permission instead.
-# This depends on how we're dealing with ex-members.
-def get_document(request, pk):
+class DocumentDownloadView(DetailView):
     """
     View that allows you to download a specific document based on it's and your
     permissions settings
-
-    :param request: the request object
-    :param pk: primary key of the document
-    :return: either a 302 redirect to the login page or a 200 with the document
     """
-    document = get_object_or_404(Document, pk=int(pk))
+    model = Document
 
-    if document.members_only and not request.user.is_authenticated:
-        return redirect('{}?next={}'.format(settings.LOGIN_URL, request.path))
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        """
+        :return: either a 302 redirect to the login page or
+        a 200 with the document
+        """
+        response = super().get(request, *args, **kwargs)
+        document = response.context_data['document']
 
-    lang = request.GET.get('language')
-    try:
-        if lang == 'nl':
-            file = document.file_nl
-        elif lang == 'en':
-            file = document.file_en
-        else:  # Fall back on language detection
-            file = document.file
-    except ValueError:
-        raise Http404('This document does not exist.')
+        if (document.members_only and
+                not request.user.is_authenticated):
+            return redirect(
+                '{}?next={}'.format(settings.LOGIN_URL, request.path))
+        elif (document.members_only and
+              not request.member.has_active_membership()):
+            raise PermissionDenied
 
-    ext = os.path.splitext(file.path)[1]
+        lang = request.GET.get('language')
+        try:
+            if lang == 'nl':
+                file = document.file_nl
+            elif lang == 'en':
+                file = document.file_en
+            else:  # Fall back on language detection
+                file = document.file
+        except ValueError:
+            raise Http404('This document does not exist.')
 
-    return sendfile(request, file.path, attachment=True,
-                    attachment_filename=slugify(document.name) + ext)
+        ext = os.path.splitext(file.path)[1]
+
+        return sendfile(request, file.path, attachment=True,
+                        attachment_filename=slugify(document.name) + ext)

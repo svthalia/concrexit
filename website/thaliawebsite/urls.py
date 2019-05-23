@@ -84,7 +84,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^', include([  # 'association' menu
         url(r'^', include('activemembers.urls')),
         url(r'^merchandise/', include('merchandise.urls')),
-        url(r'^documents/', include('documents.urls')),
         path('sibling-associations/', SiblingAssociationsView.as_view(), name='sibling-associations'),
         url(r'^thabloid/', include('thabloid.urls')),
     ])),
@@ -131,5 +130,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media'),
     url('', include('members.urls')),
     url('', include('payments.urls')),
+    url('', include('documents.urls')),
 ] + static(settings.MEDIA_URL + 'public/',
            document_root=os.path.join(settings.MEDIA_ROOT, 'public'))

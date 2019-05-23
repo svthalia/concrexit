@@ -1,11 +1,15 @@
 """The routes defined by the documents package"""
-from django.conf.urls import url
+from django.urls import path, include
 
 from . import views
 
 app_name = "documents"
 
 urlpatterns = [
-    url(r'^document/(?P<pk>[0-9]+)/$', views.get_document, name='document'),
-    url(r'^$', views.index, name='index'),
+    path('documents/', include([
+        path('document/<int:pk>/',
+             views.DocumentDownloadView.as_view(), name='document'),
+        path('',
+             views.DocumentsIndexView.as_view(), name='index'),
+    ]))
 ]
