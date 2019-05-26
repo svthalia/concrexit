@@ -430,7 +430,7 @@ def execute_data_minimisation(dry_run=False):
     :param dry_run: does not really remove data if True
     :return: number of removed registrations
     """
-    deletion_period = timezone.now().date() - timezone.timedelta(days=31)
+    deletion_period = timezone.now() - timezone.timedelta(days=31)
     objects = (Entry.objects
                .filter((Q(status=Entry.STATUS_COMPLETED)
                         | Q(status=Entry.STATUS_REJECTED))
