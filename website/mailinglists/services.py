@@ -7,6 +7,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def get_automatic_lists():
+    """Return list of mailing lists that should be generated automatically."""
     current_committee_chairs = (MemberGroupMembership.active_objects
                                 .filter(group__board=None)
                                 .filter(group__society=None)

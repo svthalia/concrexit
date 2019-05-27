@@ -10,6 +10,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def get_automatic_mailinglists():
+    """Return mailing list names that should be generated automatically."""
     lectureyear = datetime_to_lectureyear(timezone.now())
     list_names = ['leden', 'members', 'begunstigers', 'benefactors',
                   'ereleden', 'honorary', 'mentors', 'activemembers',
@@ -26,6 +27,8 @@ def get_automatic_mailinglists():
 
 
 class MailingList(models.Model):
+    """Model describing mailing lists."""
+
     name = models.CharField(
         verbose_name=_("Name"),
         max_length=100,
@@ -84,6 +87,7 @@ class MailingList(models.Model):
     )
 
     def all_addresses(self):
+        """Return all addresses subscribed to this mailing list."""
         for member in self.members.all():
             yield member.email
 
@@ -96,6 +100,7 @@ class MailingList(models.Model):
             yield verbatimaddress.address
 
     def clean(self):
+        """Validate the mailing list."""
         super().clean()
         if (ListAlias.objects
                 .filter(alias=self.name).count() > 0 or
@@ -114,10 +119,13 @@ class MailingList(models.Model):
             })
 
     def __str__(self):
+        """Return the name of the mailing list."""
         return self.name
 
 
 class VerbatimAddress(models.Model):
+    """Model that describes an email address subscribed to a mailing list."""
+
     address = models.EmailField(
         verbose_name=_("Email address"),
         help_text=_('Enter an explicit email address to include in the list.'),
@@ -129,14 +137,19 @@ class VerbatimAddress(models.Model):
                                     related_name='addresses')
 
     def __str__(self):
+        """Return the address."""
         return self.address
 
     class Meta:
+        """Meta class for VerbatimAddress."""
+
         verbose_name = _("Verbatim address")
         verbose_name_plural = _("Verbatim addresses")
 
 
 class ListAlias(models.Model):
+    """Model describing an alias of a mailing list."""
+
     alias = models.CharField(
         verbose_name=_("Alternative name"),
         max_length=100,
@@ -153,6 +166,7 @@ class ListAlias(models.Model):
                                     related_name='aliasses')
 
     def clean(self):
+        """Validate the alias."""
         super().clean()
         if (MailingList.objects
                 .filter(name=self.alias).count() > 0 or
@@ -166,10 +180,13 @@ class ListAlias(models.Model):
             })
 
     def __str__(self):
+        """Return a string representation of the alias and mailing list."""
         return (_("List alias {alias} for {list}")
                 .format(alias=self.alias,
                         list=self.mailinglist.name))
 
     class Meta:
+        """Meta class for ListAlias."""
+
         verbose_name = _("List alias")
         verbose_name_plural = _("List aliasses")
