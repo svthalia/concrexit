@@ -4,11 +4,10 @@ from rest_framework import permissions
 
 
 class MailingListPermission(permissions.BasePermission):
-    """
-    Permission check for mailing list secret key
-    """
+    """Permission check for mailing list secret key."""
 
     def has_permission(self, request, view):
+        """Return whether the user has access to the mailing list api."""
         if request.user.is_superuser:
             return True
 
