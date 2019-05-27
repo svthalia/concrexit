@@ -4,8 +4,10 @@ from partners import emails
 
 
 class Command(BaseCommand):
+    """Command class for sendvacancyexpirationnotification command."""
 
     def add_arguments(self, parser):
+        """Add --dry-run argument to command."""
         parser.add_argument(
             '--dry-run',
             action='store_true',
@@ -15,5 +17,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Call the function to handle the sending of emails."""
         emails.send_vacancy_expiration_notifications(
             bool(options['dry-run']))

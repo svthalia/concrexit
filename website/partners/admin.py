@@ -6,11 +6,15 @@ from utils.translation import TranslatedModelAdmin
 
 
 class PartnerImageInline(admin.StackedInline):
+    """Class to show partner images inline in the admin."""
+
     model = PartnerImage
 
 
 @admin.register(Partner)
 class PartnerAdmin(admin.ModelAdmin):
+    """Class to show partners in the admin."""
+
     prepopulated_fields = {"slug": ("name",)}
     list_display = ('name', 'is_active', 'is_main_partner',)
     inlines = (PartnerImageInline,)
@@ -31,12 +35,16 @@ class PartnerAdmin(admin.ModelAdmin):
 
 @admin.register(VacancyCategory)
 class VacancyCategoryAdmin(TranslatedModelAdmin):
+    """Class to show vacancy categories in the admin."""
+
     prepopulated_fields = {"slug": ("name_en",)}
     fields = ['name', 'slug']
 
 
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
+    """Class to show vacancies in the admin."""
+
     list_display = ('title', 'partner', 'company_name', 'expiration_date')
 
     fieldsets = (
@@ -60,6 +68,8 @@ class VacancyAdmin(admin.ModelAdmin):
 
 @admin.register(PartnerEvent)
 class PartnerEventAdmin(TranslatedModelAdmin):
+    """Class to show partner events in the admin."""
+
     fields = ['partner', 'other_partner', 'title', 'description', 'location',
               'start', 'end', 'url', 'published']
     list_display = ('title', 'start', 'end',

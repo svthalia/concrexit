@@ -9,6 +9,8 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Partner(models.Model):
+    """Model describing partner."""
+
     is_active = models.BooleanField(default=False)
     is_main_partner = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
@@ -42,12 +44,19 @@ class Partner(models.Model):
     city = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
+        """Save a partner and set main partner."""
         if self.is_main_partner:
             self._reset_main_partner()
 
         super(Partner, self).save(*args, **kwargs)
 
     def _reset_main_partner(self):
+        """
+        Reset the main partner status.
+
+        If this partner is not main partner,
+        remove the main partner status from the main partner.
+        """
         try:
             current_main_partner = Partner.objects.get(is_main_partner=True)
             if self != current_main_partner:
@@ -57,16 +66,22 @@ class Partner(models.Model):
             pass
 
     def __str__(self):
+        """Return the name of the partner."""
         return self.name
 
     def get_absolute_url(self):
+        """Return the url of the partner page."""
         return reverse('partners:partner', args=(self.slug,))
 
     class Meta:
+        """Meta class for partner model."""
+
         ordering = ('name',)
 
 
 class PartnerImage(models.Model):
+    """Model to save partner image."""
+
     partner = models.ForeignKey(
         Partner,
         on_delete=models.CASCADE,
@@ -75,21 +90,29 @@ class PartnerImage(models.Model):
     image = models.ImageField(upload_to='public/partners/images/')
 
     def __str__(self):
+        """Return string representation of partner name."""
         return ugettext('image of {}').format(self.partner.name)
 
 
 class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
+    """Model describing vacancy categories."""
+
     name = MultilingualField(models.CharField, max_length=30)
     slug = models.SlugField()
 
     def __str__(self):
+        """Return the category name."""
         return self.name
 
     class Meta:
+        """Meta class for vacancy category model."""
+
         verbose_name_plural = _('Vacancy Categories')
 
 
 class Vacancy(models.Model):
+    """Model describing vacancies."""
+
     title = models.CharField(max_length=255)
     description = HTMLField()
     link = models.CharField(
@@ -122,28 +145,30 @@ class Vacancy(models.Model):
     remarks = HTMLField(blank=True, help_text=_('not shown on the page'))
 
     def get_company_name(self):
+        """Return company or partner name."""
         if self.partner:
             return self.partner.name
         return self.company_name
 
     def get_company_logo(self):
+        """Return company or partner logo."""
         if self.partner:
             return self.partner.logo
         return self.company_logo
 
     def __str__(self):
+        """Return vacancy partner or company and title."""
         return '{} — {}'.format(self.get_company_name(), self.title)
 
-    class Meta:
-        verbose_name_plural = _('Vacancies')
-
     def get_absolute_url(self):
+        """Return partner or vacancy url."""
         url = reverse('partners:vacancies')
         if self.partner:
             url = reverse('partners:partner', args=(self.partner.slug,))
         return '{}#vacancy-{}'.format(url, self.pk)
 
     def clean(self):
+        """Validate the vacancy."""
         super().clean()
         errors = {}
 
@@ -172,8 +197,15 @@ class Vacancy(models.Model):
         if errors:
             raise ValidationError(errors)
 
+    class Meta:
+        """Meta class for vacancy model."""
+
+        verbose_name_plural = _('Vacancies')
+
 
 class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
+    """Model describing partner event."""
+
     partner = models.ForeignKey(
         Partner,
         on_delete=models.CASCADE,
@@ -210,6 +242,7 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
     published = models.BooleanField(_("published"), default=False)
 
     def clean(self):
+        """Validate the partner event."""
         super().clean()
         errors = {}
         if ((not self.partner and not self.other_partner) or
@@ -224,4 +257,5 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
             raise ValidationError(errors)
 
     def __str__(self):
+        """Return the event title."""
         return self.title

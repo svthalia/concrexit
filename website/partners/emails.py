@@ -8,6 +8,7 @@ from partners.models import Vacancy
 
 
 def send_vacancy_expiration_notifications(dry_run=False):
+    """Send a notification about expiring vacancies."""
     # Select vacencies that expire in roughly a month, wherefor
     # a mail hasn't been sent yet to Mr/Mrs Extern
     expired_vacancies = Vacancy.objects.filter(
