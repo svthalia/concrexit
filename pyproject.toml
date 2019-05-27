@@ -25,7 +25,7 @@ bcrypt = "~3.1"
 argon2_cffi = "~19.1"
 uWSGI = "~2.0"
 django-bootstrap4 = "~0.0.8"
-firebase-admin = "~2.16"
+firebase-admin = "~2.17"
 sentry-sdk = "~0.8.0"
 django-sendfile2 = "~0.4.2"
 
