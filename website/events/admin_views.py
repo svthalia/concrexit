@@ -1,5 +1,6 @@
 import csv
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin import helpers
 from django.contrib.admin.views.decorators import staff_member_required
@@ -151,12 +152,14 @@ class EventMessage(FormView):
 
     def form_valid(self, form):
         values = form.cleaned_data
+        if not values['url']:
+            values['url'] = settings.BASE_URL + self.event.get_absolute_url()
         message = Message(
             title_nl=values['title_nl'],
             title_en=values['title_en'],
             body_nl=values['title_nl'],
             body_en=values['title_en'],
-            url=values['url'] if values['url'] else None,
+            url=values['url'],
             category=Category.objects.get(key='event')
         )
         message.save()

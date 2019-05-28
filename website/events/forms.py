@@ -94,4 +94,8 @@ class EventMessageForm(forms.Form):
     title_nl = forms.CharField(label=_('Title (NL)'), max_length=150)
     body_en = forms.CharField(label=_('Body (EN)'), widget=forms.Textarea)
     body_nl = forms.CharField(label=_('Body (NL)'), widget=forms.Textarea)
-    url = forms.CharField(max_length=256, required=False)
+    url = forms.CharField(
+        max_length=256,
+        required=False,
+        help_text=_('The notification opens to the event by default.')
+    )
