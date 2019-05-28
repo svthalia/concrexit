@@ -7,6 +7,7 @@ from partners.models import Partner, Vacancy, VacancyCategory
 
 
 def index(request):
+    """View to show overview page of partners."""
     partners = Partner.objects.filter(is_active=True, is_main_partner=False)
     try:
         main_partner = Partner.objects.get(
@@ -24,6 +25,7 @@ def index(request):
 
 
 def partner(request, slug):
+    """View to show partner page."""
     partner = get_object_or_404(Partner, slug=slug)
     context = {
         'partner': partner,
@@ -33,6 +35,7 @@ def partner(request, slug):
 
 
 def vacancies(request):
+    """View to show vacancies."""
     context = {
         'vacancies': Vacancy.objects.exclude(
             expiration_date__lte=timezone.now().date()).order_by('?'),

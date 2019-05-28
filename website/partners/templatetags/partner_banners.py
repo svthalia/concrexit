@@ -10,6 +10,7 @@ register = template.Library()
 
 @register.inclusion_tag('partners/banners.html', takes_context=True)
 def render_partner_banners(context):
+    """Render the partner banner."""
     request = context['request']
     all_partners = Partner.objects.filter(is_active=True).order_by('id')
     ids = [partner.id for partner in all_partners]

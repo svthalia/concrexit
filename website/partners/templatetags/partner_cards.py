@@ -11,6 +11,7 @@ register = template.Library()
 
 @register.inclusion_tag('includes/grid_item.html')
 def partner_card(partner):
+    """Return grid item showing partner."""
     image_url = ''
     if partner.logo:
         image_url = get_thumbnail_url(partner.logo,
@@ -30,6 +31,7 @@ def partner_card(partner):
 
 @register.inclusion_tag('includes/grid_item.html')
 def partner_image_card(image):
+    """Return grid item showing partner image."""
     class_name = 'partner-image-card'
     image_url = get_thumbnail_url(image, settings.THUMBNAIL_SIZES['medium'])
 
@@ -45,6 +47,7 @@ def partner_image_card(image):
 
 @register.inclusion_tag('partners/vacancy_card.html')
 def vacancy_card(vacancy):
+    """Return grid item showing vacancy."""
     image_url = None
     if vacancy.get_company_logo():
         image_url = get_thumbnail_url(vacancy.get_company_logo(),
