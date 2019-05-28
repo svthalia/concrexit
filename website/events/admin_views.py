@@ -4,9 +4,8 @@ from django.contrib import messages
 from django.contrib.admin import helpers
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
@@ -89,10 +88,10 @@ class RegistrationAdminFields(FormView):
             messages.success(self.request,
                              _("Registration successfully saved."))
             if '_save' in self.request.POST:
-                return HttpResponseRedirect(reverse(
+                return redirect(
                     'admin:events_registration_change',
-                    args=[str(self.registration.pk)]
-                ))
+                    self.registration.pk
+                )
         except RegistrationError as e:
             messages.error(self.request, e)
         return self.render_to_response(self.get_context_data(form=form))
@@ -105,10 +104,10 @@ class RegistrationAdminFields(FormView):
                 return super().dispatch(request, *args, **kwargs)
         except RegistrationError:
             pass
-        return HttpResponseRedirect(reverse(
+        return redirect(
             'admin:events_registration_change',
-            args=[str(self.registration.pk)]
-        ))
+            self.registration.pk
+        )
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -157,22 +156,18 @@ class EventMessage(FormView):
             title_en=values['title_en'],
             body_nl=values['title_nl'],
             body_en=values['title_en'],
-            url=values['url'],
+            url=values['url'] if values['url'] else None,
             category=Category.objects.get(key='event')
         )
         message.save()
         message.users.set([r.member for r in self.event.participants
                            if r.member])
         message.send()
-        print(message)
 
         messages.success(self.request,
                          _("Message sent successfully."))
         if '_save' in self.request.POST:
-            return redirect(
-                'admin:events_event_details',
-                args=[str(self.event.pk)]
-            )
+            return redirect('admin:events_event_details', self.event.pk)
 
     def dispatch(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, pk=self.kwargs['pk'])
@@ -328,5 +323,4 @@ class EventRegistrationsMarkPresent(View, PermissionRequiredMixin):
         event.registration_set.filter(pk__in=registrations_query).update(
             present=True, payment=Registration.PAYMENT_CASH)
 
-        return HttpResponseRedirect(reverse('admin:events_event_details',
-                                            args=[str(event.pk)]))
+        return redirect('admin:events_event_details', event.pk)
