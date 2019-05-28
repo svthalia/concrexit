@@ -1,3 +1,4 @@
+"""DRF serializers defined by the mailinglists package"""
 from rest_framework import serializers
 
 from mailinglists.models import MailingList

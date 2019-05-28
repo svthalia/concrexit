@@ -1,3 +1,4 @@
+"""DRF routes defined by the mailinglists package"""
 from rest_framework import routers
 
 from mailinglists.api import viewsets

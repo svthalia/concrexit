@@ -1,3 +1,4 @@
+"""DRF viewsets defined by the mailinglists package"""
 from rest_framework import viewsets
 
 from mailinglists import services

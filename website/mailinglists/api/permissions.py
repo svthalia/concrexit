@@ -1,3 +1,4 @@
+"""DRF permissions defined by the mailinglists package"""
 from django.conf import settings
 
 from rest_framework import permissions
