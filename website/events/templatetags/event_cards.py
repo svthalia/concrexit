@@ -12,7 +12,7 @@ def render_event_cards(context, events=None):
     if events is None:
         events = Event.objects.filter(
             published=True,
-            start__lte=timezone.now() + timezone.timedelta(hours=24),
+            start__gte=timezone.now() - timezone.timedelta(hours=24),
             end__gte=timezone.now()
         ).order_by('start')[:6]
 
