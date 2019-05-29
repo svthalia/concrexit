@@ -17,7 +17,7 @@ cd /usr/src/app/website/
 ./manage.py compress --force
 
 >&2 echo "Running site with uwsgi"
-uwsgi --chdir /usr/src/app/website \
+exec uwsgi --chdir /usr/src/app/website \
     --socket :8000 \
     --socket-timeout 1800 \
     --uid 33 \

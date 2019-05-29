@@ -10,4 +10,4 @@ done
 
 cd /usr/src/app/website/
 >&2 echo "Running ./manage.py $@"
-./manage.py $@
+exec ./manage.py $@
