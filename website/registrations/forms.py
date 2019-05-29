@@ -4,6 +4,7 @@ from django.forms import TypedChoiceField
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
+from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from utils.snippets import datetime_to_lectureyear
@@ -17,7 +18,7 @@ class BaseRegistrationForm(forms.ModelForm):
         widget=forms.widgets.SelectDateWidget(years=[
             year for year in range(timezone.now().year - 50,
                                    timezone.now().year - 10)]),
-        label=_('birthday')
+        label=capfirst(_('birthday'))
     )
 
     privacy_policy = forms.BooleanField(
