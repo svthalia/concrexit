@@ -149,11 +149,13 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                     data = kwargs.get('data', {})
                     if self.url is not None:
                         data['url'] = self.url
+                    data['title'] = self.title
+                    data['body'] = str(self.body)
 
                     message = messaging.Message(
                         notification=messaging.Notification(
-                            title=self.title,
-                            body=str(self.body),
+                            title=data['title'],
+                            body=data['body'],
                         ),
                         data=data,
                         android=messaging.AndroidConfig(
