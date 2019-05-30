@@ -37,7 +37,8 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = ('pk', 'payment', 'name', 'member')
 
     payment = PaymentTypeField(source='payment.type',
-                               choices=Payment.PAYMENT_TYPE)
+                               choices=Payment.PAYMENT_TYPE,
+                               read_only=True)
 
 
 class AdminOrderSerializer(serializers.ModelSerializer):
@@ -64,5 +65,6 @@ class AdminOrderSerializer(serializers.ModelSerializer):
         ).get('type', instance.payment.type) != instance.payment.type:
             instance.payment.type = validated_data['payment']['type']
             instance.payment.save()
-        del validated_data['payment']
+        if 'payment' in validated_data:
+            del validated_data['payment']
         return super().update(instance, validated_data)

@@ -8,6 +8,7 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from payments.models import Payment
 from pizzas.api import serializers
 from pizzas.models import Product, PizzaEvent, Order
 from pizzas.services import can_change_order
@@ -54,7 +55,7 @@ class OrderViewset(ModelViewSet):
                 return Order.objects.none()
 
             return Order.objects.filter(member=self.request.member,
-                                        paid=False,
+                                        payment__type=Payment.NONE,
                                         pizza_event=event)
         return Order.objects.filter(member=self.request.member,
                                     pizza_event=event)
