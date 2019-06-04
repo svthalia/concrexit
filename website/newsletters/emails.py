@@ -3,7 +3,8 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from django.utils import translation
+from django.utils import translation, timezone
+from django.utils.timezone import make_aware
 
 from members.models import Member
 from newsletters import services
@@ -18,7 +19,15 @@ def send_newsletter(newsletter):
     """
     partners = Partner.objects.filter(is_main_partner=True)
     main_partner = partners[0] if len(partners) > 0 else None
-    events = services.get_agenda(newsletter.date) if newsletter.date else None
+
+    events = None
+    if newsletter.date:
+        datetime = make_aware(timezone.datetime(
+            year=newsletter.date.year,
+            month=newsletter.date.month,
+            day=newsletter.date.day,
+        )) if newsletter.date else None
+        events = services.get_agenda(datetime)
 
     from_email = settings.NEWSLETTER_FROM_ADDRESS
     html_template = get_template('newsletters/email.html')
