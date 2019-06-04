@@ -14,3 +14,5 @@ class Command(BaseCommand):
         )
         for n in newsletters:
             emails.send_newsletter(n)
+            n.sent = True
+            n.save()
