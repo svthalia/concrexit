@@ -171,9 +171,3 @@ class ProfileEditSerializer(serializers.ModelSerializer):
         return create_image_thumbnail_dict(
             self.context['request'], file, placeholder=placeholder,
             size_large='800x800')
-
-
-class SentryIdentitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Member
-        fields = ('pk', 'first_name', 'last_name', 'email', 'is_superuser')
