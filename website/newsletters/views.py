@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import activate, get_language_info
 from sendfile import sendfile
 
-from newsletters import emails, services
+from newsletters import services
 from newsletters.models import Newsletter
 from partners.models import Partner
 
@@ -95,9 +95,7 @@ def admin_send(request, pk):
         return redirect(newsletter)
 
     if request.POST:
-        emails.send_newsletter(newsletter)
-        newsletter.sent = True
-        newsletter.save()
+        services.send_newsletter(newsletter)
 
         return redirect('admin:newsletters_newsletter_changelist')
     else:

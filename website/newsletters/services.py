@@ -5,6 +5,7 @@ from django.template.loader import get_template
 from django.utils import translation, timezone
 
 from events.models import Event
+from newsletters import emails
 from partners.models import Partner
 
 
@@ -60,3 +61,9 @@ def get_agenda(start_date):
         more_events = Event.objects.filter(end__gte=end_date).order_by('start')
         return [*base_events, *more_events][:10]
     return base_events
+
+
+def send_newsletter(newsletter):
+    emails.send_newsletter(newsletter)
+    newsletter.sent = True
+    newsletter.save()

@@ -31,7 +31,7 @@ class NewsletterAdmin(TranslatedModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'title', 'date', 'description'
+                'title', 'date', 'send_date', 'description'
             )
         }),
     )
