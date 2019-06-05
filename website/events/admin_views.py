@@ -293,37 +293,3 @@ class EventRegistrationEmailsExport(TemplateView, PermissionRequiredMixin):
         context['addresses'] = addresses
         context['no_addresses'] = no_addresses
         return context
-
-
-@method_decorator(staff_member_required, name='dispatch')
-@method_decorator(organiser_only, name='dispatch')
-class EventRegistrationsMarkPresent(View, PermissionRequiredMixin):
-    """
-    Renders a page that outputs all email addresses of registered members
-    for an event
-    """
-    template_name = 'events/admin/email_export.html'
-    permission_required = 'events.change_registration'
-
-    def get(self, request, pk):
-        """
-        Mark all registrations of an event as present
-
-        :param request: the request object
-        :param pk: the primary key of the event
-        :return: HttpResponse 302 to the event admin page
-        """
-        event = get_object_or_404(Event, pk=pk)
-
-        if event.max_participants is None:
-            registrations_query = event.registration_set.filter(
-                date_cancelled=None)
-        else:
-            registrations_query = (event.registration_set
-                                   .filter(date_cancelled=None)
-                                   .order_by('date')[:event.max_participants])
-
-        event.registration_set.filter(pk__in=registrations_query).update(
-            present=True, payment=Registration.PAYMENT_CASH)
-
-        return redirect('admin:events_event_details', event.pk)

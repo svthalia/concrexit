@@ -226,10 +226,6 @@ class EventAdmin(DoNextTranslatedModelAdmin):
                  self.admin_site.admin_view(
                      admin_views.EventRegistrationEmailsExport.as_view()),
                  name='events_event_export_email'),
-            path('<int:pk>/all-present/',
-                 self.admin_site.admin_view(
-                     admin_views.EventRegistrationsMarkPresent.as_view()),
-                 name='events_event_all_present'),
             path('<int:pk>/message/',
                  self.admin_site.admin_view(
                      admin_views.EventMessage.as_view(admin=self)),
