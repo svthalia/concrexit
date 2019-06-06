@@ -18,7 +18,10 @@ def load_tests(_loader, tests, _ignore):
 
 
 class SitemapTest(TestCase):
-    fixtures = ['members.json', 'member_groups.json']
+    fixtures = [
+        'members.json', 'member_groups.json',
+        'merchandiseitems.json',
+    ]
 
     def test_sitemap_success(self):
         response = self.client.get('/sitemap.xml')
