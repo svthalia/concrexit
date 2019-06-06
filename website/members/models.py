@@ -96,7 +96,6 @@ class Member(User):
         proxy = True
         ordering = ('first_name', 'last_name')
         permissions = (
-            ('sentry_access', _("Access the Sentry backend")),
             ('nextcloud_admin', _("Access NextCloud as admin")),
         )
 
