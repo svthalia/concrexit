@@ -41,6 +41,7 @@ from django.views.i18n import JavaScriptCatalog
 import members
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
+from education.sitemaps import sitemap as education_sitemap
 from events.sitemaps import sitemap as events_sitemap
 from events.views import AlumniEventsView
 from members.sitemaps import sitemap as members_sitemap
@@ -68,6 +69,7 @@ THALIA_SITEMAP.update(members_sitemap)
 THALIA_SITEMAP.update(documents_sitemap)
 THALIA_SITEMAP.update(thabloid_sitemap)
 THALIA_SITEMAP.update(partners_sitemap)
+THALIA_SITEMAP.update(education_sitemap)
 THALIA_SITEMAP.update(events_sitemap)
 
 # pragma pylint: disable=line-too-long
