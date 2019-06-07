@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Thaliawebsite: nieuwsbrieven\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-13 16:03+0200\n"
-"PO-Revision-Date: 2019-04-13 16:00+0200\n"
+"POT-Creation-Date: 2019-06-07 14:29+0200\n"
+"PO-Revision-Date: 2019-06-07 15:03+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: Technicie <www@thalia.nu>\n"
 "Language: nl\n"
@@ -47,6 +47,10 @@ msgstr ""
 "nieuwsbrief voor is."
 
 #: models.py
+msgid "Send date"
+msgstr "Verzenddatum"
+
+#: models.py
 msgid "Introduction"
 msgstr "Introductie"
 
@@ -61,6 +65,10 @@ msgstr ""
 #: models.py
 msgid "Please make sure all urls are absolute and contain http(s)://."
 msgstr "Controleer of alle links absoluut zijn en http(s):// bevatten."
+
+#: models.py
+msgid "Please make sure the send date is not in the past."
+msgstr "De verzenddatum mag niet in het verleden liggne."
 
 #: models.py
 msgid "Description"
@@ -190,6 +198,10 @@ msgstr "Prijs"
 #: templates/newsletters/email.html templates/newsletters/email.txt
 msgid "Free"
 msgstr "Gratis"
+
+#: templates/newsletters/email.html templates/newsletters/email.txt
+msgid "our local partner"
+msgstr "onze localpartner"
 
 #: templates/newsletters/email.html templates/newsletters/email.txt
 msgid "our main partner"

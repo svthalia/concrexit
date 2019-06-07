@@ -44,14 +44,13 @@ def preview(request, pk, lang=None):
         return sendfile(request, file_path)
 
     newsletter = get_object_or_404(Newsletter, pk=pk)
-    partners = Partner.objects.filter(is_main_partner=True)
-    main_partner = partners[0] if len(partners) > 0 else None
     events = services.get_agenda(newsletter.date) if newsletter.date else None
 
     return render(request, 'newsletters/email.html', {
         'newsletter': newsletter,
         'agenda_events': events,
-        'main_partner': main_partner,
+        'main_partner': Partner.objects.filter(is_main_partner=True).first(),
+        'local_partner': Partner.objects.filter(is_local_partner=True).first(),
         'lang_code': lang_code
     })
 

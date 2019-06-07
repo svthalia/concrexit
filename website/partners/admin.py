@@ -16,15 +16,18 @@ class PartnerAdmin(admin.ModelAdmin):
     """Class to show partners in the admin."""
 
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'is_active', 'is_main_partner',)
+    list_display = ('name', 'is_active', 'is_main_partner',
+                    'is_local_partner')
     search_fields = ('name', 'city')
+    list_filter = ('is_active',)
     inlines = (PartnerImageInline,)
 
     fieldsets = (
         (None, {
             'fields': (
-                'is_active', 'is_main_partner', 'name', 'slug', 'link',
-                'company_profile', 'logo', 'site_header'
+                'name', 'slug', 'link',
+                'company_profile', 'logo', 'site_header',
+                'is_active', 'is_main_partner', 'is_local_partner',
             )
         }),
         ('Address', {

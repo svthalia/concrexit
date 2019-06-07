@@ -184,35 +184,49 @@
             </tr>
 
             <tr style="margin-top: 20px;">
-                <td style="background-color: {{ primary_color }}; overflow: hidden;">
-                    <table style="padding-left:30px; padding-right: 40px;">
-                        <col width="180">
-                        <col width="260">
-                        <tr>
-                            <td>
-                                <a href="{% baseurl %}{% url 'index' %}"><img src="{% baseurl %}{% static 'newsletters/logo-footer-'|add:lang_code|add:'.png' %}" alt="Thalia" width="180" height="75" style="float:left;width: 180px; height: 75px;"></a>
-                            </td>
-                            <td style="text-align: right; valign: middle; ">
-                                <p style="font-size: 18px; color: white; font-family: 'Calibri', 'Trebuchet MS', sans-serif;">
-                                    M1.0.08<br>
-                                    <a href="https://www.thalia.nu" style="text-decoration:none;"><span style="color: white; font-family: Calibri, 'Trebuchet MS', sans-serif">WWW.<span style="color: black">THALIA</span>.NU</span></a><br>
-                                    <a href="mailto:info@thalia.nu" style="text-decoration:none;"><span style="color: white; font-family: Calibri, 'Trebuchet MS', sans-serif">INFO@<span style="color: black">THALIA</span>.NU</span></a>
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
+                <td style="background-color: {{ primary_color }}; overflow: hidden; padding-left:30px; padding-top: 10px; padding-bottom: 10px;">
+                    <a href="{% baseurl %}{% url 'index' %}"><img src="{% baseurl %}{% static 'newsletters/logo-footer-'|add:lang_code|add:'.png' %}" alt="Thalia" width="180" height="75" style="float:left;width: 180px; height: 75px;"></a>
                 </td>
-                <td align="center" style="background-color: black; color: white;font-size: 12px;">
-                    <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
-                        {% if main_partner %}
-                            <a href="{{ main_partner.link }}"><img src="{% baseurl %}{% static 'newsletters/topicus-logo.png' %}" height="70" style="max-width: 170px; height: 70px; margin-bottom: 5px" alt="{{ main_partner.name }}"/></a><br/>
-                            {% trans "our main partner"|upper %}
-                        {% endif %}
+                <td align="center" style="background-color: black; color: white;font-size: 12px; padding: 10px;">
+                    <p style="font-size: 18px; color: white; font-family: 'Calibri', 'Trebuchet MS', sans-serif;">
+                        M1.0.08<br>
+                        <a href="https://www.thalia.nu" style="text-decoration:none; color: white; font-family: Calibri, 'Trebuchet MS', sans-serif">WWW.THALIA.NU</a><br>
+                        <a href="mailto:info@thalia.nu" style="text-decoration:none; color: white; font-family: Calibri, 'Trebuchet MS', sans-serif">INFO@THALIA.NU</a>
                     </p>
                 </td>
             </tr>
         </table>
     </div>
+    {% if local_partner or main_partner %}
+    <div style="width: 700px ; margin-top: 30px; margin-left: auto ; margin-right: auto;">
+        <table cellspacing="0" cellpadding="0">
+            {% if local_partner and main_partner and local_partner.is_active and main_partner.is_active %}
+                <col width="350px">
+                <col width="350px">
+            {% else %}
+                <col width="700px">
+            {% endif %}
+            <tr>
+                {% if local_partner and local_partner.is_active %}
+                <td align="center" style="color: black; font-size: 12px;">
+                    <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
+                        <a href="{{ local_partner.link }}"><img src="{% baseurl %}{% static 'newsletters/yoast-logo.png' %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/></a><br/>
+                        {% trans "our local partner"|upper %}
+                    </p>
+                </td>
+                {% endif %}
+                {% if main_partner and main_partner.is_active %}
+                <td align="center" style="color: black; font-size: 12px;">
+                    <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
+                        <a href="{{ main_partner.link }}"><img src="{% baseurl %}{% static 'newsletters/nedap-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/></a><br/>
+                        {% trans "our main partner"|upper %}
+                    </p>
+                </td>
+                {% endif %}
+            </tr>
+        </table>
+    </div>
+    {% endif %}
 </body>
 </html>
 {% endwith %}
