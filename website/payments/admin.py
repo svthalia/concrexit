@@ -224,13 +224,14 @@ class BankAccountAdmin(admin.ModelAdmin):
 
     list_display = ('iban', 'owner_link', 'last_used',
                     'valid_from', 'valid_until')
-    list_filter = (ValidAccountFilter,)
+    list_filter = (ValidAccountFilter, 'owner__profile__auto_renew')
     fields = ('created_at', 'last_used', 'owner', 'iban', 'bic', 'initials',
               'last_name', 'mandate_no', 'valid_from', 'valid_until',
               'signature')
     readonly_fields = ('created_at',)
     search_fields = ('owner__username', 'owner__first_name',
                      'owner__last_name', 'iban')
+    autocomplete_fields = ('owner',)
     actions = ['set_last_used']
     form = BankAccountAdminForm
 

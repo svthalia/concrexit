@@ -6,7 +6,7 @@ import datetime
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -87,6 +87,29 @@ class AgeListFilter(admin.SimpleListFilter):
         return queryset
 
 
+class HasPermissionsFilter(admin.SimpleListFilter):
+    title = _('Has individual permissions')
+    parameter_name = 'permissions'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', _('Yes')),
+            ('no', _('No')),
+        )
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+
+        queryset = queryset.annotate(
+            permission_count=Count('user_permissions'))
+
+        if self.value() == 'yes':
+            return queryset.filter(permission_count__gt=0)
+
+        return queryset.filter(permission_count=0)
+
+
 class UserAdmin(BaseUserAdmin):
     change_list_template = 'admin/members/change_list.html'
     form = forms.UserChangeForm
@@ -98,10 +121,12 @@ class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline, MembershipInline,)
     list_filter = (MembershipTypeListFilter,
                    'is_superuser',
+                   HasPermissionsFilter,
+                   'groups',
                    AgeListFilter,
                    'profile__event_permissions',
                    'profile__starting_year',
-                   'profile__auto_renew')
+                   'profile__auto_renew',)
 
     add_fieldsets = (
         (None, {

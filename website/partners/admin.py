@@ -17,6 +17,7 @@ class PartnerAdmin(admin.ModelAdmin):
 
     prepopulated_fields = {"slug": ("name",)}
     list_display = ('name', 'is_active', 'is_main_partner',)
+    search_fields = ('name', 'city')
     inlines = (PartnerImageInline,)
 
     fieldsets = (
@@ -46,7 +47,7 @@ class VacancyAdmin(admin.ModelAdmin):
     """Class to show vacancies in the admin."""
 
     list_display = ('title', 'partner', 'company_name', 'expiration_date')
-
+    search_fields = ('title', 'partner__name', 'company_name',)
     fieldsets = (
         (None, {
             'fields': ('title', 'description', 'link',)
@@ -70,8 +71,9 @@ class VacancyAdmin(admin.ModelAdmin):
 class PartnerEventAdmin(TranslatedModelAdmin):
     """Class to show partner events in the admin."""
 
-    fields = ['partner', 'other_partner', 'title', 'description', 'location',
-              'start', 'end', 'url', 'published']
+    fields = ('partner', 'other_partner', 'title', 'description', 'location',
+              'start', 'end', 'url', 'published')
     list_display = ('title', 'start', 'end',
                     'partner', 'published')
     list_filter = ('start', 'published')
+    search_fields = ('title', 'partner__name')

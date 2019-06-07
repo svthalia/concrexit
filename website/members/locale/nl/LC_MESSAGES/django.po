@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-09 21:17+0200\n"
-"PO-Revision-Date: 2019-04-09 21:18+0200\n"
+"POT-Creation-Date: 2019-06-07 16:35+0200\n"
+"PO-Revision-Date: 2019-06-07 16:37+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -41,6 +41,18 @@ msgstr "< 18"
 #: admin.py
 msgid "Unknown"
 msgstr "Onbekend"
+
+#: admin.py
+msgid "Has individual permissions"
+msgstr "Heeft individuele permissies"
+
+#: admin.py
+msgid "Yes"
+msgstr "Ja"
+
+#: admin.py
+msgid "No"
+msgstr "Nee"
 
 #: admin.py forms.py
 msgid "First name"
@@ -149,10 +161,6 @@ msgid "Your email address has been changed"
 msgstr "Je e-mailadres is aangepast"
 
 #: forms.py
-msgid "Please enter a bank account"
-msgstr "Voer een bankrekening in"
-
-#: forms.py
 msgid "Send welcome email"
 msgstr "Stuur welkomste-mails"
 
@@ -163,10 +171,6 @@ msgstr "Deze e-mail zal het gegenereerde wachtwoord bevatten"
 #: forms.py
 msgid "Email address"
 msgstr "E-mailadres"
-
-#: models.py
-msgid "Access the Sentry backend"
-msgstr "Toegang tot the Sentry backend"
 
 #: models.py
 msgid "Access NextCloud as admin"
@@ -357,33 +361,16 @@ msgid "Receive the Thalia Newsletter"
 msgstr "Ontvang de Thalia nieuwsbrief"
 
 #: models.py
-msgid ""
-"Yes, I want Thalia to take the membership fees from my bank account through "
-"direct debit for each year."
-msgstr ""
-"Ja, ik wil dat Thalia verschuldigde lidmaatschapsgelden elk jaar van mijn "
-"bankrekening afschrijft."
+msgid "Yes, enable auto renewal."
+msgstr "Ja, verleng automatisch."
 
 #: models.py
-msgid "No, I will pay the contribution myself"
-msgstr "Nee, ik zal de contributie zelf betalen"
+msgid "No, manual renewal required."
+msgstr "Nee, handmatige verlenging vereist."
 
 #: models.py
-msgid "Direct debit"
-msgstr "Automatische afschijving"
-
-#: models.py
-msgid "Each year, have Thalia take the membership fees from my bank account"
-msgstr ""
-"Laat Thalia elk jaar het lidmaatschapsgeld van mijn bankrekening afschrijven"
-
-#: models.py
-msgid "Bank account"
-msgstr "Bankrekening"
-
-#: models.py
-msgid "Bank account for direct debit"
-msgstr "Bankrekening voor automatische afschrijving"
+msgid "Automatically renew membership"
+msgstr "Lidmaatschap automatisch verlengen"
 
 #: models.py
 msgid "Display name"
@@ -503,63 +490,17 @@ msgstr "Ouder"
 msgid "Export IBANs for Direct Debit"
 msgstr "Exporteer IBANs voor automatische incasso"
 
-#: templates/members/account.html templates/members/edit_profile.html
-#: templates/members/email_change.html
-#: templates/members/email_change_confirmed.html
-#: templates/members/email_change_requested.html
-#: templates/members/email_change_verified.html templates/members/index.html
-#: templates/members/profile.html
-msgid "members"
-msgstr "leden"
-
-#: templates/members/account.html
-msgid "Account"
-msgstr "Account"
-
-#: templates/members/account.html
-#, python-format
-msgid "You’re currently logged in as <strong>%(user)s</strong>"
-msgstr "U bent momenteel ingelogd als <strong>%(user)s</strong>"
-
-#: templates/members/account.html
-msgid "show public profile"
-msgstr "bekijk publieke profielpagina"
-
-#: templates/members/account.html
-msgid "Take a look at your own profile."
-msgstr "Bekijk je eigen profielpagina."
-
-#: templates/members/account.html
-msgid "manage membership"
-msgstr "lidmaatschap beheren"
-
-#: templates/members/account.html
-msgid "Get information about your membership or renew it."
-msgstr "Bekijk je lidmaatschap of vernieuw deze indien nodig."
-
-#: templates/members/account.html templates/members/edit_profile.html
+#: templates/members/edit_profile.html templates/members/user.html
 msgid "edit profile"
 msgstr "profiel bewerken"
 
-#: templates/members/account.html
-msgid "Edit your profile and avatar."
-msgstr "Bewerk je profiel en profielafbeelding."
-
-#: templates/members/account.html
-msgid "change password"
-msgstr "wachtwoord wijzigen"
-
-#: templates/members/account.html
-msgid "Change your accounts' password."
-msgstr "Wijzig het wachtwoord van je account."
-
-#: templates/members/account.html
-msgid "logout"
-msgstr "uitloggen"
-
-#: templates/members/account.html
-msgid "Leave the restricted area of the website."
-msgstr "Verlaat het beveiligde gedeelte van de website."
+#: templates/members/edit_profile.html templates/members/email_change.html
+#: templates/members/email_change_confirmed.html
+#: templates/members/email_change_requested.html
+#: templates/members/email_change_verified.html templates/members/index.html
+#: templates/members/profile.html templates/members/user.html
+msgid "members"
+msgstr "leden"
 
 #: templates/members/edit_profile.html
 msgid "Your profile has been updated successfully."
@@ -1047,6 +988,59 @@ msgstr "Statistieken"
 #: templates/members/statistics.html
 msgid "Total amount of Thalia members"
 msgstr "Totaal aantal Thalialeden"
+
+#: templates/members/user.html
+msgid "Account"
+msgstr "Account"
+
+#: templates/members/user.html
+#, python-format
+msgid "You’re currently logged in as <strong>%(user)s</strong>"
+msgstr "U bent momenteel ingelogd als <strong>%(user)s</strong>"
+
+#: templates/members/user.html
+msgid "show public profile"
+msgstr "bekijk publieke profielpagina"
+
+#: templates/members/user.html
+msgid "Take a look at your own profile."
+msgstr "Bekijk je eigen profielpagina."
+
+#: templates/members/user.html
+msgid "manage membership"
+msgstr "lidmaatschap beheren"
+
+#: templates/members/user.html
+msgid "Get information about your membership or renew it."
+msgstr "Bekijk je lidmaatschap of vernieuw deze indien nodig."
+
+#: templates/members/user.html
+msgid "Edit your profile and avatar."
+msgstr "Bewerk je profiel en profielafbeelding."
+
+#: templates/members/user.html
+msgid "manage bank account(s)"
+msgstr "bankrekening(en) beheren"
+
+#: templates/members/user.html
+msgid "Change the financial information known to Thalia."
+msgstr "Verander de financiële informatie bekend bij Thalia."
+
+#: templates/members/user.html
+msgid "change password"
+msgstr "wachtwoord wijzigen"
+
+#: templates/members/user.html
+msgid "Change your accounts' password."
+msgstr "Wijzig het wachtwoord van je account."
+
+#: templates/members/user.html
+msgid "logout"
+msgstr "uitloggen"
+
+#: templates/members/user.html
+msgid "Leave the restricted area of the website."
+msgstr "Verlaat het beveiligde gedeelte van de website."
 
 #: views.py
 msgid "Unknown membership history"

@@ -24,7 +24,7 @@ class NewsletterEventInline(NewsletterItemInline):
 class NewsletterAdmin(TranslatedModelAdmin):
     """Manage the newsletters"""
     #: available fields in the admin overview list
-    list_display = ('title', 'date', 'sent',)
+    list_display = ('title', 'date', 'send_date', 'sent',)
     #: available inlines in the admin change form
     inlines = (NewsletterItemInline, NewsletterEventInline,)
     #: available fieldsets in the admin change form
@@ -35,6 +35,10 @@ class NewsletterAdmin(TranslatedModelAdmin):
             )
         }),
     )
+    #: available fields for searching
+    search_fields = ('title', 'description')
+    #: field to use for date filtering
+    date_hierarchy = 'date'
 
     def change_view(self, request, object_id, form_url=''):
         """
