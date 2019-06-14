@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse, path
@@ -16,12 +17,21 @@ from events.services import is_organiser
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'available')
     list_filter = ('available', 'restricted')
+    search_fields = ('name',)
 
 
 @admin.register(PizzaEvent)
 class PizzaEventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'orders')
+    list_display = ('title', 'start', 'end', 'notification_enabled', 'orders')
+    date_hierarchy = 'start'
     exclude = ('end_reminder',)
+    search_fields = [f'event__title_{l[0]}' for l in settings.LANGUAGES]
+
+    def notification_enabled(self, obj):
+        return obj.send_notification
+    notification_enabled.short_description = _('reminder')
+    notification_enabled.admin_order_field = 'send_notification'
+    notification_enabled.boolean = True
 
     def orders(self, obj):
         url = reverse('admin:pizzas_pizzaevent_details', kwargs={'pk': obj.pk})

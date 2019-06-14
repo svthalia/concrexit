@@ -176,7 +176,7 @@ class MemberGroupMembershipAdmin(TranslatedModelAdmin):
     list_select_related = ('member', 'group',)
     search_fields = ('member__first_name', 'member__last_name',
                      'member__email')
-
+    date_hierarchy = 'since'
     actions = ('export',)
 
     def changelist_view(self, request, extra_context=None):
@@ -222,4 +222,6 @@ class MemberGroupMembershipAdmin(TranslatedModelAdmin):
 @admin.register(models.Mentorship)
 class MentorshipAdmin(admin.ModelAdmin):
     """Manage the mentorships"""
-    list_select_related = ('member',)
+    autocomplete_fields = ('member',)
+    search_fields = ('member__first_name', 'member__last_name')
+    list_filter = ('year',)

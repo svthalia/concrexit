@@ -8,6 +8,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.files.base import File
+from django.db.models import Count
 from django.utils.translation import ugettext_lazy as _
 
 from utils.translation import TranslatedModelAdmin
@@ -82,7 +83,7 @@ def save_photo(request, archive_file, photo, album):
 
 
 class AlbumAdmin(TranslatedModelAdmin):
-    list_display = ('title', 'date', 'hidden', 'shareable')
+    list_display = ('title', 'date', 'num_photos', 'hidden', 'shareable')
     fields = ('title', 'slug', 'date', 'hidden', 'shareable', 'album_archive',
               '_cover')
     search_fields = ('title', 'date')
@@ -90,6 +91,15 @@ class AlbumAdmin(TranslatedModelAdmin):
     date_hierarchy = 'date'
     prepopulated_fields = {'slug': ('date', 'title_en',)}
     form = AlbumForm
+
+    def get_queryset(self, request):
+        return Album.objects.annotate(photos_count=Count('photo'))
+
+    def num_photos(self, obj):
+        """Pretty-print the number of photos"""
+        return obj.photos_count
+    num_photos.short_description = _('Number of photos')
+    num_photos.admin_order_field = 'photos_count'
 
     def save_model(self, request, obj, form, change):
         obj.save()

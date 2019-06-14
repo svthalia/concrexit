@@ -25,7 +25,7 @@ class PizzaOrderSummary(TemplateView):
             'is_popup': False,
             'save_as': False,
             'save_on_top': False,
-            'title': capfirst(_('pizza order summary')),
+            'title': capfirst(_('order summary')),
             'original': capfirst(_('summary')),
             'pizza_event': event
         })
@@ -74,7 +74,7 @@ class PizzaOrderDetails(TemplateView):
             'is_popup': False,
             'save_as': False,
             'save_on_top': False,
-            'title': capfirst(_('pizza order overview')),
+            'title': capfirst(_('order overview')),
             'original': str(event),
             'pizza_event': event
         })
