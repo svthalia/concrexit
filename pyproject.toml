@@ -31,7 +31,7 @@ django-sendfile2 = "~0.4.2"
 
 # docs requirements
 recommonmark = { version = "~0.5.0", optional = true }
-sphinx = { version = "~2.0", optional = true }
+sphinx = { version = "~2.1", optional = true }
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]

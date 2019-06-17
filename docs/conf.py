@@ -24,7 +24,6 @@ sys.path.insert(0, os.path.abspath('../website'))
 
 import django
 from django.conf import settings  # noqa
-from recommonmark.parser import CommonMarkParser  # noqa
 
 from thaliawebsite import settings as thalia_settings  # noqa
 
@@ -50,24 +49,18 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
     'sphinx.ext.graphviz',
+    'recommonmark',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
-
-# The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-source_parsers = {
-    '.md': CommonMarkParser,
-}
-source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = 'Concrexit'
-copyright = "2017, Technicie, Studievereniging Thalia"
+copyright = "2017--2019, Technicie, Studievereniging Thalia"
 author = "Technicie, Studievereniging Thalia"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -178,8 +171,11 @@ texinfo_documents = [
 
 # -- Options for autodoc --------------------------------------------------
 
-# Default flags for autodoc, saves typing
-autodoc_default_flags = ['members', 'undoc-members']
+# Default options for autodoc
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+}
 
 # We need to mock the modules for the sphinx build in the docker.
 autodoc_mock_imports = ['factory', 'pydenticon', 'faker']
@@ -192,24 +188,11 @@ doctest_test_doctest_blocks = ''
 # -- intersphinx ---
 intersphinx_mapping = {
         'python': ('https://docs.python.org/3.7', None),
-        'django': ('https://docs.djangoproject.com/en/2.1/',
-                   'https://docs.djangoproject.com/en/2.1/_objects/'),
+        'django': ('https://docs.djangoproject.com/en/2.2/',
+                   'https://docs.djangoproject.com/en/2.2/_objects/'),
 }
 
 # -- Supress warnings  ---
 suppress_warnings = [
     'image.nonlocal_uri',
 ]
-
-# Hotfix for problems with name clashes in references
-# https://github.com/sphinx-doc/sphinx/issues/3866
-from sphinx.domains.python import PythonDomain
-class PatchedPythonDomain(PythonDomain):
-    def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
-        if 'refspecific' in node:
-            del node['refspecific']
-        return super(PatchedPythonDomain, self).resolve_xref(
-            env, fromdocname, builder, typ, target, node, contnode)
-
-def setup(sphinx):
-    sphinx.override_domain(PatchedPythonDomain)

@@ -2,14 +2,13 @@ utils.management package
 ========================
 
 .. automodule:: utils.management
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
 
-    utils.management.commands
-
+   utils.management.commands
