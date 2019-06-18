@@ -186,8 +186,6 @@ def send_references_information_message(
         name = entry.member.get_full_name()
         language = entry.member.profile.language
 
-    print(language)
-
     with translation.override(language):
         _send_email(
             email,
