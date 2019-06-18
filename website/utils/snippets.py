@@ -61,7 +61,7 @@ def _extract_date(param):
         return None
     try:
         return timezone.make_aware(
-                datetime.strptime(param, '%Y-%m-%dT%H:%M:%S'))
+                datetime.strptime(param, '%Y-%m-%dT%H:%M:%SZ'))
     except ValueError:
         return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
 
