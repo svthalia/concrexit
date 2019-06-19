@@ -6,7 +6,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.template.defaultfilters import urlencode
-from django.utils import timezone
+from django.utils import timezone, dateparse
 from pytz import InvalidTimeError
 from rest_framework.exceptions import ParseError
 
@@ -60,10 +60,9 @@ def _extract_date(param):
     if param is None:
         return None
     try:
-        return timezone.make_aware(
-                datetime.strptime(param, '%Y-%m-%dT%H:%M:%SZ'))
+        return dateparse.parse_datetime(param)
     except ValueError:
-        return timezone.make_aware(datetime.strptime(param, '%Y-%m-%d'))
+        return dateparse.parse_date(param)
 
 
 def extract_date_range(request, allow_empty=False):
@@ -73,14 +72,21 @@ def extract_date_range(request, allow_empty=False):
     if allow_empty:
         default_value = None
 
-    try:
-        start = _extract_date(request.query_params.get('start', default_value))
-    except (ValueError, InvalidTimeError) as e:
-        raise ParseError(detail='start query parameter invalid') from e
+    start = request.query_params.get('start', default_value)
+    print(start)
+    start = dateparse.parse_datetime(start)
+    if not timezone.is_aware(start):
+        start = timezone.make_aware(start)
 
-    try:
-        end = _extract_date(request.query_params.get('end', default_value))
-    except (ValueError, InvalidTimeError) as e:
-        raise ParseError(detail='end query parameter invalid') from e
+    if not start and not allow_empty:
+        raise ParseError(detail='start query parameter invalid')
+
+    end = dateparse.parse_datetime(
+        request.query_params.get('end', default_value))
+    if not timezone.is_aware(end):
+        end = timezone.make_aware(end)
+
+    if not end and not allow_empty:
+        raise ParseError(detail='end query parameter invalid')
 
     return start, end

@@ -5,6 +5,10 @@ var ListView;          // our subclass
 ListView = View.extend({
     title: gettext("Upcoming Events"),
 
+    initialize: function () {
+        this.title = gettext("Upcoming Events");
+    }
+
     computeTitle: function (d) {
         return this.title;
     },

@@ -24,15 +24,15 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     """
     class Meta:
         fields = (
-            'start', 'end', 'all_day', 'is_birthday',
+            'start', 'end', 'allDay', 'isBirthday',
             'url', 'title', 'description',
             'backgroundColor', 'textColor', 'blank'
         )
 
     start = serializers.SerializerMethodField('_start')
     end = serializers.SerializerMethodField('_end')
-    all_day = serializers.SerializerMethodField('_all_day')
-    is_birthday = serializers.SerializerMethodField('_is_birthday')
+    allDay = serializers.SerializerMethodField('_all_day')
+    isBirthday = serializers.SerializerMethodField('_is_birthday')
     url = serializers.SerializerMethodField('_url')
     title = serializers.SerializerMethodField('_title')
     description = serializers.SerializerMethodField('_description')

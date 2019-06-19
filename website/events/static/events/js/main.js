@@ -1,4 +1,5 @@
 var BIRTHDAYS_COOKIE = 'showbirthdays';
+var VIEW_COOKIE = 'agendaview';
 var SOURCES = {
     events: "/api/v1/events/calendarjs",
     birthdays: "/api/v1/members/birthdays",
@@ -47,8 +48,8 @@ $(function () {
         eventSources.push(SOURCES.birthdays);
     }
     var tmpView = ($(window).width() < 979) ? 'list' : 'agendaWeek';
-    if (Cookies.get('agendaview') !== undefined) {
-        tmpView = Cookies.get('agendaview');
+    if (Cookies.get(VIEW_COOKIE) !== undefined) {
+        tmpView = Cookies.get(VIEW_COOKIE);
     }
 
     // History idea and code parts from
@@ -117,7 +118,7 @@ $(function () {
             element.attr('title', event.description);
         },
         viewRender: function (view) {
-            var prevView = Cookies.get('agendaview');
+            var prevView = Cookies.get(VIEW_COOKIE);
             var moment = calendarElement.fullCalendar('getDate');
             if (moment && moment.isValid()) {
                 window.location.hash = 'year=' + moment.format('YYYY') + '&month=' + (moment.format('M')) + '&day=' + moment.format('DD') + '&view=' + view.name;
@@ -125,14 +126,14 @@ $(function () {
 
             if (view.name !== prevView) {
                 var windowWidth = $(window).width();
-                Cookies.set('agendaview', view.name);
+                Cookies.set(VIEW_COOKIE, view.name);
                 checkResponsiveState(calendarElement, windowWidth, view);
             }
         }
         ,
         windowResize: function () {
             var windowWidth = $(window).width();
-            var view = (windowWidth <= 768) ? 'list' : Cookies.get('agendaview');
+            var view = (windowWidth <= 768) ? 'list' : Cookies.get(VIEW_COOKIE);
             var currentView = $('#calendar').fullCalendar('getView');
             if (view !== currentView.name) {
                 calendarElement.fullCalendar('changeView', view);
