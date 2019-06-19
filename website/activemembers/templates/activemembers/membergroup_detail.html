@@ -30,6 +30,12 @@
             <div class="text-center">
                 {{ membergroup.description|safe }}
             </div>
+            {% if membergroup.committee or membergroup.society %}
+            <div class="text-center">
+                    <strong>{% trans 'contact email address'|capfirst %}:</strong>
+                <a href="mailto:{{ membergroup.contact_address }}">{{ membergroup.contact_address }}</a>
+            </div>
+            {% endif %}
         </div>
     </section>
     {% endif %}
