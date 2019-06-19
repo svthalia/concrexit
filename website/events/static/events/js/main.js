@@ -1,5 +1,6 @@
 const BIRTHDAYS_COOKIE = 'showbirthdays';
 const VIEW_COOKIE = 'calendarview';
+const DATE_STORAGE = 'calendardate';
 const SOURCES = {
     events: {
         id: 'event',
@@ -19,17 +20,17 @@ const SOURCES = {
     },
 };
 
-function checkResponsiveState(calendar, windowWidth, view) {
-    var buttonText = gettext('show birthdays');
+function checkViewState(calendar) {
+    let buttonText = gettext('show birthdays');
     if (calendar.getEventSourceById(SOURCES.birthdays.id)) {
         calendar.getEventSourceById(SOURCES.birthdays.id).remove();
     }
-    if (windowWidth <= 768) {
+    if (window.innerWidth <= 768) {
         calendar.setOption('header', {
             right: ''
         });
     } else {
-        if (view.type === 'list') {
+        if (calendar.view.type === 'list') {
             calendar.setOption('header', {
                 right: 'list,timeGridWeek,dayGridMonth'
             });
@@ -43,7 +44,10 @@ function checkResponsiveState(calendar, windowWidth, view) {
             });
         }
     }
-    $('.fc-showBirthdays-button').html(buttonText);
+    const showBirthdaysBtn = calendar.el.querySelector('.fc-showBirthdays-button');
+    if (showBirthdaysBtn) {
+        showBirthdaysBtn.innerHTML = buttonText;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -61,20 +65,21 @@ document.addEventListener('DOMContentLoaded', function () {
     if (Cookies.get(BIRTHDAYS_COOKIE)) {
         eventSources.push(SOURCES.birthdays);
     }
-    let tmpView = window.innerWidth < 979 ? 'list' : 'timeGridWeek';
-    if (Cookies.get(VIEW_COOKIE) !== undefined) {
-        tmpView = Cookies.get(VIEW_COOKIE);
+
+    let defaultView = window.innerWidth < 979 ? 'list' : 'timeGridWeek';
+    if (Cookies.get(VIEW_COOKIE) !== undefined && window.innerWidth >= 979) {
+        defaultView = Cookies.get(VIEW_COOKIE);
     }
 
-    if (window.location.hash.indexOf('date') > -1) {
-        defaultDate = window.location.hash.substr(window.location.hash.indexOf('date') + 5, 24);
+    if (sessionStorage.getItem(DATE_STORAGE)) {
+        defaultDate = sessionStorage.getItem(DATE_STORAGE);
     }
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
         plugins: ['timeGrid', 'dayGrid', 'bootstrap', listViewPlugin],
         aspectRatio: 1.8,
         themeSystem: 'bootstrap',
-        defaultView: tmpView,
+        defaultView: defaultView,
         defaultDate: defaultDate,
         eventSources: eventSources,
         firstDay: 1,
@@ -112,11 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             } : {},
-        header: {
-            right: 'showBirthdays, list,timeGridWeek,dayGridMonth prev,next today'
-        },
         eventClick: function ({ jsEvent, event }) {
-            console.log(event);
             if (event.url && event.extendedProps.blank) {
                 jsEvent.preventDefault();
                 window.open(event.url, '_blank');
@@ -129,18 +130,14 @@ document.addEventListener('DOMContentLoaded', function () {
         viewSkeletonRender: function ({ view }) {
             const prevView = Cookies.get(VIEW_COOKIE);
 
-            const date = calendar.getDate();
-            window.location.hash = 'date=' + date.toISOString() + '&view=' + view.type;
-
             if (view.type !== prevView) {
-                const windowWidth = window.innerWidth;
                 Cookies.set(VIEW_COOKIE, view.type);
-                checkResponsiveState(calendar, windowWidth, view);
+                checkViewState(calendar);
             }
         },
-        datesRender: function ({ view }) {
+        datesRender: function () {
             const date = calendar.getDate();
-            window.location.hash = 'date=' + date.toISOString() + '&view=' + view.type;
+            sessionStorage.setItem(DATE_STORAGE, date.toISOString());
         },
         windowResize: function () {
             const windowWidth = window.innerWidth;
@@ -149,17 +146,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (view !== currentView.type) {
                 calendar.changeView(view);
             } else {
-                checkResponsiveState(calendar, windowWidth, currentView);
+                checkViewState(calendar);
             }
         }
     });
 
     calendar.render();
-
-    if (calendar.view.type !== tmpView) {
-        calendar.changeView(tmpView);
-    } else {
-        var windowWidth = window.innerWidth;
-        checkResponsiveState(calendar, windowWidth, calendar.view);
-    }
+    checkViewState(calendar);
 });

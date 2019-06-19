@@ -5,7 +5,6 @@
     var signaturePad = new SignaturePad(signatureCanvas);
 
     function canvasToField() {
-        console.log('canvas field');
         if (signaturePad.toData().length) {
             signatureField.val(signaturePad.toDataURL("image/svg+xml"));
         }
