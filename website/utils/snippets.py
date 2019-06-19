@@ -2,12 +2,10 @@
 import hmac
 from _sha1 import sha1
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from datetime import datetime
 
 from django.conf import settings
 from django.template.defaultfilters import urlencode
 from django.utils import timezone, dateparse
-from pytz import InvalidTimeError
 from rest_framework.exceptions import ParseError
 
 
@@ -73,7 +71,6 @@ def extract_date_range(request, allow_empty=False):
         default_value = None
 
     start = request.query_params.get('start', default_value)
-    print(start)
     start = dateparse.parse_datetime(start)
     if not timezone.is_aware(start):
         start = timezone.make_aware(start)

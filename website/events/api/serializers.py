@@ -87,6 +87,9 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
             pass
         return "#616161"
 
+    def _text_color(self, instance):
+        return "#FFFFFF"
+
 
 class UnpublishedEventSerializer(CalenderJSSerializer):
     """
