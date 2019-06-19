@@ -3,7 +3,7 @@ Registrations
 *************
 
 This document explains how the registrations module behaviour is defined.
-The behaviour of upgrading an existing 'year' membership to a 'study' membership (until graduation) is taken from the HR. If the HR ever changes this behaviour should be changed to reflect those changes.
+The behaviour of upgrading an existing 'year' membership to a 'study' membership (until graduation) are taken from the Rules and Regulations. If the Rules and Regulations ever change this behaviour should be changed to reflect those changes.
 
 This module both provides registration for members and for benefactors. The only difference is the form and view used for their registration since the information we ask from them is different.
 
