@@ -41,8 +41,21 @@
 }
 
 #events-index {
-    .fc-bootstrap4 .fc-today {
+    .fc-bootstrap .fc-today {
         background: #fff9fc;
+    }
+
+    .fc-now-indicator {
+        border-color: $dark-grey;
+
+        &.fc-now-indicator-arrow {
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+        }
+    }
+
+    .fc-day-top {
+        padding: 5px;
     }
 
     .fc-list-view {
@@ -67,6 +80,8 @@
         background-color: #616161;
         border-radius: 0;
         border: none;
+        overflow: hidden;
+        transition-property: opacity;
 
         .fc-content {
             padding: 5px;
@@ -85,21 +100,8 @@
             .fc-content {
                 opacity: 0.8;
             }
-        }
-    }
-}
 
-@media(max-width: 575px) {
-    #events-index {
-        .fc-right {
-            > div {
-                margin-bottom: 0.5rem;
-                float: right;
-            }
-            > button {
-                clear: both;
-                float: right;
-            }
+            color: $white;
         }
     }
 }

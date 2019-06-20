@@ -10,7 +10,11 @@
 {% block css_head %}
     {{ block.super }}
     {% compress css %}
-        <link href="{% static "events/css/fullcalendar.css" %}"
+        <link href="{% static "events/css/fullcalendar.core.css" %}"
+              rel="stylesheet" type="text/css">
+        <link href="{% static "events/css/fullcalendar.timegrid.css" %}"
+              rel="stylesheet" type="text/css">
+        <link href="{% static "events/css/fullcalendar.bootstrap.css" %}"
               rel="stylesheet" type="text/css">
     {% endcompress %}
 {% endblock %}
@@ -62,13 +66,17 @@
     {{ block.super }}
     {% compress js %}
         <script type="text/javascript"
-                src="{% static "events/js/moment.js" %}"></script>
+                src="{% static "events/js/fullcalendar.locale.js" %}"></script>
         <script type="text/javascript"
-                src="{% static "events/js/fullcalendar.min.js" %}"></script>
+                src="{% static "events/js/fullcalendar.core.js" %}"></script>
         <script type="text/javascript"
-                src="{% static "events/js/fullcalendar-nl.js" %}"></script>
+                src="{% static "events/js/fullcalendar.bootstrap.js" %}"></script>
         <script type="text/javascript"
-                src="{% static "events/js/calendarlistview.js" %}"></script>
+                src="{% static "events/js/fullcalendar.daygrid.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "events/js/fullcalendar.timegrid.js" %}"></script>
+        <script type="text/javascript"
+                src="{% static "events/js/listview.js" %}"></script>
         <script type="text/javascript"
                 src="{% static "events/js/main.js" %}"></script>
     {% endcompress %}
