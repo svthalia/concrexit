@@ -218,7 +218,14 @@
                 {% if main_partner and main_partner.is_active %}
                 <td align="center" style="color: black; font-size: 12px;">
                     <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
-                        <a href="{{ main_partner.link }}"><img src="{% baseurl %}{% static 'newsletters/nedap-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/></a><br/>
+                        <a href="{{ main_partner.link }}">
+                            {# TODO: Only show Nedap logo after 2019-8-1, remove if #}
+                            {% if main_partner.pk == 1 %}
+                                <img src="{% baseurl %}{% static 'newsletters/topicus-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
+                            {% else %}
+                                <img src="{% baseurl %}{% static 'newsletters/nedap-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
+                            {% endif %}
+                        </a><br/>
                         {% trans "our main partner"|upper %}
                     </p>
                 </td>
