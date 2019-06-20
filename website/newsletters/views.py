@@ -1,6 +1,5 @@
 """Views provided by the newsletters package"""
 import os
-from datetime import datetime, timedelta, date
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
@@ -53,26 +52,6 @@ def preview(request, pk, lang=None):
         'local_partner': Partner.objects.filter(is_local_partner=True).first(),
         'lang_code': lang_code
     })
-
-
-def legacy_redirect(request, year, week):
-    """
-    View that redirect you to the right newsletter by
-    using the previously used URL format of /{year}/{week}
-
-    :param request: the request object
-    :param year: the year of the newsletter
-    :param week: the week of the newsletter
-    :return: 302 RedirectResponse
-    """
-    newsletter_date = datetime.strptime(
-        '%s-%s-1' % (year, week), '%Y-%W-%w')
-    if date(int(year), 1, 4).isoweekday() > 4:
-        newsletter_date -= timedelta(days=7)
-
-    newsletter = get_object_or_404(Newsletter, date=newsletter_date)
-
-    return redirect(newsletter.get_absolute_url(), permanent=True)
 
 
 @staff_member_required
