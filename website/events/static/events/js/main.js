@@ -51,6 +51,7 @@ function checkViewState(calendar) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    let lastKnownWidth = window.innerWidth;
     const calendarEl = document.getElementById('calendar');
 
     const showUnpublished = calendarEl.dataset['show-unpublished'];
@@ -140,13 +141,15 @@ document.addEventListener('DOMContentLoaded', function () {
             sessionStorage.setItem(DATE_STORAGE, date.toISOString());
         },
         windowResize: function () {
-            const windowWidth = window.innerWidth;
-            const view = (windowWidth <= 768) ? 'list' : Cookies.get(VIEW_COOKIE);
-            const currentView = calendar.view;
-            if (view !== currentView.type) {
-                calendar.changeView(view);
-            } else {
-                checkViewState(calendar);
+            if (window.innerWidth !== lastKnownWidth) {
+                lastKnownWidth = window.innerWidth;
+                const view = (lastKnownWidth <= 768) ? 'list' : Cookies.get(VIEW_COOKIE);
+                const currentView = calendar.view;
+                if (view !== currentView.type) {
+                    calendar.changeView(view);
+                } else {
+                    checkViewState(calendar);
+                }
             }
         }
     });
