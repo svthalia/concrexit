@@ -18,6 +18,15 @@ def get_automatic_lists():
         Member(email='intern@thalia.nu')
     ]
 
+    current_society_chairs = (MemberGroupMembership.active_objects
+                              .filter(group__board=None)
+                              .filter(group__committee=None)
+                              .filter(chair=True)
+                              .prefetch_related('member'))
+    society_chair_emails = [x.member for x in current_society_chairs] + [
+        Member(email='intern@thalia.nu')
+    ]
+
     active_committee_memberships = (MemberGroupMembership.active_objects
                                     .filter(group__board=None)
                                     .filter(group__society=None)
@@ -54,6 +63,9 @@ def get_automatic_lists():
     lists += _create_automatic_list(
         ['commissievoorzitters', 'committeechairs'], '[THALIA] [CHAIRS]',
         committee_chair_emails, moderated=False)
+    lists += _create_automatic_list(
+        ['gezelschapvoorzitters', 'societychairs'], '[THALIA] [SOCIETY]',
+        society_chair_emails, moderated=False)
     lists += _create_automatic_list(
         ['optin'], '[THALIA] [OPTIN]', Member.current_members.filter(
             profile__receive_optin=True),

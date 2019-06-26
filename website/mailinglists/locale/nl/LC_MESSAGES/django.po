@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-05 19:46+0100\n"
-"PO-Revision-Date: 2018-12-05 19:47+0100\n"
+"POT-Creation-Date: 2019-06-20 16:49+0200\n"
+"PO-Revision-Date: 2019-06-20 16:50+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: admin.py models.py
 msgid "List aliasses"
@@ -187,6 +187,12 @@ msgid "Archived list that can be used to send mail to all committee chairs."
 msgstr ""
 "Gearchiveerde lijst die gebruikt kan worden om mail naar alle "
 "commissievoorzitters te versturen."
+
+#: templates/admin/mailinglists/change_list.html
+msgid "Archived list that can be used to send mail to all society chairs."
+msgstr ""
+"Gearchiveerde lijst die gebruikt kan worden om mail naar alle "
+"gezelschapvoorzitters te versturen."
 
 #: templates/admin/mailinglists/change_list.html
 msgid ""
