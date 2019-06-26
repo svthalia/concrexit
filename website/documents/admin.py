@@ -14,6 +14,7 @@ class MinutesInline(admin.StackedInline):
     """Inline for minutes of a general meeting"""
     model = Minutes
     form = forms.MinutesForm
+    extra = 0
 
 
 @admin.register(GeneralMeeting)
