@@ -1,17 +1,25 @@
 """The routes defined by the activemembers package"""
-from django.conf.urls import url
+from django.urls import path, re_path
 
-from . import views
-
+from activemembers.views import (
+    CommitteeIndexView, CommitteeDetailView,
+    SocietyIndexView, SocietyDetailView,
+    BoardIndexView, BoardDetailView
+)
 
 app_name = "activemembers"
 
 urlpatterns = [
-    url(r'committees/$', views.committee_index, name='committees'),
-    url(r'^committees/(?P<pk>\d+)/$', views.committee_detail, name='committee'),
-    url(r'societies/$', views.society_index, name='societies'),
-    url(r'^societies/(?P<pk>\d+)/$', views.society_detail, name='society'),
-    url(r'^boards/$', views.board_index, name='boards'),
-    url(r'^board/(?P<since>\d{4})$', views.board_detail, name='board'),
-    url(r'^board/(?P<since>\d{4})-(?P<until>\d{4})$', views.board_detail, name='board'),
+    path('committees/',
+         CommitteeIndexView.as_view(), name='committees'),
+    path('committees/<int:pk>/',
+         CommitteeDetailView.as_view(), name='committee'),
+    path('societies/',
+         SocietyIndexView.as_view(), name='societies'),
+    path('societies/<int:pk>/',
+         SocietyDetailView.as_view(), name='society'),
+    path('boards/',
+         BoardIndexView.as_view(), name='boards'),
+    re_path(r'boards/(?P<since>\d{4})-(?P<until>\d{4})/$',
+            BoardDetailView.as_view(), name='board'),
 ]

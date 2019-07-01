@@ -18,18 +18,19 @@
                     <a href="mailto:info@thalia.nu">send them an email</a>.
                 {% endblocktrans %}
             </p>
-
+            {% if current_board %}
             <div class="row">
-                <a href="{{ board.get_absolute_url }}" class="current-board col-12 text-center">
-                    {% if board.photo %}
-                        <img alt="{{ board.name }}"
-                             src="{% thumbnail board.photo THUMBNAIL_SIZE_LARGE fit=False %}">
+                <a href="{{ current_board.get_absolute_url }}" class="current-board col-12 text-center">
+                    {% if current_board.photo %}
+                        <img alt="{{ current_board.name }}"
+                             src="{% thumbnail current_board.photo THUMBNAIL_SIZE_LARGE fit=False %}">
                     {% else %}
-                        <img alt="{{ board.name }}"
+                        <img alt="{{ current_board.name }}"
                              src="{% static 'activemembers/images/placeholder.png' %}">
                     {% endif %}
                 </a>
             </div>
+            {% endif %}
         </div>
     </section>
     <section class="page-section">
