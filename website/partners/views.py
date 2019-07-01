@@ -8,17 +8,17 @@ from partners.models import Partner, Vacancy, VacancyCategory
 
 def index(request):
     """View to show overview page of partners."""
-    partners = Partner.objects.filter(is_active=True, is_main_partner=False)
-    try:
-        main_partner = Partner.objects.get(
-            is_active=True,
-            is_main_partner=True
-        )
-    except Partner.DoesNotExist:
-        main_partner = None
+    partners = Partner.objects.filter(
+        is_active=True,
+        is_main_partner=False,
+        is_local_partner=False
+    )
+    main_partner = Partner.objects.filter(is_main_partner=True).first()
+    local_partner = Partner.objects.filter(is_local_partner=True).first()
 
     context = {
         'main_partner': main_partner,
+        'local_partner': local_partner,
         'partners': sorted(partners, key=lambda x: random()),
     }
     return render(request, 'partners/index.html', context)

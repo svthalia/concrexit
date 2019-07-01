@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-07 14:29+0200\n"
-"PO-Revision-Date: 2019-06-07 15:04+0200\n"
+"POT-Creation-Date: 2019-06-20 16:40+0200\n"
+"PO-Revision-Date: 2019-06-20 16:41+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: apps.py templates/partners/index.html templates/partners/partner.html
 msgid "Partners"
@@ -128,13 +128,17 @@ msgstr ""
 "\">samenwerking@thalia.nu</a>."
 
 #: templates/partners/index.html
-msgid "Main Partner"
-msgstr "Hoofdpartner"
+msgid "our main partner"
+msgstr "onze hoofdpartner"
 
 #: templates/partners/index.html templates/partners/partner.html
 #: templates/partners/vacancies.html templates/partners/vacancy_card.html
 msgid "Learn more"
 msgstr "Lees meer"
+
+#: templates/partners/index.html
+msgid "our local partner"
+msgstr "onze localpartner"
 
 #: templates/partners/partner.html
 msgid "Address"
