@@ -17,9 +17,6 @@ def send_newsletter(newsletter):
 
     :param newsletter: the newsletter to be send
     """
-    partners = Partner.objects.filter(is_main_partner=True)
-    main_partner = partners[0] if len(partners) > 0 else None
-
     events = None
     if newsletter.date:
         datetime = make_aware(timezone.datetime(
@@ -32,6 +29,9 @@ def send_newsletter(newsletter):
     from_email = settings.NEWSLETTER_FROM_ADDRESS
     html_template = get_template('newsletters/email.html')
     text_template = get_template('newsletters/email.txt')
+
+    main_partner = Partner.objects.filter(is_main_partner=True).first()
+    local_partner = Partner.objects.filter(is_local_partner=True).first()
 
     for language in settings.LANGUAGES:
         translation.activate(language[0])
@@ -48,6 +48,7 @@ def send_newsletter(newsletter):
             'newsletter': newsletter,
             'agenda_events': events,
             'main_partner': main_partner,
+            'local_partner': local_partner,
             'lang_code': language[0]
         }
 

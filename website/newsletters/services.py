@@ -28,8 +28,8 @@ def save_to_disk(newsletter, request):
     """
     Writes the newsletter as HTML to file (in all languages)
     """
-    partners = Partner.objects.filter(is_main_partner=True)
-    main_partner = partners[0] if len(partners) > 0 else None
+    main_partner = Partner.objects.filter(is_main_partner=True).first()
+    local_partner = Partner.objects.filter(is_local_partner=True).first()
 
     html_template = get_template('newsletters/email.html')
 
@@ -44,6 +44,7 @@ def save_to_disk(newsletter, request):
                 .order_by('newsletterevent__start_datetime')
             ),
             'main_partner': main_partner,
+            'local_partner': local_partner,
             'lang_code': language[0],
             'request': request
         }

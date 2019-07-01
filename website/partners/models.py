@@ -13,6 +13,7 @@ class Partner(models.Model):
 
     is_active = models.BooleanField(default=False)
     is_main_partner = models.BooleanField(default=False)
+    is_local_partner = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
     link = models.CharField(
@@ -44,9 +45,12 @@ class Partner(models.Model):
     city = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
-        """Save a partner and set main partner."""
+        """Save a partner and set main/local partners."""
         if self.is_main_partner:
+            self.is_local_partner = False
             self._reset_main_partner()
+        if self.is_local_partner:
+            self._reset_local_partner()
 
         super(Partner, self).save(*args, **kwargs)
 
@@ -62,6 +66,21 @@ class Partner(models.Model):
             if self != current_main_partner:
                 current_main_partner.is_main_partner = False
                 current_main_partner.save()
+        except Partner.DoesNotExist:
+            pass
+
+    def _reset_local_partner(self):
+        """
+        Reset the local partner status.
+
+        If this partner is not local partner,
+        remove the local partner status from the local partner.
+        """
+        try:
+            current_local_partner = Partner.objects.get(is_local_partner=True)
+            if self != current_local_partner:
+                current_local_partner.is_local_partner = False
+                current_local_partner.save()
         except Partner.DoesNotExist:
             pass
 
