@@ -3,7 +3,7 @@
 
 {% block object-tools-items %}
     <li>
-        <a href="{% url 'members:iban-export' %}">{% trans "Export IBANs for Direct Debit" %}</a>
+        <a href="{% url 'admin:members_member_ibanexport' %}">{% trans "Export IBANs for Direct Debit" %}</a>
     </li>
     {{ block.super }}
 {% endblock %}

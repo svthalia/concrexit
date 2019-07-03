@@ -1,3 +1,4 @@
+"""DRF serializers defined by the members package"""
 from django.templatetags.static import static
 from django.urls import reverse
 from rest_framework import serializers
@@ -9,6 +10,7 @@ from thaliawebsite.api.services import create_image_thumbnail_dict
 
 
 class MemberBirthdaySerializer(CalenderJSSerializer):
+    """Serializer that renders the member birthdays to the CalendarJS format"""
     class Meta(CalenderJSSerializer.Meta):
         model = Member
 
@@ -47,6 +49,7 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
 
 
 class ProfileRetrieveSerializer(serializers.ModelSerializer):
+    """Serializer that renders a member profile"""
     class Meta:
         model = Profile
         fields = ('pk', 'display_name', 'avatar', 'profile_description',
@@ -92,6 +95,7 @@ class ProfileRetrieveSerializer(serializers.ModelSerializer):
 
 
 class MemberListSerializer(serializers.ModelSerializer):
+    """Serializer that renders a list of members"""
     class Meta:
         model = Member
         fields = ('pk', 'display_name', 'avatar')
@@ -114,6 +118,7 @@ class MemberListSerializer(serializers.ModelSerializer):
 
 
 class ProfileEditSerializer(serializers.ModelSerializer):
+    """Serializer that renders a profile to be edited"""
     class Meta:
         model = Profile
         fields = ('pk', 'email', 'first_name', 'last_name', 'address_street',

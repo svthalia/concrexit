@@ -88,10 +88,9 @@ urlpatterns = [  # pylint: disable=invalid-name
         path('sibling-associations/', SiblingAssociationsView.as_view(), name='sibling-associations'),
         url(r'^thabloid/', include('thabloid.urls')),
     ])),
-    url(r'^', include([  # 'for members' menu
+    url(r'^members/', include([  # 'for members' menu
         path('become-active/', BecomeActiveView.as_view(), name='become-active'),
         url(r'^photos/', include('photos.urls')),
-        path('statistics/', members.views.statistics, name='statistics'),
         path('styleguide/', StyleGuideView.as_view(), name='styleguide'),
     ])),
     url(r'^career/', include('partners.urls')),

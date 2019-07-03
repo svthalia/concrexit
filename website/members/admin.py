@@ -8,10 +8,11 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.db.models import Q, Count
 from django.http import HttpResponse
+from django.urls import path
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from members import services
+from members import services, admin_views
 from members.models import EmailChange, Member
 from . import forms, models
 
@@ -205,6 +206,16 @@ class UserAdmin(BaseUserAdmin):
                 messages.SUCCESS
             )
     minimise_data.short_description = _('Minimise data for the selected users')
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('iban-export/',
+                 self.admin_site.admin_view(
+                     admin_views.IbanExportView.as_view()),
+                 name='members_member_ibanexport'),
+        ]
+        return custom_urls + urls
 
 
 @admin.register(models.Member)

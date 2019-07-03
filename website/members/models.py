@@ -1,3 +1,4 @@
+"""Models defined in the members package"""
 import logging
 import operator
 import os

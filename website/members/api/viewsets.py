@@ -1,7 +1,8 @@
+"""DRF viewsets defined by the members package"""
 import copy
 
 from rest_framework import permissions
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -14,7 +15,8 @@ from utils.snippets import extract_date_range
 
 
 class MemberViewset(viewsets.ReadOnlyModelViewSet,
-                    viewsets.mixins.UpdateModelMixin):
+                    mixins.UpdateModelMixin):
+    """Viewset that renders or edits a member"""
     queryset = Member.objects.all()
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,)
     ordering_fields = ('profile__starting_year', 'first_name', 'last_name')

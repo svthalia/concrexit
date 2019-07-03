@@ -1,3 +1,4 @@
+"""The emails defined by the members package"""
 from datetime import timedelta
 import logging
 

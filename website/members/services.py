@@ -1,4 +1,6 @@
+"""Services defined in the members package"""
 from datetime import date
+from typing import Callable, List, Dict, Union, Any
 
 from django.db.models import Q, Count
 from django.utils import timezone
@@ -9,7 +11,13 @@ from members.models import Membership, Member
 from utils.snippets import datetime_to_lectureyear
 
 
-def _member_group_memberships(member, skip_condition):
+def _member_group_memberships(
+        member: Member, skip_condition: Callable[[Membership], bool]
+) -> Dict[str, Any]:
+    """
+    Determines the group membership of a user based on a condition
+    :return: Object with group memberships
+    """
     memberships = member.membergroupmembership_set.all()
     data = {}
 
@@ -45,9 +53,13 @@ def _member_group_memberships(member, skip_condition):
     return data
 
 
-def member_achievements(member):
+def member_achievements(member) -> List:
+    """
+    Derives a list of achievements of a member
+    Committee and board memberships + mentorships
+    """
     achievements = _member_group_memberships(
-        member, lambda membership: hasattr(membership.group, 'society'))
+        member, lambda membership: hasattr(membership, 'society'))
 
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
@@ -63,14 +75,21 @@ def member_achievements(member):
     return sorted(achievements.values(), key=lambda x: x['earliest'])
 
 
-def member_societies(member):
+def member_societies(member) -> List:
+    """
+    Derives a list of societies a member was part of
+    """
     societies = _member_group_memberships(member, lambda membership: (
         hasattr(membership.group, 'board') or
         hasattr(membership.group, 'committee')))
     return sorted(societies.values(), key=lambda x: x['earliest'])
 
 
-def gen_stats_member_type(member_types):
+def gen_stats_member_type(member_types) -> Dict[str, int]:
+    """
+    Generate a dictionary where every key is a member type with
+    the value being the number of current members of that type
+    """
     total = dict()
     for member_type in member_types:
         total[member_type] = (Membership
@@ -83,7 +102,8 @@ def gen_stats_member_type(member_types):
     return total
 
 
-def gen_stats_year(member_types):
+def gen_stats_year(
+        member_types) -> List[Dict[Union[str, Any], Union[int, Any]]]:
     """
     Generate list with 6 entries, where each entry represents the total amount
     of Thalia members in a year. The sixth element contains all the multi-year
@@ -123,7 +143,7 @@ def gen_stats_year(member_types):
     return stats_year
 
 
-def verify_email_change(change_request):
+def verify_email_change(change_request) -> None:
     """
     Mark the email change request as verified
 
@@ -135,7 +155,7 @@ def verify_email_change(change_request):
     process_email_change(change_request)
 
 
-def confirm_email_change(change_request):
+def confirm_email_change(change_request) -> None:
     """
     Mark the email change request as verified
 
@@ -147,7 +167,7 @@ def confirm_email_change(change_request):
     process_email_change(change_request)
 
 
-def process_email_change(change_request):
+def process_email_change(change_request) -> None:
     """
     Change the user's email address if the request was completed and
     send the completion email
@@ -164,7 +184,7 @@ def process_email_change(change_request):
     emails.send_email_change_completion_message(change_request)
 
 
-def execute_data_minimisation(dry_run=False, members=None):
+def execute_data_minimisation(dry_run=False, members=None) -> List[Member]:
     """
     Clean the profiles of members/users of whom the last membership ended
     at least 31 days ago

@@ -1,3 +1,4 @@
+"""Middleware provided by the members package"""
 from django.utils.functional import SimpleLazyObject
 
 from members.models import Member
@@ -11,6 +12,9 @@ def get_member(request):
 
 
 class MemberMiddleware:
+    """
+    Adds the member attribute to requests
+    """
     def __init__(self, get_response):
         self.get_response = get_response
 

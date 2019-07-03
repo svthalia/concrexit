@@ -1,32 +1,36 @@
+"""The routes defined by the members package"""
 from django.urls import path, include
 
-from . import views
+from members.views import (
+    MembersIndex, StatisticsView, ProfileDetailView,
+    UserAccountView, UserProfileUpdateView,
+    EmailChangeFormView,
+    EmailChangeVerifyView, EmailChangeConfirmView
+)
 
 app_name = "members"
 
 urlpatterns = [
-    path('iban-export/', views.iban_export,
-         name='iban-export'),
     path('members/', include([
-        path('', views.index,
-             name='index'),
-        path('statistics/', views.statistics,
+        path('', MembersIndex.as_view(), name='index'),
+        path('<slug:filter>/', MembersIndex.as_view(), name='index'),
+        path('statistics/', StatisticsView.as_view(),
              name='statistics'),
-        path('profile/<int:pk>', views.profile,
+        path('profile/<int:pk>', ProfileDetailView.as_view(),
              name='profile'),
     ])),
     path('user/', include([
-        path('', views.user,
+        path('', UserAccountView.as_view(),
              name='user'),
-        path('edit-profile/', views.edit_profile,
+        path('edit-profile/', UserProfileUpdateView.as_view(),
              name='edit-profile'),
-        path('change-email/', views.EmailChangeFormView.as_view(),
+        path('change-email/', EmailChangeFormView.as_view(),
              name='email-change'),
         path('change-email/verify/<uuid:key>/',
-             views.EmailChangeVerifyView.as_view(),
+             EmailChangeVerifyView.as_view(),
              name='email-change-verify'),
         path('change-email/confirm/<uuid:key>/',
-             views.EmailChangeConfirmView.as_view(),
+             EmailChangeConfirmView.as_view(),
              name='email-change-confirm'),
     ])),
 ]

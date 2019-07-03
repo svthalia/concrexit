@@ -25,3 +25,11 @@ utils.templatetags.thumbnail module
    :undoc-members:
    :show-inheritance:
 
+utils.templatetags.urlparams module
+-----------------------------------
+
+.. automodule:: utils.templatetags.urlparams
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
