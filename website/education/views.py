@@ -4,9 +4,12 @@ from datetime import datetime, date
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _, get_language
+from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from sendfile import sendfile
 
 from members.decorators import membership_required
@@ -14,198 +17,196 @@ from .forms import AddExamForm, AddSummaryForm
 from .models import Category, Course, Exam, Summary
 
 
-def courses(request):
+class CourseIndexView(ListView):
     """
     Renders an overview of the courses
-
-    :param request: the request object
-    :return: HttpResponse 200 containing the HTML as body
     """
-    categories = Category.objects.all()
-    courses = [
-        {
-            'course_code': x.course_code,
-            'name': x.name,
-            'categories': x.categories.all(),
-            'document_count': sum([x.summary_set.filter(accepted=True).count(),
-                                   x.exam_set.filter(accepted=True).count()] +
-                                  [c.summary_set.filter(accepted=True).count()
-                                   + c.exam_set.filter(accepted=True).count()
-                                   for c in
-                                   x.old_courses.all()]),
-            'url': x.get_absolute_url()
-        } for x in
-        Course.objects.order_by(f'name_{ get_language() }').filter(
-            until=None)
-    ]
+    queryset = Course.objects.filter(until=None)
+    template_name = 'education/courses.html'
 
-    return render(request, 'education/courses.html',
-                  {'courses': courses, 'categories': categories})
+    def get_ordering(self) -> str:
+        return f'name_{get_language()}'
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'courses': ({
+                'course_code': x.course_code,
+                'name': x.name,
+                'categories': x.categories.all(),
+                'document_count': sum(
+                    [x.summary_set.filter(accepted=True).count(),
+                     x.exam_set.filter(accepted=True).count()] +
+                    [c.summary_set.filter(accepted=True).count()
+                     + c.exam_set.filter(accepted=True).count()
+                     for c in x.old_courses.all()]),
+                'url': x.get_absolute_url()
+            } for x in context['object_list']),
+            'categories': Category.objects.all(),
+        })
+        return context
 
 
-def course(request, id):
+class CourseDetailView(DetailView):
     """
     Renders the detail page of one specific course
-
-    :param request: the request object
-    :param id: the primary key of the selected course
-    :return: HttpResponse 200 containing the HTML as body
     """
-    obj = get_object_or_404(Course, pk=id)
-    courses = list(obj.old_courses.all())
-    courses.append(obj)
-    items = {}
-    for course in courses:
-        for summary in course.summary_set.filter(accepted=True):
-            if summary.year not in items:
-                items[summary.year] = {'summaries': [], 'exams': [],
-                                       'legacy': course if course.pk != obj.pk
-                                       else None}
-            items[summary.year]['summaries'].append({
-                "year": summary.year,
-                "name": f'{ _("Summary") } { summary.name }',
-                "language": summary.language,
-                "id": summary.id
-            })
-        for exam in course.exam_set.filter(accepted=True):
-            if exam.year not in items:
-                items[exam.year] = {'summaries': [], 'exams': [],
-                                    'legacy': course if course.pk != obj.pk
-                                    else None}
-            items[exam.year]['exams'].append({
-                "type": "exam",
-                "year": exam.year, "name":
-                    f"{ exam.get_type_display() } { exam.name }",
-                "language": exam.language,
-                "id": exam.id
-            })
+    model = Course
+    context_object_name = 'course'
+    template_name = 'education/course.html'
 
-    return render(request, 'education/course.html',
-                  {'course': obj, 'items': sorted(items.items(),
-                                                  key=lambda x: x[0])})
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        obj = context['course']
+        courses = list(obj.old_courses.all())
+        courses.append(obj)
+        items = {}
+        for course in courses:
+            for summary in course.summary_set.filter(accepted=True):
+                if summary.year not in items:
+                    items[summary.year] = {
+                        'summaries': [],
+                        'exams': [],
+                        'legacy': course if course.pk != obj.pk else None
+                    }
+                items[summary.year]['summaries'].append({
+                    "year": summary.year,
+                    "name": f'{_("Summary")} {summary.name}',
+                    "language": summary.language,
+                    "id": summary.id
+                })
+            for exam in course.exam_set.filter(accepted=True):
+                if exam.year not in items:
+                    items[exam.year] = {
+                        'summaries': [],
+                        'exams': [],
+                        'legacy': course if course.pk != obj.pk else None
+                    }
+                items[exam.year]['exams'].append({
+                    "type": "exam",
+                    "year": exam.year, "name":
+                        f"{exam.get_type_display()} {exam.name}",
+                    "language": exam.language,
+                    "id": exam.id
+                })
+        context.update({
+            'items': sorted(items.items(), key=lambda x: x[0])
+        })
+        return context
 
 
-@login_required
-@membership_required
-def exam(request, id):
+@method_decorator(login_required, 'dispatch')
+@method_decorator(membership_required, 'dispatch')
+class ExamDetailView(DetailView):
     """
     Fetches and outputs the specified exam
-
-    :param request: the request object
-    :param id: the id of the exam
-    :return: 302 if not authenticated else 200 with the file as body
     """
-    exam = get_object_or_404(Exam, id=int(id))
+    model = Exam
 
-    exam.download_count += 1
-    exam.save()
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        response = super().get(request, *args, **kwargs)
+        exam = response.context_data['object']
+        exam.download_count += 1
+        exam.save()
 
-    ext = os.path.splitext(exam.file.path)[1]
-    filename = f'{ exam.course.name }-exam{ exam.year }{ ext }'
-    return sendfile(request, exam.file.path,
-                    attachment=True, attachment_filename=filename)
+        ext = os.path.splitext(exam.file.path)[1]
+        filename = f'{exam.course.name}-exam{exam.year}{ext}'
+        return sendfile(request, exam.file.path,
+                        attachment=True, attachment_filename=filename)
 
 
-@login_required
-@membership_required
-def summary(request, id):
+@method_decorator(login_required, 'dispatch')
+@method_decorator(membership_required, 'dispatch')
+class SummaryDetailView(DetailView):
     """
     Fetches and outputs the specified summary
-
-    :param request: the request object
-    :param id: the id of the summary
-    :return: 302 if not authenticated else 200 with the file as body
     """
-    obj = get_object_or_404(Summary, id=int(id))
+    model = Summary
 
-    obj.download_count += 1
-    obj.save()
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        response = super().get(request, *args, **kwargs)
+        obj = response.context_data['object']
+        obj.download_count += 1
+        obj.save()
 
-    ext = os.path.splitext(obj.file.path)[1]
-    filename = f'{ obj.course.name }-summary{ obj.year }{ ext }'
-    return sendfile(request, obj.file.path,
-                    attachment=True, attachment_filename=filename)
+        ext = os.path.splitext(obj.file.path)[1]
+        filename = f'{obj.course.name}-summary{obj.year}{ext}'
+        return sendfile(request, obj.file.path,
+                        attachment=True, attachment_filename=filename)
 
 
-@login_required
-def submit_exam(request, id=None):
+@method_decorator(login_required, 'dispatch')
+@method_decorator(membership_required, 'dispatch')
+class ExamCreateView(CreateView):
     """
     Renders the form to submit a new exam
-
-    :param request: the request object
-    :param id: the course id (optional)
-    :return: 302 if not authenticated else 200 with the form HTML as body
     """
-    saved = False
+    model = Exam
+    form_class = AddExamForm
+    template_name = 'education/add_exam.html'
+    success_url = reverse_lazy('education:submit-exam')
+    success_message = _('Exam submitted successfully.')
 
-    if request.POST:
-        form = AddExamForm(request.POST, request.FILES)
-        if form.is_valid():
-            saved = True
-            obj = form.save(commit=False)
-            obj.uploader = request.member
-            obj.uploader_date = datetime.now()
-            obj.save()
+    def get_initial(self) -> dict:
+        initial = super().get_initial()
+        initial['exam_date'] = date.today()
+        initial['course'] = self.kwargs.get('pk', None)
+        return initial
 
-            form = AddExamForm()
-    else:
-        obj = Exam()
-        obj.exam_date = date.today()
-        if id is not None:
-            obj.course = Course.objects.get(id=id)
-        form = AddExamForm(instance=obj)
-
-    return render(request, 'education/add_exam.html',
-                  {'form': form, 'saved': saved})
+    def form_valid(self, form) -> HttpResponse:
+        self.object = form.save(commit=False)
+        self.object.uploader = self.request.member
+        self.object.uploader_date = datetime.now()
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
-@login_required
-def submit_summary(request, id=None):
+@method_decorator(login_required, 'dispatch')
+@method_decorator(membership_required, 'dispatch')
+class SummaryCreateView(CreateView):
     """
     Renders the form to submit a new summary
-
-    :param request: the request object
-    :param id: the course id (optional)
-    :return: 302 if not authenticated else 200 with the form HTML as body
     """
-    saved = False
+    model = Summary
+    form_class = AddSummaryForm
+    template_name = 'education/add_summary.html'
+    success_url = reverse_lazy('education:submit-summary')
+    success_message = _('Summary submitted successfully.')
 
-    if request.POST:
-        form = AddSummaryForm(request.POST, request.FILES)
-        if form.is_valid():
-            saved = True
-            obj = form.save(commit=False)
-            obj.uploader = request.member
-            obj.uploader_date = datetime.now()
-            obj.save()
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['author'] = self.request.member.get_full_name()
+        initial['course'] = self.kwargs.get('pk', None)
+        return initial
 
-            obj = Summary()
-            obj.author = request.member.get_full_name()
-            form = AddSummaryForm(instance=obj)
-    else:
-        obj = Summary()
-        if id is not None:
-            obj.course = Course.objects.get(id=id)
-        obj.author = request.member.get_full_name()
-        form = AddSummaryForm(instance=obj)
-
-    return render(request, 'education/add_summary.html',
-                  {'form': form, 'saved': saved})
+    def form_valid(self, form) -> HttpResponse:
+        self.object = form.save(commit=False)
+        self.object.uploader = self.request.member
+        self.object.uploader_date = datetime.now()
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
-@login_required
-def books(request):
+@method_decorator(login_required, 'dispatch')
+class BookInfoView(TemplateView):
     """
     Renders a page with information about book sale
     Only available to members and to-be members
-
-    :param request: the request object
-    :return: 403 if no active membership else 200 with the page HTML as body
     """
-    if (request.member and request.member.is_authenticated and
-        (request.member.current_membership or
-         (request.member.earliest_membership and
-          request.member.earliest_membership.since > timezone.now().date())
-         )):
-        return render(request, 'education/books.html')
-    raise PermissionDenied
+    template_name = 'education/books.html'
+
+    def dispatch(self, request, *args, **kwargs) -> HttpResponse:
+        if (
+            request.member.has_active_membership() or
+            (request.member.earliest_membership and
+             request.member.earliest_membership.since > timezone.now().date())
+        ):
+            return super().dispatch(request, *args, **kwargs)
+        raise PermissionDenied
+
+
+class StudentParticipantView(TemplateView):
+    """
+    Renders a page with information about student information
+    """
+    template_name = 'education/student_participation.html'

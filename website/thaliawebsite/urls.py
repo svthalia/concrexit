@@ -109,7 +109,6 @@ urlpatterns = [  # pylint: disable=invalid-name
             url(r'^', include('pushnotifications.api.urls')),
         ])),
     ])),
-    url(r'^education/', include('education.urls')),
     url(r'^announcements/', include('announcements.urls')),
     url(r'^pushnotifications/', include('pushnotifications.urls')),
     # Default login helpers
@@ -131,6 +130,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media'),
     url('', include('members.urls')),
     url('', include('payments.urls')),
+    url('', include('education.urls')),
     url('', include('activemembers.urls')),
     url('', include('documents.urls')),
 ] + static(settings.MEDIA_URL + 'public/',
