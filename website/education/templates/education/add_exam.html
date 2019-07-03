@@ -12,9 +12,10 @@
                 {% trans "Submit Exam" %}
             </h1>
 
-            {% if saved %}
-                {% trans "Exam submitted successfully." as success_text %}
-                {% alert 'success' success_text dismissable=True %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% alert message.tags message dismissable=True %}
+                {% endfor %}
             {% endif %}
 
             <form method="post" enctype="multipart/form-data"
