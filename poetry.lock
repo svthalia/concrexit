@@ -822,7 +822,7 @@ description = "Python client for Sentry (https://getsentry.com)"
 name = "sentry-sdk"
 optional = false
 python-versions = "*"
-version = "0.9.0"
+version = "0.10.0"
 
 [package.dependencies]
 certifi = "*"
@@ -988,7 +988,7 @@ version = "1.11.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "e80149fec671e34d4db60600f9ab50fa3b2903cf834aa567ff400d9de345bb71"
+content-hash = "029d34f2ffb5fdef51efeb42718dc5b384e98967476286870a42f3838a7c76b3"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1070,7 +1070,7 @@ redis = ["6946b5dca72e86103edc8033019cc3814c031232d339d5f4533b02ea85685175", "8c
 requests = ["11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4", "9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"]
 rjsmin = ["dd9591aa73500b08b7db24367f8d32c6470021f39d5ab4e50c7c02e4401386f1"]
 rsa = ["14ba45700ff1ec9eeb206a2ce76b32814958a98e372006c8fb76ba820211be66", "1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487"]
-sentry-sdk = ["31adb5dc65ef35cabb48e3d7ad9804d885f22e74ef606a266beb31661d59a226", "52881e11649d7e5a0b04c026adcf473ab16d0ec4a1cf5e7259dd292c984264ef"]
+sentry-sdk = ["14cfbc61e44f7acb18c91b27a0912249c7bf941ecd7e248646e81492464faee0", "ff50be281cebb77525f0a7ad43aabaf04ee61131ba09885be2544acf959e0451"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 snowballstemmer = ["919f26a68b2c17a7634da993d91339e288964f93c274f1343e3bbbe2096e1128", "9f3bcd3c401c3e862ec0ebe6d2c069ebc012ce142cce209c098ccb5b09136e89"]
 sphinx = ["15143166e786c7faa76fa990d3b6b38ebffe081ef81cffd1d656b07f3b28a1fa", "5fd62ba64235d77a81554d47ff6b17578171b6dbbc992221e9ebc684898fff59"]
