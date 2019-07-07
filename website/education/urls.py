@@ -16,13 +16,12 @@ urlpatterns = [
     path('education/', include([
         path('books/', BookInfoView.as_view(), name="books"),
         path('courses/', include([
-            path('', CourseIndexView.as_view(), name="courses"),
             path('<int:pk>/', include([
-                path('', CourseDetailView.as_view(), name="course"),
                 path('exam/upload/', ExamCreateView.as_view(),
                      name="submit-exam"),
                 path('summary/upload/', SummaryCreateView.as_view(),
                      name="submit-summary"),
+                path('', CourseDetailView.as_view(), name="course"),
             ])),
             path('exam/<int:pk>/', ExamDetailView.as_view, name="exam"),
             path('summary/(<int:pk>/', SummaryDetailView.as_view(),
@@ -31,6 +30,7 @@ urlpatterns = [
                  name="submit-exam"),
             path('summary/upload/', SummaryCreateView.as_view(),
                  name="submit-summary"),
+            path('', CourseIndexView.as_view(), name="courses"),
         ])),
         path('student-participation/',
              StudentParticipantView.as_view(), name="student-participation"),
