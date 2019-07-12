@@ -48,6 +48,7 @@ class Command(BaseCommand):
                     if member.bank_accounts.exists():
                         account = member.bank_accounts.last()
                         mandate_no = account.mandate_no
+                        mandate_date = date(account.created_at, 'Y-m-d')
                         bank_account = {
                             'name': account.name,
                             'bic': account.bic or '',
@@ -55,6 +56,7 @@ class Command(BaseCommand):
                         }
                     else:
                         mandate_no = ''
+                        mandate_date = ''
                         bank_account = {
                             'name': '',
                             'bic': '',
@@ -74,7 +76,8 @@ class Command(BaseCommand):
                         'plaats': profile.address_city,
                         'land': profile.get_address_country_display(),
                         'bankrekeningnummer': bank_account,
-                        'machtigingskenmerk': mandate_no
+                        'machtigingskenmerk': mandate_no,
+                        'machtigingsdatum': mandate_date
                     }
 
                     replace_commands.append(ApiCommand(
