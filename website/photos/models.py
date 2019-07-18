@@ -191,7 +191,9 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
                                               'zojuist geüpload'
                                               .format(self.title_nl))
             new_album_notification.category = Category.objects.get(key='photo')
-            new_album_notification.url = self.get_absolute_url()
+            new_album_notification.url = (
+                        f'{settings.BASE_URL}'
+                        f'{self.get_absolute_url()}')
             new_album_notification.time = new_album_notification_time
             new_album_notification.save()
             self.new_album_notification = new_album_notification
