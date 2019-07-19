@@ -38,7 +38,8 @@ class ListView extends FullCalendar.View {
                 month: 'long',
                 weekday: 'long',
                 year: 'numeric',
-                hour12: false,
+                timeZone: 'UTC',
+                hour12: locale !== 'nl',
             });
 
             const eventCard = document.createElement('div');
