@@ -66,26 +66,24 @@ def _extract_date(param):
 def extract_date_range(request, allow_empty=False):
     """Extract a date range from an arbitrary string"""
 
-    default_value = ''
-    if allow_empty:
-        default_value = None
+    default_value = None
 
     start = request.query_params.get('start', default_value)
-    if start:
-        start = dateparse.parse_datetime(start)
-        if not timezone.is_aware(start):
-            start = timezone.make_aware(start)
-
-    if not start and not allow_empty:
-        raise ParseError(detail='start query parameter invalid')
+    if start or not allow_empty:
+        try:
+            start = dateparse.parse_datetime(start)
+            if not timezone.is_aware(start):
+                start = timezone.make_aware(start)
+        except (ValueError, AttributeError, TypeError) as e:
+            raise ParseError(detail='start query parameter invalid') from e
 
     end = request.query_params.get('end', default_value)
-    if end:
-        end = dateparse.parse_datetime(end)
-        if not timezone.is_aware(end):
-            end = timezone.make_aware(end)
-
-    if not end and not allow_empty:
-        raise ParseError(detail='end query parameter invalid')
+    if end or not allow_empty:
+        try:
+            end = dateparse.parse_datetime(end)
+            if not timezone.is_aware(end):
+                end = timezone.make_aware(end)
+        except (ValueError, AttributeError, TypeError) as e:
+            raise ParseError(detail='end query parameter invalid') from e
 
     return start, end
