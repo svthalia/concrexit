@@ -70,3 +70,19 @@ class AnnouncementCloseTestCase(TestCase):
         self.assertIn('closed_announcements', request.session)
         self.assertIn(3, request.session['closed_announcements'])
         self.assertEqual(response.content, b'')
+
+    def test_valid_alread_canceled(self):
+        request = self.factory.post(
+            reverse('announcements:close-announcement'),
+            {'id': 3})
+        self.middleware.process_request(request)
+        request.session['closed_announcements'] = [3]
+        request.user = AnonymousUser()
+        response = close_announcement(request)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertIn('closed_announcements', request.session)
+        self.assertIn(3, request.session['closed_announcements'])
+        self.assertEqual(len(request.session['closed_announcements']), 1)
+        self.assertTrue(request.session.modified)
+        self.assertEqual(response.content, b'')
