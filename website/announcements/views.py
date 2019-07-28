@@ -12,7 +12,11 @@ def close_announcement(request):
     """
     if 'id' not in request.POST:
         return HttpResponseBadRequest("no id specified")
-    announcement_id = int(request.POST['id'])
+    try:
+        announcement_id = int(request.POST['id'])
+    except ValueError:
+        return HttpResponseBadRequest("no integer id specified")
+
     # if we do not have a list of closed announcements yet:
     if 'closed_announcements' not in request.session:
         request.session['closed_announcements'] = []  # cannot use sets here :(
