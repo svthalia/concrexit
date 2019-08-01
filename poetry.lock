@@ -652,7 +652,7 @@ category = "main"
 description = "C parser in Python"
 name = "pycparser"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.19"
 
 [[package]]
@@ -774,14 +774,6 @@ version = "0.5.0"
 commonmark = ">=0.7.3"
 docutils = ">=0.11"
 sphinx = ">=1.3.1"
-
-[[package]]
-category = "main"
-description = "Python client for Redis key-value store"
-name = "redis"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.2.1"
 
 [[package]]
 category = "main"
@@ -988,7 +980,7 @@ version = "1.11.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "19d56b7abb4aaef534b6d80623b1901e7d10567a6f1a6305e528aad560beda8e"
+content-hash = "6399887238068dd7ced1be8ee7eb292de7d208f1627cf04f9d79083f85f93a90"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1066,7 +1058,6 @@ python-magic = ["f2674dcfad52ae6c49d4803fa027809540b130db1dec928cfbb924031683137
 pytz = ["303879e36b721603cc54604edcac9d20401bdbe31e1e4fdee5b9f98d5d31dfda", "d747dd3d23d77ef44c6a3526e274af6efeb0a6f1afd5a69ba4d5be4098c8e141"]
 rcssmin = ["ca87b695d3d7864157773a61263e5abb96006e9ff0e021eff90cbe0e1ba18270"]
 recommonmark = ["a520b8d25071a51ae23a27cf6252f2fe387f51bdc913390d83b2b50617f5bb48", "c85228b9b7aea7157662520e74b4e8791c5eacd375332ec68381b52bf10165be"]
-redis = ["6946b5dca72e86103edc8033019cc3814c031232d339d5f4533b02ea85685175", "8ca418d2ddca1b1a850afa1680a7d2fd1f3322739271de4b704e0d4668449273"]
 requests = ["11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4", "9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"]
 rjsmin = ["dd9591aa73500b08b7db24367f8d32c6470021f39d5ab4e50c7c02e4401386f1"]
 rsa = ["14ba45700ff1ec9eeb206a2ce76b32814958a98e372006c8fb76ba820211be66", "1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487"]
