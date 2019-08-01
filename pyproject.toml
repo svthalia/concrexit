@@ -42,7 +42,7 @@ flake8 = "~3.7"
 pydenticon = "~0.3.1"
 pylint = "~2.3"
 pylint-django = "~2.0"
-Faker = "~1.0"
+Faker = "~2.0"
 coverage = "~4.5"
 
 [build-system]
