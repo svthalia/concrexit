@@ -8,7 +8,6 @@ from django.template import loader
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import timezone, translation
-from django.utils.datetime_safe import datetime
 from django.utils.translation import ugettext as _
 
 from members.models import Member, Membership
@@ -124,7 +123,7 @@ def send_expiration_announcement(dry_run=False):
 
     :param dry_run: does not really send emails if True
     """
-    expiry_date = datetime.now() + timedelta(days=31)
+    expiry_date = timezone.now() + timedelta(days=31)
     members = (Member.current_members
                .filter(membership__until__lte=expiry_date)
                .exclude(membership__until__isnull=True)
