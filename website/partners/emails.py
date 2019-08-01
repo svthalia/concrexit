@@ -24,14 +24,12 @@ def send_vacancy_expiration_notifications(dry_run=False):
                         '\n\nKind regards,\nThe website'
                         .format(exp_vacancy.title,
                                 exp_vacancy.get_company_name()))
-        recipient = settings.PARTNER_EMAIL
-
         if not dry_run:
             # Send Mail
             EmailMessage(
                 subject,
                 text_message,
-                to=[recipient]
+                to=[settings.PARTNER_NOTIFICATION_ADDRESS]
             ).send()
 
             # Save that mail has been sent into database
