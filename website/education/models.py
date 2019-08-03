@@ -48,11 +48,6 @@ class Course(models.Model, metaclass=ModelTranslateMeta):
         blank=True
     )
 
-    shorthand = MultilingualField(
-        models.CharField,
-        max_length=10
-    )
-
     course_code = models.CharField(
         max_length=16
     )
@@ -64,11 +59,6 @@ class Course(models.Model, metaclass=ModelTranslateMeta):
     since = models.IntegerField()
     until = models.IntegerField(
         blank=True, null=True
-    )
-
-    period = models.CharField(
-        max_length=64,
-        verbose_name=_('period'),
     )
 
     def __str__(self):
