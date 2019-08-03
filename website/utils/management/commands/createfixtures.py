@@ -267,7 +267,7 @@ class Command(BaseCommand):
         duration = math.ceil(random.expovariate(0.2))
         event.end = event.start + timedelta(hours=duration)
         event.organiser = random.choice(groups)
-        event.category = random.choice(Event.EVENT_CATEGORIES)
+        event.category = random.choice(Event.EVENT_CATEGORIES)[0]
 
         if random.random() < 0.5:
             week = timedelta(days=7)

@@ -20,23 +20,19 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 class Event(models.Model, metaclass=ModelTranslateMeta):
     """Describes an event"""
 
-    CATEGORY_DRINKS = 'drinks'
-    CATEGORY_ACTIVITY = 'activity'
-    CATEGORY_LUNCH = 'lunchlecture'
-    CATEGORY_MEETING = 'generalmeeting'
-    CAGTEGORY_WORKSHOP = 'workshop'
     CATEGORY_ALUMNI = 'alumni'
-    CATEGORY_PARTY = 'party'
+    CATEGORY_EDUCATION = 'education'
+    CATEGORY_CAREER = 'career'
+    CATEGORY_LEISURE = 'leisure'
+    CATEGORY_ASSOCIATION = 'association'
     CATEGORY_OTHER = 'other'
 
     EVENT_CATEGORIES = (
-        (CATEGORY_DRINKS, _('Drinks')),
-        (CATEGORY_ACTIVITY, _('Activity')),
-        (CATEGORY_LUNCH, _('Lunch Lecture')),
-        (CATEGORY_MEETING, _('General Meeting')),
-        (CAGTEGORY_WORKSHOP, _('Workshop')),
         (CATEGORY_ALUMNI, _('Alumni')),
-        (CATEGORY_PARTY, _('Party')),
+        (CATEGORY_EDUCATION, _('Education')),
+        (CATEGORY_CAREER, _('Career')),
+        (CATEGORY_LEISURE, _('Leisure')),
+        (CATEGORY_ASSOCIATION, _('Association Affairs')),
         (CATEGORY_OTHER, _('Other')))
 
     DEFAULT_NO_REGISTRATION_MESSAGE = _('No registration required / '
@@ -70,7 +66,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         max_length=40,
         choices=EVENT_CATEGORIES,
         verbose_name=_('category'),
-        default='other'
+        help_text=_('Alumni: Events organised for alumni, '
+                    'Education: Education focused events, '
+                    'Career: Career focused events, '
+                    'Leisure: borrels, parties, game activities etc., '
+                    'Association Affairs: general meetings or '
+                    'any other board related events, '
+                    'Other: anything else.')
     )
 
     registration_start = models.DateTimeField(
