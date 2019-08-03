@@ -132,9 +132,15 @@ class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
 class Vacancy(models.Model):
     """Model describing vacancies."""
 
-    title = models.CharField(max_length=255)
-    description = HTMLField()
+    title = models.CharField(
+        _("title"),
+        max_length=255
+    )
+    description = HTMLField(
+        _("description")
+    )
     link = models.CharField(
+        _("link"),
         max_length=255,
         blank=True,
         validators=[URLValidator()]
@@ -142,6 +148,7 @@ class Vacancy(models.Model):
 
     partner = models.ForeignKey(
         Partner,
+        verbose_name=_("partner"),
         on_delete=models.PROTECT,
         null=True,
         blank=True,
@@ -149,19 +156,19 @@ class Vacancy(models.Model):
                     "below will not be used.")
     )
 
-    company_name = models.CharField(max_length=255, blank=True)
+    company_name = models.CharField(
+        _("company name"),
+        max_length=255,
+        blank=True
+    )
     company_logo = models.ImageField(
+        _("company logo"),
         upload_to='public/partners/vacancy-logos/',
         null=True,
         blank=True
     )
 
     categories = models.ManyToManyField(VacancyCategory, blank=True)
-
-    expiration_date = models.DateField(null=True, blank=True)
-    expiration_mail_sent = models.BooleanField(default=False)
-
-    remarks = HTMLField(blank=True, help_text=_('not shown on the page'))
 
     def get_company_name(self):
         """Return company or partner name."""
@@ -227,6 +234,7 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
 
     partner = models.ForeignKey(
         Partner,
+        verbose_name=_("partner"),
         on_delete=models.CASCADE,
         related_name="events",
         blank=True,

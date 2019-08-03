@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from partners.models import (Partner, PartnerEvent, PartnerImage,
                              Vacancy, VacancyCategory)
@@ -15,7 +16,7 @@ class PartnerImageInline(admin.StackedInline):
 class PartnerAdmin(admin.ModelAdmin):
     """Class to show partners in the admin."""
 
-    prepopulated_fields = {"slug": ("name",)}
+    prepopulated_fields = {'slug': ('name',)}
     list_display = ('name', 'is_active', 'is_main_partner',
                     'is_local_partner')
     search_fields = ('name', 'city')
@@ -30,7 +31,7 @@ class PartnerAdmin(admin.ModelAdmin):
                 'is_active', 'is_main_partner', 'is_local_partner',
             )
         }),
-        ('Address', {
+        (_('Address'), {
             'fields': ('address', 'zip_code', 'city')
 
         }),
@@ -41,7 +42,7 @@ class PartnerAdmin(admin.ModelAdmin):
 class VacancyCategoryAdmin(TranslatedModelAdmin):
     """Class to show vacancy categories in the admin."""
 
-    prepopulated_fields = {"slug": ("name_en",)}
+    prepopulated_fields = {'slug': ('name_en',)}
     fields = ['name', 'slug']
 
 
@@ -49,23 +50,20 @@ class VacancyCategoryAdmin(TranslatedModelAdmin):
 class VacancyAdmin(admin.ModelAdmin):
     """Class to show vacancies in the admin."""
 
-    list_display = ('title', 'partner', 'company_name', 'expiration_date')
+    list_display = ('title', 'partner', 'company_name')
     search_fields = ('title', 'partner__name', 'company_name',)
     fieldsets = (
         (None, {
             'fields': ('title', 'description', 'link',)
         }),
-        ('Existing Partner', {
+        (_('Existing partner'), {
             'fields': ('partner',)
         }),
-        ('Other Partner', {
+        (_('Other partner'), {
             'fields': ('company_name', 'company_logo',)
         }),
-        ('Categories', {
+        (_('Categories'), {
             'fields': ('categories',)
-        }),
-        ('Other', {
-            'fields': ('remarks', 'expiration_date')
         })
     )
 
