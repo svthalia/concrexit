@@ -39,12 +39,6 @@
                     {% if newsletter.date %}
                         <span style="font-size: 20px; font-family: Calibri, 'Trebuchet MS', sans-serif">WEEK</span><br/>
                         <span style="font-size: 45px; font-family: Calibri, 'Trebuchet MS', sans-serif">{{ newsletter.date.isocalendar.1 }}</span>
-                    {% else %}
-                        <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
-                            {% if main_partner %}
-                                <a href="{{ main_partner.link }}"><img src="{% baseurl %}{{ main_partner.logo.url }}" height="70" style="max-width: 170px; height: 70px; margin-bottom: 5px" alt="{{ main_partner.name }}"/></a>
-                            {% endif %}
-                        </p>
                     {% endif %}
                 </td>
             </tr>
@@ -219,12 +213,7 @@
                 <td align="center" style="color: black; font-size: 12px;">
                     <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                         <a href="{{ main_partner.link }}">
-                            {# TODO: Only show Nedap logo after 2019-8-1, remove if #}
-                            {% if main_partner.pk == 1 %}
-                                <img src="{% baseurl %}{% static 'newsletters/topicus-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
-                            {% else %}
-                                <img src="{% baseurl %}{% static 'newsletters/nedap-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
-                            {% endif %}
+                            <img src="{% baseurl %}{% static 'newsletters/nedap-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
                         </a><br/>
                         {% trans "our main partner"|upper %}
                     </p>
