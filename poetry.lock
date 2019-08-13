@@ -768,10 +768,10 @@ description = "A docutils-compatibility bridge to CommonMark, enabling you to wr
 name = "recommonmark"
 optional = true
 python-versions = "*"
-version = "0.5.0"
+version = "0.6.0"
 
 [package.dependencies]
-commonmark = ">=0.7.3"
+commonmark = ">=0.8.1"
 docutils = ">=0.11"
 sphinx = ">=1.3.1"
 
@@ -980,7 +980,7 @@ version = "1.11.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "51901458f450d2852c1190b3397f1ac7caea818fe6f4d9dde46dc46b619d14cf"
+content-hash = "5d90e48933fab8e8f46a37111203e9727d3405498a064ae1f65ab888ebad3431"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1057,7 +1057,7 @@ python-dateutil = ["7e6584c74aeed623791615e26efd690f29817a27c73085b78e4bad02493d
 python-magic = ["f2674dcfad52ae6c49d4803fa027809540b130db1dec928cfbb9240316831375", "f3765c0f582d2dfc72c15f3b5a82aecfae9498bd29ca840d72f37d7bd38bfcd5"]
 pytz = ["303879e36b721603cc54604edcac9d20401bdbe31e1e4fdee5b9f98d5d31dfda", "d747dd3d23d77ef44c6a3526e274af6efeb0a6f1afd5a69ba4d5be4098c8e141"]
 rcssmin = ["ca87b695d3d7864157773a61263e5abb96006e9ff0e021eff90cbe0e1ba18270"]
-recommonmark = ["a520b8d25071a51ae23a27cf6252f2fe387f51bdc913390d83b2b50617f5bb48", "c85228b9b7aea7157662520e74b4e8791c5eacd375332ec68381b52bf10165be"]
+recommonmark = ["29cd4faeb6c5268c633634f2d69aef9431e0f4d347f90659fd0aab20e541efeb", "2ec4207a574289355d5b6ae4ae4abb29043346ca12cdd5f07d374dc5987d2852"]
 requests = ["11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4", "9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"]
 rjsmin = ["dd9591aa73500b08b7db24367f8d32c6470021f39d5ab4e50c7c02e4401386f1"]
 rsa = ["14ba45700ff1ec9eeb206a2ce76b32814958a98e372006c8fb76ba820211be66", "1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487"]
