@@ -5,12 +5,15 @@ class ListView extends FullCalendar.View {
         skeleton.classList.add('accordion', 'bordered');
 
         const locale = this.dateEnv.locale.codeArg;
-        const events = Object.values(eventStore.instances);
-
-        events.sort(function (a, b) {
-            return a.range.start < b.range.start ? -1 :
-                a.range.start > b.range.start ? 1 : 0;
-        });
+        const now = new Date();
+        const events = Object.values(eventStore.instances)
+            .filter(function (value) {
+                return value.range.end > now;
+            })
+            .sort(function (a, b) {
+                return a.range.start < b.range.start ? -1 :
+                    a.range.start > b.range.start ? 1 : 0;
+            });
 
         if (events.length === 0) {
             var alertEl = document.createElement('div');
