@@ -68,7 +68,7 @@ class SocietyIndexView(ListView):
         return localize_attr_name('name')
 
 
-class SocietyDetailView(DetailView):
+class SocietyDetailView(_MemberGroupDetailView):
     """
     View that renders the page of one selected society
     """
