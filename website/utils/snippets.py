@@ -71,17 +71,19 @@ def extract_date_range(request, allow_empty=False):
         default_value = None
 
     start = request.query_params.get('start', default_value)
-    start = dateparse.parse_datetime(start)
-    if not timezone.is_aware(start):
-        start = timezone.make_aware(start)
+    if start:
+        start = dateparse.parse_datetime(start)
+        if not timezone.is_aware(start):
+            start = timezone.make_aware(start)
 
     if not start and not allow_empty:
         raise ParseError(detail='start query parameter invalid')
 
-    end = dateparse.parse_datetime(
-        request.query_params.get('end', default_value))
-    if not timezone.is_aware(end):
-        end = timezone.make_aware(end)
+    end = request.query_params.get('end', default_value)
+    if end:
+        end = dateparse.parse_datetime(end)
+        if not timezone.is_aware(end):
+            end = timezone.make_aware(end)
 
     if not end and not allow_empty:
         raise ParseError(detail='end query parameter invalid')
