@@ -228,9 +228,10 @@ class RenewalFormView(FormView):
             request.POST['length'] = Entry.MEMBERSHIP_YEAR
         request.POST['member'] = request.member.pk
         request.POST['remarks'] = ''
-        request.POST['no_references'] = False
+        request.POST['no_references'] = True
 
         if request.POST['membership_type'] == Membership.BENEFACTOR:
+            request.POST['no_references'] = False
             if Membership.objects.filter(user=request.member,
                                          type=Membership.MEMBER).exists():
                 request.POST['remarks'] = 'Was a Thalia member in the past.'
