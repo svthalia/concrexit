@@ -12,7 +12,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def _member_group_memberships(
-        member: Member, skip_condition: Callable[[Membership], bool]
+        member: Member, condition: Callable[[Membership], bool]
 ) -> Dict[str, Any]:
     """
     Determines the group membership of a user based on a condition
@@ -22,7 +22,7 @@ def _member_group_memberships(
     data = {}
 
     for membership in memberships:
-        if skip_condition(membership):
+        if not condition(membership):
             continue
         period = {
             'since': membership.since,
@@ -59,7 +59,8 @@ def member_achievements(member) -> List:
     Committee and board memberships + mentorships
     """
     achievements = _member_group_memberships(
-        member, lambda membership: hasattr(membership, 'society'))
+        member, lambda membership: (hasattr(membership.group, 'board') or
+                                    hasattr(membership.group, 'committee')))
 
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
@@ -80,8 +81,7 @@ def member_societies(member) -> List:
     Derives a list of societies a member was part of
     """
     societies = _member_group_memberships(member, lambda membership: (
-        hasattr(membership.group, 'board') or
-        hasattr(membership.group, 'committee')))
+        hasattr(membership.group, 'society')))
     return sorted(societies.values(), key=lambda x: x['earliest'])
 
 
