@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-20 17:13+0200\n"
-"PO-Revision-Date: 2019-06-20 17:14+0200\n"
+"POT-Creation-Date: 2019-08-15 20:07+0200\n"
+"PO-Revision-Date: 2019-08-15 20:07+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -33,6 +33,10 @@ msgstr "Adres"
 #: admin.py
 msgid "University information"
 msgstr "Unversiteitsinformatie"
+
+#: admin.py
+msgid "references"
+msgstr "referenties"
 
 #: admin.py tests/test_admin.py
 msgid "Processed"
@@ -67,6 +71,10 @@ msgstr "De geselecteerde registratie(s) konden niet worden goedgekeurd."
 #: admin.py
 msgid "Accept selected registrations"
 msgstr "Keur geselecteerde registraties goed"
+
+#: admin.py
+msgid "name"
+msgstr "naam"
 
 #: apps.py
 msgid "Registrations"
@@ -111,6 +119,22 @@ msgstr "Ik accepteer het <a href=\"{}\">privacybeleid</a>."
 #: forms.py
 msgid "I am an employee of iCIS"
 msgstr "Ik ben een medewerker van iCIS"
+
+#: forms.py
+msgid "Benefactors cannot give references."
+msgstr "Begunstigers kunnen geen referenties geven."
+
+#: forms.py
+msgid ""
+"It's not possible to give references for memberships that start after your "
+"own membership's end."
+msgstr ""
+"Het is niet mogelijk een referentie te geven voor lidmaatschappen die "
+"starten na het einde van je eigen lidmaatschap."
+
+#: forms.py templates/registrations/reference_success.html
+msgid "You've already given a reference for this person."
+msgstr "Je hebt deze persoon al een referentie gegeven."
 
 #: models.py
 msgid "created at"
@@ -789,16 +813,11 @@ msgstr ""
 "Thalia worden. Ben je geen oud-Thaliaan, iCIS medewerker of alumni, dan dien "
 "je twee referenties van leden van Thalia te verzamelen.<br /><br /> <strong>"
 "%(name)s</strong> wil graag begunstiger van Thalia worden en heeft jouw "
-"gevraagd om een deze te geven."
+"gevraagd om een referentie te geven."
 
 #: templates/registrations/reference.html
 msgid "Your reference has been saved."
 msgstr "Je referentie is opgeslagen."
-
-#: templates/registrations/reference.html
-#: templates/registrations/reference_success.html
-msgid "You've already given a reference for this person."
-msgstr "Je hebt deze persoon al een referentie gegeven."
 
 #: templates/registrations/register_benefactor.html
 #: templates/registrations/renewal.html

@@ -954,10 +954,10 @@ class ReferenceCreateViewTest(TestCase):
             response.redirect_chain
         )
         self.assertEqual({
-            '__all__': ['Reference with this Member and Entry already exists.']
+            '__all__': ['You\'ve already given a reference for this person.']
         }, response.context['form'].errors)
         self.assertEqual(False, response.context['success'])
         self.assertContains(
             response,
-            'You\'ve already given a reference for this person.'
+            'You&#39;ve already given a reference for this person.'
         )

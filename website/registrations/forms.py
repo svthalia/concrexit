@@ -1,5 +1,6 @@
 """The forms defined by the registrations package"""
 from django import forms
+from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.forms import TypedChoiceField
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -7,8 +8,10 @@ from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
+from members.models import Membership
+from registrations import services
 from utils.snippets import datetime_to_lectureyear
-from .models import Registration, Renewal
+from .models import Registration, Renewal, Reference
 
 
 class BaseRegistrationForm(forms.ModelForm):
@@ -91,3 +94,29 @@ class RenewalForm(forms.ModelForm):
         fields = '__all__'
         exclude = ['created_at', 'updated_at', 'status',
                    'payment', 'membership']
+
+
+class ReferenceForm(forms.ModelForm):
+    def clean(self):
+        super().clean()
+        membership = self.cleaned_data['member'].current_membership
+        if membership and membership.type == Membership.BENEFACTOR:
+            raise ValidationError(_('Benefactors cannot give '
+                                    'references.'))
+
+        membership = self.cleaned_data['member'].latest_membership
+        if (membership and membership.until and
+                membership.until < services.calculate_membership_since()):
+            raise ValidationError(_("It's not possible to give references for "
+                                    "memberships that start after your own "
+                                    "membership's end."))
+
+    class Meta:
+        model = Reference
+        fields = '__all__'
+        error_messages = {
+            NON_FIELD_ERRORS: {
+                'unique_together':
+                    _("You've already given a reference for this person."),
+            }
+        }

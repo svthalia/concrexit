@@ -310,6 +310,20 @@ def _create_member_from_registration(registration: Registration) -> Member:
     return Member.objects.get(pk=user.pk)
 
 
+def calculate_membership_since() -> timezone.datetime:
+    """
+    Calculate the start date of a membership
+
+    If it's August we act as if it's the next
+    lecture year already and we start new memberships in September
+    :return:
+    """
+    since = timezone.now().date()
+    if timezone.now().month == 8:
+        since = since.replace(month=9, day=1)
+    return since
+
+
 def _create_membership_from_entry(
         entry: Entry, member: Member = None) -> Union[Membership, None]:
     """
@@ -321,13 +335,10 @@ def _create_membership_from_entry(
     :rtype: Membership
     """
     lecture_year = datetime_to_lectureyear(timezone.now())
-    # If it's August we act as if it's the next
-    # lecture year already and we start new memberships in September
-    since = timezone.now().date()
+    since = calculate_membership_since()
+    until = None
     if timezone.now().month == 8:
         lecture_year += 1
-        since = since.replace(month=9, day=1)
-    until = None
 
     if entry.length == Entry.MEMBERSHIP_YEAR:
         # If entry is Renewal set since to current membership until + 1 day

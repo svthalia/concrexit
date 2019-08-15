@@ -26,8 +26,9 @@
                 {% trans "Your reference has been saved." as alert_text %}
                 {% alert 'success' alert_text extra_classes="mt-3" %}
             {% elif form.errors %}
-                {% trans "You've already given a reference for this person." as alert_text %}
-                {% alert 'danger' alert_text extra_classes="mt-3" %}
+                {% for error in form.non_field_errors %}
+                    {% alert 'danger' error extra_classes="mt-3" %}
+                {% endfor %}
             {% else %}
             <form method="post" class="">
                 {% csrf_token %}

@@ -13,7 +13,7 @@ from members.models import Member
 from payments.models import Payment
 from payments.widgets import PaymentWidget
 from registrations import admin
-from registrations.models import Entry, Registration, Renewal
+from registrations.models import Entry, Registration, Renewal, Reference
 
 
 def _get_mock_request(perms=None):
@@ -278,6 +278,17 @@ class RegistrationAdminTest(TestCase):
             last_name='Doe',
         )
         self.assertEqual(self.admin.name(reg), reg.get_full_name())
+
+    def test_reference_count(self):
+        reg = Registration.objects.create(
+            first_name='John',
+            last_name='Doe',
+            birthday=timezone.now(),
+        )
+        self.assertEqual(self.admin.reference_count(reg), 0)
+        Reference.objects.create(entry=reg, member=Member.objects.get(pk=1))
+        Reference.objects.create(entry=reg, member=Member.objects.get(pk=2))
+        self.assertEqual(self.admin.reference_count(reg), 2)
 
     def test_payment_status(self):
         reg = Registration(
