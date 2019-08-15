@@ -672,6 +672,7 @@ class RenewalFormViewTest(TestCase):
                 request = super_post.call_args[0][0]
                 self.assertEqual(request.POST['member'], 2)
                 self.assertEqual(request.POST['remarks'], '')
+                self.assertEqual(request.POST['no_references'], True)
 
             with self.subTest('Forced benefactor type'):
                 request = self.rf.post('/', {
@@ -689,6 +690,7 @@ class RenewalFormViewTest(TestCase):
                 self.assertEqual(request.POST['membership_type'],
                                  Membership.BENEFACTOR)
                 self.assertEqual(request.POST['length'], Entry.MEMBERSHIP_YEAR)
+                self.assertEqual(request.POST['no_references'], False)
 
             with self.subTest('Detects old memberships'):
                 request = self.rf.post('/', {
@@ -703,6 +705,7 @@ class RenewalFormViewTest(TestCase):
                 request = super_post.call_args[0][0]
                 self.assertEqual(request.POST['remarks'],
                                  'Was a Thalia member in the past.')
+                self.assertEqual(request.POST['no_references'], True)
 
             with self.subTest('Adds iCIS remark'):
                 request = self.rf.post('/', {
@@ -718,6 +721,7 @@ class RenewalFormViewTest(TestCase):
                 request = super_post.call_args[0][0]
                 self.assertEqual(request.POST['remarks'],
                                  'Registered as iCIS employee.')
+                self.assertEqual(request.POST['no_references'], True)
 
     @mock.patch('registrations.emails.send_references_information_message')
     @mock.patch('registrations.emails.send_new_renewal_board_message')
