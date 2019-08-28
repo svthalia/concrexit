@@ -311,7 +311,7 @@ description = "Firebase Admin Python SDK"
 name = "firebase-admin"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.17.0"
+version = "2.18.0"
 
 [package.dependencies]
 cachecontrol = ">=0.12.4"
@@ -980,7 +980,7 @@ version = "1.11.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "2811781da8c2a1c5928e3a81ac9612f259273b13650ddb58552e872c5dbe67b4"
+content-hash = "3585a9cd89fc28daaa449ead55464507c200ccb7a43434b0ba2f12167b557e52"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1013,7 +1013,7 @@ docutils = ["02aec4bd92ab067f6ff27a38a38a41173bf01bed8f89157768c1573f53e474a6", 
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 factory-boy = ["728df59b372c9588b83153facf26d3d28947fc750e8e3c95cefa9bed0e6394ee", "faf48d608a1735f0d0a3c9cbf536d64f9132b547dae7ba452c4d99a79e84a370"]
 faker = ["96ad7902706f2409a2d0c3de5132f69b413555a419bacec99d3f16e657895b47", "b3bb64aff9571510de6812df45122b633dbc6227e870edae3ed9430f94698521"]
-firebase-admin = ["3bf83d37161f00ce6cd1f046a6d4ed9de8504618b68b8af4dee5bd27e6f96251", "86862654c595c1f045128c78e4caafa88acb8548bd0c2c01eaa190c773ed7aa3"]
+firebase-admin = ["18dcbafaada4cfc970ab2ff7e3c3da5454d5a6bd97abca42c2e968cd47a3d161", "257484993cf0fa6a486106dbe5e0a674f9f77939bec2b1922b2780a32dc444b2"]
 flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a796a115208f5c03b18f332f7c11729812c8c3ded6c46319c59b53efd3819da8"]
 freezegun = ["6cb82b276f83f2acce67f121dc2656f4df26c71e32238334eb071170b892a278", "e839b43bfbe8158b4d62bb97e6313d39f3586daf48e1314fb1083d2ef17700da"]
 future = ["67045236dcfd6816dc439556d009594abf643e5eb48992e36beac09c2ca659b8"]
