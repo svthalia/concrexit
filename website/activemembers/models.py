@@ -284,7 +284,10 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def latest_connected_membership(self):
-        """Find the newest membership directly connected to the current one"""
+        """
+        Find the newest membership directly connected to the current one
+        (thus the membership that started at the moment the current one ended)
+        """
         if self.until:
             qs = MemberGroupMembership.objects.filter(
                 group=self.group,
