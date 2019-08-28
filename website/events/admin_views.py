@@ -19,6 +19,7 @@ from events import services
 from events.decorators import organiser_only
 from events.exceptions import RegistrationError
 from events.forms import FieldsForm, EventMessageForm
+from payments.models import Payment
 from pushnotifications.models import Message, Category
 from .models import Event, Registration
 
@@ -33,6 +34,15 @@ class EventAdminDetails(DetailView, PermissionRequiredMixin):
     model = Event
     context_object_name = 'event'
     permission_required = 'events.change_event'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({
+            'payment': Payment,
+        })
+
+        return context
 
 
 @method_decorator(staff_member_required, name='dispatch')

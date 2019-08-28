@@ -4,6 +4,9 @@
         <thead>
             <tr>
                 <th scope="col">{% trans "name"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col"></th>
+                <th scope="col" class="sorter-payment">{% trans 'payment'|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" class="sorter-checkbox">{% trans "present"|capfirst %} <span class="toggle"></span></th>
                 <th scope="col" class="sorter-date">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
                 {% if cancellations %}
                 <th scope="col" class="sorter-date">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
@@ -11,10 +14,6 @@
                 {% for field in fields %}
                 <th scope="col">{{ field.name }} <span class="toggle"></span></th>
                 {% endfor %}
-                <th class="sorter-checkbox">{% trans "present"|capfirst %} <span class="toggle"></span></th>
-                <th class="sorter-radio">{% trans "not paid"|capfirst %} <span class="toggle"></span></th>
-                <th class="sorter-radio">{% trans "paid cash"|capfirst %} <span class="toggle"></span></th>
-                <th class="sorter-radio">{% trans "paid card"|capfirst %} <span class="toggle"></span></th>
                 {% if registrations|length > 0 and registrations.0.date_cancelled is not None %}
                     <th>{% trans "late"|capfirst %}</th>
                 {% endif %}
@@ -31,12 +30,30 @@
                 {% if registration.member %}
                 <td>
                   <a href="{{ registration.member.get_absolute_url }}">{{ registration.member.get_full_name }}</a>
+                </td>
+                <td>
                   <a href="tel:{{ registration.member.profile.phone_number }}" title="{{ registration.member.profile.phone_number }}" class="member-phone"></a>
                   <a href="mailto:{{ registration.member.email }}" title="{{ registration.member.email }}" class="member-email"></a>
                 </td>
                 {% else %}
                 <td>{{ registration.name }}</td>
+                <td></td>
                 {% endif %}
+                <td>
+                    <select name="payment"
+                            data-none="{{ payment.NONE }}"
+                            {% if registration.payment and registration.payment.type != payment.NONE %}class="paid"{% endif %}>
+                        <option value="{{ payment.NONE }}"
+                                {% if not registration.payment or registration.payment.type == payment.NONE %}selected{% endif %}>{% trans 'None' %}</option>
+                        <option value="{{ payment.CARD }}"
+                                {% if registration.payment and registration.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
+                        <option value="{{ payment.CASH }}"
+                                {% if registration.payment and registration.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %}</option>
+                        <option value="{{ payment.WIRE }}"
+                                {% if registration.payment and registration.payment.type == payment.WIRE %}selected{% endif %}>{% trans 'Wire' %}</option>
+                    </select>
+                </td>
+                <td class="text-center"><input type="checkbox" {{ registration.present|yesno:'checked="checked",' }} data-id="{{ registration.id }}" class="present-check" /></td>
                 <td data-sortval="{{ registration.date|date:'c' }}">{{ registration.date }}</td>
                 {% if cancellations %}
                 <td data-sortval="{{ registration.date_cancelled|date:'c' }}">{{ registration.date_cancelled }}</td>
@@ -50,12 +67,6 @@
                     <td>{{ field.value }}</td>
                     {% endif %}
                 {% endfor %}
-                <td><input type="checkbox" {{ registration.present|yesno:'checked="checked",' }} data-id="{{ registration.id }}" class="present-check" /></td>
-
-                <td><input type="radio" name="payment-{{ registration.id }}" {% if not registration.payment %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_NONE }}" data-id="{{ registration.id }}" class="payment-radio" /></td>
-                <td><input type="radio" name="payment-{{ registration.id }}" {% if registration.payment and registration.payment.type == registration.PAYMENT_CASH %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_CASH }}" data-id="{{ registration.id }}" class="payment-radio" /></td>
-                <td><input type="radio" name="payment-{{ registration.id }}" {% if registration.payment and registration.payment.type == registration.PAYMENT_CARD %}checked="checked"{% endif %} data-value="{{ registration.PAYMENT_CARD }}" data-id="{{ registration.id }}" class="payment-radio" /></td>
-
                 {% if registration.date_cancelled is not None %}
                     <td>{{ registration.is_late_cancellation|yesno }}</td>
                 {% endif %}
