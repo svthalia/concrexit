@@ -56,7 +56,7 @@ msgstr "Je aanmelding is succesvol opgeslagen."
 
 #: admin_views.py
 msgid "Send push notification"
-msgstr "verstuur pushnotificatie"
+msgstr "Verstuur pushnotificatie"
 
 #: admin_views.py
 msgid "Message sent successfully."
@@ -158,33 +158,25 @@ msgstr "Bericht (NL)"
 msgid "The notification opens to the event by default."
 msgstr "De notificatie opent standaard het evenement."
 
-#: models.py
-msgid "Drinks"
-msgstr "Borrel"
-
-#: models.py
-msgid "Activity"
-msgstr "Activiteit"
-
-#: models.py
-msgid "Lunch Lecture"
-msgstr "Lunchlezing"
-
-#: models.py
-msgid "General Meeting"
-msgstr "Algemene ledenvergadering"
-
-#: models.py
-msgid "Workshop"
-msgstr "Workshop"
-
 #: models.py templates/events/alumni.html
 msgid "Alumni"
 msgstr "Alumni"
 
 #: models.py
-msgid "Party"
-msgstr "Feest"
+msgid "Education"
+msgstr "Educatief"
+
+#: models.py
+msgid "Career"
+msgstr "Carrière"
+
+#: models.py
+msgid "Leisure"
+msgstr "Vrije tijd"
+
+#: models.py
+msgid "Association Affairs"
+msgstr "Verenigingszaken"
 
 #: models.py
 msgid "Other"
@@ -225,6 +217,19 @@ msgstr "organisator"
 #: models.py
 msgid "category"
 msgstr "categorie"
+
+#: models.py
+msgid ""
+"Alumni: Events organised for alumni, Education: Education focused events, "
+"Career: Career focused events, Leisure: borrels, parties, game activities "
+"etc., Association Affairs: general meetings or any other board related "
+"events, Other: anything else."
+msgstr ""
+"Alumni: Evenementen voor alumni, Educatief: Op onderwijs gerichte "
+"evenementen, Carrière: Op carrière gerichte evenementen, Vrije tijd: "
+"borrels, feesten, spelactiviteiten etc., Verenigingszaken: algemene "
+"vergaderingen en andere bestuur gerelateerde evenementen, Overig: al het "
+"andere."
 
 #: models.py
 msgid "registration start"
