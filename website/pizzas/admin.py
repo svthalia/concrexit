@@ -2,15 +2,14 @@ from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse, path
-from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
+from events import services
+from events.services import is_organiser
 from pizzas import admin_views
 from utils.admin import DoNextModelAdmin
 from .models import Order, PizzaEvent, Product
-from events.models import Event
-from events.services import is_organiser
 
 
 @admin.register(Product)
@@ -26,6 +25,7 @@ class PizzaEventAdmin(admin.ModelAdmin):
     date_hierarchy = 'start'
     exclude = ('end_reminder',)
     search_fields = [f'event__title_{l[0]}' for l in settings.LANGUAGES]
+    autocomplete_fields = ('event',)
 
     def notification_enabled(self, obj):
         return obj.send_notification
@@ -33,17 +33,24 @@ class PizzaEventAdmin(admin.ModelAdmin):
     notification_enabled.admin_order_field = 'send_notification'
     notification_enabled.boolean = True
 
+    def has_change_permission(self, request, obj=None):
+        """Only allow access to the change form if the user is an organiser"""
+        if (obj is not None and
+                not services.is_organiser(request.member, obj.event)):
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        """Only allow access to delete if the user is an organiser"""
+        if (obj is not None and
+                not services.is_organiser(request.member, obj.event)):
+            return False
+        return super().has_delete_permission(request, obj)
+
     def orders(self, obj):
         url = reverse('admin:pizzas_pizzaevent_details', kwargs={'pk': obj.pk})
         return format_html('<a href="{url}">{text}</a>',
                            url=url, text=_("Orders"))
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "event":
-            kwargs["queryset"] = Event.objects.filter(
-                end__gte=timezone.now())
-        return super(PizzaEventAdmin, self).formfield_for_foreignkey(
-            db_field, request, **kwargs)
 
     def get_urls(self):
         urls = super().get_urls()

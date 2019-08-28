@@ -1,13 +1,16 @@
 """Admin views provided by the pizzas package"""
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 
+from events.decorators import organiser_only
 from payments.models import Payment
 from pizzas.models import PizzaEvent, Order
 
 
+@method_decorator(organiser_only, name='dispatch')
 class PizzaOrderSummary(TemplateView):
     template_name = 'pizzas/admin/summary.html'
     admin = None
@@ -57,6 +60,7 @@ class PizzaOrderSummary(TemplateView):
         return context
 
 
+@method_decorator(organiser_only, name='dispatch')
 class PizzaOrderDetails(TemplateView):
     template_name = 'pizzas/admin/orders.html'
     admin = None
