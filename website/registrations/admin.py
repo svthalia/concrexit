@@ -30,10 +30,11 @@ def _show_message(admin, request, n, message, error):
 class RegistrationAdmin(admin.ModelAdmin):
     """Manage the registrations"""
 
-    list_display = ('name', 'email', 'status',
-                    'created_at', 'payment_status')
-    list_filter = ('status', 'programme', 'payment__type',
-                   'payment__amount')
+    list_display = ('name', 'email', 'status', 'membership_type',
+                    'created_at', 'payment_status', 'no_references',
+                    'reference_count')
+    list_filter = ('status', 'programme', 'membership_type', 'no_references',
+                   'payment__type', 'payment__amount')
     inlines = (ReferenceInline,)
     search_fields = ('first_name', 'last_name', 'email', 'phone_number',
                      'student_number',)
@@ -73,6 +74,10 @@ class RegistrationAdmin(admin.ModelAdmin):
         }),
     )
     actions = ['accept_selected', 'reject_selected']
+
+    def reference_count(self, obj):
+        return obj.reference_set.count()
+    reference_count.short_description = _('references')
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
@@ -176,9 +181,11 @@ class RegistrationAdmin(admin.ModelAdmin):
 class RenewalAdmin(RegistrationAdmin):
     """Manage the renewals"""
 
-    list_display = ('name', 'email', 'status',
-                    'created_at', 'payment_status',)
-    list_filter = ('status', 'payment__type', 'payment__amount')
+    list_display = ('name', 'email', 'status', 'membership_type',
+                    'created_at', 'payment_status', 'no_references',
+                    'reference_count')
+    list_filter = ('status', 'membership_type', 'no_references',
+                   'payment__type', 'payment__amount')
     search_fields = ('member__first_name', 'member__last_name',
                      'member__email', 'member__profile__phone_number',
                      'member__profile__student_number',)
@@ -209,6 +216,7 @@ class RenewalAdmin(RegistrationAdmin):
     @staticmethod
     def name(obj):
         return obj.member.get_full_name()
+    name.short_description = _('name')
 
     @staticmethod
     def email(obj):

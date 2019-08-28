@@ -1,9 +1,10 @@
 from django.test import TestCase
 from django.utils import timezone
+from freezegun import freeze_time
 
 from members.models import Member, Membership
 from registrations import forms
-from registrations.models import Entry
+from registrations.models import Entry, Renewal, Reference
 
 
 class MemberRegistrationFormTest(TestCase):
@@ -86,6 +87,7 @@ class RenewalFormTest(TestCase):
 
     def setUp(self):
         self.member = Member.objects.filter(last_name="Wiggers").first()
+        self.member.membership_set.all().delete()
         self.data = {
             'member': self.member.pk,
             'length': Entry.MEMBERSHIP_STUDY,
@@ -94,7 +96,6 @@ class RenewalFormTest(TestCase):
         }
 
     def test_is_valid(self):
-        self.member.membership_set.all().delete()
         with self.subTest("Form is valid"):
             form = forms.RenewalForm(self.data)
             self.assertTrue(form.is_valid(), msg=dict(form.errors))
@@ -106,3 +107,66 @@ class RenewalFormTest(TestCase):
     def test_has_privacy_policy_field(self):
         form = forms.RenewalForm(self.data)
         self.assertTrue(form.fields['privacy_policy'] is not None)
+
+
+class ReferenceFormTest(TestCase):
+    fixtures = ['members.json']
+
+    def setUp(self):
+        self.member = Member.objects.filter(last_name="Wiggers").first()
+        self.member.membership_set.all().delete()
+        self.entry = Renewal.objects.create(member=self.member)
+        self.member.membership_set.all().delete()
+        self.data = {
+            'member': self.member.pk,
+            'entry': self.entry.pk
+        }
+
+    @freeze_time('2018-08-01')
+    def test_clean(self):
+        with self.subTest("Form is valid"):
+            form = forms.ReferenceForm(self.data)
+            self.assertTrue(form.is_valid())
+            form.clean()
+        with self.subTest("Form throws error about benefactor type"):
+            m = Membership.objects.create(
+                type=Membership.BENEFACTOR,
+                user=self.member,
+                since='2017-09-01',
+                until='2018-08-31'
+            )
+            form = forms.ReferenceForm(self.data)
+            self.assertFalse(form.is_valid())
+            self.assertEqual(form.errors, {
+                '__all__': ['Benefactors cannot give references.']
+            })
+            m.delete()
+        with self.subTest("Form throws error about membership end"):
+            m = Membership.objects.create(
+                type=Membership.MEMBER,
+                user=self.member,
+                since='2017-09-01',
+                until='2018-08-31'
+            )
+            form = forms.ReferenceForm(self.data)
+            self.assertFalse(form.is_valid())
+            self.assertEqual(form.errors, {
+                '__all__': [
+                    "It's not possible to give references for "
+                    "memberships that start after your own "
+                    "membership's end."
+                ]
+            })
+            m.delete()
+        with self.subTest('Form throws error about uniqueness'):
+            Reference.objects.create(
+                member=self.member,
+                entry=self.entry
+            )
+            form = forms.ReferenceForm(self.data)
+            self.assertFalse(form.is_valid())
+            self.assertEqual(form.errors, {
+                '__all__': [
+                    "You've already given a reference for this person."
+                ]
+            })

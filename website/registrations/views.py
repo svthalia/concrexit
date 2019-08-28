@@ -257,7 +257,7 @@ class ReferenceCreateView(CreateView):
     View that renders a reference creation form
     """
     model = Reference
-    fields = '__all__'
+    form_class = forms.ReferenceForm
     template_name = 'registrations/reference.html'
     entry = None
     success = False
