@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-07 19:56+0200\n"
+"POT-Creation-Date: 2019-08-14 08:06+0200\n"
 "PO-Revision-Date: 2019-08-07 19:57+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
@@ -486,10 +486,6 @@ msgstr "Exporteer aanmeldingen"
 #: templates/events/admin/details.html
 msgid "Export email addresses of attendees"
 msgstr "Exporteer e-mailadressen van aanwezigen"
-
-#: templates/events/admin/details.html
-msgid "Set all registered to paid and present"
-msgstr "Zet iedereen op betaald en present"
 
 #: templates/events/admin/details.html
 msgid "Send pushnotification to registered users"
