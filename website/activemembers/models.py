@@ -277,10 +277,26 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
             member=self.member,
             until__lte=self.since,
             until__gte=self.since - datetime.timedelta(days=1))
-        if qs.count() >= 1:  # should actually only be one; should be unique
+        if qs.count() >= 1:  # should only be one; should be unique
             return qs.first().initial_connected_membership
         else:
             return self
+
+    @property
+    def latest_connected_membership(self):
+        """
+        Find the newest membership directly connected to the current one
+        (thus the membership that started at the moment the current one ended)
+        """
+        if self.until:
+            qs = MemberGroupMembership.objects.filter(
+                group=self.group,
+                member=self.member,
+                since__lte=self.until,
+                since__gte=self.until + datetime.timedelta(days=1))
+            if qs.count() >= 1:  # should only be one; should be unique
+                return qs.last().latest_connected_membership
+        return self
 
     @property
     def is_active(self):

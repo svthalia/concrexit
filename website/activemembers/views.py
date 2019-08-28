@@ -16,18 +16,23 @@ class _MemberGroupDetailView(DetailView):
     """
     context_object_name = 'membergroup'
 
+    def _get_memberships(self, group):
+        return MemberGroupMembership.active_objects.filter(group=group)
+
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
-        memberships = (MemberGroupMembership
-                       .active_objects
-                       .filter(group=context['membergroup'])
+        memberships = (self._get_memberships(context['membergroup'])
                        .prefetch_related('member__membergroupmembership_set'))
         members = [{
             'member': x.member,
             'chair': x.chair,
             'role': x.role,
-            'since': x.initial_connected_membership.since
+            'since': x.initial_connected_membership.since,
+            'until': (None if x.latest_connected_membership.until ==
+                      context['membergroup'].until else
+                      x.latest_connected_membership.until),
+            'is_board': hasattr(x.group, 'board')
         } for x in memberships]
 
         members.sort(key=lambda x: x['since'])
@@ -109,6 +114,9 @@ class BoardDetailView(_MemberGroupDetailView):
     """
     template_name = 'activemembers/board_detail.html'
     context_object_name = 'membergroup'
+
+    def _get_memberships(self, group):
+        return MemberGroupMembership.objects.filter(group=group)
 
     def get_object(self, queryset=None) -> Board:
         return get_object_or_404(

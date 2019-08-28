@@ -29,17 +29,24 @@ def membergroup_card(group):
 @register.inclusion_tag('includes/grid_item.html')
 def membergroup_member_card(membership):
     meta_text = ''
-    if 'since' in membership:
+
+    if 'role' in membership and membership['role']:
+        meta_text += f"<p class=\"px-1\">{membership['role']}</p>"
+
+    ribbon = None
+    if membership['chair'] and not membership['until']:
+        ribbon = _('Chair')
+
+    if 'since' in membership and not membership['is_board']:
         since_text = '{}: ?'.format(_('Member since'))
         if membership['since'].year > 1970:
-            since_text = '{}: {}'.format(_('Member since'),
-                                         membership['since'].year)
-        meta_text += '<p class="px-1">{}</p>'.format(since_text)
-    if 'role' in membership and membership['role']:
-        meta_text += '<p class="px-1">{}</p>'.format(membership['role'])
-    ribbon = None
-    if membership['chair']:
-        ribbon = _('Chair')
+            since_text = f"{_('Member since')}: {membership['since'].year}"
+        meta_text += f'<p class="px-1"><em>{since_text}</em></p>'
+
+    if ('until' in membership and membership['until']
+            and membership['is_board']):
+        until_text = f"{_('until')} {membership['until']}"
+        meta_text += f'<p class="px-1"><em>{until_text}</em></p>'
 
     return member_card(
         member=membership['member'],
