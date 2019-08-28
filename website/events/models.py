@@ -7,12 +7,11 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from django.utils.translation import ugettext_lazy as _
 from django.utils.text import format_lazy
+from django.utils.translation import ugettext_lazy as _
 from tinymce.models import HTMLField
 
 from members.models import Member
-from payments.models import Payment
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -432,10 +431,6 @@ def registration_member_choices_limit():
 
 class Registration(models.Model):
     """Describes a registration for an Event"""
-
-    PAYMENT_NONE = Payment.NONE
-    PAYMENT_CARD = Payment.CARD
-    PAYMENT_CASH = Payment.CASH
 
     event = models.ForeignKey(Event, models.CASCADE)
 

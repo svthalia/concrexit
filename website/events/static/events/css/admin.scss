@@ -1,3 +1,5 @@
+@import "../../thaliawebsite/static/css/variables";
+
 .dashboard {
     #content {
         width: auto;
@@ -6,22 +8,62 @@
         }
     }
 
-    .module table td a {
-        display: inline-block;
-        vertical-align: middle;
+    .module {
+        table {
+            td {
+                vertical-align: middle;
+                &.text-center {
+                    text-align: center;
+                }
 
-        &.member-phone, &.member-email {
-            width: 16px;
-            height: 16px;
+                a {
+                    display: inline-block;
+                    vertical-align: middle;
+
+                    &.member-phone, &.member-email {
+                        width: 16px;
+                        height: 16px;
+
+                        @media(max-width: 767px) {
+                            display: block;
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+
+                    &.member-phone {
+                        background: url('../images/phone-square.svg') no-repeat;
+                        padding-right: 2px;
+
+                        @media(max-width: 767px) {
+                            padding-right: 0;
+                            margin-bottom: 2px;
+                        }
+                    }
+
+                    &.member-email {
+                        background: url('../images/envelope-square.svg') no-repeat;
+                    }
+                }
+            }
         }
 
-        &.member-phone {
-            background: url('../images/phone-square.svg') no-repeat;
-            padding-right: 2px;
+        select[name=payment] {
+            background: $danger;
+            color: white;
+
+            &.paid {
+                background: $success;
+            }
+
+            @media(max-width: 767px) {
+                height: 40px;
+            }
         }
 
-        &.member-email {
-            background: url('../images/envelope-square.svg') no-repeat;
+        .button {
+            display: inline-block;
+            margin: 2px;
         }
     }
 }

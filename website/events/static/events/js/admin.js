@@ -13,18 +13,40 @@ django.jQuery(function () {
         });
     });
 
-    $(".payment-radio").change(function () {
-        var radiobutton = $(this);
-        var url = radiobutton.parent().parent().data("url");
-        var value = radiobutton.data("value");
-        if (radiobutton.prop('checked')) {
-            patch(url, { payment: value }, function(result) {
-                radiobutton.prop('checked', value === result.payment);
-                $("table").trigger("update");
-            }, function() {
-                radiobutton.prop('checked', !checked);
-            });
+    var payment_previous;
+    $('select[name=payment]').on('focus', function () {
+        payment_previous = this.value;
+    }).change(function() {
+        var select = $(this);
+        var url = $(this).parents('tr').data("url");
+        var none = $(this).data('none');
+
+        if (payment_previous === $(this).val()) {
+            return;
         }
+
+        if ($(this).val() === none) {
+            $(this).removeClass('paid');
+        } else {
+            $(this).addClass('paid');
+        }
+
+        patch(url, { payment: $(this).val() }, function(data) {
+            if (data.payment === none) {
+                select.removeClass('paid');
+            } else {
+                select.addClass('paid');
+            }
+            select.val(data.payment);
+            $('table').trigger('update');
+        }, function(xhr) {
+            var data = $.parseJSON(xhr.responseText);
+            if (data.message !== undefined) {
+                alert(data.message);
+            } else if (data.payment !== undefined) {
+                alert(data.payment.join('\n'));
+            }
+        });
     });
 
     $.tablesorter.addParser({
@@ -39,14 +61,18 @@ django.jQuery(function () {
     });
 
     $.tablesorter.addParser({
-        id: "radio",
+        id: 'payment',
         is: function(s) {
             return false;
         },
         format: function(s, t, node) {
-            return $(node).children("input[type=radio]").is(':checked') ? 1 : 0;
+            var val = $(node).find('select').val();
+            if (val === 'no_payment') {
+                return '';
+            }
+            return $(node).find('select').val();
         },
-        type: "numeric"
+        type: 'text'
     });
 
     $.tablesorter.addParser({
