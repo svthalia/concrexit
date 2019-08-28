@@ -157,8 +157,8 @@ class EventMessage(FormView):
         message = Message(
             title_nl=values['title_nl'],
             title_en=values['title_en'],
-            body_nl=values['title_nl'],
-            body_en=values['title_en'],
+            body_nl=values['body_nl'],
+            body_en=values['body_en'],
             url=values['url'],
             category=Category.objects.get(key='event')
         )
