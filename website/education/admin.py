@@ -16,8 +16,8 @@ admin.site.register(models.Category)
 
 @admin.register(models.Course)
 class CourseAdmin(TranslatedModelAdmin):
-    fields = ('name', 'shorthand', 'course_code', 'ec', 'since', 'until',
-              'period', 'categories', 'old_courses')
+    fields = ('name', 'course_code', 'ec', 'since', 'until', 'categories',
+              'old_courses')
     list_filter = ('categories', 'ec')
     search_fields = ('name', 'course_code')
 
