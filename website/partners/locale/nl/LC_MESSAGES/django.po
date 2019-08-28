@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-20 16:40+0200\n"
-"PO-Revision-Date: 2019-06-20 16:41+0200\n"
+"POT-Creation-Date: 2019-08-03 18:47+0200\n"
+"PO-Revision-Date: 2019-08-03 18:47+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -17,6 +17,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.3\n"
+
+#: admin.py templates/partners/partner.html
+msgid "Address"
+msgstr "Adres"
+
+#: admin.py
+msgid "Existing partner"
+msgstr "Bestaande partner"
+
+#: admin.py
+msgid "Other partner"
+msgstr "Andere partner"
+
+#: admin.py
+msgid "Categories"
+msgstr "Categorieën"
 
 #: apps.py templates/partners/index.html templates/partners/partner.html
 msgid "Partners"
@@ -39,6 +55,22 @@ msgid "Vacancy Categories"
 msgstr "Vacaturecategorieën"
 
 #: models.py
+msgid "title"
+msgstr "titel"
+
+#: models.py
+msgid "description"
+msgstr "beschrijving"
+
+#: models.py
+msgid "link"
+msgstr "link"
+
+#: models.py
+msgid "partner"
+msgstr "partner"
+
+#: models.py
 msgid ""
 "When you use a partner, the company name and logo below will not be used."
 msgstr ""
@@ -46,8 +78,12 @@ msgstr ""
 "niet gebruikt worden."
 
 #: models.py
-msgid "not shown on the page"
-msgstr "wordt niet getoond op de vacaturepagina"
+msgid "company name"
+msgstr "bedrijfsnaam"
+
+#: models.py
+msgid "company logo"
+msgstr "bedrijfslogo"
 
 #: models.py
 msgid "If no partner is used then both a company name and logo are required."
@@ -61,14 +97,6 @@ msgstr "Selecteer of een partner of geef een bedrijfsnaam en logo."
 #: models.py templates/partners/partner.html templates/partners/vacancies.html
 msgid "Vacancies"
 msgstr "Vacatures"
-
-#: models.py
-msgid "title"
-msgstr "titel"
-
-#: models.py
-msgid "description"
-msgstr "beschrijving"
 
 #: models.py
 msgid "location"
@@ -139,10 +167,6 @@ msgstr "Lees meer"
 #: templates/partners/index.html
 msgid "our local partner"
 msgstr "onze localpartner"
-
-#: templates/partners/partner.html
-msgid "Address"
-msgstr "Adres"
 
 #: templates/partners/partner.html
 msgid "Website"

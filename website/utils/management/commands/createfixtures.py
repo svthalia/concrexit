@@ -409,9 +409,6 @@ class Command(BaseCommand):
             vacancy.company_logo.save(vacancy.company_name + '.jpeg',
                                       ContentFile(icon))
 
-        if random.random() < 0.5:
-            vacancy.expiration_date = _faker.date_time_between("-1y", "+1y")
-
         vacancy.save()
 
         vacancy.categories.set(random.sample(list(categories),

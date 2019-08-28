@@ -25,14 +25,6 @@ partners.apps module
    :undoc-members:
    :show-inheritance:
 
-partners.emails module
-----------------------
-
-.. automodule:: partners.emails
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 partners.models module
 ----------------------
 
