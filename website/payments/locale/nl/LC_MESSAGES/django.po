@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-05-08 20:07+0200\n"
-"PO-Revision-Date: 2019-05-08 20:47+0200\n"
+"PO-Revision-Date: 2019-08-31 12:49+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: admin.py
 msgid "paid by"
@@ -180,7 +180,7 @@ msgstr "Pin betaling"
 
 #: models.py
 msgid "Wire payment"
-msgstr "Pin betaling"
+msgstr "Overboeking"
 
 #: models.py
 msgid "processing date"
