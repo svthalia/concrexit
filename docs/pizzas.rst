@@ -40,6 +40,14 @@ pizzas.apps module
    :undoc-members:
    :show-inheritance:
 
+pizzas.decorators module
+------------------------
+
+.. automodule:: pizzas.decorators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pizzas.models module
 --------------------
 
