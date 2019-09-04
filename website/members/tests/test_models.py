@@ -113,8 +113,8 @@ class MemberDisplayNameTest(TestCase):
         self.assertEqual('Johnny Test', self.profile.display_name())
         self.assertEqual('Johnny', self.profile.short_display_name())
         self.profile.nickname = 'John'
-        self.assertEqual('John', self.profile.display_name())
-        self.assertEqual('John', self.profile.short_display_name())
+        self.assertEqual("'John'", self.profile.display_name())
+        self.assertEqual("'John'", self.profile.short_display_name())
 
     def test_check_display_name_firstname(self):
         self.profile.display_name_preference = 'firstname'
@@ -143,4 +143,4 @@ class MemberDisplayNameTest(TestCase):
         self.assertEqual('Johnny', self.profile.short_display_name())
         self.profile.nickname = 'John'
         self.assertEqual('\'John\' Test', self.profile.display_name())
-        self.assertEqual('John', self.profile.short_display_name())
+        self.assertEqual('\'John\'', self.profile.short_display_name())
