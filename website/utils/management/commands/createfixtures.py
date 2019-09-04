@@ -372,7 +372,7 @@ class Command(BaseCommand):
         membership.since = _faker.date_time_between(
             start_date='-4y', end_date='now', tzinfo=None)
         membership.until = random.choice([_faker.date_time_between(
-            start_date='-2y', end_date='+2y', tzinfo=None), None])
+            start_date=membership.since, end_date='+2y', tzinfo=None), None])
         membership.type = random.choice(
             [t[0] for t in Membership.MEMBERSHIP_TYPES])
 
