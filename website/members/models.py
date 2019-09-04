@@ -414,7 +414,7 @@ class Profile(models.Model):
     def display_name(self):
         pref = self.display_name_preference
         if pref == 'nickname' and self.nickname is not None:
-            return self.nickname
+            return f"'{self.nickname}'"
         elif pref == 'firstname':
             return self.user.first_name
         elif pref == 'initials':
@@ -436,7 +436,7 @@ class Profile(models.Model):
         pref = self.display_name_preference
         if (self.nickname is not None and
                 (pref == 'nickname' or pref == 'nicklast')):
-            return self.nickname
+            return f"'{self.nickname}'"
         elif pref == 'initials':
             if self.initials:
                 return '{} {}'.format(self.initials, self.user.last_name)
