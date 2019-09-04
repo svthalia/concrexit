@@ -191,6 +191,10 @@ class Member(User):
         return reverse('members:profile', args=[str(self.pk)])
 
 
+def _profile_image_path(instance, filename):
+    return f'public/avatars/{instance.pk}'
+
+
 class Profile(models.Model):
     """This class holds extra information about a member"""
 
@@ -365,7 +369,7 @@ class Profile(models.Model):
 
     photo = models.ImageField(
         verbose_name=_('Photo'),
-        upload_to='public/avatars/',
+        upload_to=_profile_image_path,
         null=True,
         blank=True,
     )
