@@ -16,6 +16,7 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.translation import pgettext_lazy, gettext_lazy as _
 
 from activemembers.models import MemberGroup, MemberGroupMembership
@@ -191,8 +192,20 @@ class Member(User):
         return reverse('members:profile', args=[str(self.pk)])
 
 
-def _profile_image_path(instance, filename):
-    return f'public/avatars/{instance.pk}'
+def _profile_image_path(_instance, _filename):
+    """
+    Sets the upload path for profile images.
+
+    Makes sure that it's hard to enumerate profile images.
+
+    Also makes sure any user-picked filenames don't survive
+
+    >>> _profile_image_path(None, "bla.jpg")
+    public/avatars/...
+    >>> "swearword" in _profile_image_path(None, "swearword.jpg")
+    False
+    """
+    return f'public/avatars/{get_random_string(length=16)}'
 
 
 class Profile(models.Model):
@@ -495,7 +508,7 @@ class Profile(models.Model):
 
             # Create new filename to store compressed image
             image_name, _ext = os.path.splitext(original_image_name)
-            image_name = storage.generate_filename(f"{image_name}.jpg")
+            image_name = storage.get_available_name(f"{image_name}.jpg")
             with storage.open(image_name, 'wb') as new_image_file:
                 image.convert("RGB").save(new_image_file, "JPEG")
             self.photo.name = image_name

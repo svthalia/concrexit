@@ -1,9 +1,16 @@
 from datetime import datetime
+import doctest
 
 from django.test import TestCase
 from django.utils import timezone
 
+from members import models
 from members.models import (Profile, Member)
+
+
+def load_tests(loader, tests, ignore):
+    """Load doctests"""
+    tests.addTests(doctest.DocTestSuite(models))
 
 
 class MemberBirthdayTest(TestCase):
