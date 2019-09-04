@@ -1,29 +1,24 @@
 #page-content {
     #photos-index, #photos-album {
-        .rotate90 {
-            img {
-                transform: rotate(90deg);
-            }
-        }
-        .rotate180 {
-            img {
-                transform: rotate(180deg);
-            }
-        }
-        .rotate270 {
-            img {
-                transform: rotate(270deg);
-            }
-        }
         .grayscale {
             img {
                 filter: grayscale(1);
             }
         }
 
-        .grid-item.grayscale {
-            .overlay {
-                background-color: rgba(88, 88, 88, 0.6);
+        .grid-item {
+            &.grayscale {
+                .overlay {
+                    background-color: rgba(88, 88, 88, 0.6);
+                }
+            }
+
+            @each $rotation in '90' '180' '270' {
+                &.rotate#{$rotation}:hover .image  img {
+                    -moz-transform: scale(1.05) rotate(#{$rotation}deg);
+                    -webkit-transform: scale(1.05) rotate(#{$rotation}deg);
+                    transform: scale(1.05) rotate(#{$rotation}deg);
+                }
             }
         }
 
@@ -36,5 +31,13 @@
         .btn {
             height: 50px;
         }
+    }
+}
+
+@each $rotation in '90' '180' '270' {
+    .rotate#{$rotation} img {
+        -moz-transform: rotate(#{$rotation}deg);
+        -webkit-transform: rotate(#{$rotation}deg);
+        transform: rotate(#{$rotation}deg);
     }
 }
