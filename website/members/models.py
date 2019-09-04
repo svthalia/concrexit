@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.core.files.storage import DefaultStorage
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -447,7 +448,7 @@ class Profile(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.photo:
-            self._orig_image = self.photo.path
+            self._orig_image = self.photo.name
         else:
             self._orig_image = ""
 
@@ -471,37 +472,40 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        storage = DefaultStorage()
 
         if self._orig_image and not self.photo:
-            try:
-                os.remove(self._orig_image)
-            except FileNotFoundError:
-                pass
-            self._orig_image = ''
+            storage.delete(self._orig_image)
+            self._orig_image = None
 
-        elif self.photo and self._orig_image != self.photo.path:
-            image_path = self.photo.path
-            image = Image.open(image_path)
-            image_path, _ext = os.path.splitext(image_path)
-            image_path = "{}.jpg".format(image_path)
+        elif self.photo and self._orig_image != self.photo.name:
+            original_image_name = self.photo.name
+            logger.debug("Converting image %s", original_image_name)
+
+            with self.photo.open() as image_handle:
+                image = Image.open(image_handle)
+                image.load()
 
             # Image.thumbnail does not upscale an image that is smaller
-            logger.debug("Converting image %s", image_path)
             image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-            image.convert("RGB").save(image_path, "JPEG")
-            image_name, _ext = os.path.splitext(self.photo.name)
-            self.photo.name = "{}.jpg".format(image_name)
+
+            # Create new filename to store compressed image
+            image_name, _ext = os.path.splitext(original_image_name)
+            image_name = storage.generate_filename(f"{image_name}.jpg")
+            with storage.open(image_name, 'wb') as new_image_file:
+                image.convert("RGB").save(new_image_file, "JPEG")
+            self.photo.name = image_name
             super().save(*args, **kwargs)
 
-            try:
-                if self._orig_image:
-                    logger.info("deleting", self._orig_image)
-                    os.remove(self._orig_image)
-            except FileNotFoundError:
-                pass
-            self._orig_image = self.photo.path
+            # delete original upload.
+            storage.delete(original_image_name)
+
+            if self._orig_image:
+                logger.info("deleting", self._orig_image)
+                storage.delete(self._orig_image)
+            self._orig_image = self.photo.name
         else:
-            logging.warning("We already had this image")
+            logging.info("We already had this image, skipping thumbnailing")
 
     def __str__(self):
         return _("Profile for {}").format(self.user)
