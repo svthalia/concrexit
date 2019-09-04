@@ -5,7 +5,7 @@ from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 
-from events.decorators import organiser_only
+from pizzas.decorators import organiser_only
 from payments.models import Payment
 from pizzas.models import PizzaEvent, Order
 
