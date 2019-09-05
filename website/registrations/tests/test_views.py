@@ -491,7 +491,8 @@ class BaseRegistrationFormViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('registrations:renew'))
 
-    def test_form_valid(self):
+    @mock.patch('registrations.emails.send_registration_email_confirmation')
+    def test_form_valid(self, send_mail):
         mock_form = MagicMock()
 
         return_value = self.view.form_valid(mock_form)
@@ -500,6 +501,8 @@ class BaseRegistrationFormViewTest(TestCase):
         self.assertEqual(return_value.status_code, 302)
         self.assertEqual(return_value.url,
                          reverse('registrations:register-success'))
+
+        send_mail.assert_called_once_with(mock_form.instance)
 
 
 class MemberRegistrationFormViewTest(TestCase):
@@ -522,22 +525,6 @@ class MemberRegistrationFormViewTest(TestCase):
         request = super_post.call_args[0][0]
         self.assertEqual(request.POST['language'], 'nl')
         self.assertEqual(request.POST['membership_type'], Membership.MEMBER)
-
-    @mock.patch('registrations.emails.send_registration_email_confirmation')
-    def test_form_valid(self, send_email):
-        mock_form = MagicMock()
-        mock_form.instance = {
-            'hello': 'world'
-        }
-
-        return_value = self.view.form_valid(mock_form)
-
-        mock_form.save.assert_called_once_with()
-        self.assertEqual(return_value.status_code, 302)
-        self.assertEqual(return_value.url,
-                         reverse('registrations:register-success'))
-
-        send_email.assert_called_once_with(mock_form.instance)
 
 
 class BenefactorRegistrationFormViewTest(TestCase):
