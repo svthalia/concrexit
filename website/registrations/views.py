@@ -141,6 +141,7 @@ class BaseRegistrationFormView(FormView):
 
     def form_valid(self, form):
         form.save()
+        emails.send_registration_email_confirmation(form.instance)
         return redirect('registrations:register-success')
 
 
@@ -156,11 +157,6 @@ class MemberRegistrationFormView(BaseRegistrationFormView):
         request.POST['language'] = request.LANGUAGE_CODE
         request.POST['membership_type'] = Membership.MEMBER
         return super().post(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        emails.send_registration_email_confirmation(form.instance)
-        return response
 
 
 class BenefactorRegistrationFormView(BaseRegistrationFormView):
