@@ -1,7 +1,6 @@
 from random import random
 
 from django.shortcuts import get_object_or_404, render
-from django.utils import timezone
 
 from partners.models import Partner, Vacancy, VacancyCategory
 
@@ -37,8 +36,7 @@ def partner(request, slug):
 def vacancies(request):
     """View to show vacancies."""
     context = {
-        'vacancies': Vacancy.objects.exclude(
-            expiration_date__lte=timezone.now().date()).order_by('?'),
+        'vacancies': Vacancy.objects.order_by('?'),
         'categories': VacancyCategory.objects.all(),
     }
 
