@@ -208,6 +208,7 @@ class Registration(Entry):
         validators=[validators.RegexValidator(
             regex=r'([Ss]\d{7}|[EZUezu]\d{6,7})',
             message=_('enter a valid student- or e/z/u-number.'))],
+        help_text=_('With prefix. For example: \'s5603249\'.'),
         blank=True,
         null=True,
     )
