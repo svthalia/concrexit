@@ -63,6 +63,9 @@ For other operating systems, see the [Pillow Documentation][pillow-install].
 
 [pillow-install]: https://pillow.readthedocs.io/en/latest/installation.html
 
+
+On macOS you will also need to install `libmagic`, using the brew package manager by running `brew install libmagic`.
+
 Thabloid dependencies
 ---------------------
 
