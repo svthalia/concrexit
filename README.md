@@ -43,7 +43,7 @@ There are a range of tests that can be run:
 poetry
 ------
 
-Install poetry per the [poetry documentation][poetry install]
+Install poetry per the [poetry documentation][poetry install]. Make sure you install at least version 1.x.x, choose the prerelease version if necessary.
 
 [poetry install]: https://github.com/sdispater/poetry#installation
 
