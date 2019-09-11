@@ -355,12 +355,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
                 elif field_type == RegistrationInformationField.INTEGER_FIELD:
                     fields[key] = serializers.IntegerField(
                         required=field['required'],
-                        write_only=True
+                        write_only=True,
+                        allow_null=not field['required'],
                     )
                 elif field_type == RegistrationInformationField.TEXT_FIELD:
                     fields[key] = serializers.CharField(
                         required=field['required'],
-                        write_only=True
+                        write_only=True,
+                        allow_blank=not field['required'],
+                        allow_null=not field['required'],
                     )
 
                 fields[key].label = field['label']
