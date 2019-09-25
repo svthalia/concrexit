@@ -27,7 +27,7 @@
 
             {% if form.errors %}
                 {% trans "Invalid username or password." as error_text %}
-                {% alert 'danger' error_text dismissable=True %}
+                {% alert 'danger' error_text dismissible=True %}
             {% endif %}
 
             <form method="post" action="{% url 'login' %}" class="col-lg-6 offset-lg-3">

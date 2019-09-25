@@ -15,7 +15,7 @@
 
             {% if messages %}
                 {% for message in messages %}
-                    {% alert message.tags message dismissable=True %}
+                    {% alert message.tags message dismissible=True %}
                 {% endfor %}
             {% endif %}
 
