@@ -49,6 +49,11 @@ class MailingList(models.Model):
                     'of all emails sent via this mailinglist.'),
     )
 
+    description = models.TextField(
+        verbose_name=_("Description"),
+        help_text=_('Write a description for the mailinglist.'),
+    )
+
     archived = models.BooleanField(
         verbose_name=_("Archived"),
         default=True,
