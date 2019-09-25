@@ -6,7 +6,7 @@
             {% if not events %}
                 <div class="mt-4 col-12">
                     {% trans 'There are currently no events planned' as info_text %}
-                    {% alert 'info' info_text dismissable=False %}
+                    {% alert 'info' info_text dismissible=False %}
                 </div>
             {% else %}
                 {% for next_event in events %}

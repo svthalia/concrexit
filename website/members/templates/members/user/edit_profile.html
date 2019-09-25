@@ -18,7 +18,7 @@
 
             {% if form.errors %}
                 {% trans "Please check your profile for errors." as error_text %}
-                {% alert 'danger' error_text dismissable=True %}
+                {% alert 'danger' error_text dismissible=True %}
             {% endif %}
 
             <form method="post" enctype="multipart/form-data" class="row">

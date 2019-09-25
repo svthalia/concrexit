@@ -127,7 +127,7 @@
             {% else %}
                 {% for error in form.errors.items %}
                     {% for message in error.1 %}
-                        {% alert 'danger' message dismissable=True %}
+                        {% alert 'danger' message dismissible=True %}
                     {% endfor %}
                 {% endfor %}
                 <form method="post" enctype="multipart/form-data"
