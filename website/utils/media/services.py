@@ -86,9 +86,10 @@ def get_thumbnail_url(path, size, fit=True):
 
     # Check if we need to generate, then redirect to the generating route,
     # otherwise just return the serving file path
-    if (not os.path.isfile(full_thumb_path) or
+    if (not os.path.isfile(full_thumb_path) or (
+        os.path.exists(full_original_path) and
         os.path.getmtime(full_original_path)
-            > os.path.getmtime(full_thumb_path)):
+            > os.path.getmtime(full_thumb_path))):
         # Put all image info in signature for the generate view
         query = f'?sig={signing.dumps(sig_info)}'
         # We provide a URL instead of calling it as a function, so that using

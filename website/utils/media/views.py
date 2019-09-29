@@ -75,6 +75,9 @@ def generate_thumbnail(request, request_path):
         full_thumb_path = os.path.join(
             settings.MEDIA_ROOT, sig_info['thumb_path'])
 
+    if not os.path.exists(full_original_path):
+        raise Http404
+
     # Check if directory for thumbnail exists, if not create it
     os.makedirs(os.path.dirname(full_thumb_path), exist_ok=True)
     # Skip generating the thumbnail if it exists
