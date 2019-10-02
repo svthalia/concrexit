@@ -54,9 +54,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastKnownWidth = window.innerWidth;
     const calendarEl = document.getElementById('calendar');
 
-    const showUnpublished = calendarEl.dataset['show-unpublished'];
-    let defaultDate = calendarEl.dataset['default-date'];
-    const isAuthenticated = calendarEl.dataset.authenticated;
+    const showUnpublished = calendarEl.dataset.showUnpublished === 'true';
+    let defaultDate = calendarEl.dataset.defaultDate;
+    const isAuthenticated = calendarEl.dataset.authenticated === 'true';
     const language = calendarEl.dataset.language;
 
     const eventSources = [SOURCES.events, SOURCES.partners];
