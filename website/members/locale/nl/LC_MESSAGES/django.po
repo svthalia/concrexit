@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-07 16:35+0200\n"
-"PO-Revision-Date: 2019-06-07 16:37+0200\n"
+"POT-Creation-Date: 2019-09-08 10:57+0200\n"
+"PO-Revision-Date: 2019-09-08 10:57+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: admin.py
 msgid "current membership type"
@@ -188,7 +188,7 @@ msgstr "Informatica (Computing Science)"
 msgid "Information Sciences"
 msgstr "Informatiekunde (Information Sciences)"
 
-#: models.py templates/members/profile.html
+#: models.py templates/members/user/profile.html
 msgid "Study programme"
 msgstr "Studie"
 
@@ -244,7 +244,7 @@ msgstr "Telefoonnummer noodcontact"
 msgid "The phone number for the emergency contact"
 msgstr "Het telefoonummer van de noodcontact"
 
-#: models.py templates/members/profile.html
+#: models.py templates/members/user/profile.html
 msgid "Birthday"
 msgstr "Verjaardag"
 
@@ -260,7 +260,7 @@ msgstr ""
 "Toon je verjaardag aan andere leden op je profielpagina en in de "
 "verjaardagskalender"
 
-#: models.py templates/members/profile.html
+#: models.py templates/members/user/profile.html
 msgid "Website"
 msgstr "Website"
 
@@ -401,7 +401,7 @@ msgstr "Begunstiger"
 msgid "Honorary Member"
 msgstr "Erelid"
 
-#: models.py templates/members/profile.html
+#: models.py templates/members/user/profile.html
 msgid "Membership type"
 msgstr "Lidtype"
 
@@ -489,46 +489,6 @@ msgstr "Ouder"
 #: templates/admin/members/change_list.html
 msgid "Export IBANs for Direct Debit"
 msgstr "Exporteer IBANs voor automatische incasso"
-
-#: templates/members/edit_profile.html templates/members/user.html
-msgid "edit profile"
-msgstr "profiel bewerken"
-
-#: templates/members/edit_profile.html templates/members/email_change.html
-#: templates/members/email_change_confirmed.html
-#: templates/members/email_change_requested.html
-#: templates/members/email_change_verified.html templates/members/index.html
-#: templates/members/profile.html templates/members/user.html
-msgid "members"
-msgstr "leden"
-
-#: templates/members/edit_profile.html
-msgid "Your profile has been updated successfully."
-msgstr "Je profiel is succesvol opgeslagen."
-
-#: templates/members/edit_profile.html
-msgid "Please check your profile for errors."
-msgstr "Controleer je profiel op fouten."
-
-#: templates/members/edit_profile.html
-msgid "First Name"
-msgstr "Voornaam"
-
-#: templates/members/edit_profile.html
-msgid "Last Name"
-msgstr "Achternaam"
-
-#: templates/members/edit_profile.html
-msgid "Email Address"
-msgstr "E-mailadres"
-
-#: templates/members/edit_profile.html
-msgid "Click here to change your email address."
-msgstr "Klik hier om je e-mailadres aan te passen."
-
-#: templates/members/edit_profile.html
-msgid "save"
-msgstr "opslaan"
 
 #: templates/members/email/email_change_completed.txt
 #, python-format
@@ -872,40 +832,14 @@ msgstr ""
 "\n"
 "Deze e-mail is automatisch gegenereerd."
 
-#: templates/members/email_change.html
-#: templates/members/email_change_confirmed.html
-#: templates/members/email_change_requested.html
-#: templates/members/email_change_verified.html
-msgid "change email"
-msgstr "e-mailadres veranderen"
-
-#: templates/members/email_change.html
-msgid "change"
-msgstr "verander"
-
-#: templates/members/email_change_confirmed.html
-msgid ""
-"The confirmation of your email change was successful. Check your new inbox "
-"for the verification email."
-msgstr ""
-"De verandering van je e-mailadres is bevestigd. Controleer je nieuwe inbox "
-"voor de verificatie e-mail."
-
-#: templates/members/email_change_requested.html
-msgid ""
-"We have received the request to change your email address. You should "
-"receive a message in both your new and old mailboxes to verify the change."
-msgstr ""
-"We hebben je verzoek tot verandering van je e-mailadres ontvangen. "
-"Controleer je oude en nieuwe mailboxen om de verandering te bevestigen."
-
-#: templates/members/email_change_verified.html
-msgid ""
-"The verification of your email change was successful. Check your old inbox "
-"for the confirmation email."
-msgstr ""
-"Het nieuwe e-mailadres van je account is geverifieerd. Controleer je oude "
-"inbox voor de bevestigingse-mail."
+#: templates/members/index.html templates/members/user/edit_profile.html
+#: templates/members/user/email_change.html
+#: templates/members/user/email_change_confirmed.html
+#: templates/members/user/email_change_requested.html
+#: templates/members/user/email_change_verified.html
+#: templates/members/user/index.html templates/members/user/profile.html
+msgid "members"
+msgstr "leden"
 
 #: templates/members/index.html
 msgid ""
@@ -945,42 +879,6 @@ msgstr "Oud-leden"
 msgid "No members found"
 msgstr "Geen leden gevonden"
 
-#: templates/members/profile.html
-msgid "profile"
-msgstr "profiel"
-
-#: templates/members/profile.html
-msgid "About"
-msgstr "Over"
-
-#: templates/members/profile.html
-msgid "This member has not written a description yet."
-msgstr "Dit lid heeft nog geen beschrijving geschreven."
-
-#: templates/members/profile.html
-msgid "Personal information"
-msgstr "Persoonlijke gegevens"
-
-#: templates/members/profile.html templatetags/member_card.py
-msgid "Cohort"
-msgstr "Cohort"
-
-#: templates/members/profile.html
-msgid "Achievements for Thalia"
-msgstr "Verdiensten voor Thalia"
-
-#: templates/members/profile.html
-msgid "Chair"
-msgstr "Voorzitter"
-
-#: templates/members/profile.html
-msgid "today"
-msgstr "heden"
-
-#: templates/members/profile.html
-msgid "Societies"
-msgstr "Gezelschappen"
-
 #: templates/members/statistics.html
 msgid "Statistics"
 msgstr "Statistieken"
@@ -989,58 +887,165 @@ msgstr "Statistieken"
 msgid "Total amount of Thalia members"
 msgstr "Totaal aantal Thalialeden"
 
-#: templates/members/user.html
+#: templates/members/user/edit_profile.html templates/members/user/index.html
+msgid "edit profile"
+msgstr "profiel bewerken"
+
+#: templates/members/user/edit_profile.html
+msgid "Please check your profile for errors."
+msgstr "Controleer je profiel op fouten."
+
+#: templates/members/user/edit_profile.html
+msgid "First Name"
+msgstr "Voornaam"
+
+#: templates/members/user/edit_profile.html
+msgid "Last Name"
+msgstr "Achternaam"
+
+#: templates/members/user/edit_profile.html
+msgid "Email Address"
+msgstr "E-mailadres"
+
+#: templates/members/user/edit_profile.html
+msgid "Click here to change your email address."
+msgstr "Klik hier om je e-mailadres aan te passen."
+
+#: templates/members/user/edit_profile.html
+msgid "save"
+msgstr "opslaan"
+
+#: templates/members/user/email_change.html
+#: templates/members/user/email_change_confirmed.html
+#: templates/members/user/email_change_requested.html
+#: templates/members/user/email_change_verified.html
+msgid "change email"
+msgstr "e-mailadres veranderen"
+
+#: templates/members/user/email_change.html
+msgid "change"
+msgstr "verander"
+
+#: templates/members/user/email_change_confirmed.html
+msgid ""
+"The confirmation of your email change was successful. Check your new inbox "
+"for the verification email."
+msgstr ""
+"De verandering van je e-mailadres is bevestigd. Controleer je nieuwe inbox "
+"voor de verificatie e-mail."
+
+#: templates/members/user/email_change_requested.html
+msgid ""
+"We have received the request to change your email address. You should "
+"receive a message in both your new and old mailboxes to verify the change."
+msgstr ""
+"We hebben je verzoek tot verandering van je e-mailadres ontvangen. "
+"Controleer je oude en nieuwe mailboxen om de verandering te bevestigen."
+
+#: templates/members/user/email_change_verified.html
+msgid ""
+"The verification of your email change was successful. Check your old inbox "
+"for the confirmation email."
+msgstr ""
+"Het nieuwe e-mailadres van je account is geverifieerd. Controleer je oude "
+"inbox voor de bevestigingse-mail."
+
+#: templates/members/user/index.html
 msgid "Account"
 msgstr "Account"
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 #, python-format
 msgid "You’re currently logged in as <strong>%(user)s</strong>"
 msgstr "U bent momenteel ingelogd als <strong>%(user)s</strong>"
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "show public profile"
 msgstr "bekijk publieke profielpagina"
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "Take a look at your own profile."
 msgstr "Bekijk je eigen profielpagina."
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "manage membership"
 msgstr "lidmaatschap beheren"
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "Get information about your membership or renew it."
 msgstr "Bekijk je lidmaatschap of vernieuw deze indien nodig."
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "Edit your profile and avatar."
 msgstr "Bewerk je profiel en profielafbeelding."
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "manage bank account(s)"
 msgstr "bankrekening(en) beheren"
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "Change the financial information known to Thalia."
 msgstr "Verander de financiële informatie bekend bij Thalia."
 
-#: templates/members/user.html
+#: templates/members/user/index.html
+msgid "view payments"
+msgstr "bekijk betalingen"
+
+#: templates/members/user/index.html
+msgid "Get an overview of all your expenses."
+msgstr "Verkrijg een overzicht van al je uitgaven."
+
+#: templates/members/user/index.html
 msgid "change password"
 msgstr "wachtwoord wijzigen"
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "Change your accounts' password."
 msgstr "Wijzig het wachtwoord van je account."
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "logout"
 msgstr "uitloggen"
 
-#: templates/members/user.html
+#: templates/members/user/index.html
 msgid "Leave the restricted area of the website."
 msgstr "Verlaat het beveiligde gedeelte van de website."
+
+#: templates/members/user/profile.html
+msgid "profile"
+msgstr "profiel"
+
+#: templates/members/user/profile.html
+msgid "About"
+msgstr "Over"
+
+#: templates/members/user/profile.html
+msgid "This member has not written a description yet."
+msgstr "Dit lid heeft nog geen beschrijving geschreven."
+
+#: templates/members/user/profile.html
+msgid "Personal information"
+msgstr "Persoonlijke gegevens"
+
+#: templates/members/user/profile.html templatetags/member_card.py
+msgid "Cohort"
+msgstr "Cohort"
+
+#: templates/members/user/profile.html
+msgid "Achievements for Thalia"
+msgstr "Verdiensten voor Thalia"
+
+#: templates/members/user/profile.html
+msgid "Chair"
+msgstr "Voorzitter"
+
+#: templates/members/user/profile.html
+msgid "today"
+msgstr "heden"
+
+#: templates/members/user/profile.html
+msgid "Societies"
+msgstr "Gezelschappen"
 
 #: views.py
 msgid "Unknown membership history"
@@ -1057,3 +1062,7 @@ msgstr "Oud-lid"
 #: views.py
 msgid "Former benefactor"
 msgstr "Oud-begunstiger"
+
+#: views.py
+msgid "Your profile has been updated successfully."
+msgstr "Je profiel is succesvol opgeslagen."

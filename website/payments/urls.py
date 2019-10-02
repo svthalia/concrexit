@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from .views import BankAccountCreateView, BankAccountListView, \
-    BankAccountRevokeView
+    BankAccountRevokeView, PaymentListView
 
 app_name = 'payments'
 
@@ -15,5 +15,11 @@ urlpatterns = [
             path('<uuid:pk>/revoke/', BankAccountRevokeView.as_view(),
                  name='bankaccount-revoke'),
         ])),
+        path('payments/', include([
+            path('', PaymentListView.as_view(),
+                 name='payment-list'),
+            path('<int:year>-<int:month>/', PaymentListView.as_view(),
+                 name='payment-list')
+        ]))
     ]))
 ]

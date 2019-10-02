@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-08 20:07+0200\n"
-"PO-Revision-Date: 2019-08-31 12:49+0200\n"
+"POT-Creation-Date: 2019-09-08 10:58+0200\n"
+"PO-Revision-Date: 2019-09-08 10:58+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -55,11 +55,11 @@ msgstr "aangemaakt"
 msgid "processed"
 msgstr "verwerkt"
 
-#: admin.py
+#: admin.py templates/payments/payment_list.html
 msgid "amount"
 msgstr "bedrag"
 
-#: admin.py models.py
+#: admin.py models.py templates/payments/payment_list.html
 msgid "type"
 msgstr "type"
 
@@ -75,7 +75,7 @@ msgstr "id betaler"
 msgid "payer name"
 msgstr "naam betaler"
 
-#: admin.py
+#: admin.py templates/payments/payment_list.html
 msgid "notes"
 msgstr "notities"
 
@@ -182,7 +182,7 @@ msgstr "Pin betaling"
 msgid "Wire payment"
 msgstr "Overboeking"
 
-#: models.py
+#: models.py templates/payments/payment_list.html
 msgid "processing date"
 msgstr "verwerkingsdatum"
 
@@ -190,7 +190,7 @@ msgstr "verwerkingsdatum"
 msgid "payment"
 msgstr "betaling"
 
-#: models.py
+#: models.py templates/payments/payment_list.html
 msgid "payments"
 msgstr "betalingen"
 
@@ -259,12 +259,12 @@ msgid "Process (wire payment)"
 msgstr "Verwerk (overboeking)"
 
 #: templates/payments/bankaccount_form.html
-#: templates/payments/bankaccount_list.html
 msgid "add bank account"
 msgstr "bankrekeningen toevoegen"
 
 #: templates/payments/bankaccount_form.html
 #: templates/payments/bankaccount_list.html
+#: templates/payments/payment_list.html
 msgid "finances"
 msgstr "financieën"
 
@@ -377,6 +377,18 @@ msgstr "Ongedaan maken"
 #: templates/payments/includes/signature_canvas.html
 msgid "Clear"
 msgstr "Leegmaken"
+
+#: templates/payments/payment_list.html
+msgid "Older"
+msgstr "Ouder"
+
+#: templates/payments/payment_list.html
+msgid "Total"
+msgstr "Totaal"
+
+#: templates/payments/payment_list.html
+msgid "You have not made any payments during this period."
+msgstr "Je hebt geen betalingen gedaan in deze periode."
 
 #: templates/payments/widgets/payment.html
 msgid "Unprocessed"

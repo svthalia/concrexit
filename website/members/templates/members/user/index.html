@@ -51,6 +51,13 @@
                     <hr>
 
                     <div>
+                        <a href="{% url 'payments:payment-list' %}">{% trans "view payments"|capfirst %}</a>
+                        <p>{% blocktrans %}Get an overview of all your expenses.{% endblocktrans %}</p>
+                    </div>
+
+                    <hr>
+
+                    <div>
                         <a href="{% url 'password_change' %}">{% trans "change password"|capfirst %}</a>
                         <p>{% blocktrans %}Change your accounts' password.{% endblocktrans %}</p>
                     </div>
