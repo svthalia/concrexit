@@ -12,11 +12,10 @@ from .models import Profile
 class ProfileForm(forms.ModelForm):
     """Form with all the user editable fields of a Profile model"""
     class Meta:
-        fields = ['address_street', 'address_street2',
+        fields = ['show_birthday', 'address_street', 'address_street2',
                   'address_postal_code', 'address_city', 'address_country',
                   'phone_number', 'emergency_contact',
-                  'emergency_contact_phone_number',
-                  'show_birthday', 'website',
+                  'emergency_contact_phone_number', 'website',
                   'profile_description', 'nickname', 'initials',
                   'display_name_preference', 'photo', 'language',
                   'receive_optin', 'receive_newsletter']
