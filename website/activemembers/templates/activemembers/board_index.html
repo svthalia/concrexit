@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load i18n thumbnail static activemembers_cards %}
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block title %}{% trans 'boards'|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans 'boards'|capfirst %} — {{ block.super }}{% endblock %}
 
@@ -26,7 +28,7 @@
                              src="{% thumbnail current_board.photo THUMBNAIL_SIZE_LARGE fit=False %}">
                     {% else %}
                         <img alt="{{ current_board.name }}"
-                             src="{% static 'activemembers/images/placeholder.png' %}">
+                             src="/static/activemembers/images/{{ LANGUAGE_CODE }}/placeholder.png">
                     {% endif %}
                 </a>
             </div>
