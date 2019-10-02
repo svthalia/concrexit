@@ -1,7 +1,8 @@
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -13,7 +14,7 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from members.decorators import membership_required
 from payments.forms import BankAccountForm
-from payments.models import BankAccount
+from payments.models import BankAccount, Payment
 
 
 @method_decorator(login_required, name='dispatch')
@@ -87,3 +88,36 @@ class BankAccountListView(ListView):
 
     def get_queryset(self) -> QuerySet:
         return super().get_queryset().filter(owner=self.request.member)
+
+
+@method_decorator(login_required, name='dispatch')
+class PaymentListView(ListView):
+    model = Payment
+
+    def get_queryset(self) -> QuerySet:
+        year = self.kwargs.get('year', timezone.now().year)
+        month = self.kwargs.get('month', timezone.now().month)
+
+        return super().get_queryset().filter(
+            paid_by=self.request.member,
+            processing_date__year=year,
+            processing_date__month=month,
+        )
+
+    def get_context_data(self, *args, **kwargs):
+        filters = []
+        for i in range(13):
+            new_now = timezone.now() - relativedelta(months=i)
+            filters.append({
+                'year': new_now.year, 'month': new_now.month
+            })
+
+        context = super().get_context_data(*args, **kwargs)
+        context.update({
+            'filters': filters,
+            'total': context['object_list'].aggregate(
+                Sum('amount')).get('amount__sum'),
+            'year': self.kwargs.get('year', timezone.now().year),
+            'month': self.kwargs.get('month', timezone.now().month)
+        })
+        return context

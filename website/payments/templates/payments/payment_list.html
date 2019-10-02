@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load i18n static bootstrap4 compress alert %}
+
+{% block title %}{% trans "payments"|capfirst %} —
+    {% trans "finances"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "payments"|capfirst %} —
+    {% trans "finances"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <section class="page-section" id="payments-account-overview">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "payments"|capfirst %}</h1>
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% alert message.tags message %}
+                {% endfor %}
+            {% endif %}
+
+            <ul class="nav nav-tabs justify-content-center mb-4">
+                {% for filter in filters|slice:':6' %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if filter.year == year and filter.month == month %}active{% endif %}"
+                           href="{% url 'payments:payment-list' filter.year filter.month %}">
+                            {{ filter.year }}-{{ filter.month|stringformat:"02d" }}
+                        </a>
+                    </li>
+                {% endfor %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if filters.6.year == year and filters.6.month >= month or filters.6.year > year and filters.6.month < month %}active{% endif %}"
+                       data-toggle="dropdown"
+                       href="#" role="button" aria-haspopup="true"
+                       aria-expanded="false">{% trans 'Older' %}</a>
+                    <div class="dropdown-menu">
+                        {% for filter in filters|slice:'6:' %}
+                            <a class="dropdown-item {% if filter.year == year and filter.month == month %}active{% endif %}"
+                               href="{% url 'payments:payment-list' filter.year filter.month %}">
+                                {{ filter.year }}-{{ filter.month|stringformat:"02d" }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </li>
+            </ul>
+
+            {% if object_list %}
+                <table class="table text-center">
+                    <thead>
+                    <tr>
+                        <th scope="col">{% trans "type"|capfirst %}</th>
+                        <th scope="col">{% trans "amount"|capfirst %}</th>
+                        <th scope="col">
+                            {% trans "processing date"|capfirst %}
+                        </th>
+                        <th scope="col" class="text-left">
+                            {% trans "notes"|capfirst %}
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for payment in object_list reversed %}
+                        <tr>
+                            <th scope="row">{{ payment.get_type_display }}</th>
+                            <td>€ {{ payment.amount }}</td>
+                            <td>{{ payment.processing_date }}</td>
+                            <td class="text-left">{{ payment.notes }}</td>
+                        </tr>
+                    {% endfor %}
+                        <tr>
+                            <th scope="row">{% trans 'Total' %}</th>
+                            <td>€ {{ total|floatformat:2 }}</td>
+                            <td></td><td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                {% trans "You have not made any payments during this period." as no_payments %}
+                {% alert 'info' no_payments %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
