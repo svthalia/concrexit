@@ -218,7 +218,6 @@ def execute_data_minimisation(dry_run=False, members=None) -> List[Member]:
             profile.birthday = None
             profile.emergency_contact_phone_number = None
             profile.emergency_contact = None
-            profile.website = None
             member.bank_accounts.all().delete()
             if not dry_run:
                 profile.save()
