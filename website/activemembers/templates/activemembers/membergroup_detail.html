@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n static thumbnail bleach_tags activemembers_cards alert %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block body %}
     <section id="activemembers-membergroup" class="page-section">
@@ -14,7 +15,7 @@
                          src="{% thumbnail membergroup.photo THUMBNAIL_SIZE_LARGE fit=False %}">
                 {% else %}
                     <img alt="{{ membergroup.name }}" class="col-12"
-                         src="{% static 'activemembers/images/placeholder.png' %}">
+                         src="/static/activemembers/images/{{ LANGUAGE_CODE }}/placeholder.png">
                 {% endif %}
             </div>
         </div>
