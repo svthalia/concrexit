@@ -10,7 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from members.models import Membership
 from registrations import services
-from utils.snippets import datetime_to_lectureyear
 from .models import Registration, Renewal, Reference
 
 
@@ -38,15 +37,17 @@ class BaseRegistrationForm(forms.ModelForm):
 class MemberRegistrationForm(BaseRegistrationForm):
     """Form for member registrations"""
 
-    this_year = datetime_to_lectureyear(timezone.now())
+    this_year = timezone.now().year
     years = reversed([(x, "{} - {}".format(x, x + 1)) for x in
-                      range(this_year - 20, this_year + 2)])
+                      range(this_year - 20, this_year + 1)])
 
     starting_year = TypedChoiceField(
         choices=years,
         coerce=int,
         empty_value=this_year,
-        required=False
+        required=False,
+        help_text=_('What lecture year did you start '
+                    'studying at Radboud University?')
     )
 
     class Meta:
