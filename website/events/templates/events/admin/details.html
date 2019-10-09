@@ -42,7 +42,7 @@
         {% include 'events/admin/registrations_table.html' with registrations=event.participants %}
         <br>
         {% if event.queue.count > 0 %}
-        <hregisterd2>{% trans "waiting"|capfirst %}</hregisterd2>
+        <h2>{% trans "waiting"|capfirst %}</h2>
         {% trans "queued" as queued %}
         {% include 'events/admin/registrations_table.html' with registrations=event.queue verb=queued addlink=False %}
         <br>

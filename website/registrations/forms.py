@@ -31,7 +31,7 @@ class BaseRegistrationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['privacy_policy'].label = mark_safe(_(
             'I accept the <a href="{}">privacy policy</a>.').format(
-            reverse_lazy('privacy-policy')))
+            reverse_lazy('singlepages:privacy-policy')))
 
 
 class MemberRegistrationForm(BaseRegistrationForm):
@@ -88,7 +88,7 @@ class RenewalForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['privacy_policy'].label = mark_safe(_(
             'I accept the <a href="{}">privacy policy</a>.').format(
-            reverse_lazy('privacy-policy')))
+            reverse_lazy('singlepages:privacy-policy')))
 
     class Meta:
         model = Renewal

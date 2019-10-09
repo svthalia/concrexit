@@ -53,7 +53,7 @@ class BankAccountCreateViewTest(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [('/login/?next=' +
+            [('/user/login/?next=' +
               reverse('payments:bankaccount-add'), 302)],
             response.redirect_chain
         )
@@ -274,7 +274,7 @@ class BankAccountRevokeViewTest(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [('/login/?next=' +
+            [('/user/login/?next=' +
               reverse('payments:bankaccount-add'), 302)],
             response.redirect_chain
         )
@@ -326,7 +326,7 @@ class BankAccountListViewTest(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [('/login/?next=' +
+            [('/user/login/?next=' +
               reverse('payments:bankaccount-revoke',
                       args=(self.account1.pk,)), 302)],
             response.redirect_chain

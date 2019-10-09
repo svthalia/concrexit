@@ -17,7 +17,7 @@ urlpatterns = [
         path('profile/<int:pk>', ProfileDetailView.as_view(),
              name='profile'),
         path('<slug:filter>/', MembersIndex.as_view(), name='index'),
-        path('', MembersIndex.as_view(), name='index'),
+        path('directory/', MembersIndex.as_view(), name='index'),
     ])),
     path('user/', include([
         path('edit-profile/', UserProfileUpdateView.as_view(),

@@ -30,7 +30,7 @@ class TestThabloid(TestCase):
 
     def test_thaboid_get_absolute_url(self):
         self.assertEqual(self.thabloid.get_absolute_url(),
-                         '/thabloid/pages/1998/1/')
+                         '/members/thabloid/pages/1998/1/')
 
     def test_page_urls(self):
         self.assertEqual(

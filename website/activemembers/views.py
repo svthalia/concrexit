@@ -103,8 +103,8 @@ class BoardIndexView(ListView):
 
     def dispatch(self, request, *args, **kwargs) -> HttpResponse:
         lecture_year = datetime_to_lectureyear(datetime.date.today())
-        self.current_board = Board.objects.get(
-            since__year=lecture_year, until__year=lecture_year + 1)
+        self.current_board = Board.objects.filter(
+            since__year=lecture_year, until__year=lecture_year + 1).first()
         return super().dispatch(request, *args, **kwargs)
 
 

@@ -1,6 +1,7 @@
 """The routes defined by this package"""
 # pylint: disable=invalid-name
 from django.conf.urls import url
+from django.urls import path, include
 
 from announcements import views
 
@@ -9,7 +10,9 @@ app_name = "announcements"
 
 #: the actual routes
 urlpatterns = [
-    url(r'^close-announcement$',
-        views.close_announcement,
-        name='close-announcement')
+    path('announcements/', include([
+        path('close-announcement',
+             views.close_announcement,
+             name='close-announcement')
+    ]))
 ]

@@ -415,7 +415,7 @@ class ConfirmEmailViewTest(TestCase):
                     'registrations:confirm-email', args=(self.entry.pk,)))
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(response.url,
-                                 '/registration/register/member/')
+                                 '/association/register/member/')
 
             with self.subTest('Redirect when registration confirm errors'):
                 confirm_entry.side_effect = ValidationError(message='Error')
@@ -424,7 +424,7 @@ class ConfirmEmailViewTest(TestCase):
                     'registrations:confirm-email', args=(self.entry.pk,)))
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(response.url,
-                                 '/registration/register/member/')
+                                 '/association/register/member/')
 
             with self.subTest('Redirect when no entries were processed'):
                 confirm_entry.return_value = 0
@@ -435,7 +435,7 @@ class ConfirmEmailViewTest(TestCase):
                 ))
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(response.url,
-                                 '/registration/register/member/')
+                                 '/association/register/member/')
 
     def test_get_no_mocks(self):
         response = self.client.get(reverse(
@@ -812,7 +812,7 @@ class ReferenceCreateViewTest(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [('/login/?next=' +
+            [('/user/login/?next=' +
               reverse('registrations:reference',
                       args=(self.registration.pk,)), 302)],
             response.redirect_chain

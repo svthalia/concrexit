@@ -25,7 +25,7 @@ class ViewTests(test.TestCase):
     def test_index_en(self):
         """Tests the english index page lists the merchandise items"""
         with translation.override('en'):
-            response = self.client.get('/merchandise/')
+            response = self.client.get('/association/merchandise/')
         self.assertContains(response, 'fancy hat')
         self.assertContains(response, '901.00')
         self.assertContains(response, 'bathrobe')
@@ -33,7 +33,8 @@ class ViewTests(test.TestCase):
 
     def test_index_nl(self):
         """Tests the english index page lists the merchandise items"""
-        response = self.client.get('/merchandise/', HTTP_ACCEPT_LANGUAGE='nl')
+        response = self.client.get('/association/merchandise/',
+                                   HTTP_ACCEPT_LANGUAGE='nl')
         self.assertContains(response, 'Kek hoedje')
         self.assertContains(response, '901,00')
         self.assertContains(response, 'badjas')

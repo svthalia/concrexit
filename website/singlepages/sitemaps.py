@@ -12,14 +12,16 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
         >>> sitemap = StaticViewSitemap()
         >>> sitemap.items()[0]
-        'index'
+        'singlepages:become-active'
 
         :return: the items in the site map
         :rtype: [str]
         """
         # Need to be valid entries for reverse()
         return [
-            'index'
+            'singlepages:become-active',
+            'singlepages:sibling-associations',
+            'singlepages:contact',
         ]
 
     def location(self, obj):
@@ -29,11 +31,16 @@ class StaticViewSitemap(sitemaps.Sitemap):
         Example::
 
             >>> sitemap = StaticViewSitemap()
-            >>> sitemap.location('index')
-            '/'
+            >>> sitemap.location('singlepages:become-active')
+            '/members/become-active'
 
         :param obj: the item to reverse.
         :type obj: str
         :return: the URI to the item.
         """
         return reverse(obj)
+
+
+sitemap = {
+    'singlepages-static': StaticViewSitemap,
+}
