@@ -32,7 +32,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
             >>> sitemap = StaticViewSitemap()
             >>> sitemap.location('singlepages:become-active')
-            '/members/become-active'
+            '/members/become-active/'
 
         :param obj: the item to reverse.
         :type obj: str
