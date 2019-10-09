@@ -12,6 +12,7 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly
 )
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 from rest_framework.viewsets import GenericViewSet
 
 from events import services
@@ -37,13 +38,15 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Event.objects.filter(published=True)
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = (filters.OrderingFilter,)
+    filter_backends = (filters.OrderingFilter, filters.SearchFilter,)
     ordering_fields = ('start', 'end')
+    search_fields = ('title_en', 'title_nl',)
 
     def get_queryset(self):
         queryset = Event.objects.filter(published=True)
 
-        if self.action == 'retrieve':
+        if (self.action == 'retrieve' or
+                api_settings.SEARCH_PARAM in self.request.query_params):
             return queryset
 
         start, end = extract_date_range(self.request, allow_empty=True)
