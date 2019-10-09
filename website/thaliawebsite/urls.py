@@ -9,12 +9,12 @@ Examples:
 * Function views
 
   1. Add an import: ``from my_app import views``
-  2. Add a URL to ``urlpatterns``: ``url(r'^$', views.home, name='home')``
+  2. Add a URL to ``urlpatterns``: ``path('', views.home, name='home')``
 
 * Class-based views
 
   1. Add an import: ``from other_app.views import Home``
-  2. Add a URL to urlpatterns: ``url(r'^$', Home.as_view(), name='home')``
+  2. Add a URL to urlpatterns: ``path('', Home.as_view(), name='home')``
 
 * Including another URLconf
 
@@ -22,7 +22,7 @@ Examples:
 
         from django.conf.urls import url, include
 
-  2. Add a URL to urlpatterns: ``url(r'^blog/', include('blog.urls'))``
+  2. Add a URL to urlpatterns: ``path('blog/', include('blog.urls'))``
 """
 
 # pragma: noqa
@@ -30,32 +30,25 @@ Examples:
 import os.path
 
 from django.conf import settings
-from django.conf.urls import include, url
+from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
-from django.urls import path
+from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
 
-import members
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from education.sitemaps import sitemap as education_sitemap
 from events.sitemaps import sitemap as events_sitemap
-from events.views import AlumniEventsView
 from members.sitemaps import sitemap as members_sitemap
 from members.views import ObtainThaliaAuthToken
 from partners.sitemaps import sitemap as partners_sitemap
+from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
-from thaliawebsite.views import (
-    PrivacyPolicyView, EventTermsView,
-    SiblingAssociationsView, TestCrashView,
-    ContactView, IndexView,
-    BecomeActiveView,
-    StyleGuideView
-)
+from thaliawebsite.views import TestCrashView, IndexView
 from utils.media.views import (generate_thumbnail, private_media)
 from .sitemaps import StaticViewSitemap
 
@@ -71,66 +64,57 @@ THALIA_SITEMAP.update(thabloid_sitemap)
 THALIA_SITEMAP.update(partners_sitemap)
 THALIA_SITEMAP.update(education_sitemap)
 THALIA_SITEMAP.update(events_sitemap)
+THALIA_SITEMAP.update(singlepages_sitemap)
 
 # pragma pylint: disable=line-too-long
 urlpatterns = [  # pylint: disable=invalid-name
-    url(r'^admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
-    path('privacy-policy/', PrivacyPolicyView.as_view(), name='privacy-policy'),
-    path('event-registration-terms/', EventTermsView.as_view(), name='event-registration-terms'),
-    path('alumni/', AlumniEventsView.as_view(), name='alumni'),
-    url(r'^registration/', include('registrations.urls')),
-    url(r'^events/', include('events.urls')),
-    url(r'^pizzas/', include('pizzas.urls')),
-    url(r'^newsletters/', include('newsletters.urls')),
-    url(r'^', include([  # 'association' menu
-        url(r'^merchandise/', include('merchandise.urls')),
-        path('sibling-associations/', SiblingAssociationsView.as_view(), name='sibling-associations'),
-        url(r'^thabloid/', include('thabloid.urls')),
+    # Default helpers
+    path('user/', include([
+        path('login/', LoginView.as_view(authentication_form=AuthenticationForm), name='login'),
+        path('', include('django.contrib.auth.urls')),
     ])),
-    url(r'^members/', include([  # 'for members' menu
-        path('become-active/', BecomeActiveView.as_view(), name='become-active'),
-        url(r'^photos/', include('photos.urls')),
-        path('styleguide/', StyleGuideView.as_view(), name='styleguide'),
+    path('i18n/', include([
+        path('', include('django.conf.urls.i18n')),
+        path('js/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     ])),
-    url(r'^career/', include('partners.urls')),
-    url(r'^contact$', ContactView.as_view(), name='contact'),
-    url(r'^api/', include([
-        url(r'^v1/', include([
-            url(r'^token-auth', ObtainThaliaAuthToken.as_view()),
-            url(r'^', include('activemembers.api.urls')),
-            url(r'^', include('events.api.urls')),
-            url(r'^', include('members.api.urls')),
-            url(r'^', include('partners.api.urls')),
-            url(r'^', include('mailinglists.api.urls')),
-            url(r'^', include('pizzas.api.urls')),
-            url(r'^', include('photos.api.urls')),
-            url(r'^', include('pushnotifications.api.urls')),
-        ])),
+    # Apps
+    path('', include('singlepages.urls')),
+    path('', include('merchandise.urls')),
+    path('', include('thabloid.urls')),
+    path('', include('registrations.urls')),
+    path('', include('newsletters.urls')),
+    path('', include('announcements.urls')),
+    path('', include('pushnotifications.urls')),
+    path('', include('photos.urls')),
+    path('', include('members.urls')),
+    path('', include('payments.urls')),
+    path('', include('education.urls')),
+    path('', include('activemembers.urls')),
+    path('', include('documents.urls')),
+    path('', include('events.urls')),
+    path('', include('pizzas.urls')),
+    path('', include('partners.urls')),
+    # App API
+    path('api/v1/', include([
+        path('token-auth', ObtainThaliaAuthToken.as_view()),
+        path('', include('activemembers.api.urls')),
+        path('', include('events.api.urls')),
+        path('', include('members.api.urls')),
+        path('', include('partners.api.urls')),
+        path('', include('mailinglists.api.urls')),
+        path('', include('pizzas.api.urls')),
+        path('', include('photos.api.urls')),
+        path('', include('pushnotifications.api.urls')),
     ])),
-    url(r'^announcements/', include('announcements.urls')),
-    url(r'^pushnotifications/', include('pushnotifications.urls')),
-    # Default login helpers
-    url(r'^login/$', LoginView.as_view(), {'authentication_form': AuthenticationForm},
-        name='login'),
-    url(r'^user/', include('django.contrib.auth.urls')),
-    url(r'^i18n/', include('django.conf.urls.i18n')),
     # Sitemap
-    url(r'^sitemap\.xml$', sitemap, {'sitemaps': THALIA_SITEMAP},
-        name='django.contrib.sitemaps.views.sitemap'),
+    path('sitemap.xml', sitemap, {'sitemaps': THALIA_SITEMAP}, name='django.contrib.sitemaps.views.sitemap'),
     # Dependencies
-    url(r'^tinymce/', include('tinymce.urls')),
-    # Javascript translation catalog
-    url(r'jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    path(r'tinymce', include('tinymce.urls')),
     # Provide something to test error handling. Limited to admins.
     path('crash/', TestCrashView.as_view()),
     # Custom media paths
-    url(r'^media/generate-thumbnail/(?P<request_path>.*)', generate_thumbnail, name='generate-thumbnail'),
-    url(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media'),
-    url('', include('members.urls')),
-    url('', include('payments.urls')),
-    url('', include('education.urls')),
-    url('', include('activemembers.urls')),
-    url('', include('documents.urls')),
-] + static(settings.MEDIA_URL + 'public/',
-           document_root=os.path.join(settings.MEDIA_ROOT, 'public'))
+    re_path(r'^media/generate-thumbnail/(?P<request_path>.*)', generate_thumbnail, name='generate-thumbnail'),
+    re_path(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media'),
+] + static(settings.MEDIA_URL + 'public/', document_root=os.path.join(settings.MEDIA_ROOT, 'public'))

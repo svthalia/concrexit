@@ -24,7 +24,7 @@ urlpatterns = [
                 path('', CourseDetailView.as_view(), name="course"),
             ])),
             path('exam/<int:pk>/', ExamDetailView.as_view(), name="exam"),
-            path('summary/(<int:pk>/', SummaryDetailView.as_view(),
+            path('summary/<int:pk>/', SummaryDetailView.as_view(),
                  name="summary"),
             path('exam/upload/', ExamCreateView.as_view(),
                  name="submit-exam"),

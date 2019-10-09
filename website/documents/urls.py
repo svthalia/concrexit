@@ -6,7 +6,7 @@ from . import views
 app_name = "documents"
 
 urlpatterns = [
-    path('documents/', include([
+    path('association/documents/', include([
         path('document/<int:pk>/',
              views.DocumentDownloadView.as_view(), name='document'),
         path('',

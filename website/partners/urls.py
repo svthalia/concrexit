@@ -1,11 +1,14 @@
 from django.conf.urls import url
+from django.urls import path, include
 
 from . import views
 
 app_name = "partners"
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^partners/(?P<slug>[-\w]+)$', views.partner, name='partner'),
-    url(r'^vacancies$', views.vacancies, name='vacancies'),
+    path('career/', include([
+        path('', views.index, name='index'),
+        path('partners/<slug>/', views.partner, name='partner'),
+        path('vacancies', views.vacancies, name='vacancies'),
+    ])),
 ]

@@ -25,10 +25,10 @@ MAIN_MENU = [
             {'title': _('Documents'), 'name': 'documents:index'},
             {'title': _('Merchandise'), 'name': 'merchandise:index'},
             {'title': _('Sibling Associations'),
-             'name': 'sibling-associations'},
+             'name': 'singlepages:sibling-associations'},
             {'title': _('Become a Member'), 'name': 'registrations:index'},
             {'title': _('Thabloid'), 'name': 'thabloid:index'},
-            {'title': _('Alumni'), 'name': 'alumni'},
+            {'title': _('Alumni'), 'name': 'events:alumni'},
         ],
     },
     {
@@ -37,8 +37,8 @@ MAIN_MENU = [
             {'title': _('Member list'), 'name': 'members:index'},
             {'title': _('Photos'), 'name': 'photos:index'},
             {'title': _('Statistics'), 'name': 'members:statistics'},
-            {'title': _('Styleguide'), 'name': 'styleguide'},
-            {'title': _('Become Active'), 'name': 'become-active'},
+            {'title': _('Styleguide'), 'name': 'singlepages:styleguide'},
+            {'title': _('Become Active'), 'name': 'singlepages:become-active'},
             {'title': _('Nextcloud'), 'url': 'https://cloud.thalia.nu/',
              'authenticated': True},
         ],
@@ -80,5 +80,5 @@ MAIN_MENU = [
             },
         ]
     },
-    {'title': _('Contact'), 'name': 'contact'},
+    {'title': _('Contact'), 'name': 'singlepages:contact'},
 ]

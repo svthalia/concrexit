@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'announcements.apps.AnnouncementsConfig',
     'registrations.apps.RegistrationsConfig',
     'payments.apps.PaymentsConfig',
+    'singlepages.apps.SinglepagesConfig',
 ]
 
 # enable template check if it's installed
@@ -141,7 +142,7 @@ DATABASES = {
 
 # Login pages
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/user/login/'
 
 LOGIN_REDIRECT_URL = '/'
 

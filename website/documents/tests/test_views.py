@@ -52,18 +52,20 @@ class GetDocumentTest(TestCase):
         logger.setLevel(self.previous_log_level)
 
     def test_basic(self):
-        response = self.client.post('/documents/document/1', follow=True)
+        response = self.client.post('/association/documents/document/1',
+                                    follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertIn(b''.join(response.streaming_content),
                       [b'file_nl', b'file_en'])
 
     def test_does_not_exist(self):
-        response = self.client.post('/documents/document/999', follow=True)
+        response = self.client.post('/association/documents/document/999',
+                                    follow=True)
         self.assertEqual(response.status_code, 404)
 
     def test_multilingual(self):
         response = self.client.post(
-            '/documents/document/1',
+            '/association/documents/document/1',
             HTTP_ACCEPT_LANGUAGE='nl',
             follow=True
         )
@@ -72,7 +74,7 @@ class GetDocumentTest(TestCase):
         _close_filehandles(response)
 
         response = self.client.post(
-            '/documents/document/1',
+            '/association/documents/document/1',
             HTTP_ACCEPT_LANGUAGE='en',
             follow=True
         )
@@ -84,14 +86,16 @@ class GetDocumentTest(TestCase):
         self.document.members_only = True
         self.document.save()
 
-        response = self.client.post('/documents/document/1', follow=True)
+        response = self.client.post('/association/documents/document/1',
+                                    follow=True)
         template_names = [template.name for template in response.templates]
         self.assertIn('registration/login.html', template_names)
         _close_filehandles(response)
 
         self.client.force_login(self.member)
 
-        response = self.client.post('/documents/document/1', follow=True)
+        response = self.client.post('/association/documents/document/1',
+                                    follow=True)
         template_names = [template.name for template in response.templates]
         self.assertNotIn('registration/login.html', template_names)
         _close_filehandles(response)
