@@ -193,10 +193,15 @@ class EventListSerializer(serializers.ModelSerializer):
 
     def _registered(self, instance):
         try:
-            return services.is_user_registered(self.context['request'].user,
-                                               instance)
+            registered = services.is_user_registered(
+                self.context['request'].user,
+                instance,
+            )
+            if registered is None:
+                return False
+            return registered
         except AttributeError:
-            return None
+            return False
 
     def _pizza(self, instance):
         pizza_events = PizzaEvent.objects.filter(event=instance)
