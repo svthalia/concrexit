@@ -3,6 +3,7 @@ import datetime
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import override
 from django.utils.translation import ugettext_lazy as _
 from firebase_admin import messaging, exceptions
@@ -77,7 +78,7 @@ class Device(models.Model):
         ).format(user=self.user, device_type=self.type)
 
 
-class MessageManager(models.Manager):
+class NormalMessageManager(models.Manager):
     """Returns manual messages only"""
 
     def get_queryset(self):
@@ -85,10 +86,18 @@ class MessageManager(models.Manager):
                 .filter(scheduledmessage__scheduled=None))
 
 
+class MessageManager(models.Manager):
+    """Returns all messages"""
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+
 class Message(models.Model, metaclass=ModelTranslateMeta):
     """Describes a push notification"""
 
-    objects = MessageManager()
+    objects = NormalMessageManager()
+    all_objects = MessageManager()
 
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     title = MultilingualField(
@@ -112,9 +121,9 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
         verbose_name=_('category'),
         default="general"
     )
-    sent = models.BooleanField(
+    sent = models.DateTimeField(
         verbose_name=_('sent'),
-        default=False
+        null=True,
     )
     failure = models.IntegerField(
         verbose_name=_('failure'),
@@ -187,7 +196,7 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                         except exceptions.FirebaseError:
                             failure_total += 1
 
-            self.sent = True
+            self.sent = timezone.now()
             self.success = success_total
             self.failure = failure_total
             self.save()

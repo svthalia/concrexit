@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
         before_time = timezone.now() + timedelta(seconds=interval/2)
         messages = ScheduledMessage.objects.filter(
-            sent=False, time__lte=before_time)
+            sent__isnull=True, time__lte=before_time)
 
         for message in messages:
             if (timezone.now() - now).seconds < interval:

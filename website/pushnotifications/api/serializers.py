@@ -1,7 +1,7 @@
 from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
-from pushnotifications.models import Device, Category
+from pushnotifications.models import Device, Category, Message
 
 
 class DeviceSerializer(ModelSerializer):
@@ -35,3 +35,10 @@ class CategorySerializer(ModelSerializer):
         model = Category
 
         fields = ('key', 'name', 'description')
+
+
+class MessageSerializer(ModelSerializer):
+    class Meta:
+        model = Message
+
+        fields = ('pk', 'title', 'body', 'url', 'category', 'sent')
