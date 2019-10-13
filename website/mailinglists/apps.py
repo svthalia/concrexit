@@ -8,3 +8,7 @@ class MailinglistsConfig(AppConfig):
 
     name = 'mailinglists'
     verbose_name = _('Mailing lists')
+
+    def ready(self):
+        """Imports the signals when the app is ready"""
+        from . import signals  # noqa: F401

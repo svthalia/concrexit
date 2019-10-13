@@ -19,7 +19,7 @@ class MailingListSerializer(serializers.ModelSerializer):
 
     def _names(self, instance):
         """Return list of names of the the mailing list and its aliases."""
-        return [instance.name] + [x.alias for x in instance.aliasses.all()]
+        return [instance.name] + [x.alias for x in instance.aliases.all()]
 
     def _addresses(self, instance):
         """Return list of all subscribed addresses."""

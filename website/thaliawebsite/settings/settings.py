@@ -261,6 +261,16 @@ THUMBNAIL_SIZES = {
 # Placeholder Firebase config
 FIREBASE_CREDENTIALS = {}
 
+# Placeholder GSuite config
+GSUITE_ADMIN_CREDENTIALS = {}
+GSUITE_ADMIN_USER = 'concrexit@thalia.nu'
+GSUITE_ADMIN_SCOPES = [
+    'https://www.googleapis.com/auth/admin.directory.group',
+    'https://www.googleapis.com/auth/admin.directory.user',
+    'https://www.googleapis.com/auth/apps.groups.settings'
+]
+GSUITE_DOMAIN = 'thalia.localhost'
+
 # Default FROM email
 DEFAULT_FROM_EMAIL = f'noreply@{SITE_DOMAIN}'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL

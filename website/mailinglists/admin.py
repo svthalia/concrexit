@@ -28,5 +28,5 @@ class MailingListAdmin(admin.ModelAdmin):
 
     def alias_names(self, obj):
         """Return list of aliases of obj."""
-        return [x.alias for x in obj.aliasses.all()]
-    alias_names.short_description = _('List aliasses')
+        return [x.alias for x in obj.aliases.all()]
+    alias_names.short_description = _('List aliases')

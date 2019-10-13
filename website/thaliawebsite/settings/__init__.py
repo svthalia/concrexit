@@ -9,6 +9,8 @@ overrides.
 # flake8: noqa: ignore F403
 import logging
 from firebase_admin import initialize_app, credentials
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
 # Load all default settings because we need to use settings.configure
 # for sphinx documentation generation.
@@ -39,3 +41,10 @@ if FIREBASE_CREDENTIALS != {}:
             credential=credentials.Certificate(FIREBASE_CREDENTIALS))
     except ValueError as e:
         logger.error('Firebase application failed to initialise')
+
+
+GSUITE_ADMIN_CREDENTIALS = (
+    service_account.Credentials.from_service_account_info(
+        GSUITE_ADMIN_CREDENTIALS, scopes=GSUITE_ADMIN_SCOPES
+    ).with_subject(GSUITE_ADMIN_USER)
+)
