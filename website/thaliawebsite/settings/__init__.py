@@ -43,8 +43,9 @@ if FIREBASE_CREDENTIALS != {}:
         logger.error('Firebase application failed to initialise')
 
 
-GSUITE_ADMIN_CREDENTIALS = (
-    service_account.Credentials.from_service_account_info(
-        GSUITE_ADMIN_CREDENTIALS, scopes=GSUITE_ADMIN_SCOPES
-    ).with_subject(GSUITE_ADMIN_USER)
-)
+if GSUITE_ADMIN_CREDENTIALS != {}:
+    GSUITE_ADMIN_CREDENTIALS = (
+        service_account.Credentials.from_service_account_info(
+            GSUITE_ADMIN_CREDENTIALS, scopes=GSUITE_ADMIN_SCOPES
+        ).with_subject(GSUITE_ADMIN_USER)
+    )

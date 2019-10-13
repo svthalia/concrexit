@@ -43,15 +43,6 @@ class MailingListTest(TestCase):
         mailinglist.name = "activemembers1"
         mailinglist.clean()
 
-    def test_autoresponse_has_text(self):
-        self.mailinglist.autoresponse_enabled = True
-
-        with self.assertRaises(ValidationError):
-            self.mailinglist.clean()
-
-        self.mailinglist.autoresponse_text = "Hello World"
-        self.mailinglist.clean()
-
 
 class ListAliasTest(TestCase):
     """Tests list aliases"""

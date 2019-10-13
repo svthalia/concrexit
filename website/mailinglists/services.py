@@ -40,42 +40,41 @@ def get_automatic_lists():
     if 0 < timezone.now().month < 9:
         lectureyear += 1
     active_mentorships = Mentorship.objects.filter(
-        year=lectureyear)
+        year=lectureyear).prefetch_related('member')
     mentors = [x.member for x in active_mentorships]
 
     lists = []
 
     lists += _create_automatic_list(
         ['members', 'leden'], '[THALIA]',
-        Member.all_with_membership('member'), True, True, True)
+        Member.all_with_membership('member'), '', True, True, True)
     lists += _create_automatic_list(
         ['benefactors', 'begunstigers'],
         '[THALIA]',
-        Member.all_with_membership(Membership.BENEFACTOR),
+        Member.all_with_membership(Membership.BENEFACTOR), '',
         multilingual=True)
     lists += _create_automatic_list(
         ['honorary', 'ereleden'], '[THALIA]', Member.all_with_membership(
-            'honorary'), multilingual=True)
+            'honorary'), '', multilingual=True)
     lists += _create_automatic_list(
-        ['mentors'], '[THALIA] [MENTORS]', mentors, moderated=False)
+        ['mentors'], '[THALIA] [MENTORS]', mentors, '', moderated=False)
     lists += _create_automatic_list(
         ['activemembers'], '[THALIA] [COMMITTEES]',
-        active_members)
+        active_members, '')
     lists += _create_automatic_list(
         ['committeechairs', 'commissievoorzitters'], '[THALIA] [CHAIRS]',
-        committee_chair_emails, moderated=False)
+        committee_chair_emails, '', moderated=False)
     lists += _create_automatic_list(
         ['societychairs', 'gezelschapvoorzitters'], '[THALIA] [SOCIETY]',
-        society_chair_emails, moderated=False)
+        society_chair_emails, '', moderated=False)
     lists += _create_automatic_list(
         ['optin'], '[THALIA] [OPTIN]', Member.current_members.filter(
-            profile__receive_optin=True),
-        multilingual=True)
+            profile__receive_optin=True), '', multilingual=True)
 
     all_previous_board_members = []
 
     for board in Board.objects.filter(
-        since__year__lte=lectureyear).order_by('since__year'):
+            since__year__lte=lectureyear).order_by('since__year'):
         board_members = [board.member for board in
                          MemberGroupMembership.objects.filter
                          (group=board).prefetch_related('member')]

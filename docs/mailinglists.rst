@@ -32,6 +32,14 @@ mailinglists.apps module
    :undoc-members:
    :show-inheritance:
 
+mailinglists.gsuite module
+--------------------------
+
+.. automodule:: mailinglists.gsuite
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 mailinglists.models module
 --------------------------
 
@@ -44,6 +52,14 @@ mailinglists.services module
 ----------------------------
 
 .. automodule:: mailinglists.services
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+mailinglists.signals module
+---------------------------
+
+.. automodule:: mailinglists.signals
    :members:
    :undoc-members:
    :show-inheritance:

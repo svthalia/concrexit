@@ -25,11 +25,9 @@ def get_directory_api():
     )
 
 
-def get_group_settings_api():
+def get_groups_settings_api():
     return build(
-        'groups', 'v1',
+        'groupssettings', 'v1',
         credentials=settings.GSUITE_ADMIN_CREDENTIALS,
         cache=memory_cache
     )
-
-
