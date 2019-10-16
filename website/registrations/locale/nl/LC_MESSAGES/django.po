@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-08 11:04+0200\n"
-"PO-Revision-Date: 2019-09-08 11:04+0200\n"
+"POT-Creation-Date: 2019-10-09 20:09+0200\n"
+"PO-Revision-Date: 2019-10-09 20:09+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -115,6 +115,11 @@ msgstr "verjaardag"
 #: forms.py
 msgid "I accept the <a href=\"{}\">privacy policy</a>."
 msgstr "Ik accepteer het <a href=\"{}\">privacybeleid</a>."
+
+#: forms.py
+msgid "What lecture year did you start studying at Radboud University?"
+msgstr ""
+"Welk collegejaar ben je begonnen met studeren aan de Radboud Universiteit?"
 
 #: forms.py
 msgid "I am an employee of iCIS"

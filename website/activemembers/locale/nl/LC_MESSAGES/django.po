@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-15 16:04+0100\n"
-"PO-Revision-Date: 2019-01-15 16:07+0100\n"
+"POT-Creation-Date: 2019-10-09 20:36+0200\n"
+"PO-Revision-Date: 2019-10-09 20:38+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: admin.py models.py
 msgid "group memberships"
@@ -98,6 +98,10 @@ msgstr "Exporteer de geselecteerde lidmaatschappen"
 msgid "Active members"
 msgstr "Actieve leden"
 
+#: forms.py models.py
+msgid "Member"
+msgstr "Lid"
+
 #: models.py
 msgid "Name"
 msgstr "Naam"
@@ -130,7 +134,7 @@ msgstr ""
 "Dit moet alleen uitgevinkt worden als de commissie is opgeheven. De website "
 "gaat er vanuit dat de commissies op de site op enig moment bestonden."
 
-#: models.py
+#: models.py templates/activemembers/membergroup_detail.html
 msgid "contact email address"
 msgstr "contact e-mailadres"
 
@@ -190,10 +194,6 @@ msgid "A board already exists for those years"
 msgstr "Er bestaat al een bestuur voor die jaren"
 
 #: models.py
-msgid "Member"
-msgstr "Lid"
-
-#: models.py
 msgid "The date this member joined in this role"
 msgstr "De datum waarop deze persoon lid werd in deze rol"
 
@@ -232,16 +232,17 @@ msgid "Start date can't be after group end date"
 msgstr "De begindatum kan niet na de einddatum van de groep liggen"
 
 #: models.py
-msgid "End date cannot be set for boards"
-msgstr "Voor besturen kan geen einddatum worden opgegeven"
-
-#: models.py
 msgid "There already is a chair for this time period"
 msgstr "Er is al een voorzitter voor deze periode"
 
 #: models.py
 msgid "This member is already in the group for this period"
 msgstr "Deze persoon is al lid van deze groep in de aangegeven periode"
+
+#: models.py
+#, python-brace-format
+msgid "{member} membership of {group} since {since}, until {until}"
+msgstr "{member} lidmaatschap van {group} sinds {since}, tot {until}"
 
 #: models.py
 msgid "group membership"
