@@ -2,6 +2,7 @@
 {% load i18n thumbnail static activemembers_cards alert %}
 {% block title %}{% trans 'committees'|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans 'committees'|capfirst %} — {{ block.super }}{% endblock %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block body %}
     <section id="activemembers-committees" class="page-section">
@@ -13,7 +14,7 @@
             <div class="row mt-4">
                 {% for committee in committees %}
                     <div class="col-4 col-md-3 my-3">
-                        {% membergroup_card committee %}
+                        {% membergroup_card committee LANGUAGE_CODE %}
                     </div>
                 {% empty %}
                     {% trans 'There are no committees!' as no_committees %}
