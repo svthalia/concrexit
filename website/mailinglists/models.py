@@ -41,23 +41,9 @@ class MailingList(models.Model):
         help_text=_('Enter the name for the list (i.e. name@thalia.nu).'),
     )
 
-    prefix = models.CharField(
-        verbose_name=_("Prefix"),
-        blank=True,
-        max_length=200,
-        help_text=_('Enter a prefix that should be prefixed to subjects '
-                    'of all emails sent via this mailinglist.'),
-    )
-
     description = models.TextField(
         verbose_name=_("Description"),
         help_text=_('Write a description for the mailinglist.'),
-    )
-
-    archived = models.BooleanField(
-        verbose_name=_("Archived"),
-        default=True,
-        help_text=_('Indicate whether an archive should be kept.')
     )
 
     moderated = models.BooleanField(

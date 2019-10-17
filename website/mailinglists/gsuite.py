@@ -1,7 +1,8 @@
 """GSuite syncing helpers defined by the mailinglists package"""
-
+import logging
 import threading
 from time import sleep
+from typing import List
 
 from django.conf import settings
 from django.utils.datastructures import ImmutableList
@@ -11,275 +12,315 @@ from mailinglists.models import MailingList
 from mailinglists.services import get_automatic_lists
 from utils.google_api import get_directory_api, get_groups_settings_api
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
-class GroupData:
-    def __init__(self, name, description='', moderated=False, archived=False,
-                 prefix='', aliases=ImmutableList([]),
-                 addresses=ImmutableList([])):
+
+class GSuiteSyncService:
+    class GroupData:
+        def __init__(self, name, description='', moderated=False,
+                     aliases=ImmutableList([]), addresses=ImmutableList([])):
+            super().__init__()
+            self.moderated = moderated
+            self.name = name
+            self.description = description
+            self.aliases = aliases
+            self.addresses = addresses
+
+        def __eq__(self, other: object) -> bool:
+            if isinstance(other, self.__class__):
+                return self.__dict__ == other.__dict__
+            return False
+
+    def __init__(self, groups_settings_api=get_groups_settings_api(),
+                 directory_api=get_directory_api()):
         super().__init__()
-        self.moderated = moderated
-        self.archived = archived
-        self.prefix = prefix
-        self.name = name
-        self.description = description
-        self.aliases = aliases
-        self.addresses = addresses
+        self.groups_settings_api = groups_settings_api
+        self.directory_api = directory_api
 
-
-def create_group(group):
-    """
-    Create a new group based on the provided data
-    :param group: group data
-    """
-    groups_settings_api = get_groups_settings_api()
-    directory_api = get_directory_api()
-    directory_api.groups().insert(
-        body={
-            'email': f'{group.name}@{settings.GSUITE_DOMAIN}',
-            'name': group.name,
-            'description': group.description,
-        },
-    ).execute()
-    # Wait for mailinglist creation to complete
-    # Docs say we need to wait a minute, but since we always update lists
-    # an error in the list members update is not a problem
-    sleep(0.5)
-    groups_settings_api.groups().update(
-        groupUniqueId=f'{group.name}@{settings.GSUITE_DOMAIN}',
-        body={
-            "allowExternalMembers": "true",
-            "allowWebPosting": "false",
-            "isArchived": str(group.archived).lower(),
-            "membersCanPostAsTheGroup": "false",
-            "messageModerationLevel": "MODERATE_ALL_MESSAGES"
-            if group.moderated else "MODERATE_NONE",
-            "replyTo": "REPLY_TO_LIST",
-            "whoCanAssistContent": "NONE",
-            "whoCanContactOwner": "ALL_MANAGERS_CAN_CONTACT",
-            "whoCanDiscoverGroup": "ALL_MEMBERS_CAN_DISCOVER",
-            "whoCanJoin": "INVITED_CAN_JOIN",
-            "whoCanLeaveGroup": "NONE_CAN_LEAVE",
-            "whoCanModerateContent": "OWNERS_AND_MANAGERS",
-            "whoCanModerateMembers": "NONE",
-            "whoCanPostMessage": "ANYONE_CAN_POST",
-            "whoCanViewGroup": "ALL_MANAGERS_CAN_VIEW",
-            "whoCanViewMembership": "ALL_MANAGERS_CAN_VIEW"
+    @staticmethod
+    def _group_settings(moderated):
+        return {
+            'allowExternalMembers': 'true',
+            'allowWebPosting': 'false',
+            'archiveOnly': 'false',
+            'isArchived': 'true',
+            'membersCanPostAsTheGroup': 'false',
+            'messageModerationLevel': 'MODERATE_ALL_MESSAGES'
+            if moderated else 'MODERATE_NONE',
+            'replyTo': 'REPLY_TO_SENDER',
+            'whoCanAssistContent': 'NONE',
+            'whoCanContactOwner': 'ALL_MANAGERS_CAN_CONTACT',
+            'whoCanDiscoverGroup': 'ALL_MEMBERS_CAN_DISCOVER',
+            'whoCanJoin': 'INVITED_CAN_JOIN',
+            'whoCanLeaveGroup': 'NONE_CAN_LEAVE',
+            'whoCanModerateContent': 'OWNERS_AND_MANAGERS',
+            'whoCanModerateMembers': 'NONE',
+            'whoCanPostMessage': 'ANYONE_CAN_POST',
+            'whoCanViewGroup': 'ALL_MANAGERS_CAN_VIEW',
+            'whoCanViewMembership': 'ALL_MANAGERS_CAN_VIEW'
         }
-    ).execute()
-    _update_group_members(group)
-    _update_group_aliases(group)
 
-
-def update_group(old_name, group):
-    """
-    Update a group based on the provided name and data
-    :param old_name: old group name
-    :param group: new group data
-    """
-    groups_settings_api = get_groups_settings_api()
-    directory_api = get_directory_api()
-    directory_api.groups().update(
-        groupKey=f'{old_name}@{settings.GSUITE_DOMAIN}',
-        body={
-            'email': f'{group.name}@{settings.GSUITE_DOMAIN}',
-            'name': group.name,
-            'description': group.description,
-        }
-    )
-    groups_settings_api.groups().patch(
-        groupUniqueId=f'{group.name}@{settings.GSUITE_DOMAIN}',
-        body={
-            "isArchived": str(group.archived).lower(),
-            "messageModerationLevel": "MODERATE_ALL_MESSAGES"
-            if group.moderated else "MODERATE_NONE",
-        }
-    ).execute()
-    _update_group_aliases(group)
-    _update_group_members(group)
-
-
-def _update_group_aliases(group: GroupData):
-    """
-    Update the aliases of a group based on existing values
-    :param group: group data
-    """
-    directory_api = get_directory_api()
-    aliases_response = directory_api.groups().aliases().list(
-        groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
-    ).execute()
-
-    existing_aliases = [a['alias'] for a in
-                        aliases_response.get('aliases', [])]
-    new_aliases = [f'{a}@{settings.GSUITE_DOMAIN}' for a in group.aliases]
-
-    remove_list = [x for x in existing_aliases if x not in new_aliases]
-    insert_list = [x for x in new_aliases if x not in existing_aliases]
-
-    for remove_alias in remove_list:
+    def create_group(self, group):
+        """
+        Create a new group based on the provided data
+        :param group: group data
+        """
         try:
-            directory_api.groups().aliases().delete(
-                groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
-                alias=remove_alias
-            ).execute()
-        except HttpError:
-            pass  # Ignore error, API returned failing value
-
-    for insert_alias in insert_list:
-        try:
-            directory_api.groups().aliases().insert(
-                groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
+            self.directory_api.groups().insert(
                 body={
-                    'alias': insert_alias
+                    'email': f'{group.name}@{settings.GSUITE_DOMAIN}',
+                    'name': group.name,
+                    'description': group.description,
+                },
+            ).execute()
+            # Wait for mailinglist creation to complete Docs say we need to
+            # wait a minute, but since we always update lists
+            # an error in the list members update is not a problem
+            sleep(0.5)
+            self.groups_settings_api.groups().update(
+                groupUniqueId=f'{group.name}@{settings.GSUITE_DOMAIN}',
+                body=self._group_settings(group.moderated)
+            ).execute()
+        except HttpError as e:
+            logger.error(f'Could not successfully finish '
+                         f'creating the list {group.name}', e.content)
+            return
+
+        self._update_group_members(group)
+        self._update_group_aliases(group)
+
+    def update_group(self, old_name, group):
+        """
+        Update a group based on the provided name and data
+        :param old_name: old group name
+        :param group: new group data
+        """
+        try:
+            self.directory_api.groups().update(
+                groupKey=f'{old_name}@{settings.GSUITE_DOMAIN}',
+                body={
+                    'email': f'{group.name}@{settings.GSUITE_DOMAIN}',
+                    'name': group.name,
+                    'description': group.description,
                 }
             ).execute()
-        except HttpError:
-            pass  # Ignore error, API returned failing value
-
-
-def delete_group(name: str):
-    """
-    Removes the specified list
-    :param name: Group name
-    """
-    directory_api = get_directory_api()
-    directory_api.groups().delete(
-        groupKey=f'{name}@{settings.GSUITE_DOMAIN}',
-    ).execute()
-
-
-def _update_group_members(group: GroupData):
-    """
-    Update the group members of the specified group based
-    on the existing members
-    :param group: group data
-    """
-    directory_api = get_directory_api()
-    try:
-        members_response = directory_api.members().list(
-            groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
-        ).execute()
-        members_list = members_response.get('members', [])
-        while 'nextPageToken' in members_response:
-            members_response = directory_api.members().list(
-                groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
-                pageToken=members_response['nextPageToken']
+            self.groups_settings_api.groups().update(
+                groupUniqueId=f'{group.name}@{settings.GSUITE_DOMAIN}',
+                body=self._group_settings(group.moderated)
             ).execute()
-            members_list += members_response.get('members', [])
+        except HttpError as e:
+            logger.error(f'Could not update list {group.name}', e.content)
+            return
 
-        existing_members = [m['email'] for m in members_list
-                            if m['role'] == 'MEMBER']
-        existing_managers = [m['email'] for m in members_list
-                             if m['role'] == 'MANAGER']
-    except HttpError:
-        return  # the list does not exist or something else is wrong
-    new_members = list(group.addresses)
+        self._update_group_members(group)
+        self._update_group_aliases(group)
 
-    remove_list = [x for x in existing_members if x not in new_members]
-    insert_list = [x for x in new_members if x not in existing_members
-                   and x not in existing_managers]
-
-    for remove_member in remove_list:
+    def _update_group_aliases(self, group: GroupData):
+        """
+        Update the aliases of a group based on existing values
+        :param group: group data
+        """
         try:
-            directory_api.members().delete(
+            aliases_response = self.directory_api.groups().aliases().list(
                 groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
-                memberKey=remove_member
             ).execute()
-        except HttpError:
-            pass  # Ignore error, API returned failing value
+        except HttpError as e:
+            logger.error(f'Could not obtain existing aliases'
+                         f'for list {group.name}', e.content)
+            return
 
-    for insert_member in insert_list:
+        existing_aliases = [a['alias'] for a in
+                            aliases_response.get('aliases', [])]
+        new_aliases = [f'{a}@{settings.GSUITE_DOMAIN}' for a in group.aliases]
+
+        remove_list = [x for x in existing_aliases if x not in new_aliases]
+        insert_list = [x for x in new_aliases if x not in existing_aliases]
+
+        for remove_alias in remove_list:
+            try:
+                self.directory_api.groups().aliases().delete(
+                    groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
+                    alias=remove_alias
+                ).execute()
+            except HttpError as e:
+                logger.error(
+                    f'Could not remove alias '
+                    f'{remove_list} for list {group.name}',
+                    e.content
+                )
+
+        for insert_alias in insert_list:
+            try:
+                self.directory_api.groups().aliases().insert(
+                    groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
+                    body={
+                        'alias': insert_alias
+                    }
+                ).execute()
+            except HttpError as e:
+                logger.error(
+                    f'Could not insert alias '
+                    f'{insert_alias} for list {group.name}',
+                    e.content
+                )
+
+    def delete_group(self, name: str):
+        """
+        Set the specified list to unused, this is not a real delete
+        :param name: Group name
+        """
         try:
-            directory_api.members().insert(
-                groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
+            self._update_group_members(
+                GSuiteSyncService.GroupData(name, addresses=[])
+            )
+            self._update_group_aliases(
+                GSuiteSyncService.GroupData(name, aliases=[])
+            )
+            self.groups_settings_api.groups().patch(
+                groupUniqueId=f'{name}@{settings.GSUITE_DOMAIN}',
                 body={
-                    'email': insert_member,
-                    'role': 'MEMBER'
+                    'archiveOnly': 'true',
+                    'whoCanPostMessage': 'NONE_CAN_POST'
                 }
             ).execute()
-        except HttpError:
-            pass  # Ignore error, API returned failing value
+        except HttpError as e:
+            logger.error(f'Could not delete list {name}', e.content)
 
-
-def mailinglist_to_group(mailinglist: MailingList) -> GroupData:
-    """Convert a mailinglist model to everything we need for GSuite"""
-    return GroupData(
-        moderated=mailinglist.moderated,
-        archived=mailinglist.archived,
-        prefix=mailinglist.prefix,
-        name=mailinglist.name,
-        description=mailinglist.description,
-        aliases=[x.alias for x in mailinglist.aliases.all()],
-        addresses=mailinglist.all_addresses()
-    )
-
-
-def _automatic_to_group(automatic_list) -> GroupData:
-    """Convert an automatic mailinglist to a GSuite Group data obj"""
-    return GroupData(
-        moderated=automatic_list['moderated'],
-        archived=automatic_list['archived'],
-        prefix=automatic_list['prefix'],
-        name=automatic_list['name'],
-        description=automatic_list['description'],
-        aliases=automatic_list['aliases'],
-        addresses=automatic_list['addresses']
-    )
-
-
-def sync_mailinglists(lists=None):
-    """
-    Sync mailing lists with GSuite
-    :param lists: optional parameter to determine which lists to sync
-    """
-    directory_api = get_directory_api()
-
-    if lists is None:
-        lists = [
-                    mailinglist_to_group(l) for l in MailingList.objects.all()
-                ] + [
-                    _automatic_to_group(l) for l in
-                    get_automatic_lists()
-                ]
-
-    try:
-        groups_response = directory_api.groups().list(
-            domain=settings.GSUITE_DOMAIN
-        ).execute()
-        groups_list = groups_response.get('groups', [])
-        while 'nextPageToken' in groups_response:
-            groups_response = directory_api.groups().list(
-                domain=settings.GSUITE_DOMAIN,
-                pageToken=groups_response['nextPageToken']
+    def _update_group_members(self, group: GroupData):
+        """
+        Update the group members of the specified group based
+        on the existing members
+        :param group: group data
+        """
+        try:
+            members_response = self.directory_api.members().list(
+                groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
             ).execute()
-            groups_list += groups_response.get('groups', [])
-        existing_groups = [g['name'] for g in groups_list]
-    except HttpError:
-        return  # there are no lists or something went wrong
+            members_list = members_response.get('members', [])
+            while 'nextPageToken' in members_response:
+                members_response = self.directory_api.members().list(
+                    groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
+                    pageToken=members_response['nextPageToken']
+                ).execute()
+                members_list += members_response.get('members', [])
 
-    new_groups = [g.name for g in lists]
+            existing_members = [m['email'] for m in members_list
+                                if m['role'] == 'MEMBER']
+            existing_managers = [m['email'] for m in members_list
+                                 if m['role'] == 'MANAGER']
+        except HttpError as e:
+            logger.error('Could not obtain list member data', e.content)
+            return  # the list does not exist or something else is wrong
+        new_members = list(group.addresses)
 
-    remove_list = [x for x in existing_groups if x not in new_groups]
-    insert_list = [x for x in new_groups if x not in existing_groups]
+        remove_list = [x for x in existing_members if x not in new_members]
+        insert_list = [x for x in new_members if x not in existing_members
+                       and x not in existing_managers]
 
-    threads = []
+        for remove_member in remove_list:
+            try:
+                self.directory_api.members().delete(
+                    groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
+                    memberKey=remove_member
+                ).execute()
+            except HttpError as e:
+                logger.error(f'Could not remove list member '
+                             f'{remove_member} from {group.name}', e.content)
 
-    for l in lists:
-        if l.name in insert_list:
-            thread = threading.Thread(target=create_group,
+        for insert_member in insert_list:
+            try:
+                self.directory_api.members().insert(
+                    groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
+                    body={
+                        'email': insert_member,
+                        'role': 'MEMBER'
+                    }
+                ).execute()
+            except HttpError as e:
+                logger.error(f'Could not insert list member '
+                             f'{insert_member} in {group.name}', e.content)
+
+    @staticmethod
+    def mailinglist_to_group(mailinglist: MailingList) -> GroupData:
+        """Convert a mailinglist model to everything we need for GSuite"""
+        return GSuiteSyncService.GroupData(
+            moderated=mailinglist.moderated,
+            name=mailinglist.name,
+            description=mailinglist.description,
+            aliases=[x.alias for x in mailinglist.aliases.all()],
+            addresses=list(mailinglist.all_addresses())
+        )
+
+    @staticmethod
+    def _automatic_to_group(automatic_list) -> GroupData:
+        """Convert an automatic mailinglist to a GSuite Group data obj"""
+        return GSuiteSyncService.GroupData(
+            moderated=automatic_list['moderated'],
+            name=automatic_list['name'],
+            description=automatic_list['description'],
+            aliases=automatic_list['aliases'],
+            addresses=automatic_list['addresses']
+        )
+
+    def _get_default_lists(self):
+        return [self.mailinglist_to_group(l) for l in
+                MailingList.objects.all()
+                ] + [self._automatic_to_group(l) for l in
+                     get_automatic_lists()
+                     ]
+
+    def sync_mailinglists(self, lists: List[GroupData] = None):
+        """
+        Sync mailing lists with GSuite
+        :param lists: optional parameter to determine which lists to sync
+        """
+        if lists is None:
+            lists = self._get_default_lists()
+
+        try:
+            groups_response = self.directory_api.groups().list(
+                domain=settings.GSUITE_DOMAIN
+            ).execute()
+            groups_list = groups_response.get('groups', [])
+            while 'nextPageToken' in groups_response:
+                groups_response = self.directory_api.groups().list(
+                    domain=settings.GSUITE_DOMAIN,
+                    pageToken=groups_response['nextPageToken']
+                ).execute()
+                groups_list += groups_response.get('groups', [])
+            existing_groups = [g['name'] for g in groups_list
+                               if int(g['directMembersCount']) > 0]
+            archived_groups = [g['name'] for g in groups_list
+                               if g['directMembersCount'] == '0']
+        except HttpError as e:
+            logger.error('Could not get the existing lists', e.content)
+            return  # there are no lists or something went wrong
+
+        new_groups = [g.name for g in lists]
+
+        remove_list = [x for x in existing_groups if x not in new_groups]
+        insert_list = [x for x in new_groups if x not in existing_groups]
+
+        threads = []
+
+        for l in lists:
+            if l.name in insert_list and l.name not in archived_groups:
+                thread = threading.Thread(target=self.create_group,
+                                          args=(l,))
+                threads.append(thread)
+                thread.start()
+            else:
+                thread = threading.Thread(target=self.update_group,
+                                          args=(l.name, l))
+                threads.append(thread)
+                thread.start()
+
+        for l in remove_list:
+            thread = threading.Thread(target=self.delete_group,
                                       args=(l,))
             threads.append(thread)
             thread.start()
-        else:
-            thread = threading.Thread(target=update_group,
-                                      args=(l.name, l))
-            threads.append(thread)
-            thread.start()
 
-    for l in remove_list:
-        thread = threading.Thread(target=delete_group,
-                                  args=(l,))
-        threads.append(thread)
-        thread.start()
-
-    for th in threads:
-        th.join()
+        for th in threads:
+            th.join()

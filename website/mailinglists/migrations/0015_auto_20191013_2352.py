@@ -23,6 +23,14 @@ class Migration(migrations.Migration):
             model_name='mailinglist',
             name='autoresponse_text',
         ),
+        migrations.RemoveField(
+            model_name='mailinglist',
+            name='prefix',
+        ),
+        migrations.RemoveField(
+            model_name='mailinglist',
+            name='archived',
+        ),
         migrations.AlterField(
             model_name='listalias',
             name='mailinglist',
