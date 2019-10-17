@@ -6,39 +6,23 @@ import factory
 from django.db.models import signals
 from django.test import TestCase
 from googleapiclient.errors import HttpError
-from googleapiclient.http import HttpMockSequence
 from httplib2 import Response
+from django.conf import settings
 
 from mailinglists.gsuite import GSuiteSyncService
 from mailinglists.models import MailingList, ListAlias, VerbatimAddress
 
 
-class CatchRequestHttpMockSequence(HttpMockSequence):
-    requests = []
-
-    class Request:
-        def __init__(self, uri, method, body):
-            super().__init__()
-            self.uri = uri
-            self.method = method
-            self.body = body
-
-        def __eq__(self, other: object) -> bool:
-            if isinstance(other, self.__class__):
-                return self.__dict__ == other.__dict__
-            return False
-
-    def request(self, uri, method='GET', body=None, headers=None,
-                redirections=1, connection_type=None):
-        self.requests.append(self.Request(uri, method, body))
-        return super().request(uri, method, body, headers, redirections,
-                               connection_type)
+def assert_not_called_with(self, *args, **kwargs):
+    try:
+        self.assert_any_call(*args, **kwargs)
+    except AssertionError:
+        return
+    raise AssertionError('Expected %s to not have been called.' %
+                         self._format_mock_call_signature(args, kwargs))
 
 
-# http = CatchRequestHttpMockSequence([
-#     ({'status': '200'}, 'data'),
-#     ({'status': '200'}, 'data')
-# ])
+MagicMock.assert_not_called_with = assert_not_called_with
 
 
 class GSuiteSyncTestCase(TestCase):
@@ -58,7 +42,9 @@ class GSuiteSyncTestCase(TestCase):
         ListAlias.objects.create(
             mailinglist=cls.mailinglist, alias='alias2')
         VerbatimAddress.objects.create(
-            mailinglist=cls.mailinglist, address='test2@thalia.localhost')
+            mailinglist=cls.mailinglist,
+            address=f'test2@{settings.GSUITE_DOMAIN}'
+        )
 
     def setUp(self):
         self.settings_api.reset_mock()
@@ -74,18 +60,18 @@ class GSuiteSyncTestCase(TestCase):
             'name': 'new_group',
             'description': 'some description',
             'aliases': ['alias1'],
-            'addresses': ['test1@thalia.localhost']
+            'addresses': [f'test1@{settings.GSUITE_DOMAIN}']
         })
         self.assertEqual(group, GSuiteSyncService.GroupData(
             'new_group', 'some description', False,
-            ['alias1'], ['test1@thalia.localhost']
+            ['alias1'], [f'test1@{settings.GSUITE_DOMAIN}']
         ))
 
     def test_mailinglist_to_group(self):
         group = GSuiteSyncService.mailinglist_to_group(self.mailinglist)
         self.assertEqual(group, GSuiteSyncService.GroupData(
             'new_group', 'some description', False,
-            ['alias2'], ['test2@thalia.localhost']
+            ['alias2'], [f'test2@{settings.GSUITE_DOMAIN}']
         ))
 
     def test_group_settings(self):
@@ -133,17 +119,17 @@ class GSuiteSyncTestCase(TestCase):
         with self.subTest('Successful'):
             self.sync_service.create_group(GSuiteSyncService.GroupData(
                 'new_group', 'some description', False,
-                ['alias2'], ['test2@thalia.localhost']
+                ['alias2'], [f'test2@{settings.GSUITE_DOMAIN}']
             ))
 
             self.directory_api.groups().insert.assert_called_once_with(body={
-                'email': 'new_group@thalia.localhost',
+                'email': f'new_group@{settings.GSUITE_DOMAIN}',
                 'name': 'new_group',
                 'description': 'some description',
             })
 
             self.settings_api.groups().update.assert_called_once_with(
-                groupUniqueId='new_group@thalia.localhost',
+                groupUniqueId=f'new_group@{settings.GSUITE_DOMAIN}',
                 body=self.sync_service._group_settings(False)
             )
 
@@ -154,16 +140,13 @@ class GSuiteSyncTestCase(TestCase):
         self.directory_api.reset_mock()
 
         with self.subTest('Failure'):
-            self.directory_api.groups().insert(body={
-                'email': 'new_group@thalia.localhost',
-                'name': 'new_group',
-                'description': 'some description',
-            }).execute.side_effect = HttpError(Response({'status': 500}),
-                                               bytes())
+            self.directory_api.groups().insert(
+            ).execute.side_effect = HttpError(
+                Response({'status': 500}), bytes())
 
             self.sync_service.create_group(GSuiteSyncService.GroupData(
                 'new_group', 'some description', False,
-                ['alias2'], ['test2@thalia.localhost']
+                ['alias2'], [f'test2@{settings.GSUITE_DOMAIN}']
             ))
 
             self.directory_api.members().list.assert_not_called()
@@ -174,4 +157,311 @@ class GSuiteSyncTestCase(TestCase):
                 'creating the list new_group', bytes()
             )
 
+    @mock.patch('mailinglists.gsuite.logger')
+    def test_update_group(self, logger_mock):
+        with self.subTest('Successful'):
+            self.sync_service.update_group(
+                'new_group',
+                GSuiteSyncService.GroupData(
+                    'new_group', 'some description', False,
+                    ['alias2'], [f'test2@{settings.GSUITE_DOMAIN}']
+                ))
 
+            self.directory_api.groups().update.assert_called_once_with(body={
+                'email': f'new_group@{settings.GSUITE_DOMAIN}',
+                'name': 'new_group',
+                'description': 'some description',
+            }, groupKey=f'new_group@{settings.GSUITE_DOMAIN}')
+
+            self.settings_api.groups().update.assert_called_once_with(
+                groupUniqueId=f'new_group@{settings.GSUITE_DOMAIN}',
+                body=self.sync_service._group_settings(False)
+            )
+
+            self.directory_api.members().list.assert_called()
+            self.directory_api.groups().aliases().list.assert_called()
+
+        self.settings_api.reset_mock()
+        self.directory_api.reset_mock()
+
+        with self.subTest('Failure'):
+            self.directory_api.groups().update(
+            ).execute.side_effect = HttpError(
+                Response({'status': 500}), bytes())
+
+            self.sync_service.update_group(
+                'new_group',
+                GSuiteSyncService.GroupData(
+                    'new_group', 'some description', False,
+                    ['alias2'], [f'test2@{settings.GSUITE_DOMAIN}']
+                )
+            )
+
+            self.directory_api.members().list.assert_not_called()
+            self.directory_api.groups().aliases().list.assert_not_called()
+
+            logger_mock.error.assert_called_once_with(
+                'Could not update list new_group', bytes()
+            )
+
+    @mock.patch('mailinglists.gsuite.logger')
+    def test_delete_group(self, logger_mock):
+        with self.subTest('Successful'):
+            self.sync_service.delete_group('new_group')
+
+            self.settings_api.groups().patch.assert_called_once_with(body={
+                'archiveOnly': 'true',
+                'whoCanPostMessage': 'NONE_CAN_POST'
+            }, groupUniqueId=f'new_group@{settings.GSUITE_DOMAIN}')
+
+            self.directory_api.members().list.assert_called()
+            self.directory_api.groups().aliases().list.assert_called()
+
+        self.settings_api.reset_mock()
+        self.directory_api.reset_mock()
+
+        with self.subTest('Failure'):
+            self.settings_api.groups().patch(
+            ).execute.side_effect = HttpError(
+                Response({'status': 500}), bytes())
+
+            self.sync_service.delete_group('new_group')
+
+            self.directory_api.members().list.assert_not_called()
+            self.directory_api.groups().aliases().list.assert_not_called()
+
+            logger_mock.error.assert_called_once_with(
+                'Could not delete list new_group', bytes()
+            )
+
+    @mock.patch('mailinglists.gsuite.logger')
+    def test_update_group_aliases(self, logger_mock):
+        with self.subTest('Error getting existing list'):
+            self.directory_api.groups(
+            ).aliases().list().execute.side_effect = HttpError(
+                Response({'status': 500}), bytes())
+            self.sync_service._update_group_aliases(
+                GSuiteSyncService.GroupData(name='update_group'))
+
+            logger_mock.error.assert_called_once_with(
+                'Could not obtain existing aliases for list update_group',
+                bytes()
+            )
+
+        self.directory_api.reset_mock()
+
+        with self.subTest('Successful with some errors'):
+            group_data = GSuiteSyncService.GroupData(
+                name='update_group',
+                aliases=[
+                    'not_synced',
+                    'not_synced_error',
+                    'already_synced'
+                ]
+            )
+
+            existing_aliases = [
+                {'alias': f'deleteme@{settings.GSUITE_DOMAIN}'},
+                {'alias': f'deleteme_error@{settings.GSUITE_DOMAIN}'},
+                {'alias': f'already_synced@{settings.GSUITE_DOMAIN}'}
+            ]
+
+            self.directory_api.groups(
+            ).aliases().list().execute.side_effect = [{
+                'aliases': existing_aliases
+            }]
+
+            self.directory_api.groups(
+            ).aliases().insert().execute.side_effect = [
+                'success',
+                HttpError(Response({'status': 500}), bytes())
+            ]
+
+            self.directory_api.groups(
+            ).aliases().delete().execute.side_effect = [
+                'success',
+                HttpError(Response({'status': 500}), bytes())
+            ]
+
+            self.sync_service._update_group_aliases(group_data)
+
+            self.directory_api.groups().aliases().insert.assert_any_call(
+                groupKey=f'update_group@{settings.GSUITE_DOMAIN}',
+                body={
+                    'alias': f'not_synced@{settings.GSUITE_DOMAIN}'
+                })
+
+            self.directory_api.groups().aliases().delete.assert_any_call(
+                groupKey=f'update_group@{settings.GSUITE_DOMAIN}',
+                alias=f'deleteme@{settings.GSUITE_DOMAIN}'
+            )
+
+            logger_mock.error.assert_any_call(
+                'Could not insert alias not_synced_error@'
+                f'{settings.GSUITE_DOMAIN} for list update_group',
+                bytes()
+            )
+
+            logger_mock.error.assert_any_call(
+                'Could not remove alias deleteme_error@'
+                f'{settings.GSUITE_DOMAIN} for list update_group',
+                bytes()
+            )
+
+    @mock.patch('mailinglists.gsuite.logger')
+    def test_update_group_members(self, logger_mock):
+        with self.subTest('Error getting existing list'):
+            self.directory_api.members().list(
+            ).execute.side_effect = HttpError(
+                Response({'status': 500}), bytes())
+            self.sync_service._update_group_members(
+                GSuiteSyncService.GroupData(name='update_group'))
+
+            logger_mock.error.assert_called_once_with(
+                'Could not obtain list member data',
+                bytes()
+            )
+
+        self.directory_api.reset_mock()
+
+        with self.subTest('Successful with some errors'):
+            group_data = GSuiteSyncService.GroupData(
+                name='update_group',
+                addresses=[
+                    'not_synced@example.com',
+                    'not_synced_error@example.com',
+                    'already_synced@example.com'
+                ]
+            )
+
+            existing_aliases = [
+                {'email': 'deleteme@example.com', 'role': 'MEMBER'},
+                {'email': 'deleteme_error@example.com', 'role': 'MEMBER'},
+                {'email': 'already_synced@example.com', 'role': 'MEMBER'},
+                {'email': 'donotdelete@example.com', 'role': 'MANAGER'}
+            ]
+
+            self.directory_api.members().list().execute.side_effect = [{
+                'members': existing_aliases[:1],
+                'nextPageToken': 'some_token'
+            }, {
+                'members': existing_aliases[1:]
+            }]
+
+            self.directory_api.members().insert().execute.side_effect = [
+                'success',
+                HttpError(Response({'status': 500}), bytes())
+            ]
+
+            self.directory_api.members().delete().execute.side_effect = [
+                'success',
+                HttpError(Response({'status': 500}), bytes())
+            ]
+
+            self.sync_service._update_group_members(group_data)
+
+            self.directory_api.members().insert.assert_any_call(
+                groupKey=f'update_group@{settings.GSUITE_DOMAIN}',
+                body={
+                    'email': 'not_synced@example.com',
+                    'role': 'MEMBER'
+                }
+            )
+
+            self.directory_api.members().delete.assert_any_call(
+                groupKey=f'update_group@{settings.GSUITE_DOMAIN}',
+                memberKey='deleteme@example.com'
+            )
+
+            self.directory_api.members().delete.assert_not_called_with(
+                groupKey=f'update_group@{settings.GSUITE_DOMAIN}',
+                memberKey='donotdelete@example.com'
+            )
+
+            logger_mock.error.assert_any_call(
+                'Could not insert list member '
+                'not_synced_error@example.com in update_group',
+                bytes()
+            )
+
+            logger_mock.error.assert_any_call(
+                'Could not remove list member '
+                'deleteme_error@example.com from update_group',
+                bytes()
+            )
+
+    @mock.patch('mailinglists.gsuite.logger')
+    def test_sync_mailinglists(self, logger_mock):
+        original_create = self.sync_service.create_group
+        original_update = self.sync_service.update_group
+        original_delete = self.sync_service.delete_group
+
+        self.sync_service.create_group = MagicMock()
+        self.sync_service.update_group = MagicMock()
+        self.sync_service.delete_group = MagicMock()
+
+        with self.subTest('Error getting existing list'):
+            self.directory_api.groups().list().execute.side_effect = HttpError(
+                Response({'status': 500}), bytes())
+            self.sync_service.sync_mailinglists()
+
+            logger_mock.error.assert_called_once_with(
+                'Could not get the existing groups',
+                bytes()
+            )
+
+        self.directory_api.reset_mock()
+
+        with self.subTest('Successful'):
+            existing_groups = [
+                {'name': 'deleteme', 'directMembersCount': '3'},
+                {'name': 'already_synced', 'directMembersCount': '2'},
+                {'name': 'ignore', 'directMembersCount': '0'}
+            ]
+
+            self.directory_api.groups().list().execute.side_effect = [{
+                'groups': existing_groups[:1],
+                'nextPageToken': 'some_token'
+            }, {
+                'groups': existing_groups[1:]
+            }]
+
+            self.sync_service.sync_mailinglists([
+                GSuiteSyncService.GroupData(name='syncme',
+                                            addresses=['someone']),
+                GSuiteSyncService.GroupData(name='already_synced',
+                                            addresses=['someone']),
+                GSuiteSyncService.GroupData(name='ignore2', addresses=[])
+            ])
+
+            self.sync_service.create_group.assert_called_with(
+                GSuiteSyncService.GroupData(
+                    name='syncme',
+                    addresses=['someone']
+                ))
+
+            self.sync_service.update_group.assert_called_with(
+                'already_synced',
+                GSuiteSyncService.GroupData(
+                    name='already_synced',
+                    addresses=['someone']
+                ))
+
+            self.sync_service.delete_group.assert_called_with('deleteme')
+
+            self.sync_service.create_group.assert_not_called_with(
+                GSuiteSyncService.GroupData(
+                    name='ignore2',
+                    addresses=[]
+                ))
+            self.sync_service.update_group.assert_not_called_with(
+                'ignore2',
+                GSuiteSyncService.GroupData(
+                    name='ignore2',
+                    addresses=[]
+                ))
+            self.sync_service.delete_group.assert_not_called_with('ignore2')
+
+        self.sync_service.create_group = original_create
+        self.sync_service.update_group = original_update
+        self.sync_service.delete_group = original_delete

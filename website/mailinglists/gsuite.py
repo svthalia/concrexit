@@ -126,7 +126,7 @@ class GSuiteSyncService:
                 groupKey=f'{group.name}@{settings.GSUITE_DOMAIN}',
             ).execute()
         except HttpError as e:
-            logger.error(f'Could not obtain existing aliases'
+            logger.error(f'Could not obtain existing aliases '
                          f'for list {group.name}', e.content)
             return
 
@@ -146,7 +146,7 @@ class GSuiteSyncService:
             except HttpError as e:
                 logger.error(
                     f'Could not remove alias '
-                    f'{remove_list} for list {group.name}',
+                    f'{remove_alias} for list {group.name}',
                     e.content
                 )
 
@@ -171,12 +171,6 @@ class GSuiteSyncService:
         :param name: Group name
         """
         try:
-            self._update_group_members(
-                GSuiteSyncService.GroupData(name, addresses=[])
-            )
-            self._update_group_aliases(
-                GSuiteSyncService.GroupData(name, aliases=[])
-            )
             self.groups_settings_api.groups().patch(
                 groupUniqueId=f'{name}@{settings.GSUITE_DOMAIN}',
                 body={
@@ -184,6 +178,12 @@ class GSuiteSyncService:
                     'whoCanPostMessage': 'NONE_CAN_POST'
                 }
             ).execute()
+            self._update_group_members(
+                GSuiteSyncService.GroupData(name, addresses=[])
+            )
+            self._update_group_aliases(
+                GSuiteSyncService.GroupData(name, aliases=[])
+            )
         except HttpError as e:
             logger.error(f'Could not delete list {name}', e.content)
 
@@ -242,7 +242,7 @@ class GSuiteSyncService:
                              f'{insert_member} in {group.name}', e.content)
 
     @staticmethod
-    def mailinglist_to_group(mailinglist: MailingList) -> GroupData:
+    def mailinglist_to_group(mailinglist: MailingList):
         """Convert a mailinglist model to everything we need for GSuite"""
         return GSuiteSyncService.GroupData(
             moderated=mailinglist.moderated,
@@ -253,7 +253,7 @@ class GSuiteSyncService:
         )
 
     @staticmethod
-    def _automatic_to_group(automatic_list) -> GroupData:
+    def _automatic_to_group(automatic_list):
         """Convert an automatic mailinglist to a GSuite Group data obj"""
         return GSuiteSyncService.GroupData(
             moderated=automatic_list['moderated'],
@@ -294,10 +294,10 @@ class GSuiteSyncService:
             archived_groups = [g['name'] for g in groups_list
                                if g['directMembersCount'] == '0']
         except HttpError as e:
-            logger.error('Could not get the existing lists', e.content)
-            return  # there are no lists or something went wrong
+            logger.error('Could not get the existing groups', e.content)
+            return  # there are no groups or something went wrong
 
-        new_groups = [g.name for g in lists]
+        new_groups = [g.name for g in lists if len(g.addresses) > 0]
 
         remove_list = [x for x in existing_groups if x not in new_groups]
         insert_list = [x for x in new_groups if x not in existing_groups]
@@ -310,7 +310,7 @@ class GSuiteSyncService:
                                           args=(l,))
                 threads.append(thread)
                 thread.start()
-            else:
+            elif len(l.addresses) > 0:
                 thread = threading.Thread(target=self.update_group,
                                           args=(l.name, l))
                 threads.append(thread)
