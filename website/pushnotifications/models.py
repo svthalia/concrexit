@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import override
 from django.utils.translation import ugettext_lazy as _
-from firebase_admin import messaging
+from firebase_admin import messaging, exceptions
 
 from utils.translation import MultilingualField, ModelTranslateMeta
 
@@ -174,15 +174,18 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
                             messaging.send(message, dry_run=kwargs.get(
                                 'dry_run', False))
                             success_total += 1
-                        except messaging.ApiCallError as e:
+                        except messaging.UnregisteredError:
                             failure_total += 1
-                            d = Device.objects.filter(registration_id=reg_id)
-                            if e.code == 'registration-token-not-registered':
-                                d.delete()
-                            elif (e.code == 'invalid-argument'
-                                    or e.code == 'invalid-recipient'
-                                    or e.code == 'invalid-registration-token'):
-                                d.update(active=False)
+                            Device.objects.filter(
+                                registration_id=reg_id
+                            ).delete()
+                        except exceptions.InvalidArgumentError:
+                            failure_total += 1
+                            Device.objects.filter(
+                                registration_id=reg_id
+                            ).update(active=False)
+                        except exceptions.FirebaseError:
+                            failure_total += 1
 
             self.sent = True
             self.success = success_total
