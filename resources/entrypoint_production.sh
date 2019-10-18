@@ -32,4 +32,7 @@ exec uwsgi --chdir /usr/src/app/website \
     --limit-post 0 \
     --post-buffering 16384 \
     --thunder-lock \
-    --logto '/concrexit/log/uwsgi.log'
+    --logto '/concrexit/log/uwsgi.log' \
+    --ignore-sigpipe \
+    --ignore-write-errors \
+    --disable-write-exception
