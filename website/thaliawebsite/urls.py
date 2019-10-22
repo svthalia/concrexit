@@ -98,7 +98,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     path('', include('partners.urls')),
     # App API
     path('api/v1/', include([
-        path('token-auth', ObtainThaliaAuthToken.as_view()),
+        path('token-auth/', ObtainThaliaAuthToken.as_view()),
         path('', include('activemembers.api.urls')),
         path('', include('events.api.urls')),
         path('', include('members.api.urls')),
