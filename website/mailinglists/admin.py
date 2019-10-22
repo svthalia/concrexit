@@ -23,7 +23,7 @@ class MailingListAdmin(admin.ModelAdmin):
 
     filter_horizontal = ('members',)
     inlines = (VerbatimAddressInline, ListAliasInline)
-    list_display = ('name', 'alias_names',)
+    list_display = ('name', 'alias_names', 'description')
     search_fields = ['name', 'prefix', 'aliasses__alias']
 
     def alias_names(self, obj):
