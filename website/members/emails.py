@@ -3,6 +3,8 @@ from datetime import timedelta
 import logging
 
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 from django.core import mail
 from django.template import loader
 from django.template.defaultfilters import floatformat
@@ -94,17 +96,21 @@ def send_information_request(dry_run=False):
                             'programme': member.profile.get_programme_display()
                         }.items()
                     }
-                    email_body = loader.render_to_string(
-                        'members/email/information_check.txt',
-                        email_context)
-                    mail.EmailMessage(
-                        '[THALIA] {}'.format(
-                            _('Membership information check')),
-                        email_body,
-                        settings.DEFAULT_FROM_EMAIL,
-                        [member.email],
-                        connection=connection
-                    ).send()
+                    email_context["lang_code"] = member.profile.language
+                    html_template = get_template(
+                        'members/email/information_check.html')
+                    text_template = get_template(
+                        'members/email/information_check.txt')
+                    subject = '[THALIA] ' + _('Membership information check')
+                    html_message = html_template.render(email_context)
+                    text_message = text_template.render(email_context)
+
+                    msg = EmailMultiAlternatives(subject, text_message,
+                                                 settings.DEFAULT_FROM_EMAIL,
+                                                 [member.email]
+                                                 )
+                    msg.attach_alternative(html_message, "text/html")
+                    msg.send()
 
         if not dry_run:
             mail.mail_managers(
