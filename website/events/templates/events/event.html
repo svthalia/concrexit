@@ -132,7 +132,7 @@
                                 {% endif %}
                                 {% if permissions.create_registration %}
                                     <p>
-                                        {% url 'event-registration-terms' as terms_url %}
+                                        {% url 'singlepages:event-registration-terms' as terms_url %}
                                         {% blocktrans trimmed %}
                                             By registering,
                                             you confirm that you have read the
