@@ -1,6 +1,7 @@
 """Tests for the pizza functionality"""
 import datetime
 
+from django.contrib.auth.models import Permission, ContentType
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone, translation
@@ -8,8 +9,10 @@ from django.utils import timezone, translation
 from freezegun import freeze_time
 
 from activemembers.models import Committee
+from members.models import Member
 from events.models import Event
-from pizzas.models import PizzaEvent
+from pizzas.models import PizzaEvent, Order
+from pizzas import services
 
 
 @freeze_time('2018-03-21')
@@ -19,6 +22,14 @@ class PizzaEventTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        # set up user with change_order perm
+        cls.member = Member.objects.get(pk=3)  # a non-superuser
+        content_type = ContentType.objects.get_for_model(Order)
+        cls.change_order_perm = Permission.objects.get(
+            codename='change_order',
+            content_type=content_type)
+        cls.member.user_permissions.add(cls.change_order_perm)
+
         cls.committee = Committee.objects.get(pk=1)
         cls.event = Event.objects.create(
             title_nl="testevent nl",
@@ -126,3 +137,26 @@ class PizzaEventTestCase(TestCase):
         with self.subTest(msg="end before start"):
             with self.assertRaises(ValidationError):
                 new.clean()
+
+    def test_can_not_change_if_not_in_committee(self):
+        # note that if member is superuser, this might still succeed!
+        self.assertFalse(
+            services.can_change_order(self.member, self.pizzaEvent))
+
+    def test_can_change_if_in_committee(self):
+        self.committee.members.add(self.member)
+        # refresh member object to defeat cache
+        member = Member.objects.get(pk=self.member.pk)
+        self.assertTrue(
+            services.can_change_order(member, self.pizzaEvent))
+
+    def test_can_change_if_member_has_organiser_override(self):
+        content_type = ContentType.objects.get_for_model(Event)
+        override_perm = Permission.objects.get(
+            codename='override_organiser',
+            content_type=content_type)
+        self.member.user_permissions.add(override_perm)
+        # refresh member to defeat cache
+        member = Member.objects.get(pk=self.member.pk)
+        self.assertTrue(
+            services.can_change_order(member, self.pizzaEvent))
