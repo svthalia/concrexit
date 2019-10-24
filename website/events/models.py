@@ -80,7 +80,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         blank=True,
         help_text=_("If you set a registration period registration will be "
                     "required. If you don't set one, registration won't be "
-                    "required.")
+                    "required. Prefer times when people don't have lectures, "
+                    "e.g. 12:30 instead of 13:37.")
     )
 
     registration_end = models.DateTimeField(

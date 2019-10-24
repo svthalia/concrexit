@@ -238,10 +238,12 @@ msgstr "start aanmelden"
 #: models.py
 msgid ""
 "If you set a registration period registration will be required. If you don't "
-"set one, registration won't be required."
+"set one, registration won't be required. Prefer times when people don't have "
+"lectures, e.g. 12:30 instead of 13:37."
 msgstr ""
 "Als je een aanmeldperiode instelt is aanmelden vereist, als je dat niet doet "
-"is aanmelden niet vereist."
+"is aanmelden niet vereist. Geef de voorkeur aan tijden waar mensen geen "
+"college hebben, bijvoorbeeld 12:30 in plaats van 13:37."
 
 #: models.py
 msgid "registration end"
