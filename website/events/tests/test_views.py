@@ -1,7 +1,9 @@
 import datetime
 
+import factory
 from django.contrib.auth.models import Permission
 from django.core import mail
+from django.db.models import signals
 from django.test import Client, TestCase
 from django.utils import timezone
 
@@ -134,6 +136,7 @@ class RegistrationTest(TestCase):
     fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
+    @factory.django.mute_signals(signals.pre_save)
     def setUpTestData(cls):
         cls.mailinglist = MailingList.objects.create(
             name="testmail"

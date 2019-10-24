@@ -1,4 +1,5 @@
 """The services defined by the mailinglists package"""
+
 from django.conf import settings
 from django.utils import timezone
 
@@ -39,37 +40,36 @@ def get_automatic_lists():
     if 0 < timezone.now().month < 9:
         lectureyear += 1
     active_mentorships = Mentorship.objects.filter(
-        year=lectureyear)
+        year=lectureyear).prefetch_related('member')
     mentors = [x.member for x in active_mentorships]
 
     lists = []
 
     lists += _create_automatic_list(
-        ['leden', 'members'], '[THALIA]',
-        Member.all_with_membership('member'), True, True, True)
+        ['members', 'leden'], '[THALIA]',
+        Member.all_with_membership('member'), '', True, True, True)
     lists += _create_automatic_list(
-        ['begunstigers', 'benefactors'],
+        ['benefactors', 'begunstigers'],
         '[THALIA]',
-        Member.all_with_membership(Membership.BENEFACTOR),
+        Member.all_with_membership(Membership.BENEFACTOR), '',
         multilingual=True)
     lists += _create_automatic_list(
-        ['ereleden', 'honorary'], '[THALIA]', Member.all_with_membership(
-            'honorary'), multilingual=True)
+        ['honorary', 'ereleden'], '[THALIA]', Member.all_with_membership(
+            'honorary'), '', multilingual=True)
     lists += _create_automatic_list(
-        ['mentors'], '[THALIA] [MENTORS]', mentors, moderated=False)
+        ['mentors'], '[THALIA] [MENTORS]', mentors, '', moderated=False)
     lists += _create_automatic_list(
         ['activemembers'], '[THALIA] [COMMITTEES]',
-        active_members)
+        active_members, '')
     lists += _create_automatic_list(
-        ['commissievoorzitters', 'committeechairs'], '[THALIA] [CHAIRS]',
-        committee_chair_emails, moderated=False)
+        ['committeechairs', 'commissievoorzitters'], '[THALIA] [CHAIRS]',
+        committee_chair_emails, '', moderated=False)
     lists += _create_automatic_list(
-        ['gezelschapvoorzitters', 'societychairs'], '[THALIA] [SOCIETY]',
-        society_chair_emails, moderated=False)
+        ['societychairs', 'gezelschapvoorzitters'], '[THALIA] [SOCIETY]',
+        society_chair_emails, '', moderated=False)
     lists += _create_automatic_list(
         ['optin'], '[THALIA] [OPTIN]', Member.current_members.filter(
-            profile__receive_optin=True),
-        multilingual=True)
+            profile__receive_optin=True), '', multilingual=True)
 
     all_previous_board_members = []
 
@@ -97,10 +97,13 @@ def get_automatic_lists():
     return lists
 
 
-def _create_automatic_list(names, prefix, members,
+def _create_automatic_list(names, prefix, members, description='',
                            archived=True, moderated=True, multilingual=False):
     data = {
         'names': names,
+        'name': names[0],
+        'description': description,
+        'aliases': names[1:],
         'prefix': prefix,
         'archived': archived,
         'moderated': moderated,
@@ -116,6 +119,8 @@ def _create_automatic_list(names, prefix, members,
                 if member.profile.language == language[0]]
             localized_data['names'] = [
                 '{}-{}'.format(n, language[0]) for n in names]
+            localized_data['name'] = localized_data['names'][0]
+            localized_data['aliases'] = localized_data['names'][1:]
             yield localized_data  # these are localized lists, e.g. leden-nl@
     else:
         data['addresses'] = set([member.email for member in members])
