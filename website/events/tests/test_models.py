@@ -1,6 +1,8 @@
 import datetime
 
+import factory
 from django.core.exceptions import ValidationError
+from django.db.models import signals
 from django.test import TestCase
 from django.utils import timezone
 
@@ -16,6 +18,7 @@ class EventTest(TestCase):
     fixtures = ['members.json']
 
     @classmethod
+    @factory.django.mute_signals(signals.pre_save)
     def setUpTestData(cls):
         cls.mailinglist = MailingList.objects.create(
             name="testmail"

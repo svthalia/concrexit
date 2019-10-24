@@ -43,6 +43,14 @@ utils.exception\_filter module
    :undoc-members:
    :show-inheritance:
 
+utils.google\_api module
+------------------------
+
+.. automodule:: utils.google_api
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 utils.snippets module
 ---------------------
 

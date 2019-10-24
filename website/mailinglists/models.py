@@ -41,23 +41,9 @@ class MailingList(models.Model):
         help_text=_('Enter the name for the list (i.e. name@thalia.nu).'),
     )
 
-    prefix = models.CharField(
-        verbose_name=_("Prefix"),
-        blank=True,
-        max_length=200,
-        help_text=_('Enter a prefix that should be prefixed to subjects '
-                    'of all emails sent via this mailinglist.'),
-    )
-
     description = models.TextField(
         verbose_name=_("Description"),
         help_text=_('Write a description for the mailinglist.'),
-    )
-
-    archived = models.BooleanField(
-        verbose_name=_("Archived"),
-        default=True,
-        help_text=_('Indicate whether an archive should be kept.')
     )
 
     moderated = models.BooleanField(
@@ -77,18 +63,6 @@ class MailingList(models.Model):
         MemberGroup,
         verbose_name=_("Member groups"),
         help_text=_('Select entire groups to include in the list.'),
-        blank=True,
-    )
-
-    autoresponse_enabled = models.BooleanField(
-        verbose_name=_("Automatic response enabled"),
-        default=False,
-        help_text=_('Indicate whether emails will get an automatic response.')
-    )
-
-    autoresponse_text = models.TextField(
-        verbose_name=_("Autoresponse text"),
-        null=True,
         blank=True,
     )
 
@@ -117,11 +91,6 @@ class MailingList(models.Model):
                              'model_name': _("Mailing list"),
                              'field_label': _("List alias")
                          }
-            })
-
-        if not self.autoresponse_text and self.autoresponse_enabled:
-            raise ValidationError({
-                'autoresponse_text': _('Enter a text for the auto response.')
             })
 
     def __str__(self):
@@ -169,7 +138,7 @@ class ListAlias(models.Model):
     mailinglist = models.ForeignKey(MailingList,
                                     verbose_name=_("Mailing list"),
                                     on_delete=models.CASCADE,
-                                    related_name='aliasses')
+                                    related_name='aliases')
 
     def clean(self):
         """Validate the alias."""
@@ -195,4 +164,4 @@ class ListAlias(models.Model):
         """Meta class for ListAlias."""
 
         verbose_name = _("List alias")
-        verbose_name_plural = _("List aliasses")
+        verbose_name_plural = _("List aliases")
