@@ -190,7 +190,8 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
             new_album_notification.body_nl = ('Een nieuw fotoalbum \'{}\' is '
                                               'zojuist geüpload'
                                               .format(self.title_nl))
-            new_album_notification.category = Category.objects.get(key='photo')
+            new_album_notification.category = Category.objects.get(
+                key=Category.PHOTO)
             new_album_notification.url = (
                         f'{settings.BASE_URL}'
                         f'{self.get_absolute_url()}')
