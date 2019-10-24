@@ -1,16 +1,16 @@
 from django.utils.translation import get_language_from_request
-from rest_framework import permissions
+from rest_framework import permissions, viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 from pushnotifications.api.permissions import IsOwner
 from pushnotifications.api.serializers import (DeviceSerializer,
-                                               CategorySerializer)
-from pushnotifications.models import Device, Category
+                                               CategorySerializer,
+                                               MessageSerializer)
+from pushnotifications.models import Device, Category, Message
 
 
-class DeviceViewSet(ModelViewSet):
+class DeviceViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwner)
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
@@ -47,3 +47,20 @@ class DeviceViewSet(ModelViewSet):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
+
+
+class MessageViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Message.objects.all()
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('sent',)
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        queryset = Message.all_objects.filter(users=self.request.user,
+                                              sent__isnull=False)
+
+        category = self.request.query_params.get('category', None)
+        if category is not None:
+            return queryset.filter(category=category)
+        return queryset
