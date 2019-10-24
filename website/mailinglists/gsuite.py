@@ -57,7 +57,7 @@ class GSuiteSyncService:
             'whoCanModerateContent': 'OWNERS_AND_MANAGERS',
             'whoCanModerateMembers': 'NONE',
             'whoCanPostMessage': 'ANYONE_CAN_POST',
-            'whoCanViewGroup': 'ALL_MANAGERS_CAN_VIEW',
+            'whoCanViewGroup': 'ALL_MEMBERS_CAN_VIEW',
             'whoCanViewMembership': 'ALL_MANAGERS_CAN_VIEW'
         }
 
