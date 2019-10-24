@@ -1,6 +1,7 @@
 """GSuite syncing helpers defined by the mailinglists package"""
 import logging
-import threading
+from concurrent.futures import wait
+from concurrent.futures.thread import ThreadPoolExecutor
 from time import sleep
 from typing import List
 
@@ -82,6 +83,7 @@ class GSuiteSyncService:
                 groupUniqueId=f'{group.name}@{settings.GSUITE_DOMAIN}',
                 body=self._group_settings(group.moderated)
             ).execute()
+            logger.info(f'List {group.name} created')
         except HttpError as e:
             logger.error(f'Could not successfully finish '
                          f'creating the list {group.name}', e.content)
@@ -109,6 +111,7 @@ class GSuiteSyncService:
                 groupUniqueId=f'{group.name}@{settings.GSUITE_DOMAIN}',
                 body=self._group_settings(group.moderated)
             ).execute()
+            logger.info(f'List {group.name} updated')
         except HttpError as e:
             logger.error(f'Could not update list {group.name}', e.content)
             return
@@ -165,6 +168,8 @@ class GSuiteSyncService:
                     e.content
                 )
 
+        logger.info(f'List {group.name} aliases updated')
+
     def delete_group(self, name: str):
         """
         Set the specified list to unused, this is not a real delete
@@ -184,6 +189,7 @@ class GSuiteSyncService:
             self._update_group_aliases(
                 GSuiteSyncService.GroupData(name, aliases=[])
             )
+            logger.info(f'List {name} deleted')
         except HttpError as e:
             logger.error(f'Could not delete list {name}', e.content)
 
@@ -240,6 +246,8 @@ class GSuiteSyncService:
             except HttpError as e:
                 logger.error(f'Could not insert list member '
                              f'{insert_member} in {group.name}', e.content)
+
+        logger.info(f'List {group.name} members updated')
 
     @staticmethod
     def mailinglist_to_group(mailinglist: MailingList):
@@ -302,25 +310,16 @@ class GSuiteSyncService:
         remove_list = [x for x in existing_groups if x not in new_groups]
         insert_list = [x for x in new_groups if x not in existing_groups]
 
-        threads = []
+        executor = ThreadPoolExecutor(max_workers=4)
+        futures = []
 
         for l in lists:
             if l.name in insert_list and l.name not in archived_groups:
-                thread = threading.Thread(target=self.create_group,
-                                          args=(l,))
-                threads.append(thread)
-                thread.start()
+                futures.append(executor.submit(self.create_group, l))
             elif len(l.addresses) > 0:
-                thread = threading.Thread(target=self.update_group,
-                                          args=(l.name, l))
-                threads.append(thread)
-                thread.start()
+                futures.append(executor.submit(self.update_group, l.name, l))
 
         for l in remove_list:
-            thread = threading.Thread(target=self.delete_group,
-                                      args=(l,))
-            threads.append(thread)
-            thread.start()
+            futures.append(executor.submit(self.delete_group, l))
 
-        for th in threads:
-            th.join()
+        wait(futures)
