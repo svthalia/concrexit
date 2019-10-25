@@ -350,7 +350,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                                                      'start in 1 uur'
                                                      .format(self.title_nl))
                     registration_reminder.category = Category.objects.get(
-                        key='event')
+                        key=Category.EVENT)
                     registration_reminder.time = registration_reminder_time
                     registration_reminder.url = (
                         f'{settings.BASE_URL}'
@@ -377,7 +377,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                                           '1 hour')
                 start_reminder.body_nl = (f'\'{self.title_nl}\' begint over '
                                           '1 uur')
-                start_reminder.category = Category.objects.get(key='event')
+                start_reminder.category = Category.objects.get(
+                    key=Category.EVENT)
                 start_reminder.time = start_reminder_time
                 start_reminder.save()
                 self.start_reminder = start_reminder

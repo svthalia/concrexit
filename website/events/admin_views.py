@@ -170,7 +170,7 @@ class EventMessage(FormView):
             body_nl=values['body_nl'],
             body_en=values['body_en'],
             url=values['url'],
-            category=Category.objects.get(key='event')
+            category=Category.objects.get(key=Category.EVENT)
         )
         message.save()
         message.users.set([r.member for r in self.event.participants

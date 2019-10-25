@@ -14,6 +14,16 @@ from utils.translation import MultilingualField, ModelTranslateMeta
 class Category(models.Model, metaclass=ModelTranslateMeta):
     """Describes a Message category"""
 
+    # These should be the keys of the categories that we automatically created
+    # in the migrations (0012 to be specific)
+    GENERAL = 'general'
+    PIZZA = 'pizza'
+    EVENT = 'event'
+    NEWSLETTER = 'newsletter'
+    PARTNER = 'partner'
+    PHOTO = 'photo'
+    BOARD = 'board'
+
     key = models.CharField(max_length=16, primary_key=True)
 
     name = MultilingualField(
@@ -33,7 +43,7 @@ class Category(models.Model, metaclass=ModelTranslateMeta):
 
 
 def default_receive_category():
-    return Category.objects.filter(key="general")
+    return Category.objects.filter(key=Category.GENERAL)
 
 
 class Device(models.Model):
