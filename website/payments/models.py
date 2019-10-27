@@ -219,9 +219,10 @@ class BankAccount(models.Model):
 
     @property
     def valid(self):
-        if self.valid_from and self.valid_until:
+        if self.valid_from is not None and self.valid_until is not None:
             return self.valid_from <= timezone.now().date() < self.valid_until
-        return self.valid_from and self.valid_from <= timezone.now().date()
+        return (self.valid_from is not None
+                and self.valid_from <= timezone.now().date())
 
     def __str__(self):
         return f'{self.iban} - {self.name}'
