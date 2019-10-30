@@ -1,7 +1,5 @@
 """GSuite syncing helpers defined by the mailinglists package"""
 import logging
-from concurrent.futures import wait
-from concurrent.futures.thread import ThreadPoolExecutor
 from time import sleep
 from typing import List
 
@@ -310,16 +308,11 @@ class GSuiteSyncService:
         remove_list = [x for x in existing_groups if x not in new_groups]
         insert_list = [x for x in new_groups if x not in existing_groups]
 
-        executor = ThreadPoolExecutor(max_workers=4)
-        futures = []
-
         for l in lists:
             if l.name in insert_list and l.name not in archived_groups:
-                futures.append(executor.submit(self.create_group, l))
+                self.create_group(l)
             elif len(l.addresses) > 0:
-                futures.append(executor.submit(self.update_group, l.name, l))
+                self.update_group(l.name, l)
 
         for l in remove_list:
-            futures.append(executor.submit(self.delete_group, l))
-
-        wait(futures)
+            self.delete_group(l)
