@@ -12,7 +12,6 @@ from mailinglists.services import get_automatic_lists
 from utils.google_api import get_directory_api, get_groups_settings_api
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
 
 
 class GSuiteSyncService:
@@ -216,7 +215,7 @@ class GSuiteSyncService:
         except HttpError as e:
             logger.error('Could not obtain list member data', e.content)
             return  # the list does not exist or something else is wrong
-        new_members = list(group.addresses)
+        new_members = set(group.addresses)
 
         remove_list = [x for x in existing_members if x not in new_members]
         insert_list = [x for x in new_members if x not in existing_members
