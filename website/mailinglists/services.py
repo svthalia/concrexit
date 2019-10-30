@@ -110,18 +110,20 @@ def _create_automatic_list(names, prefix, members, description='',
     }
 
     if multilingual:
-        data['addresses'] = set([member.email for member in members])
+        data['addresses'] = set([member.email for member in members
+                                 if member.email])
         yield data  # this is the complete list, e.g. leden@
         for language in settings.LANGUAGES:
             localized_data = data.copy()
             localized_data['addresses'] = [
                 member.email for member in members
-                if member.profile.language == language[0]]
+                if member.profile.language == language[0] and member.email]
             localized_data['names'] = [
                 '{}-{}'.format(n, language[0]) for n in names]
             localized_data['name'] = localized_data['names'][0]
             localized_data['aliases'] = localized_data['names'][1:]
             yield localized_data  # these are localized lists, e.g. leden-nl@
     else:
-        data['addresses'] = set([member.email for member in members])
+        data['addresses'] = set([member.email for member in members
+                                 if member.email])
         yield data
