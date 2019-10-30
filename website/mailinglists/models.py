@@ -79,7 +79,7 @@ class MailingList(models.Model):
                     yield member.email
 
         for verbatimaddress in self.addresses.all():
-            if member.email:
+            if verbatimaddress.address:
                 yield verbatimaddress.address
 
     def clean(self):

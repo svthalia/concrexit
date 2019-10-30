@@ -23,7 +23,7 @@ class GSuiteSyncService:
             self.name = name
             self.description = description
             self.aliases = aliases
-            self.addresses = addresses
+            self.addresses = sorted(set(addresses))
 
         def __eq__(self, other: object) -> bool:
             if isinstance(other, self.__class__):
@@ -215,7 +215,7 @@ class GSuiteSyncService:
         except HttpError as e:
             logger.error('Could not obtain list member data', e.content)
             return  # the list does not exist or something else is wrong
-        new_members = set(group.addresses)
+        new_members = group.addresses
 
         remove_list = [x for x in existing_members if x not in new_members]
         insert_list = [x for x in new_members if x not in existing_members
@@ -253,8 +253,10 @@ class GSuiteSyncService:
             moderated=mailinglist.moderated,
             name=mailinglist.name,
             description=mailinglist.description,
-            aliases=[x.alias for x in mailinglist.aliases.all()],
-            addresses=list(mailinglist.all_addresses())
+            aliases=([x.alias for x in mailinglist.aliases.all()]
+                     if mailinglist.pk is not None else []),
+            addresses=(list(mailinglist.all_addresses())
+                       if mailinglist.pk is not None else [])
         )
 
     @staticmethod
