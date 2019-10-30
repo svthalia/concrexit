@@ -1,12 +1,14 @@
 from collections import OrderedDict
 
 from django.utils import timezone
+from django.utils.datetime_safe import date
 from django.utils.translation import ugettext_lazy as _, get_language
 
 from events import emails
 from events.exceptions import RegistrationError
-from events.models import Registration, RegistrationInformationField
+from events.models import Registration, RegistrationInformationField, Event
 from payments.models import Payment
+from utils.snippets import datetime_to_lectureyear
 
 
 def is_user_registered(member, event):
@@ -286,3 +288,24 @@ def update_registration_by_organiser(registration, member, data):
         registration.present = data['present']
 
     registration.save()
+
+
+def generate_category_statistics():
+    """
+    Generate statistics about events, number of events per category
+    :return: Dict with key, value resp. being category, event count.
+    """
+    year = datetime_to_lectureyear(timezone.now())
+
+    data = {}
+    for i in range(5):
+        year_start = date(year=year - i, month=9, day=1)
+        year_end = date(year=year - i + 1, month=9, day=1)
+        data[str(year - i)] = {
+            str(display): Event.objects.filter(category=key,
+                                               start__gte=year_start,
+                                               end__lte=year_end).count()
+            for key, display in Event.EVENT_CATEGORIES
+        }
+
+    return data

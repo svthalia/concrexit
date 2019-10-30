@@ -27,6 +27,8 @@ from . import models
 from .forms import ProfileForm
 from .services import member_achievements
 from .services import member_societies
+import events.services as event_services
+import activemembers.services as activemembers_services
 
 
 class ObtainThaliaAuthToken(ObtainAuthToken):
@@ -219,18 +221,23 @@ class StatisticsView(TemplateView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
-        member_types = [t[0] for t in Membership.MEMBERSHIP_TYPES]
         total = models.Member.current_members.count()
 
         context.update({
             "total_members": total,
             "statistics": json.dumps({
-                "cohort_sizes": services.gen_stats_year(member_types),
+                "cohort_sizes":
+                    services.gen_stats_year(),
                 "member_type_distribution":
-                    services.gen_stats_member_type(member_types),
-                "total_pizza_orders": pizzas.services.gen_stats_pizza_orders(),
+                    services.gen_stats_member_type(),
+                "total_pizza_orders":
+                    pizzas.services.gen_stats_pizza_orders(),
                 "current_pizza_orders":
                     pizzas.services.gen_stats_current_pizza_orders(),
+                "committee_sizes":
+                    activemembers_services.generate_statistics(),
+                "event_categories":
+                    event_services.generate_category_statistics(),
             })
         })
 
