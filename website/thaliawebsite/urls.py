@@ -103,7 +103,6 @@ urlpatterns = [  # pylint: disable=invalid-name
         path('', include('events.api.urls')),
         path('', include('members.api.urls')),
         path('', include('partners.api.urls')),
-        path('', include('mailinglists.api.urls')),
         path('', include('pizzas.api.urls')),
         path('', include('photos.api.urls')),
         path('', include('pushnotifications.api.urls')),
