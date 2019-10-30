@@ -292,9 +292,6 @@ CONSCRIBO_PASSWORD = os.environ.get('CONSCRIBO_PASSWORD', '')
 # Payments creditor identifier
 SEPA_CREDITOR_ID = os.environ.get('SEPA_CREDITOR_ID', 'PLACEHOLDER')
 
-# Mailinglist API key
-MAILINGLIST_API_SECRET = os.environ.get('MAILINGLIST_API_SECRET', '')
-
 # Members Sentry API key
 MEMBERS_SENTRY_API_SECRET = os.environ.get('MEMBERS_SENTRY_API_SECRET', '')
 
