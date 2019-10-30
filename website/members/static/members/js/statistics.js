@@ -1,256 +1,207 @@
 $(function () {
-    var statistics = $('#members-statistics').data('statistics');
-    var cohortSizes = statistics.cohort_sizes;
-    var memberTypeDistribution = statistics.member_type_distribution;
-    var pizzaOrders = statistics.total_pizza_orders;
-    var currentPizzaOrders = statistics.current_pizza_orders;
+    const statistics = $('#members-statistics').data('statistics');
+    const cohortSizes = statistics.cohort_sizes;
+    const memberTypeDistribution = statistics.member_type_distribution;
+    const pizzaOrders = statistics.total_pizza_orders;
+    const currentPizzaOrders = statistics.current_pizza_orders;
+    const committeeSizes = statistics.committee_sizes;
+    const eventCategories = statistics.event_categories;
 
     Chart.defaults.global.aspectRatio = 1;
     Chart.defaults.global.legend.display = false;
     Chart.defaults.global.title.display = true;
 
-    var pluginOptions = {
-        labels: {
-            render: 'label',
-            fontColor: '#000000',
-            arc: false,
-            position: 'outside',
-            fontsize: 16,
-            fontstyle: 'bold',
-            fontFamily: '"Open Sans"'
-        }
-    };
+    const colors = [
+        '#E22672',
+        '#CB2267',
+        '#B51E5B',
+        '#9E1B50',
+        '#881744',
+        '#711339',
+        '#5A0F2E',
+        '#440B22',
+        '#2D0817',
+        '#E53C80',
+        '#E8518E',
+        '#EB679C',
+        '#EE7DAA',
+        '#F193B9',
+        '#F3A8C7',
+        '#F6BED5',
+        '#F9D4E3',
+    ];
 
     new Chart($('#members-type-chart'), {
-        type: 'pie',
+        type: 'bar',
         data: {
-            labels:
-                [
-                    gettext('Members'),
-                    gettext('Benefactors'),
-                    gettext('Honorary Members'),
-                ],
+            labels: Object.keys(memberTypeDistribution),
             datasets: [{
-                backgroundColor: [
-                    '#AE0046',
-                    '#E62272',
-                    '#E6478A',
-                ],
-                data:
-                    [
-                        memberTypeDistribution.member,
-                        memberTypeDistribution.benefactor,
-                        memberTypeDistribution.honorary
-                    ],
+                backgroundColor: colors,
+                data: Object.values(memberTypeDistribution),
             }]
         },
         options: {
+            aspectRatio: 1.5,
             title: {
                 text: gettext('Members per member type'),
             },
-            plugins: pluginOptions,
+            plugins: { labels: false },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        maxTicksLimit: 10,
+                    }
+                }]
+            }
         }
     });
 
     new Chart($('#total-year-chart'), {
-        type: 'pie',
+        type: 'bar',
         data: {
-            labels:
-                [
-                    cohortSizes[0].cohort,
-                    cohortSizes[1].cohort,
-                    cohortSizes[2].cohort,
-                    cohortSizes[3].cohort,
-                    cohortSizes[4].cohort,
-                    cohortSizes[5].cohort
-                ],
-            datasets: [{
-                backgroundColor: [
-                    '#AE0046',
-                    '#E62272',
-                    '#E6478A',
-                    '#CC2482',
-                    '#8E1056',
-                    '#DC3472',
-                ],
-                data:
-                    [
-                        cohortSizes[0].member + cohortSizes[0].benefactor + cohortSizes[0].honorary,
-                        cohortSizes[1].member + cohortSizes[1].benefactor + cohortSizes[1].honorary,
-                        cohortSizes[2].member + cohortSizes[2].benefactor + cohortSizes[2].honorary,
-                        cohortSizes[3].member + cohortSizes[3].benefactor + cohortSizes[3].honorary,
-                        cohortSizes[4].member + cohortSizes[4].benefactor + cohortSizes[4].honorary,
-                        cohortSizes[5].member + cohortSizes[5].benefactor + cohortSizes[5].honorary,
-                    ],
-            }]
+            labels: Object.keys(cohortSizes),
+            datasets: [
+                {
+                    label: gettext('Benefactor'),
+                    backgroundColor: colors[2],
+                    data: Object.values(cohortSizes).map(function (data) {
+                        return data.benefactor;
+                    }),
+                },
+                {
+                    label: gettext('Honorary'),
+                    backgroundColor: colors[1],
+                    data: Object.values(cohortSizes).map(function (data) {
+                        return data.honorary;
+                    }),
+                },
+                {
+                    label: gettext('Members'),
+                    backgroundColor: colors[0],
+                    data: Object.values(cohortSizes).map(function (data) {
+                        return data.member;
+                    }),
+                }]
         },
         options: {
+            aspectRatio: 1.5,
             title: {
                 text: gettext("Total number of (honary) members and benefactors per cohort"),
             },
-            plugins: pluginOptions,
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true,
+                    ticks: {
+                        beginAtZero: true,
+                        maxTicksLimit: 10,
+                    }
+                }]
+            },
+            plugins: { labels: false }
         }
     });
 
-    new Chart($('#members-year-chart'), {
-        type: 'pie',
+    new Chart($('#committees-members-chart'), {
+        type: 'bar',
         data: {
-            labels:
-                [
-                    cohortSizes[0].cohort,
-                    cohortSizes[1].cohort,
-                    cohortSizes[2].cohort,
-                    cohortSizes[3].cohort,
-                    cohortSizes[4].cohort,
-                    cohortSizes[5].cohort
-                ],
+            labels: Object.keys(committeeSizes),
             datasets: [{
-                backgroundColor: [
-                    '#AE0046',
-                    '#E62272',
-                    '#E6478A',
-                    '#CC2482',
-                    '#8E1056',
-                    '#DC3472',
-                ],
-                data:
-                    [
-                        cohortSizes[0].member,
-                        cohortSizes[1].member,
-                        cohortSizes[2].member,
-                        cohortSizes[3].member,
-                        cohortSizes[4].member,
-                        cohortSizes[5].member,
-                    ],
+                backgroundColor: colors,
+                data: Object.values(committeeSizes),
             }]
         },
         options: {
+            maintainAspectRatio: false,
             title: {
-                text: gettext("Members per cohort (honorary excluded)"),
+                text: gettext("Number of members per committee"),
             },
-            plugins: pluginOptions,
+            plugins: { labels: false },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        maxTicksLimit: 10,
+                    }
+                }]
+            }
         }
     });
 
-    new Chart($('#benefactors-year-chart'), {
-        type: 'pie',
+    new Chart($('#event-category-chart'), {
+        type: 'bar',
         data: {
-            labels:
-                [
-                    cohortSizes[0].cohort,
-                    cohortSizes[1].cohort,
-                    cohortSizes[2].cohort,
-                    cohortSizes[3].cohort,
-                    cohortSizes[4].cohort,
-                    cohortSizes[5].cohort
-                ],
-            datasets: [{
-                backgroundColor: [
-                    '#AE0046',
-                    '#E62272',
-                    '#E6478A',
-                    '#CC2482',
-                    '#8E1056',
-                    '#DC3472',
-                ],
-                data:
-                    [
-                        cohortSizes[0].benefactor,
-                        cohortSizes[1].benefactor,
-                        cohortSizes[2].benefactor,
-                        cohortSizes[3].benefactor,
-                        cohortSizes[4].benefactor,
-                        cohortSizes[5].benefactor,
-                    ],
-            }]
+            labels: Object.keys(eventCategories),
+            datasets: Object.keys(eventCategories[Object.keys(eventCategories)[0]]).map(function (key, index) {
+                return {
+                    label: key,
+                    backgroundColor: colors[index],
+                    data: Object.values(eventCategories).map(function (data) {
+                        return data[key];
+                    }),
+                };
+            }),
         },
         options: {
+            maintainAspectRatio: false,
             title: {
-                text: gettext("Benefactors per cohort"),
+                text: gettext("Number of events"),
             },
-            plugins: pluginOptions,
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true,
+                    ticks: {
+                        beginAtZero: true,
+                        maxTicksLimit: 10,
+                    }
+                }]
+            },
+            plugins: { labels: false }
         }
     });
 
     new Chart($('#pizza-total-type-chart'), {
         type: 'pie',
         data: {
-            labels:
-                [
-                    pizzaOrders[0].name,
-                    pizzaOrders[1].name,
-                    pizzaOrders[2].name,
-                    pizzaOrders[3].name,
-                    pizzaOrders[4].name,
-                    pizzaOrders[5].name
-                ],
+            labels: Object.keys(pizzaOrders),
             datasets: [{
-                backgroundColor: [
-                    '#AE0046',
-                    '#E62272',
-                    '#E6478A',
-                    '#CC2482',
-                    '#8E1056',
-                    '#DC3472',
-                ],
-                data:
-                    [
-                        pizzaOrders[0].total,
-                        pizzaOrders[1].total,
-                        pizzaOrders[2].total,
-                        pizzaOrders[3].total,
-                        pizzaOrders[4].total,
-                        pizzaOrders[5].total
-                    ],
+                backgroundColor: colors,
+                data: Object.values(pizzaOrders),
             }]
         },
         options: {
+            aspectRatio: 1.5,
             title: {
                 text: gettext("Total pizza orders of type"),
             },
-            plugins: pluginOptions,
+            plugins: { labels: false },
         }
     });
 
-    if (current_pizza_orders != null) {
+    if (currentPizzaOrders != null) {
         new Chart($('#pizza-current-type-chart'), {
             type: 'pie',
             data: {
-                labels:
-                    [
-                        currentPizzaOrders[0].name,
-                        currentPizzaOrders[1].name,
-                        currentPizzaOrders[2].name,
-                        currentPizzaOrders[3].name,
-                        currentPizzaOrders[4].name,
-                        currentPizzaOrders[5].name
-                    ],
+                labels: Object.keys(pizzaOrders),
                 datasets: [{
-                    backgroundColor: [
-                        '#AE0046',
-                        '#E62272',
-                        '#E6478A',
-                        '#CC2482',
-                        '#8E1056',
-                        '#DC3472',
-                    ],
-                    data:
-                        [
-                            currentPizzaOrders[0].total,
-                            currentPizzaOrders[1].total,
-                            currentPizzaOrders[2].total,
-                            currentPizzaOrders[3].total,
-                            currentPizzaOrders[4].total,
-                            currentPizzaOrders[5].total
-                        ],
+                    backgroundColor: colors,
+                    data: Object.values(pizzaOrders),
                 }]
             },
             options: {
+                aspectRatio: 1.5,
                 title: {
                     text: gettext("Current pizza orders of type"),
                 },
-                plugins: pluginOptions,
+                plugins: { labels: false },
             }
         });
     }
+
 });

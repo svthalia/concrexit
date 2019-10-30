@@ -1,6 +1,6 @@
 """Services defined in the members package"""
 from datetime import date
-from typing import Callable, List, Dict, Union, Any
+from typing import Callable, List, Dict, Any
 
 from django.db.models import Q, Count
 from django.utils import timezone
@@ -12,7 +12,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def _member_group_memberships(
-        member: Member, condition: Callable[[Membership], bool]
+    member: Member, condition: Callable[[Membership], bool]
 ) -> Dict[str, Any]:
     """
     Determines the group membership of a user based on a condition
@@ -85,60 +85,58 @@ def member_societies(member) -> List:
     return sorted(societies.values(), key=lambda x: x['earliest'])
 
 
-def gen_stats_member_type(member_types) -> Dict[str, int]:
+def gen_stats_member_type() -> Dict[str, int]:
     """
     Generate a dictionary where every key is a member type with
     the value being the number of current members of that type
     """
-    total = dict()
-    for member_type in member_types:
-        total[member_type] = (Membership
+
+    data = {}
+    for key, display in Membership.MEMBERSHIP_TYPES:
+        data[str(display)] = (Membership
                               .objects
                               .filter(since__lte=date.today())
                               .filter(Q(until__isnull=True) |
                                       Q(until__gt=date.today()))
-                              .filter(type=member_type)
+                              .filter(type=key)
                               .count())
-    return total
+    return data
 
 
-def gen_stats_year(
-        member_types) -> List[Dict[Union[str, Any], Union[int, Any]]]:
+def gen_stats_year() -> Dict[str, Dict[str, int]]:
     """
     Generate list with 6 entries, where each entry represents the total amount
     of Thalia members in a year. The sixth element contains all the multi-year
     students.
     """
-    stats_year = []
+    stats_year = {}
     current_year = datetime_to_lectureyear(date.today())
 
     for i in range(5):
-        new = dict()
-        new['cohort'] = current_year - i
-        for member_type in member_types:
-            new[member_type] = (
+        new = {}
+        for key, _ in Membership.MEMBERSHIP_TYPES:
+            new[key] = (
                 Membership.objects
                 .filter(user__profile__starting_year=current_year - i)
                 .filter(since__lte=date.today())
                 .filter(Q(until__isnull=True) |
                         Q(until__gt=date.today()))
-                .filter(type=member_type)
+                .filter(type=key)
                 .count())
-        stats_year.append(new)
+        stats_year[str(current_year - i)] = new
 
     # Add multi year members
-    new = dict()
-    new['cohort'] = gettext('Older')
-    for member_type in member_types:
-        new[member_type] = (
+    new = {}
+    for key, _ in Membership.MEMBERSHIP_TYPES:
+        new[key] = (
             Membership.objects
             .filter(user__profile__starting_year__lt=current_year - 4)
             .filter(since__lte=date.today())
             .filter(Q(until__isnull=True) |
                     Q(until__gt=date.today()))
-            .filter(type=member_type)
+            .filter(type=key)
             .count())
-    stats_year.append(new)
+    stats_year[str(gettext('Older'))] = new
 
     return stats_year
 

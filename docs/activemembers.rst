@@ -56,6 +56,14 @@ activemembers.models module
    :undoc-members:
    :show-inheritance:
 
+activemembers.services module
+-----------------------------
+
+.. automodule:: activemembers.services
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 activemembers.sitemaps module
 -----------------------------
 
