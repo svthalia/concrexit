@@ -204,6 +204,11 @@ build production docker image:
     - tags
   except:
     - master
+  script:
+    - docker-compose config -q
+    - docker-compose build --build-arg install_dev_requirements=$DEV_REQUIREMENTS --build-arg source_commit=$(git rev-parse HEAD) web
+    - docker tag $DOCKER_LATEST $DOCKER_TAG
+    - docker push $DOCKER_TAG
   after_script:
     - docker tag $DOCKER_TAG $DOCKER_TAG_PRODUCTION
     - docker tag $DOCKER_TAG $DOCKER_LATEST
