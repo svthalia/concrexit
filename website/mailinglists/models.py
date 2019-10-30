@@ -32,9 +32,9 @@ class MailingList(models.Model):
 
     name = models.CharField(
         verbose_name=_("Name"),
-        max_length=100,
+        max_length=60,
         validators=[validators.RegexValidator(
-            regex=r'^[a-zA-Z0-9]+$',
+            regex=r'^[a-zA-Z0-9-]+$',
             message=_('Enter a simpler name'))
         ],
         unique=True,
@@ -69,15 +69,18 @@ class MailingList(models.Model):
     def all_addresses(self):
         """Return all addresses subscribed to this mailing list."""
         for member in self.members.all():
-            yield member.email
+            if member.email:
+                yield member.email
 
         for group in self.member_groups.all().prefetch_related("members"):
             for member in group.members.exclude(
                     membergroupmembership__until__lt=timezone.now().date()):
-                yield member.email
+                if member.email:
+                    yield member.email
 
         for verbatimaddress in self.addresses.all():
-            yield verbatimaddress.address
+            if member.email:
+                yield verbatimaddress.address
 
     def clean(self):
         """Validate the mailing list."""
