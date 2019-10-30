@@ -1,7 +1,6 @@
 """Defines tests for the newsletters package"""
 import doctest
 
-from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.core import mail
 from django.core.exceptions import ValidationError
@@ -33,9 +32,36 @@ class NewslettersTest(TestCase):
         Profile.objects.create(user=cls.user,
                                address_street='street',
                                address_postal_code='1234AB',
-                               address_city='city')
+                               address_city='city',
+                               language='nl')
         Membership.objects.create(type=Membership.MEMBER,
                                   user=cls.user,
+                                  since=timezone.now())
+
+        cls.user2 = User.objects.create_user(username='janwillem',
+                                             email='janwillem@test.com',
+                                             password='top_secret',
+                                             is_staff=False)
+        Profile.objects.create(user=cls.user2,
+                               address_street='street',
+                               address_postal_code='1234AB',
+                               address_city='city',
+                               language='en')
+        Membership.objects.create(type=Membership.MEMBER,
+                                  user=cls.user2,
+                                  since=timezone.now())
+
+        cls.user3 = User.objects.create_user(username='thijs',
+                                             email='thijs@test.com',
+                                             password='top_secret',
+                                             is_staff=False)
+        Profile.objects.create(user=cls.user3,
+                               address_street='street',
+                               address_postal_code='1234AB',
+                               address_city='city',
+                               language='en')
+        Membership.objects.create(type=Membership.MEMBER,
+                                  user=cls.user3,
                                   since=timezone.now())
 
         cls.user.user_permissions.set(
@@ -94,7 +120,7 @@ class NewslettersTest(TestCase):
         self.client.post(reverse(
             'newsletters:admin-send',
             args=[testletter.pk]), {'post': 'yes'})
-        self.assertEqual(len(mail.outbox), len(settings.LANGUAGES))
+        self.assertEqual(len(mail.outbox), 3)
 
     def test_email_html_and_text(self):
         testletter = Newsletter.objects.create(

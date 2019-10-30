@@ -1,6 +1,6 @@
 {% load i18n baseurl %}{% load static from staticfiles %}THALIA {% trans "newsletter"|upper %}
 
-{% trans "dear members"|capfirst %},
+{% trans "dear members"|upper %},
 
 {{ newsletter.description|striptags }}
 
