@@ -1,6 +1,9 @@
 """The emails defined by the newsletters package"""
+import logging
+from smtplib import SMTPException
 
 from django.conf import settings
+from django.core import mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.utils import translation, timezone
@@ -9,6 +12,8 @@ from django.utils.timezone import make_aware
 from members.models import Member
 from newsletters import services
 from partners.models import Partner
+
+logger = logging.getLogger(__name__)
 
 
 def send_newsletter(newsletter):
@@ -33,35 +38,51 @@ def send_newsletter(newsletter):
     main_partner = Partner.objects.filter(is_main_partner=True).first()
     local_partner = Partner.objects.filter(is_local_partner=True).first()
 
-    for language in settings.LANGUAGES:
-        translation.activate(language[0])
+    with mail.get_connection() as connection:
+        for language in settings.LANGUAGES:
+            translation.activate(language[0])
 
-        recipients = [member.email for member in
-                      Member.current_members.all().filter(
-                          profile__receive_newsletter=True,
-                          profile__language=language[0])
-                      if member.email]
+            members = Member.current_members.all().filter(
+                profile__receive_newsletter=True,
+                profile__language=language[0]
+            )
 
-        subject = '[THALIA] ' + newsletter.title
+            subject = '[THALIA] ' + newsletter.title
 
-        context = {
-            'newsletter': newsletter,
-            'agenda_events': events,
-            'main_partner': main_partner,
-            'local_partner': local_partner,
-            'lang_code': language[0]
-        }
+            context = {
+                'newsletter': newsletter,
+                'agenda_events': events,
+                'main_partner': main_partner,
+                'local_partner': local_partner,
+                'lang_code': language[0]
+            }
 
-        html_message = html_template.render(context)
-        text_message = text_template.render(context)
+            html_message = html_template.render(context)
+            text_message = text_template.render(context)
 
-        msg = EmailMultiAlternatives(subject, text_message,
-                                     to=[from_email],
-                                     bcc=recipients,
-                                     from_email=from_email)
-        msg.attach_alternative(html_message, "text/html")
-        msg.send()
+            services.write_to_file(newsletter.pk, language[0], html_message)
 
-        services.write_to_file(newsletter.pk, language[0], html_message)
+            msg = EmailMultiAlternatives(
+                subject=subject,
+                body=text_message,
+                from_email=from_email,
+                connection=connection
+            )
+            msg.attach_alternative(html_message, "text/html")
 
-        translation.deactivate()
+            for member in members:
+                if not member.email:
+                    return
+
+                msg.to = [member.email]
+                try:
+                    msg.send()
+                    logger.info('Sent newsletter to %s (%s)',
+                                member.get_full_name(),
+                                member.email)
+                except SMTPException as e:
+                    logger.error('Failed to send the newsletter to %s (%s)',
+                                 member.get_full_name(),
+                                 member.email, e)
+
+            translation.deactivate()
