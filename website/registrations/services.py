@@ -9,11 +9,11 @@ from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
 from django.db.models import Q, QuerySet
 from django.utils import timezone
+from pylint.checkers.typecheck import _
 
 import members
 from members.models import Membership, Profile, Member
 from payments.models import Payment
-from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -234,13 +234,11 @@ def _create_payment_for_entry(entry: Entry) -> Payment:
     if entry.contribution and entry.membership_type == Membership.BENEFACTOR:
         amount = entry.contribution
     notes = f"Membership registration. {entry.get_membership_type_display()}."
-    topic = f"Member registration [{entry.membership_type.upper()}]"
 
     try:
         renewal = entry.renewal
         membership = renewal.member.latest_membership
         notes = f"Membership renewal. {entry.get_membership_type_display()}."
-        topic = f"Member renewal [{entry.membership_type.upper()}]"
         # Having a latest membership which has an until date implies that this
         # membership lasts/lasted till the end of the lecture year
         # This means it's possible to renew the 'year' membership
@@ -265,7 +263,7 @@ def _create_payment_for_entry(entry: Entry) -> Payment:
     except Renewal.DoesNotExist:
         pass
 
-    return Payment.objects.create(amount=amount, notes=notes, topic=topic)
+    return Payment.objects.create(amount=amount, notes=notes)
 
 
 def _create_member_from_registration(registration: Registration) -> Member:
@@ -450,13 +448,20 @@ def process_tpay_payment(renewal):
     """
     if renewal.member.tpay_enabled:
         if renewal.payment is None:
-            renewal.payment = create_payment(renewal, processed_by=renewal.member, pay_type=Payment.TPAY)
+            renewal.payment = _create_payment_for_entry(renewal)
+            renewal.save()
+
+        if renewal.payment.type == Payment.NONE:
+            renewal.payment.type = Payment.TPAY
+            renewal.payment.notes += f" Requested on {renewal.created_at}."
+            renewal.payment.processed_by = renewal.member
+            renewal.payment.save()
             renewal.save()
             process_payment(renewal.payment)
         else:
-            raise ValueError("You have already paid.")
+            raise ValueError(_("You have already paid."))
     else:
-        raise ValueError("You do not have Thalia Pay enabled.")
+        raise ValueError(_("You do not have Thalia Pay enabled."))
 
 
 def execute_data_minimisation(dry_run=False):

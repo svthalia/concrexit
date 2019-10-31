@@ -124,7 +124,7 @@
                         sending an email to info@thalia.nu.
                     {% endblocktrans %}
                 </p>
-            {% elif latest_renewal and latest_renewal.status == latest_renewal.STATUS_ACCEPTED %}
+            {% elif latest_renewal_accepted %}
                 <p class="text-center">
                     {% blocktrans trimmed %}
                         Congratulations, your renewal request has been approved!
@@ -144,13 +144,14 @@
                         {% endblocktrans %}
                     {% endif %}
                 </p>
-            {% elif latest_renewal and latest_renewal.status == latest_renewal.STATUS_REVIEW %}
+            {% elif latest_renewal_reviewing %}
                 <p class="text-center">
                     {% blocktrans trimmed %}
                         You have a renewal request queued for review.
                         You will receive an email once your request has been reviewed.
                     {% endblocktrans %}
                 </p>
+
             {% else %}
                 {% for error in form.errors.items %}
                     {% for message in error.1 %}
