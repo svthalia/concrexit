@@ -219,6 +219,10 @@ class RenewalFormView(FormView):
             user=self.request.member, type=Membership.MEMBER
         ).exists()
         context["benefactor_type"] = Membership.BENEFACTOR
+        context["latest_renewal_reviewing"] = Renewal.objects.filter(
+            member=self.request.member, status=Entry.STATUS_REVIEW).exists()
+        context["latest_renewal_accepted"] = Renewal.objects.filter(
+            member=self.request.member, status=Entry.STATUS_ACCEPTED).exists()
         return context
 
     def get_form(self, form_class=None):
@@ -316,3 +320,26 @@ class ReferenceCreateView(CreateView):
         request.POST["member"] = request.member.pk
         request.POST["entry"] = kwargs["pk"]
         return super().post(request, *args, **kwargs)
+
+
+@method_decorator(login_required, name='dispatch')
+class RenewalPayView(View):
+    """
+    Defines a view that allows the user to add a Thalia Pay payment to
+    their renewal using a POST request. The user should be authenticated.
+    """
+
+    def get(self, request, *args, **kwargs):
+        return redirect('registrations:renew')
+
+    def post(self, request, *args, **kwargs):
+        renewal = Renewal.objects.filter(
+            member=self.request.member, status=Entry.STATUS_ACCEPTED).first()
+
+        if renewal is None:
+            raise ValidationError("No renewal present")
+
+        services.process_tpay_payment(renewal)
+        messages.success(request, _("You have paid with Thalia Pay."))
+
+        return redirect('registrations:renew-completed')

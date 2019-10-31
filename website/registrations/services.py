@@ -9,6 +9,7 @@ from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
 from django.db.models import Q, QuerySet
 from django.utils import timezone
+from pylint.checkers.typecheck import _
 
 import members
 from members.models import Membership, Profile, Member
@@ -439,6 +440,30 @@ def process_payment(payment: Payment) -> None:
         entry.membership = membership
         entry.status = Entry.STATUS_COMPLETED
         entry.save()
+
+
+def process_tpay_payment(renewal):
+    """
+    Add a Thalia Pay payment to a renewal
+
+    :param renewal: the renewal
+    """
+    if renewal.member.tpay_enabled:
+        if renewal.payment is None:
+            renewal.payment = _create_payment_for_entry(renewal)
+            renewal.save()
+
+        if renewal.payment.type == Payment.NONE:
+            renewal.payment.type = Payment.TPAY
+            renewal.payment.notes += f" Requested on {renewal.created_at}."
+            renewal.payment.processed_by = renewal.member
+            renewal.payment.save()
+            renewal.save()
+            process_payment(renewal.payment)
+        else:
+            raise ValueError(_("You have already paid."))
+    else:
+        raise ValueError(_("You do not have Thalia Pay enabled."))
 
 
 def execute_data_minimisation(dry_run=False):
