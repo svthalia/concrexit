@@ -156,7 +156,7 @@ class Command(BaseCommand):
         board.since = date(year=lecture_year, month=9, day=1)
         board.until = date(year=lecture_year + 1, month=8, day=31)
         board.active = True
-        board.contact_email = _faker.email()
+        board.contact_email = _faker.safe_email()
 
         board.save()
 
@@ -208,7 +208,7 @@ class Command(BaseCommand):
                 member_group.since, now + 2 * month).date()
 
         member_group.active = random.random() < 0.9
-        member_group.contact_email = _faker.email()
+        member_group.contact_email = _faker.safe_email()
 
         member_group.save()
 
