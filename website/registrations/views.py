@@ -6,14 +6,13 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.views import View
 from django.views.generic import FormView, CreateView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
@@ -220,13 +219,10 @@ class RenewalFormView(FormView):
             user=self.request.member, type=Membership.MEMBER
         ).exists()
         context["benefactor_type"] = Membership.BENEFACTOR
-        context["latest_renewal"] = Renewal.objects.filter(
-            Q(member=self.request.member)
-            & (
-                Q(status=Registration.STATUS_ACCEPTED)
-                | Q(status=Registration.STATUS_REVIEW)
-            )
-        ).last()
+        context["latest_renewal_reviewing"] = Renewal.objects.filter(
+            member=self.request.member, status=Entry.STATUS_REVIEW).exists()
+        context["latest_renewal_accepted"] = Renewal.objects.filter(
+            member=self.request.member, status=Entry.STATUS_ACCEPTED).exists()
         return context
 
     def get_form(self, form_class=None):
@@ -326,7 +322,7 @@ class ReferenceCreateView(CreateView):
         return super().post(request, *args, **kwargs)
 
 
-@method_decorator(login_required, name="dispatch")
+@method_decorator(login_required, name='dispatch')
 class RenewalPayView(View):
     """
     Defines a view that allows the user to add a Thalia Pay payment to
@@ -334,14 +330,16 @@ class RenewalPayView(View):
     """
 
     def get(self, request, *args, **kwargs):
-        return redirect("registrations:renew")
+        return redirect('registrations:renew')
 
     def post(self, request, *args, **kwargs):
-        renewal = get_object_or_404(
-            Renewal, member=self.request.member, status=Entry.STATUS_ACCEPTED
-        )
+        renewal = Renewal.objects.filter(
+            member=self.request.member, status=Entry.STATUS_ACCEPTED).first()
+
+        if renewal is None:
+            raise ValidationError("No renewal present")
 
         services.process_tpay_payment(renewal)
         messages.success(request, _("You have paid with Thalia Pay."))
 
-        return redirect("registrations:renew-completed")
+        return redirect('registrations:renew-completed')
