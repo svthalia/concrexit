@@ -59,6 +59,8 @@ django.jQuery(function () {
             .val(data['location']);
 
         if (lang === 'en') {
+            $('#id_newsletterevent_set-' + id + '-url')
+                .val(window.location.origin + '/events/' + data['pk'] + '/');
             $('#id_newsletterevent_set-' +  id + '-price')
                 .val(data['price']);
             $('#id_newsletterevent_set-' +  id + '-penalty_costs')

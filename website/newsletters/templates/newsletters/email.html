@@ -68,7 +68,7 @@
                             {% for row in agenda_events|rows_distributed:2 %}
                              <td style="vertical-align: top;">
                                 {% for item in row %}
-                                <li style="font-family: Arial, sans-serif;"><i>{{ item.title }} - {{ item.start|date:"d F" }}</i></li>
+                                <li style="font-family: Arial, sans-serif;"><i><a href="{% baseurl %}{% url 'events:event' item.pk %}" style="text-decoration: none; color: {{ primary_color }};">{{ item.title }} - {{ item.start|date:"d F" }}</a></i></li>
                                 {% endfor %}
                              </td>
                             {% endfor %}
@@ -81,7 +81,11 @@
             {% for item in newsletter.newslettercontent_set.all %}
             <tr>
                 <td colspan="2" style="{{ item_tr_style }}">
+                    {% if item.url %}
+                    <h2 style="{{ item_h2_style }}"><a href="{{ item.url }}" style="text-decoration: none; color: inherit;">{{ item.title.upper }}</a></h2>
+                    {% else %}
                     <h2 style="{{ item_h2_style }}">{{ item.title.upper }}</h2>
+                    {% endif %}
                 </td>
             </tr>
 

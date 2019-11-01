@@ -99,6 +99,13 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
         null=False,
     )
 
+    url = models.URLField(
+        verbose_name=_('URL'),
+        blank=True,
+        null=True,
+        help_text=_('If filled, it will make the title a link to this URL'),
+    )
+
     description = MultilingualField(
         HTMLField,
         verbose_name=_('Description'),
@@ -123,12 +130,12 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
         if url in self.description_nl:
             errors.update({
                 'description_nl': _('Please make sure all urls are absolute '
-                                    'and contain http(s)://.')
+                                    'and start with http(s)://.')
             })
         if url in self.description_en:
             errors.update({
                 'description_en': _('Please make sure all urls are absolute '
-                                    'and contain http(s)://.')
+                                    'and start with http(s)://.')
             })
 
         if errors:

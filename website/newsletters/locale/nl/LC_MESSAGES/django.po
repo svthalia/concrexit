@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Thaliawebsite: nieuwsbrieven\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-03 18:14+0100\n"
-"PO-Revision-Date: 2019-06-07 15:03+0200\n"
+"POT-Creation-Date: 2019-11-06 18:49+0100\n"
+"PO-Revision-Date: 2019-11-06 18:50+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: Technicie <www@thalia.nu>\n"
 "Language: nl\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: apps.py
 msgid "Newsletters"
@@ -71,12 +71,24 @@ msgid "Please make sure the send date is not in the past."
 msgstr "De verzenddatum mag niet in het verleden liggne."
 
 #: models.py
+msgid "URL"
+msgstr "URL"
+
+#: models.py
+msgid "If filled, it will make the title a link to this URL"
+msgstr "Als je dit invult zal de titel verwijzen naar de deze URL"
+
+#: models.py
 msgid "Description"
 msgstr "Beschrijving"
 
 #: models.py
 msgid "order"
 msgstr "volgorde"
+
+#: models.py
+msgid "Please make sure all urls are absolute and start with http(s)://."
+msgstr "Controleer of alle links absoluut zijn en met http(s):// beginnen."
 
 #: models.py templates/newsletters/email.html templates/newsletters/email.txt
 msgid "Where"
