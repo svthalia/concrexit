@@ -148,13 +148,6 @@ class NewsletterItem(NewsletterContent):
 
 class NewsletterEvent(NewsletterContent):
     """Describes one piece of event content of a newsletter"""
-    what = MultilingualField(
-        models.CharField,
-        max_length=150,
-        verbose_name=_('What'),
-        blank=False,
-        null=False,
-    )
 
     where = MultilingualField(
         models.CharField,

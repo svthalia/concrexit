@@ -27,7 +27,7 @@ class NewsletterEventForm(forms.ModelForm):
 
     class Meta:
         fields = ('order', 'event', 'title_en', 'title_nl',
-                  'description_en', 'description_nl', 'what_en', 'what_nl',
+                  'description_en', 'description_nl',
                   'where_en', 'where_nl', 'start_datetime', 'end_datetime',
                   'show_costs_warning', 'price', 'penalty_costs')
         model = NewsletterEvent

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Thaliawebsite: nieuwsbrieven\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-07 14:29+0200\n"
+"POT-Creation-Date: 2019-11-03 18:14+0100\n"
 "PO-Revision-Date: 2019-06-07 15:03+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: Technicie <www@thalia.nu>\n"
@@ -77,10 +77,6 @@ msgstr "Beschrijving"
 #: models.py
 msgid "order"
 msgstr "volgorde"
-
-#: models.py templates/newsletters/email.html templates/newsletters/email.txt
-msgid "What"
-msgstr "Wat"
 
 #: models.py templates/newsletters/email.html templates/newsletters/email.txt
 msgid "Where"

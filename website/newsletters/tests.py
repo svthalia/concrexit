@@ -180,8 +180,6 @@ class NewsletterEventsTest(TestCase):
                             title_en='testevent',
                             description_nl='testbesc',
                             description_en='testdesc',
-                            what_nl='wat',
-                            what_en='what',
                             where_nl='waar',
                             where_en='where',
                             start_datetime=timezone.now().date().replace(
