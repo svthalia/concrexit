@@ -133,6 +133,20 @@
                                                        onclick="return confirm('{% trans "Are you sure you want to cancel your order?" %}')"/>
                                             </form>
                                         {% endif %}
+                                        {% if order.member.tpay_enabled and not order.payment.processed %}
+                                            <form
+                                                    class="d-inline-block"
+                                                    method="post"
+                                                    action="{% url 'pizzas:pay-order' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden"
+                                                       name="order"
+                                                       value="{{ order.pk }}"/>
+                                                <input type="submit"
+                                                       value="{% trans "Pay with Thalia Pay" %}"
+                                                       class="btn btn-primary"/>
+                                            </form>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 </tbody>

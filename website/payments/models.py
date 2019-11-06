@@ -23,12 +23,14 @@ class Payment(models.Model):
     NONE = 'no_payment'
     CASH = 'cash_payment'
     CARD = 'card_payment'
+    TPAY = 'tpay_payment'
     WIRE = 'wire_payment'
 
     PAYMENT_TYPE = (
         (NONE, _('No payment')),
         (CASH, _('Cash payment')),
         (CARD, _('Card payment')),
+        (TPAY, _('Thalia Pay payment')),
         (WIRE, _('Wire payment')),
     )
 

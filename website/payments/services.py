@@ -28,11 +28,12 @@ def process_payment(queryset: QuerySet, processed_by: Member,
     # is not appropriate, moreover save() automatically sets
     # the processing date
     for payment in queryset:
-        payment.type = pay_type
-        payment.processed_by = processed_by
-        payment.save()
-
-        data.append(payment)
+        if (pay_type != Payment.TPAY or
+           (pay_type == Payment.TPAY and payment.paid_by.tpay_enabled)):
+            payment.type = pay_type
+            payment.processed_by = processed_by
+            payment.save()
+            data.append(payment)
 
     return data
 

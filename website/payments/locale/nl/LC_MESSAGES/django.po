@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-08 10:58+0200\n"
-"PO-Revision-Date: 2019-09-08 10:58+0200\n"
-"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
+"POT-Creation-Date: 2019-10-30 20:56+0100\n"
+"PO-Revision-Date: 2019-10-30 20:58+0100\n"
+"Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: admin.py
 msgid "paid by"
@@ -33,6 +33,11 @@ msgstr "Verwerk geselecteerde betalingen (contant)"
 #: admin.py
 msgid "Process selected payments (card)"
 msgstr "Verwerk geselecteerde betalingen (pin)"
+
+#: admin.py
+msgid "Process selected payments (Thalia Pay, only if enabled)"
+msgstr ""
+"Verwerk geselecteerde betalingen (Thalia Pay, alleen indien beschikbaar)"
 
 #: admin.py
 msgid "Process selected payments (wire)"
@@ -179,6 +184,10 @@ msgid "Card payment"
 msgstr "Pin betaling"
 
 #: models.py
+msgid "Thalia Pay payment"
+msgstr "Thalia Pay betaling"
+
+#: models.py
 msgid "Wire payment"
 msgstr "Overboeking"
 
@@ -252,6 +261,11 @@ msgstr "Verwerk (contant)"
 #: templates/payments/widgets/payment.html
 msgid "Process (card payment)"
 msgstr "Verwerk (pin)"
+
+#: templates/admin/payments/change_form.html
+#: templates/payments/widgets/payment.html
+msgid "Process (Thalia Pay payment)"
+msgstr "Verwerk (Thalia Pay)"
 
 #: templates/admin/payments/change_form.html
 #: templates/payments/widgets/payment.html

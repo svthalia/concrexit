@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-08 10:57+0200\n"
+"POT-Creation-Date: 2019-10-30 21:03+0100\n"
 "PO-Revision-Date: 2019-09-08 10:57+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
@@ -244,7 +244,8 @@ msgstr "Telefoonnummer noodcontact"
 msgid "The phone number for the emergency contact"
 msgstr "Het telefoonummer van de noodcontact"
 
-#: models.py templates/members/user/profile.html
+#: models.py templates/members/user/edit_profile.html
+#: templates/members/user/profile.html
 msgid "Birthday"
 msgstr "Verjaardag"
 

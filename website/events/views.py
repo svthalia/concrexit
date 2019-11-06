@@ -11,6 +11,7 @@ from django.views.generic import DetailView, TemplateView, FormView
 
 from events import services
 from events.exceptions import RegistrationError
+from payments.models import Payment
 from .forms import FieldsForm
 from .models import Event, Registration
 
@@ -45,6 +46,7 @@ class EventDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
+        context['payment_method_tpay'] = Payment.TPAY
 
         event = context['event']
         if event.max_participants:
@@ -104,6 +106,29 @@ class EventRegisterView(View):
                 return redirect('events:registration', event.pk)
             else:
                 messages.success(request, _("Registration successful."))
+        except RegistrationError as e:
+            messages.error(request, e)
+
+        return redirect(event)
+
+
+@method_decorator(login_required, name='dispatch')
+class EventPayView(View):
+    """
+    Defines a view that allows the user to add a Thalia Pay payment to
+    their event registration using a POST request. The user should be
+    authenticated.
+    """
+
+    def get(self, request, *args, **kwargs):
+        return redirect('events:event', pk=kwargs['pk'])
+
+    def post(self, request, *args, **kwargs):
+        event = get_object_or_404(Event, pk=kwargs['pk'])
+        try:
+            services.pay_with_tpay(request.member, event)
+            messages.success(request,
+                             _("You have paid with Thalia Pay."))
         except RegistrationError as e:
             messages.error(request, e)
 
