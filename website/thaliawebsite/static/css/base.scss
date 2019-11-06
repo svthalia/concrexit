@@ -9,6 +9,10 @@ body {
     color: $text-color;
 }
 
+.form-control:disabled, .form-control[readonly] {
+    background-color: $form-background-disabled;
+}
+
 #accentbar {
     position: -webkit-sticky;
     position: sticky;
@@ -39,6 +43,10 @@ body {
         img {
             max-height: 5rem;
         }
+    }
+
+    .navbar-toggler {
+        color: $nav-link-color;
     }
 
     .navbar-nav {
