@@ -2,7 +2,7 @@
     position: relative;
     display: block;
     margin-bottom: 15px;
-    background-color: $light-grey;
+    background-color: $card-background;
     border-radius: 0;
     border: 0;
     width: 100%;
@@ -33,11 +33,15 @@
 
     .card-text {
         font-size: .9rem;
-        color: #444;
+        color: $card-background-contrast;
     }
 
     .card-btn {
         margin-top: 5px;
+    }
+
+    &:hover {
+            background-color: $card-background-hover;
     }
 
     .card-header {
@@ -50,7 +54,7 @@
         text-transform: uppercase;
         padding: 1.25rem;
         color: $preset;
-        background-color: $grey;
+        background-color: $card-background-hover;
         border-radius: 0;
 
         transition: all 300ms ease-in-out 0s;
@@ -63,16 +67,16 @@
         }
 
         &.collapsed {
-            color: $black;
-            background-color: $light-grey;
+            color: $card-background-contrast;
+            background-color: $card-background;
 
             a {
-                color: $black;
+                color: $card-background-contrast;
             }
 
             &:hover {
                 color: $preset;
-                background-color: $grey;
+                background-color: $card-background-hover;
 
                 a {
                     color: $preset;
