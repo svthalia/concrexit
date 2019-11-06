@@ -38,6 +38,8 @@
         {% compress css %}
             <link href="{% static "css/main.scss" %}" rel="stylesheet"
                   type="text/x-scss">
+            <link href="{% static "css/main-dark.scss" %}" rel="stylesheet" media="(prefers-color-scheme: dark)"
+                  type="text/x-scss">
         {% endcompress %}
     {% endblock %}
 
@@ -75,8 +77,8 @@
         </a>
         <div class="flex-grow-1"></div>
         <div class="navbar-user order-1 d-flex">
-            <a href="#lang" 
-               class="btn btn-link" 
+            <a href="#lang"
+               class="btn btn-link"
                id="language-switcher">
                 {% if LANGUAGE_CODE == 'nl' %}
                     <img src="{% static 'img/flags/en.svg' %}"/>

@@ -1,0 +1,34 @@
+// Font and Styles
+$primary-font: 'Open Sans', sans-serif;
+$header-font: 'Oswald', sans-serif;
+$regular: 400;
+$bold: 700;
+$light: 300;
+$letter-spacing: 0px;
+$fa-font-path: "../fonts";
+
+// Theme Colors
+$preset: #E62272;
+$preset-hover: #CF1760;
+
+$primary: $preset;
+$primary-hover: $preset-hover;
+$secondary: #ffffff;
+$secondary-hover: #d1d1d1;
+$success: #55c025;
+$success-hover: #52a425;
+$info: #1e9ae6;
+$info-hover: #1e83cf;
+$warning: #ffc107;
+$warning-hover: #e0a800;
+$danger: #e62a17;
+$danger-hover: #ce2816;
+$title-color: #fff;
+$sub-title-color: #fff;
+$text-color: #ccc;
+$white: #000;
+$light-grey: #f7f7f7;
+$grey: #222;
+$dark-grey: #161616;
+$black: #fff;
+$preset-transparent: RGBA(235, 88, 111, 0.7);
