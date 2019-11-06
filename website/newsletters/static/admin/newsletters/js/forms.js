@@ -63,6 +63,8 @@ django.jQuery(function () {
                 .val(data['price']);
             $('#id_newsletterevent_set-' +  id + '-penalty_costs')
                 .val(data['fine']);
+            $('#id_newsletterevent_set-' + id + '-show_costs_warning')
+                .prop("checked", data['fine'] !== "0.00");
             $('#id_newsletterevent_set-' +  id + '-start_datetime_0')
                 .val(formatDate(data['start'], 'date'));
             $('#id_newsletterevent_set-' +  id + '-start_datetime_1')
