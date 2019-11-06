@@ -24,7 +24,7 @@ class MailingListAdmin(admin.ModelAdmin):
     filter_horizontal = ('members',)
     inlines = (VerbatimAddressInline, ListAliasInline)
     list_display = ('name', 'alias_names', 'moderated', 'description')
-    search_fields = ['name', 'aliasses__alias']
+    search_fields = ['name', 'aliases__alias']
 
     def alias_names(self, obj):
         """Return list of aliases of obj."""
