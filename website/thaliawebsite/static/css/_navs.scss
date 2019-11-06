@@ -28,13 +28,13 @@
             }
 
             &.mixitup-control-active {
-                color: #E62272;
+                color: $preset;
                 border-color: #dee2e6 #dee2e6 #fff;
             }
         }
 
         .nav-select {
-            color: $black;
+            color: $secondary;
             font-family: $header-font;
             font-size: 16px;
             line-height: 18px;
@@ -45,7 +45,7 @@
             border: 1px solid transparent;
 
             &.active {
-                color: #E62272;
+                color: $preset;
             }
         }
     }
@@ -59,8 +59,11 @@
     border-radius: 0;
 
     .page-item {
+
         .page-link {
             color: $preset;
+            background-color: $background-color;
+            border-color: $background-shade;
             border-radius: 0;
 
             &:focus {

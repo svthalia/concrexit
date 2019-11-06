@@ -1,12 +1,20 @@
 $background-color: $white;
-$background-darker: $lightlight-grey;
+$background-shade: $lightlight-grey;
+$card-background: $lightlight-grey;
+$card-background-hover: $light-grey;
+$card-background-contrast: $black;
+$banner-background: $light-grey;
+$form-background: $white;
+$form-border: $black;
+$form-text: $grey-2;
+
 $title-color: $black;
-$sub-title-color: $grey;
+$sub-title-color: $grey-2;
 $text-color: $grey-2;
 $nav-link-color: $black;
+
 $footer-text-color: $white;
 $footer-text-color-hover: $lightlight-grey;
-$table-clickable-hover-background: $light-grey;
 
 $preset: $magenta;
 $preset-hover: $magenta-darker;

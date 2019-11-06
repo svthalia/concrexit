@@ -8,10 +8,6 @@
 
         height: calc(100% - 15px);
 
-        &:hover {
-            background-color: $grey;
-        }
-
         .card-date {
             color: $preset;
             margin-bottom: .7rem;
@@ -42,7 +38,7 @@
 
 #events-index {
     .fc-bootstrap .fc-today {
-        background: #fff9fc;
+        background: $background-shade;
     }
 
     .fc-now-indicator {

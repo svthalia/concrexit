@@ -6,6 +6,7 @@ html {
 body {
     margin-bottom: 80px;
     background-color: $background-color;
+    color: $text-color;
 }
 
 #accentbar {
@@ -22,7 +23,7 @@ body {
     position: sticky;
     font-size: 16px;
     background-color: $background-color;
-    border-bottom: 1px solid $background-darker;
+    border-bottom: 1px solid $background-shade;
     top: 5px;
     z-index: 1020;
 
@@ -82,12 +83,25 @@ body {
     }
 }
 
+.table {
+    color: $text-color;
+}
+
+.table-bordered {
+    border-color: $background-shade;
+}
+
+.table-bordered td, .table-bordered th {
+    border-color: $background-shade;
+}
+
+
 .table-clickable {
     tbody tr {
         &:hover {
             cursor: pointer;
             color: $preset;
-            background-color: $table-clickable-hover-background;
+            background-color: $background-shade;
         }
     }
 }
@@ -181,7 +195,7 @@ body {
 
 #page-content {
     padding: 1rem 0 4rem 0;
-    border-top: 1px solid $grey;
+    border-top: 1px solid $background-shade;
 
     .page-section {
         padding: 2rem 1rem 0 1rem;
@@ -189,7 +203,7 @@ body {
         h1.section-title {
             position: relative;
             margin-bottom: 1.5rem;
-            border-top: solid 1px $grey;
+            border-top: solid 1px $background-shade;
             padding: 20px 0 0;
 
             &::before {
@@ -252,7 +266,7 @@ footer {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     background-color: $background-color;
-    border-color: $background-darker;
+    border-color: $background-shade;
 
     .dropdown-item {
         padding: 0.5rem 1.5rem;
