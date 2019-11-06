@@ -134,15 +134,10 @@ if os.environ.get('DJANGO_EMAIL_HOST'):
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-    },
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
+            'format': '%(asctime)s %(name)s '
+                      '%(levelname)s %(message)s'
         },
     },
     'handlers': {
@@ -154,6 +149,7 @@ LOGGING = {
         'logfile': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
+            'formatter': 'verbose',
             'filename': '/concrexit/log/django.log',
         }
     },
@@ -161,7 +157,12 @@ LOGGING = {
         'django': {
             'handlers': ['console', 'logfile'],
             'level': 'INFO',
+            'propagate': False,
         },
+        '': {
+            'handlers': ['logfile'],
+            'level': 'INFO',
+        }
     },
 }
 
