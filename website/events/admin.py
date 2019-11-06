@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Registers admin interfaces for the events module"""
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
