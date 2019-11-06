@@ -64,31 +64,31 @@ p {
 }
 
 .bg-primary {
-    color: $white;
+    color: $preset-contrast;
     background: $preset;
     padding: 3px 4px;
 }
 
 .bg-success {
-    color: $white;
+    color: $success-contrast;
     background: $success;
     padding: 3px 4px;
 }
 
 .bg-info {
-    color: $white;
+    color: $info-contrast;
     background: $info;
     padding: 3px 4px;
 }
 
 .bg-warning {
-    color: $white;
+    color: $warning-contrast;
     background: $warning;
     padding: 3px 4px;
 }
 
 .bg-danger {
-    color: $white;
+    color: $danger-contrast;
     background: $danger;
     padding: 3px 4px;
 }
