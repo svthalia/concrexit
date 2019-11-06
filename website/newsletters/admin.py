@@ -11,9 +11,11 @@ class NewsletterItemInline(admin.StackedInline):
     """The inline for the text items in the newsletter"""
     model = NewsletterItem
     extra = 0
+    fields = ('order', 'title_en', 'title_nl', 'url', 'description_en',
+              'description_nl')
 
 
-class NewsletterEventInline(NewsletterItemInline):
+class NewsletterEventInline(admin.StackedInline):
     """The inline for the event items in the newsletter"""
     form = NewsletterEventForm
     model = NewsletterEvent

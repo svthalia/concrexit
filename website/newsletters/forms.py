@@ -26,7 +26,7 @@ class NewsletterEventForm(forms.ModelForm):
         self.fields['event'].required = False
 
     class Meta:
-        fields = ('order', 'event', 'title_en', 'title_nl',
+        fields = ('order', 'event', 'title_en', 'title_nl', 'url',
                   'description_en', 'description_nl',
                   'where_en', 'where_nl', 'start_datetime', 'end_datetime',
                   'show_costs_warning', 'price', 'penalty_costs')
