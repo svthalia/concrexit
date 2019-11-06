@@ -8,27 +8,23 @@ $letter-spacing: 0px;
 $fa-font-path: "../fonts";
 
 // Theme Colors
-$preset: #E62272;
-$preset-hover: #CF1760;
-
-$primary: $preset;
-$primary-hover: $preset-hover;
-$secondary: #000000;
-$secondary-hover: #1d1d1d;
-$success: #55c025;
-$success-hover: #52a425;
-$info: #1e9ae6;
-$info-hover: #1e83cf;
-$warning: #ffc107;
-$warning-hover: #e0a800;
-$danger: #e62a17;
-$danger-hover: #ce2816;
-$title-color: #000;
-$sub-title-color: #333;
-$text-color: #444;
-$white: #fff;
-$light-grey: #f7f7f7;
-$grey: #ddd;
+$magenta: #E62272;
+$magenta-darker: #CF1760;
+$black: #000000;
+$darkdark-grey: #1d1d1d;
+$grey: #333333;
+$grey-2: #444444;
 $dark-grey: #616161;
-$black: #000;
+$light-grey: #dddddd;
+$lightlight-grey: #f7f7f7;
+$white: #ffffff;
 $preset-transparent: RGBA(235, 88, 111, 0.7);
+
+$green: #55c025;
+$green-darker: #52a425;
+$blue: #1e9ae6;
+$blue-darker: #1e83cf;
+$yellow: #ffc107;
+$yellow-darker: #e0a800;
+$red: #e62a17;
+$red-darker: #ce2816;
