@@ -42,7 +42,10 @@ class ObtainThaliaAuthToken(ObtainAuthToken):
             if 'username' in request.data else None,
             'password': request.data.get('password')
         }, context={'request': request})
-        serializer.is_valid(raise_exception=True)
+
+        if not serializer.is_valid():
+            return HttpResponse('Unauthorized', status=401)
+
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
