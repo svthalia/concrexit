@@ -1,11 +1,14 @@
 $background-color: $black;
 $background-shade: $darkdark-grey;
+
 $card-background: $darkdark-grey;
-$card-background-hover: $dark-grey;
+$card-background-hover: $grey;
 $card-background-contrast: $white;
+
 $banner-background: $darkdark-grey;
+
 $form-background: $darkdark-grey;
-$form-background-disabled: $dark-grey;
+$form-background-disabled: $grey;
 $form-border: $white;
 $form-text: $light-grey;
 
@@ -18,21 +21,21 @@ $footer-text-color: $white;
 $footer-text-color-hover: $lightlight-grey;
 
 $preset: $magenta;
-$preset-hover: $magenta-darker;
+$preset-hover: $magenta-shade;
 $preset-contrast: $white;
 $preset-contrast-hover: $light-grey;
 $secondary: $white;
 $secondary-hover: $lightlight-grey;
 $secondary-contrast: $black;
 $success: $green;
-$success-hover: $green-darker;
+$success-hover: $green-shade;
 $success-contrast: $white;
 $info: $blue;
-$info-hover: $blue-darker;
+$info-hover: $blue-shade;
 $info-contrast: $white;
 $warning: $yellow;
-$warning-hover: $yellow-darker;
+$warning-hover: $yellow-shade;
 $warning-contrast: $white;
 $danger: $red;
-$danger-hover: $red-darker;
+$danger-hover: $red-shade;
 $danger-contrast: $white;
