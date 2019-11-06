@@ -69,11 +69,16 @@
 <nav class="navbar navbar-expand-lg">
     <div class="container">
         <a class="navbar-brand" href="{% url 'index' %}">
-            <img
-                src="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.png' %}"
-                id="logo"
-                alt="{% trans 'Study Association Thalia' %}"
-            >
+            <picture>
+                <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'-dark.svg' %}" media="(prefers-color-scheme: dark)">
+                <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}" media="(prefers-color-scheme: light)">
+                <img
+                    src="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}"
+                    id="logo"
+                    alt="{% trans 'Study Association Thalia' %}"
+                    height="220px"
+                >
+            </picture>
         </a>
         <div class="flex-grow-1"></div>
         <div class="navbar-user order-1 d-flex">
