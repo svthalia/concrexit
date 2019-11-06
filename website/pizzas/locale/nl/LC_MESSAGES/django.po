@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-07 16:41+0200\n"
-"PO-Revision-Date: 2019-06-07 16:41+0200\n"
-"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
+"POT-Creation-Date: 2019-10-30 21:02+0100\n"
+"PO-Revision-Date: 2019-10-30 21:03+0100\n"
+"Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: admin.py
 msgid "reminder"
@@ -148,6 +148,10 @@ msgstr "Pin"
 msgid "Cash"
 msgstr "Contant"
 
+#: templates/pizzas/admin/orders.html
+msgid "Thalia Pay"
+msgstr "Thalia Pay"
+
 #: templates/pizzas/admin/orders.html templates/pizzas/admin/summary.html
 msgid "Nobody ordered yet"
 msgstr "Nog geen bestellingen"
@@ -245,6 +249,10 @@ msgid "Are you sure you want to cancel your order?"
 msgstr "Weet je zeker dat je de bestelling wilt annuleren?"
 
 #: templates/pizzas/index.html
+msgid "Pay with Thalia Pay"
+msgstr "Betaal met Thalia Pay"
+
+#: templates/pizzas/index.html
 msgid "Changing your order"
 msgstr "Bestelling bewerken"
 
@@ -272,3 +280,7 @@ msgstr "Je bestelling is geannuleerd."
 #: views.py
 msgid "Your order could not be found."
 msgstr "Je bestelling kont niet worden gevonden."
+
+#: views.py
+msgid "Your order has been paid with Thalia Pay."
+msgstr "Je bestelling wordt betaald met Thalia Pay."

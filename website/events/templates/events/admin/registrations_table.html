@@ -49,6 +49,9 @@
                                 {% if registration.payment and registration.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
                         <option value="{{ payment.CASH }}"
                                 {% if registration.payment and registration.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %}</option>
+                        <option value="{{ payment.TPAY }}"
+                                {% if not registration.member.tpay_enabled %} disabled {% endif %}
+                                {% if registration.payment and registration.payment.type == payment.TPAY %}selected{% endif %}>{% trans 'Thalia Pay' %}</option>
                         <option value="{{ payment.WIRE }}"
                                 {% if registration.payment and registration.payment.type == payment.WIRE %}selected{% endif %}>{% trans 'Wire' %}</option>
                     </select>

@@ -112,9 +112,20 @@
                                         <th>{% trans "payment status"|capfirst %}</th>
                                         <td>
                                             {% if registration.is_paid %}
-                                                {% trans "You have paid" %}
+                                                {% if registration.payment.type == payment_method_tpay %}
+                                                    {% trans "You pay with Thalia Pay" %}
+                                                {% else %}
+                                                    {% trans "You have paid" %}
+                                                {% endif %}
                                             {% else %}
                                                 {% trans "You have not paid yet" %}
+                                                {% if registration.member.tpay_enabled %}
+                                                    <form action="{% url 'events:pay' event.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="submit" class="btn btn-primary"
+                                                               value="{% trans "Pay with Thalia Pay" %}"/>
+                                                    </form>
+                                                {% endif %}
                                             {% endif %}
                                         </td>
                                     </tr>

@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-14 08:06+0200\n"
-"PO-Revision-Date: 2019-08-07 19:57+0200\n"
-"Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
+"POT-Creation-Date: 2019-10-30 20:58+0100\n"
+"PO-Revision-Date: 2019-10-30 21:01+0100\n"
+"Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: admin.py
 msgid "lecture year"
@@ -249,6 +249,15 @@ msgstr ""
 msgid "registration end"
 msgstr "einde aanmelden"
 
+#: models.py
+msgid ""
+"If you set a registration period registration will be required. If you don't "
+"set one, registration won't be required."
+msgstr ""
+"Als je een aanmeldperiode instelt is aanmelden vereist, als je dat niet doet "
+"is aanmelden niet vereist. Geef de voorkeur aan tijden waar mensen geen "
+"college hebben, bijvoorbeeld 12:30 in plaats van 13:37."
+
 #: models.py templates/events/admin/details.html
 msgid "cancel deadline"
 msgstr "afmelddeadline"
@@ -438,12 +447,24 @@ msgid "You are not registered for this event."
 msgstr "Je bent niet aangemeld voor dit evenement."
 
 #: services.py
+msgid "You have already paid for this event."
+msgstr "Je hebt al betaald voor dit evenement"
+
+#: services.py
+msgid "You do not have Thalia Pay enabled."
+msgstr "Je maakt geen gebruik van Thalia Pay."
+
+#: services.py
 msgid "Unable to find the right registration."
 msgstr "De juiste registratie is niet gevonden."
 
 #: services.py
 msgid "You are not allowed to update this registration."
 msgstr "Je mag deze aanmelding niet bijwerken."
+
+#: services.py
+msgid "This user does not have Thalia Pay enabled"
+msgstr "Deze persoon kan geen Thalia Pay gebruiken"
 
 #: templates/events/admin/details.html templates/events/admin/email_export.html
 msgid "Thalia site admin"
@@ -563,16 +584,8 @@ msgid "Send message"
 msgstr "Stuur pushnotificatie"
 
 #: templates/events/admin/registrations_table.html
-msgid "not paid"
-msgstr "niet betaald"
-
-#: templates/events/admin/registrations_table.html
-msgid "paid cash"
-msgstr "contant betaald"
-
-#: templates/events/admin/registrations_table.html
-msgid "paid card"
-msgstr "pin betaald"
+msgid "payment"
+msgstr "betaling"
 
 #: templates/events/admin/registrations_table.html
 msgid "late"
@@ -581,6 +594,26 @@ msgstr "te laat"
 #: templates/events/admin/registrations_table.html
 msgid "add"
 msgstr "toevoegen"
+
+#: templates/events/admin/registrations_table.html
+msgid "None"
+msgstr "Geen"
+
+#: templates/events/admin/registrations_table.html
+msgid "Card"
+msgstr "Pin"
+
+#: templates/events/admin/registrations_table.html
+msgid "Cash"
+msgstr "Contant"
+
+#: templates/events/admin/registrations_table.html
+msgid "Thalia Pay"
+msgstr "Thalia Pay"
+
+#: templates/events/admin/registrations_table.html
+msgid "Wire"
+msgstr "Overschrijving"
 
 #: templates/events/admin/registrations_table.html
 msgid "registered"
@@ -683,12 +716,20 @@ msgid "payment status"
 msgstr "betalingsstatus"
 
 #: templates/events/event.html
+msgid "You pay with Thalia Pay"
+msgstr "Je betaalt met Thalia Pay"
+
+#: templates/events/event.html
 msgid "You have paid"
 msgstr "Je hebt betaald"
 
 #: templates/events/event.html
 msgid "You have not paid yet"
 msgstr "Je hebt nog niet betaald"
+
+#: templates/events/event.html
+msgid "Pay with Thalia Pay"
+msgstr "Betaal met Thalia Pay"
 
 #: templates/events/event.html
 msgid "Update registration"
@@ -861,6 +902,10 @@ msgstr "Opslaan"
 #: views.py
 msgid "Registration successful."
 msgstr "Je aanmelding was succesvol."
+
+#: views.py
+msgid "You have paid with Thalia Pay."
+msgstr "Je hebt betaald met Thalia Pay."
 
 #: views.py
 msgid "Registration successfully cancelled."

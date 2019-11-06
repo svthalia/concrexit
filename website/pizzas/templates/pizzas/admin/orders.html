@@ -113,6 +113,9 @@
                                                 {% if order.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
                                         <option value="{{ payment.CASH }}"
                                                 {% if order.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %}</option>
+                                        <option value="{{ payment.TPAY }}"
+                                                {% if order.payment.type == payment.TPAY %}selected{% endif %}
+                                                {% if not order.payment.paid_by.tpay_enabled %} disabled {% endif %}>{% trans 'Thalia Pay' %}</option>
                                     </select>
                                 </td>
                                 <td>

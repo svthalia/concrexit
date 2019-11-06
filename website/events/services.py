@@ -138,6 +138,11 @@ def cancel_registration(member, event):
 
     if (event_permissions(member, event)["cancel_registration"] and
             registration):
+        if registration.payment is not None:
+            p = registration.payment
+            registration.payment = None
+            registration.save()
+            p.delete()
         if registration.queue_position == 0:
             emails.notify_first_waiting(event)
 
@@ -153,6 +158,49 @@ def cancel_registration(member, event):
         registration.save()
     else:
         raise RegistrationError(_("You are not registered for this event."))
+
+
+def pay_with_tpay(member, event):
+    """
+    Add a Thalia Pay payment to an event registration
+
+    :param member: the user
+    :param event: the event
+    """
+    registration = None
+    try:
+        registration = Registration.objects.get(
+            event=event,
+            member=member
+        )
+    except Registration.DoesNotExist:
+        raise RegistrationError(_("You are not registered for this event."))
+
+    if member.tpay_enabled:
+        if registration.payment is None:
+            note = f'Event registration {registration.event.title_en}. '
+            if registration.name:
+                note += f'Paid by {registration.name}. '
+            note += (f'{registration.event.start}. '
+                     f'Registration date: {registration.date}.')
+
+            registration.payment = Payment.objects.create(
+                amount=registration.event.price,
+                paid_by=member,
+                notes=note,
+                processed_by=member,
+                type=Payment.TPAY
+            )
+            registration.save()
+        elif registration.payment.type == Payment.NONE:
+            registration.payment.type = Payment.TPAY
+            registration.save()
+        else:
+            raise RegistrationError(_("You have already paid for this "
+                                      "event."))
+    else:
+        raise RegistrationError(
+            _("You do not have Thalia Pay enabled."))
 
 
 def update_registration(member=None, event=None,
@@ -265,24 +313,35 @@ def update_registration_by_organiser(registration, member, data):
             p.delete()
         elif (data['payment']['type'] != Payment.NONE
               and registration.payment is not None):
-            registration.payment.type = data['payment']['type']
-            registration.payment.save()
+            if (data['payment']['type'] != Payment.TPAY or
+                (data['payment']['type'] == Payment.TPAY
+                 and member.tpay_enabled)):
+                registration.payment.type = data['payment']['type']
+                registration.payment.save()
+            else:
+                raise RegistrationError(
+                    _("This user does not have Thalia Pay enabled"))
         elif (data['payment']['type'] != Payment.NONE
               and registration.payment is None):
+            if (data['payment']['type'] != Payment.TPAY or
+                (data['payment']['type'] == Payment.TPAY
+                 and member.tpay_enabled)):
+                note = f'Event registration {registration.event.title_en}. '
+                if registration.name:
+                    note += f'Paid by {registration.name}. '
+                note += (f'{registration.event.start}. '
+                         f'Registration date: {registration.date}.')
 
-            note = f'Event registration {registration.event.title_en}. '
-            if registration.name:
-                note += f'Paid by {registration.name}. '
-            note += (f'{registration.event.start}. '
-                     f'Registration date: {registration.date}.')
-
-            registration.payment = Payment.objects.create(
-                amount=registration.event.price,
-                paid_by=registration.member,
-                notes=note,
-                processed_by=member,
-                type=data['payment']['type']
-            )
+                registration.payment = Payment.objects.create(
+                    amount=registration.event.price,
+                    paid_by=registration.member,
+                    notes=note,
+                    processed_by=member,
+                    type=data['payment']['type']
+                )
+            else:
+                raise RegistrationError(
+                    _("This user does not have Thalia Pay enabled"))
 
     if 'present' in data:
         registration.present = data['present']

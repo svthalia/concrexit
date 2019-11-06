@@ -52,7 +52,7 @@ class PaymentAdmin(admin.ModelAdmin):
     ordering = ('-created_at', 'processing_date')
     autocomplete_fields = ('paid_by', 'processed_by')
     actions = ['process_cash_selected', 'process_card_selected',
-               'process_wire_selected', 'export_csv']
+               'process_tpay_selected', 'process_wire_selected', 'export_csv']
 
     @staticmethod
     def _member_link(member: Member) -> str:
@@ -101,6 +101,7 @@ class PaymentAdmin(admin.ModelAdmin):
         if not request.user.has_perm('payments.process_payments'):
             del(actions['process_cash_selected'])
             del(actions['process_card_selected'])
+            del(actions['process_tpay_selected'])
             del(actions['process_wire_selected'])
         return actions
 
@@ -125,6 +126,17 @@ class PaymentAdmin(admin.ModelAdmin):
             self._process_feedback(request, updated_payments)
     process_card_selected.short_description = _(
         'Process selected payments (card)')
+
+    def process_tpay_selected(self, request: HttpRequest,
+                              queryset: QuerySet) -> None:
+        """Process the selected payment as Thalia Pay"""
+        if request.user.has_perm('payments.process_payments'):
+            updated_payments = services.process_payment(
+                queryset, request.member, Payment.TPAY
+            )
+            self._process_feedback(request, updated_payments)
+    process_tpay_selected.short_description = _(
+        'Process selected payments (Thalia Pay, only if enabled)')
 
     def process_wire_selected(self, request: HttpRequest,
                               queryset: QuerySet) -> None:

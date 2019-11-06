@@ -253,8 +253,9 @@ class Order(models.Model):
     @property
     def can_be_changed(self):
         try:
-            return (self.payment and not self.payment.processed
-                    and not self.pizza_event.has_ended)
+            return (self.payment and not (self.payment.processed and not
+                    self.payment.type == Payment.TPAY) and not
+                    self.pizza_event.has_ended)
         except ObjectDoesNotExist:
             return False
 

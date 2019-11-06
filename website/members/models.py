@@ -19,6 +19,8 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import pgettext_lazy, gettext_lazy as _
 
+from payments.models import BankAccount
+from thaliawebsite.settings import THALIA_PAY_ENABLED_PAYMENT_METHOD
 from activemembers.models import MemberGroup, MemberGroupMembership
 from utils import countries
 
@@ -190,6 +192,16 @@ class Member(User):
 
     def get_absolute_url(self):
         return reverse('members:profile', args=[str(self.pk)])
+
+    @property
+    def tpay_enabled(self):
+        """Does this user have a bank account with Direct Debit enabled"""
+        bank_accounts = BankAccount.objects.filter(owner=self)
+        if THALIA_PAY_ENABLED_PAYMENT_METHOD and bank_accounts.exists():
+            if bank_accounts.last().valid:
+                return True
+        else:
+            return False
 
 
 def _profile_image_path(_instance, _filename):

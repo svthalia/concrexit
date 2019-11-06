@@ -231,6 +231,49 @@ class PaymentAdminTest(TestCase):
 
     @mock.patch('django.contrib.admin.ModelAdmin.message_user')
     @mock.patch('payments.services.process_payment')
+    def test_process_tpay(self, process_payment, message_user) -> None:
+        """
+        Tests that a Thalia Pay payment is processed correctly
+        """
+        object_id = 'c85ea333-3508-46f1-8cbb-254f8c138020'
+        payment = Payment.objects.create(pk=object_id,
+                                         amount=7.5)
+        queryset = Payment.objects.filter(pk=object_id)
+        process_payment.return_value = [payment]
+        change_url = reverse('admin:payments_payment_changelist')
+
+        request_noperms = self.client.post(
+            change_url,
+            {'action': 'process_tpay_selected',
+             'index': 1,
+             '_selected_action': [object_id]}).wsgi_request
+        self._give_user_permissions()
+        request_hasperms = self.client.post(
+            change_url,
+            {'action': 'process_tpay_selected',
+             'index': 1,
+             '_selected_action': [object_id]}).wsgi_request
+
+        process_payment.reset_mock()
+        message_user.reset_mock()
+
+        self.admin.process_tpay_selected(request_noperms, queryset)
+        process_payment.assert_not_called()
+
+        self.admin.process_tpay_selected(request_hasperms, queryset)
+        process_payment.assert_called_once_with(queryset,
+                                                self.user, Payment.TPAY)
+        message_user.assert_called_once_with(
+            request_hasperms,
+            _('Successfully processed %(count)d %(items)s.')
+            % {
+                "count": 1,
+                "items": model_ngettext(Payment(), 1)
+            }, messages.SUCCESS
+        )
+
+    @mock.patch('django.contrib.admin.ModelAdmin.message_user')
+    @mock.patch('payments.services.process_payment')
     def test_process_wire(self, process_payment, message_user) -> None:
         """
         Tests that a wire payment is processed correctly
@@ -291,6 +334,7 @@ class PaymentAdminTest(TestCase):
                                         'process_cash_selected',
                                         'process_card_selected',
                                         'process_wire_selected',
+                                        'process_tpay_selected',
                                         'export_csv'])
 
     def test_get_urls(self) -> None:
