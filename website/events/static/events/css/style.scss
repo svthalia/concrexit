@@ -8,6 +8,10 @@
 
         height: calc(100% - 15px);
 
+        &:hover {
+            background-color: $card-background-hover;
+        }
+
         .card-date {
             color: $preset;
             margin-bottom: .7rem;
