@@ -61,7 +61,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
         exclude = [
             "created_at",
             "updated_at",
-            "status",
+            "processed",
             "username",
             "payment",
             "membership",
@@ -81,7 +81,7 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
         exclude = [
             "created_at",
             "updated_at",
-            "status",
+            "processed",
             "username",
             "starting_year",
             "programme",
@@ -110,7 +110,7 @@ class RenewalForm(forms.ModelForm):
     class Meta:
         model = Renewal
         fields = "__all__"
-        exclude = ["created_at", "updated_at", "status", "payment", "membership"]
+        exclude = ["created_at", "updated_at", "processed", "payment", "membership"]
 
 
 class ReferenceForm(forms.ModelForm):
