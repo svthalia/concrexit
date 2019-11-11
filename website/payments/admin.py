@@ -16,8 +16,8 @@ from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
 from payments import services, admin_views
-from payments.forms import BankAccountAdminForm
-from .models import Payment, BankAccount
+from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
+from .models import Payment, BankAccount, Batch
 
 
 def _show_message(
@@ -46,11 +46,8 @@ class PaymentAdmin(admin.ModelAdmin):
         "processed_by_link",
         "topic",
     )
-    list_filter = ("type",)
-    list_select_related = (
-        "paid_by",
-        "processed_by",
-    )
+    list_filter = ("type", "batch")
+    list_select_related = ("paid_by", "processed_by", "batch")
     date_hierarchy = "created_at"
     fields = (
         "created_at",
@@ -61,6 +58,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "processed_by",
         "topic",
         "notes",
+        "batch",
     )
     readonly_fields = (
         "created_at",
@@ -71,6 +69,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "processed_by",
         "topic",
         "notes",
+        "batch",
     )
     search_fields = (
         "topic",
@@ -90,6 +89,8 @@ class PaymentAdmin(admin.ModelAdmin):
         "process_card_selected",
         "process_tpay_selected",
         "process_wire_selected",
+        "add_to_new_batch",
+        "add_to_last_batch",
         "export_csv",
     ]
 
@@ -108,11 +109,32 @@ class PaymentAdmin(admin.ModelAdmin):
     paid_by_link.admin_order_field = "paid_by"
     paid_by_link.short_description = _("paid by")
 
+    @staticmethod
+    def _batch_link(batch: Batch) -> str:
+        if batch:
+            return format_html(
+                "<a href='{}'>{}</a>", batch.get_absolute_url(), str(batch)
+            )
+        else:
+            return "-"
+
+    def batch_link(self, obj: Payment) -> str:
+        return self._batch_link(obj.batch)
+
+    paid_by_link.admin_order_field = "paid_by"
+    paid_by_link.short_description = _("paid by")
+
     def processed_by_link(self, obj: Payment) -> str:
         return self._member_link(obj.processed_by)
 
     processed_by_link.admin_order_field = "processed_by"
     processed_by_link.short_description = _("processed by")
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "batch":
+            print(Batch.objects.filter(processed=False))
+            kwargs["queryset"] = Batch.objects.filter(processed=False)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def changeform_view(
         self,
@@ -134,7 +156,17 @@ class PaymentAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request: HttpRequest, obj: Payment = None):
         if not obj:
-            return "created_at", "type", "processing_date", "processed_by"
+            return "created_at", "type", "processing_date", "processed_by", "batch"
+        if obj.type == Payment.TPAY and not (obj.batch and obj.batch.processed):
+            return (
+                "created_at",
+                "amount",
+                "type",
+                "processing_date",
+                "paid_by",
+                "processed_by",
+                "notes",
+            )
         return super().get_readonly_fields(request, obj)
 
     def get_actions(self, request: HttpRequest) -> OrderedDict:
@@ -146,6 +178,9 @@ class PaymentAdmin(admin.ModelAdmin):
             del actions["process_card_selected"]
             del actions["process_tpay_selected"]
             del actions["process_wire_selected"]
+        if not request.user.has_perm("payments.process_batches"):
+            del actions["add_to_new_batch"]
+            del actions["add_to_last_batch"]
         return actions
 
     def process_cash_selected(self, request: HttpRequest, queryset: QuerySet) -> None:
@@ -189,6 +224,52 @@ class PaymentAdmin(admin.ModelAdmin):
             self._process_feedback(request, updated_payments)
 
     process_wire_selected.short_description = _("Process selected payments (wire)")
+
+    def add_to_new_batch(self, request: HttpRequest, queryset: QuerySet) -> None:
+        """Add selected TPAY payments to a new batch"""
+        tpays = queryset.filter(type=Payment.TPAY)
+        if len(tpays) > 0:
+            batch = Batch()
+            batch.save()
+            tpays.update(batch=batch)
+        _show_message(
+            self,
+            request,
+            len(tpays),
+            f"Successfully added {len(tpays)} payments to new batch",
+            f"No payments using Thalia Pay are selected, " f"no batch is created",
+        )
+
+    add_to_new_batch.short_descriptionn = _("Add selected TPAY payments to a new batch")
+
+    def add_to_last_batch(self, request: HttpRequest, queryset: QuerySet) -> None:
+        """Add selected TPAY payments to a new batch"""
+        tpays = queryset.filter(type=Payment.TPAY)
+        if len(tpays) > 0:
+            batch = Batch.objects.last()
+            if not batch.processed:
+                batch.save()
+                tpays.update(batch=batch)
+                self.message_user(
+                    request,
+                    f"Successfully added {len(tpays)} payments to {batch}",
+                    messages.SUCCESS,
+                )
+            else:
+                self.message_user(
+                    request,
+                    f"The last batch {batch} is already processed",
+                    messages.ERROR,
+                )
+        else:
+            self.message_user(
+                request,
+                f"No payments using Thalia Pay are selected, "
+                f"no batch is created",
+                messages.ERROR,
+            )
+
+    add_to_new_batch.short_descriptionn = _("Add selected TPAY payments to a new batch")
 
     def _process_feedback(self, request, updated_payments: list) -> None:
         """Show a feedback message for the processing result"""
@@ -283,6 +364,105 @@ class ValidAccountFilter(admin.SimpleListFilter):
             return queryset.filter(valid_from=None)
 
         return queryset
+
+
+class PaymentsInline(admin.TabularInline):
+    """The inline for payments in the Batch admin"""
+
+    model = Payment
+    readonly_fields = (
+        "amount",
+        "processing_date",
+        "paid_by",
+    )
+    form = BatchPaymentInlineAdminForm
+    extra = 0
+    can_delete = False
+
+
+@admin.register(Batch)
+class BatchAdmin(admin.ModelAdmin):
+    inlines = (PaymentsInline,)
+    list_display = (
+        "description",
+        "start_date",
+        "end_date",
+        "processing_date",
+        "processed",
+    )
+    fields = (
+        "description",
+        "processed",
+        "processing_date",
+        "total_amount",
+    )
+    search_fields = ("description",)
+
+    def get_readonly_fields(self, request: HttpRequest, obj: Batch = None):
+        default_fields = (
+            "processed",
+            "processing_date",
+            "total_amount",
+        )
+        if obj and obj.processed:
+            return ("description",) + default_fields
+        return default_fields
+
+    def get_urls(self) -> list:
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                "<uuid:pk>/process/",
+                self.admin_site.admin_view(admin_views.BatchAdminView.as_view()),
+                name="payments_batch_process",
+            ),
+            path(
+                "<uuid:pk>/export/",
+                self.admin_site.admin_view(admin_views.BatchExportAdminView.as_view()),
+                name="payments_batch_export",
+            ),
+            path(
+                "new_filled/",
+                self.admin_site.admin_view(
+                    admin_views.BatchNewFilledAdminView.as_view()
+                ),
+                name="payments_batch_new_batch_filled",
+            ),
+        ]
+        return custom_urls + urls
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in formset.deleted_objects:
+            obj.delete()
+
+        for instance in instances:
+            if instance.batch is None or (
+                instance.batch and not instance.batch.processed
+            ):
+                instance.batch = None
+            instance.save()
+        formset.save_m2m()
+
+    def changeform_view(
+        self,
+        request: HttpRequest,
+        object_id: str = None,
+        form_url: str = "",
+        extra_context: dict = None,
+    ) -> HttpResponse:
+        """
+        Renders the change formview
+        Only allow when the payment has not been processed yet
+        """
+        obj = None
+        processed = False
+        if object_id is not None and request.user.has_perm("payments.process_batches"):
+            obj = Batch.objects.get(id=object_id)
+            processed = obj.processed
+        return super().changeform_view(
+            request, object_id, form_url, {"batch": obj, "processed": processed}
+        )
 
 
 @admin.register(BankAccount)

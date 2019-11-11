@@ -11,6 +11,18 @@
     <script type="text/javascript" src="{% static 'admin/payments/js/payments.js' %}"></script>
 {% endblock %}
 
+{% block after_field_sets %}
+    {% if batch %}
+    <div class="submit-row payments-row">
+        {% if not processed %}
+            <a data-href="{% url 'admin:payments_batch_process' pk=batch.pk %}" class="button process">{% trans "Process batch" %}</a>
+        {% endif %}
+        <a data-href="{% url 'admin:payments_batch_export' pk=batch.pk %}" class="button process">{% trans "Export batch" %}</a>
+    </div>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}
+
 {% block submit_buttons_bottom %}
     {% if payment %}
     <div class="submit-row payments-row">
@@ -24,6 +36,5 @@
         <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}" data-type="wire_payment" class="button process">{% trans "Process (wire payment)" %}</a>
     </div>
     {% endif %}
-
     {{ block.super }}
 {% endblock %}
