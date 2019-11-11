@@ -1,10 +1,12 @@
+import datetime
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member
-from payments.models import Payment, BankAccount, Payable
+from payments.models import Payment, BankAccount, Batch, Payable
 
 
 class PayableTest(TestCase):
@@ -48,6 +50,7 @@ class PaymentTest(TestCase):
         cls.payment = Payment.objects.create(
             amount=10, paid_by=cls.member, processed_by=cls.member,
         )
+        cls.batch = Batch.objects.create()
 
     def test_get_admin_url(self):
         """
@@ -58,11 +61,172 @@ class PaymentTest(TestCase):
             "/admin/payments/payment/{}/change/".format(self.payment.pk),
         )
 
+    def test_add_payment_from_processed_batch_to_new_batch(self) -> None:
+        """
+        Test that a payment that is in a processed batch cannot be added to another batch
+        """
+        self.payment.type = Payment.TPAY
+        self.payment.batch = self.batch
+        self.payment.save()
+        self.batch.processed = True
+        self.batch.save()
+
+        b = Batch.objects.create()
+        self.payment.batch = b
+        self.payment.save()
+
+        self.assertEqual(self.payment.batch, self.batch)
+
+    def test_clean(self):
+        """
+        Tests that non thalia pay payments cannot be added to a batch
+        """
+        for payment_type in [Payment.CASH, Payment.CARD, Payment.WIRE]:
+            self.payment.type = payment_type
+            self.payment.batch = self.batch
+            with self.assertRaises(ValidationError):
+                self.payment.clean()
+
+        for payment_type in [Payment.CASH, Payment.CARD, Payment.WIRE]:
+            self.payment.type = payment_type
+            self.payment.batch = None
+            self.payment.clean()
+
+        self.payment.type = Payment.TPAY
+        self.payment.batch = self.batch
+        self.payment.clean()
+
     def test_str(self) -> None:
         """
         Tests that the output is a description with the amount
         """
         self.assertEqual("Payment of 10", str(self.payment))
+
+
+@freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True)
+class BatchModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user1 = Member.objects.create(
+            pk=1,
+            username="test1",
+            first_name="Test1",
+            last_name="Example",
+            email="test1@example.org",
+            is_staff=False,
+        )
+        cls.user2 = Member.objects.create(
+            pk=2,
+            username="test2",
+            first_name="Test2",
+            last_name="Example",
+            email="test2@example.org",
+            is_staff=True,
+        )
+
+    def test_start_date_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        payment1 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=37,
+            processing_date=timezone.now() + datetime.timedelta(days=1),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=36,
+            processing_date=timezone.now(),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        self.assertEqual(batch.start_date(), timezone.now())
+
+    def test_end_date_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        payment1 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=37,
+            processing_date=timezone.now() + datetime.timedelta(days=1),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=36,
+            processing_date=timezone.now(),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        self.assertEqual(batch.end_date(), timezone.now() + datetime.timedelta(days=1))
+
+    def test_description_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        now = timezone.now()
+        self.assertEqual(
+            batch.description, f"Thalia Pay payments for 2019-1",
+        )
+
+    def test_proccess_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        batch.processed = True
+        batch.save()
+        self.assertEqual(batch.processing_date, timezone.now())
+
+    def test_total_amount_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        payment1 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=37,
+            processing_date=timezone.now() + datetime.timedelta(days=1),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=36,
+            processing_date=timezone.now(),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        self.assertEqual(batch.total_amount(), 36 + 37)
+
+    def test_count_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        Payment.objects.create(
+            type=Payment.TPAY,
+            amount=37,
+            processing_date=timezone.now() + datetime.timedelta(days=1),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        Payment.objects.create(
+            type=Payment.TPAY,
+            amount=36,
+            processing_date=timezone.now(),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        self.assertEqual(batch.payments_count(), 2)
+
+    def test_absolute_url(self) -> None:
+        b1 = Batch.objects.create(id=1)
+        self.assertEqual("/admin/payments/batch/1/change/", b1.get_absolute_url())
+
+    def test_str(self) -> None:
+        b1 = Batch.objects.create(id=1)
+        self.assertEqual("Thalia Pay payments for 2019-1 (not processed)", str(b1))
+        b2 = Batch.objects.create(id=2, processed=True)
+        self.assertEqual("Thalia Pay payments for 2019-1 (processed)", str(b2))
 
 
 @freeze_time("2019-01-01")
