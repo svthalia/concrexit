@@ -9,7 +9,6 @@ from django.template.loader import get_template
 from django.utils import translation, timezone
 from django.utils.timezone import make_aware
 
-from members.models import Member
 from newsletters import services
 from partners.models import Partner
 
@@ -42,11 +41,6 @@ def send_newsletter(newsletter):
         for language in settings.LANGUAGES:
             translation.activate(language[0])
 
-            members = Member.current_members.all().filter(
-                profile__receive_newsletter=True,
-                profile__language=language[0]
-            )
-
             subject = '[THALIA] ' + newsletter.title
 
             context = {
@@ -65,24 +59,17 @@ def send_newsletter(newsletter):
             msg = EmailMultiAlternatives(
                 subject=subject,
                 body=text_message,
+                to=[f'newsletter-{language[0]}@{settings.GSUITE_DOMAIN}'],
                 from_email=from_email,
                 connection=connection
             )
             msg.attach_alternative(html_message, "text/html")
 
-            for member in members:
-                if not member.email:
-                    return
-
-                msg.to = [member.email]
-                try:
-                    msg.send()
-                    logger.info('Sent newsletter to %s (%s)',
-                                member.get_full_name(),
-                                member.email)
-                except SMTPException as e:
-                    logger.error('Failed to send the newsletter to %s (%s)',
-                                 member.get_full_name(),
-                                 member.email, e)
+            try:
+                msg.send()
+                logger.info(f'Sent {language[1]} newsletter')
+            except SMTPException as e:
+                logger.error(f'Failed to send the {language[1]} '
+                             f'newsletter: {e}')
 
             translation.deactivate()
