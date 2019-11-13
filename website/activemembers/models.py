@@ -4,7 +4,10 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.models import Permission
-from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+from django.core.exceptions import (
+    NON_FIELD_ERRORS, ValidationError,
+)
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -304,60 +307,70 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
         return self.until is None or self.until > timezone.now().date()
 
     def clean(self):
-        if self.until and (not self.since or self.until < self.since):
-            raise ValidationError(
-                {'until': _("End date can't be before start date")})
-        if self.until and self.until > timezone.now().date():
-            raise ValidationError(
-                {'until': _("End date can't be in the future")})
-
-        if (self.since and self.group.since and
-                self.since < self.group.since):
-            raise ValidationError(
-                {'since': _("Start date can't be before group start date")}
-                )
-        if (self.since and self.group.until and
-                self.since > self.group.until):
-            raise ValidationError(
-                {'since': _("Start date can't be after group end date")})
+        try:
+            if self.until and (not self.since or self.until < self.since):
+                raise ValidationError(
+                    {'until': _("End date can't be before start date")})
+            if self.until and self.until > timezone.now().date():
+                raise ValidationError(
+                    {'until': _("End date can't be in the future")})
+            if (self.since and self.group.since and
+                    self.since < self.group.since):
+                raise ValidationError(
+                    {'since':
+                        _("Start date can't be before group start date")}
+                    )
+            if (self.since and self.group.until and
+                    self.since > self.group.until):
+                raise ValidationError(
+                    {'since':
+                        _("Start date can't be after group end date")})
+        except MemberGroupMembership.group.RelatedObjectDoesNotExist:
+            return False
 
     def validate_unique(self, *args, **kwargs):
-        super().validate_unique(*args, **kwargs)
-        # Check if a group has more than one chair
-        if self.chair:
-            chairs = (MemberGroupMembership.objects
-                      .filter(group=self.group,
-                              chair=True))
-            for chair in chairs:
-                if chair.pk == self.pk:
-                    continue
-                if ((chair.until is None and
-                        (self.until is None or self.until > chair.since)) or
-                        (self.until is None and self.since < chair.until) or
-                        (self.until and chair.until and
-                            self.since < chair.until and
-                            self.until > chair.since)):
-                    raise ValidationError({
-                        NON_FIELD_ERRORS:
-                            _('There already is a '
-                              'chair for this time period')})
+        try:
+            super().validate_unique(*args, **kwargs)
+            # Check if a group has more than one chair
+            if self.chair:
+                chairs = (MemberGroupMembership.objects
+                          .filter(group=self.group,
+                                  chair=True))
+                for chair in chairs:
+                    if chair.pk == self.pk:
+                        continue
+                    if ((chair.until is None and
+                            (self.until is None or self.until > chair.since))
+                        or
+                            (self.until is None and self.since < chair.until)
+                        or
+                            (self.until and chair.until and
+                                self.since < chair.until and
+                                self.until > chair.since)):
+                        raise ValidationError({
+                            NON_FIELD_ERRORS:
+                                _('There already is a '
+                                  'chair for this time period')})
 
-        # check if this member is already in the group in this period
-        memberships = (MemberGroupMembership.objects
-                       .filter(group=self.group,
-                               member=self.member))
-        for mship in memberships:
-            if mship.pk == self.pk:
-                continue
-            if ((mship.until is None and
-                    (self.until is None or self.until > mship.since)) or
-                    (self.until is None and self.since < mship.until) or
-                    (self.until and mship.until and
-                        self.since < mship.until and
-                        self.until > mship.since)):
-                raise ValidationError({
-                    'member': _('This member is already in the group for '
-                                'this period')})
+            # check if this member is already in the group in this period
+            memberships = (MemberGroupMembership.objects
+                           .filter(group=self.group,
+                                   member=self.member))
+            for mship in memberships:
+                if mship.pk == self.pk:
+                    continue
+                if ((mship.until is None and
+                        (self.until is None or self.until > mship.since)) or
+                        (self.until is None and self.since < mship.until) or
+                        (self.until and mship.until and
+                            self.since < mship.until and
+                            self.until > mship.since)):
+                    raise ValidationError({
+                        'member': _('This member is already in the group for '
+                                    'this period')})
+        except (MemberGroupMembership.member.RelatedObjectDoesNotExist,
+                MemberGroupMembership.group.RelatedObjectDoesNotExist):
+            return False
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
