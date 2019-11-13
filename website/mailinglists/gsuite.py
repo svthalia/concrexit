@@ -266,7 +266,7 @@ class GSuiteSyncService:
             moderated=automatic_list['moderated'],
             name=automatic_list['name'],
             description=automatic_list['description'],
-            aliases=automatic_list['aliases'],
+            aliases=automatic_list.get('aliases', []),
             addresses=automatic_list['addresses']
         )
 
