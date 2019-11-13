@@ -120,7 +120,7 @@ class NewslettersTest(TestCase):
         self.client.post(reverse(
             'newsletters:admin-send',
             args=[testletter.pk]), {'post': 'yes'})
-        self.assertEqual(len(mail.outbox), 3)
+        self.assertEqual(len(mail.outbox), 2)
 
     def test_email_html_and_text(self):
         testletter = Newsletter.objects.create(

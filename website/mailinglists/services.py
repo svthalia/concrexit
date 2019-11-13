@@ -3,7 +3,8 @@
 from django.conf import settings
 from django.utils import timezone
 
-from activemembers.models import MemberGroupMembership, Mentorship, Board
+from activemembers.models import (MemberGroupMembership, Mentorship,
+                                  Board, Committee, Society)
 from members.models import Member, Membership
 from utils.snippets import datetime_to_lectureyear
 
@@ -14,26 +15,27 @@ def get_automatic_lists():
                                 .filter(group__board=None)
                                 .filter(group__society=None)
                                 .filter(chair=True)
-                                .prefetch_related('member'))
-    committee_chair_emails = [x.member for x in current_committee_chairs] + [
-        Member(email='intern@thalia.nu')
+                                .select_related('member'))
+    committee_chairs = [x.member.email for x in current_committee_chairs] + [
+        'internalaffairs@thalia.nu'
     ]
 
     current_society_chairs = (MemberGroupMembership.active_objects
                               .filter(group__board=None)
                               .filter(group__committee=None)
                               .filter(chair=True)
-                              .prefetch_related('member'))
-    society_chair_emails = [x.member for x in current_society_chairs] + [
-        Member(email='intern@thalia.nu')
+                              .select_related('member'))
+    society_chair_emails = [x.member.email for x in current_society_chairs] + [
+        'internalaffairs@thalia.nu'
     ]
 
     active_committee_memberships = (MemberGroupMembership.active_objects
                                     .filter(group__board=None)
                                     .filter(group__society=None)
-                                    .prefetch_related('member'))
+                                    .select_related('member'))
 
-    active_members = [x.member for x in active_committee_memberships]
+    active_members = [x.member.email
+                      for x in active_committee_memberships]
 
     lectureyear = datetime_to_lectureyear(timezone.now())
     # Change to next lecture year after December
@@ -41,35 +43,115 @@ def get_automatic_lists():
         lectureyear += 1
     active_mentorships = Mentorship.objects.filter(
         year=lectureyear).prefetch_related('member')
-    mentors = [x.member for x in active_mentorships]
+    mentors = [x.member.email for x in active_mentorships]
 
-    lists = []
+    lists = [
+        {
+            'name': 'members',
+            'aliases': ['leden'],
+            'description': 'Automatic moderated mailinglist that can be used '
+                           'to send mail to all members',
+            'addresses': [m.email for m in
+                          Member.all_with_membership('member')],
+            'moderated': True
+        },
+        {
+            'name': 'benefactors',
+            'aliases': ['begunstigers'],
+            'description': 'Automatic moderated mailinglist that can be used '
+                           'to send mail to all benefactors',
+            'addresses': [m.email for m in
+                          Member.all_with_membership(Membership.BENEFACTOR)],
+            'moderated': True
+        },
+        {
+            'name': 'honorary',
+            'aliases': ['ereleden'],
+            'description': 'Automatic moderated mailinglist that can be used '
+                           'to send mail to all honorary members',
+            'addresses': [m.email for m in
+                          Member.all_with_membership('honorary')],
+            'moderated': True
+        },
+        {
+            'name': 'mentors',
+            'description': 'Automatic moderated mailinglist that can be used '
+                           'to send mail to all orientation mentors. These '
+                           'members should have a mentorship with the current '
+                           'calendar year.',
+            'addresses': mentors,
+            'moderated': True
+        },
+        {
+            'name': 'activemembers',
+            'description': 'Automatic moderated mailinglist that can be used '
+                           'to send mail to all active members. These are all '
+                           'users that are currently a member of a committee.',
+            'addresses': active_members,
+            'moderated': True
+        },
+        {
+            'name': 'committeechairs',
+            'aliases': ['commissievoorzitters'],
+            'description': 'Automatic mailinglist that can be used to send '
+                           'mail to all committee chairs',
+            'addresses': committee_chairs,
 
-    lists += _create_automatic_list(
-        ['members', 'leden'], '[THALIA]',
-        Member.all_with_membership('member'), '', True, True, True)
-    lists += _create_automatic_list(
-        ['benefactors', 'begunstigers'],
-        '[THALIA]',
-        Member.all_with_membership(Membership.BENEFACTOR), '',
-        multilingual=True)
-    lists += _create_automatic_list(
-        ['honorary', 'ereleden'], '[THALIA]', Member.all_with_membership(
-            'honorary'), '', multilingual=True)
-    lists += _create_automatic_list(
-        ['mentors'], '[THALIA] [MENTORS]', mentors, '', moderated=False)
-    lists += _create_automatic_list(
-        ['activemembers'], '[THALIA] [COMMITTEES]',
-        active_members, '')
-    lists += _create_automatic_list(
-        ['committeechairs', 'commissievoorzitters'], '[THALIA] [CHAIRS]',
-        committee_chair_emails, '', moderated=False)
-    lists += _create_automatic_list(
-        ['societychairs', 'gezelschapvoorzitters'], '[THALIA] [SOCIETY]',
-        society_chair_emails, '', moderated=False)
-    lists += _create_automatic_list(
-        ['optin'], '[THALIA] [OPTIN]', Member.current_members.filter(
-            profile__receive_optin=True), '', multilingual=True)
+            'moderated': False
+        },
+        {
+            'name': 'societychairs',
+            'aliases': ['gezelschapvoorzitters'],
+            'description': 'Automatic mailinglist that can be used to send '
+                           'mail to all society chairs',
+            'addresses': society_chair_emails,
+            'moderated': False
+        },
+        {
+            'name': 'optin',
+            'description': 'Automatic mailinglist that can be used to send '
+                           'mail to all members that have opted-in to receive '
+                           'these (mostly recruitment) emails.',
+            'addresses': set(m.email for m in Member.current_members.filter(
+                profile__receive_optin=True)),
+            'moderated': True
+        },
+        {
+            'name': 'committees',
+            'description': 'Automatic moderated mailinglist that is a '
+                           'collection of all committee lists',
+            'addresses': [
+                f'{c.contact_mailinglist.name}@{settings.GSUITE_DOMAIN}'
+                for c in Committee.objects.exclude(contact_mailinglist=None)
+                    .select_related('contact_mailinglist')
+            ],
+            'moderated': True,
+        },
+        {
+            'name': 'societies',
+            'description': 'Automatic moderated mailinglist that is a '
+                           'collection of all committee lists',
+            'addresses': [
+                f'{c.contact_mailinglist.name}@{settings.GSUITE_DOMAIN}'
+                for c in Society.objects.exclude(contact_mailinglist=None)
+                    .select_related('contact_mailinglist')
+            ],
+            'moderated': True,
+        }
+    ]
+
+    for language in settings.LANGUAGES:
+        lists.append({
+            'name': f'newsletter-{language[0]}',
+            'description': 'Automatic moderated mailinglist that can be used '
+                           f'to send newsletters in {language[1]}',
+            'addresses': [m.email for m in
+                          Member.current_members.all().filter(
+                              profile__receive_newsletter=True,
+                              profile__language=language[0]
+                          )],
+            'moderated': True
+        })
 
     all_previous_board_members = []
 
@@ -79,51 +161,23 @@ def get_automatic_lists():
                          MemberGroupMembership.objects.filter
                          (group=board).prefetch_related('member')]
         all_previous_board_members += board_members
-        lists += _create_automatic_list(
-            ['bestuur'
-             + str(board.since.year)[-2:] + str(board.until.year)[-2:],
-             'board'
-             + str(board.since.year)[-2:] + str(board.until.year)[-2:]],
-            '',
-            board_members,
-            archived=False, moderated=False, multilingual=False
-        )
+        years = str(board.since.year)[-2:] + str(board.until.year)[-2:]
+        lists.append({
+            'name': f'board{years}',
+            'aliases': [f'bestuur{years}'],
+            'description': 'Automatic mailinglist to send email to all board '
+                           f'members of {board.since.year}-{board.until.year}',
+            'addresses': set(
+                m.email for m in board_members),
+            'moderated': False})
 
-    lists += _create_automatic_list(
-        ['oldboards', 'oudbesturen'], '',
-        all_previous_board_members
-    )
+    lists.append({
+        'name': 'oldboards',
+        'aliases': ['oudbesturen'],
+        'description': 'Automatic mailinglist to send '
+                       'email to all previous board members',
+        'moderated': True,
+        'addresses': set(m.email for m in all_previous_board_members)
+    })
 
     return lists
-
-
-def _create_automatic_list(names, prefix, members, description='',
-                           archived=True, moderated=True, multilingual=False):
-    data = {
-        'names': names,
-        'name': names[0],
-        'description': description,
-        'aliases': names[1:],
-        'prefix': prefix,
-        'archived': archived,
-        'moderated': moderated,
-    }
-
-    if multilingual:
-        data['addresses'] = set([member.email for member in members
-                                 if member.email])
-        yield data  # this is the complete list, e.g. leden@
-        for language in settings.LANGUAGES:
-            localized_data = data.copy()
-            localized_data['addresses'] = [
-                member.email for member in members
-                if member.profile.language == language[0] and member.email]
-            localized_data['names'] = [
-                '{}-{}'.format(n, language[0]) for n in names]
-            localized_data['name'] = localized_data['names'][0]
-            localized_data['aliases'] = localized_data['names'][1:]
-            yield localized_data  # these are localized lists, e.g. leden-nl@
-    else:
-        data['addresses'] = set([member.email for member in members
-                                 if member.email])
-        yield data

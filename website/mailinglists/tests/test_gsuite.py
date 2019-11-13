@@ -52,7 +52,7 @@ class GSuiteSyncTestCase(TestCase):
 
     def test_default_lists(self):
         self.assertEqual(len(self.sync_service._get_default_lists()),
-                         18)
+                         14)
 
     def test_automatic_to_group(self):
         group = GSuiteSyncService._automatic_to_group({
