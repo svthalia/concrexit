@@ -12,11 +12,11 @@
 {% for item in newsletter.newslettercontent_set.all %}{{ item.title|upper }}:
  {{ item.description|striptags }}
  {% if item.newsletterevent %}{% if item.newsletterevent.show_costs_warning %}
- {% trans "Attention" %}: {% trans "Registration deadline = unregistration deadline" %}! {% trans "Thalia will recover the costs on you if you do not unregister on time" %}. {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}{% trans "These costs are" %}: €{{ item.newsletterevent.penalty_costs }}.{% endif %}
+ {% trans "Attention" %}: {% trans "Registration deadline = unregistration deadline" %}! {% trans "Thalia will recover the costs on you if you do not unregister on time" %}. {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}{% trans "These costs are" %}: {{ item.newsletterevent.penalty_costs }} euro.{% endif %}
 {% endif %}
  {% trans "Where"|upper %}: {{ item.newsletterevent.where }}
  {% trans "When"|upper %}: {% if item.newsletterevent.start_datetime == item.newsletterevent.end_datetime %}{{ item.newsletterevent.start_datetime }}{% elif item.newsletterevent.start_datetime|date:'d-M-Y' == item.newsletterevent.end_datetime|date:'d-M-Y' %}{{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime|date:'H:i' }}{% else %}{{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime }}{% endif %}
- {% if item.newsletterevent.price is not None %}{% trans "Price"|upper %}: {% if item.newsletterevent.price == 0 %}{% trans "Free" %}{% else %}€{{ item.newsletterevent.price }}{% endif %}{% endif %}
+ {% if item.newsletterevent.price is not None %}{% trans "Price"|upper %}: {% if item.newsletterevent.price == 0 %}{% trans "Free" %}{% else %}{{ item.newsletterevent.price }} euro{% endif %}{% endif %}
  {% endif %}
 {% endfor %}
 
