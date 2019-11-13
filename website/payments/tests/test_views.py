@@ -1,6 +1,7 @@
 
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
+from freezegun import freeze_time
 from django.urls import reverse
 
 from members.models import Member
@@ -8,6 +9,7 @@ from payments.models import BankAccount
 from payments.views import BankAccountCreateView, BankAccountListView
 
 
+@freeze_time('2019-01-01')
 class BankAccountCreateViewTest(TestCase):
     """
     Test for the BankAccountCreateView
