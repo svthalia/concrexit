@@ -99,7 +99,7 @@
                                 <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
                                 {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
                                 {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}
-                                    {% trans "These costs are" %}: <b>€{{ item.newsletterevent.penalty_costs }}.</b>
+                                    {% trans "These costs are" %}: <b>&euro;{{ item.newsletterevent.penalty_costs }}.</b>
                                 {% endif %}
                                 </i>
                             </p>
@@ -144,7 +144,7 @@
                                     {% if item.newsletterevent.price == 0 %}
                                         {% trans "Free" %}
                                     {% else %}
-                                        €{{ item.newsletterevent.price }}
+                                        &euro;{{ item.newsletterevent.price }}
                                     {% endif %}
                                 </span>
                             </div>
