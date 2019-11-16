@@ -9,7 +9,7 @@ from django.template.defaulttags import date
 from events.models import Event
 import members
 from members.models import Member
-from payments.models import Payment
+from payments.models import Payment, Payable
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -170,7 +170,7 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
         permissions = (("order_restricted_products", _("Order restricted products")),)
 
 
-class Order(models.Model):
+class Order(models.Model, Payable):
     """Describes an order of an item during an event"""
 
     member = models.ForeignKey(
@@ -189,7 +189,9 @@ class Order(models.Model):
         verbose_name=_("payment"),
         to="payments.Payment",
         related_name="pizzas_order",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
     )
 
     product = models.ForeignKey(
@@ -200,6 +202,26 @@ class Order(models.Model):
         verbose_name=_("event"), to=PizzaEvent, on_delete=models.CASCADE
     )
 
+    @property
+    def payment_amount(self):
+        return self.product.price
+
+    @property
+    def payment_topic(self):
+        start_date = date(self.pizza_event.start, "Y-m-d")
+        return f"Pizzas {self.pizza_event.event.title_en} [{start_date}]"
+
+    @property
+    def payment_notes(self):
+        return (
+            f"Pizza order by {self.member_name} "
+            f"for {self.pizza_event.event.title_en}"
+        )
+
+    @property
+    def payment_payer(self):
+        return self.member
+
     def clean(self):
         if (self.member is None and not self.name) or (self.member and self.name):
             raise ValidationError(
@@ -208,38 +230,6 @@ class Order(models.Model):
                     "name": _("Either specify a member or a name"),
                 }
             )
-
-    def save(self, *args, **kwargs):
-        if not self.id and self.pizza_event.end_reminder:
-            self.pizza_event.end_reminder.users.remove(self.member)
-
-        notes = (
-            f"Pizza order by {self.member_name} "
-            f"for {self.pizza_event.event.title_en}"
-        )
-        try:
-            self.payment.notes = notes
-            self.payment.paid_by = self.member
-            self.payment.amount = self.product.price
-            self.payment.save()
-        except ObjectDoesNotExist:
-            self.payment = Payment.objects.create(
-                amount=self.product.price,
-                notes=notes,
-                paid_by=self.member,
-                topic=f"Pizzas {self.pizza_event.event.title_en} "
-                f'[{date(self.pizza_event.start, "Y-m-d")}]',
-            )
-
-        super().save(*args, **kwargs)
-
-    def delete(self, using=None, keep_parents=False):
-        if not self.id and self.pizza_event.end_reminder:
-            self.pizza_event.end_reminder.users.add(self.member)
-
-        payment = self.payment
-        super().delete(using, keep_parents)
-        payment.delete()
 
     @property
     def member_name(self):
@@ -263,12 +253,8 @@ class Order(models.Model):
     def can_be_changed(self):
         try:
             return (
-                self.payment
-                and not (
-                    self.payment.processed and not self.payment.type == Payment.TPAY
-                )
-                and not self.pizza_event.has_ended
-            )
+                not self.payment or self.payment.type == Payment.TPAY
+            ) and not self.pizza_event.has_ended
         except ObjectDoesNotExist:
             return False
 

@@ -28,6 +28,10 @@ def create_payment(
         raise PaymentError(_("This user does not have Thalia Pay enabled"))
 
     if payable.payment is not None:
+        payable.payment.amount = payable.payment_amount
+        payable.payment.notes = payable.payment_notes
+        payable.payment.topic = payable.payment_topic
+        payable.payment.paid_by = payable.payment_payer
         payable.payment.type = pay_type
         payable.payment.save()
     else:

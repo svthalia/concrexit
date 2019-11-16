@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from payments.models import Payment
+from payments.services import delete_payment, create_payment
 from pizzas.api import serializers
 from pizzas.models import Product, PizzaEvent, Order
 from pizzas.services import can_change_order
@@ -52,9 +53,7 @@ class OrderViewset(ModelViewSet):
                 return Order.objects.none()
 
             return Order.objects.filter(
-                member=self.request.member,
-                payment__type=Payment.NONE,
-                pizza_event=event,
+                member=self.request.member, payment=None, pizza_event=event,
             )
         return Order.objects.filter(member=self.request.member, pizza_event=event)
 
@@ -80,13 +79,39 @@ class OrderViewset(ModelViewSet):
             if serializer.validated_data.get("name"):
                 serializer.save(pizza_event=PizzaEvent.current())
             else:
-                if self.action.endswith("update") and can_change_order(
-                    self.request.member, PizzaEvent.current()
-                ):
-                    serializer.save(pizza_event=PizzaEvent.current())
+                if can_change_order(self.request.member, PizzaEvent.current()):
+                    order = serializer.save(pizza_event=PizzaEvent.current())
+                    if "payment" in serializer.validated_data:
+                        payment_type = serializer.validated_data["payment"]["type"]
+                    else:
+                        payment_type = Payment.NONE
+
+                    self._update_payment(order, payment_type, self.request.user)
                 else:
                     serializer.save(
                         member=self.request.member, pizza_event=PizzaEvent.current()
                     )
-        except IntegrityError:
-            raise ValidationError("Something went wrong when saving the order")
+        except IntegrityError as e:
+            raise ValidationError("Something went wrong when saving the order" + str(e))
+
+    def perform_update(self, serializer):
+        order = serializer.save()
+        if "payment" in serializer.validated_data and can_change_order(
+            self.request.member, PizzaEvent.current()
+        ):
+            self._update_payment(
+                order, serializer.validated_data["payment"]["type"], self.request.user,
+            )
+
+    @staticmethod
+    def _update_payment(order, payment_type=None, processed_by=None):
+        if order.payment and payment_type == Payment.NONE:
+            delete_payment(order)
+        elif order.payment:
+            if payment_type is None:
+                payment_type = order.payment.type
+            order.payment = create_payment(order, processed_by, payment_type)
+            order.payment.save()
+        else:
+            order.payment = create_payment(order, processed_by, payment_type)
+            order.save()
