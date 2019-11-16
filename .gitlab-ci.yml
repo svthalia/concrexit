@@ -192,7 +192,6 @@ build docker image:
   script:
     - docker-compose config -q
     - docker-compose build --build-arg install_dev_requirements=$DEV_REQUIREMENTS --build-arg source_commit=$(git rev-parse HEAD) web
-    - docker-compose run --rm web test
     - docker tag $DOCKER_LATEST $DOCKER_TAG
     - docker push $DOCKER_TAG
   variables:
