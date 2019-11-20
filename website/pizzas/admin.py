@@ -1,3 +1,4 @@
+"""Registers admin interfaces for the pizzas module"""
 from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
@@ -14,6 +15,7 @@ from .models import Order, PizzaEvent, Product
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    """Manage the products"""
     list_display = ('name', 'price', 'available')
     list_filter = ('available', 'restricted')
     search_fields = ('name',)
@@ -21,6 +23,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(PizzaEvent)
 class PizzaEventAdmin(admin.ModelAdmin):
+    """Manage the pizza events"""
     list_display = ('title', 'start', 'end', 'notification_enabled', 'orders')
     date_hierarchy = 'start'
     exclude = ('end_reminder',)
@@ -69,11 +72,13 @@ class PizzaEventAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(DoNextModelAdmin):
+    """Manage the orders"""
     list_display = ('pizza_event', 'member_first_name',
                     'member_last_name', 'product', 'payment')
     exclude = ('payment', )
 
     def save_model(self, request, obj, form, change):
+        """You can only save the orders if you have permission"""
         if not is_organiser(request.member, obj.pizza_event.event):
             raise PermissionDenied
         return super().save_model(request, obj, form, change)

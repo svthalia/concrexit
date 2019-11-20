@@ -1,3 +1,4 @@
+"""Views provided by the pizzas package"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -11,6 +12,7 @@ from .models import Order, PizzaEvent, Product
 
 @login_required
 def index(request):
+    """ Overview of user order for a pizza event """
     products = Product.available_products.order_by('name')
     if not request.user.has_perm('pizzas.order_restricted_products'):
         products = products.exclude(restricted=True)
@@ -26,6 +28,7 @@ def index(request):
 
 @require_http_methods(["POST"])
 def cancel_order(request):
+    """ View that cancels a user's order """
     if 'order' in request.POST:
         try:
             order = get_object_or_404(Order, pk=int(request.POST['order']))
@@ -44,6 +47,7 @@ def cancel_order(request):
 
 @require_http_methods(["POST"])
 def pay_order(request):
+    """ View that marks the order as paid using Thalia Pay """
     if 'order' in request.POST:
         try:
             order = get_object_or_404(Order, pk=int(request.POST['order']))
@@ -59,6 +63,7 @@ def pay_order(request):
 
 @login_required
 def order(request):
+    """ View that shows the detail of the current order """
     event = PizzaEvent.current()
     if not event:
         return redirect('pizzas:index')
