@@ -47,6 +47,11 @@ $(function () {
             },
             plugins: { labels: false },
             scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
                 yAxes: [{
                     ticks: {
                         beginAtZero: true,
@@ -91,6 +96,7 @@ $(function () {
             },
             scales: {
                 xAxes: [{
+                    autoSkip: false,
                     stacked: true
                 }],
                 yAxes: [{
@@ -121,6 +127,11 @@ $(function () {
             },
             plugins: { labels: false },
             scales: {
+                 xAxes: [{
+                    ticks: {
+                        autoSkip: false,
+                    }
+                }],
                 yAxes: [{
                     ticks: {
                         beginAtZero: true,
@@ -152,7 +163,8 @@ $(function () {
             },
             scales: {
                 xAxes: [{
-                    stacked: true
+                    stacked: true,
+                    autoSkip: false
                 }],
                 yAxes: [{
                     stacked: true,
@@ -176,6 +188,11 @@ $(function () {
             }]
         },
         options: {
+            xAxes: [{
+                ticks: {
+                    autoSkip: false
+                }
+            }],
             aspectRatio: 1.5,
             title: {
                 text: gettext("Total pizza orders of type"),
@@ -195,6 +212,11 @@ $(function () {
                 }]
             },
             options: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
                 aspectRatio: 1.5,
                 title: {
                     text: gettext("Current pizza orders of type"),
