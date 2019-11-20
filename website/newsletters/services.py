@@ -7,6 +7,7 @@ from django.utils import translation, timezone
 from events.models import Event
 from newsletters import emails
 from partners.models import Partner
+from pushnotifications.models import Message, Category
 
 
 def write_to_file(pk, lang, html_message):
@@ -65,4 +66,15 @@ def get_agenda(start_date):
 def send_newsletter(newsletter):
     emails.send_newsletter(newsletter)
     newsletter.sent = True
-    newsletter.save()
+    newsletter.save
+    Message.objects.create(
+        title_nl = newsletter.title_nl,
+        title_en = newsletter.title_en,
+        users = newsletter.users,
+        body_nl = newsletter.description_nl,
+        body_en = newsletter.description_en,
+        url = settings.BASE_URL + newsletter.get_absolute_url(),
+        category = Category.objects.get(
+key="newsletter"
+        )
+    ).send()
