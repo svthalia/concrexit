@@ -1,5 +1,6 @@
 """Views provided by the events package"""
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
@@ -65,6 +66,8 @@ class EventDetail(DetailView):
                 self.request.member, event)
 
         context['date_now'] = timezone.now()
+
+        context['slide_size'] = settings.THUMBNAIL_SIZES['slide']
 
         return context
 

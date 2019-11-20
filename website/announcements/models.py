@@ -120,8 +120,13 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
 
     since = models.DateTimeField(
         verbose_name=_('Display since'),
-        help_text=_("Hide this slide before this time."),
+        help_text=_("Hide this slide before this time. When all date- and"
+                    "time-fields are left blank, the slide won't "
+                    "be visible. It will, however, be visible on an event-page"
+                    "if it's linked to an event."),
         default=timezone.now,
+        blank=True,
+        null=True,
     )
 
     until = models.DateTimeField(
@@ -163,7 +168,8 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
     def is_visible(self):
         """Is this slide currently visible"""
         return ((self.until is None or self.until > timezone.now()) and
-                (self.since is None or self.since <= timezone.now()))
+                (self.since is None or self.since <= timezone.now()) and not
+                (self.since is None and self.until is None))
 
     def __str__(self):
         return self.title

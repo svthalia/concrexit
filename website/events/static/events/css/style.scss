@@ -109,3 +109,23 @@
 #page-content .page-section#events-registrations {
     padding-top: 0;
 }
+
+.event-slide {
+    #page-header {
+        height: 0;
+        padding-bottom: 21.5%;
+        position: relative;
+
+        @media(max-width: 991px) {
+            padding-bottom: 40%;
+        }
+
+        .image, #announcements-slider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    }
+}

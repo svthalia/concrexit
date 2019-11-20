@@ -14,6 +14,7 @@ from tinymce.models import HTMLField
 from members.models import Member
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
+from announcements.models import Slide
 
 
 class Event(models.Model, metaclass=ModelTranslateMeta):
@@ -168,6 +169,16 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         'documents.Document',
         verbose_name=_("documents"),
         blank=True,
+    )
+
+    slide = models.ForeignKey(
+        Slide,
+        verbose_name='slide',
+        help_text=_("Change the header-image on the event's info-page to one"
+                    "specific to this event."),
+        blank=True,
+        on_delete=models.deletion.SET_NULL,
+        null=True
     )
 
     def __init__(self, *args, **kwargs):
