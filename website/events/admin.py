@@ -83,7 +83,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
               'registration_start', 'registration_end', 'cancel_deadline',
               'send_cancel_email', 'location', 'map_location', 'price', 'fine',
               'max_participants', 'no_registration_message', 'published',
-              'documents',)
+              'slide', 'documents')
     list_display = ('overview_link', 'event_date', 'registration_date',
                     'num_participants', 'organiser', 'category', 'published',
                     'edit_link')
