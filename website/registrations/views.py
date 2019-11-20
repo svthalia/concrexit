@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.template.defaultfilters import floatformat
@@ -219,10 +220,10 @@ class RenewalFormView(FormView):
             user=self.request.member, type=Membership.MEMBER
         ).exists()
         context["benefactor_type"] = Membership.BENEFACTOR
-        context["latest_renewal_reviewing"] = Renewal.objects.filter(
-            member=self.request.member, status=Entry.STATUS_REVIEW).exists()
-        context["latest_renewal_accepted"] = Renewal.objects.filter(
-            member=self.request.member, status=Entry.STATUS_ACCEPTED).exists()
+        context["latest_renewal"] = Renewal.objects.filter(
+            Q(member=self.request.member) &
+            (Q(status=Registration.STATUS_ACCEPTED) |
+             Q(status=Registration.STATUS_REVIEW))).last()
         return context
 
     def get_form(self, form_class=None):
