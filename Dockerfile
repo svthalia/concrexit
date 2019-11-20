@@ -9,7 +9,6 @@ ARG source_commit="unknown"
 # Try to keep static operation on top to maximise Docker cache utilisation
 
 # Disable output buffering
-ENV DJANGO_PRODUCTION 1
 ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SOURCE_COMMIT=${source_commit}
