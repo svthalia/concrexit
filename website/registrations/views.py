@@ -333,11 +333,8 @@ class RenewalPayView(View):
         return redirect('registrations:renew')
 
     def post(self, request, *args, **kwargs):
-        renewal = Renewal.objects.filter(
-            member=self.request.member, status=Entry.STATUS_ACCEPTED).first()
-
-        if renewal is None:
-            raise ValidationError("No renewal present")
+        renewal = get_object_or_404(Renewal, member=self.request.member,
+                                    status=Entry.STATUS_ACCEPTED)
 
         services.process_tpay_payment(renewal)
         messages.success(request, _("You have paid with Thalia Pay."))
