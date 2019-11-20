@@ -1,3 +1,4 @@
+"""The models defined by the pizzas package"""
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
@@ -13,6 +14,8 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class PizzaEvent(models.Model):
+    """Describes an event where pizzas can be ordered"""
+
     start = models.DateTimeField(_("Order from"))
     end = models.DateTimeField(_("Order until"))
     event = models.OneToOneField(Event, on_delete=models.CASCADE)
@@ -139,6 +142,8 @@ class AvailableProductManager(models.Manager):
 
 
 class Product(models.Model, metaclass=ModelTranslateMeta):
+    """Describes a product"""
+
     objects = models.Manager()
     available_products = AvailableProductManager()
 
@@ -162,6 +167,7 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Order(models.Model):
+    """Describes an order of an item during an event"""
     member = models.ForeignKey(
         members.models.Member,
         on_delete=models.CASCADE,
