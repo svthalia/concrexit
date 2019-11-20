@@ -17,3 +17,11 @@ utils.management.commands.createfixtures module
    :undoc-members:
    :show-inheritance:
 
+utils.management.commands.createreviewuser module
+-------------------------------------------------
+
+.. automodule:: utils.management.commands.createreviewuser
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
