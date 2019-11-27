@@ -70,7 +70,6 @@ def send_newsletter(newsletter):
     Message.objects.create(
         title_nl=newsletter.title_nl,
         title_en=newsletter.title_en,
-        users=newsletter.users,
         body_nl=newsletter.description_nl,
         body_en=newsletter.description_en,
         url=settings.BASE_URL + newsletter.get_absolute_url(),
