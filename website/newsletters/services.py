@@ -66,7 +66,7 @@ def get_agenda(start_date):
 def send_newsletter(newsletter):
     emails.send_newsletter(newsletter)
     newsletter.sent = True
-    newsletter.save
+    newsletter.save()
     Message.objects.create(
         title_nl=newsletter.title_nl,
         title_en=newsletter.title_en,
