@@ -44,10 +44,17 @@ class OrderSerializer(serializers.ModelSerializer):
 class AdminOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('pk', 'payment', 'product', 'name', 'member')
+        fields = ('pk', 'payment', 'product', 'name', 'member',
+                  'display_name')
 
     payment = PaymentTypeField(source='payment.type',
                                choices=Payment.PAYMENT_TYPE)
+    display_name = serializers.SerializerMethodField('_display_name')
+
+    def _display_name(self, instance):
+        if instance.member:
+            return instance.member.get_full_name()
+        return instance.name
 
     def validate(self, attrs):
         if attrs.get('member') and attrs.get('name'):

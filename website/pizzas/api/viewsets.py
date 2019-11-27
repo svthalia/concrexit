@@ -61,9 +61,8 @@ class OrderViewset(ModelViewSet):
                                     pizza_event=event)
 
     def get_serializer_class(self):
-        if (self.action.endswith('update') and
-                can_change_order(self.request.member,
-                                 self.get_object().pizza_event)):
+        event = PizzaEvent.current()
+        if can_change_order(self.request.member, event):
             return serializers.AdminOrderSerializer
         return serializers.OrderSerializer
 
