@@ -1,7 +1,7 @@
 """Tests for things provided by this module"""
 import doctest
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from thaliawebsite import sitemaps
 from thaliawebsite.templatetags import bleach_tags
@@ -17,6 +17,7 @@ def load_tests(_loader, tests, _ignore):
     return tests
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class SitemapTest(TestCase):
     fixtures = [
         'members.json', 'member_groups.json',

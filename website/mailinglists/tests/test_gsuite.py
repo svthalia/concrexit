@@ -2,12 +2,10 @@
 from unittest import mock
 from unittest.mock import MagicMock
 
-import factory
-from django.db.models import signals
-from django.test import TestCase
+from django.conf import settings
+from django.test import TestCase, override_settings
 from googleapiclient.errors import HttpError
 from httplib2 import Response
-from django.conf import settings
 
 from mailinglists.gsuite import GSuiteSyncService
 from mailinglists.models import MailingList, ListAlias, VerbatimAddress
@@ -25,9 +23,9 @@ def assert_not_called_with(self, *args, **kwargs):
 MagicMock.assert_not_called_with = assert_not_called_with
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class GSuiteSyncTestCase(TestCase):
     @classmethod
-    @factory.django.mute_signals(signals.pre_save)
     def setUpTestData(cls):
         cls.settings_api = MagicMock()
         cls.directory_api = MagicMock()
@@ -51,8 +49,7 @@ class GSuiteSyncTestCase(TestCase):
         self.directory_api.reset_mock()
 
     def test_default_lists(self):
-        self.assertEqual(len(self.sync_service._get_default_lists()),
-                         14)
+        self.assertEqual(len(self.sync_service._get_default_lists()), 14)
 
     def test_automatic_to_group(self):
         group = GSuiteSyncService._automatic_to_group({

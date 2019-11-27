@@ -7,7 +7,9 @@ from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpRequest
-from django.test import TestCase, SimpleTestCase, Client, RequestFactory
+from django.test import (
+    TestCase, SimpleTestCase, Client, RequestFactory, override_settings
+)
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -35,6 +37,7 @@ class GlobalAdminTest(SimpleTestCase):
             request, 'message', messages.SUCCESS)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class PaymentAdminTest(TestCase):
 
     @classmethod
@@ -381,6 +384,7 @@ class PaymentAdminTest(TestCase):
 
 
 @freeze_time('2019-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class ValidAccountFilterTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
@@ -482,6 +486,7 @@ class ValidAccountFilterTest(TestCase):
 
 
 @freeze_time('2019-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class BankAccountAdminTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:

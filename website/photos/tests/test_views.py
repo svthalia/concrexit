@@ -1,13 +1,14 @@
 from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from members.models import Member, Membership
 from photos.models import Album, Photo
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class AlbumIndexTest(TestCase):
 
     fixtures = ['members.json']
@@ -129,6 +130,7 @@ class AlbumIndexTest(TestCase):
             self.assertEqual(response.context['page_range'], range(4, 9))
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class AlbumTest(TestCase):
 
     fixtures = ['members.json']
@@ -192,6 +194,7 @@ class AlbumTest(TestCase):
             self.assertEqual(response.status_code, 404)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class SharedAlbumTest(TestCase):
 
     fixtures = ['members.json']
@@ -226,6 +229,7 @@ class SharedAlbumTest(TestCase):
         self.assertEqual(len(response.context['photos']), 10)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class DownloadTest(TestCase):
 
     fixtures = ['members.json']
@@ -266,6 +270,7 @@ class DownloadTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class SharedDownloadTest(TestCase):
 
     fixtures = ['members.json']
@@ -312,6 +317,7 @@ class SharedDownloadTest(TestCase):
             self.assertEqual(response['Content-Type'], 'image/jpeg')
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class AlbumDownloadTest(TestCase):
 
     fixtures = ['members.json']

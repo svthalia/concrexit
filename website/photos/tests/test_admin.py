@@ -1,7 +1,7 @@
 from io import BytesIO
 from zipfile import ZipFile
 
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 
 from members.models import Member
 from photos.models import Album, Photo
@@ -16,6 +16,7 @@ def create_zip(photos):
     return output_file
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class AlbumUploadTest(TestCase):
     """Tests album uploads in the admin."""
 

@@ -1,9 +1,7 @@
 import datetime
 
-import factory
 from django.core.exceptions import ValidationError
-from django.db.models import signals
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from activemembers.models import Committee
@@ -12,13 +10,13 @@ from mailinglists.models import MailingList
 from members.models import Member
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class EventTest(TestCase):
     """Tests events"""
 
     fixtures = ['members.json']
 
     @classmethod
-    @factory.django.mute_signals(signals.pre_save)
     def setUpTestData(cls):
         cls.mailinglist = MailingList.objects.create(
             name="testmail"
@@ -275,6 +273,7 @@ class EventTest(TestCase):
             self.assertFalse(self.event.cancellation_allowed)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class RegistrationTest(TestCase):
     """Tests event registrations"""
 

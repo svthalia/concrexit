@@ -1,6 +1,6 @@
 
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from freezegun import freeze_time
 from django.urls import reverse
 
@@ -10,6 +10,7 @@ from payments.views import BankAccountCreateView, BankAccountListView
 
 
 @freeze_time('2019-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class BankAccountCreateViewTest(TestCase):
     """
     Test for the BankAccountCreateView
@@ -235,6 +236,7 @@ class BankAccountCreateViewTest(TestCase):
         )
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class BankAccountRevokeViewTest(TestCase):
     """
     Test for the BankAccountRevokeView
@@ -282,6 +284,7 @@ class BankAccountRevokeViewTest(TestCase):
         )
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class BankAccountListViewTest(TestCase):
     """
     Test for the BankAccountListView

@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from activemembers.models import MemberGroup, Board
+from mailinglists.services import get_member_email_addresses
 from members.models import Member
 from utils.snippets import datetime_to_lectureyear
 
@@ -69,14 +70,16 @@ class MailingList(models.Model):
     def all_addresses(self):
         """Return all addresses subscribed to this mailing list."""
         for member in self.members.all():
-            if member.email:
-                yield member.email
+            for email in get_member_email_addresses(member):
+                if email:
+                    yield email
 
         for group in self.member_groups.all().prefetch_related("members"):
             for member in group.members.exclude(
                     membergroupmembership__until__lt=timezone.now().date()):
-                if member.email:
-                    yield member.email
+                for email in get_member_email_addresses(member):
+                    if email:
+                        yield email
 
         for verbatimaddress in self.addresses.all():
             if verbatimaddress.address:

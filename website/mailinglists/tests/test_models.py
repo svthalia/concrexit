@@ -1,17 +1,15 @@
 """Tests for models in the mailinglists package"""
-import factory
 from django.core.exceptions import ValidationError
-from django.db.models import signals
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from mailinglists.models import MailingList, ListAlias
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class MailingListTest(TestCase):
     """Tests mailing lists"""
 
     @classmethod
-    @factory.django.mute_signals(signals.pre_save)
     def setUpTestData(cls):
         cls.mailinglist = MailingList.objects.create(
             name="mailtest",
@@ -47,11 +45,11 @@ class MailingListTest(TestCase):
         mailinglist.clean()
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class ListAliasTest(TestCase):
     """Tests list aliases"""
 
     @classmethod
-    @factory.django.mute_signals(signals.pre_save)
     def setUpTestData(cls):
         cls.mailinglist = MailingList.objects.create(
             name="mailtest",

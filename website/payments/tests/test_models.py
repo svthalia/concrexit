@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
@@ -7,6 +7,7 @@ from members.models import Member
 from payments.models import Payment, BankAccount
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class PaymentTest(TestCase):
     """Tests for the Payment model"""
 
@@ -57,6 +58,7 @@ class PaymentTest(TestCase):
 
 
 @freeze_time('2019-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class BankAccountTest(TestCase):
     """Tests for the BankAccount model"""
 

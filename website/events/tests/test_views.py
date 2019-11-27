@@ -1,10 +1,8 @@
 import datetime
 
-import factory
 from django.contrib.auth.models import Permission
 from django.core import mail
-from django.db.models import signals
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
 from activemembers.models import Committee, MemberGroupMembership
@@ -17,6 +15,7 @@ from mailinglists.models import MailingList
 from members.models import Member
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class AdminTest(TestCase):
     """Tests for admin views"""
 
@@ -130,13 +129,13 @@ class AdminTest(TestCase):
         self.assertIn('View event', str(response.content))
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class RegistrationTest(TestCase):
     """Tests for registration view"""
 
     fixtures = ['members.json', 'member_groups.json']
 
     @classmethod
-    @factory.django.mute_signals(signals.pre_save)
     def setUpTestData(cls):
         cls.mailinglist = MailingList.objects.create(
             name="testmail"

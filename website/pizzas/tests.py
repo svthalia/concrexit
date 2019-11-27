@@ -3,7 +3,7 @@ import datetime
 
 from django.contrib.auth.models import Permission, ContentType
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone, translation
 
 from freezegun import freeze_time
@@ -16,6 +16,7 @@ from pizzas import services
 
 
 @freeze_time('2018-03-21')
+@override_settings(SUSPEND_SIGNALS=True)
 class PizzaEventTestCase(TestCase):
     """Test the pizzaevent class"""
     fixtures = ['members.json', 'member_groups.json']

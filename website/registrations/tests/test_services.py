@@ -4,7 +4,7 @@ from unittest import mock
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import mail
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
@@ -15,6 +15,7 @@ from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class ServicesTest(TestCase):
     fixtures = ['members.json']
 

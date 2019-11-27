@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
 
 from members import emails
@@ -80,6 +81,23 @@ class UserChangeForm(BaseUserChangeForm):
     Custom user edit form that adds fields for first/last name and email
     It also force-lowercases the username on save
     """
+    username = forms.CharField(
+        label=_('Username'),
+        required=True,
+        help_text=_('Required. 64 characters or fewer. '
+                    'Letters and digits only.'),
+        widget=forms.TextInput(attrs={
+            'class': 'vTextField',
+            'maxlength': 64
+        }),
+        validators=[
+            RegexValidator(
+                regex='^[a-zA-Z0-9]{1,64}$',
+                message=_('Please use 64 characters or fewer. '
+                          'Letters and digits only.'))
+        ]
+    )
+
     first_name = forms.CharField(
         label=_('First name'),
         required=True,

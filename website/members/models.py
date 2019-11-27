@@ -76,7 +76,7 @@ class CurrentMemberManager(MemberManager):
         :rtype: Queryset
         """
         queryset = (self.get_queryset()
-                        .filter(profile__birthday__lte=to_date))
+                    .filter(profile__birthday__lte=to_date))
 
         if (to_date - from_date).days >= 366:
             # 366 is important to also account for leap years
@@ -178,7 +178,7 @@ class Member(User):
             return False
 
         return ((self.profile.event_permissions == 'all' or
-                self.profile.event_permissions == 'no_drinks') and
+                 self.profile.event_permissions == 'no_drinks') and
                 self.current_membership is not None)
 
     def get_member_groups(self):
@@ -441,6 +441,15 @@ class Profile(models.Model):
         default=False,
     )
 
+    # --- Active Member preference ---
+    email_gsuite_only = models.BooleanField(
+        verbose_name=_('Only receive Thalia emails on G Suite-account'),
+        help_text=_('If you enable this option you will no longer receive '
+                    'emails send to you by Thalia on your personal email '
+                    'address. We will only use your G Suite email address.'),
+        default=False,
+    )
+
     def display_name(self):
         pref = self.display_name_preference
         if pref == 'nickname' and self.nickname is not None:
@@ -460,6 +469,7 @@ class Profile(models.Model):
                                     self.user.last_name)
         else:
             return self.user.get_full_name() or self.user.username
+
     display_name.short_description = _('Display name')
 
     def short_display_name(self):
@@ -541,7 +551,6 @@ class Profile(models.Model):
 
 
 class Membership(models.Model):
-
     MEMBER = 'member'
     BENEFACTOR = 'benefactor'
     HONORARY = 'honorary'
@@ -578,12 +587,12 @@ class Membership(models.Model):
 
     def __str__(self):
         s = _("Membership of type {} for {} ({}) starting {}").format(
-                self.get_type_display(), self.user.get_full_name(),
-                self.user.username, self.since,
-            )
+            self.get_type_display(), self.user.get_full_name(),
+            self.user.username, self.since,
+        )
         if self.until is not None:
             s += pgettext_lazy("Membership until x", " until {}").format(
-                    self.until)
+                self.until)
         return s
 
     def clean(self):
@@ -659,6 +668,12 @@ class EmailChange(models.Model):
 
     def clean(self):
         super().clean()
+
+        if any(domain in self.email
+               for domain in settings.EMAIL_DOMAIN_BLACKLIST):
+            raise ValidationError(
+                {'email': _('You cannot use an email address '
+                            'from this domain for your account.')})
 
         if self.email == self.member.email:
             raise ValidationError(

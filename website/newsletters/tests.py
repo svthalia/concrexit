@@ -4,7 +4,7 @@ import doctest
 from django.contrib.auth.models import User, Permission
 from django.core import mail
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -22,6 +22,7 @@ def load_tests(loader, tests, ignore):
     return tests
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class NewslettersTest(TestCase):
     @classmethod
     def setUpTestData(cls):

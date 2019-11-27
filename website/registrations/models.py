@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import validators
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.template.defaultfilters import floatformat
 from django.utils import timezone
@@ -151,11 +151,17 @@ class Registration(Entry):
 
     username = models.CharField(
         _('Username'),
-        max_length=150,
+        max_length=64,  # This length is lower than Django because of G Suite
         blank=True,
         null=True,
         help_text=_('Enter value to override the auto-generated username '
-                    '(e.g. if it is not unique)')
+                    '(e.g. if it is not unique)'),
+        validators=[
+            RegexValidator(
+                regex='^[a-zA-Z0-9]{1,64}$',
+                message=_('Please use 64 characters or fewer. '
+                          'Letters and digits only.'))
+        ]
     )
 
     first_name = models.CharField(
@@ -302,11 +308,11 @@ class Registration(Entry):
                     .exclude(pk=self.pk).exists()):
                 errors.update({
                     'student_number':
-                    _('A user with that student number already exists. '
-                      'Login using the existing account and renew the '
-                      'membership by visiting the account settings.')})
+                        _('A user with that student number already exists. '
+                          'Login using the existing account and renew the '
+                          'membership by visiting the account settings.')})
         elif (self.student_number is None and
-                self.membership_type != Membership.BENEFACTOR):
+              self.membership_type != Membership.BENEFACTOR):
             errors.update({
                 'student_number': _('This field is required.')})
 
@@ -357,7 +363,7 @@ class Renewal(Entry):
         errors = {}
 
         if Renewal.objects.filter(
-                member=self.member, status=Entry.STATUS_REVIEW
+            member=self.member, status=Entry.STATUS_REVIEW
         ).exclude(pk=self.pk).exists():
             raise ValidationError(_('You already have a renewal '
                                     'request queued for review.'))

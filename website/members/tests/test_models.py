@@ -1,7 +1,7 @@
 from datetime import datetime
 import doctest
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from members import models
@@ -13,6 +13,7 @@ def load_tests(loader, tests, ignore):
     tests.addTests(doctest.DocTestSuite(models))
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class MemberBirthdayTest(TestCase):
     fixtures = ['members.json']
 
@@ -63,6 +64,7 @@ class MemberBirthdayTest(TestCase):
         self._assert_thom('1992-12-31', '1995-01-01')
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class MemberTest(TestCase):
     fixtures = ['members.json']
 

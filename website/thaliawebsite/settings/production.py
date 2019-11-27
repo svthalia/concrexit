@@ -8,8 +8,6 @@ This file is loaded by __init__.py if the environment variable
 
 See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
-import base64
-import json
 import os
 
 import sentry_sdk
@@ -72,19 +70,6 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
     'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
-
-FIREBASE_CREDENTIALS = os.environ.get('FIREBASE_CREDENTIALS', '{}')
-if not (FIREBASE_CREDENTIALS == '{}'):
-    FIREBASE_CREDENTIALS = base64.urlsafe_b64decode(FIREBASE_CREDENTIALS)
-FIREBASE_CREDENTIALS = json.loads(FIREBASE_CREDENTIALS)
-
-GSUITE_ADMIN_CREDENTIALS = os.environ.get('GSUITE_ADMIN_CREDENTIALS', '{}')
-if not (GSUITE_ADMIN_CREDENTIALS == '{}'):
-    GSUITE_ADMIN_CREDENTIALS = base64.urlsafe_b64decode(
-        GSUITE_ADMIN_CREDENTIALS)
-GSUITE_ADMIN_CREDENTIALS = json.loads(GSUITE_ADMIN_CREDENTIALS)
-GSUITE_ADMIN_USER = os.environ.get('GSUITE_ADMIN_USER', None)
-GSUITE_DOMAIN = os.environ.get('GSUITE_DOMAIN', 'thalia.nu')
 
 if os.environ.get('DJANGO_SSLONLY'):
     SECURE_SSL_REDIRECT = True

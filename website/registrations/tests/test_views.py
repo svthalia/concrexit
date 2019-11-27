@@ -34,6 +34,7 @@ def _get_mock_user(is_staff=False, is_authenticated=False, perms=None):
     return user
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class EntryAdminViewTest(TestCase):
 
     @classmethod
@@ -752,6 +753,7 @@ class RenewalFormViewTest(TestCase):
                              reverse('registrations:renew-success'))
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class ReferenceCreateViewTest(TestCase):
     """
     Test for the ReferenceCreateView

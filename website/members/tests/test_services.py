@@ -1,6 +1,6 @@
 
 from datetime import timedelta, date
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from unittest import mock
 
@@ -159,6 +159,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(1, result['Older'][Membership.MEMBER])
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class EmailChangeTest(TestCase):
     fixtures = ['members.json']
 
@@ -218,6 +219,7 @@ class EmailChangeTest(TestCase):
 
 
 @freeze_time('2018-10-2')
+@override_settings(SUSPEND_SIGNALS=True)
 class DataMinimisationTest(TestCase):
 
     @classmethod
