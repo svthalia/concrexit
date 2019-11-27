@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.admin import AdminSite
 from django.contrib.admin.utils import model_ngettext
 from django.http import HttpRequest
-from django.test import SimpleTestCase, TestCase
+from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -47,6 +47,7 @@ class GlobalAdminTest(SimpleTestCase):
             request, 'message', messages.SUCCESS)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class RegistrationAdminTest(TestCase):
     fixtures = ['members.json']
 

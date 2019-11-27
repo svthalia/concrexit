@@ -7,3 +7,7 @@ class ActiveMembersConfig(AppConfig):
     """AppConfig for the activemembers package"""
     name = 'activemembers'
     verbose_name = _('Active members')
+
+    def ready(self):
+        """Imports the signals when the app is ready"""
+        from . import signals  # noqa: F401

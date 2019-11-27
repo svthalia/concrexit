@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
@@ -8,6 +8,7 @@ from payments.models import BankAccount
 
 
 @freeze_time('2019-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class ServicesTest(TestCase):
     """
     Test for the services

@@ -1,6 +1,6 @@
 import datetime
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from rest_framework.test import APIClient
 
@@ -13,6 +13,7 @@ from events.models import (Event, Registration,
 from members.models import Member
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class RegistrationApiTest(TestCase):
     """Tests for registration view"""
 

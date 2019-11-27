@@ -40,10 +40,26 @@ activemembers.backends module
    :undoc-members:
    :show-inheritance:
 
+activemembers.emails module
+---------------------------
+
+.. automodule:: activemembers.emails
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 activemembers.forms module
 --------------------------
 
 .. automodule:: activemembers.forms
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+activemembers.gsuite module
+---------------------------
+
+.. automodule:: activemembers.gsuite
    :members:
    :undoc-members:
    :show-inheritance:
@@ -60,6 +76,14 @@ activemembers.services module
 -----------------------------
 
 .. automodule:: activemembers.services
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+activemembers.signals module
+----------------------------
+
+.. automodule:: activemembers.signals
    :members:
    :undoc-members:
    :show-inheritance:

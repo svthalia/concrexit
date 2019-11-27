@@ -3,7 +3,7 @@ from unittest import mock
 
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.http import HttpRequest
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
@@ -15,6 +15,7 @@ from members.models import Member
 
 
 @freeze_time('2017-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class ServicesTest(TestCase):
     fixtures = ['members.json', 'member_groups.json']
 

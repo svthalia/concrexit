@@ -1,0 +1,18 @@
+{% load i18n %}{% blocktrans %}Dear {{ full_name }},
+
+Our records show that you have become an active member of Thalia. Awesome!
+This means you now get access to Thalia's G Suite organisation.
+
+Your username is:   {{ username }}
+Your password is:   {{ password }}
+
+You can find the login page here: https://accounts.google.com/.
+More information about G Suite is available here: https://gsuite.members.thalia.nu/.
+
+With kind regards,
+
+The board of Study Association Thalia
+
+————
+
+This email was automatically generated.{% endblocktrans %}

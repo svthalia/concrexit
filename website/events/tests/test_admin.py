@@ -83,6 +83,7 @@ class DoNextModelAdminTest(TestCase):
 
 
 @freeze_time('2017-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class RegistrationInformationFieldInlineTest(TestCase):
     fixtures = ['members.json', 'member_groups.json']
 
@@ -158,6 +159,7 @@ class RegistrationInformationFieldInlineTest(TestCase):
 
 
 @freeze_time('2017-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class EventAdminTest(TestCase):
     fixtures = ['members.json', 'member_groups.json']
 

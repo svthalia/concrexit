@@ -1,7 +1,0 @@
-START
-{{ list.name }}
-{{ list.prefix }}
-{{ list.archived|yesno:"1,0" }}
-{{ list.moderated|yesno:"1,0" }}
-{% for address in list.all_addresses %}{{ address }}
-{% endfor %}END

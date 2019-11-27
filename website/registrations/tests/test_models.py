@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone, translation
 from django.utils.translation import ugettext_lazy as _
 from freezegun import freeze_time
@@ -9,6 +9,7 @@ from members.models import Member, Membership, Profile
 from registrations.models import Entry, Registration, Renewal, Reference
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class EntryTest(TestCase):
     fixtures = ['members.json']
 
@@ -116,6 +117,7 @@ class EntryTest(TestCase):
             entry.clean()
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class RegistrationTest(TestCase):
     """Tests registrations"""
 
@@ -255,6 +257,7 @@ class RegistrationTest(TestCase):
         self.registration.clean()
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class RenewalTest(TestCase):
     fixtures = ['members.json']
 
@@ -366,6 +369,7 @@ class RenewalTest(TestCase):
             })
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class ReferenceTest(TestCase):
     fixtures = ['members.json']
 

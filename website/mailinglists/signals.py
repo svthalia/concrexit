@@ -1,12 +1,12 @@
 from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from googleapiclient.errors import HttpError
 
 from mailinglists.gsuite import GSuiteSyncService
 from mailinglists.models import MailingList
+from utils.models.signals import suspendingreceiver
 
 
-@receiver(pre_save, sender='mailinglists.MailingList')
+@suspendingreceiver(pre_save, sender='mailinglists.MailingList')
 def pre_mailinglist_save(instance, **kwargs):
     sync_service = GSuiteSyncService()
     group = sync_service.mailinglist_to_group(instance)

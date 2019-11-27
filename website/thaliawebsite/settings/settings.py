@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/dev/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
-
+import base64
+import json
 import os
 
 from django.core.management.commands import makemessages
@@ -245,6 +246,9 @@ COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
 # Precompiler settings
 STATIC_PRECOMPILER_LIST_FILES = True
 
+# See utils/model/signals.py for explanation
+SUSPEND_SIGNALS = False
+
 # Membership prices
 MEMBERSHIP_PRICES = {
     'year': 7.5,
@@ -258,18 +262,35 @@ THUMBNAIL_SIZES = {
     'slide': '2000x430'
 }
 
-# Placeholder Firebase config
-FIREBASE_CREDENTIALS = {}
+# Firebase config
+FIREBASE_CREDENTIALS = os.environ.get('FIREBASE_CREDENTIALS', '{}')
+if FIREBASE_CREDENTIALS != '{}':
+    FIREBASE_CREDENTIALS = base64.urlsafe_b64decode(FIREBASE_CREDENTIALS)
+FIREBASE_CREDENTIALS = json.loads(FIREBASE_CREDENTIALS)
 
-# Placeholder GSuite config
-GSUITE_ADMIN_CREDENTIALS = {}
-GSUITE_ADMIN_USER = 'concrexit@thalia.nu'
+# GSuite config
 GSUITE_ADMIN_SCOPES = [
     'https://www.googleapis.com/auth/admin.directory.group',
     'https://www.googleapis.com/auth/admin.directory.user',
     'https://www.googleapis.com/auth/apps.groups.settings'
 ]
-GSUITE_DOMAIN = 'thalia.localhost'
+
+GSUITE_ADMIN_CREDENTIALS = os.environ.get('GSUITE_ADMIN_CREDENTIALS', '{}')
+if GSUITE_ADMIN_CREDENTIALS != '{}':
+    GSUITE_ADMIN_CREDENTIALS = base64.urlsafe_b64decode(
+        GSUITE_ADMIN_CREDENTIALS)
+GSUITE_ADMIN_CREDENTIALS = json.loads(GSUITE_ADMIN_CREDENTIALS)
+GSUITE_ADMIN_USER = os.environ.get('GSUITE_ADMIN_USER',
+                                   'concrexit-admin@thalia.nu')
+GSUITE_DOMAIN = os.environ.get('GSUITE_DOMAIN', 'thalia.localhost')
+GSUITE_MEMBERS_DOMAIN = os.environ.get('GSUITE_DOMAIN',
+                                       'members.thalia.localhost')
+GSUITE_MEMBERS_AUTOSYNC = os.environ.get(
+    'GSUITE_MEMBERS_AUTOSYNC', False) == 'True'
+
+EMAIL_DOMAIN_BLACKLIST = [
+    GSUITE_MEMBERS_DOMAIN
+]
 
 # Default FROM email
 DEFAULT_FROM_EMAIL = f'noreply@{SITE_DOMAIN}'

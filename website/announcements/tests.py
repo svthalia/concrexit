@@ -1,11 +1,12 @@
 from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.sessions.middleware import SessionMiddleware
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, override_settings
 from django.urls import reverse
 
 from announcements.views import close_announcement
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class AnnouncementCloseTestCase(TestCase):
 
     def setUp(self):

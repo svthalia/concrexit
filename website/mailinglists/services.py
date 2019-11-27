@@ -16,26 +16,26 @@ def get_automatic_lists():
                                 .filter(group__society=None)
                                 .filter(chair=True)
                                 .select_related('member'))
-    committee_chairs = [x.member.email for x in current_committee_chairs] + [
-        'internalaffairs@thalia.nu'
-    ]
+    committee_chairs = (_get_members_email_addresses(
+        [x.member for x in current_committee_chairs])
+        + ['internalaffairs@thalia.nu'])
 
     current_society_chairs = (MemberGroupMembership.active_objects
                               .filter(group__board=None)
                               .filter(group__committee=None)
                               .filter(chair=True)
                               .select_related('member'))
-    society_chair_emails = [x.member.email for x in current_society_chairs] + [
-        'internalaffairs@thalia.nu'
-    ]
+    society_chair_emails = (_get_members_email_addresses(
+        [x.member for x in current_society_chairs])
+        + ['internalaffairs@thalia.nu'])
 
     active_committee_memberships = (MemberGroupMembership.active_objects
                                     .filter(group__board=None)
                                     .filter(group__society=None)
                                     .select_related('member'))
 
-    active_members = [x.member.email
-                      for x in active_committee_memberships]
+    active_members = _get_members_email_addresses(
+        [x.member for x in active_committee_memberships])
 
     lectureyear = datetime_to_lectureyear(timezone.now())
     # Change to next lecture year after December
@@ -43,7 +43,8 @@ def get_automatic_lists():
         lectureyear += 1
     active_mentorships = Mentorship.objects.filter(
         year=lectureyear).prefetch_related('member')
-    mentors = [x.member.email for x in active_mentorships]
+    mentors = _get_members_email_addresses(
+        [x.member for x in active_mentorships])
 
     lists = [
         {
@@ -51,8 +52,8 @@ def get_automatic_lists():
             'aliases': ['leden'],
             'description': 'Automatic moderated mailinglist that can be used '
                            'to send mail to all members',
-            'addresses': [m.email for m in
-                          Member.all_with_membership('member')],
+            'addresses': _get_members_email_addresses(
+                Member.all_with_membership('member')),
             'moderated': True
         },
         {
@@ -60,8 +61,8 @@ def get_automatic_lists():
             'aliases': ['begunstigers'],
             'description': 'Automatic moderated mailinglist that can be used '
                            'to send mail to all benefactors',
-            'addresses': [m.email for m in
-                          Member.all_with_membership(Membership.BENEFACTOR)],
+            'addresses': _get_members_email_addresses(
+                Member.all_with_membership(Membership.BENEFACTOR)),
             'moderated': True
         },
         {
@@ -69,8 +70,8 @@ def get_automatic_lists():
             'aliases': ['ereleden'],
             'description': 'Automatic moderated mailinglist that can be used '
                            'to send mail to all honorary members',
-            'addresses': [m.email for m in
-                          Member.all_with_membership('honorary')],
+            'addresses': _get_members_email_addresses(
+                Member.all_with_membership('honorary')),
             'moderated': True
         },
         {
@@ -112,8 +113,8 @@ def get_automatic_lists():
             'description': 'Automatic mailinglist that can be used to send '
                            'mail to all members that have opted-in to receive '
                            'these (mostly recruitment) emails.',
-            'addresses': set(m.email for m in Member.current_members.filter(
-                profile__receive_optin=True)),
+            'addresses': _get_members_email_addresses(
+                Member.current_members.filter(profile__receive_optin=True)),
             'moderated': True
         },
         {
@@ -130,7 +131,7 @@ def get_automatic_lists():
         {
             'name': 'societies',
             'description': 'Automatic moderated mailinglist that is a '
-                           'collection of all committee lists',
+                           'collection of all society lists',
             'addresses': [
                 f'{c.contact_mailinglist.name}@{settings.GSUITE_DOMAIN}'
                 for c in Society.objects.exclude(contact_mailinglist=None)
@@ -145,11 +146,11 @@ def get_automatic_lists():
             'name': f'newsletter-{language[0]}',
             'description': 'Automatic moderated mailinglist that can be used '
                            f'to send newsletters in {language[1]}',
-            'addresses': [m.email for m in
-                          Member.current_members.all().filter(
-                              profile__receive_newsletter=True,
-                              profile__language=language[0]
-                          )],
+            'addresses': _get_members_email_addresses(
+                Member.current_members.all().filter(
+                    profile__receive_newsletter=True,
+                    profile__language=language[0]
+                )),
             'moderated': True
         })
 
@@ -167,8 +168,7 @@ def get_automatic_lists():
             'aliases': [f'bestuur{years}'],
             'description': 'Automatic mailinglist to send email to all board '
                            f'members of {board.since.year}-{board.until.year}',
-            'addresses': set(
-                m.email for m in board_members),
+            'addresses': _get_members_email_addresses(board_members),
             'moderated': False})
 
     lists.append({
@@ -177,7 +177,29 @@ def get_automatic_lists():
         'description': 'Automatic mailinglist to send '
                        'email to all previous board members',
         'moderated': True,
-        'addresses': set(m.email for m in all_previous_board_members)
+        'addresses': _get_members_email_addresses(all_previous_board_members)
     })
 
     return lists
+
+
+def _get_members_email_addresses(members):
+    return_list = []
+    for member in members:
+        for email in get_member_email_addresses(member):
+            if email:
+                return_list.append(email)
+    return list(set(return_list))
+
+
+def get_member_email_addresses(member):
+    if member.is_staff and member.profile.email_gsuite_only:
+        return [
+            f'{member.username}@{settings.GSUITE_MEMBERS_DOMAIN}',
+        ]
+    elif member.is_staff:
+        return [
+            member.email,
+            f'{member.username}@{settings.GSUITE_MEMBERS_DOMAIN}',
+        ]
+    return [member.email]

@@ -1,5 +1,5 @@
 from django.core import mail
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
@@ -7,6 +7,7 @@ from members import emails
 from members.models import Member, Profile, Membership
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class EmailsTest(TestCase):
 
     @classmethod

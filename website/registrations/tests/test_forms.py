@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
@@ -82,6 +82,7 @@ class BenefactorRegistrationFormTest(TestCase):
         self.assertTrue(form.fields['privacy_policy'] is not None)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class RenewalFormTest(TestCase):
     fixtures = ['members.json']
 
@@ -109,6 +110,7 @@ class RenewalFormTest(TestCase):
         self.assertTrue(form.fields['privacy_policy'] is not None)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class ReferenceFormTest(TestCase):
     fixtures = ['members.json']
 

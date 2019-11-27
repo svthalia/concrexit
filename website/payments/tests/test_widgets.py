@@ -1,10 +1,11 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from members.models import Member
 from payments.models import Payment
 from payments.widgets import PaymentWidget
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class PaymentWidgetTest(TestCase):
     """Tests widgets"""
 

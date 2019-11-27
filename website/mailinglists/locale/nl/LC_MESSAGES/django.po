@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-25 20:21+0200\n"
-"PO-Revision-Date: 2019-09-25 20:24+0200\n"
+"POT-Creation-Date: 2019-10-25 16:35+0200\n"
+"PO-Revision-Date: 2019-10-25 16:37+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,10 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: admin.py models.py
-msgid "List aliasses"
+msgid "List aliases"
 msgstr "Lijstaliassen"
 
 #: apps.py
@@ -39,18 +39,6 @@ msgid "Enter the name for the list (i.e. name@thalia.nu)."
 msgstr "Vul een naam voor de lijst in (d.w.z. naam@thalia.nu)"
 
 #: models.py
-msgid "Prefix"
-msgstr "Voorvoegsel"
-
-#: models.py
-msgid ""
-"Enter a prefix that should be prefixed to subjects of all emails sent via "
-"this mailinglist."
-msgstr ""
-"Vul een prefix in die voor het onderwerp van alle e-mails die via de lijst "
-"worden verstuurd moet worden gezet."
-
-#: models.py
 msgid "Description"
 msgstr "Beschrijving"
 
@@ -59,20 +47,24 @@ msgid "Write a description for the mailinglist."
 msgstr "Vul een beschrijving voor de lijst in."
 
 #: models.py
-msgid "Archived"
-msgstr "Gearchiveerd"
-
-#: models.py
-msgid "Indicate whether an archive should be kept."
-msgstr "Geef aan of er een archief moet worden bijgehouden."
-
-#: models.py
 msgid "Moderated"
 msgstr "Gemodereerd"
 
 #: models.py
 msgid "Indicate whether emails to the list require approval."
 msgstr "Geef aan of e-mails aan deze lijst goedgekeurd moeten worden."
+
+#: models.py
+msgid "Use G Suite accounts"
+msgstr "Gebruik G Suite accounts"
+
+#: models.py
+msgid ""
+"Indicate whether emails should be send to the Thalia G Suite accounts of the "
+"connected members, if available."
+msgstr ""
+"Geef aan of e-mails naar Thalia G Suite moeten worden verstuurd, indien "
+"mogelijk."
 
 #: models.py
 msgid "Members"
@@ -91,18 +83,6 @@ msgid "Select entire groups to include in the list."
 msgstr "Selecteer groepen die aan de lijst moeten worden toegevoegd."
 
 #: models.py
-msgid "Automatic response enabled"
-msgstr "Automatisch antwoord ingeschakeld"
-
-#: models.py
-msgid "Indicate whether emails will get an automatic response."
-msgstr "Geef aan of e-mails aan deze lijst een automatisch antwoord krijgen."
-
-#: models.py
-msgid "Autoresponse text"
-msgstr "Automatisch antwoordbericht"
-
-#: models.py
 #, python-format
 msgid "%(model_name)s with this %(field_label)s already exists."
 msgstr "%(model_name)s met deze %(field_label)s bestaat al."
@@ -114,10 +94,6 @@ msgstr "Mailing list"
 #: models.py
 msgid "List alias"
 msgstr "Lijstalias"
-
-#: models.py
-msgid "Enter a text for the auto response."
-msgstr "Voer een bericht in voor het automatische antwoord."
 
 #: models.py
 msgid "Email address"
@@ -158,28 +134,25 @@ msgid "Information"
 msgstr "Informatie"
 
 #: templates/admin/mailinglists/change_list.html
-msgid ""
-"Archived moderated list that can be used to send mail to all members. "
-"Supports language code suffix."
+msgid "Archived moderated list that can be used to send mail to all members."
 msgstr ""
 "Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
-"alle leden te versturen. Ondersteunt taalcode achtervoegsel."
+"alle leden te sturen."
 
 #: templates/admin/mailinglists/change_list.html
 msgid ""
-"Archived moderated list that can be used to send mail to all benefactors. "
-"Supports language code suffix."
+"Archived moderated list that can be used to send mail to all benefactors."
 msgstr ""
 "Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
-"alle begunstigers te sturen. Ondersteunt taalcode achtervoegsel."
+"alle begunstigers te sturen."
 
 #: templates/admin/mailinglists/change_list.html
 msgid ""
 "Archived moderated list that can be used to send mail to all honorary "
-"members. Supports language code suffix."
+"members."
 msgstr ""
 "Gearchiveerde en gemodereerde lijst die gebruikt kan worden om mail naar "
-"alle ereleden te sturen. Ondersteunt taalcode achtervoegsel."
+"alle ereleden te sturen."
 
 #: templates/admin/mailinglists/change_list.html
 msgid ""
@@ -225,13 +198,12 @@ msgstr ""
 
 #: templates/admin/mailinglists/change_list.html
 msgid ""
-"Every old board gets their own non-archived non-moderated mailinglists. For "
-"example the board of the academic year 2014 - 2015 gets bestuur1415 and "
-"board1415."
+"Every old board gets their own non-archived non-moderated mailinglist. For "
+"example the board of the academic year 2014-2015: bestuur1415 and board1415."
 msgstr ""
-"Alle oud besturen krijgen een eigen niet gearchiveerde, niet gemodereerde "
-"lijst. Bijvoorbeeld, het bestuur van het collegejaar 2014 - 2015 heeft "
-"bestuur1415 en board1415."
+"Alle oud-besturen krijgen een eigen niet gearchiveerde, niet gemodereerde "
+"lijst. Bijvoorbeeld, het bestuur van het collegejaar 2014-2015: bestuur1415 "
+"en board1415."
 
 #: templates/admin/mailinglists/change_list.html
 msgid ""

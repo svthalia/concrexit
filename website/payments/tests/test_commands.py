@@ -1,12 +1,13 @@
 from unittest import mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from freezegun import freeze_time
 
 from payments.management.commands.revokeoldmandates import Command
 
 
 @freeze_time('2019-01-01')
+@override_settings(SUSPEND_SIGNALS=True)
 class RevokeOldMandatesCommandTest(TestCase):
     """
     Test for the management command

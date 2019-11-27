@@ -1,5 +1,5 @@
 from PIL import Image
-from django.test import Client, TestCase, RequestFactory
+from django.test import Client, TestCase, RequestFactory, override_settings
 from django.utils.datetime_safe import datetime
 from freezegun import freeze_time
 
@@ -9,6 +9,7 @@ from photos.services import (is_album_accessible, photo_determine_rotation,
                              get_annotated_accessible_albums)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class IsAlbumAccesibleTest(TestCase):
     fixtures = ['members.json']
 
@@ -55,6 +56,7 @@ class IsAlbumAccesibleTest(TestCase):
             self.assertTrue(is_album_accessible(request, album))
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class GetAnnotatedAccessibleAlbumsTest(TestCase):
     fixtures = ['members.json']
 
@@ -119,6 +121,7 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
                 self.assertTrue(album.accessible)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class DetermineRotationTest(TestCase):
     fixtures = ['members.json']
 

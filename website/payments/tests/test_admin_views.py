@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.utils.translation import ugettext_lazy as _
 
 from members.models import Member, Profile
@@ -12,6 +12,7 @@ from payments import admin_views
 from payments.models import Payment
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class PaymentAdminViewTest(TestCase):
 
     @classmethod

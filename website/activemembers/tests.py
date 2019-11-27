@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from activemembers.models import Committee, MemberGroupMembership, Board
@@ -9,6 +9,7 @@ from mailinglists.models import MailingList
 from members.models import Member
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class CommitteeMembersTest(TestCase):
     fixtures = ['members.json', 'member_groups.json']
 
@@ -90,6 +91,7 @@ class CommitteeMembersTest(TestCase):
         self.assertFalse(self.m.is_active)
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class CommitteeMembersChairTest(TestCase):
     fixtures = ['members.json', 'member_groups.json']
 
@@ -130,6 +132,7 @@ class CommitteeMembersChairTest(TestCase):
         self.m1.full_clean()
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class PermissionsBackendTest(TestCase):
     fixtures = ['members.json', 'member_groups.json']
 

@@ -3,7 +3,7 @@ import logging
 from unittest.mock import Mock
 
 from django.core.files import File
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 
 from documents.models import Document
 from members.models import Member
@@ -16,6 +16,7 @@ def _close_filehandles(response):
             closable.close()
 
 
+@override_settings(SUSPEND_SIGNALS=True)
 class GetDocumentTest(TestCase):
     """tests for the :func:`.get_document` view"""
 
