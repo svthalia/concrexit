@@ -133,6 +133,9 @@ class PizzaEvent(models.Model):
     def __str__(self):
         return 'Pizzas for ' + str(self.event)
 
+    class Meta:
+        ordering = ('-start',)
+
 
 class AvailableProductManager(models.Manager):
     """Only shows available products"""
