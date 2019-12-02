@@ -202,8 +202,6 @@ build docker image:
 .reviewsetup:
   when: manual
   image: python:latest
-  variables:
-    GIT_STRATEGY: none
   before_script:
     - apt-get update
     - apt-get install -y jq
@@ -299,6 +297,8 @@ review remove:
   environment:
     name: review/${CI_COMMIT_REF_NAME}
     action: stop
+  variables:
+    GIT_STRATEGY: none
   extends: .reviewsetup
   script:
     - >-
