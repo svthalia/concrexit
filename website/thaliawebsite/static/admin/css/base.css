@@ -10,7 +10,7 @@ body {
     font-size: 14px;
     font-family: "Open Sans","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
     color: #333;
-    background: #fff;
+    background: #ffffff;
 }
 
 /* LINKS */
@@ -59,7 +59,7 @@ h1,h2,h3,h4,h5 {
 h1 {
     margin: 0 0 20px;
     font-size: 20px;
-    color: #44444;
+    color: #000000;
     font-family: "Oswald","Open Sans","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
     font-weight: 700;
     letter-spacing: 0px;
@@ -506,7 +506,6 @@ input[type=button][disabled].default {
 .module {
     border: none;
     margin-bottom: 30px;
-    background: #fff;
 }
 
 .module p, .module ul, .module h3, .module h4, .module dl, .module pre {
@@ -739,7 +738,7 @@ a.deletelink:focus, a.deletelink:hover {
     display: block;
     float: left;
     padding: 3px 12px;
-    background: #999;
+    background: #e62272;
     font-weight: 400;
     font-size: 11px;
     text-transform: uppercase;
