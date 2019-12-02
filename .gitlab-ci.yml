@@ -297,6 +297,8 @@ review remove:
   environment:
     name: review/${CI_COMMIT_REF_NAME}
     action: stop
+  variables:
+    GIT_STRATEGY: none
   extends: .reviewsetup
   script:
     - >-
