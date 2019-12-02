@@ -27,12 +27,13 @@ def is_user_registered(member, event):
         date_cancelled=None).count() > 0
 
 
-def event_permissions(member, event):
+def event_permissions(member, event, name=None):
     """
     Returns a dictionary with the available event permissions of the user
 
     :param member: the user
     :param event: the event
+    :param name: the name of a non member registration
     :return: the permission dictionary
     """
     perms = {
@@ -40,12 +41,13 @@ def event_permissions(member, event):
         "cancel_registration": False,
         "update_registration": False,
     }
-    if member and member.is_authenticated:
+    if member and member.is_authenticated or name:
         registration = None
         try:
             registration = Registration.objects.get(
                 event=event,
-                member=member
+                member=member,
+                name=name
             )
         except Registration.DoesNotExist:
             pass
@@ -53,17 +55,17 @@ def event_permissions(member, event):
         perms["create_registration"] = (
             (registration is None or registration.date_cancelled is not None)
             and event.registration_allowed and
-            member.can_attend_events)
+            (name or member.can_attend_events))
         perms["cancel_registration"] = (
             registration is not None and
             registration.date_cancelled is None and
-            event.cancellation_allowed)
+            (event.cancellation_allowed or name))
         perms["update_registration"] = (
             registration is not None and
             registration.date_cancelled is None and
             event.has_fields() and
             event.registration_allowed and
-            member.can_attend_events)
+            (name or member.can_attend_events))
 
     return perms
 
@@ -203,7 +205,7 @@ def pay_with_tpay(member, event):
             _("You do not have Thalia Pay enabled."))
 
 
-def update_registration(member=None, event=None,
+def update_registration(member=None, event=None, name=None,
                         registration=None, field_values=None):
     """
     Updates a user registration of an event
@@ -211,6 +213,7 @@ def update_registration(member=None, event=None,
     :param request: http request
     :param member: the user
     :param event: the event
+    :param name: the name of a registration not associated with a user
     :param registration: the registration
     :param field_values: values for the information fields
     """
@@ -218,7 +221,8 @@ def update_registration(member=None, event=None,
         try:
             registration = Registration.objects.get(
                 event=event,
-                member=member
+                member=member,
+                name=name
             )
         except Registration.DoesNotExist as error:
             raise RegistrationError(
@@ -226,8 +230,9 @@ def update_registration(member=None, event=None,
     else:
         member = registration.member
         event = registration.event
+        name = registration.name
 
-    if (not event_permissions(member, event)["update_registration"] or
+    if (not event_permissions(member, event, name)["update_registration"] or
             not field_values):
         return
 
@@ -248,11 +253,14 @@ def update_registration(member=None, event=None,
         field.set_value_for(registration, field_value)
 
 
-def registration_fields(request, member=None, event=None, registration=None):
+def registration_fields(request, member=None, event=None, registration=None,
+                        name=None):
     """
     Returns information about the registration fields of a registration
 
     :param member: the user (optional if registration provided)
+    :param name: the name of a non member registration
+                 (optional if registration provided)
     :param event: the event (optional if registration provided)
     :param registration: the registration (optional if member & event provided)
     :return: the fields
@@ -262,7 +270,8 @@ def registration_fields(request, member=None, event=None, registration=None):
         try:
             registration = Registration.objects.get(
                 event=event,
-                member=member
+                member=member,
+                name=name
             )
         except Registration.DoesNotExist as error:
             raise RegistrationError(
@@ -273,8 +282,9 @@ def registration_fields(request, member=None, event=None, registration=None):
     else:
         member = registration.member
         event = registration.event
+        name = registration.name
 
-    perms = (event_permissions(member, event)["update_registration"] or
+    perms = (event_permissions(member, event, name)["update_registration"] or
              is_organiser(request.member, event))
     if perms and registration:
         information_fields = registration.information_fields
