@@ -46,6 +46,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000  # Useful for managing members
 # Application definition
 
 INSTALLED_APPS = [
+    "thaliawebsite",  # include for admin settings
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -63,7 +64,6 @@ INSTALLED_APPS = [
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
-    "thaliawebsite",  # include for admin settings
     "pushnotifications.apps.PushNotificationsConfig",
     "members.apps.MembersConfig",
     "documents.apps.DocumentsConfig",
@@ -309,7 +309,7 @@ ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
 )
 
 # Payment settings
-THALIA_PAY_ENABLED_PAYMENT_METHOD = False
+THALIA_PAY_ENABLED_PAYMENT_METHOD = True
 
 # Google maps API key and secrets
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
