@@ -275,7 +275,7 @@ class ServicesTest(TestCase):
         services.cancel_registration(self.member, self.event)
 
     @mock.patch('events.services.event_permissions')
-    def test_update_registration(self, perms_mock):
+    def test_update_registration_user(self, perms_mock):
         self.event.registration_start = timezone.now() - timedelta(hours=2)
         self.event.registration_end = timezone.now() + timedelta(hours=1)
 
@@ -337,6 +337,79 @@ class ServicesTest(TestCase):
         ]
 
         services.update_registration(self.member, self.event,
+                                     field_values=fields)
+
+        self.assertEqual(field1.get_value_for(registration), 2)
+        self.assertEqual(field2.get_value_for(registration), True)
+        self.assertEqual(field3.get_value_for(registration), 'text')
+
+        field1.delete()
+        field2.delete()
+        field3.delete()
+
+    @mock.patch('events.services.event_permissions')
+    def test_update_registration_guest(self, perms_mock):
+        self.event.registration_start = timezone.now() - timedelta(hours=2)
+        self.event.registration_end = timezone.now() + timedelta(hours=1)
+
+        perms_mock.return_value = {
+            "create_registration": False,
+            "cancel_registration": False,
+            "update_registration": False,
+        }
+
+        with self.assertRaises(RegistrationError):
+            services.update_registration(self.member, self.event,
+                                         field_values=None)
+
+        registration = Registration.objects.create(
+            event=self.event,
+            name="test",
+        )
+
+        services.update_registration(event=self.event, name="test",
+                                     field_values=None)
+
+        perms_mock.return_value["update_registration"] = True
+
+        field1 = RegistrationInformationField.objects.create(
+            type=RegistrationInformationField.INTEGER_FIELD,
+            event=self.event,
+            required=False,
+        )
+
+        field2 = RegistrationInformationField.objects.create(
+            type=RegistrationInformationField.BOOLEAN_FIELD,
+            event=self.event,
+            required=False,
+        )
+
+        field3 = RegistrationInformationField.objects.create(
+            type=RegistrationInformationField.TEXT_FIELD,
+            event=self.event,
+            required=False,
+        )
+
+        fields = [
+            ('info_field_{}'.format(field1.id), None),
+            ('info_field_{}'.format(field2.id), None),
+            ('info_field_{}'.format(field3.id), None),
+        ]
+
+        services.update_registration(name="test", event=self.event,
+                                     field_values=fields)
+
+        self.assertEqual(field1.get_value_for(registration), 0)
+        self.assertEqual(field2.get_value_for(registration), False)
+        self.assertEqual(field3.get_value_for(registration), '')
+
+        fields = [
+            ('info_field_{}'.format(field1.id), 2),
+            ('info_field_{}'.format(field2.id), True),
+            ('info_field_{}'.format(field3.id), 'text'),
+        ]
+
+        services.update_registration(name="test", event=self.event,
                                      field_values=fields)
 
         self.assertEqual(field1.get_value_for(registration), 2)
