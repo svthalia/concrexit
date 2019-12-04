@@ -23,7 +23,9 @@ def pre_member_save(instance, **kwargs):
     if not settings.GSUITE_MEMBERS_AUTOSYNC:
         return
 
-    existing_member = Member.objects.get(pk=instance.pk)
+    existing_member = Member.objects.filter(pk=instance.pk).first()
+    if not existing_member:
+        return
 
     try:
         if not existing_member.is_staff and instance.is_staff:

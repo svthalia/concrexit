@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Sync all accounts """
-        for member in Member.active_members.all():
+        for member in Member.objects.filter(is_staff=True):
             try:
                 email, password = sync_service.create_user(member)
                 emails.send_gsuite_welcome_message(member, email, password)
