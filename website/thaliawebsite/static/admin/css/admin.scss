@@ -1,0 +1,102 @@
+body {
+    background-color: $background-color;
+    color: $text-color;
+    font-family: $primary-font;
+    border-color: $background-shade;
+}
+
+table, tr {
+    border-top-color: $background-shade;
+    border-bottom-color: $background-shade;
+    border-left-color: $background-shade;
+    border-right-color: $background-shade;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: $header-font;
+    font-weight: $regular;
+    letter-spacing: $letter-spacing;
+    text-transform: uppercase;
+    color: $title-color;
+}
+
+#header {
+    background-color: $black;
+    color: $white;
+    border-bottom: 5px solid $preset;
+    margin-bottom: -5px;
+}
+
+#header a:focus, #header a:hover {
+    color: $preset-hover;
+    border-bottom-color: $preset-hover;
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: $white;
+}
+
+div.breadcrumbs {
+    background: $preset;
+    color: $preset-contrast;
+}
+
+div.breadcrumbs a:focus, div.breadcrumbs a:hover {
+    color: $preset-contrast-hover;
+}
+
+.module {
+    background: $background-color;
+
+    caption, h2, caption {
+        background-color: $preset;
+    }
+}
+
+#content-related, #content-related .module, #changelist-filter {
+    background-color: $card-background !important;
+}
+
+#content-related .module h2 {
+    color: $card-background-contrast;
+}
+#content-related h3 {
+    color: $card-background-contrast;
+}
+
+a:link, a:visited {
+    color: $nav-link-color;
+    font-weight: normal;
+}
+
+a:focus, a:hover {
+    color: $preset-hover;
+}
+
+a.section:link, a.section:visited {
+    color: $nav-link-color;
+}
+
+#changelist-filter li.selected a {
+    color: $preset !important;
+}
+
+#changelist-filter a:focus, #changelist-filter a:hover, #changelist-filter li.selected a:focus, #changelist-filter li.selected a:hover {
+    color: $preset-hover !important;
+}
+
+.object-tools a:link, .object-tools a:visited {
+    background-color: $preset;
+}
+
+.object-tools a:focus, .object-tools a:hover {
+    background-color: $preset-hover;
+}
+
+.inline-related fieldset {
+    background-color: $background-color !important;
+}
+
+label {
+    color: $text-color !important;
+}
