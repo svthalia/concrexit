@@ -3,6 +3,8 @@
 {% block extrastyle %}
     {{ block.super }}
     {% compress css %}
-    <link href="{% static "admin/css/admin-main.scss" %}" rel="stylesheet" type="text/x-scss">
+        <link href="{% static "admin/css/admin-main.scss" %}" rel="stylesheet" type="text/x-scss">
+        <link href="{% static "admin/css/admin-main-dark.scss" %}" rel="stylesheet" media="(prefers-color-scheme: dark)"
+              type="text/x-scss">
     {% endcompress %}
 {% endblock %}
