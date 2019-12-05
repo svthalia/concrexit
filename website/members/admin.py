@@ -23,7 +23,7 @@ class MembershipInline(admin.StackedInline):
 
 
 class ProfileInline(admin.StackedInline):
-    fields = ('starting_year', 'programme', 'address_street',
+    fields = ['starting_year', 'programme', 'address_street',
               'address_street2', 'address_postal_code', 'address_city',
               'address_country', 'student_number', 'phone_number',
               'receive_optin', 'receive_newsletter', 'birthday',
@@ -31,9 +31,15 @@ class ProfileInline(admin.StackedInline):
               'nickname', 'display_name_preference', 'profile_description',
               'website', 'photo', 'emergency_contact',
               'emergency_contact_phone_number', 'language',
-              'event_permissions')
+              'event_permissions']
     model = models.Profile
     can_delete = False
+
+    def get_fields(self, request, obj=None):
+        fields = super().get_fields(request, obj)
+        if obj and obj.is_staff:
+            fields = fields + ['email_gsuite_only']
+        return fields
 
 
 class MembershipTypeListFilter(admin.SimpleListFilter):

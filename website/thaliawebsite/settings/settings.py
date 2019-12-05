@@ -283,7 +283,7 @@ GSUITE_ADMIN_CREDENTIALS = json.loads(GSUITE_ADMIN_CREDENTIALS)
 GSUITE_ADMIN_USER = os.environ.get('GSUITE_ADMIN_USER',
                                    'concrexit-admin@thalia.nu')
 GSUITE_DOMAIN = os.environ.get('GSUITE_DOMAIN', 'thalia.localhost')
-GSUITE_MEMBERS_DOMAIN = os.environ.get('GSUITE_DOMAIN',
+GSUITE_MEMBERS_DOMAIN = os.environ.get('GSUITE_MEMBERS_DOMAIN',
                                        'members.thalia.localhost')
 GSUITE_MEMBERS_AUTOSYNC = os.environ.get(
     'GSUITE_MEMBERS_AUTOSYNC', False) == 'True'
