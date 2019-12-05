@@ -19,8 +19,14 @@ class ProfileForm(forms.ModelForm):
                   'emergency_contact_phone_number', 'website',
                   'profile_description', 'nickname', 'initials',
                   'display_name_preference', 'photo', 'language',
-                  'receive_optin', 'receive_newsletter']
+                  'receive_optin', 'receive_newsletter', 'email_gsuite_only']
         model = Profile
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not kwargs['instance'].user.is_staff:
+            self.fields['email_gsuite_only'].widget = self.fields[
+                'email_gsuite_only'].hidden_widget()
 
 
 class UserCreationForm(BaseUserCreationForm):
