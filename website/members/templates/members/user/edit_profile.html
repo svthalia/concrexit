@@ -54,7 +54,7 @@
                     </div>
 
                     {% for field in form %}
-                        {% if forloop.counter < 8 %}
+                        {% if forloop.counter < 9 %}
                             {% bootstrap_field field %}
                         {% endif %}
                     {% endfor %}
@@ -62,7 +62,7 @@
 
                 <fieldset class="col-12 col-lg-6">
                     {% for field in form %}
-                        {% if forloop.counter > 7 %}
+                        {% if forloop.counter > 8 %}
                             {% bootstrap_field field %}
                         {% endif %}
                     {% endfor %}
