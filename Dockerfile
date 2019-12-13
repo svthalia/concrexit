@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt
 
 RUN pip install --no-cache-dir poetry && \
-    poetry config settings.virtualenvs.create false
+    poetry config virtualenvs.create false
 
 WORKDIR /usr/src/app/website/
 # install python requirements
@@ -46,7 +46,7 @@ RUN if [ "$install_dev_requirements" -eq 1 ]; then \
         echo "This will fail if the dependencies are out of date"; \
         poetry install --no-interaction --no-dev; \
     fi; \
-    poetry cache:clear --all --no-interaction pypi
+    poetry cache clear --all --no-interaction pypi
 
 # Create entry points
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh
