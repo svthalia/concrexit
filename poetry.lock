@@ -277,7 +277,10 @@ description = "Web APIs for Django, made easy."
 name = "djangorestframework"
 optional = false
 python-versions = ">=3.5"
-version = "3.10.3"
+version = "3.11.0"
+
+[package.dependencies]
+django = ">=1.11"
 
 [[package]]
 category = "main"
@@ -993,7 +996,7 @@ version = "1.11.2"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "3250a556cf5f9d9d117c8e1f403f5fcfdae8dee037fa9343c32f0e743b4a5a4a"
+content-hash = "fd77c11babdc5f4bd321e0f94448fdedaa0c3646e1b5fc8ce911bbf37de621d8"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1022,7 +1025,7 @@ django-localflavor = ["0cee94c4b8f0214a5ba7be7e935019a8c062f4e7726d1df4b1e453cb8
 django-sendfile2 = ["267cdd817a5fe7e649df9139ac3efbe8675c61ccdab43146d1e8cbd9bab70554"]
 django-template-check = ["72c424239c09ae76782e4357b29a34cacfcb0f64a8fabb478f6526c84507e3d2", "9a543d5e4c5db541c4e4c23b3139324caa494b52614e1c02febc93e8ce2fc395"]
 django-tinymce4-lite = ["e6776bc5b2c7237705fea18668574bc1c4dff36babc90c99a2bb7b5d636eb5e8", "f0958117ddacc72596e80746729e02a727264413ab54b799f3b697a44e054e87"]
-djangorestframework = ["5488aed8f8df5ec1d70f04b2114abc52ae6729748a176c453313834a9ee179c8", "dc81cbf9775c6898a580f6f1f387c4777d12bd87abf0f5406018d32ccae71090"]
+djangorestframework = ["05809fc66e1c997fd9a32ea5730d9f4ba28b109b9da71fccfa5ff241201fd0a4", "e782087823c47a26826ee5b6fa0c542968219263fb3976ec3c31edab23a4001f"]
 docutils = ["6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0", "9e4d7ecfc600058e07ba661411a2b7de2fd0fafa17d1a7f7361cd47b1175c827", "a2aeea129088da402665e92e0b25b04b073c04b2dce4ab65caaa38b7ce2e1a99"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 factory-boy = ["728df59b372c9588b83153facf26d3d28947fc750e8e3c95cefa9bed0e6394ee", "faf48d608a1735f0d0a3c9cbf536d64f9132b547dae7ba452c4d99a79e84a370"]
