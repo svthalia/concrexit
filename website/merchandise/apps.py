@@ -8,5 +8,6 @@ from django.utils.translation import gettext_lazy as _
 
 class MerchandiseConfig(AppConfig):
     """Configuration for the merchandise module"""
-    name = 'merchandise'
-    verbose_name = _('Merchandise')
+
+    name = "merchandise"
+    verbose_name = _("Merchandise")

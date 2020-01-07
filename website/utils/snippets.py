@@ -36,11 +36,13 @@ def datetime_to_lectureyear(date):
 
 
 def create_google_maps_url(location, zoom, size):
-    maps_url = (f"/maps/api/staticmap?"
-                f"center={ urlencode(location) }&"
-                f"zoom={ zoom }&size={ size }&"
-                f"markers={ urlencode(location) }&"
-                f"key={ settings.GOOGLE_MAPS_API_KEY }")
+    maps_url = (
+        f"/maps/api/staticmap?"
+        f"center={ urlencode(location) }&"
+        f"zoom={ zoom }&size={ size }&"
+        f"markers={ urlencode(location) }&"
+        f"key={ settings.GOOGLE_MAPS_API_KEY }"
+    )
 
     decoded_key = urlsafe_b64decode(settings.GOOGLE_MAPS_API_SECRET)
 
@@ -68,22 +70,22 @@ def extract_date_range(request, allow_empty=False):
 
     default_value = None
 
-    start = request.query_params.get('start', default_value)
+    start = request.query_params.get("start", default_value)
     if start or not allow_empty:
         try:
             start = dateparse.parse_datetime(start)
             if not timezone.is_aware(start):
                 start = timezone.make_aware(start)
         except (ValueError, AttributeError, TypeError) as e:
-            raise ParseError(detail='start query parameter invalid') from e
+            raise ParseError(detail="start query parameter invalid") from e
 
-    end = request.query_params.get('end', default_value)
+    end = request.query_params.get("end", default_value)
     if end or not allow_empty:
         try:
             end = dateparse.parse_datetime(end)
             if not timezone.is_aware(end):
                 end = timezone.make_aware(end)
         except (ValueError, AttributeError, TypeError) as e:
-            raise ParseError(detail='end query parameter invalid') from e
+            raise ParseError(detail="end query parameter invalid") from e
 
     return start, end

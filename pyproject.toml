@@ -39,12 +39,15 @@ docs = ["recommonmark", "sphinx"]
 [tool.poetry.dev-dependencies]
 django-template-check = "~0.3.1"
 factory_boy = "~2.12"
-flake8 = "~3.7"
 pydenticon = "~0.3.1"
 pylint = "~2.4"
 pylint-django = "~2.0"
 Faker = "~3.0"
 coverage = "~4.5"
+black = "~19.10b0"
+
+[tool.black]
+exclude = '(/(\.eggs|\.git|\.tox)/|migrations)'
 
 [build-system]
 requires = ["poetry>=0.12"]

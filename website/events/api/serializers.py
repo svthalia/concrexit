@@ -22,23 +22,31 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     """
     Serializer using the right format for CalendarJS
     """
+
     class Meta:
         fields = (
-            'start', 'end', 'allDay', 'isBirthday',
-            'url', 'title', 'description',
-            'backgroundColor', 'textColor', 'blank'
+            "start",
+            "end",
+            "allDay",
+            "isBirthday",
+            "url",
+            "title",
+            "description",
+            "backgroundColor",
+            "textColor",
+            "blank",
         )
 
-    start = serializers.SerializerMethodField('_start')
-    end = serializers.SerializerMethodField('_end')
-    allDay = serializers.SerializerMethodField('_all_day')
-    isBirthday = serializers.SerializerMethodField('_is_birthday')
-    url = serializers.SerializerMethodField('_url')
-    title = serializers.SerializerMethodField('_title')
-    description = serializers.SerializerMethodField('_description')
-    backgroundColor = serializers.SerializerMethodField('_background_color')
-    textColor = serializers.SerializerMethodField('_text_color')
-    blank = serializers.SerializerMethodField('_target_blank')
+    start = serializers.SerializerMethodField("_start")
+    end = serializers.SerializerMethodField("_end")
+    allDay = serializers.SerializerMethodField("_all_day")
+    isBirthday = serializers.SerializerMethodField("_is_birthday")
+    url = serializers.SerializerMethodField("_url")
+    title = serializers.SerializerMethodField("_title")
+    description = serializers.SerializerMethodField("_description")
+    backgroundColor = serializers.SerializerMethodField("_background_color")
+    textColor = serializers.SerializerMethodField("_text_color")
+    blank = serializers.SerializerMethodField("_target_blank")
 
     def _start(self, instance):
         return timezone.localtime(instance.start)
@@ -76,12 +84,11 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
         model = Event
 
     def _url(self, instance):
-        return reverse('events:event', kwargs={'pk': instance.id})
+        return reverse("events:event", kwargs={"pk": instance.id})
 
     def _background_color(self, instance):
         try:
-            if services.is_user_registered(self.context['member'],
-                                           instance):
+            if services.is_user_registered(self.context["member"], instance):
                 return "#E62272"
         except AttributeError:
             pass
@@ -95,6 +102,7 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
     """
     See CalenderJSSerializer, customised colors
     """
+
     class Meta(CalenderJSSerializer.Meta):
         model = Event
 
@@ -105,59 +113,80 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
         return "black"
 
     def _url(self, instance):
-        return reverse('admin:events_event_details', kwargs={
-            'pk': instance.id})
+        return reverse("admin:events_event_details", kwargs={"pk": instance.id})
 
 
 class EventRetrieveSerializer(serializers.ModelSerializer):
     """
     Serializer for events
     """
+
     class Meta:
         model = Event
-        fields = ('pk', 'title', 'description', 'start', 'end', 'organiser',
-                  'category', 'registration_start', 'registration_end',
-                  'cancel_deadline', 'location', 'map_location', 'price',
-                  'fine', 'max_participants', 'num_participants',
-                  'user_registration', 'registration_allowed',
-                  'no_registration_message', 'has_fields', 'is_pizza_event',
-                  'google_maps_url', 'is_admin')
+        fields = (
+            "pk",
+            "title",
+            "description",
+            "start",
+            "end",
+            "organiser",
+            "category",
+            "registration_start",
+            "registration_end",
+            "cancel_deadline",
+            "location",
+            "map_location",
+            "price",
+            "fine",
+            "max_participants",
+            "num_participants",
+            "user_registration",
+            "registration_allowed",
+            "no_registration_message",
+            "has_fields",
+            "is_pizza_event",
+            "google_maps_url",
+            "is_admin",
+        )
 
-    description = serializers.SerializerMethodField('_description')
-    user_registration = serializers.SerializerMethodField('_user_registration')
-    num_participants = serializers.SerializerMethodField('_num_participants')
-    registration_allowed = serializers.SerializerMethodField(
-        '_registration_allowed')
-    has_fields = serializers.SerializerMethodField('_has_fields')
-    is_pizza_event = serializers.SerializerMethodField('_is_pizza_event')
-    google_maps_url = serializers.SerializerMethodField('_google_maps_url')
-    is_admin = serializers.SerializerMethodField('_is_admin')
+    description = serializers.SerializerMethodField("_description")
+    user_registration = serializers.SerializerMethodField("_user_registration")
+    num_participants = serializers.SerializerMethodField("_num_participants")
+    registration_allowed = serializers.SerializerMethodField("_registration_allowed")
+    has_fields = serializers.SerializerMethodField("_has_fields")
+    is_pizza_event = serializers.SerializerMethodField("_is_pizza_event")
+    google_maps_url = serializers.SerializerMethodField("_google_maps_url")
+    is_admin = serializers.SerializerMethodField("_is_admin")
 
     def _description(self, instance):
         return strip_spaces_between_tags(bleach(instance.description))
 
     def _num_participants(self, instance):
-        if (instance.max_participants and
-                instance.participants.count() > instance.max_participants):
+        if (
+            instance.max_participants
+            and instance.participants.count() > instance.max_participants
+        ):
             return instance.max_participants
         return instance.participants.count()
 
     def _user_registration(self, instance):
         try:
-            if self.context['request'].member:
+            if self.context["request"].member:
                 reg = instance.registration_set.get(
-                    member=self.context['request'].member)
-                return RegistrationAdminListSerializer(
-                    reg, context=self.context).data
+                    member=self.context["request"].member
+                )
+                return RegistrationAdminListSerializer(reg, context=self.context).data
         except Registration.DoesNotExist:
             pass
         return None
 
     def _registration_allowed(self, instance):
-        member = self.context['request'].member
-        return (self.context['request'].user.is_authenticated and
-                member.has_active_membership and
-                member.can_attend_events)
+        member = self.context["request"].member
+        return (
+            self.context["request"].user.is_authenticated
+            and member.has_active_membership
+            and member.can_attend_events
+        )
 
     def _has_fields(self, instance):
         return instance.has_fields()
@@ -166,27 +195,34 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         return instance.is_pizza_event()
 
     def _google_maps_url(self, instance):
-        return create_google_maps_url(
-                instance.map_location,
-                zoom=13,
-                size='450x250')
+        return create_google_maps_url(instance.map_location, zoom=13, size="450x250")
 
     def _is_admin(self, instance):
-        member = self.context['request'].member
+        member = self.context["request"].member
         return services.is_organiser(member, instance)
 
 
 class EventListSerializer(serializers.ModelSerializer):
     """Custom list serializer for events"""
+
     class Meta:
         model = Event
-        fields = ('pk', 'title', 'description', 'start', 'end',
-                  'location', 'price', 'registered', 'pizza',
-                  'registration_allowed')
+        fields = (
+            "pk",
+            "title",
+            "description",
+            "start",
+            "end",
+            "location",
+            "price",
+            "registered",
+            "pizza",
+            "registration_allowed",
+        )
 
-    description = serializers.SerializerMethodField('_description')
-    registered = serializers.SerializerMethodField('_registered')
-    pizza = serializers.SerializerMethodField('_pizza')
+    description = serializers.SerializerMethodField("_description")
+    registered = serializers.SerializerMethodField("_registered")
+    pizza = serializers.SerializerMethodField("_pizza")
 
     def _description(self, instance):
         return unescape(strip_tags(instance.description))
@@ -194,8 +230,7 @@ class EventListSerializer(serializers.ModelSerializer):
     def _registered(self, instance):
         try:
             registered = services.is_user_registered(
-                self.context['request'].user,
-                instance,
+                self.context["request"].user, instance,
             )
             if registered is None:
                 return False
@@ -210,13 +245,14 @@ class EventListSerializer(serializers.ModelSerializer):
 
 class RegistrationListSerializer(serializers.ModelSerializer):
     """Custom registration list serializer"""
+
     class Meta:
         model = Registration
-        fields = ('pk', 'member', 'name', 'avatar')
+        fields = ("pk", "member", "name", "avatar")
 
-    name = serializers.SerializerMethodField('_name')
-    avatar = serializers.SerializerMethodField('_avatar')
-    member = serializers.SerializerMethodField('_member')
+    name = serializers.SerializerMethodField("_name")
+    avatar = serializers.SerializerMethodField("_avatar")
+    member = serializers.SerializerMethodField("_member")
 
     def _member(self, instance):
         if instance.member:
@@ -229,31 +265,40 @@ class RegistrationListSerializer(serializers.ModelSerializer):
         return instance.name
 
     def _avatar(self, instance):
-        placeholder = self.context['request'].build_absolute_uri(
-            static('members/images/default-avatar.jpg'))
+        placeholder = self.context["request"].build_absolute_uri(
+            static("members/images/default-avatar.jpg")
+        )
         file = None
         if instance.member and instance.member.profile.photo:
             file = instance.member.profile.photo
         return create_image_thumbnail_dict(
-            self.context['request'], file, placeholder=placeholder,
-            size_large='800x800')
+            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+        )
 
 
 class RegistrationAdminListSerializer(RegistrationListSerializer):
     """Custom registration admin list serializer"""
+
     class Meta:
         model = Registration
-        fields = ('pk', 'member', 'name', 'registered_on', 'is_cancelled',
-                  'is_late_cancellation', 'queue_position', 'payment',
-                  'present', 'avatar')
+        fields = (
+            "pk",
+            "member",
+            "name",
+            "registered_on",
+            "is_cancelled",
+            "is_late_cancellation",
+            "queue_position",
+            "payment",
+            "present",
+            "avatar",
+        )
 
-    registered_on = serializers.DateTimeField(source='date')
-    is_cancelled = serializers.SerializerMethodField('_is_cancelled')
-    is_late_cancellation = serializers.SerializerMethodField(
-        '_is_late_cancellation')
-    queue_position = serializers.SerializerMethodField('_queue_position')
-    payment = PaymentTypeField(source='payment.type',
-                               choices=Payment.PAYMENT_TYPE)
+    registered_on = serializers.DateTimeField(source="date")
+    is_cancelled = serializers.SerializerMethodField("_is_cancelled")
+    is_late_cancellation = serializers.SerializerMethodField("_is_late_cancellation")
+    queue_position = serializers.SerializerMethodField("_queue_position")
+    payment = PaymentTypeField(source="payment.type", choices=Payment.PAYMENT_TYPE)
 
     def _is_late_cancellation(self, instance):
         return instance.is_late_cancellation()
@@ -273,28 +318,38 @@ class RegistrationAdminListSerializer(RegistrationListSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
     """Registration serializer"""
+
     information_fields = None
 
     class Meta:
         model = Registration
-        fields = ('pk', 'member', 'name', 'photo', 'avatar', 'registered_on',
-                  'is_late_cancellation', 'is_cancelled',
-                  'queue_position', 'fields',
-                  'payment', 'present')
+        fields = (
+            "pk",
+            "member",
+            "name",
+            "photo",
+            "avatar",
+            "registered_on",
+            "is_late_cancellation",
+            "is_cancelled",
+            "queue_position",
+            "fields",
+            "payment",
+            "present",
+        )
 
-    name = serializers.SerializerMethodField('_name')
-    photo = serializers.SerializerMethodField('_photo')
-    avatar = serializers.SerializerMethodField('_avatar')
-    member = serializers.SerializerMethodField('_member')
-    payment = PaymentTypeField(source='payment.type',
-                               choices=Payment.PAYMENT_TYPE)
-    registered_on = serializers.DateTimeField(source='date', read_only=True)
-    is_cancelled = serializers.SerializerMethodField('_is_cancelled')
-    is_late_cancellation = serializers.SerializerMethodField(
-        '_is_late_cancellation')
+    name = serializers.SerializerMethodField("_name")
+    photo = serializers.SerializerMethodField("_photo")
+    avatar = serializers.SerializerMethodField("_avatar")
+    member = serializers.SerializerMethodField("_member")
+    payment = PaymentTypeField(source="payment.type", choices=Payment.PAYMENT_TYPE)
+    registered_on = serializers.DateTimeField(source="date", read_only=True)
+    is_cancelled = serializers.SerializerMethodField("_is_cancelled")
+    is_late_cancellation = serializers.SerializerMethodField("_is_late_cancellation")
     queue_position = serializers.SerializerMethodField(
-        '_queue_position', read_only=False)
-    fields = serializers.HiddenField(default='')
+        "_queue_position", read_only=False
+    )
+    fields = serializers.HiddenField(default="")
 
     def _is_late_cancellation(self, instance):
         val = instance.is_late_cancellation()
@@ -319,29 +374,32 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def _photo(self, instance):
         if instance.member and instance.member.profile.photo:
-            return self.context['request'].build_absolute_uri(
-                '%s%s' % (settings.MEDIA_URL, instance.member.profile.photo))
+            return self.context["request"].build_absolute_uri(
+                "%s%s" % (settings.MEDIA_URL, instance.member.profile.photo)
+            )
         else:
-            return self.context['request'].build_absolute_uri(
-                static('members/images/default-avatar.jpg'))
+            return self.context["request"].build_absolute_uri(
+                static("members/images/default-avatar.jpg")
+            )
 
     def _avatar(self, instance):
-        placeholder = self.context['request'].build_absolute_uri(
-            static('members/images/default-avatar.jpg'))
+        placeholder = self.context["request"].build_absolute_uri(
+            static("members/images/default-avatar.jpg")
+        )
         file = None
         if instance.member and instance.member.profile.photo:
             file = instance.member.profile.photo
         return create_image_thumbnail_dict(
-            self.context['request'], file, placeholder=placeholder,
-            size_large='800x800')
+            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+        )
 
     def __init__(self, instance=None, data=empty, **kwargs):
         super().__init__(instance, data, **kwargs)
         try:
             if instance:
                 self.information_fields = services.registration_fields(
-                    kwargs['context']['request'],
-                    registration=instance)
+                    kwargs["context"]["request"], registration=instance
+                )
         except RegistrationError:
             pass
 
@@ -350,32 +408,31 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         if self.information_fields:
             for key, field in self.information_fields.items():
-                key = 'fields[{}]'.format(key)
-                field_type = field['type']
+                key = "fields[{}]".format(key)
+                field_type = field["type"]
 
                 if field_type == RegistrationInformationField.BOOLEAN_FIELD:
                     fields[key] = serializers.BooleanField(
-                        required=False,
-                        write_only=True
+                        required=False, write_only=True
                     )
                 elif field_type == RegistrationInformationField.INTEGER_FIELD:
                     fields[key] = serializers.IntegerField(
-                        required=field['required'],
+                        required=field["required"],
                         write_only=True,
-                        allow_null=not field['required'],
+                        allow_null=not field["required"],
                     )
                 elif field_type == RegistrationInformationField.TEXT_FIELD:
                     fields[key] = serializers.CharField(
-                        required=field['required'],
+                        required=field["required"],
                         write_only=True,
-                        allow_blank=not field['required'],
-                        allow_null=not field['required'],
+                        allow_blank=not field["required"],
+                        allow_null=not field["required"],
                     )
 
-                fields[key].label = field['label']
-                fields[key].help_text = field['description']
-                fields[key].initial = field['value']
-                fields[key].default = field['value']
+                fields[key].label = field["label"]
+                fields[key].help_text = field["description"]
+                fields[key].initial = field["value"]
+                fields[key].default = field["value"]
 
                 try:
                     if key in self.information_fields:
@@ -387,10 +444,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['fields'] = self.information_fields
+        data["fields"] = self.information_fields
         return data
 
     def field_values(self):
-        return ((name[7:len(name) - 1], value)
-                for name, value in self.validated_data.items()
-                if "info_field" in name)
+        return (
+            (name[7 : len(name) - 1], value)
+            for name, value in self.validated_data.items()
+            if "info_field" in name
+        )

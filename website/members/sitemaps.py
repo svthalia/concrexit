@@ -5,16 +5,17 @@ from django.urls import reverse
 
 class StaticViewSitemap(sitemaps.Sitemap):
     """Static sitemap with members page"""
+
     priority = 0.5
-    changefreq = 'daily'
+    changefreq = "daily"
 
     def items(self):
-        return ['members:index']
+        return ["members:index"]
 
     def location(self, item):
         return reverse(item)
 
 
 sitemap = {
-    'members-static': StaticViewSitemap,
+    "members-static": StaticViewSitemap,
 }

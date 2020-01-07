@@ -12,28 +12,39 @@ class NewsletterEventForm(forms.ModelForm):
     Custom ModelForm for the NewsletterEvent model to
     add the order field and javascript for automatic field filling
     """
-    event = forms.ChoiceField(
-        label=_('Event')
-    )
+
+    event = forms.ChoiceField(label=_("Event"))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['event'].choices = [(None, '-----')] + [
-            (e.pk, e.title) for e in
-            Event.objects.filter(published=True, start__gt=timezone.now())
+        self.fields["event"].choices = [(None, "-----")] + [
+            (e.pk, e.title)
+            for e in Event.objects.filter(published=True, start__gt=timezone.now())
         ]
-        self.fields['event'].required = False
+        self.fields["event"].required = False
 
     class Meta:
-        fields = ('order', 'event', 'title_en', 'title_nl', 'url',
-                  'description_en', 'description_nl',
-                  'where_en', 'where_nl', 'start_datetime', 'end_datetime',
-                  'show_costs_warning', 'price', 'penalty_costs')
+        fields = (
+            "order",
+            "event",
+            "title_en",
+            "title_nl",
+            "url",
+            "description_en",
+            "description_nl",
+            "where_en",
+            "where_nl",
+            "start_datetime",
+            "end_datetime",
+            "show_costs_warning",
+            "price",
+            "penalty_costs",
+        )
         model = NewsletterEvent
 
     class Media:
         js = (
-            'js/js.cookie.min.js',
-            'admin/newsletters/js/forms.js',
+            "js/js.cookie.min.js",
+            "admin/newsletters/js/forms.js",
         )

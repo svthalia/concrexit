@@ -13,8 +13,8 @@ from sendfile import sendfile
 
 
 def _get_signature_info(request):
-    if 'sig' in request.GET:
-        signature = request.GET.get('sig')
+    if "sig" in request.GET:
+        signature = request.GET.get("sig")
         try:
             return signing.loads(signature, max_age=timedelta(hours=3))
         except BadSignature:
@@ -32,14 +32,16 @@ def private_media(request, request_path):
     # raises PermissionDenied if bad signature
     info = _get_signature_info(request)
 
-    if (not os.path.isfile(info['serve_path'])
-            or not info['serve_path'].endswith(request_path)):
+    if not os.path.isfile(info["serve_path"]) or not info["serve_path"].endswith(
+        request_path
+    ):
         # 404 if the file does not exist
         raise Http404("Media not found.")
 
     # Serve the file
-    return sendfile(request, info['serve_path'],
-                    attachment=info.get('attachment', False))
+    return sendfile(
+        request, info["serve_path"], attachment=info.get("attachment", False)
+    )
 
 
 def generate_thumbnail(request, request_path):
@@ -57,23 +59,23 @@ def generate_thumbnail(request, request_path):
     """
     # Get image information from signature
     # raises PermissionDenied if bad signature
-    query = ''
+    query = ""
     sig_info = _get_signature_info(request)
 
-    if not sig_info['thumb_path'].endswith(request_path):
+    if not sig_info["thumb_path"].endswith(request_path):
         # 404 if the file does not exist
         raise Http404("Media not found.")
 
-    if sig_info['visibility'] == 'public':
+    if sig_info["visibility"] == "public":
         full_original_path = os.path.join(
-            settings.MEDIA_ROOT, 'public', sig_info['path'])
+            settings.MEDIA_ROOT, "public", sig_info["path"]
+        )
         full_thumb_path = os.path.join(
-            settings.MEDIA_ROOT, 'public', sig_info['thumb_path'])
+            settings.MEDIA_ROOT, "public", sig_info["thumb_path"]
+        )
     else:
-        full_original_path = os.path.join(
-            settings.MEDIA_ROOT, sig_info['path'])
-        full_thumb_path = os.path.join(
-            settings.MEDIA_ROOT, sig_info['thumb_path'])
+        full_original_path = os.path.join(settings.MEDIA_ROOT, sig_info["path"])
+        full_thumb_path = os.path.join(settings.MEDIA_ROOT, sig_info["thumb_path"])
 
     if not os.path.exists(full_original_path):
         raise Http404
@@ -81,13 +83,13 @@ def generate_thumbnail(request, request_path):
     # Check if directory for thumbnail exists, if not create it
     os.makedirs(os.path.dirname(full_thumb_path), exist_ok=True)
     # Skip generating the thumbnail if it exists
-    if (not os.path.isfile(full_thumb_path) or
-            os.path.getmtime(full_original_path)
-            > os.path.getmtime(full_thumb_path)):
+    if not os.path.isfile(full_thumb_path) or os.path.getmtime(
+        full_original_path
+    ) > os.path.getmtime(full_thumb_path):
         # Create a thumbnail from the original_path, saved to thumb_path
         image = Image.open(full_original_path)
-        size = tuple(int(dim) for dim in sig_info['size'].split('x'))
-        if not sig_info['fit']:
+        size = tuple(int(dim) for dim in sig_info["size"].split("x"))
+        if not sig_info["fit"]:
             ratio = min([a / b for a, b in zip(size, image.size)])
             size = tuple(int(ratio * x) for x in image.size)
 
@@ -97,14 +99,16 @@ def generate_thumbnail(request, request_path):
             thumb = ImageOps.fit(image, size, Image.ANTIALIAS)
             thumb.save(full_thumb_path)
 
-    if sig_info['visibility'] == 'private':
+    if sig_info["visibility"] == "private":
         query = f'?sig={request.GET["sig"]}'
 
     # Redirect to the serving url of the image
     # for public images this goes via a static file server (i.e. nginx)
     # for private images this is a call to private_media
-    return redirect(f'{settings.MEDIA_URL}'
-                    f'{sig_info["visibility"]}/thumbnails/'
-                    f'{sig_info["size"]}_{sig_info["fit"]}/'
-                    f'{sig_info["path"]}{query}',
-                    permanent=True)
+    return redirect(
+        f"{settings.MEDIA_URL}"
+        f'{sig_info["visibility"]}/thumbnails/'
+        f'{sig_info["size"]}_{sig_info["fit"]}/'
+        f'{sig_info["path"]}{query}',
+        permanent=True,
+    )

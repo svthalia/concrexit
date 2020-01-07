@@ -9,7 +9,7 @@ from photos.models import Album, Photo
 
 def create_zip(photos):
     output_file = BytesIO()
-    with ZipFile(output_file, 'w') as zip_file:
+    with ZipFile(output_file, "w") as zip_file:
         for photo in photos:
             zip_file.write(photo)
     output_file.seek(0)
@@ -20,7 +20,7 @@ def create_zip(photos):
 class AlbumUploadTest(TestCase):
     """Tests album uploads in the admin."""
 
-    fixtures = ['members.json']
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -32,86 +32,118 @@ class AlbumUploadTest(TestCase):
 
     def test_album_upload(self):
         output_file = create_zip(["photos/fixtures/thom_assessor.png"])
-        self.client.post('/admin/photos/album/add/',
-                         {"title_nl": "test album",
-                          "title_en": "test album",
-                          "date": "2017-04-12",
-                          "slug": "2017-04-12-test-album",
-                          "album_archive": output_file},
-                         follow=True)
+        self.client.post(
+            "/admin/photos/album/add/",
+            {
+                "title_nl": "test album",
+                "title_en": "test album",
+                "date": "2017-04-12",
+                "slug": "2017-04-12-test-album",
+                "album_archive": output_file,
+            },
+            follow=True,
+        )
 
         self.assertEqual(Album.objects.all().count(), 1)
         self.assertEqual(Photo.objects.all().count(), 1)
 
     def test_album_create_album_twice(self):
-        self.client.post('/admin/photos/album/add/',
-                         {"title_nl": "test album",
-                          "title_en": "test album",
-                          "date": "2017-04-12",
-                          "slug": "2017-04-12-test-album"},
-                         follow=True)
-        self.client.post('/admin/photos/album/add/',
-                         {"title_nl": "test album",
-                          "title_en": "test album",
-                          "date": "2017-04-12",
-                          "slug": "2017-04-12-test-album"},
-                         follow=True)
+        self.client.post(
+            "/admin/photos/album/add/",
+            {
+                "title_nl": "test album",
+                "title_en": "test album",
+                "date": "2017-04-12",
+                "slug": "2017-04-12-test-album",
+            },
+            follow=True,
+        )
+        self.client.post(
+            "/admin/photos/album/add/",
+            {
+                "title_nl": "test album",
+                "title_en": "test album",
+                "date": "2017-04-12",
+                "slug": "2017-04-12-test-album",
+            },
+            follow=True,
+        )
 
         self.assertEqual(Album.objects.all().count(), 1)
 
     def test_album_upload_same_photo_twice_in_album(self):
         output_file = create_zip(["photos/fixtures/thom_assessor.png"])
-        self.client.post('/admin/photos/album/add/',
-                         {"title_nl": "test album",
-                          "title_en": "test album",
-                          "date": "2017-04-12",
-                          "slug": "2017-04-12-test-album",
-                          "album_archive": output_file},
-                         follow=True)
+        self.client.post(
+            "/admin/photos/album/add/",
+            {
+                "title_nl": "test album",
+                "title_en": "test album",
+                "date": "2017-04-12",
+                "slug": "2017-04-12-test-album",
+                "album_archive": output_file,
+            },
+            follow=True,
+        )
 
         pk = Album.objects.first().pk
-        self.client.post('/admin/photos/album/{}/change/'.format(pk),
-                         {"title_nl": "test album",
-                          "title_en": "test album",
-                          "date": "2017-04-12",
-                          "slug": "2017-04-12-test-album",
-                          "album_archive": output_file},
-                         follow=True)
+        self.client.post(
+            "/admin/photos/album/{}/change/".format(pk),
+            {
+                "title_nl": "test album",
+                "title_en": "test album",
+                "date": "2017-04-12",
+                "slug": "2017-04-12-test-album",
+                "album_archive": output_file,
+            },
+            follow=True,
+        )
 
         self.assertEqual(Album.objects.all().count(), 1)
         self.assertEqual(Photo.objects.all().count(), 1)
 
     def test_album_upload_different_photo_in_album(self):
         output_file = create_zip(["photos/fixtures/thom_assessor.png"])
-        self.client.post('/admin/photos/album/add/',
-                         {"title_nl": "test album",
-                          "title_en": "test album",
-                          "date": "2017-04-12",
-                          "slug": "2017-04-12-test-album",
-                          "album_archive": output_file},
-                         follow=True)
+        self.client.post(
+            "/admin/photos/album/add/",
+            {
+                "title_nl": "test album",
+                "title_en": "test album",
+                "date": "2017-04-12",
+                "slug": "2017-04-12-test-album",
+                "album_archive": output_file,
+            },
+            follow=True,
+        )
 
         output_file = create_zip(["photos/fixtures/janbeleid-hoe.jpg"])
         pk = Album.objects.first().pk
-        self.client.post('/admin/photos/album/{}/change/'.format(pk),
-                         {"title_nl": "test album",
-                          "title_en": "test album",
-                          "date": "2017-04-12",
-                          "slug": "2017-04-12-test-album",
-                          "album_archive": output_file},
-                         follow=True)
+        self.client.post(
+            "/admin/photos/album/{}/change/".format(pk),
+            {
+                "title_nl": "test album",
+                "title_en": "test album",
+                "date": "2017-04-12",
+                "slug": "2017-04-12-test-album",
+                "album_archive": output_file,
+            },
+            follow=True,
+        )
 
         self.assertEqual(Album.objects.all().count(), 1)
         self.assertEqual(Photo.objects.all().count(), 2)
 
     def test_album_upload_rotated_photo_in_album(self):
         output_file = create_zip(["photos/fixtures/rotated_janbeleid.jpg"])
-        self.client.post('/admin/photos/album/add/',
-                         {"title_nl": "test album",
-                          "title_en": "test album",
-                          "date": "2017-04-12",
-                          "slug": "2017-04-12-test-album",
-                          "album_archive": output_file},
-                         follow=True)
+        self.client.post(
+            "/admin/photos/album/add/",
+            {
+                "title_nl": "test album",
+                "title_en": "test album",
+                "date": "2017-04-12",
+                "slug": "2017-04-12-test-album",
+                "album_archive": output_file,
+            },
+            follow=True,
+        )
 
         self.assertEqual(Photo.objects.first().rotation, 90)

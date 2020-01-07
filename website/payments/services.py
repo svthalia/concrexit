@@ -8,8 +8,9 @@ from members.models import Member
 from .models import Payment, BankAccount
 
 
-def process_payment(queryset: QuerySet, processed_by: Member,
-                    pay_type: str = Payment.CARD) -> list:
+def process_payment(
+    queryset: QuerySet, processed_by: Member, pay_type: str = Payment.CARD
+) -> list:
     """
     Process the payment
 
@@ -28,8 +29,9 @@ def process_payment(queryset: QuerySet, processed_by: Member,
     # is not appropriate, moreover save() automatically sets
     # the processing date
     for payment in queryset:
-        if (pay_type != Payment.TPAY or
-           (pay_type == Payment.TPAY and payment.paid_by.tpay_enabled)):
+        if pay_type != Payment.TPAY or (
+            pay_type == Payment.TPAY and payment.paid_by.tpay_enabled
+        ):
             payment.type = pay_type
             payment.processed_by = processed_by
             payment.save()
@@ -38,8 +40,7 @@ def process_payment(queryset: QuerySet, processed_by: Member,
     return data
 
 
-def update_last_used(queryset: QuerySet,
-                     date: datetime.date = None) -> int:
+def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
     """
     Update the last used field of a BankAccount queryset
 
@@ -50,11 +51,10 @@ def update_last_used(queryset: QuerySet,
     if not date:
         date = timezone.now().date()
 
-    result = (queryset
-              .filter((Q(valid_from__gte=timezone.now())
-                       & Q(valid_until__lt=timezone.now()))
-                      | Q(valid_until=None))
-              .update(last_used=date))
+    result = queryset.filter(
+        (Q(valid_from__gte=timezone.now()) & Q(valid_until__lt=timezone.now()))
+        | Q(valid_until=None)
+    ).update(last_used=date)
     return result
 
 
@@ -64,5 +64,5 @@ def revoke_old_mandates() -> int:
     :return: number of affected rows
     """
     return BankAccount.objects.filter(
-        last_used__lte=(timezone.now() - timezone.timedelta(days=36*30))
+        last_used__lte=(timezone.now() - timezone.timedelta(days=36 * 30))
     ).update(valid_until=timezone.now().date())

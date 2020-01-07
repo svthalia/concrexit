@@ -10,30 +10,30 @@ from django.utils.translation import get_language
 from sendfile import sendfile
 
 from photos.models import Album, Photo
-from photos.services import (check_shared_album_token,
-                             get_annotated_accessible_albums,
-                             is_album_accessible)
+from photos.services import (
+    check_shared_album_token,
+    get_annotated_accessible_albums,
+    is_album_accessible,
+)
 
-COVER_FILENAME = 'cover.jpg'
+COVER_FILENAME = "cover.jpg"
 
 
 @login_required
 def index(request):
-    keywords = request.GET.get('keywords', '').split()
+    keywords = request.GET.get("keywords", "").split()
 
     # Only show published albums
     albums = Album.objects.filter(hidden=False)
     for key in keywords:
-        albums = albums.filter(**{
-            f'title_{get_language()}__icontains': key
-        })
+        albums = albums.filter(**{f"title_{get_language()}__icontains": key})
 
     albums = get_annotated_accessible_albums(request, albums)
 
-    albums = albums.order_by('-date')
+    albums = albums.order_by("-date")
     paginator = Paginator(albums, 16)
 
-    page = request.GET.get('page')
+    page = request.GET.get("page")
     page = 1 if page is None or not page.isdigit() else int(page)
     try:
         albums = paginator.page(page)
@@ -56,19 +56,16 @@ def index(request):
 
     page_range = range(page_range_start, page_range_stop)
 
-    return render(request, 'photos/index.html', {
-        'albums': albums,
-        'page_range': page_range,
-        'keywords': keywords
-    })
+    return render(
+        request,
+        "photos/index.html",
+        {"albums": albums, "page_range": page_range, "keywords": keywords},
+    )
 
 
 def _render_album_page(request, album):
-    context = {
-        'album': album,
-        'photos': album.photo_set.filter(hidden=False)
-    }
-    return render(request, 'photos/album.html', context)
+    context = {"album": album, "photos": album.photo_set.filter(hidden=False)}
+    return render(request, "photos/album.html", context)
 
 
 @login_required
@@ -96,20 +93,17 @@ def _photo_path(album, filename):
 def _download(request, album, filename):
     """This function provides a layer of indirection for shared albums"""
     photopath = _photo_path(album, filename)
-    photo = get_object_or_404(
-            Photo.objects.filter(album=album, file=photopath))
+    photo = get_object_or_404(Photo.objects.filter(album=album, file=photopath))
     return sendfile(request, photo.file.path, attachment=True)
 
 
 def _album_download(request, album):
     """This function provides a layer of indirection for shared albums"""
     albumpath = os.path.join(album.photospath, album.dirname)
-    zipfilename = os.path.join(gettempdir(),
-                               '{}.zip'.format(album.dirname))
+    zipfilename = os.path.join(gettempdir(), "{}.zip".format(album.dirname))
     if not os.path.exists(zipfilename):
-        with ZipFile(zipfilename, 'w') as f:
-            pictures = [os.path.join(albumpath, x)
-                        for x in os.listdir(albumpath)]
+        with ZipFile(zipfilename, "w") as f:
+            pictures = [os.path.join(albumpath, x) for x in os.listdir(albumpath)]
             for picture in pictures:
                 f.write(picture, arcname=os.path.basename(picture))
     return sendfile(request, zipfilename, attachment=True)

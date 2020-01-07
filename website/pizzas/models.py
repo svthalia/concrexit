@@ -21,14 +21,9 @@ class PizzaEvent(models.Model):
     event = models.OneToOneField(Event, on_delete=models.CASCADE)
 
     send_notification = models.BooleanField(
-        _("Send an order notification"),
-        default=True
+        _("Send an order notification"), default=True
     )
-    end_reminder = models.OneToOneField(
-        ScheduledMessage,
-        models.CASCADE,
-        null=True
-    )
+    end_reminder = models.OneToOneField(ScheduledMessage, models.CASCADE, null=True)
 
     @property
     def title(self):
@@ -44,8 +39,9 @@ class PizzaEvent(models.Model):
 
     @property
     def just_ended(self):
-        return (self.has_ended and
-                self.end + timezone.timedelta(hours=8) > timezone.now())
+        return (
+            self.has_ended and self.end + timezone.timedelta(hours=8) > timezone.now()
+        )
 
     @classmethod
     def current(cls):
@@ -58,7 +54,7 @@ class PizzaEvent(models.Model):
             events = PizzaEvent.objects.filter(
                 end__gt=timezone.now() - timezone.timedelta(hours=8),
                 start__lte=timezone.now() + timezone.timedelta(hours=8),
-            ).order_by('start')
+            ).order_by("start")
             if events.count() > 1:
                 return events.exclude(end__lt=timezone.now()).first()
             else:
@@ -73,47 +69,51 @@ class PizzaEvent(models.Model):
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
         for other in PizzaEvent.objects.filter(
-                Q(end__gte=self.start, end__lte=self.end) |
-                Q(start=self.start, start__lte=self.start)):
+            Q(end__gte=self.start, end__lte=self.end)
+            | Q(start=self.start, start__lte=self.start)
+        ):
             if other.pk == self.pk:
                 continue
-            raise ValidationError({
-                'start': _(
-                    'This event cannot overlap with {}.').format(other),
-                'end': _(
-                    'This event cannot overlap with {}.').format(other),
-            })
+            raise ValidationError(
+                {
+                    "start": _("This event cannot overlap with {}.").format(other),
+                    "end": _("This event cannot overlap with {}.").format(other),
+                }
+            )
 
     def clean(self):
         super().clean()
 
         if self.start >= self.end:
-            raise ValidationError({
-                'start': _('The start is after the end of this event.'),
-                'end': _('The end is before the start of this event.'),
-            })
+            raise ValidationError(
+                {
+                    "start": _("The start is after the end of this event."),
+                    "end": _("The end is before the start of this event."),
+                }
+            )
 
     def save(self, *args, **kwargs):
         if self.send_notification and not self.end_reminder:
             end_reminder = ScheduledMessage()
-            end_reminder.title_en = 'Order pizza'
-            end_reminder.title_nl = 'Pizza bestellen'
-            end_reminder.body_en = 'You can order pizzas for 10 more minutes'
+            end_reminder.title_en = "Order pizza"
+            end_reminder.title_nl = "Pizza bestellen"
+            end_reminder.body_en = "You can order pizzas for 10 more minutes"
             end_reminder.body_nl = "Je kan nog 10 minuten pizza's bestellen"
             end_reminder.category = Category.objects.get(key=Category.PIZZA)
             end_reminder.time = self.end - timezone.timedelta(minutes=10)
             end_reminder.save()
 
             if self.event.registration_required:
-                end_reminder.users.set(self.event.registrations
-                                       .select_related('member')
-                                       .values_list('member', flat=True))
+                end_reminder.users.set(
+                    self.event.registrations.select_related("member").values_list(
+                        "member", flat=True
+                    )
+                )
             else:
                 end_reminder.users.set(Member.current_members.all())
 
             self.end_reminder = end_reminder
-        elif (self.send_notification and self.end_reminder and
-                self._end != self.end):
+        elif self.send_notification and self.end_reminder and self._end != self.end:
             self.end_reminder.time = self.end
             self.end_reminder.save()
         elif not self.send_notification and self.end_reminder:
@@ -125,16 +125,15 @@ class PizzaEvent(models.Model):
         super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False):
-        if (self.end_reminder is not None
-                and not self.end_reminder.sent):
+        if self.end_reminder is not None and not self.end_reminder.sent:
             self.end_reminder.delete()
         return super().delete(using, keep_parents)
 
     def __str__(self):
-        return 'Pizzas for ' + str(self.event)
+        return "Pizzas for " + str(self.event)
 
     class Meta:
-        ordering = ('-start',)
+        ordering = ("-start",)
 
 
 class AvailableProductManager(models.Manager):
@@ -156,69 +155,67 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
     available = models.BooleanField(default=True)
     restricted = models.BooleanField(
         default=False,
-        help_text=_("Only allow to be ordered by people with the "
-                    "'order restricted products' permission."))
+        help_text=_(
+            "Only allow to be ordered by people with the "
+            "'order restricted products' permission."
+        ),
+    )
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ('name', )
-        permissions = (
-            ('order_restricted_products', _('Order restricted products')),
-        )
+        ordering = ("name",)
+        permissions = (("order_restricted_products", _("Order restricted products")),)
 
 
 class Order(models.Model):
     """Describes an order of an item during an event"""
+
     member = models.ForeignKey(
-        members.models.Member,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
+        members.models.Member, on_delete=models.CASCADE, blank=True, null=True,
     )
 
     name = models.CharField(
-        verbose_name=_('name'),
+        verbose_name=_("name"),
         max_length=50,
-        help_text=_('Use this for non-members'),
+        help_text=_("Use this for non-members"),
         null=True,
         blank=True,
     )
 
     payment = models.OneToOneField(
-        verbose_name=_('payment'),
-        to='payments.Payment',
-        related_name='pizzas_order',
+        verbose_name=_("payment"),
+        to="payments.Payment",
+        related_name="pizzas_order",
         on_delete=models.CASCADE,
     )
 
     product = models.ForeignKey(
-        verbose_name=_('product'),
-        to=Product,
-        on_delete=models.PROTECT,
+        verbose_name=_("product"), to=Product, on_delete=models.PROTECT,
     )
 
     pizza_event = models.ForeignKey(
-        verbose_name=_('event'),
-        to=PizzaEvent,
-        on_delete=models.CASCADE
+        verbose_name=_("event"), to=PizzaEvent, on_delete=models.CASCADE
     )
 
     def clean(self):
-        if ((self.member is None and not self.name) or
-                (self.member and self.name)):
-            raise ValidationError({
-                'member': _('Either specify a member or a name'),
-                'name': _('Either specify a member or a name'),
-            })
+        if (self.member is None and not self.name) or (self.member and self.name):
+            raise ValidationError(
+                {
+                    "member": _("Either specify a member or a name"),
+                    "name": _("Either specify a member or a name"),
+                }
+            )
 
     def save(self, *args, **kwargs):
         if not self.id and self.pizza_event.end_reminder:
             self.pizza_event.end_reminder.users.remove(self.member)
 
-        notes = (f'Pizza order by {self.member_name} '
-                 f'for {self.pizza_event.event.title_en}')
+        notes = (
+            f"Pizza order by {self.member_name} "
+            f"for {self.pizza_event.event.title_en}"
+        )
         try:
             self.payment.notes = notes
             self.payment.paid_by = self.member
@@ -226,9 +223,7 @@ class Order(models.Model):
             self.payment.save()
         except ObjectDoesNotExist:
             self.payment = Payment.objects.create(
-                amount=self.product.price,
-                notes=notes,
-                paid_by=self.member
+                amount=self.product.price, notes=notes, paid_by=self.member
             )
 
         super().save(*args, **kwargs)
@@ -251,28 +246,34 @@ class Order(models.Model):
     def member_last_name(self):
         if self.member is not None:
             return self.member.last_name
-        return ' '.join(self.name.split(' ')[1:])
+        return " ".join(self.name.split(" ")[1:])
 
     @property
     def member_first_name(self):
         if self.member is not None:
             return self.member.first_name
-        return self.name.strip(' ').split(' ')[0]
+        return self.name.strip(" ").split(" ")[0]
 
     @property
     def can_be_changed(self):
         try:
-            return (self.payment and not (self.payment.processed and not
-                    self.payment.type == Payment.TPAY) and not
-                    self.pizza_event.has_ended)
+            return (
+                self.payment
+                and not (
+                    self.payment.processed and not self.payment.type == Payment.TPAY
+                )
+                and not self.pizza_event.has_ended
+            )
         except ObjectDoesNotExist:
             return False
 
     class Meta:
-        unique_together = ('pizza_event', 'member',)
+        unique_together = (
+            "pizza_event",
+            "member",
+        )
 
     def __str__(self):
         return _("Order by {member_name}: {product}").format(
-            member_name=self.member_name,
-            product=self.product
+            member_name=self.member_name, product=self.product
         )

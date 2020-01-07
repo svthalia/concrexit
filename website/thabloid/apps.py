@@ -3,5 +3,5 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ThabloidConfig(AppConfig):
-    name = 'thabloid'
-    verbose_name = _('Thabloid')
+    name = "thabloid"
+    verbose_name = _("Thabloid")

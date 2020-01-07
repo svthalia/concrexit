@@ -14,42 +14,40 @@ from pizzas.services import can_change_order
 class PizzaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('pk', 'name', 'description', 'price', 'available')
+        fields = ("pk", "name", "description", "price", "available")
 
 
 class PizzaEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = PizzaEvent
-        fields = ('start', 'end', 'event', 'title', 'is_admin')
+        fields = ("start", "end", "event", "title", "is_admin")
 
     event = serializers.PrimaryKeyRelatedField(read_only=True)
-    is_admin = serializers.SerializerMethodField('_is_admin')
+    is_admin = serializers.SerializerMethodField("_is_admin")
 
     def _is_admin(self, instance):
-        member = self.context['request'].member
+        member = self.context["request"].member
         return can_change_order(member, instance)
 
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('pk', 'payment', 'product', 'name', 'member')
-        read_only_fields = ('pk', 'payment', 'name', 'member')
+        fields = ("pk", "payment", "product", "name", "member")
+        read_only_fields = ("pk", "payment", "name", "member")
 
-    payment = PaymentTypeField(source='payment.type',
-                               choices=Payment.PAYMENT_TYPE,
-                               read_only=True)
+    payment = PaymentTypeField(
+        source="payment.type", choices=Payment.PAYMENT_TYPE, read_only=True
+    )
 
 
 class AdminOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('pk', 'payment', 'product', 'name', 'member',
-                  'display_name')
+        fields = ("pk", "payment", "product", "name", "member", "display_name")
 
-    payment = PaymentTypeField(source='payment.type',
-                               choices=Payment.PAYMENT_TYPE)
-    display_name = serializers.SerializerMethodField('_display_name')
+    payment = PaymentTypeField(source="payment.type", choices=Payment.PAYMENT_TYPE)
+    display_name = serializers.SerializerMethodField("_display_name")
 
     def _display_name(self, instance):
         if instance.member:
@@ -57,21 +55,24 @@ class AdminOrderSerializer(serializers.ModelSerializer):
         return instance.name
 
     def validate(self, attrs):
-        if attrs.get('member') and attrs.get('name'):
-            raise ValidationError({
-                'member': _('Either specify a member or a name'),
-                'name': _('Either specify a member or a name'),
-            })
-        if not (attrs.get('member') or attrs.get('name')) and not self.partial:
-            attrs['member'] = self.context['request'].member
+        if attrs.get("member") and attrs.get("name"):
+            raise ValidationError(
+                {
+                    "member": _("Either specify a member or a name"),
+                    "name": _("Either specify a member or a name"),
+                }
+            )
+        if not (attrs.get("member") or attrs.get("name")) and not self.partial:
+            attrs["member"] = self.context["request"].member
         return super().validate(attrs)
 
     def update(self, instance: Model, validated_data: Any) -> Any:
-        if validated_data.get(
-            'payment', {}
-        ).get('type', instance.payment.type) != instance.payment.type:
-            instance.payment.type = validated_data['payment']['type']
+        if (
+            validated_data.get("payment", {}).get("type", instance.payment.type)
+            != instance.payment.type
+        ):
+            instance.payment.type = validated_data["payment"]["type"]
             instance.payment.save()
-        if 'payment' in validated_data:
-            del validated_data['payment']
+        if "payment" in validated_data:
+            del validated_data["payment"]
         return super().update(instance, validated_data)

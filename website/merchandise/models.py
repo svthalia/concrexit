@@ -22,7 +22,7 @@ class MerchandiseItem(models.Model, metaclass=ModelTranslateMeta):
     description = MultilingualField(models.TextField)
 
     #: Image of the merchandise item
-    image = models.ImageField(upload_to='public/merchandise')
+    image = models.ImageField(upload_to="public/merchandise")
 
     def __str__(self):
         """Gives the name of the merchandise item in the currently

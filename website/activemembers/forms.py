@@ -9,10 +9,9 @@ from members.models import Member
 
 class MemberGroupMembershipForm(forms.ModelForm):
     """Custom form for group memberships that orders the members"""
+
     member = forms.ModelChoiceField(
-        queryset=Member.objects.order_by('first_name',
-                                         'last_name'),
-        label=_('Member'),
+        queryset=Member.objects.order_by("first_name", "last_name"), label=_("Member"),
     )
 
     class Meta:
@@ -31,5 +30,6 @@ class MemberGroupForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['permissions'].queryset = (
-            Permission.objects.select_related('content_type'))
+        self.fields["permissions"].queryset = Permission.objects.select_related(
+            "content_type"
+        )

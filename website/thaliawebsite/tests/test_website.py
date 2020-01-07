@@ -20,10 +20,11 @@ def load_tests(_loader, tests, _ignore):
 @override_settings(SUSPEND_SIGNALS=True)
 class SitemapTest(TestCase):
     fixtures = [
-        'members.json', 'member_groups.json',
-        'merchandiseitems.json',
+        "members.json",
+        "member_groups.json",
+        "merchandiseitems.json",
     ]
 
     def test_sitemap_success(self):
-        response = self.client.get('/sitemap.xml')
+        response = self.client.get("/sitemap.xml")
         self.assertEqual(response.status_code, 200)

@@ -12,6 +12,4 @@ def index(request):
     """
     items = MerchandiseItem.objects.all()
 
-    return render(request,
-                  'merchandise/index.html',
-                  {'items': items})
+    return render(request, "merchandise/index.html", {"items": items})

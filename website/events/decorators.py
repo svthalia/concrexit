@@ -17,21 +17,21 @@ class OrganiserOnly(object):
     2. The specified event does not exist
     3. The user is no organiser of the specified event
     """
+
     def __init__(self, view_function):
         self.view_function = view_function
 
     def __call__(self, request, *args, **kwargs):
         event = None
 
-        if 'pk' in kwargs:
+        if "pk" in kwargs:
             try:
-                event = Event.objects.get(pk=kwargs.get('pk'))
+                event = Event.objects.get(pk=kwargs.get("pk"))
             except Event.DoesNotExist:
                 pass
-        elif 'registration' in kwargs:
+        elif "registration" in kwargs:
             try:
-                event = Event.objects.get(
-                    registration__pk=kwargs.get('registration'))
+                event = Event.objects.get(registration__pk=kwargs.get("registration"))
             except Event.DoesNotExist:
                 pass
 

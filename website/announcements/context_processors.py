@@ -15,7 +15,10 @@ def announcements(request):
     :return: a dict containing the list announcements
     :rtype: dict
     """
-    closed_announcements = request.session.get('closed_announcements', [])
-    announcements_list = [a for a in Announcement.objects.all()
-                          if a.is_visible and a.pk not in closed_announcements]
-    return {'announcements': announcements_list}
+    closed_announcements = request.session.get("closed_announcements", [])
+    announcements_list = [
+        a
+        for a in Announcement.objects.all()
+        if a.is_visible and a.pk not in closed_announcements
+    ]
+    return {"announcements": announcements_list}

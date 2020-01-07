@@ -4,17 +4,16 @@ from members import services
 
 
 class Command(BaseCommand):
-
     def add_arguments(self, parser):
         parser.add_argument(
-            '--dry-run',
-            action='store_true',
-            dest='dry-run',
+            "--dry-run",
+            action="store_true",
+            dest="dry-run",
             default=False,
-            help='Dry run instead of saving data',
+            help="Dry run instead of saving data",
         )
 
     def handle(self, *args, **options):
-        processed = services.execute_data_minimisation(options['dry-run'])
+        processed = services.execute_data_minimisation(options["dry-run"])
         for p in processed:
-            self.stdout.write('Removed data for {}'.format(p))
+            self.stdout.write("Removed data for {}".format(p))

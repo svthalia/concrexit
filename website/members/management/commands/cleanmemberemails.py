@@ -5,14 +5,13 @@ from django.core.validators import validate_email
 
 
 class Command(BaseCommand):
-
     def add_arguments(self, parser):
         parser.add_argument(
-            '--dry-run',
-            action='store_true',
-            dest='dry-run',
+            "--dry-run",
+            action="store_true",
+            dest="dry-run",
             default=False,
-            help='Dry run instead of saving data',
+            help="Dry run instead of saving data",
         )
 
     def handle(self, *args, **options):
@@ -23,8 +22,9 @@ class Command(BaseCommand):
             try:
                 validate_email(user.email)
             except ValidationError:
-                self.stdout.write("Email address for " + user.username +
-                                  " invalid: " + user.email)
-                if not options['dry-run']:
+                self.stdout.write(
+                    "Email address for " + user.username + " invalid: " + user.email
+                )
+                if not options["dry-run"]:
                     user.email = ""
                     user.save()

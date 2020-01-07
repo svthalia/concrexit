@@ -11,9 +11,7 @@ class MailingListTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.mailinglist = MailingList.objects.create(
-            name="mailtest",
-        )
+        cls.mailinglist = MailingList.objects.create(name="mailtest",)
 
     def setUp(self):
         self.mailinglist.refresh_from_db()
@@ -22,10 +20,7 @@ class MailingListTest(TestCase):
         self.mailinglist.clean()
 
     def test_no_alias_duplicates(self):
-        listalias = ListAlias(
-            alias="mailtest",
-            mailinglist=self.mailinglist
-        )
+        listalias = ListAlias(alias="mailtest", mailinglist=self.mailinglist)
 
         with self.assertRaises(ValidationError):
             listalias.clean()
@@ -34,9 +29,7 @@ class MailingListTest(TestCase):
         listalias.clean()
 
     def test_no_automatic_list(self):
-        mailinglist = MailingList(
-            name="activemembers"
-        )
+        mailinglist = MailingList(name="activemembers")
 
         with self.assertRaises(ValidationError):
             mailinglist.clean()
@@ -51,12 +44,9 @@ class ListAliasTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.mailinglist = MailingList.objects.create(
-            name="mailtest",
-        )
+        cls.mailinglist = MailingList.objects.create(name="mailtest",)
         cls.listalias = ListAlias.objects.create(
-            alias="mailalias",
-            mailinglist=cls.mailinglist
+            alias="mailalias", mailinglist=cls.mailinglist
         )
 
     def setUp(self):
@@ -67,18 +57,13 @@ class ListAliasTest(TestCase):
         self.listalias.clean()
 
     def test_no_automatic_list(self):
-        listalias = ListAlias(
-            alias="activemembers",
-            mailinglist=self.mailinglist
-        )
+        listalias = ListAlias(alias="activemembers", mailinglist=self.mailinglist)
 
         with self.assertRaises(ValidationError):
             listalias.clean()
 
     def test_no_mailinglist_duplicates(self):
-        m1 = MailingList(
-            name="mailalias"
-        )
+        m1 = MailingList(name="mailalias")
 
         with self.assertRaises(ValidationError):
             m1.clean()

@@ -5,17 +5,17 @@ from . import models
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
-    changefreq = 'monthly'
+    changefreq = "monthly"
 
     def items(self):
-        return ['thabloid:index']
+        return ["thabloid:index"]
 
     def location(self, item):
         return reverse(item)
 
 
 class ThabloidSitemap(sitemaps.Sitemap):
-    changefreq = 'never'
+    changefreq = "never"
 
     def items(self):
         return models.Thabloid.objects.all()
@@ -25,6 +25,6 @@ class ThabloidSitemap(sitemaps.Sitemap):
 
 
 sitemap = {
-    'thabloid-static': StaticViewSitemap,
-    'thabloid-thabloids': ThabloidSitemap,
+    "thabloid-static": StaticViewSitemap,
+    "thabloid-thabloids": ThabloidSitemap,
 }

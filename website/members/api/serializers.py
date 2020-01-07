@@ -11,6 +11,7 @@ from thaliawebsite.api.services import create_image_thumbnail_dict
 
 class MemberBirthdaySerializer(CalenderJSSerializer):
     """Serializer that renders the member birthdays to the CalendarJS format"""
+
     class Meta(CalenderJSSerializer.Meta):
         model = Member
 
@@ -27,41 +28,52 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
         return True
 
     def _url(self, instance):
-        return reverse('members:profile', kwargs={'pk': instance.pk})
+        return reverse("members:profile", kwargs={"pk": instance.pk})
 
     def _title(self, instance):
         return instance.profile.display_name()
 
     def _description(self, instance):
         membership = instance.current_membership
-        if membership and membership.type == 'honorary':
+        if membership and membership.type == "honorary":
             return membership.get_type_display()
-        return ''
+        return ""
 
     def _background_color(self, instance):
         membership = instance.current_membership
-        if membership and membership.type == 'honorary':
-            return '#E62272'
-        return 'black'
+        if membership and membership.type == "honorary":
+            return "#E62272"
+        return "black"
 
     def _text_color(self, instance):
-        return 'white'
+        return "white"
 
 
 class ProfileRetrieveSerializer(serializers.ModelSerializer):
     """Serializer that renders a member profile"""
+
     class Meta:
         model = Profile
-        fields = ('pk', 'display_name', 'avatar', 'profile_description',
-                  'birthday', 'starting_year', 'programme', 'website',
-                  'membership_type', 'achievements', 'societies')
+        fields = (
+            "pk",
+            "display_name",
+            "avatar",
+            "profile_description",
+            "birthday",
+            "starting_year",
+            "programme",
+            "website",
+            "membership_type",
+            "achievements",
+            "societies",
+        )
 
-    pk = serializers.SerializerMethodField('_pk')
-    avatar = serializers.SerializerMethodField('_avatar')
-    birthday = serializers.SerializerMethodField('_birthday')
-    membership_type = serializers.SerializerMethodField('_membership_type')
-    achievements = serializers.SerializerMethodField('_achievements')
-    societies = serializers.SerializerMethodField('_societies')
+    pk = serializers.SerializerMethodField("_pk")
+    avatar = serializers.SerializerMethodField("_avatar")
+    birthday = serializers.SerializerMethodField("_birthday")
+    membership_type = serializers.SerializerMethodField("_membership_type")
+    achievements = serializers.SerializerMethodField("_achievements")
+    societies = serializers.SerializerMethodField("_societies")
 
     def _pk(self, instance):
         return instance.user.pk
@@ -84,64 +96,89 @@ class ProfileRetrieveSerializer(serializers.ModelSerializer):
         return member_societies(instance.user)
 
     def _avatar(self, instance):
-        placeholder = self.context['request'].build_absolute_uri(
-                static('members/images/default-avatar.jpg'))
+        placeholder = self.context["request"].build_absolute_uri(
+            static("members/images/default-avatar.jpg")
+        )
         file = None
         if instance.photo:
             file = instance.photo
         return create_image_thumbnail_dict(
-            self.context['request'], file, placeholder=placeholder,
-            size_large='800x800')
+            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+        )
 
 
 class MemberListSerializer(serializers.ModelSerializer):
     """Serializer that renders a list of members"""
+
     class Meta:
         model = Member
-        fields = ('pk', 'display_name', 'avatar')
+        fields = ("pk", "display_name", "avatar")
 
-    display_name = serializers.SerializerMethodField('_display_name')
-    avatar = serializers.SerializerMethodField('_avatar')
+    display_name = serializers.SerializerMethodField("_display_name")
+    avatar = serializers.SerializerMethodField("_avatar")
 
     def _display_name(self, instance):
         return instance.profile.display_name()
 
     def _avatar(self, instance):
-        placeholder = self.context['request'].build_absolute_uri(
-            static('members/images/default-avatar.jpg'))
+        placeholder = self.context["request"].build_absolute_uri(
+            static("members/images/default-avatar.jpg")
+        )
         file = None
         if instance.profile.photo:
             file = instance.profile.photo
         return create_image_thumbnail_dict(
-            self.context['request'], file, placeholder=placeholder,
-            size_large='800x800')
+            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+        )
 
 
 class ProfileEditSerializer(serializers.ModelSerializer):
     """Serializer that renders a profile to be edited"""
+
     class Meta:
         model = Profile
-        fields = ('pk', 'email', 'first_name', 'last_name', 'address_street',
-                  'address_street2', 'address_postal_code', 'address_city',
-                  'address_country', 'phone_number', 'show_birthday',
-                  'website', 'photo', 'emergency_contact',
-                  'emergency_contact_phone_number', 'profile_description',
-                  'nickname', 'display_name_preference',
-                  'language', 'receive_optin', 'receive_newsletter',
-                  'display_name', 'avatar', 'birthday', 'starting_year',
-                  'programme', 'membership_type', 'achievements', 'societies')
+        fields = (
+            "pk",
+            "email",
+            "first_name",
+            "last_name",
+            "address_street",
+            "address_street2",
+            "address_postal_code",
+            "address_city",
+            "address_country",
+            "phone_number",
+            "show_birthday",
+            "website",
+            "photo",
+            "emergency_contact",
+            "emergency_contact_phone_number",
+            "profile_description",
+            "nickname",
+            "display_name_preference",
+            "language",
+            "receive_optin",
+            "receive_newsletter",
+            "display_name",
+            "avatar",
+            "birthday",
+            "starting_year",
+            "programme",
+            "membership_type",
+            "achievements",
+            "societies",
+        )
 
-        read_only_fields = ('display_name', 'starting_year', 'programme',
-                            'birthday')
+        read_only_fields = ("display_name", "starting_year", "programme", "birthday")
 
-    pk = serializers.SerializerMethodField('_pk')
-    email = serializers.SerializerMethodField('_email')
-    first_name = serializers.SerializerMethodField('_first_name')
-    last_name = serializers.SerializerMethodField('_last_name')
-    avatar = serializers.SerializerMethodField('_avatar')
-    membership_type = serializers.SerializerMethodField('_membership_type')
-    achievements = serializers.SerializerMethodField('_achievements')
-    societies = serializers.SerializerMethodField('_societies')
+    pk = serializers.SerializerMethodField("_pk")
+    email = serializers.SerializerMethodField("_email")
+    first_name = serializers.SerializerMethodField("_first_name")
+    last_name = serializers.SerializerMethodField("_last_name")
+    avatar = serializers.SerializerMethodField("_avatar")
+    membership_type = serializers.SerializerMethodField("_membership_type")
+    achievements = serializers.SerializerMethodField("_achievements")
+    societies = serializers.SerializerMethodField("_societies")
 
     def _pk(self, instance):
         return instance.user.pk
@@ -168,11 +205,12 @@ class ProfileEditSerializer(serializers.ModelSerializer):
         return member_societies(instance.user)
 
     def _avatar(self, instance):
-        placeholder = self.context['request'].build_absolute_uri(
-                static('members/images/default-avatar.jpg'))
+        placeholder = self.context["request"].build_absolute_uri(
+            static("members/images/default-avatar.jpg")
+        )
         file = None
         if instance.photo:
             file = instance.photo
         return create_image_thumbnail_dict(
-            self.context['request'], file, placeholder=placeholder,
-            size_large='800x800')
+            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+        )

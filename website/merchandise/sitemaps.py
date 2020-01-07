@@ -5,11 +5,12 @@ from django.urls import reverse
 
 class StaticViewSitemap(sitemaps.Sitemap):
     """Generates the sitemap of the index page"""
-    changefreq = 'monthly'
+
+    changefreq = "monthly"
 
     def items(self):
         """The items listed in the sitemap"""
-        return ['merchandise:index']
+        return ["merchandise:index"]
 
     def location(self, item):  # pylint: disable=arguments-differ
         """Gives the location for the specified item
@@ -22,5 +23,5 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
 #: The site maps defined by this module
 sitemap = {  # pylint: disable=invalid-name
-    'merchandise-static': StaticViewSitemap,
+    "merchandise-static": StaticViewSitemap,
 }

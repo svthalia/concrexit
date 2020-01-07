@@ -6,7 +6,7 @@ from mailinglists.models import MailingList
 from utils.models.signals import suspendingreceiver
 
 
-@suspendingreceiver(pre_save, sender='mailinglists.MailingList')
+@suspendingreceiver(pre_save, sender="mailinglists.MailingList")
 def pre_mailinglist_save(instance, **kwargs):
     sync_service = GSuiteSyncService()
     group = sync_service.mailinglist_to_group(instance)

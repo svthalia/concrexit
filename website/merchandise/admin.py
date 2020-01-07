@@ -14,8 +14,8 @@ class MerchandiseItemAdmin(TranslatedModelAdmin):
 
     #: Included fields in the admin interface
     fields = (
-        'name',
-        'price',
-        'description',
-        'image',
+        "name",
+        "price",
+        "description",
+        "image",
     )

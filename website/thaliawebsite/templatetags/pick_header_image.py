@@ -11,17 +11,17 @@ from django.contrib.staticfiles import finders
 
 
 register = template.Library()  # pylint: disable=invalid-name
-BANNERDIR = 'img/headers'
+BANNERDIR = "img/headers"
 
 
 @functools.lru_cache()
 def _banners():
     """Get the available banners"""
     imgdir = finders.find(BANNERDIR)
-    return [pic for pic in os.listdir(imgdir) if pic.endswith('.jpg')]
+    return [pic for pic in os.listdir(imgdir) if pic.endswith(".jpg")]
 
 
 @register.simple_tag
 def pick_header_image():
     """Renders a random header image"""
-    return settings.STATIC_URL + BANNERDIR + '/' + random.choice(_banners())
+    return settings.STATIC_URL + BANNERDIR + "/" + random.choice(_banners())

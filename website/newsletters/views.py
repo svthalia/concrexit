@@ -35,9 +35,7 @@ def preview(request, pk, lang=None):
 
     # Send cached file, if it exists
     file_path = os.path.join(
-        settings.MEDIA_ROOT,
-        'newsletters',
-        f'{pk}_{lang_code}.html'
+        settings.MEDIA_ROOT, "newsletters", f"{pk}_{lang_code}.html"
     )
     if os.path.isfile(file_path):
         return sendfile(request, file_path)
@@ -45,17 +43,21 @@ def preview(request, pk, lang=None):
     newsletter = get_object_or_404(Newsletter, pk=pk)
     events = services.get_agenda(newsletter.date) if newsletter.date else None
 
-    return render(request, 'newsletters/email.html', {
-        'newsletter': newsletter,
-        'agenda_events': events,
-        'main_partner': Partner.objects.filter(is_main_partner=True).first(),
-        'local_partner': Partner.objects.filter(is_local_partner=True).first(),
-        'lang_code': lang_code
-    })
+    return render(
+        request,
+        "newsletters/email.html",
+        {
+            "newsletter": newsletter,
+            "agenda_events": events,
+            "main_partner": Partner.objects.filter(is_main_partner=True).first(),
+            "local_partner": Partner.objects.filter(is_local_partner=True).first(),
+            "lang_code": lang_code,
+        },
+    )
 
 
 @staff_member_required
-@permission_required('newsletters.send_newsletter')
+@permission_required("newsletters.send_newsletter")
 def admin_send(request, pk):
     """
     If this is a GET request this view will render a confirmation
@@ -75,8 +77,8 @@ def admin_send(request, pk):
     if request.POST:
         services.send_newsletter(newsletter)
 
-        return redirect('admin:newsletters_newsletter_changelist')
+        return redirect("admin:newsletters_newsletter_changelist")
     else:
-        return render(request, 'newsletters/admin/send_confirm.html', {
-            'newsletter': newsletter
-        })
+        return render(
+            request, "newsletters/admin/send_confirm.html", {"newsletter": newsletter}
+        )

@@ -18,9 +18,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         :rtype: [str]
         """
         # Need to be valid entries for reverse()
-        return [
-            'index'
-        ]
+        return ["index"]
 
     def location(self, obj):
         """

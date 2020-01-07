@@ -7,11 +7,11 @@ from . import models
 class StaticViewSitemap(sitemaps.Sitemap):
     """Sitemap generator for static partner views."""
 
-    changefreq = 'daily'
+    changefreq = "daily"
 
     def items(self):
         """Return static partner view names."""
-        return ['partners:index', 'partners:vacancies']
+        return ["partners:index", "partners:vacancies"]
 
     def location(self, item):
         """Return view url."""
@@ -43,7 +43,7 @@ class VacancySitemap(sitemaps.Sitemap):
 
 
 sitemap = {
-    'partners-static': StaticViewSitemap,
-    'partners-partners': PartnerSitemap,
-    'partners-vacancies': VacancySitemap,
+    "partners-static": StaticViewSitemap,
+    "partners-partners": PartnerSitemap,
+    "partners-vacancies": VacancySitemap,
 }

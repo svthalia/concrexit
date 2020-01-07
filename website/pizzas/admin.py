@@ -16,56 +16,62 @@ from .models import Order, PizzaEvent, Product
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     """Manage the products"""
-    list_display = ('name', 'price', 'available')
-    list_filter = ('available', 'restricted')
-    search_fields = ('name',)
+
+    list_display = ("name", "price", "available")
+    list_filter = ("available", "restricted")
+    search_fields = ("name",)
 
 
 @admin.register(PizzaEvent)
 class PizzaEventAdmin(admin.ModelAdmin):
     """Manage the pizza events"""
-    list_display = ('title', 'start', 'end', 'notification_enabled', 'orders')
-    date_hierarchy = 'start'
-    exclude = ('end_reminder',)
-    search_fields = [f'event__title_{l[0]}' for l in settings.LANGUAGES]
-    autocomplete_fields = ('event',)
+
+    list_display = ("title", "start", "end", "notification_enabled", "orders")
+    date_hierarchy = "start"
+    exclude = ("end_reminder",)
+    search_fields = [f"event__title_{l[0]}" for l in settings.LANGUAGES]
+    autocomplete_fields = ("event",)
 
     def notification_enabled(self, obj):
         return obj.send_notification
-    notification_enabled.short_description = _('reminder')
-    notification_enabled.admin_order_field = 'send_notification'
+
+    notification_enabled.short_description = _("reminder")
+    notification_enabled.admin_order_field = "send_notification"
     notification_enabled.boolean = True
 
     def has_change_permission(self, request, obj=None):
         """Only allow access to the change form if the user is an organiser"""
-        if (obj is not None and
-                not services.is_organiser(request.member, obj.event)):
+        if obj is not None and not services.is_organiser(request.member, obj.event):
             return False
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
         """Only allow access to delete if the user is an organiser"""
-        if (obj is not None and
-                not services.is_organiser(request.member, obj.event)):
+        if obj is not None and not services.is_organiser(request.member, obj.event):
             return False
         return super().has_delete_permission(request, obj)
 
     def orders(self, obj):
-        url = reverse('admin:pizzas_pizzaevent_details', kwargs={'pk': obj.pk})
-        return format_html('<a href="{url}">{text}</a>',
-                           url=url, text=_("Orders"))
+        url = reverse("admin:pizzas_pizzaevent_details", kwargs={"pk": obj.pk})
+        return format_html('<a href="{url}">{text}</a>', url=url, text=_("Orders"))
 
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path('<int:pk>/details/',
-                 self.admin_site.admin_view(
-                     admin_views.PizzaOrderDetails.as_view(admin=self)),
-                 name='pizzas_pizzaevent_details'),
-            path('<int:pk>/overview/',
-                 self.admin_site.admin_view(
-                     admin_views.PizzaOrderSummary.as_view(admin=self)),
-                 name='pizzas_pizzaevent_overview'),
+            path(
+                "<int:pk>/details/",
+                self.admin_site.admin_view(
+                    admin_views.PizzaOrderDetails.as_view(admin=self)
+                ),
+                name="pizzas_pizzaevent_details",
+            ),
+            path(
+                "<int:pk>/overview/",
+                self.admin_site.admin_view(
+                    admin_views.PizzaOrderSummary.as_view(admin=self)
+                ),
+                name="pizzas_pizzaevent_overview",
+            ),
         ]
         return custom_urls + urls
 
@@ -73,9 +79,15 @@ class PizzaEventAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(DoNextModelAdmin):
     """Manage the orders"""
-    list_display = ('pizza_event', 'member_first_name',
-                    'member_last_name', 'product', 'payment')
-    exclude = ('payment', )
+
+    list_display = (
+        "pizza_event",
+        "member_first_name",
+        "member_last_name",
+        "product",
+        "payment",
+    )
+    exclude = ("payment",)
 
     def save_model(self, request, obj, form, change):
         """You can only save the orders if you have permission"""
@@ -85,21 +97,24 @@ class OrderAdmin(DoNextModelAdmin):
 
     def has_view_permission(self, request, order=None):
         """Only give view permission if the user is an organiser"""
-        if (order is not None and
-                not is_organiser(request.member, order.pizza_event.event)):
+        if order is not None and not is_organiser(
+            request.member, order.pizza_event.event
+        ):
             return False
         return super().has_view_permission(request, order)
 
     def has_change_permission(self, request, order=None):
         """Only give change permission if the user is an organiser"""
-        if (order is not None and
-                not is_organiser(request.member, order.pizza_event.event)):
+        if order is not None and not is_organiser(
+            request.member, order.pizza_event.event
+        ):
             return False
         return super().has_change_permission(request, order)
 
     def has_delete_permission(self, request, order=None):
         """Only give delete permission if the user is an organiser"""
-        if (order is not None and
-                not is_organiser(request.member, order.pizza_event.event)):
+        if order is not None and not is_organiser(
+            request.member, order.pizza_event.event
+        ):
             return False
         return super().has_delete_permission(request, order)

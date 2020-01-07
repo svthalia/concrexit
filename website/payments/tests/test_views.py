@@ -1,4 +1,3 @@
-
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase, override_settings
 from freezegun import freeze_time
@@ -9,33 +8,29 @@ from payments.models import BankAccount
 from payments.views import BankAccountCreateView, BankAccountListView
 
 
-@freeze_time('2019-01-01')
+@freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True)
 class BankAccountCreateViewTest(TestCase):
     """
     Test for the BankAccountCreateView
     """
-    fixtures = ['members.json']
+
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
         cls.login_user = Member.objects.filter(last_name="Wiggers").first()
         cls.new_user = get_user_model().objects.create_user(
-            username='username',
-            first_name='Johnny',
-            last_name='Test'
+            username="username", first_name="Johnny", last_name="Test"
         )
         cls.account = BankAccount.objects.create(
             owner=cls.login_user,
-            initials='J',
-            last_name='Test',
-            iban='NL91ABNA0417164300'
+            initials="J",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
         )
         BankAccount.objects.create(
-            owner=None,
-            initials='Someone',
-            last_name='Else',
-            iban='BE68539007547034'
+            owner=None, initials="Someone", last_name="Else", iban="BE68539007547034"
         )
 
     def setUp(self):
@@ -50,15 +45,11 @@ class BankAccountCreateViewTest(TestCase):
         """
         self.client.logout()
 
-        response = self.client.get(
-            reverse('payments:bankaccount-add'),
-            follow=True
-        )
+        response = self.client.get(reverse("payments:bankaccount-add"), follow=True)
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [('/user/login/?next=' +
-              reverse('payments:bankaccount-add'), 302)],
-            response.redirect_chain
+            [("/user/login/?next=" + reverse("payments:bankaccount-add"), 302)],
+            response.redirect_chain,
         )
 
     def test_not_a_current_member(self):
@@ -69,7 +60,7 @@ class BankAccountCreateViewTest(TestCase):
         self.client.logout()
         self.client.force_login(self.new_user)
 
-        response = self.client.get(reverse('payments:bankaccount-add'))
+        response = self.client.get(reverse("payments:bankaccount-add"))
         self.assertEqual(403, response.status_code)
 
     def test_shows_correct_reference(self):
@@ -77,16 +68,10 @@ class BankAccountCreateViewTest(TestCase):
         The page should show the reference that will be used to identify
         a new mandate if direct debit is enabled
         """
-        response = self.client.get(
-            reverse('payments:bankaccount-add'),
-            follow=True
-        )
+        response = self.client.get(reverse("payments:bankaccount-add"), follow=True)
         self.assertEqual(200, response.status_code)
-        self.assertEqual('1-1', response.context['mandate_no'])
-        self.assertContains(
-            response,
-            '1-1'
-        )
+        self.assertEqual("1-1", response.context["mandate_no"])
+        self.assertContains(response, "1-1")
 
     def test_account_no_mandate_saves_correctly(self):
         """
@@ -97,44 +82,30 @@ class BankAccountCreateViewTest(TestCase):
         BankAccounts by others should be untouched.
         """
         response = self.client.post(
-            reverse('payments:bankaccount-add'),
+            reverse("payments:bankaccount-add"),
             data={
-                'initials': 'S',
-                'last_name': 'Versteeg',
-                'iban': 'DE12500105170648489890',
-                'bic': 'NBBEBEBB'
+                "initials": "S",
+                "last_name": "Versteeg",
+                "iban": "DE12500105170648489890",
+                "bic": "NBBEBEBB",
             },
-            follow=True
+            follow=True,
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [(reverse('payments:bankaccount-list'), 302)],
-            response.redirect_chain
+            [(reverse("payments:bankaccount-list"), 302)], response.redirect_chain
         )
-        self.assertContains(
-            response,
-            'Bank account saved successfully.'
-        )
+        self.assertContains(response, "Bank account saved successfully.")
 
-        self.assertEqual(
-            1,
-            BankAccount.objects.filter(
-                owner=self.login_user
-            ).count()
-        )
+        self.assertEqual(1, BankAccount.objects.filter(owner=self.login_user).count())
 
         self.assertTrue(
             BankAccount.objects.filter(
-                owner=self.login_user,
-                iban='DE12500105170648489890'
+                owner=self.login_user, iban="DE12500105170648489890"
             ).exists()
         )
 
-        self.assertTrue(
-            BankAccount.objects.filter(
-                iban='BE68539007547034'
-            ).exists()
-        )
+        self.assertTrue(BankAccount.objects.filter(iban="BE68539007547034").exists())
 
     def test_account_with_mandate_saves_correctly(self):
         """
@@ -145,47 +116,32 @@ class BankAccountCreateViewTest(TestCase):
         BankAccounts by others should be untouched.
         """
         response = self.client.post(
-            reverse('payments:bankaccount-add'),
+            reverse("payments:bankaccount-add"),
             data={
-                'initials': 'S',
-                'last_name': 'Versteeg',
-                'iban': 'DE12500105170648489890',
-                'bic': 'NBBEBEBB',
-                'direct_debit': '',
-                'signature': 'sig'
+                "initials": "S",
+                "last_name": "Versteeg",
+                "iban": "DE12500105170648489890",
+                "bic": "NBBEBEBB",
+                "direct_debit": "",
+                "signature": "sig",
             },
-            follow=True
+            follow=True,
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [(reverse('payments:bankaccount-list'), 302)],
-            response.redirect_chain
+            [(reverse("payments:bankaccount-list"), 302)], response.redirect_chain
         )
-        self.assertContains(
-            response,
-            'Bank account saved successfully.'
-        )
+        self.assertContains(response, "Bank account saved successfully.")
 
-        self.assertEqual(
-            1,
-            BankAccount.objects.filter(
-                owner=self.login_user
-            ).count()
-        )
+        self.assertEqual(1, BankAccount.objects.filter(owner=self.login_user).count())
 
         self.assertTrue(
             BankAccount.objects.filter(
-                owner=self.login_user,
-                iban='DE12500105170648489890',
-                mandate_no='1-1'
+                owner=self.login_user, iban="DE12500105170648489890", mandate_no="1-1"
             ).exists()
         )
 
-        self.assertTrue(
-            BankAccount.objects.filter(
-                iban='BE68539007547034'
-            ).exists()
-        )
+        self.assertTrue(BankAccount.objects.filter(iban="BE68539007547034").exists())
 
     def test_account_save_keeps_old_mandates(self):
         """
@@ -195,44 +151,37 @@ class BankAccountCreateViewTest(TestCase):
         """
         BankAccount.objects.create(
             owner=self.login_user,
-            initials='J',
-            last_name='Test',
-            iban='NL91ABNA0417164300',
-            valid_from='2019-03-01',
-            signature='sig',
-            mandate_no='11-2'
+            initials="J",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
+            valid_from="2019-03-01",
+            signature="sig",
+            mandate_no="11-2",
         )
 
         self.client.post(
-            reverse('payments:bankaccount-add'),
+            reverse("payments:bankaccount-add"),
             data={
-                'initials': 'S',
-                'last_name': 'Versteeg',
-                'iban': 'DE12500105170648489890',
-                'bic': 'NBBEBEBB'
+                "initials": "S",
+                "last_name": "Versteeg",
+                "iban": "DE12500105170648489890",
+                "bic": "NBBEBEBB",
             },
-            follow=True
+            follow=True,
         )
 
-        self.assertEqual(
-            2,
-            BankAccount.objects.filter(
-                owner=self.login_user
-            ).count()
-        )
+        self.assertEqual(2, BankAccount.objects.filter(owner=self.login_user).count())
 
         self.assertTrue(
             BankAccount.objects.filter(
-                owner=self.login_user,
-                iban='DE12500105170648489890'
+                owner=self.login_user, iban="DE12500105170648489890"
             ).exists()
         )
 
         self.assertFalse(
-            BankAccount.objects.filter(
-                owner=self.login_user,
-                iban='NL91ABNA0417164300'
-            ).first().valid
+            BankAccount.objects.filter(owner=self.login_user, iban="NL91ABNA0417164300")
+            .first()
+            .valid
         )
 
 
@@ -241,23 +190,24 @@ class BankAccountRevokeViewTest(TestCase):
     """
     Test for the BankAccountRevokeView
     """
-    fixtures = ['members.json']
+
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
         cls.login_user = Member.objects.filter(last_name="Wiggers").first()
         cls.account = BankAccount.objects.create(
             owner=cls.login_user,
-            initials='J',
-            last_name='Test',
-            iban='NL91ABNA0417164300'
+            initials="J",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
         )
         BankAccount.objects.create(
             owner=None,
-            initials='Someone',
-            last_name='Else',
-            iban='BE68539007547034',
-            bic='NBBEBEBB',
+            initials="Someone",
+            last_name="Else",
+            iban="BE68539007547034",
+            bic="NBBEBEBB",
         )
 
     def setUp(self):
@@ -272,15 +222,11 @@ class BankAccountRevokeViewTest(TestCase):
         """
         self.client.logout()
 
-        response = self.client.get(
-            reverse('payments:bankaccount-add'),
-            follow=True
-        )
+        response = self.client.get(reverse("payments:bankaccount-add"), follow=True)
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [('/user/login/?next=' +
-              reverse('payments:bankaccount-add'), 302)],
-            response.redirect_chain
+            [("/user/login/?next=" + reverse("payments:bankaccount-add"), 302)],
+            response.redirect_chain,
         )
 
 
@@ -289,26 +235,27 @@ class BankAccountListViewTest(TestCase):
     """
     Test for the BankAccountListView
     """
-    fixtures = ['members.json']
+
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
         cls.login_user = Member.objects.filter(last_name="Wiggers").first()
         cls.account1 = BankAccount.objects.create(
             owner=cls.login_user,
-            initials='J1',
-            last_name='Test',
-            iban='NL91ABNA0417164300'
+            initials="J1",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
         )
         cls.account2 = BankAccount.objects.create(
             owner=cls.login_user,
-            initials='J2',
-            last_name='Test',
-            iban='BE68539007547034',
-            bic='NBBEBEBB',
-            valid_from='2019-03-01',
-            signature='sig',
-            mandate_no='11-2'
+            initials="J2",
+            last_name="Test",
+            iban="BE68539007547034",
+            bic="NBBEBEBB",
+            valid_from="2019-03-01",
+            signature="sig",
+            mandate_no="11-2",
         )
 
     def setUp(self):
@@ -326,15 +273,19 @@ class BankAccountListViewTest(TestCase):
         self.client.logout()
 
         response = self.client.post(
-            reverse('payments:bankaccount-revoke', args=(self.account1.pk,)),
-            follow=True
+            reverse("payments:bankaccount-revoke", args=(self.account1.pk,)),
+            follow=True,
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [('/user/login/?next=' +
-              reverse('payments:bankaccount-revoke',
-                      args=(self.account1.pk,)), 302)],
-            response.redirect_chain
+            [
+                (
+                    "/user/login/?next="
+                    + reverse("payments:bankaccount-revoke", args=(self.account1.pk,)),
+                    302,
+                )
+            ],
+            response.redirect_chain,
         )
 
     def test_no_post(self):
@@ -342,31 +293,30 @@ class BankAccountListViewTest(TestCase):
         If the request is not a post it should redirect to the list
         """
         response = self.client.get(
-            reverse('payments:bankaccount-revoke', args=(self.account2.pk,)),
-            follow=True
+            reverse("payments:bankaccount-revoke", args=(self.account2.pk,)),
+            follow=True,
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [(reverse('payments:bankaccount-list'), 302)],
-            response.redirect_chain
+            [(reverse("payments:bankaccount-list"), 302)], response.redirect_chain
         )
 
     def test_cannot_revoke_no_mandate(self):
         """
         If the selected account has no valid mandate it should return a 404
         """
-        self.account2.valid_until = '2019-04-01'
+        self.account2.valid_until = "2019-04-01"
         self.account2.save()
 
         response = self.client.post(
-            reverse('payments:bankaccount-revoke', args=(self.account1.pk,)),
-            follow=True
+            reverse("payments:bankaccount-revoke", args=(self.account1.pk,)),
+            follow=True,
         )
         self.assertEqual(404, response.status_code)
 
         response = self.client.post(
-            reverse('payments:bankaccount-revoke', args=(self.account2.pk,)),
-            follow=True
+            reverse("payments:bankaccount-revoke", args=(self.account2.pk,)),
+            follow=True,
         )
         self.assertEqual(404, response.status_code)
 
@@ -376,29 +326,25 @@ class BankAccountListViewTest(TestCase):
         redirect to the list with the right success message.
         """
         self.assertTrue(
-            BankAccount.objects.filter(
-                owner=self.login_user,
-                iban='BE68539007547034',
-            ).first().valid
+            BankAccount.objects.filter(owner=self.login_user, iban="BE68539007547034",)
+            .first()
+            .valid
         )
 
         response = self.client.post(
-            reverse('payments:bankaccount-revoke', args=(self.account2.pk,)),
-            follow=True
+            reverse("payments:bankaccount-revoke", args=(self.account2.pk,)),
+            follow=True,
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [(reverse('payments:bankaccount-list'), 302)],
-            response.redirect_chain
+            [(reverse("payments:bankaccount-list"), 302)], response.redirect_chain
         )
         self.assertContains(
-            response,
-            'Direct debit authorisation successfully revoked.'
+            response, "Direct debit authorisation successfully revoked."
         )
 
         self.assertFalse(
-            BankAccount.objects.filter(
-                owner=self.login_user,
-                iban='BE68539007547034',
-            ).first().valid
+            BankAccount.objects.filter(owner=self.login_user, iban="BE68539007547034",)
+            .first()
+            .valid
         )

@@ -28,18 +28,22 @@ class MemberGroupBackend(object):
             return set()
 
         groups = member.membergroup_set.filter(
-            Q(membergroupmembership__until=None) |
-            Q(membergroupmembership__until__gte=timezone.now())
+            Q(membergroupmembership__until=None)
+            | Q(membergroupmembership__until__gte=timezone.now())
         )
 
-        perm_cache_name = '_membergroup_perm_cache'
+        perm_cache_name = "_membergroup_perm_cache"
         if not hasattr(user, perm_cache_name):
-            perms = (Permission.objects
-                     .filter(membergroup__in=groups)
-                     .values_list('content_type__app_label', 'codename')
-                     .order_by())
-            setattr(user, perm_cache_name,
-                    set("{}.{}".format(ct, name) for ct, name in perms))
+            perms = (
+                Permission.objects.filter(membergroup__in=groups)
+                .values_list("content_type__app_label", "codename")
+                .order_by()
+            )
+            setattr(
+                user,
+                perm_cache_name,
+                set("{}.{}".format(ct, name) for ct, name in perms),
+            )
         return getattr(user, perm_cache_name)
 
     def get_all_permissions(self, user, obj=None):
@@ -58,6 +62,6 @@ class MemberGroupBackend(object):
         if not user.is_active:
             return False
         for perm in self.get_all_permissions(user):
-            if perm[:perm.index('.')] == app_label:
+            if perm[: perm.index(".")] == app_label:
                 return True
         return False

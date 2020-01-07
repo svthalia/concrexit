@@ -10,9 +10,16 @@ app_name = "announcements"
 
 #: the actual routes
 urlpatterns = [
-    path('announcements/', include([
-        path('close-announcement',
-             views.close_announcement,
-             name='close-announcement')
-    ]))
+    path(
+        "announcements/",
+        include(
+            [
+                path(
+                    "close-announcement",
+                    views.close_announcement,
+                    name="close-announcement",
+                )
+            ]
+        ),
+    )
 ]

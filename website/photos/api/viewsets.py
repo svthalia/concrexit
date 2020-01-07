@@ -1,7 +1,6 @@
 from rest_framework import permissions, filters
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.mixins import CreateModelMixin, \
-    UpdateModelMixin
+from rest_framework.mixins import CreateModelMixin, UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from photos import services
@@ -13,24 +12,25 @@ class AlbumsViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Album.objects.all()
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('title_en', 'title_nl', 'date', 'slug')
+    search_fields = ("title_en", "title_nl", "date", "slug")
 
     def get_queryset(self):
-        return services.get_annotated_accessible_albums(self.request,
-                                                        Album.objects.all())
+        return services.get_annotated_accessible_albums(
+            self.request, Album.objects.all()
+        )
 
     def create(self, request, *args, **kwargs):
-        if self.request.user.has_perm('photos.create_album'):
+        if self.request.user.has_perm("photos.create_album"):
             return super().create(request, *args, **kwargs)
         raise PermissionDenied
 
     def update(self, request, *args, **kwargs):
-        if self.request.user.has_perm('photos.change_album'):
+        if self.request.user.has_perm("photos.change_album"):
             return super().update(request, *args, **kwargs)
         raise PermissionDenied
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return serializers.AlbumListSerializer
         return serializers.AlbumSerializer
 
@@ -41,11 +41,11 @@ class PhotosViewSet(GenericViewSet, CreateModelMixin, UpdateModelMixin):
     serializer_class = serializers.PhotoCreateSerializer
 
     def create(self, request, *args, **kwargs):
-        if self.request.user.has_perm('photos.create_photo'):
+        if self.request.user.has_perm("photos.create_photo"):
             return super().create(request, *args, **kwargs)
         raise PermissionDenied
 
     def update(self, request, *args, **kwargs):
-        if self.request.user.has_perm('photos.change_photo'):
+        if self.request.user.has_perm("photos.change_photo"):
             return super().update(request, *args, **kwargs)
         raise PermissionDenied

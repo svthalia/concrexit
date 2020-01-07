@@ -19,13 +19,14 @@ def _allow_iframe_attrs(tag, name, value):
     :param value: the value of the item.
     """
     # these are fine
-    if name in ('class', 'width', 'height', 'frameborder', 'allowfullscreen'):
+    if name in ("class", "width", "height", "frameborder", "allowfullscreen"):
         return True
 
     # youtube is allowed to have `src`
-    if tag == 'iframe' and name == 'src':
-        return (value.startswith('https://www.youtube.com/embed/') or
-                value.startswith('https://www.youtube-nocookie.com/embed/'))
+    if tag == "iframe" and name == "src":
+        return value.startswith("https://www.youtube.com/embed/") or value.startswith(
+            "https://www.youtube-nocookie.com/embed/"
+        )
 
     return False
 
@@ -62,17 +63,30 @@ def bleach(value):
         clean(
             value,
             tags=[
-                'h2', 'h3', 'p', 'a', 'div',
-                'strong', 'em', 'i', 'b', 'ul', 'li', 'br', 'ol',
-                'iframe', 'img', 'span',
+                "h2",
+                "h3",
+                "p",
+                "a",
+                "div",
+                "strong",
+                "em",
+                "i",
+                "b",
+                "ul",
+                "li",
+                "br",
+                "ol",
+                "iframe",
+                "img",
+                "span",
             ],
             attributes={
-                '*': ['class', 'style'],
-                'iframe': _allow_iframe_attrs,
-                'a': ['href', 'rel', 'target', 'title'],
-                'img': ['alt', 'title', 'src'],
+                "*": ["class", "style"],
+                "iframe": _allow_iframe_attrs,
+                "a": ["href", "rel", "target", "title"],
+                "img": ["alt", "title", "src"],
             },
-            styles=['text-decoration'],
-            strip=True
+            styles=["text-decoration"],
+            strip=True,
         )
     )

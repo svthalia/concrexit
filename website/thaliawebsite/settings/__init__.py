@@ -28,24 +28,21 @@ except ImportError:
     pass
 
 # Load production settings if DJANGO_PRODUCTION is set
-if os.environ.get('DJANGO_PRODUCTION'):  # pragma: nocover
+if os.environ.get("DJANGO_PRODUCTION"):  # pragma: nocover
     from .production import *  # pylint: disable=wildcard-import
 
 # Load testing settings if GITLAB_CI is set
-if os.environ.get('GITLAB_CI'):  # pragma: nocover
+if os.environ.get("GITLAB_CI"):  # pragma: nocover
     from .testing import *  # pylint: disable=wildcard-import
 
 if FIREBASE_CREDENTIALS != {}:
     try:
-        initialize_app(
-            credential=credentials.Certificate(FIREBASE_CREDENTIALS))
+        initialize_app(credential=credentials.Certificate(FIREBASE_CREDENTIALS))
     except ValueError as e:
-        logger.error('Firebase application failed to initialise')
+        logger.error("Firebase application failed to initialise")
 
 
 if GSUITE_ADMIN_CREDENTIALS != {}:
-    GSUITE_ADMIN_CREDENTIALS = (
-        service_account.Credentials.from_service_account_info(
-            GSUITE_ADMIN_CREDENTIALS, scopes=GSUITE_ADMIN_SCOPES
-        ).with_subject(GSUITE_ADMIN_USER)
-    )
+    GSUITE_ADMIN_CREDENTIALS = service_account.Credentials.from_service_account_info(
+        GSUITE_ADMIN_CREDENTIALS, scopes=GSUITE_ADMIN_SCOPES
+    ).with_subject(GSUITE_ADMIN_USER)

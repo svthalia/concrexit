@@ -4,16 +4,14 @@ from members import emails
 
 
 class Command(BaseCommand):
-
     def add_arguments(self, parser):
         parser.add_argument(
-            '--dry-run',
-            action='store_true',
-            dest='dry-run',
+            "--dry-run",
+            action="store_true",
+            dest="dry-run",
             default=False,
-            help='Dry run instead of sending e-mail',
+            help="Dry run instead of sending e-mail",
         )
 
     def handle(self, *args, **options):
-        emails.send_membership_announcement(
-            bool(options['dry-run']))
+        emails.send_membership_announcement(bool(options["dry-run"]))

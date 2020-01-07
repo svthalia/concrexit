@@ -5,5 +5,6 @@ from django.utils.translation import gettext_lazy as _
 
 class EventsConfig(AppConfig):
     """AppConfig for the events package"""
-    name = 'events'
-    verbose_name = _('Events')
+
+    name = "events"
+    verbose_name = _("Events")

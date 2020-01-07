@@ -19,15 +19,17 @@ memory_cache = MemoryCache()
 
 def get_directory_api():
     return build(
-        'admin', 'directory_v1',
+        "admin",
+        "directory_v1",
         credentials=settings.GSUITE_ADMIN_CREDENTIALS,
-        cache=memory_cache
+        cache=memory_cache,
     )
 
 
 def get_groups_settings_api():
     return build(
-        'groupssettings', 'v1',
+        "groupssettings",
+        "v1",
         credentials=settings.GSUITE_ADMIN_CREDENTIALS,
-        cache=memory_cache
+        cache=memory_cache,
     )

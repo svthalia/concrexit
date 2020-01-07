@@ -7,10 +7,11 @@ from . import models
 
 class StaticViewSitemap(sitemaps.Sitemap):
     """Sitemap of the static event pages"""
-    changefreq = 'daily'
+
+    changefreq = "daily"
 
     def items(self):
-        return ['events:index']
+        return ["events:index"]
 
     def location(self, item):
         return reverse(item)
@@ -27,6 +28,6 @@ class EventSitemap(sitemaps.Sitemap):
 
 
 sitemap = {
-    'events-static': StaticViewSitemap,
-    'events-events': EventSitemap,
+    "events-static": StaticViewSitemap,
+    "events-events": EventSitemap,
 }

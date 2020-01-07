@@ -4,7 +4,6 @@ from payments.models import Payment
 
 
 class PaymentTypeField(serializers.ChoiceField):
-
     def get_attribute(self, instance):
         if not instance.payment:
             return Payment.NONE

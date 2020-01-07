@@ -12,13 +12,20 @@ class BankAccountForm(forms.ModelForm):
     """
 
     direct_debit = forms.BooleanField(
-        required=False,
-        label=_('I want to use this account for direct debits')
+        required=False, label=_("I want to use this account for direct debits")
     )
 
     class Meta:
-        fields = ('initials', 'last_name', 'iban', 'bic',
-                  'signature', 'valid_from', 'mandate_no', 'owner')
+        fields = (
+            "initials",
+            "last_name",
+            "iban",
+            "bic",
+            "signature",
+            "valid_from",
+            "mandate_no",
+            "owner",
+        )
         model = BankAccount
 
 
@@ -29,8 +36,8 @@ class BankAccountAdminForm(forms.ModelForm):
     """
 
     class Meta:
-        fields = '__all__'
+        fields = "__all__"
         model = BankAccount
         widgets = {
-            'signature': SignatureWidget(),
+            "signature": SignatureWidget(),
         }

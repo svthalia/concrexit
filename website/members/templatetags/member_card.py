@@ -10,22 +10,24 @@ from utils.media.services import get_thumbnail_url
 register = template.Library()
 
 
-@register.inclusion_tag('includes/grid_item.html')
+@register.inclusion_tag("includes/grid_item.html")
 def member_card(member, meta_text=None, ribbon=None):
     if meta_text is None and member.profile.starting_year:
         meta_text = '<p class="px-1">{}: {}</p>'.format(
-                _('Cohort'), member.profile.starting_year)
+            _("Cohort"), member.profile.starting_year
+        )
 
-    image_url = static('members/images/default-avatar.jpg')
+    image_url = static("members/images/default-avatar.jpg")
     if member.profile.photo:
-        image_url = get_thumbnail_url(member.profile.photo,
-                                      settings.THUMBNAIL_SIZES['medium'])
+        image_url = get_thumbnail_url(
+            member.profile.photo, settings.THUMBNAIL_SIZES["medium"]
+        )
 
     return grid_item(
         title=member.profile.display_name(),
         meta_text=meta_text,
-        url=reverse('members:profile', kwargs={'pk': member.pk}),
+        url=reverse("members:profile", kwargs={"pk": member.pk}),
         image_url=image_url,
         ribbon=ribbon,
-        class_name='member-card',
+        class_name="member-card",
     )

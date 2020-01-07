@@ -13,7 +13,6 @@ sync_service = GSuiteUserService()
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
         """Sync all accounts """
         for member in Member.objects.filter(is_staff=True):
@@ -21,4 +20,4 @@ class Command(BaseCommand):
                 email, password = sync_service.create_user(member)
                 emails.send_gsuite_welcome_message(member, email, password)
             except HttpError as e:
-                logger.error(f'User {member.username} could not be created', e)
+                logger.error(f"User {member.username} could not be created", e)

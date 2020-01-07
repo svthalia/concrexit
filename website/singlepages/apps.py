@@ -3,5 +3,5 @@ from django.utils.translation import gettext_lazy as _
 
 
 class SinglepagesConfig(AppConfig):
-    name = 'singlepages'
-    verbose_name = _('Singlepages')
+    name = "singlepages"
+    verbose_name = _("Singlepages")

@@ -18,21 +18,21 @@ def get_media_url(path, attachment=False):
     if isinstance(path, ImageFieldFile):
         path = path.name
 
-    parts = path.split('/')
-    query = ''
+    parts = path.split("/")
+    query = ""
     url_path = path
     sig_info = {
-        'visibility': 'private' if parts[0] != 'public' else 'public',
-        'serve_path': os.path.join(settings.MEDIA_ROOT, path),
-        'attachment': attachment
+        "visibility": "private" if parts[0] != "public" else "public",
+        "serve_path": os.path.join(settings.MEDIA_ROOT, path),
+        "attachment": attachment,
     }
 
-    if sig_info['visibility'] == 'private':
+    if sig_info["visibility"] == "private":
         # Add private to path and calculate signature
-        url_path = f'private/{path}'
-        query = f'?sig={signing.dumps(sig_info)}'
+        url_path = f"private/{path}"
+        query = f"?sig={signing.dumps(sig_info)}"
 
-    return f'{settings.MEDIA_URL}{url_path}{query}'
+    return f"{settings.MEDIA_URL}{url_path}{query}"
 
 
 def get_thumbnail_url(path, size, fit=True):
@@ -50,56 +50,59 @@ def get_thumbnail_url(path, size, fit=True):
     if isinstance(path, ImageFieldFile):
         path = path.name
 
-    query = ''
-    size_fit = '{}_{}'.format(size, int(fit))
-    parts = path.split('/')
+    query = ""
+    size_fit = "{}_{}".format(size, int(fit))
+    parts = path.split("/")
 
     sig_info = {
-        'size': size,
-        'fit': int(fit),
-        'path': path,
+        "size": size,
+        "fit": int(fit),
+        "path": path,
     }
 
     # Check if the image is public and assemble useful information
-    if parts[0] == 'public':
-        sig_info['path'] = '/'.join(parts[1:])
-        sig_info['visibility'] = 'public'
+    if parts[0] == "public":
+        sig_info["path"] = "/".join(parts[1:])
+        sig_info["visibility"] = "public"
     else:
-        sig_info['visibility'] = 'private'
+        sig_info["visibility"] = "private"
 
-    sig_info['thumb_path'] = f'thumbnails/{size_fit}/{sig_info["path"]}'
-    url_path = (f'{sig_info["visibility"]}/thumbnails/'
-                f'{size_fit}/{sig_info["path"]}')
+    sig_info["thumb_path"] = f'thumbnails/{size_fit}/{sig_info["path"]}'
+    url_path = f'{sig_info["visibility"]}/thumbnails/' f'{size_fit}/{sig_info["path"]}'
 
-    if sig_info['visibility'] == 'public':
+    if sig_info["visibility"] == "public":
         full_original_path = os.path.join(
-            settings.MEDIA_ROOT, 'public', sig_info['path'])
+            settings.MEDIA_ROOT, "public", sig_info["path"]
+        )
         full_thumb_path = os.path.join(
-            settings.MEDIA_ROOT, 'public', sig_info['thumb_path'])
+            settings.MEDIA_ROOT, "public", sig_info["thumb_path"]
+        )
     else:
-        full_original_path = os.path.join(
-            settings.MEDIA_ROOT, sig_info['path'])
-        full_thumb_path = os.path.join(
-            settings.MEDIA_ROOT, sig_info['thumb_path'])
+        full_original_path = os.path.join(settings.MEDIA_ROOT, sig_info["path"])
+        full_thumb_path = os.path.join(settings.MEDIA_ROOT, sig_info["thumb_path"])
 
-    sig_info['serve_path'] = full_thumb_path
+    sig_info["serve_path"] = full_thumb_path
 
     # Check if we need to generate, then redirect to the generating route,
     # otherwise just return the serving file path
-    if (not os.path.isfile(full_thumb_path) or (
-        os.path.exists(full_original_path) and
-        os.path.getmtime(full_original_path)
-            > os.path.getmtime(full_thumb_path))):
+    if not os.path.isfile(full_thumb_path) or (
+        os.path.exists(full_original_path)
+        and os.path.getmtime(full_original_path) > os.path.getmtime(full_thumb_path)
+    ):
         # Put all image info in signature for the generate view
-        query = f'?sig={signing.dumps(sig_info)}'
+        query = f"?sig={signing.dumps(sig_info)}"
         # We provide a URL instead of calling it as a function, so that using
         # it means kicking off a new GET request. If we would generate all
         # thumbnails inline, loading an album overview would have high latency.
-        return reverse('generate-thumbnail',
-                       args=[os.path.join(size_fit, sig_info["path"])]) + query
+        return (
+            reverse(
+                "generate-thumbnail", args=[os.path.join(size_fit, sig_info["path"])]
+            )
+            + query
+        )
 
-    if sig_info['visibility'] == 'private':
+    if sig_info["visibility"] == "private":
         # Put all image info in signature for serve view
-        query = f'?sig={signing.dumps(sig_info)}'
+        query = f"?sig={signing.dumps(sig_info)}"
 
-    return f'{settings.MEDIA_URL}{url_path}{query}'
+    return f"{settings.MEDIA_URL}{url_path}{query}"

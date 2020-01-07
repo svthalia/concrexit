@@ -16,32 +16,35 @@ class Partner(models.Model):
     is_local_partner = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
-    link = models.CharField(
-        max_length=255,
-        blank=True,
-        validators=[URLValidator()]
-    )
+    link = models.CharField(max_length=255, blank=True, validators=[URLValidator()])
     company_profile = HTMLField(blank=True)
-    logo = models.ImageField(upload_to='public/partners/logos/')
+    logo = models.ImageField(upload_to="public/partners/logos/")
     site_header = models.ImageField(
-        upload_to='public/partners/headers/',
-        null=True,
-        blank=True
+        upload_to="public/partners/headers/", null=True, blank=True
     )
 
-    address = models.CharField(max_length=100, validators=[
-        RegexValidator(
-            regex=(r'^([1-9][e][\s])*([ëéÉËa-zA-Z]'
-                   r'+(([\.][\s])|([\s]))?)+[1-9][0-9]'
-                   r'*(([-][1-9][0-9]*)|([\s]?[ëéÉËa-zA-Z]+))?$'),
-            message=_('Enter a valid address'))
-    ])
-    zip_code = models.CharField(max_length=12, validators=[
-        RegexValidator(
-            regex=r'^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$',
-            message=_('Enter a valid zip code')
-        )
-    ])
+    address = models.CharField(
+        max_length=100,
+        validators=[
+            RegexValidator(
+                regex=(
+                    r"^([1-9][e][\s])*([ëéÉËa-zA-Z]"
+                    r"+(([\.][\s])|([\s]))?)+[1-9][0-9]"
+                    r"*(([-][1-9][0-9]*)|([\s]?[ëéÉËa-zA-Z]+))?$"
+                ),
+                message=_("Enter a valid address"),
+            )
+        ],
+    )
+    zip_code = models.CharField(
+        max_length=12,
+        validators=[
+            RegexValidator(
+                regex=r"^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$",
+                message=_("Enter a valid zip code"),
+            )
+        ],
+    )
     city = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
@@ -90,27 +93,25 @@ class Partner(models.Model):
 
     def get_absolute_url(self):
         """Return the url of the partner page."""
-        return reverse('partners:partner', args=(self.slug,))
+        return reverse("partners:partner", args=(self.slug,))
 
     class Meta:
         """Meta class for partner model."""
 
-        ordering = ('name',)
+        ordering = ("name",)
 
 
 class PartnerImage(models.Model):
     """Model to save partner image."""
 
     partner = models.ForeignKey(
-        Partner,
-        on_delete=models.CASCADE,
-        related_name="images"
+        Partner, on_delete=models.CASCADE, related_name="images"
     )
-    image = models.ImageField(upload_to='public/partners/images/')
+    image = models.ImageField(upload_to="public/partners/images/")
 
     def __str__(self):
         """Return string representation of partner name."""
-        return ugettext('image of {}').format(self.partner.name)
+        return ugettext("image of {}").format(self.partner.name)
 
 
 class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
@@ -126,24 +127,16 @@ class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
     class Meta:
         """Meta class for vacancy category model."""
 
-        verbose_name_plural = _('Vacancy Categories')
+        verbose_name_plural = _("Vacancy Categories")
 
 
 class Vacancy(models.Model):
     """Model describing vacancies."""
 
-    title = models.CharField(
-        _("title"),
-        max_length=255
-    )
-    description = HTMLField(
-        _("description")
-    )
+    title = models.CharField(_("title"), max_length=255)
+    description = HTMLField(_("description"))
     link = models.CharField(
-        _("link"),
-        max_length=255,
-        blank=True,
-        validators=[URLValidator()]
+        _("link"), max_length=255, blank=True, validators=[URLValidator()]
     )
 
     partner = models.ForeignKey(
@@ -152,20 +145,18 @@ class Vacancy(models.Model):
         on_delete=models.PROTECT,
         null=True,
         blank=True,
-        help_text=_("When you use a partner, the company name and logo "
-                    "below will not be used.")
+        help_text=_(
+            "When you use a partner, the company name and logo "
+            "below will not be used."
+        ),
     )
 
-    company_name = models.CharField(
-        _("company name"),
-        max_length=255,
-        blank=True
-    )
+    company_name = models.CharField(_("company name"), max_length=255, blank=True)
     company_logo = models.ImageField(
         _("company logo"),
-        upload_to='public/partners/vacancy-logos/',
+        upload_to="public/partners/vacancy-logos/",
         null=True,
-        blank=True
+        blank=True,
     )
 
     categories = models.ManyToManyField(VacancyCategory, blank=True)
@@ -184,41 +175,39 @@ class Vacancy(models.Model):
 
     def __str__(self):
         """Return vacancy partner or company and title."""
-        return '{} — {}'.format(self.get_company_name(), self.title)
+        return "{} — {}".format(self.get_company_name(), self.title)
 
     def get_absolute_url(self):
         """Return partner or vacancy url."""
-        url = reverse('partners:vacancies')
+        url = reverse("partners:vacancies")
         if self.partner:
-            url = reverse('partners:partner', args=(self.partner.slug,))
-        return '{}#vacancy-{}'.format(url, self.pk)
+            url = reverse("partners:partner", args=(self.partner.slug,))
+        return "{}#vacancy-{}".format(url, self.pk)
 
     def clean(self):
         """Validate the vacancy."""
         super().clean()
         errors = {}
 
-        msg = _('If no partner is used then both a company name and logo are '
-                'required.')
+        msg = _(
+            "If no partner is used then both a company name and logo are " "required."
+        )
         if not self.partner and self.company_name and not self.company_logo:
-            errors.update({'company_logo': msg})
+            errors.update({"company_logo": msg})
         if not self.partner and not self.company_name and self.company_logo:
-            errors.update({'company_name': msg})
+            errors.update({"company_name": msg})
 
-        msg = _('Either select a partner or provide a company name and logo.')
+        msg = _("Either select a partner or provide a company name and logo.")
         if self.partner and (self.company_name or self.company_logo):
-            errors.update({'partner': msg})
+            errors.update({"partner": msg})
             if self.company_name:
-                errors.update({'company_name': msg})
+                errors.update({"company_name": msg})
             if self.company_logo:
-                errors.update({'company_logo': msg})
-        if (not self.partner and not self.company_name and
-                not self.company_logo):
-            errors.update({
-                'partner': msg,
-                'company_name': msg,
-                'company_logo': msg,
-            })
+                errors.update({"company_logo": msg})
+        if not self.partner and not self.company_name and not self.company_logo:
+            errors.update(
+                {"partner": msg, "company_name": msg, "company_logo": msg,}
+            )
 
         if errors:
             raise ValidationError(errors)
@@ -226,7 +215,7 @@ class Vacancy(models.Model):
     class Meta:
         """Meta class for vacancy model."""
 
-        verbose_name_plural = _('Vacancies')
+        verbose_name_plural = _("Vacancies")
 
 
 class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
@@ -238,27 +227,16 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
         on_delete=models.CASCADE,
         related_name="events",
         blank=True,
-        null=True
+        null=True,
     )
 
     other_partner = models.CharField(max_length=255, blank=True)
 
-    title = MultilingualField(
-        models.CharField,
-        _("title"),
-        max_length=100
-    )
+    title = MultilingualField(models.CharField, _("title"), max_length=100)
 
-    description = MultilingualField(
-        models.TextField,
-        _("description")
-    )
+    description = MultilingualField(models.TextField, _("description"))
 
-    location = MultilingualField(
-        models.CharField,
-        _("location"),
-        max_length=255,
-    )
+    location = MultilingualField(models.CharField, _("location"), max_length=255,)
 
     start = models.DateTimeField(_("start time"))
 
@@ -272,13 +250,17 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
         """Validate the partner event."""
         super().clean()
         errors = {}
-        if ((not self.partner and not self.other_partner) or
-                (self.partner and self.other_partner)):
+        if (not self.partner and not self.other_partner) or (
+            self.partner and self.other_partner
+        ):
             errors.update(
-                {'partner': _("Please select or enter "
-                              "a partner for this event."),
-                 'other_partner': _("Please select or enter "
-                                    "a partner for this event.")})
+                {
+                    "partner": _("Please select or enter " "a partner for this event."),
+                    "other_partner": _(
+                        "Please select or enter " "a partner for this event."
+                    ),
+                }
+            )
 
         if errors:
             raise ValidationError(errors)

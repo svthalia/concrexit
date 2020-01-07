@@ -11,7 +11,7 @@ from photos.models import Album, Photo
 @override_settings(SUSPEND_SIGNALS=True)
 class AlbumIndexTest(TestCase):
 
-    fixtures = ['members.json']
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -23,117 +23,126 @@ class AlbumIndexTest(TestCase):
 
     def test_index(self):
         with self.subTest(album_objects__count=Album.objects.count()):
-            response = self.client.get(reverse('photos:index'))
+            response = self.client.get(reverse("photos:index"))
             self.assertEqual(response.status_code, 200)
 
         for i in range(12):
             Album.objects.create(
-                title_en='test_album_a%d' % i,
-                title_nl='test_album_a%d' % i,
+                title_en="test_album_a%d" % i,
+                title_nl="test_album_a%d" % i,
                 date=date(year=2018, month=9, day=5),
-                slug='test_album_a%d' % i)
+                slug="test_album_a%d" % i,
+            )
 
         with self.subTest(album_objects__count=Album.objects.count()):
-            response = self.client.get(reverse('photos:index'))
+            response = self.client.get(reverse("photos:index"))
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(response.context['albums']), 12)
-            self.assertEqual(response.context['page_range'], range(1, 2))
+            self.assertEqual(len(response.context["albums"]), 12)
+            self.assertEqual(response.context["page_range"], range(1, 2))
 
         for i in range(12):
             Album.objects.create(
-                title_en='test_album_b%d' % i,
-                title_nl='test_album_b%d' % i,
+                title_en="test_album_b%d" % i,
+                title_nl="test_album_b%d" % i,
                 date=date(year=2018, month=9, day=5),
-                slug='test_album_b%d' % i)
+                slug="test_album_b%d" % i,
+            )
 
         with self.subTest(album_objects__count=Album.objects.count()):
-            response = self.client.get(reverse('photos:index'))
+            response = self.client.get(reverse("photos:index"))
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(response.context['albums']), 16)
-            self.assertEqual(response.context['page_range'], range(1, 3))
+            self.assertEqual(len(response.context["albums"]), 16)
+            self.assertEqual(response.context["page_range"], range(1, 3))
 
         for i in range(72):
             Album.objects.create(
-                title_en='test_album_c%d' % i,
-                title_nl='test_album_c%d' % i,
+                title_en="test_album_c%d" % i,
+                title_nl="test_album_c%d" % i,
                 date=date(year=2018, month=9, day=5),
-                slug='test_album_c%d' % i)
+                slug="test_album_c%d" % i,
+            )
 
         with self.subTest(album_objects__count=Album.objects.count()):
-            response = self.client.get(reverse('photos:index'))
+            response = self.client.get(reverse("photos:index"))
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(response.context['albums']), 16)
-            self.assertEqual(response.context['page_range'], range(1, 6))
+            self.assertEqual(len(response.context["albums"]), 16)
+            self.assertEqual(response.context["page_range"], range(1, 6))
 
     def test_empty_page(self):
         Album.objects.create(
-            title_en='test_album',
-            title_nl='test_album',
+            title_en="test_album",
+            title_nl="test_album",
             date=date(year=2018, month=9, day=5),
-            slug='test_album')
+            slug="test_album",
+        )
 
-        response = self.client.get(reverse('photos:index') + '?page=5')
+        response = self.client.get(reverse("photos:index") + "?page=5")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['page_range'], range(1, 2))
+        self.assertEqual(response.context["page_range"], range(1, 2))
 
     def test_keywords(self):
         Album.objects.create(
-            title_en='test_album1',
-            title_nl='test_album1',
+            title_en="test_album1",
+            title_nl="test_album1",
             date=date(year=2018, month=9, day=5),
-            slug='test_album1')
+            slug="test_album1",
+        )
 
         Album.objects.create(
-            title_en='test_album12',
-            title_nl='test_album12',
+            title_en="test_album12",
+            title_nl="test_album12",
             date=date(year=2018, month=9, day=5),
-            slug='test_album2')
+            slug="test_album2",
+        )
 
         Album.objects.create(
-            title_en='test_album3',
-            title_nl='test_album3',
+            title_en="test_album3",
+            title_nl="test_album3",
             date=date(year=2018, month=9, day=5),
-            slug='test_album3')
+            slug="test_album3",
+        )
 
-        for (count, keywords) in [(3, ''), (2, '1'), (1, '12'), (1, '3')]:
+        for (count, keywords) in [(3, ""), (2, "1"), (1, "12"), (1, "3")]:
             with self.subTest(keywords=keywords):
                 response = self.client.get(
-                    reverse('photos:index') + '?keywords={}'.format(keywords))
+                    reverse("photos:index") + "?keywords={}".format(keywords)
+                )
                 self.assertEqual(response.status_code, 200)
-                self.assertEqual(len(response.context['albums']), count)
-                self.assertEqual(response.context['page_range'], range(1, 2))
+                self.assertEqual(len(response.context["albums"]), count)
+                self.assertEqual(response.context["page_range"], range(1, 2))
 
     def test_many_pages(self):
         for i in range(120):
             Album.objects.create(
-                title_en='test_album_%d' % i,
-                title_nl='test_album_%d' % i,
+                title_en="test_album_%d" % i,
+                title_nl="test_album_%d" % i,
                 date=date(year=2018, month=9, day=5),
-                slug='test_album_%d' % i)
+                slug="test_album_%d" % i,
+            )
 
         with self.subTest(page=1):
-            response = self.client.get(reverse('photos:index') + '?page=1')
+            response = self.client.get(reverse("photos:index") + "?page=1")
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(response.context['albums']), 16)
-            self.assertEqual(response.context['page_range'], range(1, 6))
+            self.assertEqual(len(response.context["albums"]), 16)
+            self.assertEqual(response.context["page_range"], range(1, 6))
 
         with self.subTest(page=4):
-            response = self.client.get(reverse('photos:index') + '?page=4')
+            response = self.client.get(reverse("photos:index") + "?page=4")
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(response.context['albums']), 16)
-            self.assertEqual(response.context['page_range'], range(2, 7))
+            self.assertEqual(len(response.context["albums"]), 16)
+            self.assertEqual(response.context["page_range"], range(2, 7))
 
         with self.subTest(page=9):
-            response = self.client.get(reverse('photos:index') + '?page=9')
+            response = self.client.get(reverse("photos:index") + "?page=9")
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(response.context['albums']), 8)
-            self.assertEqual(response.context['page_range'], range(4, 9))
+            self.assertEqual(len(response.context["albums"]), 8)
+            self.assertEqual(response.context["page_range"], range(4, 9))
 
 
 @override_settings(SUSPEND_SIGNALS=True)
 class AlbumTest(TestCase):
 
-    fixtures = ['members.json']
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -142,62 +151,64 @@ class AlbumTest(TestCase):
 
     def setUp(self):
         self.album = Album.objects.create(
-            title_en='test_album',
-            title_nl='test_album',
+            title_en="test_album",
+            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
-            slug='test_album')
+            slug="test_album",
+        )
 
         self.client.force_login(self.member)
 
     def test_get(self):
         Membership.objects.create(
-                type=Membership.MEMBER,
-                user=self.member,
-                since=date(year=2015, month=1, day=1),
-                until=None)
+            type=Membership.MEMBER,
+            user=self.member,
+            since=date(year=2015, month=1, day=1),
+            until=None,
+        )
 
         for i in range(10):
             with open("photos/fixtures/thom_assessor.png", "rb") as f:
-                fi = SimpleUploadedFile(name='photo{}.png'.format(i),
-                                        content=f.read(),
-                                        content_type='image/png')
+                fi = SimpleUploadedFile(
+                    name="photo{}.png".format(i),
+                    content=f.read(),
+                    content_type="image/png",
+                )
                 photo = Photo(album=self.album, file=fi)
                 photo.save()
 
-        response = self.client.get(reverse(
-            'photos:album', args=(self.album.slug,)))
+        response = self.client.get(reverse("photos:album", args=(self.album.slug,)))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['album'], self.album)
-        self.assertEqual(len(response.context['photos']), 10)
+        self.assertEqual(response.context["album"], self.album)
+        self.assertEqual(len(response.context["photos"]), 10)
 
     def test_unaccessible(self):
         Membership.objects.create(
-                type=Membership.MEMBER,
-                user=self.member,
-                since=date(year=2016, month=1, day=1),
-                until=date(year=2018, month=1, day=1))
+            type=Membership.MEMBER,
+            user=self.member,
+            since=date(year=2016, month=1, day=1),
+            until=date(year=2018, month=1, day=1),
+        )
 
         with self.subTest():
             self.album.date = date(year=2017, month=1, day=1)
             self.album.save()
 
-            response = self.client.get(reverse(
-                'photos:album', args=(self.album.slug,)))
+            response = self.client.get(reverse("photos:album", args=(self.album.slug,)))
             self.assertEqual(response.status_code, 200)
 
         with self.subTest():
             self.album.date = date(year=2018, month=9, day=5)
             self.album.save()
 
-            response = self.client.get(reverse(
-                'photos:album', args=(self.album.slug,)))
+            response = self.client.get(reverse("photos:album", args=(self.album.slug,)))
             self.assertEqual(response.status_code, 404)
 
 
 @override_settings(SUSPEND_SIGNALS=True)
 class SharedAlbumTest(TestCase):
 
-    fixtures = ['members.json']
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -206,33 +217,38 @@ class SharedAlbumTest(TestCase):
 
     def setUp(self):
         self.album = Album.objects.create(
-            title_en='test_album',
-            title_nl='test_album',
+            title_en="test_album",
+            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
             shareable=True,
-            slug='test_album')
+            slug="test_album",
+        )
 
     def test_get(self):
         for i in range(10):
             with open("photos/fixtures/thom_assessor.png", "rb") as f:
-                fi = SimpleUploadedFile(name='photo{}.png'.format(i),
-                                        content=f.read(),
-                                        content_type='image/png')
+                fi = SimpleUploadedFile(
+                    name="photo{}.png".format(i),
+                    content=f.read(),
+                    content_type="image/png",
+                )
                 photo = Photo(album=self.album, file=fi)
                 photo.save()
 
-        response = self.client.get(reverse(
-            'photos:shared-album',
-            args=(self.album.slug, self.album.access_token,)))
+        response = self.client.get(
+            reverse(
+                "photos:shared-album", args=(self.album.slug, self.album.access_token,)
+            )
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['album'], self.album)
-        self.assertEqual(len(response.context['photos']), 10)
+        self.assertEqual(response.context["album"], self.album)
+        self.assertEqual(len(response.context["photos"]), 10)
 
 
 @override_settings(SUSPEND_SIGNALS=True)
 class DownloadTest(TestCase):
 
-    fixtures = ['members.json']
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -242,16 +258,16 @@ class DownloadTest(TestCase):
         self.client = Client()
 
         self.album = Album.objects.create(
-            title_en='test_album',
-            title_nl='test_album',
+            title_en="test_album",
+            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
-            slug='test_album')
+            slug="test_album",
+        )
 
         with open("photos/fixtures/thom_assessor.png", "rb") as f:
             fi = SimpleUploadedFile(
-                name='photo.png',
-                content=f.read(),
-                content_type='image/png')
+                name="photo.png", content=f.read(), content_type="image/png"
+            )
 
         self.photo = Photo(album=self.album, file=fi)
         self.photo.save()
@@ -259,21 +275,23 @@ class DownloadTest(TestCase):
     def test_download(self):
         self.client.force_login(self.member)
 
-        response = self.client.get(reverse(
-            'photos:download', args=(self.album.slug, self.photo,)))
+        response = self.client.get(
+            reverse("photos:download", args=(self.album.slug, self.photo,))
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'image/jpeg')
+        self.assertEqual(response["Content-Type"], "image/jpeg")
 
     def test_logged_out(self):
-        response = self.client.get(reverse(
-            'photos:download', args=(self.album.slug, self.photo,)))
+        response = self.client.get(
+            reverse("photos:download", args=(self.album.slug, self.photo,))
+        )
         self.assertEqual(response.status_code, 302)
 
 
 @override_settings(SUSPEND_SIGNALS=True)
 class SharedDownloadTest(TestCase):
 
-    fixtures = ['members.json']
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -282,45 +300,49 @@ class SharedDownloadTest(TestCase):
 
     def setUp(self):
         self.album = Album.objects.create(
-            title_en='test_album',
-            title_nl='test_album',
+            title_en="test_album",
+            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
             shareable=True,
-            slug='test_album')
+            slug="test_album",
+        )
 
         with open("photos/fixtures/thom_assessor.png", "rb") as f:
             fi = SimpleUploadedFile(
-                name='photo.png',
-                content=f.read(),
-                content_type='image/png')
+                name="photo.png", content=f.read(), content_type="image/png"
+            )
 
         self.photo = Photo(album=self.album, file=fi)
         self.photo.save()
 
     def test_download(self):
         with self.subTest():
-            response = self.client.get(reverse(
-                'photos:shared-download',
-                args=(self.album.slug, self.album.access_token,
-                      self.photo,)))
+            response = self.client.get(
+                reverse(
+                    "photos:shared-download",
+                    args=(self.album.slug, self.album.access_token, self.photo,),
+                )
+            )
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response['Content-Type'], 'image/jpeg')
+            self.assertEqual(response["Content-Type"], "image/jpeg")
 
         self.client.force_login(self.member)
 
         with self.subTest():
-            response = self.client.get(reverse(
-                'photos:shared-download',
-                args=(self.album.slug, self.album.access_token,
-                      self.photo,)))
+            response = self.client.get(
+                reverse(
+                    "photos:shared-download",
+                    args=(self.album.slug, self.album.access_token, self.photo,),
+                )
+            )
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response['Content-Type'], 'image/jpeg')
+            self.assertEqual(response["Content-Type"], "image/jpeg")
 
 
 @override_settings(SUSPEND_SIGNALS=True)
 class AlbumDownloadTest(TestCase):
 
-    fixtures = ['members.json']
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -330,16 +352,16 @@ class AlbumDownloadTest(TestCase):
         self.client = Client()
 
         self.album = Album.objects.create(
-            title_en='test_album',
-            title_nl='test_album',
+            title_en="test_album",
+            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
-            slug='test_album')
+            slug="test_album",
+        )
 
         with open("photos/fixtures/thom_assessor.png", "rb") as f:
             fi = SimpleUploadedFile(
-                name='photo.png',
-                content=f.read(),
-                content_type='image/png')
+                name="photo.png", content=f.read(), content_type="image/png"
+            )
 
         self.photo = Photo(album=self.album, file=fi)
         self.photo.save()
@@ -347,12 +369,14 @@ class AlbumDownloadTest(TestCase):
     def test_download(self):
         self.client.force_login(self.member)
 
-        response = self.client.get(reverse(
-            'photos:album-download', args=(self.album.slug,)))
+        response = self.client.get(
+            reverse("photos:album-download", args=(self.album.slug,))
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/zip')
+        self.assertEqual(response["Content-Type"], "application/zip")
 
     def test_logged_out(self):
-        response = self.client.get(reverse(
-            'photos:album-download', args=(self.album.slug,)))
+        response = self.client.get(
+            reverse("photos:album-download", args=(self.album.slug,))
+        )
         self.assertEqual(response.status_code, 302)

@@ -75,15 +75,16 @@ def localize_attr_name(attr_name, language=None):
         language = get_language()
     if language is None:
         language = settings.LANGUAGE_CODE
-    return '{}_{}'.format(attr_name, language)
+    return "{}_{}".format(attr_name, language)
 
 
 def _i18n_attr_accessor(attr):
-
     def _accessor(self):
         return getattr(self, localize_attr_name(attr))
-    _accessor.__doc__ = ("Accessor that fetches the localized "
-                         "variant of {}".format(attr))
+
+    _accessor.__doc__ = "Accessor that fetches the localized " "variant of {}".format(
+        attr
+    )
 
     return _accessor
 
@@ -92,7 +93,7 @@ class ModelTranslateMeta(models.base.ModelBase):
     """Metaclass to handle the :class:`MultilingualField` transformations"""
 
     def __new__(mcs, name, bases, dct):
-        field_i18n = {'default': {}, 'fields': {}}
+        field_i18n = {"default": {}, "fields": {}}
         try:
             # Inherit i18n fields from superclass
             field_i18n = bases[0]._meta._field_i18n
@@ -108,32 +109,32 @@ class ModelTranslateMeta(models.base.ModelBase):
             # a verbose name as first positional argument.
             # But those are not translatable (see above).
             if field.args:
-                verbose_base = ('args', field.args[0])
+                verbose_base = ("args", field.args[0])
             else:
-                verbose_base = ('kwargs', field.kwargs.get('verbose_name',
-                                                           attr))
+                verbose_base = ("kwargs", field.kwargs.get("verbose_name", attr))
             fields = []
             for lang in settings.LANGUAGES:
                 attr_i18n = localize_attr_name(attr, lang[0])
-                verbose_name = format_lazy(
-                    '{} ({})', verbose_base[1], lang[0].upper())
-                if verbose_base[0] == 'args':
+                verbose_name = format_lazy("{} ({})", verbose_base[1], lang[0].upper())
+                if verbose_base[0] == "args":
                     field.args = (verbose_name,) + field.args[1:]
                 else:
-                    field.kwargs['verbose_name'] = verbose_name
+                    field.kwargs["verbose_name"] = verbose_name
                 if attr_i18n in dct:
-                    raise FieldError("Explicit field {} is shadowed "
-                                     "by TranslateMeta.".format(attr_i18n))
+                    raise FieldError(
+                        "Explicit field {} is shadowed "
+                        "by TranslateMeta.".format(attr_i18n)
+                    )
                 dct[attr_i18n] = field.cls(*field.args, **field.kwargs)
                 fields.append(attr_i18n)
             dct[attr] = property(_i18n_attr_accessor(attr))
             default = localize_attr_name(attr, settings.LANGUAGE_CODE)
             if default not in dct:
                 raise ImproperlyConfigured("LANGUAGE_CODE not in LANGUAGES.")
-            field_i18n['default'][attr] = default
-            field_i18n['fields'][attr] = fields
+            field_i18n["default"][attr] = default
+            field_i18n["fields"][attr] = fields
         model = super(ModelTranslateMeta, mcs).__new__(mcs, name, bases, dct)
-        if hasattr(model._meta, '_field_i18n'):
+        if hasattr(model._meta, "_field_i18n"):
             raise FieldError("TranslateMeta map already exists!")
         model._meta._field_i18n = field_i18n
 
@@ -154,18 +155,21 @@ class TranslatedModelAdmin(admin.ModelAdmin):
     def __init__(self, model, admin_site):
         for key, fields in list(type(self).prepopulated_fields.items()):
             # Replace translated fields in `fields`
-            fields = tuple(model._meta._field_i18n['default'].get(field, field)
-                           for field in fields)
+            fields = tuple(
+                model._meta._field_i18n["default"].get(field, field) for field in fields
+            )
             # ..and in `key`
             del type(self).prepopulated_fields[key]
-            key = model._meta._field_i18n['default'].get(key, key)
+            key = model._meta._field_i18n["default"].get(key, key)
             type(self).prepopulated_fields[key] = fields
 
         def _trans_fields(fields):
             if fields is None:
                 return None
-            fields = [model._meta._field_i18n['fields']
-                      .get(field, (field, )) for field in fields]
+            fields = [
+                model._meta._field_i18n["fields"].get(field, (field,))
+                for field in fields
+            ]
             return tuple(field for fieldset in fields for field in fieldset)
 
         # In fields, we replace a translated field by all resulting fields.
@@ -176,6 +180,6 @@ class TranslatedModelAdmin(admin.ModelAdmin):
         if type(self).fieldsets is not None:
             # pylint: disable=not-an-iterable
             for fieldset in type(self).fieldsets:
-                fieldset[1]['fields'] = _trans_fields(fieldset[1]['fields'])
+                fieldset[1]["fields"] = _trans_fields(fieldset[1]["fields"])
 
         super(TranslatedModelAdmin, self).__init__(model, admin_site)
