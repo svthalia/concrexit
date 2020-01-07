@@ -5,5 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 class PushNotificationsConfig(AppConfig):
     """AppConfig for the pushnotifications package"""
-    name = 'pushnotifications'
-    verbose_name = _('Push Notifications')
+
+    name = "pushnotifications"
+    verbose_name = _("Push Notifications")

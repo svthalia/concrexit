@@ -19,9 +19,9 @@ class StaticViewSitemap(sitemaps.Sitemap):
         """
         # Need to be valid entries for reverse()
         return [
-            'singlepages:become-active',
-            'singlepages:sibling-associations',
-            'singlepages:contact',
+            "singlepages:become-active",
+            "singlepages:sibling-associations",
+            "singlepages:contact",
         ]
 
     def location(self, obj):
@@ -42,5 +42,5 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
 
 sitemap = {
-    'singlepages-static': StaticViewSitemap,
+    "singlepages-static": StaticViewSitemap,
 }

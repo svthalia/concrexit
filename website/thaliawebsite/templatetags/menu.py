@@ -7,7 +7,7 @@ from ..menus import MAIN_MENU
 register = template.Library()  # pylint: disable=invalid-name
 
 
-@register.inclusion_tag('menu/menu.html', takes_context=True)
+@register.inclusion_tag("menu/menu.html", takes_context=True)
 def render_main_menu(context):
     """
     Renders the main menu in this place.
@@ -16,18 +16,18 @@ def render_main_menu(context):
     """
 
     path = None
-    if 'request' in context:
-        path = context.get('request').path
+    if "request" in context:
+        path = context.get("request").path
 
     for item in MAIN_MENU:
-        active = 'name' in item and reverse(item['name']) == path
-        if not active and 'submenu' in item:
-            for subitem in item['submenu']:
-                if 'name' in subitem and reverse(subitem['name']) == path:
-                    subitem['active'] = True
+        active = "name" in item and reverse(item["name"]) == path
+        if not active and "submenu" in item:
+            for subitem in item["submenu"]:
+                if "name" in subitem and reverse(subitem["name"]) == path:
+                    subitem["active"] = True
                     active = True
                 else:
-                    subitem['active'] = False
-        item['active'] = active
+                    subitem["active"] = False
+        item["active"] = active
 
-    return {'menu': MAIN_MENU, 'request': context.get('request')}
+    return {"menu": MAIN_MENU, "request": context.get("request")}

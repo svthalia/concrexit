@@ -7,11 +7,12 @@ from . import models
 
 class StaticViewSitemap(sitemaps.Sitemap):
     """Sitemap for the static pages"""
+
     priority = 0.5
-    changefreq = 'daily'
+    changefreq = "daily"
 
     def items(self):
-        return ['documents:index']
+        return ["documents:index"]
 
     def location(self, item):
         return reverse(item)
@@ -28,6 +29,6 @@ class MiscellaneousDocumentsSitemap(sitemaps.Sitemap):
 
 
 sitemap = {
-    'documents-static': StaticViewSitemap,
-    'documents-miscellaneous': MiscellaneousDocumentsSitemap,
+    "documents-static": StaticViewSitemap,
+    "documents-miscellaneous": MiscellaneousDocumentsSitemap,
 }

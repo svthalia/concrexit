@@ -49,13 +49,13 @@ from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
 from thaliawebsite.views import TestCrashView, IndexView
-from utils.media.views import (generate_thumbnail, private_media)
+from utils.media.views import generate_thumbnail, private_media
 from .sitemaps import StaticViewSitemap
 
-__all__ = ['urlpatterns']
+__all__ = ["urlpatterns"]
 
 THALIA_SITEMAP = {
-    'main-static': StaticViewSitemap,
+    "main-static": StaticViewSitemap,
 }
 THALIA_SITEMAP.update(activemembers_sitemap)
 THALIA_SITEMAP.update(members_sitemap)
@@ -68,52 +68,85 @@ THALIA_SITEMAP.update(singlepages_sitemap)
 
 # pragma pylint: disable=line-too-long
 urlpatterns = [  # pylint: disable=invalid-name
-    path('admin/', admin.site.urls),
-    path('', IndexView.as_view(), name='index'),
+    path("admin/", admin.site.urls),
+    path("", IndexView.as_view(), name="index"),
     # Default helpers
-    path('user/', include([
-        path('login/', LoginView.as_view(authentication_form=AuthenticationForm), name='login'),
-        path('', include('django.contrib.auth.urls')),
-    ])),
-    path('i18n/', include([
-        path('', include('django.conf.urls.i18n')),
-        path('js/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    ])),
+    path(
+        "user/",
+        include(
+            [
+                path(
+                    "login/",
+                    LoginView.as_view(authentication_form=AuthenticationForm),
+                    name="login",
+                ),
+                path("", include("django.contrib.auth.urls")),
+            ]
+        ),
+    ),
+    path(
+        "i18n/",
+        include(
+            [
+                path("", include("django.conf.urls.i18n")),
+                path("js/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
+            ]
+        ),
+    ),
     # Apps
-    path('', include('singlepages.urls')),
-    path('', include('merchandise.urls')),
-    path('', include('thabloid.urls')),
-    path('', include('registrations.urls')),
-    path('', include('newsletters.urls')),
-    path('', include('announcements.urls')),
-    path('', include('pushnotifications.urls')),
-    path('', include('photos.urls')),
-    path('', include('members.urls')),
-    path('', include('payments.urls')),
-    path('', include('education.urls')),
-    path('', include('activemembers.urls')),
-    path('', include('documents.urls')),
-    path('', include('events.urls')),
-    path('', include('pizzas.urls')),
-    path('', include('partners.urls')),
+    path("", include("singlepages.urls")),
+    path("", include("merchandise.urls")),
+    path("", include("thabloid.urls")),
+    path("", include("registrations.urls")),
+    path("", include("newsletters.urls")),
+    path("", include("announcements.urls")),
+    path("", include("pushnotifications.urls")),
+    path("", include("photos.urls")),
+    path("", include("members.urls")),
+    path("", include("payments.urls")),
+    path("", include("education.urls")),
+    path("", include("activemembers.urls")),
+    path("", include("documents.urls")),
+    path("", include("events.urls")),
+    path("", include("pizzas.urls")),
+    path("", include("partners.urls")),
     # App API
-    path('api/v1/', include([
-        path('token-auth/', ObtainThaliaAuthToken.as_view()),
-        path('', include('activemembers.api.urls')),
-        path('', include('events.api.urls')),
-        path('', include('members.api.urls')),
-        path('', include('partners.api.urls')),
-        path('', include('pizzas.api.urls')),
-        path('', include('photos.api.urls')),
-        path('', include('pushnotifications.api.urls')),
-    ])),
+    path(
+        "api/v1/",
+        include(
+            [
+                path("token-auth/", ObtainThaliaAuthToken.as_view()),
+                path("", include("activemembers.api.urls")),
+                path("", include("events.api.urls")),
+                path("", include("members.api.urls")),
+                path("", include("partners.api.urls")),
+                path("", include("pizzas.api.urls")),
+                path("", include("photos.api.urls")),
+                path("", include("pushnotifications.api.urls")),
+            ]
+        ),
+    ),
     # Sitemap
-    path('sitemap.xml', sitemap, {'sitemaps': THALIA_SITEMAP}, name='django.contrib.sitemaps.views.sitemap'),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": THALIA_SITEMAP},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
     # Dependencies
-    path(r'tinymce', include('tinymce.urls')),
+    path(r"tinymce", include("tinymce.urls")),
     # Provide something to test error handling. Limited to admins.
-    path('crash/', TestCrashView.as_view()),
+    path("crash/", TestCrashView.as_view()),
     # Custom media paths
-    re_path(r'^media/generate-thumbnail/(?P<request_path>.*)', generate_thumbnail, name='generate-thumbnail'),
-    re_path(r'^media/private/(?P<request_path>.*)$', private_media, name='private-media'),
-] + static(settings.MEDIA_URL + 'public/', document_root=os.path.join(settings.MEDIA_ROOT, 'public'))
+    re_path(
+        r"^media/generate-thumbnail/(?P<request_path>.*)",
+        generate_thumbnail,
+        name="generate-thumbnail",
+    ),
+    re_path(
+        r"^media/private/(?P<request_path>.*)$", private_media, name="private-media"
+    ),
+] + static(
+    settings.MEDIA_URL + "public/",
+    document_root=os.path.join(settings.MEDIA_ROOT, "public"),
+)

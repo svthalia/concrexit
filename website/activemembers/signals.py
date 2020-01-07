@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 sync_service = GSuiteUserService()
 
 
-@suspendingreceiver(pre_save, sender=get_user_model(),
-                    dispatch_uid='activemembers_user_save')
-@suspendingreceiver(pre_save, sender=Member,
-                    dispatch_uid='activemembers_member_save')
+@suspendingreceiver(
+    pre_save, sender=get_user_model(), dispatch_uid="activemembers_user_save"
+)
+@suspendingreceiver(pre_save, sender=Member, dispatch_uid="activemembers_member_save")
 def pre_member_save(instance, **kwargs):
     if not settings.GSUITE_MEMBERS_AUTOSYNC:
         return
@@ -34,8 +34,11 @@ def pre_member_save(instance, **kwargs):
         elif existing_member.is_staff and not instance.is_staff:
             sync_service.suspend_user(instance.username)
             emails.send_gsuite_suspended_message(instance)
-        elif (existing_member.is_staff and instance.is_staff
-              and existing_member.username != instance.username):
+        elif (
+            existing_member.is_staff
+            and instance.is_staff
+            and existing_member.username != instance.username
+        ):
             sync_service.update_user(instance, existing_member.username)
     except HttpError as e:
-        logger.error('Could not update G Suite account', e)
+        logger.error("Could not update G Suite account", e)

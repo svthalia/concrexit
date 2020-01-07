@@ -22,11 +22,11 @@ class PartnerEventCalendarJSSerializer(CalenderJSSerializer):
 
     def _background_color(self, instance):
         """Return the color of the background."""
-        return 'black'
+        return "black"
 
     def _text_color(self, instance):
         """Return the color of the text."""
-        return '#E62272'
+        return "#E62272"
 
     def _url(self, instance):
         """Return the url of the partner event."""
@@ -44,8 +44,16 @@ class PartnerSerializer(serializers.ModelSerializer):
         """Meta class for partner serializer."""
 
         model = Partner
-        fields = ('pk', 'name', 'link', 'company_profile', 'address',
-                  'zip_code', 'city', 'logo')
+        fields = (
+            "pk",
+            "name",
+            "link",
+            "company_profile",
+            "address",
+            "zip_code",
+            "city",
+            "logo",
+        )
 
 
 class PartnerEventSerializer(serializers.ModelSerializer):
@@ -55,10 +63,9 @@ class PartnerEventSerializer(serializers.ModelSerializer):
         """Meta class for partner events serializer."""
 
         model = PartnerEvent
-        fields = ('pk', 'title', 'description', 'start', 'end', 'location',
-                  'url')
+        fields = ("pk", "title", "description", "start", "end", "location", "url")
 
-    description = serializers.SerializerMethodField('_description')
+    description = serializers.SerializerMethodField("_description")
 
     def _description(self, instance):
         """Return description of partner event."""

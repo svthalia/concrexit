@@ -21,12 +21,13 @@ class ListAliasInline(admin.TabularInline):
 class MailingListAdmin(admin.ModelAdmin):
     """Class to show the mailing lists in the admin."""
 
-    filter_horizontal = ('members',)
+    filter_horizontal = ("members",)
     inlines = (VerbatimAddressInline, ListAliasInline)
-    list_display = ('name', 'alias_names', 'moderated', 'description')
-    search_fields = ['name', 'aliases__alias']
+    list_display = ("name", "alias_names", "moderated", "description")
+    search_fields = ["name", "aliases__alias"]
 
     def alias_names(self, obj):
         """Return list of aliases of obj."""
         return [x.alias for x in obj.aliases.all()]
-    alias_names.short_description = _('List aliases')
+
+    alias_names.short_description = _("List aliases")

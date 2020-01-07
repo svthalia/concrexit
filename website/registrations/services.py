@@ -27,11 +27,11 @@ def _generate_username(registration: Registration) -> str:
     :return: Created username
     :rtype: str
     """
-    username = (registration.first_name[0] +
-                registration.last_name).lower()
-    username = ''.join(c for c in username if c.isalpha())
-    username = ''.join(c for c in unicodedata.normalize('NFKD', username)
-                       if c in string.ascii_letters).lower()
+    username = (registration.first_name[0] + registration.last_name).lower()
+    username = "".join(c for c in username if c.isalpha())
+    username = "".join(
+        c for c in unicodedata.normalize("NFKD", username) if c in string.ascii_letters
+    ).lower()
 
     # Limit length to 150 characters since Django doesn't support longer
     if len(username) > 150:
@@ -52,12 +52,17 @@ def check_unique_user(entry: Entry) -> bool:
     try:
         registration = entry.registration
         username = _generate_username(registration)
-        if (get_user_model().objects.filter(username=username).exists() and
-                registration.username is not None):
+        if (
+            get_user_model().objects.filter(username=username).exists()
+            and registration.username is not None
+        ):
             username = registration.username
 
-        return not (get_user_model().objects.filter(
-            Q(email=registration.email) | Q(username=username)).exists())
+        return not (
+            get_user_model()
+            .objects.filter(Q(email=registration.email) | Q(username=username))
+            .exists()
+        )
     except Registration.DoesNotExist:
         pass
     return True
@@ -73,8 +78,9 @@ def confirm_entry(queryset: QuerySet) -> int:
     :rtype: integer
     """
     queryset = queryset.filter(status=Entry.STATUS_CONFIRM)
-    rows_updated = queryset.update(status=Entry.STATUS_REVIEW,
-                                   updated_at=timezone.now())
+    rows_updated = queryset.update(
+        status=Entry.STATUS_REVIEW, updated_at=timezone.now()
+    )
     return rows_updated
 
 
@@ -90,8 +96,9 @@ def reject_entries(user_id: int, queryset: QuerySet) -> int:
     """
     queryset = queryset.filter(status=Entry.STATUS_REVIEW)
     entries = list(queryset.all())
-    rows_updated = queryset.update(status=Entry.STATUS_REJECTED,
-                                   updated_at=timezone.now())
+    rows_updated = queryset.update(
+        status=Entry.STATUS_REJECTED, updated_at=timezone.now()
+    )
 
     for entry in entries:
         log_obj = None
@@ -113,7 +120,7 @@ def reject_entries(user_id: int, queryset: QuerySet) -> int:
                 object_id=log_obj.pk,
                 object_repr=str(log_obj),
                 action_flag=CHANGE,
-                change_message='Changed status to rejected',
+                change_message="Changed status to rejected",
             )
 
     return rows_updated
@@ -147,16 +154,13 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
 
         try:
             if entry.registration.username is None:
-                entry.registration.username = _generate_username(
-                    entry.registration)
+                entry.registration.username = _generate_username(entry.registration)
                 entry.registration.save()
-            emails.send_registration_accepted_message(entry.registration,
-                                                      entry.payment)
+            emails.send_registration_accepted_message(entry.registration, entry.payment)
             log_obj = entry.registration
         except Registration.DoesNotExist:
             try:
-                emails.send_renewal_accepted_message(entry.renewal,
-                                                     entry.payment)
+                emails.send_renewal_accepted_message(entry.renewal, entry.payment)
                 log_obj = entry.renewal
             except Renewal.DoesNotExist:
                 pass
@@ -168,7 +172,7 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
                 object_id=log_obj.pk,
                 object_repr=str(log_obj),
                 action_flag=CHANGE,
-                change_message='Change status to approved',
+                change_message="Change status to approved",
             )
 
         entry.save()
@@ -212,7 +216,7 @@ def revert_entry(user_id: int, entry: Entry) -> None:
             object_id=log_obj.pk,
             object_repr=str(log_obj),
             action_flag=CHANGE,
-            change_message='Revert status to review',
+            change_message="Revert status to review",
         )
 
 
@@ -228,12 +232,12 @@ def _create_payment_for_entry(entry: Entry) -> Payment:
     amount = settings.MEMBERSHIP_PRICES[entry.length]
     if entry.contribution and entry.membership_type == Membership.BENEFACTOR:
         amount = entry.contribution
-    notes = f'Membership registration. {entry.get_membership_type_display()}.'
+    notes = f"Membership registration. {entry.get_membership_type_display()}."
 
     try:
         renewal = entry.renewal
         membership = renewal.member.latest_membership
-        notes = f'Membership renewal. {entry.get_membership_type_display()}.'
+        notes = f"Membership renewal. {entry.get_membership_type_display()}."
         # Having a latest membership which has an until date implies that this
         # membership lasts/lasted till the end of the lecture year
         # This means it's possible to renew the 'year' membership
@@ -245,18 +249,20 @@ def _create_payment_for_entry(entry: Entry) -> Payment:
         # but processing to occur _after_ the membership ended
         # we're checking if that is the case so that these members
         # still get the discount price
-        if (membership is not None and membership.until is not None and
-            entry.created_at.date() < membership.until and
-                renewal.length == Entry.MEMBERSHIP_STUDY):
-            amount = (settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY] -
-                      settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR])
+        if (
+            membership is not None
+            and membership.until is not None
+            and entry.created_at.date() < membership.until
+            and renewal.length == Entry.MEMBERSHIP_STUDY
+        ):
+            amount = (
+                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
+                - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
+            )
     except Renewal.DoesNotExist:
         pass
 
-    return Payment.objects.create(
-        amount=amount,
-        notes=notes
-    )
+    return Payment.objects.create(amount=amount, notes=notes)
 
 
 def _create_member_from_registration(registration: Registration) -> Member:
@@ -274,8 +280,9 @@ def _create_member_from_registration(registration: Registration) -> Member:
 
     # Make sure the username and email are unique
     if not check_unique_user(registration):
-        raise ValueError('Username or email address of the registration '
-                         'are not unique')
+        raise ValueError(
+            "Username or email address of the registration " "are not unique"
+        )
 
     # Create user
     user = get_user_model().objects.create_user(
@@ -283,7 +290,7 @@ def _create_member_from_registration(registration: Registration) -> Member:
         email=registration.email,
         password=password,
         first_name=registration.first_name,
-        last_name=registration.last_name
+        last_name=registration.last_name,
     )
 
     # Add profile to created user
@@ -301,7 +308,7 @@ def _create_member_from_registration(registration: Registration) -> Member:
         birthday=registration.birthday,
         language=registration.language,
         show_birthday=registration.optin_birthday,
-        receive_optin=registration.optin_mailinglist
+        receive_optin=registration.optin_mailinglist,
     )
 
     # Send welcome message to new member
@@ -325,7 +332,8 @@ def calculate_membership_since() -> timezone.datetime:
 
 
 def _create_membership_from_entry(
-        entry: Entry, member: Member = None) -> Union[Membership, None]:
+    entry: Entry, member: Member = None
+) -> Union[Membership, None]:
     """
     Create or update Membership model based on Entry model information
 
@@ -348,13 +356,13 @@ def _create_membership_from_entry(
             membership = member.current_membership
             if membership is not None:
                 if membership.until is None:
-                    raise ValueError('This member already has a never ending '
-                                     'membership')
+                    raise ValueError(
+                        "This member already has a never ending " "membership"
+                    )
                 since = membership.until
         except Renewal.DoesNotExist:
             pass
-        until = timezone.datetime(year=lecture_year + 1,
-                                  month=9, day=1).date()
+        until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
     elif entry.length == Entry.MEMBERSHIP_STUDY:
         try:
             renewal = entry.renewal
@@ -368,8 +376,9 @@ def _create_membership_from_entry(
             # The rules for this behaviour are taken from the HR
             if membership is not None:
                 if membership.until is None:
-                    raise ValueError('This member already has a never ending '
-                                     'membership')
+                    raise ValueError(
+                        "This member already has a never ending " "membership"
+                    )
                 if entry.created_at.date() < membership.until:
                     membership.until = None
                     membership.save()
@@ -380,10 +389,7 @@ def _create_membership_from_entry(
         return None
 
     return Membership.objects.create(
-        user=member,
-        since=since,
-        until=until,
-        type=entry.membership_type
+        user=member, since=since, until=until, type=entry.membership_type
     )
 
 
@@ -442,10 +448,10 @@ def execute_data_minimisation(dry_run=False):
     :return: number of removed registrations
     """
     deletion_period = timezone.now() - timezone.timedelta(days=31)
-    objects = (Entry.objects
-               .filter((Q(status=Entry.STATUS_COMPLETED)
-                        | Q(status=Entry.STATUS_REJECTED))
-                       & Q(updated_at__lt=deletion_period)))
+    objects = Entry.objects.filter(
+        (Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED))
+        & Q(updated_at__lt=deletion_period)
+    )
 
     if dry_run:
         return objects.count()

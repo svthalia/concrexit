@@ -16,21 +16,40 @@ admin.site.register(models.Category)
 
 @admin.register(models.Course)
 class CourseAdmin(TranslatedModelAdmin):
-    fields = ('name', 'course_code', 'ec', 'since', 'until', 'categories',
-              'old_courses')
-    list_filter = ('categories', 'ec')
-    search_fields = ('name', 'course_code')
+    fields = (
+        "name",
+        "course_code",
+        "ec",
+        "since",
+        "until",
+        "categories",
+        "old_courses",
+    )
+    list_filter = ("categories", "ec")
+    search_fields = ("name", "course_code")
 
 
 @admin.register(models.Exam)
 class ExamAdmin(TranslatedModelAdmin):
-    list_display = ('type', 'course', 'exam_date', 'uploader',
-                    'accepted', 'language', 'download_count')
-    readonly_fields = ('download_count',)
-    list_filter = ('accepted', 'exam_date', 'type', 'language')
-    search_fields = ('name', 'uploader__first_name', 'uploader__last_name',
-                     'course__name_nl', 'course__name_en')
-    actions = ['accept', 'reject', 'reset_download_count', 'download_csv']
+    list_display = (
+        "type",
+        "course",
+        "exam_date",
+        "uploader",
+        "accepted",
+        "language",
+        "download_count",
+    )
+    readonly_fields = ("download_count",)
+    list_filter = ("accepted", "exam_date", "type", "language")
+    search_fields = (
+        "name",
+        "uploader__first_name",
+        "uploader__last_name",
+        "course__name_nl",
+        "course__name_en",
+    )
+    actions = ["accept", "reject", "reset_download_count", "download_csv"]
 
     def accept(self, request, queryset):
         queryset.update(accepted=True)
@@ -45,14 +64,15 @@ class ExamAdmin(TranslatedModelAdmin):
     def reset_download_count(self, request, queryset):
         queryset.update(download_count=0)
 
-    reset_download_count.short_description = _("Reset the marked exams "
-                                               "download count")
+    reset_download_count.short_description = _(
+        "Reset the marked exams " "download count"
+    )
 
     def download_csv(self, request, queryset):
         opts = queryset.model._meta
-        response = HttpResponse(content_type='text/csv')
+        response = HttpResponse(content_type="text/csv")
         # force download.
-        response['Content-Disposition'] = 'attachment;filename=export.csv'
+        response["Content-Disposition"] = "attachment;filename=export.csv"
         # the csv writer
         writer = csv.writer(response)
         field_names = [field.name for field in opts.fields]
@@ -68,13 +88,24 @@ class ExamAdmin(TranslatedModelAdmin):
 
 @admin.register(models.Summary)
 class SummaryAdmin(TranslatedModelAdmin):
-    list_display = ('name', 'course', 'uploader', 'accepted', 'language',
-                    'download_count')
-    readonly_fields = ('download_count',)
-    list_filter = ('accepted', 'language')
-    search_fields = ('name', 'uploader__first_name', 'uploader__last_name',
-                     'course__name_nl', 'course__name_en',)
-    actions = ['accept', 'reject', 'reset_download_count', 'download_csv']
+    list_display = (
+        "name",
+        "course",
+        "uploader",
+        "accepted",
+        "language",
+        "download_count",
+    )
+    readonly_fields = ("download_count",)
+    list_filter = ("accepted", "language")
+    search_fields = (
+        "name",
+        "uploader__first_name",
+        "uploader__last_name",
+        "course__name_nl",
+        "course__name_en",
+    )
+    actions = ["accept", "reject", "reset_download_count", "download_csv"]
 
     def accept(self, request, queryset):
         queryset.update(accepted=True)
@@ -89,14 +120,15 @@ class SummaryAdmin(TranslatedModelAdmin):
     def reset_download_count(self, request, queryset):
         queryset.update(download_count=0)
 
-    reset_download_count.short_description = _("Reset the marked summaries "
-                                               "download count")
+    reset_download_count.short_description = _(
+        "Reset the marked summaries " "download count"
+    )
 
     def download_csv(self, request, queryset):
         opts = queryset.model._meta
-        response = HttpResponse(content_type='text/csv')
+        response = HttpResponse(content_type="text/csv")
         # force download.
-        response['Content-Disposition'] = 'attachment;filename=export.csv'
+        response["Content-Disposition"] = "attachment;filename=export.csv"
         # the csv writer
         writer = csv.writer(response)
         field_names = [field.name for field in opts.fields]

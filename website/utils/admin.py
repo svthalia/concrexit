@@ -8,15 +8,15 @@ from utils.translation import TranslatedModelAdmin
 
 def _do_next(request, response):
     """See DoNextModelAdmin"""
-    if 'next' in request.GET:
-        if not is_safe_url(request.GET['next'],
-                           allowed_hosts={request.get_host()}):
+    if "next" in request.GET:
+        if not is_safe_url(request.GET["next"], allowed_hosts={request.get_host()}):
             raise DisallowedRedirect
-        elif '_save' in request.POST:
-            return HttpResponseRedirect(request.GET['next'])
+        elif "_save" in request.POST:
+            return HttpResponseRedirect(request.GET["next"])
         elif response is not None:
-            return HttpResponseRedirect('{}?{}'.format(
-                response.url, request.GET.urlencode()))
+            return HttpResponseRedirect(
+                "{}?{}".format(response.url, request.GET.urlencode())
+            )
     return response
 
 

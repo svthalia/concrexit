@@ -22,7 +22,7 @@ codestyle:
   before_script:
     - poetry install --no-interaction
   script:
-    - poetry run flake8 website
+    - black --check .
     # Check for obsolete translations in .po files (starting with `#~`).
     - cd website
     - grep --include="*.po" --files-with-matches --recursive "^#~" && exit 1 || echo "No obsolete translations found."

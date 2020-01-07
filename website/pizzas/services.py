@@ -1,5 +1,5 @@
 from events.services import is_organiser
-from . models import Product, Order, PizzaEvent
+from .models import Product, Order, PizzaEvent
 
 
 def gen_stats_pizza_orders():
@@ -10,9 +10,9 @@ def gen_stats_pizza_orders():
     total = {}
 
     for product in Product.objects.all():
-        total.update({
-             product.name: Order.objects.filter(product=product).count(),
-        })
+        total.update(
+            {product.name: Order.objects.filter(product=product).count(),}
+        )
 
     return {
         i[0]: i[1]
@@ -34,12 +34,13 @@ def gen_stats_current_pizza_orders():
         return None
 
     for product in Product.objects.filter():
-        total.update({
-            product.name: Order.objects.filter(
-                product=product,
-                pizza_event=current_pizza_event,
-            ).count(),
-        })
+        total.update(
+            {
+                product.name: Order.objects.filter(
+                    product=product, pizza_event=current_pizza_event,
+                ).count(),
+            }
+        )
 
     return {
         i[0]: i[1]
@@ -55,5 +56,8 @@ def can_change_order(member, pizza_event):
     :param pizza_event: The event for which we want to change an order
     :return: True if we can change an order else False
     """
-    return (pizza_event and member.has_perm('pizzas.change_order') and
-            is_organiser(member, pizza_event.event))
+    return (
+        pizza_event
+        and member.has_perm("pizzas.change_order")
+        and is_organiser(member, pizza_event.event)
+    )

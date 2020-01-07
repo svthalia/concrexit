@@ -23,16 +23,22 @@ def send_newsletter(newsletter):
     """
     events = None
     if newsletter.date:
-        datetime = make_aware(timezone.datetime(
-            year=newsletter.date.year,
-            month=newsletter.date.month,
-            day=newsletter.date.day,
-        )) if newsletter.date else None
+        datetime = (
+            make_aware(
+                timezone.datetime(
+                    year=newsletter.date.year,
+                    month=newsletter.date.month,
+                    day=newsletter.date.day,
+                )
+            )
+            if newsletter.date
+            else None
+        )
         events = services.get_agenda(datetime)
 
     from_email = settings.NEWSLETTER_FROM_ADDRESS
-    html_template = get_template('newsletters/email.html')
-    text_template = get_template('newsletters/email.txt')
+    html_template = get_template("newsletters/email.html")
+    text_template = get_template("newsletters/email.txt")
 
     main_partner = Partner.objects.filter(is_main_partner=True).first()
     local_partner = Partner.objects.filter(is_local_partner=True).first()
@@ -41,14 +47,14 @@ def send_newsletter(newsletter):
         for language in settings.LANGUAGES:
             translation.activate(language[0])
 
-            subject = '[THALIA] ' + newsletter.title
+            subject = "[THALIA] " + newsletter.title
 
             context = {
-                'newsletter': newsletter,
-                'agenda_events': events,
-                'main_partner': main_partner,
-                'local_partner': local_partner,
-                'lang_code': language[0]
+                "newsletter": newsletter,
+                "agenda_events": events,
+                "main_partner": main_partner,
+                "local_partner": local_partner,
+                "lang_code": language[0],
             }
 
             html_message = html_template.render(context)
@@ -59,17 +65,16 @@ def send_newsletter(newsletter):
             msg = EmailMultiAlternatives(
                 subject=subject,
                 body=text_message,
-                to=[f'newsletter-{language[0]}@{settings.GSUITE_DOMAIN}'],
+                to=[f"newsletter-{language[0]}@{settings.GSUITE_DOMAIN}"],
                 from_email=from_email,
-                connection=connection
+                connection=connection,
             )
             msg.attach_alternative(html_message, "text/html")
 
             try:
                 msg.send()
-                logger.info(f'Sent {language[1]} newsletter')
+                logger.info(f"Sent {language[1]} newsletter")
             except SMTPException as e:
-                logger.error(f'Failed to send the {language[1]} '
-                             f'newsletter: {e}')
+                logger.error(f"Failed to send the {language[1]} " f"newsletter: {e}")
 
             translation.deactivate()

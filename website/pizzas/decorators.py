@@ -17,20 +17,20 @@ class OrganiserOnly(object):
     2. The specified pizza event does not exist
     3. The user is no organiser of the specified pizza event
     """
+
     def __init__(self, view_function):
         self.view_function = view_function
 
     def __call__(self, request, *args, **kwargs):
         pizza_event = None
 
-        if 'pk' in kwargs:
+        if "pk" in kwargs:
             try:
-                pizza_event = PizzaEvent.objects.get(pk=kwargs.get('pk'))
+                pizza_event = PizzaEvent.objects.get(pk=kwargs.get("pk"))
             except PizzaEvent.DoesNotExist:
                 pass
 
-        if pizza_event and services.is_organiser(request.member,
-                                                 pizza_event.event):
+        if pizza_event and services.is_organiser(request.member, pizza_event.event):
             return self.view_function(request, *args, **kwargs)
 
         raise PermissionDenied

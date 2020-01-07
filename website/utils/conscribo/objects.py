@@ -21,7 +21,7 @@ class Command(_JsonSerializable):
     @property
     def data(self) -> dict:
         return {
-            'command': self._command,
+            "command": self._command,
             **self._params,
         }
 
@@ -33,13 +33,13 @@ class Request(_JsonSerializable):
     @property
     def data(self) -> dict:
         if len(self._commands) == 1:
-            return {
-                'request': self._commands[0].data
-            }
+            return {"request": self._commands[0].data}
         return {
-            'requests': {
-                'request': [{**v.data, 'requestSequence': str(k)}
-                            for k, v in enumerate(self._commands)]
+            "requests": {
+                "request": [
+                    {**v.data, "requestSequence": str(k)}
+                    for k, v in enumerate(self._commands)
+                ]
             }
         }
 
@@ -63,20 +63,22 @@ class ResultException(Exception):
 class Result(object):
     def __init__(self, data) -> None:
         self._data = data
-        self._success = self._data.pop('success', False)
-        self._request_sequence = self._data.pop('requestSequence', 0)
-        self._notifications = self._data.pop('notifications', {
-            'notification': []
-        }).get('notification')
+        self._success = self._data.pop("success", False)
+        self._request_sequence = self._data.pop("requestSequence", 0)
+        self._notifications = self._data.pop("notifications", {"notification": []}).get(
+            "notification"
+        )
 
     @staticmethod
     def single(data):
-        return Result(data.get('result', {}))
+        return Result(data.get("result", {}))
 
     @staticmethod
     def multi(data):
-        return [Result(result) for result in
-                data.get('results', {'result': []}).get('result', None)]
+        return [
+            Result(result)
+            for result in data.get("results", {"result": []}).get("result", None)
+        ]
 
     @property
     def success(self):

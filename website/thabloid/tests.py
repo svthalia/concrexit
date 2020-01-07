@@ -14,13 +14,9 @@ tmp_MEDIA_ROOT = tempfile.mkdtemp()
 
 @override_settings(MEDIA_ROOT=tmp_MEDIA_ROOT)
 class TestThabloid(TestCase):
-
     def setUp(self):
-        with open('thabloid/fixtures/thabloid-1998-1999-1.pdf', 'rb') as f:
-            self.thabloid = Thabloid(
-                year=1998,
-                issue=1,
-                file=File(f))
+        with open("thabloid/fixtures/thabloid-1998-1999-1.pdf", "rb") as f:
+            self.thabloid = Thabloid(year=1998, issue=1, file=File(f))
             # we should wait for gs to be done before we can do cleanup
             self.thabloid.save(wait=True)
 
@@ -29,20 +25,23 @@ class TestThabloid(TestCase):
         shutil.rmtree(settings.MEDIA_ROOT)
 
     def test_thaboid_get_absolute_url(self):
-        self.assertEqual(self.thabloid.get_absolute_url(),
-                         '/members/thabloid/pages/1998/1/')
+        self.assertEqual(
+            self.thabloid.get_absolute_url(), "/members/thabloid/pages/1998/1/"
+        )
 
     def test_page_urls(self):
         self.assertEqual(
-            self.thabloid.cover,
-            'public/thabloids/pages/thabloid-1998-1999-1/001.png')
+            self.thabloid.cover, "public/thabloids/pages/thabloid-1998-1999-1/001.png"
+        )
         self.assertEqual(
             self.thabloid.page_url(2, 3),
-            'public/thabloids/pages/thabloid-1998-1999-1/002-003.png')
+            "public/thabloids/pages/thabloid-1998-1999-1/002-003.png",
+        )
         # check if it's actual zeropadding and not just '00' + i
         self.assertEqual(
             self.thabloid.page_url(20),
-            'public/thabloids/pages/thabloid-1998-1999-1/020.png')
+            "public/thabloids/pages/thabloid-1998-1999-1/020.png",
+        )
 
     @staticmethod
     def _pdf_exist(pdf):
@@ -54,8 +53,9 @@ class TestThabloid(TestCase):
         jpgs = [url.lstrip(settings.MEDIA_URL) for url in pages]
         for jpg in jpgs:
             jpgpath = os.path.join(settings.MEDIA_ROOT, jpg)
-            if ((not inverse and not os.path.isfile(jpgpath)) or
-                    (inverse and os.path.isfile(jpgpath))):
+            if (not inverse and not os.path.isfile(jpgpath)) or (
+                inverse and os.path.isfile(jpgpath)
+            ):
                 return False
         return True
 

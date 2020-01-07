@@ -1,4 +1,3 @@
-
 from datetime import timedelta, date
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -12,16 +11,14 @@ from members.services import gen_stats_year, gen_stats_member_type
 from utils.snippets import datetime_to_lectureyear
 
 
-@freeze_time('2020-01-01')
+@freeze_time("2020-01-01")
 class StatisticsTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         # Add 10 members with default membership
         members = [Member(id=i, username=i) for i in range(10)]
         Member.objects.bulk_create(members)
-        memberships = [Membership(user_id=i, type=Membership.MEMBER)
-                       for i in range(10)]
+        memberships = [Membership(user_id=i, type=Membership.MEMBER) for i in range(10)]
         Membership.objects.bulk_create(memberships)
         profiles = [Profile(user_id=i) for i in range(10)]
         Profile.objects.bulk_create(profiles)
@@ -141,27 +138,27 @@ class StatisticsTest(TestCase):
         self.assertEqual(4, self.sum_members(result, Membership.MEMBER))
 
         # one first year student
-        self.assertEqual(1, result['2019'][Membership.MEMBER])
+        self.assertEqual(1, result["2019"][Membership.MEMBER])
 
         # one second year student
-        self.assertEqual(1, result['2018'][Membership.MEMBER])
+        self.assertEqual(1, result["2018"][Membership.MEMBER])
 
         # no third year students
-        self.assertEqual(0, result['2017'][Membership.MEMBER])
+        self.assertEqual(0, result["2017"][Membership.MEMBER])
 
         # one fourth year student
-        self.assertEqual(1, result['2016'][Membership.MEMBER])
+        self.assertEqual(1, result["2016"][Membership.MEMBER])
 
         # no fifth year students
-        self.assertEqual(0, result['2015'][Membership.MEMBER])
+        self.assertEqual(0, result["2015"][Membership.MEMBER])
 
         # one >5 year student
-        self.assertEqual(1, result['Older'][Membership.MEMBER])
+        self.assertEqual(1, result["Older"][Membership.MEMBER])
 
 
 @override_settings(SUSPEND_SIGNALS=True)
 class EmailChangeTest(TestCase):
-    fixtures = ['members.json']
+    fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -172,43 +169,34 @@ class EmailChangeTest(TestCase):
         self.member.refresh_from_db()
 
     def test_verify_email_change(self):
-        change_request = EmailChange(
-            member=self.member,
-            email='new@example.org'
-        )
+        change_request = EmailChange(member=self.member, email="new@example.org")
 
-        with mock.patch('members.services.process_email_change') as proc:
+        with mock.patch("members.services.process_email_change") as proc:
             services.verify_email_change(change_request)
             self.assertTrue(change_request.verified)
             proc.assert_called_once_with(change_request)
 
     def test_confirm_email_change(self):
-        change_request = EmailChange(
-            member=self.member,
-            email='new@example.org'
-        )
+        change_request = EmailChange(member=self.member, email="new@example.org")
 
-        with mock.patch('members.services.process_email_change') as proc:
+        with mock.patch("members.services.process_email_change") as proc:
             services.confirm_email_change(change_request)
             self.assertTrue(change_request.confirmed)
             proc.assert_called_once_with(change_request)
 
-    @mock.patch('members.emails.send_email_change_completion_message')
+    @mock.patch("members.emails.send_email_change_completion_message")
     def test_process_email_change(self, send_message_mock):
-        change_request = EmailChange(
-            member=self.member,
-            email='new@example.org'
-        )
+        change_request = EmailChange(member=self.member, email="new@example.org")
 
         original_email = self.member.email
 
-        with self.subTest('Uncompleted request'):
+        with self.subTest("Uncompleted request"):
             services.process_email_change(change_request)
 
             self.assertEqual(self.member.email, original_email)
             send_message_mock.assert_not_called()
 
-        with self.subTest('Completed request'):
+        with self.subTest("Completed request"):
             change_request.verified = True
             change_request.confirmed = True
 
@@ -218,97 +206,84 @@ class EmailChangeTest(TestCase):
             send_message_mock.assert_called_once_with(change_request)
 
 
-@freeze_time('2018-10-2')
+@freeze_time("2018-10-2")
 @override_settings(SUSPEND_SIGNALS=True)
 class DataMinimisationTest(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.m1 = Member.objects.create(
-            username='test1',
-            first_name='Test1',
-            last_name='Example',
-            email='test1@example.org'
+            username="test1",
+            first_name="Test1",
+            last_name="Example",
+            email="test1@example.org",
         )
-        Profile.objects.create(
-            user=cls.m1,
-            language='nl',
-            student_number='s1234567'
-        )
+        Profile.objects.create(user=cls.m1, language="nl", student_number="s1234567")
         cls.s1 = Membership.objects.create(
             user=cls.m1,
             type=Membership.MEMBER,
             since=timezone.now().replace(year=2017, month=9, day=1),
-            until=timezone.now().replace(year=2018, month=9, day=1)
+            until=timezone.now().replace(year=2018, month=9, day=1),
         )
         cls.m2 = Member.objects.create(
-            username='test2',
-            first_name='Test2',
-            last_name='Example',
-            email='test2@example.org'
+            username="test2",
+            first_name="Test2",
+            last_name="Example",
+            email="test2@example.org",
         )
-        Profile.objects.create(
-            user=cls.m2,
-            language='nl',
-            student_number='s7654321'
-        )
+        Profile.objects.create(user=cls.m2, language="nl", student_number="s7654321")
         cls.s2 = Membership.objects.create(
             user=cls.m2,
             type=Membership.MEMBER,
             since=timezone.now().replace(year=2017, month=9, day=1),
-            until=timezone.now().replace(year=2018, month=9, day=1)
+            until=timezone.now().replace(year=2018, month=9, day=1),
         )
 
     def test_removes_after_31_days_or_no_membership(self):
-        with self.subTest('Deletes after 31 days'):
+        with self.subTest("Deletes after 31 days"):
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 2)
             self.assertEqual(processed[0], self.m1)
 
-        with self.subTest('Deletes after 31 days'):
-            self.s1.until = timezone.now().replace(
-                year=2018, month=11, day=1)
+        with self.subTest("Deletes after 31 days"):
+            self.s1.until = timezone.now().replace(year=2018, month=11, day=1)
             self.s1.save()
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
 
-        with self.subTest('Deletes when no memberships'):
+        with self.subTest("Deletes when no memberships"):
             self.s1.delete()
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 2)
 
     def test_dry_run(self):
-        with self.subTest('With dry_run=True'):
+        with self.subTest("With dry_run=True"):
             services.execute_data_minimisation(True)
             self.m1.refresh_from_db()
-            self.assertEqual(self.m1.profile.student_number, 's1234567')
-        with self.subTest('With dry_run=False'):
+            self.assertEqual(self.m1.profile.student_number, "s1234567")
+        with self.subTest("With dry_run=False"):
             services.execute_data_minimisation(False)
             self.m1.refresh_from_db()
             self.assertIsNone(self.m1.profile.student_number)
 
     def test_provided_queryset(self):
-        processed = services.execute_data_minimisation(True,
-                                                       members=Member.objects)
+        processed = services.execute_data_minimisation(True, members=Member.objects)
         self.assertEqual(len(processed), 2)
         self.assertEqual(processed[0], self.m1)
 
     def test_does_not_affect_current_members(self):
-        with self.subTest('Membership ends in future'):
-            self.s1.until = timezone.now().replace(
-                year=2019, month=9, day=1)
+        with self.subTest("Membership ends in future"):
+            self.s1.until = timezone.now().replace(year=2019, month=9, day=1)
             self.s1.save()
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
-        with self.subTest('Never ending membership'):
+        with self.subTest("Never ending membership"):
             self.s1.until = None
             self.s1.save()
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
-            self.s1.until = timezone.now().replace(
-                year=2018, month=9, day=1)
+            self.s1.until = timezone.now().replace(year=2018, month=9, day=1)
             self.s1.save()
-        with self.subTest('Newer year membership after expired one'):
+        with self.subTest("Newer year membership after expired one"):
             m = Membership.objects.create(
                 user=self.m1,
                 type=Membership.MEMBER,
@@ -318,12 +293,12 @@ class DataMinimisationTest(TestCase):
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
             m.delete()
-        with self.subTest('Newer study membership after expired one'):
+        with self.subTest("Newer study membership after expired one"):
             m = Membership.objects.create(
                 user=self.m1,
                 type=Membership.MEMBER,
                 since=timezone.now().replace(year=2018, month=9, day=10),
-                until=None
+                until=None,
             )
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)

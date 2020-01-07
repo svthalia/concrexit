@@ -5,8 +5,9 @@ from registrations import services
 from utils.models.signals import suspendingreceiver
 
 
-@suspendingreceiver(post_save, sender='payments.Payment',
-                    dispatch_uid='registrations_payment_process')
+@suspendingreceiver(
+    post_save, sender="payments.Payment", dispatch_uid="registrations_payment_process"
+)
 def post_payment_save(sender, instance, **kwargs):
     """Process a payment when it is saved"""
     services.process_payment(instance)

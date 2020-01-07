@@ -15,41 +15,40 @@ from utils.threading import PopenAndCall
 
 def thabloid_filename(instance, filename):
     ext = os.path.splitext(filename)[1]
-    return os.path.join('public/thabloids/', slugify(instance) + ext)
+    return os.path.join("public/thabloids/", slugify(instance) + ext)
 
 
 class Thabloid(models.Model):
     year = models.IntegerField(
-        verbose_name='academic year',
-        validators=[MinValueValidator(1990)]
+        verbose_name="academic year", validators=[MinValueValidator(1990)]
     )
 
     issue = models.IntegerField()
 
     file = models.FileField(
         upload_to=thabloid_filename,
-        validators=[FileExtensionValidator(
-            ['txt', 'pdf', 'jpg', 'jpeg', 'png'])],
+        validators=[FileExtensionValidator(["txt", "pdf", "jpg", "jpeg", "png"])],
     )
 
     class Meta:
-        unique_together = ('year', 'issue',)
-        ordering = ('-year', '-issue')
+        unique_together = (
+            "year",
+            "issue",
+        )
+        ordering = ("-year", "-issue")
 
     def __str__(self):
-        return 'Thabloid {}-{}, #{}'.format(self.year, self.year + 1,
-                                            self.issue)
+        return "Thabloid {}-{}, #{}".format(self.year, self.year + 1, self.issue)
 
     def page_url(self, page=None, second_page=None):
         if page is None:
-            page = '%03d.png'
+            page = "%03d.png"
         elif second_page is None:
-            page = '{:03}.png'.format(page)
+            page = "{:03}.png".format(page)
         else:
-            page = '{:03}-{:03}.png'.format(page, second_page)
+            page = "{:03}-{:03}.png".format(page, second_page)
         dst, ext = os.path.splitext(self.file.name)
-        return os.path.join(os.path.dirname(dst), 'pages',
-                            os.path.basename(dst), page)
+        return os.path.join(os.path.dirname(dst), "pages", os.path.basename(dst), page)
 
     @property
     def cover(self):
@@ -63,24 +62,26 @@ class Thabloid(models.Model):
 
     @property
     def pages(self):
-        pages = os.listdir(os.path.join(settings.MEDIA_ROOT,
-                                        os.path.dirname(self.page_url())))
+        pages = os.listdir(
+            os.path.join(settings.MEDIA_ROOT, os.path.dirname(self.page_url()))
+        )
         count = len(pages) * 2 - 1
         return map(lambda p: self.page_url(p[0], p[1]), self.pagesets(count))
 
     def get_absolute_url(self):
-        return reverse('thabloid:pages', kwargs={'year': self.year,
-                                                 'issue': self.issue})
+        return reverse(
+            "thabloid:pages", kwargs={"year": self.year, "issue": self.issue}
+        )
 
     def post_extract(self):
-        pages = os.listdir(os.path.join(settings.MEDIA_ROOT,
-                                        os.path.dirname(self.page_url())))
+        pages = os.listdir(
+            os.path.join(settings.MEDIA_ROOT, os.path.dirname(self.page_url()))
+        )
         pages = [self.page_url(i + 1) for i in range(len(pages))]
         pages = sorted(pages)
         pages = pages[1:-1]
         count = int(len(pages) / 2)
-        dirname = os.path.join(settings.MEDIA_ROOT,
-                               os.path.dirname(self.page_url()))
+        dirname = os.path.join(settings.MEDIA_ROOT, os.path.dirname(self.page_url()))
 
         for i in range(0, count):
             i = i * 2
@@ -94,11 +95,13 @@ class Thabloid(models.Model):
             img_right = Image.open(spread_right)
             result.paste(img_right, (1050, 0, 2100, 1485))
 
-            filename = (os.path.splitext(
-                os.path.basename(spread_left))[0] + '-' +
-                        os.path.splitext(os.path.basename(spread_right))[0] +
-                        '.png')
-            result.save(os.path.join(dirname, filename), 'PNG')
+            filename = (
+                os.path.splitext(os.path.basename(spread_left))[0]
+                + "-"
+                + os.path.splitext(os.path.basename(spread_right))[0]
+                + ".png"
+            )
+            result.save(os.path.join(dirname, filename), "PNG")
 
             os.remove(spread_left)
             os.remove(spread_right)
@@ -116,14 +119,22 @@ class Thabloid(models.Model):
 
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         # TODO reconsider if this resolution / quality is sufficient
-        thread = PopenAndCall(self.post_extract,
-                              ['gs', '-o', dst,
-                               # '-g2100x2970', '-dPDFFitPage',
-                               '-g1050x1485', '-dPDFFitPage',
-                               '-dTextAlphaBits=4',
-                               '-sDEVICE=png16m', '-f', src],
-                              stdout=subprocess.DEVNULL
-                              )
+        thread = PopenAndCall(
+            self.post_extract,
+            [
+                "gs",
+                "-o",
+                dst,
+                # '-g2100x2970', '-dPDFFitPage',
+                "-g1050x1485",
+                "-dPDFFitPage",
+                "-dTextAlphaBits=4",
+                "-sDEVICE=png16m",
+                "-f",
+                src,
+            ],
+            stdout=subprocess.DEVNULL,
+        )
         if wait:
             thread.join()
 
@@ -151,8 +162,10 @@ class Thabloid(models.Model):
                     pass
 
                 os.rename(old_dir, new_dir)
-                os.rename(os.path.join(settings.MEDIA_ROOT, old.file.name),
-                          os.path.join(settings.MEDIA_ROOT, self.file.name))
+                os.rename(
+                    os.path.join(settings.MEDIA_ROOT, old.file.name),
+                    os.path.join(settings.MEDIA_ROOT, self.file.name),
+                )
 
         if new_file:
             filename = thabloid_filename(self, self.file.name)

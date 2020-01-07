@@ -9,25 +9,29 @@ from photos.models import Album, Photo
 
 
 class Command(BaseCommand):
-    help = ("Imports a photo album based on a directory of images. "
-            "This is done per album, to avoid having to have sufficient "
-            "storage space available for two copies of every album.")
+    help = (
+        "Imports a photo album based on a directory of images. "
+        "This is done per album, to avoid having to have sufficient "
+        "storage space available for two copies of every album."
+    )
 
     def add_arguments(self, parser):
-        parser.add_argument('folder', help='Specify album folder.')
+        parser.add_argument("folder", help="Specify album folder.")
 
     def handle(self, *args, **options):
-        if not os.path.isdir(options['folder']):
+        if not os.path.isdir(options["folder"]):
             raise Exception("You must specify a directory to import")
 
-        foldername = os.path.relpath(options['folder'])
-        album, date, title = foldername.split('_', maxsplit=2)
-        date = parse_date('{}-{}-{}'.format(date[:4], date[4:6], date[6:]))
-        slug = slugify('-'.join([str(date), title]))
+        foldername = os.path.relpath(options["folder"])
+        album, date, title = foldername.split("_", maxsplit=2)
+        date = parse_date("{}-{}-{}".format(date[:4], date[4:6], date[6:]))
+        slug = slugify("-".join([str(date), title]))
 
         if Album.objects.filter(title=title, date=date).exists():
-            self.stdout.write("An album with title ({}) and"
-                              " date ({}) already exists.".format(title, date))
+            self.stdout.write(
+                "An album with title ({}) and"
+                " date ({}) already exists.".format(title, date)
+            )
             return
 
         self.stdout.write("Importing album '{}' ({})".format(title, str(date)))
@@ -35,15 +39,14 @@ class Command(BaseCommand):
         album.save()
 
         n = 0
-        for filename in os.listdir(options['folder']):
+        for filename in os.listdir(options["folder"]):
             try:
                 photo = Photo(album=album)
-                file = open(os.path.join(options['folder'], filename), 'rb')
+                file = open(os.path.join(options["folder"], filename), "rb")
                 photo.file.save(filename, File(file))
                 photo.save()
                 n += 1
             except Exception:
                 self.stdout.write("Could not import {}".format(filename))
 
-        self.stdout.write("Imported {} photos from {}"
-                          .format(n, options['folder']))
+        self.stdout.write("Imported {} photos from {}".format(n, options["folder"]))

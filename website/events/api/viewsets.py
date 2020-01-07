@@ -9,7 +9,7 @@ from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import (
     IsAuthenticated,
     IsAdminUser,
-    IsAuthenticatedOrReadOnly
+    IsAuthenticatedOrReadOnly,
 )
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
@@ -24,7 +24,7 @@ from events.api.serializers import (
     EventListSerializer,
     RegistrationListSerializer,
     RegistrationAdminListSerializer,
-    RegistrationSerializer
+    RegistrationSerializer,
 )
 from events.exceptions import RegistrationError
 from events.models import Event, Registration
@@ -36,17 +36,26 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
     Defines the viewset for events, requires an authenticated user
     and enables ordering on the event start/end.
     """
+
     queryset = Event.objects.filter(published=True)
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter,)
-    ordering_fields = ('start', 'end')
-    search_fields = ('title_en', 'title_nl',)
+    filter_backends = (
+        filters.OrderingFilter,
+        filters.SearchFilter,
+    )
+    ordering_fields = ("start", "end")
+    search_fields = (
+        "title_en",
+        "title_nl",
+    )
 
     def get_queryset(self):
         queryset = Event.objects.filter(published=True)
 
-        if (self.action == 'retrieve' or
-                api_settings.SEARCH_PARAM in self.request.query_params):
+        if (
+            self.action == "retrieve"
+            or api_settings.SEARCH_PARAM in self.request.query_params
+        ):
             return queryset
 
         start, end = extract_date_range(self.request, allow_empty=True)
@@ -61,17 +70,16 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return EventListSerializer
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return EventRetrieveSerializer
         return EventCalenderJSSerializer
 
     def get_serializer_context(self):
         return super().get_serializer_context()
 
-    @action(detail=True, methods=['get', 'post'],
-            permission_classes=(IsAuthenticated,))
+    @action(detail=True, methods=["get", "post"], permission_classes=(IsAuthenticated,))
     def registrations(self, request, pk):
         """
         Defines a custom route for the event's registrations,
@@ -83,44 +91,47 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         """
         event = get_object_or_404(Event, pk=pk)
 
-        if request.method.lower() == 'post':
+        if request.method.lower() == "post":
             try:
-                registration = services.create_registration(
-                    request.member, event)
+                registration = services.create_registration(request.member, event)
                 serializer = RegistrationSerializer(
-                    instance=registration,
-                    context={'request': request}
+                    instance=registration, context={"request": request}
                 )
                 return Response(status=201, data=serializer.data)
             except RegistrationError as e:
                 raise PermissionDenied(detail=e)
 
-        status = request.query_params.get('status', None)
+        status = request.query_params.get("status", None)
 
         # Make sure you can only access other registrations when you have
         # the permissions to do so
         if not services.is_organiser(request.member, event):
-            status = 'registered'
+            status = "registered"
 
         queryset = Registration.objects.filter(event=pk)
         if status is not None:
-            if status == 'queued':
+            if status == "queued":
+                queryset = Registration.objects.filter(event=pk, date_cancelled=None)[
+                    event.max_participants :
+                ]
+            elif status == "cancelled":
                 queryset = Registration.objects.filter(
-                    event=pk, date_cancelled=None)[event.max_participants:]
-            elif status == 'cancelled':
-                queryset = Registration.objects.filter(
-                    event=pk, date_cancelled__not=None)
-            elif status == 'registered':
-                queryset = Registration.objects.filter(
-                    event=pk, date_cancelled=None)[:event.max_participants]
+                    event=pk, date_cancelled__not=None
+                )
+            elif status == "registered":
+                queryset = Registration.objects.filter(event=pk, date_cancelled=None)[
+                    : event.max_participants
+                ]
 
-        context = {'request': request}
+        context = {"request": request}
         if services.is_organiser(self.request.member, event):
-            serializer = RegistrationAdminListSerializer(queryset, many=True,
-                                                         context=context)
+            serializer = RegistrationAdminListSerializer(
+                queryset, many=True, context=context
+            )
         else:
-            serializer = RegistrationListSerializer(queryset, many=True,
-                                                    context=context)
+            serializer = RegistrationListSerializer(
+                queryset, many=True, context=context
+            )
 
         return Response(serializer.data)
 
@@ -135,18 +146,16 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         """
         start, end = extract_date_range(request)
 
-        queryset = Event.objects.filter(
-            end__gte=start,
-            start__lte=end,
-            published=True
-        )
+        queryset = Event.objects.filter(end__gte=start, start__lte=end, published=True)
 
         serializer = EventCalenderJSSerializer(
-                queryset, many=True, context={'member': request.member})
+            queryset, many=True, context={"member": request.member}
+        )
         return Response(serializer.data)
 
-    @action(detail=False,
-            permission_classes=(IsAdminUser, UnpublishedEventPermissions,))
+    @action(
+        detail=False, permission_classes=(IsAdminUser, UnpublishedEventPermissions,)
+    )
     def unpublished(self, request):
         """
         Defines a custom route that outputs the correctly formatted
@@ -157,37 +166,34 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         """
         start, end = extract_date_range(request)
 
-        queryset = Event.objects.filter(
-            end__gte=start,
-            start__lte=end,
-            published=False
-        )
+        queryset = Event.objects.filter(end__gte=start, start__lte=end, published=False)
 
         serializer = UnpublishedEventSerializer(
-                queryset, many=True, context={'member': request.member})
+            queryset, many=True, context={"member": request.member}
+        )
         return Response(serializer.data)
 
 
-class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
-                          UpdateModelMixin):
+class RegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     """
     Defines the viewset for registrations, requires an authenticated user.
     Has custom update and destroy methods that use the services.
     """
+
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = [IsAuthenticated]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['request'] = self.request
+        context["request"] = self.request
         return context
 
     def get_object(self):
         instance = super().get_object()
-        if ((instance.name or instance.member.pk != self.request.member.pk) and
-                not services.is_organiser(self.request.member,
-                                          instance.event)):
+        if (
+            instance.name or instance.member.pk != self.request.member.pk
+        ) and not services.is_organiser(self.request.member, instance.event):
             raise NotFound()
 
         return instance
@@ -202,24 +208,26 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin,
         registration = serializer.instance
 
         member = self.request.member
-        if (member and member.has_perm('events.change_registration') and
-                services.is_organiser(member, registration.event)):
+        if (
+            member
+            and member.has_perm("events.change_registration")
+            and services.is_organiser(member, registration.event)
+        ):
             services.update_registration_by_organiser(
-                registration,
-                self.request.member,
-                serializer.validated_data)
+                registration, self.request.member, serializer.validated_data
+            )
 
-        services.update_registration(registration=registration,
-                                     field_values=serializer.field_values())
+        services.update_registration(
+            registration=registration, field_values=serializer.field_values()
+        )
         serializer.information_fields = services.registration_fields(
-            serializer.context['request'],
-            registration=registration)
+            serializer.context["request"], registration=registration
+        )
 
     def destroy(self, request, pk=None, **kwargs):
         registration = self.get_object()
         try:
-            services.cancel_registration(registration.member,
-                                         registration.event)
+            services.cancel_registration(registration.member, registration.event)
             return Response(status=204)
         except RegistrationError as e:
             raise PermissionDenied(detail=e)

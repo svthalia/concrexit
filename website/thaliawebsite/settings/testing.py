@@ -9,13 +9,13 @@ import logging
 from .settings import MIDDLEWARE
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'thalia',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'postgres',
-        'PORT': 5432,
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "thalia",
+        "USER": "postgres",
+        "PASSWORD": "",
+        "HOST": "postgres",
+        "PORT": 5432,
     },
 }
 
@@ -25,12 +25,13 @@ DEBUG = False
 logging.disable(logging.CRITICAL)
 
 # Fasters hashing
-PASSWORD_HASHERS = (
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-)
+PASSWORD_HASHERS = ("django.contrib.auth.hashers.MD5PasswordHasher",)
 
 # Strip unneeded middlewares
-_ = [MIDDLEWARE.remove(x) for x in (
-    'django.middleware.http.ConditionalGetMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-)]
+_ = [
+    MIDDLEWARE.remove(x)
+    for x in (
+        "django.middleware.http.ConditionalGetMiddleware",
+        "django.middleware.csrf.CsrfViewMiddleware",
+    )
+]

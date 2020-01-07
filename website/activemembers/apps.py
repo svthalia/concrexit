@@ -5,8 +5,9 @@ from django.utils.translation import gettext_lazy as _
 
 class ActiveMembersConfig(AppConfig):
     """AppConfig for the activemembers package"""
-    name = 'activemembers'
-    verbose_name = _('Active members')
+
+    name = "activemembers"
+    verbose_name = _("Active members")
 
     def ready(self):
         """Imports the signals when the app is ready"""

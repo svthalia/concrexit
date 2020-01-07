@@ -9,36 +9,36 @@ class DeviceSerializer(ModelSerializer):
     receive_category = ManyRelatedField(
         allow_empty=True,
         required=False,
-        child_relation=PrimaryKeyRelatedField(allow_empty=True,
-                                              queryset=Category.objects.all(),
-                                              required=False)
+        child_relation=PrimaryKeyRelatedField(
+            allow_empty=True, queryset=Category.objects.all(), required=False
+        ),
     )
 
     class Meta:
         model = Device
 
         fields = (
-            'pk',
-            'registration_id',
-            'active',
-            'date_created',
-            'type',
-            'receive_category'
+            "pk",
+            "registration_id",
+            "active",
+            "date_created",
+            "type",
+            "receive_category",
         )
-        read_only_fields = ('date_created',)
+        read_only_fields = ("date_created",)
 
-        extra_kwargs = {'active': {'default': True}}
+        extra_kwargs = {"active": {"default": True}}
 
 
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
 
-        fields = ('key', 'name', 'description')
+        fields = ("key", "name", "description")
 
 
 class MessageSerializer(ModelSerializer):
     class Meta:
         model = Message
 
-        fields = ('pk', 'title', 'body', 'url', 'category', 'sent')
+        fields = ("pk", "title", "body", "url", "category", "sent")

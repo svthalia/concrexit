@@ -5,5 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 class PaymentsConfig(AppConfig):
     """AppConfig for the payments package"""
-    name = 'payments'
-    verbose_name = _('Payments')
+
+    name = "payments"
+    verbose_name = _("Payments")

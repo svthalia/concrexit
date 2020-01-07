@@ -15,8 +15,10 @@ def create_models_test_class(classname):
     :return: An instance of the TestCase class with generated tests
 
     """
+
     def create_model_test_function(name, test_model):
         """Create a test function that tests database model test_model."""
+
         def str_function_is_overwritten_for(self):
             """Check if the test_model overrides __str__ by comparing the
             implementation to the super class version."""
@@ -25,10 +27,7 @@ def create_models_test_class(classname):
             try:
                 # the implemented __str__ method should be different from the
                 # __str__ function in the parent class (Model)
-                self.assertNotEqual(
-                    str(instance),
-                    models.Model.__str__(instance)
-                )
+                self.assertNotEqual(str(instance), models.Model.__str__(instance))
             except (ObjectDoesNotExist, AttributeError, KeyError, TypeError):
                 # if the __str__ method relies on any fields which were not
                 # instantiated, it throws a derivative of ObjectDoesNotExist,
@@ -38,7 +37,7 @@ def create_models_test_class(classname):
 
         # the testing framework uses qualname to print the method name and
         # its class
-        str_function_is_overwritten_for.__qualname__ = f'{classname}.{name}'
+        str_function_is_overwritten_for.__qualname__ = f"{classname}.{name}"
         str_function_is_overwritten_for.__name__ = name
         return str_function_is_overwritten_for
 
@@ -46,7 +45,7 @@ def create_models_test_class(classname):
     # django keeps track of the models it knows of, and we can request that
     # here by default these are only the models implemented by the project
     for model in apps.get_models():
-        funcname = f'test_str_method_overwritten_for_{model.__name__}'
+        funcname = f"test_str_method_overwritten_for_{model.__name__}"
         tests[funcname] = create_model_test_function(funcname, model)
 
     # type() is the class constructor, it's arguments are
@@ -57,4 +56,4 @@ def create_models_test_class(classname):
 
 
 # create the class to be picked up by the django test runner
-ModelsTest = create_models_test_class('ModelsTest')
+ModelsTest = create_models_test_class("ModelsTest")

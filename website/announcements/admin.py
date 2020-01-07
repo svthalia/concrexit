@@ -15,7 +15,7 @@ class AnnouncementAdmin(TranslatedModelAdmin):
     #: show these fields in the admin overview list
     #: see :py:method:content_html for the 'content_html' field
     #: see :py:method:visible for the visible field
-    list_display = ('content_html', 'since', 'until', 'visible')
+    list_display = ("content_html", "since", "until", "visible")
 
     def content_html(self, obj):  # pylint: disable=no-self-use
         """Get the content of the object as html
@@ -30,6 +30,7 @@ class AnnouncementAdmin(TranslatedModelAdmin):
     def visible(self, obj):  # pylint: disable=no-self-use
         """Is the object visible"""
         return obj.is_visible
+
     visible.boolean = True
 
 
@@ -38,11 +39,12 @@ class FrontpageArticleAdmin(TranslatedModelAdmin):
     """Manage front page articles"""
 
     #: available fields in the admin overview list
-    list_display = ('title', 'since', 'until', 'visible')
+    list_display = ("title", "since", "until", "visible")
 
     def visible(self, obj):  # pylint: disable=no-self-use
         """Is the object visible"""
         return obj.is_visible
+
     visible.boolean = True
 
 
@@ -52,9 +54,10 @@ class SlideAdmin(TranslatedModelAdmin):
 
     #: show these fields in the admin overview list
     #: see :py:method:visible for the visible field
-    list_display = ('title', 'since', 'until', 'visible')
+    list_display = ("title", "since", "until", "visible")
 
     def visible(self, obj):  # pylint: disable=no-self-use
         """Is the object visible"""
         return obj.is_visible
+
     visible.boolean = True

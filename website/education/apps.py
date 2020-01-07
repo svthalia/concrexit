@@ -5,5 +5,6 @@ from django.utils.translation import gettext_lazy as _
 
 class EducationConfig(AppConfig):
     """AppConfig for the education package"""
-    name = 'education'
-    verbose_name = _('Education')
+
+    name = "education"
+    verbose_name = _("Education")

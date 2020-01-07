@@ -7,7 +7,7 @@ from pushnotifications.models import Message
 
 
 @staff_member_required
-@permission_required('pushnotifications.change_message')
+@permission_required("pushnotifications.change_message")
 def admin_send(request, pk):
     """
     Send the provided push notification
@@ -18,4 +18,4 @@ def admin_send(request, pk):
     """
     message = get_object_or_404(Message, pk=pk)
     message.send()
-    return redirect('admin:pushnotifications_message_changelist')
+    return redirect("admin:pushnotifications_message_changelist")

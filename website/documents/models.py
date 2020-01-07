@@ -9,202 +9,183 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 class Document(models.Model, metaclass=ModelTranslateMeta):
     """Describes a base document"""
+
     class Meta:
-        verbose_name = _('Document')
-        verbose_name_plural = _('Documents')
+        verbose_name = _("Document")
+        verbose_name_plural = _("Documents")
 
     DOCUMENT_CATEGORIES = (
-        ('annual', _('Annual document')),
-        ('association', _('Association document')),
-        ('event', _('Event document')),
-        ('minutes', _('Minutes')),
-        ('misc', _('Miscellaneous document')),
+        ("annual", _("Annual document")),
+        ("association", _("Association document")),
+        ("event", _("Event document")),
+        ("minutes", _("Minutes")),
+        ("misc", _("Miscellaneous document")),
     )
 
-    name = MultilingualField(
-        models.CharField,
-        verbose_name=_('name'),
-        max_length=200
-    )
+    name = MultilingualField(models.CharField, verbose_name=_("name"), max_length=200)
 
-    created = models.DateTimeField(
-        verbose_name=_('created'),
-        auto_now_add=True,
-    )
+    created = models.DateTimeField(verbose_name=_("created"), auto_now_add=True,)
 
-    last_updated = models.DateTimeField(
-        verbose_name=_('last updated'),
-        auto_now=True
-    )
+    last_updated = models.DateTimeField(verbose_name=_("last updated"), auto_now=True)
 
     category = models.CharField(
         max_length=40,
         choices=DOCUMENT_CATEGORIES,
-        verbose_name=_('category'),
-        default='misc',
+        verbose_name=_("category"),
+        default="misc",
     )
 
     file = MultilingualField(
         models.FileField,
-        verbose_name=_('file'),
-        upload_to='documents/',
-        validators=[FileExtensionValidator(
-            ['txt', 'pdf', 'jpg', 'jpeg', 'png'])],
+        verbose_name=_("file"),
+        upload_to="documents/",
+        validators=[FileExtensionValidator(["txt", "pdf", "jpg", "jpeg", "png"])],
     )
 
-    members_only = models.BooleanField(
-        verbose_name=_('members only'),
-        default=False
-    )
+    members_only = models.BooleanField(verbose_name=_("members only"), default=False)
 
     def get_absolute_url(self):
-        return reverse('documents:document', kwargs={'pk': self.pk})
+        return reverse("documents:document", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return '%s (%s)' % (self.name, str(self.created.date()))
+        return "%s (%s)" % (self.name, str(self.created.date()))
 
 
 class AnnualDocument(Document):
     """Describes an annual document"""
+
     class Meta:
-        verbose_name = _('Annual document')
-        verbose_name_plural = _('Annual documents')
-        unique_together = ('subcategory', 'year')
+        verbose_name = _("Annual document")
+        verbose_name_plural = _("Annual documents")
+        unique_together = ("subcategory", "year")
 
     SUBCATEGORIES = (
-        ('report', _('Annual report')),
-        ('financial', _('Financial report')),
-        ('policy', _('Policy document')),
+        ("report", _("Annual report")),
+        ("financial", _("Financial report")),
+        ("policy", _("Policy document")),
     )
 
     subcategory = models.CharField(
         max_length=40,
         choices=SUBCATEGORIES,
-        verbose_name=_('category'),
-        default='report',
+        verbose_name=_("category"),
+        default="report",
     )
 
     year = models.IntegerField(
-        verbose_name=_('year'),
-        validators=[MinValueValidator(1990)],
+        verbose_name=_("year"), validators=[MinValueValidator(1990)],
     )
 
     def save(self, *args, **kwargs):
-        self.category = 'annual'
-        if self.subcategory == 'report':
-            self.name_en = 'Annual report %d' % self.year
-            self.name_nl = 'Jaarverslag %d' % self.year
-        elif self.subcategory == 'financial':
-            self.name_en = 'Financial report %d' % self.year
-            self.name_nl = 'Financieel jaarverslag %d' % self.year
+        self.category = "annual"
+        if self.subcategory == "report":
+            self.name_en = "Annual report %d" % self.year
+            self.name_nl = "Jaarverslag %d" % self.year
+        elif self.subcategory == "financial":
+            self.name_en = "Financial report %d" % self.year
+            self.name_nl = "Financieel jaarverslag %d" % self.year
         else:
-            self.name_en = 'Policy document %d' % self.year
-            self.name_nl = 'Beleidsdocument %d' % self.year
+            self.name_en = "Policy document %d" % self.year
+            self.name_nl = "Beleidsdocument %d" % self.year
         super().save(*args, **kwargs)
 
 
 class AssociationDocumentManager(models.Manager):
     """Custom manager to filter for association documents"""
+
     def get_queryset(self):
-        return super().get_queryset().filter(category='association')
+        return super().get_queryset().filter(category="association")
 
 
 class AssociationDocument(Document):
     """Describes an association document"""
+
     class Meta:
-        verbose_name = _('Miscellaneous association document')
-        verbose_name_plural = _('Miscellaneous association documents')
+        verbose_name = _("Miscellaneous association document")
+        verbose_name_plural = _("Miscellaneous association documents")
         proxy = True
 
     objects = AssociationDocumentManager()
 
     def save(self, *args, **kwargs):
-        self.category = 'association'
+        self.category = "association"
         super().save(*args, **kwargs)
 
 
 class EventDocument(Document):
     """Describes a document for events"""
+
     class Meta:
-        verbose_name = _('event document')
-        verbose_name_plural = _('event documents')
-        permissions = (
-            ("override_owner", "Can access event document as if owner"),
-        )
+        verbose_name = _("event document")
+        verbose_name_plural = _("event documents")
+        permissions = (("override_owner", "Can access event document as if owner"),)
 
     owner = models.ForeignKey(
-        'activemembers.MemberGroup',
-        verbose_name=_('owner'),
-        on_delete=models.CASCADE,
+        "activemembers.MemberGroup", verbose_name=_("owner"), on_delete=models.CASCADE,
     )
 
     def save(self, *args, **kwargs):
-        self.category = 'event'
+        self.category = "event"
         super().save(*args, **kwargs)
 
 
 class MiscellaneousDocumentManager(models.Manager):
     """Custom manager to filter for misc documents"""
+
     def get_queryset(self):
-        return super().get_queryset().filter(category='misc')
+        return super().get_queryset().filter(category="misc")
 
 
 class MiscellaneousDocument(Document):
     """Describes a miscellaneous document"""
+
     class Meta:
-        verbose_name = _('Miscellaneous document')
-        verbose_name_plural = _('Miscellaneous documents')
+        verbose_name = _("Miscellaneous document")
+        verbose_name_plural = _("Miscellaneous documents")
         proxy = True
 
     objects = MiscellaneousDocumentManager()
 
     def save(self, *args, **kwargs):
-        self.category = 'misc'
+        self.category = "misc"
         super().save(*args, **kwargs)
 
 
 class GeneralMeeting(models.Model, metaclass=ModelTranslateMeta):
     """Describes a general meeting"""
+
     class Meta:
-        verbose_name = _('General meeting')
-        verbose_name_plural = _('General meetings')
-        ordering = ['datetime']
+        verbose_name = _("General meeting")
+        verbose_name_plural = _("General meetings")
+        ordering = ["datetime"]
 
     documents = models.ManyToManyField(
-        Document,
-        verbose_name=_('documents'),
-        blank=True,
+        Document, verbose_name=_("documents"), blank=True,
     )
 
-    datetime = models.DateTimeField(
-        verbose_name=_('datetime'),
-    )
+    datetime = models.DateTimeField(verbose_name=_("datetime"),)
 
     location = MultilingualField(
-        models.CharField,
-        verbose_name=_('location'),
-        max_length=200
+        models.CharField, verbose_name=_("location"), max_length=200
     )
 
     def __str__(self):
-        return timezone.localtime(self.datetime).strftime('%Y-%m-%d')
+        return timezone.localtime(self.datetime).strftime("%Y-%m-%d")
 
 
 class Minutes(Document):
     """Describes a minutes document"""
+
     class Meta:
-        verbose_name = _('Minutes')
-        verbose_name_plural = _('Minutes')
+        verbose_name = _("Minutes")
+        verbose_name_plural = _("Minutes")
 
     meeting = models.OneToOneField(
-        GeneralMeeting,
-        blank=True,
-        null=True,
-        on_delete=models.CASCADE
+        GeneralMeeting, blank=True, null=True, on_delete=models.CASCADE
     )
 
     def save(self, *args, **kwargs):
-        self.category = 'minutes'
-        self.name_en = 'Minutes %s' % str(self.meeting.datetime.date())
-        self.name_nl = 'Notulen %s' % str(self.meeting.datetime.date())
+        self.category = "minutes"
+        self.name_en = "Minutes %s" % str(self.meeting.datetime.date())
+        self.name_nl = "Notulen %s" % str(self.meeting.datetime.date())
         super().save(*args, **kwargs)

@@ -28,9 +28,8 @@ Testing and linting
 You can use [`pyenv`](https://github.com/pyenv/pyenv) (on Unix systems) to test in different python
 environments.
 
-The linter can be run in the `poetry shell` or by running
-
-    poetry run flake8 website
+All code has to be run through [`black`](https://github.com/psf/black) before being committed. To black the code before committing make run `black` one the base directory of this project.
+If you want to integrate `black` with your editor look in the [`black` docs](https://black.readthedocs.io/en/stable/editor_integration.html). On linux you can find the black executable in `~/.cache/poety/virtualenvs/<your env>/bin/black`.
 
 There are a range of tests that can be run:
 

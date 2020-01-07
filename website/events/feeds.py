@@ -11,45 +11,45 @@ from events.models import Event, FeedToken
 
 class EventFeed(ICalFeed):
     """Output an iCal feed containing all published events"""
-    def __init__(self, lang='en'):
+
+    def __init__(self, lang="en"):
         super().__init__()
         self.lang = lang
         self.user = None
 
     def __call__(self, request, *args, **kwargs):
-        if 'u' in request.GET:
-            self.user = FeedToken.get_member(request.GET['u'])
+        if "u" in request.GET:
+            self.user = FeedToken.get_member(request.GET["u"])
         else:
             self.user = None
 
         return super().__call__(request, args, kwargs)
 
     def product_id(self):
-        return f'-//{settings.SITE_DOMAIN}//EventCalendar//{self.lang.upper()}'
+        return f"-//{settings.SITE_DOMAIN}//EventCalendar//{self.lang.upper()}"
 
     def file_name(self):
         return "thalia_{}.ics".format(self.lang)
 
     def title(self):
         activate(self.lang)
-        return _('Study Association Thalia event calendar')
+        return _("Study Association Thalia event calendar")
 
     def items(self):
         query = Q(published=True)
 
         if self.user:
-            query &= (Q(registration_start__isnull=True) |
-                      (Q(registration__member=self.user)
-                       & Q(registration__date_cancelled=None)))
+            query &= Q(registration_start__isnull=True) | (
+                Q(registration__member=self.user) & Q(registration__date_cancelled=None)
+            )
 
-        return Event.objects.filter(query).order_by('-start')
+        return Event.objects.filter(query).order_by("-start")
 
     def item_title(self, item):
         return item.title
 
     def item_description(self, item):
-        return (f'{item.description} <a href="'
-                f'{self.item_link(item)}">Website</a>')
+        return f'{item.description} <a href="' f'{self.item_link(item)}">Website</a>'
 
     def item_start_datetime(self, item):
         return item.start
@@ -58,10 +58,7 @@ class EventFeed(ICalFeed):
         return item.end
 
     def item_link(self, item):
-        return (
-            settings.BASE_URL +
-            reverse('events:event', kwargs={'pk': item.id})
-        )
+        return settings.BASE_URL + reverse("events:event", kwargs={"pk": item.id})
 
     def item_location(self, item):
         return "{} - {}".format(item.location, item.map_location)
