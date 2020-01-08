@@ -1,10 +1,12 @@
+import datetime
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member
-from payments.models import Payment, BankAccount, Payable
+from payments.models import Payment, BankAccount, Batch, Payable
 
 
 class PayableTest(TestCase):
@@ -79,6 +81,103 @@ class PaymentTest(TestCase):
         Tests that the output is a description with the amount
         """
         self.assertEqual("Payment of 10", str(self.payment))
+
+
+@freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True)
+class BatchModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user1 = Member.objects.create(
+            pk=1,
+            username="test1",
+            first_name="Test1",
+            last_name="Example",
+            email="test1@example.org",
+            is_staff=False,
+        )
+        cls.user2 = Member.objects.create(
+            pk=2,
+            username="test2",
+            first_name="Test2",
+            last_name="Example",
+            email="test2@example.org",
+            is_staff=True,
+        )
+
+    def test_start_date_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        payment1 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=37,
+            processing_date=timezone.now() + datetime.timedelta(days=1),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=36,
+            processing_date=timezone.now(),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        self.assertEqual(batch.start_date, timezone.now())
+
+    def test_end_date_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        payment1 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=37,
+            processing_date=timezone.now() + datetime.timedelta(days=1),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=36,
+            processing_date=timezone.now(),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        self.assertEqual(batch.end_date, timezone.now() + datetime.timedelta(days=1))
+
+    def test_description_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        now = timezone.now()
+        last_month = datetime.datetime(now.year, now.month, 1) - datetime.timedelta(
+            days=1)
+        self.assertEqual(batch.description,
+                         f"your Thalia payments for {last_month.year}-{last_month.month}")
+
+    def test_proccess_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        batch.processed = True
+        batch.save()
+        self.assertEqual(batch.processing_date, timezone.now())
+
+    def test_total_amount_batch(self) -> None:
+        batch = Batch.objects.create(id=1)
+        payment1 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=37,
+            processing_date=timezone.now() + datetime.timedelta(days=1),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            type=Payment.TPAY,
+            amount=36,
+            processing_date=timezone.now(),
+            paid_by=self.user1,
+            processed_by=self.user2,
+            batch=batch,
+        )
+        self.assertEqual(batch.total_amount, 36+37)
 
 
 @freeze_time("2019-01-01")

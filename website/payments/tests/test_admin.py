@@ -482,6 +482,28 @@ class ValidAccountFilterTest(TestCase):
 
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True)
+class BatchAdminTest(TestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user = Member.objects.create(
+            username="test1",
+            first_name="Test1",
+            last_name="Example",
+            email="test1@example.org",
+            is_staff=True,
+            is_superuser=True,
+        )
+
+    def setUp(self) -> None:
+        self.site = AdminSite()
+        self.admin = admin.BankAccountAdmin(BankAccount, admin_site=self.site)
+        self.rf = RequestFactory()
+
+    def
+
+
+@freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True)
 class BankAccountAdminTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
