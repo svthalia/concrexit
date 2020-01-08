@@ -47,11 +47,102 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 
 .module {
     background: $card-background;
+    color: $card-background-contrast;
 
-    caption, h2, caption {
-        background-color: $preset;
+    caption, h2, a.section:link, a.section:visited {
+        background-color: $preset !important;
+        color: $preset-contrast !important;
+        font-family: $header-font;
+        text-transform: uppercase;
     }
 }
+
+#changelist {
+    background: $background-color;
+}
+
+#changelist .actions, #changelist .paginator, #changelist #toolbar, #changelist .actions label {
+    background: $preset !important;
+    color: $preset-contrast !important;
+    font-family: $header-font !important;
+    text-transform: uppercase !important;
+}
+
+#changelist #toolbar, #changelist .paginator {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.inline-related fieldset {
+    background-color: $card-background !important;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.inline-related h3 {
+    border-top: 0;
+    border-bottom: 0;
+    color: $card-background-hover-contrast !important;
+    background: $card-background-hover !important;
+}
+.inline-group div.add-row, .inline-group .tabular tr.add-row td {
+    border-bottom: 0 !important;
+}
+
+.form-row:last-child, tr:last-child td, tr:last-child th {
+    border-bottom: 0 !important;
+}
+
+.form-row, td, th {
+    border-color: $card-background-hover !important;
+}
+
+.submit-row {
+    background: $card-background !important;
+    color: $card-background-contrast !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+label {
+    color: $text-color !important;
+}
+
+thead th {
+    border-top: 0;
+    background: $card-background;
+    color: $card-background-contrast;
+}
+
+thead th a:link, thead th a:visited, thead th.required {
+    color: $card-background-contrast;
+}
+
+thead th.sorted, table thead th .text a:focus, table thead th .text a:hover {
+    background: $card-background-hover;
+}
+
+.change-list ul.toplinks .date-back a:focus,
+.change-list ul.toplinks .date-back a:hover {
+    color: $preset !important;
+}
+
+
+tr.alt, .inline-group div.add-row,
+.inline-group .tabular tr.add-row td {
+    background: $background-color !important;
+}
+
+.row1, .row2, .row, #result_list tbody tr {
+    background: $background-color;
+}
+
+#changelist table tbody tr.selected {
+    background-color: $background-shade !important;
+}
+
+
+
 
 #content-related, #content-related .module, #changelist-filter {
     background-color: $card-background !important;
@@ -93,10 +184,22 @@ a.section:link, a.section:visited {
     background-color: $preset-hover;
 }
 
-.inline-related fieldset {
-    background-color: $background-color !important;
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background-color: $preset;
+    color: $preset-contrast;
+    border-radius: 0;
+    font-family: $header-font;
+    text-transform: uppercase;
+}
+.button:active, input[type=submit]:active, input[type=button]:active, .button:focus, input[type=submit]:focus, input[type=button]:focus, .button:hover, input[type=submit]:hover, input[type=button]:hover {
+    background-color: $preset-hover;
+    color: $preset-contrast-hover;
 }
 
-label {
-    color: $text-color !important;
+#content-main .module {
+    background-color: $background-color;
+
+    table {
+        background-color: $card-background !important;
+    }
 }
