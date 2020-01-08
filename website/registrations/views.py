@@ -221,9 +221,12 @@ class RenewalFormView(FormView):
         ).exists()
         context["benefactor_type"] = Membership.BENEFACTOR
         context["latest_renewal"] = Renewal.objects.filter(
-            Q(member=self.request.member) &
-            (Q(status=Registration.STATUS_ACCEPTED) |
-             Q(status=Registration.STATUS_REVIEW))).last()
+            Q(member=self.request.member)
+            & (
+                Q(status=Registration.STATUS_ACCEPTED)
+                | Q(status=Registration.STATUS_REVIEW)
+            )
+        ).last()
         return context
 
     def get_form(self, form_class=None):
@@ -323,7 +326,7 @@ class ReferenceCreateView(CreateView):
         return super().post(request, *args, **kwargs)
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class RenewalPayView(View):
     """
     Defines a view that allows the user to add a Thalia Pay payment to
@@ -331,13 +334,14 @@ class RenewalPayView(View):
     """
 
     def get(self, request, *args, **kwargs):
-        return redirect('registrations:renew')
+        return redirect("registrations:renew")
 
     def post(self, request, *args, **kwargs):
-        renewal = get_object_or_404(Renewal, member=self.request.member,
-                                    status=Entry.STATUS_ACCEPTED)
+        renewal = get_object_or_404(
+            Renewal, member=self.request.member, status=Entry.STATUS_ACCEPTED
+        )
 
         services.process_tpay_payment(renewal)
         messages.success(request, _("You have paid with Thalia Pay."))
 
-        return redirect('registrations:renew-completed')
+        return redirect("registrations:renew-completed")
