@@ -305,11 +305,16 @@ description = "Country-specific Django helpers"
 name = "django-localflavor"
 optional = false
 python-versions = "*"
-version = "2.1"
+version = "2.2"
 
 [package.dependencies]
 django = ">=1.11"
+python-stdnum = ">=1.6"
 
+[package.source]
+reference = "d2ce849484640999a2fde7106407f7217a3c95c1"
+type = "git"
+url = "https://github.com/django/django-localflavor.git"
 [[package]]
 category = "main"
 description = "Abstraction to offload file uploads to web-server (e.g. Apache with mod_xsendfile) once Django has checked permissions etc."
@@ -850,6 +855,19 @@ version = "0.4.15"
 
 [[package]]
 category = "main"
+description = "Python module to handle standardized numbers and codes"
+name = "python-stdnum"
+optional = false
+python-versions = "*"
+version = "1.12"
+
+[package.extras]
+soap = ["zeep"]
+soap-alt = ["suds"]
+soap-fallback = ["pysimplesoap"]
+
+[[package]]
+category = "main"
 description = "World timezone definitions, modern and historical"
 name = "pytz"
 optional = false
@@ -1150,7 +1168,7 @@ version = "1.11.2"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "8b78e81a91448240cbd7ea5feffd2b459f748a921d9ad59c76bd66cf07c0554d"
+content-hash = "c4b79e3f9fb5c9fd268777102577490be9ee3c4902589f58026010f45285c83b"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1347,10 +1365,7 @@ django-ical = [
 django-libsass = [
     {file = "django-libsass-0.7.tar.gz", hash = "sha256:49db3334b87e1f7955c4f9fb9945bc296f8bfd27a14d6d89706e4b0e5dc5de1c"},
 ]
-django-localflavor = [
-    {file = "django-localflavor-2.1.tar.gz", hash = "sha256:0cee94c4b8f0214a5ba7be7e935019a8c062f4e7726d1df4b1e453cb812b2039"},
-    {file = "django_localflavor-2.1-py2.py3-none-any.whl", hash = "sha256:12ce98b13adcd68bb4babcd937d0ae5a0fd5801f71acaf9a6bf1784c218ef53c"},
-]
+django-localflavor = []
 django-sendfile2 = [
     {file = "django-sendfile2-0.4.3.tar.gz", hash = "sha256:267cdd817a5fe7e649df9139ac3efbe8675c61ccdab43146d1e8cbd9bab70554"},
 ]
@@ -1742,6 +1757,10 @@ python-dateutil = [
 python-magic = [
     {file = "python-magic-0.4.15.tar.gz", hash = "sha256:f3765c0f582d2dfc72c15f3b5a82aecfae9498bd29ca840d72f37d7bd38bfcd5"},
     {file = "python_magic-0.4.15-py2.py3-none-any.whl", hash = "sha256:f2674dcfad52ae6c49d4803fa027809540b130db1dec928cfbb9240316831375"},
+]
+python-stdnum = [
+    {file = "python-stdnum-1.12.tar.gz", hash = "sha256:4c1347c414d7bdffb454924998f62c04d907a5c01faff0e35df659b0b52acba5"},
+    {file = "python_stdnum-1.12-py2.py3-none-any.whl", hash = "sha256:bb58877dafc2e590dbfddc63fa04876ab2005c3f35c8356a2dd01f62a9bdc4d6"},
 ]
 pytz = [
     {file = "pytz-2019.3-py2.py3-none-any.whl", hash = "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d"},

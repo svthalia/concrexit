@@ -7,44 +7,43 @@ license = "AGPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-django-localflavor = "~2.1"
-freezegun = "~0.3.11"
-bleach = "~3.1"
-django-tinymce4-lite = "~1.7"
-rcssmin = "~1.0"
-djangorestframework = "~3.11"
-django-ical = "~1.5"
-django-libsass = "~0.7.0"
-python-magic = "~0.4.15"
-Django = "~2.2"
-Pillow = "~7.0"
-django-compressor = "^2.4"
-psycopg2-binary = "~2.8"
-bcrypt = "~3.1"
-argon2_cffi = "~19.2"
-uWSGI = "~2.0"
-django-bootstrap4 = "~1.1.0"
-firebase-admin = "~3.2"
-sentry-sdk = "~0.14.0"
-django-sendfile2 = "~0.4.2"
+django-localflavor = { git = "https://github.com/django/django-localflavor.git", rev="d2ce849484640999a2fde7106407f7217a3c95c1" }
+freezegun = "0.3.12"
+bleach = "3.1"
+django-tinymce4-lite = "1.7.5"
+djangorestframework = "3.11"
+django-ical = "1.5"
+django-libsass = "0.7.0"
+python-magic = "0.4.15"
+Django = "2.2.9"
+Pillow = "7.0"
+django-compressor = "2.4"
+psycopg2-binary = "2.8.4"
+bcrypt = "3.1.7"
+argon2_cffi = "19.2"
+uWSGI = "2.0.18"
+django-bootstrap4 = "1.1.1"
+firebase-admin = "3.2.1"
+sentry-sdk = "0.14.0"
+django-sendfile2 = "0.4.3"
 
 # docs requirements
-recommonmark = { version = "~0.6.0", optional = true }
-sphinx = { version = "~2.3", optional = true }
-google-api-python-client = "^1.7.11"
+recommonmark = { version = "0.6.0", optional = true }
+sphinx = { version = "2.3.1", optional = true }
+google-api-python-client = "1.7.11"
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]
 
 [tool.poetry.dev-dependencies]
-django-template-check = "~0.3.1"
-factory_boy = "~2.12"
-pydenticon = "~0.3.1"
-pylint = "~2.4"
-pylint-django = "~2.0"
-Faker = "~3.0"
-coverage = "~4.5"
-black = "~19.10b0"
+django-template-check = "0.3.1"
+factory_boy = "2.12"
+pydenticon = "0.3.1"
+pylint = "2.4.4"
+pylint-django = "2.0.13"
+Faker = "3.0"
+coverage = "4.5.4"
+black = "19.10b0"
 
 [tool.black]
 exclude = '(/(\.eggs|\.git|\.tox)/|migrations)'
