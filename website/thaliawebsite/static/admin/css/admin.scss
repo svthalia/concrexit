@@ -57,11 +57,11 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
     }
 }
 
-#changelist {
-    background: $background-color;
+#changelist, #changelist #toolbar {
+    background: $background-color !important;
 }
 
-#changelist .actions, #changelist .paginator, #changelist #toolbar, #changelist .actions label {
+#changelist .actions, #changelist .paginator, #changelist .actions label {
     background: $preset !important;
     color: $preset-contrast !important;
     font-family: $header-font !important;
@@ -80,8 +80,8 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 }
 
 .inline-related h3 {
-    border-top: 0;
-    border-bottom: 0;
+    border-top: 0 !important;
+    border-bottom: 0 !important;
     color: $card-background-hover-contrast !important;
     background: $card-background-hover !important;
 }
@@ -130,10 +130,10 @@ thead th.sorted, table thead th .text a:focus, table thead th .text a:hover {
 
 tr.alt, .inline-group div.add-row,
 .inline-group .tabular tr.add-row td {
-    background: $background-color !important;
+    background: $card-background !important;
 }
 
-.row1, .row2, .row, #result_list tbody tr {
+.row1, .row2, .row, #result_list tbody tr, .form-row {
     background: $background-color;
 }
 
@@ -176,6 +176,11 @@ a.section:link, a.section:visited {
     color: $preset-hover !important;
 }
 
+.object-tools a {
+    border-radius: 0 !important;
+    font-family: $header-font;
+    text-transform: uppercase;
+}
 .object-tools a:link, .object-tools a:visited {
     background-color: $preset;
 }
@@ -191,9 +196,26 @@ a.section:link, a.section:visited {
     font-family: $header-font;
     text-transform: uppercase;
 }
+
+.button.default, input[type=submit].default, .submit-row input.default {
+    background-color: $preset;
+    color: $preset-contrast;
+}
+
+.button.default:active, input[type=submit].default:active, .button.default:focus, input[type=submit].default:focus, .button.default:hover, input[type=submit].default:hover {
+    background-color: $preset-hover;
+    color: $preset-contrast-hover;
+}
+
 .button:active, input[type=submit]:active, input[type=button]:active, .button:focus, input[type=submit]:focus, input[type=button]:focus, .button:hover, input[type=submit]:hover, input[type=button]:hover {
     background-color: $preset-hover;
     color: $preset-contrast-hover;
+}
+
+.deletelink-box a {
+    border-radius: 0 !important;
+    font-family: $header-font;
+    text-transform: uppercase;
 }
 
 #content-main .module {
@@ -201,5 +223,24 @@ a.section:link, a.section:visited {
 
     table {
         background-color: $card-background !important;
+    }
+}
+
+
+input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], input[type=tel], textarea, select, .vTextField {
+    color: $form-text;
+    background: $form-background;
+    border: 1px $form-border solid !important;
+    border-radius: 0 !important;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+
+    &:focus {
+        border-color: $preset;
+        box-shadow: none;
     }
 }
