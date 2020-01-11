@@ -30,7 +30,9 @@ def process_payment(
     # the processing date
     for payment in queryset:
         if pay_type != Payment.TPAY or (
-            pay_type == Payment.TPAY and payment.paid_by.tpay_enabled
+            pay_type == Payment.TPAY
+            and payment.paid_by
+            and payment.paid_by.tpay_enabled
         ):
             payment.type = pay_type
             payment.processed_by = processed_by
