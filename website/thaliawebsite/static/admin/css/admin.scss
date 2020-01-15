@@ -325,7 +325,7 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
     }
 }
 
-.selector-available h2, .selector-filter, .selector-chosen h2, .calendarbox, .clockbox{
+.selector-available h2, .selector-filter, .selector-chosen h2 {
     border-color: $form-border !important;
     border-width: 1px !important;
     border-radius: 0 !important;
@@ -344,6 +344,11 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
     a:focus, a:hover {
         color: $preset-hover !important;
     }
+}
+
+.calendarbox .module, .calendarbox, .clockbox {
+    border: 0 !important;
+    border-radius: 0 !important;
 }
 
 .calendar td a:focus, .timelist a:focus, .calendar td a:hover, .timelist a:hover {
@@ -408,6 +413,7 @@ a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.se
 
 #id_signature_canvas {
     background-color: white !important;
+    border: 1px $form-border solid !important;
     border-radius: 0 !important;
 }
 
