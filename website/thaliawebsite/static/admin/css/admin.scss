@@ -172,15 +172,15 @@ tr.alt, .inline-group div.add-row,
 }
 
 #content-related .module h2 {
-    color: $card-background-contrast !important;
+    color: $preset-contrast !important;
     border-bottom: 0;
 
     a {
-        color: $card-background-hover-contrast !important;
+        color: $preset-contrast-hover !important;
     }
 
     a:hover {
-        color: $card-background-hover-contrast !important;
+        color: $preset-contrast-hover !important;
         text-decoration: underline !important;
     }
 }
@@ -325,8 +325,9 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
     }
 }
 
-.selector-available h2, .selector-chosen h2, .calendarbox, .clockbox{
-    border: 0 !important;
+.selector-available h2, .selector-filter, .selector-chosen h2, .calendarbox, .clockbox{
+    border-color: $form-border !important;
+    border-width: 1px;
     border-radius: 0 !important;
 }
 
