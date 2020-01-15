@@ -20,6 +20,14 @@ h1, h2, h3, h4, h5, h6 {
     color: $title-color;
 }
 
+td, th, input, textarea, select, .form-row p, form .button {
+    font-family: $primary-font;
+}
+
+#changelist-filter ul {
+    border-color: $card-background-hover !important;
+}
+
 #header {
     background-color: $black;
     color: $white;
@@ -53,6 +61,8 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
         background-color: $preset !important;
         color: $preset-contrast !important;
         font-family: $header-font;
+        font-weight: $regular;
+        letter-spacing: $letter-spacing;
         text-transform: uppercase;
     }
 }
@@ -65,7 +75,10 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
     background: $preset !important;
     color: $preset-contrast !important;
     font-family: $header-font !important;
+    font-weight: $regular !important;
+    letter-spacing: $letter-spacing !important;
     text-transform: uppercase !important;
+    padding-left: 10px;
 }
 
 #changelist #toolbar, #changelist .paginator {
@@ -82,8 +95,10 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 .inline-related h3 {
     border-top: 0 !important;
     border-bottom: 0 !important;
-    color: $card-background-hover-contrast !important;
+    color: $card-background-contrast !important;
     background: $card-background-hover !important;
+    font-family: $primary-font;
+    text-transform: none;
 }
 .inline-group div.add-row, .inline-group .tabular tr.add-row td {
     border-bottom: 0 !important;
@@ -104,22 +119,26 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
     border-radius: 0 !important;
 }
 
-label {
-    color: $text-color !important;
+label, .help, p.help, form p.help, div.help, form div.help, div.help li {
+    color: $form-text !important;
 }
 
 thead th {
     border-top: 0;
-    background: $card-background;
-    color: $card-background-contrast;
+    background: $card-background !important;
+    color: $card-background-contrast !important;
 }
 
 thead th a:link, thead th a:visited, thead th.required {
-    color: $card-background-contrast;
+    color: $card-background-contrast !important;
 }
 
 thead th.sorted, table thead th .text a:focus, table thead th .text a:hover {
-    background: $card-background-hover;
+    background: $card-background-hover !important;
+}
+
+thead th.sortable:hover {
+    background: $card-background-hover !important;
 }
 
 .change-list ul.toplinks .date-back a:focus,
@@ -127,20 +146,24 @@ thead th.sorted, table thead th .text a:focus, table thead th .text a:hover {
     color: $preset !important;
 }
 
-
 tr.alt, .inline-group div.add-row,
 .inline-group .tabular tr.add-row td {
     background: $card-background !important;
 }
 
 .row1, .row2, .row, #result_list tbody tr, .form-row {
-    background: $background-color;
+    background: $background-color !important;
 }
 
 #changelist table tbody tr.selected {
     background-color: $background-shade !important;
 }
-
+#changelist .actions select {
+    color: $form-text !important;
+    background: $form-background !important;
+    border: 1px $form-border solid !important;
+    border-radius: 0 !important;
+}
 
 
 
@@ -149,10 +172,29 @@ tr.alt, .inline-group div.add-row,
 }
 
 #content-related .module h2 {
-    color: $card-background-contrast;
+    color: $card-background-contrast !important;
+    border-bottom: 0;
+
+    a {
+        color: $card-background-hover-contrast !important;
+    }
+
+    a:hover {
+        color: $card-background-hover-contrast !important;
+        text-decoration: underline !important;
+    }
 }
 #content-related h3 {
     color: $card-background-contrast;
+
+    a {
+        color: $card-background-contrast !important;
+    }
+
+    a:hover {
+        color: $card-background-hover-contrast !important;
+    }
+
 }
 
 a:link, a:visited {
@@ -168,6 +210,10 @@ a.section:link, a.section:visited {
     color: $nav-link-color;
 }
 
+#changelist-filter a {
+    color: $card-background-contrast !important;
+}
+
 #changelist-filter li.selected a {
     color: $preset !important;
 }
@@ -179,6 +225,8 @@ a.section:link, a.section:visited {
 .object-tools a {
     border-radius: 0 !important;
     font-family: $header-font;
+    font-weight: $regular;
+    letter-spacing: $letter-spacing;
     text-transform: uppercase;
 }
 .object-tools a:link, .object-tools a:visited {
@@ -190,11 +238,37 @@ a.section:link, a.section:visited {
 }
 
 .button, input[type=submit], input[type=button], .submit-row input, a.button {
-    background-color: $preset;
-    color: $preset-contrast;
-    border-radius: 0;
-    font-family: $header-font;
-    text-transform: uppercase;
+    background-color: $preset !important;
+    color: $preset-contrast !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    font-family: $header-font !important;
+    font-weight: $regular !important;
+    letter-spacing: $letter-spacing !important;
+    text-transform: uppercase !important;
+}
+
+.button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
+    background-color: $preset-hover !important;
+    color: $preset-contrast-hover !important;
+}
+
+
+#changelist .actions .button {
+    background-color: $secondary !important;
+    color: $secondary-contrast !important;
+}
+
+#changelist .actions .button:hover {
+    background-color: $secondary-contrast !important;
+    color: $secondary !important;
+}
+
+
+#searchbar {
+    margin-right: 0 !important;
+    background-color: $form-background !important;
+    color: $form-text !important;
 }
 
 .button.default, input[type=submit].default, .submit-row input.default {
@@ -215,6 +289,8 @@ a.section:link, a.section:visited {
 .deletelink-box a {
     border-radius: 0 !important;
     font-family: $header-font;
+    font-weight: $regular;
+    letter-spacing: $letter-spacing;
     text-transform: uppercase;
 }
 
@@ -222,8 +298,12 @@ a.section:link, a.section:visited {
     background-color: $background-color;
 
     table {
-        background-color: $card-background !important;
+        background-color: $card-background;
     }
+}
+
+#result-list, .tablesorter {
+    background-color: $background-color !important;
 }
 
 
@@ -244,3 +324,96 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
         box-shadow: none;
     }
 }
+
+.selector-available h2, .selector-chosen h2, .calendarbox, .clockbox{
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+.calendar {
+    background-color: $card-background !important;
+    color: $card-background-contrast !important;
+}
+
+.calendar-shortcuts, .calendar-cancel, .calendar-cancel a {
+    background-color: $card-background !important;
+    color: $card-background-contrast !important;
+    border: 0 !important;
+
+    a:focus, a:hover {
+        color: $preset-hover !important;
+    }
+}
+
+.calendar td a:focus, .timelist a:focus, .calendar td a:hover, .timelist a:hover {
+    background-color: $preset !important;
+    color: $preset-contrast !important;
+}
+
+.calendar td.selected a {
+    background-color: $preset !important;
+    color: $preset-contrast !important;
+}
+
+.calendar td, .calendar td a  {
+    border-color: $card-background-hover !important;
+    background-color: $card-background !important;
+    color: $card-background-contrast !important;
+}
+
+.calendar th {
+    background: $card-background-hover !important;
+    color: $card-background-contrast !important;
+}
+.date-icon {
+    fill: $preset !important;
+}
+
+a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.selector-chooseall:hover, a.active.selector-clearall:hover {
+    color: $preset !important;
+}
+
+
+
+
+
+
+.select2-container--admin-autocomplete .select2-results__option--highlighted[aria-selected],
+.select2-container--admin-autocomplete .select2-results__option[aria-selected=true]{
+    background-color: $preset !important;
+    color: $preset-contrast !important;
+}
+
+.select2-results {
+    background-color: $card-background !important;
+    color: $card-background-contrast !important;
+}
+
+.select2-search, .select2-search--dropdown {
+    background-color: $card-background-hover !important;
+}
+
+.select2-selection, .select2-selection--single, .select2-dropdown {
+    color: $form-text !important;
+    background: $form-background !important;
+    border: 1px $form-border solid !important;
+    border-radius: 0 !important;
+}
+
+.select2-container--admin-autocomplete .select2-selection--single .select2-selection__rendered {
+    color: $form-text !important;
+}
+
+
+#id_signature_canvas {
+    background-color: white !important;
+    border-radius: 0 !important;
+}
+
+#signature-img {
+    background-color: white !important;
+    fill: white !important;
+    margin-left: 0 !important;
+    margin-top: 10px !important;
+}
+
