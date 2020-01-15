@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
-from sendfile import sendfile
+from django_sendfile import sendfile
 
 from members.decorators import membership_required
 from .forms import AddExamForm, AddSummaryForm

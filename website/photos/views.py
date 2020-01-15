@@ -7,7 +7,7 @@ from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import get_language
-from sendfile import sendfile
+from django_sendfile import sendfile
 
 from photos.models import Album, Photo
 from photos.services import (

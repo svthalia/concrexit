@@ -325,11 +325,10 @@ description = "Abstraction to offload file uploads to web-server (e.g. Apache wi
 name = "django-sendfile2"
 optional = false
 python-versions = "*"
-version = "0.4.3"
+version = "0.5.1"
 
 [package.dependencies]
 django = "*"
-six = "*"
 
 [[package]]
 category = "dev"
@@ -1171,7 +1170,7 @@ version = "1.11.2"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "1c33afdb201d5addafcbc8c87c6c3655943906b9bf5b9f0c8306464bc112a830"
+content-hash = "4d28a5ea9a952aa8cc8111af46ff451e8e1a425c2a6bbee8c5e909a8861068ff"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1369,7 +1368,7 @@ django-libsass = [
 ]
 django-localflavor = []
 django-sendfile2 = [
-    {file = "django-sendfile2-0.4.3.tar.gz", hash = "sha256:267cdd817a5fe7e649df9139ac3efbe8675c61ccdab43146d1e8cbd9bab70554"},
+    {file = "django-sendfile2-0.5.1.tar.gz", hash = "sha256:695c635bdc26fe35e22565f046c92126a03fafb587e11415baec6da9df1be04e"},
 ]
 django-template-check = [
     {file = "django-template-check-0.3.1.tar.gz", hash = "sha256:72c424239c09ae76782e4357b29a34cacfcb0f64a8fabb478f6526c84507e3d2"},

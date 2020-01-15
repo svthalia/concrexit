@@ -6,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import activate, get_language_info
-from sendfile import sendfile
+from django_sendfile import sendfile
 
 from newsletters import services
 from newsletters.models import Newsletter

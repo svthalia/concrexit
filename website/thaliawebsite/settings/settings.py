@@ -210,7 +210,7 @@ LOCALE_PATHS = ("locale",)
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"  # Public is included by the db fields
 
-SENDFILE_BACKEND = "sendfile.backends.development"
+SENDFILE_BACKEND = "django_sendfile.backends.development"
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")

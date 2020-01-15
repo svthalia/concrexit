@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import get_language
 from django.views.generic import TemplateView, DetailView
-from sendfile import sendfile
+from django_sendfile import sendfile
 
 from documents.models import (
     AnnualDocument,
