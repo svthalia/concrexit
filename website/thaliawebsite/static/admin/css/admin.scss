@@ -356,6 +356,11 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
     border-radius: 0 !important;
 }
 
+.calendarbox, .clockbox, ul.timelist, .timelist li, .calendar td a, .timelist a {
+    background-color: $card-background !important;
+    color: $card-background-contrast !important;
+}
+
 .calendar td a:focus, .timelist a:focus, .calendar td a:hover, .timelist a:hover {
     background-color: $preset !important;
     color: $preset-contrast !important;
