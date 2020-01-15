@@ -29,8 +29,8 @@ td, th, input, textarea, select, .form-row p, form .button {
 }
 
 #header {
-    background-color: $secondary;
-    color: $secondary-contrast;
+    background-color: black;
+    color: white;
     border-bottom: 5px solid $preset;
     margin-bottom: -5px;
 }
@@ -331,6 +331,11 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
     border-radius: 0 !important;
 }
 
+.selector-filter {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+}
+
 .calendar {
     background-color: $card-background !important;
     color: $card-background-contrast !important;
@@ -426,4 +431,11 @@ a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.se
 
 #changelist #toolbar form input[type="submit"], #changelist .actions .button {
     box-shadow: none !important;
+}
+
+
+.errornote, ul.errorlist {
+    background-color: $danger;
+    color: $warning-contrast;
+    border-radius: 0;
 }
