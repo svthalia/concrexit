@@ -17,7 +17,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: $regular;
     letter-spacing: $letter-spacing;
     text-transform: uppercase;
-    color: $title-color;
+    color: $text-color;
 }
 
 td, th, input, textarea, select, .form-row p, form .button {
@@ -29,8 +29,8 @@ td, th, input, textarea, select, .form-row p, form .button {
 }
 
 #header {
-    background-color: $black;
-    color: $white;
+    background-color: $secondary;
+    color: $secondary-contrast;
     border-bottom: 5px solid $preset;
     margin-bottom: -5px;
 }
@@ -327,7 +327,7 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
 
 .selector-available h2, .selector-filter, .selector-chosen h2, .calendarbox, .clockbox{
     border-color: $form-border !important;
-    border-width: 1px;
+    border-width: 1px !important;
     border-radius: 0 !important;
 }
 
