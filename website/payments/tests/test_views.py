@@ -1,11 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase, override_settings
-from freezegun import freeze_time
 from django.urls import reverse
+from freezegun import freeze_time
 
 from members.models import Member
-from payments.models import BankAccount
-from payments.views import BankAccountCreateView, BankAccountListView
+from payments.models import BankAccount, Payment
 
 
 @freeze_time("2019-01-01")
@@ -34,7 +33,6 @@ class BankAccountCreateViewTest(TestCase):
         )
 
     def setUp(self):
-        self.view = BankAccountCreateView()
         self.client = Client()
         self.client.force_login(self.login_user)
 
@@ -196,51 +194,6 @@ class BankAccountRevokeViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.login_user = Member.objects.filter(last_name="Wiggers").first()
-        cls.account = BankAccount.objects.create(
-            owner=cls.login_user,
-            initials="J",
-            last_name="Test",
-            iban="NL91ABNA0417164300",
-        )
-        BankAccount.objects.create(
-            owner=None,
-            initials="Someone",
-            last_name="Else",
-            iban="BE68539007547034",
-            bic="NBBEBEBB",
-        )
-
-    def setUp(self):
-        self.view = BankAccountCreateView()
-        self.client = Client()
-        self.client.force_login(self.login_user)
-
-    def test_not_logged_in(self):
-        """
-        If there is no logged-in user they should redirect
-        to the authentication page
-        """
-        self.client.logout()
-
-        response = self.client.get(reverse("payments:bankaccount-add"), follow=True)
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(
-            [("/user/login/?next=" + reverse("payments:bankaccount-add"), 302)],
-            response.redirect_chain,
-        )
-
-
-@override_settings(SUSPEND_SIGNALS=True)
-class BankAccountListViewTest(TestCase):
-    """
-    Test for the BankAccountListView
-    """
-
-    fixtures = ["members.json"]
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.login_user = Member.objects.filter(last_name="Wiggers").first()
         cls.account1 = BankAccount.objects.create(
             owner=cls.login_user,
             initials="J1",
@@ -261,7 +214,6 @@ class BankAccountListViewTest(TestCase):
     def setUp(self):
         self.account1.refresh_from_db()
         self.account2.refresh_from_db()
-        self.view = BankAccountListView()
         self.client = Client()
         self.client.force_login(self.login_user)
 
@@ -348,3 +300,122 @@ class BankAccountListViewTest(TestCase):
             .first()
             .valid
         )
+
+
+@override_settings(SUSPEND_SIGNALS=True)
+class BankAccountListViewTest(TestCase):
+    """
+    Test for the BankAccountListView
+    """
+
+    fixtures = ["members.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.login_user = Member.objects.filter(last_name="Wiggers").first()
+        cls.account1 = BankAccount.objects.create(
+            owner=cls.login_user,
+            initials="J1",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
+        )
+        cls.account2 = BankAccount.objects.create(
+            owner=Member.objects.exclude(last_name="Wiggers").first(),
+            initials="J2",
+            last_name="Test",
+            iban="BE68539007547034",
+            bic="NBBEBEBB",
+            valid_from="2019-03-01",
+            signature="sig",
+            mandate_no="11-2",
+        )
+
+    def setUp(self):
+        self.account1.refresh_from_db()
+        self.account2.refresh_from_db()
+        self.client = Client()
+        self.client.force_login(self.login_user)
+
+    def test_not_logged_in(self):
+        """
+        If there is no logged-in user they should redirect
+        to the authentication page
+        """
+        self.client.logout()
+
+        response = self.client.post(reverse("payments:bankaccount-list"), follow=True,)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            [("/user/login/?next=" + reverse("payments:bankaccount-list"), 302,)],
+            response.redirect_chain,
+        )
+
+    def test_accounts(self):
+        """
+        The page should show only accounts of the logged-in user
+        """
+        response = self.client.get(reverse("payments:bankaccount-list"), follow=True,)
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "NL91ABNA0417164300")
+        self.assertNotContains(response, "BE68539007547034")
+
+
+@freeze_time("2019-04-01")
+@override_settings(SUSPEND_SIGNALS=True)
+class PaymentListViewTest(TestCase):
+    """
+    Test for the PaymentListView
+    """
+
+    fixtures = ["members.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.login_user = Member.objects.filter(last_name="Wiggers").first()
+        cls.account1 = BankAccount.objects.create(
+            owner=cls.login_user,
+            initials="J1",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
+            valid_from="2019-03-01",
+            signature="sig",
+            mandate_no="11-2",
+        )
+        cls.payment1 = Payment.objects.create(
+            paid_by=cls.login_user,
+            notes="Testing Payment 1",
+            amount=10,
+            type=Payment.CARD,
+            processing_date="2019-03-06",
+        )
+
+    def setUp(self):
+        self.account1.refresh_from_db()
+        self.payment1.refresh_from_db()
+        self.client = Client()
+        self.client.force_login(self.login_user)
+
+    def test_not_logged_in(self):
+        """
+        If there is no logged-in user they should redirect
+        to the authentication page
+        """
+        self.client.logout()
+
+        response = self.client.post(reverse("payments:payment-list"), follow=True,)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            [("/user/login/?next=" + reverse("payments:payment-list"), 302,)],
+            response.redirect_chain,
+        )
+
+    def test_contents(self):
+        """
+        Test if the view shows payments
+        """
+        response = self.client.get(
+            reverse("payments:payment-list", kwargs={"year": 2019, "month": 3}),
+            follow=True,
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "Testing Payment 1")

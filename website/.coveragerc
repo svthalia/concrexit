@@ -15,4 +15,4 @@ source = .
 precision = 2
 skip_covered = True
 show_missing = True
-fail_under = 60
+fail_under = 65
