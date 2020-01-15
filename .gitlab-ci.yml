@@ -47,7 +47,7 @@ codestyle:
     - poetry run python manage.py makemigrations --no-input --check --dry-run
     - poetry run python -Wall -mcoverage run manage.py test
     - coverage report --fail-under=100 --omit registrations/urls.py registrations/**.py
-    - coverage report --fail-under=97.32 --omit payments/urls.py payments/**.py
+    - coverage report --fail-under=100 --omit payments/urls.py payments/**.py
     - coverage report
 
 python37-django22:
