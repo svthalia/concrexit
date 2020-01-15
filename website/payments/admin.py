@@ -44,6 +44,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "type",
         "paid_by_link",
         "processed_by_link",
+        "batch_link",
         "topic",
     )
     list_filter = ("type", "batch")

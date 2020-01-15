@@ -145,6 +145,11 @@ class Batch(models.Model):
     def total_amount(self) -> Decimal:
         return sum([payment.amount for payment in self.payments_set.all()])
 
+    class Meta:
+        verbose_name = _("batch")
+        verbose_name_plural = _("batches")
+        permissions = (("process_batches", _("Process batch")),)
+
     def __str__(self):
         return (
             f"{self.description} "

@@ -22,7 +22,7 @@ from freezegun import freeze_time
 from members.models import Member, Profile
 from payments import admin
 from payments.admin import ValidAccountFilter
-from payments.models import Payment, BankAccount
+from payments.models import Payment, BankAccount, Batch
 
 
 class GlobalAdminTest(SimpleTestCase):
@@ -76,11 +76,18 @@ class PaymentAdminTest(TestCase):
         Helper to give the user permissions
         """
         content_type = ContentType.objects.get_for_model(Payment)
-        permissions = Permission.objects.filter(
+        permissions_p = Permission.objects.filter(
             content_type__app_label=content_type.app_label,
         )
-        for p in permissions:
+        content_type = ContentType.objects.get_for_model(Batch)
+        permissions_b = Permission.objects.filter(
+            content_type__app_label=content_type.app_label,
+        )
+        for p in permissions_p:
             self.user.user_permissions.add(p)
+        for p in permissions_b:
+            self.user.user_permissions.add(p)
+
         self.user.save()
 
         self.client.logout()
@@ -353,6 +360,7 @@ class PaymentAdminTest(TestCase):
                 "process_card_selected",
                 "process_wire_selected",
                 "process_tpay_selected",
+                "add_to_batch",
                 "export_csv",
             ],
         )
@@ -499,7 +507,7 @@ class BatchAdminTest(TestCase):
         self.admin = admin.BankAccountAdmin(BankAccount, admin_site=self.site)
         self.rf = RequestFactory()
 
-    def
+    # def
 
 
 @freeze_time("2019-01-01")
