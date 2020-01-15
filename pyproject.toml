@@ -42,7 +42,7 @@ pydenticon = "0.3.1"
 pylint = "2.4.4"
 pylint-django = "2.0.13"
 Faker = "3.0"
-coverage = "4.5.4"
+coverage = "5.0.3"
 black = "19.10b0"
 
 [tool.black]
