@@ -304,7 +304,7 @@ review remove:
     - >-
       aws --region eu-west-1 route53 list-resource-record-sets
       --hosted-zone-id Z072013523EW763CDQ8K4
-      --query "ResourceRecordSets[?Name == '${CI_COMMIT_REF_SLUG}.review.technicie.nl.']"
+      --query "ResourceRecordSets[?Name == '${CI_COMMIT_REF_SLUG}.review.technicie.nl.reviewhost.']"
       |
       jq '{"Comment": "DELETE review deployment record", "Changes": map({"Action": "DELETE", "ResourceRecordSet": .})}'
       > remove-record.json
