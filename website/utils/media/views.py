@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.signing import BadSignature
 from django.http import Http404
 from django.shortcuts import redirect
-from sendfile import sendfile
+from django_sendfile import sendfile
 
 
 def _get_signature_info(request):

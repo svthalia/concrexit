@@ -53,7 +53,7 @@ MEDIA_ROOT = "/concrexit/media"
 MEDIA_URL = "/media/"  # Public is included by the db fields
 
 if not settings.DEBUG:
-    SENDFILE_BACKEND = "sendfile.backends.nginx"
+    SENDFILE_BACKEND = "django_sendfile.backends.nginx"
 SENDFILE_URL = "/media/sendfile/"
 SENDFILE_ROOT = "/concrexit/media/"
 
