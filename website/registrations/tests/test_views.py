@@ -8,12 +8,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import HttpResponse
 from django.template.defaultfilters import floatformat
 from django.test import Client, TestCase, RequestFactory, override_settings
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from members.models import Membership, Profile, Member
 from registrations import views
@@ -561,39 +562,49 @@ class RenewalFormViewTest(TestCase):
         self.rf = RequestFactory()
         self.view = views.RenewalFormView()
 
-    def test_get_context_data(self):
+    @mock.patch("registrations.models.Renewal.objects")
+    @mock.patch("members.models.Membership.objects")
+    def test_get_context_data(self, _membership, _renewal):  # noqa: F841
         membership = Membership(pk=2, type=Membership.MEMBER)
         self.view.request = MagicMock()
 
-        with mock.patch("members.models.Membership.objects") as _qs:
-            Membership.objects.filter().exists.return_value = True
-            context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(len(context), 7)
-            self.assertEqual(
-                context["year_fees"],
-                floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2),
+        Membership.objects.filter().exists.return_value = True
+        Renewal.objects.filter().last.return_value = None
+
+        context = self.view.get_context_data(form=MagicMock())
+        self.assertEqual(len(context), 8)
+        self.assertEqual(
+            context["year_fees"],
+            floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2),
+        )
+        self.assertEqual(
+            context["study_fees"],
+            floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2),
+        )
+        self.assertEqual(context["was_member"], True)
+        _renewal.filter.assert_called_with(
+            Q(member=self.view.request.member)
+            & (
+                Q(status=Registration.STATUS_ACCEPTED)
+                | Q(status=Registration.STATUS_REVIEW)
             )
-            self.assertEqual(
-                context["study_fees"],
-                floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2),
-            )
-            self.assertEqual(context["was_member"], True)
+        )
 
-            Membership.objects.filter().exists.return_value = False
+        Membership.objects.filter().exists.return_value = False
+        context = self.view.get_context_data(form=MagicMock())
+        self.assertEqual(context["was_member"], False)
+
+        with self.subTest("With latest membership"):
+            self.view.request.member.latest_membership = membership
+
             context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(context["was_member"], False)
+            self.assertEqual(context["latest_membership"], membership)
 
-            with self.subTest("With latest membership"):
-                self.view.request.member.latest_membership = membership
+        with self.subTest("Without latest membership"):
+            self.view.request.member.latest_membership = None
 
-                context = self.view.get_context_data(form=MagicMock())
-                self.assertEqual(context["latest_membership"], membership)
-
-            with self.subTest("Without latest membership"):
-                self.view.request.member.latest_membership = None
-
-                context = self.view.get_context_data(form=MagicMock())
-                self.assertEqual(context["latest_membership"], None)
+            context = self.view.get_context_data(form=MagicMock())
+            self.assertEqual(context["latest_membership"], None)
 
     def test_get_form(self):
         self.view.request = self.rf.get("/")
@@ -914,5 +925,5 @@ class ReferenceCreateViewTest(TestCase):
         )
         self.assertEqual(False, response.context["success"])
         self.assertContains(
-            response, "You&#x27;ve already given a reference for this person."
+            response, "You&#39;ve already given a reference for this person."
         )
