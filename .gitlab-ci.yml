@@ -203,8 +203,8 @@ build docker image:
   when: manual
   image: python:latest
   before_script:
-    - apt-get update
-    - apt-get install -y jq
+    - DEBIAN_FRONTEND=noninteractive apt-get --yes --quiet update
+    - DEBIAN_FRONTEND=noninteractive apt-get --yes --quiet install jq
     - pip install awscli
     - >-
       instanceids=$(
@@ -218,15 +218,15 @@ review:
   stage: deploy
   environment:
     name: review/${CI_COMMIT_REF_NAME}
-    url: https://${CI_COMMIT_REF_SLUG}.review.technicie.nl/
+    url: https://${CI_COMMIT_REF_SLUG}.public.review.technicie.nl/
     on_stop: review remove
   extends: .reviewsetup
   script:
     - username=$(head /dev/urandom | tr -dc 'a-z' | head -c 10)
     - password=$(head /dev/urandom | tr -dc 'a-zA-Z' | head -c 32)
-    - echo -e "When the deployment is done, you can login with:\n$username\n$password"
     - >-
-      sed -i -e "s/@version@/$CI_COMMIT_SHA/g"
+      sed -i
+      -e "s/@version@/$CI_COMMIT_SHA/g"
       -e "s/@username@/$username/g"
       -e "s/@password@/$password/g"
       ./resources/ec2-bootstrap.sh
@@ -236,12 +236,12 @@ review:
       --count 1
       --instance-type t2.micro
       --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=concrexit-review-${CI_COMMIT_REF_SLUG}}]"
-      --launch-template LaunchTemplateId=lt-03762fc23450c2471,Version=1
+      --launch-template LaunchTemplateId=lt-03762fc23450c2471,Version=5
       --user-data file://resources/ec2-bootstrap.sh
       | jq --raw-output '.Instances[0].InstanceId'
       )
     - aws --region eu-west-1 ec2 wait instance-running --instance-ids ${instanceid}
-    - ipaddress=$(aws --region eu-west-1 ec2 describe-instances --instance-ids ${instanceid} | jq --raw-output '.Reservations[0].Instances[0].PublicIpAddress')
+    - ipaddress=$(aws --region eu-west-1 ec2 describe-instances --instance-ids ${instanceid} | jq --raw-output '.Reservations[0].Instances[0].PrivateIpAddress')
     - |
       cat > add-record.json <<EOF
       {
@@ -250,7 +250,7 @@ review:
           {
             "Action": "CREATE",
             "ResourceRecordSet": {
-              "Name": "${CI_COMMIT_REF_SLUG}.review.technicie.nl.reviewhost",
+              "Name": "${CI_COMMIT_REF_SLUG}.private.review.technicie.nl",
               "Type": "A",
               "TTL": 10,
               "ResourceRecords": [{"Value": "${ipaddress}"}]
@@ -268,7 +268,7 @@ review:
           {
             "Action": "UPSERT",
             "ResourceRecordSet": {
-              "Name": "${CI_COMMIT_REF_SLUG}.review.technicie.nl.reviewhost",
+              "Name": "${CI_COMMIT_REF_SLUG}.private.review.technicie.nl",
               "Type": "A",
               "TTL": 10,
               "ResourceRecords": [{"Value": "${ipaddress}"}]
@@ -281,16 +281,18 @@ review:
       changeinfoid=$(
       (
       aws --region eu-west-1 route53 change-resource-record-sets
-      --hosted-zone-id Z072013523EW763CDQ8K4
+      --hosted-zone-id Z3I4ZHBBD5NSHU
       --change-batch file://add-record.json
       ||
       aws --region eu-west-1 route53 change-resource-record-sets
-      --hosted-zone-id Z072013523EW763CDQ8K4
+      --hosted-zone-id Z3I4ZHBBD5NSHU
       --change-batch file://change-record.json
       )
       | jq --raw-output '.ChangeInfo.Id'
       )
     - aws --region eu-west-1 route53 wait resource-record-sets-changed --id ${changeinfoid}
+    - echo -e "The deployment is done. Please wait for the website to come up. You can login on https://${CI_COMMIT_REF_SLUG}.public.review.technicie.nl/ with:\nUsername:$username\nPassword:$password"
+
 
 review remove:
   stage: deploy
@@ -303,12 +305,12 @@ review remove:
   script:
     - >-
       aws --region eu-west-1 route53 list-resource-record-sets
-      --hosted-zone-id Z072013523EW763CDQ8K4
-      --query "ResourceRecordSets[?Name == '${CI_COMMIT_REF_SLUG}.review.technicie.nl.reviewhost.']"
+      --hosted-zone-id Z3I4ZHBBD5NSHU
+      --query "ResourceRecordSets[?Name == '${CI_COMMIT_REF_SLUG}.private.review.technicie.nl.']"
       |
       jq '{"Comment": "DELETE review deployment record", "Changes": map({"Action": "DELETE", "ResourceRecordSet": .})}'
       > remove-record.json
-    - aws --region eu-west-1 route53 change-resource-record-sets --hosted-zone-id Z072013523EW763CDQ8K4 --change-batch file://remove-record.json || true
+    - aws --region eu-west-1 route53 change-resource-record-sets --hosted-zone-id Z3I4ZHBBD5NSHU --change-batch file://remove-record.json || true
 
 build production docker image:
   extends: build docker image
@@ -329,5 +331,3 @@ cache:
   key: "$CI_JOB_NAME"
   paths:
     - "${PIP_CACHE_DIR}"
-
-# vim: set sw=2 ts=2 et :
