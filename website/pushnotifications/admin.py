@@ -1,6 +1,6 @@
 """The admin interfaces registered by the pushnotifications package"""
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pushnotifications import models
 from pushnotifications.models import Message

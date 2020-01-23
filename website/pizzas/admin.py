@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse, path
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from events import services
 from events.services import is_organiser

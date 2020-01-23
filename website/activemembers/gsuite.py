@@ -2,7 +2,7 @@ import hashlib
 import logging
 from base64 import b16encode
 
-from django.utils.translation import ugettext_lazy as _, override as lang_override
+from django.utils.translation import gettext_lazy as _, override as lang_override
 from googleapiclient.errors import HttpError
 
 from members.models import Member

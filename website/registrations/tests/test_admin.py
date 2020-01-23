@@ -7,7 +7,7 @@ from django.contrib.admin.utils import model_ngettext
 from django.http import HttpRequest
 from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
 from payments.models import Payment

@@ -7,7 +7,7 @@ from django.template import loader
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import translation
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from payments.models import Payment
 from registrations.models import Registration, Renewal
