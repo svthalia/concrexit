@@ -67,32 +67,34 @@
                             </tr>
                         {% endif %}
                         {% if event.registration_required %}
-                            <tr>
-                                <th>{% trans "registration deadline"|capfirst %}</th>
-                                <td>{{ event.registration_end }}</td>
-                            </tr>
-                            <tr>
-                                <th>{% trans "cancellation deadline"|capfirst %}</th>
-                                <td>{{ event.cancel_deadline }}</td>
-                            </tr>
-                            <tr>
-                                <th>{% trans "number of registrations"|capfirst %}</th>
-                                <td>
-                                    {% blocktrans count counter=event.participants|length trimmed %}
-                                        {{ counter }} registration
-                                    {% plural %}
-                                        {{ counter }} registrations
-                                    {% endblocktrans %}
-                                    {% if event.max_participants > 0 %}
-                                        <i>({{ event.max_participants }} {% trans "max" %})</i>
-                                        {% with prc=registration_percentage %}
-                                            <div class="progress mt-1">
-                                                <div class="progress-bar progress{{ prc|floatformat:"0" }}"></div>
-                                            </div>
-                                        {% endwith %}
-                                    {% endif %}
-                                </td>
-                            </tr>
+                            {% if request.user.is_authenticated %}
+                                <tr>
+                                    <th>{% trans "registration deadline"|capfirst %}</th>
+                                    <td>{{ event.registration_end }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{% trans "cancellation deadline"|capfirst %}</th>
+                                    <td>{{ event.cancel_deadline }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{% trans "number of registrations"|capfirst %}</th>
+                                    <td>
+                                        {% blocktrans count counter=event.participants|length trimmed %}
+                                            {{ counter }} registration
+                                        {% plural %}
+                                            {{ counter }} registrations
+                                        {% endblocktrans %}
+                                        {% if event.max_participants > 0 %}
+                                            <i>({{ event.max_participants }} {% trans "max" %})</i>
+                                            {% with prc=registration_percentage %}
+                                                <div class="progress mt-1">
+                                                    <div class="progress-bar progress{{ prc|floatformat:"0" }}"></div>
+                                                </div>
+                                            {% endwith %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
                             {% if registration %}
                                 <tr>
                                     <th>{% trans "registration status"|capfirst %}</th>
