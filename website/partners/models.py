@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, URLValidator
 from django.db import models
 from django.urls import reverse
-from django.utils.translation import ugettext, gettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _
 from tinymce.models import HTMLField
 
 from utils.translation import ModelTranslateMeta, MultilingualField
@@ -111,7 +111,7 @@ class PartnerImage(models.Model):
 
     def __str__(self):
         """Return string representation of partner name."""
-        return ugettext("image of {}").format(self.partner.name)
+        return gettext("image of {}").format(self.partner.name)
 
 
 class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
