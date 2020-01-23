@@ -50,6 +50,7 @@ class PaymentTest(TestCase):
         cls.payment = Payment.objects.create(
             amount=10, paid_by=cls.member, processed_by=cls.member,
         )
+        cls.batch = Batch.objects.create()
 
     def test_change_processed_sets_processing_date(self):
         """
@@ -75,6 +76,25 @@ class PaymentTest(TestCase):
             self.payment.get_admin_url(),
             "/admin/payments/payment/{}/change/".format(self.payment.pk),
         )
+
+    def test_clean(self):
+        """
+        Tests that non thalia pay payments cannot be added to a batch
+        """
+        for payment_type in [Payment.NONE, Payment.CASH, Payment.CARD, Payment.WIRE]:
+            self.payment.type = payment_type
+            self.payment.batch = self.batch
+            with self.assertRaises(ValidationError):
+                self.payment.clean()
+
+        for payment_type in [Payment.NONE, Payment.CASH, Payment.CARD, Payment.WIRE]:
+            self.payment.type = payment_type
+            self.payment.batch = None
+            self.payment.clean()
+
+        self.payment.type = Payment.TPAY
+        self.payment.batch = self.batch
+        self.payment.clean()
 
     def test_str(self) -> None:
         """
@@ -178,6 +198,16 @@ class BatchModelTest(TestCase):
             batch=batch,
         )
         self.assertEqual(batch.total_amount, 36+37)
+
+    def test_absolute_url(self) -> None:
+        b1 = Batch.objects.create(id=1)
+        self.assertEqual("/admin/payments/batch/1/change/", b1.get_absolute_url())
+
+    def test_str(self) -> None:
+        b1 = Batch.objects.create(id=1)
+        self.assertEqual("your Thalia payments for 2018-12 (not processed)", str(b1))
+        b2 = Batch.objects.create(id=2, processed=True)
+        self.assertEqual("your Thalia payments for 2018-12 (processed)", str(b2))
 
 
 @freeze_time("2019-01-01")

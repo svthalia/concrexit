@@ -133,7 +133,6 @@ class PaymentAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "batch":
-            print(Batch.objects.filter(processed=False))
             kwargs["queryset"] = Batch.objects.filter(processed=False)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 

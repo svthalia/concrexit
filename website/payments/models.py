@@ -84,7 +84,7 @@ class Payment(models.Model):
 
     def clean(self):
         if self.type != self.TPAY and self.batch is not None:
-            return ValidationError(
+            raise ValidationError(
                 {"batch": "Non Thalia Pay payments cannot " "be added to a batch."}
             )
 
