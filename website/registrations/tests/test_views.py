@@ -914,5 +914,5 @@ class ReferenceCreateViewTest(TestCase):
         )
         self.assertEqual(False, response.context["success"])
         self.assertContains(
-            response, "You&#39;ve already given a reference for this person."
+            response, "You&#x27;ve already given a reference for this person."
         )
