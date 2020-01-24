@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
+
 from freezegun import freeze_time
 
 from members.models import Member
@@ -386,7 +388,7 @@ class PaymentListViewTest(TestCase):
             notes="Testing Payment 1",
             amount=10,
             type=Payment.CARD,
-            processing_date="2019-03-06",
+            processing_date=timezone.now().replace(year=2019, month=3, day=6),
         )
 
     def setUp(self):
