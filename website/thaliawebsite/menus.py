@@ -42,8 +42,8 @@ MAIN_MENU = [
             {"title": _("Styleguide"), "name": "singlepages:styleguide"},
             {"title": _("Become Active"), "name": "singlepages:become-active"},
             {
-                "title": _("Nextcloud"),
-                "url": "https://cloud.thalia.nu/",
+                "title": _("G Suite Knowledge Base"),
+                "url": "https://gsuite.members.thalia.nu/",
                 "authenticated": True,
             },
         ],
