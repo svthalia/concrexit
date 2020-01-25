@@ -140,6 +140,7 @@ class MiscellaneousDocument(Document):
     """Describes a miscellaneous document"""
 
     class Meta:
+        ordering = ["-created"]
         verbose_name = _("Miscellaneous document")
         verbose_name_plural = _("Miscellaneous documents")
         proxy = True

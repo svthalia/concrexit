@@ -53,6 +53,7 @@ class Course(models.Model, metaclass=ModelTranslateMeta):
         return reverse("education:course", args=[str(self.pk)])
 
     class Meta:
+        ordering = ["-pk"]
         verbose_name = _("course")
         verbose_name_plural = _("courses")
 
