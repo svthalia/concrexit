@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.8
 MAINTAINER Thalia Technicie <www@thalia.nu>
 LABEL description="Contains the Thaliawebsite Django application"
 
