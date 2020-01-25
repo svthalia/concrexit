@@ -215,6 +215,7 @@ class Vacancy(models.Model):
     class Meta:
         """Meta class for vacancy model."""
 
+        ordering = ["-pk"]
         verbose_name_plural = _("Vacancies")
 
 
