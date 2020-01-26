@@ -1,6 +1,9 @@
+import os
+
 from io import BytesIO
 from zipfile import ZipFile
 
+from django.conf import settings
 from django.test import Client, TestCase, override_settings
 
 from members.models import Member
@@ -31,7 +34,9 @@ class AlbumUploadTest(TestCase):
         self.client.force_login(self.member)
 
     def test_album_upload(self):
-        output_file = create_zip(["photos/fixtures/thom_assessor.png"])
+        output_file = create_zip(
+            [os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png")]
+        )
         self.client.post(
             "/admin/photos/album/add/",
             {
@@ -72,7 +77,9 @@ class AlbumUploadTest(TestCase):
         self.assertEqual(Album.objects.all().count(), 1)
 
     def test_album_upload_same_photo_twice_in_album(self):
-        output_file = create_zip(["photos/fixtures/thom_assessor.png"])
+        output_file = create_zip(
+            [os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png")]
+        )
         self.client.post(
             "/admin/photos/album/add/",
             {
@@ -102,7 +109,9 @@ class AlbumUploadTest(TestCase):
         self.assertEqual(Photo.objects.all().count(), 1)
 
     def test_album_upload_different_photo_in_album(self):
-        output_file = create_zip(["photos/fixtures/thom_assessor.png"])
+        output_file = create_zip(
+            [os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png")]
+        )
         self.client.post(
             "/admin/photos/album/add/",
             {
@@ -115,7 +124,9 @@ class AlbumUploadTest(TestCase):
             follow=True,
         )
 
-        output_file = create_zip(["photos/fixtures/janbeleid-hoe.jpg"])
+        output_file = create_zip(
+            [os.path.join(settings.BASE_DIR, "photos/fixtures/janbeleid-hoe.jpg")]
+        )
         pk = Album.objects.first().pk
         self.client.post(
             "/admin/photos/album/{}/change/".format(pk),
@@ -133,7 +144,9 @@ class AlbumUploadTest(TestCase):
         self.assertEqual(Photo.objects.all().count(), 2)
 
     def test_album_upload_rotated_photo_in_album(self):
-        output_file = create_zip(["photos/fixtures/rotated_janbeleid.jpg"])
+        output_file = create_zip(
+            [os.path.join(settings.BASE_DIR, "photos/fixtures/rotated_janbeleid.jpg")]
+        )
         self.client.post(
             "/admin/photos/album/add/",
             {

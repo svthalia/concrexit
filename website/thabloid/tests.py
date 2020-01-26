@@ -6,6 +6,7 @@ from django.core.files import File
 from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.conf import settings
 
 from .models import Thabloid
 
@@ -15,7 +16,12 @@ tmp_MEDIA_ROOT = tempfile.mkdtemp()
 @override_settings(MEDIA_ROOT=tmp_MEDIA_ROOT)
 class TestThabloid(TestCase):
     def setUp(self):
-        with open("thabloid/fixtures/thabloid-1998-1999-1.pdf", "rb") as f:
+        with open(
+            os.path.join(
+                settings.BASE_DIR, "thabloid/fixtures/thabloid-1998-1999-1.pdf"
+            ),
+            "rb",
+        ) as f:
             self.thabloid = Thabloid(year=1998, issue=1, file=File(f))
             # we should wait for gs to be done before we can do cleanup
             self.thabloid.save(wait=True)

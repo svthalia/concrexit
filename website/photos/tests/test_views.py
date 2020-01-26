@@ -1,8 +1,11 @@
+import os
+
 from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+from django.conf import settings
 
 from members.models import Member, Membership
 from photos.models import Album, Photo
@@ -168,7 +171,10 @@ class AlbumTest(TestCase):
         )
 
         for i in range(10):
-            with open("photos/fixtures/thom_assessor.png", "rb") as f:
+            with open(
+                os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"),
+                "rb",
+            ) as f:
                 fi = SimpleUploadedFile(
                     name="photo{}.png".format(i),
                     content=f.read(),
@@ -226,7 +232,10 @@ class SharedAlbumTest(TestCase):
 
     def test_get(self):
         for i in range(10):
-            with open("photos/fixtures/thom_assessor.png", "rb") as f:
+            with open(
+                os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"),
+                "rb",
+            ) as f:
                 fi = SimpleUploadedFile(
                     name="photo{}.png".format(i),
                     content=f.read(),
@@ -264,7 +273,9 @@ class DownloadTest(TestCase):
             slug="test_album",
         )
 
-        with open("photos/fixtures/thom_assessor.png", "rb") as f:
+        with open(
+            os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"), "rb"
+        ) as f:
             fi = SimpleUploadedFile(
                 name="photo.png", content=f.read(), content_type="image/png"
             )
@@ -307,7 +318,9 @@ class SharedDownloadTest(TestCase):
             slug="test_album",
         )
 
-        with open("photos/fixtures/thom_assessor.png", "rb") as f:
+        with open(
+            os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"), "rb"
+        ) as f:
             fi = SimpleUploadedFile(
                 name="photo.png", content=f.read(), content_type="image/png"
             )
@@ -358,7 +371,9 @@ class AlbumDownloadTest(TestCase):
             slug="test_album",
         )
 
-        with open("photos/fixtures/thom_assessor.png", "rb") as f:
+        with open(
+            os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"), "rb"
+        ) as f:
             fi = SimpleUploadedFile(
                 name="photo.png", content=f.read(), content_type="image/png"
             )

@@ -6,11 +6,11 @@ Use ``python ./manage.py help`` for more info.
 import os
 import sys
 
-if __name__ == "__main__":  # pragma: no branch
+if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "thaliawebsite.settings")
     try:
         from django.core.management import execute_from_command_line
-    except ImportError as exc:  # pragma: no cover
+    except ImportError as exc:
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "
             "available on your PYTHONPATH environment variable? Did you "
