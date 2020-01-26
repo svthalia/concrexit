@@ -17,7 +17,7 @@ class AnnouncementAdmin(TranslatedModelAdmin):
     #: see :py:method:visible for the visible field
     list_display = ("content_html", "since", "until", "visible")
 
-    def content_html(self, obj):  # pylint: disable=no-self-use
+    def content_html(self, obj):
         """Get the content of the object as html
 
         :param obj: the object to render for
@@ -27,7 +27,7 @@ class AnnouncementAdmin(TranslatedModelAdmin):
         # First to convert HTML entities and second to strip all HTML
         return bleach(striptags(obj.content))
 
-    def visible(self, obj):  # pylint: disable=no-self-use
+    def visible(self, obj):
         """Is the object visible"""
         return obj.is_visible
 
@@ -41,7 +41,7 @@ class FrontpageArticleAdmin(TranslatedModelAdmin):
     #: available fields in the admin overview list
     list_display = ("title", "since", "until", "visible")
 
-    def visible(self, obj):  # pylint: disable=no-self-use
+    def visible(self, obj):
         """Is the object visible"""
         return obj.is_visible
 
@@ -56,7 +56,7 @@ class SlideAdmin(TranslatedModelAdmin):
     #: see :py:method:visible for the visible field
     list_display = ("title", "since", "until", "visible")
 
-    def visible(self, obj):  # pylint: disable=no-self-use
+    def visible(self, obj):
         """Is the object visible"""
         return obj.is_visible
 

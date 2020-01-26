@@ -1,8 +1,6 @@
 """
 Provides the command to generate fixtures
 """
-# pylint: disable=invalid-name,no-member,too-few-public-methods
-# pylint: disable=attribute-defined-outside-init,no-self-use
 import math
 import random
 import string
@@ -48,7 +46,7 @@ def _generate_title():
 
 
 class _ProfileFactory(factory.Factory):
-    class Meta:  # pylint: disable=missing-docstring
+    class Meta:
         model = Profile
 
     programme = random.choice(["computingscience", "informationscience"])
@@ -478,7 +476,7 @@ class Command(BaseCommand):
 
             item.save()
 
-    def handle(self, *args, **options):  # pylint: disable=too-many-branches
+    def handle(self, *args, **options):
         """
         Handle the command being executed
 

@@ -12,7 +12,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         """The items listed in the sitemap"""
         return ["merchandise:index"]
 
-    def location(self, item):  # pylint: disable=arguments-differ
+    def location(self, item):
         """Gives the location for the specified item
 
         :param item: the item to generate the link to
@@ -22,6 +22,6 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
 
 #: The site maps defined by this module
-sitemap = {  # pylint: disable=invalid-name
+sitemap = {
     "merchandise-static": StaticViewSitemap,
 }

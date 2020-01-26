@@ -3,7 +3,7 @@ Get the field type for a form field
 """
 from django import template
 
-register = template.Library()  # pylint: disable=invalid-name
+register = template.Library()
 
 
 @register.filter(name="fieldtype")

@@ -6,7 +6,6 @@ This file controls what settings are loaded.
 Using environment variables you can control the loading of various
 overrides.
 """
-# flake8: noqa: ignore F403
 import logging
 from firebase_admin import initialize_app, credentials
 from googleapiclient.discovery import build
@@ -14,26 +13,26 @@ from google.oauth2 import service_account
 
 # Load all default settings because we need to use settings.configure
 # for sphinx documentation generation.
-from django.conf.global_settings import *  # pylint: disable=wildcard-import
+from django.conf.global_settings import *
 
 # Load base settings
-from .settings import *  # pylint: disable=wildcard-import
+from .settings import *
 
 logger = logging.getLogger(__name__)
 
 # Attempt to load local overrides
 try:
-    from .localsettings import *  # pylint: disable=wildcard-import
+    from .localsettings import *
 except ImportError:
     pass
 
 # Load production settings if DJANGO_PRODUCTION is set
 if os.environ.get("DJANGO_PRODUCTION"):  # pragma: nocover
-    from .production import *  # pylint: disable=wildcard-import
+    from .production import *
 
 # Load testing settings if GITLAB_CI is set
 if os.environ.get("GITLAB_CI"):  # pragma: nocover
-    from .testing import *  # pylint: disable=wildcard-import
+    from .testing import *
 
 if FIREBASE_CREDENTIALS != {}:
     try:

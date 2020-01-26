@@ -565,7 +565,7 @@ class RenewalFormViewTest(TestCase):
         membership = Membership(pk=2, type=Membership.MEMBER)
         self.view.request = MagicMock()
 
-        with mock.patch("members.models.Membership.objects") as _qs:  # noqa: F841
+        with mock.patch("members.models.Membership.objects") as _qs:
             Membership.objects.filter().exists.return_value = True
             context = self.view.get_context_data(form=MagicMock())
             self.assertEqual(len(context), 7)

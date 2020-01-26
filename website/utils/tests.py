@@ -1,5 +1,4 @@
 """Tests for the ``utils`` module"""
-# pylint: disable=attribute-defined-outside-init
 import doctest
 
 from django.core.exceptions import FieldError

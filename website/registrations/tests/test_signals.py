@@ -8,7 +8,7 @@ from payments.models import Payment
 class ServicesTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        import registrations.signals  # noqa: F401
+        import registrations.signals
 
         cls.payment = Payment.objects.create(amount=10,)
 

@@ -25,8 +25,6 @@ Examples:
   2. Add a URL to urlpatterns: ``path('blog/', include('blog.urls'))``
 """
 
-# pragma: noqa
-
 import os.path
 
 from django.conf import settings
@@ -66,8 +64,7 @@ THALIA_SITEMAP.update(education_sitemap)
 THALIA_SITEMAP.update(events_sitemap)
 THALIA_SITEMAP.update(singlepages_sitemap)
 
-# pragma pylint: disable=line-too-long
-urlpatterns = [  # pylint: disable=invalid-name
+urlpatterns = [
     path("admin/", admin.site.urls),
     path("", IndexView.as_view(), name="index"),
     # Default helpers
