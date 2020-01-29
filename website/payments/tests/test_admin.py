@@ -379,11 +379,58 @@ class PaymentAdminTest(TestCase):
         request_hasperms = self.client.post(
             change_url,
             {
-                "action": "process_wire_selected",
+                "action": "add_to_new_batch",
                 "index": 1,
                 "_selected_action": [x.id for x in [p1, p2, p3]],
             },
         ).wsgi_request
+
+        self.admin.add_to_new_batch(request_noperms, queryset)
+        for p in Payment.objects.all():
+            self.assertIsNone(p.batch)
+
+        self.admin.add_to_new_batch(request_hasperms, queryset)
+        for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
+            self.assertIsNone(p.batch)
+
+        self.assertIsNotNone(Payment.objects.get(p3.id).batch)
+
+    def test_add_to_last_batch(self) -> None:
+        b = Batch.objects.create()
+        p1 = Payment.objects.create(amount=1)
+        p2 = Payment.objects.create(amount=2, processed_by=self.user, type=Payment.CASH)
+        p3 = Payment.objects.create(amount=3, processed_by=self.user, type=Payment.TPAY)
+        queryset = Payment.objects.all()
+
+        change_url = reverse("admin:payments_payment_changelist")
+
+        request_noperms = self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        ).wsgi_request
+        self._give_user_permissions()
+        request_hasperms = self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        ).wsgi_request
+
+        self.admin.add_to_new_batch(request_noperms, queryset)
+        for p in Payment.objects.all():
+            self.assertIsNone(p.batch)
+
+        self.admin.add_to_new_batch(request_hasperms, queryset)
+        for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
+            self.assertIsNone(p.batch)
+
+        self.assertEqual(Payment.objects.get(p3.id).batch, b.id)
 
     def test_get_actions(self) -> None:
         """
@@ -449,8 +496,18 @@ class PaymentAdminTest(TestCase):
         b1 = Batch.objects.create(id=1)
         b2 = Batch.objects.create(id=2, processed=True)
         p1 = Payment.objects.create(amount=5, processed_by=self.user, type=Payment.TPAY)
-        response = self.client.get(reverse("admin:payments_payment_change", args=(p1.id,)))
-        self.assertCountEqual([int(x.id) for x in response.context_data['adminform'].form.fields['batch'].choices.queryset], [b1.id])
+        response = self.client.get(
+            reverse("admin:payments_payment_change", args=(p1.id,))
+        )
+        self.assertCountEqual(
+            [
+                int(x.id)
+                for x in response.context_data["adminform"]
+                .form.fields["batch"]
+                .choices.queryset
+            ],
+            [b1.id],
+        )
 
 
 @freeze_time("2019-01-01")
