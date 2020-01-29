@@ -56,51 +56,6 @@ django-tests:
     paths:
       - website/covhtml/
 
-.sshsetup: &sshsetup
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$IVO_KNOWN_HOST" > ~/.ssh/known_hosts
-    - echo "$COVERAGE_DEPLOY_SSH_KEY" > ~/.ssh/id_coverage
-    - echo "$DOCS_DEPLOY_SSH_KEY" > ~/.ssh/id_docs
-    - chmod 0600 ~/.ssh/id_*
-    - apt-get update
-    - apt-get install -y openssh-client
-
-coverage deploy:
-  stage: deploy
-  image: debian:stretch
-  dependencies:
-    - django-tests
-  environment:
-    name: coverage/${CI_COMMIT_REF_NAME}
-    url: https://coverage.technicie.nl/${CI_COMMIT_REF_SLUG}/
-    on_stop: coverage remove
-  <<: *sshsetup
-  script:
-    - |
-      sftp -i ~/.ssh/id_coverage coveragewww@ivo.thalia.nu -b <<EOF
-      -rm ${CI_COMMIT_REF_SLUG}/*
-      -rmdir ${CI_COMMIT_REF_SLUG}
-      put -r website/covhtml ${CI_COMMIT_REF_SLUG}
-      EOF
-
-coverage remove:
-    stage: deploy
-    when: manual
-    image: debian:stretch
-    environment:
-        name: coverage/${CI_COMMIT_REF_NAME}
-        action: stop
-    variables:
-        GIT_STRATEGY: none
-    <<: *sshsetup
-    script:
-      - |
-        sftp -i ~/.ssh/id_coverage coveragewww@ivo.thalia.nu -b <<EOF
-        rm ${CI_COMMIT_REF_SLUG}/*
-        rmdir ${CI_COMMIT_REF_SLUG}
-        EOF
-
 docs tests:
   stage: test
   image: $PY38_IMAGE
@@ -118,56 +73,6 @@ docs tests:
   artifacts:
     paths:
       - docs/_build
-
-docs deploy:
-  stage: deploy
-  image: debian:stretch
-  dependencies:
-    - docs tests
-  environment:
-    name: docs/${CI_COMMIT_REF_NAME}
-    url: https://docs.technicie.nl/${CI_COMMIT_REF_SLUG}/
-    on_stop: docs remove
-  <<: *sshsetup
-  script:
-    - |
-      sftp -i ~/.ssh/id_docs docswww@ivo.thalia.nu -b <<EOF
-      -rm ${CI_COMMIT_REF_SLUG}/*/*
-      -rm ${CI_COMMIT_REF_SLUG}/*
-      -rmdir ${CI_COMMIT_REF_SLUG}/_images
-      -rmdir ${CI_COMMIT_REF_SLUG}/_modules
-      -rmdir ${CI_COMMIT_REF_SLUG}/_sources
-      -rmdir ${CI_COMMIT_REF_SLUG}/_static
-      -rmdir ${CI_COMMIT_REF_SLUG}/doctest
-      -rmdir ${CI_COMMIT_REF_SLUG}/doctrees
-      -rmdir ${CI_COMMIT_REF_SLUG}
-      -mkdir ${CI_COMMIT_REF_SLUG}
-      put -r docs/_build/* ${CI_COMMIT_REF_SLUG}
-      EOF
-
-docs remove:
-  stage: deploy
-  when: manual
-  image: debian:stretch
-  environment:
-    name: docs/${CI_COMMIT_REF_NAME}
-    action: stop
-  variables:
-    GIT_STRATEGY: none
-  <<: *sshsetup
-  script:
-    - |
-      sftp -i ~/.ssh/id_docs docswww@ivo.thalia.nu -b <<EOF
-      rm ${CI_COMMIT_REF_SLUG}/*/*
-      rm ${CI_COMMIT_REF_SLUG}/*
-      rmdir ${CI_COMMIT_REF_SLUG}/_images
-      rmdir ${CI_COMMIT_REF_SLUG}/_modules
-      rmdir ${CI_COMMIT_REF_SLUG}/_sources
-      rmdir ${CI_COMMIT_REF_SLUG}/_static
-      rmdir ${CI_COMMIT_REF_SLUG}/doctest
-      rmdir ${CI_COMMIT_REF_SLUG}/doctrees
-      rmdir ${CI_COMMIT_REF_SLUG}
-      EOF
 
 build docker image:
   stage: test
@@ -204,6 +109,32 @@ build production docker image:
   variables:
     DOCKER_TAG_PRODUCTION: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_TAG
     DEV_REQUIREMENTS: 0
+
+coverage deploy:
+  stage: "deploy"
+  image: "python:latest"
+  dependencies:
+    - "django-tests"
+  environment:
+    name: "coverage/${CI_COMMIT_REF_NAME}"
+    url: "https://s3-eu-west-1.amazonaws.com/thalia-coverage/${CI_COMMIT_REF_SLUG}/index.html"
+  before_script:
+      - "pip install awscli"
+  script:
+    - "aws s3 sync --only-show-errors website/covhtml s3://thalia-coverage/${CI_COMMIT_REF_SLUG}/"
+
+docs deploy:
+  stage: "deploy"
+  image: "python:latest"
+  dependencies:
+    - "docs tests"
+  environment:
+    name: "documentation/${CI_COMMIT_REF_NAME}"
+    url: "https://s3-eu-west-1.amazonaws.com/thalia-documentation/${CI_COMMIT_REF_SLUG}/index.html"
+  before_script:
+      - "pip install awscli"
+  script:
+    - "aws s3 sync --only-show-errors docs/_build s3://thalia-documentation/${CI_COMMIT_REF_SLUG}/"
 
 .reviewsetup:
   when: "manual"
