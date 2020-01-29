@@ -202,8 +202,18 @@ a:link, a:visited {
     font-weight: normal;
 }
 
+.field-payment a:link, .field-payment a:visited,
+#result_list tbody a:link, #result_list tbody a:visited {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
 a:focus, a:hover {
     color: $preset-hover;
+}
+
+.field-payment a:focus, .field-payment a:hover,
+#result_list tbody a:focus, #result_list tbody a:hover {
+    border-bottom: 1px solid $preset-hover;
 }
 
 a.section:link, a.section:visited {
@@ -443,4 +453,12 @@ a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.se
     background-color: $danger;
     color: $warning-contrast;
     border-radius: 0;
+}
+
+.clock-icon, .date-icon, .member-phone, .member-email {
+    filter: grayscale(100%);
+}
+
+code {
+    color: inherit;
 }
