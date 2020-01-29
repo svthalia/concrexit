@@ -4,7 +4,7 @@
 }
 
 .alert-success {
-    color: $white;
+    color: $success-contrast;
     background-color: $success;
     border-color: $success-hover;
 }
@@ -14,7 +14,7 @@
 }
 
 .alert-info {
-    color: $white;
+    color: $info-contrast;
     background-color: $info;
     border-color: $info-hover;
 }
@@ -24,7 +24,7 @@
 }
 
 .alert-warning {
-    color: $white;
+    color: $warning-contrast;
     background-color: $warning;
     border-color: $warning-hover;
 }
@@ -34,7 +34,7 @@
 }
 
 .alert-danger, .alert-error {
-    color: $white;
+    color: $danger-contrast;
     background-color: $danger;
     border-color: $danger-hover;
 }
