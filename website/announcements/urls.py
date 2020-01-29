@@ -1,5 +1,4 @@
 """The routes defined by this package"""
-# pylint: disable=invalid-name
 from django.conf.urls import url
 from django.urls import path, include
 

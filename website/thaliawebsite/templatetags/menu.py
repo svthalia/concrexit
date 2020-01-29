@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from ..menus import MAIN_MENU
 
-register = template.Library()  # pylint: disable=invalid-name
+register = template.Library()
 
 
 @register.inclusion_tag("menu/menu.html", takes_context=True)

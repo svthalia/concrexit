@@ -4,7 +4,7 @@ from django import template
 
 from utils.media.services import get_thumbnail_url
 
-register = template.Library()  # pylint: disable=invalid-name
+register = template.Library()
 
 
 @register.simple_tag

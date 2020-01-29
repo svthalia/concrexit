@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.staticfiles import finders
 
 
-register = template.Library()  # pylint: disable=invalid-name
+register = template.Library()
 BANNERDIR = "img/headers"
 
 

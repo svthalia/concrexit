@@ -23,9 +23,9 @@ import sys
 sys.path.insert(0, os.path.abspath("../website"))
 
 import django
-from django.conf import settings  # noqa
+from django.conf import settings
 
-from thaliawebsite import settings as thalia_settings  # noqa
+from thaliawebsite import settings as thalia_settings
 
 
 # -- Initialise Django ----------------------------------------------------

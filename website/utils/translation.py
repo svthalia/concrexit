@@ -31,7 +31,6 @@ instead;
     class SomeItemAdmin(TranslatedModelAdmin):
         fields = (name, description)
 """
-# pylint: disable=fixme,protected-access
 
 from django.conf import settings
 from django.contrib import admin
@@ -42,7 +41,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import get_language
 
 
-class MultilingualField(object):  # pylint: disable=too-few-public-methods
+class MultilingualField(object):
     """
     Transformed the passed-in form field into fields appended with the
     active languages and generates an automatic accessor property that
@@ -178,7 +177,6 @@ class TranslatedModelAdmin(admin.ModelAdmin):
         type(self).search_fields = _trans_fields(type(self).search_fields)
 
         if type(self).fieldsets is not None:
-            # pylint: disable=not-an-iterable
             for fieldset in type(self).fieldsets:
                 fieldset[1]["fields"] = _trans_fields(fieldset[1]["fields"])
 

@@ -11,4 +11,4 @@ class ActiveMembersConfig(AppConfig):
 
     def ready(self):
         """Imports the signals when the app is ready"""
-        from . import signals  # noqa: F401
+        from . import signals

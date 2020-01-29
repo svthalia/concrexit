@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.template import Library
 
-register = Library()  # pylint: disable=invalid-name
+register = Library()
 
 
 @register.simple_tag()

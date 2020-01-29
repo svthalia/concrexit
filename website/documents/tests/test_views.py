@@ -10,7 +10,6 @@ from members.models import Member
 
 
 def _close_filehandles(response):
-    # pylint: disable=protected-access
     for closable in response._closable_objects:
         if isinstance(closable, io.BufferedReader):
             closable.close()
