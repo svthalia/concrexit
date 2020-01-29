@@ -165,11 +165,16 @@ class PaymentAdminTest(TestCase):
 
     def test_batch_link(self) -> None:
         batch = Batch.objects.create(id=1)
-        payment1 = Payment.objects.create(amount=7.5, processed_by=self.user,
-                                          type=Payment.TPAY, batch=batch)
-        payment2 = Payment.objects.create(amount=7.5, processed_by=self.user,
-                                          type=Payment.TPAY)
-        self.assertEqual("<a href='/admin/payments/batch/1/change/'>your Thalia payments for 2019-12 (not processed)</a>", str(self.admin.batch_link(payment1)))
+        payment1 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, type=Payment.TPAY, batch=batch
+        )
+        payment2 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, type=Payment.TPAY
+        )
+        self.assertEqual(
+            "<a href='/admin/payments/batch/1/change/'>your Thalia payments for 2019-12 (not processed)</a>",
+            str(self.admin.batch_link(payment1)),
+        )
         self.assertEqual("-", self.admin.batch_link(payment2))
 
     @mock.patch("django.contrib.admin.ModelAdmin.message_user")
@@ -416,7 +421,6 @@ class PaymentAdminTest(TestCase):
         b2 = Batch.objects.create(id=2, processed=True)
         p1 = Payment.objects.create(amount=5, processed_by=self.user, type=Payment.TPAY)
         pass
-
 
 
 @freeze_time("2019-01-01")

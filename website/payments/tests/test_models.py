@@ -169,9 +169,12 @@ class BatchModelTest(TestCase):
         batch = Batch.objects.create(id=1)
         now = timezone.now()
         last_month = datetime.datetime(now.year, now.month, 1) - datetime.timedelta(
-            days=1)
-        self.assertEqual(batch.description,
-                         f"your Thalia payments for {last_month.year}-{last_month.month}")
+            days=1
+        )
+        self.assertEqual(
+            batch.description,
+            f"your Thalia payments for {last_month.year}-{last_month.month}",
+        )
 
     def test_proccess_batch(self) -> None:
         batch = Batch.objects.create(id=1)
@@ -197,7 +200,7 @@ class BatchModelTest(TestCase):
             processed_by=self.user2,
             batch=batch,
         )
-        self.assertEqual(batch.total_amount, 36+37)
+        self.assertEqual(batch.total_amount, 36 + 37)
 
     def test_absolute_url(self) -> None:
         b1 = Batch.objects.create(id=1)
