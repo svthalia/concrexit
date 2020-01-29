@@ -8,7 +8,6 @@ variables:
   # Installs:
   #  - pip: coverage, poetry
   #  - apt: ghostscript
-  PY37_IMAGE: thalia/python-thalia:3.7
   PY38_IMAGE: thalia/python-thalia:3.8
   PIP_CACHE_DIR: "${CI_PROJECT_DIR}/pip-cache"
 
@@ -18,7 +17,7 @@ stages:
 
 codestyle:
   stage: test
-  image: $PY37_IMAGE
+  image: $PY38_IMAGE
   before_script:
     - poetry install --no-interaction
   script:
@@ -33,7 +32,8 @@ codestyle:
     # Check for fuzzy translations in .po files
     - grep --include="*.po" --files-with-matches --recursive "#, fuzzy" && exit 1 || echo "No fuzzy translations found."
 
-.djangotest: &djangotest
+django-tests:
+  image: $PY38_IMAGE
   stage: test
   services:
     - postgres:latest
@@ -49,21 +49,12 @@ codestyle:
     - coverage report --fail-under=100 --omit registrations/urls.py registrations/**.py
     - coverage report --fail-under=100 --omit payments/urls.py payments/**.py
     - coverage report
-
-python37-django22:
-  <<: *djangotest
-  image: $PY37_IMAGE
   after_script:
     - cd website
     - coverage html --directory=covhtml --title="${CI_COMMIT_REF_SLUG} Coverage Report"
   artifacts:
     paths:
       - website/covhtml/
-
-python38-django22:
-  <<: *djangotest
-  image: $PY38_IMAGE
-  allow_failure: true
 
 .sshsetup: &sshsetup
   before_script:
@@ -79,7 +70,7 @@ coverage deploy:
   stage: deploy
   image: debian:stretch
   dependencies:
-    - python37-django22
+    - django-tests
   environment:
     name: coverage/${CI_COMMIT_REF_NAME}
     url: https://coverage.technicie.nl/${CI_COMMIT_REF_SLUG}/
@@ -112,7 +103,7 @@ coverage remove:
 
 docs tests:
   stage: test
-  image: $PY37_IMAGE
+  image: $PY38_IMAGE
   before_script:
     # install django deps
     - poetry install --no-interaction --extras "docs"
