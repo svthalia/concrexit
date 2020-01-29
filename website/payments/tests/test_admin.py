@@ -24,6 +24,8 @@ from payments import admin
 from payments.admin import ValidAccountFilter
 from payments.models import Payment, BankAccount, Batch
 
+from payments.admin import PaymentAdmin
+
 
 class GlobalAdminTest(SimpleTestCase):
     @mock.patch("registrations.admin.RegistrationAdmin")
@@ -357,6 +359,32 @@ class PaymentAdminTest(TestCase):
             messages.SUCCESS,
         )
 
+    def test_add_to_new_batch(self) -> None:
+        p1 = Payment.objects.create(amount=1)
+        p2 = Payment.objects.create(amount=2, processed_by=self.user, type=Payment.CASH)
+        p3 = Payment.objects.create(amount=3, processed_by=self.user, type=Payment.TPAY)
+        queryset = Payment.objects.all()
+
+        change_url = reverse("admin:payments_payment_changelist")
+
+        request_noperms = self.client.post(
+            change_url,
+            {
+                "action": "add_to_new_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        ).wsgi_request
+        self._give_user_permissions()
+        request_hasperms = self.client.post(
+            change_url,
+            {
+                "action": "process_wire_selected",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        ).wsgi_request
+
     def test_get_actions(self) -> None:
         """
         Test that the actions are added to the admin
@@ -379,6 +407,7 @@ class PaymentAdminTest(TestCase):
                 "process_wire_selected",
                 "process_tpay_selected",
                 "add_to_new_batch",
+                "add_to_last_batch",
                 "export_csv",
             ],
         )
@@ -416,11 +445,12 @@ class PaymentAdminTest(TestCase):
             response.content.decode("utf-8"),
         )
 
-    def test_batch_foreignkey_filter(self) -> None:
+    def test_formfield_for_foreignkey(self) -> None:
         b1 = Batch.objects.create(id=1)
         b2 = Batch.objects.create(id=2, processed=True)
         p1 = Payment.objects.create(amount=5, processed_by=self.user, type=Payment.TPAY)
-        pass
+        response = self.client.get(reverse("admin:payments_payment_change", args=(p1.id,)))
+        self.assertCountEqual([int(x.id) for x in response.context_data['adminform'].form.fields['batch'].choices.queryset], [b1.id])
 
 
 @freeze_time("2019-01-01")

@@ -56,6 +56,8 @@ class PaymentTest(TestCase):
         """
         Tests that the processed date is set when the type of payment is set
         """
+        self.payment.type = Payment.NONE
+        self.payment.save()
         self.assertFalse(self.payment.processed)
         self.assertIsNone(self.payment.processing_date)
         self.payment.type = Payment.CARD
@@ -76,6 +78,22 @@ class PaymentTest(TestCase):
             self.payment.get_admin_url(),
             "/admin/payments/payment/{}/change/".format(self.payment.pk),
         )
+
+    def test_add_payment_from_processed_batch_to_new_batch(self) -> None:
+        """
+        Test that a payment that is in a processed batch cannot be added to another batch
+        """
+        self.batch.processed = True
+        self.batch.save()
+        self.payment.type = Payment.TPAY
+        self.payment.batch = self.batch
+        self.payment.save()
+
+        b = Batch.objects.create()
+        self.payment.batch = b
+        self.payment.save()
+
+        self.assertEqual(self.payment.batch, self.batch)
 
     def test_clean(self):
         """

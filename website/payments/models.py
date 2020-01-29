@@ -73,6 +73,10 @@ class Payment(models.Model):
     def processed(self):
         return self.type != self.NONE
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._batch = self.batch
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
@@ -80,6 +84,12 @@ class Payment(models.Model):
             self.processing_date = timezone.now()
         elif self.type == self.NONE:
             self.processing_date = None
+
+        if self.batch and not self.batch.processed:
+            self.batch = self._batch
+
+        self._batch = self.batch
+
         super().save(force_insert, force_update, using, update_fields)
 
     def clean(self):
