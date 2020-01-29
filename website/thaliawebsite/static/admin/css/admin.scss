@@ -455,6 +455,10 @@ a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.se
     border-radius: 0;
 }
 
+.messagelist a {
+    color: inherit;
+}
+
 .clock-icon, .date-icon, .member-phone, .member-email {
     filter: grayscale(100%);
 }
