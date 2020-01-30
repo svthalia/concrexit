@@ -9,7 +9,7 @@
         height: calc(100% - 15px);
 
         &:hover {
-            background-color: $card-background-hover;
+            background-color: $grey;
         }
 
         .card-date {
@@ -30,7 +30,7 @@
             }
 
             .no-registration {
-                background-color: $card-background-hover;
+                background-color: $dark-grey;
             }
 
             .has-registration {
@@ -42,11 +42,11 @@
 
 #events-index {
     .fc-bootstrap .fc-today {
-        background: $background-shade;
+        background: #fff9fc;
     }
 
     .fc-now-indicator {
-        border-color: $preset;
+        border-color: $dark-grey;
 
         &.fc-now-indicator-arrow {
             border-top-color: transparent;

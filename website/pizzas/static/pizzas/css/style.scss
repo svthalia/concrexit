@@ -7,19 +7,19 @@
     h1 {
         font-size: 2rem;
         text-align: center;
+        color: $white;
     }
 
     h2 {
         text-align: center;
+        color: $white;
     }
 
     &.paid {
         background-color: $success;
-        color: $success-contrast;
     }
 
     &.unpaid {
         background-color: $danger;
-        color: $danger-contrast;
     }
 }
