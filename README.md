@@ -33,11 +33,11 @@ If you want to integrate `black` with your editor look in the [`black` docs](htt
 
 There are a range of tests that can be run:
 
-    poetry run python manage.py check
-    poetry run python manage.py templatecheck --project-only
-    poetry run python manage.py makemigrations --no-input --check --dry-run
-    poetry run python -mcoverage run --branch --source '.' manage.py test
-    coverage report
+    poetry run python website/manage.py check
+    poetry run python website/manage.py templatecheck --project-only
+    poetry run python website/manage.py makemigrations --no-input --check --dry-run
+    poetry run coverage run website/manage.py test website/
+    poetry run coverage report
 
 poetry
 ------

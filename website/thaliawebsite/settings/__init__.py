@@ -27,11 +27,11 @@ except ImportError:
     pass
 
 # Load production settings if DJANGO_PRODUCTION is set
-if os.environ.get("DJANGO_PRODUCTION"):  # pragma: nocover
+if os.environ.get("DJANGO_PRODUCTION"):
     from .production import *
 
 # Load testing settings if GITLAB_CI is set
-if os.environ.get("GITLAB_CI"):  # pragma: nocover
+if os.environ.get("GITLAB_CI"):
     from .testing import *
 
 if FIREBASE_CREDENTIALS != {}:

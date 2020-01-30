@@ -41,20 +41,18 @@ django-tests:
     - git log -1
     - poetry install --no-interaction
   script:
-    - cd website
-    - poetry run python manage.py check
-    - poetry run python manage.py templatecheck --project-only
-    - poetry run python manage.py makemigrations --no-input --check --dry-run
-    - poetry run python -Wall -mcoverage run manage.py test
-    - coverage report --fail-under=100 --omit registrations/urls.py registrations/**.py
-    - coverage report --fail-under=100 --omit payments/urls.py payments/**.py
+    - poetry run python website/manage.py check
+    - poetry run python website/manage.py templatecheck --project-only
+    - poetry run python website/manage.py makemigrations --no-input --check --dry-run
+    - poetry run coverage run website/manage.py test website/
+    - coverage report --fail-under=100 --omit website/registrations/urls.py website/registrations/**.py
+    - coverage report --fail-under=100 --omit website/payments/urls.py website/payments/**.py
     - coverage report
   after_script:
-    - cd website
     - coverage html --directory=covhtml --title="${CI_COMMIT_REF_SLUG} Coverage Report"
   artifacts:
     paths:
-      - website/covhtml/
+      - covhtml
 
 docs tests:
   stage: test
@@ -121,7 +119,7 @@ coverage deploy:
   before_script:
       - "pip install awscli"
   script:
-    - "aws s3 sync --only-show-errors website/covhtml s3://thalia-coverage/${CI_COMMIT_REF_SLUG}/"
+    - "aws s3 sync --only-show-errors covhtml s3://thalia-coverage/${CI_COMMIT_REF_SLUG}/"
 
 docs deploy:
   stage: "deploy"
