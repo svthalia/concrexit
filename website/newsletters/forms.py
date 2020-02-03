@@ -1,7 +1,7 @@
 """The forms defined by the newsletters package"""
 from django import forms
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from events.models import Event
 from .models import NewsletterEvent

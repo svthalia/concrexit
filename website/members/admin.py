@@ -10,7 +10,7 @@ from django.db.models import Q, Count
 from django.http import HttpResponse
 from django.urls import path
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from members import services, admin_views
 from members.models import EmailChange, Member

@@ -1,7 +1,7 @@
 from django import template
 from django.conf import settings
 from django.templatetags.static import static
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from members.templatetags.member_card import member_card
 from thaliawebsite.templatetags.grid_item import grid_item

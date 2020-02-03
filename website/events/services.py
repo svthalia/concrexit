@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from django.utils import timezone
 from django.utils.datetime_safe import date
-from django.utils.translation import ugettext_lazy as _, get_language
+from django.utils.translation import gettext_lazy as _, get_language
 
 from events import emails
 from events.exceptions import RegistrationError

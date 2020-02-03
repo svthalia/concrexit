@@ -3,7 +3,7 @@ from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
 from django.forms import Field
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from payments.widgets import PaymentWidget
 from . import services

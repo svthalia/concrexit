@@ -8,7 +8,7 @@ from django.urls import reverse, path
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 import events.admin_views as admin_views
 from activemembers.models import MemberGroup

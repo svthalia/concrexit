@@ -1,4 +1,3 @@
-import io
 import logging
 from unittest.mock import Mock
 
@@ -7,12 +6,6 @@ from django.test import Client, TestCase, override_settings
 
 from documents.models import Document
 from members.models import Member
-
-
-def _close_filehandles(response):
-    for closable in response._closable_objects:
-        if isinstance(closable, io.BufferedReader):
-            closable.close()
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -66,14 +59,12 @@ class GetDocumentTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(b"".join(response.streaming_content), b"file_nl")
-        _close_filehandles(response)
 
         response = self.client.post(
             "/association/documents/document/1", HTTP_ACCEPT_LANGUAGE="en", follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(b"".join(response.streaming_content), b"file_en")
-        _close_filehandles(response)
 
     def test_members_only(self):
         self.document.members_only = True
@@ -82,11 +73,9 @@ class GetDocumentTest(TestCase):
         response = self.client.post("/association/documents/document/1", follow=True)
         template_names = [template.name for template in response.templates]
         self.assertIn("registration/login.html", template_names)
-        _close_filehandles(response)
 
         self.client.force_login(self.member)
 
         response = self.client.post("/association/documents/document/1", follow=True)
         template_names = [template.name for template in response.templates]
         self.assertNotIn("registration/login.html", template_names)
-        _close_filehandles(response)
