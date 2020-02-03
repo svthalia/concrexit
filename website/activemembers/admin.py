@@ -7,7 +7,7 @@ from django.contrib import admin, messages
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from activemembers import models
 from activemembers.forms import MemberGroupMembershipForm, MemberGroupForm

@@ -9,7 +9,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.template.defaultfilters import floatformat
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from members.models import Membership, Profile
 from utils import countries

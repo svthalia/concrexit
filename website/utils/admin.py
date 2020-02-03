@@ -1,7 +1,7 @@
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import DisallowedRedirect
 from django.http import HttpResponseRedirect
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from utils.translation import TranslatedModelAdmin
 
@@ -9,7 +9,9 @@ from utils.translation import TranslatedModelAdmin
 def _do_next(request, response):
     """See DoNextModelAdmin"""
     if "next" in request.GET:
-        if not is_safe_url(request.GET["next"], allowed_hosts={request.get_host()}):
+        if not url_has_allowed_host_and_scheme(
+            request.GET["next"], allowed_hosts={request.get_host()}
+        ):
             raise DisallowedRedirect
         elif "_save" in request.POST:
             return HttpResponseRedirect(request.GET["next"])

@@ -12,7 +12,7 @@ from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import FormView, CreateView
 from django.views.generic.base import TemplateResponseMixin, TemplateView

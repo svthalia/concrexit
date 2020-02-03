@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import ImageField, CharField
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 from utils.translation import ModelTranslateMeta, MultilingualField

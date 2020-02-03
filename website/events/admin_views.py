@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.utils.translation import pgettext_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import DetailView, TemplateView, FormView
 

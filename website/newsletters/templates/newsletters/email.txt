@@ -1,4 +1,4 @@
-{% load i18n baseurl %}{% load static from staticfiles %}THALIA {% trans "newsletter"|upper %}
+{% load i18n baseurl %}{% load static %}THALIA {% trans "newsletter"|upper %}
 
 {% trans "dear members"|upper %},
 

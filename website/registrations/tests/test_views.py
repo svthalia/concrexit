@@ -13,7 +13,7 @@ from django.template.defaultfilters import floatformat
 from django.test import Client, TestCase, RequestFactory, override_settings
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from members.models import Membership, Profile, Member
 from registrations import views
@@ -914,5 +914,5 @@ class ReferenceCreateViewTest(TestCase):
         )
         self.assertEqual(False, response.context["success"])
         self.assertContains(
-            response, "You&#39;ve already given a reference for this person."
+            response, "You&#x27;ve already given a reference for this person."
         )

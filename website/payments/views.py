@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 

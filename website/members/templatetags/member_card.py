@@ -2,7 +2,7 @@ from django import template
 from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from thaliawebsite.templatetags.grid_item import grid_item
 from utils.media.services import get_thumbnail_url
