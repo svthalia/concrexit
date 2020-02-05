@@ -70,10 +70,10 @@ def send_newsletter(newsletter):
     Message.objects.create(
         title_nl=newsletter.title_nl,
         title_en=newsletter.title_en,
-        body_nl=newsletter.description_nl,
-        body_en=newsletter.description_en,
+        body_nl="Tik om te bekijken",
+        body_en="Tap to view",
         url=settings.BASE_URL + newsletter.get_absolute_url(),
         category=Category.objects.get(
-            key="newsletter"
+            key=Category.key
         )
     ).send()
