@@ -42,7 +42,8 @@ class EventAdminDetails(DetailView, PermissionRequiredMixin):
         context.update(
             {
                 "payment": Payment,
-                "has_permission": True
+                "has_permission": True,
+                "site_url": True
              }
         )
 
