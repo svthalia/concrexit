@@ -40,7 +40,10 @@ class EventAdminDetails(DetailView, PermissionRequiredMixin):
         context = super().get_context_data(**kwargs)
 
         context.update(
-            {"payment": Payment,}
+            {
+                "payment": Payment,
+                "has_permission": True
+             }
         )
 
         return context
