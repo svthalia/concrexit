@@ -2,7 +2,9 @@
 import os
 from datetime import datetime, date
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy
@@ -177,6 +179,7 @@ class ExamCreateView(CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
+        messages.success(self.request, self.success_message)
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -204,6 +207,7 @@ class SummaryCreateView(CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
+        messages.success(self.request, self.success_message)
         return HttpResponseRedirect(self.get_success_url())
 
 
