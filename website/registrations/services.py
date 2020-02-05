@@ -9,7 +9,6 @@ from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
 from django.db.models import Q, QuerySet
 from django.utils import timezone
-from pylint.checkers.typecheck import _
 
 import members
 from members.models import Membership, Profile, Member
@@ -459,9 +458,9 @@ def process_tpay_payment(renewal):
             renewal.save()
             process_payment(renewal.payment)
         else:
-            raise ValueError(_("You have already paid."))
+            raise ValueError("You have already paid.")
     else:
-        raise ValueError(_("You do not have Thalia Pay enabled."))
+        raise ValueError("You do not have Thalia Pay enabled.")
 
 
 def execute_data_minimisation(dry_run=False):
