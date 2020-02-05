@@ -206,7 +206,7 @@ class SummaryCreateView(CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
-        super().form_valid(form)
+        return super().form_valid(form)
 
 
 @method_decorator(login_required, "dispatch")
