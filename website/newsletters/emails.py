@@ -20,7 +20,9 @@ def send_newsletter(newsletter):
     Sends the newsletter as HTML and plaintext email
 
     :param newsletter: the newsletter to be send
+
     """
+
     events = None
     if newsletter.date:
         datetime = (
