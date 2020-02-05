@@ -21,7 +21,7 @@ urlpatterns = [
             [
                 path("statistics/", StatisticsView.as_view(), name="statistics"),
                 path("profile/<int:pk>", ProfileDetailView.as_view(), name="profile"),
-                path("<slug:filter>/", MembersIndex.as_view(), name="index"),
+                path("directory/<slug:filter>/", MembersIndex.as_view(), name="index"),
                 path("directory/", MembersIndex.as_view(), name="index"),
             ]
         ),
