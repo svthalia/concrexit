@@ -28,7 +28,7 @@
 
                 <ul class="nav nav-tabs justify-content-center mt-4">
                     <li class="nav-item">
-                        <a class="nav-link{% if not filter or filter == "all" %} active{% endif %}"
+                        <a class="nav-link{% if not filter or filter == "directory" or filter == "all" %} active{% endif %}"
                            href="{% url 'members:index' %}{% urlparams keywords=keys %}#members-directory">
                             {% trans "All members" %}
                         </a>
