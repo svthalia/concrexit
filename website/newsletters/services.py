@@ -74,6 +74,6 @@ def send_newsletter(newsletter):
         body_en="Tap to view",
         url=settings.BASE_URL + newsletter.get_absolute_url(),
         category=Category.objects.get(
-            key=Category.key
+            key=Category.NEWSLETTER
         )
     ).send()
