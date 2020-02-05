@@ -74,7 +74,10 @@ urlpatterns = [
             [
                 path(
                     "login/",
-                    LoginView.as_view(authentication_form=AuthenticationForm),
+                    LoginView.as_view(
+                        authentication_form=AuthenticationForm,
+                        redirect_authenticated_user=True,
+                    ),
                     name="login",
                 ),
                 path("", include("django.contrib.auth.urls")),
