@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {% if debug %}
+        <link rel="icon" href="{% static "img/browser/icon-debug.png" %}">
+    {% else %}
+        <link rel="icon" href="{% static "img/browser/icon.png" %}">
+    {% endif %}
+{% endblock %}
