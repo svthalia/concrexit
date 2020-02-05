@@ -12,6 +12,7 @@ ARG source_commit="unknown"
 ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SOURCE_COMMIT=${source_commit}
+ENV PATH /root/.poetry/bin:${PATH}
 
 # Set up entrypoint and command
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
@@ -33,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript && \
     rm -rf /var/lib/apt
 
-RUN pip install --no-cache-dir poetry && \
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python && \
     poetry config virtualenvs.create false
 
 WORKDIR /usr/src/app/website/
