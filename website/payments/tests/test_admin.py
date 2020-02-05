@@ -22,6 +22,7 @@ from freezegun import freeze_time
 from members.models import Member, Profile
 from payments import admin
 from payments.admin import ValidAccountFilter
+from payments.forms import BatchPaymentInlineAdminForm
 from payments.models import Payment, BankAccount, Batch
 
 from payments.admin import PaymentAdmin
@@ -161,6 +162,7 @@ class PaymentAdminTest(TestCase):
         payment2 = Payment.objects.create(amount=7.5)
         self.assertEqual(self.admin.processed_by_link(payment2), "-")
 
+    @freeze_time("2020-01-01")
     def test_batch_link(self) -> None:
         batch = Batch.objects.create(id=1)
         payment1 = Payment.objects.create(
@@ -371,6 +373,10 @@ class PaymentAdminTest(TestCase):
                 "_selected_action": [x.id for x in [p1, p2, p3]],
             },
         ).wsgi_request
+
+        for p in Payment.objects.all():
+            self.assertIsNone(p.batch)
+
         self._give_user_permissions()
         request_hasperms = self.client.post(
             change_url,
@@ -381,15 +387,10 @@ class PaymentAdminTest(TestCase):
             },
         ).wsgi_request
 
-        self.admin.add_to_new_batch(request_noperms, queryset)
-        for p in Payment.objects.all():
-            self.assertIsNone(p.batch)
-
-        self.admin.add_to_new_batch(request_hasperms, queryset)
         for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
             self.assertIsNone(p.batch)
 
-        self.assertIsNotNone(Payment.objects.get(p3.id).batch)
+        self.assertIsNotNone(Payment.objects.get(id=p3.id).batch.id)
 
     def test_add_to_last_batch(self) -> None:
         b = Batch.objects.create()
@@ -400,33 +401,50 @@ class PaymentAdminTest(TestCase):
 
         change_url = reverse("admin:payments_payment_changelist")
 
-        request_noperms = self.client.post(
+        self.client.post(
             change_url,
             {
                 "action": "add_to_last_batch",
                 "index": 1,
                 "_selected_action": [x.id for x in [p1, p2, p3]],
             },
-        ).wsgi_request
-        self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "add_to_last_batch",
-                "index": 1,
-                "_selected_action": [x.id for x in [p1, p2, p3]],
-            },
-        ).wsgi_request
+        )
 
-        self.admin.add_to_new_batch(request_noperms, queryset)
         for p in Payment.objects.all():
             self.assertIsNone(p.batch)
 
-        self.admin.add_to_new_batch(request_hasperms, queryset)
+        self._give_user_permissions()
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        )
+
         for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
             self.assertIsNone(p.batch)
 
-        self.assertEqual(Payment.objects.get(p3.id).batch, b.id)
+        self.assertEqual(Payment.objects.get(id=p3.id).batch.id, b.id)
+
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2]],
+            },
+        )
+
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [p3.id],
+            },
+        )
 
     def test_get_actions(self) -> None:
         """
@@ -611,10 +629,39 @@ class BatchAdminTest(TestCase):
 
     def setUp(self) -> None:
         self.site = AdminSite()
-        self.admin = admin.BankAccountAdmin(BankAccount, admin_site=self.site)
+        self.admin = admin.BatchAdmin(Batch, admin_site=self.site)
         self.rf = RequestFactory()
 
-    # def
+    def test_get_readonly_fields(self) -> None:
+        b = Batch.objects.create()
+        self.assertCountEqual(self.admin.get_readonly_fields(None, b), [
+            "processed",
+            "processing_date",
+            "total_amount",
+        ])
+
+        b.processed = True
+        b.save()
+        self.assertCountEqual(self.admin.get_readonly_fields(None, b), [
+            "description",
+            "processed",
+            "processing_date",
+            "total_amount",
+        ])
+
+    def test_save_formset(self) -> None:
+        b_payments = Batch.objects.create()
+        b_payments_proces = Batch.objects.create(processed=True)
+        p1 = Payment.objects.create(amount=1, processed_by=self.user, type=Payment.TPAY, batch=b_payments)
+        p2 = Payment.objects.create(amount=1, processed_by=self.user, type=Payment.TPAY, batch=b_payments_proces)
+
+        formset = BatchPaymentInlineAdminForm()
+        formset.save = MagicMock(return_value=Payment.objects.all())
+        formset.save_m2m = MagicMock()
+
+        self.admin.save_formset(None, None, formset, None)
+        self.assertIsNone(Payment.objects.get(id=p1.id).batch)
+        self.assertEqual(Payment.objects.get(id=p2.id).batch.id, b_payments_proces.id)
 
 
 @freeze_time("2019-01-01")

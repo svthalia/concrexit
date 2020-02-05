@@ -437,8 +437,6 @@ class BatchAdmin(admin.ModelAdmin):
 
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
-        for obj in formset.deleted_objects:
-            obj.delete()
 
         for instance in instances:
             if instance.batch is None or (
