@@ -157,7 +157,7 @@ class SummaryDetailView(DetailView):
 
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
-class ExamCreateView(CreateView):
+class ExamCreateView(SuccessMessageMixin, CreateView):
     """
     Renders the form to submit a new exam
     """
@@ -179,8 +179,7 @@ class ExamCreateView(CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
-        messages.success(self.request, self.success_message)
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
 @method_decorator(login_required, "dispatch")
@@ -207,8 +206,7 @@ class SummaryCreateView(CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
-        messages.success(self.request, self.success_message)
-        return HttpResponseRedirect(self.get_success_url())
+        super().form_valid(form)
 
 
 @method_decorator(login_required, "dispatch")
