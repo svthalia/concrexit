@@ -2,7 +2,9 @@
 import os
 from datetime import datetime, date
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy
@@ -155,7 +157,7 @@ class SummaryDetailView(DetailView):
 
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
-class ExamCreateView(CreateView):
+class ExamCreateView(SuccessMessageMixin, CreateView):
     """
     Renders the form to submit a new exam
     """
@@ -177,7 +179,7 @@ class ExamCreateView(CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
 @method_decorator(login_required, "dispatch")
@@ -204,7 +206,7 @@ class SummaryCreateView(CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
 @method_decorator(login_required, "dispatch")
