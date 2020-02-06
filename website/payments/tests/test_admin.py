@@ -361,36 +361,45 @@ class PaymentAdminTest(TestCase):
         p1 = Payment.objects.create(amount=1)
         p2 = Payment.objects.create(amount=2, processed_by=self.user, type=Payment.CASH)
         p3 = Payment.objects.create(amount=3, processed_by=self.user, type=Payment.TPAY)
-        queryset = Payment.objects.all()
 
         change_url = reverse("admin:payments_payment_changelist")
 
-        request_noperms = self.client.post(
+        self.client.post(
             change_url,
             {
                 "action": "add_to_new_batch",
                 "index": 1,
                 "_selected_action": [x.id for x in [p1, p2, p3]],
             },
-        ).wsgi_request
+        )
 
         for p in Payment.objects.all():
             self.assertIsNone(p.batch)
 
         self._give_user_permissions()
-        request_hasperms = self.client.post(
+        self.client.post(
             change_url,
             {
                 "action": "add_to_new_batch",
                 "index": 1,
                 "_selected_action": [x.id for x in [p1, p2, p3]],
             },
-        ).wsgi_request
+        )
 
         for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
             self.assertIsNone(p.batch)
 
         self.assertIsNotNone(Payment.objects.get(id=p3.id).batch.id)
+
+        self._give_user_permissions()
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_new_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2]],
+            },
+        )
 
     def test_add_to_last_batch(self) -> None:
         b = Batch.objects.create()
@@ -671,6 +680,14 @@ class BatchAdminTest(TestCase):
 
         changeform_view_mock.assert_called_once_with(
             request, b.id, "", {"processed": True, "batch": b}
+        )
+
+        changeform_view_mock.reset_mock()
+
+        self.admin.changeform_view(request)
+
+        changeform_view_mock.assert_called_once_with(
+            request, None, "", {"processed": False, "batch": None}
         )
 
 
