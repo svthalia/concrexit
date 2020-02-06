@@ -397,7 +397,6 @@ class PaymentAdminTest(TestCase):
         p1 = Payment.objects.create(amount=1)
         p2 = Payment.objects.create(amount=2, processed_by=self.user, type=Payment.CASH)
         p3 = Payment.objects.create(amount=3, processed_by=self.user, type=Payment.TPAY)
-        queryset = Payment.objects.all()
 
         change_url = reverse("admin:payments_payment_changelist")
 
@@ -437,13 +436,12 @@ class PaymentAdminTest(TestCase):
             },
         )
 
+        b.processed = True
+        b.save()
+
         self.client.post(
             change_url,
-            {
-                "action": "add_to_last_batch",
-                "index": 1,
-                "_selected_action": [p3.id],
-            },
+            {"action": "add_to_last_batch", "index": 1, "_selected_action": [p3.id],},
         )
 
     def test_get_actions(self) -> None:
@@ -634,26 +632,27 @@ class BatchAdminTest(TestCase):
 
     def test_get_readonly_fields(self) -> None:
         b = Batch.objects.create()
-        self.assertCountEqual(self.admin.get_readonly_fields(None, b), [
-            "processed",
-            "processing_date",
-            "total_amount",
-        ])
+        self.assertCountEqual(
+            self.admin.get_readonly_fields(None, b),
+            ["processed", "processing_date", "total_amount",],
+        )
 
         b.processed = True
         b.save()
-        self.assertCountEqual(self.admin.get_readonly_fields(None, b), [
-            "description",
-            "processed",
-            "processing_date",
-            "total_amount",
-        ])
+        self.assertCountEqual(
+            self.admin.get_readonly_fields(None, b),
+            ["description", "processed", "processing_date", "total_amount",],
+        )
 
     def test_save_formset(self) -> None:
         b_payments = Batch.objects.create()
         b_payments_proces = Batch.objects.create(processed=True)
-        p1 = Payment.objects.create(amount=1, processed_by=self.user, type=Payment.TPAY, batch=b_payments)
-        p2 = Payment.objects.create(amount=1, processed_by=self.user, type=Payment.TPAY, batch=b_payments_proces)
+        p1 = Payment.objects.create(
+            amount=1, processed_by=self.user, type=Payment.TPAY, batch=b_payments
+        )
+        p2 = Payment.objects.create(
+            amount=1, processed_by=self.user, type=Payment.TPAY, batch=b_payments_proces
+        )
 
         formset = BatchPaymentInlineAdminForm()
         formset.save = MagicMock(return_value=Payment.objects.all())
@@ -662,6 +661,17 @@ class BatchAdminTest(TestCase):
         self.admin.save_formset(None, None, formset, None)
         self.assertIsNone(Payment.objects.get(id=p1.id).batch)
         self.assertEqual(Payment.objects.get(id=p2.id).batch.id, b_payments_proces.id)
+
+    @mock.patch("django.contrib.admin.ModelAdmin.changeform_view")
+    def test_change_form_view(self, changeform_view_mock) -> None:
+        b = Batch.objects.create(processed=True)
+        request = self.rf.get(f"/admin/payments/batch/{b.id}/change/")
+        request.user = self.user
+        self.admin.changeform_view(request, b.id)
+
+        changeform_view_mock.assert_called_once_with(
+            request, b.id, "", {"processed": True, "batch": b}
+        )
 
 
 @freeze_time("2019-01-01")
