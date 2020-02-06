@@ -310,8 +310,8 @@ class BatchExportAdminViewTest(TestCase):
         self.assertEqual(
             response.content,
             b"Account holder name,IBAN,Mandate id,Amount,Description,Mandate date\r\n"
-            b"Test1 Example,DE75512108001245126199,2,3,your Thalia payments for 2020-1,2020-01-01\r\n"
-            b"Test2 Example,NL02ABNA0123456789,1,6,your Thalia payments for 2020-1,2020-01-01\r\n",
+            b"Test1 Example,DE75512108001245126199,2,3.00,your Thalia payments for 2020-1,2020-01-01\r\n"
+            b"Test2 Example,NL02ABNA0123456789,1,6.00,your Thalia payments for 2020-1,2020-01-01\r\n",
         )
 
 
@@ -356,9 +356,9 @@ class BatchNewFilledAdminViewTest(TestCase):
         self._give_user_permissions()
 
         response = self.client.get(url)
-        self.assertRedirects(
-            response, f"/admin/payments/batch/{Batch.objects.last().id}/change/"
-        )
+
+        b = Batch.objects.exclude(id=self.batch.id).first()
+        self.assertRedirects(response, f"/admin/payments/batch/{b.id}/change/")
 
     @freeze_time("2020-03-01")
     def test_get(self):
@@ -402,7 +402,7 @@ class BatchNewFilledAdminViewTest(TestCase):
 
         self.client.get("/admin/payments/batch/new_filled/")
 
-        b = Batch.objects.first()
+        b = Batch.objects.exclude(id=self.batch.id).first()
 
         self.assertIsNone(Payment.objects.get(amount=1).batch)
         self.assertEqual(Payment.objects.get(amount=2).batch.id, b.id)

@@ -118,7 +118,7 @@ class BatchExportAdminView(View):
                     member.get_full_name(),
                     bankaccount.iban,
                     bankaccount.mandate_no,
-                    row["total"],
+                    f"{row['total']:.2f}",
                     batch.description,
                     bankaccount.valid_from,
                 ]
