@@ -453,16 +453,18 @@ class BatchAdmin(admin.ModelAdmin):
     ) -> HttpResponse:
         """
         Renders the change formview
-        Only allow when the payment has not been processed yet
+        Only allow when the batch has not been processed yet
         """
+        extra_context = extra_context or {}
         obj = None
         processed = False
         if object_id is not None and request.user.has_perm("payments.process_batches"):
             obj = Batch.objects.get(id=object_id)
             processed = obj.processed
-        return super().changeform_view(
-            request, object_id, form_url, {"batch": obj, "processed": processed}
-        )
+
+        extra_context["batch"] = obj
+        extra_context["processed"] = processed
+        return super().changeform_view(request, object_id, form_url, extra_context)
 
 
 @admin.register(BankAccount)

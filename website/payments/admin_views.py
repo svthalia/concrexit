@@ -110,12 +110,9 @@ class BatchExportAdminView(View):
             total=Sum("amount")
         )
 
-        print(memeber_rows)
-
         for row in memeber_rows:
             member: Member = Member.objects.get(id=row["paid_by"])
             bankaccount: BankAccount = member.bank_accounts.last()
-            print(member, bankaccount)
             writer.writerow(
                 [
                     member.get_full_name(),
@@ -153,7 +150,7 @@ class BatchNewFilledAdminView(View):
             type=Payment.TPAY,
             batch=None,
             processing_date__gte=last_month_start,
-            # processing_date__lte=last_month_end,
+            processing_date__lte=last_month_end,
         )
 
         payments.update(batch=batch)
