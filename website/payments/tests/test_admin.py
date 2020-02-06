@@ -78,7 +78,7 @@ class PaymentAdminTest(TestCase):
         self.client.logout()
         self.client.force_login(self.user)
 
-    def _give_user_permissions(self) -> None:
+    def _give_user_permissions(self, batch_permissions=True) -> None:
         """
         Helper to give the user permissions
         """
@@ -88,8 +88,9 @@ class PaymentAdminTest(TestCase):
         permissions_b = content_type.permission_set.all()
         for p in permissions_p:
             self.user.user_permissions.add(p)
-        for p in permissions_b:
-            self.user.user_permissions.add(p)
+        if batch_permissions:
+            for p in permissions_b:
+                self.user.user_permissions.add(p)
 
         self.user.save()
 
@@ -364,6 +365,7 @@ class PaymentAdminTest(TestCase):
 
         change_url = reverse("admin:payments_payment_changelist")
 
+        self._give_user_permissions(batch_permissions=False)
         self.client.post(
             change_url,
             {
