@@ -411,6 +411,7 @@ class PaymentAdminTest(TestCase):
 
         change_url = reverse("admin:payments_payment_changelist")
 
+        self._give_user_permissions(batch_permissions=False)
         self.client.post(
             change_url,
             {
