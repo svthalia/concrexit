@@ -82,13 +82,9 @@ class PaymentAdminTest(TestCase):
         Helper to give the user permissions
         """
         content_type = ContentType.objects.get_for_model(Payment)
-        permissions_p = Permission.objects.filter(
-            content_type__app_label=content_type.app_label,
-        )
+        permissions_p = content_type.permission_set.all()
         content_type = ContentType.objects.get_for_model(Batch)
-        permissions_b = Permission.objects.filter(
-            content_type__app_label=content_type.app_label,
-        )
+        permissions_b = content_type.permission_set.all()
         for p in permissions_p:
             self.user.user_permissions.add(p)
         for p in permissions_b:
