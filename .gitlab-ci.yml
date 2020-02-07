@@ -1,7 +1,4 @@
 variables:
-  POSTGRES_DB: thalia
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: ""
   # https://hub.docker.com/r/thalia/python-thalia/
   # https://github.com/thaliawww/python-thalia
   # Should get auto-updated with the official 'python' repository
@@ -37,6 +34,10 @@ django-tests:
   stage: test
   services:
     - postgres:latest
+  variables:
+    POSTGRES_DB: thalia
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: ""
   before_script:
     - git log -1
     - poetry install --no-interaction
@@ -73,39 +74,38 @@ docs tests:
       - docs/_build
 
 build docker image:
-  stage: test
+  stage: "test"
+  image: "docker:git"
   services:
-    - docker:dind
-  image: thalia/docker-compose
+    - "docker:dind" 
   tags:
-    - docker
+    - "docker"
   except:
-    - tags
+    - "tags"
   before_script:
-    - echo $DOCKER_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.hub.docker.com
+    - "echo $DOCKER_REGISTRY_PASSWORD | docker login --username thaliawww --password-stdin registry.hub.docker.com"
   script:
-    - docker-compose config -q
-    - docker-compose build --build-arg install_dev_requirements=$DEV_REQUIREMENTS --build-arg source_commit=$(git rev-parse HEAD) web
-    - docker tag $DOCKER_LATEST $DOCKER_TAG
-    - docker push $DOCKER_TAG
+    - "docker build --quiet --build-arg install_dev_requirements=${DEV_REQUIREMENTS} --build-arg source_commit=$(git rev-parse HEAD) --tag ${DOCKER_LATEST} ."
+    - "docker tag ${DOCKER_LATEST} ${DOCKER_TAG}"
+    - "docker push ${DOCKER_TAG}"
   variables:
     DEV_REQUIREMENTS: 1
-    DOCKER_LATEST: registry.hub.docker.com/thalia/concrexit:latest
-    DOCKER_TAG: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_SHA
+    DOCKER_LATEST: "registry.hub.docker.com/thalia/concrexit:latest"
+    DOCKER_TAG: "registry.hub.docker.com/thalia/concrexit:${CI_COMMIT_SHA}"
 
 build production docker image:
-  extends: build docker image
+  extends: "build docker image"
   only:
-    - tags
+    - "tags"
   except:
-    - master
+    - "master"
   after_script:
-    - docker tag $DOCKER_TAG $DOCKER_TAG_PRODUCTION
-    - docker tag $DOCKER_TAG $DOCKER_LATEST
-    - docker push $DOCKER_TAG_PRODUCTION
-    - docker push $DOCKER_LATEST    
+    - "docker tag ${DOCKER_TAG} ${DOCKER_TAG_PRODUCTION}"
+    - "docker tag ${DOCKER_TAG} ${DOCKER_LATEST}"
+    - "docker push ${DOCKER_TAG_PRODUCTION}"
+    - "docker push ${DOCKER_LATEST}"
   variables:
-    DOCKER_TAG_PRODUCTION: registry.hub.docker.com/thalia/concrexit:$CI_COMMIT_TAG
+    DOCKER_TAG_PRODUCTION: "registry.hub.docker.com/thalia/concrexit:${CI_COMMIT_TAG}"
     DEV_REQUIREMENTS: 0
 
 coverage deploy:
