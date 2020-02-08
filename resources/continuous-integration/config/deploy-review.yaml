@@ -1,0 +1,40 @@
+---
+
+.review-setup:
+  when: manual
+  stage: deploy
+  except:
+    - schedules
+  image: python:latest
+  before_script:
+    - DEBIAN_FRONTEND=noninteractive apt-get --yes --quiet update
+    - DEBIAN_FRONTEND=noninteractive apt-get --yes --quiet install jq
+    - pip install awscli
+  variables:
+      AWS_DEFAULT_REGION: eu-west-1
+
+review-create:
+  extends: .review-setup
+  environment:
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://${CI_COMMIT_REF_SLUG}.public.review.technicie.nl/
+    on_stop: review-remove
+  script:
+    - username=$(head /dev/urandom | tr -dc 'a-z' | head -c 10)
+    - password=$(head /dev/urandom | tr -dc 'a-zA-Z' | head -c 32)
+    - >-
+      sed --in-place
+      --expression "s/@version@/$CI_COMMIT_SHA/g"
+      --expression "s/@username@/$username/g"
+      --expression "s/@password@/$password/g"
+      resources/continuous-integration/review/ec2-bootstrap.sh
+    - resources/continuous-integration/review/review-host-create.sh
+    - echo -e "The deployment is done. Please wait for the website to come up. You can login on https://${CI_COMMIT_REF_SLUG}.public.review.technicie.nl/ with:\nUsername:$username\nPassword:$password"
+
+review-remove:
+  extends: .review-setup
+  environment:
+    name: review/${CI_COMMIT_REF_NAME}
+    action: stop
+  script:
+    - resources/continuous-integration/review/
