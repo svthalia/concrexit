@@ -22,7 +22,7 @@ new_instance_id=$(
     aws ec2 run-instances \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=concrexit-review-${CI_COMMIT_REF_SLUG}}]" \
     --launch-template "LaunchTemplateId=lt-03762fc23450c2471,Version=5" \
-    --user-data file://resources/ec2-bootstrap.sh | 
+    --user-data file://resources/continuous-integration/review/ec2-bootstrap.sh | 
         jq --raw-output ".Instances[0].InstanceId"
     )
 aws ec2 wait instance-running --instance-ids "${new_instance_id}"
