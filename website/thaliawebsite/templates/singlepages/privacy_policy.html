@@ -128,9 +128,11 @@
                     website or registering to attend an event). Processing of these data happens on the basis of
                     it being a legitimate interest of Thalia.
                     We additionally may collect data (logs) on anything happening on the site and app to ensure
-                    the correct functioning of the services provided. Thalia tries to only collect data when
-                    errors occur. The Technicie uses these logs to fix bugs in the website and app. Processing of
-                    these data happens on the basis of it being a legitimate interest of Thalia.
+                    the correct functioning of the services provided, the username of a logged in user is sent along
+                    with the logs. See the <a href="#sentry">section below on Functional Software, Inc.</a> for
+                    information on where this data is sent. Thalia tries to only collect data when errors occur.
+                    The logs are used to fix bugs in the website and app. Processing of these data
+                    happens on the basis of it being a legitimate interest of Thalia.
                 {% endblocktrans %}
             </p>
 
@@ -272,6 +274,17 @@
                         GSuite accounts for these members, and shares the name and email address of the member with
                         Google to facilitate this. If a member stops being a member of committees and societies,
                         their GSuite account will automatically be deleted after one month.
+                    {% endblocktrans %}
+                </li>
+
+                <li>
+                    <strong id="sentry">{% trans "Functional Software, Inc." %}</strong>
+                    {% blocktrans trimmed %}
+                        Thalia uses <a href="https://sentry.io">sentry.io</a>, a platform by Functional Software, Inc.,
+                        for error monitoring. Concretely this means that when server errors occur on the website
+                        or crashes in the app some data is sent to the sentry.io platform. For logged in users,
+                        the username is sent along with an error log. We always try to filter out any personal
+                        information from the error logs.
                     {% endblocktrans %}
                 </li>
             </ul>
