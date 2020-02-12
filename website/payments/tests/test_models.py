@@ -4,7 +4,31 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member
-from payments.models import Payment, BankAccount
+from payments.models import Payment, BankAccount, Payable
+
+
+class PayableTest(TestCase):
+    """Tests for the Payable class"""
+
+    def test_payment_amount_not_implemented(self):
+        p = Payable()
+        with self.assertRaises(NotImplementedError):
+            _ = p.payment_amount
+
+    def test_payment_topic_not_implemented(self):
+        p = Payable()
+        with self.assertRaises(NotImplementedError):
+            _ = p.payment_topic
+
+    def test_payment_notes_not_implemented(self):
+        p = Payable()
+        with self.assertRaises(NotImplementedError):
+            _ = p.payment_notes
+
+    def test_payment_payer_not_implemented(self):
+        p = Payable()
+        with self.assertRaises(NotImplementedError):
+            _ = p.payment_payer
 
 
 @override_settings(SUSPEND_SIGNALS=True)
