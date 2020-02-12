@@ -47,7 +47,7 @@ class ObtainThaliaAuthToken(ObtainAuthToken):
         )
 
         if not serializer.is_valid():
-            return HttpResponse("Unauthorized", status=401)
+            return Response({"error": "Unauthorized"}, status=401)
 
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
