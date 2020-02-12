@@ -11,6 +11,24 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
 
+class Payable:
+    @property
+    def payment_amount(self):
+        raise NotImplementedError
+
+    @property
+    def payment_topic(self):
+        raise NotImplementedError
+
+    @property
+    def payment_notes(self):
+        raise NotImplementedError
+
+    @property
+    def payment_payer(self):
+        raise NotImplementedError
+
+
 class Payment(models.Model):
     """
     Describes a payment
