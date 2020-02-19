@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-30 20:28+0200\n"
-"PO-Revision-Date: 2018-09-30 20:29+0200\n"
+"PO-Revision-Date: 2020-02-19 22:18+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: static/members/js/statistics.js
 msgid "Members per member type"
@@ -47,6 +47,14 @@ msgid "Members per cohort (honorary excluded)"
 msgstr "Leden per cohort (excl. ereleden)"
 
 #: static/members/js/statistics.js
+msgid "Number of members per committee"
+msgstr "Aantal leden per commissie"
+
+#: static/members/js/statistics.js
+msgid "Number of events"
+msgstr "Aantal evenementen"
+
+#: static/members/js/statistics.js
 msgid "Benefactors per cohort"
 msgstr "Begunstigers per cohort"
 
@@ -57,4 +65,3 @@ msgstr "Totaal aantal pizza bestellingen per soort"
 #: static/members/js/statistics.js
 msgid "Current pizza orders of type"
 msgstr "Aantal pizza bestellingen van het huidige event per soort"
-
