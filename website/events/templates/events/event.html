@@ -222,7 +222,7 @@
                                                 Registration is not possible anymore.
                                             {% endblocktrans %}
                                         {% endif %}
-                                        {% if event.after_cancel_deadline and permissions.cancel_registration %}
+                                        {% if event.after_cancel_deadline %}
                                             {% blocktrans trimmed with costs=event.fine %}
                                                 Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}.
                                                 Also note that you will be unable to re-register.{% endblocktrans %}
