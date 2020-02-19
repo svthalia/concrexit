@@ -58,6 +58,15 @@
                 </a>
             </p>
         </div>
+    {% elif self.profile.event_permissions != "all" %}
+        <div class="announcement">
+            <p>
+                {% blocktrans trimmed %}
+                You're currently not allowed to go to certain events. Please contact Thalia's
+                <a href="mailto:treasurer@thalia.nu">treasurer</a> for more information.
+                {% endblocktrans %}
+            </p>
+        </div>
     {% endif %}
     {% include "announcements/announcement.html" with announcements=announcements %}
 </section>
@@ -75,8 +84,8 @@
         </a>
         <div class="flex-grow-1"></div>
         <div class="navbar-user order-1 d-flex">
-            <a href="#lang" 
-               class="btn btn-link" 
+            <a href="#lang"
+               class="btn btn-link"
                id="language-switcher">
                 {% if LANGUAGE_CODE == 'nl' %}
                     <img src="{% static 'img/flags/en.svg' %}"/>
