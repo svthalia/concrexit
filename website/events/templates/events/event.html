@@ -2,14 +2,11 @@
 {% load i18n static bleach_tags thumbnail member_card google_map_url grid_item alert document_cards slider %}
 
 
-{% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} —
-    {{ block.super }}{% endblock %}
-{% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %}
-    — {{ block.super }}{% endblock %}
+{% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block opengraph %}
-    <meta property="og:description"
-          content="{{ event.description|striptags|truncatewords:10 }}"/>
+    <meta property="og:description" content="{{ event.description|striptags|truncatewords:10 }}"/>
 {% endblock %}
 
 
@@ -61,9 +58,7 @@
                         </tr>
                         <tr>
                             <th>{% trans "organiser"|capfirst %}</th>
-                            <td>
-                                <a href={{ event.organiser.get_absolute_url }}>{{ event.organiser }}</a>
-                            </td>
+                            <td><a href={{ event.organiser.get_absolute_url }}>{{ event.organiser }}</a></td>
                         </tr>
                         {% if event.price > 0 %}
                             <tr>
@@ -144,11 +139,9 @@
                                             {% else %}
                                                 {% trans "You have not paid yet" %}
                                                 {% if registration.member.tpay_enabled %}
-                                                    <form action="{% url 'events:pay' event.id %}"
-                                                          method="post">
+                                                    <form action="{% url 'events:pay' event.id %}" method="post">
                                                         {% csrf_token %}
-                                                        <input type="submit"
-                                                               class="btn btn-primary"
+                                                        <input type="submit" class="btn btn-primary"
                                                                value="{% trans "Pay with Thalia Pay" %}"/>
                                                     </form>
                                                 {% endif %}
@@ -162,10 +155,8 @@
                             <td></td>
                             <td>
                                 {% if permissions.update_registration %}
-                                    <form action="{% url 'events:registration' event.id %}"
-                                          method="get">
-                                        <input type="submit"
-                                               class="btn btn-primary mb-2"
+                                    <form action="{% url 'events:registration' event.id %}" method="get">
+                                        <input type="submit" class="btn btn-primary mb-2"
                                                value="{% trans "Update registration" %}"/>
                                     </form>
                                 {% endif %}
@@ -175,38 +166,29 @@
                                         {% blocktrans trimmed %}
                                             By registering,
                                             you confirm that you have read the
-                                            <a target="_blank"
-                                               href="{{ terms_url }}">terms and
-                                                conditions</a>,
-                                            that you understand them and that
-                                            you agree to be bound by them.
+                                            <a target="_blank" href="{{ terms_url }}">terms and conditions</a>,
+                                            that you understand them and that you agree to be bound by them.
                                         {% endblocktrans %}
                                     </p>
-                                    <form action="{% url 'events:register' event.id %}"
-                                          method="post">{% csrf_token %}
+                                    <form action="{% url 'events:register' event.id %}" method="post">{% csrf_token %}
                                         {% if event.reached_participants_limit %}
-                                            <input type="submit"
-                                                   class="btn btn-primary"
+                                            <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Put me on the waiting list" %}"/>
                                         {% else %}
 
-                                            <input type="submit"
-                                                   class="btn btn-primary"
+                                            <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Register" %}"/>
                                         {% endif %}
                                     </form>
                                 {% elif permissions.cancel_registration %}
                                     {# Special message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
-                                    <form action="{% url 'events:cancel' event.id %}"
-                                          method="post">{% csrf_token %}
+                                    <form action="{% url 'events:cancel' event.id %}" method="post">{% csrf_token %}
                                         {% if registration.would_cancel_after_deadline %}
-                                            <input type="submit"
-                                                   class="btn btn-primary"
+                                            <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Cancel registration" %}"
                                                    onclick="return confirm('{% blocktrans trimmed with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the estimated full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');"/>
                                         {% else %}
-                                            <input type="submit"
-                                                   class="btn btn-primary"
+                                            <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Cancel registration" %}"
                                                    onclick="return confirm('{% trans 'Are you sure you want to cancel your registration?' %}');"/>
                                         {% endif %}
@@ -224,8 +206,6 @@
                                 <em>
                                     {% if not request.user.is_authenticated and event.registration_required %}
                                         {% trans "You have to log in before you can register for this event." %}
-                                    {% elif not request.user.is_authenticate and not event.registration_required %}
-                                        {% trans "No registration required" %}
                                     {% else %}
                                         {% if not event.registration_required %}
                                             {% if event.no_registration_message %}
@@ -234,24 +214,18 @@
                                                 {% trans "No registration required" %}
                                             {% endif %}
                                         {% elif not event.registration_started %}
-                                            {% blocktrans trimmed with datetime=event.registration_start %}
-                                                Registration will open
-                                                {{ datetime }}
+                                            {% blocktrans trimmed with datetime=event.registration_start  %}
+                                                Registration will open {{ datetime }}
                                             {% endblocktrans %}
                                         {% elif not event.registration_allowed %}
                                             {% blocktrans trimmed %}
-                                                Registration is not possible
-                                                anymore.
+                                                Registration is not possible anymore.
                                             {% endblocktrans %}
                                         {% endif %}
                                         {% if event.after_cancel_deadline and permissions.cancel_registration %}
                                             {% blocktrans trimmed with costs=event.fine %}
-                                                Cancellation isn't possible
-                                                anymore without having to pay
-                                                the full costs of €{{ costs }}.
-                                                Also note that you will be
-                                                unable to re-register.
-                                            {% endblocktrans %}
+                                                Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}.
+                                                Also note that you will be unable to re-register.{% endblocktrans %}
                                         {% endif %}
                                     {% endif %}
                                 </em>
@@ -264,8 +238,7 @@
                                     Pizza
                                 </th>
                                 <td>
-                                    <a href="{% url "pizzas:index" %}"
-                                       class="btn btn-primary">
+                                    <a href="{% url "pizzas:index" %}" class="btn btn-primary">
                                         {% trans "Order" context "pizzas" %}
                                     </a>
                                 </td>
@@ -277,8 +250,7 @@
 
                 <div class="col-12 col-md-6 order-0 order-md-1 mb-4 mb-md-0">
                     <div class="location-map">
-                        <img src="{% google_map_url event.map_location %}"
-                             alt="{{ event.location }}"/>
+                        <img src="{% google_map_url event.map_location %}" alt="{{ event.location }}" />
                     </div>
                 </div>
             </div>
