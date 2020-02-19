@@ -4,7 +4,7 @@ Provides the command to generate fixtures
 import math
 import random
 import string
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
@@ -19,12 +19,22 @@ from activemembers.models import (
     MemberGroup,
 )
 from documents.models import Document
+from education.models import Course, Category
 from events.models import Event
 from members.models import Profile, Member, Membership
 from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
+
+# TODO
+# [x] courses
+# [ ] exams, summaries ?
+# [ ] photos
+# [ ] albums
+# [ ] documents
+# [ ] payments
+# [ ] registrations
 
 try:
     import factory
@@ -113,6 +123,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "-w", "--vacancy", type=int, help="The amount of fake vacancies to add"
         )
+        parser.add_argument("--course", type=int, help="The amount of courses to add")
 
     def create_board(self, lecture_year):
         """
@@ -476,6 +487,27 @@ class Command(BaseCommand):
 
             item.save()
 
+    def create_course(self):
+        course = Course()
+
+        course.name_nl = _generate_title()
+        course.name_en = course.name_nl
+        course.ec = 3 if random.random() < 0.5 else 6
+
+        course.course_code = "NWI-" + "".join(random.choices(string.digits, k=5))
+
+        course.since = random.randint(2016, 2020)
+        if random.random() < 0.5:
+            course.until = max(course.since + random.randint(1, 5), datetime.now().year)
+
+        # Save so we can add categories
+        course.save()
+
+        for category in Category.objects.order_by("?")[: random.randint(1, 3)]:
+            course.categories.add(category)
+
+        course.save()
+
     def handle(self, *args, **options):
         """
         Handle the command being executed
@@ -493,6 +525,7 @@ class Command(BaseCommand):
             "vacancy",
             "document",
             "newsletter",
+            "course",
         ]
 
         if all([not options[opt] for opt in opts]):
@@ -514,6 +547,7 @@ class Command(BaseCommand):
                 "pizza": 5,
                 "newsletter": 2,
                 "document": 8,
+                "course": 10,
             }
 
         # Users need to be generated before boards and committees
@@ -578,3 +612,17 @@ class Command(BaseCommand):
         if options["document"]:
             for __ in range(options["document"]):
                 self.create_document()
+
+        # Courses need to be created before exams and summaries
+        if options["course"]:
+            # Create course categories if needed
+            if len(Category.objects.all()) < 5:
+                for _ in range(5):
+                    category = Category()
+                    category.name_nl = _generate_title()
+                    category.name_en = category.name_nl
+
+                    category.save()
+
+            for _ in range(options["course"]):
+                self.create_course()
