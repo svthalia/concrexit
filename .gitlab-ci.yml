@@ -1,7 +1,7 @@
 variables:
   POSTGRES_DB: thalia
   POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: ""
+  POSTGRES_PASSWORD: postgres
   # https://hub.docker.com/r/thalia/python-thalia/
   # https://github.com/thaliawww/python-thalia
   # Should get auto-updated with the official 'python' repository
