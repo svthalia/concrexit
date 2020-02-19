@@ -41,7 +41,7 @@ django-tests:
   variables:
     POSTGRES_DB: thalia
     POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: ""
+    POSTGRES_PASSWORD: postgres
   artifacts:
     paths:
       - covhtml
