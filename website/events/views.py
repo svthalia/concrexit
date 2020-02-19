@@ -50,7 +50,7 @@ class EventDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user"] = self.request.user
-        context["payment_method_tpay"] = Payment.TPAY
+        context["payment_method_tpay"] = Payment.Type.TPAY
 
         event = context["event"]
         if event.max_participants:

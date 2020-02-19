@@ -149,7 +149,7 @@ class PaymentAdmin(admin.ModelAdmin):
         """Process the selected payment as cash"""
         if request.user.has_perm("payments.process_payments"):
             updated_payments = services.process_payment(
-                queryset, request.member, Payment.CASH
+                queryset, request.member, Payment.Type.CASH
             )
             self._process_feedback(request, updated_payments)
 
@@ -159,7 +159,7 @@ class PaymentAdmin(admin.ModelAdmin):
         """Process the selected payment as card"""
         if request.user.has_perm("payments.process_payments"):
             updated_payments = services.process_payment(
-                queryset, request.member, Payment.CARD
+                queryset, request.member, Payment.Type.CARD
             )
             self._process_feedback(request, updated_payments)
 
@@ -169,7 +169,7 @@ class PaymentAdmin(admin.ModelAdmin):
         """Process the selected payment as Thalia Pay"""
         if request.user.has_perm("payments.process_payments"):
             updated_payments = services.process_payment(
-                queryset, request.member, Payment.TPAY
+                queryset, request.member, Payment.Type.TPAY
             )
             self._process_feedback(request, updated_payments)
 
@@ -181,7 +181,7 @@ class PaymentAdmin(admin.ModelAdmin):
         """Process the selected payment as wire"""
         if request.user.has_perm("payments.process_payments"):
             updated_payments = services.process_payment(
-                queryset, request.member, Payment.WIRE
+                queryset, request.member, Payment.Type.WIRE
             )
             self._process_feedback(request, updated_payments)
 

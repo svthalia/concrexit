@@ -1,5 +1,6 @@
 """The models defined by the payments package"""
 import uuid
+from enum import Enum
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -34,22 +35,26 @@ class Payment(models.Model):
     Describes a payment
     """
 
+    class Type(Enum):
+        CASH = "cash_payment"
+        CARD = "card_payment"
+        TPAY = "tpay_payment"
+        WIRE = "wire_payment"
+
+    types = {x.name: x.value for x in Type}
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     created_at = models.DateTimeField(_("created at"), default=timezone.now)
 
     NONE = "no_payment"
-    CASH = "cash_payment"
-    CARD = "card_payment"
-    TPAY = "tpay_payment"
-    WIRE = "wire_payment"
 
     PAYMENT_TYPE = (
         (NONE, _("No payment")),
-        (CASH, _("Cash payment")),
-        (CARD, _("Card payment")),
-        (TPAY, _("Thalia Pay payment")),
-        (WIRE, _("Wire payment")),
+        (Type.CASH, _("Cash payment")),
+        (Type.CARD, _("Card payment")),
+        (Type.TPAY, _("Thalia Pay payment")),
+        (Type.WIRE, _("Wire payment")),
     )
 
     type = models.CharField(

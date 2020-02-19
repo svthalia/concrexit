@@ -383,7 +383,7 @@ class RegistrationAdminTest(TestCase):
             ),
         )
 
-        reg.payment.type = Payment.CARD
+        reg.payment.type = Payment.Type.CARD
 
         self.assertEqual(
             self.admin.payment_status(reg),

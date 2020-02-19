@@ -260,7 +260,7 @@ class Order(models.Model):
             return (
                 self.payment
                 and not (
-                    self.payment.processed and not self.payment.type == Payment.TPAY
+                    self.payment.processed and not self.payment.type == Payment.Type.TPAY
                 )
                 and not self.pizza_event.has_ended
             )

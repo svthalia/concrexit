@@ -115,7 +115,7 @@ class PaymentAdminTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["payment"], payment)
 
-        payment.type = Payment.CARD
+        payment.type = Payment.Type.CARD
 
         response = self.client.get(
             "/admin/payments/payment/{}/change/".format(object_id)
@@ -189,7 +189,7 @@ class PaymentAdminTest(TestCase):
         process_payment.assert_not_called()
 
         self.admin.process_cash_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.CASH)
+        process_payment.assert_called_once_with(queryset, self.user, Payment.Type.CASH)
         message_user.assert_called_once_with(
             request_hasperms,
             _("Successfully processed %(count)d %(items)s.")
@@ -234,7 +234,7 @@ class PaymentAdminTest(TestCase):
         process_payment.assert_not_called()
 
         self.admin.process_card_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.CARD)
+        process_payment.assert_called_once_with(queryset, self.user, Payment.Type.CARD)
         message_user.assert_called_once_with(
             request_hasperms,
             _("Successfully processed %(count)d %(items)s.")
@@ -279,7 +279,7 @@ class PaymentAdminTest(TestCase):
         process_payment.assert_not_called()
 
         self.admin.process_tpay_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.TPAY)
+        process_payment.assert_called_once_with(queryset, self.user, Payment.Type.TPAY)
         message_user.assert_called_once_with(
             request_hasperms,
             _("Successfully processed %(count)d %(items)s.")
@@ -324,7 +324,7 @@ class PaymentAdminTest(TestCase):
         process_payment.assert_not_called()
 
         self.admin.process_wire_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.WIRE)
+        process_payment.assert_called_once_with(queryset, self.user, Payment.Type.WIRE)
         message_user.assert_called_once_with(
             request_hasperms,
             _("Successfully processed %(count)d %(items)s.")
@@ -370,10 +370,10 @@ class PaymentAdminTest(TestCase):
         Test that the CSV export of payments is correct
         """
         Payment.objects.create(
-            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CARD
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.Type.CARD
         ).save()
         Payment.objects.create(
-            amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
+            amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.Type.CASH
         ).save()
         Payment.objects.create(amount=9, notes="This is a test").save()
 

@@ -181,11 +181,11 @@ def pay_with_tpay(member, event):
                 paid_by=member,
                 notes=note,
                 processed_by=member,
-                type=Payment.TPAY,
+                type=Payment.Type.TPAY,
             )
             registration.save()
         elif registration.payment.type == Payment.NONE:
-            registration.payment.type = Payment.TPAY
+            registration.payment.type = Payment.Type.TPAY
             registration.save()
         else:
             raise RegistrationError(_("You have already paid for this " "event."))
@@ -318,16 +318,16 @@ def update_registration_by_organiser(registration, member, data):
         elif (
             data["payment"]["type"] != Payment.NONE and registration.payment is not None
         ):
-            if data["payment"]["type"] != Payment.TPAY or (
-                data["payment"]["type"] == Payment.TPAY and member.tpay_enabled
+            if data["payment"]["type"] != Payment.Type.TPAY or (
+                data["payment"]["type"] == Payment.Type.TPAY and member.tpay_enabled
             ):
                 registration.payment.type = data["payment"]["type"]
                 registration.payment.save()
             else:
                 raise RegistrationError(_("This user does not have Thalia Pay enabled"))
         elif data["payment"]["type"] != Payment.NONE and registration.payment is None:
-            if data["payment"]["type"] != Payment.TPAY or (
-                data["payment"]["type"] == Payment.TPAY and member.tpay_enabled
+            if data["payment"]["type"] != Payment.Type.TPAY or (
+                data["payment"]["type"] == Payment.Type.TPAY and member.tpay_enabled
             ):
                 note = f"Event registration {registration.event.title_en}. "
                 if registration.name:

@@ -387,7 +387,7 @@ class PaymentListViewTest(TestCase):
             paid_by=cls.login_user,
             notes="Testing Payment 1",
             amount=10,
-            type=Payment.CARD,
+            type=Payment.Type.CARD,
             processing_date=timezone.now().replace(year=2019, month=3, day=6),
         )
 

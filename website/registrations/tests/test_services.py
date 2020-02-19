@@ -510,7 +510,7 @@ class ServicesTest(TestCase):
         self.e2.save()
 
         # Check that the DoesNotExist is caught
-        p = Payment(amount=10, type=Payment.CARD)
+        p = Payment(amount=10, type=Payment.Type.CARD)
         services.process_payment(p)
 
         p0 = services._create_payment_for_entry(self.e0)
@@ -531,7 +531,7 @@ class ServicesTest(TestCase):
         )
 
         payments = Payment.objects.filter(pk__in=[p0.pk, p2.pk, p3.pk])
-        payments.update(type=Payment.CARD)
+        payments.update(type=Payment.Type.CARD)
 
         for payment in Payment.objects.filter(pk__in=[p0.pk, p1.pk, p2.pk]):
             services.process_payment(payment)
@@ -544,7 +544,7 @@ class ServicesTest(TestCase):
         self.assertEqual(self.e1.status, Entry.STATUS_ACCEPTED)
         self.assertEqual(self.e2.status, Entry.STATUS_COMPLETED)
 
-        p0.type = Payment.CARD
+        p0.type = Payment.Type.CARD
         p0.save()
         self.e0.status = Entry.STATUS_ACCEPTED
         self.e0.save()
@@ -568,7 +568,7 @@ class ServicesTest(TestCase):
         )
 
         payments = Payment.objects.filter(pk__in=[p1.pk, p2.pk])
-        payments.update(type=Payment.CARD)
+        payments.update(type=Payment.Type.CARD)
 
         with mock.patch(
             "registrations.services." "_create_member_from_registration"

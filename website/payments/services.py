@@ -9,7 +9,7 @@ from .models import Payment, BankAccount
 
 
 def process_payment(
-    queryset: QuerySet, processed_by: Member, pay_type: str = Payment.CARD
+    queryset: QuerySet, processed_by: Member, pay_type: str = Payment.Type.CARD
 ) -> list:
     """
     Process the payment
@@ -29,8 +29,8 @@ def process_payment(
     # is not appropriate, moreover save() automatically sets
     # the processing date
     for payment in queryset:
-        if pay_type != Payment.TPAY or (
-            pay_type == Payment.TPAY
+        if pay_type != Payment.Type.TPAY or (
+            pay_type == Payment.Type.TPAY
             and payment.paid_by
             and payment.paid_by.tpay_enabled
         ):

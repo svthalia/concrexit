@@ -50,7 +50,7 @@ class PaymentTest(TestCase):
         """
         self.assertFalse(self.payment.processed)
         self.assertIsNone(self.payment.processing_date)
-        self.payment.type = Payment.CARD
+        self.payment.type = Payment.Type.CARD
         self.payment.save()
         self.assertTrue(self.payment.processed)
         self.assertIsNotNone(self.payment.processing_date)

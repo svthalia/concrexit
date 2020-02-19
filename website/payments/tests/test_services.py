@@ -34,14 +34,14 @@ class ServicesTest(TestCase):
 
         p1 = Payment.objects.create(type=Payment.NONE, notes="Test payment", amount=1)
         r1 = services.process_payment(
-            Payment.objects.filter(pk=p1.pk), self.member, Payment.CARD
+            Payment.objects.filter(pk=p1.pk), self.member, Payment.Type.CARD
         )
 
         self.assertEqual(r1, [p1])
 
         p2 = Payment.objects.create(type=Payment.NONE, notes="Test payment", amount=2)
         r2 = services.process_payment(
-            Payment.objects.filter(pk=p2.pk), self.member, Payment.TPAY
+            Payment.objects.filter(pk=p2.pk), self.member, Payment.Type.TPAY
         )
         self.assertEqual(r2, [])
 
@@ -50,7 +50,7 @@ class ServicesTest(TestCase):
         )
         self.assertTrue(self.member.tpay_enabled)
         r3 = services.process_payment(
-            Payment.objects.filter(pk=p3.pk), self.member, Payment.TPAY
+            Payment.objects.filter(pk=p3.pk), self.member, Payment.Type.TPAY
         )
         self.assertEqual(r3, [p3])
 
