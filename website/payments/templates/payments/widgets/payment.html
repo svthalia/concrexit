@@ -14,12 +14,12 @@
             <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
                data-next="true" data-type="card_payment"
                class="button process">{% trans "Process (card payment)" %}</a>
-            {% if widget.value %}
+            {% if widget.value and payment.paid_by.tpay_enabled %}
                 <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
                    data-next="true" data-type="tpay_payment"
                    class="button process">{% trans "Process (Thalia Pay payment)" %}</a>
             {% else %}
-                <div class="button" disabled>{% trans "Process (Thalia Pay payment)" %}</div>
+                <a class="button" disabled>{% trans "Process (Thalia Pay payment)" %}</a>
             {% endif %}
             <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
                data-next="true" data-type="wire_payment"
