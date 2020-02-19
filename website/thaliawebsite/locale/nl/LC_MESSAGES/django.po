@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-12 21:22+0100\n"
-"PO-Revision-Date: 2020-02-19 19:11+0100\n"
+"POT-Creation-Date: 2020-02-19 21:24+0100\n"
+"PO-Revision-Date: 2020-02-19 21:25+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -180,16 +180,11 @@ msgstr ""
 #: templates/base.html
 msgid ""
 "You're currently not allowed to go to certain events. Please contact "
-"Thalia's "
-msgstr "Je mag momenteel niet naar sommige evenementen. Contacteer Thalia's"
-
-#: templates/base.html
-msgid "treasurer"
-msgstr "penningmeester"
-
-#: templates/base.html
-msgid "for more information."
-msgstr "voor meer informatie."
+"Thalia's <a href=\"mailto:treasurer@thalia.nu\">treasurer</a> for more "
+"information."
+msgstr ""
+"Je mag momenteel niet naar sommige evenementen. Contacteer Thalia's <a href="
+"\"mailto:treasurer@thalia.nu\">penningmeester</a> voor meer informatie."
 
 #: templates/base.html
 msgid "edit profile"
