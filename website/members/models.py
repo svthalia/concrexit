@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.files.storage import DefaultStorage
 from django.db import models
 from django.db.models import Q
@@ -398,6 +399,13 @@ class Profile(models.Model):
             ("nothing", _("User may not attend anything")),
         ),
         default="all",
+    )
+
+    shoe_size = models.IntegerField(
+        verbose_name=_("Shoe size"),
+        validators=[MinValueValidator(39), MaxValueValidator(47)],
+        null=True,
+        blank=True,
     )
 
     # --- Communication preference ----

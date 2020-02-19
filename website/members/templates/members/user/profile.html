@@ -43,6 +43,11 @@
                             <strong>{% trans "Membership type" %}: </strong> {{ membership_type }}<br>
                         </li>
 
+                        {% if member.profile.shoe_size %}
+                        <li><strong>{% trans "Shoe size" %}: </strong> {{ member.profile.shoe_size }}<br></li>
+                        {% endif %}
+        
+
                         {% if member.profile.starting_year %}
                             <li>
                                 <strong>{% trans "Cohort" %}: </strong> {{ member.profile.starting_year }}<br>

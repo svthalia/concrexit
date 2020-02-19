@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-30 21:03+0100\n"
-"PO-Revision-Date: 2019-09-08 10:57+0200\n"
+"POT-Creation-Date: 2020-02-19 20:12+0100\n"
+"PO-Revision-Date: 2020-02-19 20:15+0100\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: admin.py
 msgid "current membership type"
@@ -167,6 +167,22 @@ msgstr "Stuur welkomste-mails"
 #: forms.py
 msgid "This email will include the generated password"
 msgstr "Deze e-mail zal het gegenereerde wachtwoord bevatten"
+
+#: forms.py
+#, fuzzy
+#| msgid "User"
+msgid "Username"
+msgstr "Gebruiker"
+
+#: forms.py
+msgid "Required. 64 characters or fewer. Letters and digits only."
+msgstr ""
+"Vereist: maximaal 64 karakters. Alleen letters en cijfers zijn toegestaan"
+
+#: forms.py
+msgid "Please use 64 characters or fewer. Letters and digits only."
+msgstr ""
+"Gebruik maximaal 64 karakters, alleen letters en cijfers zijn toegestaan."
 
 #: forms.py
 msgid "Email address"
@@ -337,6 +353,11 @@ msgstr "Gebruiker mag niet naar borrels"
 msgid "User may not attend anything"
 msgstr "Gebruiker mag nergens heen"
 
+#: models.py templates/members/user/profile.html
+#, fuzzy
+msgid "Shoe size"
+msgstr "Schoenmaat"
+
 #: models.py
 msgid "Preferred language"
 msgstr "Voorkeurstaal"
@@ -372,6 +393,17 @@ msgstr "Nee, handmatige verlenging vereist."
 #: models.py
 msgid "Automatically renew membership"
 msgstr "Lidmaatschap automatisch verlengen"
+
+#: models.py
+msgid "Only receive Thalia emails on G Suite-account"
+msgstr ""
+
+#: models.py
+msgid ""
+"If you enable this option you will no longer receive emails send to you by "
+"Thalia on your personal email address. We will only use your G Suite email "
+"address."
+msgstr ""
 
 #: models.py
 msgid "Display name"
@@ -478,6 +510,10 @@ msgid ""
 msgstr ""
 "E-mail wijzigingsverzoek voor {} naar {} gemaakt op {} (bevestigd: {}, "
 "geverifieerd: {})."
+
+#: models.py
+msgid "You cannot use an email address from this domain for your account."
+msgstr ""
 
 #: models.py
 msgid "Please enter a new email address."
@@ -679,6 +715,89 @@ msgstr ""
 "al\n"
 "verlengd hebt, maar dat dit nog niet is verwerkt: in dat geval hoef je niets "
 "te doen."
+
+#: templates/members/email/information_check.html
+#, fuzzy
+#| msgid "Membership information check"
+msgid "membership information check"
+msgstr "Controle gegevens lidmaatschap"
+
+#: templates/members/email/information_check.html
+msgid ""
+"\n"
+"                    We currently have the following information about you in "
+"our database.<br>\n"
+"                    Via this email we'd like to ask you to check the "
+"accuracy of this data.<br>\n"
+"                    "
+msgstr ""
+
+#: templates/members/email/information_check.html
+msgid "username:"
+msgstr ""
+
+#: templates/members/email/information_check.html
+#, fuzzy
+#| msgid "Nickname"
+msgid "name:"
+msgstr "Bijnaam"
+
+#: templates/members/email/information_check.html
+#, fuzzy
+#| msgid "Address"
+msgid "address:"
+msgstr "Adres"
+
+#: templates/members/email/information_check.html
+msgid "phone:"
+msgstr ""
+
+#: templates/members/email/information_check.html
+msgid "date of birth:"
+msgstr ""
+
+#: templates/members/email/information_check.html
+#, fuzzy
+#| msgid "Email address"
+msgid "email address:"
+msgstr "E-mailadres"
+
+#: templates/members/email/information_check.html
+#, fuzzy
+#| msgid "Student number"
+msgid "student number:"
+msgstr "Studentnummer"
+
+#: templates/members/email/information_check.html
+#, fuzzy
+#| msgid "Cohort"
+msgid "cohort:"
+msgstr "Cohort"
+
+#: templates/members/email/information_check.html
+#, fuzzy
+#| msgid "Study programme"
+msgid "programme:"
+msgstr "Studie"
+
+#: templates/members/email/information_check.html
+msgid ""
+"\n"
+"                        <br>\n"
+"                        You can changige this data by logging into the "
+"website and using the 'edit profile' page.<br>\n"
+"                        Unable to edit the incorrect information? Then send "
+"an email: info@thalia.nu.<br>\n"
+"                        <br>\n"
+"                        With kind regards,<br>\n"
+"                        <br>\n"
+"                        The board of Study Association Thalia<br>\n"
+"                        <br>\n"
+"                        ————<br>\n"
+"                        <br>\n"
+"                        This email was automatically generated.<br>\n"
+"                    "
+msgstr ""
 
 #: templates/members/email/information_check.txt
 #, python-format

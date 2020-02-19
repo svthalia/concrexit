@@ -16,6 +16,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         fields = [
             "show_birthday",
+            "shoe_size",
             "address_street",
             "address_street2",
             "address_postal_code",
