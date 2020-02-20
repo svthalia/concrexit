@@ -40,3 +40,11 @@ class ContactView(TemplateView):
     """Static page with contact info"""
 
     template_name = "singlepages/contact.html"
+
+
+@method_decorator(login_required, "dispatch")
+class AlmanacView(TemplateView):
+    """Static page with url to almanac info"""
+
+    template_name = "singlepages/almanac.html"
+
