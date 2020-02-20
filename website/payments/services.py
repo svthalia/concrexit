@@ -1,11 +1,36 @@
 """The services defined by the payments package"""
 import datetime
+from typing import Union
 
 from django.db.models import QuerySet, Q
 from django.utils import timezone
 
 from members.models import Member
-from .models import Payment, BankAccount
+from .models import Payment, BankAccount, Payable
+
+
+def create_payment(
+    payable: Payable,
+    processed_by: Member,
+    pay_type: Union[Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY],
+) -> Payment:
+    """
+    Create a new payment from a payable object
+
+    :param payable: Payable object
+    :param processed_by: Member that processed this payment
+    :param pay_type: Payment type
+    :return: Payment object
+    """
+    return Payment.objects.create(
+        processed_by=processed_by,
+        amount=payable.payment_amount,
+        notes=payable.payment_notes,
+        topic=payable.payment_topic,
+        paid_by=payable.payment_payer,
+        processing_date=timezone.now(),
+        type=pay_type,
+    )
 
 
 def process_payment(

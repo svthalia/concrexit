@@ -4,7 +4,32 @@ from freezegun import freeze_time
 
 from members.models import Member
 from payments import services
-from payments.models import BankAccount, Payment
+from payments.models import BankAccount, Payment, Payable
+
+
+class MockPayable(Payable):
+    def __init__(self, payer, amount=5, topic="mock topic", notes="mock notes") -> None:
+        super().__init__()
+        self.payer = payer
+        self.amount = amount
+        self.topic = topic
+        self.notes = notes
+
+    @property
+    def payment_amount(self):
+        return self.amount
+
+    @property
+    def payment_topic(self):
+        return self.topic
+
+    @property
+    def payment_notes(self):
+        return self.notes
+
+    @property
+    def payment_payer(self):
+        return self.payer
 
 
 @freeze_time("2019-01-01")
@@ -19,6 +44,16 @@ class ServicesTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+    def test_create_payment(self):
+        p = services.create_payment(MockPayable(self.member), self.member, Payment.CASH)
+        self.assertEqual(p.processing_date, timezone.now())
+        self.assertEqual(p.amount, 5)
+        self.assertEqual(p.topic, "mock topic")
+        self.assertEqual(p.notes, "mock notes")
+        self.assertEqual(p.paid_by, self.member)
+        self.assertEqual(p.processed_by, self.member)
+        self.assertEqual(p.type, Payment.CASH)
 
     def test_process_payment(self):
         BankAccount.objects.create(

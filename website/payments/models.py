@@ -79,6 +79,7 @@ class Payment(models.Model):
     )
 
     notes = models.TextField(blank=True, null=True)
+    topic = models.CharField(max_length=255, default="Unknown")
 
     @property
     def processed(self):
