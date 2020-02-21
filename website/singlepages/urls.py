@@ -8,7 +8,8 @@ from .views import (
     BecomeActiveView,
     StyleGuideView,
     ContactView,
-    AlmanacView)
+    AlmanacView,
+)
 
 app_name = "singlepages"
 

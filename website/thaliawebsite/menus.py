@@ -46,7 +46,7 @@ MAIN_MENU = [
                 "url": "https://gsuite.members.thalia.nu/",
                 "authenticated": True,
             },
-            {"title": _("Almanac 2020"), "name": "singlepages:almanac"}
+            {"title": _("Almanac 2020"), "name": "singlepages:almanac"},
         ],
     },
     {"title": _("Calendar"), "name": "events:index",},
