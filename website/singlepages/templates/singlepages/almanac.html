@@ -9,27 +9,27 @@
         <div class="container">
             <h1 class="text-center section-title">{% trans "Almanac 2020" %}</h1>
             <p>{% blocktrans trimmed %}
-                In 2020, Thalia will make an almanac again to celebrate their 30th birthday. This almanac will be all about our members. Therefore, we ask our members to fill in a questionnaire.
-            {% endblocktrans %}</p>
-            <p>{% blocktrans trimmed %}
-                Filling in the questionnaire might take up to 10 minutes. This questionnaire is personal to you.
-                {% endblocktrans %}</p>
+                In 2020, Thalia will make an almanac again to celebrate their 30th birthday.
+                This almanac will be all about our members. Therefore, we ask our members to fill in a questionnaire.
+                Filling in the questionnaire might take up to 10 minutes.
+                The deadline for filling in this questionnaire is <b>April 5th, 2020</b>.
+            {% endblocktrans %}</p> <br>
             <a class="typeform-share button text-center btn btn-primary btn-lg btn-block" href="{{ almanac_url }}"
                data-mode="popup"  data-hide-headers=true data-hide-footer=true data-submit-close-delay="0" target="_blank">
                 {% trans "Start the questionnaire" %}
             </a>
-                <script>
-                    (function() {
-                        var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id="typef_orm_share", b="https://embed.typeform.com/";
-                        if(!gi.call(d,id)){
-                            js=ce.call(d,"script");
-                            js.id=id;
-                            js.src=b+"embed.js";
-                            q=gt.call(d,"script")[0];
-                            q.parentNode.insertBefore(js,q)
-                        }
-                    })()
-                </script>
+            <script>
+                (function() {
+                    var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id="typef_orm_share", b="https://embed.typeform.com/";
+                    if(!gi.call(d,id)){
+                        js=ce.call(d,"script");
+                        js.id=id;
+                        js.src=b+"embed.js";
+                        q=gt.call(d,"script")[0];
+                        q.parentNode.insertBefore(js,q)
+                    }
+                })()
+            </script>
         </div>
     </section>
 {% endblock body %}
