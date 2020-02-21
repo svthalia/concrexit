@@ -8,10 +8,12 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.text import format_lazy
+from django.template.defaulttags import date
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 from members.models import Member
+from payments.models import Payable
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 from announcements.models import Slide
@@ -501,7 +503,7 @@ def registration_member_choices_limit():
     )
 
 
-class Registration(models.Model):
+class Registration(models.Model, Payable):
     """Describes a registration for an Event"""
 
     event = models.ForeignKey(Event, models.CASCADE)
@@ -623,6 +625,24 @@ class Registration(models.Model):
             return "{}: {}".format(self.member.get_full_name(), self.event)
         else:
             return "{}: {}".format(self.name, self.event)
+
+    @property
+    def payment_amount(self):
+        return self.event.price
+
+    @property
+    def payment_topic(self):
+        return f'{self.event.title_en} [{date(self.event.start, "Y-m-d")}]'
+
+    @property
+    def payment_notes(self):
+        notes = f"Event registration {self.event.title_en}. "
+        notes += f"{self.event.start}. " f"Registration date: {self.date}."
+        return notes
+
+    @property
+    def payment_payer(self):
+        return self.member
 
     class Meta:
         ordering = ("date",)

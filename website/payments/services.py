@@ -4,8 +4,10 @@ from typing import Union
 
 from django.db.models import QuerySet, Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
+from .exceptions import PaymentError
 from .models import Payment, BankAccount, Payable
 
 
@@ -22,15 +24,34 @@ def create_payment(
     :param pay_type: Payment type
     :return: Payment object
     """
-    return Payment.objects.create(
-        processed_by=processed_by,
-        amount=payable.payment_amount,
-        notes=payable.payment_notes,
-        topic=payable.payment_topic,
-        paid_by=payable.payment_payer,
-        processing_date=timezone.now(),
-        type=pay_type,
-    )
+    if pay_type == Payment.TPAY and not payable.payment_payer.tpay_enabled:
+        raise PaymentError(_("This user does not have Thalia Pay enabled"))
+
+    if payable.payment is not None:
+        payable.payment.type = pay_type
+        payable.payment.save()
+    elif pay_type != Payment.NONE and payable.payment is None:
+        payable.payment = Payment.objects.create(
+            processed_by=processed_by,
+            amount=payable.payment_amount,
+            notes=payable.payment_notes,
+            topic=payable.payment_topic,
+            paid_by=payable.payment_payer,
+            processing_date=timezone.now(),
+            type=pay_type,
+        )
+    return payable.payment
+
+
+def delete_payment(payable: Payable):
+    """
+    Removes a payment from a payable object
+    :param payable: Payable object
+    :return:
+    """
+    payable.payment = None
+    payable.save()
+    payable.payment.delete()
 
 
 def process_payment(
