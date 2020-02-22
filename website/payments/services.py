@@ -30,7 +30,7 @@ def create_payment(
     if payable.payment is not None:
         payable.payment.type = pay_type
         payable.payment.save()
-    elif pay_type != Payment.NONE and payable.payment is None:
+    else:
         payable.payment = Payment.objects.create(
             processed_by=processed_by,
             amount=payable.payment_amount,
@@ -49,9 +49,10 @@ def delete_payment(payable: Payable):
     :param payable: Payable object
     :return:
     """
+    payment = payable.payment
     payable.payment = None
     payable.save()
-    payable.payment.delete()
+    payment.delete()
 
 
 def process_payment(

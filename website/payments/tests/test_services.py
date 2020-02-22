@@ -1,19 +1,27 @@
+from unittest.mock import MagicMock
+
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member
 from payments import services
+from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment, Payable
 
 
 class MockPayable(Payable):
-    def __init__(self, payer, amount=5, topic="mock topic", notes="mock notes") -> None:
+    save = MagicMock()
+
+    def __init__(
+        self, payer, amount=5, topic="mock topic", notes="mock notes", payment=None
+    ) -> None:
         super().__init__()
         self.payer = payer
         self.amount = amount
         self.topic = topic
         self.notes = notes
+        self.payment = payment
 
     @property
     def payment_amount(self):
@@ -46,14 +54,39 @@ class ServicesTest(TestCase):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
 
     def test_create_payment(self):
-        p = services.create_payment(MockPayable(self.member), self.member, Payment.CASH)
-        self.assertEqual(p.processing_date, timezone.now())
-        self.assertEqual(p.amount, 5)
-        self.assertEqual(p.topic, "mock topic")
-        self.assertEqual(p.notes, "mock notes")
-        self.assertEqual(p.paid_by, self.member)
-        self.assertEqual(p.processed_by, self.member)
-        self.assertEqual(p.type, Payment.CASH)
+        with self.subTest("Creates new payment with right payment type"):
+            p = services.create_payment(
+                MockPayable(self.member), self.member, Payment.CASH
+            )
+            self.assertEqual(p.processing_date, timezone.now())
+            self.assertEqual(p.amount, 5)
+            self.assertEqual(p.topic, "mock topic")
+            self.assertEqual(p.notes, "mock notes")
+            self.assertEqual(p.paid_by, self.member)
+            self.assertEqual(p.processed_by, self.member)
+            self.assertEqual(p.type, Payment.CASH)
+        with self.subTest("Does not create new payment if one already exists"):
+            existing_payment = Payment(amount=2)
+            p = services.create_payment(
+                MockPayable(payer=self.member, payment=existing_payment),
+                self.member,
+                Payment.CASH,
+            )
+            self.assertEqual(p, existing_payment)
+            self.assertEqual(p.amount, 2)
+        with self.subTest("Does not allow Thalia Pay when not enabled"):
+            with self.assertRaises(PaymentError):
+                services.create_payment(
+                    MockPayable(payer=self.member), self.member, Payment.TPAY
+                )
+
+    def test_delete_payment(self):
+        existing_payment = MagicMock()
+        payable = MockPayable(payer=self.member, payment=existing_payment)
+        services.delete_payment(payable)
+        self.assertIsNone(payable.payment)
+        payable.save.assert_called_once()
+        existing_payment.delete.assert_called_once()
 
     def test_process_payment(self):
         BankAccount.objects.create(

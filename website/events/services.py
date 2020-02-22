@@ -167,19 +167,13 @@ def pay_with_tpay(member, event):
     except Registration.DoesNotExist:
         raise RegistrationError(_("You are not registered for this event."))
 
-    try:
-        if registration.payment is None:
-            registration.payment = create_payment(
-                payable=registration, processed_by=member, pay_type=Payment.TPAY
-            )
-            registration.save()
-        elif registration.payment.type == Payment.NONE:
-            registration.payment.type = Payment.TPAY
-            registration.save()
-        else:
-            raise RegistrationError(_("You have already paid for this event."))
-    except PaymentError:
-        raise RegistrationError(_("You do not have Thalia Pay enabled."))
+    if registration.payment is None:
+        registration.payment = create_payment(
+            payable=registration, processed_by=member, pay_type=Payment.TPAY
+        )
+        registration.save()
+    else:
+        raise RegistrationError(_("You have already paid for this event."))
 
 
 def update_registration(
@@ -299,17 +293,14 @@ def update_registration_by_organiser(registration, member, data):
         raise RegistrationError(_("You are not allowed to update this registration."))
 
     if "payment" in data:
-        if data["payment"]["type"] == Payment.NONE:
+        if data["payment"]["type"] == Payment.NONE and registration.payment is not None:
             delete_payment(registration)
         else:
-            try:
-                registration.payment = create_payment(
-                    payable=registration,
-                    processed_by=member,
-                    pay_type=data["payment"]["type"],
-                )
-            except PaymentError:
-                raise RegistrationError(_("You do not have Thalia Pay enabled."))
+            registration.payment = create_payment(
+                payable=registration,
+                processed_by=member,
+                pay_type=data["payment"]["type"],
+            )
 
     if "present" in data:
         registration.present = data["present"]
