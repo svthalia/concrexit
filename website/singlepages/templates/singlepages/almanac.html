@@ -9,11 +9,18 @@
         <div class="container">
             <h1 class="text-center section-title">{% trans "Almanac 2020" %}</h1>
             <p>{% blocktrans trimmed %}
-                In 2020, Thalia will make an almanac again to celebrate their 30th birthday.
-                This almanac will be all about our members. Therefore, we ask our members to fill in a questionnaire.
-                Filling in the questionnaire might take up to 10 minutes.
-                The deadline for filling in this questionnaire is <b>April 5th, 2020</b>.
-            {% endblocktrans %}</p> <br>
+                Happy birthday to Thalia! As you might have noticed, Thalia has a special birthday coming up: we will be 30 years old next November.
+                In order to celebrate that, the association will once again publish an almanac! This is a book that will contain a flashback to the last five years.
+                We will look back on the best activities, all the changes within the association and there will be a little spot for all the members.
+                {% endblocktrans %}</p>
+            <p>{% blocktrans trimmed %}
+                Since the almanac will be all about our members, we are asking every member to fill out a questionnaire. This might take up to 10 minutes.
+                The deadline for filling in this questionnaire is <b>March 22nd 2020</b>.
+                {% endblocktrans %}</p>
+            <p>{% blocktrans trimmed %}
+                Note: filling in this questionnaire does not mean you sign up for buying the almanac yet. This is just for collection of information and statistics.
+            {% endblocktrans %}</p>
+            <br>
             <a class="typeform-share button text-center btn btn-primary btn-lg btn-block" href="{{ almanac_url }}"
                data-mode="popup"  data-hide-headers=true data-hide-footer=true data-submit-close-delay="0" target="_blank">
                 {% trans "Start the questionnaire" %}
@@ -30,6 +37,14 @@
                     }
                 })()
             </script>
+            <br>
+            <p>{% blocktrans trimmed %}
+                You can fill out the questionnaire as many times as you would like, your latest entry will be used at any time.
+            {% endblocktrans %}</p>
+            <p>{% blocktrans trimmed %}
+                The data you fill out in the questionnaire will be processed by <a href="https://typeform.com" target="_blank">Typeform</a>.
+                Only aggregated data will be published in the almanac, we will never publish your individual answers unless explicitly stated otherwise in the form.
+            {% endblocktrans %}</p>
         </div>
     </section>
 {% endblock body %}
