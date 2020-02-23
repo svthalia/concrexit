@@ -58,7 +58,7 @@
                 </a>
             </p>
         </div>
-    {% elif self.profile.event_permissions != "all" %}
+    {% elif request.member.profile.event_permissions != "all" %}
         <div class="announcement">
             <p>
                 {% blocktrans trimmed %}
