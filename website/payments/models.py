@@ -117,7 +117,7 @@ class Payment(models.Model):
 def _default_batch_description():
     now = datetime.datetime.utcnow()
     last_month = datetime.datetime(now.year, now.month, 1) - datetime.timedelta(days=1)
-    return f"your Thalia payments for {last_month.year}-{last_month.month}"
+    return f"Thalia Pay payments for {last_month.year}-{last_month.month}"
 
 
 class Batch(models.Model):
