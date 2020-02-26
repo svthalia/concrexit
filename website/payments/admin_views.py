@@ -55,7 +55,7 @@ class PaymentAdminView(View):
 @method_decorator(
     permission_required("payments.process_batches"), name="dispatch",
 )
-class BatchAdminView(View):
+class BatchProcessAdminView(View):
     """
     View that processes a batch
     """
