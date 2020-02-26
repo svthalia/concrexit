@@ -21,6 +21,7 @@
 
             &.active {
                 color: $preset;
+                background: $white;
             }
 
             &:hover {
@@ -30,6 +31,7 @@
             &.mixitup-control-active {
                 color: $preset;
                 border-color: #dee2e6 #dee2e6 #fff;
+                background-color: $white;
             }
         }
 

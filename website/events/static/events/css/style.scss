@@ -30,7 +30,7 @@
             }
 
             .no-registration {
-                background-color: $card-background-hover;
+                background-color: $background-color;
             }
 
             .has-registration {
@@ -42,7 +42,7 @@
 
 #events-index {
     .fc-bootstrap .fc-today {
-        background: $background-shade;
+        background: $background-shade-light;
     }
 
     .fc-now-indicator {
