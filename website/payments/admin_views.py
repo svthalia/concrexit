@@ -87,7 +87,7 @@ class BatchProcessAdminView(View):
 )
 class BatchExportAdminView(View):
     """
-    View tht exports a batch
+    View that exports a batch
     """
 
     def post(self, request, *args, **kwargs):
