@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-30 20:56+0100\n"
-"PO-Revision-Date: 2019-10-30 20:58+0100\n"
+"POT-Creation-Date: 2020-02-26 20:47+0100\n"
+"PO-Revision-Date: 2020-02-26 20:53+0100\n"
 "Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -42,6 +42,10 @@ msgstr ""
 #: admin.py
 msgid "Process selected payments (wire)"
 msgstr "Verwerk geselecteerde betalingen (overboeking)"
+
+#: admin.py
+msgid "Add selected TPAY payments to a new batch"
+msgstr "Voeg geselecteerde TPAY betalingen aan een nieuwe batch toe"
 
 #: admin.py tests/test_admin.py
 #, python-format
@@ -129,7 +133,7 @@ msgstr "naam"
 msgid "reference"
 msgstr "referentie"
 
-#: admin.py models.py templates/payments/bankaccount_list.html
+#: admin.py admin_views.py models.py templates/payments/bankaccount_list.html
 msgid "IBAN"
 msgstr "IBAN"
 
@@ -159,6 +163,34 @@ msgstr "%s succesvol verwerkt."
 msgid "Could not process %s."
 msgstr "%s kon niet worden verwerkt."
 
+#: admin_views.py tests/test_admin_views.py
+msgid "{} already processed."
+msgstr "{} al verwerkt."
+
+#: admin_views.py tests/test_admin_views.py
+msgid "Successfully processed {}."
+msgstr "{} is succesvol verwerkt."
+
+#: admin_views.py
+msgid "Account holder name"
+msgstr "Rekeninghouder"
+
+#: admin_views.py
+msgid "Mandate id"
+msgstr "Mandatennummer"
+
+#: admin_views.py
+msgid "Amount"
+msgstr "Bedrag"
+
+#: admin_views.py
+msgid "Description"
+msgstr "Beschrijving"
+
+#: admin_views.py
+msgid "Mandate date"
+msgstr "Mandaat datum"
+
 #: apps.py
 msgid "Payments"
 msgstr "Betalingen"
@@ -166,6 +198,10 @@ msgstr "Betalingen"
 #: forms.py
 msgid "I want to use this account for direct debits"
 msgstr "Ik wil dit account gebruiken voor automatische incasso's"
+
+#: forms.py
+msgid "Remove payment from batch"
+msgstr "Verwijder betaling uit batch"
 
 #: models.py
 msgid "created at"
@@ -213,6 +249,26 @@ msgid "Payment of {amount}"
 msgstr "Betaling van {amount}"
 
 #: models.py
+msgid "processing status"
+msgstr "verwerkingsstatus"
+
+#: models.py
+msgid "description of batch"
+msgstr "beschrijving van batch"
+
+#: models.py
+msgid "batch"
+msgstr "batch"
+
+#: models.py
+msgid "batches"
+msgstr "batches"
+
+#: models.py templates/admin/payments/change_form.html
+msgid "Process batch"
+msgstr "Verwerk batch"
+
+#: models.py
 msgid "last used"
 msgstr "laatst gebruikt"
 
@@ -253,6 +309,10 @@ msgid "This field cannot have a value."
 msgstr "Dit veld mag geen waarde hebben."
 
 #: templates/admin/payments/change_form.html
+msgid "Export batch"
+msgstr "Exporteer batch"
+
+#: templates/admin/payments/change_form.html
 #: templates/payments/widgets/payment.html
 msgid "Process (cash payment)"
 msgstr "Verwerk (contant)"
@@ -271,6 +331,10 @@ msgstr "Verwerk (Thalia Pay)"
 #: templates/payments/widgets/payment.html
 msgid "Process (wire payment)"
 msgstr "Verwerk (overboeking)"
+
+#: templates/admin/payments/change_list.html
+msgid "New batch from previous month of Thalia Pay payments"
+msgstr "Nieuwe batch van TPAY betalingen van vorige maand"
 
 #: templates/payments/bankaccount_form.html
 msgid "add bank account"
