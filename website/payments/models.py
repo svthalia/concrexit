@@ -85,7 +85,7 @@ class Payment(models.Model):
         elif self.type == self.NONE:
             self.processing_date = None
 
-        if self.batch and self.batch.processed:
+        if self._batch and self._batch.processed:
             self.batch = self._batch
 
         self._batch = self.batch

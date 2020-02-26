@@ -170,7 +170,7 @@ class PaymentAdminTest(TestCase):
             amount=7.5, processed_by=self.user, type=Payment.TPAY
         )
         self.assertEqual(
-            "<a href='/admin/payments/batch/1/change/'>your Thalia payments for 2019-12 (not processed)</a>",
+            "<a href='/admin/payments/batch/1/change/'>Thalia Pay payments for 2019-12 (not processed)</a>",
             str(self.admin.batch_link(payment1)),
         )
         self.assertEqual("-", self.admin.batch_link(payment2))

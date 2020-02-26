@@ -157,6 +157,7 @@ class BatchAdminViewTest(TestCase):
         Profile.objects.create(
             user=cls.user, language="nl",
         )
+        BankAccount.objects.create(owner=cls.user, created_at=timezone.now())
 
     def setUp(self):
         self.client = Client()
@@ -310,8 +311,8 @@ class BatchExportAdminViewTest(TestCase):
         self.assertEqual(
             response.content,
             b"Account holder name,IBAN,Mandate id,Amount,Description,Mandate date\r\n"
-            b"Test1 Example,DE75512108001245126199,2,3.00,your Thalia payments for 2020-1,2020-01-01\r\n"
-            b"Test2 Example,NL02ABNA0123456789,1,6.00,your Thalia payments for 2020-1,2020-01-01\r\n",
+            b"Test1 Example,DE75512108001245126199,2,3.00,Thalia Pay payments for 2020-1,2020-01-01\r\n"
+            b"Test2 Example,NL02ABNA0123456789,1,6.00,Thalia Pay payments for 2020-1,2020-01-01\r\n",
         )
 
 

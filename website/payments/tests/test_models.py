@@ -83,11 +83,11 @@ class PaymentTest(TestCase):
         """
         Test that a payment that is in a processed batch cannot be added to another batch
         """
-        self.batch.processed = True
-        self.batch.save()
         self.payment.type = Payment.TPAY
         self.payment.batch = self.batch
         self.payment.save()
+        self.batch.processed = True
+        self.batch.save()
 
         b = Batch.objects.create()
         self.payment.batch = b
@@ -191,7 +191,7 @@ class BatchModelTest(TestCase):
         )
         self.assertEqual(
             batch.description,
-            f"your Thalia payments for {last_month.year}-{last_month.month}",
+            f"Thalia Pay payments for {last_month.year}-{last_month.month}",
         )
 
     def test_proccess_batch(self) -> None:
@@ -226,9 +226,9 @@ class BatchModelTest(TestCase):
 
     def test_str(self) -> None:
         b1 = Batch.objects.create(id=1)
-        self.assertEqual("your Thalia payments for 2018-12 (not processed)", str(b1))
+        self.assertEqual("Thalia Pay payments for 2018-12 (not processed)", str(b1))
         b2 = Batch.objects.create(id=2, processed=True)
-        self.assertEqual("your Thalia payments for 2018-12 (processed)", str(b2))
+        self.assertEqual("Thalia Pay payments for 2018-12 (processed)", str(b2))
 
 
 @freeze_time("2019-01-01")
