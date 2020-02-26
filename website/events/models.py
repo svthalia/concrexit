@@ -471,7 +471,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 self.start_reminder.delete()
                 self.start_reminder = None
 
-            if self._max_participants != self.max_participants:
+        if self._max_participants != self.max_participants:
                 message.warning(request,f"The maximum number of participants has changed, please inform those who might be affected by it")
 
         super().save()
