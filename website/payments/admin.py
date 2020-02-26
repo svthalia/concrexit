@@ -378,6 +378,7 @@ class PaymentsInline(admin.TabularInline):
     )
     form = BatchPaymentInlineAdminForm
     extra = 0
+    max_num = 0
     can_delete = False
 
 
