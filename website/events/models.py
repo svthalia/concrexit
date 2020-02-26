@@ -2,15 +2,15 @@
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.db import models, router
+from django.db import models
 from django.db.models import Q
-from django.db.models.deletion import Collector
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
+from django.contrib.messages import messages
 
 from members.models import Member
 from pushnotifications.models import ScheduledMessage, Category
@@ -397,10 +397,6 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return reverse("events:event", args=[str(self.pk)])
 
     def save(self, *args, **kwargs):
-        delete_collector = Collector(
-            using=router.db_for_write(self.__class__, instance=self)
-        )
-
         if not self.pk:
             super().save(*args, **kwargs)
 
@@ -439,8 +435,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     self.registration_reminder = registration_reminder
                     self.registration_reminder.users.set(Member.current_members.all())
                 elif registration_reminder.pk is not None:
-                    delete_collector.add([self.registration_reminder])
                     self.registration_reminder = None
+                    registration_reminder.delete()
 
             start_reminder_time = self.start - timezone.timedelta(hours=1)
             start_reminder = ScheduledMessage()
@@ -463,42 +459,35 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 else:
                     self.start_reminder.users.set(Member.current_members.all())
             elif start_reminder.pk is not None:
-                delete_collector.add([self.start_reminder])
                 self.start_reminder = None
+                start_reminder.delete()
         else:
             if (
                 self.registration_reminder is not None
                 and not self.registration_reminder.sent
             ):
-                delete_collector.add([self.registration_reminder])
+                self.registration_reminder.delete()
                 self.registration_reminder = None
-
             if self.start_reminder is not None and not self.start_reminder.sent:
-                delete_collector.add([self.start_reminder])
+                self.start_reminder.delete()
                 self.start_reminder = None
 
         if self._max_participants != self.max_participants:
-                message.warning(request,f"The maximum number of participants has changed, please inform those who might be affected by it")
+            messages.warning(request,f"The maximum number of participants has changed, please inform those who might be affected by it")
 
         super().save()
-        delete_collector.delete()
 
     def delete(self, using=None, keep_parents=False):
-        using = using or router.db_for_write(self.__class__, instance=self)
-        collector = Collector(using=using)
-        collector.collect([self], keep_parents=keep_parents)
-
         if (
             self.registration_reminder is not None
             and not self.registration_reminder.sent
         ):
-            collector.add([self.registration_reminder])
+            self.registration_reminder.delete()
         if self.start_reminder is not None and not self.start_reminder.sent:
-            collector.add([self.start_reminder])
+            self.start_reminder.delete()
         if self.is_pizza_event():
-            collector.add([self.pizzaevent])
-
-        return collector.delete()
+            self.pizzaevent.delete()
+        return super().delete(using, keep_parents)
 
     def __str__(self):
         return "{}: {}".format(
