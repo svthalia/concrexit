@@ -178,6 +178,7 @@ class PaymentAdmin(admin.ModelAdmin):
             del actions["process_card_selected"]
             del actions["process_tpay_selected"]
             del actions["process_wire_selected"]
+
         if not request.user.has_perm("payments.process_batches"):
             del actions["add_to_new_batch"]
             del actions["add_to_last_batch"]
