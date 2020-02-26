@@ -384,7 +384,8 @@ class PaymentsInline(admin.TabularInline):
 
 @admin.register(Batch)
 class BatchAdmin(admin.ModelAdmin):
-"""Manage payment batches"""
+    """Manage payment batches"""
+
     inlines = (PaymentsInline,)
     list_display = (
         "description",

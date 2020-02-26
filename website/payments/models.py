@@ -121,9 +121,10 @@ def _default_batch_description():
 
 
 class Batch(models.Model):
-"""
-Describes a batch of payments for export
-"""
+    """
+    Describes a batch of payments for export
+    """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     processed = models.BooleanField(verbose_name=_("processing status"), default=False,)

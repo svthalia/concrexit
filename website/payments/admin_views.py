@@ -139,7 +139,7 @@ class BatchExportAdminView(View):
 )
 class BatchNewFilledAdminView(View):
     """
-    View tht exports a batch
+    View that adds a new batch filled with all payments that where not already in a batch from last month.
     """
 
     def get(self, request, *args, **kwargs):
