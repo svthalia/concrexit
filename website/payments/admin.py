@@ -414,7 +414,7 @@ class BatchAdmin(admin.ModelAdmin):
         custom_urls = [
             path(
                 "<uuid:pk>/process/",
-                self.admin_site.admin_view(admin_views.BatchAdminView.as_view()),
+                self.admin_site.admin_view(admin_views.BatchProcessAdminView.as_view()),
                 name="payments_batch_process",
             ),
             path(

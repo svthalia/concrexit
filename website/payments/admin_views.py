@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import permission_required
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import capfirst
 from django.utils.decorators import method_decorator
@@ -69,6 +70,12 @@ class BatchProcessAdminView(View):
             )
         else:
             batch.processed = True
+            payments = batch.payments_set.select_related("paid_by")
+            for payment in payments:
+                ba = payment.paid_by.bank_accounts.last()
+                ba.last_used = timezone.now()
+                ba.save()
+
             batch.save()
             messages.success(
                 request,
