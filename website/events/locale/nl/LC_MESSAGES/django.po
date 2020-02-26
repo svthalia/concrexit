@@ -307,6 +307,10 @@ msgid "maximum number of participants"
 msgstr "maximum aantal deelnemers"
 
 #: models.py
+msgid "The maximum number of participants has changed, inform those who might be affected by it!"
+msgstr "Het maximaal aantal deelnemers is veranderd, informeer de gene die hier iets van merken!"
+
+#: models.py
 msgid "message when there is no registration"
 msgstr "bericht dat getoond wordt wanneer aanmelden niet nodig is"
 

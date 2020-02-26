@@ -192,6 +192,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         super().__init__(*args, **kwargs)
         self._price = self.price
         self._registration_start = self.registration_start
+        self._max_participants   = self.max_participants
 
     @property
     def after_cancel_deadline(self):
@@ -469,6 +470,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             if self.start_reminder is not None and not self.start_reminder.sent:
                 self.start_reminder.delete()
                 self.start_reminder = None
+
+            if self._max_participants != self.max_participants:
+                message.warning(request,f"The maximum number of participants has changed, please inform those who might be affected by it")
 
         super().save()
 
