@@ -10,7 +10,7 @@ from django.utils.crypto import get_random_string
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
-from django.contrib.messages import messages
+from django.contrib import messages
 
 from members.models import Member
 from pushnotifications.models import ScheduledMessage, Category
@@ -471,7 +471,6 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             if self.start_reminder is not None and not self.start_reminder.sent:
                 self.start_reminder.delete()
                 self.start_reminder = None
-
         if self._max_participants != self.max_participants:
             messages.warning(request,f"The maximum number of participants has changed, please inform those who might be affected by it")
 
