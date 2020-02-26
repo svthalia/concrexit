@@ -95,7 +95,7 @@ class Payment(models.Model):
     def clean(self):
         if self.type != self.TPAY and self.batch is not None:
             raise ValidationError(
-                {"batch": "Non Thalia Pay payments cannot " "be added to a batch."}
+                {"batch": "Non Thalia Pay payments cannot be added to a batch."}
             )
 
     def get_admin_url(self):
