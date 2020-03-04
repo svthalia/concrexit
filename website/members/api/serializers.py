@@ -39,14 +39,12 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
             return membership.get_type_display()
         return ""
 
-    def _background_color(self, instance):
+    def _class_names(self, instance):
+        class_names = ["birthday-event"]
         membership = instance.current_membership
         if membership and membership.type == "honorary":
-            return "#E62272"
-        return "black"
-
-    def _text_color(self, instance):
-        return "white"
+            class_names.append("honorary")
+        return class_names
 
 
 class ProfileRetrieveSerializer(serializers.ModelSerializer):

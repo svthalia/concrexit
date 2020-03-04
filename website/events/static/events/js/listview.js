@@ -47,7 +47,7 @@ class ListView extends FullCalendar.View {
 
             const eventIndicator = document.createElement('div');
             eventIndicator.classList.add('event-indication');
-            eventIndicator.style = 'background-color: ' + def.ui.backgroundColor;
+            eventIndicator.classList.add(def.ui.classNames);
 
             const cardHead = document.createElement('div');
             cardHead.classList.add('card-header', 'collapsed');

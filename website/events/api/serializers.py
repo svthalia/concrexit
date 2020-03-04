@@ -32,8 +32,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
             "url",
             "title",
             "description",
-            "backgroundColor",
-            "textColor",
+            "classNames",
             "blank",
         )
 
@@ -44,8 +43,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField("_url")
     title = serializers.SerializerMethodField("_title")
     description = serializers.SerializerMethodField("_description")
-    backgroundColor = serializers.SerializerMethodField("_background_color")
-    textColor = serializers.SerializerMethodField("_text_color")
+    classNames = serializers.SerializerMethodField("_class_names")
     blank = serializers.SerializerMethodField("_target_blank")
 
     def _start(self, instance):
@@ -69,10 +67,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     def _description(self, instance):
         return unescape(strip_tags(instance.description))
 
-    def _background_color(self, instance):
-        pass
-
-    def _text_color(self, instance):
+    def _class_names(self, instance):
         pass
 
     def _target_blank(self, instance):
@@ -86,31 +81,23 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
     def _url(self, instance):
         return reverse("events:event", kwargs={"pk": instance.id})
 
-    def _background_color(self, instance):
-        try:
-            if services.is_user_registered(self.context["member"], instance):
-                return "#E62272"
-        except AttributeError:
-            pass
-        return "#616161"
-
-    def _text_color(self, instance):
-        return "#FFFFFF"
+    def _class_names(self, instance):
+        class_names = ["regular-event"]
+        if services.is_user_registered(self.context["member"], instance):
+            class_names.append("has-registration")
+        return class_names
 
 
 class UnpublishedEventSerializer(CalenderJSSerializer):
     """
-    See CalenderJSSerializer, customised colors
+    See CalenderJSSerializer, customised classes
     """
 
     class Meta(CalenderJSSerializer.Meta):
         model = Event
 
-    def _background_color(self, instance):
-        return "rgba(255,0,0,0.3)"
-
-    def _text_color(self, instance):
-        return "black"
+    def _class_names(self, instance):
+        return ["unpublished-event"]
 
     def _url(self, instance):
         return reverse("admin:events_event_details", kwargs={"pk": instance.id})

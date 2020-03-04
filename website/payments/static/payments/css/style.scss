@@ -9,6 +9,7 @@
 
     #id_signature_canvas {
         height: 10rem;
+        background-color: #ffffff;
     }
 
     #canvas-container {
@@ -19,7 +20,7 @@
             height: 2rem;
             width: 2rem;
             top: 0.25rem;
-            color: $black;
+            color: #000000;
 
             display: inline-block;
             font-weight: 400;
