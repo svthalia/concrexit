@@ -47,6 +47,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000  # Useful for managing members
 
 # Load django.contrib.admin after thaliawebsite so the admin page gets modified
 INSTALLED_APPS = [
+    "thaliawebsite",  # include for admin settings
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -63,7 +64,6 @@ INSTALLED_APPS = [
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
-    "thaliawebsite",  # include for admin settings
     "django.contrib.admin",
     "pushnotifications.apps.PushNotificationsConfig",
     "members.apps.MembersConfig",
