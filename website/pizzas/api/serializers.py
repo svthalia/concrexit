@@ -46,7 +46,9 @@ class AdminOrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ("pk", "payment", "product", "name", "member", "display_name")
 
-    payment = PaymentTypeField(source="payment.type", choices=Payment.PAYMENT_TYPE)
+    payment = PaymentTypeField(
+        source="payment.type", choices=Payment.PAYMENT_TYPE, required=False
+    )
     display_name = serializers.SerializerMethodField("_display_name")
 
     def _display_name(self, instance):
@@ -65,6 +67,18 @@ class AdminOrderSerializer(serializers.ModelSerializer):
         if not (attrs.get("member") or attrs.get("name")) and not self.partial:
             attrs["member"] = self.context["request"].member
         return super().validate(attrs)
+
+    def create(self, validated_data: Any) -> Any:
+        if "payment" in validated_data:
+            payment_type = validated_data["payment"].get("type", Payment.NONE)
+            del validated_data["payment"]
+        else:
+            payment_type = Payment.NONE
+
+        instance = super().create(validated_data)
+        instance.payment.type = payment_type
+        instance.payment.save()
+        return instance
 
     def update(self, instance: Model, validated_data: Any) -> Any:
         if (
