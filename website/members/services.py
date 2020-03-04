@@ -69,6 +69,9 @@ def member_achievements(member) -> List:
         name = "Mentor in {}".format(mentor_year.year)
         # Ensure mentorships appear last but are sorted
         earliest = date.today()
+        # Making sure it does not crash in leap years
+        if earliest.month == 2 and earliest.day == 29:
+            earliest.replace(day=28)
         earliest = earliest.replace(year=earliest.year + mentor_year.year)
         if not achievements.get(name):
             achievements[name] = {
