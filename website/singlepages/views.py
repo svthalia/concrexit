@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from thaliawebsite.settings import settings
+
 
 @method_decorator(login_required, "dispatch")
 class StyleGuideView(TemplateView):
@@ -50,15 +52,17 @@ class AlmanacView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        member = self.request.member
-        context["member"] = member
-        almanac_url = (
-            f"https://svthalia.typeform.com/to/Equ1fY?"
-            f"thalia_email={member.email}&"
-            f"thalia_username={member.get_username()}&"
-            f"thalia_full_name={member.get_full_name()}&"
-            f"thalia_cohort={member.profile.starting_year}&"
-            f"thalia_user_id={member.id}"
-        )
-        context["almanac_url"] = almanac_url
+        context["show_almanac"] = settings.SHOW_ALMANAC_PAGE
+        if settings.SHOW_ALMANAC_PAGE:
+            member = self.request.member
+            context["member"] = member
+            almanac_url = (
+                f"https://svthalia.typeform.com/to/Equ1fY?"
+                f"thalia_email={member.email}&"
+                f"thalia_username={member.get_username()}&"
+                f"thalia_full_name={member.get_full_name()}&"
+                f"thalia_cohort={member.profile.starting_year}&"
+                f"thalia_user_id={member.id}"
+            )
+            context["almanac_url"] = almanac_url
         return context

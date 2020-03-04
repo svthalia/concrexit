@@ -3,7 +3,7 @@ This file defines the menu layout.
 
 We set the variable `:py:main` to form the menu tree.
 """
-
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 __all__ = ["MAIN_MENU"]
@@ -45,8 +45,7 @@ MAIN_MENU = [
                 "title": _("G Suite Knowledge Base"),
                 "url": "https://gsuite.members.thalia.nu/",
                 "authenticated": True,
-            },
-            {"title": _("Almanac 2020"), "name": "singlepages:almanac"},
+            }
         ],
     },
     {"title": _("Calendar"), "name": "events:index",},
@@ -79,3 +78,10 @@ MAIN_MENU = [
     },
     {"title": _("Contact"), "name": "singlepages:contact"},
 ]
+
+if settings.SHOW_ALMANAC_PAGE:
+    MAIN_MENU[2]['submenu'].append(
+    {
+        "title": _("Almanac 2020"),
+        "name": "singlepages:almanac",
+    })
