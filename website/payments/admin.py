@@ -44,7 +44,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "type",
         "paid_by_link",
         "processed_by_link",
-        "notes",
+        "topic",
     )
     list_filter = ("type",)
     list_select_related = (
@@ -59,6 +59,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "processing_date",
         "paid_by",
         "processed_by",
+        "topic",
         "notes",
     )
     readonly_fields = (
@@ -68,9 +69,11 @@ class PaymentAdmin(admin.ModelAdmin):
         "processing_date",
         "paid_by",
         "processed_by",
+        "topic",
         "notes",
     )
     search_fields = (
+        "topic",
         "notes",
         "paid_by__username",
         "paid_by__first_name",

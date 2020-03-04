@@ -30,6 +30,11 @@ class PayableTest(TestCase):
         with self.assertRaises(NotImplementedError):
             _ = p.payment_payer
 
+    def test_save_not_implemented(self):
+        p = Payable()
+        with self.assertRaises(NotImplementedError):
+            p.save()
+
 
 @override_settings(SUSPEND_SIGNALS=True)
 class PaymentTest(TestCase):

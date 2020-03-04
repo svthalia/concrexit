@@ -1,11 +1,58 @@
 """The services defined by the payments package"""
 import datetime
+from typing import Union
 
 from django.db.models import QuerySet, Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
-from .models import Payment, BankAccount
+from .exceptions import PaymentError
+from .models import Payment, BankAccount, Payable
+
+
+def create_payment(
+    payable: Payable,
+    processed_by: Member,
+    pay_type: Union[Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY],
+) -> Payment:
+    """
+    Create a new payment from a payable object
+
+    :param payable: Payable object
+    :param processed_by: Member that processed this payment
+    :param pay_type: Payment type
+    :return: Payment object
+    """
+    if pay_type == Payment.TPAY and not payable.payment_payer.tpay_enabled:
+        raise PaymentError(_("This user does not have Thalia Pay enabled"))
+
+    if payable.payment is not None:
+        payable.payment.type = pay_type
+        payable.payment.save()
+    else:
+        payable.payment = Payment.objects.create(
+            processed_by=processed_by,
+            amount=payable.payment_amount,
+            notes=payable.payment_notes,
+            topic=payable.payment_topic,
+            paid_by=payable.payment_payer,
+            processing_date=timezone.now(),
+            type=pay_type,
+        )
+    return payable.payment
+
+
+def delete_payment(payable: Payable):
+    """
+    Removes a payment from a payable object
+    :param payable: Payable object
+    :return:
+    """
+    payment = payable.payment
+    payable.payment = None
+    payable.save()
+    payment.delete()
 
 
 def process_payment(

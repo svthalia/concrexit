@@ -233,11 +233,13 @@ def _create_payment_for_entry(entry: Entry) -> Payment:
     if entry.contribution and entry.membership_type == Membership.BENEFACTOR:
         amount = entry.contribution
     notes = f"Membership registration. {entry.get_membership_type_display()}."
+    topic = f"Member registration [{entry.membership_type.upper()}]"
 
     try:
         renewal = entry.renewal
         membership = renewal.member.latest_membership
         notes = f"Membership renewal. {entry.get_membership_type_display()}."
+        topic = f"Member renewal [{entry.membership_type.upper()}]"
         # Having a latest membership which has an until date implies that this
         # membership lasts/lasted till the end of the lecture year
         # This means it's possible to renew the 'year' membership
@@ -262,7 +264,7 @@ def _create_payment_for_entry(entry: Entry) -> Payment:
     except Renewal.DoesNotExist:
         pass
 
-    return Payment.objects.create(amount=amount, notes=notes)
+    return Payment.objects.create(amount=amount, notes=notes, topic=topic)
 
 
 def _create_member_from_registration(registration: Registration) -> Member:

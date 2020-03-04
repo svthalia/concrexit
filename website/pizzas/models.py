@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.template.defaulttags import date
 
 from events.models import Event
 import members
@@ -223,7 +224,11 @@ class Order(models.Model):
             self.payment.save()
         except ObjectDoesNotExist:
             self.payment = Payment.objects.create(
-                amount=self.product.price, notes=notes, paid_by=self.member
+                amount=self.product.price,
+                notes=notes,
+                paid_by=self.member,
+                topic=f"Pizzas {self.pizza_event.event.title_en} "
+                f'[{date(self.pizza_event.start, "Y-m-d")}]',
             )
 
         super().save(*args, **kwargs)
