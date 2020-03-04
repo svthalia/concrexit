@@ -1,11 +1,11 @@
 .form-control {
-    color: $text-color;
-    background: $white;
+    color: $form-text;
+    background: $form-background;
     font-weight: $regular;
     font-size: 14px;
     font-family: $primary-font;
     letter-spacing: $letter-spacing;
-    border: 2px solid $black;
+    border: 2px solid $form-border;
     border-radius: 0;
     padding: 3px 10px;
     min-height: 50px;
@@ -19,5 +19,7 @@
     &:focus {
         border-color: $preset;
         box-shadow: none;
+        color: $form-text;
+        background: $form-background;
     }
 }

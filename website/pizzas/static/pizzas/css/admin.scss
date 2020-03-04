@@ -63,11 +63,11 @@
 }
 
 select[name=payment] {
-    background: $danger;
+    background: $red;
     color: white;
 
     &.paid {
-        background: $success;
+        background: $green;
     }
 
     @media(max-width: 767px) {

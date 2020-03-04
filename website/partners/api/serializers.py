@@ -20,13 +20,9 @@ class PartnerEventCalendarJSSerializer(CalenderJSSerializer):
             return "{} ({})".format(instance.title, instance.partner.name)
         return "{} ({})".format(instance.title, instance.other_partner)
 
-    def _background_color(self, instance):
+    def _class_names(self, instance):
         """Return the color of the background."""
-        return "black"
-
-    def _text_color(self, instance):
-        """Return the color of the text."""
-        return "#E62272"
+        return ["partner-event"]
 
     def _url(self, instance):
         """Return the url of the partner event."""
