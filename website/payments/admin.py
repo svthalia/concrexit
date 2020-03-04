@@ -182,6 +182,7 @@ class PaymentAdmin(admin.ModelAdmin):
         if not request.user.has_perm("payments.process_batches"):
             del actions["add_to_new_batch"]
             del actions["add_to_last_batch"]
+
         return actions
 
     def process_cash_selected(self, request: HttpRequest, queryset: QuerySet) -> None:

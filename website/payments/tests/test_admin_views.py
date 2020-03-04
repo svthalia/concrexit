@@ -158,6 +158,9 @@ class BatchAdminViewTest(TestCase):
             user=cls.user, language="nl",
         )
         BankAccount.objects.create(owner=cls.user, created_at=timezone.now())
+        Payment.objects.create(
+            amount=1337, paid_by=cls.user, batch=cls.batch, type=Payment.TPAY
+        )
 
     def setUp(self):
         self.client = Client()
@@ -218,6 +221,7 @@ class BatchAdminViewTest(TestCase):
 
 
 @override_settings(SUSPEND_SIGNALS=True)
+@freeze_time("2020-01-01")
 class BatchExportAdminViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -260,7 +264,6 @@ class BatchExportAdminViewTest(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
 
-    @freeze_time("2020-01-01")
     def test_post(self):
         self._give_user_permissions()
 
@@ -311,8 +314,8 @@ class BatchExportAdminViewTest(TestCase):
         self.assertEqual(
             response.content,
             b"Account holder name,IBAN,Mandate id,Amount,Description,Mandate date\r\n"
-            b"Test1 Example,DE75512108001245126199,2,3.00,Thalia Pay payments for 2020-1,2020-01-01\r\n"
-            b"Test2 Example,NL02ABNA0123456789,1,6.00,Thalia Pay payments for 2020-1,2020-01-01\r\n",
+            b"Test1 Example,DE75512108001245126199,2,3.00,Thalia Pay payments for 2019-12,2020-01-01\r\n"
+            b"Test2 Example,NL02ABNA0123456789,1,6.00,Thalia Pay payments for 2019-12,2020-01-01\r\n",
         )
 
 
