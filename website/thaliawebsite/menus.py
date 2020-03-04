@@ -45,7 +45,7 @@ MAIN_MENU = [
                 "title": _("G Suite Knowledge Base"),
                 "url": "https://gsuite.members.thalia.nu/",
                 "authenticated": True,
-            }
+            },
         ],
     },
     {"title": _("Calendar"), "name": "events:index",},
@@ -80,8 +80,6 @@ MAIN_MENU = [
 ]
 
 if settings.SHOW_ALMANAC_PAGE:
-    MAIN_MENU[2]['submenu'].append(
-    {
-        "title": _("Almanac 2020"),
-        "name": "singlepages:almanac",
-    })
+    MAIN_MENU[2]["submenu"].append(
+        {"title": _("Almanac 2020"), "name": "singlepages:almanac",}
+    )
