@@ -266,8 +266,7 @@ class PaymentAdmin(admin.ModelAdmin):
         else:
             self.message_user(
                 request,
-                f"No payments using Thalia Pay are selected, "
-                f"no batch is created",
+                f"No payments using Thalia Pay are selected, " f"no batch is created",
                 messages.ERROR,
             )
 
