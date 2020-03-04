@@ -1,17 +1,17 @@
-$background-color: $darkdark-grey;
+$background-color: $black;
 $background-shade: $dark-grey;
-$background-shade-light: $grey;
+$background-shade-light: $darkdark-grey;
 $navbar-background-color: $black;
 
-$card-background: $dark-grey;
+$card-background: $darkdark-grey;
 $card-background-contrast: $white;
-$card-background-hover: $grey;
+$card-background-hover: $dark-grey;
 $card-background-hover-contrast: $white;
 
 $banner-background: $dark-grey;
 
-$form-background: $dark-grey;
-$form-background-disabled: $black;
+$form-background: $black;
+$form-background-disabled: $darkdark-grey;
 $form-border: $white;
 $form-text: $light-grey;
 
@@ -27,7 +27,7 @@ $preset: $magenta;
 $preset-hover: $magenta-shade;
 $preset-contrast: $white;
 $preset-contrast-hover: $light-grey;
-$secondary: $white;
+$secondary: $light-grey;
 $secondary-hover: $lightlight-grey;
 $secondary-contrast: $black;
 $success: $green;

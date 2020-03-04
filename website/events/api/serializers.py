@@ -82,7 +82,7 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
         return reverse("events:event", kwargs={"pk": instance.id})
 
     def _class_names(self, instance):
-        class_names = ['regular-event']
+        class_names = ["regular-event"]
         if services.is_user_registered(self.context["member"], instance):
             class_names.append("has-registration")
         return class_names
@@ -97,7 +97,7 @@ class UnpublishedEventSerializer(CalenderJSSerializer):
         model = Event
 
     def _class_names(self, instance):
-        return ['unpublished-event']
+        return ["unpublished-event"]
 
     def _url(self, instance):
         return reverse("admin:events_event_details", kwargs={"pk": instance.id})

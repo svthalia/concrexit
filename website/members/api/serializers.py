@@ -43,7 +43,7 @@ class MemberBirthdaySerializer(CalenderJSSerializer):
         class_names = ["birthday-event"]
         membership = instance.current_membership
         if membership and membership.type == "honorary":
-            class_names.append('honorary')
+            class_names.append("honorary")
         return class_names
 
 

@@ -19,5 +19,7 @@
     &:focus {
         border-color: $preset;
         box-shadow: none;
+        color: $form-text;
+        background: $form-background;
     }
 }

@@ -30,7 +30,7 @@
             }
 
             .no-registration {
-                background-color: $background-color;
+                background-color: $grey;
             }
 
             .has-registration {
@@ -68,20 +68,69 @@
                 border-radius: 20px;
                 margin-right: 1rem;
                 flex-shrink: 0;
+
+                &.regular-event {
+                    background-color: $grey;
+                    &.has-registration {
+                        background-color: $preset;
+                    }
+                }
+
+                &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
+                    background-color: rgba(255, 0, 0, 0.3);
+                }
+
+                &.partner-event {
+                    background-color: $secondary;
+                }
+
+                &.birthday-event {
+                    background-color: $secondary;
+                    &.honorary {
+                        background-color: $preset;
+                    }
+                }
             }
         }
     }
 
-    .fc-event-dot {
-        background-color: #616161;
-    }
-
     .fc-event {
-        background-color: #616161;
+        color: $white;
+        background-color: $grey;
         border-radius: 0;
         border: none;
         overflow: hidden;
         transition-property: opacity;
+
+        &.regular-event {
+            &.has-registration {
+                background-color: $preset;
+                color: $white;
+            }
+        }
+
+        &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
+            background-color: rgba(255, 0, 0, 0.3);
+            color: $secondary;
+        }
+
+        &.partner-event {
+            color: $preset;
+            background-color: $secondary;
+
+            &:active, &:hover {
+                color: $preset;
+            }
+        }
+
+        &.birthday-event {
+            background-color: $secondary;
+            color: $secondary-contrast;
+            &.honorary {
+                background-color: $preset;
+                color: $secondary;
+            }
+        }
 
         .fc-content {
             padding: 5px;
@@ -100,8 +149,6 @@
             .fc-content {
                 opacity: 0.8;
             }
-
-            color: $white;
         }
     }
 }
