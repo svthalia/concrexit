@@ -27,7 +27,7 @@ td, th, input, textarea, select, .form-row p, form .button {
 }
 
 #changelist-filter ul {
-    border-color: $card-background-hover !important;
+    border-color: $card-background-hover;
 }
 
 #header {
@@ -60,8 +60,8 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
     color: $card-background-contrast;
 
     caption, h2, a.section:link, a.section:visited {
-        background-color: $preset !important;
-        color: $preset-contrast !important;
+        background-color: $preset;
+        color: $preset-contrast;
         font-family: $header-font;
         font-weight: $regular;
         letter-spacing: $letter-spacing;
@@ -70,131 +70,131 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 }
 
 #changelist, #changelist #toolbar {
-    background: $background-color !important;
+    background: $background-color;
 }
 
 #changelist .actions, #changelist .paginator, #changelist .actions label {
-    background: $preset !important;
-    color: $preset-contrast !important;
-    font-family: $header-font !important;
-    font-weight: $regular !important;
-    letter-spacing: $letter-spacing !important;
-    text-transform: uppercase !important;
+    background: $preset;
+    color: $preset-contrast;
+    font-family: $header-font;
+    font-weight: $regular;
+    letter-spacing: $letter-spacing;
+    text-transform: uppercase;
     padding-left: 10px;
 }
 
 #changelist #toolbar, #changelist .paginator {
-    border-top: 0 !important;
-    border-bottom: 0 !important;
+    border-top: 0;
+    border-bottom: 0;
 }
 
 .inline-related fieldset {
-    background-color: $card-background !important;
+    background-color: $card-background;
     border-top: 0;
     border-bottom: 0;
 }
 
 .inline-related h3 {
-    border-top: 0 !important;
-    border-bottom: 0 !important;
-    color: $card-background-contrast !important;
-    background: $card-background-hover !important;
+    border-top: 0;
+    border-bottom: 0;
+    color: $card-background-contrast;
+    background: $card-background-hover;
     font-family: $primary-font;
     text-transform: none;
 }
 .inline-group div.add-row, .inline-group .tabular tr.add-row td {
-    border-bottom: 0 !important;
+    border-bottom: 0;
 }
 
 .form-row:last-child, tr:last-child td, tr:last-child th {
-    border-bottom: 0 !important;
+    border-bottom: 0;
 }
 
 .form-row, td, th {
-    border-color: $card-background-hover !important;
+    border-color: $card-background-hover;
 }
 
 .submit-row {
-    background: $card-background !important;
-    color: $card-background-contrast !important;
-    border: 0 !important;
-    border-radius: 0 !important;
+    background: $card-background;
+    color: $card-background-contrast;
+    border: 0;
+    border-radius: 0;
 }
 
 label, .help, p.help, form p.help, div.help, form div.help, div.help li {
-    color: $form-text !important;
+    color: $form-text;
 }
 
 thead th {
     border-top: 0;
-    background: $card-background !important;
-    color: $card-background-contrast !important;
+    background: $card-background;
+    color: $card-background-contrast;
 }
 
 thead th a:link, thead th a:visited, thead th.required {
-    color: $card-background-contrast !important;
+    color: $card-background-contrast;
 }
 
 thead th.sorted, table thead th .text a:focus, table thead th .text a:hover {
-    background: $card-background-hover !important;
+    background: $card-background-hover;
 }
 
 thead th.sortable:hover {
-    background: $card-background-hover !important;
+    background: $card-background-hover;
 }
 
 .change-list ul.toplinks .date-back a:focus,
 .change-list ul.toplinks .date-back a:hover {
-    color: $preset !important;
+    color: $preset;
 }
 
 tr.alt, .inline-group div.add-row,
 .inline-group .tabular tr.add-row td {
-    background: $card-background !important;
+    background: $card-background;
 }
 
 .row1, .row2, .row, #result_list tbody tr, .form-row {
-    background: $background-color !important;
+    background: $background-color;
 }
 
 #changelist table tbody tr.selected {
-    background-color: $background-shade !important;
+    background-color: $background-shade;
 }
 #changelist .actions select {
-    color: $form-text !important;
-    background: $form-background !important;
-    border: 1px $form-border solid !important;
-    border-radius: 0 !important;
+    color: $form-text;
+    background: $form-background;
+    border: 1px $form-border solid;
+    border-radius: 0;
 }
 
 
 
 #content-related, #content-related .module, #changelist-filter {
-    background-color: $card-background !important;
+    background-color: $card-background;
 }
 
 #content-related .module h2 {
-    color: $preset-contrast !important;
+    color: $preset-contrast;
     border-bottom: 0;
 
     a {
-        color: $preset-contrast-hover !important;
+        color: $preset-contrast-hover;
     }
 
     a:hover {
-        color: $preset-contrast-hover !important;
-        text-decoration: underline !important;
+        color: $preset-contrast-hover;
+        text-decoration: underline;
     }
 }
 #content-related h3 {
     color: $card-background-contrast;
 
     a {
-        color: $card-background-contrast !important;
+        color: $card-background-contrast;
     }
 
     a:hover {
-        color: $card-background-hover-contrast !important;
+        color: $card-background-hover-contrast;
     }
 
 }
@@ -223,19 +223,19 @@ a.section:link, a.section:visited {
 }
 
 #changelist-filter a {
-    color: $card-background-contrast !important;
+    color: $card-background-contrast;
 }
 
 #changelist-filter li.selected a {
-    color: $preset !important;
+    color: $preset;
 }
 
 #changelist-filter a:focus, #changelist-filter a:hover, #changelist-filter li.selected a:focus, #changelist-filter li.selected a:hover {
-    color: $preset-hover !important;
+    color: $preset-hover;
 }
 
 .object-tools a {
-    border-radius: 0 !important;
+    border-radius: 0;
     font-family: $header-font;
     font-weight: $regular;
     letter-spacing: $letter-spacing;
@@ -250,37 +250,37 @@ a.section:link, a.section:visited {
 }
 
 .button, input[type=submit], input[type=button], .submit-row input, a.button {
-    background-color: $preset !important;
-    color: $preset-contrast !important;
-    border-radius: 0 !important;
-    border: 0 !important;
-    font-family: $header-font !important;
-    font-weight: $regular !important;
-    letter-spacing: $letter-spacing !important;
-    text-transform: uppercase !important;
+    background-color: $preset;
+    color: $preset-contrast;
+    border-radius: 0;
+    border: 0;
+    font-family: $header-font;
+    font-weight: $regular;
+    letter-spacing: $letter-spacing;
+    text-transform: uppercase;
 }
 
 .button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
-    background-color: $preset-hover !important;
-    color: $preset-contrast !important;
+    background-color: $preset-hover;
+    color: $preset-contrast;
 }
 
 
 #changelist .actions .button {
-    background-color: $secondary !important;
-    color: $secondary-contrast !important;
+    background-color: $secondary;
+    color: $secondary-contrast;
 }
 
 #changelist .actions .button:hover {
-    background-color: $secondary-contrast !important;
-    color: $secondary !important;
+    background-color: $secondary-contrast;
+    color: $secondary;
 }
 
 
 #searchbar {
-    margin-right: 0 !important;
-    background-color: $form-background !important;
-    color: $form-text !important;
+    margin-right: 0;
+    background-color: $form-background;
+    color: $form-text;
 }
 
 .button.default, input[type=submit].default, .submit-row input.default {
@@ -299,7 +299,7 @@ a.section:link, a.section:visited {
 }
 
 .deletelink-box a {
-    border-radius: 0 !important;
+    border-radius: 0;
     font-family: $header-font;
     font-weight: $regular;
     letter-spacing: $letter-spacing;
@@ -315,15 +315,15 @@ a.section:link, a.section:visited {
 }
 
 #result-list, .tablesorter {
-    background-color: $background-color !important;
+    background-color: $background-color;
 }
 
 
 input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], input[type=tel], textarea, select, .vTextField {
     color: $form-text;
     background: $form-background;
-    border: 1px $form-border solid !important;
-    border-radius: 0 !important;
+    border: 1px $form-border solid;
+    border-radius: 0;
     -webkit-box-shadow: none;
     box-shadow: none;
     -webkit-appearance: none;
@@ -338,67 +338,67 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
 }
 
 .selector-available h2, .selector-filter, .selector-chosen h2 {
-    border-color: $form-border !important;
-    border-width: 1px !important;
-    border-radius: 0 !important;
+    border-color: $form-border;
+    border-width: 1px;
+    border-radius: 0;
 }
 
 .selector-filter {
-    border-top: 0 !important;
-    border-bottom: 0 !important;
+    border-top: 0;
+    border-bottom: 0;
 }
 
 .calendar {
-    background-color: $card-background !important;
-    color: $card-background-contrast !important;
+    background-color: $card-background;
+    color: $card-background-contrast;
 }
 
 .calendar-shortcuts, .calendar-cancel, .calendar-cancel a {
-    background-color: $card-background !important;
-    color: $card-background-contrast !important;
-    border: 0 !important;
+    background-color: $card-background;
+    color: $card-background-contrast;
+    border: 0;
 
     a:focus, a:hover {
-        color: $preset-hover !important;
+        color: $preset-hover;
     }
 }
 
 .calendarbox .module, .calendarbox, .clockbox {
-    border: 0 !important;
-    border-radius: 0 !important;
+    border: 0;
+    border-radius: 0;
 }
 
 .calendarbox, .clockbox, ul.timelist, .timelist li, .calendar td a, .timelist a {
-    background-color: $card-background !important;
-    color: $card-background-contrast !important;
+    background-color: $card-background;
+    color: $card-background-contrast;
 }
 
 .calendar td a:focus, .timelist a:focus, .calendar td a:hover, .timelist a:hover {
-    background-color: $preset !important;
-    color: $preset-contrast !important;
+    background-color: $preset;
+    color: $preset-contrast;
 }
 
 .calendar td.selected a {
-    background-color: $preset !important;
-    color: $preset-contrast !important;
+    background-color: $preset;
+    color: $preset-contrast;
 }
 
 .calendar td, .calendar td a  {
-    border-color: $card-background-hover !important;
-    background-color: $card-background !important;
-    color: $card-background-contrast !important;
+    border-color: $card-background-hover;
+    background-color: $card-background;
+    color: $card-background-contrast;
 }
 
 .calendar th {
-    background: $card-background-hover !important;
-    color: $card-background-contrast !important;
+    background: $card-background-hover;
+    color: $card-background-contrast;
 }
 .date-icon {
-    fill: $preset !important;
+    fill: $preset;
 }
 
 a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.selector-chooseall:hover, a.active.selector-clearall:hover {
-    color: $preset !important;
+    color: $preset;
 }
 
 
@@ -408,46 +408,46 @@ a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.se
 
 .select2-container--admin-autocomplete .select2-results__option--highlighted[aria-selected],
 .select2-container--admin-autocomplete .select2-results__option[aria-selected=true]{
-    background-color: $preset !important;
-    color: $preset-contrast !important;
+    background-color: $preset;
+    color: $preset-contrast;
 }
 
 .select2-results {
-    background-color: $card-background !important;
-    color: $card-background-contrast !important;
+    background-color: $card-background;
+    color: $card-background-contrast;
 }
 
 .select2-search, .select2-search--dropdown {
-    background-color: $card-background-hover !important;
+    background-color: $card-background-hover;
 }
 
 .select2-selection, .select2-selection--single, .select2-dropdown {
-    color: $form-text !important;
-    background: $form-background !important;
-    border: 1px $form-border solid !important;
-    border-radius: 0 !important;
+    color: $form-text;
+    background: $form-background;
+    border: 1px $form-border solid;
+    border-radius: 0;
 }
 
 .select2-container--admin-autocomplete .select2-selection--single .select2-selection__rendered {
-    color: $form-text !important;
+    color: $form-text;
 }
 
 
 #id_signature_canvas {
-    background-color: white !important;
-    border: 1px $form-border solid !important;
-    border-radius: 0 !important;
+    background-color: white;
+    border: 1px $form-border solid;
+    border-radius: 0;
 }
 
 #signature-img {
-    background-color: white !important;
-    fill: white !important;
-    margin-left: 0 !important;
-    margin-top: 10px !important;
+    background-color: white;
+    fill: white;
+    margin-left: 0;
+    margin-top: 10px;
 }
 
 #changelist #toolbar form input[type="submit"], #changelist .actions .button {
-    box-shadow: none !important;
+    box-shadow: none;
 }
 
 
