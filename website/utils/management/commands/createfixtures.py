@@ -20,21 +20,13 @@ from activemembers.models import (
 )
 from documents.models import Document
 from education.models import Course, Category
-from events.models import Event
+from events.models import Event, Registration
 from members.models import Profile, Member, Membership
 from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
 
-# TODO
-# [x] courses
-# [ ] exams, summaries ?
-# [ ] photos
-# [ ] albums
-# [ ] documents
-# [ ] payments
-# [ ] registrations
 
 try:
     import factory
@@ -124,6 +116,9 @@ class Command(BaseCommand):
             "-w", "--vacancy", type=int, help="The amount of fake vacancies to add"
         )
         parser.add_argument("--course", type=int, help="The amount of courses to add")
+        parser.add_argument(
+            "-r", "--registration", type=int, help="The amount of registrations to add"
+        )
 
     def create_board(self, lecture_year):
         """
@@ -508,6 +503,31 @@ class Command(BaseCommand):
 
         course.save()
 
+    def get_event_to_register_for(self, member):
+        for event in Event.objects.filter(published=True).order_by("?"):
+            if event.registration_required and not event.reached_participants_limit():
+                if member.id not in event.registrations.values_list('member', flat=True):
+                    return event
+
+    def create_registration(self):
+        registration = Registration()
+
+        registration.member = Member.objects.order_by("?")[0]
+
+        possible_event = self.get_event_to_register_for(registration.member)
+        while not possible_event:
+            self.stdout.write("No possible events to register for")
+            self.stdout.write("Creating a new event")
+            self.create_event()
+            possible_event = self.get_event_to_register_for(registration.member)
+
+        registration.event = possible_event
+
+        registration.date = registration.event.registration_start
+
+        registration.save()
+
+
     def handle(self, *args, **options):
         """
         Handle the command being executed
@@ -526,6 +546,7 @@ class Command(BaseCommand):
             "document",
             "newsletter",
             "course",
+            "registration",
         ]
 
         if all([not options[opt] for opt in opts]):
@@ -548,6 +569,7 @@ class Command(BaseCommand):
                 "newsletter": 2,
                 "document": 8,
                 "course": 10,
+                "registration": 20
             }
 
         # Users need to be generated before boards and committees
@@ -626,3 +648,7 @@ class Command(BaseCommand):
 
             for _ in range(options["course"]):
                 self.create_course()
+
+        if options["registration"]:
+            for _ in range(options["registration"]):
+                self.create_registration()
