@@ -11,24 +11,6 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
 
-class Payable:
-    @property
-    def payment_amount(self):
-        raise NotImplementedError
-
-    @property
-    def payment_topic(self):
-        raise NotImplementedError
-
-    @property
-    def payment_notes(self):
-        raise NotImplementedError
-
-    @property
-    def payment_payer(self):
-        raise NotImplementedError
-
-
 class Payment(models.Model):
     """
     Describes a payment
@@ -79,6 +61,7 @@ class Payment(models.Model):
     )
 
     notes = models.TextField(blank=True, null=True)
+    topic = models.CharField(max_length=255, default="Unknown")
 
     @property
     def processed(self):
@@ -215,3 +198,26 @@ class BankAccount(models.Model):
 
     class Meta:
         ordering = ("created_at",)
+
+
+class Payable:
+    payment = None
+
+    @property
+    def payment_amount(self):
+        raise NotImplementedError
+
+    @property
+    def payment_topic(self):
+        raise NotImplementedError
+
+    @property
+    def payment_notes(self):
+        raise NotImplementedError
+
+    @property
+    def payment_payer(self):
+        raise NotImplementedError
+
+    def save(self):
+        raise NotImplementedError

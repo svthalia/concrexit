@@ -40,6 +40,14 @@ payments.apps module
    :undoc-members:
    :show-inheritance:
 
+payments.exceptions module
+--------------------------
+
+.. automodule:: payments.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 payments.forms module
 ---------------------
 
