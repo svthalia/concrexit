@@ -506,7 +506,9 @@ class Command(BaseCommand):
     def get_event_to_register_for(self, member):
         for event in Event.objects.filter(published=True).order_by("?"):
             if event.registration_required and not event.reached_participants_limit():
-                if member.id not in event.registrations.values_list('member', flat=True):
+                if member.id not in event.registrations.values_list(
+                    "member", flat=True
+                ):
                     return event
 
     def create_registration(self):
@@ -526,7 +528,6 @@ class Command(BaseCommand):
         registration.date = registration.event.registration_start
 
         registration.save()
-
 
     def handle(self, *args, **options):
         """
@@ -569,7 +570,7 @@ class Command(BaseCommand):
                 "newsletter": 2,
                 "document": 8,
                 "course": 10,
-                "registration": 20
+                "registration": 20,
             }
 
         # Users need to be generated before boards and committees
