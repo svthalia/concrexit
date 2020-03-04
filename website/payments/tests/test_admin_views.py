@@ -159,7 +159,7 @@ class BatchAdminViewTest(TestCase):
         )
         BankAccount.objects.create(owner=cls.user, created_at=timezone.now())
         Payment.objects.create(
-            amount=1337, paid_by=cls.user, batch=cls.batch, type=Payment.TPAY
+            amount=999, paid_by=cls.user, batch=cls.batch, type=Payment.TPAY
         )
 
     def setUp(self):
