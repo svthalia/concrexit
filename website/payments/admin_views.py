@@ -113,11 +113,9 @@ class BatchExportAdminView(View):
         ]
         writer.writerow([capfirst(x) for x in headers])
 
-        memeber_rows = batch.payments_set.values("paid_by").annotate(
-            total=Sum("amount")
-        )
+        member_rows = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
 
-        for row in memeber_rows:
+        for row in member_rows:
             member: Member = Member.objects.get(id=row["paid_by"])
             bankaccount: BankAccount = member.bank_accounts.last()
             writer.writerow(
