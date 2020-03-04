@@ -1,9 +1,8 @@
 {% extends 'admin/base_site.html' %}
 {% load static compress %}
-{% block extrahead %}
-    {{ block.super }}
+{% block extrastyle %}
     {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static "admin/css/admin-main.scss" %}">
-        <link rel="stylesheet" media="(prefers-color-scheme: dark)" type="text/x-scss" href="{% static "admin/css/admin-main-dark.scss" %}">
+        <link href="{% static "admin/css/admin-main.scss" %}" rel="stylesheet" type="text/x-scss">
+        <link href="{% static "admin/css/admin-main-dark.scss" %}" rel="stylesheet" media="(prefers-color-scheme: dark)" type="text/x-scss">
     {% endcompress %}
 {% endblock %}
