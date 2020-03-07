@@ -37,4 +37,4 @@ review-remove:
     name: review/${CI_COMMIT_REF_NAME}
     action: stop
   script:
-    - resources/continuous-integration/review/
+    - resources/continuous-integration/review/review-host-remove.sh
