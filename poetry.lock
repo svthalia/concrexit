@@ -940,7 +940,7 @@ description = "Python documentation generator"
 name = "sphinx"
 optional = true
 python-versions = ">=3.5"
-version = "2.4.3"
+version = "2.4.4"
 
 [package.dependencies]
 Jinja2 = ">=2.3"
@@ -1104,7 +1104,7 @@ version = "0.5.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "470d2b6e7b5a09229cafd1b7bfb92d870da80092fddce18396ee9f0cc83d7a2c"
+content-hash = "c0cec03e84c9b8d18a76fef796b67958f4a46f896003a1613667799412d30108"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1737,8 +1737,8 @@ soupsieve = [
     {file = "soupsieve-1.9.5.tar.gz", hash = "sha256:e2c1c5dee4a1c36bcb790e0fabd5492d874b8ebd4617622c4f6a731701060dda"},
 ]
 sphinx = [
-    {file = "Sphinx-2.4.3-py3-none-any.whl", hash = "sha256:776ff8333181138fae52df65be733127539623bb46cc692e7fa0fcfc80d7aa88"},
-    {file = "Sphinx-2.4.3.tar.gz", hash = "sha256:ca762da97c3b5107cbf0ab9e11d3ec7ab8d3c31377266fd613b962ed971df709"},
+    {file = "Sphinx-2.4.4-py3-none-any.whl", hash = "sha256:fc312670b56cb54920d6cc2ced455a22a547910de10b3142276495ced49231cb"},
+    {file = "Sphinx-2.4.4.tar.gz", hash = "sha256:b4c750d546ab6d7e05bdff6ac24db8ae3e8b8253a3569b754e445110a0a12b66"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.1.tar.gz", hash = "sha256:edaa0ab2b2bc74403149cb0209d6775c96de797dfd5b5e2a71981309efab3897"},
