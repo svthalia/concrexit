@@ -4,6 +4,7 @@ LABEL description="Contains the Thaliawebsite dependencies"
 
 ARG install_dev_requirements=1
 ENV PATH /root/.poetry/bin:${PATH}
+ENV POETRY_VIRTUALENVS_CREATE false
 
 WORKDIR /usr/src/app/
 
@@ -15,7 +16,6 @@ RUN apt-get update && \
     rm --recursive --force /var/lib/apt/lists/* && \
     \
     curl --silent --show-error --location https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python && \
-    poetry config virtualenvs.create false && \
     \
     if [ "$install_dev_requirements" -eq 1 ]; then \
         poetry install --no-interaction --extras "docs"; \
