@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-10 17:43+0100\n"
+"POT-Creation-Date: 2020-03-09 22:31+0100\n"
 "PO-Revision-Date: 2019-03-10 17:46+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -65,10 +65,6 @@ msgstr "oude vakken"
 #: models.py templates/education/course.html
 msgid "EC"
 msgstr "EC"
-
-#: models.py
-msgid "period"
-msgstr "periode"
 
 #: models.py
 msgid "course"
@@ -172,10 +168,6 @@ msgstr "samenvattingen"
 msgid "Submit Exam"
 msgstr "Tentamen Insturen"
 
-#: templates/education/add_exam.html
-msgid "Exam submitted successfully."
-msgstr "Tentamen succesvol ingestuurd."
-
 #: templates/education/add_exam.html templates/education/add_summary.html
 msgid "submit"
 msgstr "insturen"
@@ -184,10 +176,6 @@ msgstr "insturen"
 #: templates/education/courses.html
 msgid "Submit Summary"
 msgstr "Samenvatting Insturen"
-
-#: templates/education/add_summary.html
-msgid "Summary submitted successfully."
-msgstr "Samenvatting succesvol ingestuurd."
 
 #: templates/education/books.html
 msgid "Book Sale"
@@ -266,10 +254,6 @@ msgstr ""
 #: templates/education/course.html templates/education/courses.html
 msgid "Course code"
 msgstr "Cursus code"
-
-#: templates/education/course.html
-msgid "Period"
-msgstr "Periode"
 
 #: templates/education/courses.html
 msgid "Course overview"
@@ -391,3 +375,11 @@ msgstr ""
 "veertien leden. Acht daarvan worden gekozen door de studenten en de andere "
 "zes representeren verschillende studentenorganisaties. Je kan <a href="
 "\"http://www.ru.nl/usr/\">hier</a> meer lezen over de USR."
+
+#: views.py
+msgid "Exam submitted successfully."
+msgstr "Tentamen succesvol ingestuurd."
+
+#: views.py
+msgid "Summary submitted successfully."
+msgstr "Samenvatting succesvol ingestuurd."
