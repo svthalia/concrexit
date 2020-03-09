@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-22 11:20+0100\n"
-"PO-Revision-Date: 2020-02-22 11:39+0100\n"
+"POT-Creation-Date: 2020-03-09 11:35+0100\n"
+"PO-Revision-Date: 2020-03-09 11:36+0100\n"
+"Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
+"Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.2.4\n"
 
-#: templates/singlepages/almanac.html
+#: singlepages/templates/singlepages/almanac.html
 msgid "Almanac"
 msgstr "Almanak"
 
-#: templates/singlepages/almanac.html
+#: singlepages/templates/singlepages/almanac.html
 msgid "Almanac 2020"
 msgstr "Almanak 2020"
 
-#: templates/singlepages/almanac.html
+#: singlepages/templates/singlepages/almanac.html
 msgid ""
 "Happy birthday to Thalia! As you might have noticed, Thalia has a special "
 "birthday coming up: we will be 30 years old next November. In order to "
@@ -42,17 +42,17 @@ msgstr ""
 "van het jaar, alle veranderingen binnen de vereniging en er zal ook een "
 "plekje zijn voor al onze leden."
 
-#: templates/singlepages/almanac.html
+#: singlepages/templates/singlepages/almanac.html
 msgid ""
 "Since the almanac will be all about our members, we are asking every member "
 "to fill out a questionnaire. This might take up to 10 minutes. The deadline "
-"for filling in this questionnaire is <b>March 22nd 2020</b>."
+"for filling in this questionnaire is <b>April 2nd, 2020</b>."
 msgstr ""
 "Omdat de Almanac volledig over onze leden zal gaan, vragen we ieder lid een "
 "vragenlijst in te vullen. Dit kan tot 10 minuten duren. De deadline voor het "
-"invullen van de vragenlijst is <b>22 maart 2020</b>."
+"invullen van de vragenlijst is <b>2 april 2020</b>."
 
-#: templates/singlepages/almanac.html
+#: singlepages/templates/singlepages/almanac.html
 msgid ""
 "Note: filling in this questionnaire does not mean you sign up for buying the "
 "almanac yet. This is just for collection of information and statistics."
@@ -61,11 +61,11 @@ msgstr ""
 "de almanak ook gaat kopen. Het is slechts voor het verzamelen van informatie "
 "en statistieken."
 
-#: templates/singlepages/almanac.html
+#: singlepages/templates/singlepages/almanac.html
 msgid "Start the questionnaire"
 msgstr "Vul de vragenlijst in"
 
-#: templates/singlepages/almanac.html
+#: singlepages/templates/singlepages/almanac.html
 msgid ""
 "You can fill out the questionnaire as many times as you would like, your "
 "latest entry will be used at any time."
@@ -73,7 +73,7 @@ msgstr ""
 "Je kunt de vragenlijst zo vaak in vullen als je wilt, we gebruiken altijd je "
 "laatste inzending."
 
-#: templates/singlepages/almanac.html
+#: singlepages/templates/singlepages/almanac.html
 msgid ""
 "The data you fill out in the questionnaire will be processed by <a href="
 "\"https://typeform.com\" target=\"_blank\">Typeform</a>. Only aggregated "
@@ -85,3 +85,11 @@ msgstr ""
 "geaggregeerde gegevens zullen worden gepubliceerd in de almanak. We zullen "
 "nooit jouw individuele antwoorden publiceren, tenzij expliciet anders "
 "aangegeven in de vragenlijst."
+
+#: singlepages/templates/singlepages/almanac.html
+msgid "Coming soon..."
+msgstr "Coming soon…"
+
+#: singlepages/templates/singlepages/become_active.html
+msgid "Become active"
+msgstr ""
