@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-25 16:35+0200\n"
+"POT-Creation-Date: 2020-03-09 22:33+0100\n"
 "PO-Revision-Date: 2019-10-25 16:37+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -53,18 +53,6 @@ msgstr "Gemodereerd"
 #: models.py
 msgid "Indicate whether emails to the list require approval."
 msgstr "Geef aan of e-mails aan deze lijst goedgekeurd moeten worden."
-
-#: models.py
-msgid "Use G Suite accounts"
-msgstr "Gebruik G Suite accounts"
-
-#: models.py
-msgid ""
-"Indicate whether emails should be send to the Thalia G Suite accounts of the "
-"connected members, if available."
-msgstr ""
-"Geef aan of e-mails naar Thalia G Suite moeten worden verstuurd, indien "
-"mogelijk."
 
 #: models.py
 msgid "Members"
