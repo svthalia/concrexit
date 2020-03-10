@@ -21,8 +21,11 @@
                     <div class="col-12 col-md-9 pt-4 pt-md-0">
                         <h2>{{ item.name }}</h2>
                         <p>{{ item.description }}</p>
-                        <p class="mb-0">{% blocktrans with price=item.price %}Price: €
-                            {{ price }}{% endblocktrans %}</p>
+                        <p class="mb-0">
+                            {% blocktrans trimmed with price=item.price %}
+                                Price: € {{ price }}
+                            {% endblocktrans %}
+                        </p>
                     </div>
                 </div>
             {% endfor %}

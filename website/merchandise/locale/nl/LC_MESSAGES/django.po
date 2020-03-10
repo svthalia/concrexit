@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 20:07+0200\n"
+"POT-Creation-Date: 2020-03-09 22:36+0100\n"
 "PO-Revision-Date: 2018-02-12 13:45+0100\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -18,11 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: merchandise/apps.py merchandise/templates/merchandise/index.html
+#: apps.py templates/merchandise/index.html
 msgid "Merchandise"
 msgstr "Merchandise"
 
-#: merchandise/templates/merchandise/index.html
+#: templates/merchandise/index.html
 msgid ""
 "Below you can find all the merchandise Thalia has available. During every "
 "lunch break, the merchandise is for sale in the board room (M1.0.08). "
@@ -33,7 +33,7 @@ msgstr ""
 "zijn de spullen te koop bij de bestuurskamer (M1.0.08), daarbuiten zijn ze "
 "op afspraak te verkrijgen of tijdens borrels bij het bestuur."
 
-#: merchandise/templates/merchandise/index.html
+#: templates/merchandise/index.html
 #, python-format
 msgid "Price: € %(price)s"
 msgstr "Prijs: € %(price)s"
