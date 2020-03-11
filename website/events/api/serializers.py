@@ -83,7 +83,9 @@ class EventCalenderJSSerializer(CalenderJSSerializer):
 
     def _class_names(self, instance):
         class_names = ["regular-event"]
-        if services.is_user_registered(self.context["member"], instance):
+        if self.context["member"] and services.is_user_registered(
+            self.context["member"], instance
+        ):
             class_names.append("has-registration")
         return class_names
 
