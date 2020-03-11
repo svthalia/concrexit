@@ -24,9 +24,10 @@ from events.models import Event, Registration
 from members.models import Profile, Member, Membership
 from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
+from payments.models import Payment
+from payments.services import create_payment
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
-
 
 try:
     import factory
@@ -119,6 +120,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "-r", "--registration", type=int, help="The amount of registrations to add"
         )
+        parser.add_argument("--payment", type=int, help="The amount of payments to add")
 
     def create_board(self, lecture_year):
         """
@@ -511,12 +513,16 @@ class Command(BaseCommand):
                 ):
                     return event
 
-    def create_registration(self):
+    def create_registration(self, event_to_register_for=None):
         registration = Registration()
 
         registration.member = Member.objects.order_by("?")[0]
 
-        possible_event = self.get_event_to_register_for(registration.member)
+        possible_event = (
+            event_to_register_for
+            if event_to_register_for
+            else self.get_event_to_register_for(registration.member)
+        )
         while not possible_event:
             self.stdout.write("No possible events to register for")
             self.stdout.write("Creating a new event")
@@ -528,6 +534,39 @@ class Command(BaseCommand):
         registration.date = registration.event.registration_start
 
         registration.save()
+
+        return registration
+
+    def create_payment(self):
+        possible_events = list(
+            filter(
+                lambda e: e.registrations.count() > 0,
+                Event.objects.filter(price__gt=0).order_by("?"),
+            )
+        )
+        while len(possible_events) == 0:
+            print("No event where can be payed could be found, creating a new event")
+            self.create_event()
+            possible_events = list(
+                filter(
+                    lambda e: e.registrations.count() > 0,
+                    Event.objects.filter(price__gt=0).order_by("?"),
+                )
+            )
+
+        event = possible_events[0]
+        if len(event.registrations) == 0:
+            print("No registrations found. Create some more registrations first")
+            return
+
+        registration = event.registrations.order_by("?")[0]
+
+        processed_by = Member.objects.order_by("?")[0]
+        create_payment(
+            registration,
+            processed_by,
+            random.choice([Payment.CASH, Payment.CARD, Payment.WIRE]),
+        )
 
     def handle(self, *args, **options):
         """
@@ -548,6 +587,7 @@ class Command(BaseCommand):
             "newsletter",
             "course",
             "registration",
+            "payment",
         ]
 
         if all([not options[opt] for opt in opts]):
@@ -571,6 +611,7 @@ class Command(BaseCommand):
                 "document": 8,
                 "course": 10,
                 "registration": 20,
+                "payment": 5,
             }
 
         # Users need to be generated before boards and committees
@@ -650,6 +691,11 @@ class Command(BaseCommand):
             for _ in range(options["course"]):
                 self.create_course()
 
+        # Registrations need to be created before payments
         if options["registration"]:
             for _ in range(options["registration"]):
                 self.create_registration()
+
+        if options["payment"]:
+            for _ in range(options["payment"]):
+                self.create_payment()
