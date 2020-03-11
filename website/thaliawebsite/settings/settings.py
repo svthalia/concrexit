@@ -356,4 +356,4 @@ makemessages.Command.xgettext_options.append("--add-location=file")
 
 
 # Temporary setting for almanac page
-SHOW_ALMANAC_PAGE = False
+SHOW_ALMANAC_PAGE = os.environ.get("SHOW_ALMANAC_PAGE", False) == "True"
