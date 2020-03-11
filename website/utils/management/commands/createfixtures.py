@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.utils.text import slugify
 
 from activemembers.models import (
     Board,
@@ -26,6 +27,7 @@ from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
 from payments.models import Payment
 from payments.services import create_payment
+from photos.models import Album, Photo
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
 
@@ -121,6 +123,9 @@ class Command(BaseCommand):
             "-r", "--registration", type=int, help="The amount of registrations to add"
         )
         parser.add_argument("--payment", type=int, help="The amount of payments to add")
+        parser.add_argument(
+            "--photoalbum", type=int, help="The amount of photo albums to add"
+        )
 
     def create_board(self, lecture_year):
         """
@@ -568,6 +573,41 @@ class Command(BaseCommand):
             random.choice([Payment.CASH, Payment.CARD, Payment.WIRE]),
         )
 
+    def create_photo_album(self):
+        album = Album()
+
+        album.title_nl = _generate_title()
+        album.title_en = album.title_nl
+
+        album.date = _faker.date_between("-1y", "today")
+
+        album.slug = slugify("-".join([str(album.date), album.title_nl]))
+
+        if random.random() < 0.25:
+            album.hidden = True
+        if random.random() < 0.5:
+            album.shareable = True
+
+        album.save()
+
+        for _ in range(random.randint(20, 30)):
+            self.create_photo(album)
+
+    def create_photo(self, album):
+        photo = Photo()
+
+        photo.album = album
+
+        name = _generate_title()
+
+        igen = IconGenerator(5, 5)  # 5x5 blocks
+        icon = igen.generate(
+            name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+        )  # 620x620 pixels, with 10 pixels padding on each side
+        photo.file.save(f"{name}.jpeg", ContentFile(icon))
+
+        photo.save()
+
     def handle(self, *args, **options):
         """
         Handle the command being executed
@@ -588,6 +628,7 @@ class Command(BaseCommand):
             "course",
             "registration",
             "payment",
+            "photoalbum",
         ]
 
         if all([not options[opt] for opt in opts]):
@@ -612,6 +653,7 @@ class Command(BaseCommand):
                 "course": 10,
                 "registration": 20,
                 "payment": 5,
+                "photoalbum": 5,
             }
 
         # Users need to be generated before boards and committees
@@ -699,3 +741,7 @@ class Command(BaseCommand):
         if options["payment"]:
             for _ in range(options["payment"]):
                 self.create_payment()
+
+        if options["photoalbum"]:
+            for _ in range(options["photoalbum"]):
+                self.create_photo_album()
