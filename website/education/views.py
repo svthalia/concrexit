@@ -184,7 +184,7 @@ class ExamCreateView(SuccessMessageMixin, CreateView):
 
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
-class SummaryCreateView(CreateView):
+class SummaryCreateView(SuccessMessageMixin, CreateView):
     """
     Renders the form to submit a new summary
     """
