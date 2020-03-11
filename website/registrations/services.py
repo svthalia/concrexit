@@ -448,7 +448,9 @@ def process_tpay_payment(renewal):
     """
     if renewal.member.tpay_enabled:
         if renewal.payment is None:
-            renewal.payment = create_payment(renewal, processed_by=renewal.member, pay_type=Payment.TPAY)
+            renewal.payment = create_payment(
+                renewal, processed_by=renewal.member, pay_type=Payment.TPAY
+            )
             renewal.save()
             process_payment(renewal.payment)
         else:
