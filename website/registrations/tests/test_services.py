@@ -582,75 +582,17 @@ class ServicesTest(TestCase):
                     services.process_payment(payment)
                     self.assertFalse(create_membership.called)
 
-    def test_process_tpay_payment(self):
-        settings.THALIA_PAY_ENABLED_PAYMENT_METHOD = True
+    def test_process_tpay_payment__tpay_enabled(self):
+        pass  # TODO
 
-        #  member 5 is a member without tpay enabled
-        renewal_accepted_without_tpay = Renewal.objects.create(
-            member=Member.objects.get(pk=5),
-            length=Entry.MEMBERSHIP_YEAR,
-            membership_type=Membership.MEMBER,
-        )
-        renewal_accepted_without_tpay.status = Renewal.STATUS_ACCEPTED
-        renewal_accepted_without_tpay.payment = Payment.objects.create(
-            type=Payment.NONE,
-            notes="Payment open",
-            amount=7.5,
-            paid_by=renewal_accepted_without_tpay.member,
-        )
-        renewal_reviewing_without_tpay = Renewal.objects.create(
-            member=Member.objects.get(pk=5),
-            length=Entry.MEMBERSHIP_YEAR,
-            membership_type=Membership.MEMBER,
-            status=Renewal.STATUS_REVIEW,
-        )
-        renewal_reviewing_without_tpay.status = Renewal.STATUS_REVIEW
+    def test_process_tpay_payment__already_paid(self):
+        pass  # TODO
 
-        # If Tpay is not enabled, users should not be able to pay
-        self.assertRaises(
-            PermissionError,
-            services.process_tpay_payment,
-            renewal_accepted_without_tpay,
-        )
-        self.assertRaises(
-            PermissionError,
-            services.process_tpay_payment,
-            renewal_reviewing_without_tpay,
-        )
+    def test_process_tpay_payment__tpay_unenabled(self):
+        pass  # TODO
 
-        #  member 6 is a member with tpay enabled
-        renewal_accepted_with_tpay = Renewal.objects.create(
-            member=Member.objects.get(pk=6),
-            length=Entry.MEMBERSHIP_YEAR,
-            membership_type=Membership.MEMBER,
-        )
-        renewal_accepted_with_tpay.status = Renewal.STATUS_ACCEPTED
-        renewal_accepted_with_tpay.payment = Payment.objects.create(
-            type=Payment.NONE,
-            notes="Payment open",
-            amount=7.5,
-            paid_by=renewal_accepted_with_tpay.member,
-        )
-        renewal_reviewing_with_tpay = Renewal.objects.create(
-            member=Member.objects.get(pk=6),
-            length=Entry.MEMBERSHIP_YEAR,
-            membership_type=Membership.MEMBER,
-        )
-        renewal_reviewing_with_tpay.status = Renewal.STATUS_REVIEW
-
-        # Renewals under review shouldn't be able to be paid
-        self.assertRaises(
-            PermissionError, services.process_tpay_payment, renewal_reviewing_with_tpay,
-        )
-
-        # After paying with Tpay, the payment should be paid
-        services.process_tpay_payment(renewal_accepted_with_tpay)
-        self.assertEquals(renewal_accepted_with_tpay.payment.type, Payment.TPAY)
-
-        # You should not be able to pay an already paid payment
-        self.assertRaises(
-            ValueError, services.process_tpay_payment, renewal_accepted_with_tpay,
-        )
+    def test_process_tpay_payment__not_reviewed(self):
+        pass  # TODO
 
     @freeze_time("2019-01-01")
     def test_execute_data_minimisation(self):

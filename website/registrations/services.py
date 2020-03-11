@@ -13,6 +13,7 @@ from django.utils import timezone
 import members
 from members.models import Membership, Profile, Member
 from payments.models import Payment
+from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -449,14 +450,7 @@ def process_tpay_payment(renewal):
     """
     if renewal.member.tpay_enabled:
         if renewal.payment is None:
-            renewal.payment = _create_payment_for_entry(renewal)
-            renewal.save()
-
-        if renewal.payment.type == Payment.NONE:
-            renewal.payment.type = Payment.TPAY
-            renewal.payment.notes += f" Requested on {renewal.created_at}."
-            renewal.payment.processed_by = renewal.member
-            renewal.payment.save()
+            renewal.payment = create_payment(renewal, processed_by=renewal.member, pay_type=Payment.TPAY)
             renewal.save()
             process_payment(renewal.payment)
         else:
