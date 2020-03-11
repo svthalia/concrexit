@@ -8,6 +8,7 @@ from .views import (
     BecomeActiveView,
     StyleGuideView,
     ContactView,
+    AlmanacView,
 )
 
 app_name = "singlepages"
@@ -39,6 +40,7 @@ urlpatterns = [
                     "become-active/", BecomeActiveView.as_view(), name="become-active"
                 ),
                 path("styleguide/", StyleGuideView.as_view(), name="styleguide"),
+                path("almanac/", AlmanacView.as_view(), name="almanac"),
             ]
         ),
     ),
