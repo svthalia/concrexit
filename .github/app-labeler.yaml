@@ -1,0 +1,39 @@
+# Autolabel the different apps
+activemembers:
+  - website/activemembers/**
+announcements:
+  - website/announcements/**
+documents:
+  - website/documents/**
+education:
+  - website/education/**
+events:
+  - website/events/**
+mailinglists:
+  - website/mailinglists/**
+members:
+  - website/members/**
+merchandise:
+  - website/merchandise/**
+newsletter:
+  - website/newsletters/**
+partners:
+  - website/partners/**
+payments:
+  - website/payments/**
+photos:
+  - website/photos/**
+pizzas:
+  - website/pizzas/**
+push-notifications:
+  - website/pushnotifications/**
+registrations:
+  - website/registrations/**
+singlepages:
+  - website/singlepages/**
+thabloid:
+  - website/thabloid/**
+
+# Autolabel for contents
+testing:
+  - website/**/tests/**

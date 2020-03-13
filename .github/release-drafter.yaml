@@ -10,6 +10,8 @@ categories:
       - 'bug'
   - title: '🧰 Technical changes'
     label: 'technical change'
+  - title: '📦️ Dependency updates'
+    label: 'dependency-update'
 change-template: '- $TITLE (#$NUMBER)'
 template: |
   ## 🔖 concrexit v$NEXT_MAJOR_VERSION
