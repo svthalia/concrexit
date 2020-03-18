@@ -2,14 +2,14 @@
 
 set -o errexit -o verbose 
 
-if [ -z "${GITLAB_CI}" ]; then
+if [ -z "${GITHUB_ACTIONS}" ]; then
     echo "Not running in Gitlab CI"
     exit 1;
 fi
 
 mapfile -t running_instance_ids < <(
     aws ec2 describe-instances  \
-    --filters "Name=tag:Name,Values=concrexit-review-${CI_COMMIT_REF_SLUG}" \
+    --filters "Name=tag:Name,Values=concrexit-review-${COMMIT_SHA}" \
               "Name=instance-state-name,Values=running,shutting-down,stopping,stopped" \
     --query "Reservations[].Instances[].[InstanceId]" \
     --output "text" 
@@ -21,7 +21,7 @@ fi
 resource_record_set=$(
     aws route53 list-resource-record-sets \
     --hosted-zone-id "Z3I4ZHBBD5NSHU" \
-    --query "ResourceRecordSets[?Name == '${CI_COMMIT_REF_SLUG}.private.review.technicie.nl.']" |
+    --query "ResourceRecordSets[?Name == '${COMMIT_SHA}.private.review.technicie.nl.']" |
         jq --raw-output ".[0]"
     ) 
 

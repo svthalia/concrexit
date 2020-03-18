@@ -1,7 +1,0 @@
----
-
-include:
-  - resources/continuous-integration/config/test.yaml
-  - resources/continuous-integration/config/build.yaml
-  - resources/continuous-integration/config/deploy-static-sites.yaml
-  - resources/continuous-integration/config/deploy-review.yaml

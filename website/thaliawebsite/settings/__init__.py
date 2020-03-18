@@ -30,8 +30,8 @@ except ImportError:
 if os.environ.get("DJANGO_PRODUCTION"):
     from .production import *
 
-# Load testing settings if GITLAB_CI is set
-if os.environ.get("GITLAB_CI"):
+# Load testing settings if GITHUB_ACTIONS is set
+if os.environ.get("GITHUB_ACTIONS"):
     from .testing import *
 
 if FIREBASE_CREDENTIALS != {}:
