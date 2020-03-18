@@ -1,10 +1,12 @@
-Thalia Website [![coverage report](https://gitlab.science.ru.nl/thalia/concrexit/badges/master/coverage.svg)](https://thalia-coverage.s3.amazonaws.com/master/index.html)
+Thalia Website 
 ==============
 
-New new Thalia website, now with extra Django.
+[![Linting and Testing](https://github.com/thaliawww/concrexit/workflows/Linting%20and%20Testing/badge.svg)](https://github.com/thaliawww/concrexit/actions)
+[![coverage](https://img.shields.io/badge/coverage-view-important)](https://thalia-coverage.s3.amazonaws.com/master/index.html)
+[![documentation](https://img.shields.io/badge/documentation-view-blueviolet)](https://thalia-documentation.s3.amazonaws.com/master/index.html)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-    #Concrexit
-
+The latest Thalia Website built on Django.
 
 Getting started
 ---------------
