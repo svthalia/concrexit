@@ -36,7 +36,7 @@ cat > "${temporary_record_change_file}" <<EOF
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "${CI_COMMIT_REF_SLUG}.private.review.technicie.nl",
+        "Name": "${COMMIT_SHA}.private.review.technicie.nl",
         "Type": "A",
         "TTL": 10,
         "ResourceRecords": [{"Value": "${private_ipv4_address}"}]
