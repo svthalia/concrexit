@@ -12,6 +12,9 @@ jobs:
         runs-on: ubuntu-18.04
         if: github.event.issue.pull_request && github.event.comment.body == 'deploy review'
         steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
             - name: Get commit hash
               run: echo ::set-env name=COMMIT_SHA::$(curl --location --silent ${{ github.event.issue.pull_request.patch_url }} | head --lines 1 | cut --delimiter " " --fields 2)
 
