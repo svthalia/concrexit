@@ -1,4 +1,6 @@
 feature: 'feature/*'
-bug: ['fix/*', 'fix-*']
-technical change: ['tc/*', 'chore/*']
+bug: ['fix/*', 'bug/*']
+chore: 'chore/*'
+refactor: 'refactor/*'
+docs: 'docs/*'
 dependency-update: ['renovate/*', 'dependency/*']
