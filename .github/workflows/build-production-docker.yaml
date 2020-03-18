@@ -1,0 +1,33 @@
+---
+
+name: Build Production Docker Image
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+    build-docker:
+        name: Build Production Docker Image
+        runs-on: ubuntu-18.04
+        env:
+            DOCKER_LATEST: thalia/concrexit:latest
+            DOCKER_TAG_PRODUCTION: thalia/concrexit:${{ github.ref }}
+            DOCKER_DEPENDENCIES_LATEST: thalia/concrexit-dependencies:latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Build Docker images
+              run: |
+                  docker build --file Dockerfile.dependencies --quiet --build-arg "install_dev_requirements=0" --tag "${DOCKER_DEPENDENCIES_LATEST}" .
+                  docker build --quiet --build-arg "source_commit=${{ github.sha }}" --tag "${DOCKER_LATEST}" .
+
+            - name: Login to Docker Hub
+              run: echo "${{ secrets.DOCKER_REGISTRY_PASSWORD }}" | docker login --username "thaliawww" --password-stdin
+
+            - name: Push Docker image
+              run: |
+                  docker tag "${DOCKER_LATEST}" "${DOCKER_TAG_PRODUCTION}"
+                  docker push "${DOCKER_TAG_PRODUCTION}"
+                  docker push "${DOCKER_LATEST}"

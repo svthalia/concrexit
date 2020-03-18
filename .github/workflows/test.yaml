@@ -1,0 +1,166 @@
+---
+
+name: Linting and Testing
+on: [push]
+
+jobs:
+    codestyle:
+        name: Codestyle and translation checks
+        runs-on: ubuntu-18.04
+        container: thalia/concrexit-dependencies
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Install any missing dependencies
+              run: poetry install --no-interaction
+
+            - name: Run black
+              run: poetry run black --quiet --check website
+
+            - name: Check translations
+              shell: bash
+              run: |
+                # Check for obsolete translations in .po files (starting with `#~`).
+                grep --include="*.po" --files-with-matches --recursive "^#~" website && exit 1 || echo "No obsolete translations found."
+
+                # Check for untranslated strings in .po files
+                empty_strings=$(sed '$a\\' website/**/locale/nl/LC_MESSAGES/django.po | tac | sed '/^$/N;/\nmsgstr ""$/,/^msgid/!d' | tac)
+                empty_strings+=$(sed '$a\\' website/locale/nl/LC_MESSAGES/django.po | tac | sed '/^$/N;/\nmsgstr ""$/,/^msgid/!d' | tac)
+                if [[ $empty_strings ]]; then echo $empty_strings && exit 1; else echo "No untranslated strings found."; fi
+
+                # Check for fuzzy translations in .po files
+                grep --include="*.po" --files-with-matches --recursive "#, fuzzy" website && exit 1 || echo "No fuzzy translations found."
+
+    tests:
+        name: Django Tests
+        runs-on: ubuntu-18.04
+        container: thalia/concrexit-dependencies
+        services:
+            postgres:
+                image: postgres:latest
+                env:
+                    POSTGRES_DB: thalia
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Install any missing dependencies
+              run: poetry install --no-interaction
+
+            - name: Run internal Django tests
+              run: poetry run python website/manage.py check
+
+            - name: Test the templates
+              run: poetry run python website/manage.py templatecheck --project-only
+
+            - name: Make migrations
+              run: poetry run python website/manage.py makemigrations --no-input --check --dry-run
+
+            - name: Run coverage
+              run: poetry run coverage run website/manage.py test website/
+
+            - name: Report coverage
+              run: |
+                coverage report --fail-under=100 --omit "website/registrations/urls.py" website/registrations/**.py
+                coverage report --fail-under=100 --omit "website/payments/urls.py" website/payments/**.py
+                coverage report
+
+            - name: Create coverage report
+              run: coverage html --directory=covhtml --title="Coverage Report"
+
+            - name: Save coverage report
+              uses: actions/upload-artifact@v1
+              with:
+                  name: coverage-html
+                  path: covhtml
+
+    documentation-tests:
+        name: Documentation Tests
+        runs-on: ubuntu-18.04
+        container: thalia/concrexit-dependencies
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Install any missing dependencies
+              run: poetry install --no-interaction --extras "docs"
+
+            - name: Run doctest
+              working-directory: docs
+              run: poetry run make doctest
+
+            - name: Run Sphinx
+              working-directory: docs
+              run: poetry run sphinx-build -W . _build -j $(nproc)
+
+            - name: Run API docs script
+              working-directory: docs
+              run: |
+                  poetry run ./generate-apidocs.sh
+                  git diff --exit-code
+
+            - name: Save documentation HTML
+              uses: actions/upload-artifact@v1
+              with:
+                  name: docs-html
+                  path: docs/_build
+
+    upload-coverage:
+        name: Deploy Coverage Report
+        runs-on: ubuntu-18.04
+        needs: [tests]
+        steps:
+            - uses: actions/download-artifact@v1
+              with:
+                  name: coverage-html
+                  path: html
+
+            - name: Create URL safe version of GITHUB_REF
+              run: echo ::set-env name=GITHUB_REF_SLUG::$(echo "${GITHUB_REF#refs/heads/}"| iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)
+
+            - name: Sync files to S3
+              run: aws s3 sync --only-show-errors html "s3://thalia-coverage/${GITHUB_REF_SLUG}/"
+              env:
+                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    upload-docs:
+        name: Deploy Documentation
+        runs-on: ubuntu-18.04
+        needs: [documentation-tests]
+        steps:
+            - uses: actions/download-artifact@v1
+              with:
+                  name: docs-html
+                  path: html
+
+            - name: Create URL safe version of GITHUB_REF
+              run: echo ::set-env name=GITHUB_REF_SLUG::$(echo "${GITHUB_REF#refs/heads/}" | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)
+
+            - name: Sync files to S3
+              run: aws s3 sync --only-show-errors html "s3://thalia-documentation/${GITHUB_REF_SLUG}/"
+              env:
+                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    build-docker:
+        name: Build Docker Image
+        runs-on: ubuntu-18.04
+        needs: [codestyle, tests, documentation-tests]
+        env:
+            DOCKER_TAG: thalia/concrexit:${{ github.sha }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Build new Docker image
+              run: docker build --quiet --build-arg "source_commit=${{ github.sha }}" --tag "${DOCKER_TAG}" .
+
+            - name: Login to Docker Hub
+              run: echo "${{ secrets.DOCKER_REGISTRY_PASSWORD }}" | docker login --username "thaliawww" --password-stdin
+
+            - name: Push new Docker image
+              run: docker push "${DOCKER_TAG}"

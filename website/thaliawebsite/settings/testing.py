@@ -1,7 +1,7 @@
 """
 Settings for CI testing
 
-This file is loaded by __init__.py if GITLAB_CI is set in the environment
+This file is loaded by __init__.py if GITHUB_ACTIONS is set in the environment
 """
 
 import logging
