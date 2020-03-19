@@ -16,5 +16,5 @@ indent_size = 4
 [*.html]
 indent_size = 4
 
-[*.yml,yaml]
+[*.{yml,yaml}]
 indent_size = 2
