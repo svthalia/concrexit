@@ -33,7 +33,3 @@ singlepages:
   - website/singlepages/**
 thabloid:
   - website/thabloid/**
-
-# Autolabel for contents
-testing:
-  - website/**/tests/**
