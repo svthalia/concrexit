@@ -163,6 +163,41 @@ class PaymentAdminTest(TestCase):
         payment2 = Payment.objects.create(amount=7.5)
         self.assertEqual(self.admin.processed_by_link(payment2), "-")
 
+    def test_delete_model(self) -> None:
+        batch = Batch.objects.create()
+
+        payment_non_batch = Payment.objects.create(amount=5)
+        response = self.client.post(
+            reverse("admin:payments_payment_delete", args=(payment_non_batch.id,)),
+            {"post": "yes"},  # Add data to confirm deletion in admin
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Payment.objects.filter(id=payment_non_batch.id).exists())
+
+        payment_batch_not_processed = Payment.objects.create(amount=6, batch=batch)
+        response = self.client.post(
+            reverse(
+                "admin:payments_payment_delete", args=(payment_batch_not_processed.id,)
+            ),
+            {"post": "yes"},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            Payment.objects.filter(id=payment_batch_not_processed.id).exists()
+        )
+
+        batch.processed = True
+        batch.save()
+        payment_batch_processed = Payment.objects.create(amount=7, batch=batch)
+        response = self.client.post(
+            reverse(
+                "admin:payments_payment_delete", args=(payment_batch_processed.id,)
+            ),
+            {"post": "yes"},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Payment.objects.filter(id=payment_batch_processed.id).exists())
+
     @freeze_time("2020-01-01")
     def test_batch_link(self) -> None:
         batch = Batch.objects.create(id=1)
@@ -172,11 +207,15 @@ class PaymentAdminTest(TestCase):
         payment2 = Payment.objects.create(
             amount=7.5, processed_by=self.user, type=Payment.TPAY
         )
+        payment3 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, type=Payment.WIRE
+        )
         self.assertEqual(
-            "<a href='/admin/payments/batch/1/change/'>Thalia Pay payments for 2019-12 (not processed)</a>",
+            "<a href='/admin/payments/batch/1/change/'>Thalia Pay payments for 2020-1 (not processed)</a>",
             str(self.admin.batch_link(payment1)),
         )
-        self.assertEqual("-", self.admin.batch_link(payment2))
+        self.assertEqual("No batch attached", self.admin.batch_link(payment2))
+        self.assertEqual("", self.admin.batch_link(payment3))
 
     @mock.patch("django.contrib.admin.ModelAdmin.message_user")
     @mock.patch("payments.services.process_payment")
@@ -641,6 +680,25 @@ class BatchAdminTest(TestCase):
         self.site = AdminSite()
         self.admin = admin.BatchAdmin(Batch, admin_site=self.site)
         self.rf = RequestFactory()
+
+    def test_delete_model(self) -> None:
+        batch = Batch.objects.create()
+
+        response = self.client.post(
+            reverse("admin:payments_batch_delete", args=(batch.id,)),
+            {"post": "yes"},  # Add data to confirm deletion in admin
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Payment.objects.filter(id=batch.id).exists())
+
+        batch = Batch.objects.create()
+        batch.processed = True
+        batch.save()
+        response = self.client.post(
+            reverse("admin:payments_payment_delete", args=(batch.id,)), {"post": "yes"},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Payment.objects.filter(id=batch.id).exists())
 
     def test_get_readonly_fields(self) -> None:
         b = Batch.objects.create()

@@ -56,8 +56,11 @@ class BatchPaymentInlineAdminForm(forms.ModelForm):
 
     class Meta:
         fields = (
-            "amount",
-            "processing_date",
+            "topic",
             "paid_by",
+            "amount",
+            "created_at",
+            "processing_date",
+            "notes",
         )
         model = Payment

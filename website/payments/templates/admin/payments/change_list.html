@@ -3,7 +3,7 @@
 
 {% block object-tools-items %}
     <li>
-        <a href="{% url 'admin:payments_batch_new_batch_filled' %}">{% trans "New batch from previous month of Thalia Pay payments" %}</a>
+        <a href="{% url 'admin:payments_batch_new_batch_filled' %}">{% trans "New batch from unbatched Thalia Pay payments" %}</a>
     </li>
     {{ block.super }}
 {% endblock %}

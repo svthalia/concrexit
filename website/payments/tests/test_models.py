@@ -161,7 +161,7 @@ class BatchModelTest(TestCase):
             processed_by=self.user2,
             batch=batch,
         )
-        self.assertEqual(batch.start_date, timezone.now())
+        self.assertEqual(batch.start_date(), timezone.now())
 
     def test_end_date_batch(self) -> None:
         batch = Batch.objects.create(id=1)
@@ -181,17 +181,13 @@ class BatchModelTest(TestCase):
             processed_by=self.user2,
             batch=batch,
         )
-        self.assertEqual(batch.end_date, timezone.now() + datetime.timedelta(days=1))
+        self.assertEqual(batch.end_date(), timezone.now() + datetime.timedelta(days=1))
 
     def test_description_batch(self) -> None:
         batch = Batch.objects.create(id=1)
         now = timezone.now()
-        last_month = datetime.datetime(now.year, now.month, 1) - datetime.timedelta(
-            days=1
-        )
         self.assertEqual(
-            batch.description,
-            f"Thalia Pay payments for {last_month.year}-{last_month.month}",
+            batch.description, f"Thalia Pay payments for 2019-1",
         )
 
     def test_proccess_batch(self) -> None:
@@ -226,9 +222,9 @@ class BatchModelTest(TestCase):
 
     def test_str(self) -> None:
         b1 = Batch.objects.create(id=1)
-        self.assertEqual("Thalia Pay payments for 2018-12 (not processed)", str(b1))
+        self.assertEqual("Thalia Pay payments for 2019-1 (not processed)", str(b1))
         b2 = Batch.objects.create(id=2, processed=True)
-        self.assertEqual("Thalia Pay payments for 2018-12 (processed)", str(b2))
+        self.assertEqual("Thalia Pay payments for 2019-1 (processed)", str(b2))
 
 
 @freeze_time("2019-01-01")

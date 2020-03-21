@@ -111,25 +111,41 @@ class PaymentAdmin(admin.ModelAdmin):
     paid_by_link.short_description = _("paid by")
 
     @staticmethod
-    def _batch_link(batch: Batch) -> str:
+    def _batch_link(payment: Payment, batch: Batch) -> str:
         if batch:
             return format_html(
                 "<a href='{}'>{}</a>", batch.get_absolute_url(), str(batch)
             )
+        elif payment.type == Payment.TPAY:
+            return "No batch attached"
         else:
-            return "-"
+            return ""
 
     def batch_link(self, obj: Payment) -> str:
-        return self._batch_link(obj.batch)
+        return self._batch_link(obj, obj.batch)
 
-    paid_by_link.admin_order_field = "paid_by"
-    paid_by_link.short_description = _("paid by")
+    batch_link.admin_order_field = "in batch"
+    batch_link.short_description = _("in batch")
 
     def processed_by_link(self, obj: Payment) -> str:
         return self._member_link(obj.processed_by)
 
     processed_by_link.admin_order_field = "processed_by"
     processed_by_link.short_description = _("processed by")
+
+    def delete_model(self, request, payment):
+        if payment.batch and payment.batch.processed:
+            messages.error(
+                request,
+                "You cannot delete a payment that is attached to a processed batch.",
+            )
+        else:
+            super().delete_model(request, payment)
+
+    def has_delete_permission(self, request, obj=None):
+        if isinstance(obj, Payment):
+            return not (obj.batch and obj.batch.processed)
+        return super().has_delete_permission(request, obj)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "batch":
@@ -245,11 +261,13 @@ class PaymentAdmin(admin.ModelAdmin):
     add_to_new_batch.short_descriptionn = _("Add selected TPAY payments to a new batch")
 
     def add_to_last_batch(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Add selected TPAY payments to a new batch"""
+        """Add selected TPAY payments to the last batch"""
         tpays = queryset.filter(type=Payment.TPAY)
         if len(tpays) > 0:
             batch = Batch.objects.last()
-            if not batch.processed:
+            if not batch:
+                self.message_user(request, "No batches available.", messages.ERROR)
+            elif not batch.processed:
                 batch.save()
                 tpays.update(batch=batch)
                 self.message_user(
@@ -372,9 +390,12 @@ class PaymentsInline(admin.TabularInline):
 
     model = Payment
     readonly_fields = (
-        "amount",
-        "processing_date",
+        "topic",
         "paid_by",
+        "amount",
+        "created_at",
+        "processing_date",
+        "notes",
     )
     form = BatchPaymentInlineAdminForm
     extra = 0
@@ -391,6 +412,8 @@ class BatchAdmin(admin.ModelAdmin):
         "description",
         "start_date",
         "end_date",
+        "total_amount",
+        "payments_count",
         "processing_date",
         "processed",
     )
@@ -411,6 +434,17 @@ class BatchAdmin(admin.ModelAdmin):
         if obj and obj.processed:
             return ("description",) + default_fields
         return default_fields
+
+    def delete_model(self, request, batch):
+        if batch.processed:
+            messages.error(request, "You cannot delete a processed batch.")
+        else:
+            super().delete_model(request, batch)
+
+    def has_delete_permission(self, request, obj=None):
+        if isinstance(obj, Batch):
+            return not obj.processed
+        return super().has_delete_permission(request, obj)
 
     def get_urls(self) -> list:
         urls = super().get_urls()

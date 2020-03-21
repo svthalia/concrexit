@@ -3,9 +3,11 @@ import datetime
 import uuid
 from decimal import Decimal
 
+from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import ProtectedError
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -116,8 +118,7 @@ class Payment(models.Model):
 
 def _default_batch_description():
     now = timezone.now()
-    last_month = datetime.datetime(now.year, now.month, 1) - datetime.timedelta(days=1)
-    return f"Thalia Pay payments for {last_month.year}-{last_month.month}"
+    return f"Thalia Pay payments for {now.year}-{now.month}"
 
 
 class Batch(models.Model):
@@ -147,17 +148,23 @@ class Batch(models.Model):
     def get_absolute_url(self):
         return reverse("admin:payments_batch_change", args=[str(self.pk)])
 
-    @property
     def start_date(self) -> datetime.datetime:
         return self.payments_set.earliest("processing_date").processing_date
 
-    @property
+    start_date.short_description = "first payment in batch"
+
     def end_date(self) -> datetime.datetime:
         return self.payments_set.latest("processing_date").processing_date
+
+    end_date.short_description = "last payment in batch"
 
     @property
     def total_amount(self) -> Decimal:
         return sum([payment.amount for payment in self.payments_set.all()])
+
+    @property
+    def payments_count(self) -> Decimal:
+        return len(self.payments_set.all())
 
     class Meta:
         verbose_name = _("batch")

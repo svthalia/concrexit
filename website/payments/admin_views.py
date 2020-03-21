@@ -137,26 +137,14 @@ class BatchExportAdminView(View):
 )
 class BatchNewFilledAdminView(View):
     """
-    View that adds a new batch filled with all payments that where not already in a batch from last month.
+    View that adds a new batch filled with all payments that where not already in a batch.
     """
 
     def get(self, request, *args, **kwargs):
         batch = Batch()
         batch.save()
 
-        now = datetime.datetime.utcnow()
-        last_month_start = (
-            datetime.datetime(now.year, now.month, 1) - datetime.timedelta(days=1)
-        ).replace(day=1)
-        last_month_end = datetime.datetime(
-            now.year, now.month, 1, 23, 59
-        ) - datetime.timedelta(days=1)
-        payments = Payment.objects.filter(
-            type=Payment.TPAY,
-            batch=None,
-            processing_date__gte=last_month_start,
-            processing_date__lte=last_month_end,
-        )
+        payments = Payment.objects.filter(type=Payment.TPAY, batch=None,)
 
         payments.update(batch=batch)
 

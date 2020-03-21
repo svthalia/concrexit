@@ -314,8 +314,8 @@ class BatchExportAdminViewTest(TestCase):
         self.assertEqual(
             response.content,
             b"Account holder name,IBAN,Mandate id,Amount,Description,Mandate date\r\n"
-            b"Test1 Example,DE75512108001245126199,2,3.00,Thalia Pay payments for 2019-12,2020-01-01\r\n"
-            b"Test2 Example,NL02ABNA0123456789,1,6.00,Thalia Pay payments for 2019-12,2020-01-01\r\n",
+            b"Test1 Example,DE75512108001245126199,2,3.00,Thalia Pay payments for 2020-1,2020-01-01\r\n"
+            b"Test2 Example,NL02ABNA0123456789,1,6.00,Thalia Pay payments for 2020-1,2020-01-01\r\n",
         )
 
 
@@ -401,6 +401,11 @@ class BatchNewFilledAdminViewTest(TestCase):
                     type=Payment.TPAY,
                     processing_date=timezone.datetime(2020, 3, 1, tzinfo=timezone.utc),
                 ),
+                Payment(
+                    amount=7,
+                    type=Payment.WIRE,
+                    processing_date=timezone.datetime(2020, 1, 1, tzinfo=timezone.utc),
+                ),
             ]
         )
 
@@ -408,9 +413,10 @@ class BatchNewFilledAdminViewTest(TestCase):
 
         b = Batch.objects.exclude(id=self.batch.id).first()
 
-        self.assertIsNone(Payment.objects.get(amount=1).batch)
+        self.assertEqual(Payment.objects.get(amount=1).batch.id, b.id)
         self.assertEqual(Payment.objects.get(amount=2).batch.id, b.id)
         self.assertEqual(Payment.objects.get(amount=3).batch.id, self.batch.id)
         self.assertEqual(Payment.objects.get(amount=4).batch.id, b.id)
         self.assertEqual(Payment.objects.get(amount=5).batch.id, b.id)
-        self.assertIsNone(Payment.objects.get(amount=6).batch)
+        self.assertEqual(Payment.objects.get(amount=6).batch.id, b.id)
+        self.assertIsNone(Payment.objects.get(amount=7).batch)
