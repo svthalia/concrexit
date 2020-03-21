@@ -13,6 +13,7 @@ from django.utils import timezone
 import members
 from members.models import Membership, Profile, Member
 from payments.models import Payment
+from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -439,6 +440,25 @@ def process_payment(payment: Payment) -> None:
         entry.membership = membership
         entry.status = Entry.STATUS_COMPLETED
         entry.save()
+
+
+def process_tpay_payment(renewal):
+    """
+    Add a Thalia Pay payment to a renewal
+
+    :param renewal: the renewal
+    """
+    if renewal.member.tpay_enabled:
+        if renewal.payment is None:
+            renewal.payment = create_payment(
+                renewal, processed_by=renewal.member, pay_type=Payment.TPAY
+            )
+            renewal.save()
+            process_payment(renewal.payment)
+        else:
+            raise ValueError("You have already paid.")
+    else:
+        raise ValueError("You do not have Thalia Pay enabled.")
 
 
 def execute_data_minimisation(dry_run=False):

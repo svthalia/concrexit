@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.template.defaultfilters import floatformat
@@ -219,6 +220,13 @@ class RenewalFormView(FormView):
             user=self.request.member, type=Membership.MEMBER
         ).exists()
         context["benefactor_type"] = Membership.BENEFACTOR
+        context["latest_renewal"] = Renewal.objects.filter(
+            Q(member=self.request.member)
+            & (
+                Q(status=Registration.STATUS_ACCEPTED)
+                | Q(status=Registration.STATUS_REVIEW)
+            )
+        ).last()
         return context
 
     def get_form(self, form_class=None):
@@ -316,3 +324,28 @@ class ReferenceCreateView(CreateView):
         request.POST["member"] = request.member.pk
         request.POST["entry"] = kwargs["pk"]
         return super().post(request, *args, **kwargs)
+
+
+@method_decorator(login_required, name="dispatch")
+class RenewalPayView(View):
+    """
+     Defines a view that allows the user to add a Thalia Pay payment to
+     their renewal using a POST request. The user should be authenticated.
+     """
+
+    def get(self, request, *args, **kwargs):
+        return redirect("registrations:renew")
+
+    def post(self, request, *args, **kwargs):
+        renewal = get_object_or_404(
+            Renewal, member=self.request.member, status=Entry.STATUS_ACCEPTED
+        )
+
+        try:
+            services.process_tpay_payment(renewal)
+        except ValueError as e:
+            messages.error(request, str(e))
+
+        messages.success(request, _("You have paid with Thalia Pay."))
+
+        return redirect("registrations:renew-completed")

@@ -10,6 +10,7 @@ from .views import (
     RenewalFormView,
     BenefactorRegistrationFormView,
     ReferenceCreateView,
+    RenewalPayView
 )
 
 app_name = "registrations"
@@ -53,6 +54,14 @@ urlpatterns = [
                         template_name="registrations/renewal_success.html"
                     ),
                     name="renew-success",
+                ),
+                path("renew/pay/", RenewalPayView.as_view(), name="pay"),
+                path(
+                    "renew/completed/",
+                    TemplateView.as_view(
+                        template_name="registrations/renewal_completed.html"
+                    ),
+                    name="renew-completed",
                 ),
             ]
         ),

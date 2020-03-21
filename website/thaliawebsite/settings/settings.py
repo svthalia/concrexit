@@ -310,7 +310,7 @@ ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
 )
 
 # Payment settings
-THALIA_PAY_ENABLED_PAYMENT_METHOD = False
+THALIA_PAY_ENABLED_PAYMENT_METHOD = True
 
 # Google maps API key and secrets
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")

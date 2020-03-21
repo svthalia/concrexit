@@ -581,6 +581,18 @@ class ServicesTest(TestCase):
                     services.process_payment(payment)
                     self.assertFalse(create_membership.called)
 
+    def test_process_tpay_payment__tpay_enabled(self):
+        pass  # TODO
+
+    def test_process_tpay_payment__already_paid(self):
+        pass  # TODO
+
+    def test_process_tpay_payment__tpay_unenabled(self):
+        pass  # TODO
+
+    def test_process_tpay_payment__not_reviewed(self):
+        pass  # TODO
+
     @freeze_time("2019-01-01")
     def test_execute_data_minimisation(self):
         with self.subTest("No processed entries"):
