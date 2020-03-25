@@ -69,24 +69,9 @@ class AdminOrderSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data: Any) -> Any:
-        if "payment" in validated_data:
-            payment_type = validated_data["payment"].get("type", Payment.NONE)
-            del validated_data["payment"]
-        else:
-            payment_type = Payment.NONE
-
-        instance = super().create(validated_data)
-        instance.payment.type = payment_type
-        instance.payment.save()
-        return instance
+        del validated_data["payment"]
+        return super().create(validated_data)
 
     def update(self, instance: Model, validated_data: Any) -> Any:
-        if (
-            validated_data.get("payment", {}).get("type", instance.payment.type)
-            != instance.payment.type
-        ):
-            instance.payment.type = validated_data["payment"]["type"]
-            instance.payment.save()
-        if "payment" in validated_data:
-            del validated_data["payment"]
+        del validated_data["payment"]
         return super().update(instance, validated_data)

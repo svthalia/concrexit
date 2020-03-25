@@ -65,7 +65,7 @@ class ServicesTest(TestCase):
             self.assertEqual(p.paid_by, self.member)
             self.assertEqual(p.processed_by, self.member)
             self.assertEqual(p.type, Payment.CASH)
-        with self.subTest("Does not create new payment if one already exists"):
+        with self.subTest("Updates payment if one already exists"):
             existing_payment = Payment(amount=2)
             p = services.create_payment(
                 MockPayable(payer=self.member, payment=existing_payment),
@@ -73,7 +73,7 @@ class ServicesTest(TestCase):
                 Payment.CASH,
             )
             self.assertEqual(p, existing_payment)
-            self.assertEqual(p.amount, 2)
+            self.assertEqual(p.amount, 5)
         with self.subTest("Does not allow Thalia Pay when not enabled"):
             with self.assertRaises(PaymentError):
                 services.create_payment(

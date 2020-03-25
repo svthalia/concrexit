@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from payments.models import Payment
+from payments.services import create_payment
 from .models import Order, PizzaEvent, Product
 
 
@@ -34,8 +35,6 @@ def cancel_order(request):
             if not order.can_be_changed:
                 messages.error(request, _("You can no longer cancel."))
             elif order.member == request.member:
-                if order.payment.type == Payment.TPAY:
-                    order.payment.type = Payment.NONE
                 order.delete()
                 messages.success(request, _("Your order has been cancelled."))
         except Http404:
@@ -50,8 +49,7 @@ def pay_order(request):
         try:
             order = get_object_or_404(Order, pk=int(request.POST["order"]))
             if order.member == request.member:
-                order.payment.type = Payment.TPAY
-                order.save()
+                create_payment(order, Payment.TPAY, order.member)
                 messages.success(
                     request, _("Your order has been paid with " "Thalia Pay.")
                 )
