@@ -509,6 +509,7 @@ class RenewalAdminTest(TestCase):
                 "member",
                 "membership",
                 "contribution",
+                "mandate",
             ],
         )
 
@@ -528,6 +529,7 @@ class RenewalAdminTest(TestCase):
                 "member",
                 "membership",
                 "contribution",
+                "mandate",
             ],
         )
 

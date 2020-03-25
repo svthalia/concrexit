@@ -49,7 +49,7 @@
                         <th scope="col">{% trans "type"|capfirst %}</th>
                         <th scope="col">{% trans "amount"|capfirst %}</th>
                         <th scope="col">
-                            {% trans "processing date"|capfirst %}
+                            {% trans "date"|capfirst %}
                         </th>
                         <th scope="col" class="text-left">
                             {% trans "notes"|capfirst %}
@@ -61,7 +61,7 @@
                         <tr>
                             <th scope="row">{{ payment.get_type_display }}</th>
                             <td>€ {{ payment.amount }}</td>
-                            <td>{{ payment.processing_date }}</td>
+                            <td>{{ payment.created_at }}</td>
                             <td class="text-left">{{ payment.notes }}</td>
                         </tr>
                     {% endfor %}

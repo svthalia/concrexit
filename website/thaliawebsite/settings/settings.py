@@ -300,7 +300,7 @@ CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
 SEPA_CREDITOR_ID = os.environ.get("SEPA_CREDITOR_ID", "PLACEHOLDER")
 
 # Payment settings
-THALIA_PAY_ENABLED_PAYMENT_METHOD = False
+THALIA_PAY_ENABLED_PAYMENT_METHOD = True
 
 # Google maps API key and secrets
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")

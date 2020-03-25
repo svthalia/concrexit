@@ -1,8 +1,9 @@
 """Registers admin interfaces for the registrations module"""
+from functools import partial
+
 from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
 from django.forms import Field
-from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from payments.widgets import PaymentWidget
@@ -36,8 +37,9 @@ class RegistrationAdmin(admin.ModelAdmin):
         "email",
         "status",
         "membership_type",
+        "contribution",
         "created_at",
-        "payment_status",
+        "payment",
         "no_references",
         "reference_count",
     )
@@ -47,7 +49,7 @@ class RegistrationAdmin(admin.ModelAdmin):
         "membership_type",
         "no_references",
         "payment__type",
-        "payment__amount",
+        "contribution",
     )
     inlines = (ReferenceInline,)
     search_fields = (
@@ -71,6 +73,7 @@ class RegistrationAdmin(admin.ModelAdmin):
                     "membership_type",
                     "status",
                     "payment",
+                    "mandate",
                     "remarks",
                 )
             },
@@ -113,10 +116,19 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     reference_count.short_description = _("references")
 
+    def get_form(self, request, obj=None, **kwargs):
+        kwargs["formfield_callback"] = partial(
+            self.formfield_for_dbfield, request=request, obj=obj
+        )
+        return super().get_form(request, obj, **kwargs)
+
     def formfield_for_dbfield(self, db_field, request, **kwargs):
+        obj = kwargs.pop("obj", None)
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == "payment":
-            return Field(widget=PaymentWidget, initial=field.initial, required=False)
+            return Field(
+                widget=PaymentWidget(obj=obj), initial=field.initial, required=False
+            )
         return field
 
     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
@@ -167,18 +179,6 @@ class RegistrationAdmin(admin.ModelAdmin):
     @staticmethod
     def name(obj):
         return obj.get_full_name()
-
-    @staticmethod
-    def payment_status(obj):
-        payment = obj.payment
-        if payment:
-            processed_str = _("Processed") if payment.processed else _("Unprocessed")
-            return format_html(
-                '<a href="{link}">{title}</a>'.format(
-                    link=payment.get_admin_url(), title=processed_str
-                )
-            )
-        return "-"
 
     def reject_selected(self, request, queryset):
         """Reject the selected entries"""
@@ -232,8 +232,9 @@ class RenewalAdmin(RegistrationAdmin):
         "email",
         "status",
         "membership_type",
+        "contribution",
         "created_at",
-        "payment_status",
+        "payment",
         "no_references",
         "reference_count",
     )
@@ -242,7 +243,7 @@ class RenewalAdmin(RegistrationAdmin):
         "membership_type",
         "no_references",
         "payment__type",
-        "payment__amount",
+        "contribution",
     )
     search_fields = (
         "member__first_name",

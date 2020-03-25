@@ -40,7 +40,6 @@ class PaymentAdmin(admin.ModelAdmin):
     list_display = (
         "created_at",
         "amount",
-        "processing_date",
         "type",
         "paid_by_link",
         "processed_by_link",
@@ -56,7 +55,6 @@ class PaymentAdmin(admin.ModelAdmin):
         "created_at",
         "amount",
         "type",
-        "processing_date",
         "paid_by",
         "processed_by",
         "topic",
@@ -65,8 +63,6 @@ class PaymentAdmin(admin.ModelAdmin):
     readonly_fields = (
         "created_at",
         "amount",
-        "type",
-        "processing_date",
         "paid_by",
         "processed_by",
         "topic",
@@ -83,15 +79,16 @@ class PaymentAdmin(admin.ModelAdmin):
         "processed_by__last_name",
         "amount",
     )
-    ordering = ("-created_at", "processing_date")
+    ordering = ("-created_at", )
     autocomplete_fields = ("paid_by", "processed_by")
     actions = [
-        "process_cash_selected",
-        "process_card_selected",
-        "process_tpay_selected",
-        "process_wire_selected",
         "export_csv",
     ]
+
+    def save_model(self, request, obj, form, change):
+        """Set the processor of a payment to the user accessing the form."""
+        obj.processed_by = request.user
+        super().save_model(request, obj, form, change)
 
     @staticmethod
     def _member_link(member: Member) -> str:
@@ -114,81 +111,10 @@ class PaymentAdmin(admin.ModelAdmin):
     processed_by_link.admin_order_field = "processed_by"
     processed_by_link.short_description = _("processed by")
 
-    def changeform_view(
-        self,
-        request: HttpRequest,
-        object_id: int = None,
-        form_url: str = "",
-        extra_context: dict = None,
-    ) -> HttpResponse:
-        """
-        Renders the change formview
-        Only allow when the payment has not been processed yet
-        """
-        obj = None
-        if object_id is not None and request.user.has_perm("payments.process_payments"):
-            obj = Payment.objects.get(id=object_id)
-            if obj.processed:
-                obj = None
-        return super().changeform_view(request, object_id, form_url, {"payment": obj})
-
     def get_readonly_fields(self, request: HttpRequest, obj: Payment = None):
         if not obj:
-            return "created_at", "type", "processing_date", "processed_by"
+            return "created_at", "processed_by"
         return super().get_readonly_fields(request, obj)
-
-    def get_actions(self, request: HttpRequest) -> OrderedDict:
-        """Get the actions for the payments"""
-        """Hide the processing actions if the right permissions are missing"""
-        actions = super().get_actions(request)
-        if not request.user.has_perm("payments.process_payments"):
-            del actions["process_cash_selected"]
-            del actions["process_card_selected"]
-            del actions["process_tpay_selected"]
-            del actions["process_wire_selected"]
-        return actions
-
-    def process_cash_selected(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Process the selected payment as cash"""
-        if request.user.has_perm("payments.process_payments"):
-            updated_payments = services.process_payment(
-                queryset, request.member, Payment.CASH
-            )
-            self._process_feedback(request, updated_payments)
-
-    process_cash_selected.short_description = _("Process selected payments (cash)")
-
-    def process_card_selected(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Process the selected payment as card"""
-        if request.user.has_perm("payments.process_payments"):
-            updated_payments = services.process_payment(
-                queryset, request.member, Payment.CARD
-            )
-            self._process_feedback(request, updated_payments)
-
-    process_card_selected.short_description = _("Process selected payments (card)")
-
-    def process_tpay_selected(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Process the selected payment as Thalia Pay"""
-        if request.user.has_perm("payments.process_payments"):
-            updated_payments = services.process_payment(
-                queryset, request.member, Payment.TPAY
-            )
-            self._process_feedback(request, updated_payments)
-
-    process_tpay_selected.short_description = _(
-        "Process selected payments (Thalia Pay, only if enabled)"
-    )
-
-    def process_wire_selected(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Process the selected payment as wire"""
-        if request.user.has_perm("payments.process_payments"):
-            updated_payments = services.process_payment(
-                queryset, request.member, Payment.WIRE
-            )
-            self._process_feedback(request, updated_payments)
-
-    process_wire_selected.short_description = _("Process selected payments (wire)")
 
     def _process_feedback(self, request, updated_payments: list) -> None:
         """Show a feedback message for the processing result"""
@@ -205,9 +131,9 @@ class PaymentAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path(
-                "<uuid:pk>/process/",
+                "<str:app_label>/<str:model_name>/<payable>/create/",
                 self.admin_site.admin_view(admin_views.PaymentAdminView.as_view()),
-                name="payments_payment_process",
+                name="payments_payment_create",
             ),
         ]
         return custom_urls + urls
@@ -226,7 +152,6 @@ class PaymentAdmin(admin.ModelAdmin):
         writer = csv.writer(response)
         headers = [
             _("created"),
-            _("processed"),
             _("amount"),
             _("type"),
             _("processor"),
@@ -239,7 +164,6 @@ class PaymentAdmin(admin.ModelAdmin):
             writer.writerow(
                 [
                     payment.created_at,
-                    payment.processing_date,
                     payment.amount,
                     payment.get_type_display(),
                     payment.processed_by.get_full_name()
