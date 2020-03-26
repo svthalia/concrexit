@@ -203,15 +203,6 @@ class ProfileDetailView(DetailView):
 
 
 @method_decorator(login_required, "dispatch")
-class UserAccountView(TemplateView):
-    """
-    View that renders the account options page
-    """
-
-    template_name = "members/user/index.html"
-
-
-@method_decorator(login_required, "dispatch")
 class UserProfileUpdateView(SuccessMessageMixin, UpdateView):
     """
     View that allows a user to update their profile
