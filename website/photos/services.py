@@ -148,6 +148,7 @@ def save_photo(photo_obj):
         original_path = photo_obj.file.path
 
         image = Image.open(original_path)
+        os.remove(original_path)
 
         image_path, _ext = os.path.splitext(original_path)
         image_path = "{}.jpg".format(image_path)
