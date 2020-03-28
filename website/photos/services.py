@@ -145,10 +145,24 @@ def extract_photo(request, archive_file, photo, album):
 
 def save_photo(photo_obj):
     if photo_obj.original_file != photo_obj.file.path:
-        original_path = photo_obj.file.path
+        hash_sha1 = hashlib.sha1()
+        for chunk in iter(lambda: photo_obj.file.read(4096), b""):
+            hash_sha1.update(chunk)
+        photo_obj.file.close()
+        digest = hash_sha1.hexdigest()
+        photo_obj._digest = digest
 
+        original_path = photo_obj.file.path
         image = Image.open(original_path)
         os.remove(original_path)
+
+        if (
+            Photo.objects.filter(album=photo_obj.album, _digest=digest)
+            .exclude(pk=photo_obj.pk)
+            .exists()
+        ):
+            photo_obj.delete()
+            return False
 
         image_path, _ext = os.path.splitext(original_path)
         image_path = "{}.jpg".format(image_path)
@@ -163,22 +177,6 @@ def save_photo(photo_obj):
         photo_obj.original_file = image_path
         image_name, _ext = os.path.splitext(photo_obj.file.name)
         photo_obj.file.name = "{}.jpg".format(image_name)
-
-        hash_sha1 = hashlib.sha1()
-        for chunk in iter(lambda: photo_obj.file.read(4096), b""):
-            hash_sha1.update(chunk)
-        photo_obj.file.close()
-
-        digest = hash_sha1.hexdigest()
-        photo_obj._digest = digest
-
-        if (
-            Photo.objects.filter(album=photo_obj.album, _digest=digest)
-            .exclude(pk=photo_obj.pk)
-            .exists()
-        ):
-            photo_obj.delete()
-            return False
 
         photo_obj.save()
 
