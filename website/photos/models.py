@@ -1,7 +1,7 @@
 import hashlib
+import logging
 import os
 import random
-import logging
 
 from django.conf import settings
 from django.db import models
@@ -9,13 +9,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from PIL import Image
 
 from members.models import Member
-from photos.services import photo_determine_rotation
-from utils.translation import ModelTranslateMeta, MultilingualField
 from pushnotifications.models import ScheduledMessage, Category
-
+from utils.translation import ModelTranslateMeta, MultilingualField
 
 COVER_FILENAME = "cover.jpg"
 
@@ -52,41 +49,12 @@ class Photo(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.file:
-            self._orig_file = self.file.path
+            self.original_file = self.file.path
         else:
-            self._orig_file = ""
+            self.original_file = ""
 
     def __str__(self):
         return os.path.basename(self.file.name)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if self._orig_file != self.file.path:
-            image_path = self.file.path
-            image = Image.open(image_path)
-            image_path, _ext = os.path.splitext(image_path)
-            image_path = "{}.jpg".format(image_path)
-
-            self.rotation = photo_determine_rotation(image)
-
-            # Image.thumbnail does not upscale an image that is smaller
-            image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-
-            logger.info("Trying to save to %s", image_path)
-            image.convert("RGB").save(image_path, "JPEG")
-            self._orig_file = image_path
-            image_name, _ext = os.path.splitext(self.file.name)
-            self.file.name = "{}.jpg".format(image_name)
-
-            hash_sha1 = hashlib.sha1()
-            for chunk in iter(lambda: self.file.read(4096), b""):
-                hash_sha1.update(chunk)
-            self.file.close()
-            self._digest = hash_sha1.hexdigest()
-
-            # Save again, to update changes in digest and rotation
-            super().save(*args, **kwargs)
 
     class Meta:
         ordering = ("file",)
