@@ -49,12 +49,17 @@ class PhotoAdmin(admin.ModelAdmin):
     exclude = ("_digest",)
 
     def save_model(self, request, obj, form, change):
-        save_photo(obj)
-        messages.add_message(
-            request,
-            messages.WARNING,
-            _("Full-sized photos will not be saved on the Thalia-website."),
-        )
+        super().save_model(request, obj, form, change)
+        if save_photo(obj):
+            messages.add_message(
+                request,
+                messages.WARNING,
+                _("Full-sized photos will not be saved on the Thalia-website."),
+            )
+        else:
+            messages.add_message(
+                request, messages.ERROR, _("This photo already exists in the album.")
+            )
 
 
 admin.site.register(Album, AlbumAdmin)
