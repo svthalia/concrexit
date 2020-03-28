@@ -50,6 +50,9 @@ class PhotoAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
+        if change and obj.original_file == obj.file.path:
+            return
+
         if save_photo(obj):
             messages.add_message(
                 request,

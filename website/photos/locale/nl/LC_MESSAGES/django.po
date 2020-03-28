@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-29 23:28+0200\n"
-"PO-Revision-Date: 2020-03-29 23:29+0200\n"
+"POT-Creation-Date: 2020-05-26 21:01+0200\n"
+"PO-Revision-Date: 2020-05-26 21:01+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,38 +16,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
-
-#: admin.py
-msgid "Uploading a zip or tar file adds all contained images as photos."
-msgstr ""
-"Indien je een zip of tar file upload worden alle afbeeldingen in het bestand "
-"als foto’s toegevoegd."
-
-#: admin.py
-msgid "Ignoring {}"
-msgstr "{} wordt genegeerd"
-
-#: admin.py
-msgid "{} is duplicate."
-msgstr "{} is dubbel."
+"X-Generator: Poedit 2.3.1\n"
 
 #: admin.py
 msgid "Number of photos"
 msgstr "Aantal foto's"
 
 #: admin.py
-msgid "The uploaded file is not a zip or tar file."
-msgstr "Het geüploade bestand is geen als zip of tar archief."
-
-#: admin.py
 msgid "Full-sized photos will not be saved on the Thalia-website."
 msgstr ""
 "De foto’s op de Thalia-website worden niet opgeslagen in originele grootte."
 
+#: admin.py
+msgid "This photo already exists in the album."
+msgstr "Deze foto bestaat al in het album."
+
 #: apps.py templates/photos/album.html templates/photos/index.html
 msgid "Photos"
 msgstr "Foto's"
+
+#: forms.py
+msgid "Uploading a zip or tar file adds all contained images as photos."
+msgstr ""
+"Indien je een zip of tar file upload worden alle afbeeldingen in het bestand "
+"als foto’s toegevoegd."
 
 #: models.py
 msgid "album"
@@ -93,6 +85,18 @@ msgstr "coverafbeelding"
 msgid "shareable"
 msgstr "deelbaar"
 
+#: services.py
+msgid "The uploaded file is not a zip or tar file."
+msgstr "Het geüploade bestand is geen als zip of tar archief."
+
+#: services.py
+msgid "{} is duplicate."
+msgstr "{} is dubbel."
+
+#: services.py
+msgid "Ignoring {}"
+msgstr "{} wordt genegeerd"
+
 #: templates/photos/album.html
 msgid ""
 "Note: This album can be shared with people outside the association by "
@@ -120,3 +124,7 @@ msgstr "Zoeken"
 #: templates/photos/index.html
 msgid "No albums found"
 msgstr "Geen albums gevonden"
+
+#: validators.py
+msgid "Only zip and tar files are allowed."
+msgstr "Alleen zip en tar bestanden zijn toegestaan."

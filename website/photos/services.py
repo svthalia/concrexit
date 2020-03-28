@@ -144,41 +144,39 @@ def extract_photo(request, archive_file, photo, album):
 
 
 def save_photo(photo_obj):
-    if photo_obj.original_file != photo_obj.file.path:
-        hash_sha1 = hashlib.sha1()
-        for chunk in iter(lambda: photo_obj.file.read(4096), b""):
-            hash_sha1.update(chunk)
-        photo_obj.file.close()
-        digest = hash_sha1.hexdigest()
-        photo_obj._digest = digest
+    hash_sha1 = hashlib.sha1()
+    for chunk in iter(lambda: photo_obj.file.read(4096), b""):
+        hash_sha1.update(chunk)
+    photo_obj.file.close()
+    digest = hash_sha1.hexdigest()
+    photo_obj._digest = digest
 
-        original_path = photo_obj.file.path
-        image = Image.open(original_path)
-        os.remove(original_path)
+    original_path = photo_obj.file.path
+    image = Image.open(original_path)
+    os.remove(original_path)
 
-        if (
-            Photo.objects.filter(album=photo_obj.album, _digest=digest)
-            .exclude(pk=photo_obj.pk)
-            .exists()
-        ):
-            photo_obj.delete()
-            return False
+    if (
+        Photo.objects.filter(album=photo_obj.album, _digest=digest)
+        .exclude(pk=photo_obj.pk)
+        .exists()
+    ):
+        photo_obj.delete()
+        return False
 
-        image_path, _ext = os.path.splitext(original_path)
-        image_path = "{}.jpg".format(image_path)
+    image_path, _ext = os.path.splitext(original_path)
+    image_path = "{}.jpg".format(image_path)
 
-        photo_obj.rotation = photo_determine_rotation(image)
+    photo_obj.rotation = photo_determine_rotation(image)
 
-        # Image.thumbnail does not upscale an image that is smaller
-        image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
+    # Image.thumbnail does not upscale an image that is smaller
+    image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
 
-        logger.info("Trying to save to %s", image_path)
-        image.convert("RGB").save(image_path, "JPEG")
-        photo_obj.original_file = image_path
-        image_name, _ext = os.path.splitext(photo_obj.file.name)
-        photo_obj.file.name = "{}.jpg".format(image_name)
+    logger.info("Trying to save to %s", image_path)
+    image.convert("RGB").save(image_path, "JPEG")
+    photo_obj.original_file = image_path
+    image_name, _ext = os.path.splitext(photo_obj.file.name)
+    photo_obj.file.name = "{}.jpg".format(image_name)
 
-        photo_obj.save()
+    photo_obj.save()
 
-        return True
-    return False
+    return True
