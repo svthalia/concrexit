@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-30 21:03+0100\n"
-"PO-Revision-Date: 2019-09-08 10:57+0200\n"
+"POT-Creation-Date: 2020-03-31 15:05+0200\n"
+"PO-Revision-Date: 2020-03-31 15:06+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -167,6 +167,18 @@ msgstr "Stuur welkomste-mails"
 #: forms.py
 msgid "This email will include the generated password"
 msgstr "Deze e-mail zal het gegenereerde wachtwoord bevatten"
+
+#: forms.py
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: forms.py
+msgid "Required. 64 characters or fewer. Letters and digits only."
+msgstr "Verplicht. 64 of minder karakters. Alleen letters en cijfers."
+
+#: forms.py
+msgid "Please use 64 characters or fewer. Letters and digits only."
+msgstr "Gebruik 64 karakters of minder. Alleen letters en cijfers."
 
 #: forms.py
 msgid "Email address"
@@ -374,6 +386,20 @@ msgid "Automatically renew membership"
 msgstr "Lidmaatschap automatisch verlengen"
 
 #: models.py
+msgid "Only receive Thalia emails on G Suite-account"
+msgstr "Ontvang Thalia emails alleen op je G Suite account"
+
+#: models.py
+msgid ""
+"If you enable this option you will no longer receive emails send to you by "
+"Thalia on your personal email address. We will only use your G Suite email "
+"address."
+msgstr ""
+"Als je deze optie activeert zul je niet langer e-mails van Thalia ontvangen "
+"op je persoonlijke e-mailadres. Alleen je G Suite e-mailadres zal nog worden "
+"gebruikt."
+
+#: models.py
 msgid "Display name"
 msgstr "Weergavenaam"
 
@@ -478,6 +504,11 @@ msgid ""
 msgstr ""
 "E-mail wijzigingsverzoek voor {} naar {} gemaakt op {} (bevestigd: {}, "
 "geverifieerd: {})."
+
+#: models.py
+msgid "You cannot use an email address from this domain for your account."
+msgstr ""
+"Je kunt geen e-mailadres van deze domeinnaam gebruiken voor je account."
 
 #: models.py
 msgid "Please enter a new email address."
@@ -680,6 +711,95 @@ msgstr ""
 "verlengd hebt, maar dat dit nog niet is verwerkt: in dat geval hoef je niets "
 "te doen."
 
+#: templates/members/email/information_check.html
+msgid "membership information check"
+msgstr "controle gegevens lidmaatschap"
+
+#: templates/members/email/information_check.html
+msgid ""
+"\n"
+"                    We currently have the following information about you in "
+"our database.<br>\n"
+"                    Via this email we'd like to ask you to check the "
+"accuracy of this data.<br>\n"
+"                    "
+msgstr ""
+"\n"
+"                    Hieronder vind je de (meeste) gegevens die we op dit "
+"moment van je geregistreerd hebben.<br>\n"
+"                    Wil je deze controleren op juistheid?<br>\n"
+"                    "
+
+#: templates/members/email/information_check.html
+msgid "username:"
+msgstr "gebruikersnaam:"
+
+#: templates/members/email/information_check.html
+msgid "name:"
+msgstr "naam:"
+
+#: templates/members/email/information_check.html
+msgid "address:"
+msgstr "adres:"
+
+#: templates/members/email/information_check.html
+msgid "phone:"
+msgstr "telefoon:"
+
+#: templates/members/email/information_check.html
+msgid "date of birth:"
+msgstr "geboortedatum:"
+
+#: templates/members/email/information_check.html
+msgid "email address:"
+msgstr "e-mailadres:"
+
+#: templates/members/email/information_check.html
+msgid "student number:"
+msgstr "studentnummer:"
+
+#: templates/members/email/information_check.html
+msgid "cohort:"
+msgstr "cohort:"
+
+#: templates/members/email/information_check.html
+msgid "programme:"
+msgstr "studie:"
+
+#: templates/members/email/information_check.html
+msgid ""
+"\n"
+"                        <br>\n"
+"                        You can change this data by logging into the website "
+"and using the 'edit profile' page.<br>\n"
+"                        Unable to edit the incorrect information? Then send "
+"an email: info@thalia.nu.<br>\n"
+"                        <br>\n"
+"                        With kind regards,<br>\n"
+"                        <br>\n"
+"                        The board of Study Association Thalia<br>\n"
+"                        <br>\n"
+"                        ————<br>\n"
+"                        <br>\n"
+"                        This email was automatically generated.<br>\n"
+"                    "
+msgstr ""
+"\n"
+"                        <br>\n"
+"                        Je kunt als je ingelogd bent via ‘bewerk profiel’ de "
+"meeste van deze gegevens aanpassen.<br>\n"
+"                        Klopt iets niet wat je niet zelf kunt bewerken? "
+"Stuur dan een mailtje naar info@thalia.nu.<br>\n"
+"                        <br>\n"
+"                        Met vriendelijke groet,<br>\n"
+"                        <br>\n"
+"                        Het bestuur der Studievereniging Thalia<br>\n"
+"                        <br>\n"
+"                        ————<br>\n"
+"                        <br>\n"
+"                        Deze e-mail is automatisch gegenereerd.<br>\n"
+"                    "
+
 #: templates/members/email/information_check.txt
 #, python-format
 msgid ""
@@ -736,7 +856,7 @@ msgstr ""
 "Cohort:                 %(starting_year)s\n"
 "Programma:              %(programme)s\n"
 "\n"
-"Je kunt als je ingelogd bent via ‘Mijn gegevens’ de meeste van deze "
+"Je kunt als je ingelogd bent via ‘bewerk profiel’ de meeste van deze "
 "gegevens\n"
 "aanpassen. Klopt iets niet wat je niet zelf kunt bewerken? Stuur dan een "
 "mailtje\n"
@@ -838,7 +958,7 @@ msgstr ""
 #: templates/members/user/email_change_confirmed.html
 #: templates/members/user/email_change_requested.html
 #: templates/members/user/email_change_verified.html
-#: templates/members/user/index.html templates/members/user/profile.html
+#: templates/members/user/profile.html
 msgid "members"
 msgstr "leden"
 
@@ -888,7 +1008,7 @@ msgstr "Statistieken"
 msgid "Total amount of Thalia members"
 msgstr "Totaal aantal Thalialeden"
 
-#: templates/members/user/edit_profile.html templates/members/user/index.html
+#: templates/members/user/edit_profile.html
 msgid "edit profile"
 msgstr "profiel bewerken"
 
@@ -950,67 +1070,6 @@ msgid ""
 msgstr ""
 "Het nieuwe e-mailadres van je account is geverifieerd. Controleer je oude "
 "inbox voor de bevestigingse-mail."
-
-#: templates/members/user/index.html
-msgid "Account"
-msgstr "Account"
-
-#: templates/members/user/index.html
-#, python-format
-msgid "You’re currently logged in as <strong>%(user)s</strong>"
-msgstr "U bent momenteel ingelogd als <strong>%(user)s</strong>"
-
-#: templates/members/user/index.html
-msgid "show public profile"
-msgstr "bekijk publieke profielpagina"
-
-#: templates/members/user/index.html
-msgid "Take a look at your own profile."
-msgstr "Bekijk je eigen profielpagina."
-
-#: templates/members/user/index.html
-msgid "manage membership"
-msgstr "lidmaatschap beheren"
-
-#: templates/members/user/index.html
-msgid "Get information about your membership or renew it."
-msgstr "Bekijk je lidmaatschap of vernieuw deze indien nodig."
-
-#: templates/members/user/index.html
-msgid "Edit your profile and avatar."
-msgstr "Bewerk je profiel en profielafbeelding."
-
-#: templates/members/user/index.html
-msgid "manage bank account(s)"
-msgstr "bankrekening(en) beheren"
-
-#: templates/members/user/index.html
-msgid "Change the financial information known to Thalia."
-msgstr "Verander de financiële informatie bekend bij Thalia."
-
-#: templates/members/user/index.html
-msgid "view payments"
-msgstr "bekijk betalingen"
-
-#: templates/members/user/index.html
-msgid "Get an overview of all your expenses."
-msgstr "Verkrijg een overzicht van al je uitgaven."
-
-#: templates/members/user/index.html
-msgid "change password"
-msgstr "wachtwoord wijzigen"
-
-#: templates/members/user/index.html
-msgid "Change your accounts' password."
-msgstr "Wijzig het wachtwoord van je account."
-
-#: templates/members/user/index.html
-msgid "logout"
-msgstr "uitloggen"
-
-#: templates/members/user/index.html
-msgid "Leave the restricted area of the website."
-msgstr "Verlaat het beveiligde gedeelte van de website."
 
 #: templates/members/user/profile.html
 msgid "profile"

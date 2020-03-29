@@ -122,9 +122,9 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
     since = models.DateTimeField(
         verbose_name=_("Display since"),
         help_text=_(
-            "Hide this slide before this time. When all date- and"
+            "Hide this slide before this time. When all date- and "
             "time-fields are left blank, the slide won't "
-            "be visible. It will, however, be visible on an event-page"
+            "be visible. It will, however, be visible on an event-page "
             "if it's linked to an event."
         ),
         default=timezone.now,

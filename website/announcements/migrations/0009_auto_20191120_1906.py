@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='slide',
             name='since',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, help_text="Hide this slide before this time. When all date- andtime-fields are left blank, the slide won't be visible. It will, however, be visible on an event-pageif it's linked to an event.", null=True, verbose_name='Display since'),
+            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, help_text="Hide this slide before this time. When all date- and time-fields are left blank, the slide won't be visible. It will, however, be visible on an event-page if it's linked to an event.", null=True, verbose_name='Display since'),
         ),
     ]

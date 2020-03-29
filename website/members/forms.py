@@ -111,7 +111,7 @@ class UserChangeForm(BaseUserChangeForm):
             RegexValidator(
                 regex="^[a-zA-Z0-9]{1,64}$",
                 message=_(
-                    "Please use 64 characters or fewer. " "Letters and digits only."
+                    "Please use 64 characters or fewer. Letters and digits only."
                 ),
             )
         ],

@@ -89,8 +89,8 @@ msgid ""
 "page if it's linked to an event."
 msgstr ""
 "Verberg deze slide vóór dit tijdstip. Als alle data- en tijd-velden leeg "
-"gelaten zijn, is de slide niet zichtbaar. Hij is echter wel zichtbaar op "
-"een evenement-pagina als hij aan een evenement gekoppeld is."
+"gelaten zijn, is de slide niet zichtbaar. Hij is echter wel zichtbaar op een "
+"evenement-pagina als hij aan een evenement gekoppeld is."
 
 #: models.py
 msgid "Hide this slide after this time."

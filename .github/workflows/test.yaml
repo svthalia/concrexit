@@ -21,6 +21,11 @@ jobs:
       - name: Check translations
         shell: bash
         run: |
+          # Run makemessages for all app
+          cd website
+          for dir in $(find * -maxdepth 0 -type d); do (cd $dir && poetry run ../manage.py makemessages); done
+          cd ..
+
           # Check for obsolete translations in .po files (starting with `#~`).
           grep --include="*.po" --files-with-matches --recursive "^#~" website && exit 1 || echo "No obsolete translations found."
 

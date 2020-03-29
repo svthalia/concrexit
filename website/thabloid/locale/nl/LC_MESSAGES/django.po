@@ -18,14 +18,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: thabloid/apps.py thabloid/templates/thabloid/index.html
+#: apps.py templates/thabloid/index.html
 msgid "Thabloid"
 msgstr "Thabloid"
 
-#: thabloid/templates/thabloid/index.html
+#: templates/thabloid/index.html
 msgid "All Thabloids"
 msgstr "Alle Thabloids"
 
-#: thabloid/templates/thabloid/index.html
+#: templates/thabloid/index.html
 msgid "Older"
 msgstr "Ouder"
