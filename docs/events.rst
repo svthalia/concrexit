@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
 
    events.api
+   events.models
 
 Submodules
 ----------
@@ -76,14 +77,6 @@ events.forms module
 -------------------
 
 .. automodule:: events.forms
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-events.models module
---------------------
-
-.. automodule:: events.models
    :members:
    :undoc-members:
    :show-inheritance:

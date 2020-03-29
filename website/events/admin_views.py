@@ -21,7 +21,7 @@ from events.exceptions import RegistrationError
 from events.forms import FieldsForm, EventMessageForm
 from payments.models import Payment
 from pushnotifications.models import Message, Category
-from .models import Event, Registration
+from .models import Event, EventRegistration
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -104,7 +104,7 @@ class RegistrationAdminFields(FormView):
             messages.success(self.request, _("Registration successfully saved."))
             if "_save" in self.request.POST:
                 return redirect(
-                    "admin:events_registration_change", self.registration.pk
+                    "admin:events_eventregistration_change", self.registration.pk
                 )
         except RegistrationError as e:
             messages.error(self.request, e)
@@ -112,14 +112,14 @@ class RegistrationAdminFields(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.registration = get_object_or_404(
-            Registration, pk=self.kwargs["registration"]
+            EventRegistration, pk=self.kwargs["registration"]
         )
         try:
             if self.registration.event.has_fields():
                 return super().dispatch(request, *args, **kwargs)
         except RegistrationError:
             pass
-        return redirect("admin:events_registration_change", self.registration.pk)
+        return redirect("admin:events_eventregistration_change", self.registration.pk)
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -210,7 +210,7 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
         """
         event = get_object_or_404(Event, pk=pk)
         extra_fields = event.registrationinformationfield_set.all()
-        registrations = event.registration_set.all()
+        registrations = event.eventregistration_set.all()
 
         header_fields = (
             [
@@ -315,7 +315,7 @@ class EventRegistrationEmailsExport(TemplateView, PermissionRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         event = get_object_or_404(Event, pk=kwargs["pk"])
-        registrations = event.registration_set.filter(date_cancelled=None)
+        registrations = event.eventregistration_set.filter(date_cancelled=None)
         registrations = registrations[: event.max_participants]
         addresses = [r.member.email for r in registrations if r.member]
         no_addresses = [r.name for r in registrations if not r.member]

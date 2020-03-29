@@ -19,7 +19,7 @@
                 {% endif %}
                 <th class="sorter-false">
                 {% if addlink != 0 %}
-                    <a class="addlink" href="{% url 'admin:events_registration_add' %}?event_pk={{ event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans "add"|capfirst %}</a>
+                    <a class="addlink" href="{% url 'admin:events_eventregistration_add' %}?event_pk={{ event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans "add"|capfirst %}</a>
                 {% endif %}
                 </th>
             </tr>
@@ -73,7 +73,7 @@
                 {% if registration.date_cancelled is not None %}
                     <td>{{ registration.is_late_cancellation|yesno }}</td>
                 {% endif %}
-                <td><a class="changelink" href="{% url 'admin:events_registration_change' registration.pk %}?next={{ request.get_full_path|urlencode }}">{% trans "change" %}</a></td>
+                <td><a class="changelink" href="{% url 'admin:events_eventregistration_change' registration.pk %}?next={{ request.get_full_path|urlencode }}">{% trans "change" %}</a></td>
             </tr>
             {% empty %}
             <tr class="model-events">

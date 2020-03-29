@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 from activemembers.models import Committee
 from events.models import (
     Event,
-    Registration,
+    EventRegistration,
     RegistrationInformationField,
     BooleanRegistrationInformation,
     IntegerRegistrationInformation,
@@ -60,7 +60,7 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["member"], self.member.pk)
         self.assertEqual(self.event.participants.count(), 1)
-        self.assertEqual(self.event.registration_set.first().member, self.member)
+        self.assertEqual(self.event.eventregistration_set.first().member, self.member)
 
     def test_registration_register_twice(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
@@ -88,7 +88,7 @@ class RegistrationApiTest(TestCase):
         self.event.registration_end = timezone.now() + datetime.timedelta(hours=1)
         self.event.cancel_deadline = timezone.now() + datetime.timedelta(hours=1)
         self.event.save()
-        reg = Registration.objects.create(event=self.event, member=self.member)
+        reg = EventRegistration.objects.create(event=self.event, member=self.member)
         response = self.client.delete(
             "/api/v1/registrations/{}/".format(reg.pk), follow=True
         )
@@ -137,7 +137,7 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(response.data["member"], self.member.pk)
 
         self.assertEqual(self.event.participants.count(), 1)
-        registration = self.event.registration_set.first()
+        registration = self.event.eventregistration_set.first()
         self.assertEqual(field1.get_value_for(registration), None)
         self.assertEqual(field2.get_value_for(registration), None)
         self.assertEqual(field3.get_value_for(registration), None)
@@ -232,7 +232,9 @@ class RegistrationApiTest(TestCase):
             required=False,
         )
 
-        registration = Registration.objects.create(event=self.event, member=self.member)
+        registration = EventRegistration.objects.create(
+            event=self.event, member=self.member
+        )
         BooleanRegistrationInformation.objects.create(
             registration=registration, field=field1, value=True
         )
@@ -250,7 +252,7 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["member"], self.member.pk)
 
-        registration = self.event.registration_set.first()
+        registration = self.event.eventregistration_set.first()
         self.assertEqual(field1.get_value_for(registration), True)
         self.assertEqual(field2.get_value_for(registration), 42)
         self.assertEqual(field3.get_value_for(registration), "text")
@@ -301,7 +303,9 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["member"], self.member.pk)
 
-        registration = Registration.objects.get(event=self.event, member=self.member)
+        registration = EventRegistration.objects.get(
+            event=self.event, member=self.member
+        )
         self.assertEqual(field1.get_value_for(registration), None)
         self.assertEqual(field2.get_value_for(registration), None)
         self.assertEqual(field3.get_value_for(registration), None)
@@ -320,15 +324,15 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(response.data["member"], self.member.pk)
 
         self.assertEqual(self.event.participants.count(), 1)
-        registration = self.event.registration_set.first()
+        registration = self.event.eventregistration_set.first()
         self.assertEqual(field1.get_value_for(registration), True)
         self.assertEqual(field2.get_value_for(registration), 1337)
         self.assertEqual(field3.get_value_for(registration), "no text")
 
     def test_registration_organiser(self):
-        reg0 = Registration.objects.create(event=self.event, member=self.member)
-        reg1 = Registration.objects.create(event=self.event, name="Test 1")
-        reg2 = Registration.objects.create(event=self.event, name="Test 2")
+        reg0 = EventRegistration.objects.create(event=self.event, member=self.member)
+        reg1 = EventRegistration.objects.create(event=self.event, name="Test 1")
+        reg2 = EventRegistration.objects.create(event=self.event, name="Test 2")
 
         self.member.is_superuser = True
         self.member.save()

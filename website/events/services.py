@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _, get_language
 
 from events import emails
 from events.exceptions import RegistrationError
-from events.models import Registration, RegistrationInformationField, Event
+from events.models import EventRegistration, RegistrationInformationField, Event
 from payments.models import Payment
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
@@ -43,10 +43,10 @@ def event_permissions(member, event, name=None):
     if member and member.is_authenticated or name:
         registration = None
         try:
-            registration = Registration.objects.get(
+            registration = EventRegistration.objects.get(
                 event=event, member=member, name=name
             )
-        except Registration.DoesNotExist:
+        except EventRegistration.DoesNotExist:
             pass
 
         perms["create_registration"] = (
@@ -92,12 +92,12 @@ def create_registration(member, event):
     if event_permissions(member, event)["create_registration"]:
         registration = None
         try:
-            registration = Registration.objects.get(event=event, member=member)
-        except Registration.DoesNotExist:
+            registration = EventRegistration.objects.get(event=event, member=member)
+        except EventRegistration.DoesNotExist:
             pass
 
         if registration is None:
-            return Registration.objects.create(event=event, member=member)
+            return EventRegistration.objects.create(event=event, member=member)
         elif registration.date_cancelled is not None:
             if registration.is_late_cancellation():
                 raise RegistrationError(
@@ -128,8 +128,8 @@ def cancel_registration(member, event):
     """
     registration = None
     try:
-        registration = Registration.objects.get(event=event, member=member)
-    except Registration.DoesNotExist:
+        registration = EventRegistration.objects.get(event=event, member=member)
+    except EventRegistration.DoesNotExist:
         pass
 
     if event_permissions(member, event)["cancel_registration"] and registration:
@@ -162,8 +162,8 @@ def pay_with_tpay(member, event):
     :param event: the event
     """
     try:
-        registration = Registration.objects.get(event=event, member=member)
-    except Registration.DoesNotExist:
+        registration = EventRegistration.objects.get(event=event, member=member)
+    except EventRegistration.DoesNotExist:
         raise RegistrationError(_("You are not registered for this event."))
 
     if registration.payment is None:
@@ -190,10 +190,10 @@ def update_registration(
     """
     if not registration:
         try:
-            registration = Registration.objects.get(
+            registration = EventRegistration.objects.get(
                 event=event, member=member, name=name
             )
-        except Registration.DoesNotExist as error:
+        except EventRegistration.DoesNotExist as error:
             raise RegistrationError(
                 _("You are not registered for this event.")
             ) from error
@@ -246,14 +246,14 @@ def registration_fields(request, member=None, event=None, registration=None, nam
 
     if registration is None:
         try:
-            registration = Registration.objects.get(
+            registration = EventRegistration.objects.get(
                 event=event, member=member, name=name
             )
-        except Registration.DoesNotExist as error:
+        except EventRegistration.DoesNotExist as error:
             raise RegistrationError(
                 _("You are not registered for this event.")
             ) from error
-        except Registration.MultipleObjectsReturned as error:
+        except EventRegistration.MultipleObjectsReturned as error:
             raise RegistrationError(
                 _("Unable to find the right registration.")
             ) from error

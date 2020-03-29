@@ -27,7 +27,7 @@ from events.api.serializers import (
     RegistrationSerializer,
 )
 from events.exceptions import RegistrationError
-from events.models import Event, Registration
+from events.models import Event, EventRegistration
 from utils.snippets import extract_date_range
 
 
@@ -108,20 +108,20 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         if not services.is_organiser(request.member, event):
             status = "registered"
 
-        queryset = Registration.objects.filter(event=pk)
+        queryset = EventRegistration.objects.filter(event=pk)
         if status is not None:
             if status == "queued":
-                queryset = Registration.objects.filter(event=pk, date_cancelled=None)[
-                    event.max_participants :
-                ]
+                queryset = EventRegistration.objects.filter(
+                    event=pk, date_cancelled=None
+                )[event.max_participants :]
             elif status == "cancelled":
-                queryset = Registration.objects.filter(
+                queryset = EventRegistration.objects.filter(
                     event=pk, date_cancelled__not=None
                 )
             elif status == "registered":
-                queryset = Registration.objects.filter(event=pk, date_cancelled=None)[
-                    : event.max_participants
-                ]
+                queryset = EventRegistration.objects.filter(
+                    event=pk, date_cancelled=None
+                )[: event.max_participants]
 
         context = {"request": request}
         if services.is_organiser(self.request.member, event):
@@ -180,7 +180,7 @@ class RegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
     Has custom update and destroy methods that use the services.
     """
 
-    queryset = Registration.objects.all()
+    queryset = EventRegistration.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = [IsAuthenticated]
 

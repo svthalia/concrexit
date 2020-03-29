@@ -1,23 +1,18 @@
-"""The models defined by the events package"""
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models, router
-from django.db.models import Q
 from django.db.models.deletion import Collector
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.crypto import get_random_string
 from django.utils.text import format_lazy
-from django.template.defaulttags import date
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
+from announcements.models import Slide
 from members.models import Member
-from payments.models import Payable
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
-from announcements.models import Slide
 
 
 class Event(models.Model, metaclass=ModelTranslateMeta):
@@ -183,7 +178,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         Slide,
         verbose_name="slide",
         help_text=_(
-            "Change the header-image on the event's info-page to one"
+            "Change the header-image on the event's info-page to one "
             "specific to this event."
         ),
         blank=True,
@@ -216,13 +211,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return (
             self.max_participants is not None
             and self.max_participants
-            <= self.registration_set.filter(date_cancelled=None).count()
+            <= self.eventregistration_set.filter(date_cancelled=None).count()
         )
 
     @property
     def registrations(self):
         """Queryset with all non-cancelled registrations"""
-        return self.registration_set.filter(date_cancelled=None)
+        return self.eventregistration_set.filter(date_cancelled=None)
 
     @property
     def participants(self):
@@ -241,7 +236,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     @property
     def cancellations(self):
         """Return a queryset with the cancelled events"""
-        return self.registration_set.exclude(date_cancelled=None).order_by(
+        return self.eventregistration_set.exclude(date_cancelled=None).order_by(
             "date_cancelled"
         )
 
@@ -506,280 +501,3 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     class Meta:
         ordering = ("-start",)
         permissions = (("override_organiser", "Can access events as if organizing"),)
-
-
-def registration_member_choices_limit():
-    """Defines queryset filters to only include current members"""
-    return Q(membership__until__isnull=True) | Q(
-        membership__until__gt=timezone.now().date()
-    )
-
-
-class Registration(models.Model, Payable):
-    """Describes a registration for an Event"""
-
-    event = models.ForeignKey(Event, models.CASCADE)
-
-    member = models.ForeignKey(
-        "members.Member",
-        models.CASCADE,
-        blank=True,
-        null=True,
-        limit_choices_to=registration_member_choices_limit,
-    )
-
-    name = models.CharField(
-        _("name"),
-        max_length=50,
-        help_text=_("Use this for non-members"),
-        null=True,
-        blank=True,
-    )
-
-    date = models.DateTimeField(_("registration date"), default=timezone.now)
-    date_cancelled = models.DateTimeField(_("cancellation date"), null=True, blank=True)
-
-    present = models.BooleanField(_("present"), default=False,)
-
-    payment = models.OneToOneField(
-        "payments.Payment",
-        related_name="events_registration",
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
-    )
-
-    @property
-    def information_fields(self):
-        fields = self.event.registrationinformationfield_set.all()
-        return [
-            {"field": field, "value": field.get_value_for(self)} for field in fields
-        ]
-
-    @property
-    def is_registered(self):
-        return self.date_cancelled is None
-
-    @property
-    def queue_position(self):
-        if self.event.max_participants is not None:
-            try:
-                return list(self.event.queue).index(self) + 1
-            except ValueError:
-                pass
-        return 0
-
-    @property
-    def is_invited(self):
-        return self.is_registered and self.queue_position == 0
-
-    def is_external(self):
-        return bool(self.name)
-
-    def is_late_cancellation(self):
-        # First check whether or not the user cancelled
-        # If the user cancelled then check if this was after the deadline
-        # And if there is a max participants number:
-        # do a complex check to calculate if this user was on
-        # the waiting list at the time of cancellation, since
-        # you shouldn't need to pay the costs of something
-        # you weren't even able to go to.
-        return (
-            self.date_cancelled
-            and self.event.cancel_deadline
-            and self.date_cancelled > self.event.cancel_deadline
-            and (
-                self.event.max_participants is None
-                or self.event.registration_set.filter(
-                    (
-                        Q(date_cancelled__gte=self.date_cancelled)
-                        | Q(date_cancelled=None)
-                    )
-                    & Q(date__lte=self.date)
-                ).count()
-                < self.event.max_participants
-            )
-        )
-
-    def is_paid(self):
-        return self.payment and self.payment.processed
-
-    def would_cancel_after_deadline(self):
-        now = timezone.now()
-        return self.queue_position == 0 and now >= self.event.cancel_deadline
-
-    def clean(self):
-        if (self.member is None and not self.name) or (self.member and self.name):
-            raise ValidationError(
-                {
-                    "member": _("Either specify a member or a name"),
-                    "name": _("Either specify a member or a name"),
-                }
-            )
-
-    def validate_unique(self, exclude=None):
-        super().validate_unique(exclude)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if self.event.start_reminder and self.date_cancelled:
-            self.event.start_reminder.users.remove(self.member)
-        elif (
-            self.event.start_reminder
-            and self.member is not None
-            and not self.event.start_reminder.users.filter(pk=self.member.pk).exists()
-        ):
-            self.event.start_reminder.users.add(self.member)
-
-    def __str__(self):
-        if self.member:
-            return "{}: {}".format(self.member.get_full_name(), self.event)
-        else:
-            return "{}: {}".format(self.name, self.event)
-
-    @property
-    def payment_amount(self):
-        return self.event.price
-
-    @property
-    def payment_topic(self):
-        return f'{self.event.title_en} [{date(self.event.start, "Y-m-d")}]'
-
-    @property
-    def payment_notes(self):
-        notes = f"Event registration {self.event.title_en}. "
-        notes += f"{self.event.start}. " f"Registration date: {self.date}."
-        return notes
-
-    @property
-    def payment_payer(self):
-        return self.member
-
-    class Meta:
-        ordering = ("date",)
-        unique_together = (("member", "event"),)
-
-
-class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a field description to ask for when registering"""
-
-    BOOLEAN_FIELD = "boolean"
-    INTEGER_FIELD = "integer"
-    TEXT_FIELD = "text"
-
-    FIELD_TYPES = (
-        (BOOLEAN_FIELD, _("Checkbox")),
-        (TEXT_FIELD, _("Text")),
-        (INTEGER_FIELD, _("Integer")),
-    )
-
-    event = models.ForeignKey(Event, models.CASCADE)
-
-    type = models.CharField(_("field type"), choices=FIELD_TYPES, max_length=10,)
-
-    name = MultilingualField(models.CharField, _("field name"), max_length=100,)
-
-    description = MultilingualField(
-        models.TextField, _("description"), null=True, blank=True,
-    )
-
-    required = models.BooleanField(_("required"),)
-
-    def get_value_for(self, registration):
-        if self.type == self.TEXT_FIELD:
-            value_set = self.textregistrationinformation_set
-        elif self.type == self.BOOLEAN_FIELD:
-            value_set = self.booleanregistrationinformation_set
-        elif self.type == self.INTEGER_FIELD:
-            value_set = self.integerregistrationinformation_set
-
-        try:
-            return value_set.get(registration=registration).value
-        except (
-            TextRegistrationInformation.DoesNotExist,
-            BooleanRegistrationInformation.DoesNotExist,
-            IntegerRegistrationInformation.DoesNotExist,
-        ):
-            return None
-
-    def set_value_for(self, registration, value):
-        if self.type == self.TEXT_FIELD:
-            value_set = self.textregistrationinformation_set
-        elif self.type == self.BOOLEAN_FIELD:
-            value_set = self.booleanregistrationinformation_set
-        elif self.type == self.INTEGER_FIELD:
-            value_set = self.integerregistrationinformation_set
-
-        try:
-            field_value = value_set.get(registration=registration)
-        except BooleanRegistrationInformation.DoesNotExist:
-            field_value = BooleanRegistrationInformation()
-        except TextRegistrationInformation.DoesNotExist:
-            field_value = TextRegistrationInformation()
-        except IntegerRegistrationInformation.DoesNotExist:
-            field_value = IntegerRegistrationInformation()
-
-        field_value.registration = registration
-        field_value.field = self
-        field_value.value = value
-        field_value.save()
-
-    def __str__(self):
-        return "{} ({})".format(self.name, dict(self.FIELD_TYPES)[self.type])
-
-    class Meta:
-        order_with_respect_to = "event"
-
-
-class AbstractRegistrationInformation(models.Model):
-    """Abstract to contain common things for registration information"""
-
-    registration = models.ForeignKey(Registration, models.CASCADE)
-    field = models.ForeignKey(RegistrationInformationField, models.CASCADE)
-    changed = models.DateTimeField(_("last changed"), auto_now=True)
-
-    def __str__(self):
-        return "{} - {}: {}".format(self.registration, self.field, self.value)
-
-    class Meta:
-        abstract = True
-
-
-class BooleanRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
-
-    value = models.BooleanField()
-
-
-class TextRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
-
-    value = models.TextField()
-
-
-class IntegerRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
-
-    value = models.IntegerField()
-
-
-class FeedToken(models.Model):
-    """Used to personalize the ical Feed"""
-
-    member = models.OneToOneField("members.Member", models.CASCADE)
-    token = models.CharField(max_length=32, editable=False)
-
-    def save(self, *args, **kwargs):
-        self.token = get_random_string(32)
-        super().save(*args, **kwargs)
-
-    @staticmethod
-    def get_member(token):
-        try:
-            return FeedToken.objects.get(token=token).member
-        except FeedToken.DoesNotExist:
-            return None
-
-    def __str__(self):
-        return "{} ({})".format(self.member.get_full_name(), self.token)

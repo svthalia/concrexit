@@ -8,7 +8,7 @@ from django.utils import timezone
 from activemembers.models import Committee, MemberGroupMembership
 from events.models import (
     Event,
-    Registration,
+    EventRegistration,
     RegistrationInformationField,
     BooleanRegistrationInformation,
     IntegerRegistrationInformation,
@@ -176,7 +176,7 @@ class RegistrationTest(TestCase):
         response = self.client.post("/events/1/registration/register/", follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.event.participants.count(), 1)
-        self.assertEqual(self.event.registration_set.first().member, self.member)
+        self.assertEqual(self.event.eventregistration_set.first().member, self.member)
 
     def test_registration_register_twice(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
@@ -203,7 +203,7 @@ class RegistrationTest(TestCase):
         self.event.registration_end = timezone.now() + datetime.timedelta(hours=1)
         self.event.cancel_deadline = timezone.now() + datetime.timedelta(hours=1)
         self.event.save()
-        Registration.objects.create(event=self.event, member=self.member)
+        EventRegistration.objects.create(event=self.event, member=self.member)
         response = self.client.post("/events/1/registration/cancel/", follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.event.participants.count(), 0)
@@ -249,7 +249,7 @@ class RegistrationTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(self.event.participants.count(), 1)
-        registration = self.event.registration_set.first()
+        registration = self.event.eventregistration_set.first()
         self.assertEqual(field1.get_value_for(registration), None)
         self.assertEqual(field2.get_value_for(registration), None)
         self.assertEqual(field3.get_value_for(registration), None)
@@ -346,7 +346,9 @@ class RegistrationTest(TestCase):
             required=False,
         )
 
-        registration = Registration.objects.create(event=self.event, member=self.member)
+        registration = EventRegistration.objects.create(
+            event=self.event, member=self.member
+        )
         BooleanRegistrationInformation.objects.create(
             registration=registration, field=field1, value=True
         )
@@ -361,7 +363,7 @@ class RegistrationTest(TestCase):
         response = self.client.get("/events/1/registration/", follow=True)
         self.assertEqual(response.status_code, 200)
 
-        registration = self.event.registration_set.first()
+        registration = self.event.eventregistration_set.first()
         self.assertEqual(field1.get_value_for(registration), True)
         self.assertEqual(field2.get_value_for(registration), 42)
         self.assertEqual(field3.get_value_for(registration), "text")
@@ -424,7 +426,7 @@ class RegistrationTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(self.event.participants.count(), 1)
-        registration = self.event.registration_set.first()
+        registration = self.event.eventregistration_set.first()
         self.assertEqual(field1.get_value_for(registration), False)
         self.assertEqual(field2.get_value_for(registration), 1337)
         self.assertEqual(field3.get_value_for(registration), "no text")
@@ -435,7 +437,7 @@ class RegistrationTest(TestCase):
         self.event.cancel_deadline = timezone.now() - datetime.timedelta(hours=1)
         self.event.send_cancel_email = True
         self.event.save()
-        Registration.objects.create(event=self.event, member=self.member)
+        EventRegistration.objects.create(event=self.event, member=self.member)
         response = self.client.post("/events/1/registration/cancel/", follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.event.participants.count(), 0)

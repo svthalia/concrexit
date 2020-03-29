@@ -5,7 +5,7 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from activemembers.models import Committee
-from events.models import Event, Registration
+from events.models import Event, EventRegistration
 from mailinglists.models import MailingList
 from members.models import Member
 
@@ -125,7 +125,7 @@ class EventTest(TestCase):
 
     def test_not_reached_participants_limit(self):
         self.event.max_participants = 1
-        Registration.objects.create(event=self.event, member=self.member)
+        EventRegistration.objects.create(event=self.event, member=self.member)
         self.assertTrue(self.event.reached_participants_limit())
 
     def test_registration_fine_required(self):
@@ -255,8 +255,8 @@ class RegistrationTest(TestCase):
         )
         cls.member1 = Member.objects.first()
         cls.member2 = Member.objects.all()[1]
-        cls.r1 = Registration.objects.create(event=cls.event, member=cls.member1)
-        cls.r2 = Registration.objects.create(event=cls.event, member=cls.member2)
+        cls.r1 = EventRegistration.objects.create(event=cls.event, member=cls.member1)
+        cls.r2 = EventRegistration.objects.create(event=cls.event, member=cls.member2)
 
     def setUp(self):
         self.r1.refresh_from_db()
@@ -290,10 +290,10 @@ class RegistrationTest(TestCase):
     def test_registration_either_name_or_member(self):
         self.r2.delete()
         self.r1.clean()
-        r2 = Registration.objects.create(event=self.event, name="test name")
+        r2 = EventRegistration.objects.create(event=self.event, name="test name")
         r2.clean()
         with self.assertRaises(ValidationError):
-            r3 = Registration.objects.create(
+            r3 = EventRegistration.objects.create(
                 event=self.event, name="test name", member=self.member2
             )
             r3.clean()

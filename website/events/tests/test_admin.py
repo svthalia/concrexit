@@ -10,7 +10,7 @@ from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership
 from events.admin import RegistrationInformationFieldInline, EventAdmin
-from events.models import Event, RegistrationInformationField, Registration
+from events.models import Event, RegistrationInformationField, EventRegistration
 from members.models import Member
 from utils.admin import DoNextTranslatedModelAdmin
 
@@ -229,13 +229,13 @@ class EventAdminTest(TestCase):
 
         self.event.max_participants = None
 
-        Registration.objects.create(
+        EventRegistration.objects.create(
             event=self.event,
             name="test_cancelled",
             date=timezone.now() - timezone.timedelta(days=1),
             date_cancelled=timezone.now() - timezone.timedelta(seconds=10),
         )
-        Registration.objects.create(event=self.event, name="test")
+        EventRegistration.objects.create(event=self.event, name="test")
 
         self.assertEqual(self.admin.num_participants(self.event), "1/∞")
         self.event.max_participants = 2

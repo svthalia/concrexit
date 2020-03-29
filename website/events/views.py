@@ -14,7 +14,7 @@ from events import services
 from events.exceptions import RegistrationError
 from payments.models import Payment
 from .forms import FieldsForm
-from .models import Event, Registration
+from .models import Event, EventRegistration
 
 
 class EventIndex(TemplateView):
@@ -58,10 +58,10 @@ class EventDetail(DetailView):
             context["registration_percentage"] = perc
 
         try:
-            context["registration"] = Registration.objects.get(
+            context["registration"] = EventRegistration.objects.get(
                 event=event, member=self.request.member
             )
-        except (Registration.DoesNotExist, TypeError):
+        except (EventRegistration.DoesNotExist, TypeError):
             pass
 
         context["permissions"] = services.event_permissions(self.request.member, event)

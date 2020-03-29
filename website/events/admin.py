@@ -165,7 +165,9 @@ class EventAdmin(DoNextTranslatedModelAdmin):
 
     def num_participants(self, obj):
         """Pretty-print the number of participants"""
-        num = obj.registration_set.exclude(date_cancelled__lt=timezone.now()).count()
+        num = obj.eventregistration_set.exclude(
+            date_cancelled__lt=timezone.now()
+        ).count()
         if not obj.max_participants:
             return "{}/∞".format(num)
         return "{}/{}".format(num, obj.max_participants)
@@ -286,7 +288,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         return custom_urls + urls
 
 
-@admin.register(models.Registration)
+@admin.register(models.EventRegistration)
 class RegistrationAdmin(DoNextTranslatedModelAdmin):
     """Custom admin for registrations"""
 

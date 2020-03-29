@@ -2,7 +2,7 @@ from django import forms
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from .models import RegistrationInformationField, Event, Registration
+from .models import RegistrationInformationField, Event, EventRegistration
 from .widgets import FieldsWidget
 
 
@@ -28,7 +28,7 @@ class RegistrationAdminForm(forms.ModelForm):
 
     class Meta:
         fields = "__all__"
-        model = Registration
+        model = EventRegistration
 
 
 class RegistrationInformationFieldForm(forms.ModelForm):

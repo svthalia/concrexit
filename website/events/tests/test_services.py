@@ -10,7 +10,7 @@ from freezegun import freeze_time
 from activemembers.models import Committee, MemberGroupMembership
 from events import services
 from events.exceptions import RegistrationError
-from events.models import Event, Registration, RegistrationInformationField
+from events.models import Event, EventRegistration, RegistrationInformationField
 from members.models import Member
 
 
@@ -76,7 +76,7 @@ class ServicesTest(TestCase):
         self.event.registration_end = timezone.now()
         self.assertEqual(None, services.is_user_registered(AnonymousUser(), self.event))
         self.assertFalse(services.is_user_registered(self.member, self.event))
-        Registration.objects.create(
+        EventRegistration.objects.create(
             event=self.event, member=self.member, date_cancelled=None
         )
 
@@ -117,7 +117,7 @@ class ServicesTest(TestCase):
             services.event_permissions(self.member, self.event),
         )
 
-        reg = Registration.objects.create(
+        reg = EventRegistration.objects.create(
             event=self.event, member=self.member, date_cancelled=None
         )
 
@@ -250,7 +250,7 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.cancel_registration(self.member, self.event)
 
-        registration = Registration.objects.create(
+        registration = EventRegistration.objects.create(
             event=self.event, member=self.member,
         )
 
@@ -278,7 +278,7 @@ class ServicesTest(TestCase):
         registration.date_cancelled = None
         registration.save()
 
-        Registration.objects.create(
+        EventRegistration.objects.create(
             event=self.event,
             member=Member.objects.filter(username="testuser").first(),
             date=timezone.make_aware(datetime(2017, 9, 1)),
@@ -300,7 +300,7 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.update_registration(self.member, self.event, field_values=None)
 
-        registration = Registration.objects.create(
+        registration = EventRegistration.objects.create(
             event=self.event, member=self.member,
         )
 
@@ -368,7 +368,7 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.update_registration(self.member, self.event, field_values=None)
 
-        registration = Registration.objects.create(event=self.event, name="test",)
+        registration = EventRegistration.objects.create(event=self.event, name="test",)
 
         services.update_registration(event=self.event, name="test", field_values=None)
 
@@ -434,7 +434,7 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.registration_fields(mock_request, self.member, self.event)
 
-        registration = Registration.objects.create(
+        registration = EventRegistration.objects.create(
             event=self.event, member=self.member,
         )
 

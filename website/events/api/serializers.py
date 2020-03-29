@@ -12,7 +12,7 @@ from payments.models import Payment
 from thaliawebsite.api.services import create_image_thumbnail_dict
 from events import services
 from events.exceptions import RegistrationError
-from events.models import Event, Registration, RegistrationInformationField
+from events.models import Event, EventRegistration, RegistrationInformationField
 from pizzas.models import PizzaEvent
 from thaliawebsite.templatetags.bleach_tags import bleach
 from utils.snippets import create_google_maps_url
@@ -161,11 +161,11 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     def _user_registration(self, instance):
         try:
             if self.context["request"].member:
-                reg = instance.registration_set.get(
+                reg = instance.eventregistration_set.get(
                     member=self.context["request"].member
                 )
                 return RegistrationAdminListSerializer(reg, context=self.context).data
-        except Registration.DoesNotExist:
+        except EventRegistration.DoesNotExist:
             pass
         return None
 
@@ -236,7 +236,7 @@ class RegistrationListSerializer(serializers.ModelSerializer):
     """Custom registration list serializer"""
 
     class Meta:
-        model = Registration
+        model = EventRegistration
         fields = ("pk", "member", "name", "avatar")
 
     name = serializers.SerializerMethodField("_name")
@@ -269,7 +269,7 @@ class RegistrationAdminListSerializer(RegistrationListSerializer):
     """Custom registration admin list serializer"""
 
     class Meta:
-        model = Registration
+        model = EventRegistration
         fields = (
             "pk",
             "member",
@@ -311,7 +311,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     information_fields = None
 
     class Meta:
-        model = Registration
+        model = EventRegistration
         fields = (
             "pk",
             "member",
