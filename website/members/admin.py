@@ -19,6 +19,7 @@ from . import forms, models
 
 class MembershipInline(admin.StackedInline):
     model = models.Membership
+    classes = ["collapse"]
     extra = 0
 
 
@@ -49,6 +50,7 @@ class ProfileInline(admin.StackedInline):
         "language",
         "event_permissions",
     ]
+    classes = ["collapse"]
     model = models.Profile
     can_delete = False
 
@@ -162,18 +164,24 @@ class UserAdmin(BaseUserAdmin):
         "profile__auto_renew",
     )
 
-    add_fieldsets = (
+    fieldsets = (
         (
-            None,
+            _("Personal"),
+            {"fields": ("first_name", "last_name", "email", "username", "password")},
+        ),
+        (
+            _("Permissions"),
             {
-                "classes": ("wide",),
                 "fields": (
-                    "first_name",
-                    "last_name",
-                    "username",
-                    "email",
-                    "send_welcome_email",
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                    "date_joined",
+                    "last_login",
                 ),
+                "classes": ("collapse",),
             },
         ),
     )
