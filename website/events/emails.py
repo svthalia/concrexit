@@ -5,7 +5,7 @@ from django.template.loader import get_template
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
-from events.models import Registration
+from events.models import EventRegistration
 from members.models import Profile
 
 
@@ -18,11 +18,11 @@ def notify_first_waiting(event):
     """
     if (
         event.max_participants is not None
-        and Registration.objects.filter(event=event, date_cancelled=None).count()
+        and EventRegistration.objects.filter(event=event, date_cancelled=None).count()
         > event.max_participants
     ):
         # Prepare email to send to the first person on the waiting list
-        first_waiting = Registration.objects.filter(
+        first_waiting = EventRegistration.objects.filter(
             event=event, date_cancelled=None
         ).order_by("date")[event.max_participants]
         first_waiting_member = first_waiting.member

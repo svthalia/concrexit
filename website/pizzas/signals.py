@@ -5,7 +5,9 @@ from utils.models.signals import suspendingreceiver
 
 
 @suspendingreceiver(
-    post_save, sender="events.Registration", dispatch_uid="pizzas_registration_save"
+    post_save,
+    sender="events.EventRegistration",
+    dispatch_uid="pizzas_registration_save",
 )
 def post_registration_save(sender, instance, **kwargs):
     """Update members on pizza reminder notification"""
