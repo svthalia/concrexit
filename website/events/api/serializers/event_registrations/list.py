@@ -1,238 +1,17 @@
 from django.conf import settings
 from django.templatetags.static import static
-from django.urls import reverse
-from django.utils import timezone
-from django.utils.html import strip_tags, strip_spaces_between_tags
-from html import unescape
 from rest_framework import serializers
 from rest_framework.fields import empty
 
+from events import services
+from events.exceptions import RegistrationError
+from events.models import EventRegistration, RegistrationInformationField
 from payments.api.fields import PaymentTypeField
 from payments.models import Payment
 from thaliawebsite.api.services import create_image_thumbnail_dict
-from events import services
-from events.exceptions import RegistrationError
-from events.models import Event, EventRegistration, RegistrationInformationField
-from pizzas.models import PizzaEvent
-from thaliawebsite.templatetags.bleach_tags import bleach
-from utils.snippets import create_google_maps_url
 
 
-class CalenderJSSerializer(serializers.ModelSerializer):
-    """
-    Serializer using the right format for CalendarJS
-    """
-
-    class Meta:
-        fields = (
-            "start",
-            "end",
-            "allDay",
-            "isBirthday",
-            "url",
-            "title",
-            "description",
-            "classNames",
-            "blank",
-        )
-
-    start = serializers.SerializerMethodField("_start")
-    end = serializers.SerializerMethodField("_end")
-    allDay = serializers.SerializerMethodField("_all_day")
-    isBirthday = serializers.SerializerMethodField("_is_birthday")
-    url = serializers.SerializerMethodField("_url")
-    title = serializers.SerializerMethodField("_title")
-    description = serializers.SerializerMethodField("_description")
-    classNames = serializers.SerializerMethodField("_class_names")
-    blank = serializers.SerializerMethodField("_target_blank")
-
-    def _start(self, instance):
-        return timezone.localtime(instance.start)
-
-    def _end(self, instance):
-        return timezone.localtime(instance.end)
-
-    def _all_day(self, instance):
-        return False
-
-    def _is_birthday(self, instance):
-        return False
-
-    def _url(self, instance):
-        raise NotImplementedError
-
-    def _title(self, instance):
-        return instance.title
-
-    def _description(self, instance):
-        return unescape(strip_tags(instance.description))
-
-    def _class_names(self, instance):
-        pass
-
-    def _target_blank(self, instance):
-        return False
-
-
-class EventCalenderJSSerializer(CalenderJSSerializer):
-    class Meta(CalenderJSSerializer.Meta):
-        model = Event
-
-    def _url(self, instance):
-        return reverse("events:event", kwargs={"pk": instance.id})
-
-    def _class_names(self, instance):
-        class_names = ["regular-event"]
-        if self.context["member"] and services.is_user_registered(
-            self.context["member"], instance
-        ):
-            class_names.append("has-registration")
-        return class_names
-
-
-class UnpublishedEventSerializer(CalenderJSSerializer):
-    """
-    See CalenderJSSerializer, customised classes
-    """
-
-    class Meta(CalenderJSSerializer.Meta):
-        model = Event
-
-    def _class_names(self, instance):
-        return ["unpublished-event"]
-
-    def _url(self, instance):
-        return reverse("admin:events_event_details", kwargs={"pk": instance.id})
-
-
-class EventRetrieveSerializer(serializers.ModelSerializer):
-    """
-    Serializer for events
-    """
-
-    class Meta:
-        model = Event
-        fields = (
-            "pk",
-            "title",
-            "description",
-            "start",
-            "end",
-            "organiser",
-            "category",
-            "registration_start",
-            "registration_end",
-            "cancel_deadline",
-            "location",
-            "map_location",
-            "price",
-            "fine",
-            "max_participants",
-            "num_participants",
-            "user_registration",
-            "registration_allowed",
-            "no_registration_message",
-            "has_fields",
-            "is_pizza_event",
-            "google_maps_url",
-            "is_admin",
-        )
-
-    description = serializers.SerializerMethodField("_description")
-    user_registration = serializers.SerializerMethodField("_user_registration")
-    num_participants = serializers.SerializerMethodField("_num_participants")
-    registration_allowed = serializers.SerializerMethodField("_registration_allowed")
-    has_fields = serializers.SerializerMethodField("_has_fields")
-    is_pizza_event = serializers.SerializerMethodField("_is_pizza_event")
-    google_maps_url = serializers.SerializerMethodField("_google_maps_url")
-    is_admin = serializers.SerializerMethodField("_is_admin")
-
-    def _description(self, instance):
-        return strip_spaces_between_tags(bleach(instance.description))
-
-    def _num_participants(self, instance):
-        if (
-            instance.max_participants
-            and instance.participants.count() > instance.max_participants
-        ):
-            return instance.max_participants
-        return instance.participants.count()
-
-    def _user_registration(self, instance):
-        try:
-            if self.context["request"].member:
-                reg = instance.eventregistration_set.get(
-                    member=self.context["request"].member
-                )
-                return RegistrationAdminListSerializer(reg, context=self.context).data
-        except EventRegistration.DoesNotExist:
-            pass
-        return None
-
-    def _registration_allowed(self, instance):
-        member = self.context["request"].member
-        return (
-            self.context["request"].user.is_authenticated
-            and member.has_active_membership
-            and member.can_attend_events
-        )
-
-    def _has_fields(self, instance):
-        return instance.has_fields()
-
-    def _is_pizza_event(self, instance):
-        return instance.is_pizza_event()
-
-    def _google_maps_url(self, instance):
-        return create_google_maps_url(instance.map_location, zoom=13, size="450x250")
-
-    def _is_admin(self, instance):
-        member = self.context["request"].member
-        return services.is_organiser(member, instance)
-
-
-class EventListSerializer(serializers.ModelSerializer):
-    """Custom list serializer for events"""
-
-    class Meta:
-        model = Event
-        fields = (
-            "pk",
-            "title",
-            "description",
-            "start",
-            "end",
-            "location",
-            "price",
-            "registered",
-            "pizza",
-            "registration_allowed",
-        )
-
-    description = serializers.SerializerMethodField("_description")
-    registered = serializers.SerializerMethodField("_registered")
-    pizza = serializers.SerializerMethodField("_pizza")
-
-    def _description(self, instance):
-        return unescape(strip_tags(instance.description))
-
-    def _registered(self, instance):
-        try:
-            registered = services.is_user_registered(
-                self.context["request"].user, instance,
-            )
-            if registered is None:
-                return False
-            return registered
-        except AttributeError:
-            return False
-
-    def _pizza(self, instance):
-        pizza_events = PizzaEvent.objects.filter(event=instance)
-        return pizza_events.exists()
-
-
-class RegistrationListSerializer(serializers.ModelSerializer):
+class EventRegistrationListSerializer(serializers.ModelSerializer):
     """Custom registration list serializer"""
 
     class Meta:
@@ -265,7 +44,7 @@ class RegistrationListSerializer(serializers.ModelSerializer):
         )
 
 
-class RegistrationAdminListSerializer(RegistrationListSerializer):
+class EventRegistrationAdminListSerializer(EventRegistrationListSerializer):
     """Custom registration admin list serializer"""
 
     class Meta:
@@ -305,7 +84,7 @@ class RegistrationAdminListSerializer(RegistrationListSerializer):
         return instance.name
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class EventRegistrationSerializer(serializers.ModelSerializer):
     """Registration serializer"""
 
     information_fields = None
