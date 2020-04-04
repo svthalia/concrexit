@@ -21,7 +21,7 @@ from activemembers.models import (
 )
 from documents.models import Document
 from education.models import Course, Category
-from events.models import Event, Registration
+from events.models import Event, EventRegistration
 from members.models import Profile, Member, Membership
 from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
@@ -120,7 +120,10 @@ class Command(BaseCommand):
         )
         parser.add_argument("--course", type=int, help="The amount of courses to add")
         parser.add_argument(
-            "-r", "--registration", type=int, help="The amount of registrations to add"
+            "-r",
+            "--registration",
+            type=int,
+            help="The amount of event registrations to add",
         )
         parser.add_argument("--payment", type=int, help="The amount of payments to add")
         parser.add_argument(
@@ -518,8 +521,8 @@ class Command(BaseCommand):
                 ):
                     return event
 
-    def create_registration(self, event_to_register_for=None):
-        registration = Registration()
+    def create_event_registration(self, event_to_register_for=None):
+        registration = EventRegistration()
 
         registration.member = Member.objects.order_by("?")[0]
 
@@ -736,7 +739,7 @@ class Command(BaseCommand):
         # Registrations need to be created before payments
         if options["registration"]:
             for _ in range(options["registration"]):
-                self.create_registration()
+                self.create_event_registration()
 
         if options["payment"]:
             for _ in range(options["payment"]):
