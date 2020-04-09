@@ -9,7 +9,7 @@ categories:
   - title: '🧰 Chores'
     label: 'chore'
   - title: '🛠 Refactoring'
-    label: 'docs'
+    label: 'refactor'
   - title: '📖 Documentation changes'
     label: 'docs'
   - title: '📦️ Dependency updates'
