@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-30 20:39+0200\n"
-"PO-Revision-Date: 2020-03-30 20:39+0200\n"
+"POT-Creation-Date: 2020-04-09 17:17+0200\n"
+"PO-Revision-Date: 2020-04-09 17:18+0200\n"
 "Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,11 +16,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.3\n"
 
 #: admin.py
 msgid "lecture year"
 msgstr "collegejaar"
+
+#: admin.py
+msgid "General"
+msgstr "Algemeen"
+
+#: admin.py
+msgid "Detail"
+msgstr "Detail"
+
+#: admin.py models/event_registration.py templates/events/event.html
+msgid "Registrations"
+msgstr "Aanmeldingen"
+
+#: admin.py
+msgid "Extra"
+msgstr "Extra"
 
 #: admin.py
 msgid "Event Date"
@@ -414,10 +430,6 @@ msgstr "Geef een lid of een naam op"
 #: models/event_registration.py templates/events/registration.html
 msgid "Registration"
 msgstr "Aanmelding"
-
-#: models/event_registration.py templates/events/event.html
-msgid "Registrations"
-msgstr "Aanmeldingen"
 
 #: models/registration_information_field.py
 msgid "Checkbox"

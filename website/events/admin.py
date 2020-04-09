@@ -22,7 +22,7 @@ from utils.snippets import datetime_to_lectureyear
 from . import forms, models
 
 
-class RegistrationInformationFieldInline(admin.StackedInline):
+class RegistrationInformationFieldInline(admin.TabularInline):
     """The inline for registration information fields in the Event admin"""
 
     form = forms.RegistrationInformationFieldForm
@@ -88,27 +88,6 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         RegistrationInformationFieldInline,
         PizzaEventInline,
     )
-    fields = (
-        "title",
-        "description",
-        "start",
-        "end",
-        "organiser",
-        "category",
-        "registration_start",
-        "registration_end",
-        "cancel_deadline",
-        "send_cancel_email",
-        "location",
-        "map_location",
-        "price",
-        "fine",
-        "max_participants",
-        "no_registration_message",
-        "published",
-        "slide",
-        "documents",
-    )
     list_display = (
         "overview_link",
         "event_date",
@@ -126,6 +105,41 @@ class EventAdmin(DoNextTranslatedModelAdmin):
     search_fields = ("title", "description")
     prepopulated_fields = {"map_location": ("location",)}
     filter_horizontal = ("documents",)
+
+    fieldsets = (
+        (_("General"), {"fields": ("title", "published", "organiser",)}),
+        (
+            _("Detail"),
+            {
+                "fields": (
+                    "category",
+                    "start",
+                    "end",
+                    "description",
+                    "location",
+                    "map_location",
+                ),
+                "classes": ("collapse", "start-open"),
+            },
+        ),
+        (
+            _("Registrations"),
+            {
+                "fields": (
+                    "price",
+                    "fine",
+                    "max_participants",
+                    "registration_start",
+                    "registration_end",
+                    "cancel_deadline",
+                    "send_cancel_email",
+                    "no_registration_message",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (_("Extra"), {"fields": ("slide", "documents"), "classes": ("collapse",)}),
+    )
 
     def overview_link(self, obj):
         return format_html(

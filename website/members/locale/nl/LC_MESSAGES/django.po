@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-31 15:05+0200\n"
-"PO-Revision-Date: 2020-03-31 15:06+0200\n"
+"POT-Creation-Date: 2020-04-09 17:16+0200\n"
+"PO-Revision-Date: 2020-04-09 17:17+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.3\n"
 
 #: admin.py
 msgid "current membership type"
@@ -53,6 +53,14 @@ msgstr "Ja"
 #: admin.py
 msgid "No"
 msgstr "Nee"
+
+#: admin.py
+msgid "Personal"
+msgstr "Persoonlijk"
+
+#: admin.py
+msgid "Permissions"
+msgstr "Rechten"
 
 #: admin.py forms.py
 msgid "First name"
