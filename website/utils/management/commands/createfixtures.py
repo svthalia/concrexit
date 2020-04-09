@@ -4,12 +4,13 @@ Provides the command to generate fixtures
 import math
 import random
 import string
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.utils.text import slugify
 
 from activemembers.models import (
     Board,
@@ -19,10 +20,14 @@ from activemembers.models import (
     MemberGroup,
 )
 from documents.models import Document
-from events.models import Event
+from education.models import Course, Category
+from events.models import Event, EventRegistration
 from members.models import Profile, Member, Membership
 from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
+from payments.models import Payment
+from payments.services import create_payment
+from photos.models import Album, Photo
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
 
@@ -112,6 +117,17 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             "-w", "--vacancy", type=int, help="The amount of fake vacancies to add"
+        )
+        parser.add_argument("--course", type=int, help="The amount of courses to add")
+        parser.add_argument(
+            "-r",
+            "--registration",
+            type=int,
+            help="The amount of event registrations to add",
+        )
+        parser.add_argument("--payment", type=int, help="The amount of payments to add")
+        parser.add_argument(
+            "--photoalbum", type=int, help="The amount of photo albums to add"
         )
 
     def create_board(self, lecture_year):
@@ -476,6 +492,125 @@ class Command(BaseCommand):
 
             item.save()
 
+    def create_course(self):
+        course = Course()
+
+        course.name_nl = _generate_title()
+        course.name_en = course.name_nl
+        course.ec = 3 if random.random() < 0.5 else 6
+
+        course.course_code = "NWI-" + "".join(random.choices(string.digits, k=5))
+
+        course.since = random.randint(2016, 2020)
+        if random.random() < 0.5:
+            course.until = max(course.since + random.randint(1, 5), datetime.now().year)
+
+        # Save so we can add categories
+        course.save()
+
+        for category in Category.objects.order_by("?")[: random.randint(1, 3)]:
+            course.categories.add(category)
+
+        course.save()
+
+    def get_event_to_register_for(self, member):
+        for event in Event.objects.filter(published=True).order_by("?"):
+            if event.registration_required and not event.reached_participants_limit():
+                if member.id not in event.registrations.values_list(
+                    "member", flat=True
+                ):
+                    return event
+
+    def create_event_registration(self, event_to_register_for=None):
+        registration = EventRegistration()
+
+        registration.member = Member.objects.order_by("?")[0]
+
+        possible_event = (
+            event_to_register_for
+            if event_to_register_for
+            else self.get_event_to_register_for(registration.member)
+        )
+        while not possible_event:
+            self.stdout.write("No possible events to register for")
+            self.stdout.write("Creating a new event")
+            self.create_event()
+            possible_event = self.get_event_to_register_for(registration.member)
+
+        registration.event = possible_event
+
+        registration.date = registration.event.registration_start
+
+        registration.save()
+
+        return registration
+
+    def create_payment(self):
+        possible_events = list(
+            filter(
+                lambda e: e.registrations.count() > 0,
+                Event.objects.filter(price__gt=0).order_by("?"),
+            )
+        )
+        while len(possible_events) == 0:
+            print("No event where can be payed could be found, creating a new event")
+            self.create_event()
+            possible_events = list(
+                filter(
+                    lambda e: e.registrations.count() > 0,
+                    Event.objects.filter(price__gt=0).order_by("?"),
+                )
+            )
+
+        event = possible_events[0]
+        if len(event.registrations) == 0:
+            print("No registrations found. Create some more registrations first")
+            return
+
+        registration = event.registrations.order_by("?")[0]
+
+        processed_by = Member.objects.order_by("?")[0]
+        create_payment(
+            registration,
+            processed_by,
+            random.choice([Payment.CASH, Payment.CARD, Payment.WIRE]),
+        )
+
+    def create_photo_album(self):
+        album = Album()
+
+        album.title_nl = _generate_title()
+        album.title_en = album.title_nl
+
+        album.date = _faker.date_between("-1y", "today")
+
+        album.slug = slugify("-".join([str(album.date), album.title_nl]))
+
+        if random.random() < 0.25:
+            album.hidden = True
+        if random.random() < 0.5:
+            album.shareable = True
+
+        album.save()
+
+        for _ in range(random.randint(20, 30)):
+            self.create_photo(album)
+
+    def create_photo(self, album):
+        photo = Photo()
+
+        photo.album = album
+
+        name = _generate_title()
+
+        igen = IconGenerator(5, 5)  # 5x5 blocks
+        icon = igen.generate(
+            name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+        )  # 620x620 pixels, with 10 pixels padding on each side
+        photo.file.save(f"{name}.jpeg", ContentFile(icon))
+
+        photo.save()
+
     def handle(self, *args, **options):
         """
         Handle the command being executed
@@ -493,6 +628,10 @@ class Command(BaseCommand):
             "vacancy",
             "document",
             "newsletter",
+            "course",
+            "registration",
+            "payment",
+            "photoalbum",
         ]
 
         if all([not options[opt] for opt in opts]):
@@ -514,6 +653,10 @@ class Command(BaseCommand):
                 "pizza": 5,
                 "newsletter": 2,
                 "document": 8,
+                "course": 10,
+                "registration": 20,
+                "payment": 5,
+                "photoalbum": 5,
             }
 
         # Users need to be generated before boards and committees
@@ -578,3 +721,30 @@ class Command(BaseCommand):
         if options["document"]:
             for __ in range(options["document"]):
                 self.create_document()
+
+        # Courses need to be created before exams and summaries
+        if options["course"]:
+            # Create course categories if needed
+            if len(Category.objects.all()) < 5:
+                for _ in range(5):
+                    category = Category()
+                    category.name_nl = _generate_title()
+                    category.name_en = category.name_nl
+
+                    category.save()
+
+            for _ in range(options["course"]):
+                self.create_course()
+
+        # Registrations need to be created before payments
+        if options["registration"]:
+            for _ in range(options["registration"]):
+                self.create_event_registration()
+
+        if options["payment"]:
+            for _ in range(options["payment"]):
+                self.create_payment()
+
+        if options["photoalbum"]:
+            for _ in range(options["photoalbum"]):
+                self.create_photo_album()
