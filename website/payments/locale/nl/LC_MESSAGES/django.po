@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-30 20:56+0100\n"
-"PO-Revision-Date: 2019-10-30 20:58+0100\n"
+"POT-Creation-Date: 2020-03-29 23:54+0200\n"
+"PO-Revision-Date: 2020-03-29 23:57+0200\n"
 "Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: admin.py
 msgid "paid by"
@@ -251,6 +251,10 @@ msgstr "Deze datum kan niet voor de vanaf datum liggen."
 #: models.py
 msgid "This field cannot have a value."
 msgstr "Dit veld mag geen waarde hebben."
+
+#: services.py
+msgid "This user does not have Thalia Pay enabled"
+msgstr "Deze gebruiker heeft Thalia Pay niet ingeschakeld"
 
 #: templates/admin/payments/change_form.html
 #: templates/payments/widgets/payment.html

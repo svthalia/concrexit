@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-02 16:51+0100\n"
-"PO-Revision-Date: 2019-03-02 16:52+0100\n"
+"POT-Creation-Date: 2020-03-29 23:51+0200\n"
+"PO-Revision-Date: 2020-03-29 23:52+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -11,7 +11,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#: admin.py models.py
+msgid "sent"
+msgstr "verzonden"
+
+#: admin.py
+msgid "Yes"
+msgstr "Ja"
+
+#: admin.py
+msgid "No"
+msgstr "Nee"
 
 #: admin.py
 msgid "Enable selected devices"
@@ -77,10 +89,6 @@ msgstr "url"
 #: models.py
 msgid "category"
 msgstr "categorie"
-
-#: models.py
-msgid "sent"
-msgstr "verzonden"
 
 #: models.py
 msgid "failure"
