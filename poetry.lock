@@ -361,10 +361,10 @@ description = "A Django application that provides a fully functional TinyMCE 4 e
 name = "django-tinymce4-lite"
 optional = false
 python-versions = "*"
-version = "1.7.5"
+version = "1.8.0"
 
 [package.dependencies]
-Django = ">=1.8.0"
+Django = ">=1.11"
 jsmin = "*"
 
 [[package]]
@@ -1089,7 +1089,7 @@ version = "0.5.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "e163fb0dc16eeb5d2a2cf44e3db367973f58d71f663a5669d00ccca064353add"
+content-hash = "b5fcc9c904066784c2cdd57aa6a890577963886546016b4fbe0ff16fc2dcefcc"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1299,8 +1299,8 @@ django-template-check = [
     {file = "django_template_check-0.3.1-py2.py3-none-any.whl", hash = "sha256:9a543d5e4c5db541c4e4c23b3139324caa494b52614e1c02febc93e8ce2fc395"},
 ]
 django-tinymce4-lite = [
-    {file = "django-tinymce4-lite-1.7.5.tar.gz", hash = "sha256:f0958117ddacc72596e80746729e02a727264413ab54b799f3b697a44e054e87"},
-    {file = "django_tinymce4_lite-1.7.5-py2.py3-none-any.whl", hash = "sha256:e6776bc5b2c7237705fea18668574bc1c4dff36babc90c99a2bb7b5d636eb5e8"},
+    {file = "django-tinymce4-lite-1.8.0.tar.gz", hash = "sha256:eb0ee7eda19970d06484f9e121871de01287b5345c4007ea2582d6f80ec3edb3"},
+    {file = "django_tinymce4_lite-1.8.0-py3-none-any.whl", hash = "sha256:2d53510ddb5fe20f25e525d4eaf7c8f8a567b85c9cc29f8ab2964419d9352d88"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.11.0-py3-none-any.whl", hash = "sha256:05809fc66e1c997fd9a32ea5730d9f4ba28b109b9da71fccfa5ff241201fd0a4"},

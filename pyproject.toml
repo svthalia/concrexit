@@ -10,7 +10,7 @@ python = "^3.7"
 django-localflavor = { git = "https://github.com/django/django-localflavor.git", rev="d2ce849484640999a2fde7106407f7217a3c95c1" }
 freezegun = "0.3.15"
 bleach = "3.1.4"
-django-tinymce4-lite = "1.7.5"
+django-tinymce4-lite = "1.8.0"
 djangorestframework = "3.11.0"
 django-ical = "1.7.0"
 django-libsass = "0.8.0"
