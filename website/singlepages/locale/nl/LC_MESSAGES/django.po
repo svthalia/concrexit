@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-29 23:48+0200\n"
-"PO-Revision-Date: 2020-03-29 23:49+0200\n"
+"POT-Creation-Date: 2020-04-22 22:23+0200\n"
+"PO-Revision-Date: 2020-04-22 22:24+0200\n"
 "Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.3\n"
 
 #: apps.py
 msgid "Singlepages"
@@ -183,6 +183,10 @@ msgstr "E-mail:"
 #: templates/singlepages/contact.html
 msgid "general"
 msgstr "algemeen"
+
+#: templates/singlepages/contact.html
+msgid "collaboration@thalia.nu"
+msgstr "samenwerking@thalia.nu"
 
 #: templates/singlepages/contact.html
 msgid "communication w.r.t. promoting your company (activities)"
