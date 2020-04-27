@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
 
    members.api
+   members.models
 
 Submodules
 ----------
@@ -68,14 +69,6 @@ members.middleware module
 -------------------------
 
 .. automodule:: members.middleware
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-members.models module
----------------------
-
-.. automodule:: members.models
    :members:
    :undoc-members:
    :show-inheritance:
