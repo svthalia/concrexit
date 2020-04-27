@@ -231,6 +231,12 @@ class Profile(models.Model):
         default=True,
     )
 
+    receive_magazine = models.BooleanField(
+        verbose_name=_("Receive the Thabloid"),
+        help_text=_("Receive printed Thabloid magazines"),
+        default=True,
+    )
+
     # --- Membership preference ----
 
     auto_renew = models.BooleanField(

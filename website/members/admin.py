@@ -36,6 +36,7 @@ class ProfileInline(admin.StackedInline):
         "phone_number",
         "receive_optin",
         "receive_newsletter",
+        "receive_magazine",
         "birthday",
         "show_birthday",
         "auto_renew",
@@ -160,8 +161,11 @@ class UserAdmin(BaseUserAdmin):
         "groups",
         AgeListFilter,
         "profile__event_permissions",
-        "profile__starting_year",
         "profile__auto_renew",
+        "profile__receive_optin",
+        "profile__receive_newsletter",
+        "profile__receive_magazine",
+        "profile__starting_year",
     )
 
     fieldsets = (
@@ -236,16 +240,11 @@ class UserAdmin(BaseUserAdmin):
             )
         return response
 
-    address_csv_export.short_description = _(
-        "Download address label for " "selected users"
-    )
+    address_csv_export.short_description = _("Download addresses for selected users")
 
     def student_number_csv_export(self, request, queryset):
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
-                                           filename="student_numbers.csv"'
+        response["Content-Disposition"] = 'attachment;filename="student_numbers.csv"'
         writer = csv.writer(response)
         writer.writerow([_("First name"), _("Last name"), _("Student number")])
         for user in queryset.exclude(profile=None):
@@ -255,7 +254,7 @@ class UserAdmin(BaseUserAdmin):
         return response
 
     student_number_csv_export.short_description = _(
-        "Download student number " "label for selected users"
+        "Download student number export for selected users"
     )
 
     def minimise_data(self, request, queryset):

@@ -33,6 +33,7 @@ class ProfileForm(forms.ModelForm):
             "language",
             "receive_optin",
             "receive_newsletter",
+            "receive_magazine",
             "email_gsuite_only",
         ]
         model = Profile

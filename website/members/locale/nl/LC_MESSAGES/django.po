@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-09 17:16+0200\n"
-"PO-Revision-Date: 2020-04-09 17:17+0200\n"
+"POT-Creation-Date: 2020-04-27 22:16+0200\n"
+"PO-Revision-Date: 2020-04-27 22:17+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -86,28 +86,28 @@ msgstr "Adres"
 msgid "Address line 2"
 msgstr "Tweede adresregel"
 
-#: admin.py models.py
+#: admin.py models/profile.py
 msgid "Postal code"
 msgstr "Postcode"
 
-#: admin.py models.py
+#: admin.py models/profile.py
 msgid "City"
 msgstr "Woonplaats"
 
-#: admin.py models.py
+#: admin.py models/profile.py
 msgid "Country"
 msgstr "Land"
 
 #: admin.py
-msgid "Download address label for selected users"
-msgstr "Download adreslabels voor geselecteerde gebruikers"
+msgid "Download addresses for selected users"
+msgstr "Download adressen voor geselecteerde gebruikers"
 
-#: admin.py models.py
+#: admin.py models/profile.py
 msgid "Student number"
 msgstr "Studentnummer"
 
 #: admin.py
-msgid "Download student number label for selected users"
+msgid "Download student number export for selected users"
 msgstr "Download studentnummers voor geselecteerde gebruikers"
 
 #: admin.py
@@ -192,88 +192,186 @@ msgstr "Gebruik 64 karakters of minder. Alleen letters en cijfers."
 msgid "Email address"
 msgstr "E-mailadres"
 
-#: models.py
+#: models/email_change.py
+msgid "created at"
+msgstr "gemaakt op"
+
+#: models/email_change.py
+msgid "member"
+msgstr "lid"
+
+#: models/email_change.py
+msgid "email"
+msgstr "e-mail"
+
+#: models/email_change.py
+msgid "verified"
+msgstr "geverifieerd"
+
+#: models/email_change.py
+msgid "the new email address is valid"
+msgstr "het nieuwe e-mailadres is geverifieerd"
+
+#: models/email_change.py
+msgid "confirmed"
+msgstr "bevestigd"
+
+#: models/email_change.py
+msgid "the old email address was checked"
+msgstr "het oude e-mailadres is gecontroleerd"
+
+#: models/email_change.py
+msgid ""
+"Email change request for {} to {} created at {} (confirmed: {}, verified: "
+"{})."
+msgstr ""
+"E-mail wijzigingsverzoek voor {} naar {} gemaakt op {} (bevestigd: {}, "
+"geverifieerd: {})."
+
+#: models/email_change.py
+msgid "You cannot use an email address from this domain for your account."
+msgstr ""
+"Je kunt geen e-mailadres van deze domeinnaam gebruiken voor je account."
+
+#: models/email_change.py
+msgid "Please enter a new email address."
+msgstr "Vul een nieuw e-mailadres in."
+
+#: models/member.py
 msgid "Access NextCloud as admin"
 msgstr "Toegang tot NextCloud als admin"
 
-#: models.py
+#: models/member.py
 msgid "Is this user currently active"
 msgstr "Is deze user op dit moment actief"
 
-#: models.py
+#: models/membership.py
+msgid "Member"
+msgstr "Lid"
+
+#: models/membership.py
+msgid "Benefactor"
+msgstr "Begunstiger"
+
+#: models/membership.py
+msgid "Honorary Member"
+msgstr "Erelid"
+
+#: models/membership.py templates/members/user/profile.html
+msgid "Membership type"
+msgstr "Lidtype"
+
+#: models/membership.py
+msgid "User"
+msgstr "Gebruiker"
+
+#: models/membership.py
+msgid "Membership since"
+msgstr "Lid sinds"
+
+#: models/membership.py
+msgid "The date the member started holding this membership."
+msgstr "De datum waarop het lid dit lidmaatschap is begonnen."
+
+#: models/membership.py
+msgid "Membership until"
+msgstr "Lid tot"
+
+#: models/membership.py
+msgid "The date the member stops holding this membership."
+msgstr "De datum waarop het lid dit lidmaatschap beëindigd."
+
+#: models/membership.py
+msgid "Membership of type {} for {} ({}) starting {}"
+msgstr "Lidmaatschap van type {} van {} ({}) gestart {}"
+
+#: models/membership.py
+msgctxt "Membership until x"
+msgid " until {}"
+msgstr " tot {}"
+
+#: models/membership.py
+msgid "End date can't be before start date"
+msgstr "De einddatum kan niet eerder zijn dan de startdatum"
+
+#: models/membership.py
+msgid "A membership already exists for that period"
+msgstr "Er bestaat al een lidmaatschap voor deze periode"
+
+#: models/profile.py
 msgid "Computing Science"
 msgstr "Informatica (Computing Science)"
 
-#: models.py
+#: models/profile.py
 msgid "Information Sciences"
 msgstr "Informatiekunde (Information Sciences)"
 
-#: models.py templates/members/user/profile.html
+#: models/profile.py templates/members/user/profile.html
 msgid "Study programme"
 msgstr "Studie"
 
-#: models.py
+#: models/profile.py
 msgid "Enter a valid student- or e/z/u-number."
 msgstr "Voer een geldig student- of e/z/u-nummer in."
 
-#: models.py
+#: models/profile.py
 msgid "Starting year"
 msgstr "Startjaar"
 
-#: models.py
+#: models/profile.py
 msgid "The year this member started studying."
 msgstr "Het jaar waarop dit lid begon met studeren."
 
-#: models.py
+#: models/profile.py
 msgid "please use the format <street> <number>"
 msgstr "specificeer als <straat> <nummer>"
 
-#: models.py
+#: models/profile.py
 msgid "Street and house number"
 msgstr "Straat en huisnummer"
 
-#: models.py
+#: models/profile.py
 msgid "Second address line"
 msgstr "Tweede adresregel"
 
-#: models.py
+#: models/profile.py
 msgid "Phone number"
 msgstr "Telefoonnummer"
 
-#: models.py
+#: models/profile.py
 msgid "Enter a phone number so Thalia may reach you"
 msgstr "Voer een telefoonnummer in zodat Thalia je kan bereiken"
 
-#: models.py
+#: models/profile.py
 msgid "Please enter a valid phone number"
 msgstr "Voer svp een geldig telefoonnummer in"
 
-#: models.py
+#: models/profile.py
 msgid "Emergency contact name"
 msgstr "Contact voor noodgevallen"
 
-#: models.py
+#: models/profile.py
 msgid "Who should we contact in case of emergencies"
 msgstr "Wie Thalia moet bereiken in bij noodgevallen"
 
-#: models.py
+#: models/profile.py
 msgid "Emergency contact phone number"
 msgstr "Telefoonnummer noodcontact"
 
-#: models.py
+#: models/profile.py
 msgid "The phone number for the emergency contact"
 msgstr "Het telefoonummer van de noodcontact"
 
-#: models.py templates/members/user/edit_profile.html
+#: models/profile.py templates/members/user/edit_profile.html
 #: templates/members/user/profile.html
 msgid "Birthday"
 msgstr "Verjaardag"
 
-#: models.py
+#: models/profile.py
 msgid "Display birthday"
 msgstr "Laat verjaardag zien"
 
-#: models.py
+#: models/profile.py
 msgid ""
 "Show your birthday to other members on your profile page and in the birthday "
 "calendar"
@@ -281,123 +379,131 @@ msgstr ""
 "Toon je verjaardag aan andere leden op je profielpagina en in de "
 "verjaardagskalender"
 
-#: models.py templates/members/user/profile.html
+#: models/profile.py templates/members/user/profile.html
 msgid "Website"
 msgstr "Website"
 
-#: models.py
+#: models/profile.py
 msgid "Website to display on your profile page"
 msgstr "Website om op je profiel te linken"
 
-#: models.py
+#: models/profile.py
 msgid "Profile text"
 msgstr "Profieltekst"
 
-#: models.py
+#: models/profile.py
 msgid "Text to display on your profile"
 msgstr "Tekst om te laten zien op je profielpagina"
 
-#: models.py
+#: models/profile.py
 msgid "Initials"
 msgstr "Initialen"
 
-#: models.py
+#: models/profile.py
 msgid "Nickname"
 msgstr "Bijnaam"
 
-#: models.py
+#: models/profile.py
 msgid "How to display name"
 msgstr "Weergave naam"
 
-#: models.py
+#: models/profile.py
 msgid "Show full name"
 msgstr "Volledige naam"
 
-#: models.py
+#: models/profile.py
 msgid "Show only nickname"
 msgstr "Alleen bijnaam"
 
-#: models.py
+#: models/profile.py
 msgid "Show only first name"
 msgstr "Alleen voornaam"
 
-#: models.py
+#: models/profile.py
 msgid "Show initials and last name"
 msgstr "Alleen initialen en achternaam"
 
-#: models.py
+#: models/profile.py
 msgid "Show name like \"John 'nickname' Doe\""
 msgstr "Laat zien als \"John 'bijnaam' Doe\""
 
-#: models.py
+#: models/profile.py
 msgid "Show nickname and last name"
 msgstr "Laat bijnaam en achternaam zien"
 
-#: models.py
+#: models/profile.py
 msgid "Photo"
 msgstr "Foto"
 
-#: models.py
+#: models/profile.py
 msgid "Which events can this member attend"
 msgstr "Welke evenementen mag dit lid bijwonen"
 
-#: models.py
+#: models/profile.py
 msgid "All events"
 msgstr "Alle evenementen"
 
-#: models.py
+#: models/profile.py
 msgid "User may not attend events"
 msgstr "Gebruiker mag niet naar evenementen"
 
-#: models.py
+#: models/profile.py
 msgid "User may not attend drinks"
 msgstr "Gebruiker mag niet naar borrels"
 
-#: models.py
+#: models/profile.py
 msgid "User may not attend anything"
 msgstr "Gebruiker mag nergens heen"
 
-#: models.py
+#: models/profile.py
 msgid "Preferred language"
 msgstr "Voorkeurstaal"
 
-#: models.py
+#: models/profile.py
 msgid "Preferred language for e.g. newsletters"
 msgstr "Voorkeurstaal voor b.v.b. nieuwsbrieven"
 
-#: models.py
+#: models/profile.py
 msgid "Receive opt-in mailings"
 msgstr "Ontvang opt-in mailings"
 
-#: models.py
+#: models/profile.py
 msgid "Receive mailings about vacancies and events from Thalia's partners."
 msgstr "Ontvang mailings over vacatures en evenementen van Thalia's partners."
 
-#: models.py
+#: models/profile.py
 msgid "Receive newsletter"
 msgstr "Ontvang nieuwsbrief"
 
-#: models.py
+#: models/profile.py
 msgid "Receive the Thalia Newsletter"
 msgstr "Ontvang de Thalia nieuwsbrief"
 
-#: models.py
+#: models/profile.py
+msgid "Receive the Thabloid"
+msgstr "Ontvang de Thabloid"
+
+#: models/profile.py
+msgid "Receive printed Thabloid magazines"
+msgstr "Ontvang geprinte Thabloid tijdschriften"
+
+#: models/profile.py
 msgid "Yes, enable auto renewal."
 msgstr "Ja, verleng automatisch."
 
-#: models.py
+#: models/profile.py
 msgid "No, manual renewal required."
 msgstr "Nee, handmatige verlenging vereist."
 
-#: models.py
+#: models/profile.py
 msgid "Automatically renew membership"
 msgstr "Lidmaatschap automatisch verlengen"
 
-#: models.py
+#: models/profile.py
 msgid "Only receive Thalia emails on G Suite-account"
 msgstr "Ontvang Thalia emails alleen op je G Suite account"
 
-#: models.py
+#: models/profile.py
 msgid ""
 "If you enable this option you will no longer receive emails send to you by "
 "Thalia on your personal email address. We will only use your G Suite email "
@@ -407,120 +513,22 @@ msgstr ""
 "op je persoonlijke e-mailadres. Alleen je G Suite e-mailadres zal nog worden "
 "gebruikt."
 
-#: models.py
+#: models/profile.py
 msgid "Display name"
 msgstr "Weergavenaam"
 
-#: models.py
+#: models/profile.py
 msgid "You need to enter a nickname to use it as display name"
 msgstr ""
 "Je moet een bijnaam invoeren voordat je deze kunt gebruiken als weergavenaam"
 
-#: models.py
+#: models/profile.py
 msgid "A birthday cannot be in the future."
 msgstr "Een verjaardag kan niet in de toekomst liggen."
 
-#: models.py
+#: models/profile.py
 msgid "Profile for {}"
 msgstr "Profiel voor {}"
-
-#: models.py
-msgid "Member"
-msgstr "Lid"
-
-#: models.py
-msgid "Benefactor"
-msgstr "Begunstiger"
-
-#: models.py
-msgid "Honorary Member"
-msgstr "Erelid"
-
-#: models.py templates/members/user/profile.html
-msgid "Membership type"
-msgstr "Lidtype"
-
-#: models.py
-msgid "User"
-msgstr "Gebruiker"
-
-#: models.py
-msgid "Membership since"
-msgstr "Lid sinds"
-
-#: models.py
-msgid "The date the member started holding this membership."
-msgstr "De datum waarop het lid dit lidmaatschap is begonnen."
-
-#: models.py
-msgid "Membership until"
-msgstr "Lid tot"
-
-#: models.py
-msgid "The date the member stops holding this membership."
-msgstr "De datum waarop het lid dit lidmaatschap beëindigd."
-
-#: models.py
-msgid "Membership of type {} for {} ({}) starting {}"
-msgstr "Lidmaatschap van type {} van {} ({}) gestart {}"
-
-#: models.py
-msgctxt "Membership until x"
-msgid " until {}"
-msgstr " tot {}"
-
-#: models.py
-msgid "End date can't be before start date"
-msgstr "De einddatum kan niet eerder zijn dan de startdatum"
-
-#: models.py
-msgid "A membership already exists for that period"
-msgstr "Er bestaat al een lidmaatschap voor deze periode"
-
-#: models.py
-msgid "created at"
-msgstr "gemaakt op"
-
-#: models.py
-msgid "member"
-msgstr "lid"
-
-#: models.py
-msgid "email"
-msgstr "e-mail"
-
-#: models.py
-msgid "verified"
-msgstr "geverifieerd"
-
-#: models.py
-msgid "the new email address is valid"
-msgstr "het nieuwe e-mailadres is geverifieerd"
-
-#: models.py
-msgid "confirmed"
-msgstr "bevestigd"
-
-#: models.py
-msgid "the old email address was checked"
-msgstr "het oude e-mailadres is gecontroleerd"
-
-#: models.py
-msgid ""
-"Email change request for {} to {} created at {} (confirmed: {}, verified: "
-"{})."
-msgstr ""
-"E-mail wijzigingsverzoek voor {} naar {} gemaakt op {} (bevestigd: {}, "
-"geverifieerd: {})."
-
-#: models.py
-msgid "You cannot use an email address from this domain for your account."
-msgstr ""
-"Je kunt geen e-mailadres van deze domeinnaam gebruiken voor je account."
-
-#: models.py
-msgid "Please enter a new email address."
-msgstr "Vul een nieuw e-mailadres in."
 
 #: services.py templates/members/index.html
 msgid "Older"

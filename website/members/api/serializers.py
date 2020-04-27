@@ -157,6 +157,7 @@ class ProfileEditSerializer(serializers.ModelSerializer):
             "language",
             "receive_optin",
             "receive_newsletter",
+            "receive_magazine",
             "display_name",
             "avatar",
             "birthday",
