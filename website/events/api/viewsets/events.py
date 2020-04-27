@@ -1,11 +1,8 @@
-"""Defines the viewsets of the events package"""
-
 from django.utils import timezone
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import (
     IsAuthenticated,
     IsAdminUser,
@@ -13,18 +10,17 @@ from rest_framework.permissions import (
 )
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-from rest_framework.viewsets import GenericViewSet
 
 from events import services
 from events.api.permissions import UnpublishedEventPermissions
 from events.api.serializers import (
-    EventCalenderJSSerializer,
-    UnpublishedEventSerializer,
+    EventsCalenderJSSerializer,
+    UnpublishedEventsCalenderJSSerializer,
     EventRetrieveSerializer,
     EventListSerializer,
-    RegistrationListSerializer,
-    RegistrationAdminListSerializer,
-    RegistrationSerializer,
+    EventRegistrationSerializer,
+    EventRegistrationAdminListSerializer,
+    EventRegistrationListSerializer,
 )
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
@@ -74,7 +70,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
             return EventListSerializer
         if self.action == "retrieve":
             return EventRetrieveSerializer
-        return EventCalenderJSSerializer
+        return EventsCalenderJSSerializer
 
     def get_serializer_context(self):
         return super().get_serializer_context()
@@ -94,7 +90,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         if request.method.lower() == "post":
             try:
                 registration = services.create_registration(request.member, event)
-                serializer = RegistrationSerializer(
+                serializer = EventRegistrationSerializer(
                     instance=registration, context={"request": request}
                 )
                 return Response(status=201, data=serializer.data)
@@ -105,11 +101,9 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
         # Make sure you can only access other registrations when you have
         # the permissions to do so
-        if not services.is_organiser(request.member, event):
-            status = "registered"
-
-        queryset = EventRegistration.objects.filter(event=pk)
-        if status is not None:
+        context = {"request": request}
+        if services.is_organiser(self.request.member, event):
+            queryset = EventRegistration.objects.filter(event=pk)
             if status == "queued":
                 queryset = EventRegistration.objects.filter(
                     event=pk, date_cancelled=None
@@ -123,14 +117,16 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
                     event=pk, date_cancelled=None
                 )[: event.max_participants]
 
-        context = {"request": request}
-        if services.is_organiser(self.request.member, event):
-            serializer = RegistrationAdminListSerializer(
+            serializer = EventRegistrationAdminListSerializer(
                 queryset, many=True, context=context
             )
         else:
-            serializer = RegistrationListSerializer(
-                queryset, many=True, context=context
+            serializer = EventRegistrationListSerializer(
+                EventRegistration.objects.filter(event=pk, date_cancelled=None)[
+                    : event.max_participants
+                ],
+                many=True,
+                context=context,
             )
 
         return Response(serializer.data)
@@ -148,7 +144,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
         queryset = Event.objects.filter(end__gte=start, start__lte=end, published=True)
 
-        serializer = EventCalenderJSSerializer(
+        serializer = EventsCalenderJSSerializer(
             queryset, many=True, context={"member": request.member}
         )
         return Response(serializer.data)
@@ -168,66 +164,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
         queryset = Event.objects.filter(end__gte=start, start__lte=end, published=False)
 
-        serializer = UnpublishedEventSerializer(
+        serializer = UnpublishedEventsCalenderJSSerializer(
             queryset, many=True, context={"member": request.member}
         )
         return Response(serializer.data)
-
-
-class RegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
-    """
-    Defines the viewset for registrations, requires an authenticated user.
-    Has custom update and destroy methods that use the services.
-    """
-
-    queryset = EventRegistration.objects.all()
-    serializer_class = RegistrationSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context["request"] = self.request
-        return context
-
-    def get_object(self):
-        instance = super().get_object()
-        if (
-            instance.name or instance.member.pk != self.request.member.pk
-        ) and not services.is_organiser(self.request.member, instance.event):
-            raise NotFound()
-
-        return instance
-
-    # Always set instance so that OPTIONS call will show the info fields too
-    def get_serializer(self, *args, **kwargs):
-        if len(args) == 0 and "instance" not in kwargs:
-            kwargs["instance"] = self.get_object()
-        return super().get_serializer(*args, **kwargs)
-
-    def perform_update(self, serializer):
-        registration = serializer.instance
-
-        member = self.request.member
-        if (
-            member
-            and member.has_perm("events.change_registration")
-            and services.is_organiser(member, registration.event)
-        ):
-            services.update_registration_by_organiser(
-                registration, self.request.member, serializer.validated_data
-            )
-
-        services.update_registration(
-            registration=registration, field_values=serializer.field_values()
-        )
-        serializer.information_fields = services.registration_fields(
-            serializer.context["request"], registration=registration
-        )
-
-    def destroy(self, request, pk=None, **kwargs):
-        registration = self.get_object()
-        try:
-            services.cancel_registration(registration.member, registration.event)
-            return Response(status=204)
-        except RegistrationError as e:
-            raise PermissionDenied(detail=e)
