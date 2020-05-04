@@ -76,6 +76,8 @@ if os.environ.get("DJANGO_SSLONLY"):
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
+SECURE_CONTENT_TYPE_NOSNIFF = False
+
 # Use caching template loader
 TEMPLATES = [
     {
