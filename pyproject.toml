@@ -39,7 +39,7 @@ docs = ["recommonmark", "sphinx"]
 django-template-check = "0.3.1"
 factory_boy = "2.12"
 pydenticon = "0.3.1"
-Faker = "4.0"
+Faker = "4.0.3"
 coverage = {extras = ["toml"], version = "^5.0.3"}
 black = "19.10b0"
 
