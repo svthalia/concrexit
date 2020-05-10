@@ -288,7 +288,7 @@ def _create_member_from_registration(registration: Registration) -> Member:
 
     # Create user
     user = get_user_model().objects.create_user(
-        username=registration.username,
+        username=registration.username.lower(),
         email=registration.email,
         password=password,
         first_name=registration.first_name,
