@@ -404,7 +404,7 @@ description = "Faker is a Python package that generates fake data for you."
 name = "faker"
 optional = false
 python-versions = ">=3.4"
-version = "4.0.0"
+version = "4.0.3"
 
 [package.dependencies]
 python-dateutil = ">=2.4"
@@ -1090,7 +1090,7 @@ version = "0.5.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "6eca43530655331ecb3613e7cfc1e7536a0d1ee6dafe75dbc846c8e8f60d15f1"
+content-hash = "019556e468bc92f1c122a922995ca6398e8f031ed0ce05efb9c45adc6b61ea55"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1316,8 +1316,8 @@ factory-boy = [
     {file = "factory_boy-2.12.0.tar.gz", hash = "sha256:faf48d608a1735f0d0a3c9cbf536d64f9132b547dae7ba452c4d99a79e84a370"},
 ]
 faker = [
-    {file = "Faker-4.0.0-py3-none-any.whl", hash = "sha256:047d4d1791bfb3756264da670d99df13d799bb36e7d88774b1585a82d05dbaec"},
-    {file = "Faker-4.0.0.tar.gz", hash = "sha256:1b1a58961683b30c574520d0c739c4443e0ef6a185c04382e8cc888273dbebed"},
+    {file = "Faker-4.0.3-py3-none-any.whl", hash = "sha256:53bf2c8a2de8af271466e7b9cc2f08ecf83c4c947981680eb61080779a0adace"},
+    {file = "Faker-4.0.3.tar.gz", hash = "sha256:7292806948ed848f1bcea1e7b963bae6f398687d1da0ea096e156fea2787f454"},
 ]
 firebase-admin = [
     {file = "firebase_admin-4.2.0-py3-none-any.whl", hash = "sha256:cfc3ea91c60105d51cdd52cc918f2df34ea6902144573a346fc116a210fcdc61"},
