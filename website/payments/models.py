@@ -39,7 +39,11 @@ class Payment(models.Model):
     )
 
     amount = models.DecimalField(
-        blank=False, null=False, max_digits=5, decimal_places=2
+        verbose_name=_("amount"),
+        blank=False,
+        null=False,
+        max_digits=5,
+        decimal_places=2,
     )
 
     processing_date = models.DateTimeField(_("processing date"), blank=True, null=True,)
@@ -47,6 +51,7 @@ class Payment(models.Model):
     paid_by = models.ForeignKey(
         "members.Member",
         models.CASCADE,
+        verbose_name=_("paid by"),
         related_name="paid_payment_set",
         blank=False,
         null=True,
@@ -55,13 +60,14 @@ class Payment(models.Model):
     processed_by = models.ForeignKey(
         "members.Member",
         models.CASCADE,
+        verbose_name=_("processed by"),
         related_name="processed_payment_set",
         blank=False,
         null=True,
     )
 
-    notes = models.TextField(blank=True, null=True)
-    topic = models.CharField(max_length=255, default="Unknown")
+    notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
+    topic = models.CharField(verbose_name=_("topic"), max_length=255, default="Unknown")
 
     @property
     def processed(self):
