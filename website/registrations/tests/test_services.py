@@ -338,7 +338,9 @@ class ServicesTest(TestCase):
 
     @mock.patch("registrations.services.check_unique_user")
     def test_create_member_from_registration(self, check_unique_user):
-        self.e1.username = "jdoe"
+        # We use capitalisation here because we want
+        # to test if the username is lowercased
+        self.e1.username = "JDoe"
         self.e1.save()
 
         check_unique_user.return_value = False
