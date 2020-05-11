@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 22:16+0200\n"
-"PO-Revision-Date: 2020-04-27 22:17+0200\n"
+"POT-Creation-Date: 2020-05-10 20:31+0200\n"
+"PO-Revision-Date: 2020-05-10 20:22+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -728,162 +728,91 @@ msgstr ""
 "te doen."
 
 #: templates/members/email/information_check.html
-msgid "membership information check"
-msgstr "controle gegevens lidmaatschap"
-
-#: templates/members/email/information_check.html
-msgid ""
-"\n"
-"                    We currently have the following information about you in "
-"our database.<br>\n"
-"                    Via this email we'd like to ask you to check the "
-"accuracy of this data.<br>\n"
-"                    "
-msgstr ""
-"\n"
-"                    Hieronder vind je de (meeste) gegevens die we op dit "
-"moment van je geregistreerd hebben.<br>\n"
-"                    Wil je deze controleren op juistheid?<br>\n"
-"                    "
-
-#: templates/members/email/information_check.html
-msgid "username:"
-msgstr "gebruikersnaam:"
-
-#: templates/members/email/information_check.html
-msgid "name:"
-msgstr "naam:"
-
-#: templates/members/email/information_check.html
-msgid "address:"
-msgstr "adres:"
-
-#: templates/members/email/information_check.html
-msgid "phone:"
-msgstr "telefoon:"
-
-#: templates/members/email/information_check.html
-msgid "date of birth:"
-msgstr "geboortedatum:"
-
-#: templates/members/email/information_check.html
-msgid "email address:"
-msgstr "e-mailadres:"
-
-#: templates/members/email/information_check.html
-msgid "student number:"
-msgstr "studentnummer:"
-
-#: templates/members/email/information_check.html
-msgid "cohort:"
-msgstr "cohort:"
-
-#: templates/members/email/information_check.html
-msgid "programme:"
-msgstr "studie:"
-
-#: templates/members/email/information_check.html
-msgid ""
-"\n"
-"                        <br>\n"
-"                        You can change this data by logging into the website "
-"and using the 'edit profile' page.<br>\n"
-"                        Unable to edit the incorrect information? Then send "
-"an email: info@thalia.nu.<br>\n"
-"                        <br>\n"
-"                        With kind regards,<br>\n"
-"                        <br>\n"
-"                        The board of Study Association Thalia<br>\n"
-"                        <br>\n"
-"                        ————<br>\n"
-"                        <br>\n"
-"                        This email was automatically generated.<br>\n"
-"                    "
-msgstr ""
-"\n"
-"                        <br>\n"
-"                        Je kunt als je ingelogd bent via ‘bewerk profiel’ de "
-"meeste van deze gegevens aanpassen.<br>\n"
-"                        Klopt iets niet wat je niet zelf kunt bewerken? "
-"Stuur dan een mailtje naar info@thalia.nu.<br>\n"
-"                        <br>\n"
-"                        Met vriendelijke groet,<br>\n"
-"                        <br>\n"
-"                        Het bestuur der Studievereniging Thalia<br>\n"
-"                        <br>\n"
-"                        ————<br>\n"
-"                        <br>\n"
-"                        Deze e-mail is automatisch gegenereerd.<br>\n"
-"                    "
-
 #: templates/members/email/information_check.txt
 #, python-format
+msgid "Dear %(name)s"
+msgstr "Beste %(name)s"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
 msgid ""
-"Dear %(name)s,\n"
-"\n"
-"We currently have the following information about you in our database.\n"
-"Via this email we'd like to ask you to check the accuracy of this data.\n"
-"\n"
-"Username:               %(username)s\n"
-"Name:                   %(full_name)s\n"
-"Address:                %(address_street)s\n"
-"                        %(address_street2)s\n"
-"                        %(address_postal_code)s\n"
-"                        %(address_city)s\n"
-"                        %(address_country)s\n"
-"Phone:                  %(phone_number)s\n"
-"Date of birth:          %(birthday)s\n"
-"Email address:          %(email)s\n"
-"Student number:         %(student_number)s\n"
-"Cohort:                 %(starting_year)s\n"
-"Programme:              %(programme)s\n"
-"\n"
-"You can change this data by logging into the website and using the 'edit "
-"profile' page.\n"
-"Unable to edit the incorrect information? Then send an email: info@thalia."
-"nu.\n"
-"\n"
-"With kind regards,\n"
-"\n"
-"The board of Study Association Thalia\n"
-"\n"
-"————\n"
-"\n"
-"This email was automatically generated."
+"We currently have the following information about you in our database. Via "
+"this email we'd like to ask you to check the accuracy of this data."
 msgstr ""
-"Beste %(name)s,\n"
-"\n"
 "Hieronder vind je de (meeste) gegevens die we op dit moment van je "
-"geregistreerd\n"
-"hebben. Wil je deze controleren op juistheid?\n"
-"\n"
-"Gebruikersnaam:         %(username)s\n"
-"Naam:                   %(full_name)s\n"
-"Adres:                  %(address_street)s\n"
-"                        %(address_street2)s\n"
-"                        %(address_postal_code)s\n"
-"                        %(address_city)s\n"
-"\n"
-"                        %(address_country)s\n"
-"Telefoonnummer:         %(phone_number)s\n"
-"Geboortedatum:          %(birthday)s\n"
-"Emailadres:             %(email)s\n"
-"Studentnummer:          %(student_number)s\n"
-"Cohort:                 %(starting_year)s\n"
-"Programma:              %(programme)s\n"
-"\n"
-"Je kunt als je ingelogd bent via ‘bewerk profiel’ de meeste van deze "
-"gegevens\n"
-"aanpassen. Klopt iets niet wat je niet zelf kunt bewerken? Stuur dan een "
-"mailtje\n"
-"naar info@thalia.nu.\n"
-"\n"
-"Met vriendelijke groet,\n"
-"Het bestuur der Studievereniging Thalia\n"
-"\n"
-"————\n"
-"\n"
-"Deze e-mail is automatisch gegenereerd."
+"geregistreerd hebben. Via deze e-mail willen we je graag vragen de juistheid "
+"van deze gegevens te controleren."
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "username"
+msgstr "gebruikersnaam"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "name"
+msgstr "naam"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "address"
+msgstr "adres"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "phone"
+msgstr "telefoon"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "date of birth"
+msgstr "geboortedatum"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "email address"
+msgstr "e-mailadres"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "student number"
+msgstr "studentnummer"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "cohort"
+msgstr "cohort"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "programme"
+msgstr "studie"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid ""
+"You can change this data by logging into the website and using the 'edit "
+"profile' page. Unable to edit the incorrect information? Then send an email: "
+"info@thalia.nu."
+msgstr ""
+"Je kunt deze gegevens aanpassen door in te loggen op de website en de "
+"'bewerk profiel' te gebruiken. Kun je de incorrecte informatie niet "
+"aanpassen? Stuur dan een e-mail naar: info@thalia.nu."
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "With kind regards"
+msgstr "Met vriendelijke groet"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "The board of Study Association Thalia"
+msgstr "Het bestuur der Studievereniging Thalia"
+
+#: templates/members/email/information_check.html
+#: templates/members/email/information_check.txt
+msgid "This email was automatically generated."
+msgstr "Deze e-mail is automatisch gegenereerd."
 
 #: templates/members/email/membership_announcement.txt
 #, python-format
