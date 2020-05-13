@@ -304,11 +304,6 @@ SEPA_CREDITOR_ID = os.environ.get("SEPA_CREDITOR_ID", "PLACEHOLDER")
 # Members Sentry API key
 MEMBERS_SENTRY_API_SECRET = os.environ.get("MEMBERS_SENTRY_API_SECRET", "")
 
-# Activemembers NextCloud API key
-ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
-    "ACTIVEMEMBERS_NEXTCLOUD_API_SECRET", ""
-)
-
 # Payment settings
 THALIA_PAY_ENABLED_PAYMENT_METHOD = False
 

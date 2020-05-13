@@ -116,7 +116,6 @@ urlpatterns = [
         include(
             [
                 path("token-auth/", ObtainThaliaAuthToken.as_view()),
-                path("", include("activemembers.api.urls")),
                 path("", include("events.api.urls")),
                 path("", include("members.api.urls")),
                 path("", include("partners.api.urls")),
