@@ -24,7 +24,7 @@ argon2_cffi = "20.1.0"
 uWSGI = "2.0.18"
 django-bootstrap4 = "1.1.1"
 firebase-admin = "4.2.0"
-sentry-sdk = "0.14.3"
+sentry-sdk = "0.14.4"
 django-sendfile2 = "0.5.1"
 
 # docs requirements
