@@ -468,7 +468,7 @@ description = "Google API Client Library for Python"
 name = "google-api-python-client"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
-version = "1.8.2"
+version = "1.8.3"
 
 [package.dependencies]
 google-api-core = ">=1.13.0,<2dev"
@@ -1090,7 +1090,7 @@ version = "0.5.1"
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "eacdb3809bab3ef33de70dc1b34f214a2089dc54513a1365b65325245e69a9df"
+content-hash = "0d9f7db953d403f8fa0cbe0bcf0f62cee8d8edd605f38a8525db90c412df682c"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1104,6 +1104,21 @@ appdirs = [
 ]
 argon2-cffi = [
     {file = "argon2-cffi-20.1.0.tar.gz", hash = "sha256:d8029b2d3e4b4cea770e9e5a0104dd8fa185c1724a0f01528ae4826a6d25f97d"},
+    {file = "argon2_cffi-20.1.0-cp27-cp27m-macosx_10_6_intel.whl", hash = "sha256:6ea92c980586931a816d61e4faf6c192b4abce89aa767ff6581e6ddc985ed003"},
+    {file = "argon2_cffi-20.1.0-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:05a8ac07c7026542377e38389638a8a1e9b78f1cd8439cd7493b39f08dd75fbf"},
+    {file = "argon2_cffi-20.1.0-cp27-cp27m-win32.whl", hash = "sha256:0bf066bc049332489bb2d75f69216416329d9dc65deee127152caeb16e5ce7d5"},
+    {file = "argon2_cffi-20.1.0-cp27-cp27m-win_amd64.whl", hash = "sha256:57358570592c46c420300ec94f2ff3b32cbccd10d38bdc12dc6979c4a8484fbc"},
+    {file = "argon2_cffi-20.1.0-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:7d455c802727710e9dfa69b74ccaab04568386ca17b0ad36350b622cd34606fe"},
+    {file = "argon2_cffi-20.1.0-cp35-abi3-manylinux1_x86_64.whl", hash = "sha256:b160416adc0f012fb1f12588a5e6954889510f82f698e23ed4f4fa57f12a0647"},
+    {file = "argon2_cffi-20.1.0-cp35-cp35m-win32.whl", hash = "sha256:9bee3212ba4f560af397b6d7146848c32a800652301843df06b9e8f68f0f7361"},
+    {file = "argon2_cffi-20.1.0-cp35-cp35m-win_amd64.whl", hash = "sha256:392c3c2ef91d12da510cfb6f9bae52512a4552573a9e27600bdb800e05905d2b"},
+    {file = "argon2_cffi-20.1.0-cp36-cp36m-win32.whl", hash = "sha256:ba7209b608945b889457f949cc04c8e762bed4fe3fec88ae9a6b7765ae82e496"},
+    {file = "argon2_cffi-20.1.0-cp36-cp36m-win_amd64.whl", hash = "sha256:da7f0445b71db6d3a72462e04f36544b0de871289b0bc8a7cc87c0f5ec7079fa"},
+    {file = "argon2_cffi-20.1.0-cp37-abi3-macosx_10_6_intel.whl", hash = "sha256:cc0e028b209a5483b6846053d5fd7165f460a1f14774d79e632e75e7ae64b82b"},
+    {file = "argon2_cffi-20.1.0-cp37-cp37m-win32.whl", hash = "sha256:18dee20e25e4be86680b178b35ccfc5d495ebd5792cd00781548d50880fee5c5"},
+    {file = "argon2_cffi-20.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:6678bb047373f52bcff02db8afab0d2a77d83bde61cfecea7c5c62e2335cb203"},
+    {file = "argon2_cffi-20.1.0-cp38-cp38-win32.whl", hash = "sha256:77e909cc756ef81d6abb60524d259d959bab384832f0c651ed7dcb6e5ccdbb78"},
+    {file = "argon2_cffi-20.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:9dfd5197852530294ecb5795c97a823839258dfd5eb9420233c7cfedec2058f2"},
 ]
 asgiref = [
     {file = "asgiref-3.2.3-py2.py3-none-any.whl", hash = "sha256:ea448f92fc35a0ef4b1508f53a04c4670255a3f33d22a81c8fc9c872036adbe5"},
@@ -1315,8 +1330,8 @@ google-api-core = [
     {file = "google_api_core-1.16.0-py2.py3-none-any.whl", hash = "sha256:859f7392676761f2b160c6ee030c3422135ada4458f0948c5690a6a7c8d86294"},
 ]
 google-api-python-client = [
-    {file = "google-api-python-client-1.8.2.tar.gz", hash = "sha256:bf482c13fb41a6d01770f9d62be6b33fdcd41d68c97f2beb9be02297bdd9e725"},
-    {file = "google_api_python_client-1.8.2-py3-none-any.whl", hash = "sha256:8dd35a3704650c2db44e6cf52abdaf9de71f409c93c56bbe48a321ab5e14ebad"},
+    {file = "google-api-python-client-1.8.3.tar.gz", hash = "sha256:be4e8dcf399d7d1dcaae004b7f18694907f740bf6e6cebda91da8ebd968c5481"},
+    {file = "google_api_python_client-1.8.3-py3-none-any.whl", hash = "sha256:b764be88cf2a1f8b4c4d17c9187a279fea93f4d767e7d7c24f71bf25385a8b10"},
 ]
 google-auth = [
     {file = "google-auth-1.11.0.tar.gz", hash = "sha256:44549e69ac39acf41fdf47f3f39a06e4e68378476806760d94a2c6a361b2bb06"},
