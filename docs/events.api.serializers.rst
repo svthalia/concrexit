@@ -10,6 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    events.api.serializers.base
    events.api.serializers.event_registrations
