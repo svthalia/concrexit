@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-09 22:31+0100\n"
-"PO-Revision-Date: 2019-03-10 17:46+0100\n"
+"POT-Creation-Date: 2020-05-16 13:11+0200\n"
+"PO-Revision-Date: 2020-05-16 13:14+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: admin.py
 msgid "Mark exams as accepted"
@@ -49,6 +49,14 @@ msgstr "Reset download aantal van gemarkeerde samenvattingen"
 #: apps.py
 msgid "Education"
 msgstr "Onderwijs"
+
+#: forms.py
+msgid "Uploader phone"
+msgstr "Uploader telefoon"
+
+#: forms.py
+msgid "Uploader email"
+msgstr "Uploader e-mail"
 
 #: models.py
 msgid "category"
@@ -263,12 +271,43 @@ msgstr "Vakkenoverzicht"
 msgid ""
 "This overview contains all courses for which Thalia has exams, summaries or "
 "other documents. Select a course to find out more.<br/> Can't find a course? "
-"Let the <a href=\"mailto:educacie@thalia.nu\">education committee</a> know."
+"Let the <a href=\"mailto:educacie@thalia.nu\">Educacie</a> know."
 msgstr ""
 "Overzicht van alle vakken waar Thalia tentamens, samenvatting of andere "
 "documenten voor heeft. Selecteer een vak om er naar te navigeren.<br />Staat "
 "er een vak niet tussen? Laat dat dan weten aan de <a href=\"mailto:"
-"educacie@thalia.nu\">educatiecommissie</a>."
+"educacie@thalia.nu\">Educacie</a>."
+
+#: templates/education/courses.html
+msgid ""
+"You can submit your own exams and summaries!<br /> Better even, you might "
+"even get a monetary reward if you submit a summary:"
+msgstr ""
+"Je kan je eigen tentamens en samenvattingen inleveren!<br /> Beter zelfs, je "
+"kan zelfs een kleine vergoeding krijgen als je een samenvatting inlevert "
+"die\n"
+" aan het volgende voldoet:"
+
+#: templates/education/courses.html
+msgid "In the current language of the course"
+msgstr "In de huidige taal van het vak"
+
+#: templates/education/courses.html
+msgid ""
+"Adds significant information that was not already present in the summary "
+"overview"
+msgstr ""
+"Voegt significante informatie toe die niet in eerdere samenvattingen "
+"aanwezig was"
+
+#: templates/education/courses.html
+msgid "Corresponds to the current course"
+msgstr "Komt overeen met de huidige inhoud van het vak"
+
+#: templates/education/courses.html
+msgid "Is positively peer-reviewed by people appointed by the Educacie"
+msgstr ""
+"Wordt positief gepeerreviewd door mensen die aangewezen zijn door de Educacie"
 
 #: templates/education/courses.html
 msgid "all courses"
