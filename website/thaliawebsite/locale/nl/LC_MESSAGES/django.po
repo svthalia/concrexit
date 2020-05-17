@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-29 23:04+0200\n"
+"POT-Creation-Date: 2020-05-17 22:06+0200\n"
 "PO-Revision-Date: 2020-03-29 23:04+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
@@ -137,10 +137,6 @@ msgstr "Medezeggenschap"
 #: menus.py
 msgid "Contact"
 msgstr "Contact"
-
-#: menus.py
-msgid "Almanac 2020"
-msgstr "Almanak 2020"
 
 #: settings/settings.py
 msgid "English"

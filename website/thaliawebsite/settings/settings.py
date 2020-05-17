@@ -353,7 +353,3 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
-
-
-# Temporary setting for almanac page
-SHOW_ALMANAC_PAGE = os.environ.get("SHOW_ALMANAC_PAGE", False) == "True"

@@ -78,8 +78,3 @@ MAIN_MENU = [
     },
     {"title": _("Contact"), "name": "singlepages:contact"},
 ]
-
-if settings.SHOW_ALMANAC_PAGE:
-    MAIN_MENU[2]["submenu"].append(
-        {"title": _("Almanac 2020"), "name": "singlepages:almanac",}
-    )
