@@ -8,8 +8,8 @@ from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from utils.translation import TranslatedModelAdmin
-
 from . import models
+from .forms import SummaryAdminForm
 
 admin.site.register(models.Category)
 
@@ -106,6 +106,7 @@ class SummaryAdmin(TranslatedModelAdmin):
         "course__name_en",
     )
     actions = ["accept", "reject", "reset_download_count", "download_csv"]
+    form = SummaryAdminForm
 
     def accept(self, request, queryset):
         queryset.update(accepted=True)
