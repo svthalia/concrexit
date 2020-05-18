@@ -301,9 +301,6 @@ CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
 # Payments creditor identifier
 SEPA_CREDITOR_ID = os.environ.get("SEPA_CREDITOR_ID", "PLACEHOLDER")
 
-# Members Sentry API key
-MEMBERS_SENTRY_API_SECRET = os.environ.get("MEMBERS_SENTRY_API_SECRET", "")
-
 # Activemembers NextCloud API key
 ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
     "ACTIVEMEMBERS_NEXTCLOUD_API_SECRET", ""
@@ -319,9 +316,6 @@ GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
-
-# API key for wiki
-WIKI_API_KEY = os.environ.get("WIKI_API_KEY", "debug")
 
 # TinyMCE config
 TINYMCE_JS_URL = "/static/tinymce/js/tinymce/tinymce.min.js"

@@ -59,7 +59,6 @@
     "model": "activemembers.committee",
     "pk": 1,
     "fields": {
-        "wiki_namespace": "testcie1:ns"
     }
 },
 {
