@@ -135,10 +135,6 @@ class Committee(MemberGroup):
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
 
-    wiki_namespace = models.CharField(
-        _("Wiki namespace"), null=True, blank=True, max_length=50
-    )
-
     def get_absolute_url(self):
         return reverse("activemembers:committee", args=[str(self.pk)])
 
@@ -170,7 +166,6 @@ class Board(MemberGroup):
         verbose_name = _("board")
         verbose_name_plural = _("boards")
         ordering = ["-since"]
-        permissions = (("board_wiki", _("Access the board wiki")),)
 
     def save(self, *args, **kwargs):
         self.active = True

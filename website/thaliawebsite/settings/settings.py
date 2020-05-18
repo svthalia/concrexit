@@ -37,7 +37,6 @@ ALLOWED_HOSTS = ["*"]
 if not DEBUG:  # Django 1.10.3 security release changed behaviour
     ALLOWED_HOSTS = ["*"]
 
-SITE_ID = 1
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "thalia.localhost")
 BASE_URL = f"https://{SITE_DOMAIN}"
 
@@ -52,7 +51,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",
     "django.contrib.sitemaps",
     # Dependencies
     "bootstrap4",
@@ -301,9 +299,6 @@ CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
 # Payments creditor identifier
 SEPA_CREDITOR_ID = os.environ.get("SEPA_CREDITOR_ID", "PLACEHOLDER")
 
-# Members Sentry API key
-MEMBERS_SENTRY_API_SECRET = os.environ.get("MEMBERS_SENTRY_API_SECRET", "")
-
 # Payment settings
 THALIA_PAY_ENABLED_PAYMENT_METHOD = False
 
@@ -314,9 +309,6 @@ GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 1920, 1080
-
-# API key for wiki
-WIKI_API_KEY = os.environ.get("WIKI_API_KEY", "debug")
 
 # TinyMCE config
 TINYMCE_JS_URL = "/static/tinymce/js/tinymce/tinymce.min.js"
@@ -348,7 +340,3 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
-
-
-# Temporary setting for almanac page
-SHOW_ALMANAC_PAGE = os.environ.get("SHOW_ALMANAC_PAGE", False) == "True"
