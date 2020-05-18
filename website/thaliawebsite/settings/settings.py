@@ -37,7 +37,6 @@ ALLOWED_HOSTS = ["*"]
 if not DEBUG:  # Django 1.10.3 security release changed behaviour
     ALLOWED_HOSTS = ["*"]
 
-SITE_ID = 1
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "thalia.localhost")
 BASE_URL = f"https://{SITE_DOMAIN}"
 
@@ -52,7 +51,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",
     "django.contrib.sitemaps",
     # Dependencies
     "bootstrap4",
