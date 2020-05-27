@@ -40,33 +40,36 @@ def event_permissions(member, event, name=None):
         "cancel_registration": False,
         "update_registration": False,
     }
-    if member and member.is_authenticated or name:
-        registration = None
-        try:
-            registration = EventRegistration.objects.get(
-                event=event, member=member, name=name
-            )
-        except EventRegistration.DoesNotExist:
-            pass
+    if not member:
+        return perms
+    if not (member.is_authenticated or name):
+        return perms
 
-        perms["create_registration"] = (
-            (registration is None or registration.date_cancelled is not None)
-            and event.registration_allowed
-            and (name or member.can_attend_events)
+    registration = None
+    try:
+        registration = EventRegistration.objects.get(
+            event=event, member=member, name=name
         )
-        perms["cancel_registration"] = (
-            registration is not None
-            and registration.date_cancelled is None
-            and (event.cancellation_allowed or name)
-        )
-        perms["update_registration"] = (
-            registration is not None
-            and registration.date_cancelled is None
-            and event.has_fields()
-            and event.registration_allowed
-            and (name or member.can_attend_events)
-        )
+    except EventRegistration.DoesNotExist:
+        pass
 
+    perms["create_registration"] = (
+        (registration is None or registration.date_cancelled is not None)
+        and event.registration_allowed
+        and (name or member.can_attend_events)
+    )
+    perms["cancel_registration"] = (
+        registration is not None
+        and registration.date_cancelled is None
+        and (event.cancellation_allowed or name)
+    )
+    perms["update_registration"] = (
+        registration is not None
+        and registration.date_cancelled is None
+        and event.has_fields()
+        and event.registration_allowed
+        and (name or member.can_attend_events)
+    )
     return perms
 
 
