@@ -299,11 +299,6 @@ CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
 # Payments creditor identifier
 SEPA_CREDITOR_ID = os.environ.get("SEPA_CREDITOR_ID", "PLACEHOLDER")
 
-# Activemembers NextCloud API key
-ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
-    "ACTIVEMEMBERS_NEXTCLOUD_API_SECRET", ""
-)
-
 # Payment settings
 THALIA_PAY_ENABLED_PAYMENT_METHOD = False
 

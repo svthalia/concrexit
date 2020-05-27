@@ -94,7 +94,6 @@ class Member(User):
     class Meta:
         proxy = True
         ordering = ("first_name", "last_name")
-        permissions = (("nextcloud_admin", _("Access NextCloud as admin")),)
 
     objects = MemberManager()
     current_members = CurrentMemberManager()

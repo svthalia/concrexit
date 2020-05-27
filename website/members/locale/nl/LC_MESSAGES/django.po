@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-10 20:31+0200\n"
-"PO-Revision-Date: 2020-05-10 20:22+0200\n"
+"POT-Creation-Date: 2020-05-13 21:44+0200\n"
+"PO-Revision-Date: 2020-05-13 21:45+0200\n"
 "Last-Translator: Thom Wiggers <thom@thomwiggers.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -236,10 +236,6 @@ msgstr ""
 #: models/email_change.py
 msgid "Please enter a new email address."
 msgstr "Vul een nieuw e-mailadres in."
-
-#: models/member.py
-msgid "Access NextCloud as admin"
-msgstr "Toegang tot NextCloud als admin"
 
 #: models/member.py
 msgid "Is this user currently active"
