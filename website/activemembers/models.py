@@ -1,6 +1,8 @@
 """The models defined by the activemembers package"""
 import datetime
 import logging
+import math
+from typing import Union, Iterable
 
 from django.conf import settings
 from django.contrib.auth.models import Permission
@@ -180,28 +182,13 @@ class Board(MemberGroup):
         super().validate_unique(*args, **kwargs)
         boards = Board.objects.all()
         if self.since is not None:
-            for board in boards:
-                if board.pk == self.pk:
-                    continue
-                if (
-                    (
-                        board.until is None
-                        and (self.until is None or self.until >= board.since)
-                    )
-                    or (self.until is None and self.since <= board.until)
-                    or (
-                        self.until
-                        and board.until
-                        and self.since <= board.until
-                        and self.until >= board.since
-                    )
-                ):
-                    raise ValidationError(
-                        {
-                            "since": _("A board already exists for those years"),
-                            "until": _("A board already exists for those years"),
-                        }
-                    )
+            if overlaps(self, boards, can_equal=False):
+                raise ValidationError(
+                    {
+                        "since": _("A board already exists for those years"),
+                        "until": _("A board already exists for those years"),
+                    }
+                )
 
 
 class ActiveMembershipManager(models.Manager):
@@ -318,57 +305,24 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
                 chairs = MemberGroupMembership.objects.filter(
                     group=self.group, chair=True
                 )
-                for chair in chairs:
-                    if chair.pk == self.pk:
-                        continue
-                    if (
-                        (
-                            chair.until is None
-                            and (self.until is None or self.until > chair.since)
-                        )
-                        or (self.until is None and self.since < chair.until)
-                        or (
-                            self.until
-                            and chair.until
-                            and self.since < chair.until
-                            and self.until > chair.since
-                        )
-                    ):
-                        raise ValidationError(
-                            {
-                                NON_FIELD_ERRORS: _(
-                                    "There already is a " "chair for this time period"
-                                )
-                            }
-                        )
+                if overlaps(self, chairs):
+                    raise ValidationError(
+                        {
+                            NON_FIELD_ERRORS: _(
+                                "There already is a chair for this time period"
+                            )
+                        }
+                    )
 
             # check if this member is already in the group in this period
             memberships = MemberGroupMembership.objects.filter(
                 group=self.group, member=self.member
             )
-            for mship in memberships:
-                if mship.pk == self.pk:
-                    continue
-                if (
-                    (
-                        mship.until is None
-                        and (self.until is None or self.until > mship.since)
-                    )
-                    or (self.until is None and self.since < mship.until)
-                    or (
-                        self.until
-                        and mship.until
-                        and self.since < mship.until
-                        and self.until > mship.since
-                    )
-                ):
-                    raise ValidationError(
-                        {
-                            "member": _(
-                                "This member is already in the group for " "this period"
-                            )
-                        }
-                    )
+            if overlaps(self, memberships):
+                raise ValidationError(
+                    {"member": _("This member is already in the group for this period")}
+                )
+
         except (
             MemberGroupMembership.member.RelatedObjectDoesNotExist,
             MemberGroupMembership.group.RelatedObjectDoesNotExist,
@@ -409,3 +363,50 @@ class Mentorship(models.Model):
 
     class Meta:
         unique_together = ("member", "year")
+
+
+HasTimespan = Union[MemberGroupMembership, MemberGroup]
+
+
+def overlaps(check: HasTimespan, others: Iterable[HasTimespan], can_equal=False):
+    """Check for overlapping date ranges
+
+    This works by checking the maximum of the two `since` times, and the minimum of
+    the two `until` times. Because there are no infinite dates, the value date_max
+    is created for when the `until` value is None; this signifies a timespan that
+    has not ended yet and is the maximum possible date in Python's datetime.
+
+    The ranges overlap when the maximum start time is smaller than the minimum
+    end time, as can be seen in this example of two integer ranges:
+
+    check: . . . .[4]. . . . 9
+    other: . . 2 . .[5]. . . .
+
+    check: . . . .[4]. . . . 9
+    other: . . 2 . . . . . . . [date_max]
+
+    And when non overlapping:
+    check: . . . . . .[6] . . 9
+    other: . . 2 . .[5]. . . .
+
+    4 < 5 == True so these intervals overlap, while 6 < 5 == False so these intervals
+    don't overlap
+
+    The can_equal argument is used for boards, where the end date can't be the same
+    as the start date.
+    """
+    date_max = datetime.date(datetime.MAXYEAR, 12, 31)
+    for other in others:
+        if check.pk == other.pk:
+            # No checks for the object we're validating
+            continue
+
+        max_start = max(check.since, other.since)
+        min_end = min(check.until or date_max, other.until or date_max)
+
+        if max_start == min_end and not can_equal:
+            return True
+        if max_start < min_end:
+            return True
+
+    return False
