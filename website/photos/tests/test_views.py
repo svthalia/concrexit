@@ -9,6 +9,7 @@ from django.conf import settings
 
 from members.models import Member, Membership
 from photos.models import Album, Photo
+from photos.services import save_photo
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -280,8 +281,9 @@ class DownloadTest(TestCase):
                 name="photo.png", content=f.read(), content_type="image/png"
             )
 
-        self.photo = Photo(album=self.album, file=fi)
-        self.photo.save()
+        self.photo = Photo(album=self.album)
+        self.photo.file.save(fi.name, fi)
+        save_photo(self.photo)
 
     def test_download(self):
         self.client.force_login(self.member)
@@ -299,22 +301,14 @@ class DownloadTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
-@override_settings(SUSPEND_SIGNALS=True)
-class SharedDownloadTest(TestCase):
-
-    fixtures = ["members.json"]
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
-        cls.client = Client()
-
+class _DownloadBaseTestCase(TestCase):
     def setUp(self):
+        self.client = Client()
+
         self.album = Album.objects.create(
             title_en="test_album",
             title_nl="test_album",
             date=date(year=2017, month=9, day=5),
-            shareable=True,
             slug="test_album",
         )
 
@@ -325,8 +319,20 @@ class SharedDownloadTest(TestCase):
                 name="photo.png", content=f.read(), content_type="image/png"
             )
 
-        self.photo = Photo(album=self.album, file=fi)
-        self.photo.save()
+        self.photo = Photo(album=self.album)
+        self.photo.file.save(fi.name, fi)
+        save_photo(self.photo)
+
+
+@override_settings(SUSPEND_SIGNALS=True)
+class SharedDownloadTest(_DownloadBaseTestCase):
+
+    fixtures = ["members.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.client = Client()
 
     def test_download(self):
         with self.subTest():
@@ -353,33 +359,13 @@ class SharedDownloadTest(TestCase):
 
 
 @override_settings(SUSPEND_SIGNALS=True)
-class AlbumDownloadTest(TestCase):
+class AlbumDownloadTest(_DownloadBaseTestCase):
 
     fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
-
-    def setUp(self):
-        self.client = Client()
-
-        self.album = Album.objects.create(
-            title_en="test_album",
-            title_nl="test_album",
-            date=date(year=2017, month=9, day=5),
-            slug="test_album",
-        )
-
-        with open(
-            os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"), "rb"
-        ) as f:
-            fi = SimpleUploadedFile(
-                name="photo.png", content=f.read(), content_type="image/png"
-            )
-
-        self.photo = Photo(album=self.album, file=fi)
-        self.photo.save()
 
     def test_download(self):
         self.client.force_login(self.member)

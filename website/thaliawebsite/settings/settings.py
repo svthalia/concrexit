@@ -313,7 +313,7 @@ GOOGLE_MAPS_API_SECRET = os.environ.get("GOOGLE_MAPS_API_SECRET", "")
 GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
 
 # Photos settings
-PHOTO_UPLOAD_SIZE = 1920, 1080
+PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
 TINYMCE_JS_URL = "/static/tinymce/js/tinymce/tinymce.min.js"
