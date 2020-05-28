@@ -36,7 +36,7 @@ def notify_first_waiting(event):
 
         with translation.override(language):
             subject = _(
-                "[THALIA] Notification about your " "registration for '{}'"
+                "[THALIA] Notification about your registration for '{}'"
             ).format(event.title)
             text_message = text_template.render(
                 {

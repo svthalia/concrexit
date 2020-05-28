@@ -156,7 +156,7 @@ class EntryAdminViewTest(TestCase):
 
                 request._messages.add.assert_any_call(
                     messages.ERROR,
-                    _("Could not accept %s. " "Username is not unique.")
+                    _("Could not accept %s. Username is not unique.")
                     % model_ngettext(entry_qs.all()[0], 1),
                     "",
                 )

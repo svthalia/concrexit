@@ -60,7 +60,7 @@ class EntryAdminView(View):
             if not services.check_unique_user(entry):
                 messages.error(
                     request,
-                    _("Could not accept %s. " "Username is not unique.")
+                    _("Could not accept %s. Username is not unique.")
                     % model_ngettext(entry, 1),
                 )
             elif services.accept_entries(request.user.pk, entry_qs) > 0:

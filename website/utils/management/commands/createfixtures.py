@@ -37,7 +37,7 @@ try:
     from pydenticon import Generator as IconGenerator
 except ImportError as error:
     raise Exception(
-        "Have you installed the dev-requirements? " "Failed importing {}".format(error)
+        "Have you installed the dev-requirements? Failed importing {}".format(error)
     ) from error
 
 _faker = FakerFactory.create("nl_NL")
@@ -259,7 +259,7 @@ class Command(BaseCommand):
         """
         groups = MemberGroup.objects.all()
         if len(groups) == 0:
-            self.stdout.write("Your database does not contain any " "member groups.")
+            self.stdout.write("Your database does not contain any member groups.")
             self.stdout.write("Creating a committee.")
             self.create_member_group(Committee)
             groups = MemberGroup.objects.all()
@@ -641,7 +641,7 @@ class Command(BaseCommand):
             )
 
         if options["all"]:
-            self.stdout.write("all argument given, overwriting" " all other inputs")
+            self.stdout.write("all argument given, overwriting all other inputs")
             options = {
                 "user": 20,
                 "board": 3,
@@ -699,9 +699,7 @@ class Command(BaseCommand):
         if options["vacancy"]:
             categories = VacancyCategory.objects.all()
             if not categories:
-                self.stdout.write(
-                    "No vacancy categories found. " "Creating 5 categories."
-                )
+                self.stdout.write("No vacancy categories found. Creating 5 categories.")
                 for __ in range(5):
                     self.create_vacancy_category()
                 categories = VacancyCategory.objects.all()

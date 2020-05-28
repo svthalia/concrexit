@@ -313,7 +313,7 @@ class RenewalTest(TestCase):
             self.renewal.clean()
         except ValidationError as e:
             self.assertEqual(
-                e.message, _("You already have a renewal " "request queued for review.")
+                e.message, _("You already have a renewal request queued for review.")
             )
 
     def test_not_within_renew_period(self):

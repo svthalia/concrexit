@@ -125,7 +125,7 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
     "formatters": {
-        "verbose": {"format": "%(asctime)s %(name)s " "%(levelname)s %(message)s"},
+        "verbose": {"format": "%(asctime)s %(name)s %(levelname)s %(message)s"},
     },
     "handlers": {
         "console": {

@@ -107,7 +107,7 @@ class MailingList(models.Model):
             raise ValidationError(
                 {
                     "name": _(
-                        "%(model_name)s with this " "%(field_label)s already exists."
+                        "%(model_name)s with this %(field_label)s already exists."
                     )
                     % {"model_name": _("Mailing list"), "field_label": _("List alias")}
                 }
@@ -175,7 +175,7 @@ class ListAlias(models.Model):
             raise ValidationError(
                 {
                     "alias": _(
-                        "%(model_name)s with this " "%(field_label)s already exists."
+                        "%(model_name)s with this %(field_label)s already exists."
                     )
                     % {"model_name": _("Mailing list"), "field_label": _("Name")}
                 }

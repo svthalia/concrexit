@@ -75,12 +75,8 @@ class Membership(models.Model):
                 ):
                     errors.update(
                         {
-                            "since": _(
-                                "A membership already " "exists for that period"
-                            ),
-                            "until": _(
-                                "A membership already " "exists for that period"
-                            ),
+                            "since": _("A membership already exists for that period"),
+                            "until": _("A membership already exists for that period"),
                         }
                     )
 

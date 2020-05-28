@@ -171,11 +171,7 @@ class BankAccount(models.Model):
             for field in mandate_fields:
                 if not field[1]:
                     errors.update(
-                        {
-                            field[0]: _(
-                                "This field is required " "to complete the mandate."
-                            )
-                        }
+                        {field[0]: _("This field is required to complete the mandate.")}
                     )
 
         if self.valid_from and self.valid_until and self.valid_from > self.valid_until:

@@ -189,9 +189,7 @@ class Vacancy(models.Model):
         super().clean()
         errors = {}
 
-        msg = _(
-            "If no partner is used then both a company name and logo are " "required."
-        )
+        msg = _("If no partner is used then both a company name and logo are required.")
         if not self.partner and self.company_name and not self.company_logo:
             errors.update({"company_logo": msg})
         if not self.partner and not self.company_name and self.company_logo:
@@ -256,9 +254,9 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
         ):
             errors.update(
                 {
-                    "partner": _("Please select or enter " "a partner for this event."),
+                    "partner": _("Please select or enter a partner for this event."),
                     "other_partner": _(
-                        "Please select or enter " "a partner for this event."
+                        "Please select or enter a partner for this event."
                     ),
                 }
             )

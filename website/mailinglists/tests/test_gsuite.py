@@ -179,7 +179,7 @@ class GSuiteSyncTestCase(TestCase):
             self.directory_api.groups().aliases().list.assert_not_called()
 
             logger_mock.error.assert_called_once_with(
-                "Could not successfully finish " "creating the list new_group", bytes()
+                "Could not successfully finish creating the list new_group", bytes()
             )
 
     @mock.patch("mailinglists.gsuite.logger")

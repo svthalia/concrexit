@@ -102,10 +102,10 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
             raise ValidationError(
                 {
                     "contact_email": _(
-                        "Please use either the mailing list " "or email address option."
+                        "Please use either the mailing list or email address option."
                     ),
                     "contact_mailinglist": _(
-                        "Please use either the mailing list " "or email address option."
+                        "Please use either the mailing list or email address option."
                     ),
                 }
             )
@@ -222,7 +222,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
 
     until = models.DateField(
         verbose_name=_("Member until"),
-        help_text=_("A member until this time " "(can't be in the future)."),
+        help_text=_("A member until this time (can't be in the future)."),
         blank=True,
         null=True,
     )
@@ -339,9 +339,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
         self.member.save()
 
     def __str__(self):
-        return _(
-            "{member} membership of {group} " "since {since}, until {until}"
-        ).format(
+        return _("{member} membership of {group} since {since}, until {until}").format(
             member=self.member, group=self.group, since=self.since, until=self.until
         )
 

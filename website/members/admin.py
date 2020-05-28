@@ -205,7 +205,7 @@ class UserAdmin(BaseUserAdmin):
         return response
 
     email_csv_export.short_description = _(
-        "Download email addresses for " "selected users"
+        "Download email addresses for selected users"
     )
 
     def address_csv_export(self, request, queryset):
@@ -275,9 +275,7 @@ class UserAdmin(BaseUserAdmin):
         else:
             self.message_user(
                 request,
-                _("Data minimisation was executed " "for {} user(s).").format(
-                    processed
-                ),
+                _("Data minimisation was executed for {} user(s).").format(processed),
                 messages.SUCCESS,
             )
 

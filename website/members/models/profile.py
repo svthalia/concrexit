@@ -220,7 +220,7 @@ class Profile(models.Model):
     receive_optin = models.BooleanField(
         verbose_name=_("Receive opt-in mailings"),
         help_text=_(
-            "Receive mailings about vacancies and events from Thalia's" " partners."
+            "Receive mailings about vacancies and events from Thalia's partners."
         ),
         default=True,
     )
@@ -307,7 +307,7 @@ class Profile(models.Model):
                 errors.update(
                     {
                         "nickname": _(
-                            "You need to enter a nickname to use it as " "display name"
+                            "You need to enter a nickname to use it as display name"
                         )
                     }
                 )
