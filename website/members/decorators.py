@@ -6,7 +6,7 @@ def membership_required(view_function):
     return ActiveMembershipRequired(view_function)
 
 
-class ActiveMembershipRequired(object):
+class ActiveMembershipRequired:
     """
     Decorator that checks if the user has an active membership
     """

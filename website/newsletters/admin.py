@@ -61,9 +61,7 @@ class NewsletterAdmin(TranslatedModelAdmin):
         obj = Newsletter.objects.filter(id=object_id)[0]
         if obj is not None and obj.sent is True:
             return redirect(obj)
-        return super(NewsletterAdmin, self).change_view(
-            request, object_id, form_url, {"newsletter": obj}
-        )
+        return super().change_view(request, object_id, form_url, {"newsletter": obj})
 
     def has_delete_permission(self, request, obj=None):
         """
@@ -72,10 +70,10 @@ class NewsletterAdmin(TranslatedModelAdmin):
         """
         if obj is not None and obj.sent is True:
             return False
-        return super(NewsletterAdmin, self).has_delete_permission(request, obj=obj)
+        return super().has_delete_permission(request, obj=obj)
 
     def get_actions(self, request):
         """Remove the deletion action from the admin"""
-        actions = super(NewsletterAdmin, self).get_actions(request)
+        actions = super().get_actions(request)
         del actions["delete_selected"]
         return actions
