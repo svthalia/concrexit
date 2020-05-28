@@ -48,7 +48,7 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         return reverse("documents:document", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return "%s (%s)" % (self.name, str(self.created.date()))
+        return f"{self.name} ({self.created.date()})"
 
 
 class AnnualDocument(Document):

@@ -94,8 +94,7 @@ class EntryAdminView(View):
             content_type = ContentType.objects.get_for_model(Renewal)
 
         return redirect(
-            "admin:%s_%s_change" % (content_type.app_label, content_type.model),
-            kwargs["pk"],
+            f"admin:{content_type.app_label}_{content_type.model}_change", kwargs["pk"],
         )
 
 
