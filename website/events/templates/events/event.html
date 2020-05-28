@@ -222,10 +222,15 @@
                                                 Registration is not possible anymore.
                                             {% endblocktrans %}
                                         {% endif %}
-                                        {% if event.after_cancel_deadline %}
+                                        {% if event.after_cancel_deadline and registration.queue_position == 0 %}
                                             {% blocktrans trimmed with costs=event.fine %}
                                                 Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}.
                                                 Also note that you will be unable to re-register.{% endblocktrans %}
+                                        {% endif %}
+                                        {% if event.after_cancel_deadline and registration.queue_position > 0 %}
+                                            {% blocktrans trimmed with costs=event.fine %}
+                                                Cancellation while on the waiting list will not result in having to pay a fine.
+                                                Do note that you will be unable to re-register.{% endblocktrans %}
                                         {% endif %}
                                     {% endif %}
                                 </em>

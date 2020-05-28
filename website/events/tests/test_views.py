@@ -446,3 +446,36 @@ class RegistrationTest(TestCase):
             mail.outbox[0].to,
             [self.event.organiser.contact_mailinglist.name + "@thalia.nu"],
         )
+
+    def test_registration_cancel_after_deadline_warning(self):
+        self.event.registration_start = timezone.now() - datetime.timedelta(hours=2)
+        self.event.registration_end = timezone.now() - datetime.timedelta(hours=1)
+        self.event.cancel_deadline = timezone.now() - datetime.timedelta(hours=1)
+        self.event.save()
+        EventRegistration.objects.create(event=self.event, member=self.member)
+        response = self.client.get("/events/1/")
+        self.assertContains(
+            response,
+            "Cancellation isn't possible anymore without having to pay the full costs of",
+        )
+
+    def test_registration_cancel_after_deadline_waitinglist_no_warning(self):
+        self.event.registration_start = timezone.now() - datetime.timedelta(hours=2)
+        self.event.registration_end = timezone.now() - datetime.timedelta(hours=1)
+        self.event.cancel_deadline = timezone.now() - datetime.timedelta(hours=1)
+        self.event.max_participants = 1
+        self.event.save()
+        EventRegistration.objects.create(
+            event=self.event,
+            member=Member.objects.get(pk=2),
+            date=timezone.now() - datetime.timedelta(hours=1),
+        )
+        queue_register = EventRegistration.objects.create(
+            event=self.event, member=self.member
+        )
+        response = self.client.get("/events/1/")
+        self.assertTrue(queue_register in self.event.queue)
+        self.assertNotContains(
+            response,
+            "Cancellation isn't possible anymore without having to pay the full costs of",
+        )
