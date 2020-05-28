@@ -62,7 +62,7 @@ class FieldsForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.information_fields = kwargs.pop("fields")
-        super(FieldsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         for key, field in self.information_fields.items():
             field_type = field["type"]

@@ -41,7 +41,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import get_language
 
 
-class MultilingualField(object):
+class MultilingualField:
     """
     Transformed the passed-in form field into fields appended with the
     active languages and generates an automatic accessor property that
@@ -132,7 +132,7 @@ class ModelTranslateMeta(models.base.ModelBase):
                 raise ImproperlyConfigured("LANGUAGE_CODE not in LANGUAGES.")
             field_i18n["default"][attr] = default
             field_i18n["fields"][attr] = fields
-        model = super(ModelTranslateMeta, mcs).__new__(mcs, name, bases, dct)
+        model = super().__new__(mcs, name, bases, dct)
         if hasattr(model._meta, "_field_i18n"):
             raise FieldError("TranslateMeta map already exists!")
         model._meta._field_i18n = field_i18n
@@ -180,4 +180,4 @@ class TranslatedModelAdmin(admin.ModelAdmin):
             for fieldset in type(self).fieldsets:
                 fieldset[1]["fields"] = _trans_fields(fieldset[1]["fields"])
 
-        super(TranslatedModelAdmin, self).__init__(model, admin_site)
+        super().__init__(model, admin_site)

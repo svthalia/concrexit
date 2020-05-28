@@ -1,7 +1,7 @@
 import json
 
 
-class _JsonSerializable(object):
+class _JsonSerializable:
     @property
     def data(self) -> object:
         raise NotImplementedError
@@ -57,10 +57,10 @@ class Request(_JsonSerializable):
 class ResultException(Exception):
     def __init__(self, notifications):
         msg = "Error occurred on server:\n" + "\n".join(notifications)
-        super(ResultException, self).__init__(msg)
+        super().__init__(msg)
 
 
-class Result(object):
+class Result:
     def __init__(self, data) -> None:
         self._data = data
         self._success = self._data.pop("success", False)

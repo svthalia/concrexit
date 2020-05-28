@@ -116,9 +116,7 @@ class MessageAdmin(TranslatedModelAdmin):
 
     def change_view(self, request, object_id, form_url="", **kwargs):
         obj = Message.objects.filter(id=object_id)[0]
-        return super(MessageAdmin, self).change_view(
-            request, object_id, form_url, {"message": obj}
-        )
+        return super().change_view(request, object_id, form_url, {"message": obj})
 
 
 @admin.register(models.ScheduledMessage)
