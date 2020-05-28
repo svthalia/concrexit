@@ -81,9 +81,7 @@ def _i18n_attr_accessor(attr):
     def _accessor(self):
         return getattr(self, localize_attr_name(attr))
 
-    _accessor.__doc__ = "Accessor that fetches the localized " "variant of {}".format(
-        attr
-    )
+    _accessor.__doc__ = "Accessor that fetches the localized variant of {}".format(attr)
 
     return _accessor
 

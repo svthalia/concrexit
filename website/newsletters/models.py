@@ -77,11 +77,7 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
             )
         if self.send_date and self.send_date <= timezone.now():
             errors.update(
-                {
-                    "send_date": _(
-                        "Please make sure the send date is " "not in the past."
-                    )
-                }
+                {"send_date": _("Please make sure the send date is not in the past.")}
             )
 
         if errors:
@@ -205,7 +201,7 @@ class NewsletterEvent(NewsletterContent):
         null=True,
         default=None,
         help_text=_(
-            "This is the price that a member has to " "pay when he/she did not show up."
+            "This is the price that a member has to pay when he/she did not show up."
         ),
     )
 

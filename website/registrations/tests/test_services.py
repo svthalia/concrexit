@@ -573,10 +573,10 @@ class ServicesTest(TestCase):
         payments.update(type=Payment.CARD)
 
         with mock.patch(
-            "registrations.services." "_create_member_from_registration"
+            "registrations.services._create_member_from_registration"
         ) as create_member:
             with mock.patch(
-                "registrations.services._create_membership_" "from_entry"
+                "registrations.services._create_membership_from_entry"
             ) as create_membership:
                 create_member.return_value = None
                 for payment in Payment.objects.filter(pk__in=[p1.pk, p2.pk]):
@@ -606,7 +606,7 @@ class ServicesTest(TestCase):
             self.e0.status = Entry.STATUS_COMPLETED
             self.e0.save()
 
-        with self.subTest("Has processed entries when " "rejected with dry-run"):
+        with self.subTest("Has processed entries when rejected with dry-run"):
             self.assertEqual(services.execute_data_minimisation(True), 1)
 
         self.e0.status = Entry.STATUS_COMPLETED

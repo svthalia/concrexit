@@ -214,9 +214,7 @@ class MemberGroupMembershipAdmin(TranslatedModelAdmin):
 
     def export(self, request, queryset):
         response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = (
-            "attachment;" "filename=" '"group_memberships.csv"'
-        )
+        response["Content-Disposition"] = 'attachment; filename="group_memberships.csv"'
         writer = csv.writer(response)
         writer.writerow(
             [

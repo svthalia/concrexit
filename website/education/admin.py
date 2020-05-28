@@ -64,9 +64,7 @@ class ExamAdmin(TranslatedModelAdmin):
     def reset_download_count(self, request, queryset):
         queryset.update(download_count=0)
 
-    reset_download_count.short_description = _(
-        "Reset the marked exams " "download count"
-    )
+    reset_download_count.short_description = _("Reset the marked exams download count")
 
     def download_csv(self, request, queryset):
         opts = queryset.model._meta
@@ -122,7 +120,7 @@ class SummaryAdmin(TranslatedModelAdmin):
         queryset.update(download_count=0)
 
     reset_download_count.short_description = _(
-        "Reset the marked summaries " "download count"
+        "Reset the marked summaries download count"
     )
 
     def download_csv(self, request, queryset):

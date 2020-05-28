@@ -106,7 +106,7 @@ class UserChangeForm(BaseUserChangeForm):
     username = forms.CharField(
         label=_("Username"),
         required=True,
-        help_text=_("Required. 64 characters or fewer. " "Letters and digits only."),
+        help_text=_("Required. 64 characters or fewer. Letters and digits only."),
         widget=forms.TextInput(attrs={"class": "vTextField", "maxlength": 64}),
         validators=[
             RegexValidator(

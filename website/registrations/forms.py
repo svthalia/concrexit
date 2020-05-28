@@ -50,9 +50,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
         coerce=int,
         empty_value=this_year,
         required=False,
-        help_text=_(
-            "What lecture year did you start " "studying at Radboud University?"
-        ),
+        help_text=_("What lecture year did you start studying at Radboud University?"),
     )
 
     class Meta:
@@ -118,7 +116,7 @@ class ReferenceForm(forms.ModelForm):
         super().clean()
         membership = self.cleaned_data["member"].current_membership
         if membership and membership.type == Membership.BENEFACTOR:
-            raise ValidationError(_("Benefactors cannot give " "references."))
+            raise ValidationError(_("Benefactors cannot give references."))
 
         membership = self.cleaned_data["member"].latest_membership
         if (

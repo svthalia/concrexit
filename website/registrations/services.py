@@ -282,9 +282,7 @@ def _create_member_from_registration(registration: Registration) -> Member:
 
     # Make sure the username and email are unique
     if not check_unique_user(registration):
-        raise ValueError(
-            "Username or email address of the registration " "are not unique"
-        )
+        raise ValueError("Username or email address of the registration are not unique")
 
     # Create user
     user = get_user_model().objects.create_user(
@@ -359,7 +357,7 @@ def _create_membership_from_entry(
             if membership is not None:
                 if membership.until is None:
                     raise ValueError(
-                        "This member already has a never ending " "membership"
+                        "This member already has a never ending membership"
                     )
                 since = membership.until
         except Renewal.DoesNotExist:
@@ -379,7 +377,7 @@ def _create_membership_from_entry(
             if membership is not None:
                 if membership.until is None:
                     raise ValueError(
-                        "This member already has a never ending " "membership"
+                        "This member already has a never ending membership"
                     )
                 if entry.created_at.date() < membership.until:
                     membership.until = None

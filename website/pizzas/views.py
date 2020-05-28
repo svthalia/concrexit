@@ -51,7 +51,7 @@ def pay_order(request):
             if order.member == request.member:
                 create_payment(order, Payment.TPAY, order.member)
                 messages.success(
-                    request, _("Your order has been paid with " "Thalia Pay.")
+                    request, _("Your order has been paid with Thalia Pay.")
                 )
         except Http404:
             messages.error(request, _("Your order could not be found."))

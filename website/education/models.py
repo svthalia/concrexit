@@ -92,7 +92,7 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
     file = models.FileField(
         upload_to="education/files/exams/",
         help_text=_(
-            "Use the 'View on site' button to download " "the file for inspection."
+            "Use the 'View on site' button to download the file for inspection."
         ),
     )
 
@@ -153,7 +153,7 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
     file = models.FileField(
         upload_to="education/files/summary/",
         help_text=_(
-            "Use the 'View on site' button to download " "the file for inspection."
+            "Use the 'View on site' button to download the file for inspection."
         ),
     )
 

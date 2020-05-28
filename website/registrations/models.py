@@ -357,7 +357,7 @@ class Renewal(Entry):
             .exists()
         ):
             raise ValidationError(
-                _("You already have a renewal " "request queued for review.")
+                _("You already have a renewal request queued for review.")
             )
 
         # Invalid form for study and honorary members
@@ -366,7 +366,7 @@ class Renewal(Entry):
             errors.update(
                 {
                     "length": _("You currently have an active membership."),
-                    "membership_type": _("You currently have" " an active membership."),
+                    "membership_type": _("You currently have an active membership."),
                 }
             )
 

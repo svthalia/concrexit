@@ -141,7 +141,7 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
 
     order = models.PositiveIntegerField(
         verbose_name=_("Order"),
-        help_text=_("Approximately where this slide " "should appear in the order"),
+        help_text=_("Approximately where this slide should appear in the order"),
         default=0,
     )
 
