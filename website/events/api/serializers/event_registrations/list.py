@@ -143,7 +143,7 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
     def _photo(self, instance):
         if instance.member and instance.member.profile.photo:
             return self.context["request"].build_absolute_uri(
-                "%s%s" % (settings.MEDIA_URL, instance.member.profile.photo)
+                f"{settings.MEDIA_URL}{instance.member.profile.photo}"
             )
         else:
             return self.context["request"].build_absolute_uri(

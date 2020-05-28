@@ -1,8 +1,6 @@
 """The models defined by the activemembers package"""
 import datetime
 import logging
-import math
-from typing import Union, Iterable
 
 from django.conf import settings
 from django.contrib.auth.models import Permission
@@ -18,6 +16,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce import HTMLField
 
+from utils.snippets import overlaps
 from utils.translation import ModelTranslateMeta, MultilingualField, localize_attr_name
 
 logger = logging.getLogger(__name__)
@@ -361,50 +360,3 @@ class Mentorship(models.Model):
 
     class Meta:
         unique_together = ("member", "year")
-
-
-HasTimespan = Union[MemberGroupMembership, MemberGroup]
-
-
-def overlaps(check: HasTimespan, others: Iterable[HasTimespan], can_equal=False):
-    """Check for overlapping date ranges
-
-    This works by checking the maximum of the two `since` times, and the minimum of
-    the two `until` times. Because there are no infinite dates, the value date_max
-    is created for when the `until` value is None; this signifies a timespan that
-    has not ended yet and is the maximum possible date in Python's datetime.
-
-    The ranges overlap when the maximum start time is smaller than the minimum
-    end time, as can be seen in this example of two integer ranges:
-
-    check: . . . .[4]. . . . 9
-    other: . . 2 . .[5]. . . .
-
-    check: . . . .[4]. . . . 9
-    other: . . 2 . . . . . . . [date_max]
-
-    And when non overlapping:
-    check: . . . . . .[6] . . 9
-    other: . . 2 . .[5]. . . .
-
-    4 < 5 == True so these intervals overlap, while 6 < 5 == False so these intervals
-    don't overlap
-
-    The can_equal argument is used for boards, where the end date can't be the same
-    as the start date.
-    """
-    date_max = datetime.date(datetime.MAXYEAR, 12, 31)
-    for other in others:
-        if check.pk == other.pk:
-            # No checks for the object we're validating
-            continue
-
-        max_start = max(check.since, other.since)
-        min_end = min(check.until or date_max, other.until or date_max)
-
-        if max_start == min_end and not can_equal:
-            return True
-        if max_start < min_end:
-            return True
-
-    return False

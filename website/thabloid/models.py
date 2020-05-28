@@ -177,7 +177,7 @@ class Thabloid(models.Model):
             except FileNotFoundError:
                 pass
 
-        super(Thabloid, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         if new_file:
             self.extract_thabloid_pages(wait)

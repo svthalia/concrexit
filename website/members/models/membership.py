@@ -4,6 +4,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, gettext_lazy as _
 
+from utils.snippets import overlaps
+
 
 class Membership(models.Model):
     MEMBER = "member"
@@ -57,28 +59,13 @@ class Membership(models.Model):
 
         if self.since is not None:
             memberships = self.user.membership_set.all()
-            for membership in memberships:
-                if membership.pk == self.pk:
-                    continue
-                if (
-                    (
-                        membership.until is None
-                        and (self.until is None or self.until > membership.since)
-                    )
-                    or (self.until is None and self.since < membership.until)
-                    or (
-                        self.until
-                        and membership.until
-                        and self.since < membership.until
-                        and self.until > membership.since
-                    )
-                ):
-                    errors.update(
-                        {
-                            "since": _("A membership already exists for that period"),
-                            "until": _("A membership already exists for that period"),
-                        }
-                    )
+            if overlaps(self, memberships):
+                errors.update(
+                    {
+                        "since": _("A membership already exists for that period"),
+                        "until": _("A membership already exists for that period"),
+                    }
+                )
 
         if errors:
             raise ValidationError(errors)

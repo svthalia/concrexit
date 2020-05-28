@@ -55,7 +55,7 @@ class Partner(models.Model):
         if self.is_local_partner:
             self._reset_local_partner()
 
-        super(Partner, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def _reset_main_partner(self):
         """

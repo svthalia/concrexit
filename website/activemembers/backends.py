@@ -8,7 +8,7 @@ from django.utils import timezone
 from members.models import Member
 
 
-class MemberGroupBackend(object):
+class MemberGroupBackend:
     """Check permissions against MemberGroups"""
 
     def authenticate(self, *args, **kwargs):

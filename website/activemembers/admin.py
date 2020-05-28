@@ -42,9 +42,8 @@ class MemberGroupMembershipInline(admin.StackedInline):
     autocomplete_fields = ("member",)
 
 
-@admin.register(models.Committee)
-class CommitteeAdmin(TranslatedModelAdmin):
-    """Manage the committees"""
+class MemberGroupAdmin(TranslatedModelAdmin):
+    """Manage the member groups"""
 
     inlines = (MemberGroupMembershipInline,)
     form = MemberGroupForm
@@ -75,41 +74,20 @@ class CommitteeAdmin(TranslatedModelAdmin):
         elif instance.contact_mailinglist:
             return instance.contact_mailinglist.name + "@thalia.nu"
         return None
+
+
+@admin.register(models.Committee)
+class CommitteeAdmin(MemberGroupAdmin):
+    """Manage the committees"""
+
+    pass
 
 
 @admin.register(models.Society)
-class SocietyAdmin(TranslatedModelAdmin):
+class SocietyAdmin(MemberGroupAdmin):
     """Manage the societies"""
 
-    inlines = (MemberGroupMembershipInline,)
-    form = MemberGroupForm
-    list_display = ("name", "since", "until", "active", "email")
-    list_filter = (
-        "until",
-        "active",
-    )
-    search_fields = ("name", "description")
-    filter_horizontal = ("permissions",)
-
-    fields = (
-        "name",
-        "description",
-        "photo",
-        "permissions",
-        "since",
-        "until",
-        "contact_mailinglist",
-        "contact_email",
-        "active",
-        "display_members",
-    )
-
-    def email(self, instance):
-        if instance.contact_email:
-            return instance.contact_email
-        elif instance.contact_mailinglist:
-            return instance.contact_mailinglist.name + "@thalia.nu"
-        return None
+    pass
 
 
 @admin.register(models.Board)

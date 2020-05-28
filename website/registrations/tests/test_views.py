@@ -87,14 +87,14 @@ class EntryAdminViewTest(TestCase):
     def test_permissions(self):
         url = "/registration/admin/process/{}/".format(self.entry1.pk)
         response = self.client.post(url)
-        self.assertRedirects(response, "/admin/login/?next=%s" % url)
+        self.assertRedirects(response, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
         url = "/registration/admin/process/{}/".format(self.entry1.pk)
         response = self.client.post(url)
         self.assertRedirects(
-            response, "/admin/registrations/registration/%s/change/" % self.entry1.pk
+            response, f"/admin/registrations/registration/{self.entry1.pk}/change/"
         )
 
     @mock.patch("registrations.services.check_unique_user")
@@ -127,8 +127,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
                 )
 
                 accept_entries.assert_called_once_with(1, entry_qs)
@@ -189,8 +188,7 @@ class EntryAdminViewTest(TestCase):
                 self.assertEqual(response.status_code, 302)
 
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
                 )
 
                 reject_entries.assert_called_once_with(1, entry_qs)
@@ -236,8 +234,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
                 )
 
                 if type == "registration":
@@ -269,8 +266,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
                 )
 
                 revert.assert_called_once_with(1, entry.entry_ptr)
@@ -320,8 +316,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
                 )
 
 
