@@ -69,9 +69,11 @@ class AdminOrderSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data: Any) -> Any:
-        del validated_data["payment"]
+        if "payment" in validated_data:
+            del validated_data["payment"]
         return super().create(validated_data)
 
     def update(self, instance: Model, validated_data: Any) -> Any:
-        del validated_data["payment"]
+        if "payment" in validated_data:
+            del validated_data["payment"]
         return super().update(instance, validated_data)
