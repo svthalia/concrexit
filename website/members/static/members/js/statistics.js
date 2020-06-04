@@ -53,6 +53,24 @@ $(function () {
         '#E22672'
     ];
 
+    const smallBarChartOptions = (stacked) => ({
+        aspectRatio: 1.5,
+        scales: {
+            xAxes: [{
+                autoSkip: false,
+                stacked: stacked
+            }],
+            yAxes: [{
+                stacked: stacked,
+                ticks: {
+                    beginAtZero: true,
+                    maxTicksLimit: 10,
+                }
+            }]
+        },
+        plugins: {labels: false}
+    });
+
     new Chart($('#members-type-chart'), {
         type: 'bar',
         data: {
@@ -63,24 +81,10 @@ $(function () {
             }]
         },
         options: {
-            aspectRatio: 1.5,
             title: {
                 text: gettext('Members per member type'),
             },
-            plugins: { labels: false },
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        autoSkip: false
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        maxTicksLimit: 10,
-                    }
-                }]
-            }
+            ...smallBarChartOptions(false)
         }
     });
 
@@ -88,48 +92,37 @@ $(function () {
         type: 'bar',
         data: {
             labels: Object.keys(cohortSizes),
-            datasets: [
-                {
-                    label: gettext('Benefactor'),
-                    backgroundColor: colors[2],
-                    data: Object.values(cohortSizes).map(function (data) {
-                        return data.benefactor;
-                    }),
-                },
-                {
-                    label: gettext('Honorary'),
-                    backgroundColor: colors[1],
-                    data: Object.values(cohortSizes).map(function (data) {
-                        return data.honorary;
-                    }),
-                },
-                {
-                    label: gettext('Members'),
-                    backgroundColor: colors[0],
-                    data: Object.values(cohortSizes).map(function (data) {
-                        return data.member;
-                    }),
-                }]
+            datasets: ['Benefactor', 'Honorary', 'Members'].map((type, i) => ({
+                label: gettext(type),
+                backgroundColor: colors[i],
+                data: Object.values(cohortSizes).map((data) =>
+                    data[type.toLowerCase()]
+                ),
+            }))
         },
         options: {
-            aspectRatio: 1.5,
             title: {
                 text: gettext("Total number of (honary) members and benefactors per cohort"),
             },
-            scales: {
-                xAxes: [{
-                    autoSkip: false,
-                    stacked: true
-                }],
-                yAxes: [{
-                    stacked: true,
-                    ticks: {
-                        beginAtZero: true,
-                        maxTicksLimit: 10,
-                    }
-                }]
-            },
-            plugins: { labels: false }
+            ...smallBarChartOptions(true)
+        }
+    });
+
+    const wideBarchartOptions = (stacked) => ({
+        maintainAspectRatio: false,
+        plugins: {labels: false},
+        scales: {
+            xAxes: [{
+                stacked: stacked,
+                autoSkip: false,
+            }],
+            yAxes: [{
+                stacked: stacked,
+                ticks: {
+                    beginAtZero: true,
+                    maxTicksLimit: 10,
+                }
+            }]
         }
     });
 
@@ -143,24 +136,10 @@ $(function () {
             }]
         },
         options: {
-            maintainAspectRatio: false,
             title: {
                 text: gettext("Number of members per committee"),
             },
-            plugins: { labels: false },
-            scales: {
-                 xAxes: [{
-                    ticks: {
-                        autoSkip: false,
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        maxTicksLimit: 10,
-                    }
-                }]
-            }
+            ...wideBarchartOptions(false)
         }
     });
 
@@ -179,58 +158,21 @@ $(function () {
             }),
         },
         options: {
-            maintainAspectRatio: false,
             title: {
                 text: gettext("Number of events"),
             },
-            scales: {
-                xAxes: [{
-                    stacked: true,
-                    autoSkip: false
-                }],
-                yAxes: [{
-                    stacked: true,
-                    ticks: {
-                        beginAtZero: true,
-                        maxTicksLimit: 10,
-                    }
-                }]
-            },
-            plugins: { labels: false }
+            ...wideBarchartOptions(true)
         }
     });
 
-    new Chart($('#pizza-total-type-chart'), {
-        type: 'pie',
-        data: {
-            labels: Object.keys(pizzaOrders),
-            datasets: [{
-                backgroundColor: colors,
-                data: Object.values(pizzaOrders),
-            }]
-        },
-        options: {
-            xAxes: [{
-                ticks: {
-                    autoSkip: false
-                }
-            }],
-            aspectRatio: 1.5,
-            title: {
-                text: gettext("Total pizza orders of type"),
-            },
-            plugins: { labels: false },
-        }
-    });
-
-    if (currentPizzaOrders != null) {
-        new Chart($('#pizza-current-type-chart'), {
+    const pizzaChart = (elem, data, text) =>
+        new Chart(elem, {
             type: 'pie',
             data: {
-                labels: Object.keys(pizzaOrders),
+                labels: Object.keys(data),
                 datasets: [{
                     backgroundColor: colors,
-                    data: Object.values(pizzaOrders),
+                    data: Object.values(data),
                 }]
             },
             options: {
@@ -241,11 +183,16 @@ $(function () {
                 }],
                 aspectRatio: 1.5,
                 title: {
-                    text: gettext("Current pizza orders of type"),
+                    text: gettext(text),
                 },
                 plugins: { labels: false },
             }
         });
+
+    pizzaChart($('#pizza-total-type-chart'), pizzaOrders, "Total pizza orders of type");
+
+    if (currentPizzaOrders != null) {
+        pizzaChart($('#pizza-current-type-chart'), currentPizzaOrders, "Current pizza orders of type");
     }
 
 });
