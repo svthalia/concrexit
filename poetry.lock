@@ -290,7 +290,7 @@ description = "iCal feeds for Django based on Django's syndication feed framewor
 name = "django-ical"
 optional = false
 python-versions = "*"
-version = "1.7.0"
+version = "1.7.1"
 
 [package.dependencies]
 Django = ">=1.11"
@@ -1125,7 +1125,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "1be72b11b5474bcf656f9173ab7c9ed8074d23ddb34811072f82811cd40ab7c6"
+content-hash = "32b7f4c0850ace2c6cc04dec1212f7b79059153f2f007604aea1c70fad292957"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1313,8 +1313,8 @@ django-compressor = [
     {file = "django_compressor-2.4.tar.gz", hash = "sha256:d2ed1c6137ddaac5536233ec0a819e14009553fee0a869bea65d03e5285ba74f"},
 ]
 django-ical = [
-    {file = "django-ical-1.7.0.tar.gz", hash = "sha256:b6dfe6f86e6bedca2a2147196c48b52d592b7ad02f958e0c349aa871adb924f1"},
-    {file = "django_ical-1.7.0-py2.py3-none-any.whl", hash = "sha256:b50c34bdfa6d7afa63a355125592e862135b849e2c44a592fd66fe2a4edfc29e"},
+    {file = "django-ical-1.7.1.tar.gz", hash = "sha256:645344dda9611ca77dc3609f53b6e751bd89cc7d01f77adf1fd72838992b5579"},
+    {file = "django_ical-1.7.1-py2.py3-none-any.whl", hash = "sha256:42bb51020f935342fe78f0202346a0775777811a4bdbc1c9c32bb8ec068d2f95"},
 ]
 django-libsass = [
     {file = "django-libsass-0.8.tar.gz", hash = "sha256:38fab4ce1245542f3afd7248dc48f8a0b261f5f6c61e7cc43969a9c9079b5ffd"},
