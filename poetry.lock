@@ -2,7 +2,7 @@
 category = "main"
 description = "A configurable sidebar-enabled Sphinx theme"
 name = "alabaster"
-optional = false
+optional = true
 python-versions = "*"
 version = "0.7.12"
 
@@ -60,7 +60,7 @@ tests = ["coverage", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.i
 category = "main"
 description = "Internationalization utilities"
 name = "babel"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.8.0"
 
@@ -194,7 +194,7 @@ category = "main"
 description = "Cross-platform colored terminal text."
 marker = "sys_platform == \"win32\""
 name = "colorama"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "0.4.3"
 
@@ -260,19 +260,18 @@ description = "Bootstrap support for Django projects"
 name = "django-bootstrap4"
 optional = false
 python-versions = ">=3.6,<4.0"
-version = "2.1.0"
+version = "2.1.1"
 
 [package.dependencies]
 beautifulsoup4 = ">=4.8.0,<5.0.0"
 django = ">=2.2,<4.0"
-sphinx_rtd_theme = ">=0.4.3,<0.5.0"
 
 [package.dependencies.importlib-metadata]
 python = "<3.8"
 version = ">=1.5.0,<2.0.0"
 
 [package.extras]
-docs = ["sphinx (>=2.4,<3.0)", "m2r (>=0.2.1,<0.3.0)"]
+docs = ["sphinx (>=2.4,<3.0)", "sphinx_rtd_theme (>=0.4.3,<0.5.0)", "m2r (>=0.2.1,<0.3.0)"]
 
 [[package]]
 category = "main"
@@ -392,7 +391,7 @@ django = ">=1.11"
 category = "main"
 description = "Docutils -- Python Documentation Utilities"
 name = "docutils"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "0.16"
 
@@ -618,7 +617,7 @@ version = "2.8"
 category = "main"
 description = "Getting image size from png/jpeg/jpeg2000/gif file"
 name = "imagesize"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.2.0"
 
@@ -642,7 +641,7 @@ testing = ["packaging", "importlib-resources"]
 category = "main"
 description = "A very fast and expressive template engine."
 name = "jinja2"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "2.11.0"
 
@@ -675,7 +674,7 @@ six = "*"
 category = "main"
 description = "Safely add untrusted strings to HTML/XML markup."
 name = "markupsafe"
-optional = false
+optional = true
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
 version = "1.1.1"
 
@@ -777,7 +776,7 @@ Pillow = "*"
 category = "main"
 description = "Pygments is a syntax highlighting package written in Python."
 name = "pygments"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "2.5.2"
 
@@ -933,7 +932,7 @@ version = "1.14.0"
 category = "main"
 description = "This package provides 26 stemmers for 25 languages generated from Snowball algorithms."
 name = "snowballstemmer"
-optional = false
+optional = true
 python-versions = "*"
 version = "2.0.0"
 
@@ -949,7 +948,7 @@ version = "1.9.5"
 category = "main"
 description = "Python documentation generator"
 name = "sphinx"
-optional = false
+optional = true
 python-versions = ">=3.5"
 version = "3.1.1"
 
@@ -979,20 +978,9 @@ test = ["pytest", "pytest-cov", "html5lib", "typed-ast", "cython"]
 
 [[package]]
 category = "main"
-description = "Read the Docs theme for Sphinx"
-name = "sphinx-rtd-theme"
-optional = false
-python-versions = "*"
-version = "0.4.3"
-
-[package.dependencies]
-sphinx = "*"
-
-[[package]]
-category = "main"
 description = ""
 name = "sphinxcontrib-applehelp"
-optional = false
+optional = true
 python-versions = "*"
 version = "1.0.1"
 
@@ -1003,7 +991,7 @@ test = ["pytest", "flake8", "mypy"]
 category = "main"
 description = ""
 name = "sphinxcontrib-devhelp"
-optional = false
+optional = true
 python-versions = "*"
 version = "1.0.1"
 
@@ -1014,7 +1002,7 @@ test = ["pytest", "flake8", "mypy"]
 category = "main"
 description = ""
 name = "sphinxcontrib-htmlhelp"
-optional = false
+optional = true
 python-versions = "*"
 version = "1.0.2"
 
@@ -1025,7 +1013,7 @@ test = ["pytest", "flake8", "mypy", "html5lib"]
 category = "main"
 description = "A sphinx extension which renders display math in HTML via JavaScript"
 name = "sphinxcontrib-jsmath"
-optional = false
+optional = true
 python-versions = ">=3.5"
 version = "1.0.1"
 
@@ -1036,7 +1024,7 @@ test = ["pytest", "flake8", "mypy"]
 category = "main"
 description = ""
 name = "sphinxcontrib-qthelp"
-optional = false
+optional = true
 python-versions = "*"
 version = "1.0.2"
 
@@ -1047,7 +1035,7 @@ test = ["pytest", "flake8", "mypy"]
 category = "main"
 description = ""
 name = "sphinxcontrib-serializinghtml"
-optional = false
+optional = true
 python-versions = "*"
 version = "1.1.3"
 
@@ -1140,7 +1128,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "2c8e9d66a6d454dcf2674d3b300e6cbb36bdd53d5bdbd4d8bde260d60befa38e"
+content-hash = "ecc618a29b2886bcaffc4c4b2963cb815454c9e844b984449419f138d416d829"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1320,8 +1308,8 @@ django-appconf = [
     {file = "django_appconf-1.0.3-py2.py3-none-any.whl", hash = "sha256:c98a7af40062e996b921f5962a1c4f3f0c979fa7885f7be4710cceb90ebe13a6"},
 ]
 django-bootstrap4 = [
-    {file = "django-bootstrap4-2.1.0.tar.gz", hash = "sha256:e38e6be5e7abf1ff3d48ba77b6c6f5550f0e1b2b84ab666c68fe9d70e764c813"},
-    {file = "django_bootstrap4-2.1.0-py3-none-any.whl", hash = "sha256:8734b2ea6a88f32e0ee77b4c5b05506837bc871b8997e3393008a275c9239cce"},
+    {file = "django-bootstrap4-2.1.1.tar.gz", hash = "sha256:69a68ecf8d6526c33b4c79b51ac07f3a55d3740c9a126171325133108590fff8"},
+    {file = "django_bootstrap4-2.1.1-py3-none-any.whl", hash = "sha256:b0236cdba9b64f03889cd2555c35586ab645a75260b088429ca98a47e80ef798"},
 ]
 django-compressor = [
     {file = "django_compressor-2.4-py2.py3-none-any.whl", hash = "sha256:57ac0a696d061e5fc6fbc55381d2050f353b973fb97eee5593f39247bc0f30af"},
@@ -1733,10 +1721,6 @@ soupsieve = [
 sphinx = [
     {file = "Sphinx-3.1.1-py3-none-any.whl", hash = "sha256:97c9e3bcce2f61d9f5edf131299ee9d1219630598d9f9a8791459a4d9e815be5"},
     {file = "Sphinx-3.1.1.tar.gz", hash = "sha256:74fbead182a611ce1444f50218a1c5fc70b6cc547f64948f5182fb30a2a20258"},
-]
-sphinx-rtd-theme = [
-    {file = "sphinx_rtd_theme-0.4.3-py2.py3-none-any.whl", hash = "sha256:00cf895504a7895ee433807c62094cf1e95f065843bf3acd17037c3e9a2becd4"},
-    {file = "sphinx_rtd_theme-0.4.3.tar.gz", hash = "sha256:728607e34d60456d736cc7991fd236afb828b21b82f956c5ea75f94c8414040a"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.1.tar.gz", hash = "sha256:edaa0ab2b2bc74403149cb0209d6775c96de797dfd5b5e2a71981309efab3897"},
