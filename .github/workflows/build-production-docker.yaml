@@ -11,10 +11,13 @@ jobs:
         name: Build Production Docker Image
         runs-on: ubuntu-18.04
         env:
+            DOCKER_PREFIX: thalia/concrexit
             DOCKER_LATEST: thalia/concrexit:latest
-            DOCKER_TAG_PRODUCTION: thalia/concrexit:${{ github.ref }}
             DOCKER_DEPENDENCIES_LATEST: thalia/concrexit-dependencies:latest
         steps:
+            - name: Get version
+              run: echo ::set-env name=DOCKER_VERSION::${GITHUB_REF/refs\/tags\//}
+
             - name: Checkout repository
               uses: actions/checkout@v2
 
@@ -28,6 +31,6 @@ jobs:
 
             - name: Push Docker image
               run: |
-                  docker tag "${DOCKER_LATEST}" "${DOCKER_TAG_PRODUCTION}"
-                  docker push "${DOCKER_TAG_PRODUCTION}"
+                  docker tag "${DOCKER_LATEST}" "${DOCKER_PREFIX}:${DOCKER_VERSION}"
+                  docker push "${DOCKER_PREFIX}:${DOCKER_VERSION}"
                   docker push "${DOCKER_LATEST}"
