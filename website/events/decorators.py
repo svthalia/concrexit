@@ -31,7 +31,9 @@ class OrganiserOnly:
                 pass
         elif "registration" in kwargs:
             try:
-                event = Event.objects.get(registration__pk=kwargs.get("registration"))
+                event = Event.objects.get(
+                    eventregistration__pk=kwargs.get("registration")
+                )
             except Event.DoesNotExist:
                 pass
 
