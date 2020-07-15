@@ -40,7 +40,8 @@ class EventFeed(ICalFeed):
 
         if self.user:
             query &= Q(registration_start__isnull=True) | (
-                Q(registration__member=self.user) & Q(registration__date_cancelled=None)
+                Q(eventregistration__member=self.user)
+                & Q(eventregistration__date_cancelled=None)
             )
 
         return Event.objects.filter(query).order_by("-start")
