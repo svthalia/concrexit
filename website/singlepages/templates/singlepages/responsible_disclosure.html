@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "responsible disclosure policy"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "responsible disclosure policy"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title text-center">{% trans "responsible disclosure policy"|capfirst %}</h1>
+
+            <h3>{% trans "Version" %} 1.0, 23-07-2020</h3>
+            <p>
+                {% blocktrans trimmed %}
+                    At Thalia, we take security of our infrastructure and digital systems seriously.
+                    We develop, build and deploy all systems with security in mind.
+                    However, we can never be 100% secure and vulnerabilities will, unfortunately, present themselves.
+                    If you find a (potential) vulnerability or security issue, we would appreciate it if you inform us as soon as possible.
+                {% endblocktrans %}
+            </p>
+
+            <h4>{% trans "We ask you to" %}</h4>
+            <ul>
+                <li>{% trans "send any and all reports about potential security issues to <a href='mailto:www@thalia.nu'>www@thalia.nu</a> (in either English or Dutch)." %}</li>
+                <li>{% trans "notify us as soon as possible about any potential security issue." %}</li>
+                <li>{% trans "give detailed reports of your findings to help us identify the underlying problem." %}</li>
+                <li>{% trans "only exploit vulnerabilities to confirm their presence." %}</li>
+                <li>{% trans "not use social engineering, physical attacks, (distributed) denial of service or spam attacks against any of our systems." %}</li>
+                <li>{% trans "not share your report with anybody else until the problem has been fixed." %}
+                <li>{% trans "involve us if you want to publish your report once it has been fixed." %}
+                <li>{% trans "respect the privacy of our members." %}
+
+            </ul>
+
+            <h4>{% trans "We promise you to" %}</h4>
+            <ul>
+                <li>{% trans "take your reports seriously." %}</li>
+                <li>{% trans "respond to your reports as soon as possible." %}</li>
+                <li>{% trans "solve the issue as soon as possible." %}</li>
+                <li>{% trans "respect your privacy and will treat your reports confidentially." %}</li>
+                <li>{% trans "keep you up to date and work with you to solve the underlying problem." %}</li>
+                <li>{% trans "credit you in any internal and external announcements (with your permission)." %}</li>
+                <li>{% trans "not take any legal action if you followed the above guidelines." %}</li>
+                <li>{% trans "reward you as Thalia sees fit." %}</li>
+            </ul>
+
+        </div>
+    </section>
+{% endblock %}
