@@ -260,7 +260,7 @@ description = "Bootstrap support for Django projects"
 name = "django-bootstrap4"
 optional = false
 python-versions = ">=3.6,<4.0"
-version = "2.1.1"
+version = "2.2.0"
 
 [package.dependencies]
 beautifulsoup4 = ">=4.8.0,<5.0.0"
@@ -1128,7 +1128,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "d540c915c2d5599bcb0bc702829257b9af1a5ce615b4900f5f33c6d2d398fd0b"
+content-hash = "b658b7b55f0338f575824bebe0a5741a1669a7647215067e990d35d2a21aad08"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1309,8 +1309,8 @@ django-appconf = [
     {file = "django_appconf-1.0.3-py2.py3-none-any.whl", hash = "sha256:c98a7af40062e996b921f5962a1c4f3f0c979fa7885f7be4710cceb90ebe13a6"},
 ]
 django-bootstrap4 = [
-    {file = "django-bootstrap4-2.1.1.tar.gz", hash = "sha256:69a68ecf8d6526c33b4c79b51ac07f3a55d3740c9a126171325133108590fff8"},
-    {file = "django_bootstrap4-2.1.1-py3-none-any.whl", hash = "sha256:b0236cdba9b64f03889cd2555c35586ab645a75260b088429ca98a47e80ef798"},
+    {file = "django-bootstrap4-2.2.0.tar.gz", hash = "sha256:1c0a931b4245a0dcd5051ea1b244ac130a328374ce8e85254c75eb072a737201"},
+    {file = "django_bootstrap4-2.2.0-py3-none-any.whl", hash = "sha256:32cc0f914ace4cef935c0d3f786dde2a52f0ea1be72153f6e356c0aa8f3925e1"},
 ]
 django-compressor = [
     {file = "django_compressor-2.4-py2.py3-none-any.whl", hash = "sha256:57ac0a696d061e5fc6fbc55381d2050f353b973fb97eee5593f39247bc0f30af"},
