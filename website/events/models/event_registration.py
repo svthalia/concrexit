@@ -45,7 +45,7 @@ class EventRegistration(models.Model, Payable):
     payment = models.OneToOneField(
         "payments.Payment",
         related_name="events_registration",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )

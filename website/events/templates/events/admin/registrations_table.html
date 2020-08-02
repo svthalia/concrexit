@@ -41,10 +41,10 @@
                 {% endif %}
                 <td>
                     <select name="payment"
-                            data-none="{{ payment.NONE }}"
-                            {% if registration.payment and registration.payment.type != payment.NONE %}class="paid"{% endif %}>
-                        <option value="{{ payment.NONE }}"
-                                {% if not registration.payment or registration.payment.type == payment.NONE %}selected{% endif %}>{% trans 'None' %}</option>
+                            data-none="no_payment"
+                            {% if registration.payment %}class="paid"{% endif %}>
+                        <option value="no_payment"
+                                {% if not registration.payment %}selected{% endif %}>{% trans 'None' %}</option>
                         <option value="{{ payment.CARD }}"
                                 {% if registration.payment and registration.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
                         <option value="{{ payment.CASH }}"
