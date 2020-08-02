@@ -105,9 +105,9 @@
                                 </td>
                                 <td>
                                     <select name="payment"
-                                            data-none="{{ payment.NONE }}"
+                                            data-none="no_payment"
                                             {% if order.payment is not None %}class="paid"{% endif %}>
-                                        <option value="{{ payment.NONE }}"
+                                        <option value="no_payment"
                                                 {% if order.payment is None %}selected{% endif %}>{% trans 'None' %}</option>
                                         <option value="{{ payment.CARD }}"
                                                 {% if order.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>

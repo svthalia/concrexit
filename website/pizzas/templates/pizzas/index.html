@@ -19,7 +19,7 @@
 
 {% block header_image_container %}
     {% if event.just_ended and order %}
-        <div class="image pizza-header {% if order.payment.processed == order.payment.NONE %}unpaid{% else %}paid{% endif %}">
+        <div class="image pizza-header {% if not order.payment %}unpaid{% else %}paid{% endif %}">
             <h1>
                 {{ order.product.name }}
             </h1>
@@ -90,7 +90,7 @@
                         </h3>
                     {% endif %}
                     {% if order %}
-                        {% if order.payment.processed %}
+                        {% if order.payment %}
                             {% trans "The order has been paid for." as success_text %}
                             {% alert 'success' success_text extra_classes="mt-3" %}
                         {% else %}
@@ -133,7 +133,7 @@
                                                        onclick="return confirm('{% trans "Are you sure you want to cancel your order?" %}')"/>
                                             </form>
                                         {% endif %}
-                                        {% if order.member.tpay_enabled and not order.payment.processed %}
+                                        {% if order.member.tpay_enabled and not order.payment %}
                                             <form
                                                     class="d-inline-block"
                                                     method="post"

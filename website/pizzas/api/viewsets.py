@@ -7,7 +7,7 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from payments.models import Payment
+from payments.api.fields import PaymentTypeField
 from payments.services import delete_payment, create_payment
 from pizzas.api import serializers
 from pizzas.models import Product, PizzaEvent, Order
@@ -84,7 +84,7 @@ class OrderViewset(ModelViewSet):
                     if "payment" in serializer.validated_data:
                         payment_type = serializer.validated_data["payment"]["type"]
                     else:
-                        payment_type = Payment.NONE
+                        payment_type = PaymentTypeField.NO_PAYMENT
 
                     self._update_payment(order, payment_type, self.request.user)
                 else:
@@ -105,13 +105,8 @@ class OrderViewset(ModelViewSet):
 
     @staticmethod
     def _update_payment(order, payment_type=None, processed_by=None):
-        if order.payment and payment_type == Payment.NONE:
+        if order.payment and payment_type == PaymentTypeField.NO_PAYMENT:
             delete_payment(order)
-        elif order.payment:
-            if payment_type is None:
-                payment_type = order.payment.type
-            order.payment = create_payment(order, processed_by, payment_type)
-            order.payment.save()
         else:
             order.payment = create_payment(order, processed_by, payment_type)
             order.save()
