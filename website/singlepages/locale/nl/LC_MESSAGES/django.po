@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 22:05+0200\n"
-"PO-Revision-Date: 2020-04-22 22:24+0200\n"
+"POT-Creation-Date: 2020-07-23 12:57+0200\n"
+"PO-Revision-Date: 2020-07-23 13:01+0200\n"
 "Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: apps.py
 msgid "Singlepages"
@@ -226,6 +226,7 @@ msgid "privacy policy"
 msgstr "privacybeleid"
 
 #: templates/singlepages/privacy_policy.html
+#: templates/singlepages/responsible_disclosure.html
 msgid "Version"
 msgstr "Versie"
 
@@ -746,6 +747,123 @@ msgstr ""
 "leden, begunstigers en ereleden. Wanneer wijzigingen aan verwerkingen of "
 "nieuwe verwerkingen op grondslag van toestemming geïntroduceerd worden zal "
 "deze toestemming (opnieuw) gevraagd worden."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "responsible disclosure policy"
+msgstr "responsible disclosure beleid"
+
+#: templates/singlepages/responsible_disclosure.html
+#, python-format
+msgid ""
+"At Thalia, we take security of our infrastructure and digital systems "
+"seriously. We develop, build and deploy all systems with security in mind. "
+"However, we can never be 100%% secure and vulnerabilities will, "
+"unfortunately, present themselves. If you find a (potential) vulnerability "
+"or security issue, we would appreciate it if you inform us as soon as "
+"possible."
+msgstr ""
+"Bij Thalia nemen we de beveiliging van onze infrastructuur en digitale "
+"systemen serieus. We ontwikkelen, bouwen en implementeren alle systemen met "
+"het oog op beveiliging. We kunnen echter nooit 100%% veilig zijn en "
+"kwetsbaarheden zullen zich helaas voordoen. Mocht u een (potentieel) "
+"kwetsbaarheids- of beveiligingsprobleem vinden, dan stellen wij het op prijs "
+"als u ons zo snel mogelijk daarover informeert."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "We ask you to"
+msgstr "Wij vragen u"
+
+#: templates/singlepages/responsible_disclosure.html
+msgid ""
+"send any and all reports about potential security issues to <a href='mailto:"
+"www@thalia.nu'>www@thalia.nu</a> (in either English or Dutch)."
+msgstr ""
+"om alle rapporten over mogelijke beveiligingsproblemen naar <a href='mailto:"
+"www@thalia.nu'> www@thalia.nu </a> te sturen (in het Engels of in het "
+"Nederlands)."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "notify us as soon as possible about any potential security issue."
+msgstr ""
+"om ons zo snel mogelijk over een mogelijk beveiligingsprobleem te informeren."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid ""
+"give detailed reports of your findings to help us identify the underlying "
+"problem."
+msgstr ""
+"om uw bevindingen zo gedetailleerd mogelijk bij ons te melden om ons te "
+"helpen het onderliggende probleem te identificeren."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "only exploit vulnerabilities to confirm their presence."
+msgstr ""
+"om kwetsbaarheden alleen te misbruiken om hun aanwezigheid te bevestigen."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid ""
+"not use social engineering, physical attacks, (distributed) denial of "
+"service or spam attacks against any of our systems."
+msgstr ""
+"om geen gebruik te maken van social engineering, fysieke aanvallen, "
+"(gedistribueerde) denial of service aanvallen of spam aanvallen op onze "
+"systemen."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid ""
+"not share your report with anybody else until the problem has been fixed."
+msgstr "om uw rapport met niemand te delen totdat het probleem is verholpen."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "involve us if you want to publish your report once it has been fixed."
+msgstr "om ons erbij te betrekken als u uw rapport wilt publiceren."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "respect the privacy of our members."
+msgstr "om de privacy van onze leden te respecteren."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "We promise you to"
+msgstr "Wij beloven u"
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "take your reports seriously."
+msgstr "om uw bevindingen serieus te nemen."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "respond to your reports as soon as possible."
+msgstr "zo snel mogelijk te reageren op uw bevindingen."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "solve the issue as soon as possible."
+msgstr "het probleem zo snel mogelijk op te lossen."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "respect your privacy and will treat your reports confidentially."
+msgstr ""
+"om uw privacy te respecteren en uw bevindingen vertrouwelijk te behandelen."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "keep you up to date and work with you to solve the underlying problem."
+msgstr ""
+"om u up to date te houden en u te betrekken in het proces om het probleem op "
+"te lossen."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid ""
+"credit you in any internal and external announcements (with your permission)."
+msgstr ""
+"om u (met uw toestemming) te noemen in interne en externe berichtgeving."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "not take any legal action if you followed the above guidelines."
+msgstr ""
+"om geen juridische stappen te nemen zolang u zich aan de bovenstaande regels "
+"houdt."
+
+#: templates/singlepages/responsible_disclosure.html
+msgid "reward you as Thalia sees fit."
+msgstr "om u (volgens Thalia) gepast te belonen."
 
 #: templates/singlepages/sibling_associations.html
 msgid "Sibling Associations"

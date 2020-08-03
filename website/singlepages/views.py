@@ -26,6 +26,12 @@ class PrivacyPolicyView(TemplateView):
     template_name = "singlepages/privacy_policy.html"
 
 
+class ResponsibleDisclosureView(TemplateView):
+    """Static page with the responsible disclosure policy."""
+
+    template_name = "singlepages/responsible_disclosure.html"
+
+
 class EventTermsView(TemplateView):
     """Static page with the event registration terms"""
 
