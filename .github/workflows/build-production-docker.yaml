@@ -11,9 +11,9 @@ jobs:
         name: Build Production Docker Image
         runs-on: ubuntu-18.04
         env:
-            DOCKER_PREFIX: thalia/concrexit
-            DOCKER_LATEST: thalia/concrexit:latest
-            DOCKER_DEPENDENCIES_LATEST: thalia/concrexit-dependencies:latest
+            DOCKER_PREFIX: docker.pkg.github.com/svthalia/concrexit/production
+            DOCKER_LATEST: docker.pkg.github.com/svthalia/concrexit/production:latest
+            DOCKER_DEPENDENCIES_LATEST: docker.pkg.github.com/svthalia/concrexit/dependencies:latest
         steps:
             - name: Get version
               run: echo ::set-env name=DOCKER_VERSION::${GITHUB_REF/refs\/tags\//}
@@ -21,13 +21,13 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v2
 
+            - name: Login to GitHub Packages
+              run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://docker.pkg.github.com --username "{{ github.repository }}" --password-stdin
+
             - name: Build Docker images
               run: |
                   docker build --file Dockerfile.dependencies --quiet --build-arg "install_dev_requirements=0" --tag "${DOCKER_DEPENDENCIES_LATEST}" .
                   docker build --quiet --build-arg "source_commit=${{ github.sha }}" --tag "${DOCKER_LATEST}" .
-
-            - name: Login to Docker Hub
-              run: echo "${{ secrets.DOCKER_REGISTRY_PASSWORD }}" | docker login --username "thaliawww" --password-stdin
 
             - name: Push Docker image
               run: |

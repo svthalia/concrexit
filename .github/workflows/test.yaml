@@ -156,16 +156,16 @@ jobs:
     runs-on: ubuntu-18.04
     needs: [codestyle, tests, documentation-tests]
     env:
-      DOCKER_TAG: thalia/concrexit:${{ github.sha }}
+      DOCKER_TAG: docker.pkg.github.com/svthalia/concrexit/commit:${{ github.sha }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Login to GitHub Packages
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://docker.pkg.github.com --username "{{ github.repository }}" --password-stdin
+
       - name: Build new Docker image
         run: docker build --quiet --build-arg "source_commit=${{ github.sha }}" --tag "${DOCKER_TAG}" .
-
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_REGISTRY_PASSWORD }}" | docker login --username "thaliawww" --password-stdin
 
       - name: Push new Docker image
         run: docker push "${DOCKER_TAG}"
