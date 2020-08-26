@@ -3,7 +3,7 @@
 set -o errexit -o verbose 
 
 if [ -z "${GITHUB_ACTIONS}" ]; then
-    echo "Not running in Gitlab CI"
+    echo "Not running in GitHub Actions."
     exit 1;
 fi
 

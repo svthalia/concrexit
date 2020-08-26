@@ -1,34 +1,61 @@
 #!/usr/bin/env bash
 
-# From https://docs.docker.com/install/linux/docker-ce/ubuntu/
 apt-get update
-apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+apt-get install --assume-yes \
+    nginx
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+
+
+curl --fail --silent --show-error --location https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
 apt-get update
-apt-get -y install docker-ce docker-ce-cli containerd.io
+apt-get --assume-yes install docker-ce docker-ce-cli containerd.io
 
-docker volume create concrexit_data
-docker run --name concrexit_migrate \
-  --rm \
-  --mount source=concrexit_data,target=/usr/src/app/website/ \
-  thalia/concrexit:@version@ migrate
+curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
-docker run --name concrexit_superuser \
-  --rm \
-  --mount source=concrexit_data,target=/usr/src/app/website/ \
-  thalia/concrexit:@version@ createreviewuser \
-  --username @username@ --password @password@
+mkdir certs
+openssl req -x509 -nodes -newkey rsa:2048 -keyout certs/test.local.key -out certs/test.local.crt -subj "/C=NL/ST=Gelderland/L=Nijmegen/O=Thalia/OU=Technicie/CN=test.local"
 
-docker run --name concrexit_fixtures \
-  --rm \
-  --mount source=concrexit_data,target=/usr/src/app/website/ \
-  thalia/concrexit:@version@ createfixtures -a
+cat > docker-compose.yaml <<EOF
+---
 
-docker run --name concrexit_web \
-  --detach \
-  --publish 0.0.0.0:80:80 \
-  --mount source=concrexit_data,target=/usr/src/app/website/ \
-  thalia/concrexit:@version@ runserver 0.0.0.0:80
+version: '3.5'
 
-echo "shutdown now" | at now +2 days
+services:
+    nginx-proxy:
+        image: jwilder/nginx-proxy
+        ports:
+            - 80:80
+            - 443:443
+        environment:
+            DHPARAM_GENERATION: "false"
+            DHPARAM_BITS: 2048
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+            - ./certs/:/etc/nginx/certs/
+
+    web:
+        image: docker.pkg.github.com/svthalia/concrexit/commit:2a00a9be4b558c5d5877320e3046f89fe1fd9c34
+        entrypoint: /bin/bash
+        depends_on:
+            - nginx-proxy
+        ports:
+            - 127.0.0.1:8000:8000
+        command: >-
+          -c "python manage.py migrate
+          && python manage.py createreviewuser --username user --password pass
+          && python manage.py createfixtures -a
+          && python manage.py runserver 0.0.0.0:8000"
+        environment:
+            VIRTUAL_HOST: "test.local"
+EOF
+
+docker-compose up --detach
+
+echo "shutdown now" | at now +1 days
