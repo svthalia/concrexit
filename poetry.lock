@@ -415,8 +415,8 @@ category = "dev"
 description = "Faker is a Python package that generates fake data for you."
 name = "faker"
 optional = false
-python-versions = ">=3.4"
-version = "4.1.1"
+python-versions = ">=3.5"
+version = "4.1.2"
 
 [package.dependencies]
 python-dateutil = ">=2.4"
@@ -1133,7 +1133,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "4772fe4e1607a1ba0b92e427d6f5ac260a465f929faa3c411dc002393a3b5b35"
+content-hash = "f98f7e725185d9edd59c0c0ace5598422848a801c07b27bbb05bcd3bf76505aa"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1358,8 +1358,8 @@ factory-boy = [
     {file = "factory_boy-3.0.1.tar.gz", hash = "sha256:2ce2f665045d9f15145a6310565fcb8255d52fc6fd867f3b783b3ac3de6cf10e"},
 ]
 faker = [
-    {file = "Faker-4.1.1-py3-none-any.whl", hash = "sha256:1290f589648bc470b8d98fff1fdff773fe3f46b4ca2cac73ac74668b12cf008e"},
-    {file = "Faker-4.1.1.tar.gz", hash = "sha256:c006b3664c270a2cfd4785c5e41ff263d48101c4e920b5961cf9c237131d8418"},
+    {file = "Faker-4.1.2-py3-none-any.whl", hash = "sha256:bc4b8c908dfcd84e4fe5d9fa2e52fbe17546515fb8f126909b98c47badf05658"},
+    {file = "Faker-4.1.2.tar.gz", hash = "sha256:ff188c416864e3f7d8becd8f9ee683a4b4101a2a2d2bcdcb3e84bb1bdd06eaae"},
 ]
 firebase-admin = [
     {file = "firebase_admin-4.3.0-py3-none-any.whl", hash = "sha256:7cf4ce710fa06e69308b58e7d55d5f2aebff559f07272578186c5ef3c3461730"},
