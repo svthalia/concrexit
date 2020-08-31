@@ -214,6 +214,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
             x
             for x in formset.forms
             if isinstance(x, forms.RegistrationInformationFieldForm)
+            and "DELETE" not in x.changed_data
         )
         form.instance.set_registrationinformationfield_order(
             [
