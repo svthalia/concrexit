@@ -3,11 +3,16 @@ import datetime
 import hmac
 from _sha1 import sha1
 from base64 import urlsafe_b64decode, urlsafe_b64encode
+from collections import namedtuple
 
 from django.conf import settings
 from django.template.defaultfilters import urlencode
 from django.utils import timezone, dateparse
 from rest_framework.exceptions import ParseError
+
+
+def dict2obj(d, name="Object"):
+    return namedtuple(name, d.keys())(*d.values())
 
 
 def datetime_to_lectureyear(date):
@@ -92,7 +97,7 @@ def extract_date_range(request, allow_empty=False):
     return start, end
 
 
-def overlaps(check, others, can_equal=False):
+def overlaps(check, others, can_equal=True):
     """Check for overlapping date ranges
 
     This works by checking the maximum of the two `since` times, and the minimum of
@@ -118,6 +123,45 @@ def overlaps(check, others, can_equal=False):
 
     The can_equal argument is used for boards, where the end date can't be the same
     as the start date.
+
+    >>> overlaps( \
+    dict2obj({ \
+        'pk': 1 \
+        , 'since': datetime.date(2018, 12, 1) \
+        , 'until': datetime.date(2019, 1, 1) \
+    }) \
+    , [dict2obj({ \
+    'pk': 2 \
+    , 'since': datetime.date(2019, 1, 1) \
+    , 'until': datetime.date(2019, 1, 31) \
+    })])
+    False
+
+    >>> overlaps( \
+    dict2obj({ \
+        'pk': 1 \
+        , 'since': datetime.date(2018, 12, 1) \
+        , 'until': datetime.date(2019, 1, 1) \
+    }) \
+    , [dict2obj({ \
+    'pk': 2 \
+    , 'since': datetime.date(2019, 1, 1) \
+    , 'until': datetime.date(2019, 1, 31) \
+    })], False)
+    True
+
+    >>> overlaps( \
+    dict2obj({ \
+        'pk': 1 \
+        , 'since': datetime.date(2018, 12, 1) \
+        , 'until': datetime.date(2019, 1, 2) \
+    }) \
+    , [dict2obj({ \
+    'pk': 2 \
+    , 'since': datetime.date(2019, 1, 1) \
+    , 'until': datetime.date(2019, 1, 31) \
+    })])
+    True
     """
     date_max = datetime.date(datetime.MAXYEAR, 12, 31)
     for other in others:
