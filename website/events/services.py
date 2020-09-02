@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _, get_language
 from events import emails
 from events.exceptions import RegistrationError
 from events.models import EventRegistration, RegistrationInformationField, Event
+from payments.api.fields import PaymentTypeField
 from payments.models import Payment
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
@@ -137,10 +138,7 @@ def cancel_registration(member, event):
 
     if event_permissions(member, event)["cancel_registration"] and registration:
         if registration.payment is not None:
-            p = registration.payment
-            registration.payment = None
-            registration.save()
-            p.delete()
+            delete_payment(registration)
         if registration.queue_position == 0:
             emails.notify_first_waiting(event)
 
@@ -295,7 +293,10 @@ def update_registration_by_organiser(registration, member, data):
         raise RegistrationError(_("You are not allowed to update this registration."))
 
     if "payment" in data:
-        if data["payment"]["type"] == Payment.NONE and registration.payment is not None:
+        if (
+            data["payment"]["type"] == PaymentTypeField.NO_PAYMENT
+            and registration.payment is not None
+        ):
             delete_payment(registration)
         else:
             registration.payment = create_payment(
