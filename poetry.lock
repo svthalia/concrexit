@@ -904,7 +904,7 @@ description = "Python client for Sentry (https://sentry.io)"
 name = "sentry-sdk"
 optional = false
 python-versions = "*"
-version = "0.17.1"
+version = "0.17.3"
 
 [package.dependencies]
 certifi = "*"
@@ -1133,7 +1133,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "f98f7e725185d9edd59c0c0ace5598422848a801c07b27bbb05bcd3bf76505aa"
+content-hash = "80805c181c26da9f384ca48d0943b6a07f0a690118c4ff06327091269136e788"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1714,8 +1714,8 @@ rsa = [
     {file = "rsa-4.0.tar.gz", hash = "sha256:1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-0.17.1.tar.gz", hash = "sha256:2c770e7bf72d6419bb82b3bb950f3789fc24bd6a0ba191369607a96289acd63b"},
-    {file = "sentry_sdk-0.17.1-py2.py3-none-any.whl", hash = "sha256:ad2c514aab9ed40d3f9f3245675727f672ea3d85b3b7a5956af93f405ba7aee0"},
+    {file = "sentry-sdk-0.17.3.tar.gz", hash = "sha256:0af429c221670e602f960fca85ca3f607c85510a91f11e8be8f742a978127f78"},
+    {file = "sentry_sdk-0.17.3-py2.py3-none-any.whl", hash = "sha256:a088a1054673c6a19ea590045c871c38da029ef743b61a07bfee95e9f3c060f7"},
 ]
 six = [
     {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},
