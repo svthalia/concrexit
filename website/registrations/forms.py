@@ -64,7 +64,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
             "username",
             "payment",
             "membership",
-            "contribution"
+            "contribution",
         ]
 
 

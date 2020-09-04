@@ -53,7 +53,7 @@ class EmailsTest(TestCase):
             first_name="John",
             last_name="Doe",
             pk=0,
-            contribution=2
+            contribution=2,
         )
 
         emails.send_registration_accepted_message(reg)

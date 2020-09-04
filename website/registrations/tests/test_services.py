@@ -41,6 +41,7 @@ class ServicesTest(TestCase):
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1).date(),
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
@@ -59,18 +60,21 @@ class ServicesTest(TestCase):
             phone_number="06098765432",
             birthday=timezone.now().replace(year=1992, day=2).date(),
             length=Entry.MEMBERSHIP_STUDY,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
         cls.e3 = Renewal.objects.create(
             member=Member.objects.get(pk=2),
             length=Entry.MEMBERSHIP_STUDY,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
         cls.e4 = Renewal.objects.create(
             member=Member.objects.get(pk=3),
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_ACCEPTED,
         )
@@ -79,6 +83,7 @@ class ServicesTest(TestCase):
         cls.e5 = Renewal.objects.create(
             member=Member.objects.get(pk=4),
             length=Entry.MEMBERSHIP_STUDY,
+            contribution=30,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_ACCEPTED,
             created_at=timezone.now() - timedelta(days=10),

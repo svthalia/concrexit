@@ -735,6 +735,7 @@ class ReferenceCreateViewTest(TestCase):
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1),
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.50,
             membership_type=Membership.BENEFACTOR,
             status=Entry.STATUS_CONFIRM,
         )
@@ -743,6 +744,7 @@ class ReferenceCreateViewTest(TestCase):
         )
         cls.renewal = Renewal.objects.create(
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.50,
             membership_type=Membership.BENEFACTOR,
             status=Entry.STATUS_CONFIRM,
             member=cls.new_user,

@@ -54,8 +54,9 @@ def delete_payment(payable: Payable):
     :return:
     """
     payment = payable.payment
-    if (payment.created_at < timezone.now() -
-            timezone.timedelta(seconds=settings.PAYMENT_CHANGE_WINDOW)):
+    if payment.created_at < timezone.now() - timezone.timedelta(
+        seconds=settings.PAYMENT_CHANGE_WINDOW
+    ):
         raise PermissionError(_("You are not authorized to delete this payment."))
 
     payable.payment = None

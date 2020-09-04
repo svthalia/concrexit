@@ -79,7 +79,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "processed_by__last_name",
         "amount",
     )
-    ordering = ("-created_at", )
+    ordering = ("-created_at",)
     autocomplete_fields = ("paid_by", "processed_by")
     actions = [
         "export_csv",

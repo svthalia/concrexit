@@ -34,9 +34,7 @@ class Payment(models.Model):
         (WIRE, _("Wire payment")),
     )
 
-    type = models.CharField(
-        choices=PAYMENT_TYPE, verbose_name=_("type"), max_length=20
-    )
+    type = models.CharField(choices=PAYMENT_TYPE, verbose_name=_("type"), max_length=20)
 
     amount = models.DecimalField(
         verbose_name=_("amount"),

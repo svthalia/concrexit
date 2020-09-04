@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
@@ -60,7 +61,7 @@ class EntryTest(TestCase):
 
     @freeze_time("2019-01-01")
     def test_save(self):
-        entry = Entry(registration=self.registration)
+        entry = Entry(length=Entry.MEMBERSHIP_YEAR, registration=self.registration)
 
         entry.status = Entry.STATUS_ACCEPTED
         test_value = timezone.now().replace(year=1996)
@@ -102,9 +103,11 @@ class EntryTest(TestCase):
 
         entry.membership_type = Membership.MEMBER
 
-        with self.subTest("Type `Member` should clear contribution"):
+        with self.subTest("Type `Member` should set contribution by length"):
             entry.save()
-            self.assertEqual(entry.contribution, None)
+            self.assertEqual(
+                entry.contribution, settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
+            )
 
     def test_clean(self):
         entry = Entry(registration=self.registration)
@@ -186,6 +189,7 @@ class RegistrationTest(TestCase):
         user.delete()
         self.registration.clean()
         Registration.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
             first_name="John",
             last_name="Doe",
             birthday=timezone.now().replace(year=1990),
@@ -208,6 +212,7 @@ class RegistrationTest(TestCase):
         user.delete()
         self.registration.clean()
         Registration.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
             first_name="John",
             last_name="Doe",
             birthday=timezone.now().replace(year=1990),
@@ -270,6 +275,7 @@ class RenewalTest(TestCase):
         self.renewal = Renewal(
             member=self.member,
             length=Entry.MEMBERSHIP_STUDY,
+            contribution=8,
             membership_type=Membership.MEMBER,
         )
 
