@@ -61,7 +61,7 @@ class Payment(models.Model):
         verbose_name=_("processed by"),
         related_name="processed_payment_set",
         blank=False,
-        null=False,
+        null=True,
     )
 
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)

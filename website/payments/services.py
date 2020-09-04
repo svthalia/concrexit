@@ -2,6 +2,7 @@
 import datetime
 from typing import Union
 
+from django.conf import settings
 from django.db.models import QuerySet, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -53,7 +54,8 @@ def delete_payment(payable: Payable):
     :return:
     """
     payment = payable.payment
-    if payment.created_at < datetime.datetime.now() - datetime.timedelta(minutes=10):
+    if (payment.created_at < timezone.now() -
+            timezone.timedelta(seconds=settings.PAYMENT_CHANGE_WINDOW)):
         raise PermissionError(_("You are not authorized to delete this payment."))
 
     payable.payment = None

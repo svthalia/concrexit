@@ -49,19 +49,21 @@ class EmailsTest(TestCase):
     @mock.patch("registrations.emails._send_email")
     def test_send_registration_accepted_message(self, send_email):
         reg = Registration(
-            email="test@example.org", first_name="John", last_name="Doe", pk=0,
+            email="test@example.org",
+            first_name="John",
+            last_name="Doe",
+            pk=0,
+            contribution=2
         )
 
-        payment = Payment(amount=2,)
-
-        emails.send_registration_accepted_message(reg, payment)
+        emails.send_registration_accepted_message(reg)
 
         with translation.override(reg.language):
             send_email.assert_called_once_with(
                 reg.email,
                 _("Registration accepted"),
                 "registrations/email/registration_accepted.txt",
-                {"name": reg.get_full_name(), "fees": floatformat(payment.amount, 2)},
+                {"name": reg.get_full_name(), "fees": floatformat(reg.contribution, 2)},
             )
 
     @mock.patch("registrations.emails._send_email")
@@ -113,11 +115,9 @@ class EmailsTest(TestCase):
             profile=Profile(),
         )
 
-        renewal = Renewal(pk=0, member=member)
+        renewal = Renewal(pk=0, member=member, contribution=2)
 
-        payment = Payment(amount=2,)
-
-        emails.send_renewal_accepted_message(renewal, payment)
+        emails.send_renewal_accepted_message(renewal)
 
         with translation.override(renewal.member.profile.language):
             send_email.assert_called_once_with(
@@ -126,7 +126,7 @@ class EmailsTest(TestCase):
                 "registrations/email/renewal_accepted.txt",
                 {
                     "name": renewal.member.get_full_name(),
-                    "fees": floatformat(payment.amount, 2),
+                    "fees": floatformat(renewal.contribution, 2),
                 },
             )
 

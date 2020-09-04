@@ -89,17 +89,13 @@ class Entry(models.Model, Payable):
     payment = models.OneToOneField(
         "payments.Payment",
         related_name="registrations_entry",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
 
     membership = models.OneToOneField(
         "members.Membership", on_delete=models.SET_NULL, blank=True, null=True,
-    )
-
-    mandate = models.ForeignKey(
-        "payments.BankAccount", on_delete=models.SET_NULL, blank=True, null=True,
     )
 
     @property
@@ -116,10 +112,6 @@ class Entry(models.Model, Payable):
     def payment_notes(self):
         return f"{self.payment_topic}. Creation date: {self.created_at}. Confirmation date: {self.updated_at}"
 
-    @property
-    def payment_topic(self):
-        pass
-
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
@@ -128,6 +120,8 @@ class Entry(models.Model, Payable):
 
         if self.membership_type == Membership.BENEFACTOR:
             self.length = self.MEMBERSHIP_YEAR
+        else:
+            self.contribution = settings.MEMBERSHIP_PRICES[self.length]
 
         super().save(force_insert, force_update, using, update_fields)
 

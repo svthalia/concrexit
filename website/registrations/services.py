@@ -188,9 +188,13 @@ def revert_entry(user_id: int, entry: Entry) -> None:
     if not (entry.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]):
         return
 
+    payment = entry.payment
     entry.status = Entry.STATUS_REVIEW
     entry.updated_at = timezone.now()
+    entry.payment = None
     entry.save()
+    if payment is not None:
+        payment.delete()
 
     log_obj = None
 
@@ -357,49 +361,37 @@ def _create_new_membership(entry: Entry, member: Member):
     entry.save()
 
 
-def process_registration(registration: Registration) -> None:
+def process_entry_save(entry: Entry) -> None:
     """
     Once an entry is saved, process the entry if it is paid
 
-    :param registration: The entry that should be processed
-    :type registration: Registration
+    :param entry: The entry that should be processed
+    :type entry: Entry
     """
 
-    if not registration or not registration.payment:
+    if not entry or not entry.payment:
         return
 
-    if registration.status != Entry.STATUS_ACCEPTED:
+    if entry.status != Entry.STATUS_ACCEPTED:
         return
 
-    member = _create_member_from_registration(registration)
-    registration.payment.paid_by = member
-    registration.payment.save()
+    try:
+        registration = entry.registration
+        # Create user and member
+        member = _create_member_from_registration(registration)
+    except Registration.DoesNotExist:
+        # Get member from renewal
+        renewal = entry.renewal
+        member = renewal.member
+        # Send email of payment confirmation for renewal,
+        # not needed for registration since a new member already
+        # gets the welcome email
+        emails.send_renewal_complete_message(entry.renewal)
 
-    if registration.mandate:
-        registration.mandate.owner = member
-        registration.mandate.save()
+    entry.payment.paid_by = member
+    entry.payment.save()
 
-    # If member was retrieved, then create a new membership
-    if member:
-        _create_new_membership(registration, member)
-
-
-def process_renewal(renewal: Renewal) -> None:
-    """
-    Once an entry is saved, process the entry if it is paid
-
-    :param renewal: The entry that should be processed
-    :type renewal: Renewal
-    """
-
-    if not renewal or not renewal.payment:
-        return
-
-    if renewal.status != Entry.STATUS_ACCEPTED:
-        return
-
-    _create_new_membership(renewal, renewal.member)
-    emails.send_renewal_complete_message(renewal)
+    _create_new_membership(entry, member)
 
 
 def execute_data_minimisation(dry_run=False):

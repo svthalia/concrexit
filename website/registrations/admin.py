@@ -73,7 +73,6 @@ class RegistrationAdmin(admin.ModelAdmin):
                     "membership_type",
                     "status",
                     "payment",
-                    "mandate",
                     "remarks",
                 )
             },
@@ -168,7 +167,7 @@ class RegistrationAdmin(admin.ModelAdmin):
             or obj.status == Entry.STATUS_ACCEPTED
             or obj.status == Entry.STATUS_COMPLETED
         ):
-            return ["status", "created_at", "updated_at"]
+            return ["status", "created_at", "updated_at", "payment", "contribution"]
         else:
             return [
                 field.name
@@ -276,6 +275,12 @@ class RenewalAdmin(RegistrationAdmin):
     def get_readonly_fields(self, request, obj=None):
         """Make all fields read-only and add member if needed"""
         fields = super().get_readonly_fields(request, obj)
+        if obj is None or not (
+            obj.status == Entry.STATUS_REJECTED
+            or obj.status == Entry.STATUS_ACCEPTED
+            or obj.status == Entry.STATUS_COMPLETED
+        ):
+            fields.remove("contribution")
         if "member" not in fields and obj is not None:
             return fields + ["member"]
         return fields
