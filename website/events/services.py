@@ -295,8 +295,9 @@ def update_registration_by_organiser(registration, member, data):
         raise RegistrationError(_("You are not allowed to update this registration."))
 
     if "payment" in data:
-        if data["payment"]["type"] == Payment.NONE and registration.payment is not None:
-            delete_payment(registration)
+        if data["payment"]["type"] == Payment.NONE:
+            if registration.payment is not None:
+                delete_payment(registration)
         else:
             registration.payment = create_payment(
                 payable=registration,
