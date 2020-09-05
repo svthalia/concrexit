@@ -29,6 +29,9 @@ Frontend
         - selected programme
         - cohort
 - Registration model created (status: Awaiting email confirmation)
+- If the membership type is 'member':
+    - Contribution is calculated based on selected length ('study' or 'year')
+            - Values are located in thaliawebsite.settings
 - Email address confirmation sent
 - User confirms email address
 - Registration model status changed (status: Ready for review)
@@ -43,13 +46,9 @@ Backend
         - If it's not unique a username can be entered manually
         - If it's still not unique the registration cannot be accepted
         - If it's unique the generated username will be added to the registration
-    - Payment model is created (unprocessed at first)
-        - If the membership type is 'member':
-            - Amount is calculated based on the selected length ('study' or 'year')
-                - Values are located in thaliawebsite.settings
-        - If the membership type is 'benefactor':
-            - Amount is determined by the value entered during registration
-        - Email is sent as acceptance confirmation containg instructions for `Payment processing`_
+    - If the membership type is 'benefactor':
+        - Amount is determined by the value entered during registration
+    - Email is sent as acceptance confirmation containing instructions for `Payment processing`_
 2. Admin rejects registration
     - Email is sent as rejection message
 
@@ -64,6 +63,11 @@ Frontend
     - If latest membership has not ended yet: always allow 'study' length
     - If latest membership has ended or ends within 1 month: also allow 'year' length
     - If latest membership is 'study' and did not end: do not allow renewal
+    - If the membership type is 'member':
+        - Contribution is calculated based on selected length ('study' or 'year')
+            - Values are located in thaliawebsite.settings
+            - If the current membership has not ended yet and an until date is present for that membership and
+             the selected length is 'study' the amount will be `price['study'] - price['year']`
 - Renewal model created (status: Ready for review)
 - If the renewal is for a benefactor an email is sent with a link to get references
     - Existing members of Thalia add references using the link
@@ -72,12 +76,7 @@ Backend
 -------
 
 1. Admin accepts renewal
-    - Payment model is created (processed: False)
-        - Amount is calculated based on selected length ('study' or 'year')
-            - Values are located in thaliawebsite.settings
-            - If the current membership has not ended yet and an until date is present for that membership and
-             the selected length is 'study' the amount will be `price['study'] - price['year']`
-        - Email is sent as acceptance confirmation containg instructions for `Payment processing`_
+    - Email is sent as acceptance confirmation containing instructions for `Payment processing`_
 2. Admin rejects renewal
     - Email is sent as rejection message
 
@@ -88,7 +87,7 @@ Payment processing
 Backend
 -------
 
-- Admin (or the system, if automated using e.g. iDeal) processes payment
+- Admin (or the system, if automated using e.g. iDeal) creates payment
     - If this is a Registration model then User and Member models are created
     - If this is a Renewal model then the Member is retrieved
     - A membership is added to the provided Member model based on the provided length
@@ -96,5 +95,5 @@ Backend
              the selected length is 'study' that membership will be updated to have None as until date. No new membership will be created.
         - During a lecture year the until date will be the 31 August of the lecture year + 1. Thus is you process payments in November 2016 that means the memberships will end on 31 August 2017
         - For payments processed in August the lecture year will be increased by 1. So if you process payments in August 2017 that means the memberships will end on 31 August 2018.
-    - Payment confirmation sent (if this is a Renewal model)
+    - If this is a Renewal model then the Payment confirmation sent
 
