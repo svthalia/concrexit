@@ -1,4 +1,3 @@
-import datetime
 from unittest.mock import MagicMock
 
 from django.conf import settings
@@ -9,8 +8,47 @@ from freezegun import freeze_time
 from members.models import Member
 from payments import services
 from payments.exceptions import PaymentError
+<<<<<<< HEAD
 from payments.models import BankAccount, Payment
 from payments.tests.__mocks__ import MockPayable
+=======
+from payments.models import BankAccount, Payment, Payable
+
+
+class MockPayable(Payable):
+    save = MagicMock()
+
+    def __init__(
+        self, payer, amount=5, topic="mock topic", notes="mock notes", payment=None
+    ) -> None:
+        super().__init__()
+        self.payer = payer
+        self.amount = amount
+        self.topic = topic
+        self.notes = notes
+        self.payment = payment
+
+        # Because we have to do as if this is a model sometimes
+        self.verbose_name = "MockPayable"
+        self.verbose_name_plural = self.verbose_name + "s"
+        self.pk = 0
+
+    @property
+    def payment_amount(self):
+        return self.amount
+
+    @property
+    def payment_topic(self):
+        return self.topic
+
+    @property
+    def payment_notes(self):
+        return self.notes
+
+    @property
+    def payment_payer(self):
+        return self.payer
+>>>>>>> Fix even more tests
 
 
 @freeze_time("2019-01-01")
@@ -31,7 +69,6 @@ class ServicesTest(TestCase):
             p = services.create_payment(
                 MockPayable(self.member), self.member, Payment.CASH
             )
-            self.assertEqual(p.processing_date, timezone.now())
             self.assertEqual(p.amount, 5)
             self.assertEqual(p.topic, "mock topic")
             self.assertEqual(p.notes, "mock notes")
@@ -56,6 +93,7 @@ class ServicesTest(TestCase):
     def test_delete_payment(self):
         existing_payment = MagicMock()
         payable = MockPayable(payer=self.member, payment=existing_payment)
+        payable.save.reset_mock()
 
         with self.subTest("Within deletion window"):
             payable.payment = existing_payment

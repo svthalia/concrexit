@@ -34,7 +34,13 @@ class Payment(models.Model):
         (WIRE, _("Wire payment")),
     )
 
-    type = models.CharField(choices=PAYMENT_TYPE, verbose_name=_("type"), max_length=20)
+    type = models.CharField(
+        verbose_name=_("type"),
+        blank=False,
+        null=False,
+        max_length=20,
+        choices=PAYMENT_TYPE,
+    )
 
     amount = models.DecimalField(
         verbose_name=_("amount"),
@@ -64,13 +70,6 @@ class Payment(models.Model):
 
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
     topic = models.CharField(verbose_name=_("topic"), max_length=255, default="Unknown")
-
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        if self.type == self.TPAY and self.paid_by and not self.paid_by.tpay_enabled:
-            raise PaymentError(_("This user does not have Thalia Pay enabled."))
-        super().save(force_insert, force_update, using, update_fields)
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)

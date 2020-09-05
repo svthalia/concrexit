@@ -47,6 +47,7 @@ class PaymentAdminView(View):
             messages.error(
                 request, _("Could not pay %s.") % model_ngettext(payable, 1),
             )
+            return redirect(f"admin:{app_label}_{model_name}_change", payable.pk)
 
         if "next" in request.POST:
             return redirect(request.POST["next"])

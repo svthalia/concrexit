@@ -49,22 +49,6 @@ class PaymentTest(TestCase):
             amount=10, paid_by=cls.member, processed_by=cls.member,
         )
 
-    def test_change_processed_sets_processing_date(self):
-        """
-        Tests that the processed date is set when the type of payment is set
-        """
-        self.assertFalse(self.payment.processed)
-        self.assertIsNone(self.payment.processing_date)
-        self.payment.type = Payment.CARD
-        self.payment.save()
-        self.assertTrue(self.payment.processed)
-        self.assertIsNotNone(self.payment.processing_date)
-
-        # Make sure date doesn't change on new save
-        date = self.payment.processing_date
-        self.payment.save()
-        self.assertEqual(self.payment.processing_date, date)
-
     def test_get_admin_url(self):
         """
         Tests that the right admin url is returned

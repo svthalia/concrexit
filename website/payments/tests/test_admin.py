@@ -86,44 +86,6 @@ class PaymentAdminTest(TestCase):
         self.client.logout()
         self.client.force_login(self.user)
 
-    @mock.patch("payments.models.Payment.objects.get")
-    def test_changeform_view(self, payment_get) -> None:
-        """
-        Tests that the right context data is added to the response
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        payment_get.return_value = payment
-
-        response = self.client.get("/admin/payments/payment/add/")
-        self.assertFalse(payment_get.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["payment"], None)
-        response = self.client.get(
-            "/admin/payments/payment/{}/change/".format(object_id), follow=True
-        )
-        self.assertFalse(payment_get.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["payment"], None)
-
-        self._give_user_permissions()
-
-        response = self.client.get(
-            "/admin/payments/payment/{}/change/".format(object_id)
-        )
-        self.assertTrue(payment_get.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["payment"], payment)
-
-        payment.type = Payment.CARD
-
-        response = self.client.get(
-            "/admin/payments/payment/{}/change/".format(object_id)
-        )
-        self.assertTrue(payment_get.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["payment"], None)
-
     def test_paid_by_link(self) -> None:
         """
         Tests that the right link for the paying user is returned
@@ -187,7 +149,9 @@ class PaymentAdminTest(TestCase):
         Payment.objects.create(
             amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
         ).save()
-        Payment.objects.create(amount=9, notes="This is a test").save()
+        Payment.objects.create(
+            amount=9, type=Payment.CASH, notes="This is a test"
+        ).save()
 
         response = self.admin.export_csv(HttpRequest(), Payment.objects.all())
 
@@ -197,7 +161,7 @@ class PaymentAdminTest(TestCase):
             f"7.50,Card payment,Test1 Example,{self.user.pk},Test1 Example,"
             f"\r\n2019-01-01 00:00:00+00:00,17.50,"
             f"Cash payment,Test1 Example,{self.user.pk},Test1 Example,"
-            f"\r\n2019-01-01 00:00:00+00:00,9.00,No payment,-,-,-,This is a "
+            f"\r\n2019-01-01 00:00:00+00:00,9.00,Cash payment,-,-,-,This is a "
             f"test\r\n",
             response.content.decode("utf-8"),
         )

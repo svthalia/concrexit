@@ -113,7 +113,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request: HttpRequest, obj: Payment = None):
         if not obj:
-            return "created_at", "processed_by"
+            return "created_at", "type", "processed_by"
         return super().get_readonly_fields(request, obj)
 
     def _process_feedback(self, request, updated_payments: list) -> None:
