@@ -7,7 +7,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
-from django.template.defaultfilters import floatformat
+from django.template.defaultfilters import floatformat, date
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -109,8 +109,12 @@ class Entry(models.Model, Payable):
         return None
 
     @property
+    def payment_topic(self):
+        return "Registration entry"
+
+    @property
     def payment_notes(self):
-        return f"{self.payment_topic}. Creation date: {self.created_at}. Confirmation date: {self.updated_at}"
+        return f"{self.payment_topic}. Creation date: {date(self.created_at)}. Completion date: {date(self.updated_at)}"
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -361,7 +365,7 @@ class Renewal(Entry):
 
     @property
     def payment_topic(self):
-        return f"Membership renewal '{self.membership_type}' ({self.length})"
+        return f"Membership renewal {self.membership_type} ({self.length})"
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None

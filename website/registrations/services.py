@@ -297,22 +297,7 @@ def _create_membership_from_entry(
     if timezone.now().month == 8:
         lecture_year += 1
 
-    if entry.length == Entry.MEMBERSHIP_YEAR:
-        # If entry is Renewal set since to current membership until + 1 day
-        # Unless there is no current membership
-        try:
-            member = entry.renewal.member
-            membership = member.current_membership
-            if membership is not None:
-                if membership.until is None:
-                    raise ValueError(
-                        "This member already has a never ending membership"
-                    )
-                since = membership.until
-        except Renewal.DoesNotExist:
-            pass
-        until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
-    elif entry.length == Entry.MEMBERSHIP_STUDY:
+    if entry.length == Entry.MEMBERSHIP_STUDY:
         try:
             renewal = entry.renewal
             member = renewal.member
@@ -335,30 +320,24 @@ def _create_membership_from_entry(
         except Renewal.DoesNotExist:
             pass
     else:
-        return None
+        # If entry is Renewal set since to current membership until + 1 day
+        # Unless there is no current membership
+        try:
+            member = entry.renewal.member
+            membership = member.current_membership
+            if membership is not None:
+                if membership.until is None:
+                    raise ValueError(
+                        "This member already has a never ending membership"
+                    )
+                since = membership.until
+        except Renewal.DoesNotExist:
+            pass
+        until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
 
     return Membership.objects.create(
         user=member, since=since, until=until, type=entry.membership_type
     )
-
-
-def _create_new_membership(entry: Entry, member: Member):
-    """
-    Create a new membership for an entry.
-
-    :param entry: The entry that is processed
-    :type entry: Entry
-    :param member: The member for which the Membership must be created
-    :type member: ember
-    """
-
-    if entry.status != Entry.STATUS_ACCEPTED:
-        raise AssertionError("Cannot create a new membership for an unaccepted entry.")
-
-    membership = _create_membership_from_entry(entry, member)
-    entry.membership = membership
-    entry.status = Entry.STATUS_COMPLETED
-    entry.save()
 
 
 def process_entry_save(entry: Entry) -> None:
@@ -391,7 +370,10 @@ def process_entry_save(entry: Entry) -> None:
     entry.payment.paid_by = member
     entry.payment.save()
 
-    _create_new_membership(entry, member)
+    membership = _create_membership_from_entry(entry, member)
+    entry.membership = membership
+    entry.status = Entry.STATUS_COMPLETED
+    entry.save()
 
 
 def execute_data_minimisation(dry_run=False):

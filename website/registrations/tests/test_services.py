@@ -390,13 +390,6 @@ class ServicesTest(TestCase):
                 user=self.e3.member,
             )
 
-            # Renewal without length
-            self.e3.length = None
-            membership3 = services._create_membership_from_entry(
-                self.e3, self.e3.member
-            )
-            self.assertEqual(membership3, None)
-
             # Renewal to new 'year' membership starting 1 day after
             # end of the previous membership
             self.e3.length = Entry.MEMBERSHIP_YEAR
@@ -444,6 +437,48 @@ class ServicesTest(TestCase):
             existing_membership.save()
             with self.assertRaises(ValueError):
                 services._create_membership_from_entry(self.e3)
+
+    @freeze_time("2019-01-01")
+    @mock.patch("registrations.emails.send_renewal_complete_message")
+    def test_process_entry_save(self, send_renewal_email):
+        self.e1.username = "jdoe"
+        self.e1.save()
+
+        self.e1.status = Entry.STATUS_ACCEPTED
+        self.e1.membership = None
+        self.e1.payment = Payment.objects.create(amount=8)
+        self.e1.save()
+        self.e3.status = Entry.STATUS_ACCEPTED
+        self.e3.membership = None
+        self.e3.payment = Payment.objects.create(amount=8)
+        self.e3.save()
+
+        with self.subTest("No entry"):
+            services.process_entry_save(None)
+
+        with self.subTest("No payment for entry"):
+            services.process_entry_save(Entry(payment=None))
+
+        with self.subTest("Status is not accepted"):
+            services.process_entry_save(Entry(payment=Payment()))
+
+        with self.subTest("Registration paid"):
+            services.process_entry_save(self.e1)
+
+            self.e1.refresh_from_db()
+            self.assertIsNotNone(self.e1.membership)
+            self.assertEqual(self.e1.status, Entry.STATUS_COMPLETED)
+
+        with self.subTest("Renewal paid"):
+            services.process_entry_save(self.e3)
+
+            self.e3.refresh_from_db()
+            self.e3.payment.refresh_from_db()
+
+            send_renewal_email.assert_called_with(self.e3)
+            self.assertEqual(self.e3.payment.paid_by, self.e3.member)
+            self.assertIsNotNone(self.e3.membership)
+            self.assertEqual(self.e3.status, Entry.STATUS_COMPLETED)
 
     @freeze_time("2019-01-01")
     def test_execute_data_minimisation(self):

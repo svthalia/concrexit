@@ -85,11 +85,6 @@ class PaymentAdmin(admin.ModelAdmin):
         "export_csv",
     ]
 
-    def save_model(self, request, obj, form, change):
-        """Set the processor of a payment to the user accessing the form."""
-        obj.processed_by = request.user
-        super().save_model(request, obj, form, change)
-
     @staticmethod
     def _member_link(member: Member) -> str:
         if member:
@@ -116,17 +111,6 @@ class PaymentAdmin(admin.ModelAdmin):
             return "created_at", "type", "processed_by"
         return super().get_readonly_fields(request, obj)
 
-    def _process_feedback(self, request, updated_payments: list) -> None:
-        """Show a feedback message for the processing result"""
-        rows_updated = len(updated_payments)
-        _show_message(
-            self,
-            request,
-            rows_updated,
-            message=_("Successfully processed %(count)d %(items)s."),
-            error=_("The selected payment(s) could not be processed."),
-        )
-
     def get_urls(self) -> list:
         urls = super().get_urls()
         custom_urls = [
@@ -145,10 +129,7 @@ class PaymentAdmin(admin.ModelAdmin):
         :param queryset: Items to be exported
         """
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
-                                           filename="payments.csv"'
+        response["Content-Disposition"] = 'attachment;filename="payments.csv"'
         writer = csv.writer(response)
         headers = [
             _("created"),

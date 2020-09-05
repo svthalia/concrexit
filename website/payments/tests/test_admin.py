@@ -131,6 +131,21 @@ class PaymentAdminTest(TestCase):
             actions, ["delete_selected", "export_csv",],
         )
 
+    def test_get_readonly_fields(self) -> None:
+        """
+        Test that the custom urls are added to the admin
+        """
+        with self.subTest("No object"):
+            urls = self.admin.get_readonly_fields(HttpRequest(), None)
+            self.assertEqual(urls, ("created_at", "type", "processed_by"))
+
+        with self.subTest("With object"):
+            urls = self.admin.get_readonly_fields(HttpRequest(), Payment())
+            self.assertEqual(
+                urls,
+                ("created_at", "amount", "paid_by", "processed_by", "topic", "notes"),
+            )
+
     def test_get_urls(self) -> None:
         """
         Test that the custom urls are added to the admin

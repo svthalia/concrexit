@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, override_settings
 
 from members.models import Member
@@ -19,7 +20,16 @@ class PaymentWidgetTest(TestCase):
         )
 
     def test_get_context(self):
-        widget = PaymentWidget()
+        obj = Payment.objects.create(amount=8)
+        widget = PaymentWidget(obj=obj)
+
+        with self.subTest("With object only"):
+            context = widget.get_context("payment", None, {})
+            self.assertEqual(context["obj"], obj)
+            self.assertEqual(
+                context["content_type"],
+                ContentType.objects.get(app_label="payments", model="payment"),
+            )
 
         with self.subTest("With payment primary key"):
             context = widget.get_context("payment", self.payment.pk, {})
@@ -30,6 +40,7 @@ class PaymentWidgetTest(TestCase):
             self.assertEqual(context["payment"], self.payment)
 
         with self.subTest("Empty value"):
+            widget = PaymentWidget()
             context = widget.get_context("payment", None, {})
             self.assertNotIn("url", context)
             self.assertNotIn("payment", context)
