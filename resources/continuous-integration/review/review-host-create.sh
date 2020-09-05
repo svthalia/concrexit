@@ -21,34 +21,13 @@ fi
 new_instance_id=$(
     aws ec2 run-instances \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=concrexit-review-${COMMIT_SHA}}]" \
-    --launch-template "LaunchTemplateId=lt-03762fc23450c2471,Version=5" \
+    --image-id "ami-02df9ea15c1778c9c" \
+    --security-group-ids "sg-0a9de5925f983f6c1" \
+    --subnet-id "subnet-072547905992bb9a1" \
+    --instance-type "t2.micro" \
+    --key-name "concrexit-review" \
+    --instance-initiated-shutdown-behavior "terminate" \
     --user-data file://resources/continuous-integration/review/ec2-bootstrap.sh | 
         jq --raw-output ".Instances[0].InstanceId"
     )
 aws ec2 wait instance-running --instance-ids "${new_instance_id}"
-
-private_ipv4_address=$(aws ec2 describe-instances --instance-ids "${new_instance_id}" | jq --raw-output '.Reservations[0].Instances[0].PrivateIpAddress')
-temporary_record_change_file=$(mktemp --suffix ".json") 
-cat > "${temporary_record_change_file}" <<EOF
-{
-  "Comment": "Add or update private review host record",
-  "Changes": [
-    {
-      "Action": "UPSERT",
-      "ResourceRecordSet": {
-        "Name": "${COMMIT_SHA}.private.review.technicie.nl",
-        "Type": "A",
-        "TTL": 10,
-        "ResourceRecords": [{"Value": "${private_ipv4_address}"}]
-      }
-    }
-  ]
-}
-EOF
-route53_record_change_id=$(
-    aws route53 change-resource-record-sets \
-    --hosted-zone-id "Z3I4ZHBBD5NSHU" \
-    --change-batch "file://${temporary_record_change_file}" | 
-        jq --raw-output ".ChangeInfo.Id"
-    )
-aws route53 wait resource-record-sets-changed --id "${route53_record_change_id}"

@@ -1,29 +1,31 @@
+---
+
 version: '3.5'
 
 services:
-    postgres:
-        image: postgres:11.1
-        volumes:
-            - /var/lib/postgresql/
-        environment: &postgresvars
-            POSTGRES_DB: thalia
-    web:
-        image: docker.pkg.github.com/svthalia/concrexit/local
-        build: .
-        command: runserver 0.0.0.0:8000
+    nginx-proxy:
+        image: jwilder/nginx-proxy
         ports:
-            - 8000:8000
-        depends_on:
-            - postgres
+            - 80:80
+            - 443:443
+        environment:
+            DHPARAM_GENERATION: "false"
+            DHPARAM_BITS: 2048
         volumes:
-            - ./website:/usr/src/app/website/
-            - concrexit:/concrexit/
-        environment: &webvars
-            <<: *postgresvars
-            DJANGO_DEBUG: 'True'
-            DJANGO_POSTGRES_HOST: postgres
-            DJANGO_SECRET: 'do_not_use_in_prod'
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+            - /tmp/certs/:/etc/nginx/certs/
 
-volumes:
-    concrexit:
-        driver: local
+    web:
+        image: docker.pkg.github.com/svthalia/concrexit/commit:2a00a9be4b558c5d5877320e3046f89fe1fd9c34
+        entrypoint: /bin/bash
+        depends_on:
+            - nginx-proxy
+        ports:
+            - 127.0.0.1:8000:8000
+        command: >-
+          -c "python manage.py migrate
+          && python manage.py createreviewuser --username user --password pass
+          && python manage.py createfixtures -a
+          && python manage.py runserver 0.0.0.0:8000"
+        environment:
+            VIRTUAL_HOST: "test.local"

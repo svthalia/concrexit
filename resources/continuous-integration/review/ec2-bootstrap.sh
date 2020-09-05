@@ -19,8 +19,10 @@ apt-get --assume-yes install docker-ce docker-ce-cli containerd.io
 curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
+DNS_NAME=$(curl --silent http://169.254.169.254/latest/meta-data/public-hostname)
+
 mkdir certs
-openssl req -x509 -nodes -newkey rsa:2048 -keyout certs/test.local.key -out certs/test.local.crt -subj "/C=NL/ST=Gelderland/L=Nijmegen/O=Thalia/OU=Technicie/CN=test.local"
+openssl req -x509 -nodes -newkey rsa:2048 -keyout "certs/${DNS_NAME}.key" -out "certs/${DNS_NAME}.crt" -subj "/C=NL/ST=Gelderland/L=Nijmegen/O=Thalia/OU=Technicie/CN=${DNS_NAME}"
 
 cat > docker-compose.yaml <<EOF
 ---
@@ -41,7 +43,7 @@ services:
             - ./certs/:/etc/nginx/certs/
 
     web:
-        image: docker.pkg.github.com/svthalia/concrexit/commit:2a00a9be4b558c5d5877320e3046f89fe1fd9c34
+        image: docker.pkg.github.com/svthalia/concrexit/commit:@version@
         entrypoint: /bin/bash
         depends_on:
             - nginx-proxy
@@ -49,11 +51,11 @@ services:
             - 127.0.0.1:8000:8000
         command: >-
           -c "python manage.py migrate
-          && python manage.py createreviewuser --username user --password pass
+          && python manage.py createreviewuser --username @username@ --password @password@
           && python manage.py createfixtures -a
           && python manage.py runserver 0.0.0.0:8000"
         environment:
-            VIRTUAL_HOST: "test.local"
+            VIRTUAL_HOST: "${DNS_NAME}"
 EOF
 
 docker-compose up --detach
