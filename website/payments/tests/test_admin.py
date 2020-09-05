@@ -152,186 +152,6 @@ class PaymentAdminTest(TestCase):
         payment2 = Payment.objects.create(amount=7.5)
         self.assertEqual(self.admin.processed_by_link(payment2), "-")
 
-    @mock.patch("django.contrib.admin.ModelAdmin.message_user")
-    @mock.patch("payments.services.process_payment")
-    def test_process_cash(self, process_payment, message_user) -> None:
-        """
-        Tests that a cash payment is processed correctly
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        queryset = Payment.objects.filter(pk=object_id)
-        process_payment.return_value = [payment]
-        change_url = reverse("admin:payments_payment_changelist")
-
-        request_noperms = self.client.post(
-            change_url,
-            {
-                "action": "process_cash_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-        self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "process_cash_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-
-        process_payment.reset_mock()
-        message_user.reset_mock()
-
-        self.admin.process_cash_selected(request_noperms, queryset)
-        process_payment.assert_not_called()
-
-        self.admin.process_cash_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.CASH)
-        message_user.assert_called_once_with(
-            request_hasperms,
-            _("Successfully processed %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Payment(), 1)},
-            messages.SUCCESS,
-        )
-
-    @mock.patch("django.contrib.admin.ModelAdmin.message_user")
-    @mock.patch("payments.services.process_payment")
-    def test_process_card(self, process_payment, message_user) -> None:
-        """
-        Tests that a card payment is processed correctly
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        queryset = Payment.objects.filter(pk=object_id)
-        process_payment.return_value = [payment]
-        change_url = reverse("admin:payments_payment_changelist")
-
-        request_noperms = self.client.post(
-            change_url,
-            {
-                "action": "process_card_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-        self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "process_card_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-
-        process_payment.reset_mock()
-        message_user.reset_mock()
-
-        self.admin.process_card_selected(request_noperms, queryset)
-        process_payment.assert_not_called()
-
-        self.admin.process_card_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.CARD)
-        message_user.assert_called_once_with(
-            request_hasperms,
-            _("Successfully processed %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Payment(), 1)},
-            messages.SUCCESS,
-        )
-
-    @mock.patch("django.contrib.admin.ModelAdmin.message_user")
-    @mock.patch("payments.services.process_payment")
-    def test_process_tpay(self, process_payment, message_user) -> None:
-        """
-        Tests that a Thalia Pay payment is processed correctly
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        queryset = Payment.objects.filter(pk=object_id)
-        process_payment.return_value = [payment]
-        change_url = reverse("admin:payments_payment_changelist")
-
-        request_noperms = self.client.post(
-            change_url,
-            {
-                "action": "process_tpay_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-        self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "process_tpay_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-
-        process_payment.reset_mock()
-        message_user.reset_mock()
-
-        self.admin.process_tpay_selected(request_noperms, queryset)
-        process_payment.assert_not_called()
-
-        self.admin.process_tpay_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.TPAY)
-        message_user.assert_called_once_with(
-            request_hasperms,
-            _("Successfully processed %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Payment(), 1)},
-            messages.SUCCESS,
-        )
-
-    @mock.patch("django.contrib.admin.ModelAdmin.message_user")
-    @mock.patch("payments.services.process_payment")
-    def test_process_wire(self, process_payment, message_user) -> None:
-        """
-        Tests that a wire payment is processed correctly
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        queryset = Payment.objects.filter(pk=object_id)
-        process_payment.return_value = [payment]
-        change_url = reverse("admin:payments_payment_changelist")
-
-        request_noperms = self.client.post(
-            change_url,
-            {
-                "action": "process_wire_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-        self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "process_wire_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-
-        process_payment.reset_mock()
-        message_user.reset_mock()
-
-        self.admin.process_wire_selected(request_noperms, queryset)
-        process_payment.assert_not_called()
-
-        self.admin.process_wire_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.WIRE)
-        message_user.assert_called_once_with(
-            request_hasperms,
-            _("Successfully processed %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Payment(), 1)},
-            messages.SUCCESS,
-        )
-
     def test_get_actions(self) -> None:
         """
         Test that the actions are added to the admin
@@ -346,15 +166,7 @@ class PaymentAdminTest(TestCase):
 
         actions = self.admin.get_actions(response.wsgi_request)
         self.assertCountEqual(
-            actions,
-            [
-                "delete_selected",
-                "process_cash_selected",
-                "process_card_selected",
-                "process_wire_selected",
-                "process_tpay_selected",
-                "export_csv",
-            ],
+            actions, ["delete_selected", "export_csv",],
         )
 
     def test_get_urls(self) -> None:
@@ -362,7 +174,7 @@ class PaymentAdminTest(TestCase):
         Test that the custom urls are added to the admin
         """
         urls = self.admin.get_urls()
-        self.assertEqual(urls[0].name, "payments_payment_process")
+        self.assertEqual(urls[0].name, "payments_payment_create")
 
     @freeze_time("2019-01-01")
     def test_export_csv(self) -> None:
@@ -380,12 +192,12 @@ class PaymentAdminTest(TestCase):
         response = self.admin.export_csv(HttpRequest(), Payment.objects.all())
 
         self.assertEqual(
-            f"Created,Processed,Amount,Type,Processor,Payer id,Payer name,"
-            f"Notes\r\n2019-01-01 00:00:00+00:00,2019-01-01 00:00:00+00:00,"
+            f"Created,Amount,Type,Processor,Payer id,Payer name,"
+            f"Notes\r\n2019-01-01 00:00:00+00:00,"
             f"7.50,Card payment,Test1 Example,{self.user.pk},Test1 Example,"
-            f"\r\n2019-01-01 00:00:00+00:00,2019-01-01 00:00:00+00:00,17.50,"
+            f"\r\n2019-01-01 00:00:00+00:00,17.50,"
             f"Cash payment,Test1 Example,{self.user.pk},Test1 Example,"
-            f"\r\n2019-01-01 00:00:00+00:00,,9.00,No payment,-,-,-,This is a "
+            f"\r\n2019-01-01 00:00:00+00:00,9.00,No payment,-,-,-,This is a "
             f"test\r\n",
             response.content.decode("utf-8"),
         )

@@ -394,7 +394,6 @@ class PaymentListViewTest(TestCase):
             notes="Testing Payment 1",
             amount=10,
             type=Payment.CARD,
-            processing_date=timezone.now().replace(year=2019, month=3, day=6),
         )
 
     def setUp(self):

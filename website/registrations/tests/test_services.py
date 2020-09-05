@@ -234,7 +234,7 @@ class ServicesTest(TestCase):
     def test_revert_entry(self):
         with self.subTest("Revert accepted entry"):
             self.e2.status = Entry.STATUS_ACCEPTED
-            self.e2.payment = services._create_payment_for_entry(self.e2)
+            self.e2.payment = Payment.objects.create(amount=7.5)
             self.e2.save()
 
             services.revert_entry(1, self.e2)
@@ -256,7 +256,7 @@ class ServicesTest(TestCase):
 
         with self.subTest("Revert another rejected entry"):
             self.e0.status = Entry.STATUS_REJECTED
-            self.e0.payment = services._create_payment_for_entry(self.e0)
+            self.e0.payment = Payment.objects.create(amount=7.5)
             self.e0.save()
 
             services.revert_entry(1, self.e0)
@@ -267,7 +267,7 @@ class ServicesTest(TestCase):
 
         with self.subTest("Does not revert completed entry"):
             self.e2.status = Entry.STATUS_COMPLETED
-            self.e2.payment = services._create_payment_for_entry(self.e2)
+            self.e2.payment = Payment.objects.create(amount=7.5)
             self.e2.save()
 
             services.revert_entry(1, self.e0)
@@ -276,65 +276,6 @@ class ServicesTest(TestCase):
 
             self.assertEqual(self.e2.status, Entry.STATUS_COMPLETED)
             self.assertIsNotNone(self.e2.payment)
-
-    def test_create_payment_for_entry(self):
-        self.e1.username = "jdoe"
-        self.e1.save()
-        self.e2.username = "ptest"
-        self.e2.save()
-
-        p1 = services._create_payment_for_entry(self.e1)  # 'year' payment
-        p2 = services._create_payment_for_entry(self.e2)  # 'study' payment
-
-        lecture_year = datetime_to_lectureyear(timezone.now())
-        Membership.objects.create(
-            type=Membership.MEMBER,
-            since=timezone.datetime(year=lecture_year, month=9, day=1),
-            until=timezone.datetime(year=lecture_year + 1, month=9, day=1),
-            user=self.e3.member,
-        )
-        Membership.objects.create(
-            type=Membership.MEMBER,
-            since=timezone.datetime(year=lecture_year, month=9, day=1),
-            until=timezone.datetime(year=lecture_year + 1, month=9, day=1),
-            user=self.e4.member,
-        )
-        Membership.objects.create(
-            type=Membership.MEMBER,
-            since=timezone.now() - timedelta(days=31),
-            until=timezone.now() - timedelta(days=2),
-            user=self.e5.member,
-        )
-
-        # upgrade 'study'
-        p3 = services._create_payment_for_entry(self.e3)
-        # upgrade 'year'
-        p4 = services._create_payment_for_entry(self.e4)
-        # upgrade 'study' after membership end
-        p5 = services._create_payment_for_entry(self.e5)
-
-        self.e1.membership_type = Membership.BENEFACTOR
-        self.e1.contribution = 10
-        p6 = services._create_payment_for_entry(self.e1)  # contribu payment
-
-        self.assertEqual(p1.amount, settings.MEMBERSHIP_PRICES["year"])
-        self.assertEqual(p1.processed, False)
-        self.assertEqual(p2.amount, settings.MEMBERSHIP_PRICES["study"])
-        self.assertEqual(p2.processed, False)
-        self.assertEqual(
-            p3.amount,
-            settings.MEMBERSHIP_PRICES["study"] - settings.MEMBERSHIP_PRICES["year"],
-        )
-        self.assertEqual(p3.processed, False)
-        self.assertEqual(p4.amount, settings.MEMBERSHIP_PRICES["year"])
-        self.assertEqual(p4.processed, False)
-        self.assertEqual(
-            p5.amount,
-            settings.MEMBERSHIP_PRICES["study"] - settings.MEMBERSHIP_PRICES["year"],
-        )
-        self.assertEqual(p5.processed, False)
-        self.assertEqual(p6.amount, 10)
-        self.assertEqual(p6.processed, False)
 
     @mock.patch("registrations.services.check_unique_user")
     def test_create_member_from_registration(self, check_unique_user):
@@ -503,84 +444,6 @@ class ServicesTest(TestCase):
             existing_membership.save()
             with self.assertRaises(ValueError):
                 services._create_membership_from_entry(self.e3)
-
-    def test_process_payment(self):
-        self.e1.username = "jdoe"
-        self.e1.save()
-        self.e2.username = "ptest"
-        self.e2.save()
-
-        # Check that the DoesNotExist is caught
-        p = Payment(amount=10, type=Payment.CARD)
-        services.process_payment(p)
-
-        p0 = services._create_payment_for_entry(self.e0)
-        self.e0.payment = p0
-        self.e0.save()
-        p1 = services._create_payment_for_entry(self.e1)
-        self.e1.payment = p1
-        self.e1.save()
-        p2 = services._create_payment_for_entry(self.e2)
-        self.e2.payment = p2
-        self.e2.save()
-        p3 = services._create_payment_for_entry(self.e3)
-        self.e3.payment = p3
-        self.e3.save()
-
-        Entry.objects.filter(pk__in=[self.e1.pk, self.e2.pk, self.e3.pk]).update(
-            status=Entry.STATUS_ACCEPTED
-        )
-
-        payments = Payment.objects.filter(pk__in=[p0.pk, p2.pk, p3.pk])
-        payments.update(type=Payment.CARD)
-
-        for payment in Payment.objects.filter(pk__in=[p0.pk, p1.pk, p2.pk]):
-            services.process_payment(payment)
-
-        self.e0.refresh_from_db()
-        self.e1.refresh_from_db()
-        self.e2.refresh_from_db()
-
-        self.assertEqual(self.e0.status, Entry.STATUS_REVIEW)
-        self.assertEqual(self.e1.status, Entry.STATUS_ACCEPTED)
-        self.assertEqual(self.e2.status, Entry.STATUS_COMPLETED)
-
-        p0.type = Payment.CARD
-        p0.save()
-        self.e0.status = Entry.STATUS_ACCEPTED
-        self.e0.save()
-        services.process_payment(p0)
-
-        self.assertEqual(self.e0.status, Entry.STATUS_ACCEPTED)
-
-        p3.refresh_from_db()
-        services.process_payment(p3)
-        self.e3.refresh_from_db()
-
-        self.assertEqual(self.e3.status, Entry.STATUS_COMPLETED)
-        self.assertEqual(len(mail.outbox), 2)
-
-    def test_process_payment_no_member_created(self):
-        p1 = services._create_payment_for_entry(self.e1)
-        p2 = services._create_payment_for_entry(self.e2)
-
-        Entry.objects.filter(pk__in=[self.e1.pk, self.e2.pk]).update(
-            status=Entry.STATUS_ACCEPTED
-        )
-
-        payments = Payment.objects.filter(pk__in=[p1.pk, p2.pk])
-        payments.update(type=Payment.CARD)
-
-        with mock.patch(
-            "registrations.services._create_member_from_registration"
-        ) as create_member:
-            with mock.patch(
-                "registrations.services._create_membership_from_entry"
-            ) as create_membership:
-                create_member.return_value = None
-                for payment in Payment.objects.filter(pk__in=[p1.pk, p2.pk]):
-                    services.process_payment(payment)
-                    self.assertFalse(create_membership.called)
 
     @freeze_time("2019-01-01")
     def test_execute_data_minimisation(self):
