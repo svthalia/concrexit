@@ -7,7 +7,7 @@ license = "AGPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-django-localflavor = { git = "https://github.com/django/django-localflavor.git", rev="d2ce849484640999a2fde7106407f7217a3c95c1" }
+django-localflavor = "3.0.1"
 freezegun = "1.0.0"
 bleach = "3.1.5"
 django-tinymce4-lite = "1.8.0"
@@ -15,7 +15,7 @@ djangorestframework = "3.11.1"
 django-ical = "1.7.1"
 django-libsass = "0.8.0"
 python-magic = "0.4.18"
-Django = "3.0.8"
+Django = "3.1.1"
 Pillow = "7.2.0"
 django-compressor = "2.4.0"
 psycopg2-binary = "2.8.5"
@@ -36,7 +36,7 @@ google-api-python-client = "1.11.0"
 docs = ["recommonmark", "sphinx"]
 
 [tool.poetry.dev-dependencies]
-django-template-check = "0.3.1"
+django-template-check = {git = "https://github.com/joostrijneveld/django-template-check.git", rev = "2d69e43eebd63459d9817f5c9358ed1a9bdb1951"}
 factory_boy = "3.0.1"
 pydenticon = "0.3.1"
 Faker = "4.1.2"

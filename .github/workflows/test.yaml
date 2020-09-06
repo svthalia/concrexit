@@ -23,7 +23,7 @@ jobs:
         run: |
           # Run makemessages for all app
           cd website
-          for dir in $(find * -maxdepth 0 -type d); do (cd $dir && poetry run ../manage.py makemessages); done
+          for dir in $(find * -maxdepth 0 -type d); do (cd $dir && poetry run ../manage.py makemessages --all); done
           cd ..
 
           # Check for obsolete translations in .po files (starting with `#~`).
