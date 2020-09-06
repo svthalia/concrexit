@@ -348,10 +348,13 @@ description = "Abstraction to offload file uploads to web-server (e.g. Apache wi
 name = "django-sendfile2"
 optional = false
 python-versions = "*"
-version = "0.5.1"
+version = "0.6.0"
 
 [package.dependencies]
 django = "*"
+
+[package.extras]
+docs = ["sphinx", "sphinx-rtd-theme"]
 
 [[package]]
 category = "dev"
@@ -1132,7 +1135,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "bf8451b80636c7b0572b8daa29b5f308c5d67b6b9f1af27897844a7deceb595a"
+content-hash = "3d7b9f54a65834408d32982859717ea0732c36bc3026479dc234ee00674079ae"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1335,7 +1338,7 @@ django-recurrence = [
     {file = "django_recurrence-1.10.1-py3-none-any.whl", hash = "sha256:cf865ec07e60bc4203ce09d849b03e1e506a36c56337962d95cd558a7c59b707"},
 ]
 django-sendfile2 = [
-    {file = "django-sendfile2-0.5.1.tar.gz", hash = "sha256:695c635bdc26fe35e22565f046c92126a03fafb587e11415baec6da9df1be04e"},
+    {file = "django-sendfile2-0.6.0.tar.gz", hash = "sha256:7f850040ddc29c9c42192ed85b915465a3ed7cced916c4fafdd5eda057dd06ec"},
 ]
 django-template-check = [
     {file = "django-template-check-0.3.1.tar.gz", hash = "sha256:72c424239c09ae76782e4357b29a34cacfcb0f64a8fabb478f6526c84507e3d2"},
