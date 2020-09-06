@@ -41,3 +41,33 @@ class BankAccountAdminForm(forms.ModelForm):
         widgets = {
             "signature": SignatureWidget(),
         }
+
+
+class PaymentCreateForm(forms.Form):
+    """
+    Custom form to create a payment
+    by a user
+    """
+
+    app_label = forms.CharField(
+        max_length=255,
+        widget=forms.HiddenInput()
+    )
+
+    model_name = forms.CharField(
+        max_length=255,
+        widget=forms.HiddenInput()
+    )
+
+    payable = forms.CharField(
+        max_length=255,
+        widget=forms.HiddenInput()
+    )
+
+    next = forms.CharField(
+        max_length=255,
+        widget=forms.HiddenInput()
+    )
+
+    class Meta:
+        fields = "__all__"

@@ -5,6 +5,7 @@ from .views import (
     BankAccountListView,
     BankAccountRevokeView,
     PaymentListView,
+    PaymentProcessView,
 )
 
 app_name = "payments"
@@ -48,8 +49,13 @@ urlpatterns = [
                             ),
                         ]
                     ),
+                    path(
+                        "process/",
+                        PaymentProcessView.as_view(),
+                        name="payment-process",
+                    ),
                 ),
             ]
         ),
-    )
+    ),
 ]

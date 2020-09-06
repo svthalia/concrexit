@@ -1,19 +1,27 @@
 from dateutil.relativedelta import relativedelta
+from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import (
+    PermissionDenied,
+    DisallowedRedirect,
+    SuspiciousOperation,
+)
 from django.db.models import QuerySet, Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 
 from members.decorators import membership_required
-from payments.forms import BankAccountForm
+from payments import services
+from payments.forms import BankAccountForm, PaymentCreateForm
 from payments.models import BankAccount, Payment
 
 
@@ -128,3 +136,64 @@ class PaymentListView(ListView):
             }
         )
         return context
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(membership_required, name="dispatch")
+class PaymentProcessView(SuccessMessageMixin, FormView):
+    form_class = PaymentCreateForm
+    success_message = _("Your payment has been processed successfully.")
+    template_name = "payments/payment_form.html"
+
+    payable = None
+
+    def get_success_url(self):
+        return self.request.POST["next"]
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.member.tpay_enabled:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"payable": self.payable})
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not (
+            "app_label" in request.POST
+            and "model_name" in request.POST
+            and "payable" in request.POST
+            and "next" in request.POST
+        ):
+            raise SuspiciousOperation("Missing POST parameters")
+
+        if not url_has_allowed_host_and_scheme(
+            request.POST["next"], allowed_hosts={request.get_host()}
+        ):
+            raise DisallowedRedirect
+
+        app_label = request.POST["app_label"]
+        model_name = request.POST["model_name"]
+        payable_pk = request.POST["payable"]
+
+        payable_model = apps.get_model(app_label=app_label, model_name=model_name)
+        self.payable = payable_model.objects.get(pk=payable_pk)
+
+        if self.payable.payment_payer.pk != self.request.member.pk:
+            raise SuspiciousOperation("Payer does not match request")
+
+        if "_save" not in request.POST:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        services.create_payment(self.payable, self.request.member, Payment.TPAY)
+        self.payable.save()
+        return super().form_valid(form)
