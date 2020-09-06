@@ -4,6 +4,11 @@ name: Build Dependencies Docker Image
 on:
   schedule:
     - cron: 0 4 * * *
+  push:
+    branches:
+      - master
+    paths:
+      - poetry.lock
 
 jobs:
   build-docker:
