@@ -125,6 +125,21 @@ class PaymentAdminViewTest(TestCase):
                 response.wsgi_request, "Successfully paid MockPayable.",
             )
 
+        create_payment.reset_mock()
+        messages_success.reset_mock()
+        resolve_url.reset_mock()
+
+        with self.subTest("Send post with insecure next"):
+            response = self.client.post(
+                url, {"type": "cash_payment", "next": "https://ru.nl/"},
+            )
+
+            self.assertEqual(response.status_code, 400)
+
+            create_payment.assert_not_called()
+            messages_error.assert_not_called()
+            messages_success.assert_not_called()
+
         with self.subTest("Send post with failed processing"):
             create_payment.return_value = None
             response = self.client.post(url, {"type": payment_type,},)

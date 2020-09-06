@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation, DisallowedRedirect
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 
@@ -24,12 +25,16 @@ class PaymentAdminView(View):
 
     def post(self, request, *args, **kwargs):
         if not (
-            "app_label" in kwargs
-            and "model_name" in kwargs
-            and "payable" in kwargs
+            kwargs.keys() >= {"app_label", "model_name", "payable"}
             and "type" in request.POST
         ):
             raise SuspiciousOperation("Missing POST parameters")
+
+        if "next" in request.POST and not url_has_allowed_host_and_scheme(
+            request.POST.get("next"), allowed_hosts={request.get_host()}
+        ):
+            raise DisallowedRedirect
+
         app_label = kwargs["app_label"]
         model_name = kwargs["model_name"]
 

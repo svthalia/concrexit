@@ -65,6 +65,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "amount",
         "paid_by",
         "processed_by",
+        "type",
         "topic",
         "notes",
     )

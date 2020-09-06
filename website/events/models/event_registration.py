@@ -150,7 +150,7 @@ class EventRegistration(models.Model, Payable):
     @property
     def payment_notes(self):
         notes = f"Event registration {self.event.title_en}. "
-        notes += f"{self.event.start}. " f"Registration date: {self.date}."
+        notes += f"{date(self.event.start)}. Registration date: {date(self.date)}."
         return notes
 
     @property

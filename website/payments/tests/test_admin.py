@@ -143,7 +143,15 @@ class PaymentAdminTest(TestCase):
             urls = self.admin.get_readonly_fields(HttpRequest(), Payment())
             self.assertEqual(
                 urls,
-                ("created_at", "amount", "paid_by", "processed_by", "topic", "notes"),
+                (
+                    "created_at",
+                    "amount",
+                    "paid_by",
+                    "processed_by",
+                    "type",
+                    "topic",
+                    "notes",
+                ),
             )
 
     def test_get_urls(self) -> None:
