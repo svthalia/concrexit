@@ -1,6 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from django.apps import apps
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import (
@@ -9,7 +10,7 @@ from django.core.exceptions import (
     SuspiciousOperation,
 )
 from django.db.models import QuerySet, Sum
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -21,6 +22,7 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 
 from members.decorators import membership_required
 from payments import services
+from payments.exceptions import PaymentError
 from payments.forms import BankAccountForm, PaymentCreateForm
 from payments.models import BankAccount, Payment
 
@@ -139,8 +141,13 @@ class PaymentListView(ListView):
 
 
 @method_decorator(login_required, name="dispatch")
-@method_decorator(membership_required, name="dispatch")
 class PaymentProcessView(SuccessMessageMixin, FormView):
+    """
+    Defines a view that allows the user to add a Thalia Pay payment to
+    a Payable object using a POST request. The user should be
+    authenticated.
+    """
+
     form_class = PaymentCreateForm
     success_message = _("Your payment has been processed successfully.")
     template_name = "payments/payment_form.html"
@@ -155,21 +162,13 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({"payable": self.payable})
         return context
 
     def post(self, request, *args, **kwargs):
-        if not (
-            "app_label" in request.POST
-            and "model_name" in request.POST
-            and "payable" in request.POST
-            and "next" in request.POST
-        ):
+        if not (request.POST.keys() >= {"app_label", "model_name", "payable", "next"}):
             raise SuspiciousOperation("Missing POST parameters")
 
         if not url_has_allowed_host_and_scheme(
@@ -185,7 +184,14 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         self.payable = payable_model.objects.get(pk=payable_pk)
 
         if self.payable.payment_payer.pk != self.request.member.pk:
-            raise SuspiciousOperation("Payer does not match request")
+            messages.error(
+                self.request, _("You are not allowed to process this payment.")
+            )
+            return redirect(request.POST["next"])
+
+        if self.payable.payment:
+            messages.error(self.request, _("This object has already been paid for."))
+            return redirect(request.POST["next"])
 
         if "_save" not in request.POST:
             context = self.get_context_data(**kwargs)
@@ -194,6 +200,9 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        services.create_payment(self.payable, self.request.member, Payment.TPAY)
-        self.payable.save()
+        try:
+            services.create_payment(self.payable, self.request.member, Payment.TPAY)
+            self.payable.save()
+        except PaymentError as e:
+            messages.error(self.request, str(e))
         return super().form_valid(form)

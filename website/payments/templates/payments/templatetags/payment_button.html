@@ -1,0 +1,29 @@
+{% load i18n %}
+<form action="{% url 'payments:payment-process' %}" method="post">
+    {% csrf_token %}
+    <input
+        type="hidden"
+        name="model_name"
+        value="{{ model_name }}"
+    />
+    <input
+        type="hidden"
+        name="app_label"
+        value="{{ app_label }}"
+    />
+    <input
+        type="hidden"
+        name="payable"
+        value="{{ pk }}"
+    />
+    <input
+        type="hidden"
+        name="next"
+        value="{{ redirect_to }}"
+    />
+    <input
+        type="submit"
+        class="btn btn-primary"
+        value="{% trans "Pay with Thalia Pay" %}"
+    />
+</form>

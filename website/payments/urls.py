@@ -47,12 +47,12 @@ urlpatterns = [
                                 PaymentListView.as_view(),
                                 name="payment-list",
                             ),
+                            path(
+                                "process/",
+                                PaymentProcessView.as_view(),
+                                name="payment-process",
+                            ),
                         ]
-                    ),
-                    path(
-                        "process/",
-                        PaymentProcessView.as_view(),
-                        name="payment-process",
                     ),
                 ),
             ]

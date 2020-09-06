@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-10 20:41+0200\n"
-"PO-Revision-Date: 2020-05-10 20:41+0200\n"
-"Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
+"POT-Creation-Date: 2020-09-10 20:44+0200\n"
+"PO-Revision-Date: 2020-09-10 20:44+0200\n"
+"Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: admin.py models.py
 msgid "paid by"
@@ -159,6 +159,10 @@ msgstr "%s succesvol verwerkt."
 msgid "Could not process %s."
 msgstr "%s kon niet worden verwerkt."
 
+#: api/fields.py models.py
+msgid "No payment"
+msgstr "Geen betaling"
+
 #: apps.py
 msgid "Payments"
 msgstr "Betalingen"
@@ -170,10 +174,6 @@ msgstr "Ik wil dit account gebruiken voor automatische incasso's"
 #: models.py
 msgid "created at"
 msgstr "aangemaakt op"
-
-#: models.py
-msgid "No payment"
-msgstr "Geen betaling"
 
 #: models.py
 msgid "Cash payment"
@@ -400,6 +400,28 @@ msgstr "Ongedaan maken"
 msgid "Clear"
 msgstr "Leegmaken"
 
+#: templates/payments/payment_form.html
+msgid "confirm payment"
+msgstr "bevestig betaling"
+
+#: templates/payments/payment_form.html
+msgid "Thalia Pay"
+msgstr "Thalia Pay"
+
+#: templates/payments/payment_form.html
+msgid "Please confirm your payment. Be aware that this confirmation is final."
+msgstr ""
+"Bevestig je betaling. Houd er rekening mee dat deze bevestiging definitief "
+"is."
+
+#: templates/payments/payment_form.html
+msgid "confirm"
+msgstr "bevestig"
+
+#: templates/payments/payment_form.html
+msgid "cancel"
+msgstr "annuleer"
+
 #: templates/payments/payment_list.html
 msgid "Older"
 msgstr "Ouder"
@@ -411,6 +433,10 @@ msgstr "Totaal"
 #: templates/payments/payment_list.html
 msgid "You have not made any payments during this period."
 msgstr "Je hebt geen betalingen gedaan in deze periode."
+
+#: templates/payments/templatetags/payment_button.html
+msgid "Pay with Thalia Pay"
+msgstr "Thalia Pay"
 
 #: templates/payments/widgets/payment.html
 msgid "Unprocessed"
@@ -427,3 +453,15 @@ msgstr "Bankrekening succesvol opgeslagen."
 #: views.py
 msgid "Direct debit authorisation successfully revoked."
 msgstr "Autorisatie voor automatisch incasso succesvol ingetrokken."
+
+#: views.py
+msgid "Your payment has been processed successfully."
+msgstr "Je betaling is succesvol verwerkt."
+
+#: views.py
+msgid "You are not allowed to process this payment."
+msgstr "U mag deze betaling niet verwerken."
+
+#: views.py
+msgid "This object has already been paid for."
+msgstr "Er is al betaald voor dit object."

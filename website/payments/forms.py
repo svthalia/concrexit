@@ -49,25 +49,10 @@ class PaymentCreateForm(forms.Form):
     by a user
     """
 
-    app_label = forms.CharField(
-        max_length=255,
-        widget=forms.HiddenInput()
-    )
-
-    model_name = forms.CharField(
-        max_length=255,
-        widget=forms.HiddenInput()
-    )
-
-    payable = forms.CharField(
-        max_length=255,
-        widget=forms.HiddenInput()
-    )
-
-    next = forms.CharField(
-        max_length=255,
-        widget=forms.HiddenInput()
-    )
+    app_label = forms.CharField(max_length=255, widget=forms.HiddenInput())
+    model_name = forms.CharField(max_length=255, widget=forms.HiddenInput())
+    payable = forms.CharField(max_length=255, widget=forms.HiddenInput())
+    next = forms.CharField(max_length=255, widget=forms.HiddenInput())
 
     class Meta:
         fields = "__all__"

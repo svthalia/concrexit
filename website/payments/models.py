@@ -203,6 +203,7 @@ class BankAccount(models.Model):
 
 
 class Payable:
+    pk = None
     payment = None
 
     @property

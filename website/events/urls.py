@@ -9,7 +9,6 @@ from events.views import (
     RegistrationView,
     EventCancelView,
     AlumniEventsView,
-    EventPayView,
 )
 
 app_name = "events"
@@ -30,7 +29,6 @@ urlpatterns = [
                     EventCancelView.as_view(),
                     name="cancel",
                 ),
-                path("<int:pk>/registration/pay/", EventPayView.as_view(), name="pay"),
                 path(
                     "<int:pk>/registration/",
                     RegistrationView.as_view(),
