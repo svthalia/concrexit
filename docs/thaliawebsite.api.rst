@@ -16,4 +16,3 @@ thaliawebsite.api.services module
    :members:
    :undoc-members:
    :show-inheritance:
-

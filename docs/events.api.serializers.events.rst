@@ -32,4 +32,3 @@ events.api.serializers.events.retrieve module
    :members:
    :undoc-members:
    :show-inheritance:
-

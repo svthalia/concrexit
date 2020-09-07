@@ -64,4 +64,3 @@ thaliawebsite.templatetags.pick\_header\_image module
    :members:
    :undoc-members:
    :show-inheritance:
-

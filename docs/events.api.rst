@@ -33,4 +33,3 @@ events.api.urls module
    :members:
    :undoc-members:
    :show-inheritance:
-

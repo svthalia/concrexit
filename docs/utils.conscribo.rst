@@ -24,4 +24,3 @@ utils.conscribo.objects module
    :members:
    :undoc-members:
    :show-inheritance:
-

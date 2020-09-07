@@ -16,4 +16,3 @@ events.api.serializers.event\_registrations.list module
    :members:
    :undoc-members:
    :show-inheritance:
-

@@ -24,4 +24,3 @@ events.api.viewsets.events module
    :members:
    :undoc-members:
    :show-inheritance:
-

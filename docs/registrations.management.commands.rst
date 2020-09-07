@@ -16,4 +16,3 @@ registrations.management.commands.minimiseregistrations module
    :members:
    :undoc-members:
    :show-inheritance:
-
