@@ -7,7 +7,7 @@ jobs:
   codestyle:
     name: Codestyle and translation checks
     runs-on: ubuntu-18.04
-    container: thalia/concrexit-dependencies
+    container: docker.pkg.github.com/svthalia/concrexit/dependencies
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -40,7 +40,7 @@ jobs:
   tests:
     name: Django Tests
     runs-on: ubuntu-18.04
-    container: thalia/concrexit-dependencies
+    container: docker.pkg.github.com/svthalia/concrexit/dependencies
     services:
       postgres:
         image: postgres:latest
@@ -85,7 +85,7 @@ jobs:
   documentation-tests:
     name: Documentation Tests
     runs-on: ubuntu-18.04
-    container: thalia/concrexit-dependencies
+    container: docker.pkg.github.com/svthalia/concrexit/dependencies
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
