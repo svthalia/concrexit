@@ -145,16 +145,14 @@ class Command(BaseCommand):
 
         board = Board()
 
-        board.name_nl = "Bestuur {}-{}".format(lecture_year, lecture_year + 1)
         board.name_en = "Board {}-{}".format(lecture_year, lecture_year + 1)
-        board.description_nl = _faker.paragraph()
         board.description_en = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            board.name_nl, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+            board.name_en, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg"
         )  # 620x620 pixels, with 10 pixels padding on each side
-        board.photo.save(board.name_nl + ".jpeg", ContentFile(icon))
+        board.photo.save(board.name_en + ".jpeg", ContentFile(icon))
 
         board.since = date(year=lecture_year, month=9, day=1)
         board.until = date(year=lecture_year + 1, month=8, day=31)
@@ -188,20 +186,18 @@ class Command(BaseCommand):
 
         member_group = group_model()
 
-        member_group.name_nl = _generate_title()
-        member_group.name_en = member_group.name_nl
-        member_group.description_nl = _faker.paragraph()
+        member_group.name_en = _generate_title()
         member_group.description_en = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            member_group.name_nl,
+            member_group.name_en,
             480,
             480,
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        member_group.photo.save(member_group.name_nl + ".jpeg", ContentFile(icon))
+        member_group.photo.save(member_group.name_en + ".jpeg", ContentFile(icon))
 
         member_group.since = _faker.date_time_between("-10y", "+30d")
 
@@ -265,10 +261,8 @@ class Command(BaseCommand):
             groups = MemberGroup.objects.all()
         event = Event()
 
-        event.title_nl = _generate_title()
-        event.title_en = event.title_nl
-        event.description_nl = _faker.paragraph()
         event.description_en = _faker.paragraph()
+        event.title_en = _generate_title()
         event.start = _faker.date_time_between("-30d", "+120d", _current_tz)
         duration = math.ceil(random.expovariate(0.2))
         event.end = event.start + timedelta(hours=duration)
@@ -293,9 +287,8 @@ class Command(BaseCommand):
                 tzinfo=_current_tz,
             )
 
-        event.location_nl = _faker.street_address()
-        event.location_en = event.location_nl
-        event.map_location = event.location_nl
+        event.location_en = _faker.street_address()
+        event.map_location = event.location_en
         event.send_cancel_email = False
 
         if random.random() < 0.5:
@@ -339,8 +332,6 @@ class Command(BaseCommand):
         product = Product()
 
         product.name = f"Pizza {_pizza_name_faker.last_name()}"
-        product.description_nl = _faker.sentence()
-        product.description_nl = _faker.sentence()
         product.price = random.randint(250, 1000) / 100
         product.available = random.random() < 0.9
 
@@ -425,7 +416,6 @@ class Command(BaseCommand):
         """Create new random vacancy categories"""
         category = VacancyCategory()
 
-        category.name_nl = _faker.text(max_nb_chars=30)
         category.name_en = _faker.text(max_nb_chars=30)
         category.slug = _faker.slug()
 
@@ -435,22 +425,18 @@ class Command(BaseCommand):
         """Creates new random documents"""
         doc = Document()
 
-        doc.name_nl = _faker.text(max_nb_chars=30)
         doc.name_en = _faker.text(max_nb_chars=30)
         doc.category = random.choice([c[0] for c in Document.DOCUMENT_CATEGORIES])
         doc.members_only = random.random() < 0.75
         doc.file_en.save(
             "{}.txt".format(doc.name_en), ContentFile(_faker.text(max_nb_chars=120))
         )
-        doc.file_nl = doc.file_en
         doc.save()
 
     def create_newsletter(self):
         newsletter = Newsletter()
 
         newsletter.title_en = _generate_title()
-        newsletter.title_nl = newsletter.title_en
-        newsletter.description_nl = _faker.paragraph()
         newsletter.description_en = _faker.paragraph()
         newsletter.date = _faker.date_time_between("-3m", "+3m", _current_tz)
 
@@ -459,8 +445,6 @@ class Command(BaseCommand):
         for i in range(random.randint(1, 5)):
             item = NewsletterItem()
             item.title_en = _generate_title()
-            item.title_nl = item.title_en
-            item.description_nl = _faker.paragraph()
             item.description_en = _faker.paragraph()
             item.newsletter = newsletter
             item.save()
@@ -468,15 +452,11 @@ class Command(BaseCommand):
         for i in range(random.randint(1, 5)):
             item = NewsletterEvent()
             item.title_en = _generate_title()
-            item.title_nl = item.title_en
-            item.description_nl = _faker.paragraph()
             item.description_en = _faker.paragraph()
             item.newsletter = newsletter
 
             item.what_en = item.title_en
-            item.what_nl = item.what_en
             item.where_en = _faker.city()
-            item.where_nl = item.where_en
             item.start_datetime = _faker.date_time_between("-1y", "+3m", _current_tz)
             duration = math.ceil(random.expovariate(0.2))
             item.end_datetime = item.start_datetime + timedelta(hours=duration)
@@ -495,8 +475,7 @@ class Command(BaseCommand):
     def create_course(self):
         course = Course()
 
-        course.name_nl = _generate_title()
-        course.name_en = course.name_nl
+        course.name_en = _generate_title()
         course.ec = 3 if random.random() < 0.5 else 6
 
         course.course_code = "NWI-" + "".join(random.choices(string.digits, k=5))
@@ -579,12 +558,11 @@ class Command(BaseCommand):
     def create_photo_album(self):
         album = Album()
 
-        album.title_nl = _generate_title()
-        album.title_en = album.title_nl
+        album.title_en = _generate_title()
 
         album.date = _faker.date_between("-1y", "today")
 
-        album.slug = slugify("-".join([str(album.date), album.title_nl]))
+        album.slug = slugify("-".join([str(album.date), album.title_en]))
 
         if random.random() < 0.25:
             album.hidden = True
@@ -726,8 +704,7 @@ class Command(BaseCommand):
             if len(Category.objects.all()) < 5:
                 for _ in range(5):
                     category = Category()
-                    category.name_nl = _generate_title()
-                    category.name_en = category.name_nl
+                    category.name_en = _generate_title()
 
                     category.save()
 

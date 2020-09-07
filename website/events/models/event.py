@@ -40,15 +40,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     title = MultilingualField(models.CharField, _("title"), max_length=100)
 
-    description = MultilingualField(
-        HTMLField,
-        _("description"),
-        help_text=_(
-            "Please fill in both of the description boxes (EN/NL),"
-            " even if your event is Dutch only! Fill in the English "
-            "description in Dutch then."
-        ),
-    )
+    description = MultilingualField(HTMLField, _("description"),)
 
     start = models.DateTimeField(_("start time"))
 
@@ -412,13 +404,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
                 if registration_reminder_time > timezone.now():
                     registration_reminder.title_en = "Event registration"
-                    registration_reminder.title_nl = "Evenement registratie"
                     registration_reminder.body_en = (
                         "Registration for '{}' "
                         "starts in 1 hour".format(self.title_en)
-                    )
-                    registration_reminder.body_nl = "Registratie voor '{}' start in 1 uur".format(
-                        self.title_nl
                     )
                     registration_reminder.category = Category.objects.get(
                         key=Category.EVENT
@@ -443,9 +431,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
             if start_reminder_time > timezone.now():
                 start_reminder.title_en = "Event"
-                start_reminder.title_nl = "Evenement"
                 start_reminder.body_en = f"'{self.title_en}' starts in 1 hour"
-                start_reminder.body_nl = f"'{self.title_nl}' begint over 1 uur"
                 start_reminder.category = Category.objects.get(key=Category.EVENT)
                 start_reminder.time = start_reminder_time
                 start_reminder.save()

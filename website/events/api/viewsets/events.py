@@ -40,10 +40,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         filters.SearchFilter,
     )
     ordering_fields = ("start", "end")
-    search_fields = (
-        "title_en",
-        "title_nl",
-    )
+    search_fields = ("title_en",)
 
     def get_queryset(self):
         queryset = Event.objects.filter(published=True)

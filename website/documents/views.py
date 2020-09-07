@@ -83,9 +83,7 @@ class DocumentDownloadView(DetailView):
 
         lang = request.GET.get("language")
         try:
-            if lang == "nl":
-                file = document.file_nl
-            elif lang == "en":
+            if lang == "en":
                 file = document.file_en
             else:  # Fall back on language detection
                 file = document.file

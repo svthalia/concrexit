@@ -83,15 +83,12 @@ class RegistrationInformationFieldInlineTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_nl="testevenement",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -106,7 +103,6 @@ class RegistrationInformationFieldInlineTest(TestCase):
             event=cls.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -115,7 +111,6 @@ class RegistrationInformationFieldInlineTest(TestCase):
             event=cls.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -124,7 +119,6 @@ class RegistrationInformationFieldInlineTest(TestCase):
             event=cls.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 
@@ -155,15 +149,12 @@ class EventAdminTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_nl="testevenement",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,

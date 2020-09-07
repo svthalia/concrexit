@@ -163,7 +163,7 @@ def get_automatic_lists():
                 f"to send newsletters in {language[1]}",
                 "addresses": _get_members_email_addresses(
                     Member.current_members.all().filter(
-                        profile__receive_newsletter=True, profile__language=language[0]
+                        profile__receive_newsletter=True,
                     )
                 ),
                 "moderated": True,

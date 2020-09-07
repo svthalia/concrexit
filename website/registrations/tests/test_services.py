@@ -40,7 +40,6 @@ class ServicesTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1).date(),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
@@ -59,7 +58,6 @@ class ServicesTest(TestCase):
             address_country="NL",
             phone_number="06098765432",
             birthday=timezone.now().replace(year=1992, day=2).date(),
-            language="nl",
             length=Entry.MEMBERSHIP_STUDY,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
@@ -368,7 +366,6 @@ class ServicesTest(TestCase):
         self.assertEqual(
             member.profile.birthday, timezone.now().replace(year=1990, day=1).date()
         )
-        self.assertEqual(member.profile.language, "en")
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Welcome to Study Association Thalia")

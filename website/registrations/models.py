@@ -170,12 +170,9 @@ class Registration(Entry):
 
     birthday = models.DateField(verbose_name=_("birthday"), blank=False,)
 
-    language = models.CharField(
-        verbose_name=_("language"),
-        max_length=5,
-        choices=settings.LANGUAGES,
-        default="nl",
-    )
+    @property
+    def language(self):
+        return "en"
 
     # ---- Contact information -----
 

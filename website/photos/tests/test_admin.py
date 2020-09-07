@@ -40,7 +40,6 @@ class AlbumUploadTest(TestCase):
         self.client.post(
             "/admin/photos/album/add/",
             {
-                "title_nl": "test album",
                 "title_en": "test album",
                 "date": "2017-04-12",
                 "slug": "2017-04-12-test-album",
@@ -56,7 +55,6 @@ class AlbumUploadTest(TestCase):
         self.client.post(
             "/admin/photos/album/add/",
             {
-                "title_nl": "test album",
                 "title_en": "test album",
                 "date": "2017-04-12",
                 "slug": "2017-04-12-test-album",
@@ -66,7 +64,6 @@ class AlbumUploadTest(TestCase):
         self.client.post(
             "/admin/photos/album/add/",
             {
-                "title_nl": "test album",
                 "title_en": "test album",
                 "date": "2017-04-12",
                 "slug": "2017-04-12-test-album",
@@ -83,7 +80,6 @@ class AlbumUploadTest(TestCase):
         self.client.post(
             "/admin/photos/album/add/",
             {
-                "title_nl": "test album",
                 "title_en": "test album",
                 "date": "2017-04-12",
                 "slug": "2017-04-12-test-album",
@@ -96,7 +92,6 @@ class AlbumUploadTest(TestCase):
         self.client.post(
             "/admin/photos/album/{}/change/".format(pk),
             {
-                "title_nl": "test album",
                 "title_en": "test album",
                 "date": "2017-04-12",
                 "slug": "2017-04-12-test-album",
@@ -115,7 +110,6 @@ class AlbumUploadTest(TestCase):
         self.client.post(
             "/admin/photos/album/add/",
             {
-                "title_nl": "test album",
                 "title_en": "test album",
                 "date": "2017-04-12",
                 "slug": "2017-04-12-test-album",
@@ -131,7 +125,6 @@ class AlbumUploadTest(TestCase):
         self.client.post(
             "/admin/photos/album/{}/change/".format(pk),
             {
-                "title_nl": "test album",
                 "title_en": "test album",
                 "date": "2017-04-12",
                 "slug": "2017-04-12-test-album",
@@ -150,7 +143,6 @@ class AlbumUploadTest(TestCase):
         self.client.post(
             "/admin/photos/album/add/",
             {
-                "title_nl": "test album",
                 "title_en": "test album",
                 "date": "2017-04-12",
                 "slug": "2017-04-12-test-album",
