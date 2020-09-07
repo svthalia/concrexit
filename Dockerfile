@@ -1,4 +1,4 @@
-FROM docker.pkg.github.com/svthalia/concrexit/dependencies
+FROM thalia/concrexit-dependencies
 MAINTAINER Thalia Technicie <www@thalia.nu>
 LABEL description="Contains the Thaliawebsite Django application"
 
