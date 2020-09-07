@@ -56,4 +56,3 @@ pushnotifications.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

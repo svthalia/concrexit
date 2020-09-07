@@ -32,4 +32,3 @@ utils.templatetags.urlparams module
    :members:
    :undoc-members:
    :show-inheritance:
-

@@ -40,4 +40,3 @@ members.models.profile module
    :members:
    :undoc-members:
    :show-inheritance:
-

@@ -56,4 +56,3 @@ merchandise.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

@@ -56,4 +56,3 @@ mailinglists.signals module
    :members:
    :undoc-members:
    :show-inheritance:
-

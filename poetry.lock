@@ -363,6 +363,7 @@ django = ">=1.8"
 reference = "2d69e43eebd63459d9817f5c9358ed1a9bdb1951"
 type = "git"
 url = "https://github.com/joostrijneveld/django-template-check.git"
+
 [[package]]
 category = "main"
 description = "A Django application that provides a fully functional TinyMCE 4 editor widget for models and forms."
@@ -977,7 +978,7 @@ description = "Python documentation generator"
 name = "sphinx"
 optional = true
 python-versions = ">=3.5"
-version = "3.1.2"
+version = "3.2.1"
 
 [package.dependencies]
 Jinja2 = ">=2.3"
@@ -1160,7 +1161,8 @@ testing = ["jaraco.itertools", "func-timeout"]
 docs = ["recommonmark", "sphinx"]
 
 [metadata]
-content-hash = "fe9bb05f66a4bd5cf6933811a50ad85b7cdd8746948b2864d09fe0f8d3f01b2e"
+content-hash = "7aab7cf66349b3630a1eda60adbcf3e4fc14e6006dc3da44aca2dff93329b63a"
+lock-version = "1.0"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1755,8 +1757,8 @@ soupsieve = [
     {file = "soupsieve-1.9.6.tar.gz", hash = "sha256:7985bacc98c34923a439967c1a602dc4f1e15f923b6fcf02344184f86cc7efaa"},
 ]
 sphinx = [
-    {file = "Sphinx-3.1.2-py3-none-any.whl", hash = "sha256:97dbf2e31fc5684bb805104b8ad34434ed70e6c588f6896991b2fdfd2bef8c00"},
-    {file = "Sphinx-3.1.2.tar.gz", hash = "sha256:b9daeb9b39aa1ffefc2809b43604109825300300b987a24f45976c001ba1a8fd"},
+    {file = "Sphinx-3.2.1-py3-none-any.whl", hash = "sha256:ce6fd7ff5b215af39e2fcd44d4a321f6694b4530b6f2b2109b64d120773faea0"},
+    {file = "Sphinx-3.2.1.tar.gz", hash = "sha256:321d6d9b16fa381a5306e5a0b76cd48ffbc588e6340059a729c6fdd66087e0e8"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.2.tar.gz", hash = "sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58"},

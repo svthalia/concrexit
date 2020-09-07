@@ -16,4 +16,3 @@ events.api.serializers.base.calendarjs module
    :members:
    :undoc-members:
    :show-inheritance:
-

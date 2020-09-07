@@ -80,4 +80,3 @@ photos.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

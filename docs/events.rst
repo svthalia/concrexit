@@ -121,4 +121,3 @@ events.widgets module
    :members:
    :undoc-members:
    :show-inheritance:
-

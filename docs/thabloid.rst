@@ -56,4 +56,3 @@ thabloid.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

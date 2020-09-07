@@ -40,4 +40,3 @@ events.models.registration\_information\_field module
    :members:
    :undoc-members:
    :show-inheritance:
-
