@@ -3,8 +3,8 @@
     "model": "activemembers.membergroup",
     "pk": 1,
     "fields": {
-        "name_en": "testcie1",
-        "description_en": "Test",
+        "name": "testcie1",
+        "description": "Test",
         "photo": "Thom_Wiggers.jpg",
         "active": "True",
         "permissions": [
@@ -18,9 +18,9 @@
     "model": "activemembers.membergroup",
     "pk": 2,
     "fields": {
-        "name_en": "testcie2",
+        "name": "testcie2",
         "active": "True",
-        "description_en": "testdesc2",
+        "description": "testdesc2",
         "photo": "Thom_Wiggers_4YRoxV3.jpg",
         "permissions": []
     }
@@ -29,9 +29,9 @@
     "model": "activemembers.membergroup",
     "pk": 3,
     "fields": {
-        "name_en": "testboard1",
+        "name": "testboard1",
         "active": "True",
-        "description_en": "testdesc1",
+        "description": "testdesc1",
         "since": "1990-09-01",
         "until": "1991-09-01"
     }
@@ -40,9 +40,9 @@
     "model": "activemembers.membergroup",
     "pk": 4,
     "fields": {
-        "name_en": "testsoc1",
+        "name": "testsoc1",
         "active": "True",
-        "description_en": "testdesc1",
+        "description": "testdesc1",
         "since": "1990-09-01",
         "until": "1991-09-01"
     }
