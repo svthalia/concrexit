@@ -17,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from tinymce import HTMLField
 
 from utils.snippets import overlaps
-from utils.translation import ModelTranslateMeta, MultilingualField, localize_attr_name
+from utils.translation import localize_attr_name
 
 logger = logging.getLogger(__name__)
 
@@ -34,17 +34,15 @@ class ActiveMemberGroupManager(models.Manager):
         )
 
 
-class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
+class MemberGroup(models.Model):
     """Describes a groups of members"""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
 
-    name = MultilingualField(
-        models.CharField, max_length=40, verbose_name=_("Name"), unique=True,
-    )
+    name = models.CharField(max_length=40, verbose_name=_("Name"), unique=True)
 
-    description = MultilingualField(HTMLField, verbose_name=_("Description"),)
+    description = HTMLField(verbose_name=_("Description"))
 
     photo = models.ImageField(
         verbose_name=_("Image"),
@@ -199,7 +197,7 @@ class ActiveMembershipManager(models.Manager):
         return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
-class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
+class MemberGroupMembership(models.Model):
     """Describes a group membership"""
 
     objects = models.Manager()
@@ -232,8 +230,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
         default=False,
     )
 
-    role = MultilingualField(
-        models.CharField,
+    role = models.CharField(
         _("role"),
         help_text=_("The role of this member"),
         max_length=255,
