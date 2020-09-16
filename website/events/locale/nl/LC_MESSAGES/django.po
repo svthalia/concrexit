@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-09 16:58+0200\n"
-"PO-Revision-Date: 2020-09-09 17:00+0200\n"
+"POT-Creation-Date: 2020-09-10 20:39+0200\n"
+"PO-Revision-Date: 2020-09-10 20:39+0200\n"
 "Last-Translator: Sébastiaan Versteeg <se_bastiaan@outlook.com>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -739,7 +739,7 @@ msgid "payment status"
 msgstr "betalingsstatus"
 
 #: templates/events/event.html
-msgid "You pay with Thalia Pay"
+msgid "You are paying with Thalia Pay"
 msgstr "Je betaalt met Thalia Pay"
 
 #: templates/events/event.html
@@ -749,10 +749,6 @@ msgstr "Je hebt betaald"
 #: templates/events/event.html
 msgid "You have not paid yet"
 msgstr "Je hebt nog niet betaald"
-
-#: templates/events/event.html
-msgid "Pay with Thalia Pay"
-msgstr "Betaal met Thalia Pay"
 
 #: templates/events/event.html
 msgid "Update registration"
@@ -935,10 +931,6 @@ msgstr "Opslaan"
 #: views.py
 msgid "Registration successful."
 msgstr "Je aanmelding was succesvol."
-
-#: views.py
-msgid "You have paid with Thalia Pay."
-msgstr "Je hebt betaald met Thalia Pay."
 
 #: views.py
 msgid "Registration successfully cancelled."

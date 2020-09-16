@@ -1,3 +1,7 @@
+from unittest import mock
+from unittest.mock import MagicMock, Mock, ANY
+
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
@@ -6,7 +10,9 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member
+from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment
+from payments.tests.test_services import MockPayable
 
 
 @freeze_time("2019-01-01")
@@ -421,3 +427,162 @@ class PaymentListViewTest(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertContains(response, "Testing Payment 1")
+
+
+@freeze_time("2020-09-01")
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+class PaymentProcessViewTest(TestCase):
+    """
+    Test for the PaymentProcessView
+    """
+
+    fixtures = ["members.json"]
+
+    test_body = {
+        "app_label": "mock_app",
+        "model_name": "mock_model",
+        "payable": "mock_payable_pk",
+        "next": "/mock_next",
+    }
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = Member.objects.filter(last_name="Wiggers").first()
+        cls.account1 = BankAccount.objects.create(
+            owner=cls.user,
+            initials="J1",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
+            valid_from="2019-03-01",
+            signature="sig",
+            mandate_no="11-2",
+        )
+
+    def setUp(self):
+        self.account1.refresh_from_db()
+        self.client = Client()
+        self.client.force_login(self.user)
+
+        self.payable = MockPayable(payer=self.user)
+
+        self.original_get_model = apps.get_model
+        mock_get_model = mock_get_model = MagicMock()
+
+        def side_effect(*args, **kwargs):
+            if "app_label" in kwargs and kwargs["app_label"] == "mock_app":
+                return mock_get_model
+            else:
+                return self.original_get_model(*args, **kwargs)
+
+        apps.get_model = Mock(side_effect=side_effect)
+        mock_get_model.objects.get.return_value = self.payable
+
+    def tearDown(self):
+        apps.get_model = self.original_get_model
+
+    def test_not_logged_in(self):
+        """
+        If there is no logged-in user they should redirect
+        to the authentication page
+        """
+        self.client.logout()
+
+        response = self.client.post(reverse("payments:payment-process"), follow=True,)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            [("/user/login/?next=" + reverse("payments:payment-process"), 302,)],
+            response.redirect_chain,
+        )
+
+    @override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=False)
+    def test_member_has_tpay_enabled(self):
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=True, data=self.test_body
+        )
+        self.assertEqual(403, response.status_code)
+
+    def test_missing_parameters(self):
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=True, data={}
+        )
+        self.assertEqual(400, response.status_code)
+
+    def test_disallowed_redirect(self):
+        response = self.client.post(
+            reverse("payments:payment-process"),
+            follow=True,
+            data={**self.test_body, "next": "https://ru.nl/"},
+        )
+        self.assertEqual(400, response.status_code)
+
+    @mock.patch("django.contrib.messages.error")
+    def test_different_member(self, messages_error):
+        self.payable.payer = Member()
+
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=self.test_body
+        )
+
+        messages_error.assert_called_with(
+            ANY, "You are not allowed to process this payment."
+        )
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual("/mock_next", response.url)
+
+    @mock.patch("django.contrib.messages.error")
+    def test_already_paid(self, messages_error):
+        self.payable.payment = Payment(amount=8)
+
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=self.test_body
+        )
+
+        messages_error.assert_called_with(ANY, "This object has already been paid for.")
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual("/mock_next", response.url)
+
+    def test_renders_confirmation(self):
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=self.test_body
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(self.payable, response.context_data["payable"])
+        self.assertContains(response, "Please confirm your payment.")
+        self.assertContains(response, 'name="_save"')
+
+    @mock.patch("django.contrib.messages.success")
+    @mock.patch("payments.services.create_payment")
+    def test_creates_payment(self, create_payment, messages_success):
+        response = self.client.post(
+            reverse("payments:payment-process"),
+            follow=False,
+            data={**self.test_body, "_save": True},
+        )
+
+        create_payment.assert_called_with(self.payable, self.user, Payment.TPAY)
+
+        messages_success.assert_called_with(
+            ANY, "Your payment has been processed successfully."
+        )
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual("/mock_next", response.url)
+
+    @mock.patch("django.contrib.messages.error")
+    @mock.patch("payments.services.create_payment")
+    def test_payment_create_error(self, create_payment, messages_error):
+        create_payment.side_effect = PaymentError("Test error")
+
+        response = self.client.post(
+            reverse("payments:payment-process"),
+            follow=False,
+            data={**self.test_body, "_save": True},
+        )
+
+        messages_error.assert_called_with(ANY, "Test error")
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual("/mock_next", response.url)

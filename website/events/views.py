@@ -117,28 +117,6 @@ class EventRegisterView(View):
 
 
 @method_decorator(login_required, name="dispatch")
-class EventPayView(View):
-    """
-    Defines a view that allows the user to add a Thalia Pay payment to
-    their event registration using a POST request. The user should be
-    authenticated.
-    """
-
-    def get(self, request, *args, **kwargs):
-        return redirect("events:event", pk=kwargs["pk"])
-
-    def post(self, request, *args, **kwargs):
-        event = get_object_or_404(Event, pk=kwargs["pk"])
-        try:
-            services.pay_with_tpay(request.member, event)
-            messages.success(request, _("You have paid with Thalia Pay."))
-        except RegistrationError as e:
-            messages.error(request, e)
-
-        return redirect(event)
-
-
-@method_decorator(login_required, name="dispatch")
 class EventCancelView(View):
     """
     Defines a view that allows the user to cancel their event registration

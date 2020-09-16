@@ -7,37 +7,8 @@ from freezegun import freeze_time
 from members.models import Member
 from payments import services
 from payments.exceptions import PaymentError
-from payments.models import BankAccount, Payment, Payable
-
-
-class MockPayable(Payable):
-    save = MagicMock()
-
-    def __init__(
-        self, payer, amount=5, topic="mock topic", notes="mock notes", payment=None
-    ) -> None:
-        super().__init__()
-        self.payer = payer
-        self.amount = amount
-        self.topic = topic
-        self.notes = notes
-        self.payment = payment
-
-    @property
-    def payment_amount(self):
-        return self.amount
-
-    @property
-    def payment_topic(self):
-        return self.topic
-
-    @property
-    def payment_notes(self):
-        return self.notes
-
-    @property
-    def payment_payer(self):
-        return self.payer
+from payments.models import BankAccount, Payment
+from payments.tests.__mocks__ import MockPayable
 
 
 @freeze_time("2019-01-01")

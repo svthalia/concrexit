@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    payments.management
+   payments.templatetags
 
 Submodules
 ----------
