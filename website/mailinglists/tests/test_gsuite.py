@@ -46,7 +46,7 @@ class GSuiteSyncTestCase(TestCase):
         self.directory_api.reset_mock()
 
     def test_default_lists(self):
-        self.assertEqual(len(self.sync_service._get_default_lists()), 14)
+        self.assertEqual(len(self.sync_service._get_default_lists()), 13)
 
     def test_automatic_to_group(self):
         group = GSuiteSyncService._automatic_to_group(

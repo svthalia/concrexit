@@ -46,37 +46,37 @@ def send_newsletter(newsletter):
     local_partner = Partner.objects.filter(is_local_partner=True).first()
 
     with mail.get_connection() as connection:
-        for language in settings.LANGUAGES:
-            translation.activate(language[0])
+        language = ("en", "English")
+        translation.activate(language[0])
 
-            subject = "[THALIA] " + newsletter.title
+        subject = "[THALIA] " + newsletter.title
 
-            context = {
-                "newsletter": newsletter,
-                "agenda_events": events,
-                "main_partner": main_partner,
-                "local_partner": local_partner,
-                "lang_code": language[0],
-            }
+        context = {
+            "newsletter": newsletter,
+            "agenda_events": events,
+            "main_partner": main_partner,
+            "local_partner": local_partner,
+            "lang_code": language[0],
+        }
 
-            html_message = html_template.render(context)
-            text_message = text_template.render(context)
+        html_message = html_template.render(context)
+        text_message = text_template.render(context)
 
-            services.write_to_file(newsletter.pk, language[0], html_message)
+        services.write_to_file(newsletter.pk, language[0], html_message)
 
-            msg = EmailMultiAlternatives(
-                subject=subject,
-                body=text_message,
-                to=[f"newsletter-{language[0]}@{settings.GSUITE_DOMAIN}"],
-                from_email=from_email,
-                connection=connection,
-            )
-            msg.attach_alternative(html_message, "text/html")
+        msg = EmailMultiAlternatives(
+            subject=subject,
+            body=text_message,
+            to=[f"newsletter@{settings.GSUITE_DOMAIN}"],
+            from_email=from_email,
+            connection=connection,
+        )
+        msg.attach_alternative(html_message, "text/html")
 
-            try:
-                msg.send()
-                logger.info(f"Sent {language[1]} newsletter")
-            except SMTPException as e:
-                logger.error(f"Failed to send the {language[1]} " f"newsletter: {e}")
+        try:
+            msg.send()
+            logger.info(f"Sent {language[1]} newsletter")
+        except SMTPException as e:
+            logger.error(f"Failed to send the {language[1]} " f"newsletter: {e}")
 
-            translation.deactivate()
+        translation.deactivate()

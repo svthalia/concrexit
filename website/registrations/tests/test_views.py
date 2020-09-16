@@ -52,7 +52,6 @@ class EntryAdminViewTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
@@ -337,7 +336,6 @@ class ConfirmEmailViewTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
@@ -684,7 +682,7 @@ class RenewalFormViewTest(TestCase):
             email="test@example.org",
             first_name="John",
             last_name="Doe",
-            profile=Profile(language="en"),
+            profile=Profile(),
         )
 
         renewal = Renewal(pk=0, member=member)
@@ -736,7 +734,6 @@ class ReferenceCreateViewTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.BENEFACTOR,
             status=Entry.STATUS_CONFIRM,

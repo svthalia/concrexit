@@ -217,7 +217,7 @@ class DataMinimisationTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(user=cls.m1, language="nl", student_number="s1234567")
+        Profile.objects.create(user=cls.m1, student_number="s1234567")
         cls.s1 = Membership.objects.create(
             user=cls.m1,
             type=Membership.MEMBER,
@@ -230,7 +230,7 @@ class DataMinimisationTest(TestCase):
             last_name="Example",
             email="test2@example.org",
         )
-        Profile.objects.create(user=cls.m2, language="nl", student_number="s7654321")
+        Profile.objects.create(user=cls.m2, student_number="s7654321")
         cls.s2 = Membership.objects.create(
             user=cls.m2,
             type=Membership.MEMBER,

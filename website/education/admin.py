@@ -65,7 +65,6 @@ class ExamAdmin(TranslatedModelAdmin, WithDownloadCsv):
         "name",
         "uploader__first_name",
         "uploader__last_name",
-        "course__name_nl",
         "course__name_en",
     )
     actions = ["accept", "reject", "reset_download_count", "download_csv"]
@@ -102,7 +101,6 @@ class SummaryAdmin(TranslatedModelAdmin, WithDownloadCsv):
         "name",
         "uploader__first_name",
         "uploader__last_name",
-        "course__name_nl",
         "course__name_en",
     )
     actions = ["accept", "reject", "reset_download_count", "download_csv"]

@@ -27,15 +27,12 @@ class RegistrationApiTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=Committee.objects.get(pk=1),
-            title_nl="testevene",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -106,7 +103,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -115,7 +111,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -124,7 +119,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 
@@ -153,7 +147,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -162,7 +155,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -171,7 +163,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 
@@ -190,7 +181,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test",
-            name_nl="test",
             required=True,
         )
 
@@ -210,7 +200,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -219,7 +208,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -228,7 +216,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 
@@ -268,7 +255,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -277,7 +263,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -286,7 +271,6 @@ class RegistrationApiTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 

@@ -34,30 +34,24 @@ class PizzaEventTestCase(TestCase):
 
         cls.committee = Committee.objects.get(pk=1)
         cls.event = Event.objects.create(
-            title_nl="testevent nl",
             title_en="testevent en",
             description_en="desc",
-            description_nl="besch",
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             organiser=cls.committee,
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=5.00,
         )
 
         cls.event2 = Event.objects.create(
-            title_nl="testevent2 nl",
             title_en="testevent2 en",
             description_en="desc2",
-            description_nl="besch2",
             start=(timezone.now() + datetime.timedelta(hours=4)),
             end=(timezone.now() + datetime.timedelta(hours=8)),
             organiser=cls.committee,
             location_en="test location2",
-            location_nl="test locatie2",
             map_location="test map location",
             price=0.00,
             fine=5.00,
@@ -71,10 +65,9 @@ class PizzaEventTestCase(TestCase):
 
     def test_title(self):
         """Check the title attribute"""
-        for lang in ["en", "nl"]:
-            with self.subTest(lang=lang):
-                translation.activate(lang)
-                self.assertEqual(self.pizzaEvent.title, self.event.title)
+        with self.subTest(lang="en"):
+            translation.activate("en")
+            self.assertEqual(self.pizzaEvent.title, self.event.title)
 
     def test_current(self):
         """Test the classmethod that fetches a currently active pizzaevent"""

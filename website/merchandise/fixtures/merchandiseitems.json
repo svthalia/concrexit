@@ -1,1 +1,22 @@
-[{"model": "merchandise.merchandiseitem", "pk": 1, "fields": {"price": "901.00", "image": "hoedje.png", "name_en": "Fancy hat", "name_nl": "Kek hoedje", "description_en": "Extremely fancy hat", "description_nl": "Extreem kek hoedje"}}, {"model": "merchandise.merchandiseitem", "pk": 2, "fields": {"price": "9.00", "image": "badjas.png", "name_en": "bathrobe", "name_nl": "badjas", "description_en": "Limited edition bathrobe", "description_nl": "limited edition badjas"}}]
+[
+  {
+    "model": "merchandise.merchandiseitem",
+    "pk": 1,
+    "fields": {
+      "price": "901.00",
+      "image": "hoedje.png",
+      "name_en": "Fancy hat",
+      "description_en": "Extremely fancy hat"
+    }
+  },
+  {
+    "model": "merchandise.merchandiseitem",
+    "pk": 2,
+    "fields": {
+      "price": "9.00",
+      "image": "badjas.png",
+      "name_en": "bathrobe",
+      "description_en": "Limited edition bathrobe"
+    }
+  }
+]

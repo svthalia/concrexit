@@ -97,9 +97,7 @@ class PizzaEvent(models.Model):
         if self.send_notification and not self.end_reminder:
             end_reminder = ScheduledMessage()
             end_reminder.title_en = "Order pizza"
-            end_reminder.title_nl = "Pizza bestellen"
             end_reminder.body_en = "You can order pizzas for 10 more minutes"
-            end_reminder.body_nl = "Je kan nog 10 minuten pizza's bestellen"
             end_reminder.category = Category.objects.get(key=Category.PIZZA)
             end_reminder.time = self.end - timezone.timedelta(minutes=10)
             end_reminder.save()

@@ -30,15 +30,12 @@ class AdminTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_nl="testevenement",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -137,22 +134,17 @@ class RegistrationTest(TestCase):
     def setUpTestData(cls):
         cls.mailinglist = MailingList.objects.create(name="testmail")
         cls.committee = Committee.objects.create(
-            name_nl="commissie",
-            name_en="committee",
-            contact_mailinglist=cls.mailinglist,
+            name_en="committee", contact_mailinglist=cls.mailinglist,
         )
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_nl="testevene",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -219,7 +211,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -228,7 +219,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -237,7 +227,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 
@@ -265,7 +254,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -274,7 +262,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -283,7 +270,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 
@@ -303,7 +289,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test",
-            name_nl="test",
             required=True,
         )
 
@@ -324,7 +309,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -333,7 +317,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -342,7 +325,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 
@@ -379,7 +361,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -388,7 +369,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -397,7 +377,6 @@ class RegistrationTest(TestCase):
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 

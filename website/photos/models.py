@@ -123,12 +123,8 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
                 new_album_notification = self.new_album_notification
 
             new_album_notification.title_en = "New album uploaded"
-            new_album_notification.title_nl = "Nieuw album geüpload"
             new_album_notification.body_en = "A new photo album '{}' has just been uploaded".format(
                 self.title_en
-            )
-            new_album_notification.body_nl = "Een nieuw fotoalbum '{}' is zojuist geüpload".format(
-                self.title_nl
             )
             new_album_notification.category = Category.objects.get(key=Category.PHOTO)
             new_album_notification.url = (

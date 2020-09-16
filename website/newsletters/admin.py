@@ -15,10 +15,8 @@ class NewsletterItemInline(admin.StackedInline):
     fields = (
         "order",
         "title_en",
-        "title_nl",
         "url",
         "description_en",
-        "description_nl",
     )
 
 

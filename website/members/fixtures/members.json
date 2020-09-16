@@ -92,7 +92,6 @@
         "profile_description": "",
         "nickname": "",
         "display_name_preference": "full",
-        "language": "nl",
         "receive_optin": true,
         "auto_renew": false
     }
@@ -118,7 +117,6 @@
         "profile_description": "",
         "nickname": "",
         "display_name_preference": "full",
-        "language": "nl",
         "receive_optin": true,
         "auto_renew": false
     }
@@ -144,7 +142,6 @@
         "profile_description": "",
         "nickname": "",
         "display_name_preference": "full",
-        "language": "nl",
         "receive_optin": true,
         "auto_renew": false
     }
@@ -170,7 +167,6 @@
         "profile_description": "",
         "nickname": "",
         "display_name_preference": "full",
-        "language": "nl",
         "receive_optin": true,
         "auto_renew": false
     }

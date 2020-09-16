@@ -21,21 +21,16 @@ class EventTest(TestCase):
         cls.mailinglist = MailingList.objects.create(name="testmail")
 
         cls.committee = Committee.objects.create(
-            name_nl="commissie",
-            name_en="committee",
-            contact_mailinglist=cls.mailinglist,
+            name_en="committee", contact_mailinglist=cls.mailinglist,
         )
 
         cls.event = Event.objects.create(
-            title_nl="testevene",
             title_en="testevent",
             organiser=cls.committee,
             description_en="desc",
-            description_nl="besch",
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=5.00,
@@ -88,12 +83,10 @@ class EventTest(TestCase):
         self.event.registration_end = timezone.now() + datetime.timedelta(hours=1)
         self.event.cancel_deadline = timezone.now()
         self.event.no_registration_message_en = "Not registered"
-        self.event.no_registration_message_nl = "Niet geregistreerd"
         with self.assertRaises(ValidationError):
             self.event.clean()
 
         self.event.no_registration_message_en = ""
-        self.event.no_registration_message_nl = ""
         self.event.clean()
 
     def test_registration_end_after_registration_start(self):
@@ -240,15 +233,12 @@ class RegistrationTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.event = Event.objects.create(
-            title_nl="testevene",
             title_en="testevent",
             organiser=Committee.objects.get(pk=1),
             description_en="desc",
-            description_nl="besch",
             start=timezone.now(),
             end=(timezone.now() + datetime.timedelta(hours=1)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
