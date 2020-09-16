@@ -12,7 +12,7 @@ class PaymentButtonTemplatetagTest(TestCase):
     """Tests the payment button templatetag"""
 
     def test_inserts_data(self):
-        payable = MockPayable(None)
+        payable = MockPayable("test")
         payable.pk = 1
 
         with self.subTest("With payable and primary key"):
@@ -26,6 +26,7 @@ class PaymentButtonTemplatetagTest(TestCase):
                 self.assertEqual(
                     return_value,
                     {
+                        "member": "test",
                         "pk": 1,
                         "model_name": "model_name",
                         "app_label": "app_label",

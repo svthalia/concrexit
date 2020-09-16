@@ -15,6 +15,7 @@ def payment_button(payable: Payable, redirect_to: str):
     content_type = ContentType.objects.get_for_model(payable)
 
     return {
+        "member": payable.payment_payer,
         "pk": payable.pk,
         "app_label": content_type.app_label,
         "model_name": content_type.model,

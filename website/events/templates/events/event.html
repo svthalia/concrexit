@@ -138,9 +138,7 @@
                                                 {% endif %}
                                             {% else %}
                                                 {% trans "You have not paid yet" %}
-                                                {% if registration.member.tpay_enabled %}
-                                                    {% payment_button registration request.path %}
-                                                {% endif %}
+                                                {% payment_button registration request.path %}
                                             {% endif %}
                                         </td>
                                     </tr>
