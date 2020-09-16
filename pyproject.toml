@@ -39,7 +39,7 @@ docs = ["recommonmark", "sphinx"]
 django-template-check = {git = "https://github.com/joostrijneveld/django-template-check.git", rev = "2d69e43eebd63459d9817f5c9358ed1a9bdb1951"}
 factory_boy = "3.0.1"
 pydenticon = "0.3.1"
-Faker = "4.1.2"
+Faker = "4.1.3"
 coverage = {extras = ["toml"], version = "^5.0.3"}
 black = "19.10b0"
 
