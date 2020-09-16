@@ -31,13 +31,3 @@ class ViewTests(test.TestCase):
         self.assertContains(response, "901.00")
         self.assertContains(response, "bathrobe")
         self.assertContains(response, "9.00")
-
-    def test_index_nl(self):
-        """Tests the english index page lists the merchandise items"""
-        response = self.client.get(
-            "/association/merchandise/", HTTP_ACCEPT_LANGUAGE="nl"
-        )
-        self.assertContains(response, "Kek hoedje")
-        self.assertContains(response, "901,00")
-        self.assertContains(response, "badjas")
-        self.assertContains(response, "9,00")

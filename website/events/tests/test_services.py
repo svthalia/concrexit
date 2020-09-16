@@ -25,15 +25,12 @@ class ServicesTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_nl="testevenement",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + timedelta(hours=1)),
             end=(timezone.now() + timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -133,7 +130,6 @@ class ServicesTest(TestCase):
         RegistrationInformationField.objects.create(
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
-            name_nl="test",
             name_en="test",
             required=False,
         )
@@ -448,7 +444,6 @@ class ServicesTest(TestCase):
         RegistrationInformationField.objects.create(
             id=1,
             name_en="1",
-            name_nl="1",
             type=RegistrationInformationField.INTEGER_FIELD,
             event=self.event,
             required=False,
@@ -457,7 +452,6 @@ class ServicesTest(TestCase):
         RegistrationInformationField.objects.create(
             id=2,
             name_en="2",
-            name_nl="2",
             type=RegistrationInformationField.BOOLEAN_FIELD,
             event=self.event,
             required=True,
@@ -465,7 +459,6 @@ class ServicesTest(TestCase):
 
         RegistrationInformationField.objects.create(
             id=3,
-            name_nl="3",
             name_en="3",
             type=RegistrationInformationField.TEXT_FIELD,
             event=self.event,

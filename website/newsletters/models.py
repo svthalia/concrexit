@@ -57,15 +57,6 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
 
         errors = {}
         url = "admin/newsletters/"
-        if url in self.description_nl:
-            errors.update(
-                {
-                    "description_nl": _(
-                        "Please make sure all urls are absolute "
-                        "and contain http(s)://."
-                    )
-                }
-            )
         if url in self.description_en:
             errors.update(
                 {
@@ -126,15 +117,6 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
 
         errors = {}
         url = "admin/newsletters/"
-        if url in self.description_nl:
-            errors.update(
-                {
-                    "description_nl": _(
-                        "Please make sure all urls are absolute "
-                        "and start with http(s)://."
-                    )
-                }
-            )
         if url in self.description_en:
             errors.update(
                 {

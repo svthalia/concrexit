@@ -18,25 +18,6 @@ jobs:
       - name: Run black
         run: poetry run black --quiet --check website
 
-      - name: Check translations
-        shell: bash
-        run: |
-          # Run makemessages for all app
-          cd website
-          for dir in $(find * -maxdepth 0 -type d); do (cd $dir && poetry run ../manage.py makemessages --all); done
-          cd ..
-
-          # Check for obsolete translations in .po files (starting with `#~`).
-          grep --include="*.po" --files-with-matches --recursive "^#~" website && exit 1 || echo "No obsolete translations found."
-
-          # Check for untranslated strings in .po files
-          empty_strings=$(sed '$a\\' website/**/locale/nl/LC_MESSAGES/django.po | tac | sed '/^$/N;/\nmsgstr ""$/,/^msgid/!d' | tac)
-          empty_strings+=$(sed '$a\\' website/locale/nl/LC_MESSAGES/django.po | tac | sed '/^$/N;/\nmsgstr ""$/,/^msgid/!d' | tac)
-          if [[ $empty_strings ]]; then echo $empty_strings && exit 1; else echo "No untranslated strings found."; fi
-
-          # Check for fuzzy translations in .po files
-          grep --include="*.po" --files-with-matches --recursive "#, fuzzy" website && exit 1 || echo "No fuzzy translations found."
-
   tests:
     name: Django Tests
     runs-on: ubuntu-18.04

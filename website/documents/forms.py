@@ -21,12 +21,9 @@ class DocumentFileInput(widgets.ClearableFileInput):
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         if hasattr(value, "url"):
-            doc = models.Document.objects.get(Q(file_en=value) | Q(file_nl=value))
+            doc = models.Document.objects.get(file_en=value)
             context["document_id"] = doc.pk
-            if doc.file_en == value:
-                context["language"] = "en"
-            else:
-                context["language"] = "nl"
+            context["language"] = "en"
         return context
 
 
@@ -36,12 +33,10 @@ class MinutesForm(forms.ModelForm):
     class Meta:
         model = models.Minutes
         fields = (
-            "file_nl",
             "file_en",
             "members_only",
         )
         widgets = {
-            "file_nl": DocumentFileInput,
             "file_en": DocumentFileInput,
         }
 
@@ -54,7 +49,6 @@ class AnnualDocumentForm(forms.ModelForm):
         exclude = ()
         widgets = {
             "year": forms.Select,
-            "file_nl": DocumentFileInput,
             "file_en": DocumentFileInput,
         }
 
@@ -82,13 +76,10 @@ class AssociationDocumentForm(forms.ModelForm):
         model = models.AssociationDocument
         fields = (
             "name_en",
-            "name_nl",
             "file_en",
-            "file_nl",
             "members_only",
         )
         widgets = {
-            "file_nl": DocumentFileInput,
             "file_en": DocumentFileInput,
         }
 
@@ -100,14 +91,11 @@ class EventDocumentForm(forms.ModelForm):
         model = models.EventDocument
         fields = (
             "name_en",
-            "name_nl",
             "file_en",
-            "file_nl",
             "members_only",
             "owner",
         )
         widgets = {
-            "file_nl": DocumentFileInput,
             "file_en": DocumentFileInput,
         }
 
@@ -119,13 +107,10 @@ class MiscellaneousDocumentForm(forms.ModelForm):
         model = models.MiscellaneousDocument
         fields = (
             "name_en",
-            "name_nl",
             "file_en",
-            "file_nl",
             "members_only",
         )
         widgets = {
-            "file_nl": DocumentFileInput,
             "file_en": DocumentFileInput,
         }
 

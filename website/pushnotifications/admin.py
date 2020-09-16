@@ -78,9 +78,7 @@ class MessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_nl",
                 "title_en",
-                "body_nl",
                 "body_en",
                 "url",
                 "category",
@@ -90,9 +88,7 @@ class MessageAdmin(TranslatedModelAdmin):
             )
         return (
             "users",
-            "title_nl",
             "title_en",
-            "body_nl",
             "body_en",
             "url",
             "category",
@@ -102,9 +98,7 @@ class MessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_nl",
                 "title_en",
-                "body_nl",
                 "body_en",
                 "url",
                 "category",
@@ -132,9 +126,7 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_nl",
                 "title_en",
-                "body_nl",
                 "body_en",
                 "url",
                 "category",
@@ -146,9 +138,7 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
             )
         return (
             "users",
-            "title_nl",
             "title_en",
-            "body_nl",
             "body_en",
             "url",
             "category",
@@ -159,9 +149,7 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_nl",
                 "title_en",
-                "body_nl",
                 "body_en",
                 "url",
                 "category",

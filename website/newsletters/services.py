@@ -70,9 +70,7 @@ def send_newsletter(newsletter):
     newsletter.sent = True
     newsletter.save()
     message = Message.objects.create(
-        title_nl=newsletter.title_nl,
         title_en=newsletter.title_en,
-        body_nl="Tik om te bekijken",
         body_en="Tap to view",
         url=settings.BASE_URL + newsletter.get_absolute_url(),
         category=Category.objects.get(key=Category.NEWSLETTER),

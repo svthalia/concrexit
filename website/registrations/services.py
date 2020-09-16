@@ -306,7 +306,6 @@ def _create_member_from_registration(registration: Registration) -> Member:
         address_country=registration.address_country,
         phone_number=registration.phone_number,
         birthday=registration.birthday,
-        language=registration.language,
         show_birthday=registration.optin_birthday,
         receive_optin=registration.optin_mailinglist,
     )

@@ -1,5 +1,6 @@
 """Forms defined by the members package"""
 from django import forms
+from django.conf import settings
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.contrib.auth.models import User
@@ -30,7 +31,6 @@ class ProfileForm(forms.ModelForm):
             "initials",
             "display_name_preference",
             "photo",
-            "language",
             "receive_optin",
             "receive_newsletter",
             "receive_magazine",
@@ -86,10 +86,7 @@ class UserCreationForm(BaseUserCreationForm):
         if commit:
             user.save()
         if self.cleaned_data["send_welcome_email"]:
-            # Ugly way to get the language since member isn't available
-            language = str(self.data.get("profile-0-language", "en"))
-            if language not in ("nl", "en"):
-                language = "en"
+            language = settings.LANGUAGE_CODE
             emails.send_welcome_message(user, password, language)
         return user
 

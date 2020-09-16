@@ -48,7 +48,6 @@ class ProfileInline(admin.StackedInline):
         "photo",
         "emergency_contact",
         "emergency_contact_phone_number",
-        "language",
         "event_permissions",
     ]
     classes = ["collapse"]

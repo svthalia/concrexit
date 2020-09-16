@@ -209,13 +209,12 @@ class Profile(models.Model):
 
     # --- Communication preference ----
 
-    language = models.CharField(
-        verbose_name=_("Preferred language"),
-        help_text=_("Preferred language for e.g. newsletters"),
-        max_length=5,
-        choices=settings.LANGUAGES,
-        default="nl",
-    )
+    @property
+    def language(self):
+        """
+            @todo: Remove usage of this property
+        """
+        return "en"
 
     receive_optin = models.BooleanField(
         verbose_name=_("Receive opt-in mailings"),

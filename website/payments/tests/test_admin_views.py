@@ -23,9 +23,7 @@ class PaymentAdminViewTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(
-            user=cls.user, language="nl",
-        )
+        Profile.objects.create(user=cls.user,)
 
     def setUp(self):
         self.client = Client()

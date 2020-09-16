@@ -14,9 +14,7 @@ class EmailsTest(TestCase):
         cls.member_no_mail = Member.objects.create(
             username="no_mail_test", first_name="Nomail", last_name="Example"
         )
-        Profile.objects.create(
-            user=cls.member_no_mail, language="en",
-        )
+        Profile.objects.create(user=cls.member_no_mail,)
         Membership.objects.create(
             user=cls.member_no_mail,
             type=Membership.MEMBER,
@@ -29,9 +27,7 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(
-            user=cls.year_member_nl, language="nl",
-        )
+        Profile.objects.create(user=cls.year_member_nl)
         Membership.objects.create(
             user=cls.year_member_nl,
             type=Membership.MEMBER,
@@ -44,9 +40,7 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test2@example.org",
         )
-        Profile.objects.create(
-            user=cls.year_member_en, language="en",
-        )
+        Profile.objects.create(user=cls.year_member_en)
         Membership.objects.create(
             user=cls.year_member_en,
             type=Membership.MEMBER,
@@ -59,9 +53,7 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test3@example.org",
         )
-        Profile.objects.create(
-            user=cls.year_member_no_expiry, language="nl",
-        )
+        Profile.objects.create(user=cls.year_member_no_expiry,)
         Membership.objects.create(
             user=cls.year_member_no_expiry,
             type=Membership.MEMBER,
@@ -74,9 +66,7 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test4@example.org",
         )
-        Profile.objects.create(
-            user=cls.study_member, language="nl",
-        )
+        Profile.objects.create(user=cls.study_member,)
         Membership.objects.create(
             user=cls.study_member,
             type=Membership.MEMBER,
@@ -89,9 +79,7 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test5@example.org",
         )
-        Profile.objects.create(
-            user=cls.study_member_2, language="nl",
-        )
+        Profile.objects.create(user=cls.study_member_2,)
         Membership.objects.create(
             user=cls.study_member_2,
             type=Membership.MEMBER,
@@ -116,18 +104,14 @@ class EmailsTest(TestCase):
             since=timezone.now().replace(year=2017, month=9, day=1),
             until=timezone.now().replace(year=2018, month=9, day=1),
         )
-        Profile.objects.create(
-            user=cls.benefactor, language="nl",
-        )
+        Profile.objects.create(user=cls.benefactor,)
         cls.honorary_member = Member.objects.create(
             username="test7",
             first_name="Test7",
             last_name="Example",
             email="test7@example.org",
         )
-        Profile.objects.create(
-            user=cls.honorary_member, language="nl",
-        )
+        Profile.objects.create(user=cls.honorary_member,)
         Membership.objects.create(
             user=cls.honorary_member,
             type=Membership.HONORARY,
@@ -146,9 +130,7 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test8@example.org",
         )
-        Profile.objects.create(
-            user=cls.old_member, language="nl",
-        )
+        Profile.objects.create(user=cls.old_member,)
         Membership.objects.create(
             user=cls.old_member,
             type=Membership.MEMBER,
@@ -161,9 +143,7 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test9@example.org",
         )
-        Profile.objects.create(
-            user=cls.future_member, language="nl",
-        )
+        Profile.objects.create(user=cls.future_member,)
         Membership.objects.create(
             user=cls.future_member,
             type=Membership.MEMBER,
@@ -186,7 +166,7 @@ class EmailsTest(TestCase):
         self.assertEqual(len(mail.outbox), 8)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
         self.assertEqual(
-            mail.outbox[0].subject, "[THALIA] Controle gegevens lidmaatschap"
+            mail.outbox[0].subject, "[THALIA] Membership information check"
         )
         self.assertEqual(mail.outbox[1].to, ["test2@example.org"])
         self.assertEqual(
@@ -205,7 +185,9 @@ class EmailsTest(TestCase):
 
         self.assertEqual(len(mail.outbox), 3)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
-        self.assertEqual(mail.outbox[0].subject, "[THALIA] Verlopen lidmaatschap")
+        self.assertEqual(
+            mail.outbox[0].subject, "[THALIA] Membership expiration announcement"
+        )
         self.assertEqual(mail.outbox[1].to, ["test2@example.org"])
         self.assertEqual(
             mail.outbox[1].subject, "[THALIA] Membership expiration announcement"
@@ -214,11 +196,8 @@ class EmailsTest(TestCase):
 
     @freeze_time("2018-08-15")
     def test_send_welcome_message(self):
-        emails.send_welcome_message(self.year_member_nl, "password1", "nl")
         emails.send_welcome_message(self.year_member_nl, "password1", "en")
 
-        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
-        self.assertEqual(mail.outbox[0].subject, "Welkom bij Studievereniging Thalia")
-        self.assertEqual(mail.outbox[1].to, ["test1@example.org"])
-        self.assertEqual(mail.outbox[1].subject, "Welcome to Study Association Thalia")
+        self.assertEqual(mail.outbox[0].subject, "Welcome to Study Association Thalia")

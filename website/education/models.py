@@ -101,7 +101,10 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
     )
 
     language = models.CharField(
-        max_length=2, choices=settings.LANGUAGES, blank=False, null=True
+        max_length=2,
+        choices=[("en", "English"), ("nl", "Dutch")],
+        blank=False,
+        null=True,
     )
 
     download_count = models.IntegerField(
@@ -158,7 +161,10 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
     )
 
     language = models.CharField(
-        max_length=2, choices=settings.LANGUAGES, blank=False, null=True
+        max_length=2,
+        choices=[("en", "English"), ("nl", "Dutch")],
+        blank=False,
+        null=True,
     )
 
     download_count = models.IntegerField(

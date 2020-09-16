@@ -80,13 +80,10 @@ class AnnualDocument(Document):
         self.category = "annual"
         if self.subcategory == "report":
             self.name_en = "Annual report %d" % self.year
-            self.name_nl = "Jaarverslag %d" % self.year
         elif self.subcategory == "financial":
             self.name_en = "Financial report %d" % self.year
-            self.name_nl = "Financieel jaarverslag %d" % self.year
         else:
             self.name_en = "Policy document %d" % self.year
-            self.name_nl = "Beleidsdocument %d" % self.year
         super().save(*args, **kwargs)
 
 
@@ -188,5 +185,4 @@ class Minutes(Document):
     def save(self, *args, **kwargs):
         self.category = "minutes"
         self.name_en = "Minutes %s" % str(self.meeting.datetime.date())
-        self.name_nl = "Notulen %s" % str(self.meeting.datetime.date())
         super().save(*args, **kwargs)

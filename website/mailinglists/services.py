@@ -155,20 +155,17 @@ def get_automatic_lists():
         },
     ]
 
-    for language in settings.LANGUAGES:
-        lists.append(
-            {
-                "name": f"newsletter-{language[0]}",
-                "description": "Automatic moderated mailinglist that can be used "
-                f"to send newsletters in {language[1]}",
-                "addresses": _get_members_email_addresses(
-                    Member.current_members.all().filter(
-                        profile__receive_newsletter=True, profile__language=language[0]
-                    )
-                ),
-                "moderated": True,
-            }
-        )
+    lists.append(
+        {
+            "name": f"newsletter",
+            "description": "Automatic moderated mailinglist that can be used "
+            f"to send newsletters",
+            "addresses": _get_members_email_addresses(
+                Member.current_members.all().filter(profile__receive_newsletter=True)
+            ),
+            "moderated": True,
+        }
+    )
 
     all_previous_board_members = []
 

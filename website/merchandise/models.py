@@ -12,7 +12,6 @@ class MerchandiseItem(models.Model, metaclass=ModelTranslateMeta):
     """
 
     #: Name of the merchandise item.
-    #: Automatically provides ``_nl`` and ``_en`` variants
     name = MultilingualField(models.CharField, max_length=200)
 
     #: Price of the merchandise item
