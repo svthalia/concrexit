@@ -58,17 +58,6 @@ class BankAccountCreateViewTest(TestCase):
             response.redirect_chain,
         )
 
-    def test_not_a_current_member(self):
-        """
-        If the logged-in user is not a member they should not be able to visit
-        this page
-        """
-        self.client.logout()
-        self.client.force_login(self.new_user)
-
-        response = self.client.get(reverse("payments:bankaccount-add"))
-        self.assertEqual(403, response.status_code)
-
     def test_shows_correct_reference(self):
         """
         The page should show the reference that will be used to identify
