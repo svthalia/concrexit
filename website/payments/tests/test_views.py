@@ -390,11 +390,11 @@ class PaymentListViewTest(TestCase):
             mandate_no="11-2",
         )
         cls.payment1 = Payment.objects.create(
+            created_at=timezone.datetime(year=2019, month=3, day=1),
             paid_by=cls.login_user,
             notes="Testing Payment 1",
             amount=10,
             type=Payment.CARD,
-            processing_date=timezone.now().replace(year=2019, month=3, day=6),
         )
 
     def setUp(self):

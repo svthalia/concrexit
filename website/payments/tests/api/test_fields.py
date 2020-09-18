@@ -23,7 +23,7 @@ class PaymentTypeFieldTest(TestCase):
         obj = Payment()
         obj.payment = False
 
-        self.assertEqual(field.get_attribute(obj), Payment.NONE)
+        self.assertEqual(field.get_attribute(obj), PaymentTypeField.NO_PAYMENT)
 
         obj.payment = True
 

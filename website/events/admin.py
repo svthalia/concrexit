@@ -1,4 +1,6 @@
 """Registers admin interfaces for the events module"""
+from functools import partial
+
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Max, Min
@@ -338,7 +340,17 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
             return False
         return super().has_delete_permission(request, registration)
 
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
+    def get_form(self, request, obj=None, **kwargs):
+        return super().get_form(
+            request,
+            obj,
+            formfield_callback=partial(
+                self.formfield_for_dbfield, request=request, obj=obj
+            ),
+            **kwargs
+        )
+
+    def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
         """Customise the formfields of event and member"""
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name in ("event", "member"):
@@ -347,7 +359,9 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
             field.widget.can_change_related = False
             field.widget.can_delete_related = False
         elif db_field.name == "payment":
-            return Field(widget=PaymentWidget, initial=field.initial, required=False)
+            return Field(
+                widget=PaymentWidget(obj=obj), initial=field.initial, required=False,
+            )
         return field
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

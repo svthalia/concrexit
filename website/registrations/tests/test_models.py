@@ -1,3 +1,6 @@
+from unittest.mock import MagicMock
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
@@ -60,7 +63,7 @@ class EntryTest(TestCase):
 
     @freeze_time("2019-01-01")
     def test_save(self):
-        entry = Entry(registration=self.registration)
+        entry = Entry(length=Entry.MEMBERSHIP_YEAR, registration=self.registration)
 
         entry.status = Entry.STATUS_ACCEPTED
         test_value = timezone.now().replace(year=1996)
@@ -102,9 +105,11 @@ class EntryTest(TestCase):
 
         entry.membership_type = Membership.MEMBER
 
-        with self.subTest("Type `Member` should clear contribution"):
+        with self.subTest("Type `Member` should set contribution by length"):
             entry.save()
-            self.assertEqual(entry.contribution, None)
+            self.assertEqual(
+                entry.contribution, settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
+            )
 
     def test_clean(self):
         entry = Entry(registration=self.registration)
@@ -123,8 +128,30 @@ class EntryTest(TestCase):
             entry.contribution = 7.5
             entry.clean()
 
+    @freeze_time("2019-01-01")
+    def test_payable_attributes(self):
+        entry = Entry(
+            contribution=8,
+            length=Entry.MEMBERSHIP_YEAR,
+            registration=self.registration,
+        )
+
+        self.assertEqual(entry.payment_amount, 8)
+        self.assertEqual(
+            entry.payment_notes,
+            "Registration entry. Creation date: Jan. 1, 2019. Completion date: Jan. 1, 2019",
+        )
+
+        with self.subTest("Without membership"):
+            self.assertEqual(entry.payment_payer, None)
+
+        with self.subTest("With membership"):
+            entry.membership = Membership(user=self.member)
+            self.assertEqual(entry.payment_payer, self.member)
+
 
 @override_settings(SUSPEND_SIGNALS=True)
+@freeze_time("2019-01-01")
 class RegistrationTest(TestCase):
     """Tests registrations"""
 
@@ -186,6 +213,7 @@ class RegistrationTest(TestCase):
         user.delete()
         self.registration.clean()
         Registration.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
             first_name="John",
             last_name="Doe",
             birthday=timezone.now().replace(year=1990),
@@ -208,6 +236,7 @@ class RegistrationTest(TestCase):
         user.delete()
         self.registration.clean()
         Registration.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
             first_name="John",
             last_name="Doe",
             birthday=timezone.now().replace(year=1990),
@@ -260,8 +289,16 @@ class RegistrationTest(TestCase):
         self.registration.contribution = 7.5
         self.registration.clean()
 
+    def test_payable_attributes(self):
+        self.assertEqual(self.registration.payment_amount, 7.5)
+        self.assertEqual(
+            self.registration.payment_notes,
+            "Membership registration member (year). Creation date: Jan. 1, 2019. Completion date: Jan. 1, 2019",
+        )
+
 
 @override_settings(SUSPEND_SIGNALS=True)
+@freeze_time("2019-01-01")
 class RenewalTest(TestCase):
     fixtures = ["members.json"]
 
@@ -270,6 +307,7 @@ class RenewalTest(TestCase):
         self.renewal = Renewal(
             member=self.member,
             length=Entry.MEMBERSHIP_STUDY,
+            contribution=8,
             membership_type=Membership.MEMBER,
         )
 
@@ -380,6 +418,14 @@ class RenewalTest(TestCase):
                     "membership_type": "You currently have an active membership.",
                 },
             )
+
+    def test_payable_attributes(self):
+        self.assertEqual(self.renewal.payment_amount, 8)
+        self.assertEqual(
+            self.renewal.payment_notes,
+            "Membership renewal member (study). Creation date: Jan. 1, 2019. Completion date: Jan. 1, 2019",
+        )
+        self.assertEqual(self.renewal.payment_payer, self.renewal.member)
 
 
 @override_settings(SUSPEND_SIGNALS=True)

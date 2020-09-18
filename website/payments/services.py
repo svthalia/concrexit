@@ -2,6 +2,7 @@
 import datetime
 from typing import Union
 
+from django.conf import settings
 from django.db.models import QuerySet, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -41,7 +42,6 @@ def create_payment(
             notes=payable.payment_notes,
             topic=payable.payment_topic,
             paid_by=payable.payment_payer,
-            processing_date=timezone.now(),
             type=pay_type,
         )
     return payable.payment
@@ -54,43 +54,14 @@ def delete_payment(payable: Payable):
     :return:
     """
     payment = payable.payment
+    if payment.created_at < timezone.now() - timezone.timedelta(
+        seconds=settings.PAYMENT_CHANGE_WINDOW
+    ):
+        raise PermissionError(_("You are not authorized to delete this payment."))
+
     payable.payment = None
     payable.save()
     payment.delete()
-
-
-def process_payment(
-    queryset: QuerySet, processed_by: Member, pay_type: str = Payment.CARD
-) -> list:
-    """
-    Process the payment
-
-    :param queryset: Queryset of payments that should be processed
-    :type queryset: QuerySet[Payment]
-    :param processed_by: Member that processed this payment
-    :type processed_by: Member
-    :param pay_type: Type of the payment
-    :type pay_type: String
-    """
-
-    queryset = queryset.filter(type=Payment.NONE)
-    data = []
-
-    # This should trigger post_save signals, thus a queryset update
-    # is not appropriate, moreover save() automatically sets
-    # the processing date
-    for payment in queryset:
-        if pay_type != Payment.TPAY or (
-            pay_type == Payment.TPAY
-            and payment.paid_by
-            and payment.paid_by.tpay_enabled
-        ):
-            payment.type = pay_type
-            payment.processed_by = processed_by
-            payment.save()
-            data.append(payment)
-
-    return data
 
 
 def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:

@@ -16,6 +16,11 @@ class MockPayable(Payable):
         self.notes = notes
         self.payment = payment
 
+        # Because we have to do as if this is a model sometimes
+        self.verbose_name = "MockPayable"
+        self.verbose_name_plural = self.verbose_name + "s"
+        self.pk = 0
+
     @property
     def payment_amount(self):
         return self.amount

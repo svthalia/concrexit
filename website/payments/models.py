@@ -10,6 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
+from payments.exceptions import PaymentError
+
 
 class Payment(models.Model):
     """
@@ -20,14 +22,12 @@ class Payment(models.Model):
 
     created_at = models.DateTimeField(_("created at"), default=timezone.now)
 
-    NONE = "no_payment"
     CASH = "cash_payment"
     CARD = "card_payment"
     TPAY = "tpay_payment"
     WIRE = "wire_payment"
 
     PAYMENT_TYPE = (
-        (NONE, _("No payment")),
         (CASH, _("Cash payment")),
         (CARD, _("Card payment")),
         (TPAY, _("Thalia Pay payment")),
@@ -35,7 +35,11 @@ class Payment(models.Model):
     )
 
     type = models.CharField(
-        choices=PAYMENT_TYPE, verbose_name=_("type"), max_length=20, default=NONE
+        verbose_name=_("type"),
+        blank=False,
+        null=False,
+        max_length=20,
+        choices=PAYMENT_TYPE,
     )
 
     amount = models.DecimalField(
@@ -45,8 +49,6 @@ class Payment(models.Model):
         max_digits=5,
         decimal_places=2,
     )
-
-    processing_date = models.DateTimeField(_("processing date"), blank=True, null=True,)
 
     paid_by = models.ForeignKey(
         "members.Member",
@@ -68,19 +70,6 @@ class Payment(models.Model):
 
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
     topic = models.CharField(verbose_name=_("topic"), max_length=255, default="Unknown")
-
-    @property
-    def processed(self):
-        return self.type != self.NONE
-
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        if self.type != self.NONE and not self.processing_date:
-            self.processing_date = timezone.now()
-        elif self.type == self.NONE:
-            self.processing_date = None
-        super().save(force_insert, force_update, using, update_fields)
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)

@@ -64,7 +64,9 @@ class RegistrationAdminTest(TestCase):
         form_url = "form://url"
 
         registration = Registration.objects.create(
-            status=Entry.STATUS_REVIEW, birthday=timezone.now()
+            length=Entry.MEMBERSHIP_YEAR,
+            status=Entry.STATUS_REVIEW,
+            birthday=timezone.now(),
         )
         entry = registration.entry_ptr
         entry_get.return_value = entry
@@ -164,6 +166,7 @@ class RegistrationAdminTest(TestCase):
         super_method.reset_mock()
         renewal = Renewal.objects.create(
             status=Entry.STATUS_REVIEW,
+            length=Entry.MEMBERSHIP_YEAR,
             member=Member.objects.filter(last_name="Wiggers").first(),
         )
         entry = renewal.entry_ptr
@@ -233,12 +236,16 @@ class RegistrationAdminTest(TestCase):
         request = _get_mock_request([])
 
         fields = self.admin.get_readonly_fields(request)
-        self.assertEqual(fields, ["status", "created_at", "updated_at"])
+        self.assertEqual(
+            fields, ["status", "created_at", "updated_at", "payment", "contribution"]
+        )
 
         fields = self.admin.get_readonly_fields(
             request, Registration(status=Entry.STATUS_CONFIRM)
         )
-        self.assertEqual(fields, ["status", "created_at", "updated_at"])
+        self.assertEqual(
+            fields, ["status", "created_at", "updated_at", "payment", "contribution"]
+        )
 
         fields = self.admin.get_readonly_fields(
             request, Registration(status=Entry.STATUS_REJECTED)
@@ -363,34 +370,15 @@ class RegistrationAdminTest(TestCase):
 
     def test_reference_count(self):
         reg = Registration.objects.create(
-            first_name="John", last_name="Doe", birthday=timezone.now(),
+            length=Entry.MEMBERSHIP_YEAR,
+            first_name="John",
+            last_name="Doe",
+            birthday=timezone.now(),
         )
         self.assertEqual(self.admin.reference_count(reg), 0)
         Reference.objects.create(entry=reg, member=Member.objects.get(pk=1))
         Reference.objects.create(entry=reg, member=Member.objects.get(pk=2))
         self.assertEqual(self.admin.reference_count(reg), 2)
-
-    def test_payment_status(self):
-        reg = Registration(username="johnnytest", payment=Payment(pk="123",))
-
-        self.assertEqual(
-            self.admin.payment_status(reg),
-            '<a href="{}">{}</a>'.format(
-                "/admin/payments/payment/123/change/", _("Unprocessed")
-            ),
-        )
-
-        reg.payment.type = Payment.CARD
-
-        self.assertEqual(
-            self.admin.payment_status(reg),
-            '<a href="{}">{}</a>'.format(
-                "/admin/payments/payment/123/change/", _("Processed")
-            ),
-        )
-
-        reg.payment = None
-        self.assertEqual(self.admin.payment_status(reg), "-")
 
     def test_formfield_for_dbfield(self):
         with self.subTest("Payment field"):
@@ -406,7 +394,11 @@ class RegistrationAdminTest(TestCase):
             self.assertIsNotNone(field.widget)
 
     def test_save_model(self):
-        reg = Registration(status=Registration.STATUS_REVIEW, birthday=timezone.now())
+        reg = Registration(
+            length=Entry.MEMBERSHIP_YEAR,
+            status=Registration.STATUS_REVIEW,
+            birthday=timezone.now(),
+        )
 
         with self.subTest("Status review saves"):
             reg.first_name = "Test1"
@@ -486,12 +478,14 @@ class RenewalAdminTest(TestCase):
         request = _get_mock_request([])
 
         fields = self.admin.get_readonly_fields(request)
-        self.assertEqual(fields, ["status", "created_at", "updated_at"])
+        self.assertEqual(fields, ["status", "created_at", "updated_at", "payment"])
 
         fields = self.admin.get_readonly_fields(
             request, Renewal(status=Entry.STATUS_CONFIRM)
         )
-        self.assertEqual(fields, ["status", "created_at", "updated_at", "member"])
+        self.assertEqual(
+            fields, ["status", "created_at", "updated_at", "payment", "member"]
+        )
 
         fields = self.admin.get_readonly_fields(
             request, Renewal(status=Entry.STATUS_REJECTED)

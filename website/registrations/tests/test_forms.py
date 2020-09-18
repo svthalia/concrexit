@@ -64,6 +64,7 @@ class BenefactorRegistrationFormTest(TestCase):
             "membership_type": Membership.BENEFACTOR,
             "privacy_policy": 1,
             "icis_employee": 1,
+            "contribution": 8,
         }
 
     def test_privacy_policy_checked(self):
@@ -90,6 +91,7 @@ class RenewalFormTest(TestCase):
         self.data = {
             "member": self.member.pk,
             "length": Entry.MEMBERSHIP_STUDY,
+            "contribution": 8,
             "membership_type": Membership.MEMBER,
             "privacy_policy": 1,
         }
@@ -115,7 +117,9 @@ class ReferenceFormTest(TestCase):
     def setUp(self):
         self.member = Member.objects.filter(last_name="Wiggers").first()
         self.member.membership_set.all().delete()
-        self.entry = Renewal.objects.create(member=self.member)
+        self.entry = Renewal.objects.create(
+            member=self.member, length=Entry.MEMBERSHIP_YEAR
+        )
         self.member.membership_set.all().delete()
         self.data = {"member": self.member.pk, "entry": self.entry.pk}
 

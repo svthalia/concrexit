@@ -245,6 +245,9 @@ MEMBERSHIP_PRICES = {
     "study": 30,
 }
 
+# Window during which a payment can be deleted again
+PAYMENT_CHANGE_WINDOW = int(os.environ.get("PAYMENTS_CHANGE_WINDOW", 10 * 60))
+
 THUMBNAIL_SIZES = {
     "small": "150x150",
     "medium": "300x300",
@@ -300,7 +303,9 @@ CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
 SEPA_CREDITOR_ID = os.environ.get("SEPA_CREDITOR_ID", "PLACEHOLDER")
 
 # Payment settings
-THALIA_PAY_ENABLED_PAYMENT_METHOD = False
+THALIA_PAY_ENABLED_PAYMENT_METHOD = (
+    os.environ.get("THALIA_PAY_ENABLED", "False") == "True"
+)
 
 # Google maps API key and secrets
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")

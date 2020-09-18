@@ -9,7 +9,6 @@ from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
-from payments.models import Payment
 from registrations.models import Registration, Renewal
 
 
@@ -34,14 +33,11 @@ def send_registration_email_confirmation(registration: Registration) -> None:
         )
 
 
-def send_registration_accepted_message(
-    registration: Registration, payment: Payment
-) -> None:
+def send_registration_accepted_message(registration: Registration) -> None:
     """
     Send the registration acceptance email
 
     :param registration: the registration entry
-    :param payment: the payment entry
     """
     with translation.override(registration.language):
         _send_email(
@@ -50,7 +46,7 @@ def send_registration_accepted_message(
             "registrations/email/registration_accepted.txt",
             {
                 "name": registration.get_full_name(),
-                "fees": floatformat(payment.amount, 2),
+                "fees": floatformat(registration.contribution, 2),
             },
         )
 
@@ -92,12 +88,11 @@ def send_new_registration_board_message(registration: Registration) -> None:
     )
 
 
-def send_renewal_accepted_message(renewal: Renewal, payment: Payment) -> None:
+def send_renewal_accepted_message(renewal: Renewal) -> None:
     """
     Send the renewal acceptation email
 
     :param renewal: the renewal entry
-    :param payment: the payment entry
     """
     with translation.override(renewal.member.profile.language):
         _send_email(
@@ -106,7 +101,7 @@ def send_renewal_accepted_message(renewal: Renewal, payment: Payment) -> None:
             "registrations/email/renewal_accepted.txt",
             {
                 "name": renewal.member.get_full_name(),
-                "fees": floatformat(payment.amount, 2),
+                "fees": floatformat(renewal.contribution, 2),
             },
         )
 

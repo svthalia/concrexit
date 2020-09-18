@@ -1,5 +1,5 @@
 """Widgets provided by the payments package"""
-
+from django.contrib.contenttypes.models import ContentType
 from django.forms import Widget
 
 from payments.models import Payment
@@ -12,9 +12,16 @@ class PaymentWidget(Widget):
 
     template_name = "payments/widgets/payment.html"
 
+    def __init__(self, attrs=None, obj=None):
+        super().__init__(attrs)
+        self.obj = obj
+
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
-        if value:
+        if self.obj and not value:
+            context["obj"] = self.obj
+            context["content_type"] = ContentType.objects.get_for_model(self.obj)
+        elif value:
             payment = Payment.objects.get(pk=value)
             context["url"] = payment.get_admin_url()
             context["payment"] = payment

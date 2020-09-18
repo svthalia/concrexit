@@ -115,8 +115,8 @@ class PaymentListView(ListView):
             .get_queryset()
             .filter(
                 paid_by=self.request.member,
-                processing_date__year=year,
-                processing_date__month=month,
+                created_at__year=year,
+                created_at__month=month,
             )
         )
 

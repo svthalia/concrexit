@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock
 
+from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
@@ -29,7 +30,6 @@ class ServicesTest(TestCase):
             p = services.create_payment(
                 MockPayable(self.member), self.member, Payment.CASH
             )
-            self.assertEqual(p.processing_date, timezone.now())
             self.assertEqual(p.amount, 5)
             self.assertEqual(p.topic, "mock topic")
             self.assertEqual(p.notes, "mock notes")
@@ -54,44 +54,24 @@ class ServicesTest(TestCase):
     def test_delete_payment(self):
         existing_payment = MagicMock()
         payable = MockPayable(payer=self.member, payment=existing_payment)
-        services.delete_payment(payable)
-        self.assertIsNone(payable.payment)
-        payable.save.assert_called_once()
-        existing_payment.delete.assert_called_once()
+        payable.save.reset_mock()
 
-    def test_process_payment(self):
-        BankAccount.objects.create(
-            owner=self.member,
-            initials="J",
-            last_name="Test",
-            iban="NL91ABNA0417164300",
-            mandate_no="11-2",
-            valid_from=timezone.now().date() - timezone.timedelta(days=5),
-            last_used=timezone.now().date() - timezone.timedelta(days=5),
-            signature="base64,png",
-        )
+        with self.subTest("Within deletion window"):
+            payable.payment = existing_payment
+            existing_payment.created_at = timezone.now()
+            services.delete_payment(payable)
+            self.assertIsNone(payable.payment)
+            payable.save.assert_called_once()
+            existing_payment.delete.assert_called_once()
 
-        p1 = Payment.objects.create(type=Payment.NONE, notes="Test payment", amount=1)
-        r1 = services.process_payment(
-            Payment.objects.filter(pk=p1.pk), self.member, Payment.CARD
-        )
-
-        self.assertEqual(r1, [p1])
-
-        p2 = Payment.objects.create(type=Payment.NONE, notes="Test payment", amount=2)
-        r2 = services.process_payment(
-            Payment.objects.filter(pk=p2.pk), self.member, Payment.TPAY
-        )
-        self.assertEqual(r2, [])
-
-        p3 = Payment.objects.create(
-            type=Payment.NONE, notes="Test payment", amount=3, paid_by=self.member
-        )
-        self.assertTrue(self.member.tpay_enabled)
-        r3 = services.process_payment(
-            Payment.objects.filter(pk=p3.pk), self.member, Payment.TPAY
-        )
-        self.assertEqual(r3, [p3])
+        with self.subTest("Outside deletion window"):
+            payable.payment = existing_payment
+            existing_payment.created_at = timezone.now() - timezone.timedelta(
+                seconds=settings.PAYMENT_CHANGE_WINDOW + 60
+            )
+            with self.assertRaises(PermissionError):
+                services.delete_payment(payable)
+            self.assertIsNotNone(payable.payment)
 
     def test_update_last_used(self):
         BankAccount.objects.create(
