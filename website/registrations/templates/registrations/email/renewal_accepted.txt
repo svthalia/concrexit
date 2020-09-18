@@ -9,7 +9,7 @@ The membership fees are €{{ fees }}. Those can be paid in a few ways:
 
 1. You can let us withdraw the money from your bank account via Thalia Pay. For this, you
 will need to have a bank account added to your account and have signed a direct debit mandate.
-To pay with Thalia Pay, go to https://thalia.nu/user/membership/.
+To pay with Thalia Pay, go to {{ url }}.
 
 2. You can transfer the amount of €{{ fees }} to NL 23 INGB 0006 2341 84 with the description "Contribution {{ name }}".
 Once your payment is processed by us, you will receive a confirmation email.
