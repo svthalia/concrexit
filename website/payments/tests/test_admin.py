@@ -681,13 +681,14 @@ class BatchAdminTest(TestCase):
         )
 
     def test_save_formset(self) -> None:
+        batch = Batch.objects.create()
         batch_processed = Batch.objects.create()
         p1 = Payment.objects.create(
             amount=1,
             paid_by=self.user,
             processed_by=self.user,
             type=Payment.TPAY,
-            batch=Batch.objects.create(),
+            batch=batch,
         )
         p2 = Payment.objects.create(
             amount=1,
@@ -705,6 +706,12 @@ class BatchAdminTest(TestCase):
 
         with self.assertRaises(ValidationError):
             self.admin.save_formset(None, None, formset, None)
+
+        batch_processed.processed = False
+        batch_processed.save()
+
+        formset.save.return_value = Payment.objects.all()
+        self.admin.save_formset(None, None, formset, None)
 
     @mock.patch("django.contrib.admin.ModelAdmin.changeform_view")
     def test_change_form_view(self, changeform_view_mock) -> None:

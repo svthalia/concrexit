@@ -112,7 +112,23 @@ class PaymentTest(TestCase):
             batch.processed = True
             batch.save()
             payment.amount = 5
-            with self.assertRaises(ValidationError):
+            with self.assertRaisesMessage(
+                ValidationError,
+                "Cannot change a payment that is part of a processed batch",
+            ):
+                payment.clean()
+
+        with self.subTest("Block payment connect with processed batch"):
+            payment = Payment.objects.create(
+                amount=10,
+                paid_by=self.member,
+                processed_by=self.member,
+                type=Payment.TPAY,
+            )
+            payment.batch = Batch.objects.create(processed=True)
+            with self.assertRaisesMessage(
+                ValidationError, "Cannot add a payment to a processed batch"
+            ):
                 payment.clean()
 
     def test_str(self) -> None:

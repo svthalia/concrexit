@@ -90,12 +90,9 @@ class PaymentAdmin(admin.ModelAdmin):
 
     @staticmethod
     def _member_link(member: Member) -> str:
-        if member:
-            return format_html(
-                "<a href='{}'>{}</a>", member.get_absolute_url(), member.get_full_name()
-            )
-        else:
-            return "-"
+        return format_html(
+            "<a href='{}'>{}</a>", member.get_absolute_url(), member.get_full_name()
+        )
 
     def paid_by_link(self, obj: Payment) -> str:
         return self._member_link(obj.paid_by)
@@ -142,10 +139,10 @@ class PaymentAdmin(admin.ModelAdmin):
 
         return super().has_delete_permission(request, obj)
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "batch":
-            kwargs["queryset"] = Batch.objects.filter(processed=False)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    def formfield_for_foreignkey(self, db_field, request, queryset=None, **kwargs):
+        return super().formfield_for_foreignkey(
+            db_field, request, queryset=Batch.objects.filter(processed=False), **kwargs
+        )
 
     def get_readonly_fields(self, request: HttpRequest, obj: Payment = None):
         if not obj:

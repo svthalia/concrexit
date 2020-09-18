@@ -147,7 +147,7 @@ class PaymentAdminViewTest(TestCase):
 
 
 @override_settings(SUSPEND_SIGNALS=True)
-class BatchAdminViewTest(TestCase):
+class BatchProcessAdminViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.batch = Batch.objects.create()
@@ -194,6 +194,16 @@ class BatchAdminViewTest(TestCase):
 
         response = self.client.post(url)
         self.assertRedirects(response, f"/admin/payments/batch/{self.batch.id}/change/")
+
+    def test_next_validation(self):
+        self._give_user_permissions()
+
+        response = self.client.post(
+            f"/admin/payments/batch/{self.batch.id}/process/",
+            {"next": "https://google.com"},
+        )
+
+        self.assertEqual(response.status_code, 400)
 
     @mock.patch("django.contrib.messages.error")
     @mock.patch("django.contrib.messages.success")
