@@ -28,7 +28,6 @@ from payments.models import BankAccount, Payment
 
 
 @method_decorator(login_required, name="dispatch")
-@method_decorator(membership_required, name="dispatch")
 class BankAccountCreateView(SuccessMessageMixin, CreateView):
     model = BankAccount
     form_class = BankAccountForm
