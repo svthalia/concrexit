@@ -260,6 +260,10 @@ def _create_member_from_registration(registration: Registration) -> Member:
         receive_optin=registration.optin_mailinglist,
     )
 
+    if registration.bank_account:
+        registration.bank_account.owner = user
+        registration.bank_account.save()
+
     # Send welcome message to new member
     members.emails.send_welcome_message(user, password, registration.language)
 

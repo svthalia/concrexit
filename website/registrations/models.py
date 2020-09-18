@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Membership, Profile
-from payments.models import Payable
+from payments.models import Payable, BankAccount
 from utils import countries
 
 
@@ -272,6 +272,12 @@ class Registration(Entry):
 
     optin_birthday = models.BooleanField(
         verbose_name=_("birthday calendar opt-in"), default=False
+    )
+
+    # ---- Bank account -----
+
+    bank_account = models.ForeignKey(
+        BankAccount, blank=True, null=True, on_delete=models.SET_NULL
     )
 
     @property

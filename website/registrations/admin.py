@@ -73,6 +73,7 @@ class RegistrationAdmin(admin.ModelAdmin):
                     "membership_type",
                     "status",
                     "payment",
+                    "bank_account",
                     "remarks",
                 )
             },
