@@ -2,17 +2,13 @@ from unittest import mock
 from unittest.mock import Mock, MagicMock
 
 from django.apps import apps
-from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import SuspiciousOperation
 from django.test import Client, TestCase, override_settings
-from django.urls import NoReverseMatch
-from django.utils.translation import gettext_lazy as _
 
 from members.models import Member, Profile
 from payments import admin_views
-from payments.admin_views import PaymentAdminView
 from payments.models import Payment
 from payments.tests.test_services import MockPayable
 
@@ -75,10 +71,6 @@ class PaymentAdminViewTest(TestCase):
         mock_get_model.objects.get.return_value = payable
         create_payment.return_value = self.payment
         resolve_url.return_value = "/resolved_url"
-
-        with self.subTest("Test kwargs"):
-            with self.assertRaises(SuspiciousOperation):
-                self.view.post(MagicMock())
 
         with self.subTest("Send post without payload"):
             response = self.client.post(url)

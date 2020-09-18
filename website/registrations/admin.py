@@ -116,13 +116,11 @@ class RegistrationAdmin(admin.ModelAdmin):
     reference_count.short_description = _("references")
 
     def get_form(self, request, obj=None, **kwargs):
-        kwargs["formfield_callback"] = partial(
+        return super().get_form(request, obj, formfield_callback=partial(
             self.formfield_for_dbfield, request=request, obj=obj
-        )
-        return super().get_form(request, obj, **kwargs)
+        ), **kwargs)
 
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        obj = kwargs.pop("obj", None)
+    def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == "payment":
             return Field(

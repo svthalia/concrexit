@@ -11,7 +11,6 @@ class PaymentWidget(Widget):
     """
 
     template_name = "payments/widgets/payment.html"
-    obj = None
 
     def __init__(self, attrs=None, obj=None):
         super().__init__(attrs)
