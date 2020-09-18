@@ -341,10 +341,11 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
         return super().has_delete_permission(request, registration)
 
     def get_form(self, request, obj=None, **kwargs):
-        kwargs["formfield_callback"] = partial(
-            self.formfield_for_dbfield, request=request, obj=obj
-        )
-        return super().get_form(request, obj, **kwargs)
+        return super().get_form(
+            request, 
+            obj, 
+            formfield_callback=partial(self.formfield_for_dbfield, request=request, obj=obj), 
+            **kwargs)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         """Customise the formfields of event and member"""
