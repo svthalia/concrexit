@@ -13,9 +13,9 @@ def _do_next(request, response):
             request.GET["next"], allowed_hosts={request.get_host()}
         ):
             raise DisallowedRedirect
-        elif "_save" in request.POST:
+        if "_save" in request.POST:
             return HttpResponseRedirect(request.GET["next"])
-        elif response is not None:
+        if response is not None:
             return HttpResponseRedirect(
                 "{}?{}".format(response.url, request.GET.urlencode())
             )
@@ -29,8 +29,8 @@ class DoNextTranslatedModelAdmin(TranslatedModelAdmin):
     override will redirect the user to the provided url.
     """
 
-    def response_add(self, request, obj):
-        res = super().response_add(request, obj)
+    def response_add(self, request, obj, **kwargs):
+        res = super().response_add(request, obj, **kwargs)
         return _do_next(request, res)
 
     def response_change(self, request, obj):
@@ -45,8 +45,8 @@ class DoNextModelAdmin(ModelAdmin):
     override will redirect the user to the provided url.
     """
 
-    def response_add(self, request, obj):
-        res = super().response_add(request, obj)
+    def response_add(self, request, obj, **kwargs):
+        res = super().response_add(request, obj, **kwargs)
         return _do_next(request, res)
 
     def response_change(self, request, obj):

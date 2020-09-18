@@ -73,8 +73,8 @@ def send_newsletter(newsletter):
 
         try:
             msg.send()
-            logger.info(f"Sent {language[1]} newsletter")
-        except SMTPException as e:
-            logger.error(f"Failed to send the {language[1]} " f"newsletter: {e}")
+            logger.info("Sent %s newsletter", language[1])
+        except SMTPException:
+            logger.exception("Failed to send the %s newsletter", language[1])
 
         translation.deactivate()

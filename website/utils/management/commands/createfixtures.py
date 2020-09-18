@@ -1,12 +1,14 @@
 """
 Provides the command to generate fixtures
 """
+
+# pylint: disable=too-many-statements,too-many-branches
 import math
 import random
 import string
 from datetime import date, timedelta, datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -66,6 +68,14 @@ class _ProfileFactory(factory.Factory):
     address_country = random.choice(["NL", "DE", "BE"])
 
     phone_number = "+31{}".format(_faker.numerify(text="##########"))
+
+
+def get_event_to_register_for(member):
+    for event in Event.objects.filter(published=True).order_by("?"):
+        if event.registration_required and not event.reached_participants_limit():
+            if member.id not in event.registrations.values_list("member", flat=True):
+                return event
+    return None
 
 
 class Command(BaseCommand):
@@ -136,6 +146,7 @@ class Command(BaseCommand):
 
         :param int lecture_year: the  lecture year this board was active
         """
+        self.stdout.write("Creating a board")
         members = Member.objects.all()
         if len(members) < 6:
             self.stdout.write("Your database does not contain 6 users.")
@@ -180,6 +191,7 @@ class Command(BaseCommand):
         """
         Create a MemberGroup
         """
+        self.stdout.write("Creating a membergroup")
         members = Member.objects.all()
         if len(members) < 6:
             self.stdout.write("Your database does not contain 6 users.")
@@ -231,6 +243,7 @@ class Command(BaseCommand):
         :param member: the member to add to the committee
         :param group: the group to add the member to
         """
+        self.stdout.write("Creating a group membership")
         membership = MemberGroupMembership()
 
         membership.member = member
@@ -308,6 +321,7 @@ class Command(BaseCommand):
 
     def create_partner(self):
         """Create a new random partner"""
+        self.stdout.write("Creating a partner")
         partner = Partner()
 
         partner.is_active = random.random() < 0.75
@@ -329,6 +343,8 @@ class Command(BaseCommand):
 
     def create_pizza(self):
         """Create a new random pizza product"""
+        self.stdout.write("Creating a pizza product")
+
         product = Product()
 
         product.name = f"Pizza {_pizza_name_faker.last_name()}"
@@ -339,11 +355,13 @@ class Command(BaseCommand):
 
     def create_user(self):
         """Create a new random user"""
+        self.stdout.write("Creating a user")
+
         fakeprofile = _faker.profile()
         fakeprofile["password"] = "".join(
             random.choice(string.ascii_uppercase + string.digits) for _ in range(16)
         )
-        user = User.objects.create_user(
+        user = get_user_model().objects.create_user(
             fakeprofile["username"], fakeprofile["mail"], fakeprofile["password"]
         )
         user.first_name = fakeprofile["name"].split()[0]
@@ -386,6 +404,7 @@ class Command(BaseCommand):
         :param partners: the partners to choose a partner from
         :param categories: the categories to choose this vacancy from
         """
+        self.stdout.write("Creating a vacancy")
         vacancy = Vacancy()
 
         vacancy.title = _faker.job()
@@ -414,6 +433,7 @@ class Command(BaseCommand):
 
     def create_vacancy_category(self):
         """Create new random vacancy categories"""
+        self.stdout.write("Creating a new vacancy category")
         category = VacancyCategory()
 
         category.name_en = _faker.text(max_nb_chars=30)
@@ -423,6 +443,7 @@ class Command(BaseCommand):
 
     def create_document(self):
         """Creates new random documents"""
+        self.stdout.write("Creating a document")
         doc = Document()
 
         doc.name = _faker.text(max_nb_chars=30)
@@ -434,6 +455,7 @@ class Command(BaseCommand):
         doc.save()
 
     def create_newsletter(self):
+        self.stdout.write("Creating a new newsletter")
         newsletter = Newsletter()
 
         newsletter.title_en = _generate_title()
@@ -442,14 +464,14 @@ class Command(BaseCommand):
 
         newsletter.save()
 
-        for i in range(random.randint(1, 5)):
+        for _ in range(random.randint(1, 5)):
             item = NewsletterItem()
             item.title_en = _generate_title()
             item.description_en = _faker.paragraph()
             item.newsletter = newsletter
             item.save()
 
-        for i in range(random.randint(1, 5)):
+        for _ in range(random.randint(1, 5)):
             item = NewsletterEvent()
             item.title_en = _generate_title()
             item.description_en = _faker.paragraph()
@@ -473,6 +495,7 @@ class Command(BaseCommand):
             item.save()
 
     def create_course(self):
+        self.stdout.write("Creating a new course")
         course = Course()
 
         course.name = _generate_title()
@@ -492,15 +515,8 @@ class Command(BaseCommand):
 
         course.save()
 
-    def get_event_to_register_for(self, member):
-        for event in Event.objects.filter(published=True).order_by("?"):
-            if event.registration_required and not event.reached_participants_limit():
-                if member.id not in event.registrations.values_list(
-                    "member", flat=True
-                ):
-                    return event
-
     def create_event_registration(self, event_to_register_for=None):
+        self.stdout.write("Creating an event registration")
         registration = EventRegistration()
 
         registration.member = Member.objects.order_by("?")[0]
@@ -508,13 +524,13 @@ class Command(BaseCommand):
         possible_event = (
             event_to_register_for
             if event_to_register_for
-            else self.get_event_to_register_for(registration.member)
+            else get_event_to_register_for(registration.member)
         )
         while not possible_event:
             self.stdout.write("No possible events to register for")
             self.stdout.write("Creating a new event")
             self.create_event()
-            possible_event = self.get_event_to_register_for(registration.member)
+            possible_event = get_event_to_register_for(registration.member)
 
         registration.event = possible_event
 
@@ -525,6 +541,8 @@ class Command(BaseCommand):
         return registration
 
     def create_payment(self):
+        self.stdout.write("Creating a payment")
+
         possible_events = list(
             filter(
                 lambda e: e.registrations.count() > 0,
@@ -556,6 +574,7 @@ class Command(BaseCommand):
         )
 
     def create_photo_album(self):
+        self.stdout.write("Creating a photo album")
         album = Album()
 
         album.title_en = _generate_title()
@@ -575,6 +594,7 @@ class Command(BaseCommand):
             self.create_photo(album)
 
     def create_photo(self, album):
+        self.stdout.write("Creating a photo")
         photo = Photo()
 
         photo.album = album

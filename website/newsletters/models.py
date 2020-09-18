@@ -74,14 +74,11 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
         if errors:
             raise ValidationError(errors)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
     class Meta:
         permissions = (("send_newsletter", "Can send newsletter"),)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
 
 class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
@@ -131,7 +128,7 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
             raise ValidationError(errors)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ("order",)
@@ -139,8 +136,6 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
 
 class NewsletterItem(NewsletterContent):
     """Describes one piece of text content of a newsletter"""
-
-    pass
 
 
 class NewsletterEvent(NewsletterContent):

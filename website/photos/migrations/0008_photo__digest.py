@@ -5,7 +5,9 @@ import hashlib
 
 from django.db import migrations, models
 
+
 def add_digests(apps, schema_editor):
+    # pylint: disable=cell-var-from-loop
     Photo = apps.get_model('photos', 'Photo')
     for photo in Photo.objects.all():
         hash_sha1 = hashlib.sha1()
@@ -13,6 +15,7 @@ def add_digests(apps, schema_editor):
             hash_sha1.update(chunk)
         photo._digest = hash_sha1.hexdigest()
         photo.save()
+
 
 class Migration(migrations.Migration):
     atomic = False

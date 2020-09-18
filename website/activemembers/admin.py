@@ -68,10 +68,11 @@ class MemberGroupAdmin(admin.ModelAdmin):
         "display_members",
     )
 
-    def email(self, instance):
+    @staticmethod
+    def email(instance):
         if instance.contact_email:
             return instance.contact_email
-        elif instance.contact_mailinglist:
+        if instance.contact_mailinglist:
             return instance.contact_mailinglist.name + "@thalia.nu"
         return None
 
@@ -80,14 +81,10 @@ class MemberGroupAdmin(admin.ModelAdmin):
 class CommitteeAdmin(MemberGroupAdmin):
     """Manage the committees."""
 
-    pass
-
 
 @admin.register(models.Society)
 class SocietyAdmin(MemberGroupAdmin):
     """Manage the societies."""
-
-    pass
 
 
 @admin.register(models.Board)
@@ -128,11 +125,10 @@ class TypeFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() == "boards":
             return queryset.exclude(group__board=None)
-        elif self.value() == "committees":
+        if self.value() == "committees":
             return queryset.exclude(group__committee=None)
-        elif self.value() == "societies":
+        if self.value() == "societies":
             return queryset.exclude(group__society=None)
-
         return queryset
 
 
@@ -169,7 +165,7 @@ class ActiveMembershipsFilter(admin.SimpleListFilter):
     title = _("active memberships")
     parameter_name = "active"
 
-    def lookups(self, request, model_name):
+    def lookups(self, request, model_admin):
         return (
             ("active", _("Active")),
             ("inactive", _("Inactive")),
@@ -180,9 +176,9 @@ class ActiveMembershipsFilter(admin.SimpleListFilter):
 
         if self.value() == "active":
             return queryset.filter(Q(until__isnull=True) | Q(until__gte=now))
-
         if self.value() == "inactive":
             return queryset.filter(until__lt=now)
+        return queryset
 
 
 @admin.register(models.MemberGroupMembership)

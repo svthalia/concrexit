@@ -259,36 +259,35 @@ class Profile(models.Model):
     )
 
     def display_name(self):
+        # pylint: disable=too-many-return-statements
         pref = self.display_name_preference
         if pref == "nickname" and self.nickname is not None:
             return f"'{self.nickname}'"
-        elif pref == "firstname":
+        if pref == "firstname":
             return self.user.first_name
-        elif pref == "initials":
+        if pref == "initials":
             if self.initials:
                 return "{} {}".format(self.initials, self.user.last_name)
             return self.user.last_name
-        elif pref == "fullnick" and self.nickname is not None:
+        if pref == "fullnick" and self.nickname is not None:
             return "{} '{}' {}".format(
                 self.user.first_name, self.nickname, self.user.last_name
             )
-        elif pref == "nicklast" and self.nickname is not None:
+        if pref == "nicklast" and self.nickname is not None:
             return "'{}' {}".format(self.nickname, self.user.last_name)
-        else:
-            return self.user.get_full_name() or self.user.username
+        return self.user.get_full_name() or self.user.username
 
     display_name.short_description = _("Display name")
 
     def short_display_name(self):
         pref = self.display_name_preference
-        if self.nickname is not None and (pref == "nickname" or pref == "nicklast"):
+        if self.nickname is not None and pref in ("nickname", "nicklast"):
             return f"'{self.nickname}'"
-        elif pref == "initials":
+        if pref == "initials":
             if self.initials:
                 return "{} {}".format(self.initials, self.user.last_name)
             return self.user.last_name
-        else:
-            return self.user.first_name
+        return self.user.first_name
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -317,8 +316,8 @@ class Profile(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def save(self, **kwargs):
+        super().save(**kwargs)
         storage = DefaultStorage()
 
         if self._orig_image and not self.photo:
@@ -342,13 +341,13 @@ class Profile(models.Model):
             with storage.open(image_name, "wb") as new_image_file:
                 image.convert("RGB").save(new_image_file, "JPEG")
             self.photo.name = image_name
-            super().save(*args, **kwargs)
+            super().save(**kwargs)
 
             # delete original upload.
             storage.delete(original_image_name)
 
             if self._orig_image:
-                logger.info("deleting", self._orig_image)
+                logger.info("deleting: %s", self._orig_image)
                 storage.delete(self._orig_image)
             self._orig_image = self.photo.name
         else:

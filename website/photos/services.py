@@ -53,7 +53,7 @@ def is_album_accessible(request, album):
     """Check if the request user can access an album."""
     if request.member and request.member.current_membership is not None:
         return True
-    elif request.member and request.member.current_membership is None:
+    if request.member and request.member.current_membership is None:
         # This user is currently not a member, so need to check if he/she
         # can view this album by checking the membership
         return (
@@ -108,8 +108,8 @@ def extract_archive(request, album, archive):
             with tarfile.open(fileobj=archive) as tar_file:
                 for photo in sorted(tar_file.getmembers(), key=lambda x: x.name):
                     extract_photo(request, tar_file, photo, album)
-        except tarfile.ReadError:
-            raise ValueError(_("The uploaded file is not a zip or tar file."))
+        except tarfile.ReadError as e:
+            raise ValueError(_("The uploaded file is not a zip or tar file.")) from e
 
 
 def extract_photo(request, archive_file, photo, album):
@@ -130,7 +130,7 @@ def extract_photo(request, archive_file, photo, album):
 
     # Generate unique filename
     num = album.photo_set.count()
-    filename, extension = os.path.splitext(photo_filename)
+    __, extension = os.path.splitext(photo_filename)
     new_filename = str(num).zfill(4) + extension
 
     photo_obj = Photo()

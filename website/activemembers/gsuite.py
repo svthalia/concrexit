@@ -1,13 +1,13 @@
 import hashlib
 import logging
 from base64 import b16encode
-
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _, override as lang_override
+
 from googleapiclient.errors import HttpError
+from utils.google_api import get_directory_api
 
 from members.models import Member
-from utils.google_api import get_directory_api
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 

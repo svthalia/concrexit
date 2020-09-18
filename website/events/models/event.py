@@ -249,6 +249,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         )
 
     def is_pizza_event(self):
+        # pylint: disable=pointless-statement
         try:
             self.pizzaevent
             return True
@@ -256,6 +257,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             return False
 
     def clean(self):
+        # pylint: disable=too-many-branches
         super().clean()
         errors = {}
         if self.start is None:
@@ -382,13 +384,13 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def get_absolute_url(self):
         return reverse("events:event", args=[str(self.pk)])
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         delete_collector = Collector(
             using=router.db_for_write(self.__class__, instance=self)
         )
 
         if not self.pk:
-            super().save(*args, **kwargs)
+            super().save(**kwargs)
 
         if self.published:
             if self.registration_required:

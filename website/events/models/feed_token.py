@@ -8,9 +8,9 @@ class FeedToken(models.Model):
     member = models.OneToOneField("members.Member", models.CASCADE)
     token = models.CharField(max_length=32, editable=False)
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.token = get_random_string(32)
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
     @staticmethod
     def get_member(token):

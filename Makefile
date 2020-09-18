@@ -65,6 +65,12 @@ fmt: .make/fmt ## Format python code with black
 blackcheck: $(VIRTUALENV) $(PYTHONFILES) ## Check if everything is formatted correctly
 	poetry run black $(BLACK_FLAGS) --check website
 
+.make/pylint: .make $(VIRTUALENV) $(PYTHONFILES)
+	DJANGO_SETTINGS_MODULE=thaliawebsite.settings poetry run pylint website/**/*.py
+	@touch .make/pylint
+
+pylint: .make/pylint ## Check python code with pylint
+
 .make/check: .make $(VIRTUALENV) $(PYTHONFILES)
 	poetry run python website/manage.py check
 	@touch .make/check
@@ -120,7 +126,7 @@ docs: docs/_build ## Generate docs HTML files
 
 docker: .make/docker
 
-lint: blackcheck ## Run all linters
+lint: blackcheck pylint ## Run all linters
 
 test: check templatecheck migrationcheck tests ## Run every kind of test
 

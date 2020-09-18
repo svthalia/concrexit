@@ -19,5 +19,5 @@ def index(request):
 def pages(request, year, issue):
     """Return paths of individual Thabloid pages."""
     thabloid = get_object_or_404(Thabloid, year=int(year), issue=int(issue))
-    pages = [{"src": "{}{}".format(settings.MEDIA_URL, p)} for p in thabloid.pages]
-    return JsonResponse(pages, safe=False)
+    files = [{"src": "{}{}".format(settings.MEDIA_URL, p)} for p in thabloid.pages]
+    return JsonResponse(files, safe=False)

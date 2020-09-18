@@ -78,7 +78,7 @@ class DocumentDownloadView(DetailView):
 
         if document.members_only and not request.user.is_authenticated:
             return redirect("{}?next={}".format(settings.LOGIN_URL, request.path))
-        elif document.members_only and not request.member.has_active_membership():
+        if document.members_only and not request.member.has_active_membership():
             raise PermissionDenied
 
         lang = request.GET.get("language")
@@ -87,8 +87,8 @@ class DocumentDownloadView(DetailView):
                 file = document.file_en
             else:  # Fall back on language detection
                 file = document.file
-        except ValueError:
-            raise Http404("This document does not exist.")
+        except ValueError as e:
+            raise Http404("This document does not exist.") from e
 
         ext = os.path.splitext(file.path)[1]
 

@@ -30,4 +30,4 @@ class MerchandiseItem(models.Model, metaclass=ModelTranslateMeta):
         :return: The name of the merchandise item.
         :rtype: str
         """
-        return self.name
+        return str(self.name)

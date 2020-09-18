@@ -14,7 +14,7 @@ urlpatterns = [
                     "<slug>/",
                     include(
                         [
-                            path("", views.album, name="album"),
+                            path("", views.detail, name="album"),
                             path(
                                 "download/",
                                 include(

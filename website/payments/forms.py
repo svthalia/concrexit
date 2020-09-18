@@ -1,8 +1,8 @@
 from django import forms
+from django.utils.translation import gettext as _
 
 from payments.models import BankAccount, Payment
 from payments.widgets import SignatureWidget
-from django.utils.translation import gettext as _
 
 
 class BankAccountForm(forms.ModelForm):

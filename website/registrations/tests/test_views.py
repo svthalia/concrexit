@@ -101,7 +101,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.services.reject_entries")
     def test_post_accept(self, reject_entries, accept_entries, check_unique_user):
         self.view.action = "accept"
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -126,7 +126,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 accept_entries.assert_called_once_with(1, entry_qs)
@@ -163,7 +163,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.services.reject_entries")
     def test_post_reject(self, reject_entries, accept_entries):
         self.view.action = "reject"
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -187,7 +187,7 @@ class EntryAdminViewTest(TestCase):
                 self.assertEqual(response.status_code, 302)
 
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 reject_entries.assert_called_once_with(1, entry_qs)
@@ -212,7 +212,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.emails.send_registration_email_confirmation")
     def test_post_resend(self, send_email):
         self.view.action = "resend"
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -233,18 +233,18 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
-                if type == "registration":
+                if reg_type == "registration":
                     send_email.assert_called_once_with(entry)
-                elif type == "renewal":
+                elif reg_type == "renewal":
                     send_email.assert_not_called()
 
     @mock.patch("registrations.services.revert_entry")
     def test_post_revert(self, revert):
         self.view.action = "revert"
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -265,7 +265,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 revert.assert_called_once_with(1, entry.entry_ptr)
@@ -277,7 +277,7 @@ class EntryAdminViewTest(TestCase):
         )
 
         request = self.rf.post(
-            f"/registration/admin/process/1234/", {"action": "accept",}
+            "/registration/admin/process/1234/", {"action": "accept"}
         )
         request.user = _get_mock_user()
         request.member = request.user
@@ -291,7 +291,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.services.reject_entries")
     def test_post_no_action(self, reject_entries, accept_entries):
         self.view.action = None
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -315,7 +315,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{type}/{entry.pk}/change/",
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
 

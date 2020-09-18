@@ -71,47 +71,47 @@ def _render_album_page(request, album):
 
 
 @login_required
-def album(request, slug):
+def detail(request, slug):
     """Render an album, if it accessible by the user."""
-    album = get_object_or_404(Album, slug=slug)
-    if is_album_accessible(request, album):
-        return _render_album_page(request, album)
+    obj = get_object_or_404(Album, slug=slug)
+    if is_album_accessible(request, obj):
+        return _render_album_page(request, obj)
     raise Http404("Sorry, you're not allowed to view this album")
 
 
 def shared_album(request, slug, token):
     """Render a shared album if the correct token is provided."""
-    album = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(album, token)
-    return _render_album_page(request, album)
+    obj = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(obj, token)
+    return _render_album_page(request, obj)
 
 
-def _photo_path(album, filename):
+def _photo_path(obj, filename):
     """Return the path to a Photo."""
     photoname = os.path.basename(filename)
-    albumpath = os.path.join(album.photosdir, album.dirname)
+    albumpath = os.path.join(obj.photosdir, obj.dirname)
     photopath = os.path.join(albumpath, photoname)
-    get_object_or_404(Photo.objects.filter(album=album, file=photopath))
+    get_object_or_404(Photo.objects.filter(album=obj, file=photopath))
     return photopath
 
 
-def _download(request, album, filename):
+def _download(request, obj, filename):
     """Download a photo.
 
     This function provides a layer of indirection for shared albums.
     """
-    photopath = _photo_path(album, filename)
-    photo = get_object_or_404(Photo.objects.filter(album=album, file=photopath))
+    photopath = _photo_path(obj, filename)
+    photo = get_object_or_404(Photo.objects.filter(album=obj, file=photopath))
     return sendfile(request, photo.file.path, attachment=True)
 
 
-def _album_download(request, album):
+def _album_download(request, obj):
     """Download an album.
 
     This function provides a layer of indirection for shared albums.
     """
-    albumpath = os.path.join(album.photospath, album.dirname)
-    zipfilename = os.path.join(gettempdir(), "{}.zip".format(album.dirname))
+    albumpath = os.path.join(obj.photospath, obj.dirname)
+    zipfilename = os.path.join(gettempdir(), "{}.zip".format(obj.dirname))
     if not os.path.exists(zipfilename):
         with ZipFile(zipfilename, "w") as f:
             pictures = [os.path.join(albumpath, x) for x in os.listdir(albumpath)]
@@ -123,30 +123,30 @@ def _album_download(request, album):
 @login_required
 def download(request, slug, filename):
     """Download a photo if the album of the photo is accessible by the user."""
-    album = get_object_or_404(Album, slug=slug)
-    if is_album_accessible(request, album):
-        return _download(request, album, filename)
+    obj = get_object_or_404(Album, slug=slug)
+    if is_album_accessible(request, obj):
+        return _download(request, obj, filename)
     raise Http404("Sorry, you're not allowed to view this album")
 
 
 @login_required
 def album_download(request, slug):
     """Download an album if the album is accessible by the user."""
-    album = get_object_or_404(Album, slug=slug)
-    if is_album_accessible(request, album):
-        return _album_download(request, album)
+    obj = get_object_or_404(Album, slug=slug)
+    if is_album_accessible(request, obj):
+        return _album_download(request, obj)
     raise Http404("Sorry, you're not allowed to view this album")
 
 
 def shared_download(request, slug, token, filename):
     """Download a photo from a shared album if the album token is provided."""
-    album = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(album, token)
-    return _download(request, album, filename)
+    obj = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(obj, token)
+    return _download(request, obj, filename)
 
 
 def shared_album_download(request, slug, token):
     """Download a shared album if the album token is provided."""
-    album = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(album, token)
-    return _album_download(request, album)
+    obj = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(obj, token)
+    return _album_download(request, obj)

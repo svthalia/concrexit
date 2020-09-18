@@ -106,7 +106,7 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
         cover = None
         if self._cover is not None:
             return self._cover
-        elif self.photo_set.exists():
+        if self.photo_set.exists():
             random.seed(self.dirname)
             cover = random.choice(self.photo_set.all())
         return cover
@@ -119,7 +119,7 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
         """Get url of Album."""
         return reverse("photos:album", args=[str(self.slug)])
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         """Save album and send appropriate notifications."""
         # dirname is only set for new objects, to avoid ever changing it
         if self.pk is None:
@@ -138,13 +138,11 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
                 new_album_notification = self.new_album_notification
 
             new_album_notification.title_en = "New album uploaded"
-            new_album_notification.body_en = "A new photo album '{}' has just been uploaded".format(
-                self.title_en
+            new_album_notification.body_en = (
+                f"A new photo album '{self.title_en}' has just been uploaded"
             )
             new_album_notification.category = Category.objects.get(key=Category.PHOTO)
-            new_album_notification.url = (
-                f"{settings.BASE_URL}" f"{self.get_absolute_url()}"
-            )
+            new_album_notification.url = f"{settings.BASE_URL}{self.get_absolute_url()}"
             new_album_notification.time = new_album_notification_time
             new_album_notification.save()
             self.new_album_notification = new_album_notification
@@ -158,7 +156,7 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
             self.new_album_notification = None
             existing_notification.delete()
 
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
     @property
     def access_token(self):

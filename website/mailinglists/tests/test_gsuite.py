@@ -179,7 +179,9 @@ class GSuiteSyncTestCase(TestCase):
             self.directory_api.groups().aliases().list.assert_not_called()
 
             logger_mock.error.assert_called_once_with(
-                "Could not successfully finish creating the list new_group", bytes()
+                "Could not successfully finish creating the list %s: %s",
+                "new_group",
+                bytes(),
             )
 
     @mock.patch("mailinglists.gsuite.logger")
@@ -236,7 +238,7 @@ class GSuiteSyncTestCase(TestCase):
             self.directory_api.groups().aliases().list.assert_not_called()
 
             logger_mock.error.assert_called_once_with(
-                "Could not update list new_group", bytes()
+                "Could not update list %s: %s", "new_group", bytes()
             )
 
     @mock.patch("mailinglists.gsuite.logger")
@@ -266,7 +268,7 @@ class GSuiteSyncTestCase(TestCase):
             self.directory_api.groups().aliases().list.assert_not_called()
 
             logger_mock.error.assert_called_once_with(
-                "Could not delete list new_group", bytes()
+                "Could not delete list %s: %s", "new_group", bytes()
             )
 
     @mock.patch("mailinglists.gsuite.logger")
@@ -280,7 +282,9 @@ class GSuiteSyncTestCase(TestCase):
             )
 
             logger_mock.error.assert_called_once_with(
-                "Could not obtain existing aliases for list update_group", bytes()
+                "Could not obtain existing aliases for list %s: %s",
+                "update_group",
+                bytes(),
             )
 
         self.directory_api.reset_mock()
@@ -324,14 +328,16 @@ class GSuiteSyncTestCase(TestCase):
             )
 
             logger_mock.error.assert_any_call(
-                "Could not insert alias not_synced_error@"
-                f"{settings.GSUITE_DOMAIN} for list update_group",
+                "Could not insert alias %s for list %s: %s",
+                f"not_synced_error@{settings.GSUITE_DOMAIN}",
+                "update_group",
                 bytes(),
             )
 
             logger_mock.error.assert_any_call(
-                "Could not remove alias deleteme_error@"
-                f"{settings.GSUITE_DOMAIN} for list update_group",
+                "Could not remove alias %s for list %s: %s",
+                f"deleteme_error@{settings.GSUITE_DOMAIN}",
+                "update_group",
                 bytes(),
             )
 
@@ -346,7 +352,7 @@ class GSuiteSyncTestCase(TestCase):
             )
 
             logger_mock.error.assert_called_once_with(
-                "Could not obtain list member data", bytes()
+                "Could not obtain list member data: %s", bytes()
             )
 
         self.directory_api.reset_mock()
@@ -401,14 +407,16 @@ class GSuiteSyncTestCase(TestCase):
             )
 
             logger_mock.error.assert_any_call(
-                "Could not insert list member "
-                "not_synced_error@example.com in update_group",
+                "Could not insert list member %s in %s: %s",
+                "not_synced_error@example.com",
+                "update_group",
                 bytes(),
             )
 
             logger_mock.error.assert_any_call(
-                "Could not remove list member "
-                "deleteme_error@example.com from update_group",
+                "Could not remove list member %s from %s: %s",
+                "deleteme_error@example.com",
+                "update_group",
                 bytes(),
             )
 
@@ -429,7 +437,7 @@ class GSuiteSyncTestCase(TestCase):
             self.sync_service.sync_mailinglists()
 
             logger_mock.error.assert_called_once_with(
-                "Could not get the existing groups", bytes()
+                "Could not get the existing groups: %s", bytes()
             )
 
         self.directory_api.reset_mock()

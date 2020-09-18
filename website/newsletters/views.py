@@ -78,7 +78,7 @@ def admin_send(request, pk):
         services.send_newsletter(newsletter)
 
         return redirect("admin:newsletters_newsletter_changelist")
-    else:
-        return render(
-            request, "newsletters/admin/send_confirm.html", {"newsletter": newsletter}
-        )
+
+    return render(
+        request, "newsletters/admin/send_confirm.html", {"newsletter": newsletter}
+    )

@@ -1,4 +1,4 @@
-from django.db import migrations, models
+from django.db import migrations
 
 
 def forwards_func(apps, schema_editor):
@@ -14,14 +14,14 @@ def reverse_func(apps, schema_editor):
     Exam = apps.get_model('education', 'Exam')
 
     for exam in Exam.objects.all():
-        if exam.type in ['exam_answers', 'partial_answers', 'resit_answers', 
+        if exam.type in ['exam_answers', 'partial_answers', 'resit_answers',
                          'practice_answers']:
             exam.type = 'answers'
             exam.save(update_fields=('type',))
 
 
 class Migration(migrations.Migration):
-    
+
     dependencies = [
         # Without this dependency we get multiple leaf nodes
         ('education', '0006_auto_20171013_1535'),

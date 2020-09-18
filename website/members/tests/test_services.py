@@ -1,7 +1,7 @@
+from unittest import mock
 from datetime import timedelta, date
 from django.test import TestCase, override_settings
 from django.utils import timezone
-from unittest import mock
 
 from freezegun import freeze_time
 
@@ -23,11 +23,10 @@ class StatisticsTest(TestCase):
         profiles = [Profile(user_id=i) for i in range(10)]
         Profile.objects.bulk_create(profiles)
 
-    def sum_members(self, members, type=None):
-        if type is None:
+    def sum_members(self, members, member_type=None):
+        if member_type is None:
             return sum(sum(i.values()) for i in members.values())
-        else:
-            return sum(i[type] for i in members.values())
+        return sum(i[member_type] for i in members.values())
 
     def sum_member_types(self, members):
         return sum(members.values())
@@ -50,7 +49,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(10, self.sum_members(result))
         self.assertEqual(10, self.sum_members(result, Membership.MEMBER))
 
-        result = {k: v for k, v in gen_stats_member_type().items()}
+        result = gen_stats_member_type()
         self.assertEqual(10, self.sum_member_types(result))
 
         # Change one membership to benefactor should decrease amount of members
@@ -63,7 +62,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(9, self.sum_members(result, Membership.MEMBER))
         self.assertEqual(1, self.sum_members(result, Membership.BENEFACTOR))
 
-        result = {k: v for k, v in gen_stats_member_type().items()}
+        result = gen_stats_member_type()
         self.assertEqual(10, self.sum_member_types(result))
         self.assertEqual(9, result[Membership.MEMBERSHIP_TYPES[0][1]])
         self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
@@ -79,7 +78,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(1, self.sum_members(result, Membership.BENEFACTOR))
         self.assertEqual(1, self.sum_members(result, Membership.HONORARY))
 
-        result = {k: v for k, v in gen_stats_member_type().items()}
+        result = gen_stats_member_type()
         self.assertEqual(10, self.sum_member_types(result))
         self.assertEqual(8, result[Membership.MEMBERSHIP_TYPES[0][1]])
         self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
@@ -96,7 +95,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(1, self.sum_members(result, Membership.BENEFACTOR))
         self.assertEqual(1, self.sum_members(result, Membership.HONORARY))
 
-        result = {k: v for k, v in gen_stats_member_type().items()}
+        result = gen_stats_member_type()
         self.assertEqual(9, self.sum_member_types(result))
         self.assertEqual(7, result[Membership.MEMBERSHIP_TYPES[0][1]])
         self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
@@ -106,7 +105,7 @@ class StatisticsTest(TestCase):
         current_year = datetime_to_lectureyear(date.today())
 
         # postgres does not define random access directly on unsorted querysets
-        members = [member for member in Member.objects.all()]
+        members = list(Member.objects.all())
 
         # one first year student
         m = members[0]

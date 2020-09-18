@@ -55,5 +55,5 @@ class Command(BaseCommand):
             last_name="Review",
         )
 
-        logger.info(f"Username: {username}")
-        logger.info(f"Password: {password}")
+        logger.info("Username: %s", username)
+        logger.info("Password: %s", password)

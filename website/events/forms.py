@@ -79,8 +79,8 @@ class FieldsForm(forms.Form):
             self.fields[key].initial = field["value"]
 
     def field_values(self):
-        for key, field in self.information_fields.items():
-            yield (key, self.cleaned_data[key])
+        for key in self.information_fields:
+            yield key, self.cleaned_data[key]
 
 
 class EventMessageForm(forms.Form):
