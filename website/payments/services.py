@@ -33,6 +33,7 @@ def create_payment(
         payable.payment.notes = payable.payment_notes
         payable.payment.topic = payable.payment_topic
         payable.payment.paid_by = payable.payment_payer
+        payable.payment.processed_by = processed_by
         payable.payment.type = pay_type
         payable.payment.save()
     else:

@@ -82,13 +82,12 @@ class Payment(models.Model):
         self._batch = self.batch
 
     def save(self, **kwargs):
+        self.clean()
+
         if self._batch and self._batch.processed:
             self.batch = self._batch
 
         self._batch = self.batch
-
-        if self.batch is not None:
-            raise PaymentError(_("Payments that are in a batch cannot be changed."))
 
         super().save(**kwargs)
 
@@ -97,6 +96,12 @@ class Payment(models.Model):
             raise ValidationError(
                 {"batch": _("Non Thalia Pay payments cannot be added to a batch.")}
             )
+        if self._batch and self._batch.processed:
+            raise ValidationError(
+                _("Cannot change a payment that is " "part of a processed batch")
+            )
+        if self.batch and self.batch.processed:
+            raise ValidationError(_("Cannot add a payment to " "a processed batch"))
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)

@@ -2,6 +2,7 @@ from unittest import mock
 from unittest.mock import Mock, MagicMock
 
 from django.apps import apps
+from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.test import Client, TestCase, override_settings
@@ -19,12 +20,14 @@ from payments.tests.test_services import MockPayable
 class PaymentAdminViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.payment = Payment.objects.create(amount=7.5)
         cls.user = Member.objects.create(
             username="test1",
             first_name="Test1",
             last_name="Example",
             email="test1@example.org",
+        )
+        cls.payment = Payment.objects.create(
+            amount=7.5, processed_by=cls.user, paid_by=cls.user, type=Payment.CARD
         )
         Profile.objects.create(user=cls.user,)
 
@@ -154,12 +157,14 @@ class BatchAdminViewTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(
-            user=cls.user, language="nl",
-        )
+        Profile.objects.create(user=cls.user)
         BankAccount.objects.create(owner=cls.user, created_at=timezone.now())
         Payment.objects.create(
-            amount=99, paid_by=cls.user, batch=cls.batch, type=Payment.TPAY
+            amount=99,
+            paid_by=cls.user,
+            processed_by=cls.user,
+            batch=cls.batch,
+            type=Payment.TPAY,
         )
 
     def setUp(self):
@@ -232,9 +237,7 @@ class BatchExportAdminViewTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(
-            user=cls.user, language="nl",
-        )
+        Profile.objects.create(user=cls.user)
 
     def setUp(self):
         self.client = Client()
@@ -273,9 +276,7 @@ class BatchExportAdminViewTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(
-            user=self.user2, language="nl",
-        )
+        Profile.objects.create(user=self.user2)
 
         BankAccount.objects.create(
             last_used=timezone.now(),
@@ -330,9 +331,7 @@ class BatchNewFilledAdminViewTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(
-            user=cls.user, language="nl",
-        )
+        Profile.objects.create(user=cls.user)
 
     def setUp(self):
         self.client = Client()
@@ -373,38 +372,38 @@ class BatchNewFilledAdminViewTest(TestCase):
                 Payment(
                     amount=1,
                     type=Payment.TPAY,
-                    processing_date=timezone.datetime(2020, 1, 31, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(2020, 1, 31, tzinfo=timezone.utc),
                 ),
                 Payment(
                     amount=2,
                     type=Payment.TPAY,
-                    processing_date=timezone.datetime(2020, 2, 1, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(2020, 2, 1, tzinfo=timezone.utc),
                 ),
                 Payment(
                     amount=3,
                     type=Payment.TPAY,
-                    processing_date=timezone.datetime(2020, 2, 10, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(2020, 2, 10, tzinfo=timezone.utc),
                     batch=self.batch,
                 ),
                 Payment(
                     amount=4,
                     type=Payment.TPAY,
-                    processing_date=timezone.datetime(2020, 2, 28, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(2020, 2, 28, tzinfo=timezone.utc),
                 ),
                 Payment(
                     amount=5,
                     type=Payment.TPAY,
-                    processing_date=timezone.datetime(2020, 2, 29, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(2020, 2, 29, tzinfo=timezone.utc),
                 ),
                 Payment(
                     amount=6,
                     type=Payment.TPAY,
-                    processing_date=timezone.datetime(2020, 3, 1, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(2020, 3, 1, tzinfo=timezone.utc),
                 ),
                 Payment(
                     amount=7,
                     type=Payment.WIRE,
-                    processing_date=timezone.datetime(2020, 1, 1, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(2020, 1, 1, tzinfo=timezone.utc),
                 ),
             ]
         )

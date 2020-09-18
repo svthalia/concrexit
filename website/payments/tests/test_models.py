@@ -48,9 +48,13 @@ class PaymentTest(TestCase):
     def setUpTestData(cls):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.payment = Payment.objects.create(
-            amount=10, paid_by=cls.member, processed_by=cls.member,
+            amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.TPAY
         )
         cls.batch = Batch.objects.create()
+
+    def setUp(self) -> None:
+        self.batch.processed = False
+        self.batch.save()
 
     def test_get_admin_url(self):
         """
@@ -73,28 +77,43 @@ class PaymentTest(TestCase):
 
         b = Batch.objects.create()
         self.payment.batch = b
-        self.payment.save()
-
-        self.assertEqual(self.payment.batch, self.batch)
+        with self.assertRaises(ValidationError):
+            self.payment.save()
 
     def test_clean(self):
         """
-        Tests that non thalia pay payments cannot be added to a batch
+        Tests the model clean functionality
         """
-        for payment_type in [Payment.CASH, Payment.CARD, Payment.WIRE]:
-            self.payment.type = payment_type
-            self.payment.batch = self.batch
-            with self.assertRaises(ValidationError):
+        with self.subTest("Test that only Thalia Pay can be added to a batch"):
+            for payment_type in [Payment.CASH, Payment.CARD, Payment.WIRE]:
+                self.payment.type = payment_type
+                self.payment.batch = self.batch
+                with self.assertRaises(ValidationError):
+                    self.payment.clean()
+
+            for payment_type in [Payment.CASH, Payment.CARD, Payment.WIRE]:
+                self.payment.type = payment_type
+                self.payment.batch = None
                 self.payment.clean()
 
-        for payment_type in [Payment.CASH, Payment.CARD, Payment.WIRE]:
-            self.payment.type = payment_type
-            self.payment.batch = None
+            self.payment.type = Payment.TPAY
+            self.payment.batch = self.batch
             self.payment.clean()
 
-        self.payment.type = Payment.TPAY
-        self.payment.batch = self.batch
-        self.payment.clean()
+        with self.subTest("Block payment change with when batch is processed"):
+            batch = Batch.objects.create()
+            payment = Payment.objects.create(
+                amount=10,
+                paid_by=self.member,
+                processed_by=self.member,
+                batch=batch,
+                type=Payment.TPAY,
+            )
+            batch.processed = True
+            batch.save()
+            payment.amount = 5
+            with self.assertRaises(ValidationError):
+                payment.clean()
 
     def test_str(self) -> None:
         """
@@ -109,7 +128,6 @@ class BatchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user1 = Member.objects.create(
-            pk=1,
             username="test1",
             first_name="Test1",
             last_name="Example",
@@ -117,7 +135,6 @@ class BatchModelTest(TestCase):
             is_staff=False,
         )
         cls.user2 = Member.objects.create(
-            pk=2,
             username="test2",
             first_name="Test2",
             last_name="Example",
@@ -125,20 +142,24 @@ class BatchModelTest(TestCase):
             is_staff=True,
         )
 
+    def setUp(self):
+        self.user1.refresh_from_db()
+        self.user2.refresh_from_db()
+
     def test_start_date_batch(self) -> None:
         batch = Batch.objects.create(id=1)
-        payment1 = Payment.objects.create(
+        Payment.objects.create(
+            created_at=timezone.now() + datetime.timedelta(days=1),
             type=Payment.TPAY,
             amount=37,
-            processing_date=timezone.now() + datetime.timedelta(days=1),
             paid_by=self.user1,
             processed_by=self.user2,
             batch=batch,
         )
-        payment2 = Payment.objects.create(
+        Payment.objects.create(
+            created_at=timezone.now(),
             type=Payment.TPAY,
             amount=36,
-            processing_date=timezone.now(),
             paid_by=self.user1,
             processed_by=self.user2,
             batch=batch,
@@ -147,18 +168,18 @@ class BatchModelTest(TestCase):
 
     def test_end_date_batch(self) -> None:
         batch = Batch.objects.create(id=1)
-        payment1 = Payment.objects.create(
+        Payment.objects.create(
+            created_at=timezone.now() + datetime.timedelta(days=1),
             type=Payment.TPAY,
             amount=37,
-            processing_date=timezone.now() + datetime.timedelta(days=1),
             paid_by=self.user1,
             processed_by=self.user2,
             batch=batch,
         )
-        payment2 = Payment.objects.create(
+        Payment.objects.create(
+            created_at=timezone.now(),
             type=Payment.TPAY,
             amount=36,
-            processing_date=timezone.now(),
             paid_by=self.user1,
             processed_by=self.user2,
             batch=batch,
@@ -167,7 +188,6 @@ class BatchModelTest(TestCase):
 
     def test_description_batch(self) -> None:
         batch = Batch.objects.create(id=1)
-        now = timezone.now()
         self.assertEqual(
             batch.description, f"Thalia Pay payments for 2019-1",
         )
@@ -180,18 +200,18 @@ class BatchModelTest(TestCase):
 
     def test_total_amount_batch(self) -> None:
         batch = Batch.objects.create(id=1)
-        payment1 = Payment.objects.create(
+        Payment.objects.create(
+            created_at=timezone.now() + datetime.timedelta(days=1),
             type=Payment.TPAY,
             amount=37,
-            processing_date=timezone.now() + datetime.timedelta(days=1),
             paid_by=self.user1,
             processed_by=self.user2,
             batch=batch,
         )
-        payment2 = Payment.objects.create(
+        Payment.objects.create(
+            created_at=timezone.now(),
             type=Payment.TPAY,
             amount=36,
-            processing_date=timezone.now(),
             paid_by=self.user1,
             processed_by=self.user2,
             batch=batch,
@@ -201,17 +221,17 @@ class BatchModelTest(TestCase):
     def test_count_batch(self) -> None:
         batch = Batch.objects.create(id=1)
         Payment.objects.create(
+            created_at=timezone.now() + datetime.timedelta(days=1),
             type=Payment.TPAY,
             amount=37,
-            processing_date=timezone.now() + datetime.timedelta(days=1),
             paid_by=self.user1,
             processed_by=self.user2,
             batch=batch,
         )
         Payment.objects.create(
+            created_at=timezone.now(),
             type=Payment.TPAY,
             amount=36,
-            processing_date=timezone.now(),
             paid_by=self.user1,
             processed_by=self.user2,
             batch=batch,
