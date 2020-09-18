@@ -347,9 +347,8 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
             formfield_callback=partial(self.formfield_for_dbfield, request=request, obj=obj), 
             **kwargs)
 
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
+    def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
         """Customise the formfields of event and member"""
-        obj = kwargs.pop("obj", None)
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name in ("event", "member"):
             # Disable add/change/delete buttons
