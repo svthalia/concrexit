@@ -4,21 +4,20 @@ import django.core.validators
 from django.db import migrations, models
 
 
+def set_contribution_fields(apps, schema_editor):
+    """On this migration, set the empty contribution fields to the paid contribution."""
+    Entry = apps.get_model('registrations', 'Entry')
+    for entry in Entry.objects.all():
+        if entry.payment and not entry.contribution:
+            entry.contribution = entry.payment.amount
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('registrations', '0022_auto_20200325_2045'),
+        ('registrations', '0022_remove_registration_language'),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='entry',
-            name='contribution',
-            field=models.FloatField(validators=[django.core.validators.MinValueValidator(7.5)], verbose_name='contribution'),
-        ),
-        migrations.AlterField(
-            model_name='entry',
-            name='payment',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='registrations_entry', to='payments.Payment'),
-        ),
+        migrations.RunPython(set_contribution_fields)
     ]
