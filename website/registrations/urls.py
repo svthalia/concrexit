@@ -54,6 +54,13 @@ urlpatterns = [
                     ),
                     name="renew-success",
                 ),
+                path(
+                    "renew/completed/",
+                    TemplateView.as_view(
+                        template_name="registrations/renewal_completed.html"
+                    ),
+                    name="renewal-completed",
+                ),
             ]
         ),
     ),
