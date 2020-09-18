@@ -246,7 +246,7 @@ MEMBERSHIP_PRICES = {
 }
 
 # Window during which a payment can be deleted again
-PAYMENT_CHANGE_WINDOW = os.environ.get("PAYMENTS_CHANGE_WINDOW", 10 * 60)
+PAYMENT_CHANGE_WINDOW = int(os.environ.get("PAYMENTS_CHANGE_WINDOW", 10 * 60))
 
 THUMBNAIL_SIZES = {
     "small": "150x150",
