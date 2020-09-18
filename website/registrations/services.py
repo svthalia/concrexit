@@ -11,6 +11,8 @@ from django.utils import timezone
 
 import members
 from members.models import Membership, Profile, Member
+from payments.models import Payment, BankAccount
+from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -173,9 +175,44 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
             )
 
         entry.save()
+
+        entry.refresh_from_db()
+
+        if (
+            entry.registration.bank_account
+            and entry.registration.pay_with_tpay
+            and entry.registration.bank_account.mandate_no
+        ):
+            process_tpay_registration(entry.registration)
+            process_entry_save(entry)
+
         updated_entries.append(entry.pk)
 
     return len(updated_entries)
+
+
+def process_tpay_registration(registration: Registration) -> None:
+    """
+    If a registration is labeled to be paid with Thalia Pay, add the payment.
+    This does not use create_payment as the tpay_enabled check cannot be
+    performed.
+
+    :param registration: The registration that should be processed
+    :type registration: Registration
+    """
+    if not registration:
+        return
+
+    if not (registration.bank_account and registration.bank_account.mandate_no):
+        return
+
+    registration.payment = Payment.objects.create(
+        amount=registration.payment_amount,
+        notes=registration.payment_notes,
+        topic=registration.payment_topic,
+        type=Payment.TPAY,
+    )
+    registration.save()
 
 
 def revert_entry(user_id: int, entry: Entry) -> None:
@@ -394,6 +431,9 @@ def execute_data_minimisation(dry_run=False):
         & Q(updated_at__lt=deletion_period)
     )
 
+    bank_accounts = BankAccount.objects.filter(Q(registration__in=objects))
+
     if dry_run:
         return objects.count()
+    bank_accounts.delete()
     return objects.delete()[0]

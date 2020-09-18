@@ -74,6 +74,7 @@ class RegistrationAdmin(admin.ModelAdmin):
                     "status",
                     "payment",
                     "bank_account",
+                    "pay_with_tpay",
                     "remarks",
                 )
             },

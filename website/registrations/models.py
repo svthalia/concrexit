@@ -277,7 +277,17 @@ class Registration(Entry):
     # ---- Bank account -----
 
     bank_account = models.ForeignKey(
-        BankAccount, blank=True, null=True, on_delete=models.SET_NULL
+        BankAccount, blank=True, null=True, on_delete=models.SET_NULL,
+    )
+
+    pay_with_tpay = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="If selected, when the registration is accepted, immediately a "
+        "Thalia Pay payment will be created for this user and the registration "
+        "will be completed directly. This can only be selected if a bank "
+        "account is added with direct debit authorization.",
     )
 
     @property
@@ -342,6 +352,17 @@ class Registration(Entry):
 
         if self.programme is None and self.membership_type != Membership.BENEFACTOR:
             errors.update({"programme": _("This field is required.")})
+
+        if self.pay_with_tpay == True and (
+            not self.bank_account or not self.bank_account.mandate_no
+        ):
+            errors.update(
+                {
+                    "pay_with_tpay": _(
+                        "You can only pay with Thalia Pay if you add a bank account for direct debits.."
+                    )
+                }
+            )
 
         if errors:
             raise ValidationError(errors)
