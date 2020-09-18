@@ -4,7 +4,6 @@ from unittest.mock import Mock, MagicMock
 from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import SuspiciousOperation
 from django.test import Client, TestCase, override_settings
 
 from members.models import Member, Profile
@@ -134,7 +133,7 @@ class PaymentAdminViewTest(TestCase):
 
         with self.subTest("Send post with failed processing"):
             create_payment.return_value = None
-            response = self.client.post(url, {"type": payment_type,},)
+            response = self.client.post(url, {"type": payment_type,})
 
             messages_error.assert_called_once_with(
                 response.wsgi_request, "Could not pay MockPayable.",

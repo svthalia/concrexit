@@ -4,7 +4,6 @@ from django.test import TestCase
 from django.utils import timezone
 
 from members.models import Membership
-from payments.models import Payment
 from registrations.models import Registration, Entry
 
 
@@ -27,7 +26,6 @@ class ServicesTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1).date(),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
             contribution=7.5,
             membership_type=Membership.MEMBER,

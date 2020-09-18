@@ -23,7 +23,7 @@ class PaymentAdminView(View):
     View that creates a payment
     """
 
-    def post(self, request, *args, app_label, model_name, payable_model, **kwargs):
+    def post(self, request, *args, app_label, model_name, payable, **kwargs):
         if "type" not in request.POST:
             raise SuspiciousOperation("Missing POST parameters")
 
@@ -33,22 +33,22 @@ class PaymentAdminView(View):
             raise DisallowedRedirect
 
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
-        payable_model = payable_model.objects.get(pk=payable_model)
+        payable_obj = payable_model.objects.get(pk=payable)
 
         result = services.create_payment(
-            payable_model, request.member, request.POST["type"]
+            payable_obj, request.member, request.POST["type"]
         )
-        payable_model.save()
+        payable_obj.save()
 
         if result:
             messages.success(
-                request, _("Successfully paid %s.") % model_ngettext(payable_model, 1),
+                request, _("Successfully paid %s.") % model_ngettext(payable_obj, 1),
             )
         else:
             messages.error(
-                request, _("Could not pay %s.") % model_ngettext(payable_model, 1),
+                request, _("Could not pay %s.") % model_ngettext(payable_obj, 1),
             )
-            return redirect(f"admin:{app_label}_{model_name}_change", payable_model.pk)
+            return redirect(f"admin:{app_label}_{model_name}_change", payable_obj.pk)
 
         if "next" in request.POST:
             return redirect(request.POST["next"])
