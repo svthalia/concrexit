@@ -90,8 +90,12 @@ class PaymentAdmin(admin.ModelAdmin):
 
     @staticmethod
     def _member_link(member: Member) -> str:
-        return format_html(
-            "<a href='{}'>{}</a>", member.get_absolute_url(), member.get_full_name()
+        return (
+            format_html(
+                "<a href='{}'>{}</a>", member.get_absolute_url(), member.get_full_name()
+            )
+            if member
+            else None
         )
 
     def paid_by_link(self, obj: Payment) -> str:
