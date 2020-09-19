@@ -16,11 +16,13 @@ class PaymentWidgetTest(TestCase):
     def setUpTestData(cls):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.payment = Payment.objects.create(
-            amount=10, paid_by=cls.member, processed_by=cls.member,
+            amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.CASH
         )
 
     def test_get_context(self):
-        obj = Payment.objects.create(amount=8)
+        obj = Payment.objects.create(
+            amount=8, paid_by=self.member, processed_by=self.member, type=Payment.CASH
+        )
         widget = PaymentWidget(obj=obj)
 
         with self.subTest("With object only"):

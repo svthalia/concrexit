@@ -69,7 +69,7 @@ class ServicesTest(TestCase):
             existing_payment.created_at = timezone.now() - timezone.timedelta(
                 seconds=settings.PAYMENT_CHANGE_WINDOW + 60
             )
-            with self.assertRaises(PermissionError):
+            with self.assertRaises(PaymentError):
                 services.delete_payment(payable)
             self.assertIsNotNone(payable.payment)
 

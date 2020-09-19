@@ -1,5 +1,7 @@
 """The models defined by the payments package"""
+import datetime
 import uuid
+from decimal import Decimal
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -68,8 +70,33 @@ class Payment(models.Model):
         null=True,
     )
 
+    batch = models.ForeignKey(
+        "Batch", models.PROTECT, related_name="payments_set", blank=True, null=True,
+    )
+
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
     topic = models.CharField(verbose_name=_("topic"), max_length=255, default="Unknown")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._batch = self.batch
+
+    def save(self, **kwargs):
+        self.clean()
+        self._batch = self.batch
+        super().save(**kwargs)
+
+    def clean(self):
+        if self.type != self.TPAY and self.batch is not None:
+            raise ValidationError(
+                {"batch": _("Non Thalia Pay payments cannot be added to a batch.")}
+            )
+        if self._batch and self._batch.processed:
+            raise ValidationError(
+                _("Cannot change a payment that is part of a processed batch")
+            )
+        if self.batch and self.batch.processed:
+            raise ValidationError(_("Cannot add a payment to a processed batch"))
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
@@ -85,6 +112,74 @@ class Payment(models.Model):
 
     def __str__(self):
         return _("Payment of {amount}").format(amount=self.amount)
+
+
+def _default_batch_description():
+    now = timezone.now()
+    return f"Thalia Pay payments for {now.year}-{now.month}"
+
+
+class Batch(models.Model):
+    """
+    Describes a batch of payments for export
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    processed = models.BooleanField(verbose_name=_("processing status"), default=False,)
+
+    processing_date = models.DateTimeField(
+        verbose_name=_("processing date"), blank=True, null=True,
+    )
+
+    description = models.TextField(
+        verbose_name=_("description"), default=_default_batch_description,
+    )
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        if self.processed and not self.processing_date:
+            self.processing_date = timezone.now()
+        super().save(force_insert, force_update, using, update_fields)
+
+    def get_absolute_url(self):
+        return reverse("admin:payments_batch_change", args=[str(self.pk)])
+
+    def start_date(self) -> datetime.datetime:
+        return self.payments_set.earliest("created_at").created_at
+
+    start_date.admin_order_field = "first payment in batch"
+    start_date.short_description = _("first payment in batch")
+
+    def end_date(self) -> datetime.datetime:
+        return self.payments_set.latest("created_at").created_at
+
+    end_date.admin_order_field = "last payment in batch"
+    end_date.short_description = _("last payment in batch")
+
+    def total_amount(self) -> Decimal:
+        return sum([payment.amount for payment in self.payments_set.all()])
+
+    total_amount.admin_order_field = "total amount"
+    total_amount.short_description = _("total amount")
+
+    def payments_count(self) -> Decimal:
+        return self.payments_set.all().count()
+
+    payments_count.admin_order_field = "payments count"
+    payments_count.short_description = _("payments count")
+
+    class Meta:
+        verbose_name = _("batch")
+        verbose_name_plural = _("batches")
+        permissions = (("process_batches", _("Process batch")),)
+
+    def __str__(self):
+        return (
+            f"{self.description} "
+            f"({'processed' if self.processed else 'not processed'})"
+        )
 
 
 class BankAccount(models.Model):

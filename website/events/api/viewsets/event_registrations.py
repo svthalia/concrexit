@@ -8,6 +8,7 @@ from events import services
 from events.api.serializers import EventRegistrationSerializer
 from events.exceptions import RegistrationError
 from events.models import EventRegistration
+from payments.exceptions import PaymentError
 
 
 class EventRegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
@@ -41,24 +42,29 @@ class EventRegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMi
         return super().get_serializer(*args, **kwargs)
 
     def perform_update(self, serializer):
-        registration = serializer.instance
+        try:
+            registration = serializer.instance
 
-        member = self.request.member
-        if (
-            member
-            and member.has_perm("events.change_registration")
-            and services.is_organiser(member, registration.event)
-        ):
-            services.update_registration_by_organiser(
-                registration, self.request.member, serializer.validated_data
+            member = self.request.member
+            if (
+                member
+                and member.has_perm("events.change_registration")
+                and services.is_organiser(member, registration.event)
+            ):
+                services.update_registration_by_organiser(
+                    registration, self.request.member, serializer.validated_data
+                )
+
+            services.update_registration(
+                registration=registration, field_values=serializer.field_values()
             )
-
-        services.update_registration(
-            registration=registration, field_values=serializer.field_values()
-        )
-        serializer.information_fields = services.registration_fields(
-            serializer.context["request"], registration=registration
-        )
+            serializer.information_fields = services.registration_fields(
+                serializer.context["request"], registration=registration
+            )
+        except RegistrationError as e:
+            raise PermissionDenied(detail=e)
+        except PaymentError as e:
+            raise PermissionDenied(detail=e)
 
     def destroy(self, request, pk=None, **kwargs):
         registration = self.get_object()

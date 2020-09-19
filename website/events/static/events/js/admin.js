@@ -40,11 +40,17 @@ django.jQuery(function () {
             select.val(data.payment);
             $('table').trigger('update');
         }, function(xhr) {
+            select.val(payment_previous);
+
+            if (payment_previous === none) {
+                select.removeClass('paid');
+            } else {
+                select.addClass('paid');
+            }
+
             var data = $.parseJSON(xhr.responseText);
-            if (data.message !== undefined) {
-                alert(data.message);
-            } else if (data.payment !== undefined) {
-                alert(data.payment.join('\n'));
+            if (data.detail !== undefined) {
+                alert(data.detail);
             }
         });
     });

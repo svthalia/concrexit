@@ -33,6 +33,7 @@ def create_payment(
         payable.payment.notes = payable.payment_notes
         payable.payment.topic = payable.payment_topic
         payable.payment.paid_by = payable.payment_payer
+        payable.payment.processed_by = processed_by
         payable.payment.type = pay_type
         payable.payment.save()
     else:
@@ -57,7 +58,7 @@ def delete_payment(payable: Payable):
     if payment.created_at < timezone.now() - timezone.timedelta(
         seconds=settings.PAYMENT_CHANGE_WINDOW
     ):
-        raise PermissionError(_("You are not authorized to delete this payment."))
+        raise PaymentError(_("You are not authorized to delete this payment."))
 
     payable.payment = None
     payable.save()

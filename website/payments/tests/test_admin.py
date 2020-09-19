@@ -6,6 +6,7 @@ from django.contrib.admin import AdminSite
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpRequest
 from django.test import (
     TestCase,
@@ -22,7 +23,10 @@ from freezegun import freeze_time
 from members.models import Member, Profile
 from payments import admin
 from payments.admin import ValidAccountFilter
-from payments.models import Payment, BankAccount
+from payments.forms import BatchPaymentInlineAdminForm
+from payments.models import Payment, BankAccount, Batch
+
+from payments.admin import PaymentAdmin
 
 
 class GlobalAdminTest(SimpleTestCase):
@@ -68,19 +72,27 @@ class PaymentAdminTest(TestCase):
             content_type__model="payment", codename="process_payments"
         )
         self.user.user_permissions.remove(process_perm)
+        process_perm_batch = Permission.objects.get(
+            content_type__model="batch", codename="process_batches"
+        )
+        self.user.user_permissions.remove(process_perm_batch)
         self.client.logout()
         self.client.force_login(self.user)
 
-    def _give_user_permissions(self) -> None:
+    def _give_user_permissions(self, batch_permissions=True) -> None:
         """
         Helper to give the user permissions
         """
         content_type = ContentType.objects.get_for_model(Payment)
-        permissions = Permission.objects.filter(
-            content_type__app_label=content_type.app_label,
-        )
-        for p in permissions:
+        permissions_p = content_type.permission_set.all()
+        content_type = ContentType.objects.get_for_model(Batch)
+        permissions_b = content_type.permission_set.all()
+        for p in permissions_p:
             self.user.user_permissions.add(p)
+        if batch_permissions:
+            for p in permissions_b:
+                self.user.user_permissions.add(p)
+
         self.user.save()
 
         self.client.logout()
@@ -90,29 +102,282 @@ class PaymentAdminTest(TestCase):
         """
         Tests that the right link for the paying user is returned
         """
-        payment = Payment.objects.create(amount=7.5, paid_by=self.user)
+        payment = Payment.objects.create(
+            amount=7.5, paid_by=self.user, processed_by=self.user, type=Payment.CASH
+        )
 
         self.assertEqual(
             self.admin.paid_by_link(payment),
             f"<a href='/members/profile/{self.user.pk}'>" f"Test1 Example</a>",
         )
 
-        payment2 = Payment.objects.create(amount=7.5)
-        self.assertEqual(self.admin.paid_by_link(payment2), "-")
-
     def test_processed_by_link(self) -> None:
         """
         Tests that the right link for the processing user is returned
         """
-        payment1 = Payment.objects.create(amount=7.5, processed_by=self.user)
+        payment1 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
+        )
 
         self.assertEqual(
             self.admin.processed_by_link(payment1),
             f"<a href='/members/profile/{self.user.pk}'>" f"Test1 Example</a>",
         )
 
-        payment2 = Payment.objects.create(amount=7.5)
-        self.assertEqual(self.admin.processed_by_link(payment2), "-")
+    def test_delete_model_succeed(self) -> None:
+        batch = Batch.objects.create()
+        payment = Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        response = self.client.post(
+            reverse("admin:payments_payment_delete", args=(payment.id,)),
+            {"post": "yes"},  # Add data to confirm deletion in admin
+        )
+        self.assertFalse(Payment.objects.filter(id=payment.id).exists())
+
+    def test_delete_model_fail(self) -> None:
+        batch = Batch.objects.create()
+        payment = Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        batch.processed = True
+        batch.save()
+        response = self.client.post(
+            reverse("admin:payments_payment_delete", args=(payment.id,)),
+            {"post": "yes"},  # Add data to confirm deletion in admin
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Payment.objects.filter(id=payment.id).exists())
+
+    def test_delete_action_fail(self) -> None:
+        batch = Batch.objects.create()
+        batch_proc = Batch.objects.create()
+        Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch_proc,
+        )
+        batch_proc.processed = True
+        batch_proc.save()
+        self.client.post(
+            reverse("admin:payments_payment_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": Payment.objects.values_list("id", flat=True),
+                "post": "yes",
+            },
+        )
+        self.assertTrue(Payment.objects.filter(id=payment2.id).exists())
+
+    def test_delete_action_success(self) -> None:
+        batch = Batch.objects.create()
+        payment1 = Payment.objects.create(
+            amount=1,
+            processed_by=self.user,
+            paid_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            amount=1,
+            processed_by=self.user,
+            paid_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        self.client.post(
+            reverse("admin:payments_payment_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": Payment.objects.values_list("id", flat=True),
+                "post": "yes",
+            },
+        )
+        self.assertFalse(
+            Payment.objects.filter(id__in=[payment1.id, payment2.id]).exists()
+        )
+
+    def test_has_delete_permission_get(self) -> None:
+        payment = Payment.objects.create(
+            amount=10, paid_by=self.user, processed_by=self.user, type=Payment.CASH
+        )
+        request = self.factory.get(
+            reverse("admin:payments_payment_delete", args=(payment.id,))
+        )
+        request.user = self.user
+        self.admin.has_delete_permission(request)
+        self.assertTrue(Payment.objects.filter(id=payment.id).exists())
+
+    @freeze_time("2020-01-01")
+    def test_batch_link(self) -> None:
+        batch = Batch.objects.create(id=1)
+        payment1 = Payment.objects.create(
+            amount=7.5,
+            processed_by=self.user,
+            paid_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.TPAY
+        )
+        payment3 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.WIRE
+        )
+        self.assertEqual(
+            "<a href='/admin/payments/batch/1/change/'>Thalia Pay payments for 2020-1 (not processed)</a>",
+            str(self.admin.batch_link(payment1)),
+        )
+        self.assertEqual("No batch attached", self.admin.batch_link(payment2))
+        self.assertEqual("", self.admin.batch_link(payment3))
+
+    def test_add_to_new_batch(self) -> None:
+        p1 = Payment.objects.create(
+            amount=1, processed_by=self.user, paid_by=self.user, type=Payment.CARD
+        )
+        p2 = Payment.objects.create(
+            amount=2, processed_by=self.user, paid_by=self.user, type=Payment.CASH
+        )
+        p3 = Payment.objects.create(
+            amount=3, processed_by=self.user, paid_by=self.user, type=Payment.TPAY
+        )
+
+        change_url = reverse("admin:payments_payment_changelist")
+
+        self._give_user_permissions(batch_permissions=False)
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_new_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        )
+
+        for p in Payment.objects.all():
+            self.assertIsNone(p.batch)
+
+        self._give_user_permissions()
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_new_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        )
+
+        for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
+            self.assertIsNone(p.batch)
+
+        self.assertIsNotNone(Payment.objects.get(id=p3.id).batch.id)
+
+        self._give_user_permissions()
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_new_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2]],
+            },
+        )
+
+    def test_add_to_last_batch(self) -> None:
+        b = Batch.objects.create()
+        p1 = Payment.objects.create(
+            amount=1, processed_by=self.user, paid_by=self.user, type=Payment.CARD
+        )
+        p2 = Payment.objects.create(
+            amount=2, processed_by=self.user, paid_by=self.user, type=Payment.CASH
+        )
+        p3 = Payment.objects.create(
+            amount=3, processed_by=self.user, paid_by=self.user, type=Payment.TPAY
+        )
+
+        change_url = reverse("admin:payments_payment_changelist")
+
+        self._give_user_permissions(batch_permissions=False)
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        )
+
+        for p in Payment.objects.all():
+            self.assertIsNone(p.batch)
+
+        self._give_user_permissions()
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        )
+
+        for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
+            self.assertIsNone(p.batch)
+
+        self.assertEqual(Payment.objects.get(id=p3.id).batch.id, b.id)
+
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2]],
+            },
+        )
+
+        b.processed = True
+        b.save()
+
+        self.client.post(
+            change_url,
+            {"action": "add_to_last_batch", "index": 1, "_selected_action": [p3.id],},
+        )
+
+    def test_add_to_last_batch_no_batch(self):
+        p3 = Payment.objects.create(
+            amount=3, processed_by=self.user, paid_by=self.user, type=Payment.TPAY
+        )
+
+        change_url = reverse("admin:payments_payment_changelist")
+
+        self._give_user_permissions()
+
+        try:
+            self.client.post(
+                change_url,
+                {
+                    "action": "add_to_last_batch",
+                    "index": 1,
+                    "_selected_action": [p3.id],
+                },
+            )
+        except ObjectDoesNotExist:
+            self.fail("Add to last batch should work without a batch")
 
     def test_get_actions(self) -> None:
         """
@@ -128,7 +393,8 @@ class PaymentAdminTest(TestCase):
 
         actions = self.admin.get_actions(response.wsgi_request)
         self.assertCountEqual(
-            actions, ["delete_selected", "export_csv",],
+            actions,
+            ["delete_selected", "add_to_new_batch", "add_to_last_batch", "export_csv",],
         )
 
     def test_get_readonly_fields(self) -> None:
@@ -137,7 +403,7 @@ class PaymentAdminTest(TestCase):
         """
         with self.subTest("No object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), None)
-            self.assertEqual(urls, ("created_at", "type", "processed_by"))
+            self.assertEqual(urls, ("created_at", "type", "processed_by", "batch"))
 
         with self.subTest("With object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), Payment())
@@ -151,6 +417,7 @@ class PaymentAdminTest(TestCase):
                     "type",
                     "topic",
                     "notes",
+                    "batch",
                 ),
             )
 
@@ -172,9 +439,6 @@ class PaymentAdminTest(TestCase):
         Payment.objects.create(
             amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
         ).save()
-        Payment.objects.create(
-            amount=9, type=Payment.CASH, notes="This is a test"
-        ).save()
 
         response = self.admin.export_csv(HttpRequest(), Payment.objects.all())
 
@@ -184,9 +448,27 @@ class PaymentAdminTest(TestCase):
             f"7.50,Card payment,Test1 Example,{self.user.pk},Test1 Example,"
             f"\r\n2019-01-01 00:00:00+00:00,17.50,"
             f"Cash payment,Test1 Example,{self.user.pk},Test1 Example,"
-            f"\r\n2019-01-01 00:00:00+00:00,9.00,Cash payment,-,-,-,This is a "
-            f"test\r\n",
+            f"\r\n",
             response.content.decode("utf-8"),
+        )
+
+    def test_formfield_for_foreignkey(self) -> None:
+        b1 = Batch.objects.create(id=1)
+        b2 = Batch.objects.create(id=2, processed=True)
+        p1 = Payment.objects.create(
+            amount=5, paid_by=self.user, processed_by=self.user, type=Payment.TPAY
+        )
+        response = self.client.get(
+            reverse("admin:payments_payment_change", args=(p1.id,))
+        )
+        self.assertCountEqual(
+            [
+                int(x.id)
+                for x in response.context_data["adminform"]
+                .form.fields["batch"]
+                .choices.queryset
+            ],
+            [b1.id],
         )
 
 
@@ -277,6 +559,174 @@ class ValidAccountFilterTest(TestCase):
             result = account_filter.queryset(None, BankAccount.objects.all())
 
             self.assertEqual(result.count(), 3)
+
+
+@freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True)
+class BatchAdminTest(TestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user = Member.objects.create(
+            username="test1",
+            first_name="Test1",
+            last_name="Example",
+            email="test1@example.org",
+            is_staff=True,
+            is_superuser=True,
+        )
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.client.force_login(self.user)
+        self.site = AdminSite()
+        self.admin = admin.BatchAdmin(Batch, admin_site=self.site)
+        self.rf = RequestFactory()
+
+        self.user.refresh_from_db()
+
+        self._give_user_permissions()
+        process_perm = Permission.objects.get(
+            content_type__model="payment", codename="process_payments"
+        )
+        self.user.user_permissions.remove(process_perm)
+        process_perm_batch = Permission.objects.get(
+            content_type__model="batch", codename="process_batches"
+        )
+        self.user.user_permissions.remove(process_perm_batch)
+        self.client.logout()
+        self.client.force_login(self.user)
+
+    def _give_user_permissions(self, batch_permissions=True) -> None:
+        """
+        Helper to give the user permissions
+        """
+        content_type = ContentType.objects.get_for_model(Payment)
+        permissions_p = content_type.permission_set.all()
+        content_type = ContentType.objects.get_for_model(Batch)
+        permissions_b = content_type.permission_set.all()
+        for p in permissions_p:
+            self.user.user_permissions.add(p)
+        if batch_permissions:
+            for p in permissions_b:
+                self.user.user_permissions.add(p)
+
+        self.user.save()
+
+        self.client.logout()
+        self.client.force_login(self.user)
+
+    def test_delete_model_succeed(self) -> None:
+        batch = Batch.objects.create()
+        self.client.post(
+            reverse("admin:payments_batch_delete", args=(batch.id,)),
+            {"post": "yes"},  # Add data to confirm deletion in admin
+        )
+        self.assertFalse(Batch.objects.filter(id=batch.id).exists())
+
+    def test_delete_model_fail(self) -> None:
+        batch = Batch.objects.create(processed=True)
+        response = self.client.post(
+            reverse("admin:payments_batch_delete", args=(batch.id,)), {"post": "yes"},
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Batch.objects.filter(id=batch.id).exists())
+
+    def test_delete_action_fail(self) -> None:
+        Batch.objects.create()
+        batch_proc = Batch.objects.create(processed=True)
+        self.client.post(
+            reverse("admin:payments_batch_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": Batch.objects.values_list("id", flat=True),
+                "post": "yes",
+            },
+        )
+        self.assertTrue(Batch.objects.filter(id=batch_proc.id).exists())
+
+    def test_delete_action_success(self) -> None:
+        batch = Batch.objects.create()
+        batch_proc = Batch.objects.create()
+        self.client.post(
+            reverse("admin:payments_batch_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": Batch.objects.values_list("id", flat=True),
+                "post": "yes",
+            },
+        )
+        self.assertFalse(
+            Batch.objects.filter(id__in=[batch_proc.id, batch.id]).exists()
+        )
+
+    def test_has_delete_permission_get(self) -> None:
+        batch = Batch.objects.create()
+        request = self.rf.get(reverse("admin:payments_batch_delete", args=(batch.id,)))
+        request.user = self.user
+        self.admin.has_delete_permission(request)
+        self.assertTrue(Batch.objects.filter(id=batch.id).exists())
+
+    def test_get_readonly_fields(self) -> None:
+        b = Batch.objects.create()
+        self.assertCountEqual(
+            self.admin.get_readonly_fields(None, b),
+            ["processed", "processing_date", "total_amount",],
+        )
+
+        b.processed = True
+        b.save()
+        self.assertCountEqual(
+            self.admin.get_readonly_fields(None, b),
+            ["description", "processed", "processing_date", "total_amount",],
+        )
+
+    def test_save_formset(self) -> None:
+        batch = Batch.objects.create()
+        batch_processed = Batch.objects.create()
+        p1 = Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        p2 = Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch_processed,
+        )
+        batch_processed.processed = True
+        batch_processed.save()
+
+        formset = BatchPaymentInlineAdminForm()
+        formset.save = MagicMock(return_value=Payment.objects.all())
+        formset.save_m2m = MagicMock()
+
+        with self.assertRaises(ValidationError):
+            self.admin.save_formset(None, None, formset, None)
+
+        batch_processed.processed = False
+        batch_processed.save()
+
+        formset.save.return_value = Payment.objects.all()
+        self.admin.save_formset(None, None, formset, None)
+
+    @mock.patch("django.contrib.admin.ModelAdmin.changeform_view")
+    def test_change_form_view(self, changeform_view_mock) -> None:
+        b = Batch.objects.create(processed=True)
+        request = self.rf.get(f"/admin/payments/batch/{b.id}/change/")
+        request.user = self.user
+        self.admin.changeform_view(request, b.id)
+
+        changeform_view_mock.assert_called_once_with(request, b.id, "", {"batch": b})
+
+        changeform_view_mock.reset_mock()
+
+        self.admin.changeform_view(request)
+
+        changeform_view_mock.assert_called_once_with(request, None, "", {"batch": None})
 
 
 @freeze_time("2019-01-01")

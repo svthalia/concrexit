@@ -1,6 +1,6 @@
 from django import forms
 
-from payments.models import BankAccount
+from payments.models import BankAccount, Payment
 from payments.widgets import SignatureWidget
 from django.utils.translation import gettext as _
 
@@ -56,3 +56,25 @@ class PaymentCreateForm(forms.Form):
 
     class Meta:
         fields = "__all__"
+
+
+class BatchPaymentInlineAdminForm(forms.ModelForm):
+    """
+    Custom admin form for Payments model
+    for the Batch inlines to add remove
+    from batch option
+    """
+
+    remove_batch = forms.BooleanField(
+        required=False, label=_("Remove payment from batch")
+    )
+
+    class Meta:
+        fields = (
+            "topic",
+            "paid_by",
+            "amount",
+            "created_at",
+            "notes",
+        )
+        model = Payment
