@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     # Dependencies
+    "oauth2_provider",
+    "corsheaders",
     "bootstrap4",
     "tinymce",
     "rest_framework",
@@ -97,6 +99,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -147,6 +150,14 @@ LOGIN_URL = "/user/login/"
 
 LOGIN_REDIRECT_URL = "/"
 
+# OAuth configuration
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
+AUTHORIZATION_CODE_EXPIRE_SECONDS = 600
+if not DEBUG:
+    ALLOWED_REDIRECT_URI_SCHEMES = ["https"]
+
 # Email settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
@@ -180,6 +191,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
