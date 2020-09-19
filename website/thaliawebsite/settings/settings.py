@@ -150,13 +150,19 @@ LOGIN_URL = "/user/login/"
 
 LOGIN_REDIRECT_URL = "/"
 
-# OAuth configuration
-
+# Cors configuration
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
-AUTHORIZATION_CODE_EXPIRE_SECONDS = 600
-if not DEBUG:
-    ALLOWED_REDIRECT_URI_SCHEMES = ["https"]
+
+# OAuth configuration
+OAUTH2_PROVIDER = {
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["https"] if not DEBUG else ["http", "https"],
+    "SCOPES": {
+        "read": "Read scope",
+        "write": "Write scope",
+        "members:read": "Members read scope",
+    },
+}
 
 # Email settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
