@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='entry',
             name='contribution',
-            field=models.FloatField(validators=[django.core.validators.MinValueValidator(7.5)], verbose_name='contribution'),
+            field=models.FloatField(validators=[django.core.validators.MinValueValidator(7.5)], default=7.5, verbose_name='contribution'),
         ),
         migrations.AlterField(
             model_name='entry',

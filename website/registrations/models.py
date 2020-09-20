@@ -69,6 +69,7 @@ class Entry(models.Model, Payable):
     contribution = models.FloatField(
         verbose_name=_("contribution"),
         validators=[MinValueValidator(settings.MEMBERSHIP_PRICES["year"])],
+        default=settings.MEMBERSHIP_PRICES["year"],
         blank=False,
         null=False,
     )
