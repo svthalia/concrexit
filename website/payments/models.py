@@ -219,7 +219,10 @@ class BankAccount(models.Model):
     valid_from = models.DateField(verbose_name=_("valid from"), blank=True, null=True,)
 
     valid_until = models.DateField(
-        verbose_name=_("valid until"), blank=True, null=True, help_text="Users can revoke the mandate at any time, as long as they do not have any Thalia Pay payments that have not been processed. If you revoke a mandate, make sure to check that all unprocessed Thalia Pay payments are paid in an alternative manner."
+        verbose_name=_("valid until"),
+        blank=True,
+        null=True,
+        help_text="Users can revoke the mandate at any time, as long as they do not have any Thalia Pay payments that have not been processed. If you revoke a mandate, make sure to check that all unprocessed Thalia Pay payments are paid in an alternative manner.",
     )
 
     signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
@@ -276,12 +279,9 @@ class BankAccount(models.Model):
 
     @property
     def can_be_revoked(self):
-        return not (
-            len(self.owner.paid_payment_set.filter(
-                (Q(batch__isnull=True) | (Q(batch__processed=False)))
-                & Q(type=Payment.TPAY)
-            )) > 0
-        )
+        return not self.owner.paid_payment_set.filter(
+            (Q(batch__isnull=True) | Q(batch__processed=False)) & Q(type=Payment.TPAY)
+        ).exists()
 
     @property
     def valid(self):

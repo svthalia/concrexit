@@ -35,8 +35,7 @@ class BankAccountUserRevokeForm(forms.ModelForm):
     """
 
     def is_valid(self):
-        if not self.instance.can_be_revoked:
-            return False
+        return self.instance.can_be_revoked
 
     class Meta:
         fields = ("valid_until",)

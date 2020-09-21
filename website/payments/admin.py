@@ -451,8 +451,12 @@ class BankAccountAdmin(admin.ModelAdmin):
         "valid_from",
         "valid_until",
         "signature",
+        "can_be_revoked",
     )
-    readonly_fields = ("created_at",)
+    readonly_fields = (
+        "created_at",
+        "can_be_revoked",
+    )
     search_fields = ("owner__username", "owner__first_name", "owner__last_name", "iban")
     autocomplete_fields = ("owner",)
     actions = ["set_last_used"]
