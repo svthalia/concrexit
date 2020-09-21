@@ -388,6 +388,13 @@ class BatchAdmin(admin.ModelAdmin):
                 name="payments_batch_export",
             ),
             path(
+                "<uuid:pk>/export-topic/",
+                self.admin_site.admin_view(
+                    admin_views.BatchTopicExportAdminView.as_view()
+                ),
+                name="payments_batch_export_topic",
+            ),
+            path(
                 "new_filled/",
                 self.admin_site.admin_view(
                     admin_views.BatchNewFilledAdminView.as_view()

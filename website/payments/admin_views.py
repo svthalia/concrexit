@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Sum
+from django.db.models import Sum, Count, Min, Max
 from django.http import HttpResponse
 from django.core.exceptions import SuspiciousOperation, DisallowedRedirect
 from django.shortcuts import redirect
@@ -143,6 +143,54 @@ class BatchExportAdminView(View):
                     f"{row['total']:.2f}",
                     batch.description,
                     bankaccount.valid_from,
+                ]
+            )
+        return response
+
+
+@method_decorator(staff_member_required, name="dispatch")
+@method_decorator(
+    permission_required("payments.process_batches"), name="dispatch",
+)
+class BatchTopicExportAdminView(View):
+    """
+    View that exports a batch per topic
+    """
+
+    def post(self, request, *args, **kwargs):
+        batch = Batch.objects.get(pk=kwargs["pk"])
+
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = 'attachment;filename="batch-topic.csv"'
+        writer = csv.writer(response)
+        headers = [
+            _("Topic"),
+            _("No. of payments"),
+            _("First payment"),
+            _("Last payment"),
+            _("Total amount"),
+        ]
+        writer.writerow([capfirst(x) for x in headers])
+
+        topic_rows = (
+            batch.payments_set.values("topic")
+            .annotate(
+                total=Sum("amount"),
+                count=Count("paid_by"),
+                min_date=Min("created_at"),
+                max_date=Max("created_at"),
+            )
+            .order_by("topic")
+        )
+
+        for row in topic_rows:
+            writer.writerow(
+                [
+                    row["topic"],
+                    row["count"],
+                    timezone.localtime(row["min_date"]).date(),
+                    timezone.localtime(row["max_date"]).date(),
+                    f"{row['total']:.2f}",
                 ]
             )
         return response

@@ -18,6 +18,7 @@
             <a data-href="{% url 'admin:payments_batch_process' pk=batch.pk %}" class="button process">{% trans "Process batch" %}</a>
         {% endif %}
         <a data-href="{% url 'admin:payments_batch_export' pk=batch.pk %}" class="button process">{% trans "Export batch" %}</a>
+        <a data-href="{% url 'admin:payments_batch_export_topic' pk=batch.pk %}" class="button process">{% trans "Export batch per topic" %}</a>
     </div>
     {% endif %}
     {{ block.super }}
