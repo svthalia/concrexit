@@ -102,6 +102,7 @@ def send_renewal_accepted_message(renewal: Renewal) -> None:
             {
                 "name": renewal.member.get_full_name(),
                 "fees": floatformat(renewal.contribution, 2),
+                "url": (settings.BASE_URL + reverse("registrations:renew",)),
             },
         )
 

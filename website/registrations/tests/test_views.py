@@ -558,35 +558,48 @@ class RenewalFormViewTest(TestCase):
         membership = Membership(pk=2, type=Membership.MEMBER)
         self.view.request = MagicMock()
 
-        with mock.patch("members.models.Membership.objects") as _qs:
+        with mock.patch("members.models.Membership.objects") as _membership_qs:
             Membership.objects.filter().exists.return_value = True
-            context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(len(context), 7)
-            self.assertEqual(
-                context["year_fees"],
-                floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2),
-            )
-            self.assertEqual(
-                context["study_fees"],
-                floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2),
-            )
-            self.assertEqual(context["was_member"], True)
 
-            Membership.objects.filter().exists.return_value = False
-            context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(context["was_member"], False)
-
-            with self.subTest("With latest membership"):
-                self.view.request.member.latest_membership = membership
+            with mock.patch("registrations.models.Renewal.objects") as _renewal_qs:
+                Renewal.objects.filter().last.return_value = None
 
                 context = self.view.get_context_data(form=MagicMock())
-                self.assertEqual(context["latest_membership"], membership)
+                self.assertEqual(len(context), 8)
+                self.assertEqual(
+                    context["year_fees"],
+                    floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2),
+                )
+                self.assertEqual(
+                    context["study_fees"],
+                    floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2),
+                )
+                self.assertEqual(context["was_member"], True)
 
-            with self.subTest("Without latest membership"):
-                self.view.request.member.latest_membership = None
-
+                Membership.objects.filter().exists.return_value = False
                 context = self.view.get_context_data(form=MagicMock())
-                self.assertEqual(context["latest_membership"], None)
+                self.assertEqual(context["was_member"], False)
+
+                with self.subTest("With latest membership"):
+                    self.view.request.member.latest_membership = membership
+
+                    context = self.view.get_context_data(form=MagicMock())
+                    self.assertEqual(context["latest_membership"], membership)
+
+                with self.subTest("Without latest membership"):
+                    self.view.request.member.latest_membership = None
+
+                    context = self.view.get_context_data(form=MagicMock())
+                    self.assertEqual(context["latest_membership"], None)
+
+                with self.subTest("With renewal"):
+                    renewal = Renewal.objects.create(
+                        member=self.view.request.member, status=Entry.STATUS_ACCEPTED
+                    )
+                    Renewal.objects.filter().last.return_value = renewal
+
+                    context = self.view.get_context_data(form=MagicMock())
+                    self.assertEqual(context["latest_renewal"], renewal)
 
     def test_get_form(self):
         self.view.request = self.rf.get("/")

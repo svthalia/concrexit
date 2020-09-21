@@ -20,7 +20,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 
-from members.decorators import membership_required
 from payments import services
 from payments.exceptions import PaymentError
 from payments.forms import BankAccountForm, PaymentCreateForm
@@ -28,7 +27,6 @@ from payments.models import BankAccount, Payment
 
 
 @method_decorator(login_required, name="dispatch")
-@method_decorator(membership_required, name="dispatch")
 class BankAccountCreateView(SuccessMessageMixin, CreateView):
     model = BankAccount
     form_class = BankAccountForm

@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.template.defaultfilters import floatformat
@@ -214,6 +215,13 @@ class RenewalFormView(FormView):
             settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2
         )
         context["latest_membership"] = self.request.member.latest_membership
+        context["latest_renewal"] = Renewal.objects.filter(
+            Q(member=self.request.member)
+            & (
+                Q(status=Registration.STATUS_ACCEPTED)
+                | Q(status=Registration.STATUS_REVIEW)
+            )
+        ).last()
         context["was_member"] = Membership.objects.filter(
             user=self.request.member, type=Membership.MEMBER
         ).exists()

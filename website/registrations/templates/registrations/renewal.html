@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n bootstrap4 alert compress static %}
+{% load i18n bootstrap4 alert compress static payments %}
 
 {% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
 
@@ -99,8 +99,25 @@
             </div>
 
             <hr/>
-
-            {% if latest_membership is None %}
+            {% if latest_renewal and latest_renewal.status == latest_renewal.STATUS_ACCEPTED %}
+                <p class="text-center">
+                    {% blocktrans trimmed %}
+                        Congratulations, your renewal request has been approved!
+                        The renewal will be completed once you have paid your contribution.
+                    {% endblocktrans %}
+                </p>
+                <div class="text-center">
+                    {% url 'registrations:renewal-completed' as renewal_completed %}
+                    {% payment_button latest_renewal renewal_completed %}
+                </div>
+            {% elif latest_renewal and latest_renewal.status == latest_renewal.STATUS_REVIEW %}
+                  <p class="text-center">
+                      {% blocktrans trimmed %}
+                          You have a renewal request queued for review.
+                          You will receive an email once your request has been reviewed.
+                      {% endblocktrans %}
+                  </p>
+            {% elif latest_membership is None %}
                 <p class="text-center">
                     {% blocktrans trimmed %}
                         We do not have any previous memberships in our system.
