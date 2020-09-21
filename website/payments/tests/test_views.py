@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import MagicMock, Mock, ANY
+from unittest.mock import MagicMock, Mock, ANY, patch
 
 from django.apps import apps
 from django.contrib.auth import get_user_model
@@ -268,6 +268,25 @@ class BankAccountRevokeViewTest(TestCase):
             follow=True,
         )
         self.assertEqual(404, response.status_code)
+
+    def test_cannot_revoke_cannot_revoke(self):
+        """
+        If a bank account cannot be revoked, an error should be displayed.
+        """
+        with patch(
+            "payments.models.BankAccount.can_be_revoked", new_callable=mock.PropertyMock
+        ) as can_be_revoked:
+            can_be_revoked.return_value = False
+
+            response = self.client.post(
+                reverse("payments:bankaccount-revoke", args=(self.account2.pk,)),
+                follow=True,
+            )
+            self.assertEqual(200, response.status_code)
+            self.assertEqual(
+                [(reverse("payments:bankaccount-list"), 302)], response.redirect_chain
+            )
+            self.assertContains(response, "cannot be revoked")
 
     def test_revoke_successful(self):
         """
