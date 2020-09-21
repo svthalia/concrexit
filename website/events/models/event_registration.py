@@ -103,7 +103,7 @@ class EventRegistration(models.Model, Payable):
         )
 
     def is_paid(self):
-        return self.payment and self.payment.processed
+        return self.payment
 
     def would_cancel_after_deadline(self):
         now = timezone.now()
