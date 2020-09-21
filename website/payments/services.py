@@ -91,3 +91,10 @@ def revoke_old_mandates() -> int:
     return BankAccount.objects.filter(
         last_used__lte=(timezone.now() - timezone.timedelta(days=36 * 30))
     ).update(valid_until=timezone.now().date())
+
+
+def revoke_user_bank_account(bank_account: BankAccount) -> bool:
+    if bank_account.valid_until and not bank_account.can_be_revoked:
+        return False
+    bank_account.valid_until = timezone.now()
+    return True

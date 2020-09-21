@@ -29,6 +29,20 @@ class BankAccountForm(forms.ModelForm):
         model = BankAccount
 
 
+class BankAccountUserRevokeForm(forms.ModelForm):
+    """
+    Custom form for members to revoke their bank account
+    """
+
+    def is_valid(self):
+        if not self.instance.can_be_revoked:
+            return False
+
+    class Meta:
+        fields = ("valid_until",)
+        model = BankAccount
+
+
 class BankAccountAdminForm(forms.ModelForm):
     """
     Custom admin form for BankAccount model

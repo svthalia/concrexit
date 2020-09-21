@@ -10,7 +10,7 @@ from django.core.exceptions import (
     SuspiciousOperation,
 )
 from django.db.models import QuerySet, Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -22,7 +22,7 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 
 from payments import services
 from payments.exceptions import PaymentError
-from payments.forms import BankAccountForm, PaymentCreateForm
+from payments.forms import BankAccountForm, PaymentCreateForm, BankAccountUserRevokeForm
 from payments.models import BankAccount, Payment
 
 
@@ -71,7 +71,7 @@ class BankAccountCreateView(SuccessMessageMixin, CreateView):
 @method_decorator(login_required, name="dispatch")
 class BankAccountRevokeView(SuccessMessageMixin, UpdateView):
     model = BankAccount
-    fields = ("valid_until",)
+    form_class = BankAccountUserRevokeForm
     success_url = reverse_lazy("payments:bankaccount-list")
     success_message = _("Direct debit authorisation successfully revoked.")
 
@@ -82,6 +82,14 @@ class BankAccountRevokeView(SuccessMessageMixin, UpdateView):
             .filter(owner=self.request.member, valid_until=None,)
             .exclude(mandate_no=None)
         )
+
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            "This bank account cannot be revoked right now, as it is used for payments that have not yet been processed. Contact treasurer@thalia.nu to revoke your mandate.",
+        )
+        super().form_invalid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get(self, *args, **kwargs) -> HttpResponse:
         return redirect("payments:bankaccount-list")
