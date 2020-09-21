@@ -64,15 +64,11 @@
                             <td>€ {{ payment.amount }}</td>
                             <td>{{ payment.created_at }}</td>
                             <td class="text-left">{{ payment.notes }}</td>
+                            <td>
                             {% if payment.type == "tpay_payment" %}
-                                {% if payment.batch and payment.batch.processed %}
-                                    <td>Yes</td>
-                                {% else %}
-                                    <td>No</td>
-                                {% endif %}
-                            {% else %}
-                                <td>-</td>
+                                {{ payment.batch.processed|yesno:"yes,no" }}
                             {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                         <tr>
