@@ -54,6 +54,7 @@
                         <th scope="col" class="text-left">
                             {% trans "notes"|capfirst %}
                         </th>
+                        <th scope="col">{% trans "processed"|capfirst %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,12 +64,21 @@
                             <td>€ {{ payment.amount }}</td>
                             <td>{{ payment.created_at }}</td>
                             <td class="text-left">{{ payment.notes }}</td>
+                            {% if payment.type == "tpay_payment" %}
+                                {% if payment.batch and payment.batch.processed %}
+                                    <td>Yes</td>
+                                {% else %}
+                                    <td>No</td>
+                                {% endif %}
+                            {% else %}
+                                <td>-</td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                         <tr>
                             <th scope="row">{% trans 'Total' %}</th>
                             <td>€ {{ total|floatformat:2 }}</td>
-                            <td></td><td></td>
+                            <td></td><td></td><td></td>
                         </tr>
                     </tbody>
                 </table>
