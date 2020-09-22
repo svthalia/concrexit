@@ -86,7 +86,9 @@ class BankAccountRevokeView(SuccessMessageMixin, UpdateView):
     def form_invalid(self, form):
         messages.error(
             self.request,
-            _("The mandate for this bank account cannot be revoked right now, as it is used for payments that have not yet been processed. Contact treasurer@thalia.nu to revoke your mandate."),
+            _(
+                "The mandate for this bank account cannot be revoked right now, as it is used for payments that have not yet been processed. Contact treasurer@thalia.nu to revoke your mandate."
+            ),
         )
         super().form_invalid(form)
         return HttpResponseRedirect(self.get_success_url())
