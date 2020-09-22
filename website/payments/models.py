@@ -222,7 +222,7 @@ class BankAccount(models.Model):
         verbose_name=_("valid until"),
         blank=True,
         null=True,
-        help_text="Users can revoke the mandate at any time, as long as they do not have any Thalia Pay payments that have not been processed. If you revoke a mandate, make sure to check that all unprocessed Thalia Pay payments are paid in an alternative manner.",
+        help_text=_("Users can revoke the mandate at any time, as long as they do not have any Thalia Pay payments that have not been processed. If you revoke a mandate, make sure to check that all unprocessed Thalia Pay payments are paid in an alternative manner."),
     )
 
     signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
