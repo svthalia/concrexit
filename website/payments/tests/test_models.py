@@ -310,6 +310,24 @@ class BankAccountTest(TestCase):
         self.with_mandate.valid_until = timezone.now().date()
         self.assertFalse(self.with_mandate.valid)
 
+    def test_can_be_revoked(self) -> None:
+        """
+        Tests the correct property value for bank accounts that have unprocessed
+        or unbatched Thalia Pay payments that hence cannot be revoked by users directly
+        """
+        self.assertTrue(self.with_mandate.can_be_revoked)
+        payment = Payment.objects.create(
+            paid_by=self.member, type=Payment.TPAY, topic="test", amount=3
+        )
+        self.assertFalse(self.with_mandate.can_be_revoked)
+        batch = Batch.objects.create()
+        payment.batch = batch
+        payment.save()
+        self.assertFalse(self.with_mandate.can_be_revoked)
+        batch.processed = True
+        batch.save()
+        self.assertTrue(self.with_mandate.can_be_revoked)
+
     def test_str(self) -> None:
         """
         Tests that the output is the IBAN concatenated

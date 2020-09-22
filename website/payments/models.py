@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -218,7 +219,12 @@ class BankAccount(models.Model):
     valid_from = models.DateField(verbose_name=_("valid from"), blank=True, null=True,)
 
     valid_until = models.DateField(
-        verbose_name=_("valid until"), blank=True, null=True,
+        verbose_name=_("valid until"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "Users can revoke the mandate at any time, as long as they do not have any Thalia Pay payments that have not been processed. If you revoke a mandate, make sure to check that all unprocessed Thalia Pay payments are paid in an alternative manner."
+        ),
     )
 
     signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
@@ -272,6 +278,12 @@ class BankAccount(models.Model):
     @property
     def name(self):
         return f"{self.initials} {self.last_name}"
+
+    @property
+    def can_be_revoked(self):
+        return not self.owner.paid_payment_set.filter(
+            (Q(batch__isnull=True) | Q(batch__processed=False)) & Q(type=Payment.TPAY)
+        ).exists()
 
     @property
     def valid(self):
