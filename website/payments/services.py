@@ -99,8 +99,8 @@ def send_tpay_batch_processing_emails(batch):
     """Sends withdrawal notice emails to all members in a batch"""
     member_payments = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
     for member_row in member_payments:
-        member = Member.objects.get(pk=member_row['paid_by'])
-        total_amount = member_row['total']
+        member = Member.objects.get(pk=member_row["paid_by"])
+        total_amount = member_row["total"]
 
         with translation.override(member.profile.language):
             _send_email(
@@ -110,12 +110,14 @@ def send_tpay_batch_processing_emails(batch):
                 {
                     "name": member.get_full_name(),
                     "batch": batch,
-                    "bank_account": member.bank_accounts.filter(mandate_no__isnull=False).last(),
+                    "bank_account": member.bank_accounts.filter(
+                        mandate_no__isnull=False
+                    ).last(),
+                    "creditor_id": settings.SEPA_CREDITOR_ID,
                     "payments": batch.payments_set.filter(paid_by=member),
                     "total_amount": total_amount,
                     "payments_url": (
-                        settings.BASE_URL
-                        + reverse("payments:payment-list",)
+                        settings.BASE_URL + reverse("payments:payment-list",)
                     ),
                 },
             )

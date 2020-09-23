@@ -1,15 +1,19 @@
 Dear {{ name }},
 
-In the past period, you have made use of Thalia Pay. With this email, we would like to inform you that in the upcoming
-days, we will withdraw an amount of €{{ total }} from your bank account {{ iban }}. This is related to your following
-payments:
-
+In the past period, you have made use of Thalia Pay. With this email, we would like to inform you that in the upcoming days, we will withdraw an amount of € {{ total_amount|floatformat:2 }} from your bank account {{ bank_account.iban }} {% if bank_account.bic %}, {{ bank_account.bic }},{% endif %} to settle the following Thalia Pay payments:
 {% for payment in payments %}
-{{ payment.created_at }} - {{ payment.amount }} - {{ payment.topic }}
+- {{ payment.topic }} - € {{ payment.amount|floatformat:2 }} - {{ payment.created_at|date }}
 {% endfor %}
+More details can be found at {{ payments_url }}
 
-Check {{ payments_url }} for more details.
+The withdrawal will be made under the name 'Studievereniging Thalia' (creditor identifier {{ creditor_id }}) and your mandate id {{ bank_account.mandate_no }}.
+
+Please make sure your bank account has sufficient funds to make this withdrawal.
+
+In case you have any questions, you can contact treasurer@thalia.nu
 
 
-Please make sure your bank account has sufficient funds to make this withdrawal. In case you do not have sufficient
-funds, please contact the board as soon as possible at treasurer@thalia.nu.
+
+————
+
+This email was automatically generated.
