@@ -3,13 +3,12 @@ from django.contrib import admin
 from django.template.defaultfilters import striptags
 
 from thaliawebsite.templatetags.bleach_tags import bleach
-from utils.translation import TranslatedModelAdmin
 
 from .models import Announcement, FrontpageArticle, Slide
 
 
 @admin.register(Announcement)
-class AnnouncementAdmin(TranslatedModelAdmin):
+class AnnouncementAdmin(admin.ModelAdmin):
     """Manage the admin pages for the announcements"""
 
     #: show these fields in the admin overview list
@@ -35,7 +34,7 @@ class AnnouncementAdmin(TranslatedModelAdmin):
 
 
 @admin.register(FrontpageArticle)
-class FrontpageArticleAdmin(TranslatedModelAdmin):
+class FrontpageArticleAdmin(admin.ModelAdmin):
     """Manage front page articles"""
 
     #: available fields in the admin overview list
@@ -49,7 +48,7 @@ class FrontpageArticleAdmin(TranslatedModelAdmin):
 
 
 @admin.register(Slide)
-class SlideAdmin(TranslatedModelAdmin):
+class SlideAdmin(admin.ModelAdmin):
     """Manage the admin pages for the slides"""
 
     #: show these fields in the admin overview list

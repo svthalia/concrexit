@@ -5,14 +5,11 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
-from utils.translation import ModelTranslateMeta, MultilingualField
 
-
-class Announcement(models.Model, metaclass=ModelTranslateMeta):
+class Announcement(models.Model):
     """Describes an announcement"""
 
-    content = MultilingualField(
-        HTMLField,
+    content = HTMLField(
         verbose_name=_("Content"),
         help_text=_("The content of the announcement; what text to display."),
         blank=False,
@@ -55,19 +52,17 @@ class Announcement(models.Model, metaclass=ModelTranslateMeta):
         )
 
 
-class FrontpageArticle(models.Model, metaclass=ModelTranslateMeta):
+class FrontpageArticle(models.Model):
     """Front page articles"""
 
-    title = MultilingualField(
-        models.CharField,
+    title = models.CharField(
         verbose_name=_("Title"),
         help_text=_("The title of the article; what goes in the header"),
         blank=False,
         max_length=80,
     )
 
-    content = MultilingualField(
-        HTMLField,
+    content = HTMLField(
         verbose_name=_("Content"),
         help_text=_("The content of the article; what text to display."),
         blank=False,
@@ -101,7 +96,7 @@ class FrontpageArticle(models.Model, metaclass=ModelTranslateMeta):
         )
 
 
-class Slide(models.Model, metaclass=ModelTranslateMeta):
+class Slide(models.Model):
     """Describes an announcement"""
 
     title = CharField(
@@ -111,8 +106,7 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
         max_length=100,
     )
 
-    content = MultilingualField(
-        ImageField,
+    content = ImageField(
         verbose_name=_("Content"),
         help_text=_("The content of the slide; what image to display."),
         blank=False,
