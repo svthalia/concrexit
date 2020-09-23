@@ -32,7 +32,6 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
 
     def get_serializer_class(self):
         if self.action == "retrieve":
-            print(self.request.user)
             if self.is_self_reference() or (
                 self.request.user
                 and self.request.user.has_perm("members.change_profile")

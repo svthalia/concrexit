@@ -158,9 +158,9 @@ CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
 OAUTH2_PROVIDER = {
     "ALLOWED_REDIRECT_URI_SCHEMES": ["https"] if not DEBUG else ["http", "https"],
     "SCOPES": {
-        "read": "Read scope",
-        "write": "Write scope",
-        "members:read": "Members read scope",
+        "read": "Authenticated read access to the website",
+        "write": "Authenticated write access to the website",
+        "members:read": "Read access to your member profile",
     },
 }
 
