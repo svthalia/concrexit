@@ -143,14 +143,14 @@ class PaymentAdmin(admin.ModelAdmin):
 
         return super().has_delete_permission(request, obj)
 
-    def formfield_for_foreignkey(self, db_field, request, queryset=None, **kwargs):
-        return super().formfield_for_foreignkey(
-            db_field, request, queryset=Batch.objects.filter(processed=False), **kwargs
-        )
+    def get_field_queryset(self, db, db_field, request):
+        if str(db_field) == "payments.Payment.batch":
+            return Batch.objects.filter(processed=False)
+        return super().get_field_queryset(db, db_field, request)
 
     def get_readonly_fields(self, request: HttpRequest, obj: Payment = None):
         if not obj:
-            return "created_at", "type", "processed_by", "batch"
+            return "created_at", "processed_by", "batch"
         if obj.type == Payment.TPAY and not (obj.batch and obj.batch.processed):
             return (
                 "created_at",
@@ -159,6 +159,7 @@ class PaymentAdmin(admin.ModelAdmin):
                 "paid_by",
                 "processed_by",
                 "notes",
+                "topic",
             )
         return super().get_readonly_fields(request, obj)
 

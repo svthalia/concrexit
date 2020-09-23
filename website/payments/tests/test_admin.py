@@ -403,7 +403,7 @@ class PaymentAdminTest(TestCase):
         """
         with self.subTest("No object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), None)
-            self.assertEqual(urls, ("created_at", "type", "processed_by", "batch"))
+            self.assertEqual(urls, ("created_at", "processed_by", "batch"))
 
         with self.subTest("With object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), Payment())
@@ -452,9 +452,9 @@ class PaymentAdminTest(TestCase):
             response.content.decode("utf-8"),
         )
 
-    def test_formfield_for_foreignkey(self) -> None:
+    def test_get_field_queryset(self) -> None:
         b1 = Batch.objects.create(id=1)
-        b2 = Batch.objects.create(id=2, processed=True)
+        Batch.objects.create(id=2, processed=True)
         p1 = Payment.objects.create(
             amount=5, paid_by=self.user, processed_by=self.user, type=Payment.TPAY
         )
@@ -470,6 +470,8 @@ class PaymentAdminTest(TestCase):
             ],
             [b1.id],
         )
+
+        self.client.get(reverse("admin:payments_payment_add"))
 
 
 @freeze_time("2019-01-01")

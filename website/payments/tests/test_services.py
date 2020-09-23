@@ -69,14 +69,20 @@ class ServicesTest(TestCase):
             existing_payment.created_at = timezone.now() - timezone.timedelta(
                 seconds=settings.PAYMENT_CHANGE_WINDOW + 60
             )
-            with self.assertRaises(PaymentError):
+            with self.assertRaisesMessage(
+                PaymentError, "You are not authorized to delete this payment."
+            ):
                 services.delete_payment(payable)
             self.assertIsNotNone(payable.payment)
+
+        existing_payment.created_at = timezone.now()
 
         with self.subTest("Already processed"):
             payable.payment = existing_payment
             existing_payment.batch = Batch.objects.create(processed=True)
-            with self.assertRaises(PaymentError):
+            with self.assertRaisesMessage(
+                PaymentError, "This payment has already been processed."
+            ):
                 services.delete_payment(payable)
             self.assertIsNotNone(payable.payment)
 
