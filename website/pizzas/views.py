@@ -42,22 +42,6 @@ def cancel_order(request):
     return redirect("pizzas:index")
 
 
-@require_http_methods(["POST"])
-def pay_order(request):
-    """ View that marks the order as paid using Thalia Pay """
-    if "order" in request.POST:
-        try:
-            order = get_object_or_404(Order, pk=int(request.POST["order"]))
-            if order.member == request.member:
-                create_payment(order, Payment.TPAY, order.member)
-                messages.success(
-                    request, _("Your order has been paid with Thalia Pay.")
-                )
-        except Http404:
-            messages.error(request, _("Your order could not be found."))
-    return redirect("pizzas:index")
-
-
 @login_required
 def order(request):
     """ View that shows the detail of the current order """

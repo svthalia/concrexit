@@ -10,6 +10,7 @@ from events.models import Event
 import members
 from members.models import Member
 from payments.models import Payment, Payable
+from payments.services import delete_payment
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -255,6 +256,11 @@ class Order(models.Model, Payable):
             ) and not self.pizza_event.has_ended
         except ObjectDoesNotExist:
             return False
+
+    def delete(self, using=None, keep_parents=False):
+        if self.payment is not None and self.can_be_changed:
+            delete_payment(self)
+        return super().delete(using, keep_parents)
 
     class Meta:
         unique_together = (
