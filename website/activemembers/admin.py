@@ -12,7 +12,6 @@ from django.utils.translation import gettext_lazy as _
 from activemembers import models
 from activemembers.forms import MemberGroupMembershipForm, MemberGroupForm
 from utils.snippets import datetime_to_lectureyear
-from utils.translation import TranslatedModelAdmin
 
 
 class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
@@ -42,7 +41,7 @@ class MemberGroupMembershipInline(admin.StackedInline):
     autocomplete_fields = ("member",)
 
 
-class MemberGroupAdmin(TranslatedModelAdmin):
+class MemberGroupAdmin(admin.ModelAdmin):
     """Manage the member groups"""
 
     inlines = (MemberGroupMembershipInline,)
@@ -91,7 +90,7 @@ class SocietyAdmin(MemberGroupAdmin):
 
 
 @admin.register(models.Board)
-class BoardAdmin(TranslatedModelAdmin):
+class BoardAdmin(admin.ModelAdmin):
     """Manage the board"""
 
     inlines = (MemberGroupMembershipInline,)
@@ -186,7 +185,7 @@ class ActiveMembershipsFilter(admin.SimpleListFilter):
 
 
 @admin.register(models.MemberGroupMembership)
-class MemberGroupMembershipAdmin(TranslatedModelAdmin):
+class MemberGroupMembershipAdmin(admin.ModelAdmin):
     """Manage the group memberships"""
 
     form = MemberGroupMembershipForm

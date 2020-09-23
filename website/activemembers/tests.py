@@ -29,7 +29,7 @@ class CommitteeMembersTest(TestCase):
     def test_unique(self):
         with self.assertRaises(IntegrityError):
             Committee.objects.create(
-                name_en="testcie1", description_en="desc3", photo="",
+                name="testcie1", description="desc3", photo="",
             )
 
     def test_join(self):
@@ -216,9 +216,9 @@ class BoardTest(TestCase):
     def test_create_unique_period1(self):
         """ Check uniqueness with since before period of testboard """
         b = Board(
-            name_en="testbo",
+            name="testbo",
             contact_email="board@example.org",
-            description_en="descen",
+            description="descen",
             since=timezone.now().date().replace(year=1990, month=2, day=1),
             until=timezone.now().date().replace(year=1990, month=9, day=1),
         )
@@ -236,9 +236,9 @@ class BoardTest(TestCase):
     def test_create_unique_period2(self):
         """ Check uniqueness with until after period of testboard """
         b = Board(
-            name_en="testbo",
+            name="testbo",
             contact_email="board@example.org",
-            description_en="descen",
+            description="descen",
             since=timezone.now().date().replace(year=1991, month=8, day=1),
             until=timezone.now().date().replace(year=1992, month=9, day=1),
         )
