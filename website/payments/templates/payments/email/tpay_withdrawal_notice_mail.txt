@@ -1,0 +1,15 @@
+Dear {{ name }},
+
+In the past period, you have made use of Thalia Pay. With this email, we would like to inform you that in the upcoming
+days, we will withdraw an amount of €{{ total }} from your bank account {{ iban }}. This is related to your following
+payments:
+
+{% for payment in payments %}
+{{ payment.created_at }} - {{ payment.amount }} - {{ payment.topic }}
+{% endfor %}
+
+Check {{ payments_url }} for more details.
+
+
+Please make sure your bank account has sufficient funds to make this withdrawal. In case you do not have sufficient
+funds, please contact the board as soon as possible at treasurer@thalia.nu.
