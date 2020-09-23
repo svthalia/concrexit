@@ -9,14 +9,6 @@ activemembers.api package
 Submodules
 ----------
 
-activemembers.api.permissions module
-------------------------------------
-
-.. automodule:: activemembers.api.permissions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 activemembers.api.serializers module
 ------------------------------------
 
@@ -33,11 +25,10 @@ activemembers.api.urls module
    :undoc-members:
    :show-inheritance:
 
-activemembers.api.views module
-------------------------------
+activemembers.api.viewsets module
+---------------------------------
 
-.. automodule:: activemembers.api.views
+.. automodule:: activemembers.api.viewsets
    :members:
    :undoc-members:
    :show-inheritance:
-

@@ -112,6 +112,10 @@
                             {% trans "edit profile"|capfirst %}
                         </a>
                         <a class="dropdown-item"
+                           href="{% url 'oauth2_provider:authorized-token-list' %}">
+                            {% trans "authorised applications"|capfirst %}
+                        </a>
+                        <a class="dropdown-item"
                            href="{% url 'password_change' %}">
                             {% trans "change password"|capfirst %}
                         </a>

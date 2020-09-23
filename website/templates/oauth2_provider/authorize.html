@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n static bootstrap4 compress alert %}
+
+{% comment %}This page is automatically used by django-oauth-toolkit{% endcomment %}
+
+{% block title %}{% trans "authorise application"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "authorise application"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <section class="page-section" id="payments-account-overview">
+        <div class="container">
+            {% if not error %}
+                <h1 class="text-center section-title">{% trans "authorise"|capfirst %} {{ application.name }}</h1>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        {% if field.is_hidden %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+
+                    <p class="text-center">{% trans "Application requires following permissions" %}:</p>
+                    <ul class="text-center list-unstyled">
+                        {% for scope in scopes_descriptions %}
+                            <li>{{ scope }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    {{ form.errors }}
+                    {{ form.non_field_errors }}
+
+                    <div class="form-group col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
+                        <input type="submit" class="btn btn-success w-100" name="allow" value="{% trans "confirm"|capfirst %}" />
+                        <input type="submit" class="btn btn-danger w-100 mt-4" value="{% trans "cancel"|capfirst %}" />
+                    </div>
+                </form>
+
+            {% else %}
+                <h1 class="text-center section-title">{% trans "error"|capfirst %}</h1>
+                <h4 class="text-center">{{ error.error }}</h4>
+                <p class="text-center">{{ error.description }}</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

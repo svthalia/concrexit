@@ -35,6 +35,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
+from oauth2_provider.urls import base_urlpatterns
+from oauth2_provider.views import AuthorizedTokensListView, AuthorizedTokenDeleteView
 
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
@@ -72,6 +74,28 @@ urlpatterns = [
         "user/",
         include(
             [
+                path(
+                    "oauth/",
+                    include(
+                        (
+                            base_urlpatterns
+                            + [
+                                path(
+                                    "authorised-apps/",
+                                    AuthorizedTokensListView.as_view(),
+                                    name="authorized-token-list",
+                                ),
+                                path(
+                                    "authorised-apps/<int:pk>/delete/",
+                                    AuthorizedTokenDeleteView.as_view(),
+                                    name="authorized-token-delete",
+                                ),
+                            ],
+                            "oauth2_provider",
+                        ),
+                        namespace="oauth2_provider",
+                    ),
+                ),
                 path(
                     "login/",
                     LoginView.as_view(
@@ -116,6 +140,7 @@ urlpatterns = [
         include(
             [
                 path("token-auth/", ObtainThaliaAuthToken.as_view()),
+                path("", include("activemembers.api.urls")),
                 path("", include("events.api.urls")),
                 path("", include("members.api.urls")),
                 path("", include("partners.api.urls")),

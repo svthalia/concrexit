@@ -2,6 +2,7 @@
 from datetime import date
 from typing import Callable, List, Dict, Any
 
+from django.conf import settings
 from django.db.models import Q, Count
 from django.utils import timezone
 from django.utils.translation import gettext
@@ -41,13 +42,18 @@ def _member_group_memberships(
             data[name]["periods"].append(period)
             if data[name]["earliest"] > membership.since:
                 data[name]["earliest"] = membership.since
+            if data[name]["latest"] < membership.until:
+                data[name]["latest"] = membership.until
             data[name]["periods"].sort(key=lambda x: x["since"])
         else:
             data[name] = {
+                "pk": membership.group.pk,
+                "active": membership.group.active,
                 "name": name,
                 "periods": [period],
-                "url": membership.group.get_absolute_url(),
+                "url": settings.BASE_URL + membership.group.get_absolute_url(),
                 "earliest": membership.since,
+                "latest": membership.until,
             }
     return data
 
