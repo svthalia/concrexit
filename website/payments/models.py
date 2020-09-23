@@ -81,6 +81,7 @@ class Payment(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._batch = self.batch
+        self._type = self.type
 
     def save(self, **kwargs):
         self.clean()
@@ -88,9 +89,9 @@ class Payment(models.Model):
         super().save(**kwargs)
 
     def clean(self):
-        if self.type != self.TPAY and self.batch is not None:
+        if self.type != Payment.TPAY and self.batch is not None:
             raise ValidationError(
-                {"batch": _("Non Thalia Pay payments cannot be added to a batch.")}
+                {"batch": _("Non Thalia Pay payments cannot be added to a batch")}
             )
         if self._batch and self._batch.processed:
             raise ValidationError(
@@ -98,6 +99,14 @@ class Payment(models.Model):
             )
         if self.batch and self.batch.processed:
             raise ValidationError(_("Cannot add a payment to a processed batch"))
+        if (
+            (self._state.adding or self._type != Payment.TPAY)
+            and self.type == Payment.TPAY
+            and not self.paid_by.tpay_enabled
+        ):
+            raise ValidationError(
+                {"paid_by": _("This user does not have Thalia Pay enabled")}
+            )
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)

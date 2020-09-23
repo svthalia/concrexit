@@ -194,5 +194,5 @@ class Member(User):
         return (
             settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
             and bank_accounts.exists()
-            and bank_accounts.last().valid
+            and any(x.valid for x in bank_accounts)
         )

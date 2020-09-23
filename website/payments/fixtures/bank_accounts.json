@@ -1,0 +1,28 @@
+[
+  {
+    "model": "payments.bankaccount",
+    "pk": 1,
+    "fields": {
+      "owner": 1,
+      "initials": "T",
+      "last_name": "Wiggers",
+      "iban": "NL91ABNA0417164300",
+      "mandate_no": "11-1",
+      "valid_from": "2016-07-07",
+      "signature": "base64,png"
+    }
+  },
+  {
+    "model": "payments.bankaccount",
+    "pk": 2,
+    "fields": {
+      "owner": 2,
+      "initials": "S",
+      "last_name": "Versteeg",
+      "iban": "NL09ABNA0606463410",
+      "mandate_no": "12-1",
+      "valid_from": "2016-07-07",
+      "signature": "base64,png"
+    }
+  }
+]

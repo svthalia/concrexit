@@ -146,19 +146,14 @@ class PaymentAdminViewTest(TestCase):
             )
 
 
-@override_settings(SUSPEND_SIGNALS=True)
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class BatchProcessAdminViewTest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json"]
+
     @classmethod
     def setUpTestData(cls):
         cls.batch = Batch.objects.create()
-        cls.user = Member.objects.create(
-            username="test1",
-            first_name="Test1",
-            last_name="Example",
-            email="test1@example.org",
-        )
-        Profile.objects.create(user=cls.user)
-        BankAccount.objects.create(owner=cls.user, created_at=timezone.now())
+        cls.user = Member.objects.get(pk=2)
         Payment.objects.create(
             amount=99,
             paid_by=cls.user,
@@ -188,7 +183,8 @@ class BatchProcessAdminViewTest(TestCase):
     def test_permissions(self):
         url = f"/admin/payments/batch/{self.batch.id}/process/"
         response = self.client.post(url)
-        self.assertRedirects(response, "/admin/login/?next=%s" % url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"/user/login/?next={url}")
 
         self._give_user_permissions()
 
