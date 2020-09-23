@@ -127,6 +127,7 @@ class EmailsTest(TestCase):
                 {
                     "name": renewal.member.get_full_name(),
                     "fees": floatformat(renewal.contribution, 2),
+                    "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
                     "url": (settings.BASE_URL + reverse("registrations:renew",)),
                 },
             )
