@@ -94,6 +94,9 @@ class BatchProcessAdminView(View):
                 bank_account.save()
 
             batch.save()
+
+            services.send_tpay_batch_processing_emails(batch)
+
             messages.success(
                 request,
                 _("Successfully processed {}.").format(model_ngettext(batch, 1)),
