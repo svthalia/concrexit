@@ -1,6 +1,6 @@
 Dear {{ name }},
 
-In the past period, you have made use of Thalia Pay. With this email, we would like to inform you that in the upcoming days, we will withdraw an amount of € {{ total_amount|floatformat:2 }} from your bank account {{ bank_account.iban }} {% if bank_account.bic %}, {{ bank_account.bic }},{% endif %} to settle the following Thalia Pay payments:
+We would like to inform you that in the upcoming days, we will withdraw an amount of € {{ total_amount|floatformat:2 }} from your bank account {{ bank_account.iban }} {% if bank_account.bic %}, {{ bank_account.bic }},{% endif %} to settle the following Thalia Pay payments:
 {% for payment in payments %}
 - {{ payment.topic }} - € {{ payment.amount|floatformat:2 }} - {{ payment.created_at|date }}
 {% endfor %}
