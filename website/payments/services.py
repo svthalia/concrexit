@@ -61,6 +61,8 @@ def delete_payment(payable: Payable):
         seconds=settings.PAYMENT_CHANGE_WINDOW
     ):
         raise PaymentError(_("You are not authorized to delete this payment."))
+    if payment.batch and payment.batch.processed:
+        raise PaymentError(_("This payment has already been processed."))
 
     payable.payment = None
     payable.save()

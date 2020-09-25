@@ -8,7 +8,7 @@ from freezegun import freeze_time
 from members.models import Member
 from payments import services
 from payments.exceptions import PaymentError
-from payments.models import BankAccount, Payment
+from payments.models import BankAccount, Payment, Batch
 from payments.tests.__mocks__ import MockPayable
 
 
@@ -52,7 +52,7 @@ class ServicesTest(TestCase):
                 )
 
     def test_delete_payment(self):
-        existing_payment = MagicMock()
+        existing_payment = MagicMock(batch=None)
         payable = MockPayable(payer=self.member, payment=existing_payment)
         payable.save.reset_mock()
 
@@ -69,7 +69,20 @@ class ServicesTest(TestCase):
             existing_payment.created_at = timezone.now() - timezone.timedelta(
                 seconds=settings.PAYMENT_CHANGE_WINDOW + 60
             )
-            with self.assertRaises(PaymentError):
+            with self.assertRaisesMessage(
+                PaymentError, "You are not authorized to delete this payment."
+            ):
+                services.delete_payment(payable)
+            self.assertIsNotNone(payable.payment)
+
+        existing_payment.created_at = timezone.now()
+
+        with self.subTest("Already processed"):
+            payable.payment = existing_payment
+            existing_payment.batch = Batch.objects.create(processed=True)
+            with self.assertRaisesMessage(
+                PaymentError, "This payment has already been processed."
+            ):
                 services.delete_payment(payable)
             self.assertIsNotNone(payable.payment)
 

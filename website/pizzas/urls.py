@@ -11,7 +11,6 @@ urlpatterns = [
         include(
             [
                 path("order/cancel/", views.cancel_order, name="cancel-order"),
-                path("order/pay/", views.pay_order, name="pay-order"),
                 path("order/", views.order, name="order"),
                 path("", views.index, name="index"),
             ]
