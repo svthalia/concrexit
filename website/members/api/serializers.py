@@ -110,13 +110,18 @@ class MemberListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ("pk", "display_name", "avatar")
+        fields = ("pk", "starting_year", "display_name", "membership_type", "avatar")
 
     display_name = serializers.SerializerMethodField("_display_name")
+    starting_year = serializers.SerializerMethodField("_starting_year")
     avatar = serializers.SerializerMethodField("_avatar")
+    membership_type = serializers.SerializerMethodField("_membership_type")
 
     def _display_name(self, instance):
         return instance.profile.display_name()
+
+    def _starting_year(self, instance):
+        return instance.profile.starting_year
 
     def _avatar(self, instance):
         placeholder = self.context["request"].build_absolute_uri(
@@ -128,6 +133,12 @@ class MemberListSerializer(serializers.ModelSerializer):
         return create_image_thumbnail_dict(
             self.context["request"], file, placeholder=placeholder, size_large="800x800"
         )
+
+    def _membership_type(self, instance):
+        membership = instance.current_membership
+        if membership:
+            return membership.type
+        return None
 
 
 class ProfileEditSerializer(serializers.ModelSerializer):
