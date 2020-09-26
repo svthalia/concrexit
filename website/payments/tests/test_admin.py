@@ -26,8 +26,6 @@ from payments.admin import ValidAccountFilter
 from payments.forms import BatchPaymentInlineAdminForm
 from payments.models import Payment, BankAccount, Batch
 
-from payments.admin import PaymentAdmin
-
 
 class GlobalAdminTest(SimpleTestCase):
     @mock.patch("registrations.admin.RegistrationAdmin")
@@ -46,19 +44,13 @@ class GlobalAdminTest(SimpleTestCase):
         )
 
 
-@override_settings(SUSPEND_SIGNALS=True)
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class PaymentAdminTest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json"]
+
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.user = Member.objects.create(
-            pk=1,
-            username="test1",
-            first_name="Test1",
-            last_name="Example",
-            email="test1@example.org",
-            is_staff=True,
-        )
-        Profile.objects.create(user=cls.user)
+        cls.user = Member.objects.get(pk=2)
 
     def setUp(self) -> None:
         self.client = Client()
@@ -108,7 +100,7 @@ class PaymentAdminTest(TestCase):
 
         self.assertEqual(
             self.admin.paid_by_link(payment),
-            f"<a href='/members/profile/{self.user.pk}'>" f"Test1 Example</a>",
+            f"<a href='/members/profile/{self.user.pk}'>Sébastiaan Versteeg</a>",
         )
 
     def test_processed_by_link(self) -> None:
@@ -121,7 +113,7 @@ class PaymentAdminTest(TestCase):
 
         self.assertEqual(
             self.admin.processed_by_link(payment1),
-            f"<a href='/members/profile/{self.user.pk}'>" f"Test1 Example</a>",
+            f"<a href='/members/profile/{self.user.pk}'>Sébastiaan Versteeg</a>",
         )
 
     def test_delete_model_succeed(self) -> None:
@@ -445,9 +437,9 @@ class PaymentAdminTest(TestCase):
         self.assertEqual(
             f"Created,Amount,Type,Processor,Payer id,Payer name,"
             f"Notes\r\n2019-01-01 00:00:00+00:00,"
-            f"7.50,Card payment,Test1 Example,{self.user.pk},Test1 Example,"
+            f"7.50,Card payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,"
             f"\r\n2019-01-01 00:00:00+00:00,17.50,"
-            f"Cash payment,Test1 Example,{self.user.pk},Test1 Example,"
+            f"Cash payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,"
             f"\r\n",
             response.content.decode("utf-8"),
         )
@@ -564,18 +556,13 @@ class ValidAccountFilterTest(TestCase):
 
 
 @freeze_time("2019-01-01")
-@override_settings(SUSPEND_SIGNALS=True)
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class BatchAdminTest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json"]
+
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.user = Member.objects.create(
-            username="test1",
-            first_name="Test1",
-            last_name="Example",
-            email="test1@example.org",
-            is_staff=True,
-            is_superuser=True,
-        )
+        cls.user = Member.objects.get(pk=2)
 
     def setUp(self) -> None:
         self.client = Client()
@@ -717,6 +704,8 @@ class BatchAdminTest(TestCase):
 
     @mock.patch("django.contrib.admin.ModelAdmin.changeform_view")
     def test_change_form_view(self, changeform_view_mock) -> None:
+        self._give_user_permissions()
+
         b = Batch.objects.create(processed=True)
         request = self.rf.get(f"/admin/payments/batch/{b.id}/change/")
         request.user = self.user
@@ -761,7 +750,7 @@ class BankAccountAdminTest(TestCase):
 
         self.assertEqual(
             self.admin.owner_link(bank_account1),
-            f"<a href='/admin/auth/user/{self.user.pk}/change/'>" f"Test1 Example</a>",
+            f"<a href='/admin/auth/user/{self.user.pk}/change/'>Test1 Example</a>",
         )
 
         bank_account2 = BankAccount.objects.create(

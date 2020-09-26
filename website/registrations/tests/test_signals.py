@@ -1,12 +1,13 @@
 from unittest import mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from members.models import Membership
 from registrations.models import Registration, Entry
 
 
+@override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class ServicesTest(TestCase):
     @classmethod
     def setUpTestData(cls):

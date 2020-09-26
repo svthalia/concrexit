@@ -38,17 +38,17 @@ class PayableTest(TestCase):
             p.save()
 
 
-@override_settings(SUSPEND_SIGNALS=True)
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class PaymentTest(TestCase):
     """Tests for the Payment model"""
 
-    fixtures = ["members.json"]
+    fixtures = ["members.json", "bank_accounts.json"]
 
     @classmethod
     def setUpTestData(cls):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.payment = Payment.objects.create(
-            amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.TPAY
+            amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.CASH
         )
         cls.batch = Batch.objects.create()
 
@@ -84,6 +84,17 @@ class PaymentTest(TestCase):
         """
         Tests the model clean functionality
         """
+        with self.subTest("Block Thalia Pay creation when it is disabled for user"):
+            with override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=False):
+                self.payment.type = Payment.TPAY
+                self.payment.batch = self.batch
+                with self.assertRaises(ValidationError):
+                    self.payment.clean()
+
+            self.payment.type = Payment.TPAY
+            self.payment.batch = self.batch
+            self.payment.clean()
+
         with self.subTest("Test that only Thalia Pay can be added to a batch"):
             for payment_type in [Payment.CASH, Payment.CARD, Payment.WIRE]:
                 self.payment.type = payment_type
@@ -139,7 +150,7 @@ class PaymentTest(TestCase):
 
 
 @freeze_time("2019-01-01")
-@override_settings(SUSPEND_SIGNALS=True)
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class BatchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
@@ -156,6 +167,16 @@ class BatchModelTest(TestCase):
             last_name="Example",
             email="test2@example.org",
             is_staff=True,
+        )
+
+        BankAccount.objects.create(
+            owner=cls.user1,
+            initials="J",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
+            mandate_no="11-1",
+            valid_from=timezone.now().date() - timezone.timedelta(days=5),
+            signature="base64,png",
         )
 
     def setUp(self):
@@ -208,7 +229,7 @@ class BatchModelTest(TestCase):
             batch.description, f"Thalia Pay payments for 2019-1",
         )
 
-    def test_proccess_batch(self) -> None:
+    def test_process_batch(self) -> None:
         batch = Batch.objects.create(id=1)
         batch.processed = True
         batch.save()
@@ -266,7 +287,7 @@ class BatchModelTest(TestCase):
 
 
 @freeze_time("2019-01-01")
-@override_settings(SUSPEND_SIGNALS=True)
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class BankAccountTest(TestCase):
     """Tests for the BankAccount model"""
 
