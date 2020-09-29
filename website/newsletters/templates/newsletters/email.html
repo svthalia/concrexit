@@ -125,11 +125,11 @@
                                 <br>
                                 <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
                                     {% if item.newsletterevent.start_datetime|date:'d-M-Y H:i' == item.newsletterevent.end_datetime|date:'d-M-Y H:i' %}
-                                        {{ item.newsletterevent.start_datetime }}
+                                        {{ item.newsletterevent.start_datetime|date:'D d-M-Y H:i' }}
                                     {% elif item.newsletterevent.start_datetime|date:'d-M-Y' == item.newsletterevent.end_datetime|date:'d-M-Y' %}
-                                        {{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime|date:'H:i' }}
+                                        {{ item.newsletterevent.start_datetime|date:'D d-M-Y H:i' }} - {{ item.newsletterevent.end_datetime|date:'H:i' }}
                                     {% else %}
-                                        {{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime }}
+                                        {{ item.newsletterevent.start_datetime|date:'D d-M-Y H:i'}} - {{ item.newsletterevent.end_datetime|date:'D d-M-Y H:i' }}
                                     {% endif %}
                                 </span>
                             </div>
