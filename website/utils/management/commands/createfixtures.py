@@ -145,14 +145,18 @@ class Command(BaseCommand):
 
         board = Board()
 
-        board.name_en = "Board {}-{}".format(lecture_year, lecture_year + 1)
-        board.description_en = _faker.paragraph()
+        board.name = "Board {}-{}".format(lecture_year, lecture_year + 1)
+        while Board.objects.filter(name=board.name).exists():
+            lecture_year = lecture_year - 1
+            board.name = "Board {}-{}".format(lecture_year, lecture_year + 1)
+
+        board.description = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            board.name_en, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg"
+            board.name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg"
         )  # 620x620 pixels, with 10 pixels padding on each side
-        board.photo.save(board.name_en + ".jpeg", ContentFile(icon))
+        board.photo.save(f"{board.name}.jpeg", ContentFile(icon))
 
         board.since = date(year=lecture_year, month=9, day=1)
         board.until = date(year=lecture_year + 1, month=8, day=31)
@@ -186,18 +190,14 @@ class Command(BaseCommand):
 
         member_group = group_model()
 
-        member_group.name_en = _generate_title()
-        member_group.description_en = _faker.paragraph()
+        member_group.name = _generate_title()
+        member_group.description = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            member_group.name_en,
-            480,
-            480,
-            padding=(10, 10, 10, 10),
-            output_format="jpeg",
+            member_group.name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        member_group.photo.save(member_group.name_en + ".jpeg", ContentFile(icon))
+        member_group.photo.save(member_group.name + ".jpeg", ContentFile(icon))
 
         member_group.since = _faker.date_time_between("-10y", "+30d")
 
