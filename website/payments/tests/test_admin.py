@@ -666,7 +666,13 @@ class BatchAdminTest(TestCase):
         b.save()
         self.assertCountEqual(
             self.admin.get_readonly_fields(None, b),
-            ["description", "processed", "processing_date", "total_amount",],
+            [
+                "description",
+                "processed",
+                "processing_date",
+                "total_amount",
+                "withdrawal_date",
+            ],
         )
 
     def test_save_formset(self) -> None:
