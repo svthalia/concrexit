@@ -8,7 +8,6 @@ from events import emails
 from events.exceptions import RegistrationError
 from events.models import EventRegistration, RegistrationInformationField, Event
 from payments.api.fields import PaymentTypeField
-from payments.models import Payment
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
 
@@ -153,27 +152,6 @@ def cancel_registration(member, event):
         registration.save()
     else:
         raise RegistrationError(_("You are not registered for this event."))
-
-
-def pay_with_tpay(member, event):
-    """
-    Add a Thalia Pay payment to an event registration
-
-    :param member: the user
-    :param event: the event
-    """
-    try:
-        registration = EventRegistration.objects.get(event=event, member=member)
-    except EventRegistration.DoesNotExist:
-        raise RegistrationError(_("You are not registered for this event."))
-
-    if registration.payment is None:
-        registration.payment = create_payment(
-            payable=registration, processed_by=member, pay_type=Payment.TPAY
-        )
-        registration.save()
-    else:
-        raise RegistrationError(_("You have already paid for this event."))
 
 
 def update_registration(
