@@ -335,6 +335,7 @@ class BatchAdmin(admin.ModelAdmin):
     inlines = (PaymentsInline,)
     list_display = (
         "description",
+        "withdrawal_date",
         "start_date",
         "end_date",
         "total_amount",
@@ -344,11 +345,15 @@ class BatchAdmin(admin.ModelAdmin):
     )
     fields = (
         "description",
+        "withdrawal_date",
         "processed",
         "processing_date",
         "total_amount",
     )
-    search_fields = ("description",)
+    search_fields = (
+        "description",
+        "withdrawal_date",
+    )
 
     def get_readonly_fields(self, request: HttpRequest, obj: Batch = None):
         default_fields = (
@@ -357,7 +362,7 @@ class BatchAdmin(admin.ModelAdmin):
             "total_amount",
         )
         if obj and obj.processed:
-            return ("description",) + default_fields
+            return ("description", "withdrawal_date",) + default_fields
         return default_fields
 
     def has_delete_permission(self, request, obj=None):
