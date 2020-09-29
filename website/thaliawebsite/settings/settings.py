@@ -161,6 +161,7 @@ OAUTH2_PROVIDER = {
         "read": "Authenticated read access to the website",
         "write": "Authenticated write access to the website",
         "members:read": "Read access to your member profile",
+        "activemembers:read": "Read access to committee, society and board groups",
     },
 }
 
