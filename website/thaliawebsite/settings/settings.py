@@ -16,7 +16,6 @@ import json
 import os
 
 from django.core.management.commands import makemessages
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -321,9 +320,6 @@ CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
 
 # Payments creditor identifier
 SEPA_CREDITOR_ID = os.environ.get("SEPA_CREDITOR_ID", "PLACEHOLDER")
-
-# Payment batch withdrawal date default offset after creation date
-PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET = timezone.timedelta(days=14)
 
 # Payment settings
 THALIA_PAY_ENABLED_PAYMENT_METHOD = (
