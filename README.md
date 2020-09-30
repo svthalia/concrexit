@@ -17,14 +17,10 @@ If you use Docker, please look at [this part](#docker) of the README.
 0. Get at least Python 3.7 and install poetry and the Pillow requirements as per below.
 1. Clone this repository
 2. Make sure `poetry` uses your Python 3.x installation: `poetry env use python3`
-3. Run `poetry install`
-4. Run `poetry shell`
-5. `cd website`
-6. `./manage.py migrate` to initialise the database
-7. `./manage.py createsuperuser` to create the first user (note that this user won't be a member!)
-8. `./manage.py createfixtures -a` to generate a bunch of test data
-9. `./manage.py runserver` to run a testing server
-10. Go to the user you created and complete the profile and add a membership for full access
+3. `make createsuperuser` to create the first user (note that this user won't be a member!)
+4. `make createfixtures` to generate a bunch of test data
+5. `make run` to run a testing server
+6. Go to the user you created and complete the profile and add a membership for full access
 
 Testing and linting
 -------------------
@@ -32,16 +28,10 @@ Testing and linting
 You can use [`pyenv`](https://github.com/pyenv/pyenv) (on Unix systems) to test in different python
 environments.
 
-All code has to be run through [`black`](https://github.com/psf/black) before being committed. To black the code before committing make run `black` one the base directory of this project.
+All code has to be run through [`black`](https://github.com/psf/black) before being committed. To black the code before committing run `make fmt` one the base directory of this project.
 If you want to integrate `black` with your editor look in the [`black` docs](https://black.readthedocs.io/en/stable/editor_integration.html). On linux you can find the black executable in `~/.cache/poety/virtualenvs/<your env>/bin/black`.
 
-There are a range of tests that can be run:
-
-    poetry run python website/manage.py check
-    poetry run python website/manage.py templatecheck --project-only
-    poetry run python website/manage.py makemigrations --no-input --check --dry-run
-    poetry run coverage run website/manage.py test website/
-    poetry run coverage report
+You can run all the tests with `make test`, afterwards you can check the coverage with `make coverage`.
 
 poetry
 ------
@@ -112,11 +102,9 @@ Documentation
 The documentation for our code is located inside the files and is combined using [Sphinx](https://www.sphinx-doc.org/en/master/) into an HTML output.
 The continuous integration checks if the latest Python modules are included in the Sphinx files located in the `docs` folder
 
-To update these files:
+To update these files run `make apidocs`
 
-1. `cd docs` into the application's directory
-2. Run `poetry install -E docs` to install the dependencies
-3. Run `./generate-apidocs.sh` to update the `.rst` documents
+To render the docs to HTML run `make docs`
 
 If you have a `localsettings.py` then make sure you do not commit this part of the documentation to version control.
 

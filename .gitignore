@@ -13,6 +13,8 @@ db.sqlite3
 
 website/media/
 website/static/
+covhtml/
+.make
 
 # Ignore local settings
 website/thaliawebsite/settings/localsettings.py
