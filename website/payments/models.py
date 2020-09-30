@@ -3,7 +3,6 @@ import datetime
 import uuid
 from decimal import Decimal
 
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -145,14 +144,6 @@ class Batch(models.Model):
 
     description = models.TextField(
         verbose_name=_("description"), default=_default_batch_description,
-    )
-
-    withdrawal_date = models.DateField(
-        verbose_name=_("withdrawal date"),
-        blank=False,
-        null=False,
-        default=timezone.now().date()
-        + settings.PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET,
     )
 
     def save(
