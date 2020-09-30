@@ -137,7 +137,9 @@ def cancel_registration(member, event):
 
     if event_permissions(member, event)["cancel_registration"] and registration:
         if registration.payment is not None:
-            raise RegistrationError(_("You can't cancel a registration after having payed."))
+            raise RegistrationError(
+                _("You can't cancel a registration after having payed.")
+            )
         if registration.queue_position == 0:
             emails.notify_first_waiting(event)
 
