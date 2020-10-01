@@ -3,6 +3,7 @@ import datetime
 import uuid
 from decimal import Decimal
 
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -129,6 +130,10 @@ def _default_batch_description():
     return f"Thalia Pay payments for {now.year}-{now.month}"
 
 
+def _default_withdrawal_date():
+    return timezone.now() + settings.PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET
+
+
 class Batch(models.Model):
     """
     Describes a batch of payments for export
@@ -144,6 +149,13 @@ class Batch(models.Model):
 
     description = models.TextField(
         verbose_name=_("description"), default=_default_batch_description,
+    )
+
+    withdrawal_date = models.DateField(
+        verbose_name=_("withdrawal date"),
+        null=False,
+        blank=False,
+        default=_default_withdrawal_date,
     )
 
     def save(
