@@ -62,6 +62,7 @@ def event_permissions(member, event, name=None):
         registration is not None
         and registration.date_cancelled is None
         and (event.cancellation_allowed or name)
+        and registration.payment is None
     )
     perms["update_registration"] = (
         registration is not None
@@ -136,10 +137,6 @@ def cancel_registration(member, event):
         pass
 
     if event_permissions(member, event)["cancel_registration"] and registration:
-        if registration.payment is not None:
-            raise RegistrationError(
-                _("You can't cancel a registration after having payed.")
-            )
         if registration.queue_position == 0:
             emails.notify_first_waiting(event)
 
@@ -153,7 +150,12 @@ def cancel_registration(member, event):
         registration.date_cancelled = timezone.now()
         registration.save()
     else:
-        raise RegistrationError(_("You are not registered for this event."))
+        if registration.payment is not None:
+            raise RegistrationError(
+                _("You can't cancel a registration after having payed.")
+            )
+        else:
+            raise RegistrationError(_("You are not registered for this event."))
 
 
 def update_registration(
