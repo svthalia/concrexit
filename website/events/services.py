@@ -150,7 +150,7 @@ def cancel_registration(member, event):
         registration.date_cancelled = timezone.now()
         registration.save()
     else:
-        if registration.payment is not None:
+        if registration is not None and registration.payment is not None:
             raise RegistrationError(
                 _("You can't cancel a registration after having payed.")
             )
