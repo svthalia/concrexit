@@ -12,11 +12,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install any missing dependencies
-        run: poetry install --no-interaction
-
       - name: Run black
-        run: poetry run black --quiet --check website
+        run: make blackcheck
 
   tests:
     name: Django Tests
@@ -33,29 +30,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install any missing dependencies
-        run: poetry install --no-interaction
-
-      - name: Run internal Django tests
-        run: poetry run python website/manage.py check
-
-      - name: Test the templates
-        run: poetry run python website/manage.py templatecheck --project-only
-
-      - name: Make migrations
-        run: poetry run python website/manage.py makemigrations --no-input --check --dry-run
-
-      - name: Run coverage
-        run: poetry run coverage run website/manage.py test website/
+      - name: Run tests
+        run: make test
 
       - name: Report coverage
-        run: |
-          coverage report --fail-under=100 --omit "website/registrations/urls.py" website/registrations/**.py
-          coverage report --fail-under=100 --omit "website/payments/urls.py" website/payments/**.py
-          coverage report
+        run: make coverage
 
       - name: Create coverage report
-        run: coverage html --directory=covhtml --title="Coverage Report"
+        run: make covhtml
 
       - name: Save coverage report
         uses: actions/upload-artifact@v1
@@ -71,21 +53,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install any missing dependencies
-        run: poetry install --no-interaction --extras "docs"
-
       - name: Run doctest
-        working-directory: docs
-        run: poetry run make doctest
+        run: make doctest
 
       - name: Run Sphinx
-        working-directory: docs
-        run: poetry run sphinx-build -W . _build -j $(nproc)
+        run: make docs
 
       - name: Run API docs script
-        working-directory: docs
         run: |
-          poetry run ./generate-apidocs.sh
+          make apidocs
           git diff --exit-code
 
       - name: Save documentation HTML
