@@ -4,10 +4,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from utils.translation import ModelTranslateMeta, MultilingualField
 
-
-class Document(models.Model, metaclass=ModelTranslateMeta):
+class Document(models.Model):
     """Describes a base document"""
 
     class Meta:
@@ -22,7 +20,7 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         ("misc", _("Miscellaneous document")),
     )
 
-    name = MultilingualField(models.CharField, verbose_name=_("name"), max_length=200)
+    name = models.CharField(verbose_name=_("name"), max_length=200)
 
     created = models.DateTimeField(verbose_name=_("created"), auto_now_add=True,)
 
@@ -35,8 +33,7 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         default="misc",
     )
 
-    file = MultilingualField(
-        models.FileField,
+    file = models.FileField(
         verbose_name=_("file"),
         upload_to="documents/",
         validators=[FileExtensionValidator(["txt", "pdf", "jpg", "jpeg", "png"])],
@@ -149,7 +146,7 @@ class MiscellaneousDocument(Document):
         super().save(*args, **kwargs)
 
 
-class GeneralMeeting(models.Model, metaclass=ModelTranslateMeta):
+class GeneralMeeting(models.Model):
     """Describes a general meeting"""
 
     class Meta:
@@ -163,9 +160,7 @@ class GeneralMeeting(models.Model, metaclass=ModelTranslateMeta):
 
     datetime = models.DateTimeField(verbose_name=_("datetime"),)
 
-    location = MultilingualField(
-        models.CharField, verbose_name=_("location"), max_length=200
-    )
+    location = models.CharField(verbose_name=_("location"), max_length=200)
 
     def __str__(self):
         return timezone.localtime(self.datetime).strftime("%Y-%m-%d")

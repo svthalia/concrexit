@@ -21,7 +21,7 @@ class DocumentFileInput(widgets.ClearableFileInput):
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         if hasattr(value, "url"):
-            doc = models.Document.objects.get(file_en=value)
+            doc = models.Document.objects.get(file=value)
             context["document_id"] = doc.pk
             context["language"] = "en"
         return context
@@ -33,11 +33,11 @@ class MinutesForm(forms.ModelForm):
     class Meta:
         model = models.Minutes
         fields = (
-            "file_en",
+            "file",
             "members_only",
         )
         widgets = {
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
 
@@ -49,7 +49,7 @@ class AnnualDocumentForm(forms.ModelForm):
         exclude = ()
         widgets = {
             "year": forms.Select,
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
     def current_year():
@@ -75,12 +75,12 @@ class AssociationDocumentForm(forms.ModelForm):
     class Meta:
         model = models.AssociationDocument
         fields = (
-            "name_en",
-            "file_en",
+            "name",
+            "file",
             "members_only",
         )
         widgets = {
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
 
@@ -90,13 +90,13 @@ class EventDocumentForm(forms.ModelForm):
     class Meta:
         model = models.EventDocument
         fields = (
-            "name_en",
-            "file_en",
+            "name",
+            "file",
             "members_only",
             "owner",
         )
         widgets = {
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
 
@@ -106,12 +106,12 @@ class MiscellaneousDocumentForm(forms.ModelForm):
     class Meta:
         model = models.MiscellaneousDocument
         fields = (
-            "name_en",
-            "file_en",
+            "name",
+            "file",
             "members_only",
         )
         widgets = {
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
 
