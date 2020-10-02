@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
 
 from utils.snippets import datetime_to_lectureyear
-from utils.translation import localize_attr_name
 from .models import Board, MemberGroupMembership, Committee, Society
 
 
@@ -59,7 +58,7 @@ class CommitteeIndexView(ListView):
     context_object_name = "committees"
 
     def get_ordering(self) -> str:
-        return localize_attr_name("name")
+        return "name"
 
 
 class CommitteeDetailView(_MemberGroupDetailView):
@@ -81,7 +80,7 @@ class SocietyIndexView(ListView):
     context_object_name = "societies"
 
     def get_ordering(self) -> str:
-        return localize_attr_name("name")
+        return "name"
 
 
 class SocietyDetailView(_MemberGroupDetailView):
