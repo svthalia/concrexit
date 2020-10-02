@@ -2,7 +2,6 @@
 {% load i18n thumbnail static activemembers_cards alert %}
 {% block title %}{% trans 'societies'|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans 'societies'|capfirst %} — {{ block.super }}{% endblock %}
-{% get_current_language as LANGUAGE_CODE %}
 
 {% block body %}
     <section id="activemembers-committees" class="page-section">
@@ -24,7 +23,7 @@
             <div class="row mt-4">
                 {% for society in societies %}
                     <div class="col-4 col-md-3 my-3">
-                        {% membergroup_card society LANGUAGE_CODE %}
+                        {% membergroup_card society %}
                     </div>
                 {% empty %}
                     {% trans 'There are no societies!' as no_societies %}
