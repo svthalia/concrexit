@@ -11,6 +11,8 @@ from .services import extract_archive, save_photo
 
 @admin.register(Album)
 class AlbumAdmin(TranslatedModelAdmin):
+    """Model for Album admin page."""
+
     list_display = ("title", "date", "num_photos", "hidden", "shareable")
     fields = ("title", "slug", "date", "hidden", "shareable", "album_archive", "_cover")
     search_fields = ("title", "date")
@@ -20,16 +22,18 @@ class AlbumAdmin(TranslatedModelAdmin):
     form = AlbumForm
 
     def get_queryset(self, request):
+        """Get Albums and add the amount of photos as an annotation."""
         return Album.objects.annotate(photos_count=Count("photo"))
 
     def num_photos(self, obj):
-        """Pretty-print the number of photos"""
+        """Pretty-print the number of photos."""
         return obj.photos_count
 
     num_photos.short_description = _("Number of photos")
     num_photos.admin_order_field = "photos_count"
 
     def save_model(self, request, obj, form, change):
+        """Save the new Album by extracting the archive."""
         super().save_model(request, obj, form, change)
 
         archive = form.cleaned_data.get("album_archive", None)
@@ -45,12 +49,15 @@ class AlbumAdmin(TranslatedModelAdmin):
 
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
+    """Model for Photo admin page."""
+
     list_display = ("__str__", "album", "hidden")
     search_fields = ("file",)
     list_filter = ("album", "hidden")
     exclude = ("_digest",)
 
     def save_model(self, request, obj, form, change):
+        """Save new Photo."""
         super().save_model(request, obj, form, change)
         if change and obj.original_file == obj.file.path:
             return

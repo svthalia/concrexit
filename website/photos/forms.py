@@ -6,10 +6,14 @@ from django.utils.translation import gettext_lazy as _
 
 
 class AlbumForm(forms.ModelForm):
+    """Class for an album submisison form."""
 
-    # Excuse my french
-    # https://stackoverflow.com/questions/4391776/django-admin-inline-forms-limit-foreign-key-queryset-to-a-set-of-values#4392047
     def __init__(self, *args, **kwargs):
+        """Initialize AlbumForm.
+
+        Set the cover options to photos from the specified album.
+        https://stackoverflow.com/questions/4391776/django-admin-inline-forms-limit-foreign-key-queryset-to-a-set-of-values#4392047
+        """
         super().__init__(*args, **kwargs)
         if "instance" in kwargs and "_cover" in self.fields:
             self.fields["_cover"].queryset = Photo.objects.filter(album=self.instance)
@@ -21,4 +25,6 @@ class AlbumForm(forms.ModelForm):
     )
 
     class Meta:
+        """Meta class for AlbumForm."""
+
         exclude = ["dirname"]

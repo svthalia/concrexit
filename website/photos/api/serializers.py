@@ -6,6 +6,8 @@ from photos.models import Photo, Album
 
 
 class PhotoRetrieveSerializer(serializers.ModelSerializer):
+    """ModelSerializer class to get a Photo object set."""
+
     file = serializers.SerializerMethodField("_file")
 
     def _file(self, obj):
@@ -17,17 +19,25 @@ class PhotoRetrieveSerializer(serializers.ModelSerializer):
         )
 
     class Meta:
+        """Meta class for PhotoRetrieveSerializer."""
+
         model = Photo
         fields = ("pk", "rotation", "hidden", "album", "file")
 
 
 class PhotoCreateSerializer(serializers.ModelSerializer):
+    """ModelSerializer class to create or update a Photo object set."""
+
     class Meta:
+        """Met class for PhotoCreateSerializer."""
+
         model = Photo
         fields = ("pk", "rotation", "hidden", "album", "file")
 
 
 class AlbumSerializer(serializers.ModelSerializer):
+    """ModelSerializer for an Album object."""
+
     photos = serializers.SerializerMethodField("_photos")
     accessible = serializers.SerializerMethodField("_accessible")
 
@@ -42,6 +52,7 @@ class AlbumSerializer(serializers.ModelSerializer):
         return []
 
     def create(self, validated_data):
+        """Create album."""
         photos_data = validated_data.pop("photos")
         album = Album.objects.create(**validated_data)
         for photo_data in photos_data:
@@ -49,6 +60,7 @@ class AlbumSerializer(serializers.ModelSerializer):
         return album
 
     def update(self, instance, validated_data):
+        """Update album."""
         photos_data = validated_data.pop("photos")
         album = Album.objects.update(**validated_data)
         for photo_data in photos_data:
@@ -56,11 +68,15 @@ class AlbumSerializer(serializers.ModelSerializer):
         return album
 
     class Meta:
+        """Meta class for AlbumSerializer."""
+
         model = Album
         fields = ("pk", "title", "date", "hidden", "shareable", "accessible", "photos")
 
 
 class AlbumListSerializer(serializers.ModelSerializer):
+    """ModelSerializer class for a list of Albums."""
+
     cover = PhotoRetrieveSerializer()
     accessible = serializers.SerializerMethodField("_accessible")
 
@@ -68,5 +84,7 @@ class AlbumListSerializer(serializers.ModelSerializer):
         return services.is_album_accessible(self.context["request"], obj)
 
     class Meta:
+        """Meta class for AlbumListSerializer."""
+
         model = Album
         fields = ("pk", "title", "date", "hidden", "shareable", "accessible", "cover")

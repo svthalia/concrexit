@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def photo_uploadto(instance, filename):
+    """Get path of file to upload to."""
     num = instance.album.photo_set.count()
     extension = os.path.splitext(filename)[1]
     new_filename = str(num).zfill(4) + extension
@@ -28,6 +29,7 @@ def photo_uploadto(instance, filename):
 
 
 class Photo(models.Model):
+    """Model for a Photo object."""
 
     album = models.ForeignKey(
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
@@ -47,6 +49,7 @@ class Photo(models.Model):
     _digest = models.CharField("digest", max_length=40,)
 
     def __init__(self, *args, **kwargs):
+        """Initialize Photo object and set the file if it exists."""
         super().__init__(*args, **kwargs)
         if self.file:
             self.original_file = self.file.path
@@ -54,13 +57,18 @@ class Photo(models.Model):
             self.original_file = ""
 
     def __str__(self):
+        """Return the filename of a Photo object."""
         return os.path.basename(self.file.name)
 
     class Meta:
+        """Meta class for Photo."""
+
         ordering = ("file",)
 
 
 class Album(models.Model, metaclass=ModelTranslateMeta):
+    """Model for Album objects."""
+
     title = MultilingualField(models.CharField, _("title"), max_length=200,)
 
     dirname = models.CharField(verbose_name=_("directory name"), max_length=200,)
@@ -91,6 +99,10 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
 
     @cached_property
     def cover(self):
+        """Return cover of Album.
+
+        If a cover is not set, return a random photo or None if there are no photos.
+        """
         cover = None
         if self._cover is not None:
             return self._cover
@@ -100,12 +112,15 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
         return cover
 
     def __str__(self):
+        """Get string representation of Album."""
         return "{} {}".format(self.date.strftime("%Y-%m-%d"), self.title)
 
     def get_absolute_url(self):
+        """Get url of Album."""
         return reverse("photos:album", args=[str(self.slug)])
 
     def save(self, *args, **kwargs):
+        """Save album and send appropriate notifications."""
         # dirname is only set for new objects, to avoid ever changing it
         if self.pk is None:
             self.dirname = self.slug
@@ -147,9 +162,12 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def access_token(self):
+        """Return access token for album."""
         return hashlib.sha256(
             "{}album{}".format(settings.SECRET_KEY, self.pk).encode("utf-8")
         ).hexdigest()
 
     class Meta:
+        """Meta class for Album."""
+
         ordering = ("-date", "title_en")
