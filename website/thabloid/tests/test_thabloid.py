@@ -8,7 +8,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.conf import settings
 
-from .models import Thabloid
+from thabloid.models import Thabloid
 
 tmp_MEDIA_ROOT = tempfile.mkdtemp()
 
