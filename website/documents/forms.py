@@ -51,11 +51,13 @@ class AnnualDocumentForm(forms.ModelForm):
             "file": DocumentFileInput,
         }
 
-    def current_year():
+    @staticmethod
+    def _current_year():
         """Get the current lecture year"""
         return datetime_to_lectureyear(timezone.now())
 
-    def year_choices():
+    @staticmethod
+    def _year_choices():
         """Get the lecture years"""
         current = datetime_to_lectureyear(timezone.now())
         return [
@@ -64,7 +66,7 @@ class AnnualDocumentForm(forms.ModelForm):
         ]
 
     year = forms.TypedChoiceField(
-        coerce=int, choices=year_choices, initial=current_year
+        coerce=int, choices=_year_choices.__func__(), initial=_current_year.__func__()
     )
 
 
