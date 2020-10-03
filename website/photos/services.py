@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 def photo_determine_rotation(pil_image):
+    """Get the rotation of an image."""
     EXIF_ORIENTATION = {
         1: 0,
         2: 0,
@@ -43,23 +44,29 @@ def photo_determine_rotation(pil_image):
 
 
 def check_shared_album_token(album, token):
+    """Return a 404 if the token does not match the album token."""
     if token != album.access_token:
         raise Http404("Invalid token.")
 
 
 def is_album_accessible(request, album):
+    """Check if the request user can access an album."""
     if request.member and request.member.current_membership is not None:
         return True
     elif request.member and request.member.current_membership is None:
         # This user is currently not a member, so need to check if he/she
         # can view this album by checking the membership
-        filter = Q(since__lte=album.date) & Q(until__gte=album.date)
-        return request.member.membership_set.filter(filter).count() > 0
+        return (
+            request.member.membership_set.filter(
+                Q(since__lte=album.date) & Q(until__gte=album.date)
+            ).count()
+            > 0
+        )
     return False
 
 
-# Annotate the albums which are accessible by the user
 def get_annotated_accessible_albums(request, albums):
+    """Annotate the albums which are accessible by the user."""
     if request.member and request.member.current_membership is not None:
         albums = albums.annotate(
             accessible=ExpressionWrapper(Value(True), output_field=BooleanField())
@@ -87,6 +94,7 @@ def get_annotated_accessible_albums(request, albums):
 
 
 def extract_archive(request, album, archive):
+    """Extract zip and tar files."""
     iszipfile = is_zipfile(archive)
     archive.seek(0)
 
@@ -105,6 +113,7 @@ def extract_archive(request, album, archive):
 
 
 def extract_photo(request, archive_file, photo, album):
+    """Extract ZipInfo or TarInfo Photo object."""
     # zipfile and tarfile are inconsistent
     if isinstance(photo, ZipInfo):
         photo_filename = photo.filename
@@ -144,6 +153,10 @@ def extract_photo(request, archive_file, photo, album):
 
 
 def save_photo(photo_obj):
+    """Convert a Photo object to a JPG image and save it.
+
+    Returns True if photo is saved successfully and False if Photo is a duplicate.
+    """
     hash_sha1 = hashlib.sha1()
     for chunk in iter(lambda: photo_obj.file.read(4096), b""):
         hash_sha1.update(chunk)

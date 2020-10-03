@@ -21,6 +21,7 @@ COVER_FILENAME = "cover.jpg"
 
 @login_required
 def index(request):
+    """Render the index page showing multiple album cards."""
     keywords = request.GET.get("keywords", "").split()
 
     # Only show published albums
@@ -64,12 +65,14 @@ def index(request):
 
 
 def _render_album_page(request, album):
+    """Render album.html for a specified album."""
     context = {"album": album, "photos": album.photo_set.filter(hidden=False)}
     return render(request, "photos/album.html", context)
 
 
 @login_required
 def album(request, slug):
+    """Render an album, if it accessible by the user."""
     album = get_object_or_404(Album, slug=slug)
     if is_album_accessible(request, album):
         return _render_album_page(request, album)
@@ -77,12 +80,14 @@ def album(request, slug):
 
 
 def shared_album(request, slug, token):
+    """Render a shared album if the correct token is provided."""
     album = get_object_or_404(Album, slug=slug)
     check_shared_album_token(album, token)
     return _render_album_page(request, album)
 
 
 def _photo_path(album, filename):
+    """Return the path to a Photo."""
     photoname = os.path.basename(filename)
     albumpath = os.path.join(album.photosdir, album.dirname)
     photopath = os.path.join(albumpath, photoname)
@@ -91,14 +96,20 @@ def _photo_path(album, filename):
 
 
 def _download(request, album, filename):
-    """This function provides a layer of indirection for shared albums"""
+    """Download a photo.
+
+    This function provides a layer of indirection for shared albums.
+    """
     photopath = _photo_path(album, filename)
     photo = get_object_or_404(Photo.objects.filter(album=album, file=photopath))
     return sendfile(request, photo.file.path, attachment=True)
 
 
 def _album_download(request, album):
-    """This function provides a layer of indirection for shared albums"""
+    """Download an album.
+
+    This function provides a layer of indirection for shared albums.
+    """
     albumpath = os.path.join(album.photospath, album.dirname)
     zipfilename = os.path.join(gettempdir(), "{}.zip".format(album.dirname))
     if not os.path.exists(zipfilename):
@@ -111,6 +122,7 @@ def _album_download(request, album):
 
 @login_required
 def download(request, slug, filename):
+    """Download a photo if the album of the photo is accessible by the user."""
     album = get_object_or_404(Album, slug=slug)
     if is_album_accessible(request, album):
         return _download(request, album, filename)
@@ -119,6 +131,7 @@ def download(request, slug, filename):
 
 @login_required
 def album_download(request, slug):
+    """Download an album if the album is accessible by the user."""
     album = get_object_or_404(Album, slug=slug)
     if is_album_accessible(request, album):
         return _album_download(request, album)
@@ -126,12 +139,14 @@ def album_download(request, slug):
 
 
 def shared_download(request, slug, token, filename):
+    """Download a photo from a shared album if the album token is provided."""
     album = get_object_or_404(Album, slug=slug)
     check_shared_album_token(album, token)
     return _download(request, album, filename)
 
 
 def shared_album_download(request, slug, token):
+    """Download a shared album if the album token is provided."""
     album = get_object_or_404(Album, slug=slug)
     check_shared_album_token(album, token)
     return _album_download(request, album)

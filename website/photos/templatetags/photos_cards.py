@@ -11,6 +11,7 @@ register = template.Library()
 
 @register.inclusion_tag("includes/grid_item.html")
 def album_card(album):
+    """Create a card to show on a page of multiple albums."""
     class_name = "album-card"
     image_url = ""
 
@@ -37,6 +38,7 @@ def album_card(album):
 
 @register.inclusion_tag("includes/grid_item.html")
 def photo_card(photo):
+    """Create a card of a photo to show on an album page."""
     class_name = "photo-card"
     anchor_attrs = f'data-rotation="{photo.rotation}" ' f'data-fancybox="gallery"'
 
