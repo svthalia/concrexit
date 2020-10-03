@@ -27,9 +27,7 @@ class ThabloidAdminForm(forms.ModelForm):
         )
 
 
+@admin.register(Thabloid)
 class ThabloidAdmin(admin.ModelAdmin):
     form = ThabloidAdminForm
     list_filter = ("year",)
-
-
-admin.site.register(Thabloid, ThabloidAdmin)
