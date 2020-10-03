@@ -14,11 +14,14 @@ from utils.threading import PopenAndCall
 
 
 def thabloid_filename(instance, filename):
+    """Return path of thabloid."""
     ext = os.path.splitext(filename)[1]
     return os.path.join("public/thabloids/", slugify(instance) + ext)
 
 
 class Thabloid(models.Model):
+    """Model representing a Thabloid."""
+
     year = models.IntegerField(
         verbose_name="academic year", validators=[MinValueValidator(1990)]
     )
@@ -31,6 +34,8 @@ class Thabloid(models.Model):
     )
 
     class Meta:
+        """Meta class for Thabloid model."""
+
         unique_together = (
             "year",
             "issue",
@@ -38,9 +43,11 @@ class Thabloid(models.Model):
         ordering = ("-year", "-issue")
 
     def __str__(self):
+        """Return string representation of a Thabloid object."""
         return "Thabloid {}-{}, #{}".format(self.year, self.year + 1, self.issue)
 
     def page_url(self, page=None, second_page=None):
+        """Return path of Thabloid pages image."""
         if page is None:
             page = "%03d.png"
         elif second_page is None:
@@ -52,9 +59,11 @@ class Thabloid(models.Model):
 
     @property
     def cover(self):
+        """Return first page as cover."""
         return self.page_url(1)
 
     def pagesets(self, count):
+        """Return list of pages to should be shown together."""
         if count < 1:
             return []
         pageiter = iter(range(2, count))
@@ -62,6 +71,7 @@ class Thabloid(models.Model):
 
     @property
     def pages(self):
+        """Return urls of pages that should be shown together."""
         pages = os.listdir(
             os.path.join(settings.MEDIA_ROOT, os.path.dirname(self.page_url()))
         )
@@ -69,11 +79,13 @@ class Thabloid(models.Model):
         return map(lambda p: self.page_url(p[0], p[1]), self.pagesets(count))
 
     def get_absolute_url(self):
+        """Get url of Thabloid."""
         return reverse(
             "thabloid:pages", kwargs={"year": self.year, "issue": self.issue}
         )
 
     def post_extract(self):
+        """Save extracted pages to disk."""
         pages = os.listdir(
             os.path.join(settings.MEDIA_ROOT, os.path.dirname(self.page_url()))
         )
@@ -107,6 +119,7 @@ class Thabloid(models.Model):
             os.remove(spread_right)
 
     def extract_thabloid_pages(self, wait):
+        """Extract the pages of a Thabloid using Ghostscript."""
         dst = os.path.join(settings.MEDIA_ROOT, self.page_url())
         name = thabloid_filename(self, self.file.name)
         src = os.path.join(settings.MEDIA_ROOT, name)
@@ -139,6 +152,7 @@ class Thabloid(models.Model):
             thread.join()
 
     def save(self, *args, wait=False, **kwargs):
+        """Save Thabloid to disk."""
         new_file = False
 
         if self.pk is None:

@@ -9,6 +9,7 @@ register = template.Library()
 
 @register.inclusion_tag("includes/grid_item.html")
 def thabloid_card(year, thabloid):
+    """Create a card for a thabloid to show on an overview of thabloids."""
     view_url = reverse("thabloid:pages", args=[thabloid.year, thabloid.issue])
     buttons = (
         '<div class="text-center mt-2">'
