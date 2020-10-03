@@ -9,6 +9,7 @@ from .models import Album, Photo
 from .services import extract_archive, save_photo
 
 
+@admin.register(Album)
 class AlbumAdmin(TranslatedModelAdmin):
     list_display = ("title", "date", "num_photos", "hidden", "shareable")
     fields = ("title", "slug", "date", "hidden", "shareable", "album_archive", "_cover")
@@ -42,6 +43,7 @@ class AlbumAdmin(TranslatedModelAdmin):
             )
 
 
+@admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
     list_display = ("__str__", "album", "hidden")
     search_fields = ("file",)
@@ -63,7 +65,3 @@ class PhotoAdmin(admin.ModelAdmin):
             messages.add_message(
                 request, messages.ERROR, _("This photo already exists in the album.")
             )
-
-
-admin.site.register(Album, AlbumAdmin)
-admin.site.register(Photo, PhotoAdmin)
