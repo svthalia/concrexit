@@ -23,7 +23,7 @@ def write_to_file(pk, lang, html_message):
         cache_file.write(html_message)
 
 
-def save_to_disk(newsletter, request):
+def save_to_disk(newsletter):
     """
     Writes the newsletter as HTML to file (in all languages)
     """
@@ -45,7 +45,6 @@ def save_to_disk(newsletter, request):
             "main_partner": main_partner,
             "local_partner": local_partner,
             "lang_code": language[0],
-            "request": request,
         }
 
         html_message = html_template.render(context)
@@ -77,3 +76,5 @@ def send_newsletter(newsletter):
     )
     message.users.set(Member.current_members.all())
     message.send()
+
+    save_to_disk(newsletter)

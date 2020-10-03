@@ -26,9 +26,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        request = HttpRequest()
-        request.META["SERVER_NAME"] = options["server-name"]
-        request.META["SERVER_PORT"] = options["server-port"]
         for n in models.Newsletter.objects.all():
             if n.sent or options["include-unsent"]:
-                services.save_to_disk(n, request)
+                services.save_to_disk(n)
