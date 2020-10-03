@@ -3,7 +3,6 @@ This file defines the menu layout.
 
 We set the variable `:py:main` to form the menu tree.
 """
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 __all__ = ["MAIN_MENU"]

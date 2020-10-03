@@ -1,5 +1,5 @@
 """The signals checked by the pizzas package"""
-from django.db.models.signals import post_save, post_delete, pre_delete, pre_save
+from django.db.models.signals import post_save, pre_delete, pre_save
 
 from utils.models.signals import suspendingreceiver
 

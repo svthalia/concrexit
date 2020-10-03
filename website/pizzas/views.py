@@ -6,8 +6,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
-from payments.models import Payment
-from payments.services import create_payment
 from .models import Order, PizzaEvent, Product
 
 

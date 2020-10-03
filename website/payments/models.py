@@ -14,8 +14,6 @@ from django.utils.translation import gettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
-from payments.exceptions import PaymentError
-
 
 class Payment(models.Model):
     """

@@ -10,7 +10,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
-from payments.models import Payment
 from payments.widgets import PaymentWidget
 from registrations import admin
 from registrations.models import Entry, Registration, Renewal, Reference

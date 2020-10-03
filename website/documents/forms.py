@@ -1,7 +1,6 @@
 """The forms defined by the documents package"""
 from django import forms
 from django.contrib import admin
-from django.db.models import Q
 from django.forms import widgets
 from django.utils import timezone
 
