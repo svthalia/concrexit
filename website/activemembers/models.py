@@ -17,7 +17,6 @@ from django.utils.translation import gettext_lazy as _
 from tinymce import HTMLField
 
 from utils.snippets import overlaps
-from utils.translation import localize_attr_name
 
 logger = logging.getLogger(__name__)
 

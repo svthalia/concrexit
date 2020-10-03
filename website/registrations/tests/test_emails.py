@@ -11,7 +11,6 @@ from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member, Profile
-from payments.models import Payment
 from registrations import emails
 from registrations.emails import _send_email
 from registrations.models import Registration, Renewal

@@ -1,6 +1,5 @@
 """The forms defined by the registrations package"""
 from django import forms
-from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.forms import TypedChoiceField
 from django.urls import reverse_lazy

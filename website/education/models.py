@@ -5,7 +5,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
-from thaliawebsite.settings import settings
 from utils.snippets import datetime_to_lectureyear
 from utils.translation import ModelTranslateMeta, MultilingualField
 
