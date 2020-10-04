@@ -18,5 +18,5 @@ class MemberGroupViewset(viewsets.ReadOnlyModelViewSet):
         filters.OrderingFilter,
         filters.SearchFilter,
     )
-    search_fields = ("name_en", "contact_email", "contact_mailinglist__name")
+    search_fields = ("name", "contact_email", "contact_mailinglist__name")
     lookup_field = "pk"
