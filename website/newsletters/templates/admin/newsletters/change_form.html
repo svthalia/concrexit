@@ -12,8 +12,7 @@
     {% if newsletter %}
     <div class="submit-row newsletters-row">
         <a href="{% url 'newsletters:admin-send' pk=newsletter.pk %}" class="default button">{% trans "Send newsletter to members" %}</a>
-        <a target="_blank" href="{% url 'newsletters:preview-localised' pk=newsletter.pk lang='en' %}" class="button">{% trans "Show preview" %} (EN)</a>
-        <a target="_blank" href="{% url 'newsletters:preview-localised' pk=newsletter.pk lang='nl' %}" class="button">{% trans "Show preview" %} (NL)</a>
+        <a target="_blank" href="{% url 'newsletters:preview' pk=newsletter.pk %}" class="button">{% trans "Show preview" %}</a>
     </div>
     {% endif %}
 {% endblock %}
@@ -24,8 +23,7 @@
     {% if newsletter %}
     <div class="submit-row newsletters-row">
         <a href="{% url 'newsletters:admin-send' pk=newsletter.pk %}" class="default button">{% trans "Send newsletter to members" %}</a>
-        <a target="_blank" href="{% url 'newsletters:preview-localised' pk=newsletter.pk lang='en' %}" class="button">{% trans "Show preview" %} (EN)</a>
-        <a target="_blank" href="{% url 'newsletters:preview-localised' pk=newsletter.pk lang='nl' %}" class="button">{% trans "Show preview" %} (NL)</a>
+        <a target="_blank" href="{% url 'newsletters:preview' pk=newsletter.pk %}" class="button">{% trans "Show preview" %}</a>
     </div>
     {% endif %}
 {% endblock %}
