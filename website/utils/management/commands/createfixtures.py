@@ -425,11 +425,11 @@ class Command(BaseCommand):
         """Creates new random documents"""
         doc = Document()
 
-        doc.name_en = _faker.text(max_nb_chars=30)
+        doc.name = _faker.text(max_nb_chars=30)
         doc.category = random.choice([c[0] for c in Document.DOCUMENT_CATEGORIES])
         doc.members_only = random.random() < 0.75
-        doc.file_en.save(
-            "{}.txt".format(doc.name_en), ContentFile(_faker.text(max_nb_chars=120))
+        doc.file.save(
+            "{}.txt".format(doc.name), ContentFile(_faker.text(max_nb_chars=120))
         )
         doc.save()
 
