@@ -62,8 +62,6 @@ def send_newsletter(newsletter):
         html_message = html_template.render(context)
         text_message = text_template.render(context)
 
-        services.write_to_file(newsletter.pk, language[0], html_message)
-
         msg = EmailMultiAlternatives(
             subject=subject,
             body=text_message,
