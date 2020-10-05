@@ -22,9 +22,9 @@ class _MemberGroupDetailView(DetailView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
-        memberships = self._get_memberships(context["membergroup"]).prefetch_related(
-            "member__membergroupmembership_set"
-        )
+        memberships = MemberGroupMembership.active_objects.filter(
+            group=group
+        ).prefetch_related("member__membergroupmembership_set")
         members = [
             {
                 "member": x.member,
