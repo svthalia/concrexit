@@ -24,13 +24,20 @@ class MemberGroupSerializer(serializers.ModelSerializer):
             "members",
         )
 
-    members = MemberListSerializer(many=True)
+    members = serializers.SerializerMethodField("_members")
     chair = serializers.SerializerMethodField("_chair")
     type = serializers.SerializerMethodField("_type")
 
+    def _members(self, instance):
+        memberships = MemberGroupMembership.active_objects.filter(group=instance)
+        members = [x.member for x in memberships.select_related("member")]
+        return MemberListSerializer(context=self.context, many=True).to_representation(
+            members
+        )
+
     def _chair(self, instance):
         membership = (
-            MemberGroupMembership.objects.filter(chair=True, group=instance)
+            MemberGroupMembership.active_objects.filter(chair=True, group=instance)
             .select_related("member")
             .first()
         )
