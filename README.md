@@ -70,19 +70,10 @@ Or for macOS:
 
     brew install ghostscript
 
-Translating
+Language
 ------------------
 
 Make sure to use British English.
-
-To create translations for your app:
-
-1. `cd` into the application's directory
-2. `../manage.py makemessages --locale nl --no-obsolete`
-3. This creates or updates `locale/nl/LC_MESSAGES/django.po`
-4. Start poedit by calling `poedit locale/nl/LC_MESSAGES/django.po`
-5. `../manage.py compilemessages` (should happen automatically when saving the file in poedit)
-6. Commit both the `.po` and `.mo` file to the repository
 
 Settings
 ------------------
