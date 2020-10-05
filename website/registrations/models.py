@@ -66,8 +66,10 @@ class Entry(models.Model, Payable):
         m for m in Membership.MEMBERSHIP_TYPES if m[0] != Membership.HONORARY
     ]
 
-    contribution = models.FloatField(
+    contribution = models.DecimalField(
         verbose_name=_("contribution"),
+        max_digits=5,
+        decimal_places=2,
         validators=[MinValueValidator(settings.MEMBERSHIP_PRICES["year"])],
         default=settings.MEMBERSHIP_PRICES["year"],
         blank=False,
