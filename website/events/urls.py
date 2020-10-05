@@ -35,7 +35,7 @@ urlpatterns = [
                     name="registration",
                 ),
                 path("", EventIndex.as_view(), name="index"),
-                path("ical/nl.ics", EventFeed(lang="nl"), name="ical-nl"),
+                path("ical/nl.ics", EventFeed(), name="ical-nl"),
                 path("ical/en.ics", EventFeed(), name="ical-en"),
             ]
         ),
