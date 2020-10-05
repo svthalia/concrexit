@@ -40,10 +40,13 @@ def _member_group_memberships(
         name = membership.group.name
         if data.get(name):
             data[name]["periods"].append(period)
-            if data[name]["earliest"] > membership.since:
-                data[name]["earliest"] = membership.since
-            if data[name]["latest"] < membership.until:
-                data[name]["latest"] = membership.until
+            if data[name]["earliest"] > period["since"]:
+                data[name]["earliest"] = period["since"]
+            if period["until"] is None or (
+                data[name]["latest"] is not None
+                and data[name]["latest"] < period["until"]
+            ):
+                data[name]["latest"] = period["until"]
             data[name]["periods"].sort(key=lambda x: x["since"])
         else:
             data[name] = {
@@ -52,8 +55,8 @@ def _member_group_memberships(
                 "name": name,
                 "periods": [period],
                 "url": settings.BASE_URL + membership.group.get_absolute_url(),
-                "earliest": membership.since,
-                "latest": membership.until,
+                "earliest": period["since"],
+                "latest": period["until"],
             }
     return data
 
