@@ -71,7 +71,7 @@ def member_achievements(member) -> List:
         earliest = date.today()
         # Making sure it does not crash in leap years
         if earliest.month == 2 and earliest.day == 29:
-            earliest.replace(day=28)
+            earliest = earliest.replace(day=28)
         earliest = earliest.replace(year=earliest.year + mentor_year.year)
         if not achievements.get(name):
             achievements[name] = {
