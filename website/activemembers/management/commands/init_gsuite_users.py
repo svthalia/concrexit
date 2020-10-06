@@ -1,4 +1,4 @@
-"""Initialise G Suite users management command"""
+"""Initialise G Suite users management command."""
 import logging
 
 from django.core.management.base import BaseCommand
@@ -14,7 +14,7 @@ sync_service = GSuiteUserService()
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        """Sync all accounts """
+        """Sync all accounts."""
         for member in Member.objects.filter(is_staff=True):
             try:
                 email, password = sync_service.create_user(member)
