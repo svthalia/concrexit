@@ -440,6 +440,117 @@ class BatchTopicExportAdminViewTest(TestCase):
 
 
 @override_settings(SUSPEND_SIGNALS=True)
+@freeze_time("2020-01-01")
+class BatchTopicDescriptionAdminViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.batch = Batch.objects.create()
+        cls.user = Member.objects.create(
+            username="test1",
+            first_name="Test1",
+            last_name="Example",
+            email="test1@example.org",
+        )
+        Profile.objects.create(user=cls.user)
+
+    def setUp(self):
+        self.client = Client()
+        self.client.force_login(self.user)
+        self.view = admin_views.BatchTopicDescriptionAdminView()
+
+    def _give_user_permissions(self):
+        content_type = ContentType.objects.get_for_model(Batch)
+        permissions = Permission.objects.filter(
+            content_type__app_label=content_type.app_label,
+        )
+        for p in permissions:
+            self.user.user_permissions.add(p)
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.logout()
+        self.client.force_login(self.user)
+
+    def test_permission(self):
+        url = f"/admin/payments/batch/{self.batch.id}/topic-description/"
+        response = self.client.post(url)
+        self.assertRedirects(response, "/admin/login/?next=%s" % url)
+
+        self._give_user_permissions()
+
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_post(self):
+        self._give_user_permissions()
+
+        self.user2 = Member.objects.create(
+            username="test2",
+            first_name="Test2",
+            last_name="Example",
+            email="test1@example.org",
+        )
+        Profile.objects.create(user=self.user2)
+
+        BankAccount.objects.create(
+            last_used=timezone.now(),
+            owner=self.user,
+            iban="DE75512108001245126199",
+            mandate_no="2",
+            valid_from=timezone.now(),
+        )
+        BankAccount.objects.create(
+            last_used=timezone.now(),
+            owner=self.user2,
+            iban="NL02ABNA0123456789",
+            mandate_no="1",
+            valid_from=timezone.now(),
+        )
+
+        Payment.objects.bulk_create(
+            [
+                Payment(
+                    amount=1,
+                    paid_by=self.user,
+                    type=Payment.TPAY,
+                    batch=self.batch,
+                    topic="test1",
+                ),
+                Payment(
+                    amount=2,
+                    paid_by=self.user,
+                    type=Payment.TPAY,
+                    batch=self.batch,
+                    topic="test2",
+                ),
+                Payment(
+                    amount=4,
+                    paid_by=self.user2,
+                    type=Payment.TPAY,
+                    batch=self.batch,
+                    topic="test1",
+                ),
+                Payment(
+                    amount=2,
+                    paid_by=self.user2,
+                    type=Payment.TPAY,
+                    batch=self.batch,
+                    topic="test2",
+                ),
+            ]
+        )
+
+        response = self.client.post(
+            f"/admin/payments/batch/{self.batch.id}/topic-description/"
+        )
+
+        self.assertContains(
+            response,
+            "- test1 (2x) [2020-01-01 -- 2020-01-01], total €5.00\n- test2 (2x) [2020-01-01 -- 2020-01-01], total €4.00\n",
+        )
+
+
+@override_settings(SUSPEND_SIGNALS=True)
 class BatchNewFilledAdminViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
