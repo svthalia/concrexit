@@ -331,6 +331,7 @@ class BatchAdmin(admin.ModelAdmin):
 
     inlines = (PaymentsInline,)
     list_display = (
+        "id",
         "description",
         "withdrawal_date",
         "start_date",
@@ -341,6 +342,7 @@ class BatchAdmin(admin.ModelAdmin):
         "processed",
     )
     fields = (
+        "id",
         "description",
         "withdrawal_date",
         "processed",
@@ -348,12 +350,14 @@ class BatchAdmin(admin.ModelAdmin):
         "total_amount",
     )
     search_fields = (
+        "id",
         "description",
         "withdrawal_date",
     )
 
     def get_readonly_fields(self, request: HttpRequest, obj: Batch = None):
         default_fields = (
+            "id",
             "processed",
             "processing_date",
             "total_amount",
@@ -381,24 +385,24 @@ class BatchAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path(
-                "<uuid:pk>/process/",
+                "<int:pk>/process/",
                 self.admin_site.admin_view(admin_views.BatchProcessAdminView.as_view()),
                 name="payments_batch_process",
             ),
             path(
-                "<uuid:pk>/export/",
+                "<int:pk>/export/",
                 self.admin_site.admin_view(admin_views.BatchExportAdminView.as_view()),
                 name="payments_batch_export",
             ),
             path(
-                "<uuid:pk>/export-topic/",
+                "<int:pk>/export-topic/",
                 self.admin_site.admin_view(
                     admin_views.BatchTopicExportAdminView.as_view()
                 ),
                 name="payments_batch_export_topic",
             ),
             path(
-                "<uuid:pk>/topic-description/",
+                "<int:pk>/topic-description/",
                 self.admin_site.admin_view(
                     admin_views.BatchTopicDescriptionAdminView.as_view()
                 ),
