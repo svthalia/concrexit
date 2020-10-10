@@ -16,7 +16,6 @@ from django.utils.decorators import method_decorator
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import TemplateView
 
 from members.models import Member
 from payments import services
@@ -225,9 +224,10 @@ class BatchTopicDescriptionAdminView(View):
             .order_by("topic")
         )
 
-        description = f"Batch {batch.id} - {batch.processing_date if batch.processing_date else timezone.now().date()} ({batch.description}):\n"
+        description = f"Batch {batch.id} - {batch.processing_date if batch.processing_date else timezone.now().date()}:\n"
         for row in topic_rows:
             description += f"- {row['topic']} ({row['count']}x) [{timezone.localtime(row['min_date']).date()} -- {timezone.localtime(row['max_date']).date()}], total €{row['total']:.2f}\n"
+        description += f"\n{batch.description}"
 
         context["batch"] = batch
         context["description"] = description
