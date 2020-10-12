@@ -418,7 +418,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "factory-boy"
-version = "3.0.1"
+version = "3.1.0"
 description = "A versatile test fixtures replacement based on thoughtbot's factory_bot for Ruby."
 category = "dev"
 optional = false
@@ -1192,7 +1192,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "899d529c34f159e58933718bc955eae3f0eb1453d0246624cbd3751e20b4f027"
+content-hash = "dbfcb6e16ddcfc5229bc713744771c0ec87855db9346d6bb01b26d1ccc89ba6e"
 
 [metadata.files]
 alabaster = [
@@ -1406,7 +1406,8 @@ docutils = [
     {file = "docutils-0.16.tar.gz", hash = "sha256:c2de3a60e9e7d07be26b7f2b00ca0309c207e06c100f9cc2a94931fc75a478fc"},
 ]
 factory-boy = [
-    {file = "factory_boy-3.0.1.tar.gz", hash = "sha256:2ce2f665045d9f15145a6310565fcb8255d52fc6fd867f3b783b3ac3de6cf10e"},
+    {file = "factory_boy-3.1.0-py2.py3-none-any.whl", hash = "sha256:d8626622550c8ba31392f9e19fdbcef9f139cf1ad643c5923f20490a7b3e2e3d"},
+    {file = "factory_boy-3.1.0.tar.gz", hash = "sha256:ded73e49135c24bd4d3f45bf1eb168f8d290090f5cf4566b8df3698317dc9c08"},
 ]
 faker = [
     {file = "Faker-4.9.0-py3-none-any.whl", hash = "sha256:934660336924f4453733baebc74ad9c9b237155a17781990808c00801e63d557"},
