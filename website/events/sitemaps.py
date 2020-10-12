@@ -13,8 +13,8 @@ class StaticViewSitemap(sitemaps.Sitemap):
     def items(self):
         return ["events:index"]
 
-    def location(self, item):
-        return reverse(item)
+    def location(self, obj):
+        return reverse(obj)
 
 
 class EventSitemap(sitemaps.Sitemap):
@@ -23,8 +23,8 @@ class EventSitemap(sitemaps.Sitemap):
     def items(self):
         return models.Event.objects.filter(published=True)
 
-    def location(self, item):
-        return item.get_absolute_url()
+    def location(self, obj):
+        return obj.get_absolute_url()
 
 
 sitemap = {

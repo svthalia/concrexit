@@ -1,7 +1,8 @@
 """Defines tests for the newsletters package"""
 import doctest
 
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core import mail
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
@@ -26,7 +27,7 @@ def load_tests(loader, tests, ignore):
 class NewslettersTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user(
+        cls.user = get_user_model().objects.create_user(
             username="jacob",
             email="jacob@test.com",
             password="top_secret",
@@ -42,7 +43,7 @@ class NewslettersTest(TestCase):
             type=Membership.MEMBER, user=cls.user, since=timezone.now()
         )
 
-        cls.user2 = User.objects.create_user(
+        cls.user2 = get_user_model().objects.create_user(
             username="janwillem",
             email="janwillem@test.com",
             password="top_secret",
@@ -58,7 +59,7 @@ class NewslettersTest(TestCase):
             type=Membership.MEMBER, user=cls.user2, since=timezone.now()
         )
 
-        cls.user3 = User.objects.create_user(
+        cls.user3 = get_user_model().objects.create_user(
             username="thijs",
             email="thijs@test.com",
             password="top_secret",

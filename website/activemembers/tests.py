@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.test import TestCase, override_settings
@@ -147,7 +147,7 @@ class PermissionsBackendTest(TestCase):
         self.assertEqual(set(), self.u3.get_all_permissions())
 
     def test_nonmember_user(self):
-        u = User.objects.create(username="foo")
+        u = get_user_model().objects.create(username="foo")
         self.assertEqual(set(), u.get_all_permissions())
 
 

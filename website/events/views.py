@@ -108,8 +108,8 @@ class EventRegisterView(View):
 
             if event.has_fields():
                 return redirect("events:registration", event.pk)
-            else:
-                messages.success(request, _("Registration successful."))
+
+            messages.success(request, _("Registration successful."))
         except RegistrationError as e:
             messages.error(request, e)
 

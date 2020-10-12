@@ -4,8 +4,6 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 
-import activemembers.models
-
 
 def remove_enddates(apps, schema_editor):
     Board = apps.get_model("activemembers", "Board")

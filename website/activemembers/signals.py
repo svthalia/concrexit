@@ -1,4 +1,4 @@
-"""The signals defined by the activemembers package"""
+"""The signals defined by the activemembers package."""
 import logging
 
 from django.conf import settings
@@ -41,4 +41,4 @@ def pre_member_save(instance, **kwargs):
         ):
             sync_service.update_user(instance, existing_member.username)
     except HttpError as e:
-        logger.error("Could not update G Suite account", e)
+        logger.error("Could not update G Suite account: %s", e)

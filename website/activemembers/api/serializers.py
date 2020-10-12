@@ -1,4 +1,4 @@
-"""DRF serializers defined by the activemembers package"""
+"""DRF serializers defined by the activemembers package."""
 from rest_framework import serializers
 
 from activemembers.models import MemberGroup, MemberGroupMembership
@@ -6,10 +6,10 @@ from members.api.serializers import MemberListSerializer
 
 
 class MemberGroupSerializer(serializers.ModelSerializer):
-    """MemberGroup serializer"""
+    """MemberGroup serializer."""
 
     class Meta:
-        """Meta class for the serializer"""
+        """Meta class for the serializer."""
 
         model = MemberGroup
         fields = (
@@ -54,3 +54,4 @@ class MemberGroupSerializer(serializers.ModelSerializer):
             return "committee"
         if hasattr(instance, "society"):
             return "society"
+        return None

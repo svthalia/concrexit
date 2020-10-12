@@ -38,7 +38,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
             ):
                 return ProfileEditSerializer
             return ProfileRetrieveSerializer
-        elif self.action.endswith("update"):
+        if self.action.endswith("update"):
             return ProfileEditSerializer
         return MemberListSerializer
 
@@ -67,8 +67,7 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
     def get_object(self):
         if self.is_self_reference():
             return self.request.member.profile
-        else:
-            return super().get_object().profile
+        return super().get_object().profile
 
     def _get_birthdays(self, member, start, end):
         birthdays = []

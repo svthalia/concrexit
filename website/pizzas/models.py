@@ -59,8 +59,7 @@ class PizzaEvent(models.Model):
             ).order_by("start")
             if events.count() > 1:
                 return events.exclude(end__lt=timezone.now()).first()
-            else:
-                return events.get()
+            return events.get()
         except PizzaEvent.DoesNotExist:
             return None
 
@@ -94,7 +93,7 @@ class PizzaEvent(models.Model):
                 }
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         if self.send_notification and not self.end_reminder:
             end_reminder = ScheduledMessage()
             end_reminder.title_en = "Order pizza"
@@ -122,7 +121,7 @@ class PizzaEvent(models.Model):
             if not end_reminder.sent:
                 end_reminder.delete()
 
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
     def delete(self, using=None, keep_parents=False):
         if self.end_reminder is not None and not self.end_reminder.sent:

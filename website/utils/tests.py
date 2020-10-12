@@ -27,6 +27,7 @@ def load_tests(_loader, tests, _ignore):
 
 @override_settings(LANGUAGES=LANGUAGES)
 class TestTranslateMeta(TestCase):
+    # pylint: disable=attribute-defined-outside-init
     """Test the translate metaclass"""
 
     def test_translate_adds_fields(self):

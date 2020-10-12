@@ -1,4 +1,4 @@
-"""Registers admin interfaces for the activemembers module"""
+"""Registers admin interfaces for the activemembers module."""
 import csv
 import datetime
 
@@ -24,6 +24,7 @@ class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialize and set queryset."""
         super().__init__(*args, **kwargs)
         self.queryset = self.queryset.select_related("member", "group").filter(
             until=None
@@ -31,7 +32,7 @@ class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
 
 
 class MemberGroupMembershipInline(admin.StackedInline):
-    """Inline for group memberships"""
+    """Inline for group memberships."""
 
     model = models.MemberGroupMembership
     formset = MemberGroupMembershipInlineFormSet
@@ -42,7 +43,7 @@ class MemberGroupMembershipInline(admin.StackedInline):
 
 
 class MemberGroupAdmin(admin.ModelAdmin):
-    """Manage the member groups"""
+    """Manage the member groups."""
 
     inlines = (MemberGroupMembershipInline,)
     form = MemberGroupForm
@@ -67,31 +68,28 @@ class MemberGroupAdmin(admin.ModelAdmin):
         "display_members",
     )
 
-    def email(self, instance):
+    @staticmethod
+    def email(instance):
         if instance.contact_email:
             return instance.contact_email
-        elif instance.contact_mailinglist:
+        if instance.contact_mailinglist:
             return instance.contact_mailinglist.name + "@thalia.nu"
         return None
 
 
 @admin.register(models.Committee)
 class CommitteeAdmin(MemberGroupAdmin):
-    """Manage the committees"""
-
-    pass
+    """Manage the committees."""
 
 
 @admin.register(models.Society)
 class SocietyAdmin(MemberGroupAdmin):
-    """Manage the societies"""
-
-    pass
+    """Manage the societies."""
 
 
 @admin.register(models.Board)
 class BoardAdmin(admin.ModelAdmin):
-    """Manage the board"""
+    """Manage the board."""
 
     inlines = (MemberGroupMembershipInline,)
     form = MemberGroupForm
@@ -112,7 +110,7 @@ class BoardAdmin(admin.ModelAdmin):
 
 
 class TypeFilter(admin.SimpleListFilter):
-    """Filter memberships on board-only"""
+    """Filter memberships on board-only."""
 
     title = _("group memberships")
     parameter_name = "group_type"
@@ -127,16 +125,15 @@ class TypeFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() == "boards":
             return queryset.exclude(group__board=None)
-        elif self.value() == "committees":
+        if self.value() == "committees":
             return queryset.exclude(group__committee=None)
-        elif self.value() == "societies":
+        if self.value() == "societies":
             return queryset.exclude(group__society=None)
-
         return queryset
 
 
 class LectureYearFilter(admin.SimpleListFilter):
-    """Filter the memberships on those started or ended in a lecture year"""
+    """Filter the memberships on those started or ended in a lecture year."""
 
     title = _("lecture year")
     parameter_name = "lecture_year"
@@ -163,12 +160,12 @@ class LectureYearFilter(admin.SimpleListFilter):
 
 
 class ActiveMembershipsFilter(admin.SimpleListFilter):
-    """Filter the memberships by whether they are active or not"""
+    """Filter the memberships by whether they are active or not."""
 
     title = _("active memberships")
     parameter_name = "active"
 
-    def lookups(self, request, model_name):
+    def lookups(self, request, model_admin):
         return (
             ("active", _("Active")),
             ("inactive", _("Inactive")),
@@ -179,14 +176,14 @@ class ActiveMembershipsFilter(admin.SimpleListFilter):
 
         if self.value() == "active":
             return queryset.filter(Q(until__isnull=True) | Q(until__gte=now))
-
         if self.value() == "inactive":
             return queryset.filter(until__lt=now)
+        return queryset
 
 
 @admin.register(models.MemberGroupMembership)
 class MemberGroupMembershipAdmin(admin.ModelAdmin):
-    """Manage the group memberships"""
+    """Manage the group memberships."""
 
     form = MemberGroupMembershipForm
     list_display = ("member", "group", "since", "until", "chair", "role")
@@ -249,7 +246,7 @@ class MemberGroupMembershipAdmin(admin.ModelAdmin):
 
 @admin.register(models.Mentorship)
 class MentorshipAdmin(admin.ModelAdmin):
-    """Manage the mentorships"""
+    """Manage the mentorships."""
 
     autocomplete_fields = ("member",)
     search_fields = ("member__first_name", "member__last_name")

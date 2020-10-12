@@ -69,9 +69,6 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
             return EventRetrieveSerializer
         return EventsCalenderJSSerializer
 
-    def get_serializer_context(self):
-        return super().get_serializer_context()
-
     @action(detail=True, methods=["get", "post"], permission_classes=(IsAuthenticated,))
     def registrations(self, request, pk):
         """
@@ -92,7 +89,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
                 )
                 return Response(status=201, data=serializer.data)
             except RegistrationError as e:
-                raise PermissionDenied(detail=e)
+                raise PermissionDenied(detail=e) from e
 
         status = request.query_params.get("status", None)
 

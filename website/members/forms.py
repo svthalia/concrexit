@@ -1,9 +1,9 @@
 """Forms defined by the members package"""
 from django import forms
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
-from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
@@ -78,7 +78,7 @@ class UserCreationForm(BaseUserCreationForm):
         super().clean()
 
     def save(self, commit=True):
-        password = User.objects.make_random_password(length=15)
+        password = get_user_model().objects.make_random_password(length=15)
         # pass the password on as if it was filled in, so that save() works
         self.cleaned_data["password1"] = password
         user = super().save(commit=False)
@@ -130,9 +130,6 @@ class UserChangeForm(BaseUserChangeForm):
         required=True,
         widget=forms.EmailInput(attrs={"class": "vTextField", "maxlength": 254}),
     )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def clean(self):
         if "username" in self.cleaned_data:

@@ -3,7 +3,6 @@ import tempfile
 import os.path
 
 from django.core.files import File
-from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.conf import settings

@@ -1,9 +1,7 @@
 from __future__ import unicode_literals
 import os
 
-import django.core.validators
-from django.db import migrations, models
-import django.db.models.deletion
+from django.db import migrations
 
 
 def make_assocation_documents(apps, schema_editor):
@@ -68,14 +66,14 @@ def make_general_meeting_documents(apps, schema_editor):
     GeneralMeetingDocument = apps.get_model('documents', 'GeneralMeetingDocument')
 
     for meeting_doc in GeneralMeetingDocument.objects.all():
-        name = os.path.basename(meeting_doc.file.name),
+        name = os.path.basename(meeting_doc.file.name)
         doc = Document.objects.create(
-            name_en = name,
-            name_nl = name,
-            category = 'misc',
-            file_en = meeting_doc.file,
-            file_nl = meeting_doc.file,
-            members_only = True,
+            name_en=name,
+            name_nl=name,
+            category='misc',
+            file_en=meeting_doc.file,
+            file_nl=meeting_doc.file,
+            members_only=True,
         )
         meeting_doc.meeting.documents.add(doc)
 
@@ -83,7 +81,7 @@ def make_general_meeting_documents(apps, schema_editor):
 def make_minutes_documents(apps, schema_editor):
     GeneralMeeting = apps.get_model('documents', 'GeneralMeeting')
     Minutes = apps.get_model('documents', 'Minutes')
-    
+
     for meeting in GeneralMeeting.objects.all():
         if meeting.minutes_old:
             Minutes.objects.create(
@@ -103,7 +101,7 @@ def set_location_en_meetings(apps, schema_editor):
     for meeting in GeneralMeeting.objects.all():
         meeting.location_en = meeting.location_nl
         meeting.save()
-        
+
 
 class Migration(migrations.Migration):
 

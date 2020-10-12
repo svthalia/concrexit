@@ -92,7 +92,9 @@ class OrderViewset(ModelViewSet):
                         member=self.request.member, pizza_event=PizzaEvent.current()
                     )
         except IntegrityError as e:
-            raise ValidationError("Something went wrong when saving the order" + str(e))
+            raise ValidationError(
+                "Something went wrong when saving the order" + str(e)
+            ) from e
 
     def perform_update(self, serializer):
         order = serializer.save()

@@ -16,14 +16,14 @@ class ReferenceInline(admin.StackedInline):
     extra = 0
 
 
-def _show_message(admin, request, n, message, error):
+def _show_message(model_admin, request, n, message, error):
     """Show a message in the Django Admin"""
     if n == 0:
-        admin.message_user(request, error, messages.ERROR)
+        model_admin.message_user(request, error, messages.ERROR)
     else:
-        admin.message_user(
+        model_admin.message_user(
             request,
-            message % {"count": n, "items": model_ngettext(admin.opts, n)},
+            message % {"count": n, "items": model_ngettext(model_admin.opts, n)},
             messages.SUCCESS,
         )
 
@@ -171,12 +171,11 @@ class RegistrationAdmin(admin.ModelAdmin):
             or obj.status == Entry.STATUS_COMPLETED
         ):
             return ["status", "created_at", "updated_at", "payment", "contribution"]
-        else:
-            return [
-                field.name
-                for field in self.model._meta.get_fields()
-                if not field.name in ["payment", "no_references"] and field.editable
-            ]
+        return [
+            field.name
+            for field in self.model._meta.get_fields()
+            if field.name not in ["payment", "no_references"] and field.editable
+        ]
 
     @staticmethod
     def name(obj):

@@ -1,4 +1,4 @@
-"""DRF viewsets defined by the members package"""
+"""DRF viewsets defined by the members package."""
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import viewsets, filters
@@ -8,7 +8,7 @@ from activemembers.models import MemberGroup
 
 
 class MemberGroupViewset(viewsets.ReadOnlyModelViewSet):
-    """Viewset that renders or edits a member"""
+    """Viewset that renders or edits a member."""
 
     required_scopes = ["activemembers:read"]
     permission_classes = [IsAuthenticatedOrTokenHasScope]

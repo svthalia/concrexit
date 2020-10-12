@@ -118,11 +118,8 @@ class EventRegistration(models.Model, Payable):
                 }
             )
 
-    def validate_unique(self, exclude=None):
-        super().validate_unique(exclude)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def save(self, **kwargs):
+        super().save(**kwargs)
 
         if self.event.start_reminder and self.date_cancelled:
             self.event.start_reminder.users.remove(self.member)
@@ -136,8 +133,7 @@ class EventRegistration(models.Model, Payable):
     def __str__(self):
         if self.member:
             return "{}: {}".format(self.member.get_full_name(), self.event)
-        else:
-            return "{}: {}".format(self.name, self.event)
+        return "{}: {}".format(self.name, self.event)
 
     @property
     def payment_amount(self):

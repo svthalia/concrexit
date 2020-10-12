@@ -22,7 +22,7 @@ psycopg2-binary = "2.8.6"
 bcrypt = "3.2.0"
 argon2_cffi = "20.1.0"
 uWSGI = "2.0.19.1"
-django-bootstrap4 = "2.2.0"
+django-bootstrap4 = "2.3.0"
 firebase-admin = "4.4.0"
 sentry-sdk = "0.18.0"
 django-sendfile2 = "0.5.1"
@@ -39,11 +39,13 @@ docs = ["recommonmark", "sphinx"]
 
 [tool.poetry.dev-dependencies]
 django-template-check = {git = "https://github.com/joostrijneveld/django-template-check.git", rev = "2d69e43eebd63459d9817f5c9358ed1a9bdb1951"}
-factory_boy = "3.0.1"
+factory_boy = "3.1.0"
 pydenticon = "0.3.1"
-Faker = "4.4.0"
+Faker = "4.9.0"
 coverage = {extras = ["toml"], version = "^5.0.3"}
 black = "19.10b0"
+pylint = "^2.6.0"
+pylint-django = "^2.3.0"
 
 [tool.coverage.run]
 branch = true

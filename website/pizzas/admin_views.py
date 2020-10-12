@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
 from pizzas.decorators import organiser_only
-from payments.models import Payment
 from pizzas.models import PizzaEvent, Order
+from payments.models import Payment
 
 
 @method_decorator(organiser_only, name="dispatch")

@@ -125,7 +125,7 @@ class PaymentAdminTest(TestCase):
             type=Payment.TPAY,
             batch=batch,
         )
-        response = self.client.post(
+        self.client.post(
             reverse("admin:payments_payment_delete", args=(payment.id,)),
             {"post": "yes"},  # Add data to confirm deletion in admin
         )
@@ -680,14 +680,14 @@ class BatchAdminTest(TestCase):
     def test_save_formset(self) -> None:
         batch = Batch.objects.create()
         batch_processed = Batch.objects.create()
-        p1 = Payment.objects.create(
+        Payment.objects.create(
             amount=1,
             paid_by=self.user,
             processed_by=self.user,
             type=Payment.TPAY,
             batch=batch,
         )
-        p2 = Payment.objects.create(
+        Payment.objects.create(
             amount=1,
             paid_by=self.user,
             processed_by=self.user,

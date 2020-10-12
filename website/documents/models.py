@@ -73,7 +73,7 @@ class AnnualDocument(Document):
         verbose_name=_("year"), validators=[MinValueValidator(1990)],
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "annual"
         if self.subcategory == "report":
             self.name_en = "Annual report %d" % self.year
@@ -81,7 +81,7 @@ class AnnualDocument(Document):
             self.name_en = "Financial report %d" % self.year
         else:
             self.name_en = "Policy document %d" % self.year
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
 
 class AssociationDocumentManager(models.Manager):
@@ -101,9 +101,9 @@ class AssociationDocument(Document):
 
     objects = AssociationDocumentManager()
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "association"
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
 
 class EventDocument(Document):
@@ -118,9 +118,9 @@ class EventDocument(Document):
         "activemembers.MemberGroup", verbose_name=_("owner"), on_delete=models.CASCADE,
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "event"
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
 
 class MiscellaneousDocumentManager(models.Manager):
@@ -141,9 +141,9 @@ class MiscellaneousDocument(Document):
 
     objects = MiscellaneousDocumentManager()
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "misc"
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
 
 class GeneralMeeting(models.Model):
@@ -177,7 +177,7 @@ class Minutes(Document):
         GeneralMeeting, blank=True, null=True, on_delete=models.CASCADE
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "minutes"
         self.name_en = "Minutes %s" % str(self.meeting.datetime.date())
-        super().save(*args, **kwargs)
+        super().save(**kwargs)

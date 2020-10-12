@@ -59,7 +59,6 @@ class MultilingualField:
         """
         if issubclass(cls, RelatedField):
             # Especially naming the reverses gets quite messy for these.
-            # TODO consider implementing this when there is a need for it.
             raise NotImplementedError("RelatedFields are not translatable.")
         if get_language() is None:
             raise ImproperlyConfigured("I18n does not appear to be activated.")

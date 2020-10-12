@@ -1,12 +1,12 @@
 from django import forms
-
-from photos.models import Photo
-from photos.validators import ArchiveFileTypeValidator
 from django.utils.translation import gettext_lazy as _
+
+from photos.models import Photo, Album
+from photos.validators import ArchiveFileTypeValidator
 
 
 class AlbumForm(forms.ModelForm):
-    """Class for an album submisison form."""
+    """Class for an album submission form."""
 
     def __init__(self, *args, **kwargs):
         """Initialize AlbumForm.
@@ -27,4 +27,13 @@ class AlbumForm(forms.ModelForm):
     class Meta:
         """Meta class for AlbumForm."""
 
-        exclude = ["dirname"]
+        model = Album
+        fields = (
+            "title_en",
+            "date",
+            "slug",
+            "hidden",
+            "new_album_notification",
+            "shareable",
+            "_cover",
+        )

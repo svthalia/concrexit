@@ -4,8 +4,8 @@ This module registers admin pages for the models
 import csv
 import datetime
 from django.contrib import admin, messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
 from django.db.models import Q, Count
 from django.http import HttpResponse
 from django.urls import path
@@ -107,9 +107,9 @@ class AgeListFilter(admin.SimpleListFilter):
 
         if self.value() == "unknown":
             return queryset.filter(profile__birthday__isnull=True)
-        elif self.value() == "18+":
+        if self.value() == "18+":
             return queryset.filter(profile__birthday__lte=eightteen_years_ago)
-        elif self.value() == "18-":
+        if self.value() == "18-":
             return queryset.filter(profile__birthday__gt=eightteen_years_ago)
 
         return queryset
@@ -301,5 +301,5 @@ class MemberAdmin(UserAdmin):
 admin.site.register(EmailChange)
 
 # re-register User admin
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.unregister(get_user_model())
+admin.site.register(get_user_model(), UserAdmin)

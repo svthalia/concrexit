@@ -1,4 +1,4 @@
-"""The models defined by the activemembers package"""
+"""The models defined by the activemembers package."""
 import datetime
 import logging
 
@@ -22,14 +22,14 @@ logger = logging.getLogger(__name__)
 
 
 class ActiveMemberGroupManager(models.Manager):
-    """Returns active objects only sorted by the localized name"""
+    """Returns active objects only sorted by the localized name."""
 
     def get_queryset(self):
         return super().get_queryset().exclude(active=False).order_by("name")
 
 
 class MemberGroup(models.Model):
-    """Describes a groups of members"""
+    """Describes a groups of members."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
@@ -102,7 +102,7 @@ class MemberGroup(models.Model):
             )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def get_absolute_url(self):
         try:
@@ -123,7 +123,7 @@ class MemberGroup(models.Model):
 
 
 class Committee(MemberGroup):
-    """Describes a committee, which is a type of MemberGroup"""
+    """Describes a committee, which is a type of MemberGroup."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
@@ -138,7 +138,7 @@ class Committee(MemberGroup):
 
 
 class Society(MemberGroup):
-    """Describes a society, which is a type of MemberGroup"""
+    """Describes a society, which is a type of MemberGroup."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
@@ -153,24 +153,24 @@ class Society(MemberGroup):
 
 
 class Board(MemberGroup):
-    """Describes a board, which is a type of MemberGroup"""
+    """Describes a board, which is a type of MemberGroup."""
 
     class Meta:
         verbose_name = _("board")
         verbose_name_plural = _("boards")
         ordering = ["-since"]
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.active = True
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
     def get_absolute_url(self):
         return reverse(
             "activemembers:board", args=[str(self.since.year), str(self.until.year)]
         )
 
-    def validate_unique(self, *args, **kwargs):
-        super().validate_unique(*args, **kwargs)
+    def validate_unique(self, **kwargs):
+        super().validate_unique(**kwargs)
         boards = Board.objects.all()
         if self.since is not None:
             if overlaps(self, boards, can_equal=False):
@@ -183,16 +183,14 @@ class Board(MemberGroup):
 
 
 class ActiveMembershipManager(models.Manager):
-    """
-    Custom manager that gets the currently active membergroup memberships
-    """
+    """Custom manager that gets the currently active membergroup memberships."""
 
     def get_queryset(self):
         return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
 class MemberGroupMembership(models.Model):
-    """Describes a group membership"""
+    """Describes a group membership."""
 
     objects = models.Manager()
     active_objects = ActiveMembershipManager()
@@ -234,7 +232,7 @@ class MemberGroupMembership(models.Model):
 
     @property
     def initial_connected_membership(self):
-        """Find the oldest membership directly connected to the current one"""
+        """Find the oldest membership directly connected to the current one."""
         qs = MemberGroupMembership.objects.filter(
             group=self.group,
             member=self.member,
@@ -243,14 +241,13 @@ class MemberGroupMembership(models.Model):
         )
         if qs.count() >= 1:  # should only be one; should be unique
             return qs.first().initial_connected_membership
-        else:
-            return self
+        return self
 
     @property
     def latest_connected_membership(self):
-        """
-        Find the newest membership directly connected to the current one
-        (thus the membership that started at the moment the current one ended)
+        """Find the newest membership directly connected to the current one.
+
+        (thus the membership that started at the moment the current one ended).
         """
         if self.until:
             qs = MemberGroupMembership.objects.filter(
@@ -265,7 +262,7 @@ class MemberGroupMembership(models.Model):
 
     @property
     def is_active(self):
-        """Is this membership currently active"""
+        """Is this membership currently active."""
         return self.until is None or self.until > timezone.now().date()
 
     def clean(self):
@@ -285,11 +282,11 @@ class MemberGroupMembership(models.Model):
                     {"since": _("Start date can't be after group end date")}
                 )
         except MemberGroupMembership.group.RelatedObjectDoesNotExist:
-            return False
+            pass
 
-    def validate_unique(self, *args, **kwargs):
+    def validate_unique(self, **kwargs):
         try:
-            super().validate_unique(*args, **kwargs)
+            super().validate_unique(**kwargs)
             # Check if a group has more than one chair
             if self.chair:
                 chairs = MemberGroupMembership.objects.filter(
@@ -317,10 +314,10 @@ class MemberGroupMembership(models.Model):
             MemberGroupMembership.member.RelatedObjectDoesNotExist,
             MemberGroupMembership.group.RelatedObjectDoesNotExist,
         ):
-            return False
+            pass
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def save(self, **kwargs):
+        super().save(**kwargs)
         self.member.is_staff = (
             self.member.membergroupmembership_set.exclude(
                 until__lte=timezone.now().date()
@@ -339,7 +336,7 @@ class MemberGroupMembership(models.Model):
 
 
 class Mentorship(models.Model):
-    """Describe a mentorship during the orientation"""
+    """Describe a mentorship during the orientation."""
 
     member = models.ForeignKey(
         "members.Member", on_delete=models.CASCADE, verbose_name=_("Member"),
