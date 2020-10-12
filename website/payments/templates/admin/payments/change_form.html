@@ -19,6 +19,7 @@
         {% endif %}
         <a data-href="{% url 'admin:payments_batch_export' pk=batch.pk %}" class="button process">{% trans "Export batch" %}</a>
         <a data-href="{% url 'admin:payments_batch_export_topic' pk=batch.pk %}" class="button process">{% trans "Export batch per topic" %}</a>
+        <a data-href="{% url 'admin:payments_batch_topic_description' pk=batch.pk %}" class="button process">{% trans "Export description" %}</a>
     </div>
     {% endif %}
     {{ block.super }}

@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import permission_required
 from django.db.models import Sum, Count, Min, Max
 from django.http import HttpResponse
 from django.core.exceptions import SuspiciousOperation, DisallowedRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404, render
 from django.utils import timezone
 from django.utils.text import capfirst
 from django.utils.decorators import method_decorator
@@ -197,6 +197,41 @@ class BatchTopicExportAdminView(View):
                 ]
             )
         return response
+
+
+@method_decorator(staff_member_required, name="dispatch")
+@method_decorator(
+    permission_required("payments.process_batches"), name="dispatch",
+)
+class BatchTopicDescriptionAdminView(View):
+    """
+    Shows the topic export as plain text
+    """
+
+    template_name = "admin/payments/batch_topic.html"
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        batch = get_object_or_404(Batch, pk=kwargs["pk"])
+        topic_rows = (
+            batch.payments_set.values("topic")
+            .annotate(
+                total=Sum("amount"),
+                count=Count("paid_by"),
+                min_date=Min("created_at"),
+                max_date=Max("created_at"),
+            )
+            .order_by("topic")
+        )
+
+        description = f"Batch {batch.id} - {batch.processing_date if batch.processing_date else timezone.now().date()}:\n"
+        for row in topic_rows:
+            description += f"- {row['topic']} ({row['count']}x) [{timezone.localtime(row['min_date']).date()} -- {timezone.localtime(row['max_date']).date()}], total €{row['total']:.2f}\n"
+        description += f"\n{batch.description}"
+
+        context["batch"] = batch
+        context["description"] = description
+        return render(request, self.template_name, context)
 
 
 @method_decorator(staff_member_required, name="dispatch")
