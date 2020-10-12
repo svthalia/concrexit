@@ -1,4 +1,4 @@
-"""The routes defined by the activemembers package"""
+"""The routes defined by the activemembers package."""
 from django.urls import path, re_path, include
 
 from activemembers.views import (

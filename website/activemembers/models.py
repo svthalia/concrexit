@@ -1,4 +1,4 @@
-"""The models defined by the activemembers package"""
+"""The models defined by the activemembers package."""
 import datetime
 import logging
 
@@ -22,14 +22,14 @@ logger = logging.getLogger(__name__)
 
 
 class ActiveMemberGroupManager(models.Manager):
-    """Returns active objects only sorted by the localized name"""
+    """Returns active objects only sorted by the localized name."""
 
     def get_queryset(self):
         return super().get_queryset().exclude(active=False).order_by("name")
 
 
 class MemberGroup(models.Model):
-    """Describes a groups of members"""
+    """Describes a groups of members."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
@@ -123,7 +123,7 @@ class MemberGroup(models.Model):
 
 
 class Committee(MemberGroup):
-    """Describes a committee, which is a type of MemberGroup"""
+    """Describes a committee, which is a type of MemberGroup."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
@@ -138,7 +138,7 @@ class Committee(MemberGroup):
 
 
 class Society(MemberGroup):
-    """Describes a society, which is a type of MemberGroup"""
+    """Describes a society, which is a type of MemberGroup."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
@@ -153,7 +153,7 @@ class Society(MemberGroup):
 
 
 class Board(MemberGroup):
-    """Describes a board, which is a type of MemberGroup"""
+    """Describes a board, which is a type of MemberGroup."""
 
     class Meta:
         verbose_name = _("board")
@@ -183,16 +183,14 @@ class Board(MemberGroup):
 
 
 class ActiveMembershipManager(models.Manager):
-    """
-    Custom manager that gets the currently active membergroup memberships
-    """
+    """Custom manager that gets the currently active membergroup memberships."""
 
     def get_queryset(self):
         return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
 class MemberGroupMembership(models.Model):
-    """Describes a group membership"""
+    """Describes a group membership."""
 
     objects = models.Manager()
     active_objects = ActiveMembershipManager()
@@ -234,7 +232,7 @@ class MemberGroupMembership(models.Model):
 
     @property
     def initial_connected_membership(self):
-        """Find the oldest membership directly connected to the current one"""
+        """Find the oldest membership directly connected to the current one."""
         qs = MemberGroupMembership.objects.filter(
             group=self.group,
             member=self.member,
@@ -248,9 +246,9 @@ class MemberGroupMembership(models.Model):
 
     @property
     def latest_connected_membership(self):
-        """
-        Find the newest membership directly connected to the current one
-        (thus the membership that started at the moment the current one ended)
+        """Find the newest membership directly connected to the current one.
+
+        (thus the membership that started at the moment the current one ended).
         """
         if self.until:
             qs = MemberGroupMembership.objects.filter(
@@ -265,7 +263,7 @@ class MemberGroupMembership(models.Model):
 
     @property
     def is_active(self):
-        """Is this membership currently active"""
+        """Is this membership currently active."""
         return self.until is None or self.until > timezone.now().date()
 
     def clean(self):
@@ -339,7 +337,7 @@ class MemberGroupMembership(models.Model):
 
 
 class Mentorship(models.Model):
-    """Describe a mentorship during the orientation"""
+    """Describe a mentorship during the orientation."""
 
     member = models.ForeignKey(
         "members.Member", on_delete=models.CASCADE, verbose_name=_("Member"),
