@@ -475,7 +475,7 @@ class Command(BaseCommand):
     def create_course(self):
         course = Course()
 
-        course.name_en = _generate_title()
+        course.name = _generate_title()
         course.ec = 3 if random.random() < 0.5 else 6
 
         course.course_code = "NWI-" + "".join(random.choices(string.digits, k=5))

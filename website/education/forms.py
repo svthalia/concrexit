@@ -28,8 +28,7 @@ class AddExamForm(ModelForm):
         widget=SelectDateWidget(years=years), initial=datetime.date.today
     )
     course = ModelChoiceField(
-        queryset=Course.objects.order_by("name_" + settings.LANGUAGE_CODE),
-        empty_label=None,
+        queryset=Course.objects.order_by("name"), empty_label=None,
     )
     type = ChoiceField(choices=Exam.EXAM_TYPES)
 
@@ -45,8 +44,7 @@ class AddSummaryForm(ModelForm):
     """
 
     course = ModelChoiceField(
-        queryset=Course.objects.order_by("name_" + settings.LANGUAGE_CODE),
-        empty_label=None,
+        queryset=Course.objects.order_by("name"), empty_label=None,
     )
 
     this_year = datetime_to_lectureyear(timezone.now())

@@ -6,13 +6,12 @@ from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
 from utils.snippets import datetime_to_lectureyear
-from utils.translation import ModelTranslateMeta, MultilingualField
 
 
-class Category(models.Model, metaclass=ModelTranslateMeta):
+class Category(models.Model):
     """Describes a course category"""
 
-    name = MultilingualField(models.CharField, max_length=64,)
+    name = models.CharField(max_length=64,)
 
     def __str__(self):
         return self.name
@@ -25,10 +24,10 @@ class Category(models.Model, metaclass=ModelTranslateMeta):
         verbose_name_plural = _("categories")
 
 
-class Course(models.Model, metaclass=ModelTranslateMeta):
+class Course(models.Model):
     """Describes a course"""
 
-    name = MultilingualField(models.CharField, max_length=255)
+    name = models.CharField(max_length=255)
 
     categories = models.ManyToManyField(
         Category, verbose_name=_("categories"), blank=True
@@ -57,7 +56,7 @@ class Course(models.Model, metaclass=ModelTranslateMeta):
         verbose_name_plural = _("courses")
 
 
-class Exam(models.Model, metaclass=ModelTranslateMeta):
+class Exam(models.Model):
     """Describes an exam"""
 
     EXAM_TYPES = (
@@ -131,7 +130,7 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
         verbose_name_plural = _("exams")
 
 
-class Summary(models.Model, metaclass=ModelTranslateMeta):
+class Summary(models.Model):
     """Describes a summary"""
 
     name = models.CharField(max_length=255, verbose_name=_("summary name"),)

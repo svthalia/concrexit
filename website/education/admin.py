@@ -4,10 +4,10 @@ This module registers admin pages for the models
 import csv
 
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
-from utils.translation import TranslatedModelAdmin
 from . import models
 from .forms import SummaryAdminForm
 
@@ -15,7 +15,7 @@ admin.site.register(models.Category)
 
 
 @admin.register(models.Course)
-class CourseAdmin(TranslatedModelAdmin):
+class CourseAdmin(ModelAdmin):
     fields = (
         "name",
         "course_code",
@@ -49,7 +49,7 @@ class WithDownloadCsv:
 
 
 @admin.register(models.Exam)
-class ExamAdmin(TranslatedModelAdmin, WithDownloadCsv):
+class ExamAdmin(ModelAdmin, WithDownloadCsv):
     list_display = (
         "type",
         "course",
@@ -65,7 +65,7 @@ class ExamAdmin(TranslatedModelAdmin, WithDownloadCsv):
         "name",
         "uploader__first_name",
         "uploader__last_name",
-        "course__name_en",
+        "course__name",
     )
     actions = ["accept", "reject", "reset_download_count", "download_csv"]
 
@@ -86,7 +86,7 @@ class ExamAdmin(TranslatedModelAdmin, WithDownloadCsv):
 
 
 @admin.register(models.Summary)
-class SummaryAdmin(TranslatedModelAdmin, WithDownloadCsv):
+class SummaryAdmin(ModelAdmin, WithDownloadCsv):
     list_display = (
         "name",
         "course",
@@ -101,7 +101,7 @@ class SummaryAdmin(TranslatedModelAdmin, WithDownloadCsv):
         "name",
         "uploader__first_name",
         "uploader__last_name",
-        "course__name_en",
+        "course__name",
     )
     actions = ["accept", "reject", "reset_download_count", "download_csv"]
     form = SummaryAdminForm
