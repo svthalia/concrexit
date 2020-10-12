@@ -11,6 +11,7 @@ from django.utils import timezone
 
 import members
 from members.models import Membership, Profile, Member
+from payments.models import PaymentUser
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -367,7 +368,7 @@ def process_entry_save(entry: Entry) -> None:
         # gets the welcome email
         emails.send_renewal_complete_message(entry.renewal)
 
-    entry.payment.paid_by = member
+    entry.payment.paid_by = PaymentUser.objects.get(pk=member.pk)
     entry.payment.save()
 
     membership = _create_membership_from_entry(entry, member)

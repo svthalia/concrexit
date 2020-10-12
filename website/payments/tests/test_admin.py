@@ -24,7 +24,7 @@ from members.models import Member, Profile
 from payments import admin
 from payments.admin import ValidAccountFilter
 from payments.forms import BatchPaymentInlineAdminForm
-from payments.models import Payment, BankAccount, Batch
+from payments.models import Payment, BankAccount, Batch, PaymentUser
 
 
 class GlobalAdminTest(SimpleTestCase):
@@ -50,7 +50,7 @@ class PaymentAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.user = Member.objects.get(pk=2)
+        cls.user = PaymentUser.objects.get(pk=2)
 
     def setUp(self) -> None:
         self.client = Client()
@@ -471,7 +471,7 @@ class PaymentAdminTest(TestCase):
 class ValidAccountFilterTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.member = Member.objects.create(
+        cls.member = PaymentUser.objects.create(
             username="test1",
             first_name="Test1",
             last_name="Example",
@@ -479,6 +479,8 @@ class ValidAccountFilterTest(TestCase):
             is_staff=True,
         )
         Profile.objects.create(user=cls.member)
+
+        cls.member = PaymentUser.objects.get(pk=cls.member.pk)
 
         cls.no_mandate = BankAccount.objects.create(
             owner=cls.member, initials="J", last_name="Test", iban="NL91ABNA0417164300"
@@ -562,7 +564,7 @@ class BatchAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.user = Member.objects.get(pk=2)
+        cls.user = PaymentUser.objects.get(pk=2)
 
     def setUp(self) -> None:
         self.client = Client()
@@ -740,6 +742,8 @@ class BankAccountAdminTest(TestCase):
             is_superuser=True,
         )
         Profile.objects.create(user=cls.user)
+
+        cls.user = PaymentUser.objects.get(pk=cls.user.pk)
 
     def setUp(self) -> None:
         self.site = AdminSite()

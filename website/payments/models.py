@@ -14,6 +14,24 @@ from django.utils.translation import gettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
+from members.models import Member
+
+
+class PaymentUser(Member):
+    class Meta:
+        proxy = True
+        verbose_name = "payment user"
+
+    @property
+    def tpay_enabled(self):
+        """Does this user have a bank account with Direct Debit enabled"""
+        bank_accounts = BankAccount.objects.filter(owner=self)
+        return (
+            settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+            and bank_accounts.exists()
+            and any(x.valid for x in bank_accounts)
+        )
+
 
 class Payment(models.Model):
     """
@@ -53,7 +71,7 @@ class Payment(models.Model):
     )
 
     paid_by = models.ForeignKey(
-        "members.Member",
+        PaymentUser,
         models.CASCADE,
         verbose_name=_("paid by"),
         related_name="paid_payment_set",
@@ -214,7 +232,7 @@ class BankAccount(models.Model):
     last_used = models.DateField(verbose_name=_("last used"), blank=True, null=True,)
 
     owner = models.ForeignKey(
-        to="members.Member",
+        to=PaymentUser,
         verbose_name=_("owner"),
         related_name="bank_accounts",
         on_delete=models.SET_NULL,

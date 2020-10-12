@@ -8,22 +8,21 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
 
-from members.models import Member
 from registrations.emails import _send_email
 from .exceptions import PaymentError
-from .models import Payment, BankAccount, Payable
+from .models import Payment, BankAccount, Payable, PaymentUser
 
 
 def create_payment(
     payable: Payable,
-    processed_by: Member,
+    processed_by: PaymentUser,
     pay_type: Union[Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY],
 ) -> Payment:
     """
     Create a new payment from a payable object
 
     :param payable: Payable object
-    :param processed_by: Member that processed this payment
+    :param processed_by: PaymentUser that processed this payment
     :param pay_type: Payment type
     :return: Payment object
     """
@@ -101,7 +100,7 @@ def send_tpay_batch_processing_emails(batch):
     """Sends withdrawal notice emails to all members in a batch"""
     member_payments = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
     for member_row in member_payments:
-        member = Member.objects.get(pk=member_row["paid_by"])
+        member = PaymentUser.objects.get(pk=member_row["paid_by"])
         total_amount = member_row["total"]
 
         with translation.override(member.profile.language):

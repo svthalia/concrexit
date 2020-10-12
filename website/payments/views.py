@@ -23,7 +23,7 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 from payments import services
 from payments.exceptions import PaymentError
 from payments.forms import BankAccountForm, PaymentCreateForm, BankAccountUserRevokeForm
-from payments.models import BankAccount, Payment
+from payments.models import BankAccount, Payment, PaymentUser
 
 
 @method_decorator(login_required, name="dispatch")
@@ -35,7 +35,9 @@ class BankAccountCreateView(SuccessMessageMixin, CreateView):
 
     def _derive_mandate_no(self) -> str:
         count = (
-            BankAccount.objects.filter(owner=self.request.member)
+            BankAccount.objects.filter(
+                owner=PaymentUser.objects.get(pk=self.request.member.pk)
+            )
             .exclude(mandate_no=None)
             .count()
             + 1
@@ -61,10 +63,12 @@ class BankAccountCreateView(SuccessMessageMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form: BankAccountForm) -> HttpResponse:
-        BankAccount.objects.filter(owner=self.request.member, mandate_no=None).delete()
-        BankAccount.objects.filter(owner=self.request.member).exclude(
-            mandate_no=None
-        ).update(valid_until=timezone.now())
+        BankAccount.objects.filter(
+            owner=PaymentUser.objects.get(pk=self.request.member.pk), mandate_no=None
+        ).delete()
+        BankAccount.objects.filter(
+            owner=PaymentUser.objects.get(pk=self.request.member.pk)
+        ).exclude(mandate_no=None).update(valid_until=timezone.now())
         return super().form_valid(form)
 
 
@@ -79,7 +83,10 @@ class BankAccountRevokeView(SuccessMessageMixin, UpdateView):
         return (
             super()
             .get_queryset()
-            .filter(owner=self.request.member, valid_until=None,)
+            .filter(
+                owner=PaymentUser.objects.get(pk=self.request.member.pk),
+                valid_until=None,
+            )
             .exclude(mandate_no=None)
         )
 
@@ -107,7 +114,11 @@ class BankAccountListView(ListView):
     model = BankAccount
 
     def get_queryset(self) -> QuerySet:
-        return super().get_queryset().filter(owner=self.request.member)
+        return (
+            super()
+            .get_queryset()
+            .filter(owner=PaymentUser.objects.get(pk=self.request.member.pk))
+        )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -122,7 +133,7 @@ class PaymentListView(ListView):
             super()
             .get_queryset()
             .filter(
-                paid_by=self.request.member,
+                paid_by=PaymentUser.objects.get(pk=self.request.member.pk),
                 created_at__year=year,
                 created_at__month=month,
             )
@@ -166,7 +177,7 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         return self.request.POST["next"]
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.member.tpay_enabled:
+        if not PaymentUser.objects.get(pk=request.member.pk).tpay_enabled:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -191,7 +202,10 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
         self.payable = payable_model.objects.get(pk=payable_pk)
 
-        if self.payable.payment_payer.pk != self.request.member.pk:
+        if (
+            self.payable.payment_payer.pk
+            != PaymentUser.objects.get(pk=self.request.member.pk).pk
+        ):
             messages.error(
                 self.request, _("You are not allowed to process this payment.")
             )
@@ -209,7 +223,11 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
 
     def form_valid(self, form):
         try:
-            services.create_payment(self.payable, self.request.member, Payment.TPAY)
+            services.create_payment(
+                self.payable,
+                PaymentUser.objects.get(pk=self.request.member.pk),
+                Payment.TPAY,
+            )
             self.payable.save()
         except PaymentError as e:
             messages.error(self.request, str(e))

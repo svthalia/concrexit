@@ -1,8 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, override_settings
 
-from members.models import Member
-from payments.models import Payment
+from payments.models import Payment, PaymentUser
 from payments.widgets import PaymentWidget
 
 
@@ -14,7 +13,7 @@ class PaymentWidgetTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.payment = Payment.objects.create(
             amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.CASH
         )

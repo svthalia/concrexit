@@ -5,8 +5,8 @@ from django.template.defaulttags import date
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from payments.models import Payable, PaymentUser
 from . import Event
-from payments.models import Payable
 
 
 def registration_member_choices_limit():
@@ -155,7 +155,7 @@ class EventRegistration(models.Model, Payable):
 
     @property
     def payment_payer(self):
-        return self.member
+        return PaymentUser.objects.get(pk=self.member.pk) if self.member else None
 
     class Meta:
         verbose_name = _("Registration")

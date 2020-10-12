@@ -5,10 +5,9 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
-from members.models import Member
 from payments import services
 from payments.exceptions import PaymentError
-from payments.models import BankAccount, Payment, Batch
+from payments.models import BankAccount, Payment, Batch, PaymentUser
 from payments.tests.__mocks__ import MockPayable
 
 
@@ -23,7 +22,7 @@ class ServicesTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
 
     def test_create_payment(self):
         with self.subTest("Creates new payment with right payment type"):
