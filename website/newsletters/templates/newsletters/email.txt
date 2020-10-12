@@ -27,6 +27,4 @@
 {% if main_partner and main_partner.is_active %}{% trans "our main partner"|capfirst %}: {{ main_partner.name }} - {{ main_partner.link }}{% endif %}
 {% if local_partner and local_partner.is_active %}{% trans "our local partner"|capfirst %}: {{ local_partner.name }} - {{ local_partner.link }}{% endif %}
 
-Is this email not in your preferred language? Then edit your profile on the website ({% baseurl %}{% url 'members:edit-profile' %}) and adjust the preferred language setting. The next newsletter you'll receive will be in the language you selected.
-
 {% trans "view this email in your browser"|capfirst %}: {% baseurl %}{{ newsletter.get_absolute_url }}
