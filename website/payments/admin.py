@@ -21,14 +21,14 @@ from .models import Payment, BankAccount, Batch
 
 
 def _show_message(
-    admin: ModelAdmin, request: HttpRequest, n: int, message: str, error: str
+    model_admin: ModelAdmin, request: HttpRequest, n: int, message: str, error: str
 ) -> None:
     if n == 0:
-        admin.message_user(request, error, messages.ERROR)
+        model_admin.message_user(request, error, messages.ERROR)
     else:
-        admin.message_user(
+        model_admin.message_user(
             request,
-            message % {"count": n, "items": model_ngettext(admin.opts, n)},
+            message % {"count": n, "items": model_ngettext(model_admin.opts, n)},
             messages.SUCCESS,
         )
 
@@ -110,10 +110,9 @@ class PaymentAdmin(admin.ModelAdmin):
             return format_html(
                 "<a href='{}'>{}</a>", batch.get_absolute_url(), str(batch)
             )
-        elif payment.type == Payment.TPAY:
+        if payment.type == Payment.TPAY:
             return _("No batch attached")
-        else:
-            return ""
+        return ""
 
     def batch_link(self, obj: Payment) -> str:
         return self._batch_link(obj, obj.batch)
@@ -136,8 +135,8 @@ class PaymentAdmin(admin.ModelAdmin):
             and request.POST
             and request.POST.get("action") == "delete_selected"
         ):
-            for id in request.POST.getlist("_selected_action"):
-                payment = Payment.objects.get(id=id)
+            for payment_id in request.POST.getlist("_selected_action"):
+                payment = Payment.objects.get(id=payment_id)
                 if payment.batch and payment.batch.processed:
                     return False
 
@@ -164,8 +163,10 @@ class PaymentAdmin(admin.ModelAdmin):
         return super().get_readonly_fields(request, obj)
 
     def get_actions(self, request: HttpRequest) -> OrderedDict:
-        """Get the actions for the payments"""
-        """Hide the processing actions if the right permissions are missing"""
+        """
+        Get the actions for the payments
+        Hide the processing actions if the right permissions are missing
+        """
         actions = super().get_actions(request)
         if not request.user.has_perm("payments.process_batches"):
             del actions["add_to_new_batch"]
@@ -215,10 +216,7 @@ class PaymentAdmin(admin.ModelAdmin):
         else:
             self.message_user(
                 request,
-                _(
-                    f"No payments using Thalia Pay are selected, "
-                    f"no batch is created"
-                ),
+                _("No payments using Thalia Pay are selected, no batch is created"),
                 messages.ERROR,
             )
 
@@ -374,8 +372,8 @@ class BatchAdmin(admin.ModelAdmin):
             and request.POST
             and request.POST.get("action") == "delete_selected"
         ):
-            for id in request.POST.getlist("_selected_action"):
-                if Batch.objects.get(id=id).processed:
+            for payment_id in request.POST.getlist("_selected_action"):
+                if Batch.objects.get(id=payment_id).processed:
                     return False
 
         return super().has_delete_permission(request, obj)

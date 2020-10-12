@@ -1,4 +1,5 @@
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase, RequestFactory, override_settings
 from django.urls import reverse
@@ -10,7 +11,7 @@ from announcements.views import close_announcement
 class AnnouncementCloseTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-        self.user = User.objects.create_user(
+        self.user = get_user_model().objects.create_user(
             username="thom", email="test@example.com", password="top secret",
         )
         self.middleware = SessionMiddleware()

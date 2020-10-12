@@ -27,9 +27,8 @@ class MessageSentFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() == "1":
             return queryset.filter(sent__isnull=False)
-        elif self.value() == "0":
+        if self.value() == "0":
             return queryset.filter(sent__isnull=True)
-
         return queryset
 
 

@@ -145,10 +145,9 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
             return self.context["request"].build_absolute_uri(
                 f"{settings.MEDIA_URL}{instance.member.profile.photo}"
             )
-        else:
-            return self.context["request"].build_absolute_uri(
-                static("members/images/default-avatar.jpg")
-            )
+        return self.context["request"].build_absolute_uri(
+            static("members/images/default-avatar.jpg")
+        )
 
     def _avatar(self, instance):
         placeholder = self.context["request"].build_absolute_uri(

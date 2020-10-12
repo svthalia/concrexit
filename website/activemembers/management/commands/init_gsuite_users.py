@@ -20,4 +20,4 @@ class Command(BaseCommand):
                 email, password = sync_service.create_user(member)
                 emails.send_gsuite_welcome_message(member, email, password)
             except HttpError as e:
-                logger.error(f"User {member.username} could not be created", e)
+                logger.error("User %s could not be created: %s", member.username, e)

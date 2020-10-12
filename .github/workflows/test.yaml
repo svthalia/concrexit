@@ -5,7 +5,7 @@ on: [push]
 
 jobs:
   codestyle:
-    name: Codestyle and translation checks
+    name: Codestyle
     runs-on: ubuntu-18.04
     container: thalia/concrexit-dependencies
     steps:
@@ -14,6 +14,17 @@ jobs:
 
       - name: Run black
         run: make blackcheck
+
+  linting:
+    name: Linting
+    runs-on: ubuntu-18.04
+    container: thalia/concrexit-dependencies
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run pylint
+        run: make pylint
 
   tests:
     name: Django Tests

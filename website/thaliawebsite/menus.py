@@ -58,16 +58,7 @@ MAIN_MENU = [
     {
         "title": _("Education"),
         "submenu": [
-            {
-                "title": _("Summaries & Exams"),
-                "name": "education:courses",
-                # TODO: Remove submenu when the new template is implemented
-                # everywhere
-                "submenu": [
-                    {"title": _("Submit Exam"), "name": "education:submit-exam"},
-                    {"title": _("Submit Summary"), "name": "education:submit-summary"},
-                ],
-            },
+            {"title": _("Summaries & Exams"), "name": "education:courses",},
             {"title": _("Book Sale"), "name": "education:books"},
             {
                 "title": _("Student Participation"),

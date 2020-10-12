@@ -102,7 +102,7 @@ def create_registration(member, event):
 
         if registration is None:
             return EventRegistration.objects.create(event=event, member=member)
-        elif registration.date_cancelled is not None:
+        if registration.date_cancelled is not None:
             if registration.is_late_cancellation():
                 raise RegistrationError(
                     _(
@@ -111,16 +111,14 @@ def create_registration(member, event):
                         "deadline."
                     )
                 )
-            else:
-                registration.date = timezone.now()
-                registration.date_cancelled = None
-                registration.save()
+            registration.date = timezone.now()
+            registration.date_cancelled = None
+            registration.save()
 
         return registration
-    elif event_permissions(member, event)["cancel_registration"]:
+    if event_permissions(member, event)["cancel_registration"]:
         raise RegistrationError(_("You were already registered."))
-    else:
-        raise RegistrationError(_("You may not register."))
+    raise RegistrationError(_("You may not register."))
 
 
 def cancel_registration(member, event):
@@ -235,10 +233,10 @@ def registration_fields(request, member=None, event=None, registration=None, nam
             raise RegistrationError(
                 _("Unable to find the right registration.")
             ) from error
-    else:
-        member = registration.member
-        event = registration.event
-        name = registration.name
+
+    member = registration.member
+    event = registration.event
+    name = registration.name
 
     perms = event_permissions(member, event, name)[
         "update_registration"
@@ -261,8 +259,7 @@ def registration_fields(request, member=None, event=None, registration=None, nam
             }
 
         return fields
-    else:
-        raise RegistrationError(_("You are not allowed to update this registration."))
+    raise RegistrationError(_("You are not allowed to update this registration."))
 
 
 def update_registration_by_organiser(registration, member, data):

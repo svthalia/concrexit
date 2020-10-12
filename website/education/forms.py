@@ -1,7 +1,6 @@
 """The forms defined by the education package"""
 import datetime
 
-from django.conf import settings
 from django.forms import (
     ChoiceField,
     DateField,

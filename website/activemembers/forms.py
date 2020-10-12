@@ -16,7 +16,7 @@ class MemberGroupMembershipForm(forms.ModelForm):
 
     class Meta:
         model = MemberGroupMembership
-        exclude = ()
+        fields = "__all__"
 
 
 class MemberGroupForm(forms.ModelForm):

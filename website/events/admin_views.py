@@ -81,7 +81,7 @@ class RegistrationAdminFields(FormView):
                 "title": _("Change registration fields"),
                 "adminform": helpers.AdminForm(
                     context["form"],
-                    ((None, {"fields": [f for f in context["form"].fields.keys()]}),),
+                    ((None, {"fields": context["form"].fields.keys()}),),
                     {},
                 ),
             }
@@ -133,6 +133,7 @@ class EventMessage(FormView):
     form_class = EventMessageForm
     template_name = "events/admin/message_form.html"
     admin = None
+    event = None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -158,7 +159,7 @@ class EventMessage(FormView):
                 "title": _("Send push notification"),
                 "adminform": helpers.AdminForm(
                     context["form"],
-                    ((None, {"fields": [f for f in context["form"].fields.keys()]}),),
+                    ((None, {"fields": context["form"].fields.keys()}),),
                     {},
                 ),
             }
@@ -182,6 +183,7 @@ class EventMessage(FormView):
         messages.success(self.request, _("Message sent successfully."))
         if "_save" in self.request.POST:
             return redirect("admin:events_event_details", self.event.pk)
+        return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, pk=self.kwargs["pk"])
@@ -226,7 +228,7 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
         rows = []
         if event.price == 0:
             header_fields.remove(_("Paid"))
-        for i, registration in enumerate(registrations):
+        for registration in registrations:
             if registration.member:
                 name = registration.member.get_full_name()
             else:

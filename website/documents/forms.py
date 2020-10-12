@@ -45,7 +45,7 @@ class AnnualDocumentForm(forms.ModelForm):
 
     class Meta:
         model = models.AnnualDocument
-        exclude = ()
+        fields = "__all__"
         widgets = {
             "year": forms.Select,
             "file": DocumentFileInput,
@@ -64,10 +64,6 @@ class AnnualDocumentForm(forms.ModelForm):
             (year, "{}-{}".format(year, year + 1))
             for year in range(current + 1, 1989, -1)
         ]
-
-    year = forms.TypedChoiceField(
-        coerce=int, choices=_year_choices.__func__(), initial=_current_year.__func__()
-    )
 
 
 class AssociationDocumentForm(forms.ModelForm):
@@ -121,7 +117,7 @@ class GeneralMeetingForm(forms.ModelForm):
 
     class Meta:
         model = models.GeneralMeeting
-        exclude = ()
+        fields = "__all__"
         widgets = {
             "documents": admin.widgets.FilteredSelectMultiple(
                 "documents", is_stacked=False

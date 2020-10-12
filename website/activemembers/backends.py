@@ -17,7 +17,8 @@ class MemberGroupBackend:
         """Not implemented in this backend."""
         return
 
-    def _get_permissions(self, user, obj):
+    @staticmethod
+    def _get_permissions(user, obj):
         if not user.is_active or user.is_anonymous or obj is not None:
             return set()
         try:

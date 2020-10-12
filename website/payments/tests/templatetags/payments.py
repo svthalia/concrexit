@@ -38,7 +38,3 @@ class PaymentButtonTemplatetagTest(TestCase):
             payable.pk = None
             with self.assertRaisesMessage(PaymentError, "Payable does not exist"):
                 payment_button(payable, "https://next")
-
-        with self.subTest("Without payable"):
-            with self.assertRaises(TypeError):
-                payment_button()

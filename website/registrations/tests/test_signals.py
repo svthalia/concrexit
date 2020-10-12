@@ -11,6 +11,7 @@ from registrations.models import Registration, Entry
 class ServicesTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        # pylint: disable=unused-import,import-outside-toplevel
         import registrations.signals
 
         cls.registration = Registration.objects.create(

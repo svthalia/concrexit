@@ -19,6 +19,13 @@ def thabloid_filename(instance, filename):
     return os.path.join("public/thabloids/", slugify(instance) + ext)
 
 
+def pagesets(count):
+    if count < 1:
+        return []
+    pageiter = iter(range(2, count))
+    return [(1, None)] + list(zip_longest(pageiter, pageiter))
+
+
 class Thabloid(models.Model):
     """Model representing a Thabloid."""
 
@@ -54,7 +61,7 @@ class Thabloid(models.Model):
             page = "{:03}.png".format(page)
         else:
             page = "{:03}-{:03}.png".format(page, second_page)
-        dst, ext = os.path.splitext(self.file.name)
+        dst, _ = os.path.splitext(self.file.name)
         return os.path.join(os.path.dirname(dst), "pages", os.path.basename(dst), page)
 
     @property
@@ -76,7 +83,7 @@ class Thabloid(models.Model):
             os.path.join(settings.MEDIA_ROOT, os.path.dirname(self.page_url()))
         )
         count = len(pages) * 2 - 1
-        return map(lambda p: self.page_url(p[0], p[1]), self.pagesets(count))
+        return map(lambda p: self.page_url(p[0], p[1]), pagesets(count))
 
     def get_absolute_url(self):
         """Get url of Thabloid."""
@@ -131,14 +138,12 @@ class Thabloid(models.Model):
             pass
 
         os.makedirs(os.path.dirname(dst), exist_ok=True)
-        # TODO reconsider if this resolution / quality is sufficient
         thread = PopenAndCall(
             self.post_extract,
             [
                 "gs",
                 "-o",
                 dst,
-                # '-g2100x2970', '-dPDFFitPage',
                 "-g1050x1485",
                 "-dPDFFitPage",
                 "-dTextAlphaBits=4",

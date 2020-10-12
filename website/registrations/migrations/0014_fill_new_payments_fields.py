@@ -12,7 +12,6 @@ def forwards_func(apps, schema_editor):
             payment.paid_by = membership.user
             payment.notes = 'Membership registration'
             try:
-                renewal = entry.renewal
                 payment.notes = 'Membership renewal'
             except Renewal.DoesNotExist:
                 pass

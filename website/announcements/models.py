@@ -42,7 +42,7 @@ class Announcement(models.Model):
         ordering = ("-since",)
 
     def __str__(self):
-        return self.content
+        return str(self.content)
 
     @property
     def is_visible(self):
@@ -86,7 +86,7 @@ class FrontpageArticle(models.Model):
         ordering = ("-since",)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     @property
     def is_visible(self):
@@ -169,4 +169,4 @@ class Slide(models.Model):
         )
 
     def __str__(self):
-        return self.title
+        return str(self.title)

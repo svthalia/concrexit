@@ -102,7 +102,7 @@ class MemberGroup(models.Model):
             )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def get_absolute_url(self):
         try:
@@ -160,17 +160,17 @@ class Board(MemberGroup):
         verbose_name_plural = _("boards")
         ordering = ["-since"]
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.active = True
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
     def get_absolute_url(self):
         return reverse(
             "activemembers:board", args=[str(self.since.year), str(self.until.year)]
         )
 
-    def validate_unique(self, *args, **kwargs):
-        super().validate_unique(*args, **kwargs)
+    def validate_unique(self, **kwargs):
+        super().validate_unique(**kwargs)
         boards = Board.objects.all()
         if self.since is not None:
             if overlaps(self, boards, can_equal=False):
@@ -241,8 +241,7 @@ class MemberGroupMembership(models.Model):
         )
         if qs.count() >= 1:  # should only be one; should be unique
             return qs.first().initial_connected_membership
-        else:
-            return self
+        return self
 
     @property
     def latest_connected_membership(self):
@@ -283,11 +282,11 @@ class MemberGroupMembership(models.Model):
                     {"since": _("Start date can't be after group end date")}
                 )
         except MemberGroupMembership.group.RelatedObjectDoesNotExist:
-            return False
+            pass
 
-    def validate_unique(self, *args, **kwargs):
+    def validate_unique(self, **kwargs):
         try:
-            super().validate_unique(*args, **kwargs)
+            super().validate_unique(**kwargs)
             # Check if a group has more than one chair
             if self.chair:
                 chairs = MemberGroupMembership.objects.filter(
@@ -315,10 +314,10 @@ class MemberGroupMembership(models.Model):
             MemberGroupMembership.member.RelatedObjectDoesNotExist,
             MemberGroupMembership.group.RelatedObjectDoesNotExist,
         ):
-            return False
+            pass
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def save(self, **kwargs):
+        super().save(**kwargs)
         self.member.is_staff = (
             self.member.membergroupmembership_set.exclude(
                 until__lte=timezone.now().date()

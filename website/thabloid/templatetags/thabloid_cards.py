@@ -28,5 +28,5 @@ def thabloid_card(year, thabloid):
         meta_text=buttons,
         url=None,
         image_url=get_thumbnail_url(thabloid.cover, "255x360"),
-        class_name=f"thabloid-card",
+        class_name="thabloid-card",
     )

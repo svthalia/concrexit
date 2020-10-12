@@ -62,9 +62,9 @@ class EventRegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMi
                 serializer.context["request"], registration=registration
             )
         except RegistrationError as e:
-            raise PermissionDenied(detail=e)
+            raise PermissionDenied(detail=e) from e
         except PaymentError as e:
-            raise PermissionDenied(detail=e)
+            raise PermissionDenied(detail=e) from e
 
     def destroy(self, request, pk=None, **kwargs):
         registration = self.get_object()
@@ -72,4 +72,4 @@ class EventRegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMi
             services.cancel_registration(registration.member, registration.event)
             return Response(status=204)
         except RegistrationError as e:
-            raise PermissionDenied(detail=e)
+            raise PermissionDenied(detail=e) from e

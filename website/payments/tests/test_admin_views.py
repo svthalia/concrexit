@@ -69,8 +69,7 @@ class PaymentAdminViewTest(TestCase):
         def side_effect(*args, **kwargs):
             if "app_label" in kwargs and kwargs["app_label"] == "mock_label":
                 return mock_get_model
-            else:
-                return original_get_model(*args, **kwargs)
+            return original_get_model(*args, **kwargs)
 
         apps.get_model = Mock(side_effect=side_effect)
         mock_get_model.objects.get.return_value = payable

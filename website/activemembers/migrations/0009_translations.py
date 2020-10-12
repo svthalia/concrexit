@@ -6,22 +6,24 @@ from django.db import migrations, models
 import django.db.models.manager
 
 
+def forwards_func(apps, schema_editor):
+    Committee = apps.get_model("activemembers", "committee")
+    db_alias = schema_editor.connection.alias
+    for committee in Committee.unfiltered_objects.using(db_alias).all():
+        committee.name_en = committee.name_nl
+        committee.description_en = committee.description_nl
+        committee.save()
+
+
+def reverse_func(apps, schema_editor):
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
         ('activemembers', '0008_auto_20160906_1015'),
     ]
-
-    def forwards_func(apps, schema_editor):
-        Committee = apps.get_model("activemembers", "committee")
-        db_alias = schema_editor.connection.alias
-        for committee in Committee.unfiltered_objects.using(db_alias).all():
-            committee.name_en = committee.name_nl
-            committee.description_en = committee.description_nl
-            committee.save()
-
-    def reverse_func(apps, schema_editor):
-        pass
 
     operations = [
         migrations.AlterModelManagers(

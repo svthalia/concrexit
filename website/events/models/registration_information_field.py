@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from . import Event, EventRegistration
 from utils.translation import ModelTranslateMeta, MultilingualField
+from . import Event, EventRegistration
 
 
 class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):

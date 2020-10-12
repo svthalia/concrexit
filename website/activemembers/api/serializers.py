@@ -54,3 +54,4 @@ class MemberGroupSerializer(serializers.ModelSerializer):
             return "committee"
         if hasattr(instance, "society"):
             return "society"
+        return None
