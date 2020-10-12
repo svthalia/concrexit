@@ -1,7 +1,6 @@
 .POSIX:
 .SUFFIXES:
 
-VIRTUALENV := $(shell poetry env info | grep Path: | sed 's/Path:[[:space:]]*//')
 PYTHONFILES := $(shell find website -name '*.py')
 MIGRATIONS := $(shell find website -name '*.py' | grep migrations)
 DOCSFILES := $(shell find docs -name '*.rst')
@@ -32,16 +31,16 @@ help:
 .make:
 	mkdir .make
 
-run: $(VIRTUALENV) website/db.sqlite3 ## Run a local webserver on PORT
+run: ./make/deps website/db.sqlite3 ## Run a local webserver on PORT
 	poetry run website/manage.py runserver $(PORT)
 
-$(VIRTUALENV): poetry.lock pyproject.toml
+./make/deps: .make poetry.lock pyproject.toml
 	poetry install $(POETRY_FLAGS)
-	@touch $(VIRTUALENV)
+	@touch .make/deps
 
-deps: $(VIRTUALENV) ## Install all the required dependencies
+deps: ./make/deps ## Install all the required dependencies
 
-website/db.sqlite3: $(VIRTUALENV) $(MIGRATIONS)
+website/db.sqlite3: ./make/deps $(MIGRATIONS)
 	poetry run website/manage.py migrate
 
 migrate: ## Run all database migrations
@@ -50,46 +49,46 @@ migrate: ## Run all database migrations
 makemigrations: ## Automatically create migration scripts
 	poetry run website/manage.py makemigrations
 
-createsuperuser: $(VIRTUALENV) website/db.sqlite3 ## Create a superuser for your local concrexit
+createsuperuser: ./make/deps website/db.sqlite3 ## Create a superuser for your local concrexit
 	poetry run website/manage.py createsuperuser
 
-createfixtures: $(VIRTUALENV) website/db.sqlite3 ## Create dummy database entries
+createfixtures: ./make/deps website/db.sqlite3 ## Create dummy database entries
 	poetry run website/manage.py createfixtures -a
 
-.make/fmt: .make $(VIRTUALENV) $(PYTHONFILES)
+.make/fmt: .make ./make/deps $(PYTHONFILES)
 	poetry run black $(BLACK_FLAGS) website
 	@touch .make/fmt
 
 fmt: .make/fmt ## Format python code with black
 
-blackcheck: $(VIRTUALENV) $(PYTHONFILES) ## Check if everything is formatted correctly
+blackcheck: ./make/deps $(PYTHONFILES) ## Check if everything is formatted correctly
 	poetry run black $(BLACK_FLAGS) --check website
 
-.make/pylint: .make $(VIRTUALENV) $(PYTHONFILES)
+.make/pylint: .make ./make/deps $(PYTHONFILES)
 	DJANGO_SETTINGS_MODULE=thaliawebsite.settings poetry run pylint website/**/*.py
 	@touch .make/pylint
 
 pylint: .make/pylint ## Check python code with pylint
 
-.make/check: .make $(VIRTUALENV) $(PYTHONFILES)
+.make/check: .make ./make/deps $(PYTHONFILES)
 	poetry run python website/manage.py check
 	@touch .make/check
 
 check: .make/check ## Run internal Django tests
 
-.make/templatecheck: .make $(VIRTUALENV) $(TEMPLATEFILES)
+.make/templatecheck: .make ./make/deps $(TEMPLATEFILES)
 	poetry run python website/manage.py templatecheck --project-only
 	@touch .make/templatecheck
 
 templatecheck: .make/templatecheck ## Test the templates
 
-.make/migrationcheck: .make $(VIRTUALENV) $(PYTHONFILES)
+.make/migrationcheck: .make ./make/deps $(PYTHONFILES)
 	poetry run python website/manage.py makemigrations --no-input --check --dry-run
 	@touch .make/migrationcheck
 
 migrationcheck: .make/migrationcheck ## Check if migrations are created
 
-.coverage: $(VIRTUALENV) $(PYTHONFILES)
+.coverage: ./make/deps $(PYTHONFILES)
 	poetry run coverage run website/manage.py test website/
 
 tests: .coverage ## Run tests with coverage
@@ -102,7 +101,7 @@ coverage: .coverage ## Generate a coverage report after running the tests
 covhtml: .coverage ## Generate an HTML coverage report
 	poetry run coverage html --directory=covhtml --title="Coverage Report"
 
-.make/docsdeps: .make $(VIRTUALENV)
+.make/docsdeps: .make ./make/deps
 	poetry install $(POETRY_FLAGS) --extras "docs"
 	@touch .make/docsdeps
 
