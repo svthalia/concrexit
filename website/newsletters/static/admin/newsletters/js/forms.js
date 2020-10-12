@@ -79,25 +79,12 @@ django.jQuery(function () {
     }
 
     function getEvent(pk, success) {
-        var originalLang = $('html').attr('lang');
-        switchLanguage('nl', function () {
-            $.ajax({
-                url: '/api/v1/events/' + pk,
-                type: 'GET',
-                dataType: 'json'
-            }).done(function(data) {
-                success(data, 'nl');
-                switchLanguage('en', function () {
-                    $.ajax({
-                        url: '/api/v1/events/' + pk,
-                        type: 'GET',
-                        dataType: 'json'
-                    }).done(function(data) {
-                        success(data, 'en');
-                        switchLanguage(originalLang, function() {});
-                    });
-                });
-            });
+        $.ajax({
+            url: '/api/v1/events/' + pk,
+            type: 'GET',
+            dataType: 'json'
+        }).done(function(data) {
+            success(data, 'en');
         });
     }
 
