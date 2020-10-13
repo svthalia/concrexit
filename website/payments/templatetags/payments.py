@@ -2,7 +2,7 @@ from django import template
 from django.contrib.contenttypes.models import ContentType
 
 from payments.exceptions import PaymentError
-from payments.models import Payable
+from payments.models import Payable, PaymentUser
 
 register = template.Library()
 
@@ -15,7 +15,9 @@ def payment_button(payable: Payable, redirect_to: str):
     content_type = ContentType.objects.get_for_model(payable)
 
     return {
-        "member": payable.payment_payer,
+        "member": PaymentUser.objects.get(pk=payable.payment_payer.pk)
+        if payable.payment_payer
+        else None,
         "pk": payable.pk,
         "app_label": content_type.app_label,
         "model_name": content_type.model,

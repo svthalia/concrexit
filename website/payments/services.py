@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
 
+from members.models import Member
 from registrations.emails import _send_email
 from .exceptions import PaymentError
 from .models import Payment, BankAccount, Payable, PaymentUser
@@ -15,7 +16,7 @@ from .models import Payment, BankAccount, Payable, PaymentUser
 
 def create_payment(
     payable: Payable,
-    processed_by: PaymentUser,
+    processed_by: Member,
     pay_type: Union[Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY],
 ) -> Payment:
     """
@@ -26,14 +27,20 @@ def create_payment(
     :param pay_type: Payment type
     :return: Payment object
     """
-    if pay_type == Payment.TPAY and not payable.payment_payer.tpay_enabled:
+    payer = (
+        PaymentUser.objects.get(pk=payable.payment_payer.pk)
+        if payable.payment_payer
+        else None
+    )
+
+    if pay_type == Payment.TPAY and not payer.tpay_enabled:
         raise PaymentError(_("This user does not have Thalia Pay enabled"))
 
     if payable.payment is not None:
         payable.payment.amount = payable.payment_amount
         payable.payment.notes = payable.payment_notes
         payable.payment.topic = payable.payment_topic
-        payable.payment.paid_by = payable.payment_payer
+        payable.payment.paid_by = payer
         payable.payment.processed_by = processed_by
         payable.payment.type = pay_type
         payable.payment.save()
@@ -43,7 +50,7 @@ def create_payment(
             amount=payable.payment_amount,
             notes=payable.payment_notes,
             topic=payable.payment_topic,
-            paid_by=payable.payment_payer,
+            paid_by=payer,
             type=pay_type,
         )
     return payable.payment

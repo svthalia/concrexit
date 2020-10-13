@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Membership, Profile
-from payments.models import Payable, PaymentUser
+from payments.models import Payable
 from utils import countries
 
 
@@ -108,7 +108,7 @@ class Entry(models.Model, Payable):
     @property
     def payment_payer(self):
         if self.membership:
-            return PaymentUser.objects.get(pk=self.membership.user.pk)
+            return self.membership.user
         return None
 
     @property
@@ -364,7 +364,7 @@ class Renewal(Entry):
 
     @property
     def payment_payer(self):
-        return PaymentUser.objects.get(pk=self.member.pk)
+        return self.member
 
     @property
     def payment_topic(self):

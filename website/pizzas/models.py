@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.template.defaulttags import date
 
-from events.models import Event, PaymentUser
+from events.models import Event
 import members
 from members.models import Member
 from payments.models import Payment, Payable
@@ -218,7 +218,7 @@ class Order(models.Model, Payable):
 
     @property
     def payment_payer(self):
-        return PaymentUser.objects.get(pk=self.member.pk)
+        return self.member
 
     def clean(self):
         if (self.member is None and not self.name) or (self.member and self.name):
