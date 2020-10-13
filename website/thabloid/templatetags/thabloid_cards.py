@@ -2,7 +2,7 @@ from django import template
 from django.urls import reverse
 
 from thaliawebsite.templatetags.grid_item import grid_item
-from utils.media.services import get_thumbnail_url
+from utils.media.services import get_thumbnail_url, get_media_url
 
 register = template.Library()
 
@@ -21,7 +21,7 @@ def thabloid_card(year, thabloid):
         '<i class="fas fa-download"></i>'
         "</a>"
         "</div>"
-    ).format(view_url, thabloid.file.url)
+    ).format(view_url, get_media_url(thabloid.file.path, attachment=True))
 
     return grid_item(
         title="{}-{}, #{}".format(thabloid.year, thabloid.year + 1, thabloid.issue),

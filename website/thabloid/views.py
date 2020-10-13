@@ -1,11 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Max
-from django.conf import settings
 from django.http import JsonResponse
 
+from utils.media.services import get_media_url
 from .models import Thabloid
 
 
+@login_required
 def index(request):
     """Render Thabloid overview index page."""
     thabloids = Thabloid.objects.all()
@@ -16,8 +18,9 @@ def index(request):
     return render(request, "thabloid/index.html", context)
 
 
+@login_required
 def pages(request, year, issue):
     """Return paths of individual Thabloid pages."""
     thabloid = get_object_or_404(Thabloid, year=int(year), issue=int(issue))
-    files = [{"src": "{}{}".format(settings.MEDIA_URL, p)} for p in thabloid.pages]
+    files = [{"src": get_media_url(p)} for p in thabloid.pages]
     return JsonResponse(files, safe=False)
