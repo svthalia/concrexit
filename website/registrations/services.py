@@ -11,7 +11,6 @@ from django.utils import timezone
 
 import members
 from members.models import Membership, Profile, Member
-from payments.models import PaymentUser
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
