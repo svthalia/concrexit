@@ -17,9 +17,8 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 
-from members.models import Member
 from payments import services
-from .models import Payment, Batch
+from .models import Payment, Batch, PaymentUser
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -44,7 +43,9 @@ class PaymentAdminView(View):
         payable_obj = payable_model.objects.get(pk=payable)
 
         result = services.create_payment(
-            payable_obj, request.member, request.POST["type"]
+            payable_obj,
+            PaymentUser.objects.get(pk=self.request.member.pk),
+            request.POST["type"],
         )
         payable_obj.save()
 
@@ -136,7 +137,7 @@ class BatchExportAdminView(View):
         member_rows = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
 
         for row in member_rows:
-            member = Member.objects.get(id=row["paid_by"])
+            member = PaymentUser.objects.get(id=row["paid_by"])
             bankaccount = member.bank_accounts.last()
             writer.writerow(
                 [

@@ -5,8 +5,7 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
-from members.models import Member
-from payments.models import Payment, BankAccount, Batch, Payable
+from payments.models import Payment, BankAccount, Batch, Payable, PaymentUser
 
 
 class PayableTest(TestCase):
@@ -46,7 +45,7 @@ class PaymentTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.payment = Payment.objects.create(
             amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.CASH
         )
@@ -154,14 +153,14 @@ class PaymentTest(TestCase):
 class BatchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.user1 = Member.objects.create(
+        cls.user1 = PaymentUser.objects.create(
             username="test1",
             first_name="Test1",
             last_name="Example",
             email="test1@example.org",
             is_staff=False,
         )
-        cls.user2 = Member.objects.create(
+        cls.user2 = PaymentUser.objects.create(
             username="test2",
             first_name="Test2",
             last_name="Example",
@@ -295,7 +294,7 @@ class BankAccountTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.no_mandate = BankAccount.objects.create(
             owner=cls.member, initials="J", last_name="Test", iban="NL91ABNA0417164300"
         )
@@ -409,3 +408,31 @@ class BankAccountTest(TestCase):
                 self.with_mandate.clean()
             self.with_mandate.bic = "NBBEBEBB"
             self.with_mandate.clean()
+
+
+@freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+class PaymentUserTest(TestCase):
+    fixtures = ["members.json"]
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
+
+    def test_tpay_enabled(self):
+        self.assertFalse(self.member.tpay_enabled)
+        b = BankAccount.objects.create(
+            owner=self.member,
+            initials="J",
+            last_name="Test2",
+            iban="NL91ABNA0417164300",
+            mandate_no="11-2",
+            valid_from=timezone.now().date() - timezone.timedelta(days=5),
+            last_used=timezone.now().date() - timezone.timedelta(days=5),
+            signature="base64,png",
+        )
+        self.assertTrue(self.member.tpay_enabled)
+
+        b.valid_until = timezone.now().date() - timezone.timedelta(days=1)
+        b.save()
+        self.assertFalse(self.member.tpay_enabled)

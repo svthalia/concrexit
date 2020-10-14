@@ -12,7 +12,7 @@ from freezegun import freeze_time
 
 from members.models import Member, Profile
 from payments import admin_views
-from payments.models import Payment, Batch, BankAccount
+from payments.models import Payment, Batch, BankAccount, PaymentUser
 from payments.tests.test_services import MockPayable
 
 
@@ -26,10 +26,11 @@ class PaymentAdminViewTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
+        Profile.objects.create(user=cls.user,)
+        cls.user = PaymentUser.objects.get(pk=cls.user.pk)
         cls.payment = Payment.objects.create(
             amount=7.5, processed_by=cls.user, paid_by=cls.user, type=Payment.CARD
         )
-        Profile.objects.create(user=cls.user,)
 
     def setUp(self):
         self.client = Client()
@@ -152,7 +153,7 @@ class BatchProcessAdminViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.batch = Batch.objects.create()
-        cls.user = Member.objects.get(pk=2)
+        cls.user = PaymentUser.objects.get(pk=2)
         Payment.objects.create(
             amount=99,
             paid_by=cls.user,
@@ -243,6 +244,7 @@ class BatchExportAdminViewTest(TestCase):
             email="test1@example.org",
         )
         Profile.objects.create(user=cls.user)
+        cls.user = PaymentUser.objects.get(pk=cls.user.pk)
 
     def setUp(self):
         self.client = Client()
@@ -282,6 +284,7 @@ class BatchExportAdminViewTest(TestCase):
             email="test1@example.org",
         )
         Profile.objects.create(user=self.user2)
+        self.user2 = PaymentUser.objects.get(pk=self.user2.pk)
 
         BankAccount.objects.create(
             last_used=timezone.now(),
@@ -338,6 +341,7 @@ class BatchTopicExportAdminViewTest(TestCase):
             email="test1@example.org",
         )
         Profile.objects.create(user=cls.user)
+        cls.user = PaymentUser.objects.get(pk=cls.user.pk)
 
     def setUp(self):
         self.client = Client()
@@ -377,6 +381,7 @@ class BatchTopicExportAdminViewTest(TestCase):
             email="test1@example.org",
         )
         Profile.objects.create(user=self.user2)
+        self.user2 = PaymentUser.objects.get(pk=self.user2.pk)
 
         BankAccount.objects.create(
             last_used=timezone.now(),
@@ -561,6 +566,7 @@ class BatchNewFilledAdminViewTest(TestCase):
             email="test1@example.org",
         )
         Profile.objects.create(user=cls.user)
+        cls.user = PaymentUser.objects.get(pk=cls.user.pk)
 
     def setUp(self):
         self.client = Client()

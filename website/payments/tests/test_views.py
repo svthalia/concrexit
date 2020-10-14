@@ -11,7 +11,7 @@ from freezegun import freeze_time
 
 from members.models import Member
 from payments.exceptions import PaymentError
-from payments.models import BankAccount, Payment
+from payments.models import BankAccount, Payment, PaymentUser
 from payments.tests.test_services import MockPayable
 
 
@@ -26,7 +26,7 @@ class BankAccountCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.login_user = Member.objects.filter(last_name="Wiggers").first()
+        cls.login_user = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.new_user = get_user_model().objects.create_user(
             username="username", first_name="Johnny", last_name="Test"
         )
@@ -190,7 +190,7 @@ class BankAccountRevokeViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.login_user = Member.objects.filter(last_name="Wiggers").first()
+        cls.login_user = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.account1 = BankAccount.objects.create(
             owner=cls.login_user,
             initials="J1",
@@ -294,7 +294,10 @@ class BankAccountRevokeViewTest(TestCase):
         redirect to the list with the right success message.
         """
         self.assertTrue(
-            BankAccount.objects.filter(owner=self.login_user, iban="BE68539007547034",)
+            BankAccount.objects.filter(
+                owner=PaymentUser.objects.get(pk=self.login_user.pk),
+                iban="BE68539007547034",
+            )
             .first()
             .valid
         )
@@ -328,7 +331,7 @@ class BankAccountListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.login_user = Member.objects.filter(last_name="Wiggers").first()
+        cls.login_user = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.account1 = BankAccount.objects.create(
             owner=cls.login_user,
             initials="J1",
@@ -336,7 +339,7 @@ class BankAccountListViewTest(TestCase):
             iban="NL91ABNA0417164300",
         )
         cls.account2 = BankAccount.objects.create(
-            owner=Member.objects.exclude(last_name="Wiggers").first(),
+            owner=PaymentUser.objects.exclude(last_name="Wiggers").first(),
             initials="J2",
             last_name="Test",
             iban="BE68539007547034",
@@ -387,7 +390,7 @@ class PaymentListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.login_user = Member.objects.filter(last_name="Wiggers").first()
+        cls.login_user = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.account1 = BankAccount.objects.create(
             owner=cls.login_user,
             initials="J1",
@@ -466,6 +469,7 @@ class PaymentProcessViewTest(TestCase):
             signature="sig",
             mandate_no="11-2",
         )
+        cls.user = PaymentUser.objects.get(pk=cls.user.pk)
 
     def setUp(self):
         self.account1.refresh_from_db()
@@ -525,7 +529,7 @@ class PaymentProcessViewTest(TestCase):
 
     @mock.patch("django.contrib.messages.error")
     def test_different_member(self, messages_error):
-        self.payable.payer = Member()
+        self.payable.payer = PaymentUser()
 
         response = self.client.post(
             reverse("payments:payment-process"), follow=False, data=self.test_body

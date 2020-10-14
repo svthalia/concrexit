@@ -5,7 +5,6 @@ import operator
 from datetime import timedelta
 from functools import reduce
 
-from django.conf import settings
 from django.contrib.auth.models import User, UserManager
 from django.db.models import Q
 from django.urls import reverse
@@ -13,7 +12,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from activemembers.models import MemberGroup, MemberGroupMembership
-from payments.models import BankAccount
 
 logger = logging.getLogger(__name__)
 
@@ -188,13 +186,3 @@ class Member(User):
 
     def get_absolute_url(self):
         return reverse("members:profile", args=[str(self.pk)])
-
-    @property
-    def tpay_enabled(self):
-        """Does this user have a bank account with Direct Debit enabled"""
-        bank_accounts = BankAccount.objects.filter(owner=self)
-        return (
-            settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
-            and bank_accounts.exists()
-            and any(x.valid for x in bank_accounts)
-        )

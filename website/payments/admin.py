@@ -14,10 +14,9 @@ from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
-from members.models import Member
 from payments import services, admin_views
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
-from .models import Payment, BankAccount, Batch
+from .models import Payment, BankAccount, Batch, PaymentUser
 
 
 def _show_message(
@@ -89,7 +88,7 @@ class PaymentAdmin(admin.ModelAdmin):
     ]
 
     @staticmethod
-    def _member_link(member: Member) -> str:
+    def _member_link(member: PaymentUser) -> str:
         return (
             format_html(
                 "<a href='{}'>{}</a>", member.get_absolute_url(), member.get_full_name()
@@ -530,3 +529,14 @@ class BankAccountAdmin(admin.ModelAdmin):
         return response
 
     export_csv.short_description = _("Export")
+
+
+@admin.register(PaymentUser)
+class PaymentUserAdmin(admin.ModelAdmin):
+
+    search_fields = (
+        "first_name",
+        "last_name",
+        "email",
+        "username",
+    )
