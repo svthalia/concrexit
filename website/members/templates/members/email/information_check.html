@@ -27,7 +27,7 @@
                   </tr>
                   <tr>
                     <td>{% trans "address"|capfirst %}</td>
-                    <td>{{ address_street }}<br>{{ address_street2 }}<br>{{ address_postal_code }}<br>{{ address_city }}<br>{{ address_country }}</td>
+                    <td>{{ address_street }}{% if address_street2 %}<br>{{ address_street2 }}{% endif %}<br>{{ address_postal_code }}<br>{{ address_city }}<br>{{ address_country }}</td>
                   </tr>
                   <tr>
                     <td>{% trans "phone"|capfirst %}</td>
