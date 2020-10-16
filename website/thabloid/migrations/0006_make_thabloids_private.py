@@ -5,28 +5,30 @@ from django.db import migrations
 
 
 def make_public_thabloids_private(apps, schema_editor):
-    if not os.path.exists(os.path.join(settings.MEDIA_ROOT, "private/thabloids/")):
-        os.makedirs(os.path.join(settings.MEDIA_ROOT, "private/thabloids/"))
+    if os.path.exists(os.path.join(settings.MEDIA_ROOT, "public/thabloids/")):
+        if not os.path.exists(os.path.join(settings.MEDIA_ROOT, "private/thabloids/")):
+            os.makedirs(os.path.join(settings.MEDIA_ROOT, "private/thabloids/"))
 
-    os.rename(os.path.join(settings.MEDIA_ROOT, "public/thabloids/"),os.path.join(settings.MEDIA_ROOT, "private/thabloids/"))
+        os.rename(os.path.join(settings.MEDIA_ROOT, "public/thabloids/"),os.path.join(settings.MEDIA_ROOT, "private/thabloids/"))
 
-    Thabloid = apps.get_model('thabloid', 'Thabloid')
-    db_alias = schema_editor.connection.alias
-    for thabloid in Thabloid.objects.using(db_alias).all():
-        thabloid.file.name = os.path.join("private/thabloids", os.path.basename(thabloid.file.name))
-        thabloid.save()
+        Thabloid = apps.get_model('thabloid', 'Thabloid')
+        db_alias = schema_editor.connection.alias
+        for thabloid in Thabloid.objects.using(db_alias).all():
+            thabloid.file.name = os.path.join("private/thabloids", os.path.basename(thabloid.file.name))
+            thabloid.save()
 
 def make_public_thabloids_public(apps, schema_editor):
-    if not os.path.exists(os.path.join(settings.MEDIA_ROOT, "public/thabloids/")):
-        os.makedirs(os.path.join(settings.MEDIA_ROOT, "public/thabloids/"))
+    if os.path.exists(os.path.join(settings.MEDIA_ROOT, "private/thabloids/")):
+        if not os.path.exists(os.path.join(settings.MEDIA_ROOT, "public/thabloids/")):
+            os.makedirs(os.path.join(settings.MEDIA_ROOT, "public/thabloids/"))
 
-    os.rename(os.path.join(settings.MEDIA_ROOT, "private/thabloids/"),os.path.join(settings.MEDIA_ROOT, "public/thabloids/"))
+        os.rename(os.path.join(settings.MEDIA_ROOT, "private/thabloids/"),os.path.join(settings.MEDIA_ROOT, "public/thabloids/"))
 
-    Thabloid = apps.get_model('thabloid', 'Thabloid')
-    db_alias = schema_editor.connection.alias
-    for thabloid in Thabloid.objects.using(db_alias).all():
-        thabloid.file.name = os.path.join("public/thabloids", os.path.basename(thabloid.file.name))
-        thabloid.save()
+        Thabloid = apps.get_model('thabloid', 'Thabloid')
+        db_alias = schema_editor.connection.alias
+        for thabloid in Thabloid.objects.using(db_alias).all():
+            thabloid.file.name = os.path.join("public/thabloids", os.path.basename(thabloid.file.name))
+            thabloid.save()
 
 
 class Migration(migrations.Migration):
