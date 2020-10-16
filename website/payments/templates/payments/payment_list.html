@@ -17,6 +17,12 @@
                 {% endfor %}
             {% endif %}
 
+            {% if tpay_balance and tpay_balance != 0 %}
+                 <h5 class="text-center mb-4">
+                    Your current Thalia Pay balance is: € {{ tpay_balance|floatformat:2 }}
+                 </h5>
+            {% endif %}
+
             <ul class="nav nav-tabs justify-content-center mb-4">
                 {% for filter in filters|slice:':6' %}
                     <li class="nav-item">

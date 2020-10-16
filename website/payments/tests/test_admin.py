@@ -1,5 +1,6 @@
+from decimal import Decimal
 from unittest import mock
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, PropertyMock
 
 from django.contrib import messages
 from django.contrib.admin import AdminSite
@@ -22,7 +23,7 @@ from freezegun import freeze_time
 
 from members.models import Member, Profile
 from payments import admin
-from payments.admin import ValidAccountFilter
+from payments.admin import ValidAccountFilter, BankAccountInline, PaymentInline
 from payments.forms import BatchPaymentInlineAdminForm
 from payments.models import Payment, BankAccount, Batch, PaymentUser
 
@@ -850,4 +851,139 @@ class BankAccountAdminTest(TestCase):
             _("Successfully updated %(count)d %(items)s.")
             % {"count": 1, "items": model_ngettext(BankAccount(), 1)},
             messages.SUCCESS,
+        )
+
+
+@freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+class PaymentUserAdminTest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json"]
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user = Member.objects.get(pk=2)
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.client.force_login(self.user)
+        self.site = AdminSite()
+        self.admin = admin.PaymentUserAdmin(PaymentUser, admin_site=self.site)
+        self.rf = RequestFactory()
+        self.user = PaymentUser.objects.first()
+
+    def test_has_add_permissions(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_add"))
+        request.user = self.user
+        self.assertFalse(self.admin.has_add_permission(request))
+
+    def test_has_delete_permissions(self):
+        request = self.rf.get(
+            reverse("admin:payments_paymentuser_delete", args=[self.user.pk])
+        )
+        request.user = self.user
+        self.assertFalse(self.admin.has_delete_permission(request))
+
+    @mock.patch("payments.models.PaymentUser.tpay_balance", new_callable=PropertyMock)
+    def test_get_tpay_balance(self, tpay_balance):
+        tpay_balance.return_value = Decimal(-10)
+        self.assertEquals(self.admin.get_tpay_balance(self.user), "€ -10.00")
+
+    @mock.patch("payments.models.PaymentUser.tpay_enabled", new_callable=PropertyMock)
+    def test_get_tpay_enabled(self, tpay_enabled):
+        tpay_enabled.return_value = True
+        self.assertEquals(self.admin.get_tpay_enabled(self.user), True)
+
+    def test_tpay_enabled_filter(self):
+        filter_all = admin.ThaliaPayEnabledFilter(
+            None, {}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertIsNone(filter_all.queryset(None, None))
+
+        filter_true = admin.ThaliaPayEnabledFilter(
+            None, {"tpay_enabled": "Yes"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_true.queryset(None, None).values_list("pk", flat=True).all(),
+            ["2", "1"],
+        )
+        filter_false = admin.ThaliaPayEnabledFilter(
+            None, {"tpay_enabled": "No"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_false.queryset(None, None).values_list("pk", flat=True).all(),
+            ["3", "4"],
+        )
+
+    @mock.patch("payments.models.PaymentUser.tpay_balance", new_callable=PropertyMock)
+    def test_tpay_balance_filter(self, tpay_balance):
+        filter_all = admin.ThaliaPayBalanceFilter(
+            None, {}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertIsNone(filter_all.queryset(None, None))
+
+        tpay_balance.return_value = Decimal(0)
+        filter_true = admin.ThaliaPayBalanceFilter(
+            None, {"tpay_balance": "0"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_true.queryset(None, None).values_list("pk", flat=True).all(),
+            ["3", "4", "2", "1"],
+        )
+        filter_false = admin.ThaliaPayBalanceFilter(
+            None, {"tpay_balance": "1"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_false.queryset(None, None).values_list("pk", flat=True).all(), []
+        )
+        tpay_balance.return_value = Decimal(10)
+        filter_true = admin.ThaliaPayBalanceFilter(
+            None, {"tpay_balance": "0"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_true.queryset(None, None).values_list("pk", flat=True).all(), []
+        )
+        filter_false = admin.ThaliaPayBalanceFilter(
+            None, {"tpay_balance": "1"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_false.queryset(None, None).values_list("pk", flat=True).all(),
+            ["3", "4", "2", "1"],
+        )
+
+    def test_user_link(self):
+        self.assertEqual(
+            self.admin.user_link(self.user),
+            f"<a href='/admin/auth/user/{self.user.pk}/change/'>{self.user.get_full_name()}</a>",
+        )
+
+    def test_bankaccount_inline_permissions(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_add"))
+        request.user = self.user
+        self.assertFalse(
+            BankAccountInline(BankAccount, self.admin.admin_site).has_add_permission(
+                request
+            )
+        )
+        self.assertFalse(
+            BankAccountInline(BankAccount, self.admin.admin_site).has_change_permission(
+                request
+            )
+        )
+        self.assertFalse(
+            BankAccountInline(BankAccount, self.admin.admin_site).has_delete_permission(
+                request
+            )
+        )
+
+    def test_payment_inline_permissions(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_add"))
+        request.user = self.user
+        self.assertFalse(
+            PaymentInline(Payment, self.admin.admin_site).has_add_permission(request)
+        )
+        self.assertFalse(
+            PaymentInline(Payment, self.admin.admin_site).has_change_permission(request)
+        )
+        self.assertFalse(
+            PaymentInline(Payment, self.admin.admin_site).has_delete_permission(request)
         )

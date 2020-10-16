@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from dateutil.relativedelta import relativedelta
 from django.apps import apps
 from django.conf import settings
@@ -152,6 +154,9 @@ class PaymentListView(ListView):
                 "total": context["object_list"]
                 .aggregate(Sum("amount"))
                 .get("amount__sum"),
+                "tpay_balance": PaymentUser.objects.get(
+                    pk=self.request.member.pk
+                ).tpay_balance,
                 "year": self.kwargs.get("year", timezone.now().year),
                 "month": self.kwargs.get("month", timezone.now().month),
             }
@@ -184,6 +189,14 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({"payable": self.payable})
+        context.update(
+            {
+                "new_debt": PaymentUser.objects.get(
+                    pk=self.payable.payment_payer.pk
+                ).tpay_balance
+                - Decimal(self.payable.payment_amount)
+            }
+        )
         return context
 
     def post(self, request, *args, **kwargs):

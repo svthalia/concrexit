@@ -34,6 +34,10 @@
                 {% endblocktrans %}
             </p>
 
+            <p class="text-center">
+                 After this payment, your Thalia Pay balance will be € {{ new_debt|floatformat:2 }}.
+            </p>
+
             <form class="form-horizontal row" method="post" class="row">
                 {% csrf_token %}
 
