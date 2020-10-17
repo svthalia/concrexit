@@ -535,12 +535,145 @@ class BankAccountAdmin(admin.ModelAdmin):
     export_csv.short_description = _("Export")
 
 
+class BankAccountInline(admin.TabularInline):
+    model = BankAccount
+    fields = (
+        "iban",
+        "bic",
+        "mandate_no",
+        "valid_from",
+        "valid_until",
+        "last_used",
+    )
+    show_change_link = True
+
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class PaymentInline(admin.TabularInline):
+    model = Payment
+    fields = (
+        "created_at",
+        "type",
+        "amount",
+        "topic",
+        "notes",
+        "batch",
+    )
+
+    show_change_link = True
+
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class ThaliaPayEnabledFilter(admin.SimpleListFilter):
+    title = _("Thalia Pay enabled")
+    parameter_name = "tpay_enabled"
+
+    def lookups(self, request, model_admin):
+        return ("1", _("Yes")), ("0", _("No"))
+
+    def queryset(self, request, queryset):
+        tpay_enabled = [x.id for x in queryset.all() if x.tpay_enabled]
+        if self.value() == "1":
+            return queryset.filter(id__in=tpay_enabled)
+        if self.value() == "0":
+            return queryset.exclude(id__in=tpay_enabled)
+        return queryset
+
+
+class ThaliaPayBalanceFilter(admin.SimpleListFilter):
+    title = _("Thalia Pay balance")
+    parameter_name = "tpay_balance"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("0", "€0,00"),
+            ("1", ">€0.00"),
+        )
+
+    def queryset(self, request, queryset):
+        tpay_balance = [x.id for x in queryset.all() if x.tpay_balance != 0]
+        if self.value() == "0":
+            return queryset.exclude(id__in=tpay_balance)
+        if self.value() == "1":
+            return queryset.filter(id__in=tpay_balance)
+        return queryset
+
+
 @admin.register(PaymentUser)
 class PaymentUserAdmin(admin.ModelAdmin):
+    list_display = (
+        "__str__",
+        "email",
+        "get_tpay_enabled",
+        "get_tpay_balance",
+    )
+    list_filter = [ThaliaPayEnabledFilter, ThaliaPayBalanceFilter]
+
+    inlines = [BankAccountInline, PaymentInline]
+
+    fields = (
+        "user_link",
+        "get_tpay_enabled",
+        "get_tpay_balance",
+    )
+
+    readonly_fields = (
+        "user_link",
+        "get_tpay_enabled",
+        "get_tpay_balance",
+    )
 
     search_fields = (
         "first_name",
         "last_name",
-        "email",
         "username",
+        "email",
     )
+
+    def get_tpay_balance(self, obj):
+        return f"€ {obj.tpay_balance:.2f}"
+
+    get_tpay_balance.short_description = _("balance")
+
+    def get_tpay_enabled(self, obj):
+        return obj.tpay_enabled
+
+    get_tpay_enabled.short_description = _("Thalia Pay enabled")
+    get_tpay_enabled.boolean = True
+
+    def user_link(self, obj):
+        return (
+            format_html(
+                "<a href='{}'>{}</a>",
+                reverse("admin:auth_user_change", args=[obj.pk]),
+                obj.get_full_name(),
+            )
+            if obj
+            else ""
+        )
+
+    user_link.admin_order_field = "user"
+    user_link.short_description = _("user")
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

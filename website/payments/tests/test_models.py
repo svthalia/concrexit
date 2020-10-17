@@ -1,11 +1,14 @@
 import datetime
+from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
+from payments import services
 from payments.models import Payment, BankAccount, Batch, Payable, PaymentUser
+from payments.tests.__mocks__ import MockPayable
 
 
 class PayableTest(TestCase):
@@ -436,3 +439,39 @@ class PaymentUserTest(TestCase):
         b.valid_until = timezone.now().date() - timezone.timedelta(days=1)
         b.save()
         self.assertFalse(self.member.tpay_enabled)
+
+    def test_tpay_balance(self):
+        self.assertEqual(self.member.tpay_balance, 0)
+        BankAccount.objects.create(
+            owner=self.member,
+            initials="J",
+            last_name="Test2",
+            iban="NL91ABNA0417164300",
+            mandate_no="11-2",
+            valid_from=timezone.now().date() - timezone.timedelta(days=5),
+            last_used=timezone.now().date() - timezone.timedelta(days=5),
+            signature="base64,png",
+        )
+        p1 = services.create_payment(
+            MockPayable(self.member), self.member, Payment.TPAY
+        )
+        self.assertEqual(self.member.tpay_balance, Decimal(-5))
+
+        p2 = services.create_payment(
+            MockPayable(self.member), self.member, Payment.TPAY
+        )
+        self.assertEqual(self.member.tpay_balance, Decimal(-10))
+
+        batch = Batch.objects.create()
+        p1.batch = batch
+        p1.save()
+
+        p2.batch = batch
+        p2.save()
+
+        self.assertEqual(self.member.tpay_balance, Decimal(-10))
+
+        batch.processed = True
+        batch.save()
+
+        self.assertEqual(self.member.tpay_balance, 0)

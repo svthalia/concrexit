@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -31,6 +31,16 @@ class PaymentUser(Member):
             and bank_accounts.exists()
             and any(x.valid for x in bank_accounts)
         )
+
+    @property
+    def tpay_balance(self):
+        """Checks the Thalia Pay balance for a user"""
+        payments = Payment.objects.filter(
+            Q(paid_by=self, type=Payment.TPAY)
+            & (Q(batch__isnull=True) | Q(batch__processed=False))
+        )
+        total = payments.aggregate(Sum("amount"))["amount__sum"]
+        return -1 * total if total else 0
 
 
 class Payment(models.Model):
