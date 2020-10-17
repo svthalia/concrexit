@@ -16,7 +16,7 @@ from utils.threading import PopenAndCall
 def thabloid_filename(instance, filename):
     """Return path of thabloid."""
     ext = os.path.splitext(filename)[1]
-    return os.path.join("public/thabloids/", slugify(instance) + ext)
+    return os.path.join("private/thabloids/", slugify(instance) + ext)
 
 
 def pagesets(count):

@@ -28,7 +28,6 @@ MAIN_MENU = [
                 "name": "singlepages:sibling-associations",
             },
             {"title": _("Become a Member"), "name": "registrations:index"},
-            {"title": _("Thabloid"), "name": "thabloid:index"},
             {"title": _("Alumni"), "name": "events:alumni"},
         ],
     },
@@ -39,6 +38,7 @@ MAIN_MENU = [
             {"title": _("Photos"), "name": "photos:index"},
             {"title": _("Statistics"), "name": "members:statistics"},
             {"title": _("Styleguide"), "name": "singlepages:styleguide"},
+            {"title": _("Thabloid"), "name": "thabloid:index"},
             {"title": _("Become Active"), "name": "singlepages:become-active"},
             {
                 "title": _("G Suite Knowledge Base"),

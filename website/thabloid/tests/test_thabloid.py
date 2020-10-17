@@ -36,16 +36,16 @@ class TestThabloid(TestCase):
 
     def test_page_urls(self):
         self.assertEqual(
-            self.thabloid.cover, "public/thabloids/pages/thabloid-1998-1999-1/001.png"
+            self.thabloid.cover, "private/thabloids/pages/thabloid-1998-1999-1/001.png"
         )
         self.assertEqual(
             self.thabloid.page_url(2, 3),
-            "public/thabloids/pages/thabloid-1998-1999-1/002-003.png",
+            "private/thabloids/pages/thabloid-1998-1999-1/002-003.png",
         )
         # check if it's actual zeropadding and not just '00' + i
         self.assertEqual(
             self.thabloid.page_url(20),
-            "public/thabloids/pages/thabloid-1998-1999-1/020.png",
+            "private/thabloids/pages/thabloid-1998-1999-1/020.png",
         )
 
     @staticmethod
