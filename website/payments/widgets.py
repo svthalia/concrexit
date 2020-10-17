@@ -22,8 +22,8 @@ class PaymentWidget(Widget):
             context["obj"] = self.obj
             context["payable_payer"] = (
                 PaymentUser.objects.get(pk=self.obj.payment_payer.pk)
-                if hasattr(self.obj, "payment_payer")
-                else self.obj.paid_by
+                if self.obj and self.obj.payment_payer
+                else None
             )
             context["content_type"] = ContentType.objects.get_for_model(self.obj)
         elif value:
