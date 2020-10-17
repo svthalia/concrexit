@@ -19,7 +19,7 @@
 
             {% if tpay_balance and tpay_balance != 0 %}
                  <h5 class="text-center mb-4">
-                    Your current Thalia Pay balance is: € {{ tpay_balance|floatformat:2 }}
+                    {% trans "Your current Thalia Pay balance is" %}: € {{ tpay_balance|floatformat:2 }}
                  </h5>
             {% endif %}
 

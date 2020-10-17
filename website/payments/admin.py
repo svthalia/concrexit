@@ -575,24 +575,23 @@ class PaymentInline(admin.TabularInline):
 
 
 class ThaliaPayEnabledFilter(admin.SimpleListFilter):
-    title = "Thalia Pay enabled"
+    title = _("Thalia Pay enabled")
     parameter_name = "tpay_enabled"
 
     def lookups(self, request, model_admin):
-        return ("Yes", "Yes"), ("No", "No")
+        return ("1", _("Yes")), ("0", _("No"))
 
     def queryset(self, request, queryset):
-        value = self.value()
-        tpay_enabled = [x.id for x in PaymentUser.objects.all() if x.tpay_enabled]
-        if value == "Yes":
-            return PaymentUser.objects.filter(id__in=tpay_enabled)
-        if value == "No":
-            return PaymentUser.objects.exclude(id__in=tpay_enabled)
-        return None
+        tpay_enabled = [x.id for x in queryset.all() if x.tpay_enabled]
+        if self.value() == "1":
+            return queryset.filter(id__in=tpay_enabled)
+        if self.value() == "0":
+            return queryset.exclude(id__in=tpay_enabled)
+        return queryset
 
 
 class ThaliaPayBalanceFilter(admin.SimpleListFilter):
-    title = "Thalia Pay balance"
+    title = _("Thalia Pay balance")
     parameter_name = "tpay_balance"
 
     def lookups(self, request, model_admin):
@@ -602,13 +601,12 @@ class ThaliaPayBalanceFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
-        value = self.value()
-        tpay_balance = [x.id for x in PaymentUser.objects.all() if x.tpay_balance != 0]
-        if value == "0":
-            return PaymentUser.objects.exclude(id__in=tpay_balance)
-        if value == "1":
-            return PaymentUser.objects.filter(id__in=tpay_balance)
-        return None
+        tpay_balance = [x.id for x in queryset.all() if x.tpay_balance != 0]
+        if self.value() == "0":
+            return queryset.exclude(id__in=tpay_balance)
+        if self.value() == "1":
+            return queryset.filter(id__in=tpay_balance)
+        return queryset
 
 
 @admin.register(PaymentUser)
@@ -645,12 +643,12 @@ class PaymentUserAdmin(admin.ModelAdmin):
     def get_tpay_balance(self, obj):
         return f"€ {obj.tpay_balance:.2f}"
 
-    get_tpay_balance.short_description = "Balance"
+    get_tpay_balance.short_description = _("balance")
 
     def get_tpay_enabled(self, obj):
         return obj.tpay_enabled
 
-    get_tpay_enabled.short_description = "Thalia Pay enabled"
+    get_tpay_enabled.short_description = _("Thalia Pay enabled")
     get_tpay_enabled.boolean = True
 
     def user_link(self, obj):

@@ -191,7 +191,7 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         context.update({"payable": self.payable})
         context.update(
             {
-                "new_debt": PaymentUser.objects.get(
+                "new_balance": PaymentUser.objects.get(
                     pk=self.payable.payment_payer.pk
                 ).tpay_balance
                 - Decimal(self.payable.payment_amount)
