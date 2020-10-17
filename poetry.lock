@@ -267,7 +267,7 @@ django = "*"
 
 [[package]]
 name = "django-bootstrap4"
-version = "2.3.0"
+version = "2.3.1"
 description = "Bootstrap support for Django projects"
 category = "main"
 optional = false
@@ -1288,7 +1288,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "c4c4a5cd7b4a97d2480c4795f5361f791a1ff8104381196d4e198caab991631f"
+content-hash = "6f1ab93fab2b1701e00c446fa593e7e7addbd4e3990d1433b8d122da6428a449"
 
 [metadata.files]
 alabaster = [
@@ -1466,8 +1466,8 @@ django-appconf = [
     {file = "django_appconf-1.0.4-py2.py3-none-any.whl", hash = "sha256:1b1d0e1069c843ebe8ae5aa48ec52403b1440402b320c3e3a206a0907e97bb06"},
 ]
 django-bootstrap4 = [
-    {file = "django-bootstrap4-2.3.0.tar.gz", hash = "sha256:4dd062fc19651da87ee3f42e495c507e2835664af28371e7a1371bf579867cef"},
-    {file = "django_bootstrap4-2.3.0-py3-none-any.whl", hash = "sha256:aa3441c63107ca7cba35f60c30567e763bdad5f289512ca49bf2c16760480cdb"},
+    {file = "django-bootstrap4-2.3.1.tar.gz", hash = "sha256:2c199020ac38866cdf8d1c5561ce7468116b9685b455a29843c0225ef8568879"},
+    {file = "django_bootstrap4-2.3.1-py3-none-any.whl", hash = "sha256:b68f073b647b20ec7894a252a0ca4e06b7b8dafdbad995cb0cdc783d0bb4629d"},
 ]
 django-compressor = [
     {file = "django_compressor-2.4-py2.py3-none-any.whl", hash = "sha256:57ac0a696d061e5fc6fbc55381d2050f353b973fb97eee5593f39247bc0f30af"},
