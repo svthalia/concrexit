@@ -89,7 +89,11 @@ class Payment(models.Model):
     )
 
     batch = models.ForeignKey(
-        "Batch", models.PROTECT, related_name="payments_set", blank=True, null=True,
+        "payments.Batch",
+        models.PROTECT,
+        related_name="payments_set",
+        blank=True,
+        null=True,
     )
 
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
@@ -154,8 +158,6 @@ class Batch(models.Model):
     """
     Describes a batch of payments for export
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     processed = models.BooleanField(verbose_name=_("processing status"), default=False,)
 

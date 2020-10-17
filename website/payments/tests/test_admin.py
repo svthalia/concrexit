@@ -661,7 +661,7 @@ class BatchAdminTest(TestCase):
         b = Batch.objects.create()
         self.assertCountEqual(
             self.admin.get_readonly_fields(None, b),
-            ["processed", "processing_date", "total_amount",],
+            ["id", "processed", "processing_date", "total_amount",],
         )
 
         b.processed = True
@@ -669,6 +669,7 @@ class BatchAdminTest(TestCase):
         self.assertCountEqual(
             self.admin.get_readonly_fields(None, b),
             [
+                "id",
                 "description",
                 "processed",
                 "processing_date",
