@@ -578,6 +578,22 @@ class PaymentInline(admin.TabularInline):
         return False
 
 
+class ThaliaPaAllowedFilter(admin.SimpleListFilter):
+    title = _("Thalia Pay allowed")
+    parameter_name = "tpay_allowed"
+
+    def lookups(self, request, model_admin):
+        return ("1", _("Yes")), ("0", _("No"))
+
+    def queryset(self, request, queryset):
+        tpay_allowed = [x.id for x in queryset.all() if x.tpay_allowed]
+        if self.value() == "1":
+            return queryset.filter(id__in=tpay_allowed)
+        if self.value() == "0":
+            return queryset.exclude(id__in=tpay_allowed)
+        return queryset
+
+
 class ThaliaPayEnabledFilter(admin.SimpleListFilter):
     title = _("Thalia Pay enabled")
     parameter_name = "tpay_enabled"
@@ -618,21 +634,28 @@ class PaymentUserAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "email",
+        "get_tpay_allowed",
         "get_tpay_enabled",
         "get_tpay_balance",
     )
-    list_filter = [ThaliaPayEnabledFilter, ThaliaPayBalanceFilter]
+    list_filter = [
+        ThaliaPaAllowedFilter,
+        ThaliaPayEnabledFilter,
+        ThaliaPayBalanceFilter,
+    ]
 
     inlines = [BankAccountInline, PaymentInline]
 
     fields = (
         "user_link",
+        "get_tpay_allowed",
         "get_tpay_enabled",
         "get_tpay_balance",
     )
 
     readonly_fields = (
         "user_link",
+        "get_tpay_allowed",
         "get_tpay_enabled",
         "get_tpay_balance",
     )
@@ -655,6 +678,12 @@ class PaymentUserAdmin(admin.ModelAdmin):
     get_tpay_enabled.short_description = _("Thalia Pay enabled")
     get_tpay_enabled.boolean = True
 
+    def get_tpay_allowed(self, obj):
+        return obj.tpay_allowed
+
+    get_tpay_allowed.short_description = _("Thalia Pay allowed")
+    get_tpay_allowed.boolean = True
+
     def user_link(self, obj):
         return (
             format_html(
@@ -668,6 +697,33 @@ class PaymentUserAdmin(admin.ModelAdmin):
 
     user_link.admin_order_field = "user"
     user_link.short_description = _("user")
+
+    actions = ["disallow_thalia_pay", "allow_thalia_pay"]
+
+    def disallow_thalia_pay(self, request, queryset):
+        count = 0
+        for x in queryset:
+            if x.tpay_enabled:
+                x.disallow_tpay()
+                count += 1
+        messages.success(
+            request, _(f"Succesfully disallowed Thalia Pay for {count} users."),
+        )
+
+    disallow_thalia_pay.short_description = _("Disallow Thalia Pay for selected users")
+
+    def allow_thalia_pay(self, request, queryset):
+        """Disallow Thalia Pay for selected users"""
+        count = 0
+        for x in queryset:
+            if not x.tpay_enabled:
+                x.allow_tpay()
+                count += 1
+        messages.success(
+            request, _(f"Succesfully allowed Thalia Pay for {count} users."),
+        )
+
+    allow_thalia_pay.short_description = _("Allow Thalia Pay for selected users")
 
     def has_add_permission(self, request, obj=None):
         return False
