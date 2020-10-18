@@ -22,6 +22,7 @@ class EventListSerializer(serializers.ModelSerializer):
             "location",
             "price",
             "registered",
+            "present",
             "pizza",
             "registration_allowed",
         )
@@ -29,6 +30,7 @@ class EventListSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField("_description")
     registered = serializers.SerializerMethodField("_registered")
     pizza = serializers.SerializerMethodField("_pizza")
+    present = serializers.SerializerMethodField("_present")
 
     def _description(self, instance):
         return unescape(strip_tags(instance.description))
@@ -47,3 +49,12 @@ class EventListSerializer(serializers.ModelSerializer):
     def _pizza(self, instance):
         pizza_events = PizzaEvent.objects.filter(event=instance)
         return pizza_events.exists()
+
+    def _present(self, instance):
+        try:
+            present = services.is_user_present(self.context["request"].user, instance,)
+            if present is None:
+                return False
+            return present
+        except AttributeError:
+            return False

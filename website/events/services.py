@@ -26,6 +26,18 @@ def is_user_registered(member, event):
     return event.registrations.filter(member=member, date_cancelled=None).count() > 0
 
 
+def is_user_present(member, event):
+    if not event.registration_required or not member.is_authenticated:
+        return None
+
+    return (
+        event.registrations.filter(
+            member=member, date_cancelled=None, present=True
+        ).count()
+        > 0
+    )
+
+
 def event_permissions(member, event, name=None):
     """
     Returns a dictionary with the available event permissions of the user
