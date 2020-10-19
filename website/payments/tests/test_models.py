@@ -1,5 +1,6 @@
 import datetime
 from decimal import Decimal
+from unittest.mock import PropertyMock, patch
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
@@ -153,6 +154,7 @@ class PaymentTest(TestCase):
 
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class BatchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
@@ -475,3 +477,6 @@ class PaymentUserTest(TestCase):
         batch.save()
 
         self.assertEqual(self.member.tpay_balance, 0)
+
+    def test_allow_disallow_tpay(self):
+        pass

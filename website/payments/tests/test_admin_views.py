@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, PropertyMock, patch
 
 from django.apps import apps
 from django.contrib.admin.utils import model_ngettext
@@ -147,10 +147,12 @@ class PaymentAdminViewTest(TestCase):
 
 
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class BatchProcessAdminViewTest(TestCase):
     fixtures = ["members.json", "bank_accounts.json"]
 
     @classmethod
+    @patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
     def setUpTestData(cls):
         cls.batch = Batch.objects.create()
         cls.user = PaymentUser.objects.get(pk=2)

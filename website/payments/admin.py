@@ -578,7 +578,7 @@ class PaymentInline(admin.TabularInline):
         return False
 
 
-class ThaliaPaAllowedFilter(admin.SimpleListFilter):
+class ThaliaPayAllowedFilter(admin.SimpleListFilter):
     title = _("Thalia Pay allowed")
     parameter_name = "tpay_allowed"
 
@@ -639,7 +639,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
         "get_tpay_balance",
     )
     list_filter = [
-        ThaliaPaAllowedFilter,
+        ThaliaPayAllowedFilter,
         ThaliaPayEnabledFilter,
         ThaliaPayBalanceFilter,
     ]
