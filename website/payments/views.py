@@ -115,6 +115,13 @@ class BankAccountRevokeView(SuccessMessageMixin, UpdateView):
 class BankAccountListView(ListView):
     model = BankAccount
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update(
+            {"payment_user": PaymentUser.objects.get(pk=self.request.member.pk),}
+        )
+        return context
+
     def get_queryset(self) -> QuerySet:
         return (
             super()
