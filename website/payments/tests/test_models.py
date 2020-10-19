@@ -479,4 +479,9 @@ class PaymentUserTest(TestCase):
         self.assertEqual(self.member.tpay_balance, 0)
 
     def test_allow_disallow_tpay(self):
-        pass
+        self.member.is_superuser = False
+        self.member.save()
+        self.member.allow_tpay()
+        self.assertTrue(self.member.tpay_allowed)
+        self.member.disallow_tpay()
+        self.assertFalse(PaymentUser.objects.first().tpay_allowed)

@@ -910,7 +910,7 @@ class PaymentUserAdminTest(TestCase):
             filter_all.queryset(None, PaymentUser.objects), PaymentUser.objects
         )
 
-        filter_true = admin.ThaliaPayEnabledFilter(
+        filter_true = admin.ThaliaPayAllowedFilter(
             None, {"tpay_allowed": "1"}, PaymentUser, admin.PaymentUserAdmin
         )
         self.assertQuerysetEqual(
@@ -919,14 +919,14 @@ class PaymentUserAdminTest(TestCase):
             .all(),
             ["3", "4", "2", "1"],
         )
-        filter_false = admin.ThaliaPayEnabledFilter(
+        filter_false = admin.ThaliaPayAllowedFilter(
             None, {"tpay_allowed": "0"}, PaymentUser, admin.PaymentUserAdmin
         )
         self.assertQuerysetEqual(
             filter_false.queryset(None, PaymentUser.objects)
             .values_list("pk", flat=True)
             .all(),
-            ["3", "4", "2", "1"],
+            [],
         )
 
     def test_tpay_enabled_filter(self):
