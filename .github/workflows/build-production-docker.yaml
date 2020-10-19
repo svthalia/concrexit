@@ -27,7 +27,7 @@ jobs:
             - name: Build Docker images
               run: |
                   docker build --file Dockerfile.dependencies --quiet --build-arg "install_dev_requirements=0" --tag "${DOCKER_DEPENDENCIES_LATEST}" .
-                  docker build --quiet --build-arg "source_commit=${{ github.sha }}" --tag "${DOCKER_LATEST}" .
+                  docker build --quiet --build-arg "install_dev_requirements=0" --build-arg "source_commit=${{ github.sha }}" --tag "${DOCKER_LATEST}" .
 
             - name: Push Docker image
               run: |

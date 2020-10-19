@@ -2,6 +2,7 @@ FROM thalia/concrexit-dependencies
 MAINTAINER Thalia Technicie <www@thalia.nu>
 LABEL description="Contains the Thaliawebsite Django application"
 
+ARG install_dev_requirements=1
 ARG source_commit="unknown"
 
 ENV PYTHONUNBUFFERED 1
