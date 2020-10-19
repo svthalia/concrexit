@@ -92,7 +92,7 @@ jobs:
           path: html
 
       - name: Create URL safe version of GITHUB_REF
-        run: echo ::set-env name=GITHUB_REF_SLUG::$(echo "${GITHUB_REF#refs/heads/}"| iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)
+        run: echo "GITHUB_REF_SLUG=(echo \"${GITHUB_REF#refs/heads/}\"| iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)" >> "${GITHUB_ENV}"
 
       - name: Sync files to S3
         run: aws s3 sync --only-show-errors html "s3://thalia-coverage/${GITHUB_REF_SLUG}/"
@@ -111,7 +111,7 @@ jobs:
           path: html
 
       - name: Create URL safe version of GITHUB_REF
-        run: echo ::set-env name=GITHUB_REF_SLUG::$(echo "${GITHUB_REF#refs/heads/}" | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)
+        run: echo "GITHUB_REF_SLUG=$(echo \"${GITHUB_REF#refs/heads/}\" | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)" >> "${GITHUB_ENV}"
 
       - name: Sync files to S3
         run: aws s3 sync --only-show-errors html "s3://thalia-documentation/${GITHUB_REF_SLUG}/"
