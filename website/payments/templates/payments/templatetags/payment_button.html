@@ -1,10 +1,10 @@
 {% load i18n static bootstrap4 %}
 <script>
-$(function () {
-$("[data-toggle=popover]").popover();
-})
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
 </script>
-{% if member.profile.tpay_allowed %}
+{% if member.tpay_allowed %}
     <form action="{% url 'payments:payment-process' %}" method="post">
         {% csrf_token %}
         <input
@@ -28,7 +28,7 @@ $("[data-toggle=popover]").popover();
             value="{{ redirect_to }}"
         />
         {% if not member.tpay_enabled %}
-            <span data-trigger="hover" data-toggle="popover" data-placement="right"
+            <span data-trigger="hover" data-toggle="tooltip" data-placement="right"
                   data-html="true" data-content="To start using Thalia Pay, you need to <a href='{% url 'payments:bankaccount-add' %}' target='_blank'>sign a direct debit mandate</a>."
             >
                 <input
