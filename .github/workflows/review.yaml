@@ -16,13 +16,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get commit hash
-        run: echo ::set-env name=COMMIT_SHA::$(curl --location --silent ${{ github.event.issue.pull_request.patch_url }} | grep --perl-regexp '^From [a-z0-9]{40} ' | tail --lines 1 | cut --delimiter " " --fields 2)
+        run: echo "COMMIT_SHA=$(curl --location --silent ${{ github.event.issue.pull_request.patch_url }} | grep --perl-regexp '^From [a-z0-9]{40} ' | tail --lines 1 | cut --delimiter " " --fields 2)" >> "${GITHUB_ENV}"
 
       - name: Generate username
-        run: echo ::set-env name=username::$(head /dev/urandom | tr -dc 'a-z' | head -c 10)
+        run: echo "username=$(head /dev/urandom | tr -dc 'a-z' | head -c 10)" >> "${GITHUB_ENV}"
 
       - name: Generate password
-        run: echo ::set-env name=password::$(head /dev/urandom | tr -dc 'a-zA-Z' | head -c 32)
+        run: echo "password=$(head /dev/urandom | tr -dc 'a-zA-Z' | head -c 32)" >> "${GITHUB_ENV}"
 
       - name: Set variables in bootstrap script
         run: >-
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get commit hash
-        run: echo ::set-env name=COMMIT_SHA::$(curl --location --silent ${{ github.event.issue.pull_request.patch_url }} | grep --perl-regexp '^From [a-z0-9]{40} ' | tail --lines 1 | cut --delimiter " " --fields 2)
+        run: echo "COMMIT_SHA=$(curl --location --silent ${{ github.event.issue.pull_request.patch_url }} | grep --perl-regexp '^From [a-z0-9]{40} ' | tail --lines 1 | cut --delimiter " " --fields 2)" >> "${GITHUB_ENV}"
 
       - name: Run script to remove review environment
         run: resources/continuous-integration/review/review-host-remove.sh

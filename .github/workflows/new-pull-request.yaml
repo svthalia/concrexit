@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Create URL safe version of GITHUB_REF
-        run: echo ::set-env name=GITHUB_REF_SLUG::$(echo '${{ github.event.pull_request.head.ref }}' | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)
+        run: echo "GITHUB_REF_SLUG=$(echo '${{ github.event.pull_request.head.ref }}' | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)" >> "${GITHUB_ENV}"
 
       - name: Add comment to PR with useful information
         uses: peter-evans/create-or-update-comment@v1

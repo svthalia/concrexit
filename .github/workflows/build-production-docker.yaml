@@ -16,7 +16,7 @@ jobs:
             DOCKER_DEPENDENCIES_LATEST: thalia/concrexit-dependencies:latest
         steps:
             - name: Get version
-              run: echo ::set-env name=DOCKER_VERSION::${GITHUB_REF/refs\/tags\//}
+              run: echo "DOCKER_VERSION=${GITHUB_REF/refs\/tags\//}" >> "${GITHUB_ENV}"
 
             - name: Checkout repository
               uses: actions/checkout@v2
