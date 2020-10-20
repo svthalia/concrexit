@@ -37,13 +37,22 @@ class GSuiteSyncService:
             return False
 
     def __init__(
-        self,
-        groups_settings_api=get_groups_settings_api(),
-        directory_api=get_directory_api(),
+        self, groups_settings_api=None, directory_api=None,
     ):
-        super().__init__()
-        self.groups_settings_api = groups_settings_api
-        self.directory_api = directory_api
+        self._groups_settings_api = groups_settings_api
+        self._directory_api = directory_api
+
+    @property
+    def directory_api(self):
+        if self._directory_api is not None:
+            return self._directory_api
+        return get_directory_api()
+
+    @property
+    def groups_settings_api(self):
+        if self._groups_settings_api is not None:
+            return self._groups_settings_api
+        return get_groups_settings_api()
 
     @staticmethod
     def _group_settings(moderated):
