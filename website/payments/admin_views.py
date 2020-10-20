@@ -43,9 +43,7 @@ class PaymentAdminView(View):
         payable_obj = payable_model.objects.get(pk=payable)
 
         result = services.create_payment(
-            payable_obj,
-            PaymentUser.objects.get(pk=self.request.member.pk),
-            request.POST["type"],
+            payable_obj, self.request.member, request.POST["type"],
         )
         payable_obj.save()
 
