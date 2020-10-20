@@ -1,6 +1,6 @@
 from decimal import Decimal
 from unittest import mock
-from unittest.mock import Mock, MagicMock, PropertyMock
+from unittest.mock import Mock, MagicMock, PropertyMock, patch
 
 from django.contrib import messages
 from django.contrib.admin import AdminSite
@@ -46,6 +46,7 @@ class GlobalAdminTest(SimpleTestCase):
 
 
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class PaymentAdminTest(TestCase):
     fixtures = ["members.json", "bank_accounts.json"]
 
@@ -560,6 +561,7 @@ class ValidAccountFilterTest(TestCase):
 
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class BatchAdminTest(TestCase):
     fixtures = ["members.json", "bank_accounts.json"]
 
@@ -857,6 +859,7 @@ class BankAccountAdminTest(TestCase):
 
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class PaymentUserAdminTest(TestCase):
     fixtures = ["members.json", "bank_accounts.json"]
 
@@ -892,7 +895,39 @@ class PaymentUserAdminTest(TestCase):
     @mock.patch("payments.models.PaymentUser.tpay_enabled", new_callable=PropertyMock)
     def test_get_tpay_enabled(self, tpay_enabled):
         tpay_enabled.return_value = True
-        self.assertEquals(self.admin.get_tpay_enabled(self.user), True)
+        self.assertTrue(self.admin.get_tpay_enabled(self.user))
+
+    @mock.patch("payments.models.PaymentUser.tpay_allowed", new_callable=PropertyMock)
+    def test_get_tpay_allowed(self, tpay_allowed):
+        tpay_allowed.return_value = True
+        self.assertTrue(self.admin.get_tpay_allowed(self.user))
+
+    def test_tpay_allowed_filter(self):
+        filter_all = admin.ThaliaPayAllowedFilter(
+            None, {}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertEqual(
+            filter_all.queryset(None, PaymentUser.objects), PaymentUser.objects
+        )
+
+        filter_true = admin.ThaliaPayAllowedFilter(
+            None, {"tpay_allowed": "1"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_true.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            ["3", "4", "2", "1"],
+        )
+        filter_false = admin.ThaliaPayAllowedFilter(
+            None, {"tpay_allowed": "0"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_false.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            [],
+        )
 
     def test_tpay_enabled_filter(self):
         filter_all = admin.ThaliaPayEnabledFilter(
@@ -1006,3 +1041,19 @@ class PaymentUserAdminTest(TestCase):
         self.assertFalse(
             PaymentInline(Payment, self.admin.admin_site).has_delete_permission(request)
         )
+
+    def test_disallow_tpay_action(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_changelist"))
+        request.user = self.user
+        with patch("payments.models.PaymentUser.disallow_tpay") as mock:
+            request._messages = Mock()
+            self.admin.disallow_thalia_pay(request, PaymentUser.objects.all())
+            mock.assert_called()
+
+    def test_allow_tpay_action(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_changelist"))
+        request.user = self.user
+        with patch("payments.models.PaymentUser.allow_tpay") as mock:
+            request._messages = Mock()
+            self.admin.allow_thalia_pay(request, PaymentUser.objects.all())
+            mock.assert_called()

@@ -1,5 +1,10 @@
-{% load i18n %}
-{% if member.tpay_enabled %}
+{% load i18n static bootstrap4 %}
+<script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+{% if member.tpay_allowed %}
     <form action="{% url 'payments:payment-process' %}" method="post">
         {% csrf_token %}
         <input
@@ -22,10 +27,24 @@
             name="next"
             value="{{ redirect_to }}"
         />
-        <input
-            type="submit"
-            class="btn btn-primary"
-            value="{% trans "Pay with Thalia Pay" %}"
-        />
+        {% if not member.tpay_enabled %}
+            <span data-trigger="hover" data-toggle="tooltip" data-placement="right"
+                  data-html="true" data-content="To start using Thalia Pay, you need to <a href='{% url 'payments:bankaccount-add' %}' target='_blank'>sign a direct debit mandate</a>."
+            >
+                <input
+                type="submit"
+                disabled="disabled"
+                class="btn btn-primary"
+                style="pointer-events: none;"
+                value="{% trans "Pay with Thalia Pay" %}"
+                />
+            </span>
+        {% else %}
+            <input
+                type="submit"
+                class="btn btn-primary"
+                value="{% trans "Pay with Thalia Pay" %}"
+                />
+        {% endif %}
     </form>
 {% endif %}

@@ -4,6 +4,7 @@ import uuid
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -21,6 +22,7 @@ class PaymentUser(Member):
     class Meta:
         proxy = True
         verbose_name = "payment user"
+        permissions = (("tpay_allowed", "Is allowed to use Thalia Pay"),)
 
     @property
     def tpay_enabled(self):
@@ -28,6 +30,7 @@ class PaymentUser(Member):
         bank_accounts = BankAccount.objects.filter(owner=self)
         return (
             settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+            and self.tpay_allowed
             and bank_accounts.exists()
             and any(x.valid for x in bank_accounts)
         )
@@ -41,6 +44,19 @@ class PaymentUser(Member):
         )
         total = payments.aggregate(Sum("amount"))["amount__sum"]
         return -1 * total if total else 0
+
+    @property
+    def tpay_allowed(self):
+        """Does this user have permissions to use Thalia Pay (but not necessarily enabled)"""
+        return self.has_perm("payments.tpay_allowed")
+
+    def allow_tpay(self):
+        """Give this user Thalia Pay permission"""
+        self.user_permissions.add(Permission.objects.get(codename="tpay_allowed"))
+
+    def disallow_tpay(self):
+        """Revoke this user's Thalia Pay permission"""
+        self.user_permissions.remove(Permission.objects.get(codename="tpay_allowed"))
 
 
 class Payment(models.Model):

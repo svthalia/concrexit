@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import MagicMock, Mock, ANY, patch
+from unittest.mock import MagicMock, Mock, ANY, patch, PropertyMock
 
 from django.apps import apps
 from django.contrib.auth import get_user_model
@@ -443,6 +443,7 @@ class PaymentListViewTest(TestCase):
 
 @freeze_time("2020-09-01")
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class PaymentProcessViewTest(TestCase):
     """
     Test for the PaymentProcessView

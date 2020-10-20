@@ -329,6 +329,9 @@ PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET = timezone.timedelta(days=14)
 THALIA_PAY_ENABLED_PAYMENT_METHOD = (
     os.environ.get("THALIA_PAY_ENABLED", "False") == "True"
 )
+THALIA_PAY_FOR_NEW_MEMBERS = (
+    os.environ.get("THALIA_PAY_FOR_NEW_MEMBERS", "True") == "True"
+)
 
 # Google maps API key and secrets
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")

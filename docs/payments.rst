@@ -74,6 +74,14 @@ payments.services module
    :undoc-members:
    :show-inheritance:
 
+payments.signals module
+-----------------------
+
+.. automodule:: payments.signals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 payments.urls module
 --------------------
 
