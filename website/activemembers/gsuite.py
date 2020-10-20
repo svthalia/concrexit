@@ -5,17 +5,22 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _, override as lang_override
 
 from googleapiclient.errors import HttpError
-from utils.google_api import get_directory_api
 
 from members.models import Member
+from utils.google_api import get_directory_api
 
 logger = logging.getLogger(__name__)
 
 
 class GSuiteUserService:
-    def __init__(self, directory_api=get_directory_api()):
-        super().__init__()
-        self.directory_api = directory_api
+    def __init__(self, directory_api=None):
+        self._directory_api = directory_api
+
+    @property
+    def directory_api(self):
+        if self._directory_api is not None:
+            return self._directory_api
+        return get_directory_api()
 
     def create_user(self, member: Member):
         """
