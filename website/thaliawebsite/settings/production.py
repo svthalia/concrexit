@@ -49,7 +49,7 @@ CONN_MAX_AGE = "60"
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 # Where to store uploaded files
-MEDIA_ROOT = "/concrexit/media"
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", "/concrexit/media")
 MEDIA_URL = "/media/"  # Public is included by the db fields
 
 if not settings.DEBUG:
@@ -58,7 +58,7 @@ SENDFILE_URL = "/media/sendfile/"
 SENDFILE_ROOT = "/concrexit/media/"
 
 STATIC_URL = "/static/"
-STATIC_ROOT = "/concrexit/static"
+STATIC_ROOT = os.environ.get("STATIC_ROOT", "/concrexit/static")
 
 if not DEBUG:
     COMPRESS_OFFLINE = True
