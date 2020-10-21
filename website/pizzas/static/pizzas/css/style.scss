@@ -14,12 +14,12 @@
     }
 
     &.paid {
-        background-color: $success;
-        color: $success-contrast;
+        background-color: var(--success);
+        color: var(--success-contrast);
     }
 
     &.unpaid {
-        background-color: $danger;
-        color: $danger-contrast;
+        background-color: var(--danger);
+        color: var(--danger-contrast);
     }
 }

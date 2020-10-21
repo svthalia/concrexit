@@ -1,30 +1,30 @@
 #announcements-alerts {
     .announcement {
-        background: $preset;
-        color: $preset-contrast;
+        background: var(--preset);
+        color: var(--preset-contrast);
         text-align: center;
         padding: 0.5rem 1rem;
         position: relative;
 
         .close {
-            color: $preset-contrast;
+            color: var(--preset-contrast);
         }
 
         p {
             display: inline;
             margin-left: 0.5rem;
-            color: $preset-contrast;
+            color: var(--preset-contrast);
             font-size: 0.9rem;
             font-weight: $bold;
         }
 
         a {
-            color: $preset-contrast;
+            color: var(--preset-contrast);
             text-decoration: underline;
         }
 
         a:hover {
-            color: $preset-contrast-hover;
+            color: var(--preset-contrast-hover);
         }
 
         button {
