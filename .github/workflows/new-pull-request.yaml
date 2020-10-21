@@ -4,7 +4,6 @@ name: PR Comment
 
 on:
   pull_request:
-    types: [opened]
 
 jobs:
   comment:
@@ -14,13 +13,45 @@ jobs:
       - name: Create URL safe version of GITHUB_REF
         run: echo "GITHUB_REF_SLUG=$(echo '${{ github.event.pull_request.head.ref }}' | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)" >> "${GITHUB_ENV}"
 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ github.event.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Thank you for opening a pull request.
+
+      - name: Check for migrations
+        id: get-comment-body
+        run: |
+          body='Thank you for opening a pull request.
+          * A coverage report will be available on [thalia-coverage.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html](https://thalia-coverage.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html) after the "Deploy Coverage Report" job finishes.
+          * Branch specific documentation will be available on [thalia-documentation.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html](https://thalia-documentation.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html) after the "Deploy Documentation" job finishes.
+          * Once the "Build Docker Image" job finishes you can comment "**deploy review**" to this pull request to setup a review environment. When you are done, you can remove the review environment by commenting "**remove review**".'
+
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          if (curl -s -X GET -G $URL | jq -r '.[] | .filename' | grep migrations); then
+            body="$body
+
+          ## The reviewer of this pull request should check the migrations for breaking changes
+          To make sure that changes from this PR can run alongside the previous release, the migrations should not make
+          any breaking changes to the database fields."
+            echo "::set-output name=reactions::eyes"
+          fi
+          body="${body//'%'/'%25'}"
+          body="${body//$'\n'/'%0A'}"
+          body="${body//$'\r'/'%0D'}"
+          echo ::set-output name=body::$body
+
       - name: Add comment to PR with useful information
         uses: peter-evans/create-or-update-comment@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.number }}
-          body: |
-            Thank you for opening a pull request.
-            * A coverage report will be available on [thalia-coverage.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html](https://thalia-coverage.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html) after the "Deploy Coverage Report" job finishes.
-            * Branch specific documentation will be available on [thalia-documentation.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html](https://thalia-documentation.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html) after the "Deploy Documentation" job finishes.
-            * Once the "Build Docker Image" job finishes you can comment "**deploy review**" to this pull request to setup a review environment. When you are done, you can remove the review environment by commenting "**remove review**".
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: ${{ steps.get-comment-body.outputs.body }}
+          edit-mode: replace
+          reactions: ${{ steps.get-comment-body.outputs.reactions }}
