@@ -2,13 +2,13 @@
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
-    background-color: $card-background-hover;
+    background-color: var(--card-background-hover);
 
     .progress-bar {
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         border-radius: 0;
-        background-color: $preset;
+        background-color: var(--preset);
 
         @for $i from 1 through 100 {
             &.progress#{$i} {

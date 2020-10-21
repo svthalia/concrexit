@@ -9,11 +9,11 @@
         height: calc(100% - 15px);
 
         &:hover {
-            background-color: $card-background-hover;
+            background-color: var(--card-background-hover);
         }
 
         .card-date {
-            color: $preset;
+            color: var(--preset);
             margin-bottom: .7rem;
         }
 
@@ -34,7 +34,7 @@
             }
 
             .has-registration {
-                background-color: $preset;
+                background-color: var(--preset);
             }
         }
     }
@@ -42,11 +42,11 @@
 
 #events-index {
     .fc-bootstrap .fc-today {
-        background: $background-shade-light;
+        background: var(--background-shade-light);
     }
 
     .fc-now-indicator {
-        border-color: $preset;
+        border-color: var(--preset);
 
         &.fc-now-indicator-arrow {
             border-top-color: transparent;
@@ -72,7 +72,7 @@
                 &.regular-event {
                     background-color: $grey;
                     &.has-registration {
-                        background-color: $preset;
+                        background-color: var(--preset);
                     }
                 }
 
@@ -81,13 +81,13 @@
                 }
 
                 &.partner-event {
-                    background-color: $secondary;
+                    background-color: var(--secondary);
                 }
 
                 &.birthday-event {
-                    background-color: $secondary;
+                    background-color: var(--secondary);
                     &.honorary {
-                        background-color: $preset;
+                        background-color: var(--preset);
                     }
                 }
             }
@@ -104,31 +104,31 @@
 
         &.regular-event {
             &.has-registration {
-                background-color: $preset;
+                background-color: var(--preset);
                 color: $white;
             }
         }
 
         &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
             background-color: rgba(255, 0, 0, 0.3);
-            color: $secondary;
+            color: var(--secondary);
         }
 
         &.partner-event {
-            color: $preset;
-            background-color: $secondary;
+            color: var(--preset);
+            background-color: var(--secondary);
 
             &:active, &:hover {
-                color: $preset;
+                color: var(--preset);
             }
         }
 
         &.birthday-event {
-            background-color: $secondary;
-            color: $secondary-contrast;
+            background-color: var(--secondary);
+            color: var(--secondary-contrast);
             &.honorary {
-                background-color: $preset;
-                color: $secondary;
+                background-color: var(--preset);
+                color: var(--secondary);
             }
         }
 
