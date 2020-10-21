@@ -4,7 +4,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: $title-color;
+    color: var(--title-color);
     font-family: $header-font;
     font-weight: $regular;
     letter-spacing: $letter-spacing;
@@ -37,10 +37,10 @@ h6 {
 }
 
 a {
-    color: $preset;
+    color: var(--preset);
     @include transition(.2s);
     &:hover, &:active, &:focus {
-        color: $preset-hover;
+        color: var(--preset-hover);
         text-decoration: none;
     }
     letter-spacing: $letter-spacing;
@@ -52,43 +52,43 @@ p {
     font-weight: $regular;
     font-size: 14px;
     line-height: 25px;
-    color: $text-color;
+    color: var(--text-color);
     letter-spacing: $letter-spacing;
     margin-bottom: 10px;
 }
 
 .bg-default {
-    color: $text-color;
-    background: $preset;
+    color: var(--text-color);
+    background: var(--preset);
     padding: 3px 4px;
 }
 
 .bg-primary {
-    color: $preset-contrast;
-    background: $preset;
+    color: var(--preset-contrast);
+    background: var(--preset);
     padding: 3px 4px;
 }
 
 .bg-success {
-    color: $success-contrast;
-    background: $success;
+    color: var(--success-contrast);
+    background: var(--success);
     padding: 3px 4px;
 }
 
 .bg-info {
-    color: $info-contrast;
-    background: $info;
+    color: var(--info-contrast);
+    background: var(--info);
     padding: 3px 4px;
 }
 
 .bg-warning {
-    color: $warning-contrast;
-    background: $warning;
+    color: var(--warning-contrast);
+    background: var(--warning);
     padding: 3px 4px;
 }
 
 .bg-danger {
-    color: $danger-contrast;
-    background: $danger;
+    color: var(--danger-contrast);
+    background: var(--danger);
     padding: 3px 4px;
 }

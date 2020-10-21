@@ -23,81 +23,81 @@
 }
 
 .btn-link {
-    color: $preset;
+    color: var(--preset);
 
     &:hover {
-        color: $preset-hover;
+        color: var(--preset-hover);
         text-decoration: none;
     }
 
     &:focus {
-        color: $preset-hover;
+        color: var(--preset-hover);
         text-decoration: none;
     }
 }
 
 .btn-primary, .btn-primary:active, .btn-primary:focus {
-    background: $preset !important;
-    border-color: $preset !important;
-    color: $preset-contrast !important;
+    background: var(--preset) !important;
+    border-color: var(--preset) !important;
+    color: var(--preset-contrast) !important;
 
     &:hover, &.active {
-        background: $preset-hover !important;
-        border-color: $preset-hover !important;
+        background: var(--preset-hover) !important;
+        border-color: var(--preset-hover) !important;
     }
 }
 
 .btn-secondary, .btn-secondary:active, .btn-secondary:focus {
-    background: $secondary !important;
-    border-color: $secondary !important;
-    color: $secondary-contrast !important;
+    background: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    color: var(--secondary-contrast) !important;
 
     &:hover {
-        background: $secondary-hover !important;
-        border-color: $secondary-hover !important;
+        background: var(--secondary-hover) !important;
+        border-color: var(--secondary-hover) !important;
     }
 }
 
 .btn-success, .btn-success:active, .btn-success:focus {
-    background: $success !important;
-    border-color: $success !important;
-    color: $success-contrast !important;
+    background: var(--success) !important;
+    border-color: var(--success) !important;
+    color: var(--success-contrast) !important;
 
     &:hover {
-        background: $success-hover !important;
-        border-color: $success-hover !important;
+        background: var(--success-hover) !important;
+        border-color: var(--success-hover) !important;
     }
 }
 
 .btn-info, .btn-info:active, .btn-info:focus {
-    background: $info !important;
-    border-color: $info !important;
-    color: $info-contrast !important;
+    background: var(--info) !important;
+    border-color: var(--info) !important;
+    color: var(--info-contrast) !important;
 
     &:hover {
-        background: $info-hover !important;
-        border-color: $info-hover !important;
+        background: var(--info-hover) !important;
+        border-color: var(--info-hover) !important;
     }
 }
 
 .btn-warning, .btn-warning:active, .btn-warning:focus {
-    background: $warning !important;
-    border-color: $warning !important;
-    color: $warning-contrast !important;
+    background: var(--warning) !important;
+    border-color: var(--warning) !important;
+    color: var(--warning-contrast) !important;
 
     &:hover {
-        background: $warning-hover !important;
-        border-color: $warning-hover !important;
+        background: var(--warning-hover) !important;
+        border-color: var(--warning-hover) !important;
     }
 }
 
 .btn-danger, .btn-danger:active, .btn-danger:focus {
-    background: $danger !important;
-    border-color: $danger !important;
-    color: $danger-contrast !important;
+    background: var(--danger) !important;
+    border-color: var(--danger) !important;
+    color: var(--danger-contrast) !important;
 
     &:hover {
-        background: $danger-hover !important;
-        border-color: $danger-hover !important;
+        background: var(--danger-hover) !important;
+        border-color: var(--danger-hover) !important;
     }
 }

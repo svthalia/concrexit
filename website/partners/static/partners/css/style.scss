@@ -1,5 +1,5 @@
 #partner-banners {
-    background-color: $banner-background;
+    background-color: var(--banner-background);
     height: 140px;
     overflow: hidden;
 
@@ -92,7 +92,7 @@
                 flex-direction: column;
                 justify-content: center;
 
-                background-color: $banner-background;
+                background-color: var(--banner-background);
 
                 img {
                     width: auto;
