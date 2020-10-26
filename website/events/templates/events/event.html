@@ -137,7 +137,7 @@
                                                     {% trans "You have paid" %}
                                                 {% endif %}
                                             {% else %}
-                                                {% trans "You have not paid yet" %}
+                                                <div class="mb-3">{% trans "You have not paid yet" %}</div>
                                                 {% payment_button registration request.path %}
                                             {% endif %}
                                         </td>
