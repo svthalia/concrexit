@@ -156,11 +156,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
 
 # OAuth configuration
-OAUTH_SCHEME = os.getenv("OAUTH_SCHEME", "nu.thalia")
+APP_OAUTH_SCHEME = os.getenv("APP_OAUTH_SCHEME", "nu.thalia")
 OAUTH2_PROVIDER = {
-    "ALLOWED_REDIRECT_URI_SCHEMES": ["https", OAUTH_SCHEME]
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["https", APP_OAUTH_SCHEME]
     if not DEBUG
-    else ["http", "https", OAUTH_SCHEME],
+    else ["http", "https", APP_OAUTH_SCHEME],
     "SCOPES": {
         "read": "Authenticated read access to the website",
         "write": "Authenticated write access to the website",
