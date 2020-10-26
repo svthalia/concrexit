@@ -129,6 +129,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "announcements.context_processors.announcements",
                 "thaliawebsite.context_processors.thumbnail_sizes",
+                "thaliawebsite.context_processors.lustrum_styling",
             ],
         },
     },
@@ -374,3 +375,5 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
+
+LUSTRUM_STYLING = os.environ.get("LUSTRUM_STYLING", "False") == "True"
