@@ -36,8 +36,13 @@
 
     {% block css_head %}
         {% compress css %}
-            <link href="{% static "css/main.scss" %}" rel="stylesheet"
-                  type="text/x-scss">
+            {% if lustrumstyling %}
+                <link href="{% static "css/main-lustrum.scss" %}" rel="stylesheet"
+                      type="text/x-scss">
+            {% else %}
+                <link href="{% static "css/main.scss" %}" rel="stylesheet"
+                      type="text/x-scss">
+            {% endif %}
         {% endcompress %}
     {% endblock %}
 
@@ -77,14 +82,24 @@
     <div class="container">
         <a class="navbar-brand" href="{% url 'index' %}">
             <picture>
-                <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'-dark.svg' %}" media="(prefers-color-scheme: dark)">
-                <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}" media="(prefers-color-scheme: light)">
-                <img
-                    src="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}"
-                    id="logo"
-                    alt="{% trans 'Study Association Thalia' %}"
-                    height="220px"
-                >
+                {% if lustrumstyling %}
+                    <source srcset="{% static 'img/lustrum-logo.svg' %}">
+                    <img
+                        src="{% static 'img/lustrum-logo.svg' %}"
+                        id="logo"
+                        alt="{% trans 'Study Association Thalia' %}"
+                        height="220px"
+                    >
+                {% else %}
+                    <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'-dark.svg' %}" media="(prefers-color-scheme: dark)">
+                    <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}" media="(prefers-color-scheme: light)">
+                    <img
+                        src="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}"
+                        id="logo"
+                        alt="{% trans 'Study Association Thalia' %}"
+                        height="220px"
+                    >
+                {% endif %}
             </picture>
         </a>
         <div class="flex-grow-1"></div>
