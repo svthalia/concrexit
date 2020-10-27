@@ -1,7 +1,10 @@
 """Views provided by the members package"""
 import json
 from datetime import date, datetime
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q, QuerySet
@@ -171,7 +174,8 @@ class ProfileDetailView(DetailView):
 
     def setup(self, request, *args, **kwargs) -> None:
         if "pk" not in kwargs:
-            kwargs["pk"] = request.member.pk
+            if request.member :
+                kwargs["pk"] = request.member.pk
         super().setup(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs) -> dict:
