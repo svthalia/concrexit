@@ -93,6 +93,7 @@ TEMPLATES = [
                 "announcements.context_processors.announcements",
                 "thaliawebsite.context_processors.source_commit",
                 "thaliawebsite.context_processors.thumbnail_sizes",
+                "thaliawebsite.context_processors.lustrum_styling",
             ],
             "loaders": [
                 (
