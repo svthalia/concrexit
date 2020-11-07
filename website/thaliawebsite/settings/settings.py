@@ -33,10 +33,7 @@ SECRET_KEY = "#o-0d1q5&^&06tn@8pr1f(n3$crafd++^%sacao7hj*ea@c)^t"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 INTERNAL_IPS = ["127.0.0.1"]
-ALLOWED_HOSTS = ["*"]
-
-if not DEBUG:  # Django 1.10.3 security release changed behaviour
-    ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*"] if DEBUG else []
 
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "thalia.localhost")
 BASE_URL = f"https://{SITE_DOMAIN}"
@@ -130,10 +127,22 @@ TEMPLATES = [
                 "announcements.context_processors.announcements",
                 "thaliawebsite.context_processors.thumbnail_sizes",
                 "thaliawebsite.context_processors.lustrum_styling",
-            ],
+            ]
         },
     },
 ]
+
+if not DEBUG:
+    del TEMPLATES[0]["APP_DIRS"]
+    TEMPLATES[0]["OPTIONS"]["loaders"] = [
+        (
+            "django.template.loaders.cached.Loader",
+            [
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
+            ],
+        ),
+    ]
 
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
@@ -247,6 +256,7 @@ STATICFILES_FINDERS = (
 
 # Compressor settings
 COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = not DEBUG
 
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 

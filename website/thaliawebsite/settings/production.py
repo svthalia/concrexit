@@ -8,7 +8,6 @@ This file is loaded by __init__.py if the environment variable
 
 See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
-import logging
 import os
 
 import sentry_sdk
@@ -61,9 +60,6 @@ SENDFILE_ROOT = "/concrexit/media/"
 STATIC_URL = "/static/"
 STATIC_ROOT = os.environ.get("STATIC_ROOT", "/concrexit/static")
 
-if not DEBUG:
-    COMPRESS_OFFLINE = True
-
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
@@ -78,35 +74,6 @@ if os.environ.get("DJANGO_SSLONLY"):
     CSRF_COOKIE_SECURE = True
 
 SECURE_CONTENT_TYPE_NOSNIFF = False
-
-# Use caching template loader
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.template.context_processors.media",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-                "announcements.context_processors.announcements",
-                "thaliawebsite.context_processors.source_commit",
-                "thaliawebsite.context_processors.thumbnail_sizes",
-            ],
-            "loaders": [
-                (
-                    "django.template.loaders.cached.Loader",
-                    [
-                        "django.template.loaders.filesystem.Loader",
-                        "django.template.loaders.app_directories.Loader",
-                    ],
-                ),
-            ],
-        },
-    },
-]
 
 # ADMINS
 ADMINS = [("Technicie", "www@thalia.nu")]
