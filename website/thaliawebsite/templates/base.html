@@ -35,15 +35,17 @@
     {% block opengraph %}{% endblock %}
 
     {% block css_head %}
-        {% compress css %}
-            {% if lustrumstyling %}
+        {% if lustrumstyling %}
+            {% compress css %}
                 <link href="{% static "css/main-lustrum.scss" %}" rel="stylesheet"
                       type="text/x-scss">
-            {% else %}
+            {% endcompress %}
+        {% else %}
+            {% compress css %}
                 <link href="{% static "css/main.scss" %}" rel="stylesheet"
                       type="text/x-scss">
-            {% endif %}
-        {% endcompress %}
+            {% endcompress %}
+        {% endif %}
     {% endblock %}
 
     {% block js_head %}
