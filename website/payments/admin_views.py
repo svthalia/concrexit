@@ -85,17 +85,7 @@ class BatchProcessAdminView(View):
                 request, _("{} already processed.").format(model_ngettext(batch, 1))
             )
         else:
-            batch.processed = True
-            payments = batch.payments_set.select_related("paid_by")
-            for payment in payments:
-                bank_account = payment.paid_by.bank_accounts.last()
-                bank_account.last_used = timezone.now()
-                bank_account.save()
-
-            batch.save()
-
-            services.send_tpay_batch_processing_emails(batch)
-
+            services.process_batch(batch)
             messages.success(
                 request,
                 _("Successfully processed {}.").format(model_ngettext(batch, 1)),

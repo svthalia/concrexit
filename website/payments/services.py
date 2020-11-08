@@ -103,6 +103,26 @@ def revoke_old_mandates() -> int:
     ).update(valid_until=timezone.now().date())
 
 
+def process_batch(batch):
+    """
+    Processes a Thalia Pay batch
+
+    :param batch: the batch to be processed
+    :return:
+    """
+    batch.processed = True
+
+    payments = batch.payments_set.select_related("paid_by")
+    for payment in payments:
+        bank_account = payment.paid_by.bank_accounts.last()
+        bank_account.last_used = batch.processing_date
+        bank_account.save()
+
+    batch.save()
+
+    send_tpay_batch_processing_emails(batch)
+
+
 def send_tpay_batch_processing_emails(batch):
     """Sends withdrawal notice emails to all members in a batch"""
     member_payments = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
