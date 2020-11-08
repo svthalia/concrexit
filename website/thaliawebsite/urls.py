@@ -34,22 +34,24 @@ from django.contrib import admin
 from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
 from oauth2_provider.urls import base_urlpatterns
 from oauth2_provider.views import AuthorizedTokensListView, AuthorizedTokenDeleteView
+from rest_framework.schemas import get_schema_view
 
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
 from education.sitemaps import sitemap as education_sitemap
 from events.sitemaps import sitemap as events_sitemap
 from members.sitemaps import sitemap as members_sitemap
-from members.views import ObtainThaliaAuthToken
 from partners.sitemaps import sitemap as partners_sitemap
 from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
 from thaliawebsite.views import TestCrashView, IndexView
 from utils.media.views import generate_thumbnail, private_media
+from .api.openapi import OAuthSchemaGenerator
 from .sitemaps import StaticViewSitemap
 
 __all__ = ["urlpatterns"]
@@ -134,19 +136,35 @@ urlpatterns = [
     path("", include("events.urls")),
     path("", include("pizzas.urls")),
     path("", include("partners.urls")),
-    # App API
     path(
-        "api/v1/",
+        "api/",
         include(
             [
-                path("token-auth/", ObtainThaliaAuthToken.as_view()),
-                path("", include("activemembers.api.urls")),
-                path("", include("events.api.urls")),
-                path("", include("members.api.urls")),
-                path("", include("partners.api.urls")),
-                path("", include("pizzas.api.urls")),
-                path("", include("photos.api.urls")),
-                path("", include("pushnotifications.api.urls")),
+                path("v1/", include("thaliawebsite.api.v1.urls")),
+                path(
+                    "v1/schema",
+                    get_schema_view(
+                        title="API v1",
+                        version=settings.SOURCE_COMMIT,
+                        url="/api/v1/",
+                        urlconf="thaliawebsite.api.v1.urls",
+                        generator_class=OAuthSchemaGenerator,
+                    ),
+                    name="schema-v1",
+                ),
+                path(
+                    "docs",
+                    TemplateView.as_view(
+                        template_name="swagger.html",
+                        extra_context={"schema_urls": ["schema-v1"]},
+                    ),
+                    name="swagger",
+                ),
+                path(
+                    "docs/oauth2-redirect",
+                    TemplateView.as_view(template_name="swagger-oauth2-redirect.html"),
+                    name="swagger-oauth-redirect",
+                ),
             ]
         ),
     ),
