@@ -37,14 +37,20 @@
                 {% endblocktrans %}
             </p>
 
-{#            TODO: Add a mention to payments functionality when we build it  #}
-{#            https://gitlab.science.ru.nl/thalia/concrexit/issues/632 #}
-{#            <p class="text-center">#}
-{#                {% blocktrans trimmed %}#}
-{#                    If you have a bank account with an authorisation for#}
-{#                    direct debit you can use it to pay digitally.#}
-{#                {% endblocktrans %}#}
-{#            </p>#}
+
+            {% if payment_user.tpay_allowed %}
+                <h3 class="text-center section-title mt-5">{% trans "Thalia Pay" %}</h3>
+                <p class="text-center mb-5">
+                    {% blocktrans trimmed %}
+                        If you agree to using your bank account for direct debit transactions,
+                        you can make use of Thalia Pay. With Thalia Pay, you can pay for things
+                        like events or pizzas via direct debit. You just hit the
+                        'Pay with Thalia Pay'-button on the website and confirm your payment.
+                        These amounts will then later be withdrawn from your bank account.
+                    {% endblocktrans %}
+                </p>
+            {% endif %}
+
 
             {% if object_list %}
                 <p class="text-center mb-4">
@@ -86,7 +92,7 @@
                             <th scope="row">
                                 {{ account.iban }}
                                 {% if account.bic %}
-                                    ({{ account.bic }}
+                                    ({{ account.bic }})
                                 {% endif %}
                             </th>
                             <td>

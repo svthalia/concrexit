@@ -1,37 +1,35 @@
 {% load i18n %}
 <div class="readonly payments-row">
-    {% if widget.value %}
-        {% if not payment.processed %}
-            <a href="{{ url }}">
-                {% trans "Unprocessed" %}
-            </a>
-             -
-            € {{ payment.amount }}
-             -
-            <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
-               data-next="true" data-type="cash_payment"
-               class="button process">{% trans "Process (cash payment)" %}</a>
-            <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
-               data-next="true" data-type="card_payment"
-               class="button process">{% trans "Process (card payment)" %}</a>
-            {% if widget.value and payment.paid_by.tpay_enabled %}
-                <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
-                   data-next="true" data-type="tpay_payment"
-                   class="button process">{% trans "Process (Thalia Pay payment)" %}</a>
-            {% else %}
-                <a class="button" disabled>{% trans "Process (Thalia Pay payment)" %}</a>
-            {% endif %}
-            <a data-href="{% url 'admin:payments_payment_process' pk=payment.pk %}"
-               data-next="true" data-type="wire_payment"
-               class="button process">{% trans "Process (wire payment)" %}</a>
-        {% else %}
-            <a href="{{ url }}">
-                {% trans "Processed" %}
-            </a>
-             -
-            {{ payment.processing_date }} - {{ payment.get_type_display }}
-        {% endif %}
-    {% else %}
+    {% if not obj and not payment %}
         -
+    {% elif not payment %}
+        {% trans "Unpaid" %}
+        -
+        € {{ obj.payment_amount }}
+        -
+        <a data-href="{% url 'admin:payments_payment_create' app_label=content_type.app_label model_name=content_type.model payable=obj.pk %}"
+           data-next="true" data-type="cash_payment"
+           class="button process">{% trans "Process (cash payment)" %}</a>
+
+        <a data-href="{% url 'admin:payments_payment_create' app_label=content_type.app_label model_name=content_type.model payable=obj.pk %}"
+           data-next="true" data-type="card_payment"
+           class="button process">{% trans "Process (card payment)" %}</a>
+
+        {% if payable_payer.tpay_enabled %}
+            <a data-href="{% url 'admin:payments_payment_create' app_label=content_type.app_label model_name=content_type.model payable=obj.pk %}"
+               data-next="true" data-type="tpay_payment"
+               class="button process">{% trans "Process (Thalia Pay payment)" %}</a>
+        {% else %}
+            <a class="button" disabled>{% trans "Process (Thalia Pay payment)" %}</a>
+        {% endif %}
+
+        <a data-href="{% url 'admin:payments_payment_create' app_label=content_type.app_label model_name=content_type.model payable=obj.pk %}"
+           data-next="true" data-type="wire_payment"
+           class="button process">{% trans "Process (wire payment)" %}</a>
+    {% else %}
+        <a href="{{ url }}">
+            {% trans "Paid" %} (€ {{ payment.amount }}) - {{ payment.created_at }}
+            - {{ payment.get_type_display }}
+        </a>
     {% endif %}
 </div>

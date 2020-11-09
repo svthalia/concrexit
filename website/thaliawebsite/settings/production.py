@@ -8,6 +8,7 @@ This file is loaded by __init__.py if the environment variable
 
 See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
+import logging
 import os
 
 import sentry_sdk
@@ -35,9 +36,9 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "USER": os.environ.get("POSTGRES_USER", "postgres"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", None),
         "NAME": os.environ.get("POSTGRES_DB"),
-        "HOST": os.environ.get("DJANGO_POSTGRES_HOST"),
+        "HOST": os.environ.get("DJANGO_POSTGRES_HOST", ""),
         "PORT": 5432,
     }
 }
@@ -49,7 +50,7 @@ CONN_MAX_AGE = "60"
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 # Where to store uploaded files
-MEDIA_ROOT = "/concrexit/media"
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", "/concrexit/media")
 MEDIA_URL = "/media/"  # Public is included by the db fields
 
 if not settings.DEBUG:
@@ -58,7 +59,7 @@ SENDFILE_URL = "/media/sendfile/"
 SENDFILE_ROOT = "/concrexit/media/"
 
 STATIC_URL = "/static/"
-STATIC_ROOT = "/concrexit/static"
+STATIC_ROOT = os.environ.get("STATIC_ROOT", "/concrexit/static")
 
 if not DEBUG:
     COMPRESS_OFFLINE = True
@@ -75,6 +76,8 @@ if os.environ.get("DJANGO_SSLONLY"):
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+SECURE_CONTENT_TYPE_NOSNIFF = False
 
 # Use caching template loader
 TEMPLATES = [
@@ -119,34 +122,35 @@ if os.environ.get("DJANGO_EMAIL_HOST"):
     EMAIL_USE_SSL = os.environ.get("DJANGO_EMAIL_USE_SSL", False) == "True"
     EMAIL_TIMEOUT = 10
 
+# Default logging: https://github.com/django/django/blob/master/django/utils/log.py
+# We disable mailing the admin.
+# Server errors will be sent to Sentry via the config below this.
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,
     "formatters": {
-        "verbose": {"format": "%(asctime)s %(name)s " "%(levelname)s %(message)s"},
+        "verbose": {"format": "%(asctime)s %(name)s[%(levelname)s]: %(message)s"},
     },
     "handlers": {
         "console": {
-            "level": "WARNING",
+            "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        },
-        "logfile": {
-            "level": "INFO",
-            "class": "logging.FileHandler",
-            "formatter": "verbose",
-            "filename": "/concrexit/log/django.log",
-        },
+        }
     },
     "loggers": {
-        "django": {
-            "handlers": ["console", "logfile"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "": {"handlers": ["logfile"], "level": "INFO",},
+        "django": {"handlers": [], "level": "INFO"},
+        "": {"handlers": ["console"], "level": "INFO"},
     },
 }
+
+if os.environ.get("ENABLE_LOGFILE", "1") == "1":
+    LOGGING["handlers"]["logfile"] = {
+        "level": "INFO",
+        "class": "logging.FileHandler",
+        "formatter": "verbose",
+        "filename": os.environ.get("LOGFILE", "/concrexit/log/django.log"),
+    }
+    LOGGING["loggers"][""]["handlers"] += ["logfile"]
 
 sentry_sdk.init(
     dsn=os.environ.get("SENTRY_DSN"),

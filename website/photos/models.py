@@ -1,7 +1,7 @@
 import hashlib
+import logging
 import os
 import random
-import logging
 
 from django.conf import settings
 from django.db import models
@@ -9,13 +9,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from PIL import Image
 
 from members.models import Member
-from photos.services import photo_determine_rotation
-from utils.translation import ModelTranslateMeta, MultilingualField
 from pushnotifications.models import ScheduledMessage, Category
-
+from utils.translation import ModelTranslateMeta, MultilingualField
 
 COVER_FILENAME = "cover.jpg"
 
@@ -24,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def photo_uploadto(instance, filename):
+    """Get path of file to upload to."""
     num = instance.album.photo_set.count()
     extension = os.path.splitext(filename)[1]
     new_filename = str(num).zfill(4) + extension
@@ -31,6 +29,7 @@ def photo_uploadto(instance, filename):
 
 
 class Photo(models.Model):
+    """Model for a Photo object."""
 
     album = models.ForeignKey(
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
@@ -50,49 +49,26 @@ class Photo(models.Model):
     _digest = models.CharField("digest", max_length=40,)
 
     def __init__(self, *args, **kwargs):
+        """Initialize Photo object and set the file if it exists."""
         super().__init__(*args, **kwargs)
         if self.file:
-            self._orig_file = self.file.path
+            self.original_file = self.file.path
         else:
-            self._orig_file = ""
+            self.original_file = ""
 
     def __str__(self):
+        """Return the filename of a Photo object."""
         return os.path.basename(self.file.name)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if self._orig_file != self.file.path:
-            image_path = self.file.path
-            image = Image.open(image_path)
-            image_path, _ext = os.path.splitext(image_path)
-            image_path = "{}.jpg".format(image_path)
-
-            self.rotation = photo_determine_rotation(image)
-
-            # Image.thumbnail does not upscale an image that is smaller
-            image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-
-            logger.info("Trying to save to %s", image_path)
-            image.convert("RGB").save(image_path, "JPEG")
-            self._orig_file = image_path
-            image_name, _ext = os.path.splitext(self.file.name)
-            self.file.name = "{}.jpg".format(image_name)
-
-            hash_sha1 = hashlib.sha1()
-            for chunk in iter(lambda: self.file.read(4096), b""):
-                hash_sha1.update(chunk)
-            self.file.close()
-            self._digest = hash_sha1.hexdigest()
-
-            # Save again, to update changes in digest and rotation
-            super().save(*args, **kwargs)
-
     class Meta:
+        """Meta class for Photo."""
+
         ordering = ("file",)
 
 
 class Album(models.Model, metaclass=ModelTranslateMeta):
+    """Model for Album objects."""
+
     title = MultilingualField(models.CharField, _("title"), max_length=200,)
 
     dirname = models.CharField(verbose_name=_("directory name"), max_length=200,)
@@ -123,21 +99,28 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
 
     @cached_property
     def cover(self):
+        """Return cover of Album.
+
+        If a cover is not set, return a random photo or None if there are no photos.
+        """
         cover = None
         if self._cover is not None:
             return self._cover
-        elif self.photo_set.exists():
+        if self.photo_set.exists():
             random.seed(self.dirname)
             cover = random.choice(self.photo_set.all())
         return cover
 
     def __str__(self):
+        """Get string representation of Album."""
         return "{} {}".format(self.date.strftime("%Y-%m-%d"), self.title)
 
     def get_absolute_url(self):
+        """Get url of Album."""
         return reverse("photos:album", args=[str(self.slug)])
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
+        """Save album and send appropriate notifications."""
         # dirname is only set for new objects, to avoid ever changing it
         if self.pk is None:
             self.dirname = self.slug
@@ -155,17 +138,11 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
                 new_album_notification = self.new_album_notification
 
             new_album_notification.title_en = "New album uploaded"
-            new_album_notification.title_nl = "Nieuw album geüpload"
             new_album_notification.body_en = (
-                "A new photo album '{}' has " "just been uploaded".format(self.title_en)
-            )
-            new_album_notification.body_nl = (
-                "Een nieuw fotoalbum '{}' is " "zojuist geüpload".format(self.title_nl)
+                f"A new photo album '{self.title_en}' has just been uploaded"
             )
             new_album_notification.category = Category.objects.get(key=Category.PHOTO)
-            new_album_notification.url = (
-                f"{settings.BASE_URL}" f"{self.get_absolute_url()}"
-            )
+            new_album_notification.url = f"{settings.BASE_URL}{self.get_absolute_url()}"
             new_album_notification.time = new_album_notification_time
             new_album_notification.save()
             self.new_album_notification = new_album_notification
@@ -179,13 +156,16 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
             self.new_album_notification = None
             existing_notification.delete()
 
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
     @property
     def access_token(self):
+        """Return access token for album."""
         return hashlib.sha256(
             "{}album{}".format(settings.SECRET_KEY, self.pk).encode("utf-8")
         ).hexdigest()
 
     class Meta:
+        """Meta class for Album."""
+
         ordering = ("-date", "title_en")

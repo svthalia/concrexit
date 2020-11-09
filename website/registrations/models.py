@@ -7,15 +7,16 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
-from django.template.defaultfilters import floatformat
+from django.template.defaultfilters import floatformat, date
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Membership, Profile
+from payments.models import Payable
 from utils import countries
 
 
-class Entry(models.Model):
+class Entry(models.Model, Payable):
     """Describes a registration entry"""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -65,12 +66,14 @@ class Entry(models.Model):
         m for m in Membership.MEMBERSHIP_TYPES if m[0] != Membership.HONORARY
     ]
 
-    contribution = models.FloatField(
+    contribution = models.DecimalField(
         verbose_name=_("contribution"),
+        max_digits=5,
+        decimal_places=2,
         validators=[MinValueValidator(settings.MEMBERSHIP_PRICES["year"])],
         default=settings.MEMBERSHIP_PRICES["year"],
-        blank=True,
-        null=True,
+        blank=False,
+        null=False,
     )
 
     no_references = models.BooleanField(
@@ -89,7 +92,7 @@ class Entry(models.Model):
     payment = models.OneToOneField(
         "payments.Payment",
         related_name="registrations_entry",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
@@ -98,19 +101,34 @@ class Entry(models.Model):
         "members.Membership", on_delete=models.SET_NULL, blank=True, null=True,
     )
 
+    @property
+    def payment_amount(self):
+        return self.contribution
+
+    @property
+    def payment_payer(self):
+        if self.membership:
+            return self.membership.user
+        return None
+
+    @property
+    def payment_topic(self):
+        return "Registration entry"
+
+    @property
+    def payment_notes(self):
+        return f"{self.payment_topic}. Creation date: {date(self.created_at)}. Completion date: {date(self.updated_at)}"
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if self.status != self.STATUS_ACCEPTED and self.status != self.STATUS_REJECTED:
             self.updated_at = timezone.now()
 
-        if (
-            self.contribution is not None
-            and self.membership_type != Membership.BENEFACTOR
-        ):
-            self.contribution = None
-        elif self.membership_type == Membership.BENEFACTOR:
+        if self.membership_type == Membership.BENEFACTOR:
             self.length = self.MEMBERSHIP_YEAR
+        else:
+            self.contribution = settings.MEMBERSHIP_PRICES[self.length]
 
         super().save(force_insert, force_update, using, update_fields)
 
@@ -158,7 +176,7 @@ class Registration(Entry):
             RegexValidator(
                 regex="^[a-zA-Z0-9]{1,64}$",
                 message=_(
-                    "Please use 64 characters or fewer. " "Letters and digits only."
+                    "Please use 64 characters or fewer. Letters and digits only."
                 ),
             )
         ],
@@ -170,12 +188,12 @@ class Registration(Entry):
 
     birthday = models.DateField(verbose_name=_("birthday"), blank=False,)
 
-    language = models.CharField(
-        verbose_name=_("language"),
-        max_length=5,
-        choices=settings.LANGUAGES,
-        default="nl",
-    )
+    @property
+    def language(self):
+        """
+            @todo: Remove usage of this property
+        """
+        return "en"
 
     # ---- Contact information -----
 
@@ -259,6 +277,10 @@ class Registration(Entry):
         verbose_name=_("birthday calendar opt-in"), default=False
     )
 
+    @property
+    def payment_topic(self):
+        return f"Membership registration {self.membership_type} ({self.length})"
+
     def get_full_name(self):
         full_name = "{} {}".format(self.first_name, self.last_name)
         return full_name.strip()
@@ -340,6 +362,14 @@ class Renewal(Entry):
         null=False,
     )
 
+    @property
+    def payment_payer(self):
+        return self.member
+
+    @property
+    def payment_topic(self):
+        return f"Membership renewal {self.membership_type} ({self.length})"
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
@@ -357,7 +387,7 @@ class Renewal(Entry):
             .exists()
         ):
             raise ValidationError(
-                _("You already have a renewal " "request queued for review.")
+                _("You already have a renewal request queued for review.")
             )
 
         # Invalid form for study and honorary members
@@ -366,7 +396,7 @@ class Renewal(Entry):
             errors.update(
                 {
                     "length": _("You currently have an active membership."),
-                    "membership_type": _("You currently have" " an active membership."),
+                    "membership_type": _("You currently have an active membership."),
                 }
             )
 

@@ -4,8 +4,8 @@ This module registers admin pages for the models
 import csv
 import datetime
 from django.contrib import admin, messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
 from django.db.models import Q, Count
 from django.http import HttpResponse
 from django.urls import path
@@ -19,6 +19,7 @@ from . import forms, models
 
 class MembershipInline(admin.StackedInline):
     model = models.Membership
+    classes = ["collapse"]
     extra = 0
 
 
@@ -35,6 +36,7 @@ class ProfileInline(admin.StackedInline):
         "phone_number",
         "receive_optin",
         "receive_newsletter",
+        "receive_magazine",
         "birthday",
         "show_birthday",
         "auto_renew",
@@ -46,9 +48,9 @@ class ProfileInline(admin.StackedInline):
         "photo",
         "emergency_contact",
         "emergency_contact_phone_number",
-        "language",
         "event_permissions",
     ]
+    classes = ["collapse"]
     model = models.Profile
     can_delete = False
 
@@ -105,9 +107,9 @@ class AgeListFilter(admin.SimpleListFilter):
 
         if self.value() == "unknown":
             return queryset.filter(profile__birthday__isnull=True)
-        elif self.value() == "18+":
+        if self.value() == "18+":
             return queryset.filter(profile__birthday__lte=eightteen_years_ago)
-        elif self.value() == "18-":
+        if self.value() == "18-":
             return queryset.filter(profile__birthday__gt=eightteen_years_ago)
 
         return queryset
@@ -158,22 +160,31 @@ class UserAdmin(BaseUserAdmin):
         "groups",
         AgeListFilter,
         "profile__event_permissions",
-        "profile__starting_year",
         "profile__auto_renew",
+        "profile__receive_optin",
+        "profile__receive_newsletter",
+        "profile__receive_magazine",
+        "profile__starting_year",
     )
 
-    add_fieldsets = (
+    fieldsets = (
         (
-            None,
+            _("Personal"),
+            {"fields": ("first_name", "last_name", "email", "username", "password")},
+        ),
+        (
+            _("Permissions"),
             {
-                "classes": ("wide",),
                 "fields": (
-                    "first_name",
-                    "last_name",
-                    "username",
-                    "email",
-                    "send_welcome_email",
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                    "date_joined",
+                    "last_login",
                 ),
+                "classes": ("collapse",),
             },
         ),
     )
@@ -193,7 +204,7 @@ class UserAdmin(BaseUserAdmin):
         return response
 
     email_csv_export.short_description = _(
-        "Download email addresses for " "selected users"
+        "Download email addresses for selected users"
     )
 
     def address_csv_export(self, request, queryset):
@@ -228,16 +239,11 @@ class UserAdmin(BaseUserAdmin):
             )
         return response
 
-    address_csv_export.short_description = _(
-        "Download address label for " "selected users"
-    )
+    address_csv_export.short_description = _("Download addresses for selected users")
 
     def student_number_csv_export(self, request, queryset):
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
-                                           filename="student_numbers.csv"'
+        response["Content-Disposition"] = 'attachment;filename="student_numbers.csv"'
         writer = csv.writer(response)
         writer.writerow([_("First name"), _("Last name"), _("Student number")])
         for user in queryset.exclude(profile=None):
@@ -247,7 +253,7 @@ class UserAdmin(BaseUserAdmin):
         return response
 
     student_number_csv_export.short_description = _(
-        "Download student number " "label for selected users"
+        "Download student number export for selected users"
     )
 
     def minimise_data(self, request, queryset):
@@ -268,9 +274,7 @@ class UserAdmin(BaseUserAdmin):
         else:
             self.message_user(
                 request,
-                _("Data minimisation was executed " "for {} user(s).").format(
-                    processed
-                ),
+                _("Data minimisation was executed for {} user(s).").format(processed),
                 messages.SUCCESS,
             )
 
@@ -297,5 +301,5 @@ class MemberAdmin(UserAdmin):
 admin.site.register(EmailChange)
 
 # re-register User admin
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.unregister(get_user_model())
+admin.site.register(get_user_model(), UserAdmin)

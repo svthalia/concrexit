@@ -4,10 +4,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from utils.translation import ModelTranslateMeta, MultilingualField
 
-
-class Document(models.Model, metaclass=ModelTranslateMeta):
+class Document(models.Model):
     """Describes a base document"""
 
     class Meta:
@@ -22,7 +20,7 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         ("misc", _("Miscellaneous document")),
     )
 
-    name = MultilingualField(models.CharField, verbose_name=_("name"), max_length=200)
+    name = models.CharField(verbose_name=_("name"), max_length=200)
 
     created = models.DateTimeField(verbose_name=_("created"), auto_now_add=True,)
 
@@ -35,8 +33,7 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         default="misc",
     )
 
-    file = MultilingualField(
-        models.FileField,
+    file = models.FileField(
         verbose_name=_("file"),
         upload_to="documents/",
         validators=[FileExtensionValidator(["txt", "pdf", "jpg", "jpeg", "png"])],
@@ -48,7 +45,7 @@ class Document(models.Model, metaclass=ModelTranslateMeta):
         return reverse("documents:document", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return "%s (%s)" % (self.name, str(self.created.date()))
+        return f"{self.name} ({self.created.date()})"
 
 
 class AnnualDocument(Document):
@@ -76,18 +73,15 @@ class AnnualDocument(Document):
         verbose_name=_("year"), validators=[MinValueValidator(1990)],
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "annual"
         if self.subcategory == "report":
             self.name_en = "Annual report %d" % self.year
-            self.name_nl = "Jaarverslag %d" % self.year
         elif self.subcategory == "financial":
             self.name_en = "Financial report %d" % self.year
-            self.name_nl = "Financieel jaarverslag %d" % self.year
         else:
             self.name_en = "Policy document %d" % self.year
-            self.name_nl = "Beleidsdocument %d" % self.year
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
 
 class AssociationDocumentManager(models.Manager):
@@ -107,9 +101,9 @@ class AssociationDocument(Document):
 
     objects = AssociationDocumentManager()
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "association"
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
 
 class EventDocument(Document):
@@ -124,9 +118,9 @@ class EventDocument(Document):
         "activemembers.MemberGroup", verbose_name=_("owner"), on_delete=models.CASCADE,
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "event"
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
 
 class MiscellaneousDocumentManager(models.Manager):
@@ -147,12 +141,12 @@ class MiscellaneousDocument(Document):
 
     objects = MiscellaneousDocumentManager()
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "misc"
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
 
-class GeneralMeeting(models.Model, metaclass=ModelTranslateMeta):
+class GeneralMeeting(models.Model):
     """Describes a general meeting"""
 
     class Meta:
@@ -166,9 +160,7 @@ class GeneralMeeting(models.Model, metaclass=ModelTranslateMeta):
 
     datetime = models.DateTimeField(verbose_name=_("datetime"),)
 
-    location = MultilingualField(
-        models.CharField, verbose_name=_("location"), max_length=200
-    )
+    location = models.CharField(verbose_name=_("location"), max_length=200)
 
     def __str__(self):
         return timezone.localtime(self.datetime).strftime("%Y-%m-%d")
@@ -185,8 +177,7 @@ class Minutes(Document):
         GeneralMeeting, blank=True, null=True, on_delete=models.CASCADE
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.category = "minutes"
         self.name_en = "Minutes %s" % str(self.meeting.datetime.date())
-        self.name_nl = "Notulen %s" % str(self.meeting.datetime.date())
-        super().save(*args, **kwargs)
+        super().save(**kwargs)

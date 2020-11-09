@@ -2,7 +2,7 @@ from django import forms
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from .models import RegistrationInformationField, Event, Registration
+from .models import RegistrationInformationField, Event, EventRegistration
 from .widgets import FieldsWidget
 
 
@@ -28,7 +28,7 @@ class RegistrationAdminForm(forms.ModelForm):
 
     class Meta:
         fields = "__all__"
-        model = Registration
+        model = EventRegistration
 
 
 class RegistrationInformationFieldForm(forms.ModelForm):
@@ -62,7 +62,7 @@ class FieldsForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.information_fields = kwargs.pop("fields")
-        super(FieldsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         for key, field in self.information_fields.items():
             field_type = field["type"]
@@ -79,17 +79,15 @@ class FieldsForm(forms.Form):
             self.fields[key].initial = field["value"]
 
     def field_values(self):
-        for key, field in self.information_fields.items():
-            yield (key, self.cleaned_data[key])
+        for key in self.information_fields:
+            yield key, self.cleaned_data[key]
 
 
 class EventMessageForm(forms.Form):
     """Form that outputs a widget to get info to send a push notification"""
 
     title_en = forms.CharField(label=_("Title (EN)"), max_length=150)
-    title_nl = forms.CharField(label=_("Title (NL)"), max_length=150)
     body_en = forms.CharField(label=_("Body (EN)"), widget=forms.Textarea)
-    body_nl = forms.CharField(label=_("Body (NL)"), widget=forms.Textarea)
     url = forms.CharField(
         max_length=256,
         required=False,

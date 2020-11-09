@@ -89,9 +89,6 @@ class NormalMessageManager(models.Manager):
 class MessageManager(models.Manager):
     """Returns all messages"""
 
-    def get_queryset(self):
-        return super().get_queryset()
-
 
 class Message(models.Model, metaclass=ModelTranslateMeta):
     """Describes a push notification"""
@@ -177,14 +174,10 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
             self.success = success_total
             self.failure = failure_total
             self.save()
-        return None
 
 
 class ScheduledMessageManager(models.Manager):
     """Returns scheduled messages only"""
-
-    def get_queryset(self):
-        return super().get_queryset()
 
 
 class ScheduledMessage(Message, metaclass=ModelTranslateMeta):

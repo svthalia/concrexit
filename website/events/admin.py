@@ -1,4 +1,6 @@
 """Registers admin interfaces for the events module"""
+from functools import partial
+
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Max, Min
@@ -22,7 +24,7 @@ from utils.snippets import datetime_to_lectureyear
 from . import forms, models
 
 
-class RegistrationInformationFieldInline(admin.StackedInline):
+class RegistrationInformationFieldInline(admin.TabularInline):
     """The inline for registration information fields in the Event admin"""
 
     form = forms.RegistrationInformationFieldForm
@@ -88,27 +90,6 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         RegistrationInformationFieldInline,
         PizzaEventInline,
     )
-    fields = (
-        "title",
-        "description",
-        "start",
-        "end",
-        "organiser",
-        "category",
-        "registration_start",
-        "registration_end",
-        "cancel_deadline",
-        "send_cancel_email",
-        "location",
-        "map_location",
-        "price",
-        "fine",
-        "max_participants",
-        "no_registration_message",
-        "published",
-        "slide",
-        "documents",
-    )
     list_display = (
         "overview_link",
         "event_date",
@@ -126,6 +107,41 @@ class EventAdmin(DoNextTranslatedModelAdmin):
     search_fields = ("title", "description")
     prepopulated_fields = {"map_location": ("location",)}
     filter_horizontal = ("documents",)
+
+    fieldsets = (
+        (_("General"), {"fields": ("title", "published", "organiser",)}),
+        (
+            _("Detail"),
+            {
+                "fields": (
+                    "category",
+                    "start",
+                    "end",
+                    "description",
+                    "location",
+                    "map_location",
+                ),
+                "classes": ("collapse", "start-open"),
+            },
+        ),
+        (
+            _("Registrations"),
+            {
+                "fields": (
+                    "price",
+                    "fine",
+                    "max_participants",
+                    "registration_start",
+                    "registration_end",
+                    "cancel_deadline",
+                    "send_cancel_email",
+                    "no_registration_message",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (_("Extra"), {"fields": ("slide", "documents"), "classes": ("collapse",)}),
+    )
 
     def overview_link(self, obj):
         return format_html(
@@ -165,7 +181,9 @@ class EventAdmin(DoNextTranslatedModelAdmin):
 
     def num_participants(self, obj):
         """Pretty-print the number of participants"""
-        num = obj.registration_set.exclude(date_cancelled__lt=timezone.now()).count()
+        num = obj.eventregistration_set.exclude(
+            date_cancelled__lt=timezone.now()
+        ).count()
         if not obj.max_participants:
             return "{}/∞".format(num)
         return "{}/{}".format(num, obj.max_participants)
@@ -198,6 +216,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
             x
             for x in formset.forms
             if isinstance(x, forms.RegistrationInformationFieldForm)
+            and "DELETE" not in x.changed_data
         )
         form.instance.set_registrationinformationfield_order(
             [
@@ -243,7 +262,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_actions(self, request):
-        actions = super(EventAdmin, self).get_actions(request)
+        actions = super().get_actions(request)
         if "delete_selected" in actions:
             del actions["delete_selected"]
         return actions
@@ -286,7 +305,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         return custom_urls + urls
 
 
-@admin.register(models.Registration)
+@admin.register(models.EventRegistration)
 class RegistrationAdmin(DoNextTranslatedModelAdmin):
     """Custom admin for registrations"""
 
@@ -321,7 +340,17 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
             return False
         return super().has_delete_permission(request, registration)
 
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
+    def get_form(self, request, obj=None, **kwargs):
+        return super().get_form(
+            request,
+            obj,
+            formfield_callback=partial(
+                self.formfield_for_dbfield, request=request, obj=obj
+            ),
+            **kwargs
+        )
+
+    def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
         """Customise the formfields of event and member"""
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name in ("event", "member"):
@@ -330,7 +359,9 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
             field.widget.can_change_related = False
             field.widget.can_delete_related = False
         elif db_field.name == "payment":
-            return Field(widget=PaymentWidget, initial=field.initial, required=False)
+            return Field(
+                widget=PaymentWidget(obj=obj), initial=field.initial, required=False,
+            )
         return field
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

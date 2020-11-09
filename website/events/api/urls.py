@@ -5,5 +5,5 @@ from events.api import viewsets
 
 router = routers.SimpleRouter()
 router.register(r"events", viewsets.EventViewset)
-router.register(r"registrations", viewsets.RegistrationViewSet)
+router.register(r"registrations", viewsets.EventRegistrationViewSet)
 urlpatterns = router.urls

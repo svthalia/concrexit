@@ -10,6 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    pushnotifications.api
 
@@ -55,4 +56,3 @@ pushnotifications.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

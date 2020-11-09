@@ -1,28 +1,6 @@
 django.jQuery(function () {
     var $ = django.jQuery;
 
-    function switchLanguage(newLang, success) {
-        var currentLang = $('html').attr('lang');
-        if (currentLang === newLang) {
-            success();
-            return;
-        }
-        django.jQuery.ajax({
-            url: '/i18n/setlang/',
-            type: 'POST',
-            data: {
-                'language': newLang
-            },
-            headers: {
-                "X-CSRFToken": Cookies.get('csrftoken')
-            },
-            dataType: 'json'
-        }).done(function () {
-            $('html').attr('lang', newLang);
-            success();
-        });
-    }
-
     function pad(num, size) {
         var s = "0" + num;
         return s.substr(s.length-size);
@@ -79,25 +57,12 @@ django.jQuery(function () {
     }
 
     function getEvent(pk, success) {
-        var originalLang = $('html').attr('lang');
-        switchLanguage('nl', function () {
-            $.ajax({
-                url: '/api/v1/events/' + pk,
-                type: 'GET',
-                dataType: 'json'
-            }).done(function(data) {
-                success(data, 'nl');
-                switchLanguage('en', function () {
-                    $.ajax({
-                        url: '/api/v1/events/' + pk,
-                        type: 'GET',
-                        dataType: 'json'
-                    }).done(function(data) {
-                        success(data, 'en');
-                        switchLanguage(originalLang, function() {});
-                    });
-                });
-            });
+        $.ajax({
+            url: '/api/v1/events/' + pk,
+            type: 'GET',
+            dataType: 'json'
+        }).done(function(data) {
+            success(data, 'en');
         });
     }
 

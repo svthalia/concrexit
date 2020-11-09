@@ -17,12 +17,25 @@
                     exams, summaries or other documents. Select a course to
                     find out more.<br/>
                     Can't find a course? Let the
-                    <a href="mailto:educacie@thalia.nu">education committee</a>
+                    <a href="mailto:educacie@thalia.nu">Educacie</a>
                     know.
                 {% endblocktrans %}
             </p>
 
             <p class="text-center">
+                {% blocktrans trimmed %}
+                    You can submit your own exams and summaries!<br />
+                    Better even, you might even get a monetary reward if you submit a summary:
+                {% endblocktrans %}
+                <ul class="text-center list-unstyled">
+                    <li>{% trans "In the current language of the course" %}</li>
+                    <li>{% trans "Adds significant information that was not already present in the summary overview" %}</li>
+                    <li>{% trans "Corresponds to the current course" %}</li>
+                    <li>{% trans "Is positively peer-reviewed by people appointed by the Educacie" %}</li>
+                </ul>
+            </p>
+
+            <p class="text-center mt-4">
                 <a class="btn btn-primary d-inline"
                    href="{% url 'education:submit-exam' %}">{% trans "Submit Exam" %}</a>
                 <a class="btn btn-primary d-inline"

@@ -5,14 +5,11 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
-from utils.translation import ModelTranslateMeta, MultilingualField
 
-
-class Announcement(models.Model, metaclass=ModelTranslateMeta):
+class Announcement(models.Model):
     """Describes an announcement"""
 
-    content = MultilingualField(
-        HTMLField,
+    content = HTMLField(
         verbose_name=_("Content"),
         help_text=_("The content of the announcement; what text to display."),
         blank=False,
@@ -45,7 +42,7 @@ class Announcement(models.Model, metaclass=ModelTranslateMeta):
         ordering = ("-since",)
 
     def __str__(self):
-        return self.content
+        return str(self.content)
 
     @property
     def is_visible(self):
@@ -55,19 +52,17 @@ class Announcement(models.Model, metaclass=ModelTranslateMeta):
         )
 
 
-class FrontpageArticle(models.Model, metaclass=ModelTranslateMeta):
+class FrontpageArticle(models.Model):
     """Front page articles"""
 
-    title = MultilingualField(
-        models.CharField,
+    title = models.CharField(
         verbose_name=_("Title"),
         help_text=_("The title of the article; what goes in the header"),
         blank=False,
         max_length=80,
     )
 
-    content = MultilingualField(
-        HTMLField,
+    content = HTMLField(
         verbose_name=_("Content"),
         help_text=_("The content of the article; what text to display."),
         blank=False,
@@ -91,7 +86,7 @@ class FrontpageArticle(models.Model, metaclass=ModelTranslateMeta):
         ordering = ("-since",)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     @property
     def is_visible(self):
@@ -101,7 +96,7 @@ class FrontpageArticle(models.Model, metaclass=ModelTranslateMeta):
         )
 
 
-class Slide(models.Model, metaclass=ModelTranslateMeta):
+class Slide(models.Model):
     """Describes an announcement"""
 
     title = CharField(
@@ -111,8 +106,7 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
         max_length=100,
     )
 
-    content = MultilingualField(
-        ImageField,
+    content = ImageField(
         verbose_name=_("Content"),
         help_text=_("The content of the slide; what image to display."),
         blank=False,
@@ -122,9 +116,9 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
     since = models.DateTimeField(
         verbose_name=_("Display since"),
         help_text=_(
-            "Hide this slide before this time. When all date- and"
+            "Hide this slide before this time. When all date- and "
             "time-fields are left blank, the slide won't "
-            "be visible. It will, however, be visible on an event-page"
+            "be visible. It will, however, be visible on an event-page "
             "if it's linked to an event."
         ),
         default=timezone.now,
@@ -141,7 +135,7 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
 
     order = models.PositiveIntegerField(
         verbose_name=_("Order"),
-        help_text=_("Approximately where this slide " "should appear in the order"),
+        help_text=_("Approximately where this slide should appear in the order"),
         default=0,
     )
 
@@ -175,4 +169,4 @@ class Slide(models.Model, metaclass=ModelTranslateMeta):
         )
 
     def __str__(self):
-        return self.title
+        return str(self.title)

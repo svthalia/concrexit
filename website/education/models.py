@@ -5,18 +5,16 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
-from thaliawebsite.settings import settings
 from utils.snippets import datetime_to_lectureyear
-from utils.translation import ModelTranslateMeta, MultilingualField
 
 
-class Category(models.Model, metaclass=ModelTranslateMeta):
+class Category(models.Model):
     """Describes a course category"""
 
-    name = MultilingualField(models.CharField, max_length=64,)
+    name = models.CharField(max_length=64,)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def get_absolute_url(self):
         return reverse("education:category", args=[str(self.pk)])
@@ -26,10 +24,10 @@ class Category(models.Model, metaclass=ModelTranslateMeta):
         verbose_name_plural = _("categories")
 
 
-class Course(models.Model, metaclass=ModelTranslateMeta):
+class Course(models.Model):
     """Describes a course"""
 
-    name = MultilingualField(models.CharField, max_length=255)
+    name = models.CharField(max_length=255)
 
     categories = models.ManyToManyField(
         Category, verbose_name=_("categories"), blank=True
@@ -58,7 +56,7 @@ class Course(models.Model, metaclass=ModelTranslateMeta):
         verbose_name_plural = _("courses")
 
 
-class Exam(models.Model, metaclass=ModelTranslateMeta):
+class Exam(models.Model):
     """Describes an exam"""
 
     EXAM_TYPES = (
@@ -92,7 +90,7 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
     file = models.FileField(
         upload_to="education/files/exams/",
         help_text=_(
-            "Use the 'View on site' button to download " "the file for inspection."
+            "Use the 'View on site' button to download the file for inspection."
         ),
     )
 
@@ -101,7 +99,10 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
     )
 
     language = models.CharField(
-        max_length=2, choices=settings.LANGUAGES, blank=False, null=True
+        max_length=2,
+        choices=[("en", "English"), ("nl", "Dutch")],
+        blank=False,
+        null=True,
     )
 
     download_count = models.IntegerField(
@@ -129,7 +130,7 @@ class Exam(models.Model, metaclass=ModelTranslateMeta):
         verbose_name_plural = _("exams")
 
 
-class Summary(models.Model, metaclass=ModelTranslateMeta):
+class Summary(models.Model):
     """Describes a summary"""
 
     name = models.CharField(max_length=255, verbose_name=_("summary name"),)
@@ -153,12 +154,15 @@ class Summary(models.Model, metaclass=ModelTranslateMeta):
     file = models.FileField(
         upload_to="education/files/summary/",
         help_text=_(
-            "Use the 'View on site' button to download " "the file for inspection."
+            "Use the 'View on site' button to download the file for inspection."
         ),
     )
 
     language = models.CharField(
-        max_length=2, choices=settings.LANGUAGES, blank=False, null=True
+        max_length=2,
+        choices=[("en", "English"), ("nl", "Dutch")],
+        blank=False,
+        null=True,
     )
 
     download_count = models.IntegerField(

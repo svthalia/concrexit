@@ -11,4 +11,5 @@ class MailinglistsConfig(AppConfig):
 
     def ready(self):
         """Imports the signals when the app is ready"""
+        # pylint: disable=unused-import,import-outside-toplevel
         from . import signals

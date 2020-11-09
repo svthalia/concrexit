@@ -41,7 +41,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import get_language
 
 
-class MultilingualField(object):
+class MultilingualField:
     """
     Transformed the passed-in form field into fields appended with the
     active languages and generates an automatic accessor property that
@@ -59,7 +59,6 @@ class MultilingualField(object):
         """
         if issubclass(cls, RelatedField):
             # Especially naming the reverses gets quite messy for these.
-            # TODO consider implementing this when there is a need for it.
             raise NotImplementedError("RelatedFields are not translatable.")
         if get_language() is None:
             raise ImproperlyConfigured("I18n does not appear to be activated.")
@@ -81,9 +80,7 @@ def _i18n_attr_accessor(attr):
     def _accessor(self):
         return getattr(self, localize_attr_name(attr))
 
-    _accessor.__doc__ = "Accessor that fetches the localized " "variant of {}".format(
-        attr
-    )
+    _accessor.__doc__ = "Accessor that fetches the localized variant of {}".format(attr)
 
     return _accessor
 
@@ -132,7 +129,7 @@ class ModelTranslateMeta(models.base.ModelBase):
                 raise ImproperlyConfigured("LANGUAGE_CODE not in LANGUAGES.")
             field_i18n["default"][attr] = default
             field_i18n["fields"][attr] = fields
-        model = super(ModelTranslateMeta, mcs).__new__(mcs, name, bases, dct)
+        model = super().__new__(mcs, name, bases, dct)
         if hasattr(model._meta, "_field_i18n"):
             raise FieldError("TranslateMeta map already exists!")
         model._meta._field_i18n = field_i18n
@@ -180,4 +177,4 @@ class TranslatedModelAdmin(admin.ModelAdmin):
             for fieldset in type(self).fieldsets:
                 fieldset[1]["fields"] = _trans_fields(fieldset[1]["fields"])
 
-        super(TranslatedModelAdmin, self).__init__(model, admin_site)
+        super().__init__(model, admin_site)

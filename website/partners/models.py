@@ -47,7 +47,7 @@ class Partner(models.Model):
     )
     city = models.CharField(max_length=100)
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         """Save a partner and set main/local partners."""
         if self.is_main_partner:
             self.is_local_partner = False
@@ -55,7 +55,7 @@ class Partner(models.Model):
         if self.is_local_partner:
             self._reset_local_partner()
 
-        super(Partner, self).save(*args, **kwargs)
+        super().save(**kwargs)
 
     def _reset_main_partner(self):
         """
@@ -89,7 +89,7 @@ class Partner(models.Model):
 
     def __str__(self):
         """Return the name of the partner."""
-        return self.name
+        return str(self.name)
 
     def get_absolute_url(self):
         """Return the url of the partner page."""
@@ -122,7 +122,7 @@ class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
 
     def __str__(self):
         """Return the category name."""
-        return self.name
+        return str(self.name)
 
     class Meta:
         """Meta class for vacancy category model."""
@@ -189,9 +189,7 @@ class Vacancy(models.Model):
         super().clean()
         errors = {}
 
-        msg = _(
-            "If no partner is used then both a company name and logo are " "required."
-        )
+        msg = _("If no partner is used then both a company name and logo are required.")
         if not self.partner and self.company_name and not self.company_logo:
             errors.update({"company_logo": msg})
         if not self.partner and not self.company_name and self.company_logo:
@@ -256,9 +254,9 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
         ):
             errors.update(
                 {
-                    "partner": _("Please select or enter " "a partner for this event."),
+                    "partner": _("Please select or enter a partner for this event."),
                     "other_partner": _(
-                        "Please select or enter " "a partner for this event."
+                        "Please select or enter a partner for this event."
                     ),
                 }
             )
@@ -268,4 +266,4 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
 
     def __str__(self):
         """Return the event title."""
-        return self.title
+        return str(self.title)

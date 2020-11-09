@@ -11,7 +11,6 @@ from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member, Profile
-from payments.models import Payment
 from registrations import emails
 from registrations.emails import _send_email
 from registrations.models import Registration, Renewal
@@ -24,7 +23,6 @@ class EmailsTest(TestCase):
     @mock.patch("registrations.emails._send_email")
     def test_send_registration_email_confirmation(self, send_email):
         reg = Registration(
-            language="en",
             email="test@example.org",
             first_name="John",
             last_name="Doe",
@@ -50,33 +48,27 @@ class EmailsTest(TestCase):
     @mock.patch("registrations.emails._send_email")
     def test_send_registration_accepted_message(self, send_email):
         reg = Registration(
-            language="en",
             email="test@example.org",
             first_name="John",
             last_name="Doe",
             pk=0,
+            contribution=2,
         )
 
-        payment = Payment(amount=2,)
-
-        emails.send_registration_accepted_message(reg, payment)
+        emails.send_registration_accepted_message(reg)
 
         with translation.override(reg.language):
             send_email.assert_called_once_with(
                 reg.email,
                 _("Registration accepted"),
                 "registrations/email/registration_accepted.txt",
-                {"name": reg.get_full_name(), "fees": floatformat(payment.amount, 2)},
+                {"name": reg.get_full_name(), "fees": floatformat(reg.contribution, 2)},
             )
 
     @mock.patch("registrations.emails._send_email")
     def test_send_registration_rejected_message(self, send_email):
         reg = Registration(
-            language="en",
-            email="test@example.org",
-            first_name="John",
-            last_name="Doe",
-            pk=0,
+            email="test@example.org", first_name="John", last_name="Doe", pk=0,
         )
 
         emails.send_registration_rejected_message(reg)
@@ -92,11 +84,7 @@ class EmailsTest(TestCase):
     @mock.patch("registrations.emails._send_email")
     def test_send_new_registration_board_message(self, send_email):
         registration = Registration(
-            language="en",
-            email="test@example.org",
-            first_name="John",
-            last_name="Doe",
-            pk=0,
+            email="test@example.org", first_name="John", last_name="Doe", pk=0,
         )
 
         emails.send_new_registration_board_message(registration)
@@ -123,14 +111,12 @@ class EmailsTest(TestCase):
             email="test@example.org",
             first_name="John",
             last_name="Doe",
-            profile=Profile(language="en"),
+            profile=Profile(),
         )
 
-        renewal = Renewal(pk=0, member=member)
+        renewal = Renewal(pk=0, member=member, contribution=2)
 
-        payment = Payment(amount=2,)
-
-        emails.send_renewal_accepted_message(renewal, payment)
+        emails.send_renewal_accepted_message(renewal)
 
         with translation.override(renewal.member.profile.language):
             send_email.assert_called_once_with(
@@ -139,7 +125,9 @@ class EmailsTest(TestCase):
                 "registrations/email/renewal_accepted.txt",
                 {
                     "name": renewal.member.get_full_name(),
-                    "fees": floatformat(payment.amount, 2),
+                    "fees": floatformat(renewal.contribution, 2),
+                    "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
+                    "url": (settings.BASE_URL + reverse("registrations:renew",)),
                 },
             )
 
@@ -149,7 +137,7 @@ class EmailsTest(TestCase):
             email="test@example.org",
             first_name="John",
             last_name="Doe",
-            profile=Profile(language="en"),
+            profile=Profile(),
         )
 
         renewal = Renewal(pk=0, member=member)
@@ -170,7 +158,7 @@ class EmailsTest(TestCase):
             email="test@example.org",
             first_name="John",
             last_name="Doe",
-            profile=Profile(language="en"),
+            profile=Profile(),
         )
 
         renewal = Renewal(pk=0, member=member)
@@ -191,7 +179,7 @@ class EmailsTest(TestCase):
             email="test@example.org",
             first_name="John",
             last_name="Doe",
-            profile=Profile(language="en"),
+            profile=Profile(),
         )
 
         renewal = Renewal(pk=0, member=member)
@@ -215,7 +203,6 @@ class EmailsTest(TestCase):
     def test_send_references_information_message(self, send_email):
         with self.subTest("Registrations"):
             registration = Registration(
-                language="en",
                 email="test@example.org",
                 first_name="John",
                 last_name="Doe",
@@ -244,7 +231,7 @@ class EmailsTest(TestCase):
                 email="test@example.org",
                 first_name="John",
                 last_name="Doe",
-                profile=Profile(language="en"),
+                profile=Profile(),
             )
 
             renewal = Renewal(pk=uuid.uuid4(), member=member)

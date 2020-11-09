@@ -16,12 +16,14 @@ import json
 import os
 
 from django.core.management.commands import makemessages
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 )
+SOURCE_COMMIT = os.environ.get("SOURCE_COMMIT", "unknown")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
@@ -37,7 +39,6 @@ ALLOWED_HOSTS = ["*"]
 if not DEBUG:  # Django 1.10.3 security release changed behaviour
     ALLOWED_HOSTS = ["*"]
 
-SITE_ID = 1
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "thalia.localhost")
 BASE_URL = f"https://{SITE_DOMAIN}"
 
@@ -53,9 +54,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",
     "django.contrib.sitemaps",
     # Dependencies
+    "oauth2_provider",
+    "corsheaders",
     "bootstrap4",
     "tinymce",
     "rest_framework",
@@ -99,6 +101,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -127,6 +130,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "announcements.context_processors.announcements",
                 "thaliawebsite.context_processors.thumbnail_sizes",
+                "thaliawebsite.context_processors.lustrum_styling",
             ],
         },
     },
@@ -149,6 +153,24 @@ LOGIN_URL = "/user/login/"
 
 LOGIN_REDIRECT_URL = "/"
 
+# Cors configuration
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
+
+# OAuth configuration
+APP_OAUTH_SCHEME = os.getenv("APP_OAUTH_SCHEME", "nu.thalia")
+OAUTH2_PROVIDER = {
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["https", APP_OAUTH_SCHEME]
+    if not DEBUG
+    else ["http", "https", APP_OAUTH_SCHEME],
+    "SCOPES": {
+        "read": "Authenticated read access to the website",
+        "write": "Authenticated write access to the website",
+        "members:read": "Read access to your member profile",
+        "activemembers:read": "Read access to committee, society and board groups",
+    },
+}
+
 # Email settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
@@ -162,9 +184,9 @@ AUTH_PASSWORD_VALIDATORS = [
             "password_validation.UserAttributeSimilarityValidator"
         ),
     },
-    {"NAME": ("django.contrib.auth." "password_validation.MinimumLengthValidator"),},
-    {"NAME": ("django.contrib.auth." "password_validation.CommonPasswordValidator"),},
-    {"NAME": ("django.contrib.auth." "password_validation.NumericPasswordValidator"),},
+    {"NAME": ("django.contrib.auth.password_validation.MinimumLengthValidator"),},
+    {"NAME": ("django.contrib.auth.password_validation.CommonPasswordValidator"),},
+    {"NAME": ("django.contrib.auth.password_validation.NumericPasswordValidator"),},
 ]
 
 # allow to use md5 in tests
@@ -182,9 +204,11 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
+    "DEFAULT_SCHEMA_CLASS": "thaliawebsite.api.openapi.OAuthAutoSchema",
 }
 
 # Internationalization
@@ -200,7 +224,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-LANGUAGES = [("en", _("English")), ("nl", _("Dutch"))]
+LANGUAGES = [("en", _("English"))]
 
 LOCALE_PATHS = ("locale",)
 
@@ -246,6 +270,9 @@ MEMBERSHIP_PRICES = {
     "year": 7.5,
     "study": 30,
 }
+
+# Window during which a payment can be deleted again
+PAYMENT_CHANGE_WINDOW = int(os.environ.get("PAYMENTS_CHANGE_WINDOW", 10 * 60))
 
 THUMBNAIL_SIZES = {
     "small": "150x150",
@@ -301,16 +328,16 @@ CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
 # Payments creditor identifier
 SEPA_CREDITOR_ID = os.environ.get("SEPA_CREDITOR_ID", "PLACEHOLDER")
 
-# Members Sentry API key
-MEMBERS_SENTRY_API_SECRET = os.environ.get("MEMBERS_SENTRY_API_SECRET", "")
-
-# Activemembers NextCloud API key
-ACTIVEMEMBERS_NEXTCLOUD_API_SECRET = os.environ.get(
-    "ACTIVEMEMBERS_NEXTCLOUD_API_SECRET", ""
-)
+# Payment batch withdrawal date default offset after creation date
+PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET = timezone.timedelta(days=14)
 
 # Payment settings
-THALIA_PAY_ENABLED_PAYMENT_METHOD = False
+THALIA_PAY_ENABLED_PAYMENT_METHOD = (
+    os.environ.get("THALIA_PAY_ENABLED", "False") == "True"
+)
+THALIA_PAY_FOR_NEW_MEMBERS = (
+    os.environ.get("THALIA_PAY_FOR_NEW_MEMBERS", "True") == "True"
+)
 
 # Google maps API key and secrets
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
@@ -318,10 +345,7 @@ GOOGLE_MAPS_API_SECRET = os.environ.get("GOOGLE_MAPS_API_SECRET", "")
 GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
 
 # Photos settings
-PHOTO_UPLOAD_SIZE = 1920, 1080
-
-# API key for wiki
-WIKI_API_KEY = os.environ.get("WIKI_API_KEY", "debug")
+PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
 TINYMCE_JS_URL = "/static/tinymce/js/tinymce/tinymce.min.js"
@@ -354,6 +378,4 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
 
-
-# Temporary setting for almanac page
-SHOW_ALMANAC_PAGE = os.environ.get("SHOW_ALMANAC_PAGE", False) == "True"
+LUSTRUM_STYLING = os.environ.get("LUSTRUM_STYLING", "False") == "True"

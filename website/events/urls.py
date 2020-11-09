@@ -9,7 +9,6 @@ from events.views import (
     RegistrationView,
     EventCancelView,
     AlumniEventsView,
-    EventPayView,
 )
 
 app_name = "events"
@@ -30,14 +29,13 @@ urlpatterns = [
                     EventCancelView.as_view(),
                     name="cancel",
                 ),
-                path("<int:pk>/registration/pay/", EventPayView.as_view(), name="pay"),
                 path(
                     "<int:pk>/registration/",
                     RegistrationView.as_view(),
                     name="registration",
                 ),
                 path("", EventIndex.as_view(), name="index"),
-                path("ical/nl.ics", EventFeed(lang="nl"), name="ical-nl"),
+                path("ical/nl.ics", EventFeed(), name="ical-nl"),
                 path("ical/en.ics", EventFeed(), name="ical-en"),
             ]
         ),

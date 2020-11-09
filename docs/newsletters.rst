@@ -72,4 +72,3 @@ newsletters.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

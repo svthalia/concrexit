@@ -1,47 +1,19 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch, PropertyMock
 
+from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
-from members.models import Member
 from payments import services
 from payments.exceptions import PaymentError
-from payments.models import BankAccount, Payment, Payable
-
-
-class MockPayable(Payable):
-    save = MagicMock()
-
-    def __init__(
-        self, payer, amount=5, topic="mock topic", notes="mock notes", payment=None
-    ) -> None:
-        super().__init__()
-        self.payer = payer
-        self.amount = amount
-        self.topic = topic
-        self.notes = notes
-        self.payment = payment
-
-    @property
-    def payment_amount(self):
-        return self.amount
-
-    @property
-    def payment_topic(self):
-        return self.topic
-
-    @property
-    def payment_notes(self):
-        return self.notes
-
-    @property
-    def payment_payer(self):
-        return self.payer
+from payments.models import BankAccount, Payment, Batch, PaymentUser
+from payments.tests.__mocks__ import MockPayable
 
 
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class ServicesTest(TestCase):
     """
     Test for the services
@@ -51,21 +23,20 @@ class ServicesTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
 
     def test_create_payment(self):
         with self.subTest("Creates new payment with right payment type"):
             p = services.create_payment(
                 MockPayable(self.member), self.member, Payment.CASH
             )
-            self.assertEqual(p.processing_date, timezone.now())
             self.assertEqual(p.amount, 5)
             self.assertEqual(p.topic, "mock topic")
             self.assertEqual(p.notes, "mock notes")
             self.assertEqual(p.paid_by, self.member)
             self.assertEqual(p.processed_by, self.member)
             self.assertEqual(p.type, Payment.CASH)
-        with self.subTest("Does not create new payment if one already exists"):
+        with self.subTest("Updates payment if one already exists"):
             existing_payment = Payment(amount=2)
             p = services.create_payment(
                 MockPayable(payer=self.member, payment=existing_payment),
@@ -73,7 +44,7 @@ class ServicesTest(TestCase):
                 Payment.CASH,
             )
             self.assertEqual(p, existing_payment)
-            self.assertEqual(p.amount, 2)
+            self.assertEqual(p.amount, 5)
         with self.subTest("Does not allow Thalia Pay when not enabled"):
             with self.assertRaises(PaymentError):
                 services.create_payment(
@@ -81,46 +52,39 @@ class ServicesTest(TestCase):
                 )
 
     def test_delete_payment(self):
-        existing_payment = MagicMock()
+        existing_payment = MagicMock(batch=None)
         payable = MockPayable(payer=self.member, payment=existing_payment)
-        services.delete_payment(payable)
-        self.assertIsNone(payable.payment)
-        payable.save.assert_called_once()
-        existing_payment.delete.assert_called_once()
+        payable.save.reset_mock()
 
-    def test_process_payment(self):
-        BankAccount.objects.create(
-            owner=self.member,
-            initials="J",
-            last_name="Test",
-            iban="NL91ABNA0417164300",
-            mandate_no="11-2",
-            valid_from=timezone.now().date() - timezone.timedelta(days=5),
-            last_used=timezone.now().date() - timezone.timedelta(days=5),
-            signature="base64,png",
-        )
+        with self.subTest("Within deletion window"):
+            payable.payment = existing_payment
+            existing_payment.created_at = timezone.now()
+            services.delete_payment(payable)
+            self.assertIsNone(payable.payment)
+            payable.save.assert_called_once()
+            existing_payment.delete.assert_called_once()
 
-        p1 = Payment.objects.create(type=Payment.NONE, notes="Test payment", amount=1)
-        r1 = services.process_payment(
-            Payment.objects.filter(pk=p1.pk), self.member, Payment.CARD
-        )
+        with self.subTest("Outside deletion window"):
+            payable.payment = existing_payment
+            existing_payment.created_at = timezone.now() - timezone.timedelta(
+                seconds=settings.PAYMENT_CHANGE_WINDOW + 60
+            )
+            with self.assertRaisesMessage(
+                PaymentError, "You are not authorized to delete this payment."
+            ):
+                services.delete_payment(payable)
+            self.assertIsNotNone(payable.payment)
 
-        self.assertEqual(r1, [p1])
+        existing_payment.created_at = timezone.now()
 
-        p2 = Payment.objects.create(type=Payment.NONE, notes="Test payment", amount=2)
-        r2 = services.process_payment(
-            Payment.objects.filter(pk=p2.pk), self.member, Payment.TPAY
-        )
-        self.assertEqual(r2, [])
-
-        p3 = Payment.objects.create(
-            type=Payment.NONE, notes="Test payment", amount=3, paid_by=self.member
-        )
-        self.assertTrue(self.member.tpay_enabled)
-        r3 = services.process_payment(
-            Payment.objects.filter(pk=p3.pk), self.member, Payment.TPAY
-        )
-        self.assertEqual(r3, [p3])
+        with self.subTest("Already processed"):
+            payable.payment = existing_payment
+            existing_payment.batch = Batch.objects.create(processed=True)
+            with self.assertRaisesMessage(
+                PaymentError, "This payment has already been processed."
+            ):
+                services.delete_payment(payable)
+            self.assertIsNotNone(payable.payment)
 
     def test_update_last_used(self):
         BankAccount.objects.create(

@@ -10,7 +10,7 @@ from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership
 from events.admin import RegistrationInformationFieldInline, EventAdmin
-from events.models import Event, RegistrationInformationField, Registration
+from events.models import Event, RegistrationInformationField, EventRegistration
 from members.models import Member
 from utils.admin import DoNextTranslatedModelAdmin
 
@@ -83,15 +83,12 @@ class RegistrationInformationFieldInlineTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_nl="testevenement",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -106,7 +103,6 @@ class RegistrationInformationFieldInlineTest(TestCase):
             event=cls.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
             name_en="test bool",
-            name_nl="test bool",
             required=False,
         )
 
@@ -115,7 +111,6 @@ class RegistrationInformationFieldInlineTest(TestCase):
             event=cls.event,
             type=RegistrationInformationField.INTEGER_FIELD,
             name_en="test int",
-            name_nl="test int",
             required=False,
         )
 
@@ -124,7 +119,6 @@ class RegistrationInformationFieldInlineTest(TestCase):
             event=cls.event,
             type=RegistrationInformationField.TEXT_FIELD,
             name_en="test text",
-            name_nl="test text",
             required=False,
         )
 
@@ -155,15 +149,12 @@ class EventAdminTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_nl="testevenement",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -229,13 +220,13 @@ class EventAdminTest(TestCase):
 
         self.event.max_participants = None
 
-        Registration.objects.create(
+        EventRegistration.objects.create(
             event=self.event,
             name="test_cancelled",
             date=timezone.now() - timezone.timedelta(days=1),
             date_cancelled=timezone.now() - timezone.timedelta(seconds=10),
         )
-        Registration.objects.create(event=self.event, name="test")
+        EventRegistration.objects.create(event=self.event, name="test")
 
         self.assertEqual(self.admin.num_participants(self.event), "1/∞")
         self.event.max_participants = 2

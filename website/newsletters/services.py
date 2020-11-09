@@ -23,7 +23,7 @@ def write_to_file(pk, lang, html_message):
         cache_file.write(html_message)
 
 
-def save_to_disk(newsletter, request):
+def save_to_disk(newsletter):
     """
     Writes the newsletter as HTML to file (in all languages)
     """
@@ -45,7 +45,6 @@ def save_to_disk(newsletter, request):
             "main_partner": main_partner,
             "local_partner": local_partner,
             "lang_code": language[0],
-            "request": request,
         }
 
         html_message = html_template.render(context)
@@ -55,11 +54,12 @@ def save_to_disk(newsletter, request):
 
 def get_agenda(start_date):
     end_date = start_date + timezone.timedelta(weeks=2)
-    base_events = Event.objects.filter(
-        start__gte=start_date, end__lt=end_date, published=True
+    published_events = Event.objects.filter(published=True)
+    base_events = published_events.filter(
+        start__gte=start_date, end__lt=end_date
     ).order_by("start")
     if base_events.count() < 10:
-        more_events = Event.objects.filter(end__gte=end_date).order_by("start")
+        more_events = published_events.filter(end__gte=end_date).order_by("start")
         return [*base_events, *more_events][:10]
     return base_events
 
@@ -69,12 +69,12 @@ def send_newsletter(newsletter):
     newsletter.sent = True
     newsletter.save()
     message = Message.objects.create(
-        title_nl=newsletter.title_nl,
         title_en=newsletter.title_en,
-        body_nl="Tik om te bekijken",
         body_en="Tap to view",
         url=settings.BASE_URL + newsletter.get_absolute_url(),
         category=Category.objects.get(key=Category.NEWSLETTER),
     )
     message.users.set(Member.current_members.all())
     message.send()
+
+    save_to_disk(newsletter)

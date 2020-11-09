@@ -14,7 +14,7 @@ from events import services
 from events.exceptions import RegistrationError
 from payments.models import Payment
 from .forms import FieldsForm
-from .models import Event, Registration
+from .models import Event, EventRegistration
 
 
 class EventIndex(TemplateView):
@@ -58,10 +58,10 @@ class EventDetail(DetailView):
             context["registration_percentage"] = perc
 
         try:
-            context["registration"] = Registration.objects.get(
+            context["registration"] = EventRegistration.objects.get(
                 event=event, member=self.request.member
             )
-        except (Registration.DoesNotExist, TypeError):
+        except (EventRegistration.DoesNotExist, TypeError):
             pass
 
         context["permissions"] = services.event_permissions(self.request.member, event)
@@ -108,30 +108,8 @@ class EventRegisterView(View):
 
             if event.has_fields():
                 return redirect("events:registration", event.pk)
-            else:
-                messages.success(request, _("Registration successful."))
-        except RegistrationError as e:
-            messages.error(request, e)
 
-        return redirect(event)
-
-
-@method_decorator(login_required, name="dispatch")
-class EventPayView(View):
-    """
-    Defines a view that allows the user to add a Thalia Pay payment to
-    their event registration using a POST request. The user should be
-    authenticated.
-    """
-
-    def get(self, request, *args, **kwargs):
-        return redirect("events:event", pk=kwargs["pk"])
-
-    def post(self, request, *args, **kwargs):
-        event = get_object_or_404(Event, pk=kwargs["pk"])
-        try:
-            services.pay_with_tpay(request.member, event)
-            messages.success(request, _("You have paid with Thalia Pay."))
+            messages.success(request, _("Registration successful."))
         except RegistrationError as e:
             messages.error(request, e)
 

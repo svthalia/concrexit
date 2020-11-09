@@ -1,11 +1,13 @@
+from decimal import Decimal
 from unittest import mock
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, PropertyMock, patch
 
 from django.contrib import messages
 from django.contrib.admin import AdminSite
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpRequest
 from django.test import (
     TestCase,
@@ -21,8 +23,9 @@ from freezegun import freeze_time
 
 from members.models import Member, Profile
 from payments import admin
-from payments.admin import ValidAccountFilter
-from payments.models import Payment, BankAccount
+from payments.admin import ValidAccountFilter, BankAccountInline, PaymentInline
+from payments.forms import BatchPaymentInlineAdminForm
+from payments.models import Payment, BankAccount, Batch, PaymentUser
 
 
 class GlobalAdminTest(SimpleTestCase):
@@ -42,19 +45,14 @@ class GlobalAdminTest(SimpleTestCase):
         )
 
 
-@override_settings(SUSPEND_SIGNALS=True)
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class PaymentAdminTest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json"]
+
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.user = Member.objects.create(
-            pk=1,
-            username="test1",
-            first_name="Test1",
-            last_name="Example",
-            email="test1@example.org",
-            is_staff=True,
-        )
-        Profile.objects.create(user=cls.user)
+        cls.user = PaymentUser.objects.get(pk=2)
 
     def setUp(self) -> None:
         self.client = Client()
@@ -68,269 +66,312 @@ class PaymentAdminTest(TestCase):
             content_type__model="payment", codename="process_payments"
         )
         self.user.user_permissions.remove(process_perm)
+        process_perm_batch = Permission.objects.get(
+            content_type__model="batch", codename="process_batches"
+        )
+        self.user.user_permissions.remove(process_perm_batch)
         self.client.logout()
         self.client.force_login(self.user)
 
-    def _give_user_permissions(self) -> None:
+    def _give_user_permissions(self, batch_permissions=True) -> None:
         """
         Helper to give the user permissions
         """
         content_type = ContentType.objects.get_for_model(Payment)
-        permissions = Permission.objects.filter(
-            content_type__app_label=content_type.app_label,
-        )
-        for p in permissions:
+        permissions_p = content_type.permission_set.all()
+        content_type = ContentType.objects.get_for_model(Batch)
+        permissions_b = content_type.permission_set.all()
+        for p in permissions_p:
             self.user.user_permissions.add(p)
+        if batch_permissions:
+            for p in permissions_b:
+                self.user.user_permissions.add(p)
+
         self.user.save()
 
         self.client.logout()
         self.client.force_login(self.user)
 
-    @mock.patch("payments.models.Payment.objects.get")
-    def test_changeform_view(self, payment_get) -> None:
-        """
-        Tests that the right context data is added to the response
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        payment_get.return_value = payment
-
-        response = self.client.get("/admin/payments/payment/add/")
-        self.assertFalse(payment_get.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["payment"], None)
-        response = self.client.get(
-            "/admin/payments/payment/{}/change/".format(object_id), follow=True
-        )
-        self.assertFalse(payment_get.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["payment"], None)
-
-        self._give_user_permissions()
-
-        response = self.client.get(
-            "/admin/payments/payment/{}/change/".format(object_id)
-        )
-        self.assertTrue(payment_get.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["payment"], payment)
-
-        payment.type = Payment.CARD
-
-        response = self.client.get(
-            "/admin/payments/payment/{}/change/".format(object_id)
-        )
-        self.assertTrue(payment_get.called)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["payment"], None)
-
     def test_paid_by_link(self) -> None:
         """
         Tests that the right link for the paying user is returned
         """
-        payment = Payment.objects.create(amount=7.5, paid_by=self.user)
+        payment = Payment.objects.create(
+            amount=7.5, paid_by=self.user, processed_by=self.user, type=Payment.CASH
+        )
 
         self.assertEqual(
             self.admin.paid_by_link(payment),
-            f"<a href='/members/profile/{self.user.pk}'>" f"Test1 Example</a>",
+            f"<a href='/members/profile/{self.user.pk}'>Sébastiaan Versteeg</a>",
         )
-
-        payment2 = Payment.objects.create(amount=7.5)
-        self.assertEqual(self.admin.paid_by_link(payment2), "-")
 
     def test_processed_by_link(self) -> None:
         """
         Tests that the right link for the processing user is returned
         """
-        payment1 = Payment.objects.create(amount=7.5, processed_by=self.user)
+        payment1 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
+        )
 
         self.assertEqual(
             self.admin.processed_by_link(payment1),
-            f"<a href='/members/profile/{self.user.pk}'>" f"Test1 Example</a>",
+            f"<a href='/members/profile/{self.user.pk}'>Sébastiaan Versteeg</a>",
         )
 
-        payment2 = Payment.objects.create(amount=7.5)
-        self.assertEqual(self.admin.processed_by_link(payment2), "-")
+    def test_delete_model_succeed(self) -> None:
+        batch = Batch.objects.create()
+        payment = Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        self.client.post(
+            reverse("admin:payments_payment_delete", args=(payment.id,)),
+            {"post": "yes"},  # Add data to confirm deletion in admin
+        )
+        self.assertFalse(Payment.objects.filter(id=payment.id).exists())
 
-    @mock.patch("django.contrib.admin.ModelAdmin.message_user")
-    @mock.patch("payments.services.process_payment")
-    def test_process_cash(self, process_payment, message_user) -> None:
-        """
-        Tests that a cash payment is processed correctly
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        queryset = Payment.objects.filter(pk=object_id)
-        process_payment.return_value = [payment]
+    def test_delete_model_fail(self) -> None:
+        batch = Batch.objects.create()
+        payment = Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        batch.processed = True
+        batch.save()
+        response = self.client.post(
+            reverse("admin:payments_payment_delete", args=(payment.id,)),
+            {"post": "yes"},  # Add data to confirm deletion in admin
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Payment.objects.filter(id=payment.id).exists())
+
+    def test_delete_action_fail(self) -> None:
+        batch = Batch.objects.create()
+        batch_proc = Batch.objects.create()
+        Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch_proc,
+        )
+        batch_proc.processed = True
+        batch_proc.save()
+        self.client.post(
+            reverse("admin:payments_payment_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": Payment.objects.values_list("id", flat=True),
+                "post": "yes",
+            },
+        )
+        self.assertTrue(Payment.objects.filter(id=payment2.id).exists())
+
+    def test_delete_action_success(self) -> None:
+        batch = Batch.objects.create()
+        payment1 = Payment.objects.create(
+            amount=1,
+            processed_by=self.user,
+            paid_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            amount=1,
+            processed_by=self.user,
+            paid_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        self.client.post(
+            reverse("admin:payments_payment_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": Payment.objects.values_list("id", flat=True),
+                "post": "yes",
+            },
+        )
+        self.assertFalse(
+            Payment.objects.filter(id__in=[payment1.id, payment2.id]).exists()
+        )
+
+    def test_has_delete_permission_get(self) -> None:
+        payment = Payment.objects.create(
+            amount=10, paid_by=self.user, processed_by=self.user, type=Payment.CASH
+        )
+        request = self.factory.get(
+            reverse("admin:payments_payment_delete", args=(payment.id,))
+        )
+        request.user = self.user
+        self.admin.has_delete_permission(request)
+        self.assertTrue(Payment.objects.filter(id=payment.id).exists())
+
+    @freeze_time("2020-01-01")
+    def test_batch_link(self) -> None:
+        batch = Batch.objects.create(id=1)
+        payment1 = Payment.objects.create(
+            amount=7.5,
+            processed_by=self.user,
+            paid_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        payment2 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.TPAY
+        )
+        payment3 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.WIRE
+        )
+        self.assertEqual(
+            "<a href='/admin/payments/batch/1/change/'>Thalia Pay payments for 2020-1 (not processed)</a>",
+            str(self.admin.batch_link(payment1)),
+        )
+        self.assertEqual("No batch attached", self.admin.batch_link(payment2))
+        self.assertEqual("", self.admin.batch_link(payment3))
+
+    def test_add_to_new_batch(self) -> None:
+        p1 = Payment.objects.create(
+            amount=1, processed_by=self.user, paid_by=self.user, type=Payment.CARD
+        )
+        p2 = Payment.objects.create(
+            amount=2, processed_by=self.user, paid_by=self.user, type=Payment.CASH
+        )
+        p3 = Payment.objects.create(
+            amount=3, processed_by=self.user, paid_by=self.user, type=Payment.TPAY
+        )
+
         change_url = reverse("admin:payments_payment_changelist")
 
-        request_noperms = self.client.post(
+        self._give_user_permissions(batch_permissions=False)
+        self.client.post(
             change_url,
             {
-                "action": "process_cash_selected",
+                "action": "add_to_new_batch",
                 "index": 1,
-                "_selected_action": [object_id],
+                "_selected_action": [x.id for x in [p1, p2, p3]],
             },
-        ).wsgi_request
-        self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "process_cash_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-
-        process_payment.reset_mock()
-        message_user.reset_mock()
-
-        self.admin.process_cash_selected(request_noperms, queryset)
-        process_payment.assert_not_called()
-
-        self.admin.process_cash_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.CASH)
-        message_user.assert_called_once_with(
-            request_hasperms,
-            _("Successfully processed %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Payment(), 1)},
-            messages.SUCCESS,
         )
 
-    @mock.patch("django.contrib.admin.ModelAdmin.message_user")
-    @mock.patch("payments.services.process_payment")
-    def test_process_card(self, process_payment, message_user) -> None:
-        """
-        Tests that a card payment is processed correctly
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        queryset = Payment.objects.filter(pk=object_id)
-        process_payment.return_value = [payment]
+        for p in Payment.objects.all():
+            self.assertIsNone(p.batch)
+
+        self._give_user_permissions()
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_new_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        )
+
+        for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
+            self.assertIsNone(p.batch)
+
+        self.assertIsNotNone(Payment.objects.get(id=p3.id).batch.id)
+
+        self._give_user_permissions()
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_new_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2]],
+            },
+        )
+
+    def test_add_to_last_batch(self) -> None:
+        b = Batch.objects.create()
+        p1 = Payment.objects.create(
+            amount=1, processed_by=self.user, paid_by=self.user, type=Payment.CARD
+        )
+        p2 = Payment.objects.create(
+            amount=2, processed_by=self.user, paid_by=self.user, type=Payment.CASH
+        )
+        p3 = Payment.objects.create(
+            amount=3, processed_by=self.user, paid_by=self.user, type=Payment.TPAY
+        )
+
         change_url = reverse("admin:payments_payment_changelist")
 
-        request_noperms = self.client.post(
+        self._give_user_permissions(batch_permissions=False)
+        self.client.post(
             change_url,
             {
-                "action": "process_card_selected",
+                "action": "add_to_last_batch",
                 "index": 1,
-                "_selected_action": [object_id],
+                "_selected_action": [x.id for x in [p1, p2, p3]],
             },
-        ).wsgi_request
-        self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "process_card_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-
-        process_payment.reset_mock()
-        message_user.reset_mock()
-
-        self.admin.process_card_selected(request_noperms, queryset)
-        process_payment.assert_not_called()
-
-        self.admin.process_card_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.CARD)
-        message_user.assert_called_once_with(
-            request_hasperms,
-            _("Successfully processed %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Payment(), 1)},
-            messages.SUCCESS,
         )
 
-    @mock.patch("django.contrib.admin.ModelAdmin.message_user")
-    @mock.patch("payments.services.process_payment")
-    def test_process_tpay(self, process_payment, message_user) -> None:
-        """
-        Tests that a Thalia Pay payment is processed correctly
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        queryset = Payment.objects.filter(pk=object_id)
-        process_payment.return_value = [payment]
+        for p in Payment.objects.all():
+            self.assertIsNone(p.batch)
+
+        self._give_user_permissions()
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2, p3]],
+            },
+        )
+
+        for p in Payment.objects.filter(id__in=[p1.id, p2.id]):
+            self.assertIsNone(p.batch)
+
+        self.assertEqual(Payment.objects.get(id=p3.id).batch.id, b.id)
+
+        self.client.post(
+            change_url,
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [x.id for x in [p1, p2]],
+            },
+        )
+
+        b.processed = True
+        b.save()
+
+        self.client.post(
+            change_url,
+            {"action": "add_to_last_batch", "index": 1, "_selected_action": [p3.id],},
+        )
+
+    def test_add_to_last_batch_no_batch(self):
+        p3 = Payment.objects.create(
+            amount=3, processed_by=self.user, paid_by=self.user, type=Payment.TPAY
+        )
+
         change_url = reverse("admin:payments_payment_changelist")
 
-        request_noperms = self.client.post(
-            change_url,
-            {
-                "action": "process_tpay_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
         self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "process_tpay_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
 
-        process_payment.reset_mock()
-        message_user.reset_mock()
-
-        self.admin.process_tpay_selected(request_noperms, queryset)
-        process_payment.assert_not_called()
-
-        self.admin.process_tpay_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.TPAY)
-        message_user.assert_called_once_with(
-            request_hasperms,
-            _("Successfully processed %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Payment(), 1)},
-            messages.SUCCESS,
-        )
-
-    @mock.patch("django.contrib.admin.ModelAdmin.message_user")
-    @mock.patch("payments.services.process_payment")
-    def test_process_wire(self, process_payment, message_user) -> None:
-        """
-        Tests that a wire payment is processed correctly
-        """
-        object_id = "c85ea333-3508-46f1-8cbb-254f8c138020"
-        payment = Payment.objects.create(pk=object_id, amount=7.5)
-        queryset = Payment.objects.filter(pk=object_id)
-        process_payment.return_value = [payment]
-        change_url = reverse("admin:payments_payment_changelist")
-
-        request_noperms = self.client.post(
-            change_url,
-            {
-                "action": "process_wire_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-        self._give_user_permissions()
-        request_hasperms = self.client.post(
-            change_url,
-            {
-                "action": "process_wire_selected",
-                "index": 1,
-                "_selected_action": [object_id],
-            },
-        ).wsgi_request
-
-        process_payment.reset_mock()
-        message_user.reset_mock()
-
-        self.admin.process_wire_selected(request_noperms, queryset)
-        process_payment.assert_not_called()
-
-        self.admin.process_wire_selected(request_hasperms, queryset)
-        process_payment.assert_called_once_with(queryset, self.user, Payment.WIRE)
-        message_user.assert_called_once_with(
-            request_hasperms,
-            _("Successfully processed %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Payment(), 1)},
-            messages.SUCCESS,
-        )
+        try:
+            self.client.post(
+                change_url,
+                {
+                    "action": "add_to_last_batch",
+                    "index": 1,
+                    "_selected_action": [p3.id],
+                },
+            )
+        except ObjectDoesNotExist:
+            self.fail("Add to last batch should work without a batch")
 
     def test_get_actions(self) -> None:
         """
@@ -347,22 +388,39 @@ class PaymentAdminTest(TestCase):
         actions = self.admin.get_actions(response.wsgi_request)
         self.assertCountEqual(
             actions,
-            [
-                "delete_selected",
-                "process_cash_selected",
-                "process_card_selected",
-                "process_wire_selected",
-                "process_tpay_selected",
-                "export_csv",
-            ],
+            ["delete_selected", "add_to_new_batch", "add_to_last_batch", "export_csv",],
         )
+
+    def test_get_readonly_fields(self) -> None:
+        """
+        Test that the custom urls are added to the admin
+        """
+        with self.subTest("No object"):
+            urls = self.admin.get_readonly_fields(HttpRequest(), None)
+            self.assertEqual(urls, ("created_at", "processed_by", "batch"))
+
+        with self.subTest("With object"):
+            urls = self.admin.get_readonly_fields(HttpRequest(), Payment())
+            self.assertEqual(
+                urls,
+                (
+                    "created_at",
+                    "amount",
+                    "paid_by",
+                    "processed_by",
+                    "type",
+                    "topic",
+                    "notes",
+                    "batch",
+                ),
+            )
 
     def test_get_urls(self) -> None:
         """
         Test that the custom urls are added to the admin
         """
         urls = self.admin.get_urls()
-        self.assertEqual(urls[0].name, "payments_payment_process")
+        self.assertEqual(urls[0].name, "payments_payment_create")
 
     @freeze_time("2019-01-01")
     def test_export_csv(self) -> None:
@@ -375,20 +433,39 @@ class PaymentAdminTest(TestCase):
         Payment.objects.create(
             amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
         ).save()
-        Payment.objects.create(amount=9, notes="This is a test").save()
 
         response = self.admin.export_csv(HttpRequest(), Payment.objects.all())
 
         self.assertEqual(
-            f"Created,Processed,Amount,Type,Processor,Payer id,Payer name,"
-            f"Notes\r\n2019-01-01 00:00:00+00:00,2019-01-01 00:00:00+00:00,"
-            f"7.50,Card payment,Test1 Example,{self.user.pk},Test1 Example,"
-            f"\r\n2019-01-01 00:00:00+00:00,2019-01-01 00:00:00+00:00,17.50,"
-            f"Cash payment,Test1 Example,{self.user.pk},Test1 Example,"
-            f"\r\n2019-01-01 00:00:00+00:00,,9.00,No payment,-,-,-,This is a "
-            f"test\r\n",
+            f"Created,Amount,Type,Processor,Payer id,Payer name,"
+            f"Notes\r\n2019-01-01 00:00:00+00:00,"
+            f"7.50,Card payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,"
+            f"\r\n2019-01-01 00:00:00+00:00,17.50,"
+            f"Cash payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,"
+            f"\r\n",
             response.content.decode("utf-8"),
         )
+
+    def test_get_field_queryset(self) -> None:
+        b1 = Batch.objects.create(id=1)
+        Batch.objects.create(id=2, processed=True)
+        p1 = Payment.objects.create(
+            amount=5, paid_by=self.user, processed_by=self.user, type=Payment.TPAY
+        )
+        response = self.client.get(
+            reverse("admin:payments_payment_change", args=(p1.id,))
+        )
+        self.assertCountEqual(
+            [
+                int(x.id)
+                for x in response.context_data["adminform"]
+                .form.fields["batch"]
+                .choices.queryset
+            ],
+            [b1.id],
+        )
+
+        self.client.get(reverse("admin:payments_payment_add"))
 
 
 @freeze_time("2019-01-01")
@@ -396,7 +473,7 @@ class PaymentAdminTest(TestCase):
 class ValidAccountFilterTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.member = Member.objects.create(
+        cls.member = PaymentUser.objects.create(
             username="test1",
             first_name="Test1",
             last_name="Example",
@@ -404,6 +481,8 @@ class ValidAccountFilterTest(TestCase):
             is_staff=True,
         )
         Profile.objects.create(user=cls.member)
+
+        cls.member = PaymentUser.objects.get(pk=cls.member.pk)
 
         cls.no_mandate = BankAccount.objects.create(
             owner=cls.member, initials="J", last_name="Test", iban="NL91ABNA0417164300"
@@ -481,6 +560,179 @@ class ValidAccountFilterTest(TestCase):
 
 
 @freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
+class BatchAdminTest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json"]
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user = PaymentUser.objects.get(pk=2)
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.client.force_login(self.user)
+        self.site = AdminSite()
+        self.admin = admin.BatchAdmin(Batch, admin_site=self.site)
+        self.rf = RequestFactory()
+
+        self.user.refresh_from_db()
+
+        self._give_user_permissions()
+        process_perm = Permission.objects.get(
+            content_type__model="payment", codename="process_payments"
+        )
+        self.user.user_permissions.remove(process_perm)
+        process_perm_batch = Permission.objects.get(
+            content_type__model="batch", codename="process_batches"
+        )
+        self.user.user_permissions.remove(process_perm_batch)
+        self.client.logout()
+        self.client.force_login(self.user)
+
+    def _give_user_permissions(self, batch_permissions=True) -> None:
+        """
+        Helper to give the user permissions
+        """
+        content_type = ContentType.objects.get_for_model(Payment)
+        permissions_p = content_type.permission_set.all()
+        content_type = ContentType.objects.get_for_model(Batch)
+        permissions_b = content_type.permission_set.all()
+        for p in permissions_p:
+            self.user.user_permissions.add(p)
+        if batch_permissions:
+            for p in permissions_b:
+                self.user.user_permissions.add(p)
+
+        self.user.save()
+
+        self.client.logout()
+        self.client.force_login(self.user)
+
+    def test_delete_model_succeed(self) -> None:
+        batch = Batch.objects.create()
+        self.client.post(
+            reverse("admin:payments_batch_delete", args=(batch.id,)),
+            {"post": "yes"},  # Add data to confirm deletion in admin
+        )
+        self.assertFalse(Batch.objects.filter(id=batch.id).exists())
+
+    def test_delete_model_fail(self) -> None:
+        batch = Batch.objects.create(processed=True)
+        response = self.client.post(
+            reverse("admin:payments_batch_delete", args=(batch.id,)), {"post": "yes"},
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Batch.objects.filter(id=batch.id).exists())
+
+    def test_delete_action_fail(self) -> None:
+        Batch.objects.create()
+        batch_proc = Batch.objects.create(processed=True)
+        self.client.post(
+            reverse("admin:payments_batch_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": Batch.objects.values_list("id", flat=True),
+                "post": "yes",
+            },
+        )
+        self.assertTrue(Batch.objects.filter(id=batch_proc.id).exists())
+
+    def test_delete_action_success(self) -> None:
+        batch = Batch.objects.create()
+        batch_proc = Batch.objects.create()
+        self.client.post(
+            reverse("admin:payments_batch_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": Batch.objects.values_list("id", flat=True),
+                "post": "yes",
+            },
+        )
+        self.assertFalse(
+            Batch.objects.filter(id__in=[batch_proc.id, batch.id]).exists()
+        )
+
+    def test_has_delete_permission_get(self) -> None:
+        batch = Batch.objects.create()
+        request = self.rf.get(reverse("admin:payments_batch_delete", args=(batch.id,)))
+        request.user = self.user
+        self.admin.has_delete_permission(request)
+        self.assertTrue(Batch.objects.filter(id=batch.id).exists())
+
+    def test_get_readonly_fields(self) -> None:
+        b = Batch.objects.create()
+        self.assertCountEqual(
+            self.admin.get_readonly_fields(None, b),
+            ["id", "processed", "processing_date", "total_amount",],
+        )
+
+        b.processed = True
+        b.save()
+        self.assertCountEqual(
+            self.admin.get_readonly_fields(None, b),
+            [
+                "id",
+                "description",
+                "processed",
+                "processing_date",
+                "total_amount",
+                "withdrawal_date",
+            ],
+        )
+
+    def test_save_formset(self) -> None:
+        batch = Batch.objects.create()
+        batch_processed = Batch.objects.create()
+        Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch,
+        )
+        Payment.objects.create(
+            amount=1,
+            paid_by=self.user,
+            processed_by=self.user,
+            type=Payment.TPAY,
+            batch=batch_processed,
+        )
+        batch_processed.processed = True
+        batch_processed.save()
+
+        formset = BatchPaymentInlineAdminForm()
+        formset.save = MagicMock(return_value=Payment.objects.all())
+        formset.save_m2m = MagicMock()
+
+        with self.assertRaises(ValidationError):
+            self.admin.save_formset(None, None, formset, None)
+
+        batch_processed.processed = False
+        batch_processed.save()
+
+        formset.save.return_value = Payment.objects.all()
+        self.admin.save_formset(None, None, formset, None)
+
+    @mock.patch("django.contrib.admin.ModelAdmin.changeform_view")
+    def test_change_form_view(self, changeform_view_mock) -> None:
+        self._give_user_permissions()
+
+        b = Batch.objects.create(processed=True)
+        request = self.rf.get(f"/admin/payments/batch/{b.id}/change/")
+        request.user = self.user
+        self.admin.changeform_view(request, b.id)
+
+        changeform_view_mock.assert_called_once_with(request, b.id, "", {"batch": b})
+
+        changeform_view_mock.reset_mock()
+
+        self.admin.changeform_view(request)
+
+        changeform_view_mock.assert_called_once_with(request, None, "", {"batch": None})
+
+
+@freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True)
 class BankAccountAdminTest(TestCase):
     @classmethod
@@ -494,6 +746,8 @@ class BankAccountAdminTest(TestCase):
             is_superuser=True,
         )
         Profile.objects.create(user=cls.user)
+
+        cls.user = PaymentUser.objects.get(pk=cls.user.pk)
 
     def setUp(self) -> None:
         self.site = AdminSite()
@@ -510,7 +764,7 @@ class BankAccountAdminTest(TestCase):
 
         self.assertEqual(
             self.admin.owner_link(bank_account1),
-            f"<a href='/admin/auth/user/{self.user.pk}/change/'>" f"Test1 Example</a>",
+            f"<a href='/admin/auth/user/{self.user.pk}/change/'>Test1 Example</a>",
         )
 
         bank_account2 = BankAccount.objects.create(
@@ -601,3 +855,205 @@ class BankAccountAdminTest(TestCase):
             % {"count": 1, "items": model_ngettext(BankAccount(), 1)},
             messages.SUCCESS,
         )
+
+
+@freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
+class PaymentUserAdminTest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json"]
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user = Member.objects.get(pk=2)
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.client.force_login(self.user)
+        self.site = AdminSite()
+        self.admin = admin.PaymentUserAdmin(PaymentUser, admin_site=self.site)
+        self.rf = RequestFactory()
+        self.user = PaymentUser.objects.first()
+
+    def test_has_add_permissions(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_add"))
+        request.user = self.user
+        self.assertFalse(self.admin.has_add_permission(request))
+
+    def test_has_delete_permissions(self):
+        request = self.rf.get(
+            reverse("admin:payments_paymentuser_delete", args=[self.user.pk])
+        )
+        request.user = self.user
+        self.assertFalse(self.admin.has_delete_permission(request))
+
+    @mock.patch("payments.models.PaymentUser.tpay_balance", new_callable=PropertyMock)
+    def test_get_tpay_balance(self, tpay_balance):
+        tpay_balance.return_value = Decimal(-10)
+        self.assertEquals(self.admin.get_tpay_balance(self.user), "€ -10.00")
+
+    @mock.patch("payments.models.PaymentUser.tpay_enabled", new_callable=PropertyMock)
+    def test_get_tpay_enabled(self, tpay_enabled):
+        tpay_enabled.return_value = True
+        self.assertTrue(self.admin.get_tpay_enabled(self.user))
+
+    @mock.patch("payments.models.PaymentUser.tpay_allowed", new_callable=PropertyMock)
+    def test_get_tpay_allowed(self, tpay_allowed):
+        tpay_allowed.return_value = True
+        self.assertTrue(self.admin.get_tpay_allowed(self.user))
+
+    def test_tpay_allowed_filter(self):
+        filter_all = admin.ThaliaPayAllowedFilter(
+            None, {}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertEqual(
+            filter_all.queryset(None, PaymentUser.objects), PaymentUser.objects
+        )
+
+        filter_true = admin.ThaliaPayAllowedFilter(
+            None, {"tpay_allowed": "1"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_true.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            ["3", "4", "2", "1"],
+        )
+        filter_false = admin.ThaliaPayAllowedFilter(
+            None, {"tpay_allowed": "0"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_false.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            [],
+        )
+
+    def test_tpay_enabled_filter(self):
+        filter_all = admin.ThaliaPayEnabledFilter(
+            None, {}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertEqual(
+            filter_all.queryset(None, PaymentUser.objects), PaymentUser.objects
+        )
+
+        filter_true = admin.ThaliaPayEnabledFilter(
+            None, {"tpay_enabled": "1"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_true.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            ["2", "1"],
+        )
+        filter_false = admin.ThaliaPayEnabledFilter(
+            None, {"tpay_enabled": "0"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_false.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            ["3", "4"],
+        )
+
+    @mock.patch("payments.models.PaymentUser.tpay_balance", new_callable=PropertyMock)
+    def test_tpay_balance_filter(self, tpay_balance):
+        filter_all = admin.ThaliaPayBalanceFilter(
+            None, {}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertEqual(
+            filter_all.queryset(None, PaymentUser.objects), PaymentUser.objects
+        )
+
+        tpay_balance.return_value = Decimal(0)
+        filter_true = admin.ThaliaPayBalanceFilter(
+            None, {"tpay_balance": "0"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_true.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            ["3", "4", "2", "1"],
+        )
+        filter_false = admin.ThaliaPayBalanceFilter(
+            None, {"tpay_balance": "1"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_false.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            [],
+        )
+        tpay_balance.return_value = Decimal(10)
+        filter_true = admin.ThaliaPayBalanceFilter(
+            None, {"tpay_balance": "0"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_true.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            [],
+        )
+        filter_false = admin.ThaliaPayBalanceFilter(
+            None, {"tpay_balance": "1"}, PaymentUser, admin.PaymentUserAdmin
+        )
+        self.assertQuerysetEqual(
+            filter_false.queryset(None, PaymentUser.objects)
+            .values_list("pk", flat=True)
+            .all(),
+            ["3", "4", "2", "1"],
+        )
+
+    def test_user_link(self):
+        self.assertEqual(
+            self.admin.user_link(self.user),
+            f"<a href='/admin/auth/user/{self.user.pk}/change/'>{self.user.get_full_name()}</a>",
+        )
+
+    def test_bankaccount_inline_permissions(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_add"))
+        request.user = self.user
+        self.assertFalse(
+            BankAccountInline(BankAccount, self.admin.admin_site).has_add_permission(
+                request
+            )
+        )
+        self.assertFalse(
+            BankAccountInline(BankAccount, self.admin.admin_site).has_change_permission(
+                request
+            )
+        )
+        self.assertFalse(
+            BankAccountInline(BankAccount, self.admin.admin_site).has_delete_permission(
+                request
+            )
+        )
+
+    def test_payment_inline_permissions(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_add"))
+        request.user = self.user
+        self.assertFalse(
+            PaymentInline(Payment, self.admin.admin_site).has_add_permission(request)
+        )
+        self.assertFalse(
+            PaymentInline(Payment, self.admin.admin_site).has_change_permission(request)
+        )
+        self.assertFalse(
+            PaymentInline(Payment, self.admin.admin_site).has_delete_permission(request)
+        )
+
+    def test_disallow_tpay_action(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_changelist"))
+        request.user = self.user
+        with patch("payments.models.PaymentUser.disallow_tpay") as mock:
+            request._messages = Mock()
+            self.admin.disallow_thalia_pay(request, PaymentUser.objects.all())
+            mock.assert_called()
+
+    def test_allow_tpay_action(self):
+        request = self.rf.get(reverse("admin:payments_paymentuser_changelist"))
+        request.user = self.user
+        with patch("payments.models.PaymentUser.allow_tpay") as mock:
+            request._messages = Mock()
+            self.admin.allow_thalia_pay(request, PaymentUser.objects.all())
+            mock.assert_called()

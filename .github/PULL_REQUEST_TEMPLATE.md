@@ -1,8 +1,15 @@
 Closes #ISSUE
 
 <!--
-Please add the appropriate label for the change that you made to this PR.
-That is: feature, bug or technical change.
+
+Please add the appropriate label for the change that you made to this PR:
+- feature: new feature for the user, not a new feature for build script
+- bug: fix for the user, not a fix to a build script
+- docs: changes to the documentation
+- refactor: refactoring production code, eg. renaming a variable or rewriting a function
+- test: adding missing tests, refactoring tests; no production code change
+- chore: updating poetry, changing the CI settings etc; no production code change
+
 -->
 
 ### Summary

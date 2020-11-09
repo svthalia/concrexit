@@ -3,7 +3,6 @@ This file defines the menu layout.
 
 We set the variable `:py:main` to form the menu tree.
 """
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 __all__ = ["MAIN_MENU"]
@@ -29,7 +28,6 @@ MAIN_MENU = [
                 "name": "singlepages:sibling-associations",
             },
             {"title": _("Become a Member"), "name": "registrations:index"},
-            {"title": _("Thabloid"), "name": "thabloid:index"},
             {"title": _("Alumni"), "name": "events:alumni"},
         ],
     },
@@ -40,6 +38,7 @@ MAIN_MENU = [
             {"title": _("Photos"), "name": "photos:index"},
             {"title": _("Statistics"), "name": "members:statistics"},
             {"title": _("Styleguide"), "name": "singlepages:styleguide"},
+            {"title": _("Thabloid"), "name": "thabloid:index"},
             {"title": _("Become Active"), "name": "singlepages:become-active"},
             {
                 "title": _("G Suite Knowledge Base"),
@@ -59,16 +58,7 @@ MAIN_MENU = [
     {
         "title": _("Education"),
         "submenu": [
-            {
-                "title": _("Summaries & Exams"),
-                "name": "education:courses",
-                # TODO: Remove submenu when the new template is implemented
-                # everywhere
-                "submenu": [
-                    {"title": _("Submit Exam"), "name": "education:submit-exam"},
-                    {"title": _("Submit Summary"), "name": "education:submit-summary"},
-                ],
-            },
+            {"title": _("Summaries & Exams"), "name": "education:courses",},
             {"title": _("Book Sale"), "name": "education:books"},
             {
                 "title": _("Student Participation"),
@@ -78,8 +68,3 @@ MAIN_MENU = [
     },
     {"title": _("Contact"), "name": "singlepages:contact"},
 ]
-
-if settings.SHOW_ALMANAC_PAGE:
-    MAIN_MENU[2]["submenu"].append(
-        {"title": _("Almanac 2020"), "name": "singlepages:almanac",}
-    )

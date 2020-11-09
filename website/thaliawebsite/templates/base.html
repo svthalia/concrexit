@@ -35,12 +35,17 @@
     {% block opengraph %}{% endblock %}
 
     {% block css_head %}
-        {% compress css %}
-            <link href="{% static "css/main.scss" %}" rel="stylesheet"
-                  type="text/x-scss">
-            <link href="{% static "css/main-dark.scss" %}" rel="stylesheet" media="(prefers-color-scheme: dark)"
-                  type="text/x-scss">
-        {% endcompress %}
+        {% if lustrumstyling %}
+            {% compress css %}
+                <link href="{% static "css/main-lustrum.scss" %}" rel="stylesheet"
+                      type="text/x-scss">
+            {% endcompress %}
+        {% else %}
+            {% compress css %}
+                <link href="{% static "css/main.scss" %}" rel="stylesheet"
+                      type="text/x-scss">
+            {% endcompress %}
+        {% endif %}
     {% endblock %}
 
     {% block js_head %}
@@ -79,48 +84,78 @@
     <div class="container">
         <a class="navbar-brand" href="{% url 'index' %}">
             <picture>
-                <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'-dark.svg' %}" media="(prefers-color-scheme: dark)">
-                <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}" media="(prefers-color-scheme: light)">
-                <img
-                    src="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}"
-                    id="logo"
-                    alt="{% trans 'Study Association Thalia' %}"
-                    height="220px"
-                >
+                {% if lustrumstyling %}
+                    <source srcset="{% static 'img/lustrum-logo.svg' %}">
+                    <img
+                        src="{% static 'img/lustrum-logo.svg' %}"
+                        id="logo"
+                        alt="{% trans 'Study Association Thalia' %}"
+                        height="220px"
+                    >
+                {% else %}
+                    <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'-dark.svg' %}" media="(prefers-color-scheme: dark)">
+                    <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}" media="(prefers-color-scheme: light)">
+                    <img
+                        src="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}"
+                        id="logo"
+                        alt="{% trans 'Study Association Thalia' %}"
+                        height="220px"
+                    >
+                {% endif %}
             </picture>
         </a>
         <div class="flex-grow-1"></div>
         <div class="navbar-user order-1 d-flex">
-            <a href="#lang"
-               class="btn btn-link"
-               id="language-switcher">
-                {% if LANGUAGE_CODE == 'nl' %}
-                    <img src="{% static 'img/flags/en.svg' %}"/>
-                {% else %}
-                    <img src="{% static 'img/flags/nl.svg' %}"/>
-                {% endif %}
-            </a>
             <div class="btn-group">
                 {% if not user.is_authenticated %}
                     <a href="{% url 'login' %}" class="btn btn-primary"><i
                         class="fas fa-user"></i></a>
                 {% else %}
-                    <a href="{% url 'members:user' %}" class="btn btn-primary"><i
-                        class="fas fa-user"></i></a>
                     <button type="button"
                             class="btn btn-primary dropdown-toggle dropdown-toggle-split"
                             data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"></button>
+                            aria-expanded="false">
+                        <i class="fas fa-user pr-2"></i>
+                    </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item"
-                           href="{% url 'members:edit-profile' %}">{% trans "edit profile"|capfirst %}</a>
+                           href="{% url 'members:profile' %}">
+                            {% trans "show public profile"|capfirst %}
+                        </a>
                         <a class="dropdown-item"
-                           href="{% url 'password_change' %}">{% trans "change password"|capfirst %}</a>
+                           href="{% url 'members:edit-profile' %}">
+                            {% trans "edit profile"|capfirst %}
+                        </a>
+                        <a class="dropdown-item"
+                           href="{% url 'oauth2_provider:authorized-token-list' %}">
+                            {% trans "authorised applications"|capfirst %}
+                        </a>
+                        <a class="dropdown-item"
+                           href="{% url 'password_change' %}">
+                            {% trans "change password"|capfirst %}
+                        </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item"
-                           href="{% url 'admin:index' %}">{% trans "Site administration" %}</a>
+                           href="{% url 'registrations:renew' %}">
+                            {% trans "manage membership"|capfirst %}
+                        </a>
                         <a class="dropdown-item"
-                           href="{% url 'logout' %}">{% trans "Log Out" %}</a>
+                           href="{% url 'payments:bankaccount-list' %}">
+                            {% trans "manage bank account(s)"|capfirst %}
+                        </a>
+                        <a class="dropdown-item"
+                           href="{% url 'payments:payment-list' %}">
+                            {% trans "view payments"|capfirst %}
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item"
+                           href="{% url 'admin:index' %}">
+                            {% trans "Site administration" %}
+                        </a>
+                        <a class="dropdown-item"
+                           href="{% url 'logout' %}">
+                            {% trans "Logout" %}
+                        </a>
                     </div>
                 {% endif %}
             </div>
@@ -132,7 +167,7 @@
                 aria-label="Toggle navigation"><i class="fa fa-bars"></i>
         </button>
         <div
-            class="collapse navbar-collapse justify-content-end order-lg-0 order-2"
+            class="collapse navbar-collapse justify-content-end pr-lg-4 order-lg-0 order-2"
             id="navbarCollapse">
             {% render_main_menu %}
         </div>
@@ -163,6 +198,8 @@
             <strong>Copyright {% now "Y" %} {% trans 'Study Association Thalia' %}</strong>
             <span class="divider">&#9679;</span>
             <a href="{% url 'singlepages:privacy-policy' %}">{% trans "privacy policy"|capfirst %}</a>
+            <span class="divider">&#9679;</span>
+            <a href="{% url 'singlepages:responsible-disclosure' %}">{% trans "responsible disclosure policy"|capfirst %}</a>
         </div>
         <div class="social float-right">
             <a target="_blank" rel="noopener" href="https://www.facebook.com/svThalia">
@@ -174,8 +211,8 @@
             <a target="_blank" rel="noopener" href="http://www.linkedin.com/groups?gid=54887">
                 <i class="fab fa-linkedin"></i>
             </a>
-            <a target="_blank" rel="noopener" href="https://gitlab.science.ru.nl/thalia/">
-                <i class="fab fa-gitlab"></i>
+            <a target="_blank" rel="noopener" href="https://github.com/svthalia/">
+                <i class="fab fa-github"></i>
             </a>
         </div>
     </div>

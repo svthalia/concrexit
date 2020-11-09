@@ -52,7 +52,6 @@ class EntryAdminViewTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
@@ -87,14 +86,14 @@ class EntryAdminViewTest(TestCase):
     def test_permissions(self):
         url = "/registration/admin/process/{}/".format(self.entry1.pk)
         response = self.client.post(url)
-        self.assertRedirects(response, "/admin/login/?next=%s" % url)
+        self.assertRedirects(response, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
         url = "/registration/admin/process/{}/".format(self.entry1.pk)
         response = self.client.post(url)
         self.assertRedirects(
-            response, "/admin/registrations/registration/%s/change/" % self.entry1.pk
+            response, f"/admin/registrations/registration/{self.entry1.pk}/change/"
         )
 
     @mock.patch("registrations.services.check_unique_user")
@@ -102,7 +101,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.services.reject_entries")
     def test_post_accept(self, reject_entries, accept_entries, check_unique_user):
         self.view.action = "accept"
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -127,8 +126,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 accept_entries.assert_called_once_with(1, entry_qs)
@@ -156,7 +154,7 @@ class EntryAdminViewTest(TestCase):
 
                 request._messages.add.assert_any_call(
                     messages.ERROR,
-                    _("Could not accept %s. " "Username is not unique.")
+                    _("Could not accept %s. Username is not unique.")
                     % model_ngettext(entry_qs.all()[0], 1),
                     "",
                 )
@@ -165,7 +163,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.services.reject_entries")
     def test_post_reject(self, reject_entries, accept_entries):
         self.view.action = "reject"
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -189,8 +187,7 @@ class EntryAdminViewTest(TestCase):
                 self.assertEqual(response.status_code, 302)
 
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 reject_entries.assert_called_once_with(1, entry_qs)
@@ -215,7 +212,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.emails.send_registration_email_confirmation")
     def test_post_resend(self, send_email):
         self.view.action = "resend"
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -236,19 +233,18 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
-                if type == "registration":
+                if reg_type == "registration":
                     send_email.assert_called_once_with(entry)
-                elif type == "renewal":
+                elif reg_type == "renewal":
                     send_email.assert_not_called()
 
     @mock.patch("registrations.services.revert_entry")
     def test_post_revert(self, revert):
         self.view.action = "revert"
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -269,8 +265,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 revert.assert_called_once_with(1, entry.entry_ptr)
@@ -282,7 +277,7 @@ class EntryAdminViewTest(TestCase):
         )
 
         request = self.rf.post(
-            f"/registration/admin/process/1234/", {"action": "accept",}
+            "/registration/admin/process/1234/", {"action": "accept"}
         )
         request.user = _get_mock_user()
         request.member = request.user
@@ -296,7 +291,7 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.services.reject_entries")
     def test_post_no_action(self, reject_entries, accept_entries):
         self.view.action = None
-        for type, entry in {
+        for reg_type, entry in {
             "registration": self.entry1,
             "renewal": self.entry2,
         }.items():
@@ -320,8 +315,7 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url,
-                    "/admin/registrations/%s/%s/change/" % (type, entry.pk),
+                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
 
@@ -342,7 +336,6 @@ class ConfirmEmailViewTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
@@ -565,35 +558,48 @@ class RenewalFormViewTest(TestCase):
         membership = Membership(pk=2, type=Membership.MEMBER)
         self.view.request = MagicMock()
 
-        with mock.patch("members.models.Membership.objects") as _qs:
+        with mock.patch("members.models.Membership.objects") as _membership_qs:
             Membership.objects.filter().exists.return_value = True
-            context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(len(context), 7)
-            self.assertEqual(
-                context["year_fees"],
-                floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2),
-            )
-            self.assertEqual(
-                context["study_fees"],
-                floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2),
-            )
-            self.assertEqual(context["was_member"], True)
 
-            Membership.objects.filter().exists.return_value = False
-            context = self.view.get_context_data(form=MagicMock())
-            self.assertEqual(context["was_member"], False)
-
-            with self.subTest("With latest membership"):
-                self.view.request.member.latest_membership = membership
+            with mock.patch("registrations.models.Renewal.objects") as _renewal_qs:
+                Renewal.objects.filter().last.return_value = None
 
                 context = self.view.get_context_data(form=MagicMock())
-                self.assertEqual(context["latest_membership"], membership)
+                self.assertEqual(len(context), 8)
+                self.assertEqual(
+                    context["year_fees"],
+                    floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR], 2),
+                )
+                self.assertEqual(
+                    context["study_fees"],
+                    floatformat(settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2),
+                )
+                self.assertEqual(context["was_member"], True)
 
-            with self.subTest("Without latest membership"):
-                self.view.request.member.latest_membership = None
-
+                Membership.objects.filter().exists.return_value = False
                 context = self.view.get_context_data(form=MagicMock())
-                self.assertEqual(context["latest_membership"], None)
+                self.assertEqual(context["was_member"], False)
+
+                with self.subTest("With latest membership"):
+                    self.view.request.member.latest_membership = membership
+
+                    context = self.view.get_context_data(form=MagicMock())
+                    self.assertEqual(context["latest_membership"], membership)
+
+                with self.subTest("Without latest membership"):
+                    self.view.request.member.latest_membership = None
+
+                    context = self.view.get_context_data(form=MagicMock())
+                    self.assertEqual(context["latest_membership"], None)
+
+                with self.subTest("With renewal"):
+                    renewal = Renewal.objects.create(
+                        member=self.view.request.member, status=Entry.STATUS_ACCEPTED
+                    )
+                    Renewal.objects.filter().last.return_value = renewal
+
+                    context = self.view.get_context_data(form=MagicMock())
+                    self.assertEqual(context["latest_renewal"], renewal)
 
     def test_get_form(self):
         self.view.request = self.rf.get("/")
@@ -689,7 +695,7 @@ class RenewalFormViewTest(TestCase):
             email="test@example.org",
             first_name="John",
             last_name="Doe",
-            profile=Profile(language="en"),
+            profile=Profile(),
         )
 
         renewal = Renewal(pk=0, member=member)
@@ -741,8 +747,8 @@ class ReferenceCreateViewTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.50,
             membership_type=Membership.BENEFACTOR,
             status=Entry.STATUS_CONFIRM,
         )
@@ -751,6 +757,7 @@ class ReferenceCreateViewTest(TestCase):
         )
         cls.renewal = Renewal.objects.create(
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.50,
             membership_type=Membership.BENEFACTOR,
             status=Entry.STATUS_CONFIRM,
             member=cls.new_user,

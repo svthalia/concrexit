@@ -27,9 +27,8 @@ class MessageSentFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() == "1":
             return queryset.filter(sent__isnull=False)
-        elif self.value() == "0":
+        if self.value() == "0":
             return queryset.filter(sent__isnull=True)
-
         return queryset
 
 
@@ -78,9 +77,7 @@ class MessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_nl",
                 "title_en",
-                "body_nl",
                 "body_en",
                 "url",
                 "category",
@@ -90,9 +87,7 @@ class MessageAdmin(TranslatedModelAdmin):
             )
         return (
             "users",
-            "title_nl",
             "title_en",
-            "body_nl",
             "body_en",
             "url",
             "category",
@@ -102,9 +97,7 @@ class MessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_nl",
                 "title_en",
-                "body_nl",
                 "body_en",
                 "url",
                 "category",
@@ -116,9 +109,7 @@ class MessageAdmin(TranslatedModelAdmin):
 
     def change_view(self, request, object_id, form_url="", **kwargs):
         obj = Message.objects.filter(id=object_id)[0]
-        return super(MessageAdmin, self).change_view(
-            request, object_id, form_url, {"message": obj}
-        )
+        return super().change_view(request, object_id, form_url, {"message": obj})
 
 
 @admin.register(models.ScheduledMessage)
@@ -134,9 +125,7 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_nl",
                 "title_en",
-                "body_nl",
                 "body_en",
                 "url",
                 "category",
@@ -148,9 +137,7 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
             )
         return (
             "users",
-            "title_nl",
             "title_en",
-            "body_nl",
             "body_en",
             "url",
             "category",
@@ -161,9 +148,7 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_nl",
                 "title_en",
-                "body_nl",
                 "body_en",
                 "url",
                 "category",

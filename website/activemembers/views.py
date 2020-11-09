@@ -6,14 +6,11 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
 
 from utils.snippets import datetime_to_lectureyear
-from utils.translation import localize_attr_name
 from .models import Board, MemberGroupMembership, Committee, Society
 
 
 class _MemberGroupDetailView(DetailView):
-    """
-    Base view for membergroup details
-    """
+    """Base view for membergroup details."""
 
     context_object_name = "membergroup"
 
@@ -50,53 +47,43 @@ class _MemberGroupDetailView(DetailView):
 
 
 class CommitteeIndexView(ListView):
-    """
-    View that renders the committee overview page
-    """
+    """View that renders the committee overview page."""
 
     template_name = "activemembers/committee_index.html"
     queryset = Committee.active_objects
     context_object_name = "committees"
 
     def get_ordering(self) -> str:
-        return localize_attr_name("name")
+        return "name"
 
 
 class CommitteeDetailView(_MemberGroupDetailView):
-    """
-    View that renders the page of one selected committee
-    """
+    """View that renders the page of one selected committee."""
 
     template_name = "activemembers/committee_detail.html"
     model = Committee
 
 
 class SocietyIndexView(ListView):
-    """
-    View that renders the societies overview page
-    """
+    """View that renders the societies overview page."""
 
     template_name = "activemembers/society_index.html"
     queryset = Society.active_objects
     context_object_name = "societies"
 
     def get_ordering(self) -> str:
-        return localize_attr_name("name")
+        return "name"
 
 
 class SocietyDetailView(_MemberGroupDetailView):
-    """
-    View that renders the page of one selected society
-    """
+    """View that renders the page of one selected society."""
 
     template_name = "activemembers/society_detail.html"
     model = Society
 
 
 class BoardIndexView(ListView):
-    """
-    View that renders the board overview page
-    """
+    """View that renders the board overview page."""
 
     template_name = "activemembers/board_index.html"
     context_object_name = "old_boards"
@@ -121,9 +108,7 @@ class BoardIndexView(ListView):
 
 
 class BoardDetailView(_MemberGroupDetailView):
-    """
-    View that renders the page of one selected board
-    """
+    """View that renders the page of one selected board."""
 
     template_name = "activemembers/board_detail.html"
     context_object_name = "membergroup"

@@ -1,8 +1,9 @@
 """Forms defined by the members package"""
 from django import forms
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
-from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
@@ -30,9 +31,9 @@ class ProfileForm(forms.ModelForm):
             "initials",
             "display_name_preference",
             "photo",
-            "language",
             "receive_optin",
             "receive_newsletter",
+            "receive_magazine",
             "email_gsuite_only",
         ]
         model = Profile
@@ -77,7 +78,7 @@ class UserCreationForm(BaseUserCreationForm):
         super().clean()
 
     def save(self, commit=True):
-        password = User.objects.make_random_password(length=15)
+        password = get_user_model().objects.make_random_password(length=15)
         # pass the password on as if it was filled in, so that save() works
         self.cleaned_data["password1"] = password
         user = super().save(commit=False)
@@ -85,10 +86,7 @@ class UserCreationForm(BaseUserCreationForm):
         if commit:
             user.save()
         if self.cleaned_data["send_welcome_email"]:
-            # Ugly way to get the language since member isn't available
-            language = str(self.data.get("profile-0-language", "en"))
-            if language not in ("nl", "en"):
-                language = "en"
+            language = settings.LANGUAGE_CODE
             emails.send_welcome_message(user, password, language)
         return user
 
@@ -105,13 +103,13 @@ class UserChangeForm(BaseUserChangeForm):
     username = forms.CharField(
         label=_("Username"),
         required=True,
-        help_text=_("Required. 64 characters or fewer. " "Letters and digits only."),
+        help_text=_("Required. 64 characters or fewer. Letters and digits only."),
         widget=forms.TextInput(attrs={"class": "vTextField", "maxlength": 64}),
         validators=[
             RegexValidator(
                 regex="^[a-zA-Z0-9]{1,64}$",
                 message=_(
-                    "Please use 64 characters or fewer. " "Letters and digits only."
+                    "Please use 64 characters or fewer. Letters and digits only."
                 ),
             )
         ],
@@ -132,9 +130,6 @@ class UserChangeForm(BaseUserChangeForm):
         required=True,
         widget=forms.EmailInput(attrs={"class": "vTextField", "maxlength": 254}),
     )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def clean(self):
         if "username" in self.cleaned_data:

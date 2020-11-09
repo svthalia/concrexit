@@ -8,6 +8,3 @@ class FieldsWidget(Widget):
     """
 
     template_name = "events/admin/fields_widget.html"
-
-    def value_from_datadict(self, data, files, name):
-        return super().value_from_datadict(data, files, name)

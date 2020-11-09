@@ -10,7 +10,7 @@ from freezegun import freeze_time
 from activemembers.models import Committee, MemberGroupMembership
 from events import services
 from events.exceptions import RegistrationError
-from events.models import Event, Registration, RegistrationInformationField
+from events.models import Event, EventRegistration, RegistrationInformationField
 from members.models import Member
 
 
@@ -25,15 +25,12 @@ class ServicesTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_nl="testevenement",
             title_en="testevent",
             description_en="desc",
-            description_nl="besch",
             published=True,
             start=(timezone.now() + timedelta(hours=1)),
             end=(timezone.now() + timedelta(hours=2)),
             location_en="test location",
-            location_nl="test locatie",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -76,7 +73,7 @@ class ServicesTest(TestCase):
         self.event.registration_end = timezone.now()
         self.assertEqual(None, services.is_user_registered(AnonymousUser(), self.event))
         self.assertFalse(services.is_user_registered(self.member, self.event))
-        Registration.objects.create(
+        EventRegistration.objects.create(
             event=self.event, member=self.member, date_cancelled=None
         )
 
@@ -117,7 +114,7 @@ class ServicesTest(TestCase):
             services.event_permissions(self.member, self.event),
         )
 
-        reg = Registration.objects.create(
+        reg = EventRegistration.objects.create(
             event=self.event, member=self.member, date_cancelled=None
         )
 
@@ -133,7 +130,6 @@ class ServicesTest(TestCase):
         RegistrationInformationField.objects.create(
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
-            name_nl="test",
             name_en="test",
             required=False,
         )
@@ -250,7 +246,7 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.cancel_registration(self.member, self.event)
 
-        registration = Registration.objects.create(
+        registration = EventRegistration.objects.create(
             event=self.event, member=self.member,
         )
 
@@ -278,7 +274,7 @@ class ServicesTest(TestCase):
         registration.date_cancelled = None
         registration.save()
 
-        Registration.objects.create(
+        EventRegistration.objects.create(
             event=self.event,
             member=Member.objects.filter(username="testuser").first(),
             date=timezone.make_aware(datetime(2017, 9, 1)),
@@ -300,7 +296,7 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.update_registration(self.member, self.event, field_values=None)
 
-        registration = Registration.objects.create(
+        registration = EventRegistration.objects.create(
             event=self.event, member=self.member,
         )
 
@@ -368,7 +364,7 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.update_registration(self.member, self.event, field_values=None)
 
-        registration = Registration.objects.create(event=self.event, name="test",)
+        registration = EventRegistration.objects.create(event=self.event, name="test",)
 
         services.update_registration(event=self.event, name="test", field_values=None)
 
@@ -434,7 +430,7 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.registration_fields(mock_request, self.member, self.event)
 
-        registration = Registration.objects.create(
+        registration = EventRegistration.objects.create(
             event=self.event, member=self.member,
         )
 
@@ -448,7 +444,6 @@ class ServicesTest(TestCase):
         RegistrationInformationField.objects.create(
             id=1,
             name_en="1",
-            name_nl="1",
             type=RegistrationInformationField.INTEGER_FIELD,
             event=self.event,
             required=False,
@@ -457,7 +452,6 @@ class ServicesTest(TestCase):
         RegistrationInformationField.objects.create(
             id=2,
             name_en="2",
-            name_nl="2",
             type=RegistrationInformationField.BOOLEAN_FIELD,
             event=self.event,
             required=True,
@@ -465,7 +459,6 @@ class ServicesTest(TestCase):
 
         RegistrationInformationField.objects.create(
             id=3,
-            name_nl="3",
             name_en="3",
             type=RegistrationInformationField.TEXT_FIELD,
             event=self.event,

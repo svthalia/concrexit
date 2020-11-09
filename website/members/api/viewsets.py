@@ -1,6 +1,7 @@
 """DRF viewsets defined by the members package"""
 import copy
 
+from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import permissions
 from rest_framework import viewsets, filters, mixins
 from rest_framework.decorators import action
@@ -19,6 +20,7 @@ from utils.snippets import extract_date_range
 class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
     """Viewset that renders or edits a member"""
 
+    required_scopes = ["members:read"]
     queryset = Member.objects.all()
     filter_backends = (
         filters.OrderingFilter,
@@ -30,12 +32,13 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
 
     def get_serializer_class(self):
         if self.action == "retrieve":
-            if self.is_self_reference() or self.request.user.has_perm(
-                "members.change_profile"
+            if self.is_self_reference() or (
+                self.request.user
+                and self.request.user.has_perm("members.change_profile")
             ):
                 return ProfileEditSerializer
             return ProfileRetrieveSerializer
-        elif self.action.endswith("update"):
+        if self.action.endswith("update"):
             return ProfileEditSerializer
         return MemberListSerializer
 
@@ -48,24 +51,23 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
         lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
         lookup_arg = self.kwargs.get(lookup_url_kwarg)
 
-        return self.request.user.is_authenticated and lookup_arg in (
-            "me",
-            str(self.request.member.pk),
+        return (
+            self.request.user
+            and self.request.user.is_authenticated
+            and lookup_arg in ("me", str(self.request.member.pk),)
         )
 
     def get_permissions(self):
         if self.action and (
             not self.action.endswith("update") or self.is_self_reference()
         ):
-            return [permissions.IsAuthenticated()]
-        else:
-            return [permissions.DjangoModelPermissions()]
+            return [IsAuthenticatedOrTokenHasScope()]
+        return [IsAuthenticatedOrTokenHasScope(), permissions.DjangoModelPermissions()]
 
     def get_object(self):
         if self.is_self_reference():
             return self.request.member.profile
-        else:
-            return super().get_object().profile
+        return super().get_object().profile
 
     def _get_birthdays(self, member, start, end):
         birthdays = []

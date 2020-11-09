@@ -10,6 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    thaliawebsite.api
    thaliawebsite.settings
@@ -81,4 +82,3 @@ thaliawebsite.wsgi module
    :members:
    :undoc-members:
    :show-inheritance:
-

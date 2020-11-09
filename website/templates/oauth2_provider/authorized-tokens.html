@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load i18n static bootstrap4 compress alert %}
+
+{% comment %}This page is automatically used by django-oauth-toolkit{% endcomment %}
+
+{% block title %}{% trans "authorised applications"|capfirst %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "authorised applications"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block body %}
+    <section class="page-section" id="payments-account-overview">
+        <div class="container">
+            <h1 class="text-center section-title">{% trans "authorised applications"|capfirst %}</h1>
+
+            <p class="text-center">
+                {% blocktrans trimmed %}
+                    This page lists all the applications you have authorised to access your Thalia account.
+                {% endblocktrans %}
+            </p>
+
+            {% if authorized_tokens %}
+                <table class="table text-center mt-4">
+                    <thead>
+                    <tr>
+                        <th scope="col">
+                            {% trans "Application" %}
+                        </th>
+                        <th scope="col">
+                            {% trans "Scopes"|capfirst %}
+                        </th>
+                        <th scope="col">
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for token in authorized_tokens %}
+                        <tr>
+                            <th scope="row">
+                                {{ token.application }}
+                            </th>
+                            <td>
+                                <ul class="list-unstyled">
+                                {% for scope_name, scope_description in token.scopes.items %}
+                                    <li>{{ scope_description }}</li>
+                                {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <a
+                                    class="btn btn-secondary"
+                                    href="{% url 'oauth2_provider:authorized-token-delete' token.pk %}">
+                                    {% trans 'revoke'|capfirst %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {% trans "You don't have any authorised applications yet." as no_tokens %}
+                {% alert 'info' no_tokens %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

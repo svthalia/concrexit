@@ -37,13 +37,22 @@ class GSuiteSyncService:
             return False
 
     def __init__(
-        self,
-        groups_settings_api=get_groups_settings_api(),
-        directory_api=get_directory_api(),
+        self, groups_settings_api=None, directory_api=None,
     ):
-        super().__init__()
-        self.groups_settings_api = groups_settings_api
-        self.directory_api = directory_api
+        self._groups_settings_api = groups_settings_api
+        self._directory_api = directory_api
+
+    @property
+    def directory_api(self):
+        if self._directory_api is not None:
+            return self._directory_api
+        return get_directory_api()
+
+    @property
+    def groups_settings_api(self):
+        if self._groups_settings_api is not None:
+            return self._groups_settings_api
+        return get_groups_settings_api()
 
     @staticmethod
     def _group_settings(moderated):
@@ -90,10 +99,11 @@ class GSuiteSyncService:
                 groupUniqueId=f"{group.name}@{settings.GSUITE_DOMAIN}",
                 body=self._group_settings(group.moderated),
             ).execute()
-            logger.info(f"List {group.name} created")
+            logger.info("List %s created", group.name)
         except HttpError as e:
             logger.error(
-                f"Could not successfully finish " f"creating the list {group.name}",
+                "Could not successfully finish creating the list %s: %s",
+                group.name,
                 e.content,
             )
             return
@@ -120,9 +130,9 @@ class GSuiteSyncService:
                 groupUniqueId=f"{group.name}@{settings.GSUITE_DOMAIN}",
                 body=self._group_settings(group.moderated),
             ).execute()
-            logger.info(f"List {group.name} updated")
+            logger.info("List %s updated", group.name)
         except HttpError as e:
-            logger.error(f"Could not update list {group.name}", e.content)
+            logger.error("Could not update list %s: %s", group.name, e.content)
             return
 
         self._update_group_members(group)
@@ -142,7 +152,8 @@ class GSuiteSyncService:
             )
         except HttpError as e:
             logger.error(
-                f"Could not obtain existing aliases " f"for list {group.name}",
+                "Could not obtain existing aliases for list %s: %s",
+                group.name,
                 e.content,
             )
             return
@@ -161,7 +172,9 @@ class GSuiteSyncService:
                 ).execute()
             except HttpError as e:
                 logger.error(
-                    f"Could not remove alias " f"{remove_alias} for list {group.name}",
+                    "Could not remove alias %s for list %s: %s",
+                    remove_alias,
+                    group.name,
                     e.content,
                 )
 
@@ -173,11 +186,13 @@ class GSuiteSyncService:
                 ).execute()
             except HttpError as e:
                 logger.error(
-                    f"Could not insert alias " f"{insert_alias} for list {group.name}",
+                    "Could not insert alias %s for list %s: %s",
+                    insert_alias,
+                    group.name,
                     e.content,
                 )
 
-        logger.info(f"List {group.name} aliases updated")
+        logger.info("List %s aliases updated", group.name)
 
     def delete_group(self, name: str):
         """
@@ -191,9 +206,9 @@ class GSuiteSyncService:
             ).execute()
             self._update_group_members(GSuiteSyncService.GroupData(name, addresses=[]))
             self._update_group_aliases(GSuiteSyncService.GroupData(name, aliases=[]))
-            logger.info(f"List {name} deleted")
+            logger.info("List %s deleted", name)
         except HttpError as e:
-            logger.error(f"Could not delete list {name}", e.content)
+            logger.error("Could not delete list %s: %s", name, e.content)
 
     def _update_group_members(self, group: GroupData):
         """
@@ -226,7 +241,7 @@ class GSuiteSyncService:
                 m["email"] for m in members_list if m["role"] == "MANAGER"
             ]
         except HttpError as e:
-            logger.error("Could not obtain list member data", e.content)
+            logger.error("Could not obtain list member data: %s", e.content)
             return  # the list does not exist or something else is wrong
         new_members = group.addresses
 
@@ -245,8 +260,9 @@ class GSuiteSyncService:
                 ).execute()
             except HttpError as e:
                 logger.error(
-                    f"Could not remove list member "
-                    f"{remove_member} from {group.name}",
+                    "Could not remove list member %s from %s: %s",
+                    remove_member,
+                    group.name,
                     e.content,
                 )
 
@@ -258,11 +274,13 @@ class GSuiteSyncService:
                 ).execute()
             except HttpError as e:
                 logger.error(
-                    f"Could not insert list member " f"{insert_member} in {group.name}",
+                    "Could not insert list member %s in %s: %s",
+                    insert_member,
+                    group.name,
                     e.content,
                 )
 
-        logger.info(f"List {group.name} members updated")
+        logger.info("List %s members updated", group.name)
 
     @staticmethod
     def mailinglist_to_group(mailinglist: MailingList):
@@ -293,8 +311,8 @@ class GSuiteSyncService:
         )
 
     def _get_default_lists(self):
-        return [self.mailinglist_to_group(l) for l in MailingList.objects.all()] + [
-            self._automatic_to_group(l) for l in get_automatic_lists()
+        return [self.mailinglist_to_group(ml) for ml in MailingList.objects.all()] + [
+            self._automatic_to_group(ml) for ml in get_automatic_lists()
         ]
 
     def sync_mailinglists(self, lists: List[GroupData] = None):
@@ -329,7 +347,7 @@ class GSuiteSyncService:
                 g["name"] for g in groups_list if g["directMembersCount"] == "0"
             ]
         except HttpError as e:
-            logger.error("Could not get the existing groups", e.content)
+            logger.error("Could not get the existing groups: %s", e.content)
             return  # there are no groups or something went wrong
 
         new_groups = [g.name for g in lists if len(g.addresses) > 0]
@@ -337,11 +355,11 @@ class GSuiteSyncService:
         remove_list = [x for x in existing_groups if x not in new_groups]
         insert_list = [x for x in new_groups if x not in existing_groups]
 
-        for l in lists:
-            if l.name in insert_list and l.name not in archived_groups:
-                self.create_group(l)
-            elif len(l.addresses) > 0:
-                self.update_group(l.name, l)
+        for ml in lists:
+            if ml.name in insert_list and ml.name not in archived_groups:
+                self.create_group(ml)
+            elif len(ml.addresses) > 0:
+                self.update_group(ml.name, ml)
 
-        for l in remove_list:
-            self.delete_group(l)
+        for ml in remove_list:
+            self.delete_group(ml)

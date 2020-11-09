@@ -1,7 +1,6 @@
 """The forms defined by the documents package"""
 from django import forms
 from django.contrib import admin
-from django.db.models import Q
 from django.forms import widgets
 from django.utils import timezone
 
@@ -21,12 +20,9 @@ class DocumentFileInput(widgets.ClearableFileInput):
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         if hasattr(value, "url"):
-            doc = models.Document.objects.get(Q(file_en=value) | Q(file_nl=value))
+            doc = models.Document.objects.get(file=value)
             context["document_id"] = doc.pk
-            if doc.file_en == value:
-                context["language"] = "en"
-            else:
-                context["language"] = "nl"
+            context["language"] = "en"
         return context
 
 
@@ -36,13 +32,11 @@ class MinutesForm(forms.ModelForm):
     class Meta:
         model = models.Minutes
         fields = (
-            "file_nl",
-            "file_en",
+            "file",
             "members_only",
         )
         widgets = {
-            "file_nl": DocumentFileInput,
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
 
@@ -51,28 +45,25 @@ class AnnualDocumentForm(forms.ModelForm):
 
     class Meta:
         model = models.AnnualDocument
-        exclude = ()
+        fields = "__all__"
         widgets = {
             "year": forms.Select,
-            "file_nl": DocumentFileInput,
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
-    def current_year():
+    @staticmethod
+    def _current_year():
         """Get the current lecture year"""
         return datetime_to_lectureyear(timezone.now())
 
-    def year_choices():
+    @staticmethod
+    def _year_choices():
         """Get the lecture years"""
         current = datetime_to_lectureyear(timezone.now())
         return [
             (year, "{}-{}".format(year, year + 1))
             for year in range(current + 1, 1989, -1)
         ]
-
-    year = forms.TypedChoiceField(
-        coerce=int, choices=year_choices, initial=current_year
-    )
 
 
 class AssociationDocumentForm(forms.ModelForm):
@@ -81,15 +72,12 @@ class AssociationDocumentForm(forms.ModelForm):
     class Meta:
         model = models.AssociationDocument
         fields = (
-            "name_en",
-            "name_nl",
-            "file_en",
-            "file_nl",
+            "name",
+            "file",
             "members_only",
         )
         widgets = {
-            "file_nl": DocumentFileInput,
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
 
@@ -99,16 +87,13 @@ class EventDocumentForm(forms.ModelForm):
     class Meta:
         model = models.EventDocument
         fields = (
-            "name_en",
-            "name_nl",
-            "file_en",
-            "file_nl",
+            "name",
+            "file",
             "members_only",
             "owner",
         )
         widgets = {
-            "file_nl": DocumentFileInput,
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
 
@@ -118,15 +103,12 @@ class MiscellaneousDocumentForm(forms.ModelForm):
     class Meta:
         model = models.MiscellaneousDocument
         fields = (
-            "name_en",
-            "name_nl",
-            "file_en",
-            "file_nl",
+            "name",
+            "file",
             "members_only",
         )
         widgets = {
-            "file_nl": DocumentFileInput,
-            "file_en": DocumentFileInput,
+            "file": DocumentFileInput,
         }
 
 
@@ -135,7 +117,7 @@ class GeneralMeetingForm(forms.ModelForm):
 
     class Meta:
         model = models.GeneralMeeting
-        exclude = ()
+        fields = "__all__"
         widgets = {
             "documents": admin.widgets.FilteredSelectMultiple(
                 "documents", is_stacked=False

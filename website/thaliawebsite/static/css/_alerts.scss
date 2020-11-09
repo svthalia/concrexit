@@ -4,43 +4,43 @@
 }
 
 .alert-success {
-    color: $success-contrast;
-    background-color: $success;
-    border-color: $success-hover;
+    color: var(--success-contrast);
+    background-color: var(--success);
+    border-color: var(--success-hover);
 }
 
 .alert-success .close:hover {
-    color: $success-hover;
+    color: var(--success-hover);
 }
 
 .alert-info {
-    color: $info-contrast;
-    background-color: $info;
-    border-color: $info-hover;
+    color: var(--info-contrast);
+    background-color: var(--info);
+    border-color: var(--info-hover);
 }
 
 .alert-info .close:hover {
-    color: $info-hover;
+    color: var(--info-hover);
 }
 
 .alert-warning {
-    color: $warning-contrast;
-    background-color: $warning;
-    border-color: $warning-hover;
+    color: var(--warning-contrast);
+    background-color: var(--warning);
+    border-color: var(--warning-hover);
 }
 
 .alert-warning .close:hover {
-    color: $warning-hover;
+    color: var(--warning-hover);
 }
 
 .alert-danger, .alert-error {
-    color: $danger-contrast;
-    background-color: $danger;
-    border-color: $danger-hover;
+    color: var(--danger-contrast);
+    background-color: var(--danger);
+    border-color: var(--danger-hover);
 }
 
 .alert-danger .close:hover, .alert-error .close:hover {
-    color: $danger-hover;
+    color: var(--danger-hover);
 }
 
 .alert-dismissible .close {

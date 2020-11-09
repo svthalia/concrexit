@@ -21,7 +21,7 @@ from events.exceptions import RegistrationError
 from events.forms import FieldsForm, EventMessageForm
 from payments.models import Payment
 from pushnotifications.models import Message, Category
-from .models import Event, Registration
+from .models import Event, EventRegistration
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -81,7 +81,7 @@ class RegistrationAdminFields(FormView):
                 "title": _("Change registration fields"),
                 "adminform": helpers.AdminForm(
                     context["form"],
-                    ((None, {"fields": [f for f in context["form"].fields.keys()]}),),
+                    ((None, {"fields": context["form"].fields.keys()}),),
                     {},
                 ),
             }
@@ -104,7 +104,7 @@ class RegistrationAdminFields(FormView):
             messages.success(self.request, _("Registration successfully saved."))
             if "_save" in self.request.POST:
                 return redirect(
-                    "admin:events_registration_change", self.registration.pk
+                    "admin:events_eventregistration_change", self.registration.pk
                 )
         except RegistrationError as e:
             messages.error(self.request, e)
@@ -112,14 +112,14 @@ class RegistrationAdminFields(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.registration = get_object_or_404(
-            Registration, pk=self.kwargs["registration"]
+            EventRegistration, pk=self.kwargs["registration"]
         )
         try:
             if self.registration.event.has_fields():
                 return super().dispatch(request, *args, **kwargs)
         except RegistrationError:
             pass
-        return redirect("admin:events_registration_change", self.registration.pk)
+        return redirect("admin:events_eventregistration_change", self.registration.pk)
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -133,6 +133,7 @@ class EventMessage(FormView):
     form_class = EventMessageForm
     template_name = "events/admin/message_form.html"
     admin = None
+    event = None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -158,7 +159,7 @@ class EventMessage(FormView):
                 "title": _("Send push notification"),
                 "adminform": helpers.AdminForm(
                     context["form"],
-                    ((None, {"fields": [f for f in context["form"].fields.keys()]}),),
+                    ((None, {"fields": context["form"].fields.keys()}),),
                     {},
                 ),
             }
@@ -170,9 +171,7 @@ class EventMessage(FormView):
         if not values["url"]:
             values["url"] = settings.BASE_URL + self.event.get_absolute_url()
         message = Message(
-            title_nl=values["title_nl"],
             title_en=values["title_en"],
-            body_nl=values["body_nl"],
             body_en=values["body_en"],
             url=values["url"],
             category=Category.objects.get(key=Category.EVENT),
@@ -184,6 +183,7 @@ class EventMessage(FormView):
         messages.success(self.request, _("Message sent successfully."))
         if "_save" in self.request.POST:
             return redirect("admin:events_event_details", self.event.pk)
+        return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, pk=self.kwargs["pk"])
@@ -210,7 +210,7 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
         """
         event = get_object_or_404(Event, pk=pk)
         extra_fields = event.registrationinformationfield_set.all()
-        registrations = event.registration_set.all()
+        registrations = event.eventregistration_set.all()
 
         header_fields = (
             [
@@ -228,7 +228,7 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
         rows = []
         if event.price == 0:
             header_fields.remove(_("Paid"))
-        for i, registration in enumerate(registrations):
+        for registration in registrations:
             if registration.member:
                 name = registration.member.get_full_name()
             else:
@@ -315,7 +315,7 @@ class EventRegistrationEmailsExport(TemplateView, PermissionRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         event = get_object_or_404(Event, pk=kwargs["pk"])
-        registrations = event.registration_set.filter(date_cancelled=None)
+        registrations = event.eventregistration_set.filter(date_cancelled=None)
         registrations = registrations[: event.max_participants]
         addresses = [r.member.email for r in registrations if r.member]
         no_addresses = [r.name for r in registrations if not r.member]

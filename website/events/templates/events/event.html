@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bleach_tags thumbnail member_card google_map_url grid_item alert document_cards slider %}
+{% load i18n static bleach_tags thumbnail member_card google_map_url grid_item alert document_cards slider payments %}
 
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -102,7 +102,7 @@
                                         {% if registration.is_registered and registration.queue_position == 0 %}
                                             {% trans "You are registered" %}
                                         {% elif registration.is_registered and registration.queue_position > 0 %}
-                                            {% blocktrans with pos=registration.queue_position trimmed %}
+                                            {% blocktrans trimmed with pos=registration.queue_position %}
                                                 Waiting list position {{ pos }}
                                             {% endblocktrans %}
                                         {% elif not registration.is_registered and registration.is_late_cancellation %}
@@ -132,19 +132,13 @@
                                         <td>
                                             {% if registration.is_paid %}
                                                 {% if registration.payment.type == payment_method_tpay %}
-                                                    {% trans "You pay with Thalia Pay" %}
+                                                    {% trans "You are paying with Thalia Pay" %}
                                                 {% else %}
                                                     {% trans "You have paid" %}
                                                 {% endif %}
                                             {% else %}
-                                                {% trans "You have not paid yet" %}
-                                                {% if registration.member.tpay_enabled %}
-                                                    <form action="{% url 'events:pay' event.id %}" method="post">
-                                                        {% csrf_token %}
-                                                        <input type="submit" class="btn btn-primary"
-                                                               value="{% trans "Pay with Thalia Pay" %}"/>
-                                                    </form>
-                                                {% endif %}
+                                                <div class="mb-3">{% trans "You have not paid yet" %}</div>
+                                                {% payment_button registration request.path %}
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -186,7 +180,7 @@
                                         {% if registration.would_cancel_after_deadline %}
                                             <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Cancel registration" %}"
-                                                   onclick="return confirm('{% blocktrans trimmed with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the estimated full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %}');"/>
+                                                   onclick="return confirm('{% blocktrans trimmed with costs=event.fine %}The deadline has passed, are you sure you want to cancel your registration and pay the estimated full costs of €{{ costs }}? You will not be able to undo this!{% endblocktrans %} {% blocktrans trimmed %}Note: If you have any COVID-19 symptoms you will not have to pay these fees. Let us know via info@thalia.nu that this is this reason for your cancellation.{% endblocktrans %}');"/>
                                         {% else %}
                                             <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Cancel registration" %}"
@@ -222,10 +216,18 @@
                                                 Registration is not possible anymore.
                                             {% endblocktrans %}
                                         {% endif %}
-                                        {% if event.after_cancel_deadline %}
+                                        {% if event.after_cancel_deadline and registration.queue_position == 0 %}
                                             {% blocktrans trimmed with costs=event.fine %}
                                                 Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}.
                                                 Also note that you will be unable to re-register.{% endblocktrans %}
+                                            {% blocktrans trimmed %}
+                                                Note: If you have any COVID-19 symptoms you will not have to pay these fees. Let us know via info@thalia.nu that this is this reason for your cancellation.
+                                            {% endblocktrans %}
+                                        {% endif %}
+                                        {% if event.after_cancel_deadline and registration.queue_position > 0 %}
+                                            {% blocktrans trimmed with costs=event.fine %}
+                                                Cancellation while on the waiting list will not result in having to pay a fine.
+                                                Do note that you will be unable to re-register.{% endblocktrans %}
                                         {% endif %}
                                     {% endif %}
                                 </em>

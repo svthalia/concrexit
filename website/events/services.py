@@ -6,9 +6,8 @@ from django.utils.translation import gettext_lazy as _, get_language
 
 from events import emails
 from events.exceptions import RegistrationError
-from events.models import Registration, RegistrationInformationField, Event
-from payments.exceptions import PaymentError
-from payments.models import Payment
+from events.models import EventRegistration, RegistrationInformationField, Event
+from payments.api.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
 
@@ -27,6 +26,18 @@ def is_user_registered(member, event):
     return event.registrations.filter(member=member, date_cancelled=None).count() > 0
 
 
+def is_user_present(member, event):
+    if not event.registration_required or not member.is_authenticated:
+        return None
+
+    return (
+        event.registrations.filter(
+            member=member, date_cancelled=None, present=True
+        ).count()
+        > 0
+    )
+
+
 def event_permissions(member, event, name=None):
     """
     Returns a dictionary with the available event permissions of the user
@@ -41,33 +52,37 @@ def event_permissions(member, event, name=None):
         "cancel_registration": False,
         "update_registration": False,
     }
-    if member and member.is_authenticated or name:
-        registration = None
-        try:
-            registration = Registration.objects.get(
-                event=event, member=member, name=name
-            )
-        except Registration.DoesNotExist:
-            pass
+    if not member:
+        return perms
+    if not (member.is_authenticated or name):
+        return perms
 
-        perms["create_registration"] = (
-            (registration is None or registration.date_cancelled is not None)
-            and event.registration_allowed
-            and (name or member.can_attend_events)
+    registration = None
+    try:
+        registration = EventRegistration.objects.get(
+            event=event, member=member, name=name
         )
-        perms["cancel_registration"] = (
-            registration is not None
-            and registration.date_cancelled is None
-            and (event.cancellation_allowed or name)
-        )
-        perms["update_registration"] = (
-            registration is not None
-            and registration.date_cancelled is None
-            and event.has_fields()
-            and event.registration_allowed
-            and (name or member.can_attend_events)
-        )
+    except EventRegistration.DoesNotExist:
+        pass
 
+    perms["create_registration"] = (
+        (registration is None or registration.date_cancelled is not None)
+        and event.registration_allowed
+        and (name or member.can_attend_events)
+    )
+    perms["cancel_registration"] = (
+        registration is not None
+        and registration.date_cancelled is None
+        and (event.cancellation_allowed or name)
+        and registration.payment is None
+    )
+    perms["update_registration"] = (
+        registration is not None
+        and registration.date_cancelled is None
+        and event.has_fields()
+        and event.registration_allowed
+        and (name or member.can_attend_events)
+    )
     return perms
 
 
@@ -93,13 +108,13 @@ def create_registration(member, event):
     if event_permissions(member, event)["create_registration"]:
         registration = None
         try:
-            registration = Registration.objects.get(event=event, member=member)
-        except Registration.DoesNotExist:
+            registration = EventRegistration.objects.get(event=event, member=member)
+        except EventRegistration.DoesNotExist:
             pass
 
         if registration is None:
-            return Registration.objects.create(event=event, member=member)
-        elif registration.date_cancelled is not None:
+            return EventRegistration.objects.create(event=event, member=member)
+        if registration.date_cancelled is not None:
             if registration.is_late_cancellation():
                 raise RegistrationError(
                     _(
@@ -108,16 +123,14 @@ def create_registration(member, event):
                         "deadline."
                     )
                 )
-            else:
-                registration.date = timezone.now()
-                registration.date_cancelled = None
-                registration.save()
+            registration.date = timezone.now()
+            registration.date_cancelled = None
+            registration.save()
 
         return registration
-    elif event_permissions(member, event)["cancel_registration"]:
+    if event_permissions(member, event)["cancel_registration"]:
         raise RegistrationError(_("You were already registered."))
-    else:
-        raise RegistrationError(_("You may not register."))
+    raise RegistrationError(_("You may not register."))
 
 
 def cancel_registration(member, event):
@@ -129,16 +142,11 @@ def cancel_registration(member, event):
     """
     registration = None
     try:
-        registration = Registration.objects.get(event=event, member=member)
-    except Registration.DoesNotExist:
+        registration = EventRegistration.objects.get(event=event, member=member)
+    except EventRegistration.DoesNotExist:
         pass
 
     if event_permissions(member, event)["cancel_registration"] and registration:
-        if registration.payment is not None:
-            p = registration.payment
-            registration.payment = None
-            registration.save()
-            p.delete()
         if registration.queue_position == 0:
             emails.notify_first_waiting(event)
 
@@ -152,28 +160,7 @@ def cancel_registration(member, event):
         registration.date_cancelled = timezone.now()
         registration.save()
     else:
-        raise RegistrationError(_("You are not registered for this event."))
-
-
-def pay_with_tpay(member, event):
-    """
-    Add a Thalia Pay payment to an event registration
-
-    :param member: the user
-    :param event: the event
-    """
-    try:
-        registration = Registration.objects.get(event=event, member=member)
-    except Registration.DoesNotExist:
-        raise RegistrationError(_("You are not registered for this event."))
-
-    if registration.payment is None:
-        registration.payment = create_payment(
-            payable=registration, processed_by=member, pay_type=Payment.TPAY
-        )
-        registration.save()
-    else:
-        raise RegistrationError(_("You have already paid for this event."))
+        raise RegistrationError(_("You are not allowed to deregister for this event."))
 
 
 def update_registration(
@@ -191,10 +178,10 @@ def update_registration(
     """
     if not registration:
         try:
-            registration = Registration.objects.get(
+            registration = EventRegistration.objects.get(
                 event=event, member=member, name=name
             )
-        except Registration.DoesNotExist as error:
+        except EventRegistration.DoesNotExist as error:
             raise RegistrationError(
                 _("You are not registered for this event.")
             ) from error
@@ -247,21 +234,21 @@ def registration_fields(request, member=None, event=None, registration=None, nam
 
     if registration is None:
         try:
-            registration = Registration.objects.get(
+            registration = EventRegistration.objects.get(
                 event=event, member=member, name=name
             )
-        except Registration.DoesNotExist as error:
+        except EventRegistration.DoesNotExist as error:
             raise RegistrationError(
                 _("You are not registered for this event.")
             ) from error
-        except Registration.MultipleObjectsReturned as error:
+        except EventRegistration.MultipleObjectsReturned as error:
             raise RegistrationError(
                 _("Unable to find the right registration.")
             ) from error
-    else:
-        member = registration.member
-        event = registration.event
-        name = registration.name
+
+    member = registration.member
+    event = registration.event
+    name = registration.name
 
     perms = event_permissions(member, event, name)[
         "update_registration"
@@ -284,8 +271,7 @@ def registration_fields(request, member=None, event=None, registration=None, nam
             }
 
         return fields
-    else:
-        raise RegistrationError(_("You are not allowed to update this registration."))
+    raise RegistrationError(_("You are not allowed to update this registration."))
 
 
 def update_registration_by_organiser(registration, member, data):
@@ -293,8 +279,9 @@ def update_registration_by_organiser(registration, member, data):
         raise RegistrationError(_("You are not allowed to update this registration."))
 
     if "payment" in data:
-        if data["payment"]["type"] == Payment.NONE and registration.payment is not None:
-            delete_payment(registration)
+        if data["payment"]["type"] == PaymentTypeField.NO_PAYMENT:
+            if registration.payment is not None:
+                delete_payment(registration)
         else:
             registration.payment = create_payment(
                 payable=registration,

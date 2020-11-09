@@ -105,6 +105,6 @@ class Command(BaseCommand):
                 if not response.success:
                     logger.debug(response.notifications)
         except HTTPError as e:
-            logger.error("HTTP error syncing relations to Conscribo", e)
+            logger.error("HTTP error syncing relations to Conscribo: %s", e)
         except ResultException as e:
-            logger.error("Server error syncing relations to Conscribo", e)
+            logger.error("Server error syncing relations to Conscribo: %s", e)

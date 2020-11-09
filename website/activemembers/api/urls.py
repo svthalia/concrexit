@@ -1,8 +1,8 @@
-from django.urls import path
+"""DRF routes defined by the activemembers package."""
+from rest_framework import routers
 
-from activemembers.api import views
+from activemembers.api import viewsets
 
-urlpatterns = [
-    path("activemembers/nextcloud/users/", views.NextCloudUsersView.as_view()),
-    path("activemembers/nextcloud/groups/", views.NextCloudGroupsView.as_view()),
-]
+router = routers.SimpleRouter()
+router.register(r"activemembers/groups", viewsets.MemberGroupViewset)
+urlpatterns = router.urls

@@ -10,6 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    documents.templatetags
 
@@ -79,4 +80,3 @@ documents.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

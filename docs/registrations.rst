@@ -10,6 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    registrations.management
 
@@ -87,4 +88,3 @@ registrations.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

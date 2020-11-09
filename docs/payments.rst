@@ -10,8 +10,10 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    payments.management
+   payments.templatetags
 
 Submodules
 ----------
@@ -72,6 +74,14 @@ payments.services module
    :undoc-members:
    :show-inheritance:
 
+payments.signals module
+-----------------------
+
+.. automodule:: payments.signals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 payments.urls module
 --------------------
 
@@ -95,4 +105,3 @@ payments.widgets module
    :members:
    :undoc-members:
    :show-inheritance:
-

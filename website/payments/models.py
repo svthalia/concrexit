@@ -1,14 +1,62 @@
 """The models defined by the payments package"""
+import datetime
 import uuid
+from decimal import Decimal
 
+from django.conf import settings
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q, Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
+
+from members.models import Member
+
+
+class PaymentUser(Member):
+    class Meta:
+        proxy = True
+        verbose_name = "payment user"
+        permissions = (("tpay_allowed", "Is allowed to use Thalia Pay"),)
+
+    @property
+    def tpay_enabled(self):
+        """Does this user have a bank account with Direct Debit enabled"""
+        bank_accounts = BankAccount.objects.filter(owner=self)
+        return (
+            settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+            and self.tpay_allowed
+            and bank_accounts.exists()
+            and any(x.valid for x in bank_accounts)
+        )
+
+    @property
+    def tpay_balance(self):
+        """Checks the Thalia Pay balance for a user"""
+        payments = Payment.objects.filter(
+            Q(paid_by=self, type=Payment.TPAY)
+            & (Q(batch__isnull=True) | Q(batch__processed=False))
+        )
+        total = payments.aggregate(Sum("amount"))["amount__sum"]
+        return -1 * total if total else 0
+
+    @property
+    def tpay_allowed(self):
+        """Does this user have permissions to use Thalia Pay (but not necessarily enabled)"""
+        return self.has_perm("payments.tpay_allowed")
+
+    def allow_tpay(self):
+        """Give this user Thalia Pay permission"""
+        self.user_permissions.add(Permission.objects.get(codename="tpay_allowed"))
+
+    def disallow_tpay(self):
+        """Revoke this user's Thalia Pay permission"""
+        self.user_permissions.remove(Permission.objects.get(codename="tpay_allowed"))
 
 
 class Payment(models.Model):
@@ -20,14 +68,12 @@ class Payment(models.Model):
 
     created_at = models.DateTimeField(_("created at"), default=timezone.now)
 
-    NONE = "no_payment"
     CASH = "cash_payment"
     CARD = "card_payment"
     TPAY = "tpay_payment"
     WIRE = "wire_payment"
 
     PAYMENT_TYPE = (
-        (NONE, _("No payment")),
         (CASH, _("Cash payment")),
         (CARD, _("Card payment")),
         (TPAY, _("Thalia Pay payment")),
@@ -35,18 +81,25 @@ class Payment(models.Model):
     )
 
     type = models.CharField(
-        choices=PAYMENT_TYPE, verbose_name=_("type"), max_length=20, default=NONE
+        verbose_name=_("type"),
+        blank=False,
+        null=False,
+        max_length=20,
+        choices=PAYMENT_TYPE,
     )
 
     amount = models.DecimalField(
-        blank=False, null=False, max_digits=5, decimal_places=2
+        verbose_name=_("amount"),
+        blank=False,
+        null=False,
+        max_digits=5,
+        decimal_places=2,
     )
 
-    processing_date = models.DateTimeField(_("processing date"), blank=True, null=True,)
-
     paid_by = models.ForeignKey(
-        "members.Member",
+        PaymentUser,
         models.CASCADE,
+        verbose_name=_("paid by"),
         related_name="paid_payment_set",
         blank=False,
         null=True,
@@ -55,31 +108,57 @@ class Payment(models.Model):
     processed_by = models.ForeignKey(
         "members.Member",
         models.CASCADE,
+        verbose_name=_("processed by"),
         related_name="processed_payment_set",
         blank=False,
         null=True,
     )
 
-    notes = models.TextField(blank=True, null=True)
-    topic = models.CharField(max_length=255, default="Unknown")
+    batch = models.ForeignKey(
+        "payments.Batch",
+        models.PROTECT,
+        related_name="payments_set",
+        blank=True,
+        null=True,
+    )
 
-    @property
-    def processed(self):
-        return self.type != self.NONE
+    notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
+    topic = models.CharField(verbose_name=_("topic"), max_length=255, default="Unknown")
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        if self.type != self.NONE and not self.processing_date:
-            self.processing_date = timezone.now()
-        elif self.type == self.NONE:
-            self.processing_date = None
-        super().save(force_insert, force_update, using, update_fields)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._batch = self.batch
+        self._type = self.type
+
+    def save(self, **kwargs):
+        self.clean()
+        self._batch = self.batch
+        super().save(**kwargs)
+
+    def clean(self):
+        if self.type != Payment.TPAY and self.batch is not None:
+            raise ValidationError(
+                {"batch": _("Non Thalia Pay payments cannot be added to a batch")}
+            )
+        if self._batch and self._batch.processed:
+            raise ValidationError(
+                _("Cannot change a payment that is part of a processed batch")
+            )
+        if self.batch and self.batch.processed:
+            raise ValidationError(_("Cannot add a payment to a processed batch"))
+        if (
+            (self._state.adding or self._type != Payment.TPAY)
+            and self.type == Payment.TPAY
+            and not self.paid_by.tpay_enabled
+        ):
+            raise ValidationError(
+                {"paid_by": _("This user does not have Thalia Pay enabled")}
+            )
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
         return reverse(
-            "admin:%s_%s_change" % (content_type.app_label, content_type.model),
+            f"admin:{content_type.app_label}_{content_type.model}_change",
             args=(self.id,),
         )
 
@@ -90,6 +169,83 @@ class Payment(models.Model):
 
     def __str__(self):
         return _("Payment of {amount}").format(amount=self.amount)
+
+
+def _default_batch_description():
+    now = timezone.now()
+    return f"Thalia Pay payments for {now.year}-{now.month}"
+
+
+def _default_withdrawal_date():
+    return timezone.now() + settings.PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET
+
+
+class Batch(models.Model):
+    """
+    Describes a batch of payments for export
+    """
+
+    processed = models.BooleanField(verbose_name=_("processing status"), default=False,)
+
+    processing_date = models.DateTimeField(
+        verbose_name=_("processing date"), blank=True, null=True,
+    )
+
+    description = models.TextField(
+        verbose_name=_("description"), default=_default_batch_description,
+    )
+
+    withdrawal_date = models.DateField(
+        verbose_name=_("withdrawal date"),
+        null=False,
+        blank=False,
+        default=_default_withdrawal_date,
+    )
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        if self.processed and not self.processing_date:
+            self.processing_date = timezone.now()
+        super().save(force_insert, force_update, using, update_fields)
+
+    def get_absolute_url(self):
+        return reverse("admin:payments_batch_change", args=[str(self.pk)])
+
+    def start_date(self) -> datetime.datetime:
+        return self.payments_set.earliest("created_at").created_at
+
+    start_date.admin_order_field = "first payment in batch"
+    start_date.short_description = _("first payment in batch")
+
+    def end_date(self) -> datetime.datetime:
+        return self.payments_set.latest("created_at").created_at
+
+    end_date.admin_order_field = "last payment in batch"
+    end_date.short_description = _("last payment in batch")
+
+    def total_amount(self) -> Decimal:
+        return sum([payment.amount for payment in self.payments_set.all()])
+
+    total_amount.admin_order_field = "total amount"
+    total_amount.short_description = _("total amount")
+
+    def payments_count(self) -> Decimal:
+        return self.payments_set.all().count()
+
+    payments_count.admin_order_field = "payments count"
+    payments_count.short_description = _("payments count")
+
+    class Meta:
+        verbose_name = _("batch")
+        verbose_name_plural = _("batches")
+        permissions = (("process_batches", _("Process batch")),)
+
+    def __str__(self):
+        return (
+            f"{self.description} "
+            f"({'processed' if self.processed else 'not processed'})"
+        )
 
 
 class BankAccount(models.Model):
@@ -104,7 +260,7 @@ class BankAccount(models.Model):
     last_used = models.DateField(verbose_name=_("last used"), blank=True, null=True,)
 
     owner = models.ForeignKey(
-        to="members.Member",
+        to=PaymentUser,
         verbose_name=_("owner"),
         related_name="bank_accounts",
         on_delete=models.SET_NULL,
@@ -128,7 +284,12 @@ class BankAccount(models.Model):
     valid_from = models.DateField(verbose_name=_("valid from"), blank=True, null=True,)
 
     valid_until = models.DateField(
-        verbose_name=_("valid until"), blank=True, null=True,
+        verbose_name=_("valid until"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "Users can revoke the mandate at any time, as long as they do not have any Thalia Pay payments that have not been processed. If you revoke a mandate, make sure to check that all unprocessed Thalia Pay payments are paid in an alternative manner."
+        ),
     )
 
     signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
@@ -165,11 +326,7 @@ class BankAccount(models.Model):
             for field in mandate_fields:
                 if not field[1]:
                     errors.update(
-                        {
-                            field[0]: _(
-                                "This field is required " "to complete the mandate."
-                            )
-                        }
+                        {field[0]: _("This field is required to complete the mandate.")}
                     )
 
         if self.valid_from and self.valid_until and self.valid_from > self.valid_until:
@@ -188,6 +345,12 @@ class BankAccount(models.Model):
         return f"{self.initials} {self.last_name}"
 
     @property
+    def can_be_revoked(self):
+        return not self.owner.paid_payment_set.filter(
+            (Q(batch__isnull=True) | Q(batch__processed=False)) & Q(type=Payment.TPAY)
+        ).exists()
+
+    @property
     def valid(self):
         if self.valid_from is not None and self.valid_until is not None:
             return self.valid_from <= timezone.now().date() < self.valid_until
@@ -201,6 +364,7 @@ class BankAccount(models.Model):
 
 
 class Payable:
+    pk = None
     payment = None
 
     @property

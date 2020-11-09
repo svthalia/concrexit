@@ -12,6 +12,13 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 COPY resources/entrypoint.sh resources/entrypoint_production.sh /usr/local/bin/
 
+RUN if [ "$install_dev_requirements" -eq 1 ]; then \
+        poetry install --no-interaction --extras "docs"; \
+    else \
+        poetry install --no-interaction --no-dev; \
+    fi; \
+    poetry cache clear --all --no-interaction pypi
+
 RUN mkdir --parents /concrexit/log/ && \
     touch /concrexit/log/uwsgi.log && \
     chown --recursive www-data:www-data /concrexit/ && \

@@ -40,4 +40,3 @@ pushnotifications.api.viewsets module
    :members:
    :undoc-members:
    :show-inheritance:
-

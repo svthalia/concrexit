@@ -10,7 +10,7 @@ def organiser_only(view_function):
     return OrganiserOnly(view_function)
 
 
-class OrganiserOnly(object):
+class OrganiserOnly:
     """
     Decorator that denies access to the page if:
     1. There is no `pk` or `registration` in the request
@@ -31,7 +31,9 @@ class OrganiserOnly(object):
                 pass
         elif "registration" in kwargs:
             try:
-                event = Event.objects.get(registration__pk=kwargs.get("registration"))
+                event = Event.objects.get(
+                    eventregistration__pk=kwargs.get("registration")
+                )
             except Event.DoesNotExist:
                 pass
 

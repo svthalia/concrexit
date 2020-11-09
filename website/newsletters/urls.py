@@ -1,5 +1,4 @@
 """The routes defined by the newsletters package"""
-from django.conf.urls import url
 from django.urls import path, include
 
 from . import views

@@ -39,6 +39,6 @@ class Command(BaseCommand):
 
         for message in messages:
             if (timezone.now() - now).seconds < interval:
-                logger.info(f"Sending push notification {message.pk}")
+                logger.info("Sending push notification %d", message.pk)
                 message.executed = timezone.now()
                 message.send(dry_run=bool(options["dry-run"]))

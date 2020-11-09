@@ -22,12 +22,13 @@ from members import services, emails
 from members.decorators import membership_required
 from members.models import EmailChange, Membership, Member, Profile
 from utils.snippets import datetime_to_lectureyear
+import events.services as event_services
+import activemembers.services as activemembers_services
+
 from . import models
 from .forms import ProfileForm
 from .services import member_achievements
 from .services import member_societies
-import events.services as event_services
-import activemembers.services as activemembers_services
 
 
 class ObtainThaliaAuthToken(ObtainAuthToken):
@@ -50,7 +51,7 @@ class ObtainThaliaAuthToken(ObtainAuthToken):
             return Response({"error": "Unauthorized"}, status=401)
 
         user = serializer.validated_data["user"]
-        token, created = Token.objects.get_or_create(user=user)
+        token, _ = Token.objects.get_or_create(user=user)
         return Response({"token": token.key})
 
 
@@ -169,7 +170,7 @@ class ProfileDetailView(DetailView):
     template_name = "members/user/profile.html"
 
     def setup(self, request, *args, **kwargs) -> None:
-        if "pk" not in kwargs:
+        if "pk" not in kwargs and request.member:
             kwargs["pk"] = request.member.pk
         super().setup(request, *args, **kwargs)
 
@@ -200,15 +201,6 @@ class ProfileDetailView(DetailView):
         )
 
         return context
-
-
-@method_decorator(login_required, "dispatch")
-class UserAccountView(TemplateView):
-    """
-    View that renders the account options page
-    """
-
-    template_name = "members/user/index.html"
 
 
 @method_decorator(login_required, "dispatch")

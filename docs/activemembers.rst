@@ -10,6 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    activemembers.api
 
@@ -111,4 +112,3 @@ activemembers.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

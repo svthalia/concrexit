@@ -14,11 +14,21 @@ from utils.threading import PopenAndCall
 
 
 def thabloid_filename(instance, filename):
+    """Return path of thabloid."""
     ext = os.path.splitext(filename)[1]
-    return os.path.join("public/thabloids/", slugify(instance) + ext)
+    return os.path.join("private/thabloids/", slugify(instance) + ext)
+
+
+def pagesets(count):
+    if count < 1:
+        return []
+    pageiter = iter(range(2, count))
+    return [(1, None)] + list(zip_longest(pageiter, pageiter))
 
 
 class Thabloid(models.Model):
+    """Model representing a Thabloid."""
+
     year = models.IntegerField(
         verbose_name="academic year", validators=[MinValueValidator(1990)]
     )
@@ -31,6 +41,8 @@ class Thabloid(models.Model):
     )
 
     class Meta:
+        """Meta class for Thabloid model."""
+
         unique_together = (
             "year",
             "issue",
@@ -38,23 +50,27 @@ class Thabloid(models.Model):
         ordering = ("-year", "-issue")
 
     def __str__(self):
+        """Return string representation of a Thabloid object."""
         return "Thabloid {}-{}, #{}".format(self.year, self.year + 1, self.issue)
 
     def page_url(self, page=None, second_page=None):
+        """Return path of Thabloid pages image."""
         if page is None:
             page = "%03d.png"
         elif second_page is None:
             page = "{:03}.png".format(page)
         else:
             page = "{:03}-{:03}.png".format(page, second_page)
-        dst, ext = os.path.splitext(self.file.name)
+        dst, _ = os.path.splitext(self.file.name)
         return os.path.join(os.path.dirname(dst), "pages", os.path.basename(dst), page)
 
     @property
     def cover(self):
+        """Return first page as cover."""
         return self.page_url(1)
 
     def pagesets(self, count):
+        """Return list of pages to should be shown together."""
         if count < 1:
             return []
         pageiter = iter(range(2, count))
@@ -62,18 +78,21 @@ class Thabloid(models.Model):
 
     @property
     def pages(self):
+        """Return urls of pages that should be shown together."""
         pages = os.listdir(
             os.path.join(settings.MEDIA_ROOT, os.path.dirname(self.page_url()))
         )
         count = len(pages) * 2 - 1
-        return map(lambda p: self.page_url(p[0], p[1]), self.pagesets(count))
+        return map(lambda p: self.page_url(p[0], p[1]), pagesets(count))
 
     def get_absolute_url(self):
+        """Get url of Thabloid."""
         return reverse(
             "thabloid:pages", kwargs={"year": self.year, "issue": self.issue}
         )
 
     def post_extract(self):
+        """Save extracted pages to disk."""
         pages = os.listdir(
             os.path.join(settings.MEDIA_ROOT, os.path.dirname(self.page_url()))
         )
@@ -107,6 +126,7 @@ class Thabloid(models.Model):
             os.remove(spread_right)
 
     def extract_thabloid_pages(self, wait):
+        """Extract the pages of a Thabloid using Ghostscript."""
         dst = os.path.join(settings.MEDIA_ROOT, self.page_url())
         name = thabloid_filename(self, self.file.name)
         src = os.path.join(settings.MEDIA_ROOT, name)
@@ -118,14 +138,12 @@ class Thabloid(models.Model):
             pass
 
         os.makedirs(os.path.dirname(dst), exist_ok=True)
-        # TODO reconsider if this resolution / quality is sufficient
         thread = PopenAndCall(
             self.post_extract,
             [
                 "gs",
                 "-o",
                 dst,
-                # '-g2100x2970', '-dPDFFitPage',
                 "-g1050x1485",
                 "-dPDFFitPage",
                 "-dTextAlphaBits=4",
@@ -139,6 +157,7 @@ class Thabloid(models.Model):
             thread.join()
 
     def save(self, *args, wait=False, **kwargs):
+        """Save Thabloid to disk."""
         new_file = False
 
         if self.pk is None:
@@ -177,7 +196,7 @@ class Thabloid(models.Model):
             except FileNotFoundError:
                 pass
 
-        super(Thabloid, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         if new_file:
             self.extract_thabloid_pages(wait)

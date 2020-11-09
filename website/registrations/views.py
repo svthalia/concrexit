@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.template.defaultfilters import floatformat
@@ -60,7 +61,7 @@ class EntryAdminView(View):
             if not services.check_unique_user(entry):
                 messages.error(
                     request,
-                    _("Could not accept %s. " "Username is not unique.")
+                    _("Could not accept %s. Username is not unique.")
                     % model_ngettext(entry, 1),
                 )
             elif services.accept_entries(request.user.pk, entry_qs) > 0:
@@ -94,8 +95,7 @@ class EntryAdminView(View):
             content_type = ContentType.objects.get_for_model(Renewal)
 
         return redirect(
-            "admin:%s_%s_change" % (content_type.app_label, content_type.model),
-            kwargs["pk"],
+            f"admin:{content_type.app_label}_{content_type.model}_change", kwargs["pk"],
         )
 
 
@@ -215,6 +215,13 @@ class RenewalFormView(FormView):
             settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY], 2
         )
         context["latest_membership"] = self.request.member.latest_membership
+        context["latest_renewal"] = Renewal.objects.filter(
+            Q(member=self.request.member)
+            & (
+                Q(status=Registration.STATUS_ACCEPTED)
+                | Q(status=Registration.STATUS_REVIEW)
+            )
+        ).last()
         context["was_member"] = Membership.objects.filter(
             user=self.request.member, type=Membership.MEMBER
         ).exists()

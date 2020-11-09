@@ -6,6 +6,15 @@ events.api package
    :undoc-members:
    :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   events.api.serializers
+   events.api.viewsets
+
 Submodules
 ----------
 
@@ -17,14 +26,6 @@ events.api.permissions module
    :undoc-members:
    :show-inheritance:
 
-events.api.serializers module
------------------------------
-
-.. automodule:: events.api.serializers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 events.api.urls module
 ----------------------
 
@@ -32,12 +33,3 @@ events.api.urls module
    :members:
    :undoc-members:
    :show-inheritance:
-
-events.api.viewsets module
---------------------------
-
-.. automodule:: events.api.viewsets
-   :members:
-   :undoc-members:
-   :show-inheritance:
-

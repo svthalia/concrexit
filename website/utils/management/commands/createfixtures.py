@@ -1,15 +1,18 @@
 """
 Provides the command to generate fixtures
 """
+
+# pylint: disable=too-many-statements,too-many-branches
 import math
 import random
 import string
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.utils.text import slugify
 
 from activemembers.models import (
     Board,
@@ -19,10 +22,14 @@ from activemembers.models import (
     MemberGroup,
 )
 from documents.models import Document
-from events.models import Event
+from education.models import Course, Category
+from events.models import Event, EventRegistration
 from members.models import Profile, Member, Membership
 from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
+from payments.models import Payment
+from payments.services import create_payment
+from photos.models import Album, Photo
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
 
@@ -32,7 +39,7 @@ try:
     from pydenticon import Generator as IconGenerator
 except ImportError as error:
     raise Exception(
-        "Have you installed the dev-requirements? " "Failed importing {}".format(error)
+        "Have you installed the dev-requirements? Failed importing {}".format(error)
     ) from error
 
 _faker = FakerFactory.create("nl_NL")
@@ -61,6 +68,14 @@ class _ProfileFactory(factory.Factory):
     address_country = random.choice(["NL", "DE", "BE"])
 
     phone_number = "+31{}".format(_faker.numerify(text="##########"))
+
+
+def get_event_to_register_for(member):
+    for event in Event.objects.filter(published=True).order_by("?"):
+        if event.registration_required and not event.reached_participants_limit():
+            if member.id not in event.registrations.values_list("member", flat=True):
+                return event
+    return None
 
 
 class Command(BaseCommand):
@@ -113,6 +128,17 @@ class Command(BaseCommand):
         parser.add_argument(
             "-w", "--vacancy", type=int, help="The amount of fake vacancies to add"
         )
+        parser.add_argument("--course", type=int, help="The amount of courses to add")
+        parser.add_argument(
+            "-r",
+            "--registration",
+            type=int,
+            help="The amount of event registrations to add",
+        )
+        parser.add_argument("--payment", type=int, help="The amount of payments to add")
+        parser.add_argument(
+            "--photoalbum", type=int, help="The amount of photo albums to add"
+        )
 
     def create_board(self, lecture_year):
         """
@@ -120,6 +146,7 @@ class Command(BaseCommand):
 
         :param int lecture_year: the  lecture year this board was active
         """
+        self.stdout.write("Creating a board")
         members = Member.objects.all()
         if len(members) < 6:
             self.stdout.write("Your database does not contain 6 users.")
@@ -129,16 +156,18 @@ class Command(BaseCommand):
 
         board = Board()
 
-        board.name_nl = "Bestuur {}-{}".format(lecture_year, lecture_year + 1)
-        board.name_en = "Board {}-{}".format(lecture_year, lecture_year + 1)
-        board.description_nl = _faker.paragraph()
-        board.description_en = _faker.paragraph()
+        board.name = "Board {}-{}".format(lecture_year, lecture_year + 1)
+        while Board.objects.filter(name=board.name).exists():
+            lecture_year = lecture_year - 1
+            board.name = "Board {}-{}".format(lecture_year, lecture_year + 1)
+
+        board.description = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            board.name_nl, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+            board.name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg"
         )  # 620x620 pixels, with 10 pixels padding on each side
-        board.photo.save(board.name_nl + ".jpeg", ContentFile(icon))
+        board.photo.save(f"{board.name}.jpeg", ContentFile(icon))
 
         board.since = date(year=lecture_year, month=9, day=1)
         board.until = date(year=lecture_year + 1, month=8, day=31)
@@ -162,6 +191,7 @@ class Command(BaseCommand):
         """
         Create a MemberGroup
         """
+        self.stdout.write("Creating a membergroup")
         members = Member.objects.all()
         if len(members) < 6:
             self.stdout.write("Your database does not contain 6 users.")
@@ -172,20 +202,14 @@ class Command(BaseCommand):
 
         member_group = group_model()
 
-        member_group.name_nl = _generate_title()
-        member_group.name_en = member_group.name_nl
-        member_group.description_nl = _faker.paragraph()
-        member_group.description_en = _faker.paragraph()
+        member_group.name = _generate_title()
+        member_group.description = _faker.paragraph()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            member_group.name_nl,
-            480,
-            480,
-            padding=(10, 10, 10, 10),
-            output_format="jpeg",
+            member_group.name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        member_group.photo.save(member_group.name_nl + ".jpeg", ContentFile(icon))
+        member_group.photo.save(member_group.name + ".jpeg", ContentFile(icon))
 
         member_group.since = _faker.date_time_between("-10y", "+30d")
 
@@ -219,6 +243,7 @@ class Command(BaseCommand):
         :param member: the member to add to the committee
         :param group: the group to add the member to
         """
+        self.stdout.write("Creating a group membership")
         membership = MemberGroupMembership()
 
         membership.member = member
@@ -243,16 +268,14 @@ class Command(BaseCommand):
         """
         groups = MemberGroup.objects.all()
         if len(groups) == 0:
-            self.stdout.write("Your database does not contain any " "member groups.")
+            self.stdout.write("Your database does not contain any member groups.")
             self.stdout.write("Creating a committee.")
             self.create_member_group(Committee)
             groups = MemberGroup.objects.all()
         event = Event()
 
-        event.title_nl = _generate_title()
-        event.title_en = event.title_nl
-        event.description_nl = _faker.paragraph()
         event.description_en = _faker.paragraph()
+        event.title_en = _generate_title()
         event.start = _faker.date_time_between("-30d", "+120d", _current_tz)
         duration = math.ceil(random.expovariate(0.2))
         event.end = event.start + timedelta(hours=duration)
@@ -277,9 +300,8 @@ class Command(BaseCommand):
                 tzinfo=_current_tz,
             )
 
-        event.location_nl = _faker.street_address()
-        event.location_en = event.location_nl
-        event.map_location = event.location_nl
+        event.location_en = _faker.street_address()
+        event.map_location = event.location_en
         event.send_cancel_email = False
 
         if random.random() < 0.5:
@@ -299,6 +321,7 @@ class Command(BaseCommand):
 
     def create_partner(self):
         """Create a new random partner"""
+        self.stdout.write("Creating a partner")
         partner = Partner()
 
         partner.is_active = random.random() < 0.75
@@ -320,11 +343,11 @@ class Command(BaseCommand):
 
     def create_pizza(self):
         """Create a new random pizza product"""
+        self.stdout.write("Creating a pizza product")
+
         product = Product()
 
         product.name = f"Pizza {_pizza_name_faker.last_name()}"
-        product.description_nl = _faker.sentence()
-        product.description_nl = _faker.sentence()
         product.price = random.randint(250, 1000) / 100
         product.available = random.random() < 0.9
 
@@ -332,11 +355,13 @@ class Command(BaseCommand):
 
     def create_user(self):
         """Create a new random user"""
+        self.stdout.write("Creating a user")
+
         fakeprofile = _faker.profile()
         fakeprofile["password"] = "".join(
             random.choice(string.ascii_uppercase + string.digits) for _ in range(16)
         )
-        user = User.objects.create_user(
+        user = get_user_model().objects.create_user(
             fakeprofile["username"], fakeprofile["mail"], fakeprofile["password"]
         )
         user.first_name = fakeprofile["name"].split()[0]
@@ -379,6 +404,7 @@ class Command(BaseCommand):
         :param partners: the partners to choose a partner from
         :param categories: the categories to choose this vacancy from
         """
+        self.stdout.write("Creating a vacancy")
         vacancy = Vacancy()
 
         vacancy.title = _faker.job()
@@ -407,9 +433,9 @@ class Command(BaseCommand):
 
     def create_vacancy_category(self):
         """Create new random vacancy categories"""
+        self.stdout.write("Creating a new vacancy category")
         category = VacancyCategory()
 
-        category.name_nl = _faker.text(max_nb_chars=30)
         category.name_en = _faker.text(max_nb_chars=30)
         category.slug = _faker.slug()
 
@@ -417,50 +443,42 @@ class Command(BaseCommand):
 
     def create_document(self):
         """Creates new random documents"""
+        self.stdout.write("Creating a document")
         doc = Document()
 
-        doc.name_nl = _faker.text(max_nb_chars=30)
-        doc.name_en = _faker.text(max_nb_chars=30)
+        doc.name = _faker.text(max_nb_chars=30)
         doc.category = random.choice([c[0] for c in Document.DOCUMENT_CATEGORIES])
         doc.members_only = random.random() < 0.75
-        doc.file_en.save(
-            "{}.txt".format(doc.name_en), ContentFile(_faker.text(max_nb_chars=120))
+        doc.file.save(
+            "{}.txt".format(doc.name), ContentFile(_faker.text(max_nb_chars=120))
         )
-        doc.file_nl = doc.file_en
         doc.save()
 
     def create_newsletter(self):
+        self.stdout.write("Creating a new newsletter")
         newsletter = Newsletter()
 
         newsletter.title_en = _generate_title()
-        newsletter.title_nl = newsletter.title_en
-        newsletter.description_nl = _faker.paragraph()
         newsletter.description_en = _faker.paragraph()
         newsletter.date = _faker.date_time_between("-3m", "+3m", _current_tz)
 
         newsletter.save()
 
-        for i in range(random.randint(1, 5)):
+        for _ in range(random.randint(1, 5)):
             item = NewsletterItem()
             item.title_en = _generate_title()
-            item.title_nl = item.title_en
-            item.description_nl = _faker.paragraph()
             item.description_en = _faker.paragraph()
             item.newsletter = newsletter
             item.save()
 
-        for i in range(random.randint(1, 5)):
+        for _ in range(random.randint(1, 5)):
             item = NewsletterEvent()
             item.title_en = _generate_title()
-            item.title_nl = item.title_en
-            item.description_nl = _faker.paragraph()
             item.description_en = _faker.paragraph()
             item.newsletter = newsletter
 
             item.what_en = item.title_en
-            item.what_nl = item.what_en
             item.where_en = _faker.city()
-            item.where_nl = item.where_en
             item.start_datetime = _faker.date_time_between("-1y", "+3m", _current_tz)
             duration = math.ceil(random.expovariate(0.2))
             item.end_datetime = item.start_datetime + timedelta(hours=duration)
@@ -475,6 +493,121 @@ class Command(BaseCommand):
                 )
 
             item.save()
+
+    def create_course(self):
+        self.stdout.write("Creating a new course")
+        course = Course()
+
+        course.name = _generate_title()
+        course.ec = 3 if random.random() < 0.5 else 6
+
+        course.course_code = "NWI-" + "".join(random.choices(string.digits, k=5))
+
+        course.since = random.randint(2016, 2020)
+        if random.random() < 0.5:
+            course.until = max(course.since + random.randint(1, 5), datetime.now().year)
+
+        # Save so we can add categories
+        course.save()
+
+        for category in Category.objects.order_by("?")[: random.randint(1, 3)]:
+            course.categories.add(category)
+
+        course.save()
+
+    def create_event_registration(self, event_to_register_for=None):
+        self.stdout.write("Creating an event registration")
+        registration = EventRegistration()
+
+        registration.member = Member.objects.order_by("?")[0]
+
+        possible_event = (
+            event_to_register_for
+            if event_to_register_for
+            else get_event_to_register_for(registration.member)
+        )
+        while not possible_event:
+            self.stdout.write("No possible events to register for")
+            self.stdout.write("Creating a new event")
+            self.create_event()
+            possible_event = get_event_to_register_for(registration.member)
+
+        registration.event = possible_event
+
+        registration.date = registration.event.registration_start
+
+        registration.save()
+
+        return registration
+
+    def create_payment(self):
+        self.stdout.write("Creating a payment")
+
+        possible_events = list(
+            filter(
+                lambda e: e.registrations.count() > 0,
+                Event.objects.filter(price__gt=0).order_by("?"),
+            )
+        )
+        while len(possible_events) == 0:
+            print("No event where can be payed could be found, creating a new event")
+            self.create_event()
+            possible_events = list(
+                filter(
+                    lambda e: e.registrations.count() > 0,
+                    Event.objects.filter(price__gt=0).order_by("?"),
+                )
+            )
+
+        event = possible_events[0]
+        if len(event.registrations) == 0:
+            print("No registrations found. Create some more registrations first")
+            return
+
+        registration = event.registrations.order_by("?")[0]
+
+        processed_by = Member.objects.order_by("?")[0]
+        create_payment(
+            registration,
+            processed_by,
+            random.choice([Payment.CASH, Payment.CARD, Payment.WIRE]),
+        )
+
+    def create_photo_album(self):
+        self.stdout.write("Creating a photo album")
+        album = Album()
+
+        album.title_en = _generate_title()
+
+        album.date = _faker.date_between("-1y", "today")
+
+        album.slug = slugify("-".join([str(album.date), album.title_en]))
+
+        if random.random() < 0.25:
+            album.hidden = True
+        if random.random() < 0.5:
+            album.shareable = True
+
+        album.save()
+
+        for _ in range(random.randint(20, 30)):
+            self.create_photo(album)
+
+    def create_photo(self, album):
+        self.stdout.write("Creating a photo")
+        photo = Photo()
+
+        photo.album = album
+
+        name = _generate_title()
+
+        igen = IconGenerator(5, 5)  # 5x5 blocks
+        icon = igen.generate(
+            name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+        )  # 620x620 pixels, with 10 pixels padding on each side
+        photo.file.save(f"{name}.jpeg", ContentFile(icon))
+
+        photo.save()
 
     def handle(self, *args, **options):
         """
@@ -493,6 +626,10 @@ class Command(BaseCommand):
             "vacancy",
             "document",
             "newsletter",
+            "course",
+            "registration",
+            "payment",
+            "photoalbum",
         ]
 
         if all([not options[opt] for opt in opts]):
@@ -502,7 +639,7 @@ class Command(BaseCommand):
             )
 
         if options["all"]:
-            self.stdout.write("all argument given, overwriting" " all other inputs")
+            self.stdout.write("all argument given, overwriting all other inputs")
             options = {
                 "user": 20,
                 "board": 3,
@@ -514,6 +651,10 @@ class Command(BaseCommand):
                 "pizza": 5,
                 "newsletter": 2,
                 "document": 8,
+                "course": 10,
+                "registration": 20,
+                "payment": 5,
+                "photoalbum": 5,
             }
 
         # Users need to be generated before boards and committees
@@ -556,9 +697,7 @@ class Command(BaseCommand):
         if options["vacancy"]:
             categories = VacancyCategory.objects.all()
             if not categories:
-                self.stdout.write(
-                    "No vacancy categories found. " "Creating 5 categories."
-                )
+                self.stdout.write("No vacancy categories found. Creating 5 categories.")
                 for __ in range(5):
                     self.create_vacancy_category()
                 categories = VacancyCategory.objects.all()
@@ -578,3 +717,29 @@ class Command(BaseCommand):
         if options["document"]:
             for __ in range(options["document"]):
                 self.create_document()
+
+        # Courses need to be created before exams and summaries
+        if options["course"]:
+            # Create course categories if needed
+            if len(Category.objects.all()) < 5:
+                for _ in range(5):
+                    category = Category()
+                    category.name_en = _generate_title()
+
+                    category.save()
+
+            for _ in range(options["course"]):
+                self.create_course()
+
+        # Registrations need to be created before payments
+        if options["registration"]:
+            for _ in range(options["registration"]):
+                self.create_event_registration()
+
+        if options["payment"]:
+            for _ in range(options["payment"]):
+                self.create_payment()
+
+        if options["photoalbum"]:
+            for _ in range(options["photoalbum"]):
+                self.create_photo_album()

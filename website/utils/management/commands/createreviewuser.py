@@ -8,7 +8,7 @@ try:
     from faker import Factory as FakerFactory
 except ImportError as error:
     raise Exception(
-        "Have you installed the dev-requirements? " "Failed importing {}".format(error)
+        "Have you installed the dev-requirements? Failed importing {}".format(error)
     ) from error
 
 _faker = FakerFactory.create("nl_NL")
@@ -55,5 +55,5 @@ class Command(BaseCommand):
             last_name="Review",
         )
 
-        logger.info(f"Username: {username}")
-        logger.info(f"Password: {password}")
+        logger.info("Username: %s", username)
+        logger.info("Password: %s", password)

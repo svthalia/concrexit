@@ -5,23 +5,31 @@ from . import models
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
+    """Sitemap of the static thabloid index page."""
+
     changefreq = "monthly"
 
     def items(self):
+        """Return the index url name."""
         return ["thabloid:index"]
 
-    def location(self, item):
-        return reverse(item)
+    def location(self, obj):
+        """Return the index url."""
+        return reverse(obj)
 
 
 class ThabloidSitemap(sitemaps.Sitemap):
+    """Sitemap of the thabloid pages."""
+
     changefreq = "never"
 
     def items(self):
+        """Return all Thabloids."""
         return models.Thabloid.objects.all()
 
-    def location(self, item):
-        return item.get_absolute_url()
+    def location(self, obj):
+        """Return the url of a Thabloid."""
+        return obj.get_absolute_url()
 
 
 sitemap = {

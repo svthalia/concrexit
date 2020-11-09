@@ -1,4 +1,4 @@
-"""The models defined by the activemembers package"""
+"""The models defined by the activemembers package."""
 import datetime
 import logging
 
@@ -16,34 +16,27 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce import HTMLField
 
-from utils.translation import ModelTranslateMeta, MultilingualField, localize_attr_name
+from utils.snippets import overlaps
 
 logger = logging.getLogger(__name__)
 
 
 class ActiveMemberGroupManager(models.Manager):
-    """Returns active objects only sorted by the localized name"""
+    """Returns active objects only sorted by the localized name."""
 
     def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .exclude(active=False)
-            .order_by(localize_attr_name("name"))
-        )
+        return super().get_queryset().exclude(active=False).order_by("name")
 
 
-class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a groups of members"""
+class MemberGroup(models.Model):
+    """Describes a groups of members."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
 
-    name = MultilingualField(
-        models.CharField, max_length=40, verbose_name=_("Name"), unique=True,
-    )
+    name = models.CharField(max_length=40, verbose_name=_("Name"), unique=True)
 
-    description = MultilingualField(HTMLField, verbose_name=_("Description"),)
+    description = HTMLField(verbose_name=_("Description"))
 
     photo = models.ImageField(
         verbose_name=_("Image"),
@@ -100,16 +93,16 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
             raise ValidationError(
                 {
                     "contact_email": _(
-                        "Please use either the mailing list " "or email address option."
+                        "Please use either the mailing list or email address option."
                     ),
                     "contact_mailinglist": _(
-                        "Please use either the mailing list " "or email address option."
+                        "Please use either the mailing list or email address option."
                     ),
                 }
             )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def get_absolute_url(self):
         try:
@@ -130,14 +123,10 @@ class MemberGroup(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Committee(MemberGroup):
-    """Describes a committee, which is a type of MemberGroup"""
+    """Describes a committee, which is a type of MemberGroup."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
-
-    wiki_namespace = models.CharField(
-        _("Wiki namespace"), null=True, blank=True, max_length=50
-    )
 
     def get_absolute_url(self):
         return reverse("activemembers:committee", args=[str(self.pk)])
@@ -149,7 +138,7 @@ class Committee(MemberGroup):
 
 
 class Society(MemberGroup):
-    """Describes a society, which is a type of MemberGroup"""
+    """Describes a society, which is a type of MemberGroup."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
@@ -164,62 +153,44 @@ class Society(MemberGroup):
 
 
 class Board(MemberGroup):
-    """Describes a board, which is a type of MemberGroup"""
+    """Describes a board, which is a type of MemberGroup."""
 
     class Meta:
         verbose_name = _("board")
         verbose_name_plural = _("boards")
         ordering = ["-since"]
-        permissions = (("board_wiki", _("Access the board wiki")),)
 
-    def save(self, *args, **kwargs):
+    def save(self, **kwargs):
         self.active = True
-        super().save(*args, **kwargs)
+        super().save(**kwargs)
 
     def get_absolute_url(self):
         return reverse(
             "activemembers:board", args=[str(self.since.year), str(self.until.year)]
         )
 
-    def validate_unique(self, *args, **kwargs):
-        super().validate_unique(*args, **kwargs)
+    def validate_unique(self, **kwargs):
+        super().validate_unique(**kwargs)
         boards = Board.objects.all()
         if self.since is not None:
-            for board in boards:
-                if board.pk == self.pk:
-                    continue
-                if (
-                    (
-                        board.until is None
-                        and (self.until is None or self.until >= board.since)
-                    )
-                    or (self.until is None and self.since <= board.until)
-                    or (
-                        self.until
-                        and board.until
-                        and self.since <= board.until
-                        and self.until >= board.since
-                    )
-                ):
-                    raise ValidationError(
-                        {
-                            "since": _("A board already exists for those years"),
-                            "until": _("A board already exists for those years"),
-                        }
-                    )
+            if overlaps(self, boards, can_equal=False):
+                raise ValidationError(
+                    {
+                        "since": _("A board already exists for those years"),
+                        "until": _("A board already exists for those years"),
+                    }
+                )
 
 
 class ActiveMembershipManager(models.Manager):
-    """
-    Custom manager that gets the currently active membergroup memberships
-    """
+    """Custom manager that gets the currently active membergroup memberships."""
 
     def get_queryset(self):
         return super().get_queryset().exclude(until__lt=timezone.now().date())
 
 
-class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a group membership"""
+class MemberGroupMembership(models.Model):
+    """Describes a group membership."""
 
     objects = models.Manager()
     active_objects = ActiveMembershipManager()
@@ -240,7 +211,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
 
     until = models.DateField(
         verbose_name=_("Member until"),
-        help_text=_("A member until this time " "(can't be in the future)."),
+        help_text=_("A member until this time (can't be in the future)."),
         blank=True,
         null=True,
     )
@@ -251,8 +222,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
         default=False,
     )
 
-    role = MultilingualField(
-        models.CharField,
+    role = models.CharField(
         _("role"),
         help_text=_("The role of this member"),
         max_length=255,
@@ -262,7 +232,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def initial_connected_membership(self):
-        """Find the oldest membership directly connected to the current one"""
+        """Find the oldest membership directly connected to the current one."""
         qs = MemberGroupMembership.objects.filter(
             group=self.group,
             member=self.member,
@@ -271,14 +241,13 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
         )
         if qs.count() >= 1:  # should only be one; should be unique
             return qs.first().initial_connected_membership
-        else:
-            return self
+        return self
 
     @property
     def latest_connected_membership(self):
-        """
-        Find the newest membership directly connected to the current one
-        (thus the membership that started at the moment the current one ended)
+        """Find the newest membership directly connected to the current one.
+
+        (thus the membership that started at the moment the current one ended).
         """
         if self.until:
             qs = MemberGroupMembership.objects.filter(
@@ -293,7 +262,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def is_active(self):
-        """Is this membership currently active"""
+        """Is this membership currently active."""
         return self.until is None or self.until > timezone.now().date()
 
     def clean(self):
@@ -313,75 +282,42 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
                     {"since": _("Start date can't be after group end date")}
                 )
         except MemberGroupMembership.group.RelatedObjectDoesNotExist:
-            return False
+            pass
 
-    def validate_unique(self, *args, **kwargs):
+    def validate_unique(self, **kwargs):
         try:
-            super().validate_unique(*args, **kwargs)
+            super().validate_unique(**kwargs)
             # Check if a group has more than one chair
             if self.chair:
                 chairs = MemberGroupMembership.objects.filter(
                     group=self.group, chair=True
                 )
-                for chair in chairs:
-                    if chair.pk == self.pk:
-                        continue
-                    if (
-                        (
-                            chair.until is None
-                            and (self.until is None or self.until > chair.since)
-                        )
-                        or (self.until is None and self.since < chair.until)
-                        or (
-                            self.until
-                            and chair.until
-                            and self.since < chair.until
-                            and self.until > chair.since
-                        )
-                    ):
-                        raise ValidationError(
-                            {
-                                NON_FIELD_ERRORS: _(
-                                    "There already is a " "chair for this time period"
-                                )
-                            }
-                        )
+                if overlaps(self, chairs):
+                    raise ValidationError(
+                        {
+                            NON_FIELD_ERRORS: _(
+                                "There already is a chair for this time period"
+                            )
+                        }
+                    )
 
             # check if this member is already in the group in this period
             memberships = MemberGroupMembership.objects.filter(
                 group=self.group, member=self.member
             )
-            for mship in memberships:
-                if mship.pk == self.pk:
-                    continue
-                if (
-                    (
-                        mship.until is None
-                        and (self.until is None or self.until > mship.since)
-                    )
-                    or (self.until is None and self.since < mship.until)
-                    or (
-                        self.until
-                        and mship.until
-                        and self.since < mship.until
-                        and self.until > mship.since
-                    )
-                ):
-                    raise ValidationError(
-                        {
-                            "member": _(
-                                "This member is already in the group for " "this period"
-                            )
-                        }
-                    )
+            if overlaps(self, memberships):
+                raise ValidationError(
+                    {"member": _("This member is already in the group for this period")}
+                )
+
         except (
             MemberGroupMembership.member.RelatedObjectDoesNotExist,
             MemberGroupMembership.group.RelatedObjectDoesNotExist,
         ):
-            return False
+            pass
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def save(self, **kwargs):
+        super().save(**kwargs)
         self.member.is_staff = (
             self.member.membergroupmembership_set.exclude(
                 until__lte=timezone.now().date()
@@ -390,9 +326,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
         self.member.save()
 
     def __str__(self):
-        return _(
-            "{member} membership of {group} " "since {since}, until {until}"
-        ).format(
+        return _("{member} membership of {group} since {since}, until {until}").format(
             member=self.member, group=self.group, since=self.since, until=self.until
         )
 
@@ -402,7 +336,7 @@ class MemberGroupMembership(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Mentorship(models.Model):
-    """Describe a mentorship during the orientation"""
+    """Describe a mentorship during the orientation."""
 
     member = models.ForeignKey(
         "members.Member", on_delete=models.CASCADE, verbose_name=_("Member"),

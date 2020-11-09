@@ -16,4 +16,3 @@ payments.management.commands.revokeoldmandates module
    :members:
    :undoc-members:
    :show-inheritance:
-

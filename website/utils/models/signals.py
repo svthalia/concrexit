@@ -29,7 +29,7 @@ def suspendingreceiver(signal, **decorator_kwargs):
         def fake_receiver(**kwargs):
             if settings.SUSPEND_SIGNALS:
                 return
-            return func(**kwargs)
+            func(**kwargs)
 
         return fake_receiver
 

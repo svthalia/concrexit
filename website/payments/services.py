@@ -2,13 +2,16 @@
 import datetime
 from typing import Union
 
-from django.db.models import QuerySet, Q
-from django.utils import timezone
+from django.conf import settings
+from django.db.models import QuerySet, Q, Sum
+from django.urls import reverse
+from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
+from registrations.emails import _send_email
 from .exceptions import PaymentError
-from .models import Payment, BankAccount, Payable
+from .models import Payment, BankAccount, Payable, PaymentUser
 
 
 def create_payment(
@@ -20,14 +23,25 @@ def create_payment(
     Create a new payment from a payable object
 
     :param payable: Payable object
-    :param processed_by: Member that processed this payment
+    :param processed_by: PaymentUser that processed this payment
     :param pay_type: Payment type
     :return: Payment object
     """
-    if pay_type == Payment.TPAY and not payable.payment_payer.tpay_enabled:
+    payer = (
+        PaymentUser.objects.get(pk=payable.payment_payer.pk)
+        if payable.payment_payer
+        else None
+    )
+
+    if pay_type == Payment.TPAY and not payer.tpay_enabled:
         raise PaymentError(_("This user does not have Thalia Pay enabled"))
 
     if payable.payment is not None:
+        payable.payment.amount = payable.payment_amount
+        payable.payment.notes = payable.payment_notes
+        payable.payment.topic = payable.payment_topic
+        payable.payment.paid_by = payer
+        payable.payment.processed_by = processed_by
         payable.payment.type = pay_type
         payable.payment.save()
     else:
@@ -36,8 +50,7 @@ def create_payment(
             amount=payable.payment_amount,
             notes=payable.payment_notes,
             topic=payable.payment_topic,
-            paid_by=payable.payment_payer,
-            processing_date=timezone.now(),
+            paid_by=payer,
             type=pay_type,
         )
     return payable.payment
@@ -50,43 +63,16 @@ def delete_payment(payable: Payable):
     :return:
     """
     payment = payable.payment
+    if payment.created_at < timezone.now() - timezone.timedelta(
+        seconds=settings.PAYMENT_CHANGE_WINDOW
+    ):
+        raise PaymentError(_("You are not authorized to delete this payment."))
+    if payment.batch and payment.batch.processed:
+        raise PaymentError(_("This payment has already been processed."))
+
     payable.payment = None
     payable.save()
     payment.delete()
-
-
-def process_payment(
-    queryset: QuerySet, processed_by: Member, pay_type: str = Payment.CARD
-) -> list:
-    """
-    Process the payment
-
-    :param queryset: Queryset of payments that should be processed
-    :type queryset: QuerySet[Payment]
-    :param processed_by: Member that processed this payment
-    :type processed_by: Member
-    :param pay_type: Type of the payment
-    :type pay_type: String
-    """
-
-    queryset = queryset.filter(type=Payment.NONE)
-    data = []
-
-    # This should trigger post_save signals, thus a queryset update
-    # is not appropriate, moreover save() automatically sets
-    # the processing date
-    for payment in queryset:
-        if pay_type != Payment.TPAY or (
-            pay_type == Payment.TPAY
-            and payment.paid_by
-            and payment.paid_by.tpay_enabled
-        ):
-            payment.type = pay_type
-            payment.processed_by = processed_by
-            payment.save()
-            data.append(payment)
-
-    return data
 
 
 def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
@@ -115,3 +101,32 @@ def revoke_old_mandates() -> int:
     return BankAccount.objects.filter(
         last_used__lte=(timezone.now() - timezone.timedelta(days=36 * 30))
     ).update(valid_until=timezone.now().date())
+
+
+def send_tpay_batch_processing_emails(batch):
+    """Sends withdrawal notice emails to all members in a batch"""
+    member_payments = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
+    for member_row in member_payments:
+        member = PaymentUser.objects.get(pk=member_row["paid_by"])
+        total_amount = member_row["total"]
+
+        with translation.override(member.profile.language):
+            _send_email(
+                member.email,
+                _("Thalia Pay withdrawal notice"),
+                "payments/email/tpay_withdrawal_notice_mail.txt",
+                {
+                    "name": member.get_full_name(),
+                    "batch": batch,
+                    "bank_account": member.bank_accounts.filter(
+                        mandate_no__isnull=False
+                    ).last(),
+                    "creditor_id": settings.SEPA_CREDITOR_ID,
+                    "payments": batch.payments_set.filter(paid_by=member),
+                    "total_amount": total_amount,
+                    "payments_url": (
+                        settings.BASE_URL + reverse("payments:payment-list",)
+                    ),
+                },
+            )
+    return len(member_payments)

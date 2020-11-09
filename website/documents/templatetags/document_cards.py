@@ -30,13 +30,13 @@ def event_document_card(document):
 
 
 @register.inclusion_tag("includes/grid_item.html")
-def annual_document_card(type, document):
+def annual_document_card(doc_type, document):
     name = ""
     class_name = "annual-document-card"
     for t, n in AnnualDocument.SUBCATEGORIES:
-        if t == type:
+        if t == doc_type:
             name = n
-    url = "#{}".format(type)
+    url = "#{}".format(doc_type)
     image_url = static("documents/images/placeholder.png")
     if document:
         url = document.get_absolute_url()

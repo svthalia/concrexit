@@ -105,17 +105,17 @@
                                 </td>
                                 <td>
                                     <select name="payment"
-                                            data-none="{{ payment.NONE }}"
-                                            {% if order.payment.type != payment.NONE %}class="paid"{% endif %}>
-                                        <option value="{{ payment.NONE }}"
-                                                {% if order.payment.type == payment.NONE %}selected{% endif %}>{% trans 'None' %}</option>
+                                            data-none="no_payment"
+                                            {% if order.payment is not None %}class="paid"{% endif %}>
+                                        <option value="no_payment"
+                                                {% if order.payment is None %}selected{% endif %}>{% trans 'None' %}</option>
                                         <option value="{{ payment.CARD }}"
                                                 {% if order.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
                                         <option value="{{ payment.CASH }}"
                                                 {% if order.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %}</option>
                                         <option value="{{ payment.TPAY }}"
                                                 {% if order.payment.type == payment.TPAY %}selected{% endif %}
-                                                {% if not order.payment.paid_by.tpay_enabled %} disabled {% endif %}>{% trans 'Thalia Pay' %}</option>
+                                                {% if not order.member.tpay_enabled %} disabled {% endif %}>{% trans 'Thalia Pay' %}</option>
                                     </select>
                                 </td>
                                 <td>

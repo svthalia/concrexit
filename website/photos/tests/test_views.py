@@ -9,6 +9,7 @@ from django.conf import settings
 
 from members.models import Member, Membership
 from photos.models import Album, Photo
+from photos.services import save_photo
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -32,7 +33,6 @@ class AlbumIndexTest(TestCase):
         for i in range(12):
             Album.objects.create(
                 title_en="test_album_a%d" % i,
-                title_nl="test_album_a%d" % i,
                 date=date(year=2018, month=9, day=5),
                 slug="test_album_a%d" % i,
             )
@@ -46,7 +46,6 @@ class AlbumIndexTest(TestCase):
         for i in range(12):
             Album.objects.create(
                 title_en="test_album_b%d" % i,
-                title_nl="test_album_b%d" % i,
                 date=date(year=2018, month=9, day=5),
                 slug="test_album_b%d" % i,
             )
@@ -60,7 +59,6 @@ class AlbumIndexTest(TestCase):
         for i in range(72):
             Album.objects.create(
                 title_en="test_album_c%d" % i,
-                title_nl="test_album_c%d" % i,
                 date=date(year=2018, month=9, day=5),
                 slug="test_album_c%d" % i,
             )
@@ -74,7 +72,6 @@ class AlbumIndexTest(TestCase):
     def test_empty_page(self):
         Album.objects.create(
             title_en="test_album",
-            title_nl="test_album",
             date=date(year=2018, month=9, day=5),
             slug="test_album",
         )
@@ -86,21 +83,18 @@ class AlbumIndexTest(TestCase):
     def test_keywords(self):
         Album.objects.create(
             title_en="test_album1",
-            title_nl="test_album1",
             date=date(year=2018, month=9, day=5),
             slug="test_album1",
         )
 
         Album.objects.create(
             title_en="test_album12",
-            title_nl="test_album12",
             date=date(year=2018, month=9, day=5),
             slug="test_album2",
         )
 
         Album.objects.create(
             title_en="test_album3",
-            title_nl="test_album3",
             date=date(year=2018, month=9, day=5),
             slug="test_album3",
         )
@@ -118,7 +112,6 @@ class AlbumIndexTest(TestCase):
         for i in range(120):
             Album.objects.create(
                 title_en="test_album_%d" % i,
-                title_nl="test_album_%d" % i,
                 date=date(year=2018, month=9, day=5),
                 slug="test_album_%d" % i,
             )
@@ -155,7 +148,6 @@ class AlbumTest(TestCase):
     def setUp(self):
         self.album = Album.objects.create(
             title_en="test_album",
-            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
             slug="test_album",
         )
@@ -224,7 +216,6 @@ class SharedAlbumTest(TestCase):
     def setUp(self):
         self.album = Album.objects.create(
             title_en="test_album",
-            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
             shareable=True,
             slug="test_album",
@@ -268,7 +259,6 @@ class DownloadTest(TestCase):
 
         self.album = Album.objects.create(
             title_en="test_album",
-            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
             slug="test_album",
         )
@@ -280,8 +270,9 @@ class DownloadTest(TestCase):
                 name="photo.png", content=f.read(), content_type="image/png"
             )
 
-        self.photo = Photo(album=self.album, file=fi)
-        self.photo.save()
+        self.photo = Photo(album=self.album)
+        self.photo.file.save(fi.name, fi)
+        save_photo(self.photo)
 
     def test_download(self):
         self.client.force_login(self.member)
@@ -299,22 +290,13 @@ class DownloadTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
-@override_settings(SUSPEND_SIGNALS=True)
-class SharedDownloadTest(TestCase):
-
-    fixtures = ["members.json"]
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
-        cls.client = Client()
-
+class _DownloadBaseTestCase(TestCase):
     def setUp(self):
+        self.client = Client()
+
         self.album = Album.objects.create(
             title_en="test_album",
-            title_nl="test_album",
             date=date(year=2017, month=9, day=5),
-            shareable=True,
             slug="test_album",
         )
 
@@ -325,8 +307,20 @@ class SharedDownloadTest(TestCase):
                 name="photo.png", content=f.read(), content_type="image/png"
             )
 
-        self.photo = Photo(album=self.album, file=fi)
-        self.photo.save()
+        self.photo = Photo(album=self.album)
+        self.photo.file.save(fi.name, fi)
+        save_photo(self.photo)
+
+
+@override_settings(SUSPEND_SIGNALS=True)
+class SharedDownloadTest(_DownloadBaseTestCase):
+
+    fixtures = ["members.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.client = Client()
 
     def test_download(self):
         with self.subTest():
@@ -353,33 +347,13 @@ class SharedDownloadTest(TestCase):
 
 
 @override_settings(SUSPEND_SIGNALS=True)
-class AlbumDownloadTest(TestCase):
+class AlbumDownloadTest(_DownloadBaseTestCase):
 
     fixtures = ["members.json"]
 
     @classmethod
     def setUpTestData(cls):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
-
-    def setUp(self):
-        self.client = Client()
-
-        self.album = Album.objects.create(
-            title_en="test_album",
-            title_nl="test_album",
-            date=date(year=2017, month=9, day=5),
-            slug="test_album",
-        )
-
-        with open(
-            os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"), "rb"
-        ) as f:
-            fi = SimpleUploadedFile(
-                name="photo.png", content=f.read(), content_type="image/png"
-            )
-
-        self.photo = Photo(album=self.album, file=fi)
-        self.photo.save()
 
     def test_download(self):
         self.client.force_login(self.member)

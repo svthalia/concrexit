@@ -17,6 +17,12 @@
                 {% endfor %}
             {% endif %}
 
+            {% if tpay_balance and tpay_balance != 0 %}
+                 <h5 class="text-center mb-4">
+                    {% trans "Your current Thalia Pay balance is" %}: € {{ tpay_balance|floatformat:2 }}
+                 </h5>
+            {% endif %}
+
             <ul class="nav nav-tabs justify-content-center mb-4">
                 {% for filter in filters|slice:':6' %}
                     <li class="nav-item">
@@ -49,11 +55,12 @@
                         <th scope="col">{% trans "type"|capfirst %}</th>
                         <th scope="col">{% trans "amount"|capfirst %}</th>
                         <th scope="col">
-                            {% trans "processing date"|capfirst %}
+                            {% trans "date"|capfirst %}
                         </th>
                         <th scope="col" class="text-left">
                             {% trans "notes"|capfirst %}
                         </th>
+                        <th scope="col">{% trans "settled"|capfirst %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -61,14 +68,23 @@
                         <tr>
                             <th scope="row">{{ payment.get_type_display }}</th>
                             <td>€ {{ payment.amount }}</td>
-                            <td>{{ payment.processing_date }}</td>
+                            <td>{{ payment.created_at }}</td>
                             <td class="text-left">{{ payment.notes }}</td>
+                            <td>
+                            {% if payment.type == "tpay_payment" %}
+                                {% if payment.batch.processed %}
+                                    {{ payment.batch.withdrawal_date|date }}
+                                {% else %}
+                                    no
+                                {% endif %}
+                            {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                         <tr>
                             <th scope="row">{% trans 'Total' %}</th>
                             <td>€ {{ total|floatformat:2 }}</td>
-                            <td></td><td></td>
+                            <td></td><td></td><td></td>
                         </tr>
                     </tbody>
                 </table>

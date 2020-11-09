@@ -1,7 +1,6 @@
 """The forms defined by the education package"""
 import datetime
 
-from django.conf import settings
 from django.forms import (
     ChoiceField,
     DateField,
@@ -9,8 +8,10 @@ from django.forms import (
     ModelForm,
     SelectDateWidget,
     TypedChoiceField,
+    CharField,
 )
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from utils.snippets import datetime_to_lectureyear
 from .models import Course, Exam, Summary
@@ -26,8 +27,7 @@ class AddExamForm(ModelForm):
         widget=SelectDateWidget(years=years), initial=datetime.date.today
     )
     course = ModelChoiceField(
-        queryset=Course.objects.order_by("name_" + settings.LANGUAGE_CODE),
-        empty_label=None,
+        queryset=Course.objects.order_by("name"), empty_label=None,
     )
     type = ChoiceField(choices=Exam.EXAM_TYPES)
 
@@ -43,8 +43,7 @@ class AddSummaryForm(ModelForm):
     """
 
     course = ModelChoiceField(
-        queryset=Course.objects.order_by("name_" + settings.LANGUAGE_CODE),
-        empty_label=None,
+        queryset=Course.objects.order_by("name"), empty_label=None,
     )
 
     this_year = datetime_to_lectureyear(timezone.now())
@@ -57,3 +56,26 @@ class AddSummaryForm(ModelForm):
     class Meta:
         model = Summary
         fields = ("name", "year", "language", "file", "course", "author")
+
+
+class SummaryAdminForm(ModelForm):
+    """
+    Custom form for summaries so that we can show more data in the admin
+    """
+
+    def __init__(self, data=None, files=None, **kwargs):
+        super().__init__(data, files, **kwargs)
+        obj = kwargs.get("instance", None)
+        if not obj:
+            self.fields["phone"].widget = self.fields["phone"].hidden_widget()
+            self.fields["email"].widget = self.fields["email"].hidden_widget()
+        else:
+            self.fields["phone"].initial = obj.uploader.profile.phone_number
+            self.fields["email"].initial = obj.uploader.email
+
+    phone = CharField(label=_("Uploader phone"), disabled=True, required=False)
+    email = CharField(label=_("Uploader email"), disabled=True, required=False)
+
+    class Meta:
+        model = Summary
+        fields = "__all__"

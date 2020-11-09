@@ -1,25 +1,31 @@
 import hashlib
 import logging
 from base64 import b16encode
-
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _, override as lang_override
+
 from googleapiclient.errors import HttpError
 
 from members.models import Member
 from utils.google_api import get_directory_api
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 
 class GSuiteUserService:
-    def __init__(self, directory_api=get_directory_api()):
-        super().__init__()
-        self.directory_api = directory_api
+    def __init__(self, directory_api=None):
+        self._directory_api = directory_api
+
+    @property
+    def directory_api(self):
+        if self._directory_api is not None:
+            return self._directory_api
+        return get_directory_api()
 
     def create_user(self, member: Member):
         """
-        Create a new GSuite user based on the provided data
+        Create a new GSuite user based on the provided data.
+
         :param member: The member that gets an account
         :return returns a tuple with the password and id of the created user
         """
@@ -80,7 +86,8 @@ class GSuiteUserService:
 
     def suspend_user(self, username):
         """
-        Suspends the user in GSuite
+        Suspend the user in GSuite.
+
         :param username: username of the user
         """
         self.directory_api.users().patch(
@@ -90,16 +97,14 @@ class GSuiteUserService:
 
     def delete_user(self, email):
         """
-        Deletes the user from GSuite
+        Delete the user from GSuite.
+
         :param email: primary email of the user
         """
         self.directory_api.users().delete(userKey=email).execute()
 
     def get_suspended_users(self):
-        """
-        Get all the suspended users
-        :return:
-        """
+        """Get all the suspended users."""
         response = (
             self.directory_api.users()
             .list(domain=settings.GSUITE_MEMBERS_DOMAIN, query="isSuspended=true")

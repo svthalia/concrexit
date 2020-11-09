@@ -4,7 +4,7 @@ set -e
 
 chown -R www-data:www-data /concrexit/
 
-until psql -h "$DJANGO_POSTGRES_HOST" -U "postgres" -c '\l' "$POSTGRES_DB"; do
+until PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${DJANGO_POSTGRES_HOST}" -U "${POSTGRES_USER}" -c '\l' "${POSTGRES_DB}"; do
     >&2 echo "PostgreSQL is unavailable: Sleeping"
     sleep 5
 done

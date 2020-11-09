@@ -84,7 +84,7 @@ def rows_distributed(thelist, n):
         [[0, 1], [2], [3], [4], [5], [6], [7], [8], [9]]
 
         # This filter will always return `n` rows, even if some are empty:
-        >>> rows(range(2), 3)
+        >>> rows_distributed(range(2), 3)
         [[0], [1], []]
     """
     try:
@@ -97,17 +97,17 @@ def rows_distributed(thelist, n):
 
     remainder = list_len % n
     offset = 0
-    rows = []
+    r = []
     for i in range(n):
         if remainder:
             start, end = (split + 1) * i, (split + 1) * (i + 1)
         else:
             start, end = split * i + offset, split * (i + 1) + offset
-        rows.append(thelist[start:end])
+        r.append(thelist[start:end])
         if remainder:
             remainder -= 1
             offset += 1
-    return rows
+    return r
 
 
 def columns(thelist, n):
@@ -162,6 +162,7 @@ register.filter(columns)
 
 
 def _test():
+    # pylint: disable=import-outside-toplevel
     import doctest
 
     doctest.testmod()

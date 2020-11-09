@@ -1,7 +1,7 @@
+# pylint: disable=too-many-statements
 from datetime import timedelta
 from unittest import mock
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase, override_settings
@@ -40,8 +40,8 @@ class ServicesTest(TestCase):
             address_country="NL",
             phone_number="06123456789",
             birthday=timezone.now().replace(year=1990, day=1).date(),
-            language="en",
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
@@ -59,20 +59,22 @@ class ServicesTest(TestCase):
             address_country="NL",
             phone_number="06098765432",
             birthday=timezone.now().replace(year=1992, day=2).date(),
-            language="nl",
             length=Entry.MEMBERSHIP_STUDY,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
         cls.e3 = Renewal.objects.create(
             member=Member.objects.get(pk=2),
             length=Entry.MEMBERSHIP_STUDY,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
         cls.e4 = Renewal.objects.create(
             member=Member.objects.get(pk=3),
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_ACCEPTED,
         )
@@ -81,6 +83,7 @@ class ServicesTest(TestCase):
         cls.e5 = Renewal.objects.create(
             member=Member.objects.get(pk=4),
             length=Entry.MEMBERSHIP_STUDY,
+            contribution=30,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_ACCEPTED,
             created_at=timezone.now() - timedelta(days=10),
@@ -191,9 +194,6 @@ class ServicesTest(TestCase):
         self.e2.refresh_from_db()
         self.e3.refresh_from_db()
 
-        self.assertNotEqual(self.e2.payment, None)
-        self.assertNotEqual(self.e3.payment, None)
-
         self.assertEqual(self.e2.username, "ptest")
 
         self.assertEqual(rows_updated, 3)
@@ -234,7 +234,7 @@ class ServicesTest(TestCase):
     def test_revert_entry(self):
         with self.subTest("Revert accepted entry"):
             self.e2.status = Entry.STATUS_ACCEPTED
-            self.e2.payment = services._create_payment_for_entry(self.e2)
+            self.e2.payment = Payment.objects.create(amount=7.5)
             self.e2.save()
 
             services.revert_entry(1, self.e2)
@@ -256,7 +256,7 @@ class ServicesTest(TestCase):
 
         with self.subTest("Revert another rejected entry"):
             self.e0.status = Entry.STATUS_REJECTED
-            self.e0.payment = services._create_payment_for_entry(self.e0)
+            self.e0.payment = Payment.objects.create(amount=7.5)
             self.e0.save()
 
             services.revert_entry(1, self.e0)
@@ -267,7 +267,7 @@ class ServicesTest(TestCase):
 
         with self.subTest("Does not revert completed entry"):
             self.e2.status = Entry.STATUS_COMPLETED
-            self.e2.payment = services._create_payment_for_entry(self.e2)
+            self.e2.payment = Payment.objects.create(amount=7.5)
             self.e2.save()
 
             services.revert_entry(1, self.e0)
@@ -277,68 +277,11 @@ class ServicesTest(TestCase):
             self.assertEqual(self.e2.status, Entry.STATUS_COMPLETED)
             self.assertIsNotNone(self.e2.payment)
 
-    def test_create_payment_for_entry(self):
-        self.e1.username = "jdoe"
-        self.e1.save()
-        self.e2.username = "ptest"
-        self.e2.save()
-
-        p1 = services._create_payment_for_entry(self.e1)  # 'year' payment
-        p2 = services._create_payment_for_entry(self.e2)  # 'study' payment
-
-        lecture_year = datetime_to_lectureyear(timezone.now())
-        Membership.objects.create(
-            type=Membership.MEMBER,
-            since=timezone.datetime(year=lecture_year, month=9, day=1),
-            until=timezone.datetime(year=lecture_year + 1, month=9, day=1),
-            user=self.e3.member,
-        )
-        Membership.objects.create(
-            type=Membership.MEMBER,
-            since=timezone.datetime(year=lecture_year, month=9, day=1),
-            until=timezone.datetime(year=lecture_year + 1, month=9, day=1),
-            user=self.e4.member,
-        )
-        Membership.objects.create(
-            type=Membership.MEMBER,
-            since=timezone.now() - timedelta(days=31),
-            until=timezone.now() - timedelta(days=2),
-            user=self.e5.member,
-        )
-
-        # upgrade 'study'
-        p3 = services._create_payment_for_entry(self.e3)
-        # upgrade 'year'
-        p4 = services._create_payment_for_entry(self.e4)
-        # upgrade 'study' after membership end
-        p5 = services._create_payment_for_entry(self.e5)
-
-        self.e1.membership_type = Membership.BENEFACTOR
-        self.e1.contribution = 10
-        p6 = services._create_payment_for_entry(self.e1)  # contribu payment
-
-        self.assertEqual(p1.amount, settings.MEMBERSHIP_PRICES["year"])
-        self.assertEqual(p1.processed, False)
-        self.assertEqual(p2.amount, settings.MEMBERSHIP_PRICES["study"])
-        self.assertEqual(p2.processed, False)
-        self.assertEqual(
-            p3.amount,
-            settings.MEMBERSHIP_PRICES["study"] - settings.MEMBERSHIP_PRICES["year"],
-        )
-        self.assertEqual(p3.processed, False)
-        self.assertEqual(p4.amount, settings.MEMBERSHIP_PRICES["year"])
-        self.assertEqual(p4.processed, False)
-        self.assertEqual(
-            p5.amount,
-            settings.MEMBERSHIP_PRICES["study"] - settings.MEMBERSHIP_PRICES["year"],
-        )
-        self.assertEqual(p5.processed, False)
-        self.assertEqual(p6.amount, 10)
-        self.assertEqual(p6.processed, False)
-
     @mock.patch("registrations.services.check_unique_user")
     def test_create_member_from_registration(self, check_unique_user):
-        self.e1.username = "jdoe"
+        # We use capitalisation here because we want
+        # to test if the username is lowercased
+        self.e1.username = "JDoe"
         self.e1.save()
 
         check_unique_user.return_value = False
@@ -366,7 +309,6 @@ class ServicesTest(TestCase):
         self.assertEqual(
             member.profile.birthday, timezone.now().replace(year=1990, day=1).date()
         )
-        self.assertEqual(member.profile.language, "en")
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Welcome to Study Association Thalia")
@@ -448,13 +390,6 @@ class ServicesTest(TestCase):
                 user=self.e3.member,
             )
 
-            # Renewal without length
-            self.e3.length = None
-            membership3 = services._create_membership_from_entry(
-                self.e3, self.e3.member
-            )
-            self.assertEqual(membership3, None)
-
             # Renewal to new 'year' membership starting 1 day after
             # end of the previous membership
             self.e3.length = Entry.MEMBERSHIP_YEAR
@@ -503,83 +438,47 @@ class ServicesTest(TestCase):
             with self.assertRaises(ValueError):
                 services._create_membership_from_entry(self.e3)
 
-    def test_process_payment(self):
+    @freeze_time("2019-01-01")
+    @mock.patch("registrations.emails.send_renewal_complete_message")
+    def test_process_entry_save(self, send_renewal_email):
         self.e1.username = "jdoe"
         self.e1.save()
-        self.e2.username = "ptest"
-        self.e2.save()
 
-        # Check that the DoesNotExist is caught
-        p = Payment(amount=10, type=Payment.CARD)
-        services.process_payment(p)
-
-        p0 = services._create_payment_for_entry(self.e0)
-        self.e0.payment = p0
-        self.e0.save()
-        p1 = services._create_payment_for_entry(self.e1)
-        self.e1.payment = p1
+        self.e1.status = Entry.STATUS_ACCEPTED
+        self.e1.membership = None
+        self.e1.payment = Payment.objects.create(amount=8)
         self.e1.save()
-        p2 = services._create_payment_for_entry(self.e2)
-        self.e2.payment = p2
-        self.e2.save()
-        p3 = services._create_payment_for_entry(self.e3)
-        self.e3.payment = p3
+        self.e3.status = Entry.STATUS_ACCEPTED
+        self.e3.membership = None
+        self.e3.payment = Payment.objects.create(amount=8)
         self.e3.save()
 
-        Entry.objects.filter(pk__in=[self.e1.pk, self.e2.pk, self.e3.pk]).update(
-            status=Entry.STATUS_ACCEPTED
-        )
+        with self.subTest("No entry"):
+            services.process_entry_save(None)
 
-        payments = Payment.objects.filter(pk__in=[p0.pk, p2.pk, p3.pk])
-        payments.update(type=Payment.CARD)
+        with self.subTest("No payment for entry"):
+            services.process_entry_save(Entry(payment=None))
 
-        for payment in Payment.objects.filter(pk__in=[p0.pk, p1.pk, p2.pk]):
-            services.process_payment(payment)
+        with self.subTest("Status is not accepted"):
+            services.process_entry_save(Entry(payment=Payment()))
 
-        self.e0.refresh_from_db()
-        self.e1.refresh_from_db()
-        self.e2.refresh_from_db()
+        with self.subTest("Registration paid"):
+            services.process_entry_save(self.e1)
 
-        self.assertEqual(self.e0.status, Entry.STATUS_REVIEW)
-        self.assertEqual(self.e1.status, Entry.STATUS_ACCEPTED)
-        self.assertEqual(self.e2.status, Entry.STATUS_COMPLETED)
+            self.e1.refresh_from_db()
+            self.assertIsNotNone(self.e1.membership)
+            self.assertEqual(self.e1.status, Entry.STATUS_COMPLETED)
 
-        p0.type = Payment.CARD
-        p0.save()
-        self.e0.status = Entry.STATUS_ACCEPTED
-        self.e0.save()
-        services.process_payment(p0)
+        with self.subTest("Renewal paid"):
+            services.process_entry_save(self.e3)
 
-        self.assertEqual(self.e0.status, Entry.STATUS_ACCEPTED)
+            self.e3.refresh_from_db()
+            self.e3.payment.refresh_from_db()
 
-        p3.refresh_from_db()
-        services.process_payment(p3)
-        self.e3.refresh_from_db()
-
-        self.assertEqual(self.e3.status, Entry.STATUS_COMPLETED)
-        self.assertEqual(len(mail.outbox), 2)
-
-    def test_process_payment_no_member_created(self):
-        p1 = services._create_payment_for_entry(self.e1)
-        p2 = services._create_payment_for_entry(self.e2)
-
-        Entry.objects.filter(pk__in=[self.e1.pk, self.e2.pk]).update(
-            status=Entry.STATUS_ACCEPTED
-        )
-
-        payments = Payment.objects.filter(pk__in=[p1.pk, p2.pk])
-        payments.update(type=Payment.CARD)
-
-        with mock.patch(
-            "registrations.services." "_create_member_from_registration"
-        ) as create_member:
-            with mock.patch(
-                "registrations.services._create_membership_" "from_entry"
-            ) as create_membership:
-                create_member.return_value = None
-                for payment in Payment.objects.filter(pk__in=[p1.pk, p2.pk]):
-                    services.process_payment(payment)
-                    self.assertFalse(create_membership.called)
+            send_renewal_email.assert_called_with(self.e3)
+            self.assertEqual(self.e3.payment.paid_by, self.e3.member)
+            self.assertIsNotNone(self.e3.membership)
+            self.assertEqual(self.e3.status, Entry.STATUS_COMPLETED)
 
     @freeze_time("2019-01-01")
     def test_execute_data_minimisation(self):
@@ -604,7 +503,7 @@ class ServicesTest(TestCase):
             self.e0.status = Entry.STATUS_COMPLETED
             self.e0.save()
 
-        with self.subTest("Has processed entries when " "rejected with dry-run"):
+        with self.subTest("Has processed entries when rejected with dry-run"):
             self.assertEqual(services.execute_data_minimisation(True), 1)
 
         self.e0.status = Entry.STATUS_COMPLETED

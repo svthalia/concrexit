@@ -18,10 +18,7 @@ class BaseRegistrationForm(forms.ModelForm):
 
     birthday = forms.DateField(
         widget=forms.widgets.SelectDateWidget(
-            years=[
-                year
-                for year in range(timezone.now().year - 50, timezone.now().year - 10)
-            ]
+            years=range(timezone.now().year - 50, timezone.now().year - 10)
         ),
         label=capfirst(_("birthday")),
     )
@@ -50,22 +47,30 @@ class MemberRegistrationForm(BaseRegistrationForm):
         coerce=int,
         empty_value=this_year,
         required=False,
-        help_text=_(
-            "What lecture year did you start " "studying at Radboud University?"
-        ),
+        help_text=_("What lecture year did you start studying at Radboud University?"),
     )
 
     class Meta:
         model = Registration
-        fields = "__all__"
-        exclude = [
-            "created_at",
-            "updated_at",
-            "status",
-            "username",
-            "payment",
-            "membership",
-        ]
+        fields = (
+            "length",
+            "first_name",
+            "last_name",
+            "birthday",
+            "email",
+            "phone_number",
+            "student_number",
+            "programme",
+            "starting_year",
+            "address_street",
+            "address_street2",
+            "address_postal_code",
+            "address_city",
+            "address_country",
+            "optin_birthday",
+            "optin_mailinglist",
+            "membership_type",
+        )
 
 
 class BenefactorRegistrationForm(BaseRegistrationForm):
@@ -77,17 +82,24 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
 
     class Meta:
         model = Registration
-        fields = "__all__"
-        exclude = [
-            "created_at",
-            "updated_at",
-            "status",
-            "username",
-            "starting_year",
-            "programme",
-            "payment",
-            "membership",
-        ]
+        fields = (
+            "length",
+            "first_name",
+            "last_name",
+            "birthday",
+            "email",
+            "phone_number",
+            "student_number",
+            "address_street",
+            "address_street2",
+            "address_postal_code",
+            "address_city",
+            "address_country",
+            "optin_birthday",
+            "optin_mailinglist",
+            "contribution",
+            "membership_type",
+        )
 
 
 class RenewalForm(forms.ModelForm):
@@ -109,8 +121,7 @@ class RenewalForm(forms.ModelForm):
 
     class Meta:
         model = Renewal
-        fields = "__all__"
-        exclude = ["created_at", "updated_at", "status", "payment", "membership"]
+        fields = ("member", "length", "contribution", "membership_type")
 
 
 class ReferenceForm(forms.ModelForm):
@@ -118,7 +129,7 @@ class ReferenceForm(forms.ModelForm):
         super().clean()
         membership = self.cleaned_data["member"].current_membership
         if membership and membership.type == Membership.BENEFACTOR:
-            raise ValidationError(_("Benefactors cannot give " "references."))
+            raise ValidationError(_("Benefactors cannot give references."))
 
         membership = self.cleaned_data["member"].latest_membership
         if (

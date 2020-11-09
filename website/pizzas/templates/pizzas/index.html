@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static alert %}
+{% load i18n static alert payments %}
 
 {% block title %}{% if event %}{{ event.title }}
     — {% endif %}{% trans "pizzas"|capfirst %} —
@@ -19,7 +19,7 @@
 
 {% block header_image_container %}
     {% if event.just_ended and order %}
-        <div class="image pizza-header {% if order.payment.processed == order.payment.NONE %}unpaid{% else %}paid{% endif %}">
+        <div class="image pizza-header {% if not order.payment %}unpaid{% else %}paid{% endif %}">
             <h1>
                 {{ order.product.name }}
             </h1>
@@ -90,7 +90,7 @@
                         </h3>
                     {% endif %}
                     {% if order %}
-                        {% if order.payment.processed %}
+                        {% if order.payment %}
                             {% trans "The order has been paid for." as success_text %}
                             {% alert 'success' success_text extra_classes="mt-3" %}
                         {% else %}
@@ -105,7 +105,7 @@
                                     <th>{% trans "Name" %}</th>
                                     <th class="d-none d-md-table d-none d-md-table-cell">{% trans "Description" %}</th>
                                     <th>{% trans "Price" %}</th>
-                                    <th>{% trans "Cancel" %}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -120,7 +120,7 @@
                                             {% trans "You can no longer cancel." %}
                                         {% else %}
                                             <form
-                                                class="d-inline-block"
+                                                class="d-inline-block p-1"
                                                 method="post"
                                                 action="{% url 'pizzas:cancel-order' %}">
                                                 {% csrf_token %}
@@ -133,19 +133,10 @@
                                                        onclick="return confirm('{% trans "Are you sure you want to cancel your order?" %}')"/>
                                             </form>
                                         {% endif %}
-                                        {% if order.member.tpay_enabled and not order.payment.processed %}
-                                            <form
-                                                    class="d-inline-block"
-                                                    method="post"
-                                                    action="{% url 'pizzas:pay-order' %}">
-                                                {% csrf_token %}
-                                                <input type="hidden"
-                                                       name="order"
-                                                       value="{{ order.pk }}"/>
-                                                <input type="submit"
-                                                       value="{% trans "Pay with Thalia Pay" %}"
-                                                       class="btn btn-primary"/>
-                                            </form>
+                                        {% if not order.payment %}
+                                            <div class="d-inline-block p-1">
+                                                {% payment_button order request.path %}
+                                            </div>
                                         {% endif %}
                                     </td>
                                 </tr>

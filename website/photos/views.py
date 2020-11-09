@@ -21,6 +21,7 @@ COVER_FILENAME = "cover.jpg"
 
 @login_required
 def index(request):
+    """Render the index page showing multiple album cards."""
     keywords = request.GET.get("keywords", "").split()
 
     # Only show published albums
@@ -64,43 +65,53 @@ def index(request):
 
 
 def _render_album_page(request, album):
+    """Render album.html for a specified album."""
     context = {"album": album, "photos": album.photo_set.filter(hidden=False)}
     return render(request, "photos/album.html", context)
 
 
 @login_required
-def album(request, slug):
-    album = get_object_or_404(Album, slug=slug)
-    if is_album_accessible(request, album):
-        return _render_album_page(request, album)
+def detail(request, slug):
+    """Render an album, if it accessible by the user."""
+    obj = get_object_or_404(Album, slug=slug)
+    if is_album_accessible(request, obj):
+        return _render_album_page(request, obj)
     raise Http404("Sorry, you're not allowed to view this album")
 
 
 def shared_album(request, slug, token):
-    album = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(album, token)
-    return _render_album_page(request, album)
+    """Render a shared album if the correct token is provided."""
+    obj = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(obj, token)
+    return _render_album_page(request, obj)
 
 
-def _photo_path(album, filename):
+def _photo_path(obj, filename):
+    """Return the path to a Photo."""
     photoname = os.path.basename(filename)
-    albumpath = os.path.join(album.photosdir, album.dirname)
+    albumpath = os.path.join(obj.photosdir, obj.dirname)
     photopath = os.path.join(albumpath, photoname)
-    get_object_or_404(Photo.objects.filter(album=album, file=photopath))
+    get_object_or_404(Photo.objects.filter(album=obj, file=photopath))
     return photopath
 
 
-def _download(request, album, filename):
-    """This function provides a layer of indirection for shared albums"""
-    photopath = _photo_path(album, filename)
-    photo = get_object_or_404(Photo.objects.filter(album=album, file=photopath))
+def _download(request, obj, filename):
+    """Download a photo.
+
+    This function provides a layer of indirection for shared albums.
+    """
+    photopath = _photo_path(obj, filename)
+    photo = get_object_or_404(Photo.objects.filter(album=obj, file=photopath))
     return sendfile(request, photo.file.path, attachment=True)
 
 
-def _album_download(request, album):
-    """This function provides a layer of indirection for shared albums"""
-    albumpath = os.path.join(album.photospath, album.dirname)
-    zipfilename = os.path.join(gettempdir(), "{}.zip".format(album.dirname))
+def _album_download(request, obj):
+    """Download an album.
+
+    This function provides a layer of indirection for shared albums.
+    """
+    albumpath = os.path.join(obj.photospath, obj.dirname)
+    zipfilename = os.path.join(gettempdir(), "{}.zip".format(obj.dirname))
     if not os.path.exists(zipfilename):
         with ZipFile(zipfilename, "w") as f:
             pictures = [os.path.join(albumpath, x) for x in os.listdir(albumpath)]
@@ -111,27 +122,31 @@ def _album_download(request, album):
 
 @login_required
 def download(request, slug, filename):
-    album = get_object_or_404(Album, slug=slug)
-    if is_album_accessible(request, album):
-        return _download(request, album, filename)
+    """Download a photo if the album of the photo is accessible by the user."""
+    obj = get_object_or_404(Album, slug=slug)
+    if is_album_accessible(request, obj):
+        return _download(request, obj, filename)
     raise Http404("Sorry, you're not allowed to view this album")
 
 
 @login_required
 def album_download(request, slug):
-    album = get_object_or_404(Album, slug=slug)
-    if is_album_accessible(request, album):
-        return _album_download(request, album)
+    """Download an album if the album is accessible by the user."""
+    obj = get_object_or_404(Album, slug=slug)
+    if is_album_accessible(request, obj):
+        return _album_download(request, obj)
     raise Http404("Sorry, you're not allowed to view this album")
 
 
 def shared_download(request, slug, token, filename):
-    album = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(album, token)
-    return _download(request, album, filename)
+    """Download a photo from a shared album if the album token is provided."""
+    obj = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(obj, token)
+    return _download(request, obj, filename)
 
 
 def shared_album_download(request, slug, token):
-    album = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(album, token)
-    return _album_download(request, album)
+    """Download a shared album if the album token is provided."""
+    obj = get_object_or_404(Album, slug=slug)
+    check_shared_album_token(obj, token)
+    return _album_download(request, obj)

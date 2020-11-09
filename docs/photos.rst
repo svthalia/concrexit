@@ -25,6 +25,14 @@ photos.apps module
    :undoc-members:
    :show-inheritance:
 
+photos.forms module
+-------------------
+
+.. automodule:: photos.forms
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 photos.models module
 --------------------
 
@@ -41,10 +49,26 @@ photos.services module
    :undoc-members:
    :show-inheritance:
 
+photos.signals module
+---------------------
+
+.. automodule:: photos.signals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 photos.urls module
 ------------------
 
 .. automodule:: photos.urls
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+photos.validators module
+------------------------
+
+.. automodule:: photos.validators
    :members:
    :undoc-members:
    :show-inheritance:
@@ -56,4 +80,3 @@ photos.views module
    :members:
    :undoc-members:
    :show-inheritance:
-

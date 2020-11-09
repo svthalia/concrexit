@@ -16,7 +16,6 @@ def PopenAndCall(onExit, *popenArgs, **popenKWArgs):
         proc = subprocess.Popen(*popenArgs, **popenKWArgs)
         proc.wait()
         onExit()
-        return
 
     thread = threading.Thread(target=runInThread, args=(onExit, popenArgs, popenKWArgs))
     thread.start()

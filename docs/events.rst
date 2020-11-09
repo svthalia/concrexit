@@ -10,8 +10,10 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    events.api
+   events.models
 
 Submodules
 ----------
@@ -80,14 +82,6 @@ events.forms module
    :undoc-members:
    :show-inheritance:
 
-events.models module
---------------------
-
-.. automodule:: events.models
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 events.services module
 ----------------------
 
@@ -127,4 +121,3 @@ events.widgets module
    :members:
    :undoc-members:
    :show-inheritance:
-

@@ -10,6 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    utils.conscribo
    utils.management
@@ -74,4 +75,3 @@ utils.translation module
    :members:
    :undoc-members:
    :show-inheritance:
-

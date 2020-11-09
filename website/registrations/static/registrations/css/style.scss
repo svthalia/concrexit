@@ -3,7 +3,7 @@
         label::after {
             content: '*';
             margin-left: 2px;
-            color: $text-color;
+            color: var(--text-color);
         }
     }
 }

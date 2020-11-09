@@ -57,15 +57,6 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
 
         errors = {}
         url = "admin/newsletters/"
-        if url in self.description_nl:
-            errors.update(
-                {
-                    "description_nl": _(
-                        "Please make sure all urls are absolute "
-                        "and contain http(s)://."
-                    )
-                }
-            )
         if url in self.description_en:
             errors.update(
                 {
@@ -77,24 +68,17 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
             )
         if self.send_date and self.send_date <= timezone.now():
             errors.update(
-                {
-                    "send_date": _(
-                        "Please make sure the send date is " "not in the past."
-                    )
-                }
+                {"send_date": _("Please make sure the send date is not in the past.")}
             )
 
         if errors:
             raise ValidationError(errors)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
     class Meta:
         permissions = (("send_newsletter", "Can send newsletter"),)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
 
 class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
@@ -130,15 +114,6 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
 
         errors = {}
         url = "admin/newsletters/"
-        if url in self.description_nl:
-            errors.update(
-                {
-                    "description_nl": _(
-                        "Please make sure all urls are absolute "
-                        "and start with http(s)://."
-                    )
-                }
-            )
         if url in self.description_en:
             errors.update(
                 {
@@ -153,7 +128,7 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
             raise ValidationError(errors)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ("order",)
@@ -161,8 +136,6 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
 
 class NewsletterItem(NewsletterContent):
     """Describes one piece of text content of a newsletter"""
-
-    pass
 
 
 class NewsletterEvent(NewsletterContent):
@@ -205,7 +178,7 @@ class NewsletterEvent(NewsletterContent):
         null=True,
         default=None,
         help_text=_(
-            "This is the price that a member has to " "pay when he/she did not show up."
+            "This is the price that a member has to pay when he/she did not show up."
         ),
     )
 

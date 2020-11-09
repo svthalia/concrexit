@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
-from payments.models import Payment
 from .models import Order, PizzaEvent, Product
 
 
@@ -18,10 +17,10 @@ def index(request):
         products = products.exclude(restricted=True)
     event = PizzaEvent.current()
     try:
-        order = Order.objects.get(pizza_event=event, member=request.member)
+        obj = Order.objects.get(pizza_event=event, member=request.member)
     except Order.DoesNotExist:
-        order = None
-    context = {"event": event, "products": products, "order": order}
+        obj = None
+    context = {"event": event, "products": products, "order": obj}
     return render(request, "pizzas/index.html", context)
 
 
@@ -34,8 +33,6 @@ def cancel_order(request):
             if not order.can_be_changed:
                 messages.error(request, _("You can no longer cancel."))
             elif order.member == request.member:
-                if order.payment.type == Payment.TPAY:
-                    order.payment.type = Payment.NONE
                 order.delete()
                 messages.success(request, _("Your order has been cancelled."))
         except Http404:
@@ -43,35 +40,18 @@ def cancel_order(request):
     return redirect("pizzas:index")
 
 
-@require_http_methods(["POST"])
-def pay_order(request):
-    """ View that marks the order as paid using Thalia Pay """
-    if "order" in request.POST:
-        try:
-            order = get_object_or_404(Order, pk=int(request.POST["order"]))
-            if order.member == request.member:
-                order.payment.type = Payment.TPAY
-                order.save()
-                messages.success(
-                    request, _("Your order has been paid with " "Thalia Pay.")
-                )
-        except Http404:
-            messages.error(request, _("Your order could not be found."))
-    return redirect("pizzas:index")
-
-
 @login_required
-def order(request):
+def place_order(request):
     """ View that shows the detail of the current order """
     event = PizzaEvent.current()
     if not event:
         return redirect("pizzas:index")
 
     try:
-        order = Order.objects.get(pizza_event=event, member=request.member)
-        current_order_locked = not order.can_be_changed
+        obj = Order.objects.get(pizza_event=event, member=request.member)
+        current_order_locked = not obj.can_be_changed
     except Order.DoesNotExist:
-        order = None
+        obj = None
         current_order_locked = False
 
     if "product" in request.POST and not current_order_locked:
@@ -80,10 +60,10 @@ def order(request):
             productset = productset.exclude(restricted=True)
         try:
             product = productset.get(pk=int(request.POST["product"]))
-        except Product.DoesNotExist:
-            raise Http404("Pizza does not exist")
-        if not order:
-            order = Order(pizza_event=event, member=request.member)
-        order.product = product
-        order.save()
+        except Product.DoesNotExist as e:
+            raise Http404("Pizza does not exist") from e
+        if not obj:
+            obj = Order(pizza_event=event, member=request.member)
+        obj.product = product
+        obj.save()
     return redirect("pizzas:index")

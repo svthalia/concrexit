@@ -1,6 +1,4 @@
-"""
-Authentication backend to check permissions
-"""
+"""Authentication backend to check permissions."""
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.utils import timezone
@@ -8,18 +6,19 @@ from django.utils import timezone
 from members.models import Member
 
 
-class MemberGroupBackend(object):
-    """Check permissions against MemberGroups"""
+class MemberGroupBackend:
+    """Check permissions against MemberGroups."""
 
     def authenticate(self, *args, **kwargs):
-        """Not implemented in this backend"""
+        """Not implemented in this backend."""
         return
 
     def get_user(self, *args, **kwargs):
-        """Not implemented in this backend"""
+        """Not implemented in this backend."""
         return
 
-    def _get_permissions(self, user, obj):
+    @staticmethod
+    def _get_permissions(user, obj):
         if not user.is_active or user.is_anonymous or obj is not None:
             return set()
         try:
@@ -58,7 +57,7 @@ class MemberGroupBackend(object):
         return perm in self.get_all_permissions(user, obj)
 
     def has_module_perms(self, user, app_label):
-        """Returns True if user has any permissions in the given app_label"""
+        """Return True if user has any permissions in the given app_label."""
         if not user.is_active:
             return False
         for perm in self.get_all_permissions(user):

@@ -24,4 +24,3 @@ documents.templatetags.filename module
    :members:
    :undoc-members:
    :show-inheritance:
-

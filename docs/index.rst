@@ -6,6 +6,7 @@ Concrexit, Thalia's website
     :caption: Contents:
 
     readme
+    website-structure
     modules
 
 Indices and tables

@@ -10,6 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    pizzas.api
 
@@ -87,4 +88,3 @@ pizzas.views module
    :members:
    :undoc-members:
    :show-inheritance:
-
