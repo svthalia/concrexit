@@ -668,7 +668,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
     )
 
     def get_tpay_balance(self, obj):
-        return f"€ {obj.tpay_balance:.2f}"
+        return f"€ {obj.tpay_balance:.2f}" if obj.tpay_enabled else "-"
 
     get_tpay_balance.short_description = _("balance")
 
