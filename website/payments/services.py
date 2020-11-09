@@ -115,7 +115,7 @@ def process_batch(batch):
     payments = batch.payments_set.select_related("paid_by")
     for payment in payments:
         bank_account = payment.paid_by.bank_accounts.last()
-        bank_account.last_used = batch.processing_date
+        bank_account.last_used = batch.withdrawal_date
         bank_account.save()
 
     batch.save()
