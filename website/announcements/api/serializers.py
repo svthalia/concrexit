@@ -5,7 +5,7 @@ from announcements.models import Slide
 
 
 class SlideSerializer(serializers.ModelSerializer):
-    """MemberGroup serializer."""
+    """Slide serializer."""
 
     class Meta:
         """Meta class for the serializer."""

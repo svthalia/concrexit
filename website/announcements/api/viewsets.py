@@ -5,6 +5,10 @@ from announcements.models import Slide
 
 
 class SlideViewset(viewsets.ReadOnlyModelViewSet):
+    """
+    Viewset for slides
+    """
+
     queryset = Slide.objects.all()
     serializer_class = SlideSerializer
 
