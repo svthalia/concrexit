@@ -170,7 +170,7 @@ class ProfileDetailView(DetailView):
     template_name = "members/user/profile.html"
 
     def setup(self, request, *args, **kwargs) -> None:
-        if "pk" not in kwargs and request.member :
+        if "pk" not in kwargs and request.member:
             kwargs["pk"] = request.member.pk
         super().setup(request, *args, **kwargs)
 
