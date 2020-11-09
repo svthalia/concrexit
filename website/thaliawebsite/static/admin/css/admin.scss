@@ -1,17 +1,17 @@
 @import "./_admin-fonts.scss";
 
 body {
-    background-color: $background-color;
-    color: $text-color;
-    font-family: $primary-font;
-    border-color: $background-shade;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--primary-font);
+    border-color: var(--background-shade);
 }
 
 table, tr {
-    border-top-color: $background-shade;
-    border-bottom-color: $background-shade;
-    border-left-color: $background-shade;
-    border-right-color: $background-shade;
+    border-top-color: var(--background-shade);
+    border-bottom-color: var(--background-shade);
+    border-left-color: var(--background-shade);
+    border-right-color: var(--background-shade);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -19,7 +19,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: $regular;
     letter-spacing: $letter-spacing;
     text-transform: uppercase;
-    color: $text-color;
+    color: var(--text-color);
 }
 
 td, th, input, textarea, select, .form-row p, form .button {
@@ -27,19 +27,19 @@ td, th, input, textarea, select, .form-row p, form .button {
 }
 
 #changelist-filter ul {
-    border-color: $card-background-hover;
+    border-color: var(--card-background-hover);
 }
 
 #header {
     background-color: black;
     color: white;
-    border-bottom: 5px solid $preset;
+    border-bottom: 5px solid var(--preset);
     margin-bottom: -5px;
 }
 
 #header a:focus, #header a:hover {
-    color: $preset-hover;
-    border-bottom-color: $preset-hover;
+    color: var(--preset-hover);
+    border-bottom-color: var(--preset-hover);
 }
 
 #branding h1, #branding h1 a:link, #branding h1 a:visited {
@@ -47,21 +47,21 @@ td, th, input, textarea, select, .form-row p, form .button {
 }
 
 div.breadcrumbs {
-    background: $preset;
-    color: $preset-contrast;
+    background: var(--preset);
+    color: var(--preset-contrast);
 }
 
 div.breadcrumbs a:focus, div.breadcrumbs a:hover {
-    color: $preset-contrast-hover;
+    color: var(--preset-contrast-hover);
 }
 
 .module {
-    background: $card-background;
-    color: $card-background-contrast;
+    background: var(--card-background);
+    color: var(--card-background-contrast);
 
     caption, h2, a.section:link, a.section:visited {
-        background-color: $preset;
-        color: $preset-contrast;
+        background-color: var(--preset);
+        color: var(--preset-contrast);
         font-family: $header-font;
         font-weight: $regular;
         letter-spacing: $letter-spacing;
@@ -70,12 +70,12 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 }
 
 #changelist, #changelist #toolbar {
-    background: $background-color;
+    background: var(--background-color);
 }
 
 #changelist .actions, #changelist .paginator, #changelist .actions label {
-    background: $preset;
-    color: $preset-contrast;
+    background: var(--preset);
+    color: var(--preset-contrast);
     font-family: $header-font;
     font-weight: $regular;
     letter-spacing: $letter-spacing;
@@ -89,7 +89,7 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 }
 
 .inline-related fieldset {
-    background-color: $card-background;
+    background-color: var(--card-background);
     border-top: 0;
     border-bottom: 0;
 }
@@ -97,8 +97,8 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 .inline-related h3 {
     border-top: 0;
     border-bottom: 0;
-    color: $card-background-contrast;
-    background: $card-background-hover;
+    color: var(--card-background)-contrast;
+    background: var(--card-background-hover);
     font-family: $primary-font;
     text-transform: none;
 }
@@ -111,96 +111,96 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 }
 
 .form-row, td, th {
-    border-color: $card-background-hover;
+    border-color: var(--card-background-hover);
 }
 
 .submit-row {
-    background: $card-background;
-    color: $card-background-contrast;
+    background: var(--card-background);
+    color: var(--card-background)-contrast;
     border: 0;
     border-radius: 0;
 }
 
 label, .help, p.help, form p.help, div.help, form div.help, div.help li {
-    color: $form-text;
+    color: var(--form-text);
 }
 
 thead th {
     border-top: 0;
-    background: $card-background;
-    color: $card-background-contrast;
+    background: var(--card-background);
+    color: var(--card-background)-contrast;
 }
 
 thead th a:link, thead th a:visited, thead th.required {
-    color: $card-background-contrast;
+    color: var(--card-background)-contrast;
 }
 
 thead th.sorted, table thead th .text a:focus, table thead th .text a:hover {
-    background: $card-background-hover;
+    background: var(--card-background-hover);
 }
 
 thead th.sortable:hover {
-    background: $card-background-hover;
+    background: var(--card-background-hover);
 }
 
 .change-list ul.toplinks .date-back a:focus,
 .change-list ul.toplinks .date-back a:hover {
-    color: $preset;
+    color: var(--preset);
 }
 
 tr.alt, .inline-group div.add-row,
 .inline-group .tabular tr.add-row td {
-    background: $card-background;
+    background: var(--card-background);
 }
 
 .row1, .row2, .row, #result_list tbody tr, .form-row {
-    background: $background-color;
+    background: var(--background-color);
 }
 
 #changelist table tbody tr.selected {
-    background-color: $background-shade;
+    background-color: var(--background-shade);
 }
 #changelist .actions select {
-    color: $form-text;
-    background: $form-background;
-    border: 1px $form-border solid;
+    color: var(--form-text);
+    background: var(--form-background);
+    border: 1px var(--form-border) solid;
     border-radius: 0;
 }
 
 
 
 #content-related, #content-related .module, #changelist-filter {
-    background-color: $card-background;
+    background-color: var(--card-background);
 }
 
 #content-related .module h2 {
-    color: $preset-contrast;
+    color: var(--preset-contrast);
     border-bottom: 0;
 
     a {
-        color: $preset-contrast-hover;
+        color: var(--preset-contrast-hover);
     }
 
     a:hover {
-        color: $preset-contrast-hover;
+        color: var(--preset-contrast-hover);
         text-decoration: underline;
     }
 }
 #content-related h3 {
-    color: $card-background-contrast;
+    color: var(--card-background)-contrast;
 
     a {
-        color: $card-background-contrast;
+        color: var(--card-background)-contrast;
     }
 
     a:hover {
-        color: $card-background-hover-contrast;
+        color: var(--card-background-hover)-contrast;
     }
 
 }
 
 a:link, a:visited {
-    color: $nav-link-color;
+    color: var(--nav-link-color);
     font-weight: normal;
 }
 
@@ -210,28 +210,28 @@ a:link, a:visited {
 }
 
 a:focus, a:hover {
-    color: $preset-hover;
+    color: var(--preset-hover);
 }
 
 .field-payment a:focus, .field-payment a:hover,
 #result_list tbody a:focus, #result_list tbody a:hover {
-    border-bottom: 1px solid $preset-hover;
+    border-bottom: 1px solid var(--preset-hover);
 }
 
 a.section:link, a.section:visited {
-    color: $nav-link-color;
+    color: var(--nav-link-color);
 }
 
 #changelist-filter a {
-    color: $card-background-contrast;
+    color: var(--card-background)-contrast;
 }
 
 #changelist-filter li.selected a {
-    color: $preset;
+    color: var(--preset);
 }
 
 #changelist-filter a:focus, #changelist-filter a:hover, #changelist-filter li.selected a:focus, #changelist-filter li.selected a:hover {
-    color: $preset-hover;
+    color: var(--preset-hover);
 }
 
 .object-tools a {
@@ -242,16 +242,16 @@ a.section:link, a.section:visited {
     text-transform: uppercase;
 }
 .object-tools a:link, .object-tools a:visited {
-    background-color: $preset;
+    background-color: var(--preset);
 }
 
 .object-tools a:focus, .object-tools a:hover {
-    background-color: $preset-hover;
+    background-color: var(--preset-hover);
 }
 
 .button, input[type=submit], input[type=button], .submit-row input, a.button {
-    background-color: $preset;
-    color: $preset-contrast;
+    background-color: var(--preset);
+    color: var(--preset-contrast);
     border-radius: 0;
     border: 0;
     font-family: $header-font;
@@ -261,41 +261,41 @@ a.section:link, a.section:visited {
 }
 
 .button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
-    background-color: $preset-hover;
-    color: $preset-contrast;
+    background-color: var(--preset-hover);
+    color: var(--preset-contrast);
 }
 
 
 #changelist .actions .button {
-    background-color: $secondary;
-    color: $secondary-contrast;
+    background-color: var(--secondary);
+    color: var(var(--secondary-contrast));
 }
 
 #changelist .actions .button:hover {
-    background-color: $secondary-contrast;
-    color: $secondary;
+    background-color: var(var(--secondary-contrast));
+    color: var(--secondary);
 }
 
 
 #searchbar {
     margin-right: 0;
-    background-color: $form-background;
-    color: $form-text;
+    background-color: var(--form-background);
+    color: var(--form-text);
 }
 
 .button.default, input[type=submit].default, .submit-row input.default {
-    background-color: $preset;
-    color: $preset-contrast;
+    background-color: var(--preset);
+    color: var(--preset-contrast);
 }
 
 .button.default:active, input[type=submit].default:active, .button.default:focus, input[type=submit].default:focus, .button.default:hover, input[type=submit].default:hover {
-    background-color: $preset-hover;
-    color: $preset-contrast;
+    background-color: var(--preset-hover);
+    color: var(--preset-contrast);
 }
 
 .button:active, input[type=submit]:active, input[type=button]:active, .button:focus, input[type=submit]:focus, input[type=button]:focus, .button:hover, input[type=submit]:hover, input[type=button]:hover {
-    background-color: $preset-hover;
-    color: $preset-contrast;
+    background-color: var(--preset-hover);
+    color: var(--preset-contrast);
 }
 
 .deletelink-box a {
@@ -307,22 +307,22 @@ a.section:link, a.section:visited {
 }
 
 #content-main .module {
-    background-color: $background-color;
+    background-color: var(--background-color);
 
     table {
-        background-color: $card-background;
+        background-color: var(--card-background);
     }
 }
 
 #result-list, .tablesorter {
-    background-color: $background-color;
+    background-color: var(--background-color);
 }
 
 
 input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], input[type=tel], textarea, select, .vTextField {
-    color: $form-text;
-    background: $form-background;
-    border: 1px $form-border solid;
+    color: var(--form-text);
+    background: var(--form-background);
+    border: 1px var(--form-border) solid;
     border-radius: 0;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -332,13 +332,13 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
     outline: none;
 
     &:focus {
-        border-color: $preset;
+        border-color: var(--preset);
         box-shadow: none;
     }
 }
 
 .selector-available h2, .selector-filter, .selector-chosen h2 {
-    border-color: $form-border;
+    border-color: var(--form-border);
     border-width: 1px;
     border-radius: 0;
 }
@@ -349,17 +349,17 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
 }
 
 .calendar {
-    background-color: $card-background;
-    color: $card-background-contrast;
+    background-color: var(--card-background);
+    color: var(--card-background)-contrast;
 }
 
 .calendar-shortcuts, .calendar-cancel, .calendar-cancel a {
-    background-color: $card-background;
-    color: $card-background-contrast;
+    background-color: var(--card-background);
+    color: var(--card-background)-contrast;
     border: 0;
 
     a:focus, a:hover {
-        color: $preset-hover;
+        color: var(--preset-hover);
     }
 }
 
@@ -369,36 +369,36 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
 }
 
 .calendarbox, .clockbox, ul.timelist, .timelist li, .calendar td a, .timelist a {
-    background-color: $card-background;
-    color: $card-background-contrast;
+    background-color: var(--card-background);
+    color: var(--card-background)-contrast;
 }
 
 .calendar td a:focus, .timelist a:focus, .calendar td a:hover, .timelist a:hover {
-    background-color: $preset;
-    color: $preset-contrast;
+    background-color: var(--preset);
+    color: var(--preset-contrast);
 }
 
 .calendar td.selected a {
-    background-color: $preset;
-    color: $preset-contrast;
+    background-color: var(--preset);
+    color: var(--preset-contrast);
 }
 
 .calendar td, .calendar td a  {
-    border-color: $card-background-hover;
-    background-color: $card-background;
-    color: $card-background-contrast;
+    border-color: var(--card-background-hover);
+    background-color: var(--card-background);
+    color: var(--card-background)-contrast;
 }
 
 .calendar th {
-    background: $card-background-hover;
-    color: $card-background-contrast;
+    background: var(--card-background-hover);
+    color: var(--card-background)-contrast;
 }
 .date-icon {
-    fill: $preset;
+    fill: var(--preset);
 }
 
 a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.selector-chooseall:hover, a.active.selector-clearall:hover {
-    color: $preset;
+    color: var(--preset);
 }
 
 
@@ -408,34 +408,34 @@ a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.se
 
 .select2-container--admin-autocomplete .select2-results__option--highlighted[aria-selected],
 .select2-container--admin-autocomplete .select2-results__option[aria-selected=true]{
-    background-color: $preset;
-    color: $preset-contrast;
+    background-color: var(--preset);
+    color: var(--preset-contrast);
 }
 
 .select2-results {
-    background-color: $card-background;
-    color: $card-background-contrast;
+    background-color: var(--card-background);
+    color: var(--card-background)-contrast;
 }
 
 .select2-search, .select2-search--dropdown {
-    background-color: $card-background-hover;
+    background-color: var(--card-background-hover);
 }
 
 .select2-selection, .select2-selection--single, .select2-dropdown {
-    color: $form-text;
-    background: $form-background;
-    border: 1px $form-border solid;
+    color: var(--form-text);
+    background: var(--form-background);
+    border: 1px var(--form-border) solid;
     border-radius: 0;
 }
 
 .select2-container--admin-autocomplete .select2-selection--single .select2-selection__rendered {
-    color: $form-text;
+    color: var(--form-text);
 }
 
 
 #id_signature_canvas {
     background-color: white;
-    border: 1px $form-border solid;
+    border: 1px var(--form-border) solid;
     border-radius: 0;
 }
 
@@ -452,8 +452,8 @@ a.active.selector-chooseall:focus, a.active.selector-clearall:focus, a.active.se
 
 
 .errornote, ul.errorlist {
-    background-color: $danger;
-    color: $warning-contrast;
+    background-color: var(--danger);
+    color: var(--warning-contrast);
     border-radius: 0;
 }
 
