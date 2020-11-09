@@ -12,5 +12,8 @@
   },
   "docker": {
     "enabled": false
-  }
+  },
+  "github-actions": {
+    "enabled": true
+  },
 }
