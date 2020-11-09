@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _, get_language
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from django_sendfile import sendfile
 
@@ -27,7 +27,7 @@ class CourseIndexView(ListView):
     template_name = "education/courses.html"
 
     def get_ordering(self) -> str:
-        return f"name_{get_language()}"
+        return "name"
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
