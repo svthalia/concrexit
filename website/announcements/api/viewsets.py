@@ -17,10 +17,6 @@ class SlideViewset(viewsets.ReadOnlyModelViewSet):
         if not self.request.member:
             queryset = queryset.filter(members_only=False)
 
-        ids = (
-            slide.pk
-            for slide in queryset
-            if slide.event_set.exists() or slide.is_visible
-        )
+        ids = (slide.pk for slide in queryset if slide.is_visible)
 
         return Slide.objects.filter(pk__in=ids)
