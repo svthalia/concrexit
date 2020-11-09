@@ -3,14 +3,17 @@
     "config:base"
   ],
   "schedule": [
-      "every weekday except on Wednesday",
+      "every weekday except on Monday",
       "every weekend",
-      "before 5pm on Wednesday"
+      "before 5pm on Monday"
   ],
   "poetry": {
     "enabled": true
   },
   "docker": {
     "enabled": false
+  },
+  "github-actions": {
+    "enabled": true
   }
 }
