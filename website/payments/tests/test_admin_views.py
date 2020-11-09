@@ -294,6 +294,8 @@ class BatchExportAdminViewTest(TestCase):
             iban="DE75512108001245126199",
             mandate_no="2",
             valid_from=timezone.now(),
+            initials="T.E.S.T.",
+            last_name="ersssss",
         )
         BankAccount.objects.create(
             last_used=timezone.now(),
@@ -301,6 +303,8 @@ class BatchExportAdminViewTest(TestCase):
             iban="NL02ABNA0123456789",
             mandate_no="1",
             valid_from=timezone.now(),
+            initials="T.E.S.T.",
+            last_name="ersssss2",
         )
 
         Payment.objects.bulk_create(
@@ -325,8 +329,8 @@ class BatchExportAdminViewTest(TestCase):
         self.assertEqual(
             response.content,
             b"Account holder,IBAN,Mandate Reference,Amount,Description,Mandate Date\r\n"
-            b"Test1 Example,DE75512108001245126199,2,3.00,Thalia Pay payments for 2020-1,2020-01-01\r\n"
-            b"Test2 Example,NL02ABNA0123456789,1,6.00,Thalia Pay payments for 2020-1,2020-01-01\r\n",
+            b"T.E.S.T. ersssss,DE75512108001245126199,2,3.00,Thalia Pay payments for 2020-1,2020-01-01\r\n"
+            b"T.E.S.T. ersssss2,NL02ABNA0123456789,1,6.00,Thalia Pay payments for 2020-1,2020-01-01\r\n",
         )
 
 

@@ -139,7 +139,7 @@ class BatchExportAdminView(View):
             bankaccount = member.bank_accounts.last()
             writer.writerow(
                 [
-                    member.get_full_name(),
+                    bankaccount.name,
                     bankaccount.iban,
                     bankaccount.mandate_no,
                     f"{row['total']:.2f}",
