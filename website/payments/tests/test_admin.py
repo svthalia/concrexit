@@ -889,7 +889,7 @@ class PaymentUserAdminTest(TestCase):
 
     @mock.patch("payments.models.PaymentUser.tpay_balance", new_callable=PropertyMock)
     @mock.patch("payments.models.PaymentUser.tpay_enabled", new_callable=PropertyMock)
-    def test_get_tpay_balance(self, tpay_balance, tpay_enabled):
+    def test_get_tpay_balance(self, tpay_enabled, tpay_balance):
         tpay_balance.return_value = Decimal(-10)
         tpay_enabled.return_value = True
         self.assertEquals(self.admin.get_tpay_balance(self.user), "€ -10.00")
