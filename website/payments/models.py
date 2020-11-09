@@ -48,7 +48,10 @@ class PaymentUser(Member):
     @property
     def tpay_allowed(self):
         """Does this user have permissions to use Thalia Pay (but not necessarily enabled)"""
-        return self.has_perm("payments.tpay_allowed")
+        return (
+            self.has_perm("payments.tpay_allowed")
+            and settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+        )
 
     def allow_tpay(self):
         """Give this user Thalia Pay permission"""
