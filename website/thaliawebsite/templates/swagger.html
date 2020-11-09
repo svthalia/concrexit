@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="swagger-ui">
+  <head>
+    <title>Swagger</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static "css/swagger-ui.css" %}" />
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="{% static "js/swagger-ui-bundle.js" %}" type="application/javascript"></script>
+    <script src="{% static "js/swagger-ui-standalone-preset.js" %}" type="application/javascript"></script>
+    <script type="application/javascript">
+    window.onload = function() {
+        const ui = SwaggerUIBundle({
+            oauth2RedirectUrl: "{{ request.scheme }}://{{ request.get_host }}{% url "swagger-oauth-redirect" %}",
+            urls: [
+                {% for schema_url in schema_urls %}
+                    {"url": "{% url schema_url %}", name: "{% url schema_url %}"}
+                {% endfor %}
+            ],
+            dom_id: '#swagger-ui',
+            presets: [
+              SwaggerUIBundle.presets.apis,
+              SwaggerUIStandalonePreset
+            ],
+            plugins: [
+              SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout",
+            requestInterceptor: (request) => {
+              request.headers['X-CSRFToken'] = "{{ csrf_token }}"
+              return request;
+            }
+          });
+
+        ui.initOAuth({
+            clientId: ""
+        });
+    }
+    </script>
+  </body>
+</html>

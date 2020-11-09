@@ -2,14 +2,13 @@
 These context processors can be used to expand the context provided
 tos views.
 """
-import os
 from django.conf import settings
 from django.utils import timezone
 
 
 def source_commit(_):
     """Get the SOURCE_COMMIT environment variable"""
-    return {"SOURCE_COMMIT": os.environ.get("SOURCE_COMMIT", "unknown")}
+    return {"SOURCE_COMMIT": settings.SOURCE_COMMIT}
 
 
 def thumbnail_sizes(_):

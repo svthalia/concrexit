@@ -11,7 +11,7 @@ from events.models import EventRegistration
 from payments.exceptions import PaymentError
 
 
-class EventRegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMixin):
+class EventRegistrationViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     """
     Defines the viewset for registrations, requires an authenticated user.
     Has custom update and destroy methods that use the services.
@@ -34,12 +34,6 @@ class EventRegistrationViewSet(GenericViewSet, RetrieveModelMixin, UpdateModelMi
             raise NotFound()
 
         return instance
-
-    # Always set instance so that OPTIONS call will show the info fields too
-    def get_serializer(self, *args, **kwargs):
-        if len(args) == 0 and "instance" not in kwargs:
-            kwargs["instance"] = self.get_object()
-        return super().get_serializer(*args, **kwargs)
 
     def perform_update(self, serializer):
         try:
