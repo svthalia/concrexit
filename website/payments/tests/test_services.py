@@ -154,3 +154,27 @@ class ServicesTest(TestCase):
         services.revoke_old_mandates()
 
         self.assertEqual(BankAccount.objects.filter(valid_until=None).count(), 1)
+
+    def test_process_batch(self):
+        with patch("payments.services.send_tpay_batch_processing_emails") as mock_mails:
+            ba = BankAccount.objects.create(
+                owner=self.member,
+                initials="J",
+                last_name="Test1",
+                iban="NL91ABNA0417164300",
+                mandate_no="11-1",
+                valid_from=timezone.now().date() - timezone.timedelta(days=2000),
+                signature="base64,png",
+            )
+            p = services.create_payment(
+                MockPayable(self.member), self.member, Payment.TPAY
+            )
+            b = Batch.objects.create()
+            p.batch = b
+            p.save()
+
+            services.process_batch(b)
+
+            mock_mails.assert_called_once()
+            ba.refresh_from_db()
+            self.assertEqual(b.withdrawal_date.date(), ba.last_used)
