@@ -1,6 +1,7 @@
 from django.utils.html import strip_spaces_between_tags
 from rest_framework import serializers
 
+from announcements.api.serializers import SlideSerializer
 from events import services
 from events.api.serializers.event_registrations.list import (
     EventRegistrationAdminListSerializer,
@@ -41,6 +42,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
             "is_pizza_event",
             "google_maps_url",
             "is_admin",
+            "slide",
         )
 
     description = serializers.SerializerMethodField("_description")
@@ -51,6 +53,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     is_pizza_event = serializers.SerializerMethodField("_is_pizza_event")
     google_maps_url = serializers.SerializerMethodField("_google_maps_url")
     is_admin = serializers.SerializerMethodField("_is_admin")
+    slide = SlideSerializer()
 
     def _description(self, instance):
         return strip_spaces_between_tags(bleach(instance.description))
