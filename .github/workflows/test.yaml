@@ -53,7 +53,7 @@ jobs:
         run: make covhtml
 
       - name: Save coverage report
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: coverage-html
           path: covhtml
@@ -78,7 +78,7 @@ jobs:
           git diff --exit-code
 
       - name: Save documentation HTML
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: docs-html
           path: docs/_build
