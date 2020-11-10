@@ -7,7 +7,6 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.text import slugify
-from django.utils.translation import get_language
 from django.views.generic import TemplateView, DetailView
 from django_sendfile import sendfile
 
@@ -52,7 +51,7 @@ class DocumentsIndexView(TemplateView):
         context.update(
             {
                 "association_documents": AssociationDocument.objects.order_by(
-                    f"name_{get_language()}"
+                    "name"
                 ).all(),
                 "years": list(years.items()),
             }
@@ -81,12 +80,8 @@ class DocumentDownloadView(DetailView):
         if document.members_only and not request.member.has_active_membership():
             raise PermissionDenied
 
-        lang = request.GET.get("language")
         try:
-            if lang == "en":
-                file = document.file_en
-            else:  # Fall back on language detection
-                file = document.file
+            file = document.file
         except ValueError as e:
             raise Http404("This document does not exist.") from e
 
