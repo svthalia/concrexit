@@ -1,0 +1,27 @@
+name: "Build with Nix and deploy if master"
+on:
+  pull_request:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - uses: cachix/install-nix-action@v12
+    - uses: cachix/cachix-action@v8
+      with:
+        name: svthalia-concrexit
+        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+    - run: nix-build -j 4 release.nix
+    - run: nix-shell --run "echo OK"
+    - name: Deploy if this is master
+      if: github.ref == 'refs/heads/master'
+      run: |
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ./deploykey
+        chmod 600 ./deploykey
+        echo "staging-nix.thalia.nu ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL9Fs2GLgTzFK/8ib18cC+uehhE9tpd4efVmvo0C9RtJ" > ./known_hosts
+        mkdir --mode 700 ~/.ssh
+        echo "IdentityFile $(pwd)/deploykey" >> ~/.ssh/config
+        echo "UserKnownHostsFile $(pwd)/known_hosts" >> ~/.ssh/config
+
+        USER=deploy scripts/send-conf-and-switch.sh

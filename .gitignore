@@ -28,3 +28,8 @@ website/.sass-cache/
 
 # venv from source_me.sh
 venv/
+
+# nix
+result
+result-*
+.pre-commit-config.yaml
