@@ -51,6 +51,22 @@ thaliawebsite.menus module
    :undoc-members:
    :show-inheritance:
 
+thaliawebsite.models module
+---------------------------
+
+.. automodule:: thaliawebsite.models
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+thaliawebsite.scopes module
+---------------------------
+
+.. automodule:: thaliawebsite.scopes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 thaliawebsite.sitemaps module
 -----------------------------
 

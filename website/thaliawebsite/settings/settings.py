@@ -159,7 +159,9 @@ CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
 
 # OAuth configuration
 APP_OAUTH_SCHEME = os.getenv("APP_OAUTH_SCHEME", "nu.thalia")
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'thaliawebsite.ScopedApplication'
 OAUTH2_PROVIDER = {
+    'SCOPES_BACKEND_CLASS': 'thaliawebsite.scopes.ApplicationSettingsScopes',
     "ALLOWED_REDIRECT_URI_SCHEMES": ["https", APP_OAUTH_SCHEME]
     if not DEBUG
     else ["http", "https", APP_OAUTH_SCHEME],
