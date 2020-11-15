@@ -312,7 +312,7 @@ DEFAULT_FROM_EMAIL = f"noreply@{SITE_DOMAIN}"
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Newsletter settings
-NEWSLETTER_FROM_ADDRESS = f"newsletter@{SITE_DOMAIN}"
+NEWSLETTER_FROM_ADDRESS = f"secretary@{SITE_DOMAIN}"
 
 # Board notification address
 BOARD_NOTIFICATION_ADDRESS = f"info@{SITE_DOMAIN}"
