@@ -64,21 +64,17 @@ class PaymentProcessViewTest(TestCase):
         apps.get_model = self.original_get_model
 
     def test_not_logged_in(self):
-        """
-        If there is no logged-in user they should redirect
-        to the authentication page
-        """
         self.client.logout()
 
         response = self.client.post(reverse("payment-list"))
-        self.assertEqual(401, response.status_code)
+        self.assertEqual(403, response.status_code)
 
     @override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=False)
     def test_member_has_tpay_enabled(self):
         response = self.client.post(
             reverse("payment-list"), self.test_body, format="json"
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(400, response.status_code)
 
     def test_different_member(self):
         self.payable.payer = PaymentUser()
@@ -99,13 +95,18 @@ class PaymentProcessViewTest(TestCase):
             reverse("payment-list"), self.test_body, format="json"
         )
 
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(409, response.status_code)
         self.assertEqual(
             {"detail": "This object has already been paid for."}, response.data
         )
 
     @mock.patch("payments.services.create_payment")
     def test_creates_payment(self, create_payment):
+        def set_payments_side_effect(*args, **kwargs):
+            self.payable.payment = Payment.objects.create(amount=8)
+
+        create_payment.side_effect = set_payments_side_effect
+
         response = self.client.post(
             reverse("payment-list"), self.test_body, format="json"
         )
@@ -113,7 +114,10 @@ class PaymentProcessViewTest(TestCase):
         create_payment.assert_called_with(self.payable, self.user, Payment.TPAY)
 
         self.assertEqual(201, response.status_code)
-        self.assertEqual({"Location": reverse(self.payable.payment)}, response.headers)
+        self.assertEqual(
+            reverse("payment-detail", kwargs={"pk": self.payable.payment.pk}),
+            response._headers["location"][1],
+        )
 
     @mock.patch("payments.services.create_payment")
     def test_payment_create_error(self, create_payment):

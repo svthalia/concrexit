@@ -60,7 +60,9 @@ class PaymentViewset(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         except PaymentError as e:
             raise ValidationError(detail=str(e))
 
-        headers = {"Location": reverse(payable.payment)}
+        headers = {
+            "Location": reverse("payment-detail", kwargs={"pk": payable.payment.pk})
+        }
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
