@@ -3,6 +3,7 @@ from html import unescape
 from django.utils.html import strip_tags
 from rest_framework import serializers
 
+from announcements.api.serializers import SlideSerializer
 from events import services
 from events.models import Event
 from pizzas.models import PizzaEvent
@@ -25,12 +26,14 @@ class EventListSerializer(serializers.ModelSerializer):
             "present",
             "pizza",
             "registration_allowed",
+            "slide",
         )
 
     description = serializers.SerializerMethodField("_description")
     registered = serializers.SerializerMethodField("_registered")
     pizza = serializers.SerializerMethodField("_pizza")
     present = serializers.SerializerMethodField("_present")
+    slide = SlideSerializer()
 
     def _description(self, instance):
         return unescape(strip_tags(instance.description))
