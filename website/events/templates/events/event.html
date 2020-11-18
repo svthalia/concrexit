@@ -126,7 +126,7 @@
                                         </td>
                                     </tr>
                                 {% endif %}
-                                {% if event.price > 0 %}
+                                {% if event.payment_required %}
                                     <tr>
                                         <th>{% trans "payment status"|capfirst %}</th>
                                         <td>
