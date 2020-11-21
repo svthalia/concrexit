@@ -1,7 +1,7 @@
 from django.utils.html import strip_spaces_between_tags
 from rest_framework import serializers
 
-from announcements.api.serializers import SlideSerializer
+from announcements.api.v1.serializers import SlideSerializer
 from events import services
 from events.api.serializers.event_registrations.list import (
     EventRegistrationAdminListSerializer,

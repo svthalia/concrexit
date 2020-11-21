@@ -3,7 +3,7 @@ from html import unescape
 from django.utils.html import strip_tags
 from rest_framework import serializers
 
-from announcements.api.serializers import SlideSerializer
+from announcements.api.v1.serializers import SlideSerializer
 from events import services
 from events.models import Event
 from pizzas.models import PizzaEvent

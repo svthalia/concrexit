@@ -3,7 +3,7 @@
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import viewsets, filters
 
-from activemembers.api.serializers import MemberGroupSerializer
+from activemembers.api.v1.serializers import MemberGroupSerializer
 from activemembers.models import MemberGroup
 
 

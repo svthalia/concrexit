@@ -17,7 +17,7 @@
             oauth2RedirectUrl: "{{ request.scheme }}://{{ request.get_host }}{% url "swagger-oauth-redirect" %}",
             urls: [
                 {% for schema_url in schema_urls %}
-                    {"url": "{% url schema_url %}", name: "{% url schema_url %}"}
+                    {"url": "{% url schema_url %}", name: "{% url schema_url %}"},
                 {% endfor %}
             ],
             dom_id: '#swagger-ui',
