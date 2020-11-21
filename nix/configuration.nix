@@ -5,6 +5,8 @@ let
   concatStringsSep = lib.strings.concatStringsSep;
 
   concrexit-manage = pkgs.writeScript "concrexit-manage" ''
+    #!${pkgs.stdenv.shell}
+
     set -e
     export DJANGO_SECRET="a"
     test -f ${cfg.dir}/secrets.env && source ${cfg.dir}/secrets.env
@@ -12,7 +14,9 @@ let
     ${pkgs.concrexit}/bin/python ${pkgs.concrexit}/src/website/manage.py $@
   '';
   sudo-concrexit-manage = pkgs.writeScriptBin "concrexit-manage" ''
-    sudo -u concrexit ${concrexit-manage} $@
+    #!${pkgs.stdenv.shell}
+
+    ${pkgs.sudo}/bin/sudo -u concrexit ${concrexit-manage} $@
   '';
 
   securityHeaders = ''
