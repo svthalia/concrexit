@@ -76,6 +76,11 @@ in
       default = true;
     };
 
+    concrexit.rejectUnknownHost = mkOption {
+      type = types.bool;
+      default = cfg.ssl;
+    };
+
     concrexit.env-vars = mkOption {
       type = types.attrsOf types.str;
       apply = x: {
@@ -118,7 +123,7 @@ in
     nix = {
       gc.automatic = true;
       # This is required to be able to use nix-copy-closure
-      trustedUsers = [ "root" "deploy" "jelle" ];
+      trustedUsers = [ "root" "deploy" "jelle" "wouter" ];
     };
 
     # Allow passwordless sudo for easier deployment
@@ -208,7 +213,10 @@ in
         every = 60 * 5;
         description = "Send scheduled push notifications";
       };
-      sendplannednewsletters.every = 60 * 60;
+      sendplannednewsletters = {
+        every = 60 * 60;
+        description = "Send planned newsletters";
+      };
       sync_mailinglists.calendar = "*-*-* *:30:00";
       clearsessions.calendar = "*-*-* 23:00:00";
       minimiseregistrations.calendar = "*-*-01 03:00:00";
@@ -228,9 +236,6 @@ in
         recommendedOptimisation = true;
         recommendedTlsSettings = true;
 
-        # Reloads NGINX instead of restarting it whenever possible
-        enableReload = true;
-
         virtualHosts =
           let
             # Because this is used for multiple vhosts below, we just define it once
@@ -247,7 +252,7 @@ in
               enableACME = cfg.ssl;
               # Enable redirects to https
               forceSSL = cfg.ssl;
-              default = !cfg.ssl;
+              default = !cfg.rejectUnknownHost;
               locations."/".extraConfig = ''
                 uwsgi_pass 127.0.0.1:${toString cfg.app-port};
               '';
@@ -276,11 +281,12 @@ in
             "pizza.${cfg.domain}" = pizzaConfig;
             "pasta.${cfg.domain}" = pizzaConfig;
             "xn--vi8h.${cfg.domain}" = pizzaConfig;
+            "xn--3i8h.${cfg.domain}" = pizzaConfig;
 
             # Disallow other Host headers when this server is configured for ssl
             # (so it's not added for local testing in the VM)
             "\"\"" = {
-              default = cfg.ssl;
+              default = cfg.rejectUnknownHost;
               locations."/".return = "444";
             };
           };
