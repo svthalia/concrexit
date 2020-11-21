@@ -1,13 +1,32 @@
 """The models defined by the announcement package"""
 from django.db import models
-from django.db.models import ImageField, CharField
+from django.db.models import ImageField, CharField, Manager, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 
+class VisibleObjectManager(Manager):
+    """Get all active members, i.e. who have a committee membership"""
+
+    def get_queryset(self):
+        """Select all visible items"""
+        return (
+            super()
+            .get_queryset()
+            .filter(
+                (Q(until__isnull=True) | Q(until__gt=timezone.now()))
+                & (Q(since__isnull=True) | Q(since__lte=timezone.now()))
+                & ~(Q(since__isnull=True) & Q(until__isnull=True))
+            )
+        )
+
+
 class Announcement(models.Model):
     """Describes an announcement"""
+
+    objects = models.Manager()
+    visible_objects = VisibleObjectManager()
 
     content = HTMLField(
         verbose_name=_("Content"),
@@ -47,13 +66,18 @@ class Announcement(models.Model):
     @property
     def is_visible(self):
         """Is this announcement currently visible"""
-        return (self.until is None or self.until > timezone.now()) and (
-            self.since is None or self.since <= timezone.now()
+        return (
+            (self.until is None or self.until > timezone.now())
+            and (self.since is None or self.since <= timezone.now())
+            and not (self.since is None and self.until is None)
         )
 
 
 class FrontpageArticle(models.Model):
     """Front page articles"""
+
+    objects = models.Manager()
+    visible_objects = VisibleObjectManager()
 
     title = models.CharField(
         verbose_name=_("Title"),
@@ -91,13 +115,18 @@ class FrontpageArticle(models.Model):
     @property
     def is_visible(self):
         """Is this announcement currently visible"""
-        return (self.until is None or self.until > timezone.now()) and (
-            self.since is None or self.since <= timezone.now()
+        return (
+            (self.until is None or self.until > timezone.now())
+            and (self.since is None or self.since <= timezone.now())
+            and not (self.since is None and self.until is None)
         )
 
 
 class Slide(models.Model):
     """Describes an announcement"""
+
+    objects = models.Manager()
+    visible_objects = VisibleObjectManager()
 
     title = CharField(
         verbose_name=_("Title"),

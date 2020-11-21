@@ -31,7 +31,16 @@ class DjangoCustomPermissions(BasePermission):
         codes that the user is required to have.
         """
         try:
-            perms_map = getattr(view, "required_permissions")
+            perms_map = {
+                "GET": [],
+                "OPTIONS": [],
+                "HEAD": [],
+                "POST": [],
+                "PUT": [],
+                "PATCH": [],
+                "DELETE": [],
+            }
+            perms_map.update(getattr(view, "required_permissions"))
         except AttributeError:
             raise ImproperlyConfigured(
                 "DjangoCustomPermissions requires the view to"

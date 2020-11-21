@@ -284,6 +284,8 @@ THUMBNAIL_SIZES = {
     "small": "150x150",
     "medium": "300x300",
     "large": "1024x768",
+    "slide_small": "500x108",
+    "slide_medium": "1000x215",
     "slide": "2000x430",
 }
 

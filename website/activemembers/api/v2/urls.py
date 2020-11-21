@@ -1,4 +1,5 @@
-from django.urls import path, re_path, include
+"""Activemembers app API v2 urls"""
+from django.urls import path, include
 
 from activemembers.api.v2.views import (
     CommitteeDetailView,

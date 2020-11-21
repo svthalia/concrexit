@@ -6,4 +6,5 @@ app_name = "thaliawebsite"
 
 urlpatterns = [
     path("", include("activemembers.api.v2.urls")),
+    path("", include("announcements.api.v2.urls")),
 ]
