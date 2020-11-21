@@ -155,7 +155,7 @@ LOGIN_REDIRECT_URL = "/"
 
 # Cors configuration
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
+CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
 
 # OAuth configuration
 APP_OAUTH_SCHEME = os.getenv("APP_OAUTH_SCHEME", "nu.thalia")
