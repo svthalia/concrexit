@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from io import BytesIO
 from zipfile import ZipFile
@@ -11,9 +12,11 @@ from photos.models import Album, Photo
 
 
 def create_zip(photos):
+    valid_date = int(datetime.datetime(2019, 1, 1).timestamp())
     output_file = BytesIO()
     with ZipFile(output_file, "w") as zip_file:
         for photo in photos:
+            os.utime(photo, (valid_date, valid_date))
             zip_file.write(photo)
     output_file.seek(0)
     return output_file

@@ -72,7 +72,7 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptPasswordHasher",
 ]
 
-if os.environ.get("DJANGO_SSLONLY"):
+if os.environ.get("DJANGO_SSLONLY", "1") == "1":
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
