@@ -78,7 +78,7 @@ in
 
     concrexit.env-vars = mkOption {
       type = types.attrsOf types.str;
-      default = {
+      apply = x: {
         SITE_DOMAIN = if cfg.ssl then cfg.domain else "*";
         MEDIA_ROOT = "${cfg.dir}/media";
         ENABLE_LOGFILE = "0";
@@ -96,7 +96,8 @@ in
         GSUITE_DOMAIN = "staging.thalia.nu";
         GSUITE_MEMBERS_DOMAIN = "members.staging.thalia.nu";
         THALIA_PAY_ENABLED = "False";
-      };
+      } // x;
+      default = { };
     };
   };
 
