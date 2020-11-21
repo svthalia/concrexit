@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from announcements.api.v1.serializers import SlideSerializer
 from events import services
-from events.api.serializers.event_registrations.list import (
+from events.api.v1.serializers.event_registrations.list import (
     EventRegistrationAdminListSerializer,
 )
 from events.models import Event, EventRegistration

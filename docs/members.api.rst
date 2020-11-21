@@ -12,31 +12,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   members.api.calendarjs
+   members.api.v1
    members.api.v2
-
-Submodules
-----------
-
-members.api.serializers module
-------------------------------
-
-.. automodule:: members.api.serializers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-members.api.urls module
------------------------
-
-.. automodule:: members.api.urls
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-members.api.viewsets module
----------------------------
-
-.. automodule:: members.api.viewsets
-   :members:
-   :undoc-members:
-   :show-inheritance:

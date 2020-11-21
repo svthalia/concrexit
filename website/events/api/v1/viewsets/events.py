@@ -5,17 +5,13 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import (
     IsAuthenticated,
-    IsAdminUser,
     IsAuthenticatedOrReadOnly,
 )
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
 from events import services
-from events.api.permissions import UnpublishedEventPermissions
-from events.api.serializers import (
-    EventsCalenderJSSerializer,
-    UnpublishedEventsCalenderJSSerializer,
+from events.api.v1.serializers import (
     EventRetrieveSerializer,
     EventListSerializer,
     EventRegistrationSerializer,
@@ -63,11 +59,9 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return EventListSerializer
         if self.action == "retrieve":
             return EventRetrieveSerializer
-        return EventsCalenderJSSerializer
+        return EventListSerializer
 
     @action(detail=True, methods=["get", "post"], permission_classes=(IsAuthenticated,))
     def registrations(self, request, pk):
@@ -123,42 +117,4 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
                 context=context,
             )
 
-        return Response(serializer.data)
-
-    @action(detail=False, permission_classes=(IsAuthenticatedOrReadOnly,))
-    def calendarjs(self, request):
-        """
-        Defines a custom route that outputs the correctly formatted
-        events information for CalendarJS, published events only
-        :param request: the request object
-
-        :return: response containing the data
-        """
-        start, end = extract_date_range(request)
-
-        queryset = Event.objects.filter(end__gte=start, start__lte=end, published=True)
-
-        serializer = EventsCalenderJSSerializer(
-            queryset, many=True, context={"member": request.member}
-        )
-        return Response(serializer.data)
-
-    @action(
-        detail=False, permission_classes=(IsAdminUser, UnpublishedEventPermissions,)
-    )
-    def unpublished(self, request):
-        """
-        Defines a custom route that outputs the correctly formatted
-        events information for CalendarJS, unpublished events only
-
-        :param request: the request object
-        :return: response containing the data
-        """
-        start, end = extract_date_range(request)
-
-        queryset = Event.objects.filter(end__gte=start, start__lte=end, published=False)
-
-        serializer = UnpublishedEventsCalenderJSSerializer(
-            queryset, many=True, context={"member": request.member}
-        )
         return Response(serializer.data)

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from events import services
-from events.api.serializers import EventRegistrationSerializer
+from events.api.v1.serializers import EventRegistrationSerializer
 from events.exceptions import RegistrationError
 from events.models import EventRegistration
 from payments.exceptions import PaymentError

@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 from activemembers.models import MemberGroup, MemberGroupMembership
-from members.api.serializers import MemberListSerializer
+from members.api.v1.serializers import MemberListSerializer
 
 
 class MemberGroupSerializer(serializers.ModelSerializer):

@@ -1,50 +1,10 @@
 """DRF serializers defined by the members package"""
 from django.templatetags.static import static
-from django.urls import reverse
 from rest_framework import serializers
 
-from events.api.serializers import CalenderJSSerializer
 from members.models import Member, Profile
 from members.services import member_achievements, member_societies
 from thaliawebsite.api.services import create_image_thumbnail_dict
-
-
-class MemberBirthdaySerializer(CalenderJSSerializer):
-    """Serializer that renders the member birthdays to the CalendarJS format"""
-
-    class Meta(CalenderJSSerializer.Meta):
-        model = Member
-
-    def _start(self, instance):
-        return instance.profile.birthday
-
-    def _end(self, instance):
-        pass
-
-    def _all_day(self, instance):
-        return True
-
-    def _is_birthday(self, instance):
-        return True
-
-    def _url(self, instance):
-        return reverse("members:profile", kwargs={"pk": instance.pk})
-
-    def _title(self, instance):
-        return instance.profile.display_name()
-
-    def _description(self, instance):
-        membership = instance.current_membership
-        if membership and membership.type == "honorary":
-            return membership.get_type_display()
-        return ""
-
-    def _class_names(self, instance):
-        class_names = ["birthday-event"]
-        membership = instance.current_membership
-        if membership and membership.type == "honorary":
-            class_names.append("honorary")
-        return class_names
 
 
 class ProfileRetrieveSerializer(serializers.ModelSerializer):

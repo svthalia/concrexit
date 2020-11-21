@@ -1,20 +1,15 @@
 """DRF viewsets defined by the members package"""
-import copy
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import permissions
 from rest_framework import viewsets, filters, mixins
-from rest_framework.decorators import action
-from rest_framework.response import Response
 
-from members.api.serializers import (
-    MemberBirthdaySerializer,
+from members.models import Member
+from .serializers import (
     MemberListSerializer,
     ProfileRetrieveSerializer,
     ProfileEditSerializer,
 )
-from members.models import Member
-from utils.snippets import extract_date_range
 
 
 class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
@@ -68,36 +63,3 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
         if self.is_self_reference():
             return self.request.member.profile
         return super().get_object().profile
-
-    def _get_birthdays(self, member, start, end):
-        birthdays = []
-
-        start_year = max(start.year, member.profile.birthday.year)
-        for year in range(start_year, end.year + 1):
-            bday = copy.deepcopy(member)
-            try:
-                bday.profile.birthday = bday.profile.birthday.replace(year=year)
-            except ValueError as e:
-                if bday.profile.birthday.month == 2 and bday.profile.birthday.day == 29:
-                    bday.profile.birthday = bday.profile.birthday.replace(
-                        year=year, day=28
-                    )
-                else:
-                    raise e
-            if start.date() <= bday.profile.birthday <= end.date():
-                birthdays.append(bday)
-        return birthdays
-
-    @action(detail=False)
-    def birthdays(self, request):
-        start, end = extract_date_range(request)
-
-        queryset = Member.current_members.with_birthdays_in_range(start, end).filter(
-            profile__show_birthday=True
-        )
-
-        all_birthdays = [self._get_birthdays(m, start, end) for m in queryset.all()]
-        birthdays = [x for sublist in all_birthdays for x in sublist]
-
-        serializer = MemberBirthdaySerializer(birthdays, many=True)
-        return Response(serializer.data)

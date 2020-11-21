@@ -1,7 +1,7 @@
 """Defines the API routes of the events package"""
 from rest_framework import routers
 
-from events.api import viewsets
+from events.api.v1 import viewsets
 
 router = routers.SimpleRouter()
 router.register(r"events", viewsets.EventViewset)

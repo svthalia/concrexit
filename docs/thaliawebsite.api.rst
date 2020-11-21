@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   thaliawebsite.api.calendarjs
    thaliawebsite.api.v1
    thaliawebsite.api.v2
 

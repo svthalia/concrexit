@@ -12,7 +12,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   events.api
    events.models
 
 Submodules

@@ -1,6 +1,6 @@
 from rest_framework import routers
 
-from partners.api import viewsets
+from . import viewsets
 
 router = routers.SimpleRouter()
 router.register(r"partners/events", viewsets.PartnerEventViewset)

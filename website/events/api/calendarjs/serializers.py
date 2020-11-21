@@ -1,8 +1,8 @@
-from django.urls import reverse
+from rest_framework.reverse import reverse
 
 from events import services
-from events.api.serializers.base.calendarjs import CalenderJSSerializer
 from events.models import Event
+from thaliawebsite.api.calendarjs.serializers import CalenderJSSerializer
 
 
 class EventsCalenderJSSerializer(CalenderJSSerializer):

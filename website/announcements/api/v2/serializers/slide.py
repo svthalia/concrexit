@@ -1,13 +1,8 @@
-"""DRF serializers defined by the announcements package."""
+from django.conf import settings
 from rest_framework import serializers
 
 from announcements.models import Slide
-from thaliawebsite.api.v2.serializers.thumbnail import (
-    ThumbnailSerializer,
-    CleanedHTMLSerializer,
-)
-from thaliawebsite.settings import settings
-from utils.media.services import get_thumbnail_url
+from thaliawebsite.api.v2.serializers.thumbnail import ThumbnailSerializer
 
 
 class SlideSerializer(serializers.ModelSerializer):
@@ -30,15 +25,3 @@ class SlideSerializer(serializers.ModelSerializer):
         size_medium=settings.THUMBNAIL_SIZES["slide_medium"],
         size_small=settings.THUMBNAIL_SIZES["slide_small"],
     )
-
-
-class FrontpageArticleSerializer(serializers.ModelSerializer):
-    """FrontpageArticle serializer."""
-
-    class Meta:
-        """Meta class for the serializer."""
-
-        model = Slide
-        fields = ("pk", "title", "content")
-
-    content = CleanedHTMLSerializer()
