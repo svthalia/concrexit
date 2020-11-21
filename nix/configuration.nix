@@ -76,9 +76,10 @@ in
       default = true;
     };
 
-    concrexit.rejectUnknownHost = mkOption {
+    concrexit.allowUnknownHost = mkOption {
       type = types.bool;
-      default = cfg.ssl;
+      default = !cfg.ssl;
+      description = "If this option is enabled we allow any hostname to link to Concrexit";
     };
 
     concrexit.env-vars = mkOption {
@@ -252,7 +253,7 @@ in
               enableACME = cfg.ssl;
               # Enable redirects to https
               forceSSL = cfg.ssl;
-              default = !cfg.rejectUnknownHost;
+              default = cfg.allowUnknownHost;
               locations."/".extraConfig = ''
                 uwsgi_pass 127.0.0.1:${toString cfg.app-port};
               '';
@@ -286,7 +287,7 @@ in
             # Disallow other Host headers when this server is configured for ssl
             # (so it's not added for local testing in the VM)
             "\"\"" = {
-              default = cfg.rejectUnknownHost;
+              default = !cfg.allowUnknownHost;
               locations."/".return = "444";
             };
           };
