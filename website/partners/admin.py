@@ -44,7 +44,7 @@ class PartnerAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (_("Address"), {"fields": ("address", "zip_code", "city")}),
+        (_("Address"), {"fields": ("address", "address2", "zip_code", "city", "country")}),
     )
 
 
