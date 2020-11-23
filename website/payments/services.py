@@ -33,6 +33,9 @@ def create_payment(
         else None
     )
 
+    if payable.payment_amount == 0:
+        raise PaymentError(_("Payment amount 0 is not accepted"))
+
     if pay_type == Payment.TPAY and not payer.tpay_enabled:
         raise PaymentError(_("This user does not have Thalia Pay enabled"))
 

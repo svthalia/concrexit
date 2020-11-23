@@ -18,7 +18,7 @@ def payment_button(payable: Payable, redirect_to: str):
         "member": PaymentUser.objects.get(pk=payable.payment_payer.pk)
         if payable.payment_payer
         else None,
-        "pk": payable.pk,
+        "payable": payable,
         "app_label": content_type.app_label,
         "model_name": content_type.model,
         "redirect_to": redirect_to,

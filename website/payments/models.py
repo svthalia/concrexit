@@ -136,6 +136,8 @@ class Payment(models.Model):
         super().save(**kwargs)
 
     def clean(self):
+        if self.amount == 0:
+            raise ValidationError({"amount": _(f"Payments cannot be €{self.amount}")})
         if self.type != Payment.TPAY and self.batch is not None:
             raise ValidationError(
                 {"batch": _("Non Thalia Pay payments cannot be added to a batch")}

@@ -51,6 +51,12 @@ class ServicesTest(TestCase):
                     MockPayable(payer=self.member), self.member, Payment.TPAY
                 )
 
+        with self.subTest("Do not allow zero euro payments"):
+            with self.assertRaises(PaymentError):
+                services.create_payment(
+                    MockPayable(payer=self.member, amount=0), self.member, Payment.TPAY
+                )
+
     def test_delete_payment(self):
         existing_payment = MagicMock(batch=None)
         payable = MockPayable(payer=self.member, payment=existing_payment)
