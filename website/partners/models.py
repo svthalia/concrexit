@@ -42,9 +42,7 @@ class Partner(models.Model):
         max_length=100, verbose_name=_("Second address line"), blank=True, null=True,
     )
 
-    zip_code = models.CharField(
-        max_length=12,
-    )
+    zip_code = models.CharField(max_length=12,)
 
     city = models.CharField(max_length=100)
 
