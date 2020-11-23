@@ -70,7 +70,7 @@ class ServicesTest(TestCase):
                 seconds=settings.PAYMENT_CHANGE_WINDOW + 60
             )
             with self.assertRaisesMessage(
-                PaymentError, "You are not authorized to delete this payment."
+                PaymentError, "This payment cannot be deleted anymore."
             ):
                 services.delete_payment(payable)
             self.assertIsNotNone(payable.payment)
@@ -81,7 +81,8 @@ class ServicesTest(TestCase):
             payable.payment = existing_payment
             existing_payment.batch = Batch.objects.create(processed=True)
             with self.assertRaisesMessage(
-                PaymentError, "This payment has already been processed."
+                PaymentError,
+                "This payment has already been processed and hence cannot be deleted.",
             ):
                 services.delete_payment(payable)
             self.assertIsNotNone(payable.payment)
