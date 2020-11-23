@@ -39,6 +39,7 @@ class ProfileInline(admin.StackedInline):
         "receive_magazine",
         "birthday",
         "show_birthday",
+        "shoe_size",
         "auto_renew",
         "initials",
         "nickname",

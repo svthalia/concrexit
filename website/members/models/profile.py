@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.files.storage import DefaultStorage
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -151,6 +152,13 @@ class Profile(models.Model):
             "in the birthday calendar"
         ),
         default=True,
+    )
+
+    shoe_size = models.IntegerField(
+        verbose_name=_("Shoe Size"),
+        validators=[MinValueValidator(39), MaxValueValidator(47)],
+        blank=True,
+        null=True,
     )
 
     website = models.URLField(
