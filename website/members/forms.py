@@ -26,6 +26,7 @@ class ProfileForm(forms.ModelForm):
             "emergency_contact",
             "emergency_contact_phone_number",
             "website",
+            "shoe_size",
             "profile_description",
             "nickname",
             "initials",
