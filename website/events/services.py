@@ -1,4 +1,4 @@
-    from collections import OrderedDict
+from collections import OrderedDict
 
 from django.utils import timezone
 from django.utils.datetime_safe import date
@@ -192,7 +192,8 @@ def update_registration(
 
     if (
         (not event_permissions(member, event, name)["update_registration"]
-        or not field_values) and is_organiser(member, event)
+        or not field_values)
+        and is_organiser(member, event)
     ):
         return
 
