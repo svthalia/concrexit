@@ -27,6 +27,7 @@ Examples:
 
 import os.path
 
+import debug_toolbar
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
@@ -177,6 +178,7 @@ urlpatterns = [
     ),
     # Dependencies
     path(r"tinymce", include("tinymce.urls")),
+    path("__debug__/", include(debug_toolbar.urls)),
     # Provide something to test error handling. Limited to admins.
     path("crash/", TestCrashView.as_view()),
     # Custom media paths
