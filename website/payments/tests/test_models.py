@@ -98,6 +98,12 @@ class PaymentTest(TestCase):
             self.payment.batch = self.batch
             self.payment.clean()
 
+        with self.subTest("Zero euro payments cannot exist"):
+            self.payment.amount = 0
+            with self.assertRaises(ValidationError):
+                self.payment.clean()
+            self.payment.refresh_from_db()
+
         with self.subTest("Test that only Thalia Pay can be added to a batch"):
             for payment_type in [Payment.CASH, Payment.CARD, Payment.WIRE]:
                 self.payment.type = payment_type
@@ -149,7 +155,7 @@ class PaymentTest(TestCase):
         """
         Tests that the output is a description with the amount
         """
-        self.assertEqual("Payment of 10", str(self.payment))
+        self.assertEqual("Payment of 10.00", str(self.payment))
 
 
 @freeze_time("2019-01-01")

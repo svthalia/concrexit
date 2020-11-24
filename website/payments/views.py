@@ -231,6 +231,10 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
             )
             return redirect(request.POST["next"])
 
+        if self.payable.payment_amount == 0:
+            messages.error(self.request, _("No payment required for amount of €0.00"))
+            return redirect(request.POST["next"])
+
         if self.payable.payment:
             messages.error(self.request, _("This object has already been paid for."))
             return redirect(request.POST["next"])

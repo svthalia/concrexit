@@ -2,7 +2,7 @@
 <div class="readonly payments-row">
     {% if not obj and not payment %}
         -
-    {% elif not payment %}
+    {% elif not payment and obj.payment_amount != 0 %}
         {% trans "Unpaid" %}
         -
         € {{ obj.payment_amount }}
@@ -26,6 +26,8 @@
         <a data-href="{% url 'admin:payments_payment_create' app_label=content_type.app_label model_name=content_type.model payable=obj.pk %}"
            data-next="true" data-type="wire_payment"
            class="button process">{% trans "Process (wire payment)" %}</a>
+    {% elif not payment and obj.payment_amount == 0 %}
+        No payment required
     {% else %}
         <a href="{{ url }}">
             {% trans "Paid" %} (€ {{ payment.amount }}) - {{ payment.created_at }}

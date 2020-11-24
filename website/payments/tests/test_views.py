@@ -556,6 +556,21 @@ class PaymentProcessViewTest(TestCase):
         self.assertEqual(302, response.status_code)
         self.assertEqual("/mock_next", response.url)
 
+    @mock.patch("django.contrib.messages.error")
+    def test_zero_payment(self, messages_error):
+        self.payable.amount = 0
+
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=self.test_body
+        )
+
+        messages_error.assert_called_with(
+            ANY, "No payment required for amount of €0.00"
+        )
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual("/mock_next", response.url)
+
     def test_renders_confirmation(self):
         response = self.client.post(
             reverse("payments:payment-process"), follow=False, data=self.test_body

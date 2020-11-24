@@ -34,8 +34,8 @@ class RegistrationApiTest(TestCase):
             end=(timezone.now() + datetime.timedelta(hours=2)),
             location_en="test location",
             map_location="test map location",
-            price=0.00,
-            fine=0.00,
+            price=13.37,
+            fine=5.00,
         )
         cls.member = Member.objects.filter(last_name="Wiggers").first()
 
