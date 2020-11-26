@@ -380,6 +380,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "compressor",
     "debug_toolbar",
+    "admin_auto_filters",
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
@@ -405,6 +406,7 @@ INSTALLED_APPS = [
     "payments.apps.PaymentsConfig",
     "singlepages.apps.SinglepagesConfig",
     "shortlinks.apps.ShortLinkConfig",
+    "sales.apps.SalesConfig",
 ]
 
 MIDDLEWARE = [
@@ -520,6 +522,8 @@ OAUTH2_PROVIDER = {
         "photos:read": "Read access to photos",
         "pushnotifications:read": "Read access to push notifications",
         "pushnotifications:write": "Write access to push notifications",
+        "sales:read": "Read access to Point of Sale orders",
+        "sales:write": "Write access to Point of Sale orders",
     },
 }
 
@@ -571,7 +575,11 @@ REST_FRAMEWORK = {
         "thaliawebsite.api.throttling.AnonRateThrottle",
         "thaliawebsite.api.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "1000/day"},
+    "DEFAULT_THROTTLE_RATES": setting(
+        production={"anon": "100/day", "user": "20/min"},
+        staging={"anon": "100/day", "user": "20/min"},
+        development={"anon": None, "user": None},
+    ),
 }
 
 # Internationalization

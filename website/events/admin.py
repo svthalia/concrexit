@@ -141,7 +141,10 @@ class EventAdmin(DoNextTranslatedModelAdmin):
                 "classes": ("collapse",),
             },
         ),
-        (_("Extra"), {"fields": ("slide", "documents"), "classes": ("collapse",)}),
+        (
+            _("Extra"),
+            {"fields": ("slide", "documents", "shift"), "classes": ("collapse",)},
+        ),
     )
 
     def get_form(self, request, obj=None, change=False, **kwargs):

@@ -1,0 +1,755 @@
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+from django.test import TestCase
+from django.urls import reverse
+from django.utils import timezone
+from freezegun import freeze_time
+from rest_framework.test import APIClient
+
+from activemembers.models import Committee, MemberGroupMembership
+from members.models import Member
+from payments.models import Payment
+from payments.services import create_payment
+from sales.models.order import Order, OrderItem
+from sales.models.product import Product, ProductList, ProductListItem
+from sales.models.shift import Shift
+
+
+@freeze_time("2021-01-01")
+class OrderAPITest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json", "member_groups.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+        cls.beer = Product.objects.create(name="beer", age_restricted=True)
+        cls.wine = Product.objects.create(name="wine", age_restricted=True)
+        cls.soda = Product.objects.create(name="soda", age_restricted=False)
+
+        cls.normal = ProductList.objects.create(name="normal",)
+        cls.free = ProductList.objects.create(name="free",)
+
+        cls.normal.product_items.bulk_create(
+            [
+                ProductListItem(product=cls.beer, product_list=cls.normal, price=0.50),
+                ProductListItem(product=cls.wine, product_list=cls.normal, price=0.50),
+                ProductListItem(product=cls.soda, product_list=cls.normal, price=0.00),
+            ]
+        )
+        cls.free.product_items.bulk_create(
+            [
+                ProductListItem(product=cls.beer, product_list=cls.free, price=0.00),
+                ProductListItem(product=cls.wine, product_list=cls.free, price=0.00),
+                ProductListItem(product=cls.soda, product_list=cls.free, price=0.00),
+            ]
+        )
+
+        cls.shift = Shift.objects.create(
+            start=timezone.now(),
+            end=timezone.now() + timezone.timedelta(hours=1),
+            product_list=cls.normal,
+        )
+
+        cls.o0 = Order.objects.create(shift=cls.shift)
+        cls.o1 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o1,
+            product=cls.shift.product_list.product_items.get(product=cls.beer),
+            amount=2,
+        )
+        cls.o2 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o2,
+            product=cls.shift.product_list.product_items.get(product=cls.soda),
+            amount=2,
+        )
+        cls.o3 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o3,
+            product=cls.shift.product_list.product_items.get(product=cls.beer),
+            amount=2,
+        )
+        OrderItem.objects.create(
+            order=cls.o3,
+            product=cls.shift.product_list.product_items.get(product=cls.wine),
+            amount=2,
+        )
+        cls.o4 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o4,
+            product=cls.shift.product_list.product_items.get(product=cls.wine),
+            amount=2,
+        )
+        cls.o5 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o5,
+            product=cls.shift.product_list.product_items.get(product=cls.beer),
+            amount=2,
+        )
+        OrderItem.objects.create(
+            order=cls.o5,
+            product=cls.shift.product_list.product_items.get(product=cls.wine),
+            amount=2,
+        )
+        cls.o4.payment = create_payment(
+            cls.o4, processed_by=cls.member, pay_type=Payment.CASH
+        )
+        cls.o4.save()
+        cls.o5.payment = create_payment(
+            cls.o5, processed_by=cls.member, pay_type=Payment.CASH
+        )
+        cls.o5.save()
+
+        """
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o4: a paid order with 2 beer and 2 wine
+        """
+
+        cls.cie = Committee.objects.get(pk=1)
+        MemberGroupMembership.objects.create(group=cls.cie, member=cls.member)
+        content_type = ContentType.objects.get_for_model(Order)
+        permission1 = Permission.objects.get(
+            content_type=content_type, codename="add_order"
+        )
+        permission2 = Permission.objects.get(
+            content_type=content_type, codename="change_order"
+        )
+        permission3 = Permission.objects.get(
+            content_type=content_type, codename="delete_order"
+        )
+        cls.cie.permissions.add(permission1)
+        cls.cie.permissions.add(permission2)
+        cls.cie.permissions.add(permission3)
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.force_login(self.member)
+
+    def test_detail_not_logged_in(self):
+        self.client.logout()
+        response = self.client.get(
+            reverse("v2:order-detail", kwargs={"pk": self.o0.pk})
+        )
+        self.assertEqual(403, response.status_code)
+
+    def test_detail_not_authorized__get(self):
+        response = self.client.get(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk})
+        )
+        self.assertEqual(200, response.status_code)
+
+        self.member.is_superuser = False
+        self.member.save()
+
+        response = self.client.get(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk})
+        )
+        self.assertEqual(403, response.status_code)
+
+        self.shift.managers.add(self.cie)
+        self.shift.save()
+
+        response = self.client.get(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk})
+        )
+        self.assertEqual(200, response.status_code)
+
+    def test_detail_not_authorized__patch(self):
+        data = {"discount": "0.5"}
+
+        response = self.client.patch(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+        )
+        self.assertEqual(200, response.status_code)
+
+        self.member.is_superuser = False
+        self.member.save()
+
+        response = self.client.patch(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+        )
+        self.assertEqual(403, response.status_code)
+
+        self.shift.managers.add(self.cie)
+        self.shift.save()
+
+        response = self.client.patch(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+        )
+        self.assertEqual(200, response.status_code)
+
+    def test_detail_not_authorized__put(self):
+        data = {"discount": "0.5"}
+
+        response = self.client.put(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+        )
+        self.assertEqual(200, response.status_code)
+
+        self.member.is_superuser = False
+        self.member.save()
+
+        response = self.client.put(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+        )
+        self.assertEqual(403, response.status_code)
+
+        self.shift.managers.add(self.cie)
+        self.shift.save()
+
+        response = self.client.put(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+        )
+        self.assertEqual(200, response.status_code)
+
+    def test_detail_not_authorized__delete(self):
+        response = self.client.delete(
+            reverse("v2:order-detail", kwargs={"pk": self.o1.pk})
+        )
+        self.assertEqual(204, response.status_code)
+
+        self.member.is_superuser = False
+        self.member.save()
+
+        response = self.client.delete(
+            reverse("v2:order-detail", kwargs={"pk": self.o2.pk})
+        )
+        self.assertEqual(403, response.status_code)
+
+        self.shift.managers.add(self.cie)
+        self.shift.save()
+
+        response3 = self.client.delete(
+            reverse("v2:order-detail", kwargs={"pk": self.o2.pk})
+        )
+        self.assertEqual(204, response3.status_code)
+
+    def test_list_not_logged_in(self):
+        self.client.logout()
+        response = self.client.get(
+            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk})
+        )
+        self.assertEqual(403, response.status_code)
+
+    def test_list_not_authorized__get(self):
+        response = self.client.get(
+            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk})
+        )
+        self.assertEqual(200, response.status_code)
+
+        self.member.is_superuser = False
+        self.member.save()
+
+        response = self.client.get(
+            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk})
+        )
+        self.assertEqual(403, response.status_code)
+
+        self.shift.managers.add(self.cie)
+        self.shift.save()
+
+        response = self.client.get(
+            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk})
+        )
+        self.assertEqual(200, response.status_code)
+
+    def test_list_not_authorized__post(self):
+        data = {"discount": "0.5"}
+
+        response = self.client.post(
+            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}), data
+        )
+        self.assertEqual(201, response.status_code)
+
+        self.member.is_superuser = False
+        self.member.save()
+
+        response = self.client.post(
+            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}), data
+        )
+        self.assertEqual(403, response.status_code)
+
+        self.shift.managers.add(self.cie)
+        self.shift.save()
+
+        response = self.client.post(
+            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}), data
+        )
+        self.assertEqual(201, response.status_code)
+
+    def test_create_order(self):
+        self.maxDiff = None
+        with self.subTest("Create new order with single item"):
+            data = {"order_items": [{"product": "beer", "amount": 4}]}
+            response = self.client.post(
+                reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}),
+                data,
+                format="json",
+            )
+            self.assertEqual(201, response.status_code)
+            pk = response.data["pk"]
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [{"product": "beer", "amount": 4, "total": "2.00"}],
+                "order_description": "4x beer",
+                "age_restricted": True,
+                "subtotal": "2.00",
+                "discount": None,
+                "total_amount": "2.00",
+                "num_items": 4,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Add product item"):
+            data = {
+                "order_items": [
+                    {"product": "beer", "amount": 5},
+                    {"product": "soda", "amount": 2},
+                ]
+            }
+            response = self.client.put(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [
+                    {"product": "beer", "amount": 5, "total": "2.50"},
+                    {"product": "soda", "amount": 2, "total": "0.00"},
+                ],
+                "order_description": "5x beer, 2x soda",
+                "age_restricted": True,
+                "subtotal": "2.50",
+                "discount": None,
+                "total_amount": "2.50",
+                "num_items": 7,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Delete and add product item"):
+            data = {
+                "order_items": [
+                    {"product": "wine", "amount": 1},
+                    {"product": "soda", "amount": 2},
+                ]
+            }
+            response = self.client.put(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "0.50"},
+                    {"product": "soda", "amount": 2, "total": "0.00"},
+                ],
+                "order_description": "1x wine, 2x soda",
+                "age_restricted": True,
+                "subtotal": "0.50",
+                "discount": None,
+                "total_amount": "0.50",
+                "num_items": 3,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Write discount"):
+            data = {"discount": 0.2}
+            response = self.client.patch(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "0.50"},
+                    {"product": "soda", "amount": 2, "total": "0.00"},
+                ],
+                "order_description": "1x wine, 2x soda",
+                "age_restricted": True,
+                "subtotal": "0.50",
+                "discount": "0.20",
+                "total_amount": "0.30",
+                "num_items": 3,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Reset discount"):
+            data = {"discount": 0}
+            response = self.client.patch(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "0.50"},
+                    {"product": "soda", "amount": 2, "total": "0.00"},
+                ],
+                "order_description": "1x wine, 2x soda",
+                "age_restricted": True,
+                "subtotal": "0.50",
+                "discount": "0.00",
+                "total_amount": "0.50",
+                "num_items": 3,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Override total field"):
+            data = {
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "1.30"},
+                    {"product": "soda", "amount": 2, "total": "2.00"},
+                ]
+            }
+            response = self.client.patch(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "1.30"},
+                    {"product": "soda", "amount": 2, "total": "2.00"},
+                ],
+                "order_description": "1x wine, 2x soda",
+                "age_restricted": True,
+                "subtotal": "3.30",
+                "discount": "0.00",
+                "total_amount": "3.30",
+                "num_items": 3,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Reset overridden total fields"):
+            data = {
+                "order_items": [
+                    {"product": "wine", "amount": 1},
+                    {"product": "soda", "amount": 2},
+                ]
+            }
+            response = self.client.patch(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "0.50"},
+                    {"product": "soda", "amount": 2, "total": "0.00"},
+                ],
+                "order_description": "1x wine, 2x soda",
+                "age_restricted": True,
+                "subtotal": "0.50",
+                "discount": "0.00",
+                "total_amount": "0.50",
+                "num_items": 3,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Write discount without custom price permissions"):
+            self.member.is_superuser = False
+            self.member.save()
+            self.shift.managers.add(self.cie)
+            self.shift.save()
+
+            data = {"discount": 0.2}
+            response = self.client.patch(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "0.50"},
+                    {"product": "soda", "amount": 2, "total": "0.00"},
+                ],
+                "order_description": "1x wine, 2x soda",
+                "age_restricted": True,
+                "subtotal": "0.50",
+                "discount": "0.00",
+                "total_amount": "0.50",
+                "num_items": 3,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Write total field without custom price permissions"):
+            data = {
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "1.30"},
+                    {"product": "soda", "amount": 2, "total": "2.00"},
+                ]
+            }
+            response = self.client.patch(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "0.50"},
+                    {"product": "soda", "amount": 2, "total": "0.00"},
+                ],
+                "order_description": "1x wine, 2x soda",
+                "age_restricted": True,
+                "subtotal": "0.50",
+                "discount": "0.00",
+                "total_amount": "0.50",
+                "num_items": 3,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+        with self.subTest("Delete one product item"):
+            data = {"order_items": [{"product": "wine", "amount": 1},]}
+            response = self.client.patch(
+                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+            )
+            self.assertEqual(200, response.status_code)
+            expected_response = {
+                "pk": pk,
+                "shift": self.shift.pk,
+                "created_at": "2021-01-01T01:00:00+01:00",
+                "order_items": [{"product": "wine", "amount": 1, "total": "0.50"},],
+                "order_description": "1x wine",
+                "age_restricted": True,
+                "subtotal": "0.50",
+                "discount": "0.00",
+                "total_amount": "0.50",
+                "num_items": 1,
+                "payment": None,
+                "payer": None,
+                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+            }
+            self.assertJSONEqual(response.content, expected_response)
+
+    def test_invalid_product(self):
+        data = {"order_items": [{"product": "invalidproduct", "amount": 4}]}
+        response = self.client.post(
+            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}),
+            data,
+            format="json",
+        )
+        self.assertEqual(400, response.status_code)
+
+
+class ShiftAPITest(TestCase):
+    fixtures = ["members.json", "bank_accounts.json", "member_groups.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+        cls.beer = Product.objects.create(name="beer", age_restricted=True)
+        cls.wine = Product.objects.create(name="wine", age_restricted=True)
+        cls.soda = Product.objects.create(name="soda", age_restricted=False)
+
+        cls.normal = ProductList.objects.create(name="normal",)
+        cls.free = ProductList.objects.create(name="free",)
+
+        cls.normal.product_items.bulk_create(
+            [
+                ProductListItem(product=cls.beer, product_list=cls.normal, price=0.50),
+                ProductListItem(product=cls.wine, product_list=cls.normal, price=0.50),
+                ProductListItem(product=cls.soda, product_list=cls.normal, price=0.00),
+            ]
+        )
+        cls.free.product_items.bulk_create(
+            [
+                ProductListItem(product=cls.beer, product_list=cls.free, price=0.00),
+                ProductListItem(product=cls.wine, product_list=cls.free, price=0.00),
+                ProductListItem(product=cls.soda, product_list=cls.free, price=0.00),
+            ]
+        )
+
+        cls.shift = Shift.objects.create(
+            start=timezone.now(),
+            end=timezone.now() + timezone.timedelta(hours=1),
+            product_list=cls.normal,
+        )
+
+        cls.shift2 = Shift.objects.create(
+            start=timezone.now(),
+            end=timezone.now() + timezone.timedelta(hours=1),
+            product_list=cls.free,
+        )
+
+        cls.o0 = Order.objects.create(shift=cls.shift)
+        cls.o1 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o1,
+            product=cls.shift.product_list.product_items.get(product=cls.beer),
+            amount=2,
+        )
+        cls.o2 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o2,
+            product=cls.shift.product_list.product_items.get(product=cls.soda),
+            amount=2,
+        )
+        cls.o3 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o3,
+            product=cls.shift.product_list.product_items.get(product=cls.beer),
+            amount=2,
+        )
+        OrderItem.objects.create(
+            order=cls.o3,
+            product=cls.shift.product_list.product_items.get(product=cls.wine),
+            amount=2,
+        )
+        cls.o4 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o4,
+            product=cls.shift.product_list.product_items.get(product=cls.wine),
+            amount=2,
+        )
+        cls.o5 = Order.objects.create(shift=cls.shift)
+        OrderItem.objects.create(
+            order=cls.o5,
+            product=cls.shift.product_list.product_items.get(product=cls.beer),
+            amount=2,
+        )
+        OrderItem.objects.create(
+            order=cls.o5,
+            product=cls.shift.product_list.product_items.get(product=cls.wine),
+            amount=2,
+        )
+        cls.o4.payment = create_payment(
+            cls.o4, processed_by=cls.member, pay_type=Payment.CASH
+        )
+        cls.o4.save()
+        cls.o5.payment = create_payment(
+            cls.o5, processed_by=cls.member, pay_type=Payment.CASH
+        )
+        cls.o5.save()
+
+        """
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o4: a paid order with 2 beer and 2 wine
+        """
+
+        cls.cie = Committee.objects.get(pk=1)
+        MemberGroupMembership.objects.create(group=cls.cie, member=cls.member)
+        content_type = ContentType.objects.get_for_model(Order)
+        permission1 = Permission.objects.get(
+            content_type=content_type, codename="add_order"
+        )
+        permission2 = Permission.objects.get(
+            content_type=content_type, codename="change_order"
+        )
+        permission3 = Permission.objects.get(
+            content_type=content_type, codename="delete_order"
+        )
+        cls.cie.permissions.add(permission1)
+        cls.cie.permissions.add(permission2)
+        cls.cie.permissions.add(permission3)
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.force_login(self.member)
+
+    def test_detail_not_logged_in(self):
+        self.client.logout()
+        response = self.client.get(
+            reverse("v2:shift-detail", kwargs={"pk": self.shift.pk})
+        )
+        self.assertEqual(403, response.status_code)
+
+    def test_detail_not_authorized__get(self):
+        response = self.client.get(
+            reverse("v2:shift-detail", kwargs={"pk": self.shift.pk})
+        )
+        self.assertEqual(200, response.status_code)
+
+        self.member.is_superuser = False
+        self.member.save()
+
+        response = self.client.get(
+            reverse("v2:shift-detail", kwargs={"pk": self.shift.pk})
+        )
+        self.assertEqual(403, response.status_code)
+
+        self.shift.managers.add(self.cie)
+        self.shift.save()
+
+        response = self.client.get(
+            reverse("v2:shift-detail", kwargs={"pk": self.shift.pk})
+        )
+        self.assertEqual(200, response.status_code)
+
+    def test_list_not_logged_in(self):
+        self.client.logout()
+        response = self.client.get(reverse("v2:shift-list"))
+        self.assertEqual(403, response.status_code)
+
+    def test_list_not_authorized__get(self):
+        response = self.client.get(reverse("v2:shift-list"))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(2, response.data["count"])
+
+        self.member.is_superuser = False
+        self.member.save()
+
+        response = self.client.get(reverse("v2:shift-list"))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, response.data["count"])
+
+        self.shift.managers.add(self.cie)
+        self.shift.save()
+
+        response = self.client.get(reverse("v2:shift-list"))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, response.data["count"])

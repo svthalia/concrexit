@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load i18n payments %}
+
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title text-center">{% trans "Pay for order" %}</h1>
+            <div class="text-center">
+                {{ order.order_description }}
+            </div>
+            <div class="text-center mt-4">
+                {% url 'index' as next %}
+                {% payment_button order next %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+    <script type="text/javascript">
+        window.onload=function() {
+            document.forms['tpay-payment-form'].submit();
+        }
+    </script>
+{% endblock %}

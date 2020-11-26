@@ -258,6 +258,24 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-admin-autocomplete-filter"
+version = "0.5"
+description = ""
+category = "main"
+optional = false
+python-versions = "*"
+develop = false
+
+[package.dependencies]
+django = ">=2.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/farhan0581/django-admin-autocomplete-filter.git"
+reference = "pre_release"
+resolved_reference = "e6ebfe50777b326bec49220546c3fc0bc2fca27d"
+
+[[package]]
 name = "django-appconf"
 version = "1.0.4"
 description = "A helper class for handling configuration defaults of packaged apps gracefully."
@@ -367,6 +385,18 @@ python-versions = "*"
 django = ">=2.1"
 oauthlib = ">=3.0.1"
 requests = ">=2.13.0"
+
+[[package]]
+name = "django-queryable-properties"
+version = "1.6.1"
+description = "Write Django model properties that can be used in database queries."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=1.4"
+six = ">=1.9"
 
 [[package]]
 name = "django-recurrence"
@@ -1321,7 +1351,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "598a7a9c53dacdb11c3a652b7ebb8e32f8b1fda422557f311463ef9deb690fcf"
+content-hash = "8f5d28504aa4920e06a6585676e0a9c5bdb34aed4e2cecbee9fb912c264fc874"
 
 [metadata.files]
 alabaster = [
@@ -1514,6 +1544,7 @@ django = [
     {file = "Django-3.2-py3-none-any.whl", hash = "sha256:0604e84c4fb698a5e53e5857b5aea945b2f19a18f25f10b8748dbdf935788927"},
     {file = "Django-3.2.tar.gz", hash = "sha256:21f0f9643722675976004eb683c55d33c05486f94506672df3d6a141546f389d"},
 ]
+django-admin-autocomplete-filter = []
 django-appconf = [
     {file = "django-appconf-1.0.4.tar.gz", hash = "sha256:be58deb54a43d77d2e1621fe59f787681376d3cd0b8bd8e4758ef6c3a6453380"},
     {file = "django_appconf-1.0.4-py2.py3-none-any.whl", hash = "sha256:1b1d0e1069c843ebe8ae5aa48ec52403b1440402b320c3e3a206a0907e97bb06"},
@@ -1549,6 +1580,10 @@ django-localflavor = [
 django-oauth-toolkit = [
     {file = "django-oauth-toolkit-1.3.2.tar.gz", hash = "sha256:28508f83385ab4313936ddedfb310eaa8a1dcb737153d2956383ce47e75c2fab"},
     {file = "django_oauth_toolkit-1.3.2-py2.py3-none-any.whl", hash = "sha256:d5a1044af9419ddc048390c5974777ea97874e5b78e33c609e17eebb8423afb2"},
+]
+django-queryable-properties = [
+    {file = "django-queryable-properties-1.6.1.tar.gz", hash = "sha256:d06dd56f529f81f48610534d5175d737611b7b2a34b3dd129ef2d8e599327c30"},
+    {file = "django_queryable_properties-1.6.1-py2.py3-none-any.whl", hash = "sha256:bce26d5a9eca152d4a9c1f6001badd24ec2e23ce0a268afee5071f5b1e4225cf"},
 ]
 django-recurrence = [
     {file = "django-recurrence-1.10.3.tar.gz", hash = "sha256:715f681f6af029ff3a8d73c7b1460abd8cbc5d5a5001efcb127032e84d9cb963"},
