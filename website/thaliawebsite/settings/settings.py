@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     "registrations.apps.RegistrationsConfig",
     "payments.apps.PaymentsConfig",
     "singlepages.apps.SinglepagesConfig",
+    "sales.apps.SalesConfig",
 ]
 
 # enable template check if it's installed
