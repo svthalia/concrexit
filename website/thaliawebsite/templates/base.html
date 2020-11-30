@@ -93,10 +93,10 @@
                         height="220px"
                     >
                 {% else %}
-                    <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'-dark.svg' %}" media="(prefers-color-scheme: dark)">
-                    <source srcset="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}" media="(prefers-color-scheme: light)">
+                    <source srcset="{% static 'img/logo-dark.svg' %}" media="(prefers-color-scheme: dark)">
+                    <source srcset="{% static 'img/logo.svg' %}" media="(prefers-color-scheme: light)">
                     <img
-                        src="{% static 'img/logo-'|add:LANGUAGE_CODE|add:'.svg' %}"
+                        src="{% static 'img/logo.svg' %}"
                         id="logo"
                         alt="{% trans 'Study Association Thalia' %}"
                         height="220px"
