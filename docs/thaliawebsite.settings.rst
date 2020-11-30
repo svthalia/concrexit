@@ -9,6 +9,14 @@ thaliawebsite.settings package
 Submodules
 ----------
 
+thaliawebsite.settings.localsettings module
+-------------------------------------------
+
+.. automodule:: thaliawebsite.settings.localsettings
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 thaliawebsite.settings.production module
 ----------------------------------------
 
