@@ -1,11 +1,13 @@
 """Registers admin interfaces for the payments module"""
 import csv
 from collections import OrderedDict
+from functools import lru_cache
 
+from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
 from django.contrib.admin.utils import model_ngettext
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Sum
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpRequest
 from django.urls import path, reverse
@@ -621,7 +623,7 @@ class ThaliaPayBalanceFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
-        tpay_balance = [x.id for x in queryset.all() if x.tpay_balance != 0]
+        tpay_balance = [x.id for x in queryset.all() if x.amount_sum != 0]
         if self.value() == "0":
             return queryset.exclude(id__in=tpay_balance)
         if self.value() == "1":
@@ -667,19 +669,48 @@ class PaymentUserAdmin(admin.ModelAdmin):
         "email",
     )
 
+    def get_queryset(self, request):
+        queryset = super(PaymentUserAdmin, self).get_queryset(request)
+        return queryset.annotate(
+            amount_sum=Sum(
+                "paid_payment_set__amount",
+                filter=Q(paid_payment_set__type=Payment.TPAY)
+                & (Q(paid_payment_set__batch__isnull=True) | Q(paid_payment_set__batch__processed=False)),
+            )
+        )
+
+    @lru_cache
+    def _tpay_allowed(self, obj):
+        """Does this user have permissions to use Thalia Pay (but not necessarily enabled)"""
+        return (
+            obj.has_perm("payments.tpay_allowed")
+            and settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+        )
+
+    @lru_cache
+    def _tpay_enabled(self, obj):
+        """Does this user have a bank account with Direct Debit enabled"""
+        bank_accounts = BankAccount.objects.filter(owner=obj)
+        return (
+            settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+            and self._tpay_allowed(obj)
+            and bank_accounts.exists()
+            and any(x.valid for x in bank_accounts)
+        )
+
     def get_tpay_balance(self, obj):
-        return f"€ {obj.tpay_balance:.2f}" if obj.tpay_enabled else "-"
+        return f"€ {obj.amount_sum:.2f}" if self._tpay_allowed(obj) else "-"
 
     get_tpay_balance.short_description = _("balance")
 
     def get_tpay_enabled(self, obj):
-        return obj.tpay_enabled
+        return self._tpay_enabled(obj)
 
     get_tpay_enabled.short_description = _("Thalia Pay enabled")
     get_tpay_enabled.boolean = True
 
     def get_tpay_allowed(self, obj):
-        return obj.tpay_allowed
+        return self._tpay_allowed(obj)
 
     get_tpay_allowed.short_description = _("Thalia Pay allowed")
     get_tpay_allowed.boolean = True
@@ -703,7 +734,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
     def disallow_thalia_pay(self, request, queryset):
         count = 0
         for x in queryset:
-            if x.tpay_enabled:
+            if self._tpay_enabled(x):
                 x.disallow_tpay()
                 count += 1
         messages.success(
@@ -716,7 +747,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
         """Disallow Thalia Pay for selected users"""
         count = 0
         for x in queryset:
-            if not x.tpay_enabled:
+            if self._tpay_enabled(x):
                 x.allow_tpay()
                 count += 1
         messages.success(
