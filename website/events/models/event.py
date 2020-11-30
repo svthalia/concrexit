@@ -197,7 +197,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def payment_required(self):
-        return not (self.price == 0)
+        return self.price != 0
 
     def has_fields(self):
         return self.registrationinformationfield_set.count() > 0
