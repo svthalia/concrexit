@@ -62,7 +62,7 @@
                 <td data-sortval="{{ registration.date_cancelled|date:'c' }}">{{ registration.date_cancelled }}</td>
                 {% endif %}
                 {% for field in registration.information_fields %}
-                    {% if not field.value %}
+                    {% if not field.value and not field.field.type == 'boolean' %}
                     <td></td>
                     {% elif field.field.type == 'checkbox' %}
                     <td>{{ field.value|yesno }}</td>
