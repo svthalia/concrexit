@@ -141,11 +141,11 @@ class EventRegistration(models.Model, Payable):
 
     @property
     def payment_topic(self):
-        return f'{self.event.title} [{date(self.event.start, "Y-m-d")}]'
+        return f'{self.event.title_en} [{date(self.event.start, "Y-m-d")}]'
 
     @property
     def payment_notes(self):
-        notes = f"Event registration {self.event.title}. "
+        notes = f"Event registration {self.event.title_en}. "
         notes += f"{date(self.event.start)}. Registration date: {date(self.date)}."
         return notes
 
