@@ -6,6 +6,7 @@ from django.utils.translation import gettext, gettext_lazy as _
 from tinymce.models import HTMLField
 
 from utils.translation import ModelTranslateMeta, MultilingualField
+from utils import countries
 
 
 class Partner(models.Model):
@@ -36,16 +37,18 @@ class Partner(models.Model):
             )
         ],
     )
-    zip_code = models.CharField(
-        max_length=12,
-        validators=[
-            RegexValidator(
-                regex=r"^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$",
-                message=_("Enter a valid zip code"),
-            )
-        ],
+
+    address2 = models.CharField(
+        max_length=100, verbose_name=_("Second address line"), blank=True, null=True,
     )
+
+    zip_code = models.CharField(max_length=12,)
+
     city = models.CharField(max_length=100)
+
+    country = models.CharField(
+        max_length=2, choices=countries.EUROPE, verbose_name=_("Country"), null=True,
+    )
 
     def save(self, **kwargs):
         """Save a partner and set main/local partners."""

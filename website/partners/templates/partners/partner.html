@@ -25,8 +25,14 @@
                     <h4 class="mt-4 text-center text-md-left">{% trans "Address" %}</h4>
                     <p class="text-center text-md-left">
                         {{ partner.address }}<br/>
+                        {% if partner.adress2 %}
+                            {{ partner.address2 }}<br/>
+                        {% endif %}
                         {{ partner.zip_code }}<br/>
-                        {{ partner.city }}
+                        {{ partner.city }}<br />
+                        {% if partner.country != "NL" %}
+                            {{ partner.get_country_display }}
+                        {% endif %}
                     </p>
 
                     {% if partner.link %}
@@ -37,7 +43,7 @@
                     {% endif %}
 
                     <p class="text-center">
-                        {% with partner.address|add:" "|add:partner.zip_code|add:" "|add:partner.city|add:",The Netherlands"|urlize as location %}
+                        {% with partner.address|add:" "|add:partner.zip_code|add:" "|add:partner.city|add:" "|add:partner.get_country_display|urlize as location %}
                             <img src="{% google_map_url location zoom=10 size='400x300' %}"/>
                         {% endwith %}
                     </p>
