@@ -14,3 +14,4 @@ Subpackages
 
    events.api.calendarjs
    events.api.v1
+   events.api.v2

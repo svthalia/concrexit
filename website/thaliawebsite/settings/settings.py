@@ -157,7 +157,7 @@ LOGIN_REDIRECT_URL = "/"
 
 # Cors configuration
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r"^/(?:api/v1|user/oauth)/.*"
+CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
 
 # OAuth configuration
 APP_OAUTH_SCHEME = os.getenv("APP_OAUTH_SCHEME", "nu.thalia")
@@ -286,6 +286,8 @@ THUMBNAIL_SIZES = {
     "small": "150x150",
     "medium": "300x300",
     "large": "1024x768",
+    "slide_small": "500x108",
+    "slide_medium": "1000x215",
     "slide": "2000x430",
 }
 

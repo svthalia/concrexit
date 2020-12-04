@@ -13,3 +13,4 @@ Subpackages
    :maxdepth: 4
 
    payments.api.v1
+   payments.api.v2

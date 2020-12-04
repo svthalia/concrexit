@@ -14,3 +14,4 @@ Subpackages
 
    members.api.calendarjs
    members.api.v1
+   members.api.v2

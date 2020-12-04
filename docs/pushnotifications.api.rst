@@ -13,3 +13,4 @@ Subpackages
    :maxdepth: 4
 
    pushnotifications.api.v1
+   pushnotifications.api.v2
