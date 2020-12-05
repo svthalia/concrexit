@@ -6,14 +6,6 @@ activemembers package
    :undoc-members:
    :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   activemembers.api
-
 Submodules
 ----------
 
