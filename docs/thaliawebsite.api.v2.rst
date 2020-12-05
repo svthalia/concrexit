@@ -17,6 +17,14 @@ Subpackages
 Submodules
 ----------
 
+thaliawebsite.api.v2.permissions module
+---------------------------------------
+
+.. automodule:: thaliawebsite.api.v2.permissions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 thaliawebsite.api.v2.urls module
 --------------------------------
 
