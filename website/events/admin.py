@@ -98,6 +98,8 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         "organiser",
         "category",
         "published",
+        "everything_paid",
+        "present",
         "edit_link",
     )
     list_display_links = ("edit_link",)
@@ -142,6 +144,29 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         ),
         (_("Extra"), {"fields": ("slide", "documents"), "classes": ("collapse",)}),
     )
+
+    def everything_paid(self, obj):
+        return obj.everything_paid
+
+    everything_paid.boolean = True
+
+    def present(self, obj):
+        if not obj.registration_required:
+            return
+
+        count_present_registrations = (
+            obj.present_registrations.count() if obj.present_registrations else 0
+        )
+        count_unpaid_present_registrations = (
+            obj.unpaid_present_registrations.count()
+            if obj.unpaid_present_registrations
+            else 0
+        )
+        count_participants = obj.participants.count() if obj.participants else 0
+
+        if count_unpaid_present_registrations > 0:
+            return f"{count_present_registrations}/{count_participants} ({count_unpaid_present_registrations} unpaid)"
+        return f"{count_present_registrations}/{count_participants}"
 
     def overview_link(self, obj):
         return format_html(
@@ -347,7 +372,7 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
             formfield_callback=partial(
                 self.formfield_for_dbfield, request=request, obj=obj
             ),
-            **kwargs
+            **kwargs,
         )
 
     def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):

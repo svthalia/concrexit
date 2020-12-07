@@ -252,6 +252,41 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             and self.registration_start <= now < self.start
         )
 
+    @property
+    def present_registrations(self):
+        return self.participants.filter(present=True)
+
+    @property
+    def unpresent_registrations(self):
+        return self.participants.filter(present=False)
+
+    @property
+    def unpaid_registrations(self):
+        return (
+            self.participants.filter(payment__isnull=True)
+            if self.payment_required
+            else None
+        )
+
+    @property
+    def unpaid_present_registrations(self):
+        return (
+            self.present_registrations.filter(payment__isnull=True)
+            if self.payment_required
+            else None
+        )
+
+    @property
+    def everything_paid(self):
+        if self.payment_required:
+            return (
+                False
+                if self.unpaid_registrations is not None
+                and self.unpaid_registrations.count() > 0
+                else True
+            )
+        return None
+
     def is_pizza_event(self):
         # pylint: disable=pointless-statement
         try:
