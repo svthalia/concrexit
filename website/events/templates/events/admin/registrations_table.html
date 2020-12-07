@@ -64,7 +64,7 @@
                 {% for field in registration.information_fields %}
                     {% if not field.value and not field.field.type == 'boolean' %}
                     <td></td>
-                    {% elif field.field.type == 'checkbox' %}
+                    {% elif field.field.type == 'boolean' %}
                     <td>{{ field.value|yesno }}</td>
                     {% else %}
                     <td>{{ field.value }}</td>
