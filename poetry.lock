@@ -458,11 +458,11 @@ doc = ["sphinx", "sphinx-rtd-theme"]
 
 [[package]]
 name = "faker"
-version = "5.0.0"
+version = "5.0.1"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 
 [package.dependencies]
 python-dateutil = ">=2.4"
@@ -992,7 +992,7 @@ version = "5.3.1"
 description = "YAML parser and emitter for Python"
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = "*"
 
 [[package]]
 name = "rcssmin"
@@ -1309,7 +1309,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "ea3c6d40df2468bf38060dc42895872addd41ae8beadeb9e275a2533848513dc"
+content-hash = "f2466962e4a6aa416eb1bf77a0df8c1a0042d656356c6c67bc3aad53e016f3b8"
 
 [metadata.files]
 alabaster = [
@@ -1544,8 +1544,8 @@ factory-boy = [
     {file = "factory_boy-3.1.0.tar.gz", hash = "sha256:ded73e49135c24bd4d3f45bf1eb168f8d290090f5cf4566b8df3698317dc9c08"},
 ]
 faker = [
-    {file = "Faker-5.0.0-py3-none-any.whl", hash = "sha256:7bca5b074299ac6532be2f72979e6793f1a2403ca8105cb4cf0b385a964469c4"},
-    {file = "Faker-5.0.0.tar.gz", hash = "sha256:fb21a76064847561033d8cab1cfd11af436ddf2c6fe72eb51b3cda51dff86bdc"},
+    {file = "Faker-5.0.1-py3-none-any.whl", hash = "sha256:1fcb415562ee6e2395b041e85fa6901d4708d30b84d54015226fa754ed0822c3"},
+    {file = "Faker-5.0.1.tar.gz", hash = "sha256:e8beccb398ee9b8cc1a91d9295121d66512b6753b4846eb1e7370545d46b3311"},
 ]
 firebase-admin = [
     {file = "firebase_admin-4.4.0-py3-none-any.whl", hash = "sha256:44bb982951cfa201a99a59657a58f66eb367c362fe90200d0816f39df9862ff3"},
