@@ -49,13 +49,13 @@
                         <option value="no_payment"
                                 {% if not registration.payment %}selected{% endif %}>{% trans 'None' %}</option>
                         <option value="{{ payment.CARD }}"
-                                {% if registration.payment and registration.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %} (€ {% if registration.payment %}{{ registration.payment.amount }}{% else %}{{ event.price }}{% endif %})</option>
+                                {% if registration.payment and registration.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
                         <option value="{{ payment.CASH }}"
-                                {% if registration.payment and registration.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %} (€ {% if registration.payment %}{{ registration.payment.amount }}{% else %}{{ event.price }}{% endif %})</option>
+                                {% if registration.payment and registration.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %}</option>
                         <option value="{{ payment.TPAY }}" disabled
-                                {% if registration.payment and registration.payment.type == payment.TPAY %}selected{% endif %}>{% trans 'Thalia Pay' %} (€ {% if registration.payment %}{{ registration.payment.amount }}{% else %}{{ event.price }}{% endif %})</option>
+                                {% if registration.payment and registration.payment.type == payment.TPAY %}selected{% endif %}>{% trans 'Thalia Pay' %}</option>
                         <option value="{{ payment.WIRE }}"
-                                {% if registration.payment and registration.payment.type == payment.WIRE %}selected{% endif %}>{% trans 'Wire' %} (€ {% if registration.payment %}{{ registration.payment.amount }}{% else %}{{ event.price }}{% endif %})</option>
+                                {% if registration.payment and registration.payment.type == payment.WIRE %}selected{% endif %}>{% trans 'Wire' %}</option>
                     </select>
                 </td>
                 {% endif %}
