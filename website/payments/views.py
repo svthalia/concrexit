@@ -222,14 +222,18 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
         self.payable = payable_model.objects.get(pk=payable_pk)
 
-        if (
-            self.payable.payment_payer.pk
-            != PaymentUser.objects.get(pk=self.request.member.pk).pk
-        ):
-            messages.error(
-                self.request, _("You are not allowed to process this payment.")
-            )
-            return redirect(request.POST["next"])
+
+        if self.payable.payment_payer is None:
+            self.payable.payment_payer = self.request.member
+        else:
+            if (
+                self.payable.payment_payer.pk
+                != PaymentUser.objects.get(pk=self.request.member.pk).pk
+            ):
+                messages.error(
+                    self.request, _("You are not allowed to process this payment.")
+                )
+                return redirect(request.POST["next"])
 
         if self.payable.payment_amount == 0:
             messages.error(self.request, _("No payment required for amount of €0.00"))

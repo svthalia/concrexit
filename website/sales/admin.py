@@ -1,6 +1,9 @@
+from functools import partial
+
 from django.contrib import admin
 from django.contrib.admin import register
 from django.forms import Field
+from django.http import HttpRequest
 
 from payments.widgets import PaymentWidget
 from sales.models.order import Order, OrderItem
@@ -13,42 +16,78 @@ class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
 
-    fields = [
+    fields = (
         "product",
         "amount",
-        "total_price"
-    ]
+        "total"
+    )
 
-    readonly_fields = [
-        "total_price",
-    ]
+    def has_delete_permission(self, request, obj=None):
+        if obj and obj.payment:
+            return False
+        return True
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj):
+        if obj and obj.payment:
+            return False
+        return True
+
 
 @register(Order)
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline,]
 
-    list_display = [
+    list_display = (
         "id",
-        "shift",
-        "payment_notes",
-        "payment"
-    ]
-
-    fields = [
         "shift",
         "created_at",
         "total_amount",
         "discount",
         "payment",
-        "payment_notes"
-    ]
+        "order_description"
+    )
 
-    readonly_fields = [
-        "created_at",
+    fields = (
         "shift",
+        "created_at",
         "total_amount",
-        "payment_notes"
-    ]
+        "discount",
+        "payment",
+        "order_description",
+        "age_restricted"
+    )
+
+    readonly_fields = (
+        "created_at",
+        "total_amount",
+        "order_description",
+        "age_restricted"
+    )
+
+    def get_readonly_fields(self, request: HttpRequest, obj: Order = None):
+        default_fields = self.readonly_fields
+        if obj and obj.payment:
+            return self.fields
+        return default_fields
+
+
+    def age_restricted(self, obj):
+        return obj.age_restricted if obj else None
+
+    age_restricted.boolean = True
+
+    def get_form(self, request, obj=None, **kwargs):
+        return super().get_form(
+            request,
+            obj,
+            formfield_callback=partial(
+                self.formfield_for_dbfield, request=request, obj=obj
+            ),
+            **kwargs
+        )
 
     def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
@@ -71,7 +110,41 @@ class ProductListItemInline(admin.TabularInline):
 class ProductListAdmin(admin.ModelAdmin):
     inlines = [ProductListItemInline, ]
 
+class OrderInline(admin.TabularInline):
+    model = Order
+    extra = 0
+    show_change_link = True
+
+    fields = (
+        "created_at",
+        "id",
+        "order_description",
+        "discount",
+        "total_amount",
+        "payment",
+    )
+
+    readonly_fields = (
+        "created_at",
+        "id",
+        "order_description",
+        "discount",
+        "total_amount",
+        "payment",
+    )
 
 @register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
-    pass
+    inlines = [OrderInline, ]
+
+    fields = (
+        "start_date",
+        "end_date",
+        "product_list",
+        "total_revenue",
+    )
+
+    readonly_fields = (
+        "total_revenue",
+    )
+
