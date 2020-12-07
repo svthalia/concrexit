@@ -6,29 +6,10 @@ pizzas.api package
    :undoc-members:
    :show-inheritance:
 
-Submodules
-----------
+Subpackages
+-----------
 
-pizzas.api.serializers module
------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: pizzas.api.serializers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pizzas.api.urls module
-----------------------
-
-.. automodule:: pizzas.api.urls
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pizzas.api.viewsets module
---------------------------
-
-.. automodule:: pizzas.api.viewsets
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   pizzas.api.v1

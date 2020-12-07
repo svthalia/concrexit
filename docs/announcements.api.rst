@@ -6,29 +6,10 @@ announcements.api package
    :undoc-members:
    :show-inheritance:
 
-Submodules
-----------
+Subpackages
+-----------
 
-announcements.api.serializers module
-------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: announcements.api.serializers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-announcements.api.urls module
------------------------------
-
-.. automodule:: announcements.api.urls
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-announcements.api.viewsets module
----------------------------------
-
-.. automodule:: announcements.api.viewsets
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   announcements.api.v1

@@ -1,6 +1,10 @@
 """Routes defined by the events package"""
 from django.urls import path, include
 
+from events.api.calendarjs.views import (
+    CalendarJSEventListView,
+    CalendarJSUnpublishedEventListView,
+)
 from events.feeds import EventFeed
 from events.views import (
     EventIndex,
@@ -41,4 +45,21 @@ urlpatterns = [
         ),
     ),
     path("association/alumni/", AlumniEventsView.as_view(), name="alumni"),
+    path(
+        "api/calendarjs/",
+        include(
+            [
+                path(
+                    "events/",
+                    CalendarJSEventListView.as_view(),
+                    name="calendarjs-published",
+                ),
+                path(
+                    "events/unpublished/",
+                    CalendarJSUnpublishedEventListView.as_view(),
+                    name="calendarjs-unpublished",
+                ),
+            ]
+        ),
+    ),
 ]

@@ -6,29 +6,10 @@ activemembers.api package
    :undoc-members:
    :show-inheritance:
 
-Submodules
-----------
+Subpackages
+-----------
 
-activemembers.api.serializers module
-------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: activemembers.api.serializers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-activemembers.api.urls module
------------------------------
-
-.. automodule:: activemembers.api.urls
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-activemembers.api.viewsets module
----------------------------------
-
-.. automodule:: activemembers.api.viewsets
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   activemembers.api.v1

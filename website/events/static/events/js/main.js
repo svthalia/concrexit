@@ -4,19 +4,19 @@ const DATE_STORAGE = 'calendardate';
 const SOURCES = {
     events: {
         id: 'event',
-        url: '/api/v1/events/calendarjs/',
+        url: '/api/calendarjs/events/',
     },
     birthdays: {
         id: 'birthdays',
-        url: '/api/v1/members/birthdays/',
+        url: '/api/calendarjs/birthdays/',
     },
     partners: {
         id: 'partners',
-        url: '/api/v1/partners/calendarjs/',
+        url: '/api/calendarjs/partners/',
     },
     unpublished: {
         id: 'unpublished',
-        url: '/api/v1/events/unpublished/',
+        url: '/api/calendarjs/events/unpublished/',
     },
 };
 
