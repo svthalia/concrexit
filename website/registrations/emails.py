@@ -2,14 +2,13 @@
 from typing import Union
 
 from django.conf import settings
-from django.core import mail
-from django.template import loader
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from registrations.models import Registration, Renewal
+from utils.snippets import _send_email
 
 
 def send_registration_email_confirmation(registration: Registration) -> None:
@@ -180,19 +179,3 @@ def send_references_information_message(entry: Union[Registration, Renewal]) -> 
                 ),
             },
         )
-
-
-def _send_email(to: str, subject: str, body_template: str, context: dict) -> None:
-    """Easily send an email with the right subject and a body template.
-
-    :param to: where should the email go?
-    :param subject: what is the email about?
-    :param body_template: what is the content of the email?
-    :param context: add some context to the body
-    """
-    mail.EmailMessage(
-        "[THALIA] {}".format(subject),
-        loader.render_to_string(body_template, context),
-        settings.DEFAULT_FROM_EMAIL,
-        [to],
-    ).send()

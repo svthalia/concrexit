@@ -9,7 +9,7 @@ from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
-from registrations.emails import _send_email
+from utils.snippets import _send_email
 from .exceptions import PaymentError
 from .models import Payment, BankAccount, Payable, PaymentUser
 
