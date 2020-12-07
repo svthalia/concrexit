@@ -9,7 +9,7 @@ from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
-from registrations.emails import _send_email
+from utils.snippets import send_email
 from .exceptions import PaymentError
 from .models import Payment, BankAccount, Payable, PaymentUser
 
@@ -133,7 +133,7 @@ def send_tpay_batch_processing_emails(batch):
         total_amount = member_row["total"]
 
         with translation.override(member.profile.language):
-            _send_email(
+            send_email(
                 member.email,
                 _("Thalia Pay withdrawal notice"),
                 "payments/email/tpay_withdrawal_notice_mail.txt",
