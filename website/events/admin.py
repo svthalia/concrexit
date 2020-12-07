@@ -152,7 +152,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
 
     def present(self, obj):
         if not obj.registration_required:
-            return
+            return None
 
         count_present_registrations = (
             obj.present_registrations.count() if obj.present_registrations else 0
