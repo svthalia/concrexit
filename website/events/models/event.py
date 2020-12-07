@@ -195,6 +195,10 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def registration_required(self):
         return bool(self.registration_start) or bool(self.registration_end)
 
+    @property
+    def payment_required(self):
+        return self.price != 0
+
     def has_fields(self):
         return self.registrationinformationfield_set.count() > 0
 

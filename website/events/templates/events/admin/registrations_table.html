@@ -5,7 +5,9 @@
             <tr>
                 <th scope="col">{% trans "name"|capfirst %} <span class="toggle"></span></th>
                 <th scope="col"></th>
+                {% if event.payment_required %}
                 <th scope="col" class="sorter-payment">{% trans 'payment'|capfirst %} <span class="toggle"></span></th>
+                {% endif %}
                 <th scope="col" class="sorter-checkbox">{% trans "present"|capfirst %} <span class="toggle"></span></th>
                 <th scope="col" class="sorter-date">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
                 {% if cancellations %}
@@ -39,6 +41,7 @@
                 <td>{{ registration.name }}</td>
                 <td></td>
                 {% endif %}
+                {% if event.payment_required %}
                 <td>
                     <select name="payment"
                             data-none="no_payment"
@@ -49,13 +52,13 @@
                                 {% if registration.payment and registration.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
                         <option value="{{ payment.CASH }}"
                                 {% if registration.payment and registration.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %}</option>
-                        <option value="{{ payment.TPAY }}"
-                                {% if not registration.member.tpay_enabled %} disabled {% endif %}
+                        <option value="{{ payment.TPAY }}" disabled
                                 {% if registration.payment and registration.payment.type == payment.TPAY %}selected{% endif %}>{% trans 'Thalia Pay' %}</option>
                         <option value="{{ payment.WIRE }}"
                                 {% if registration.payment and registration.payment.type == payment.WIRE %}selected{% endif %}>{% trans 'Wire' %}</option>
                     </select>
                 </td>
+                {% endif %}
                 <td class="text-center"><input type="checkbox" {{ registration.present|yesno:'checked="checked",' }} data-id="{{ registration.id }}" class="present-check" /></td>
                 <td data-sortval="{{ registration.date|date:'c' }}">{{ registration.date }}</td>
                 {% if cancellations %}
