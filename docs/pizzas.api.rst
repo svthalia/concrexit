@@ -13,3 +13,4 @@ Subpackages
    :maxdepth: 4
 
    pizzas.api.v1
+   pizzas.api.v2

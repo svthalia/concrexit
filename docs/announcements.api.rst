@@ -13,3 +13,4 @@ Subpackages
    :maxdepth: 4
 
    announcements.api.v1
+   announcements.api.v2
