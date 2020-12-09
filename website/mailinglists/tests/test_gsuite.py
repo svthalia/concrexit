@@ -45,7 +45,6 @@ class GSuiteSyncTestCase(TestCase):
         self.settings_api.reset_mock()
         self.directory_api.reset_mock()
 
-    def test_default_lists(self):
         self.assertEqual(len(self.sync_service._get_default_lists()), 13)
 
     def test_automatic_to_group(self):
@@ -91,7 +90,7 @@ class GSuiteSyncTestCase(TestCase):
                 "archiveOnly": "false",
                 "enableCollaborativeInbox": "true",
                 "isArchived": "true",
-                "membersCanPostAsTheGroup": "false",
+                "membersCanPostAsTheGroup": "true",
                 "messageModerationLevel": "MODERATE_NONE",
                 "replyTo": "REPLY_TO_SENDER",
                 "whoCanAssistContent": "ALL_MEMBERS",
@@ -114,7 +113,7 @@ class GSuiteSyncTestCase(TestCase):
                 "archiveOnly": "false",
                 "enableCollaborativeInbox": "true",
                 "isArchived": "true",
-                "membersCanPostAsTheGroup": "false",
+                "membersCanPostAsTheGroup": "true",
                 "messageModerationLevel": "MODERATE_ALL_MESSAGES",
                 "replyTo": "REPLY_TO_SENDER",
                 "whoCanAssistContent": "ALL_MEMBERS",
