@@ -45,7 +45,6 @@ class GSuiteSyncTestCase(TestCase):
         self.settings_api.reset_mock()
         self.directory_api.reset_mock()
 
-    def test_default_lists(self):
         self.assertEqual(len(self.sync_service._get_default_lists()), 13)
 
     def test_automatic_to_group(self):
@@ -87,13 +86,14 @@ class GSuiteSyncTestCase(TestCase):
             self.sync_service._group_settings(False),
             {
                 "allowExternalMembers": "true",
-                "allowWebPosting": "false",
+                "allowWebPosting": "true",
                 "archiveOnly": "false",
+                "enableCollaborativeInbox": "true",
                 "isArchived": "true",
-                "membersCanPostAsTheGroup": "false",
+                "membersCanPostAsTheGroup": "true",
                 "messageModerationLevel": "MODERATE_NONE",
                 "replyTo": "REPLY_TO_SENDER",
-                "whoCanAssistContent": "NONE",
+                "whoCanAssistContent": "ALL_MEMBERS",
                 "whoCanContactOwner": "ALL_MANAGERS_CAN_CONTACT",
                 "whoCanDiscoverGroup": "ALL_MEMBERS_CAN_DISCOVER",
                 "whoCanJoin": "INVITED_CAN_JOIN",
@@ -109,13 +109,14 @@ class GSuiteSyncTestCase(TestCase):
             self.sync_service._group_settings(True),
             {
                 "allowExternalMembers": "true",
-                "allowWebPosting": "false",
+                "allowWebPosting": "true",
                 "archiveOnly": "false",
+                "enableCollaborativeInbox": "true",
                 "isArchived": "true",
-                "membersCanPostAsTheGroup": "false",
+                "membersCanPostAsTheGroup": "true",
                 "messageModerationLevel": "MODERATE_ALL_MESSAGES",
                 "replyTo": "REPLY_TO_SENDER",
-                "whoCanAssistContent": "NONE",
+                "whoCanAssistContent": "ALL_MEMBERS",
                 "whoCanContactOwner": "ALL_MANAGERS_CAN_CONTACT",
                 "whoCanDiscoverGroup": "ALL_MEMBERS_CAN_DISCOVER",
                 "whoCanJoin": "INVITED_CAN_JOIN",

@@ -58,15 +58,16 @@ class GSuiteSyncService:
     def _group_settings(moderated):
         return {
             "allowExternalMembers": "true",
-            "allowWebPosting": "false",
+            "allowWebPosting": "true",
             "archiveOnly": "false",
+            "enableCollaborativeInbox": "true",
             "isArchived": "true",
-            "membersCanPostAsTheGroup": "false",
+            "membersCanPostAsTheGroup": "true",
             "messageModerationLevel": "MODERATE_ALL_MESSAGES"
             if moderated
             else "MODERATE_NONE",
             "replyTo": "REPLY_TO_SENDER",
-            "whoCanAssistContent": "NONE",
+            "whoCanAssistContent": "ALL_MEMBERS",
             "whoCanContactOwner": "ALL_MANAGERS_CAN_CONTACT",
             "whoCanDiscoverGroup": "ALL_MEMBERS_CAN_DISCOVER",
             "whoCanJoin": "INVITED_CAN_JOIN",
