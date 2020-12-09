@@ -83,6 +83,12 @@ class PaymentTest(TestCase):
         with self.assertRaises(ValidationError):
             self.payment.save()
 
+    def test_deleting_member_who_made_a_payment_doesnt_crach(self) -> None:
+        """
+        Check that https://github.com/svthalia/concrexit/issues/1328 is fixed
+        """
+        self.member.delete()
+
     def test_clean(self):
         """
         Tests the model clean functionality

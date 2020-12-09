@@ -8,7 +8,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q, Sum
+from django.db.models import DEFERRED, Q, Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -130,12 +130,47 @@ class Payment(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._batch = self.batch
+
+        # This is a pretty ugly hack, but it's necessary to something like this
+        # when you want to check things against the old version of the model in
+        # the clean() method---so some of the old data is saved here in init.
+
+        # Previously we had something like this:
+        # self._batch = self.batch
+        # but this breaks when deleting the Payment instance, and creates a
+        # stack overflow crash.
+
+        # Instead we try to get the foreign key out of the init function arguments.
+        # This works because when Django does database lookups via the .objects
+        # manager, it uses the init method to create this model instance and it
+        # includes the id. When we create a Payment in our own code we also use
+        # this init method but use keyword arguments most of the time.
+
+        # In the future we might want to remove this code and instead move
+        # cleaning code to a place where we do have the old information available.
+        self._batch_id = None
+        if not kwargs:
+            batch_id_idx = [
+                i
+                for i, x in enumerate(self._meta.concrete_fields)
+                if x.attname == "batch_id"
+            ]
+            if (
+                batch_id_idx
+                and len(args) >= batch_id_idx[0]
+                and args[batch_id_idx[0]] != DEFERRED
+            ):
+                self._batch_id = args[batch_id_idx[0]]
+        else:
+            # This should be okay as keyword arguments are only used for manual
+            # instantiation.
+            self._batch_id = self.batch_id
+
         self._type = self.type
 
     def save(self, **kwargs):
         self.clean()
-        self._batch = self.batch
+        self._batch_id = self.batch.id if self.batch else None
         super().save(**kwargs)
 
     def clean(self):
@@ -145,7 +180,7 @@ class Payment(models.Model):
             raise ValidationError(
                 {"batch": _("Non Thalia Pay payments cannot be added to a batch")}
             )
-        if self._batch and self._batch.processed:
+        if self._batch_id and Batch.objects.get(pk=self._batch_id).processed:
             raise ValidationError(
                 _("Cannot change a payment that is part of a processed batch")
             )
