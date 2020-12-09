@@ -16,11 +16,10 @@ If you use Docker, please look at [this part](#docker) of the README.
 
 0. Get at least Python 3.7 and install poetry and the Pillow requirements as per below.
 1. Clone this repository
-2. Make sure `poetry` uses your Python 3.x installation: `poetry env use python3`
-3. `make createsuperuser` to create the first user (note that this user won't be a member!)
-4. `make createfixtures` to generate a bunch of test data
-5. `make run` to run a testing server
-6. Go to the user you created and complete the profile and add a membership for full access
+2. `make superuser` to create the first user (note that this user won't be a member!)
+3. `make fixtures` to generate a bunch of test data
+4. `make run` to run a testing server
+5. Go to the user you created and complete the profile and add a membership for full access
 
 Testing and linting
 -------------------

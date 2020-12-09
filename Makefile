@@ -46,13 +46,13 @@ website/db.sqlite3: .make/deps $(MIGRATIONS)
 migrate: ## Run all database migrations
 	poetry run website/manage.py migrate
 
-makemigrations: ## Automatically create migration scripts
+migrations: ## Automatically create migration scripts
 	poetry run website/manage.py makemigrations
 
-createsuperuser: .make/deps website/db.sqlite3 ## Create a superuser for your local concrexit
+superuser: .make/deps website/db.sqlite3 ## Create a superuser for your local concrexit
 	poetry run website/manage.py createsuperuser
 
-createfixtures: .make/deps website/db.sqlite3 ## Create dummy database entries
+fixtures: .make/deps website/db.sqlite3 ## Create dummy database entries
 	poetry run website/manage.py createfixtures -a
 
 .make/fmt: .make .make/deps $(PYTHONFILES)
