@@ -344,28 +344,3 @@ class SharedDownloadTest(_DownloadBaseTestCase):
             )
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response["Content-Type"], "image/jpeg")
-
-
-@override_settings(SUSPEND_SIGNALS=True)
-class AlbumDownloadTest(_DownloadBaseTestCase):
-
-    fixtures = ["members.json"]
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
-
-    def test_download(self):
-        self.client.force_login(self.member)
-
-        response = self.client.get(
-            reverse("photos:album-download", args=(self.album.slug,))
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response["Content-Type"], "application/zip")
-
-    def test_logged_out(self):
-        response = self.client.get(
-            reverse("photos:album-download", args=(self.album.slug,))
-        )
-        self.assertEqual(response.status_code, 302)

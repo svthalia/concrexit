@@ -11,17 +11,6 @@
         <div class="container">
             <h1 class="text-center section-title">
                 {{ album.title }}
-                <a 
-                   {% if album.shareable %}
-                   href="{% url 'photos:shared-album-download' album.slug album.access_token %}"
-                   {% else %}
-                   href="{% url 'photos:album-download' album.slug %}"
-                   {% endif %}
-                   target="_blank"
-                   class="btn btn-primary btn-first"
-                >
-                    <i class="fas fa-download"></i>
-                </a>
             </h1>
 
             <h2 class="text-center mt-2">{{ album.date|date:"d-m-Y" }}</h2>

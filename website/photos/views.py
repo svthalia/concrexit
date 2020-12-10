@@ -1,6 +1,4 @@
 import os
-from tempfile import gettempdir
-from zipfile import ZipFile
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, Paginator
@@ -105,21 +103,6 @@ def _download(request, obj, filename):
     return sendfile(request, photo.file.path, attachment=True)
 
 
-def _album_download(request, obj):
-    """Download an album.
-
-    This function provides a layer of indirection for shared albums.
-    """
-    albumpath = os.path.join(obj.photospath, obj.dirname)
-    zipfilename = os.path.join(gettempdir(), "{}.zip".format(obj.dirname))
-    if not os.path.exists(zipfilename):
-        with ZipFile(zipfilename, "w") as f:
-            pictures = [os.path.join(albumpath, x) for x in os.listdir(albumpath)]
-            for picture in pictures:
-                f.write(picture, arcname=os.path.basename(picture))
-    return sendfile(request, zipfilename, attachment=True)
-
-
 @login_required
 def download(request, slug, filename):
     """Download a photo if the album of the photo is accessible by the user."""
@@ -129,24 +112,8 @@ def download(request, slug, filename):
     raise Http404("Sorry, you're not allowed to view this album")
 
 
-@login_required
-def album_download(request, slug):
-    """Download an album if the album is accessible by the user."""
-    obj = get_object_or_404(Album, slug=slug)
-    if is_album_accessible(request, obj):
-        return _album_download(request, obj)
-    raise Http404("Sorry, you're not allowed to view this album")
-
-
 def shared_download(request, slug, token, filename):
     """Download a photo from a shared album if the album token is provided."""
     obj = get_object_or_404(Album, slug=slug)
     check_shared_album_token(obj, token)
     return _download(request, obj, filename)
-
-
-def shared_album_download(request, slug, token):
-    """Download a shared album if the album token is provided."""
-    obj = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(obj, token)
-    return _album_download(request, obj)
