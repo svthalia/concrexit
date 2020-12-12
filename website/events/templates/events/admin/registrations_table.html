@@ -9,9 +9,9 @@
                 <th scope="col" class="sorter-payment">{% trans 'payment'|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
                 <th scope="col" class="sorter-checkbox">{% trans "present"|capfirst %} <span class="toggle"></span></th>
-                <th scope="col" class="sorter-date">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" class="sorter-sortval">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
                 {% if cancellations %}
-                <th scope="col" class="sorter-date">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" class="sorter-sortval">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
                 {% for field in fields %}
                 <th scope="col">{{ field.name }} <span class="toggle"></span></th>
