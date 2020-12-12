@@ -7,14 +7,9 @@ Using environment variables you can control the loading of various
 overrides.
 """
 import logging
-import os
 from firebase_admin import initialize_app, credentials
 from google.oauth2 import service_account
 
-if os.environ.get("DOCUTILSCONFIG"):
-    # Load all default settings because we need to use settings.configure
-    # for sphinx documentation generation.
-    from django.conf.global_settings import *
 
 # Load base settings
 # pylint: disable=wrong-import-position
