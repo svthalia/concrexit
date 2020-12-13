@@ -3,7 +3,6 @@
 
 PYTHONFILES := $(shell find website -name '*.py')
 MIGRATIONS := $(shell find website -name '*.py' | grep migrations)
-DOCSFILES := $(shell find docs -name '*.rst')
 TEMPLATEFILES := $(shell find website -name '*.html')
 
 PORT ?= 8000
@@ -110,21 +109,16 @@ covhtml: .coverage ## Generate an HTML coverage report
 	poetry install $(POETRY_FLAGS) --extras "docs"
 	@touch .make/docsdeps
 
-$(DOCSFILES): .make/docsdeps
+apidocs: ## Generate API docs
 	cd docs && poetry run sphinx-apidoc -M -f -o . ../website ../website/*/migrations ../website/*/tests* ../website/manage.py
-	@touch $(DOCSFILES)
 
-apidocs: $(DOCSFILES) ## Generate API docs
-
-.make/doctest: .make/docsdeps $(DOCSFILES)
+.make/doctest: .make/docsdeps
 	cd docs && poetry run sphinx-build -M doctest . _build
 
 doctest: .make/doctest ## Run doctests
 
-docs/_build: .make/docsdeps $(DOCSFILES)
-	cd docs && poetry run sphinx-build -W . _build -j $$(nproc)
-
-docs: docs/_build ## Generate docs HTML files
+docs: ## Generate docs HTML files
+	cd docs && poetry run sphinx-build -M html . _build
 
 .make/docker: .make
 	docker build $(DOCKER_FLAGS) --build-arg "source_commit=$$(git rev-parse HEAD)" --tag "thalia/concrexit:$$(git rev-parse HEAD)" .

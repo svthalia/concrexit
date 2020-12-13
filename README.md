@@ -12,6 +12,8 @@ The latest Thalia Website built on Django.
 Getting started
 ---------------
 
+If you use Docker, please look at [this part](#docker) of the README.
+
 0. Get at least Python 3.7 and install poetry and the Pillow requirements as per below.
 1. Clone this repository
 2. `make superuser` to create the first user (note that this user won't be a member!)
@@ -93,5 +95,3 @@ The continuous integration checks if the latest Python modules are included in t
 To update these files run `make apidocs`
 
 To render the docs to HTML run `make docs`
-
-If you have a `localsettings.py` then make sure you do not commit this part of the documentation to version control.

@@ -1,4 +1,5 @@
 """DRF serializers defined by the announcements package."""
+from django.conf import settings
 from rest_framework import serializers
 
 from announcements.models import Slide
@@ -6,8 +7,6 @@ from thaliawebsite.api.v2.serializers.thumbnail import (
     ThumbnailSerializer,
     CleanedHTMLSerializer,
 )
-from thaliawebsite.settings import settings
-from utils.media.services import get_thumbnail_url
 
 
 class SlideSerializer(serializers.ModelSerializer):

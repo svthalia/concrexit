@@ -3,7 +3,7 @@ import doctest
 
 from django.test import TestCase, override_settings
 
-from thaliawebsite import sitemaps
+from thaliawebsite import settings, sitemaps
 from thaliawebsite.templatetags import bleach_tags
 
 
@@ -12,6 +12,7 @@ def load_tests(_loader, tests, _ignore):
     # Adds the doctests in bleach_tags
     tests.addTests(doctest.DocTestSuite(bleach_tags))
     tests.addTests(doctest.DocTestSuite(sitemaps))
+    tests.addTests(doctest.DocTestSuite(settings))
     return tests
 
 

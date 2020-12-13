@@ -35,17 +35,10 @@
     {% block opengraph %}{% endblock %}
 
     {% block css_head %}
-        {% if lustrumstyling %}
-            {% compress css %}
-                <link href="{% static "css/main-lustrum.scss" %}" rel="stylesheet"
-                      type="text/x-scss">
-            {% endcompress %}
-        {% else %}
-            {% compress css %}
-                <link href="{% static "css/main.scss" %}" rel="stylesheet"
-                      type="text/x-scss">
-            {% endcompress %}
-        {% endif %}
+        {% compress css %}
+            <link href="{% static "css/main.scss" %}" rel="stylesheet"
+                  type="text/x-scss">
+        {% endcompress %}
     {% endblock %}
 
     {% block js_head %}
@@ -84,24 +77,14 @@
     <div class="container">
         <a class="navbar-brand" href="{% url 'index' %}">
             <picture>
-                {% if lustrumstyling %}
-                    <source srcset="{% static 'img/lustrum-logo.svg' %}">
-                    <img
-                        src="{% static 'img/lustrum-logo.svg' %}"
-                        id="logo"
-                        alt="{% trans 'Study Association Thalia' %}"
-                        height="220px"
-                    >
-                {% else %}
-                    <source srcset="{% static 'img/logo-dark.svg' %}" media="(prefers-color-scheme: dark)">
-                    <source srcset="{% static 'img/logo.svg' %}" media="(prefers-color-scheme: light)">
-                    <img
-                        src="{% static 'img/logo.svg' %}"
-                        id="logo"
-                        alt="{% trans 'Study Association Thalia' %}"
-                        height="220px"
-                    >
-                {% endif %}
+                <source srcset="{% static 'img/logo-dark.svg' %}" media="(prefers-color-scheme: dark)">
+                <source srcset="{% static 'img/logo-.svg' %}" media="(prefers-color-scheme: light)">
+                <img
+                    src="{% static 'img/logo.svg' %}"
+                    id="logo"
+                    alt="{% trans 'Study Association Thalia' %}"
+                    height="220px"
+                >
             </picture>
         </a>
         <div class="flex-grow-1"></div>
