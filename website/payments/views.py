@@ -222,7 +222,6 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
         self.payable = payable_model.objects.get(pk=payable_pk)
 
-
         if self.payable.payment_payer is None:
             self.payable.payment_payer = self.request.member
         else:

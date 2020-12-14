@@ -8,31 +8,44 @@ from pylint.checkers.typecheck import _
 
 from members.models import uuid
 from payments.models import Payable, Payment
-from sales.models.product_list import ProductListItem
+from sales.models.product import ProductListItem
 from sales.models.shift import Shift
 
 
 def default_order_shift():
     return Shift.currently_active().first()
 
+
 class Order(models.Model, Payable):
+    class Meta:
+        verbose_name = "order"
+        verbose_name_plural = "orders"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     created_at = models.DateTimeField(default=timezone.now)
 
-    shift = models.ForeignKey(Shift, related_name='orders', default=default_order_shift, null=False, blank=False, on_delete=models.PROTECT)
+    shift = models.ForeignKey(
+        Shift,
+        related_name="orders",
+        default=default_order_shift,
+        null=False,
+        blank=False,
+        on_delete=models.PROTECT,
+    )
 
-    items = models.ManyToManyField(ProductListItem, through='OrderItem')
+    items = models.ManyToManyField(ProductListItem, through="OrderItem")
 
-    payment = models.OneToOneField(Payment,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
+    payment = models.OneToOneField(
+        Payment, on_delete=models.SET_NULL, blank=True, null=True,
     )
 
     discount = models.DecimalField(
-        max_digits=6, decimal_places=2, null=True, blank=True,
-        validators=[MinValueValidator(Decimal("0.00"))]
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("0.00"))],
     )
 
     def clean(self):
@@ -51,7 +64,11 @@ class Order(models.Model, Payable):
 
     @property
     def age_restricted(self):
-        return any(self.orderitem_set.values_list('product__product__age_restricted', flat=True))
+        return any(
+            self.orderitem_set.values_list(
+                "product__product__age_restricted", flat=True
+            )
+        )
 
     @property
     def total_amount(self):
@@ -67,11 +84,13 @@ class Order(models.Model, Payable):
 
     @property
     def order_description(self):
-        return ', '.join(str(x) for x in self.orderitem_set.all())
+        return ", ".join(str(x) for x in self.orderitem_set.all())
 
     @property
     def payment_notes(self):
-        return f"{self.order_description}. Ordered at {self.created_at.time()} ({self.id})"
+        return (
+            f"{self.order_description}. Ordered at {self.created_at.time()} ({self.id})"
+        )
 
     @property
     def payment_payer(self):
@@ -86,29 +105,39 @@ class Order(models.Model, Payable):
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(ProductListItem, null=False, blank=False, on_delete=models.PROTECT)
+    class Meta:
+        verbose_name = "item"
+        verbose_name_plural = "items"
+
+    product = models.ForeignKey(
+        ProductListItem, null=False, blank=False, on_delete=models.PROTECT
+    )
     order = models.ForeignKey(Order, null=False, blank=False, on_delete=models.CASCADE)
     total = models.DecimalField(
-        max_digits=6, decimal_places=2, null=False, blank=True,
-        validators=[MinValueValidator(Decimal("0.00"))], help_text="Only when overriding the default"
+        max_digits=6,
+        decimal_places=2,
+        null=False,
+        blank=True,
+        validators=[MinValueValidator(Decimal("0.00"))],
+        help_text="Only when overriding the default",
     )
     amount = models.PositiveSmallIntegerField(null=False, blank=False)
 
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
         if not self.total:
             self.total = self.product.price * self.amount
-        return super(OrderItem, self).save(force_insert, force_update, using, update_fields)
+        return super(OrderItem, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     def clean(self):
         super().clean()
         errors = {}
 
         if self.product not in self.order.shift.product_list.productlistitem_set.all():
-            errors.update(
-                {"product": _("This product is not available.")}
-            )
+            errors.update({"product": _("This product is not available.")})
 
         if errors:
             raise ValidationError(errors)
