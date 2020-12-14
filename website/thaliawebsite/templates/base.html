@@ -218,15 +218,6 @@
     </div>
 </footer>
 
-<form method="post" action="{% url 'set_language' %}" class="d-none"
-      id="change-language-form">
-    {% csrf_token %}
-    <input type="hidden" value="{{ request.get_full_path }}" name="next"/>
-    <input type="hidden"
-           value="{% if LANGUAGE_CODE == 'nl' %}en{% else %}nl{% endif %}"
-           name="language"/>
-</form>
-
 {% block js_body %}
     <script type="text/javascript"
             src="{% url 'javascript-catalog' %}"></script>
