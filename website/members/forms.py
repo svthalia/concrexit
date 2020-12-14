@@ -51,44 +51,19 @@ class UserCreationForm(BaseUserCreationForm):
 
     # Don't forget to edit the formset in admin.py!
     # This is a stupid quirk of the user admin.
-
-    # shadow the password fields to prevent validation errors,
-    #   since we generate the passwords dynamically.
-    password1 = None
-    password2 = None
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Repeat Password', widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in ("email", "first_name", "last_name"):
-            self.fields[field].required = True
-
-    send_welcome_email = forms.BooleanField(
-        label=_("Send welcome email"),
-        help_text=_("This email will include the generated password"),
-        required=False,
-        initial=True,
-    )
 
     def clean(self):
         if "username" in self.cleaned_data:
             self.cleaned_data["username"] = self.cleaned_data["username"].lower()
         super().clean()
 
-    def save(self, commit=True):
-        password = get_user_model().objects.make_random_password(length=15)
-        # pass the password on as if it was filled in, so that save() works
-        self.cleaned_data["password1"] = password
-        user = super().save(commit=False)
-        user.set_password(password)
-        if commit:
-            user.save()
-        if self.cleaned_data["send_welcome_email"]:
-            language = settings.LANGUAGE_CODE
-            emails.send_welcome_message(user, password, language)
-        return user
-
     class Meta:
-        fields = ("username", "first_name", "last_name", "send_welcome_email")
+        fields = ("username", "first_name", "last_name")
 
 
 class UserChangeForm(BaseUserChangeForm):
