@@ -2,6 +2,7 @@
 from django.urls import path, include
 from django.views.generic import RedirectView
 
+from members.api.calendarjs.views import CalendarJSBirthdayListView
 from members.views import (
     MembersIndex,
     StatisticsView,
@@ -62,6 +63,18 @@ urlpatterns = [
                         pattern_name="members:profile", permanent=True
                     ),
                     name="user",
+                ),
+            ]
+        ),
+    ),
+    path(
+        "api/calendarjs/",
+        include(
+            [
+                path(
+                    "birthdays/",
+                    CalendarJSBirthdayListView.as_view(),
+                    name="calendarjs-birthdays",
                 ),
             ]
         ),

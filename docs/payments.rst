@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   payments.api
    payments.management
    payments.templatetags
 

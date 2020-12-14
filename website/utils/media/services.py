@@ -1,6 +1,6 @@
 import os
 
-from django.db.models.fields.files import ImageFieldFile
+from django.db.models.fields.files import FieldFile, ImageFieldFile
 from django.conf import settings
 from django.core import signing
 from django.urls import reverse
@@ -47,12 +47,15 @@ def get_thumbnail_url(path, size, fit=True):
     :param fit: False to keep the aspect ratio, True to crop
     :return: direct media url or generate-thumbnail path
     """
-    if isinstance(path, ImageFieldFile):
+    if isinstance(path, ImageFieldFile) or isinstance(path, FieldFile):
         path = path.name
 
     query = ""
     size_fit = "{}_{}".format(size, int(fit))
     parts = path.split("/")
+
+    if parts[-1].endswith(".svg") and parts[0] == "public":
+        return f"{settings.MEDIA_URL}{path}"
 
     sig_info = {
         "size": size,

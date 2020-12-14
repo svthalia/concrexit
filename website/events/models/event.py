@@ -178,11 +178,6 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         null=True,
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._price = self.price
-        self._registration_start = self.registration_start
-
     @property
     def after_cancel_deadline(self):
         return self.cancel_deadline and self.cancel_deadline <= timezone.now()
@@ -295,6 +290,34 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         except ObjectDoesNotExist:
             return False
 
+    def clean_changes(self, changed_data):
+        """Check if changes from `changed_data` are allowed.
+
+        This method should be run from a form clean() method, where changed_data
+        can be retrieved from self.changed_data
+        """
+        errors = {}
+        if self.published:
+            if "price" in changed_data:
+                errors.update(
+                    {
+                        "price": _(
+                            "You cannot change this field after the registration has started."
+                        )
+                    }
+                )
+            if "registration_start" in changed_data:
+                errors.update(
+                    {
+                        "registration_start": _(
+                            "You cannot change this field after the registration has started."
+                        )
+                    }
+                )
+
+        if errors:
+            raise ValidationError(errors)
+
     def clean(self):
         # pylint: disable=too-many-branches
         super().clean()
@@ -388,34 +411,6 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 )
         except ObjectDoesNotExist:
             pass
-
-        if self.published:
-            if (
-                self.price != self._price
-                and self._registration_start
-                and self._registration_start <= timezone.now()
-            ):
-                errors.update(
-                    {
-                        "price": _(
-                            "You cannot change this field after "
-                            "the registration has started."
-                        )
-                    }
-                )
-            if (
-                self._registration_start
-                and self.registration_start != self._registration_start
-                and self._registration_start <= timezone.now()
-            ):
-                errors.update(
-                    {
-                        "registration_start": _(
-                            "You cannot change this field after "
-                            "the registration has started."
-                        )
-                    }
-                )
 
         if errors:
             raise ValidationError(errors)

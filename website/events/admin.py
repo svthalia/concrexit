@@ -168,6 +168,11 @@ class EventAdmin(DoNextTranslatedModelAdmin):
             return f"{count_present_registrations}/{count_participants} ({count_unpaid_present_registrations} unpaid)"
         return f"{count_present_registrations}/{count_participants}"
 
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super().get_form(request, obj, change, **kwargs)
+        form.clean = lambda form: form.instance.clean_changes(form.changed_data)
+        return form
+
     def overview_link(self, obj):
         return format_html(
             '<a href="{link}">{title}</a>',

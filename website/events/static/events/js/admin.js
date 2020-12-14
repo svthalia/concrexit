@@ -24,6 +24,7 @@ django.jQuery(function () {
         if (payment_previous === $(this).val()) {
             return;
         }
+        $('table').trigger('update', false).trigger('sortReset');
 
         if ($(this).val() === none) {
             $(this).removeClass('paid');
@@ -38,9 +39,10 @@ django.jQuery(function () {
                 select.addClass('paid');
             }
             select.val(data.payment);
-            $('table').trigger('update');
+            $('table').trigger('update', false);
         }, function(xhr) {
             select.val(payment_previous);
+            $('table').trigger('update', false);
 
             if (payment_previous === none) {
                 select.removeClass('paid');
@@ -72,17 +74,17 @@ django.jQuery(function () {
             return false;
         },
         format: function(s, t, node) {
-            var val = $(node).find('select').val();
+            const val = node.firstElementChild.value;
             if (val === 'no_payment') {
-                return '';
+                return 'z';
             }
-            return $(node).find('select').val();
+            return val;
         },
-        type: 'text'
+        type: "text",
     });
 
     $.tablesorter.addParser({
-        id: "date",
+        id: "sortval",
         is: function(s) {
             return false;
         },

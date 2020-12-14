@@ -9,9 +9,9 @@
                 <th scope="col" class="sorter-payment">{% trans 'payment'|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
                 <th scope="col" class="sorter-checkbox">{% trans "present"|capfirst %} <span class="toggle"></span></th>
-                <th scope="col" class="sorter-date">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" class="sorter-sortval">{% trans "registration date"|capfirst %} <span class="toggle"></span></th>
                 {% if cancellations %}
-                <th scope="col" class="sorter-date">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
+                <th scope="col" class="sorter-sortval">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
                 {% for field in fields %}
                 <th scope="col">{{ field.name }} <span class="toggle"></span></th>
@@ -65,9 +65,9 @@
                 <td data-sortval="{{ registration.date_cancelled|date:'c' }}">{{ registration.date_cancelled }}</td>
                 {% endif %}
                 {% for field in registration.information_fields %}
-                    {% if not field.value %}
+                    {% if not field.value and not field.field.type == 'boolean' %}
                     <td></td>
-                    {% elif field.field.type == 'checkbox' %}
+                    {% elif field.field.type == 'boolean' %}
                     <td>{{ field.value|yesno }}</td>
                     {% else %}
                     <td>{{ field.value }}</td>

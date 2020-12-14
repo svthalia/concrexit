@@ -1,6 +1,10 @@
 """The models defined by the announcement package"""
+from django.core.validators import (
+    FileExtensionValidator,
+    get_available_image_extensions,
+)
 from django.db import models
-from django.db.models import ImageField, CharField
+from django.db.models import CharField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
@@ -96,6 +100,12 @@ class FrontpageArticle(models.Model):
         )
 
 
+def validate_image(value):
+    return FileExtensionValidator(
+        allowed_extensions=[*get_available_image_extensions(), "svg"]
+    )(value)
+
+
 class Slide(models.Model):
     """Describes an announcement"""
 
@@ -106,11 +116,12 @@ class Slide(models.Model):
         max_length=100,
     )
 
-    content = ImageField(
+    content = models.FileField(
         verbose_name=_("Content"),
         help_text=_("The content of the slide; what image to display."),
         blank=False,
         upload_to="public/announcements/slides/",
+        validators=[validate_image],
     )
 
     since = models.DateTimeField(

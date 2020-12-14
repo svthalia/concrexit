@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _, get_language
 from events import emails
 from events.exceptions import RegistrationError
 from events.models import EventRegistration, RegistrationInformationField, Event
-from payments.api.fields import PaymentTypeField
+from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
 

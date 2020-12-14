@@ -20,11 +20,6 @@ urlpatterns = [
                                 include(
                                     [
                                         path(
-                                            "",
-                                            views.album_download,
-                                            name="album-download",
-                                        ),
-                                        path(
                                             "<filename>",
                                             views.download,
                                             name="download",
@@ -33,11 +28,6 @@ urlpatterns = [
                                             "<token>/",
                                             include(
                                                 [
-                                                    path(
-                                                        "",
-                                                        views.shared_album_download,
-                                                        name="shared-album-download",
-                                                    ),
                                                     path(
                                                         "<filename>",
                                                         views.shared_download,
