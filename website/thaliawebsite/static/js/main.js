@@ -1,11 +1,5 @@
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
-
-    $("#language-switcher").click(function (e) {
-        e.preventDefault();
-        $("#change-language-form").submit();
-        return false;
-    });
 });
 
 $.fancybox.defaults.btnTpl.close = '<a title="{{CLOSE}}" class="fancybox-button fancybox-button--close" data-fancybox-close href="javascript:;"><i class="fas fa-times"></i></a>';
