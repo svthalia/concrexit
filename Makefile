@@ -106,12 +106,13 @@ covhtml: .coverage ## Generate an HTML coverage report
 	@touch .make/docsdeps
 
 $(DOCSFILES): .make/docsdeps
-	cd docs && ./generate-apidocs.sh
+	cd docs && poetry run sphinx-apidoc -M -f -o . ../website ../website/*/migrations ../website/*/tests* ../website/manage.py
+	@touch $(DOCSFILES)
 
 apidocs: $(DOCSFILES) ## Generate API docs
 
 .make/doctest: .make/docsdeps $(DOCSFILES)
-	cd docs && poetry run make doctest
+	cd docs && poetry run sphinx-build -M doctest . _build
 
 doctest: .make/doctest ## Run doctests
 
