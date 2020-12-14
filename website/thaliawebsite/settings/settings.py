@@ -169,6 +169,7 @@ OAUTH2_PROVIDER = {
         "read": "Authenticated read access to the website",
         "write": "Authenticated write access to the website",
         "members:read": "Read access to your member profile",
+        "announcements:read": "Read access to announcements",
         "activemembers:read": "Read access to committee, society and board groups",
         "pushnotifications:read": "Read access to push messages and registered devices",
         "pushnotifications:write": "Write access to registered devices",
