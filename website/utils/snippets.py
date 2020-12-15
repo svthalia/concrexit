@@ -7,6 +7,7 @@ from _sha1 import sha1
 
 from django.conf import settings
 from django.template.defaultfilters import urlencode
+from django.templatetags.static import static
 from django.utils import timezone, dateparse
 from rest_framework.exceptions import ParseError
 
@@ -42,6 +43,11 @@ def datetime_to_lectureyear(date):
 
 
 def create_google_maps_url(location, zoom, size):
+    if location.lower().strip() == "online":
+        return static("img/locations/online.png")
+    if location.lower().strip() == "discord":
+        return static("img/locations/discord.png")
+
     maps_url = (
         f"/maps/api/staticmap?"
         f"center={ urlencode(location) }&"

@@ -107,6 +107,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         help_text=_(
             "Location of Huygens: Heyendaalseweg 135, Nijmegen. "
             "Location of Mercator 1: Toernooiveld 212, Nijmegen. "
+            "Use the input 'discord' or 'online' for special placeholders. "
             "Not shown as text!!"
         ),
     )
