@@ -186,7 +186,7 @@ def overlaps(check, others, can_equal=True):
     return False
 
 
-def _send_email(to: str, subject: str, body_template: str, context: dict) -> None:
+def send_email(to: str, subject: str, body_template: str, context: dict) -> None:
     """
     Easily send an email with the right subject and a body template
 
