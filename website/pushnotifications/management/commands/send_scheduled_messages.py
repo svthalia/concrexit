@@ -26,7 +26,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        """Send a scheduled push notifications"""
+        """Send a scheduled push notifications."""
         interval = int(options["interval"])
         now = timezone.now()
 

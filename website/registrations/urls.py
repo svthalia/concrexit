@@ -1,4 +1,4 @@
-"""The routes defined by the registrations package"""
+"""The routes defined by the registrations package."""
 from django.urls import path, include
 from django.views.generic import TemplateView
 

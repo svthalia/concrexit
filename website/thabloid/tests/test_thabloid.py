@@ -26,7 +26,7 @@ class TestThabloid(TestCase):
             self.thabloid.save(wait=True)
 
     def tearDown(self):
-        """Clean up remaining Thabloid files"""
+        """Clean up remaining Thabloid files."""
         shutil.rmtree(settings.MEDIA_ROOT)
 
     def test_thaboid_get_absolute_url(self):

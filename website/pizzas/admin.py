@@ -1,4 +1,4 @@
-"""Registers admin interfaces for the pizzas module"""
+"""Registers admin interfaces for the pizzas module."""
 from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
@@ -15,7 +15,7 @@ from .models import Order, PizzaEvent, Product
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    """Manage the products"""
+    """Manage the products."""
 
     list_display = ("name", "price", "available")
     list_filter = ("available", "restricted")
@@ -24,7 +24,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(PizzaEvent)
 class PizzaEventAdmin(admin.ModelAdmin):
-    """Manage the pizza events"""
+    """Manage the pizza events."""
 
     list_display = ("title", "start", "end", "notification_enabled", "orders")
     date_hierarchy = "start"
@@ -40,13 +40,13 @@ class PizzaEventAdmin(admin.ModelAdmin):
     notification_enabled.boolean = True
 
     def has_change_permission(self, request, obj=None):
-        """Only allow access to the change form if the user is an organiser"""
+        """Only allow access to the change form if the user is an organiser."""
         if obj is not None and not services.is_organiser(request.member, obj.event):
             return False
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
-        """Only allow access to delete if the user is an organiser"""
+        """Only allow access to delete if the user is an organiser."""
         if obj is not None and not services.is_organiser(request.member, obj.event):
             return False
         return super().has_delete_permission(request, obj)
@@ -78,7 +78,7 @@ class PizzaEventAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(DoNextModelAdmin):
-    """Manage the orders"""
+    """Manage the orders."""
 
     list_display = (
         "pizza_event",
@@ -90,13 +90,13 @@ class OrderAdmin(DoNextModelAdmin):
     exclude = ("payment",)
 
     def save_model(self, request, obj, form, change):
-        """You can only save the orders if you have permission"""
+        """You can only save the orders if you have permission."""
         if not is_organiser(request.member, obj.pizza_event.event):
             raise PermissionDenied
         return super().save_model(request, obj, form, change)
 
     def has_view_permission(self, request, order=None):
-        """Only give view permission if the user is an organiser"""
+        """Only give view permission if the user is an organiser."""
         if order is not None and not is_organiser(
             request.member, order.pizza_event.event
         ):
@@ -104,7 +104,7 @@ class OrderAdmin(DoNextModelAdmin):
         return super().has_view_permission(request, order)
 
     def has_change_permission(self, request, order=None):
-        """Only give change permission if the user is an organiser"""
+        """Only give change permission if the user is an organiser."""
         if order is not None and not is_organiser(
             request.member, order.pizza_event.event
         ):
@@ -112,7 +112,7 @@ class OrderAdmin(DoNextModelAdmin):
         return super().has_change_permission(request, order)
 
     def has_delete_permission(self, request, order=None):
-        """Only give delete permission if the user is an organiser"""
+        """Only give delete permission if the user is an organiser."""
         if order is not None and not is_organiser(
             request.member, order.pizza_event.event
         ):

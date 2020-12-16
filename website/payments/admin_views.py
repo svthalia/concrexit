@@ -1,4 +1,4 @@
-"""Admin views provided by the payments package"""
+"""Admin views provided by the payments package."""
 import csv
 
 from django.apps import apps
@@ -26,9 +26,7 @@ from .models import Payment, Batch, PaymentUser
     permission_required("payments.process_payments"), name="dispatch",
 )
 class PaymentAdminView(View):
-    """
-    View that creates a payment
-    """
+    """View that creates a payment."""
 
     def post(self, request, *args, app_label, model_name, payable, **kwargs):
         if "type" not in request.POST:
@@ -68,9 +66,7 @@ class PaymentAdminView(View):
     permission_required("payments.process_batches"), name="dispatch",
 )
 class BatchProcessAdminView(View):
-    """
-    View that processes a batch
-    """
+    """View that processes a batch."""
 
     def post(self, request, *args, **kwargs):
         batch = Batch.objects.get(pk=kwargs["pk"])
@@ -102,9 +98,7 @@ class BatchProcessAdminView(View):
     permission_required("payments.process_batches"), name="dispatch",
 )
 class BatchExportAdminView(View):
-    """
-    View that exports a batch
-    """
+    """View that exports a batch."""
 
     def post(self, request, *args, **kwargs):
         batch = Batch.objects.get(pk=kwargs["pk"])
@@ -145,9 +139,7 @@ class BatchExportAdminView(View):
     permission_required("payments.process_batches"), name="dispatch",
 )
 class BatchTopicExportAdminView(View):
-    """
-    View that exports a batch per topic
-    """
+    """View that exports a batch per topic."""
 
     def post(self, request, *args, **kwargs):
         batch = Batch.objects.get(pk=kwargs["pk"])
@@ -193,9 +185,7 @@ class BatchTopicExportAdminView(View):
     permission_required("payments.process_batches"), name="dispatch",
 )
 class BatchTopicDescriptionAdminView(View):
-    """
-    Shows the topic export as plain text
-    """
+    """Shows the topic export as plain text."""
 
     template_name = "admin/payments/batch_topic.html"
 
@@ -228,9 +218,7 @@ class BatchTopicDescriptionAdminView(View):
     permission_required("payments.process_batches"), name="dispatch",
 )
 class BatchNewFilledAdminView(View):
-    """
-    View that adds a new batch filled with all payments that where not already in a batch.
-    """
+    """View that adds a new batch filled with all payments that where not already in a batch."""
 
     def get(self, request, *args, **kwargs):
         batch = Batch()

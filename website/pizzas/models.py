@@ -1,4 +1,4 @@
-"""The models defined by the pizzas package"""
+"""The models defined by the pizzas package."""
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
@@ -16,7 +16,7 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class PizzaEvent(models.Model):
-    """Describes an event where pizzas can be ordered"""
+    """Describes an event where pizzas can be ordered."""
 
     start = models.DateTimeField(_("Order from"))
     end = models.DateTimeField(_("Order until"))
@@ -47,11 +47,7 @@ class PizzaEvent(models.Model):
 
     @classmethod
     def current(cls):
-        """
-        Get the currently relevant pizza event: the first one
-        that starts within 8 hours from now.
-        """
-
+        """Get the currently relevant pizza event: the first one that starts within 8 hours from now."""
         try:
             events = PizzaEvent.objects.filter(
                 end__gt=timezone.now() - timezone.timedelta(hours=8),
@@ -136,14 +132,14 @@ class PizzaEvent(models.Model):
 
 
 class AvailableProductManager(models.Manager):
-    """Only shows available products"""
+    """Only shows available products."""
 
     def get_queryset(self):
         return super().get_queryset().filter(available=True)
 
 
 class Product(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a product"""
+    """Describes a product."""
 
     objects = models.Manager()
     available_products = AvailableProductManager()
@@ -169,7 +165,7 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
 
 
 class Order(models.Model, Payable):
-    """Describes an order of an item during an event"""
+    """Describes an order of an item during an event."""
 
     member = models.ForeignKey(
         members.models.Member, on_delete=models.CASCADE, blank=True, null=True,

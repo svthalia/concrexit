@@ -1,4 +1,4 @@
-"""Provides various utilities that are useful across the project"""
+"""Provides various utilities that are useful across the project."""
 import datetime
 import hmac
 from base64 import urlsafe_b64decode, urlsafe_b64encode
@@ -16,7 +16,7 @@ def dict2obj(d, name="Object"):
 
 
 def datetime_to_lectureyear(date):
-    """Convert a :class:`~datetime.date` to the start of the lectureyear
+    """Convert a :class:`~datetime.date` to the start of the lectureyear.
 
     >>> from datetime import date, datetime, timezone
     >>> nov_23 = date(1990, 11, 7)
@@ -32,7 +32,6 @@ def datetime_to_lectureyear(date):
     >>> datetime_to_lectureyear(new_year)
     1999
     """
-
     if isinstance(date, timezone.datetime):
         date = timezone.localtime(date).date()
     sept_1 = timezone.make_aware(timezone.datetime(date.year, 9, 1))
@@ -62,7 +61,7 @@ def create_google_maps_url(location, zoom, size):
 
 
 def _extract_date(param):
-    """Extract the date from an arbitrary string"""
+    """Extract the date from an arbitrary string."""
     if param is None:
         return None
     try:
@@ -72,8 +71,7 @@ def _extract_date(param):
 
 
 def extract_date_range(request, allow_empty=False):
-    """Extract a date range from an arbitrary string"""
-
+    """Extract a date range from an arbitrary string."""
     default_value = None
 
     start = request.query_params.get("start", default_value)
@@ -98,7 +96,7 @@ def extract_date_range(request, allow_empty=False):
 
 
 def overlaps(check, others, can_equal=True):
-    """Check for overlapping date ranges
+    """Check for overlapping date ranges.
 
     This works by checking the maximum of the two `since` times, and the minimum of
     the two `until` times. Because there are no infinite dates, the value date_max

@@ -173,10 +173,9 @@ class PaymentListView(ListView):
 
 @method_decorator(login_required, name="dispatch")
 class PaymentProcessView(SuccessMessageMixin, FormView):
-    """
-    Defines a view that allows the user to add a Thalia Pay payment to
-    a Payable object using a POST request. The user should be
-    authenticated.
+    """Defines a view that allows the user to add a Thalia Pay payment to a Payable object using a POST request.
+
+    The user should be authenticated.
     """
 
     form_class = PaymentCreateForm

@@ -1,4 +1,4 @@
-"""The sitemaps defined by the education package"""
+"""The sitemaps defined by the education package."""
 from django.contrib import sitemaps
 from django.urls import reverse
 
@@ -6,7 +6,7 @@ from . import models
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
-    """Sitemap of the static pages"""
+    """Sitemap of the static pages."""
 
     changefreq = "daily"
     priority = 0.5
@@ -19,7 +19,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
 
 class CourseSitemap(sitemaps.Sitemap):
-    """Sitemap of the course pages"""
+    """Sitemap of the course pages."""
 
     def items(self):
         return models.Course.objects.all()

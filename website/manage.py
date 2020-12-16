@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""This is the entrypoint for running the django site
+"""This is the entrypoint for running the django site.
 
 Use ``python ./manage.py help`` for more info.
 """

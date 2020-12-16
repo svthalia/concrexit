@@ -3,9 +3,7 @@ import subprocess
 
 
 def PopenAndCall(onExit, *popenArgs, **popenKWArgs):
-    """
-    Runs a subprocess.Popen, and then calls the function onExit when the
-    subprocess completes.
+    """Run a subprocess.Popen, and then call the function onExit when the subprocess completes.
 
     Use it exactly the way you'd normally use subprocess.Popen, except include
     a callable to execute as the first argument. onExit is a callable object,

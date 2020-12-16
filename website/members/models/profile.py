@@ -17,8 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def _profile_image_path(_instance, _filename):
-    """
-    Sets the upload path for profile images.
+    """Set the upload path for profile images.
 
     Makes sure that it's hard to enumerate profile images.
 
@@ -33,7 +32,7 @@ def _profile_image_path(_instance, _filename):
 
 
 class Profile(models.Model):
-    """This class holds extra information about a member"""
+    """This class holds extra information about a member."""
 
     # No longer yearly membership as a type, use expiration date instead.
     PROGRAMME_CHOICES = (
@@ -211,9 +210,7 @@ class Profile(models.Model):
 
     @property
     def language(self):
-        """
-            @todo: Remove usage of this property
-        """
+        # todo: Remove usage of this property.
         return "en"
 
     receive_optin = models.BooleanField(

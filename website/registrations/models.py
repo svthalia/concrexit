@@ -1,4 +1,4 @@
-"""The models defined by the registrations package"""
+"""The models defined by the registrations package."""
 import uuid
 
 from django.conf import settings
@@ -17,7 +17,7 @@ from utils import countries
 
 
 class Entry(models.Model, Payable):
-    """Describes a registration entry"""
+    """Describes a registration entry."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -159,7 +159,7 @@ class Entry(models.Model, Payable):
 
 
 class Registration(Entry):
-    """Describes a new registration for the association"""
+    """Describes a new registration for the association."""
 
     # ---- Personal information -----
 
@@ -190,9 +190,7 @@ class Registration(Entry):
 
     @property
     def language(self):
-        """
-            @todo: Remove usage of this property
-        """
+        """@todo: Remove usage of this property."""
         return "en"
 
     # ---- Contact information -----
@@ -352,7 +350,7 @@ class Registration(Entry):
 
 
 class Renewal(Entry):
-    """Describes a renewal for the association membership"""
+    """Describes a renewal for the association membership."""
 
     member = models.ForeignKey(
         "members.Member",
@@ -439,7 +437,7 @@ class Renewal(Entry):
 
 
 class Reference(models.Model):
-    """Describes a reference of a member for a potential member"""
+    """Describes a reference of a member for a potential member."""
 
     member = models.ForeignKey(
         "members.Member",

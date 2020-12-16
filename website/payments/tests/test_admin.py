@@ -74,9 +74,7 @@ class PaymentAdminTest(TestCase):
         self.client.force_login(self.user)
 
     def _give_user_permissions(self, batch_permissions=True) -> None:
-        """
-        Helper to give the user permissions
-        """
+        """Helper to give the user permissions."""
         content_type = ContentType.objects.get_for_model(Payment)
         permissions_p = content_type.permission_set.all()
         content_type = ContentType.objects.get_for_model(Batch)
@@ -93,9 +91,7 @@ class PaymentAdminTest(TestCase):
         self.client.force_login(self.user)
 
     def test_paid_by_link(self) -> None:
-        """
-        Tests that the right link for the paying user is returned
-        """
+        """Tests that the right link for the paying user is returned."""
         payment = Payment.objects.create(
             amount=7.5, paid_by=self.user, processed_by=self.user, type=Payment.CASH
         )
@@ -106,9 +102,7 @@ class PaymentAdminTest(TestCase):
         )
 
     def test_processed_by_link(self) -> None:
-        """
-        Tests that the right link for the processing user is returned
-        """
+        """Tests that the right link for the processing user is returned."""
         payment1 = Payment.objects.create(
             amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
         )
@@ -374,9 +368,7 @@ class PaymentAdminTest(TestCase):
             self.fail("Add to last batch should work without a batch")
 
     def test_get_actions(self) -> None:
-        """
-        Test that the actions are added to the admin
-        """
+        """Test that the actions are added to the admin."""
         response = self.client.get(reverse("admin:payments_payment_changelist"))
 
         actions = self.admin.get_actions(response.wsgi_request)
@@ -392,9 +384,7 @@ class PaymentAdminTest(TestCase):
         )
 
     def test_get_readonly_fields(self) -> None:
-        """
-        Test that the custom urls are added to the admin
-        """
+        """Test that the custom urls are added to the admin."""
         with self.subTest("No object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), None)
             self.assertEqual(urls, ("created_at", "processed_by", "batch"))
@@ -416,17 +406,13 @@ class PaymentAdminTest(TestCase):
             )
 
     def test_get_urls(self) -> None:
-        """
-        Test that the custom urls are added to the admin
-        """
+        """Test that the custom urls are added to the admin."""
         urls = self.admin.get_urls()
         self.assertEqual(urls[0].name, "payments_payment_create")
 
     @freeze_time("2019-01-01")
     def test_export_csv(self) -> None:
-        """
-        Test that the CSV export of payments is correct
-        """
+        """Test that the CSV export of payments is correct."""
         Payment.objects.create(
             amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CARD
         ).save()
@@ -512,9 +498,7 @@ class ValidAccountFilterTest(TestCase):
         self.admin = admin.BankAccountAdmin(BankAccount, admin_site=self.site)
 
     def test_lookups(self) -> None:
-        """
-        Tests that the right options are implemented for lookups
-        """
+        """Tests that the right options are implemented for lookups."""
         account_filter = ValidAccountFilter(
             model=BankAccount, model_admin=self.admin, params={}, request=None
         )
@@ -525,9 +509,7 @@ class ValidAccountFilterTest(TestCase):
         )
 
     def test_queryset(self) -> None:
-        """
-        Tests that the right results are returned
-        """
+        """Tests that the right results are returned."""
         for param, item in [
             ("valid", self.valid_mandate),
             ("invalid", self.invalid_mandate),
@@ -591,9 +573,7 @@ class BatchAdminTest(TestCase):
         self.client.force_login(self.user)
 
     def _give_user_permissions(self, batch_permissions=True) -> None:
-        """
-        Helper to give the user permissions
-        """
+        """Helper to give the user permissions."""
         content_type = ContentType.objects.get_for_model(Payment)
         permissions_p = content_type.permission_set.all()
         content_type = ContentType.objects.get_for_model(Batch)
@@ -755,9 +735,7 @@ class BankAccountAdminTest(TestCase):
         self.rf = RequestFactory()
 
     def test_owner_link(self) -> None:
-        """
-        Test that the link to a member profile is correct
-        """
+        """Test that the link to a member profile is correct."""
         bank_account1 = BankAccount.objects.create(
             owner=self.user, initials="J", last_name="Test", iban="NL91ABNA0417164300"
         )
@@ -774,9 +752,7 @@ class BankAccountAdminTest(TestCase):
         self.assertEqual(self.admin.owner_link(bank_account2), "")
 
     def test_export_csv(self) -> None:
-        """
-        Test that the CSV export of accounts is correct
-        """
+        """Test that the CSV export of accounts is correct."""
         BankAccount.objects.create(
             owner=self.user, initials="J", last_name="Test", iban="NL91ABNA0417164300"
         )
@@ -821,9 +797,7 @@ class BankAccountAdminTest(TestCase):
     @mock.patch("django.contrib.admin.ModelAdmin.message_user")
     @mock.patch("payments.services.update_last_used")
     def test_set_last_used(self, update_last_used, message_user) -> None:
-        """
-        Tests that the last used value is updated
-        """
+        """Tests that the last used value is updated."""
         update_last_used.return_value = 1
 
         request_noperms = self.rf.post(

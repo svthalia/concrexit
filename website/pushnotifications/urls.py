@@ -1,4 +1,4 @@
-""""The routes defined by the pushnotifications package"""
+"""The routes defined by the pushnotifications package."""
 from django.urls import path, include
 
 from . import views

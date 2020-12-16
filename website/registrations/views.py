@@ -1,4 +1,4 @@
-"""Views provided by the registrations package"""
+"""Views provided by the registrations package."""
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.utils import model_ngettext
@@ -25,7 +25,7 @@ from .models import Entry, Registration, Renewal, Reference
 
 
 class BecomeAMemberView(TemplateView):
-    """View that render a HTML template with context data"""
+    """View that render a HTML template with context data."""
 
     template_name = "registrations/become_a_member.html"
 
@@ -45,9 +45,7 @@ class BecomeAMemberView(TemplateView):
     permission_required("registrations.review_entries"), name="dispatch",
 )
 class EntryAdminView(View):
-    """
-    View that handles the processing of entries
-    """
+    """View that handles the processing of entries."""
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
@@ -100,10 +98,7 @@ class EntryAdminView(View):
 
 
 class ConfirmEmailView(View, TemplateResponseMixin):
-    """
-    View that renders an HTML template and confirms the email address
-    of the provided registration
-    """
+    """View that renders an HTML template and confirms the email address of the provided registration."""
 
     template_name = "registrations/confirm_email.html"
 
@@ -133,9 +128,7 @@ class ConfirmEmailView(View, TemplateResponseMixin):
 
 
 class BaseRegistrationFormView(FormView):
-    """
-    View that renders a membership registration form
-    """
+    """View that renders a membership registration form."""
 
     form_class = forms.MemberRegistrationForm
     template_name = "registrations/register_member.html"
@@ -163,9 +156,7 @@ class BaseRegistrationFormView(FormView):
 
 
 class MemberRegistrationFormView(BaseRegistrationFormView):
-    """
-    View that renders the `member` membership registration form
-    """
+    """View that renders the `member` membership registration form."""
 
     form_class = forms.MemberRegistrationForm
     template_name = "registrations/register_member.html"
@@ -178,9 +169,7 @@ class MemberRegistrationFormView(BaseRegistrationFormView):
 
 
 class BenefactorRegistrationFormView(BaseRegistrationFormView):
-    """
-    View that renders the `benefactor` membership registration form
-    """
+    """View that renders the `benefactor` membership registration form."""
 
     form_class = forms.BenefactorRegistrationForm
     template_name = "registrations/register_benefactor.html"
@@ -199,9 +188,7 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
 
 @method_decorator(login_required, name="dispatch")
 class RenewalFormView(FormView):
-    """
-    View that renders the membership renewal form
-    """
+    """View that renders the membership renewal form."""
 
     form_class = forms.RenewalForm
     template_name = "registrations/renewal.html"
@@ -283,9 +270,7 @@ class RenewalFormView(FormView):
 @method_decorator(login_required, name="dispatch")
 @method_decorator(membership_required, name="dispatch")
 class ReferenceCreateView(CreateView):
-    """
-    View that renders a reference creation form
-    """
+    """View that renders a reference creation form."""
 
     model = Reference
     form_class = forms.ReferenceForm

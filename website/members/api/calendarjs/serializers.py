@@ -5,7 +5,7 @@ from thaliawebsite.api.calendarjs.serializers import CalenderJSSerializer
 
 
 class MemberBirthdaySerializer(CalenderJSSerializer):
-    """Serializer that renders the member birthdays to the CalendarJS format"""
+    """Serializer that renders the member birthdays to the CalendarJS format."""
 
     class Meta(CalenderJSSerializer.Meta):
         model = Member

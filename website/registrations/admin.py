@@ -1,4 +1,4 @@
-"""Registers admin interfaces for the registrations module"""
+"""Registers admin interfaces for the registrations module."""
 from functools import partial
 
 from django.contrib import admin, messages
@@ -17,7 +17,7 @@ class ReferenceInline(admin.StackedInline):
 
 
 def _show_message(model_admin, request, n, message, error):
-    """Show a message in the Django Admin"""
+    """Show a message in the Django Admin."""
     if n == 0:
         model_admin.message_user(request, error, messages.ERROR)
     else:
@@ -30,7 +30,7 @@ def _show_message(model_admin, request, n, message, error):
 
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
-    """Manage the registrations"""
+    """Manage the registrations."""
 
     list_display = (
         "name",
@@ -134,8 +134,8 @@ class RegistrationAdmin(admin.ModelAdmin):
         return field
 
     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
-        """
-        Renders the change formview
+        """Render the change formview.
+
         Only allow when the entry has not been processed yet
         """
         obj = None
@@ -182,7 +182,7 @@ class RegistrationAdmin(admin.ModelAdmin):
         return obj.get_full_name()
 
     def reject_selected(self, request, queryset):
-        """Reject the selected entries"""
+        """Reject the selected entries."""
         if request.user.has_perm("registrations.review_entries"):
             rows_updated = services.reject_entries(request.user.pk, queryset)
             _show_message(
@@ -197,7 +197,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     reject_selected.allowed_permissions = ("review",)
 
     def accept_selected(self, request, queryset):
-        """Accept the selected entries"""
+        """Accept the selected entries."""
         if request.user.has_perm("registrations.review_entries"):
             rows_updated = services.accept_entries(request.user.pk, queryset)
             _show_message(
@@ -212,7 +212,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     accept_selected.allowed_permissions = ("review",)
 
     def has_review_permission(self, request):
-        """Does the user have the review permission?"""
+        """Check if the user has the review permission."""
         return request.user.has_perm("registrations.review_entries")
 
     def save_model(self, request, obj, form, change):
@@ -226,7 +226,7 @@ class RegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Renewal)
 class RenewalAdmin(RegistrationAdmin):
-    """Manage the renewals"""
+    """Manage the renewals."""
 
     list_display = (
         "name",
@@ -275,7 +275,7 @@ class RenewalAdmin(RegistrationAdmin):
     actions = RegistrationAdmin.actions
 
     def get_readonly_fields(self, request, obj=None):
-        """Make all fields read-only and add member if needed"""
+        """Make all fields read-only and add member if needed."""
         fields = super().get_readonly_fields(request, obj)
         if obj is None or not (
             obj.status == Entry.STATUS_REJECTED

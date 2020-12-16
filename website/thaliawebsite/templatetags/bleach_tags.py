@@ -1,7 +1,4 @@
-"""
-Bleach allows to clean up user input to make it safe to display, but
-allow some HTML.
-"""
+"""Bleach allows to clean up user input to make it safe to display, but allow some HTML."""
 from bleach import clean
 from django import template
 from django.template.defaultfilters import stringfilter
@@ -11,8 +8,7 @@ register = template.Library()
 
 
 def _allow_iframe_attrs(tag, name, value):
-    """
-    Filter to allow certain attributes for tags
+    """Filter to allow certain attributes for tags.
 
     :param tag: the tag
     :param name: the attribute name
@@ -34,7 +30,7 @@ def _allow_iframe_attrs(tag, name, value):
 @register.filter(is_safe=True)
 @stringfilter
 def bleach(value):
-    """Bleach dangerous html from the input
+    """Bleach dangerous html from the input.
 
     Examples::
 
@@ -58,7 +54,6 @@ def bleach(value):
         >>> bleach('<iframe src="https://clearlyreta.rded.nl/ivo/"></iframe>')
         '<iframe></iframe>'
     """
-
     return mark_safe(
         clean(
             value,

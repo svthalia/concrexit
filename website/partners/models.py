@@ -61,8 +61,7 @@ class Partner(models.Model):
         super().save(**kwargs)
 
     def _reset_main_partner(self):
-        """
-        Reset the main partner status.
+        """Reset the main partner status.
 
         If this partner is not main partner,
         remove the main partner status from the main partner.
@@ -76,8 +75,7 @@ class Partner(models.Model):
             pass
 
     def _reset_local_partner(self):
-        """
-        Reset the local partner status.
+        """Reset the local partner status.
 
         If this partner is not local partner,
         remove the local partner status from the local partner.

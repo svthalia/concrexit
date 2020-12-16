@@ -1,4 +1,4 @@
-"""Tests for the ``utils`` module"""
+"""Tests for the ``utils`` module."""
 import doctest
 
 from django.core.exceptions import FieldError
@@ -17,9 +17,7 @@ LANGUAGES = [
 
 
 def load_tests(_loader, tests, _ignore):
-    """
-    Load all tests in this module
-    """
+    """Load all tests in this module."""
     # Adds the doctests in snippets
     tests.addTests(doctest.DocTestSuite(snippets))
     return tests
@@ -28,10 +26,10 @@ def load_tests(_loader, tests, _ignore):
 @override_settings(LANGUAGES=LANGUAGES)
 class TestTranslateMeta(TestCase):
     # pylint: disable=attribute-defined-outside-init
-    """Test the translate metaclass"""
+    """Test the translate metaclass."""
 
     def test_translate_adds_fields(self):
-        """Confirm that we get extra items added to the class"""
+        """Confirm that we get extra items added to the class."""
 
         class _TestItem(models.Model, metaclass=ModelTranslateMeta):
             text = MultilingualField(models.TextField)
@@ -42,9 +40,7 @@ class TestTranslateMeta(TestCase):
         self.assertTrue(hasattr(_TestItem, "text"), "expect text as placeholder")
 
     def test_verbose_name(self):
-        """
-        Confirm that passing verbose_name as kwargs or args works.
-        """
+        """Confirm that passing verbose_name as kwargs or args works."""
 
         class _TestItem2(models.Model, metaclass=ModelTranslateMeta):
             text = MultilingualField(models.TextField, verbose_name="Text")
@@ -67,10 +63,7 @@ class TestTranslateMeta(TestCase):
                 )
 
     def test_no_verbose_name(self):
-        """
-        Test that the generated name is processed correctly if no
-        verbose_name is passed.
-        """
+        """Test that the generated name is processed correctly if no verbose_name is passed."""
 
         class _TestItem3b(models.Model, metaclass=ModelTranslateMeta):
             text = MultilingualField(models.TextField)
@@ -86,7 +79,7 @@ class TestTranslateMeta(TestCase):
         )
 
     def test_other_kwargs(self):
-        """Assert that other kwargs are transferred"""
+        """Assert that other kwargs are transferred."""
 
         class _TestItem4(models.Model, metaclass=ModelTranslateMeta):
             text = MultilingualField(models.CharField, "Text", max_length=100)
@@ -94,7 +87,7 @@ class TestTranslateMeta(TestCase):
         self.assertEqual(_TestItem4._meta.get_field("text_nl").max_length, 100)
 
     def test_related_fields(self):
-        """Confirm that foreign keys raise errors"""
+        """Confirm that foreign keys raise errors."""
         for field_type in (
             models.ForeignKey,
             models.OneToOneField,
@@ -107,7 +100,7 @@ class TestTranslateMeta(TestCase):
                         foreign = MultilingualField(field_type, "TestItem5")
 
     def test_setter(self):
-        """Setting directly on a multilingual field is not allowed"""
+        """Setting directly on a multilingual field is not allowed."""
 
         class _TestItem6(models.Model, metaclass=ModelTranslateMeta):
             text = MultilingualField(models.TextField)
@@ -122,7 +115,7 @@ class TestTranslateMeta(TestCase):
         item.text_en = "text"
 
     def test_accessor(self):
-        """Test the accessor gets the proper languages"""
+        """Test the accessor gets the proper languages."""
 
         class _TestItem7(models.Model, metaclass=ModelTranslateMeta):
             text = MultilingualField(models.TextField)
@@ -141,7 +134,7 @@ class TestTranslateMeta(TestCase):
             self.assertEqual(item.text, "Here's some text")
 
     def test_shadowing(self):
-        """Don't let us shadow a MultilingualField with another field"""
+        """Don't let us shadow a MultilingualField with another field."""
         with self.assertRaises(FieldError):
 
             class _TestItem8(models.Model, metaclass=ModelTranslateMeta):

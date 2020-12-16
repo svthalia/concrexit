@@ -1,4 +1,4 @@
-"""The services defined by the payments package"""
+"""The services defined by the payments package."""
 import datetime
 from typing import Union
 
@@ -19,8 +19,7 @@ def create_payment(
     processed_by: Member,
     pay_type: Union[Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY],
 ) -> Payment:
-    """
-    Create a new payment from a payable object
+    """Create a new payment from a payable object.
 
     :param payable: Payable object
     :param processed_by: PaymentUser that processed this payment
@@ -60,8 +59,8 @@ def create_payment(
 
 
 def delete_payment(payable: Payable):
-    """
-    Removes a payment from a payable object
+    """Remove a payment from a payable object.
+
     :param payable: Payable object
     :return:
     """
@@ -81,8 +80,7 @@ def delete_payment(payable: Payable):
 
 
 def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
-    """
-    Update the last used field of a BankAccount queryset
+    """Update the last used field of a BankAccount queryset.
 
     :param queryset: Queryset of BankAccounts
     :param date: date to set last_used to
@@ -99,8 +97,8 @@ def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
 
 
 def revoke_old_mandates() -> int:
-    """
-    Revokes all mandates that have not been used for 36 months or more
+    """Revoke all mandates that have not been used for 36 months or more.
+
     :return: number of affected rows
     """
     return BankAccount.objects.filter(
@@ -109,8 +107,7 @@ def revoke_old_mandates() -> int:
 
 
 def process_batch(batch):
-    """
-    Processes a Thalia Pay batch
+    """Process a Thalia Pay batch.
 
     :param batch: the batch to be processed
     :return:
@@ -129,7 +126,7 @@ def process_batch(batch):
 
 
 def send_tpay_batch_processing_emails(batch):
-    """Sends withdrawal notice emails to all members in a batch"""
+    """Send withdrawal notice emails to all members in a batch."""
     member_payments = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
     for member_row in member_payments:
         member = PaymentUser.objects.get(pk=member_row["paid_by"])

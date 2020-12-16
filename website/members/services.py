@@ -1,4 +1,4 @@
-"""Services defined in the members package"""
+"""Services defined in the members package."""
 from datetime import date, datetime
 from typing import Callable, List, Dict, Any
 
@@ -15,8 +15,8 @@ from utils.snippets import datetime_to_lectureyear
 def _member_group_memberships(
     member: Member, condition: Callable[[Membership], bool]
 ) -> Dict[str, Any]:
-    """
-    Determines the group membership of a user based on a condition
+    """Determine the group membership of a user based on a condition.
+
     :return: Object with group memberships
     """
     memberships = member.membergroupmembership_set.all()
@@ -62,8 +62,8 @@ def _member_group_memberships(
 
 
 def member_achievements(member) -> List:
-    """
-    Derives a list of achievements of a member
+    """Derive a list of achievements of a member.
+
     Committee and board memberships + mentorships
     """
     achievements = _member_group_memberships(
@@ -88,9 +88,7 @@ def member_achievements(member) -> List:
 
 
 def member_societies(member) -> List:
-    """
-    Derives a list of societies a member was part of
-    """
+    """Derive a list of societies a member was part of."""
     societies = _member_group_memberships(
         member, lambda membership: (hasattr(membership.group, "society"))
     )
@@ -98,11 +96,7 @@ def member_societies(member) -> List:
 
 
 def gen_stats_member_type() -> Dict[str, int]:
-    """
-    Generate a dictionary where every key is a member type with
-    the value being the number of current members of that type
-    """
-
+    """Generate a dictionary where every key is a member type with the value being the number of current members of that type."""
     data = {}
     for key, display in Membership.MEMBERSHIP_TYPES:
         data[str(display)] = (
@@ -115,10 +109,9 @@ def gen_stats_member_type() -> Dict[str, int]:
 
 
 def gen_stats_year() -> Dict[str, Dict[str, int]]:
-    """
-    Generate list with 6 entries, where each entry represents the total amount
-    of Thalia members in a year. The sixth element contains all the multi-year
-    students.
+    """Generate list with 6 entries, where each entry represents the total amount of Thalia members in a year.
+
+    The sixth element contains all the multi-year students.
     """
     stats_year = {}
     current_year = datetime_to_lectureyear(date.today())
@@ -151,8 +144,7 @@ def gen_stats_year() -> Dict[str, Dict[str, int]]:
 
 
 def verify_email_change(change_request) -> None:
-    """
-    Mark the email change request as verified
+    """Mark the email change request as verified.
 
     :param change_request: the email change request
     """
@@ -163,8 +155,7 @@ def verify_email_change(change_request) -> None:
 
 
 def confirm_email_change(change_request) -> None:
-    """
-    Mark the email change request as verified
+    """Mark the email change request as verified.
 
     :param change_request: the email change request
     """
@@ -175,9 +166,7 @@ def confirm_email_change(change_request) -> None:
 
 
 def process_email_change(change_request) -> None:
-    """
-    Change the user's email address if the request was completed and
-    send the completion email
+    """Change the user's email address if the request was completed and send the completion email.
 
     :param change_request: the email change request
     """
@@ -192,9 +181,7 @@ def process_email_change(change_request) -> None:
 
 
 def execute_data_minimisation(dry_run=False, members=None) -> List[Member]:
-    """
-    Clean the profiles of members/users of whom the last membership ended
-    at least 31 days ago
+    """Clean the profiles of members/users of whom the last membership ended at least 31 days ago.
 
     :param dry_run: does not really remove data if True
     :param members: queryset of members to process, optional

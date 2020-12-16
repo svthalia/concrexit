@@ -22,9 +22,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
 
 
 class UnpublishedEventsCalenderJSSerializer(CalenderJSSerializer):
-    """
-    See CalenderJSSerializer, customised classes
-    """
+    """See CalenderJSSerializer, customised classes."""
 
     class Meta(CalenderJSSerializer.Meta):
         model = Event

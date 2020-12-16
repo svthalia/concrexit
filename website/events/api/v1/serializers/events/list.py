@@ -10,7 +10,7 @@ from pizzas.models import PizzaEvent
 
 
 class EventListSerializer(serializers.ModelSerializer):
-    """Custom list serializer for events"""
+    """Custom list serializer for events."""
 
     class Meta:
         model = Event

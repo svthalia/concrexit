@@ -1,4 +1,4 @@
-"""Admin views provided by the members package"""
+"""Admin views provided by the members package."""
 import csv
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -13,9 +13,7 @@ from members.models import Member
 @method_decorator(staff_member_required, "dispatch")
 @method_decorator(permission_required("auth.change_user"), "dispatch")
 class IbanExportView(View):
-    """
-    Exports IBANs of users that have set auto renew to true in their accounts
-    """
+    """Exports IBANs of users that have set auto renew to true in their accounts."""
 
     def get(self, request, **kwargs) -> HttpResponse:
         header_fields = ["name", "username", "iban", "bic"]

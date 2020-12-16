@@ -1,3 +1,3 @@
-"""Events app API v2 urls"""
+"""Events app API v2 urls."""
 
 urlpatterns = []

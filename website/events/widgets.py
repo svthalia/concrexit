@@ -1,10 +1,8 @@
-"""Widgets provided by the payments package"""
+"""Widgets provided by the payments package."""
 from django.forms import Widget
 
 
 class FieldsWidget(Widget):
-    """
-    Custom widget for linking to the fields, used in registrations
-    """
+    """Custom widget for linking to the fields, used in registrations."""
 
     template_name = "events/admin/fields_widget.html"

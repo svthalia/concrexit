@@ -1,4 +1,4 @@
-"""The models defined by the events package"""
+"""The models defined by the events package."""
 
 from .event import *
 from .event_registration import *

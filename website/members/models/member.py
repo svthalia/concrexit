@@ -24,10 +24,10 @@ class MemberManager(UserManager):
 
 
 class ActiveMemberManager(MemberManager):
-    """Get all active members, i.e. who have a committee membership"""
+    """Get all active members, i.e. who have a committee membership."""
 
     def get_queryset(self):
-        """Select all committee members"""
+        """Select all committee members."""
         active_memberships = MemberGroupMembership.active_objects.filter(
             group__board=None
         ).filter(group__society=None)
@@ -41,12 +41,10 @@ class ActiveMemberManager(MemberManager):
 
 
 class CurrentMemberManager(MemberManager):
-    """Get all members with an active membership"""
+    """Get all members with an active membership."""
 
     def get_queryset(self):
-        """
-        Select all members who have a current membership
-        """
+        """Select all members who have a current membership."""
         return (
             super()
             .get_queryset()
@@ -59,9 +57,7 @@ class CurrentMemberManager(MemberManager):
         )
 
     def with_birthdays_in_range(self, from_date, to_date):
-        """
-        Select all who are currently a Thalia member and have a
-        birthday within the specified range
+        """Select all who are currently a Thalia member and have a birthday within the specified range.
 
         :param from_date: the start of the range (inclusive)
         :param to_date: the end of the range (inclusive)
@@ -104,8 +100,7 @@ class Member(User):
 
     @property
     def current_membership(self):
-        """
-        The currently active membership of the user. None if not active.
+        """Return the currently active membership of the user, one if not active.
 
         :return: the currently active membership or None
         :rtype: Membership or None
@@ -117,28 +112,28 @@ class Member(User):
 
     @property
     def latest_membership(self):
-        """Get the most recent membership of this user"""
+        """Get the most recent membership of this user."""
         if not self.membership_set.exists():
             return None
         return self.membership_set.latest("since")
 
     @property
     def earliest_membership(self):
-        """Get the earliest membership of this user"""
+        """Get the earliest membership of this user."""
         if not self.membership_set.exists():
             return None
         return self.membership_set.earliest("since")
 
     def has_been_member(self):
-        """Has this user ever been a member?"""
+        """Has this user ever been a member?."""
         return self.membership_set.filter(type="member").count() > 0
 
     def has_been_honorary_member(self):
-        """Has this user ever been an honorary member?"""
+        """Has this user ever been an honorary member?."""
         return self.membership_set.filter(type="honorary").count() > 0
 
     def has_active_membership(self):
-        """Is this member currently active
+        """Is this member currently active.
 
         Tested by checking if the expiration date has passed.
         """
@@ -150,8 +145,7 @@ class Member(User):
 
     @classmethod
     def all_with_membership(cls, membership_type):
-        """
-        Get all users who have a specific membership.
+        """Get all users who have a specific membership.
 
         :param membership_type: The membership to select by
         :return: List of users
@@ -165,7 +159,7 @@ class Member(User):
 
     @property
     def can_attend_events(self):
-        """May this user attend events"""
+        """May this user attend events."""
         if not self.profile:
             return False
 
@@ -175,7 +169,7 @@ class Member(User):
         ) and self.current_membership is not None
 
     def get_member_groups(self):
-        """Get the groups this user is a member of"""
+        """Get the groups this user is a member of."""
         return MemberGroup.objects.filter(
             Q(membergroupmembership__member=self)
             & (

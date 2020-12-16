@@ -1,4 +1,4 @@
-"""Views provided by the members package"""
+"""Views provided by the members package."""
 import json
 from datetime import date, datetime
 
@@ -32,9 +32,7 @@ from .services import member_societies
 
 
 class ObtainThaliaAuthToken(ObtainAuthToken):
-    """
-    Custom override of the AuthToken view to force lowercase the username
-    """
+    """Custom override of the AuthToken view to force lowercase the username."""
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
         serializer = self.serializer_class(
@@ -58,9 +56,7 @@ class ObtainThaliaAuthToken(ObtainAuthToken):
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
 class MembersIndex(ListView):
-    """
-    View that renders the members overview
-    """
+    """View that renders the members overview."""
 
     model = Member
     paginate_by = 28
@@ -161,9 +157,7 @@ class MembersIndex(ListView):
 
 @method_decorator(login_required, "dispatch")
 class ProfileDetailView(DetailView):
-    """
-    View that renders a member's profile
-    """
+    """View that renders a member's profile."""
 
     context_object_name = "member"
     model = Member
@@ -205,9 +199,7 @@ class ProfileDetailView(DetailView):
 
 @method_decorator(login_required, "dispatch")
 class UserProfileUpdateView(SuccessMessageMixin, UpdateView):
-    """
-    View that allows a user to update their profile
-    """
+    """View that allows a user to update their profile."""
 
     template_name = "members/user/edit_profile.html"
     model = Profile
@@ -221,9 +213,7 @@ class UserProfileUpdateView(SuccessMessageMixin, UpdateView):
 
 @method_decorator(login_required, "dispatch")
 class StatisticsView(TemplateView):
-    """
-    View that renders the statistics page
-    """
+    """View that renders the statistics page."""
 
     template_name = "members/statistics.html"
 
@@ -253,9 +243,7 @@ class StatisticsView(TemplateView):
 
 @method_decorator(login_required, name="dispatch")
 class EmailChangeFormView(CreateView):
-    """
-    View that renders the email change form
-    """
+    """View that renders the email change form."""
 
     model = EmailChange
     fields = ["email", "member"]
@@ -281,9 +269,7 @@ class EmailChangeFormView(CreateView):
 
 @method_decorator(login_required, name="dispatch")
 class EmailChangeConfirmView(View, TemplateResponseMixin):
-    """
-    View that renders an HTML template and confirms the old email address
-    """
+    """View that renders an HTML template and confirms the old email address."""
 
     template_name = "members/user/email_change_confirmed.html"
 
@@ -300,9 +286,7 @@ class EmailChangeConfirmView(View, TemplateResponseMixin):
 
 @method_decorator(login_required, name="dispatch")
 class EmailChangeVerifyView(View, TemplateResponseMixin):
-    """
-    View that renders an HTML template and verifies the new email address
-    """
+    """View that renders an HTML template and verifies the new email address."""
 
     template_name = "members/user/email_change_verified.html"
 

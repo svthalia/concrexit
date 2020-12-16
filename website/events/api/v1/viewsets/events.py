@@ -24,10 +24,7 @@ from utils.snippets import extract_date_range
 
 
 class EventViewset(viewsets.ReadOnlyModelViewSet):
-    """
-    Defines the viewset for events, requires an authenticated user
-    and enables ordering on the event start/end.
-    """
+    """Define the viewset for events, requires an authenticated user and enables ordering on the event start/end."""
 
     queryset = Event.objects.filter(published=True)
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -65,9 +62,7 @@ class EventViewset(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=True, methods=["get", "post"], permission_classes=(IsAuthenticated,))
     def registrations(self, request, pk):
-        """
-        Defines a custom route for the event's registrations,
-        can filter on registration status if the user is an organiser
+        """Define a custom route for the event's registrations, can filter on registration status if the user is an organiser.
 
         :param request: the request object
         :param pk: the primary key of the event

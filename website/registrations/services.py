@@ -1,4 +1,4 @@
-"""The services defined by the registrations package"""
+"""The services defined by the registrations package."""
 import string
 import unicodedata
 from typing import Union
@@ -17,8 +17,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def _generate_username(registration: Registration) -> str:
-    """
-    Create username from first and lastname
+    """Create username from first and lastname.
 
     :param registration: Model containing first and last name
     :type registration: Registration
@@ -39,8 +38,7 @@ def _generate_username(registration: Registration) -> str:
 
 
 def check_unique_user(entry: Entry) -> bool:
-    """
-    Check that the username and email address of the entry are unique.
+    """Check that the username and email address of the entry are unique.
 
     :param entry: Registration entry
     :type entry: Entry
@@ -67,8 +65,7 @@ def check_unique_user(entry: Entry) -> bool:
 
 
 def confirm_entry(queryset: QuerySet) -> int:
-    """
-    Confirm all entries in the queryset
+    """Confirm all entries in the queryset.
 
     :param queryset: queryset of entries
     :type queryset: Queryset[Entry]
@@ -83,8 +80,7 @@ def confirm_entry(queryset: QuerySet) -> int:
 
 
 def reject_entries(user_id: int, queryset: QuerySet) -> int:
-    """
-    Reject all entries in the queryset
+    """Reject all entries in the queryset.
 
     :param user_id: Id of the user executing this action
     :param queryset: queryset of entries
@@ -125,8 +121,7 @@ def reject_entries(user_id: int, queryset: QuerySet) -> int:
 
 
 def accept_entries(user_id: int, queryset: QuerySet) -> int:
-    """
-    Accept all entries in the queryset
+    """Accept all entries in the queryset.
 
     :param user_id: Id of the user executing this action
     :param queryset: queryset of entries
@@ -179,8 +174,7 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
 
 
 def revert_entry(user_id: int, entry: Entry) -> None:
-    """
-    Revert status of entry to review so that it can be corrected
+    """Revert status of entry to review so that it can be corrected.
 
     :param user_id: Id of the user executing this action
     :param entry: Entry that should be reverted
@@ -218,15 +212,13 @@ def revert_entry(user_id: int, entry: Entry) -> None:
 
 
 def _create_member_from_registration(registration: Registration) -> Member:
-    """
-    Create User and Member model from Registration
+    """Create User and Member model from Registration.
 
     :param registration: Registration model
     :type registration: Registration
     :return: Created member object
     :rtype: Member
     """
-
     # Generate random password for user that we can send to the new user
     password = get_user_model().objects.make_random_password(length=15)
 
@@ -267,8 +259,7 @@ def _create_member_from_registration(registration: Registration) -> Member:
 
 
 def calculate_membership_since() -> timezone.datetime:
-    """
-    Calculate the start date of a membership
+    """Calculate the start date of a membership.
 
     If it's August we act as if it's the next
     lecture year already and we start new memberships in September
@@ -283,8 +274,7 @@ def calculate_membership_since() -> timezone.datetime:
 def _create_membership_from_entry(
     entry: Entry, member: Member = None
 ) -> Union[Membership, None]:
-    """
-    Create or update Membership model based on Entry model information
+    """Create or update Membership model based on Entry model information.
 
     :param entry: Entry model
     :type entry: Entry
@@ -341,13 +331,11 @@ def _create_membership_from_entry(
 
 
 def process_entry_save(entry: Entry) -> None:
-    """
-    Once an entry is saved, process the entry if it is paid
+    """Once an entry is saved, process the entry if it is paid.
 
     :param entry: The entry that should be processed
     :type entry: Entry
     """
-
     if not entry or not entry.payment:
         return
 
@@ -377,9 +365,7 @@ def process_entry_save(entry: Entry) -> None:
 
 
 def execute_data_minimisation(dry_run=False):
-    """
-    Delete completed or rejected registrations that were modified
-    at least 31 days ago
+    """Delete completed or rejected registrations that were modified at least 31 days ago.
 
     :param dry_run: does not really remove data if True
     :return: number of removed registrations

@@ -1,4 +1,4 @@
-"""Views provided by the newsletters package"""
+"""Views provided by the newsletters package."""
 import os
 
 from django.conf import settings
@@ -14,8 +14,7 @@ from partners.models import Partner
 
 
 def preview(request, pk, lang=None):
-    """
-    View that renders the newsletter as HTML
+    """View that renders the newsletter as HTML.
 
     :param request: the request object
     :param pk: the newsletter's primary key
@@ -59,10 +58,9 @@ def preview(request, pk, lang=None):
 @staff_member_required
 @permission_required("newsletters.send_newsletter")
 def admin_send(request, pk):
-    """
-    If this is a GET request this view will render a confirmation
-    page for the administrator. If it is a POST request the newsletter
-    will be sent to all recipients
+    """If this is a GET request this view will render a confirmation page for the administrator.
+
+    If it is a POST request the newsletter will be sent to all recipients.
 
     :param request: the request object
     :param pk: the newsletter's primary key

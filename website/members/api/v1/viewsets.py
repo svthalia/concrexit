@@ -1,4 +1,4 @@
-"""DRF viewsets defined by the members package"""
+"""DRF viewsets defined by the members package."""
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import permissions
@@ -13,7 +13,7 @@ from .serializers import (
 
 
 class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
-    """Viewset that renders or edits a member"""
+    """Viewset that renders or edits a member."""
 
     required_scopes = ["members:read"]
     queryset = Member.objects.all()

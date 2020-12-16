@@ -1,5 +1,4 @@
-"""
-This file defines the menu layout.
+"""This file defines the menu layout.
 
 We set the variable `:py:main` to form the menu tree.
 """

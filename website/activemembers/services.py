@@ -5,8 +5,7 @@ from activemembers.models import Committee
 
 
 def generate_statistics():
-    """
-    Generate statistics about number of members in each committee.
+    """Generate statistics about number of members in each committee.
 
     :return: Dict with key, value being resp. name, member count of committees.
     """

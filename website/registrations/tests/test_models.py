@@ -151,7 +151,7 @@ class EntryTest(TestCase):
 @override_settings(SUSPEND_SIGNALS=True)
 @freeze_time("2019-01-01")
 class RegistrationTest(TestCase):
-    """Tests registrations"""
+    """Tests registrations."""
 
     @classmethod
     def setUpTestData(cls):

@@ -1,4 +1,4 @@
-"""The routes defined by this package"""
+"""The routes defined by this package."""
 from django.urls import include, path
 
 from . import views

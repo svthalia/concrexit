@@ -9,9 +9,7 @@ from payments.management.commands.revokeoldmandates import Command
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True)
 class RevokeOldMandatesCommandTest(TestCase):
-    """
-    Test for the management command
-    """
+    """Test for the management command."""
 
     fixtures = ["members.json"]
 

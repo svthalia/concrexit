@@ -1,4 +1,4 @@
-"""Defines tests for the newsletters package"""
+"""Defines tests for the newsletters package."""
 import doctest
 
 from django.contrib.auth import get_user_model
@@ -15,9 +15,7 @@ from newsletters.templatetags import listutil
 
 
 def load_tests(loader, tests, ignore):
-    """
-    Load all tests in this module
-    """
+    """Load all tests in this module."""
     # Adds the doctests in listutil
     tests.addTests(doctest.DocTestSuite(listutil))
     return tests

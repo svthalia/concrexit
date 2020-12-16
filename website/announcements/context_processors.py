@@ -1,13 +1,9 @@
-"""
-These context processors can be used to expand the context provided
-to admin views.
-"""
+"""These context processors can be used to expand the context provided to admin views."""
 from .models import Announcement
 
 
 def announcements(request):
-    """
-    Gets a list of announcements.
+    """Get a list of announcements.
 
     Filters out announcements that have been closed already.
 

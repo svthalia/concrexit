@@ -9,7 +9,7 @@ from members.models import Profile, Member
 
 
 def load_tests(loader, tests, ignore):
-    """Load doctests"""
+    """Load doctests."""
     tests.addTests(doctest.DocTestSuite(models))
 
 

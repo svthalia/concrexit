@@ -6,9 +6,6 @@ register = Library()
 
 @register.simple_tag(takes_context=True)
 def personal_feed(context):
-    """
-    Returns a personal token for the ical feed
-    """
-
+    """Return a personal token for the ical feed."""
     member = context["request"].user
     return FeedToken.objects.get_or_create(member=member)[0].token

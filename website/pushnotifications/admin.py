@@ -1,4 +1,4 @@
-"""The admin interfaces registered by the pushnotifications package"""
+"""The admin interfaces registered by the pushnotifications package."""
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
@@ -8,7 +8,7 @@ from utils.translation import TranslatedModelAdmin
 
 
 class MessageSentFilter(admin.SimpleListFilter):
-    """Filter the push notifications on whether they are sent or not"""
+    """Filter the push notifications on whether they are sent or not."""
 
     title = _("sent")
     parameter_name = "is_sent"
@@ -34,7 +34,7 @@ class MessageSentFilter(admin.SimpleListFilter):
 
 @admin.register(models.Device)
 class DeviceAdmin(admin.ModelAdmin):
-    """Manage the devices"""
+    """Manage the devices."""
 
     list_display = ("name", "type", "active", "date_created")
     list_filter = ("active", "type")
@@ -66,7 +66,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(models.Message)
 class MessageAdmin(TranslatedModelAdmin):
-    """Manage normal messages"""
+    """Manage normal messages."""
 
     list_display = ("title", "body", "category", "url", "sent", "success", "failure")
     filter_horizontal = ("users",)
@@ -114,7 +114,7 @@ class MessageAdmin(TranslatedModelAdmin):
 
 @admin.register(models.ScheduledMessage)
 class ScheduledMessageAdmin(TranslatedModelAdmin):
-    """Manage scheduled messages"""
+    """Manage scheduled messages."""
 
     list_display = ("title", "body", "time", "category", "sent", "success", "failure")
     date_hierarchy = "time"

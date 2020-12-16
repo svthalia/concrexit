@@ -1,4 +1,4 @@
-"""API views of the activemembers app"""
+"""API views of the activemembers app."""
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.generics import (
@@ -25,7 +25,7 @@ from activemembers.models import (
 
 
 class MemberGroupListView(ListAPIView):
-    """Returns an overview of all member groups"""
+    """Returns an overview of all member groups."""
 
     serializer_class = MemberGroupListSerializer
     queryset = MemberGroup.active_objects.all()
@@ -37,7 +37,7 @@ class MemberGroupListView(ListAPIView):
 
 
 class MemberGroupDetailView(RetrieveAPIView):
-    """Returns details of a member group"""
+    """Returns details of a member group."""
 
     serializer_class = MemberGroupSerializer
     queryset = MemberGroup.active_objects.all()
@@ -59,37 +59,37 @@ class MemberGroupDetailView(RetrieveAPIView):
 
 
 class CommitteeListView(MemberGroupListView):
-    """Returns an overview of all committees"""
+    """Returns an overview of all committees."""
 
     queryset = Committee.active_objects.all()
 
 
 class CommitteeDetailView(MemberGroupDetailView):
-    """Returns details of a committee"""
+    """Returns details of a committee."""
 
     queryset = Committee.active_objects.all()
 
 
 class SocietyListView(MemberGroupListView):
-    """Returns an overview of all societies"""
+    """Returns an overview of all societies."""
 
     queryset = Society.active_objects.all()
 
 
 class SocietyDetailView(MemberGroupDetailView):
-    """Returns details of a society"""
+    """Returns details of a society."""
 
     queryset = Society.active_objects.all()
 
 
 class BoardListView(MemberGroupListView):
-    """Returns an overview of all boards"""
+    """Returns an overview of all boards."""
 
     queryset = Board.objects.all()
 
 
 class BoardDetailView(MemberGroupDetailView):
-    """Returns details of a board"""
+    """Returns details of a board."""
 
     queryset = Board.objects.all()
 

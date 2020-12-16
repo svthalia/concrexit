@@ -1,3 +1,3 @@
-"""Partners app API v2 urls"""
+"""Partners app API v2 urls."""
 
 urlpatterns = []

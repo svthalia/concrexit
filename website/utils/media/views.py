@@ -1,4 +1,4 @@
-"""Utility views"""
+"""Utility views."""
 import os
 from datetime import timedelta
 
@@ -23,8 +23,8 @@ def _get_signature_info(request):
 
 
 def private_media(request, request_path):
-    """
-    Serve private media files
+    """Serve private media files.
+
     :param request: the request
     :return: the media file
     """
@@ -45,8 +45,7 @@ def private_media(request, request_path):
 
 
 def generate_thumbnail(request, request_path):
-    """
-    Generate thumbnail and redirect user to new location
+    """Generate thumbnail and redirect user to new location.
 
     The thumbnails are generated with this route. Because the
     thumbnails will be generated in parallel, it will not block

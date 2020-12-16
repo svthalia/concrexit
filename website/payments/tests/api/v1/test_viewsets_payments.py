@@ -16,9 +16,7 @@ from payments.tests.__mocks__ import MockPayable
 @freeze_time("2020-09-01")
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class PaymentProcessViewTest(TestCase):
-    """
-    Test for the PaymentProcessView
-    """
+    """Test for the PaymentProcessView."""
 
     fixtures = ["members.json"]
 

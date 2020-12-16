@@ -27,9 +27,7 @@ from .models import Event, EventRegistration
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(organiser_only, name="dispatch")
 class EventAdminDetails(DetailView, PermissionRequiredMixin):
-    """
-    Renders an overview of registrations for the specified event
-    """
+    """Render an overview of registrations for the specified event."""
 
     template_name = "events/admin/details.html"
     model = Event
@@ -47,9 +45,9 @@ class EventAdminDetails(DetailView, PermissionRequiredMixin):
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(organiser_only, name="dispatch")
 class RegistrationAdminFields(FormView):
-    """
-    Renders a form that allows the user to change the details of their
-    registration. The user should be authenticated.
+    """Render a form that allows the user to change the details of their registration.
+
+    The user should be authenticated.
     """
 
     form_class = FieldsForm
@@ -125,10 +123,7 @@ class RegistrationAdminFields(FormView):
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(organiser_only, name="dispatch")
 class EventMessage(FormView):
-    """
-    Renders a form that allows the user to create a push notification for all
-    users registers to the event.
-    """
+    """Renders a form that allows the user to create a push notification for all users registers to the event."""
 
     form_class = EventMessageForm
     template_name = "events/admin/message_form.html"
@@ -193,16 +188,13 @@ class EventMessage(FormView):
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(organiser_only, name="dispatch")
 class EventRegistrationsExport(View, PermissionRequiredMixin):
-    """
-    View to export registrations
-    """
+    """View to export registrations."""
 
     template_name = "events/admin/details.html"
     permission_required = "events.change_event"
 
     def get(self, request, pk):
-        """
-        Export the registration of a specified event
+        """Export the registration of a specified event.
 
         :param request: the request object
         :param pk: the primary key of the event
@@ -304,10 +296,7 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(organiser_only, name="dispatch")
 class EventRegistrationEmailsExport(TemplateView, PermissionRequiredMixin):
-    """
-    Renders a page that outputs all email addresses of registered members
-    for an event
-    """
+    """Renders a page that outputs all email addresses of registered members for an event."""
 
     template_name = "events/admin/email_export.html"
     permission_required = "events.view_event"

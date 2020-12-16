@@ -1,4 +1,4 @@
-"""Thumbnail template tags"""
+"""Thumbnail template tags."""
 
 from django import template
 
@@ -9,7 +9,8 @@ register = template.Library()
 
 @register.simple_tag
 def thumbnail(path, size, fit=True):
-    """
+    """Generate a thumbnail for a path.
+
     This templatetag provides us with a way of getting a thumbnail
     directly inside templates. See the documentation
     of :func:`get_thumbnail_url` for a more information.

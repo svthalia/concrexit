@@ -20,7 +20,7 @@ from members.models import Member
 
 @override_settings(SUSPEND_SIGNALS=True)
 class AdminTest(TestCase):
-    """Tests for admin views"""
+    """Tests for admin views."""
 
     fixtures = ["members.json", "member_groups.json"]
 
@@ -61,7 +61,7 @@ class AdminTest(TestCase):
         self.member.user_permissions.add(self.permission_override_orga)
 
     def test_admin_details_need_change_event_access(self):
-        """I need the event.change_event permission to do stuff"""
+        """I need the event.change_event permission to do stuff."""
         self._remove_event_permission()
         response = self.client.get("/admin/events/event/1/details/")
         self.assertEqual(403, response.status_code)
@@ -110,7 +110,7 @@ class AdminTest(TestCase):
         self.assertEqual(403, response.status_code)
 
     def test_modeladmin_change_superuser_allowed(self):
-        """Superuser should be allowed access always"""
+        """Superuser should be allowed access always."""
         self.member.is_superuser = True
         self.member.save()
         response = self.client.get("/admin/events/event/1/change/")
@@ -118,7 +118,7 @@ class AdminTest(TestCase):
         self.assertIn("Change event", str(response.content))
 
     def test_modeladmin_change_organiser_denied(self):
-        """If I'm not an organiser I should not be allowed access"""
+        """If I'm not an organiser I should not be allowed access."""
         response = self.client.get("/admin/events/event/1/change/")
         self.assertEqual(200, response.status_code)
         self.assertIn("View event", str(response.content))
@@ -126,7 +126,7 @@ class AdminTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class RegistrationTest(TestCase):
-    """Tests for registration view"""
+    """Tests for registration view."""
 
     fixtures = ["members.json", "member_groups.json"]
 

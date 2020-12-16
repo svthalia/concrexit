@@ -1,5 +1,4 @@
-"""
-Django settings for thaliawebsite project.
+"""Django settings for thaliawebsite project.
 
 This file is loaded by __init__.py.
 

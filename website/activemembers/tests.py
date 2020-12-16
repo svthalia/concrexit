@@ -214,7 +214,7 @@ class BoardTest(TestCase):
         self.testboard.validate_unique()
 
     def test_create_unique_period1(self):
-        """ Check uniqueness with since before period of testboard """
+        """Check uniqueness with since before period of testboard."""
         b = Board(
             name="testbo",
             contact_email="board@example.org",
@@ -234,7 +234,7 @@ class BoardTest(TestCase):
             b.full_clean()
 
     def test_create_unique_period2(self):
-        """ Check uniqueness with until after period of testboard """
+        """Check uniqueness with until after period of testboard."""
         b = Board(
             name="testbo",
             contact_email="board@example.org",

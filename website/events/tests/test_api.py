@@ -18,7 +18,7 @@ from members.models import Member
 
 @override_settings(SUSPEND_SIGNALS=True)
 class RegistrationApiTest(TestCase):
-    """Tests for registration view"""
+    """Tests for registration view."""
 
     fixtures = ["members.json", "member_groups.json"]
 

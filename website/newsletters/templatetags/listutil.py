@@ -1,5 +1,4 @@
-"""
-Template filters to partition lists into rows or columns.
+"""Template filters to partition lists into rows or columns.
 
 From https://djangosnippets.org/snippets/401/
 
@@ -23,9 +22,9 @@ register = Library()
 
 
 def rows(thelist, n):
-    """
-    Break a list into ``n`` rows, filling up each row to the maximum equal
-    length possible. For example::
+    """Break a list into ``n`` rows, filling up each row to the maximum equal length possible.
+
+    For example::
 
         >>> l = range(10)
 
@@ -62,9 +61,9 @@ def rows(thelist, n):
 
 
 def rows_distributed(thelist, n):
-    """
-    Break a list into ``n`` rows, distributing columns as evenly as possible
-    across the rows. For example::
+    """Break a list into ``n`` rows, distributing columns as evenly as possible across the rows.
+
+    For example::
 
         >>> l = range(10)
 
@@ -111,10 +110,9 @@ def rows_distributed(thelist, n):
 
 
 def columns(thelist, n):
-    """
-    Break a list into ``n`` columns,
-    filling up each column to the maximum equal
-    length possible. For example:
+    """Break a list into ``n`` columns, filling up each column to the maximum equal length possible.
+
+    For example:
 
         >>> from pprint import pprint
         >>> for i in range(7, 11):

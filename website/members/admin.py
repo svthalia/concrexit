@@ -1,6 +1,4 @@
-"""
-This module registers admin pages for the models
-"""
+"""Register admin pages for the models."""
 import csv
 import datetime
 from django.contrib import admin, messages

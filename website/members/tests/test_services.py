@@ -36,9 +36,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(0, self.sum_members(result))
 
     def test_gen_stats_active(self):
-        """
-        Testing if active and non-active objects are counted correctly
-        """
+        """Testing if active and non-active objects are counted correctly."""
         current_year = datetime_to_lectureyear(date.today())
 
         # Set start date to current year - 1:

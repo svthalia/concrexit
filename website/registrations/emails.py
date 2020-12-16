@@ -1,4 +1,4 @@
-"""The emails defined by the registrations package"""
+"""The emails defined by the registrations package."""
 from typing import Union
 
 from django.conf import settings
@@ -13,8 +13,7 @@ from registrations.models import Registration, Renewal
 
 
 def send_registration_email_confirmation(registration: Registration) -> None:
-    """
-    Send the email confirmation message
+    """Send the email confirmation message.
 
     :param registration: the registration entry
     """
@@ -34,8 +33,7 @@ def send_registration_email_confirmation(registration: Registration) -> None:
 
 
 def send_registration_accepted_message(registration: Registration) -> None:
-    """
-    Send the registration acceptance email
+    """Send the registration acceptance email.
 
     :param registration: the registration entry
     """
@@ -52,8 +50,7 @@ def send_registration_accepted_message(registration: Registration) -> None:
 
 
 def send_registration_rejected_message(registration: Registration) -> None:
-    """
-    Send the registration rejection email
+    """Send the registration rejection email.
 
     :param registration: the registration entry
     """
@@ -67,8 +64,7 @@ def send_registration_rejected_message(registration: Registration) -> None:
 
 
 def send_new_registration_board_message(registration: Registration) -> None:
-    """
-    Send a notification to the board about a new registration
+    """Send a notification to the board about a new registration.
 
     :param registration: the registration entry
     """
@@ -89,8 +85,7 @@ def send_new_registration_board_message(registration: Registration) -> None:
 
 
 def send_renewal_accepted_message(renewal: Renewal) -> None:
-    """
-    Send the renewal acceptation email
+    """Send the renewal acceptation email.
 
     :param renewal: the renewal entry
     """
@@ -109,8 +104,7 @@ def send_renewal_accepted_message(renewal: Renewal) -> None:
 
 
 def send_renewal_rejected_message(renewal: Renewal) -> None:
-    """
-    Send the renewal rejection email
+    """Send the renewal rejection email.
 
     :param renewal: the renewal entry
     """
@@ -124,8 +118,7 @@ def send_renewal_rejected_message(renewal: Renewal) -> None:
 
 
 def send_renewal_complete_message(renewal: Renewal) -> None:
-    """
-    Send the email completing the renewal
+    """Send the email completing the renewal.
 
     :param renewal: the renewal entry
     """
@@ -139,8 +132,7 @@ def send_renewal_complete_message(renewal: Renewal) -> None:
 
 
 def send_new_renewal_board_message(renewal: Renewal) -> None:
-    """
-    Send a notification to the board about a new renewal
+    """Send a notification to the board about a new renewal.
 
     :param renewal: the renewal entry
     """
@@ -159,14 +151,13 @@ def send_new_renewal_board_message(renewal: Renewal) -> None:
 
 
 def send_references_information_message(entry: Union[Registration, Renewal]) -> None:
-    """
-    Send a notification to the user with information about references
+    """Send a notification to the user with information about references.
+
     These are required for benefactors who have not been a Thalia member
     and do not work for iCIS
 
     :param entry: the registration or renewal entry
     """
-
     if type(entry).__name__ == "Registration":
         email = entry.email
         name = entry.get_full_name()
@@ -192,8 +183,7 @@ def send_references_information_message(entry: Union[Registration, Renewal]) -> 
 
 
 def _send_email(to: str, subject: str, body_template: str, context: dict) -> None:
-    """
-    Easily send an email with the right subject and a body template
+    """Easily send an email with the right subject and a body template.
 
     :param to: where should the email go?
     :param subject: what is the email about?

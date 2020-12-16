@@ -1,4 +1,4 @@
-"""The models defined by the pushnotifications package"""
+"""The models defined by the pushnotifications package."""
 import datetime
 
 from django.conf import settings
@@ -12,7 +12,7 @@ from utils.translation import MultilingualField, ModelTranslateMeta
 
 
 class Category(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a Message category"""
+    """Describes a Message category."""
 
     # These should be the keys of the categories that we automatically created
     # in the migrations (0012 to be specific)
@@ -39,7 +39,7 @@ def default_receive_category():
 
 
 class Device(models.Model):
-    """Describes a device"""
+    """Describes a device."""
 
     DEVICE_TYPES = (("ios", "iOS"), ("android", "Android"))
 
@@ -80,18 +80,18 @@ class Device(models.Model):
 
 
 class NormalMessageManager(models.Manager):
-    """Returns manual messages only"""
+    """Returns manual messages only."""
 
     def get_queryset(self):
         return super().get_queryset().filter(scheduledmessage__scheduled=None)
 
 
 class MessageManager(models.Manager):
-    """Returns all messages"""
+    """Returns all messages."""
 
 
 class Message(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a push notification"""
+    """Describes a push notification."""
 
     objects = NormalMessageManager()
     all_objects = MessageManager()
@@ -177,11 +177,11 @@ class Message(models.Model, metaclass=ModelTranslateMeta):
 
 
 class ScheduledMessageManager(models.Manager):
-    """Returns scheduled messages only"""
+    """Returns scheduled messages only."""
 
 
 class ScheduledMessage(Message, metaclass=ModelTranslateMeta):
-    """Describes a scheduled push notification"""
+    """Describes a scheduled push notification."""
 
     objects = ScheduledMessageManager()
 

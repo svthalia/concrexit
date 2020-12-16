@@ -1,4 +1,4 @@
-"""The emails defined by the members package"""
+"""The emails defined by the members package."""
 from datetime import timedelta
 import logging
 
@@ -18,9 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def send_membership_announcement(dry_run=False):
-    """
-    Sends an email to all members with a never ending membership
-    excluding honorary members
+    """Send an email to all members with a never ending membership excluding honorary members.
 
     :param dry_run: does not really send emails if True
     """
@@ -62,8 +60,7 @@ def send_membership_announcement(dry_run=False):
 
 
 def send_information_request(dry_run=False):
-    """
-    Sends an email to all members to have them check their personal information
+    """Send an email to all members to have them check their personal information.
 
     :param dry_run: does not really send emails if True
     """
@@ -121,9 +118,7 @@ def send_information_request(dry_run=False):
 
 
 def send_expiration_announcement(dry_run=False):
-    """
-    Sends an email to all members whose membership will end in the next 31 days
-    to warn them about this
+    """Send an email to all members whose membership will end in the next 31 days to warn them about this.
 
     :param dry_run: does not really send emails if True
     """
@@ -173,8 +168,7 @@ def send_expiration_announcement(dry_run=False):
 
 
 def send_welcome_message(user, password, language):
-    """
-    Sends an email to a new mail welcoming them
+    """Send an email to a new mail welcoming them.
 
     :param user: the new user
     :param password: randomly generated password
@@ -194,9 +188,7 @@ def send_welcome_message(user, password, language):
 
 
 def send_email_change_confirmation_messages(change_request):
-    """
-    Sends emails to the old and new email address of a member to
-    confirm the email change
+    """Send emails to the old and new email address of a member to confirm the email change.
 
     :param change_request the email change request entered by the user
     """
@@ -242,8 +234,7 @@ def send_email_change_confirmation_messages(change_request):
 
 
 def send_email_change_completion_message(change_request):
-    """
-    Sends email to the member to confirm the email change
+    """Send email to the member to confirm the email change.
 
     :param change_request the email change request entered by the user
     """

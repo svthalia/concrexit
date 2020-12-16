@@ -13,7 +13,7 @@ from payments.tests.__mocks__ import MockPayable
 
 
 class PayableTest(TestCase):
-    """Tests for the Payable class"""
+    """Tests for the Payable class."""
 
     def test_payment_amount_not_implemented(self):
         p = Payable()
@@ -43,7 +43,7 @@ class PayableTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class PaymentTest(TestCase):
-    """Tests for the Payment model"""
+    """Tests for the Payment model."""
 
     fixtures = ["members.json", "bank_accounts.json"]
 
@@ -60,18 +60,14 @@ class PaymentTest(TestCase):
         self.batch.save()
 
     def test_get_admin_url(self):
-        """
-        Tests that the right admin url is returned
-        """
+        """Tests that the right admin url is returned."""
         self.assertEqual(
             self.payment.get_admin_url(),
             "/admin/payments/payment/{}/change/".format(self.payment.pk),
         )
 
     def test_add_payment_from_processed_batch_to_new_batch(self) -> None:
-        """
-        Test that a payment that is in a processed batch cannot be added to another batch
-        """
+        """Test that a payment that is in a processed batch cannot be added to another batch."""
         self.payment.type = Payment.TPAY
         self.payment.batch = self.batch
         self.payment.save()
@@ -84,15 +80,11 @@ class PaymentTest(TestCase):
             self.payment.save()
 
     def test_deleting_member_who_made_a_payment_doesnt_crach(self) -> None:
-        """
-        Check that https://github.com/svthalia/concrexit/issues/1328 is fixed
-        """
+        """Check that https://github.com/svthalia/concrexit/issues/1328 is fixed."""
         self.member.delete()
 
     def test_clean(self):
-        """
-        Tests the model clean functionality
-        """
+        """Tests the model clean functionality."""
         with self.subTest("Block Thalia Pay creation when it is disabled for user"):
             with override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=False):
                 self.payment.type = Payment.TPAY
@@ -158,9 +150,7 @@ class PaymentTest(TestCase):
                 payment.clean()
 
     def test_str(self) -> None:
-        """
-        Tests that the output is a description with the amount
-        """
+        """Tests that the output is a description with the amount."""
         self.assertEqual("Payment of 10.00", str(self.payment))
 
 
@@ -305,7 +295,7 @@ class BatchModelTest(TestCase):
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class BankAccountTest(TestCase):
-    """Tests for the BankAccount model"""
+    """Tests for the BankAccount model."""
 
     fixtures = ["members.json"]
 
@@ -330,18 +320,14 @@ class BankAccountTest(TestCase):
         self.with_mandate.refresh_from_db()
 
     def test_name(self) -> None:
-        """
-        Tests that the property returns initials concatenated with last name
-        """
+        """Tests that the property returns initials concatenated with last name."""
         self.assertEqual("J Test", self.no_mandate.name)
         self.no_mandate.initials = "R"
         self.no_mandate.last_name = "Hood"
         self.assertEqual("R Hood", self.no_mandate.name)
 
     def test_valid(self) -> None:
-        """
-        Tests that the property returns the right validity of the mandate
-        """
+        """Tests that the property returns the right validity of the mandate."""
         self.assertFalse(self.no_mandate.valid)
         self.assertTrue(self.with_mandate.valid)
         self.with_mandate.valid_until = timezone.now().date()
@@ -373,9 +359,7 @@ class BankAccountTest(TestCase):
         self.assertEqual("NL91ABNA0417164300 - J Test", str(self.no_mandate))
 
     def test_clean(self) -> None:
-        """
-        Tests that the model is validated correctly
-        """
+        """Tests that the model is validated correctly."""
         self.no_mandate.clean()
         self.with_mandate.clean()
 

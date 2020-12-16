@@ -1,2 +1,2 @@
 class RegistrationError(Exception):
-    """Custom error for problems during registration"""
+    """Custom error for problems during registration."""

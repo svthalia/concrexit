@@ -7,7 +7,7 @@ from utils.translation import TranslatedModelAdmin
 
 
 def _do_next(request, response):
-    """See DoNextModelAdmin"""
+    """See DoNextModelAdmin."""
     if "next" in request.GET:
         if not url_has_allowed_host_and_scheme(
             request.GET["next"], allowed_hosts={request.get_host()}
@@ -23,10 +23,9 @@ def _do_next(request, response):
 
 
 class DoNextTranslatedModelAdmin(TranslatedModelAdmin):
-    """
-    This class adds processing of a `next` parameter in the urls
-    of the add and change admin forms. If it is set and safe this
-    override will redirect the user to the provided url.
+    """This class adds processing of a `next` parameter in the urls of the add and change admin forms.
+
+    If it is set and safe this override will redirect the user to the provided url.
     """
 
     def response_add(self, request, obj, **kwargs):
@@ -39,10 +38,9 @@ class DoNextTranslatedModelAdmin(TranslatedModelAdmin):
 
 
 class DoNextModelAdmin(ModelAdmin):
-    """
-    This class adds processing of a `next` parameter in the urls
-    of the add and change admin forms. If it is set and safe this
-    override will redirect the user to the provided url.
+    """This class adds processing of a `next` parameter in the urls of the add and change admin forms.
+
+    If it is set and safe this override will redirect the user to the provided url.
     """
 
     def response_add(self, request, obj, **kwargs):

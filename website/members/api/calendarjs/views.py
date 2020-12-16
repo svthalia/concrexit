@@ -10,10 +10,7 @@ from utils.snippets import extract_date_range
 
 
 class CalendarJSBirthdayListView(ListAPIView):
-    """
-    Defines a custom route that outputs the correctly formatted
-    events information for CalendarJS, published events only
-    """
+    """Define a custom route that outputs the correctly formatted events information for CalendarJS, published events only."""
 
     serializer_class = MemberBirthdaySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
