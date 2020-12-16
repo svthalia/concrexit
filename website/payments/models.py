@@ -1,4 +1,4 @@
-"""The models defined by the payments package"""
+"""The models defined by the payments package."""
 import datetime
 import uuid
 from decimal import Decimal
@@ -26,7 +26,7 @@ class PaymentUser(Member):
 
     @property
     def tpay_enabled(self):
-        """Does this user have a bank account with Direct Debit enabled"""
+        """Check if this user has a bank account with Direct Debit enabled."""
         bank_accounts = BankAccount.objects.filter(owner=self)
         return (
             settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
@@ -37,7 +37,7 @@ class PaymentUser(Member):
 
     @property
     def tpay_balance(self):
-        """Checks the Thalia Pay balance for a user"""
+        """Check the Thalia Pay balance for a user."""
         payments = Payment.objects.filter(
             Q(paid_by=self, type=Payment.TPAY)
             & (Q(batch__isnull=True) | Q(batch__processed=False))
@@ -47,25 +47,23 @@ class PaymentUser(Member):
 
     @property
     def tpay_allowed(self):
-        """Does this user have permissions to use Thalia Pay (but not necessarily enabled)"""
+        """Check if this user has permissions to use Thalia Pay (but not necessarily enabled)."""
         return (
             self.has_perm("payments.tpay_allowed")
             and settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
         )
 
     def allow_tpay(self):
-        """Give this user Thalia Pay permission"""
+        """Give this user Thalia Pay permission."""
         self.user_permissions.add(Permission.objects.get(codename="tpay_allowed"))
 
     def disallow_tpay(self):
-        """Revoke this user's Thalia Pay permission"""
+        """Revoke this user's Thalia Pay permission."""
         self.user_permissions.remove(Permission.objects.get(codename="tpay_allowed"))
 
 
 class Payment(models.Model):
-    """
-    Describes a payment
-    """
+    """Describes a payment."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -221,9 +219,7 @@ def _default_withdrawal_date():
 
 
 class Batch(models.Model):
-    """
-    Describes a batch of payments for export
-    """
+    """Describes a batch of payments for export."""
 
     processed = models.BooleanField(verbose_name=_("processing status"), default=False,)
 
@@ -289,9 +285,7 @@ class Batch(models.Model):
 
 
 class BankAccount(models.Model):
-    """
-    Describes a bank account
-    """
+    """Describes a bank account."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 

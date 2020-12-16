@@ -1,11 +1,11 @@
-"""Views provided by the announcements package"""
+"""Views provided by the announcements package."""
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 
 
 @require_POST
 def close_announcement(request):
-    """Close an announcement
+    """Close an announcement.
 
     :param: request
     :return: Http 204 No Content if successful

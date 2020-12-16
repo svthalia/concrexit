@@ -13,8 +13,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 def is_user_registered(member, event):
-    """
-    Returns if the user is registered for the specified event
+    """Return if the user is registered for the specified event.
 
     :param member: the user
     :param event: the event
@@ -39,8 +38,7 @@ def is_user_present(member, event):
 
 
 def event_permissions(member, event, name=None):
-    """
-    Returns a dictionary with the available event permissions of the user
+    """Return a dictionary with the available event permissions of the user.
 
     :param member: the user
     :param event: the event
@@ -98,12 +96,11 @@ def is_organiser(member, event):
 
 
 def create_registration(member, event):
-    """
-    Creates a new user registration for an event
+    """Create a new user registration for an event.
 
     :param member: the user
     :param event: the event
-    :return: returns the registration if successful
+    :return: Return the registration if successful
     """
     if event_permissions(member, event)["create_registration"]:
         registration = None
@@ -134,8 +131,7 @@ def create_registration(member, event):
 
 
 def cancel_registration(member, event):
-    """
-    Cancel a user registration for an event
+    """Cancel a user registration for an event.
 
     :param member: the user
     :param event: the event
@@ -166,8 +162,7 @@ def cancel_registration(member, event):
 def update_registration(
     member=None, event=None, name=None, registration=None, field_values=None
 ):
-    """
-    Updates a user registration of an event
+    """Update a user registration of an event.
 
     :param request: http request
     :param member: the user
@@ -221,8 +216,7 @@ def update_registration(
 
 
 def registration_fields(request, member=None, event=None, registration=None, name=None):
-    """
-    Returns information about the registration fields of a registration
+    """Return information about the registration fields of a registration.
 
     :param member: the user (optional if registration provided)
     :param name: the name of a non member registration
@@ -231,7 +225,6 @@ def registration_fields(request, member=None, event=None, registration=None, nam
     :param registration: the registration (optional if member & event provided)
     :return: the fields
     """
-
     if registration is None:
         try:
             registration = EventRegistration.objects.get(
@@ -296,8 +289,8 @@ def update_registration_by_organiser(registration, member, data):
 
 
 def generate_category_statistics():
-    """
-    Generate statistics about events, number of events per category
+    """Generate statistics about events, number of events per category.
+
     :return: Dict with key, value resp. being category, event count.
     """
     year = datetime_to_lectureyear(timezone.now())

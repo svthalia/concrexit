@@ -1,4 +1,4 @@
-"""The forms defined by the registrations package"""
+"""The forms defined by the registrations package."""
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.forms import TypedChoiceField
@@ -14,7 +14,7 @@ from .models import Registration, Renewal, Reference
 
 
 class BaseRegistrationForm(forms.ModelForm):
-    """Base form for membership registrations"""
+    """Base form for membership registrations."""
 
     birthday = forms.DateField(
         widget=forms.widgets.SelectDateWidget(
@@ -35,7 +35,7 @@ class BaseRegistrationForm(forms.ModelForm):
 
 
 class MemberRegistrationForm(BaseRegistrationForm):
-    """Form for member registrations"""
+    """Form for member registrations."""
 
     this_year = timezone.now().year
     years = reversed(
@@ -74,7 +74,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
 
 
 class BenefactorRegistrationForm(BaseRegistrationForm):
-    """Form for benefactor registrations"""
+    """Form for benefactor registrations."""
 
     icis_employee = forms.BooleanField(
         required=False, label=_("I am an employee of iCIS")
@@ -103,7 +103,7 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
 
 
 class RenewalForm(forms.ModelForm):
-    """Form for membership renewals"""
+    """Form for membership renewals."""
 
     privacy_policy = forms.BooleanField(required=True,)
 

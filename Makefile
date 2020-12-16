@@ -70,6 +70,11 @@ blackcheck: .make/deps $(PYTHONFILES) ## Check if everything is formatted correc
 
 pylint: .make/pylint ## Check python code with pylint
 
+.make/pydocstyle: .make .make/deps $(PYTHONFILES)
+	poetry run pydocstyle --match-dir='(?!migrations).*' --add-ignore D100,D101,D102,D103,D104,D105,D106,D107 --add-select D212 website/
+
+pydocstyle: .make/pydocstyle
+
 .make/check: .make .make/deps $(PYTHONFILES)
 	poetry run python website/manage.py check
 	@touch .make/check
@@ -126,7 +131,7 @@ docs: docs/_build ## Generate docs HTML files
 
 docker: .make/docker
 
-lint: blackcheck pylint ## Run all linters
+lint: blackcheck pylint pydocstyle ## Run all linters
 
 test: check templatecheck migrationcheck tests ## Run every kind of test
 
@@ -136,4 +141,4 @@ clean: ## Remove all generated files
 
 .PHONY: help run deps migrate createsuperuser createfixtures fmt check \
 		templatecheck migrationcheck tests coverage covhtml doctest docs \
-		docker lint test clean
+		docker lint test clean pydocstyle

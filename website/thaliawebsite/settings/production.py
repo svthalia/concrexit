@@ -1,5 +1,4 @@
-"""
-Django production settings for thaliawebsite project.
+"""Django production settings for thaliawebsite project.
 
 Many of these settings override settings from settings.py.
 

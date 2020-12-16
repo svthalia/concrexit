@@ -1,4 +1,4 @@
-"""Tests for the pizza functionality"""
+"""Tests for the pizza functionality."""
 import datetime
 
 from django.contrib.auth.models import Permission, ContentType
@@ -18,7 +18,7 @@ from pizzas import services
 @freeze_time("2018-03-21")
 @override_settings(SUSPEND_SIGNALS=True)
 class PizzaEventTestCase(TestCase):
-    """Test the pizzaevent class"""
+    """Test the pizzaevent class."""
 
     fixtures = ["members.json", "member_groups.json"]
 
@@ -64,13 +64,13 @@ class PizzaEventTestCase(TestCase):
         )
 
     def test_title(self):
-        """Check the title attribute"""
+        """Check the title attribute."""
         with self.subTest(lang="en"):
             translation.activate("en")
             self.assertEqual(self.pizzaEvent.title, self.event.title)
 
     def test_current(self):
-        """Test the classmethod that fetches a currently active pizzaevent"""
+        """Test the classmethod that fetches a currently active pizzaevent."""
         with self.subTest(msg="Single event, active"):
             self.assertEqual(self.pizzaEvent, PizzaEvent.current())
 
@@ -107,7 +107,7 @@ class PizzaEventTestCase(TestCase):
             self.assertEqual(second_pizzaevent, PizzaEvent.current())
 
     def test_validate_unique(self):
-        """Check if uniqueness validation is correct"""
+        """Check if uniqueness validation is correct."""
         self.pizzaEvent.start = self.pizzaEvent.start + datetime.timedelta(minutes=10)
 
         with self.subTest(msg="saving works"):
@@ -123,7 +123,7 @@ class PizzaEventTestCase(TestCase):
                 new.validate_unique()
 
     def test_clean(self):
-        """Check if clean method works"""
+        """Check if clean method works."""
         new = PizzaEvent(
             event=self.event2,
             start=self.pizzaEvent.start + datetime.timedelta(minutes=10),

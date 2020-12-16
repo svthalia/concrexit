@@ -12,9 +12,7 @@ from utils.snippets import create_google_maps_url
 
 
 class EventRetrieveSerializer(serializers.ModelSerializer):
-    """
-    Serializer for events
-    """
+    """Serializer for events."""
 
     class Meta:
         model = Event

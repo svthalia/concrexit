@@ -724,9 +724,7 @@ class RenewalFormViewTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class ReferenceCreateViewTest(TestCase):
-    """
-    Test for the ReferenceCreateView
-    """
+    """Test for the ReferenceCreateView."""
 
     fixtures = ["members.json"]
 
@@ -806,9 +804,7 @@ class ReferenceCreateViewTest(TestCase):
         self.assertEqual(403, response.status_code)
 
     def test_entry_does_not_exist(self):
-        """
-        If the registration/renewal does not exist a 404 should be shown
-        """
+        """If the registration/renewal does not exist a 404 should be shown."""
         response = self.client.get(
             reverse(
                 "registrations:reference",

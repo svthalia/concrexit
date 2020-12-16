@@ -6,7 +6,7 @@ from . import Event, EventRegistration
 
 
 class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a field description to ask for when registering"""
+    """Describes a field description to ask for when registering."""
 
     BOOLEAN_FIELD = "boolean"
     INTEGER_FIELD = "integer"
@@ -77,7 +77,7 @@ class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
 
 
 class AbstractRegistrationInformation(models.Model):
-    """Abstract to contain common things for registration information"""
+    """Abstract to contain common things for registration information."""
 
     registration = models.ForeignKey(EventRegistration, models.CASCADE)
     field = models.ForeignKey(RegistrationInformationField, models.CASCADE)
@@ -91,18 +91,18 @@ class AbstractRegistrationInformation(models.Model):
 
 
 class BooleanRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
+    """Checkbox information filled in by members when registering."""
 
     value = models.BooleanField()
 
 
 class TextRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
+    """Checkbox information filled in by members when registering."""
 
     value = models.TextField()
 
 
 class IntegerRegistrationInformation(AbstractRegistrationInformation):
-    """Checkbox information filled in by members when registering"""
+    """Checkbox information filled in by members when registering."""
 
     value = models.IntegerField()

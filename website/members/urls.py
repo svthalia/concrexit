@@ -1,4 +1,4 @@
-"""The routes defined by the members package"""
+"""The routes defined by the members package."""
 from django.urls import path, include
 from django.views.generic import RedirectView
 

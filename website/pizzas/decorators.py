@@ -1,4 +1,4 @@
-"""The decorators defined by the pizzas package"""
+"""The decorators defined by the pizzas package."""
 from django.core.exceptions import PermissionDenied
 
 from events import services
@@ -6,13 +6,14 @@ from pizzas.models import PizzaEvent
 
 
 def organiser_only(view_function):
-    """See OrganiserOnly"""
+    """See OrganiserOnly."""
     return OrganiserOnly(view_function)
 
 
 class OrganiserOnly:
-    """
-    Decorator that denies access to the page if:
+    """Decorator that denies access on certain conditions.
+
+    The conditions are:
     1. There is no `pk` in the request
     2. The specified pizza event does not exist
     3. The user is no organiser of the specified pizza event

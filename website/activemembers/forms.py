@@ -20,8 +20,7 @@ class MemberGroupMembershipForm(forms.ModelForm):
 
 
 class MemberGroupForm(forms.ModelForm):
-    """
-    Solely here for performance reasons.
+    """Solely here for performance reasons.
 
     Needed because the `__str__()` of `Permission` (which is displayed in the
     permissions selection box) also prints the corresponding app and

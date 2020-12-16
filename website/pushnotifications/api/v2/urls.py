@@ -1,4 +1,4 @@
-"""Pushnotifications app API v2 urls"""
+"""Pushnotifications app API v2 urls."""
 from django.urls import path, include
 
 from pushnotifications.api.v2.views import (

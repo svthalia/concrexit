@@ -5,11 +5,10 @@ from . import sitemaps
 
 
 class SitemapTests(test.SimpleTestCase):
-    """Tests the sitemaps"""
+    """Tests the sitemaps."""
 
     def test_staticviewsitemap(self):
-        """Tests the ``:class::merchandise.sitemaps.StaticViewSitemap``"""
-
+        """Tests the ``:class::merchandise.sitemaps.StaticViewSitemap``."""
         sitemap = sitemaps.StaticViewSitemap()
         items = sitemap.items()
         self.assertNotEqual(items, [])
@@ -19,12 +18,12 @@ class SitemapTests(test.SimpleTestCase):
 
 
 class ViewTests(test.TestCase):
-    """Tests the views of this method"""
+    """Tests the views of this method."""
 
     fixtures = ["merchandiseitems.json"]
 
     def test_index_en(self):
-        """Tests the english index page lists the merchandise items"""
+        """Tests the english index page lists the merchandise items."""
         with translation.override("en"):
             response = self.client.get("/association/merchandise/")
         self.assertContains(response, "fancy hat")

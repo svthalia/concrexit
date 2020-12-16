@@ -1,4 +1,4 @@
-"""The models defined by the newsletters package"""
+"""The models defined by the newsletters package."""
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -10,7 +10,7 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Newsletter(models.Model, metaclass=ModelTranslateMeta):
-    """Describes a newsletter"""
+    """Describes a newsletter."""
 
     title = MultilingualField(
         models.CharField,
@@ -82,7 +82,7 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
 
 
 class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
-    """Describes one piece of basic content of a newsletter"""
+    """Describes one piece of basic content of a newsletter."""
 
     title = MultilingualField(
         models.CharField,
@@ -135,11 +135,11 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
 
 
 class NewsletterItem(NewsletterContent):
-    """Describes one piece of text content of a newsletter"""
+    """Describes one piece of text content of a newsletter."""
 
 
 class NewsletterEvent(NewsletterContent):
-    """Describes one piece of event content of a newsletter"""
+    """Describes one piece of event content of a newsletter."""
 
     where = MultilingualField(
         models.CharField,
@@ -183,7 +183,7 @@ class NewsletterEvent(NewsletterContent):
     )
 
     def clean(self):
-        """Make sure that the event end date is after the start date"""
+        """Make sure that the event end date is after the start date."""
         super().clean()
         if (
             self.end_datetime is not None

@@ -1,4 +1,4 @@
-"""Views provided by the education package"""
+"""Views provided by the education package."""
 import os
 from datetime import datetime, date
 
@@ -19,9 +19,7 @@ from .models import Category, Course, Exam, Summary
 
 
 class CourseIndexView(ListView):
-    """
-    Renders an overview of the courses
-    """
+    """Render an overview of the courses."""
 
     queryset = Course.objects.filter(until=None)
     template_name = "education/courses.html"
@@ -60,9 +58,7 @@ class CourseIndexView(ListView):
 
 
 class CourseDetailView(DetailView):
-    """
-    Renders the detail page of one specific course
-    """
+    """Render the detail page of one specific course."""
 
     model = Course
     context_object_name = "course"
@@ -113,9 +109,7 @@ class CourseDetailView(DetailView):
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
 class ExamDetailView(DetailView):
-    """
-    Fetches and outputs the specified exam
-    """
+    """Fetch and output the specified exam."""
 
     model = Exam
 
@@ -135,9 +129,7 @@ class ExamDetailView(DetailView):
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
 class SummaryDetailView(DetailView):
-    """
-    Fetches and outputs the specified summary
-    """
+    """Fetch and output the specified summary."""
 
     model = Summary
 
@@ -157,9 +149,7 @@ class SummaryDetailView(DetailView):
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
 class ExamCreateView(SuccessMessageMixin, CreateView):
-    """
-    Renders the form to submit a new exam
-    """
+    """Render the form to submit a new exam."""
 
     model = Exam
     form_class = AddExamForm
@@ -184,9 +174,7 @@ class ExamCreateView(SuccessMessageMixin, CreateView):
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
 class SummaryCreateView(SuccessMessageMixin, CreateView):
-    """
-    Renders the form to submit a new summary
-    """
+    """Render the form to submit a new summary."""
 
     model = Summary
     form_class = AddSummaryForm
@@ -210,8 +198,8 @@ class SummaryCreateView(SuccessMessageMixin, CreateView):
 
 @method_decorator(login_required, "dispatch")
 class BookInfoView(TemplateView):
-    """
-    Renders a page with information about book sale
+    """Render a page with information about book sale.
+
     Only available to members and to-be members
     """
 
@@ -227,8 +215,6 @@ class BookInfoView(TemplateView):
 
 
 class StudentParticipantView(TemplateView):
-    """
-    Renders a page with information about student information
-    """
+    """Renders a page with information about student information."""
 
     template_name = "education/student_participation.html"

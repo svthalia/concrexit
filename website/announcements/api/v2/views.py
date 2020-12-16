@@ -1,4 +1,4 @@
-"""API v2 views of the announcements app"""
+"""API v2 views of the announcements app."""
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.generics import (
@@ -20,28 +20,28 @@ class AnnouncementsAPIViewMixin:
 
 
 class SlideListView(AnnouncementsAPIViewMixin, ListAPIView):
-    """Returns an overview of all slides that are currently active"""
+    """Returns an overview of all slides that are currently active."""
 
     serializer_class = SlideSerializer
     queryset = Slide.visible_objects.order_by("order")
 
 
 class SlideDetailView(AnnouncementsAPIViewMixin, RetrieveAPIView):
-    """Returns details of a slide"""
+    """Returns details of a slide."""
 
     serializer_class = SlideSerializer
     queryset = Slide.visible_objects.order_by("order")
 
 
 class FrontpageArticleListView(AnnouncementsAPIViewMixin, ListAPIView):
-    """Returns an overview of all frontpage articles that are currently active"""
+    """Returns an overview of all frontpage articles that are currently active."""
 
     serializer_class = FrontpageArticleSerializer
     queryset = FrontpageArticle.visible_objects.all()
 
 
 class FrontpageArticleDetailView(AnnouncementsAPIViewMixin, RetrieveAPIView):
-    """Returns details of a frontpage article"""
+    """Returns details of a frontpage article."""
 
     serializer_class = FrontpageArticleSerializer
     queryset = FrontpageArticle.visible_objects.all()

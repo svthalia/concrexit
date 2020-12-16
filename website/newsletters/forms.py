@@ -1,4 +1,4 @@
-"""The forms defined by the newsletters package"""
+"""The forms defined by the newsletters package."""
 from django import forms
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -8,10 +8,7 @@ from .models import NewsletterEvent
 
 
 class NewsletterEventForm(forms.ModelForm):
-    """
-    Custom ModelForm for the NewsletterEvent model to
-    add the order field and javascript for automatic field filling
-    """
+    """Custom ModelForm for the NewsletterEvent model to add the order field and javascript for automatic field filling."""
 
     event = forms.ChoiceField(label=_("Event"))
 

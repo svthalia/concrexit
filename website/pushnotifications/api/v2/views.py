@@ -20,7 +20,7 @@ from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMe
 
 
 class DeviceListView(ListAPIView, CreateAPIView):
-    """Returns an overview of all devices that are owner by the user"""
+    """Returns an overview of all devices that are owner by the user."""
 
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
@@ -60,7 +60,7 @@ class DeviceListView(ListAPIView, CreateAPIView):
 
 
 class DeviceDetailView(RetrieveAPIView, UpdateAPIView):
-    """Returns details of a device"""
+    """Returns details of a device."""
 
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
@@ -75,7 +75,7 @@ class DeviceDetailView(RetrieveAPIView, UpdateAPIView):
 
 
 class MessageListView(ListAPIView):
-    """Returns a list of message sent to the user"""
+    """Returns a list of message sent to the user."""
 
     serializer_class = MessageSerializer
     required_scopes = ["pushnotifications:read"]
@@ -92,7 +92,7 @@ class MessageListView(ListAPIView):
 
 
 class MessageDetailView(RetrieveAPIView):
-    """Returns a message"""
+    """Returns a message."""
 
     serializer_class = MessageSerializer
     required_scopes = ["pushnotifications:read"]

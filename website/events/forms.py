@@ -7,10 +7,7 @@ from .widgets import FieldsWidget
 
 
 class RegistrationAdminForm(forms.ModelForm):
-    """
-    Custom admin form to add a link to the registration information
-    fields admin
-    """
+    """Custom admin form to add a link to the registration information fields admin."""
 
     fields = forms.URLField(widget=FieldsWidget, required=False)
 
@@ -32,10 +29,7 @@ class RegistrationAdminForm(forms.ModelForm):
 
 
 class RegistrationInformationFieldForm(forms.ModelForm):
-    """
-    Custom form for the registration information fields
-    that adds an order field
-    """
+    """Custom form for the registration information fields that adds an order field."""
 
     order = forms.IntegerField(label=_("order"), initial=0)
 
@@ -58,7 +52,7 @@ class RegistrationInformationFieldForm(forms.ModelForm):
 
 
 class FieldsForm(forms.Form):
-    """Form that outputs the correct widgets for the information fields"""
+    """Form that outputs the correct widgets for the information fields."""
 
     def __init__(self, *args, **kwargs):
         self.information_fields = kwargs.pop("fields")
@@ -84,7 +78,7 @@ class FieldsForm(forms.Form):
 
 
 class EventMessageForm(forms.Form):
-    """Form that outputs a widget to get info to send a push notification"""
+    """Form that outputs a widget to get info to send a push notification."""
 
     title_en = forms.CharField(label=_("Title (EN)"), max_length=150)
     body_en = forms.CharField(label=_("Body (EN)"), widget=forms.Textarea)

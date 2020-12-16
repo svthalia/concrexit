@@ -1,5 +1,4 @@
-"""
-Settings for CI testing
+"""Settings for CI testing.
 
 This file is loaded by __init__.py if GITHUB_ACTIONS is set in the environment
 """

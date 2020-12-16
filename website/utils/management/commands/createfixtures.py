@@ -1,6 +1,4 @@
-"""
-Provides the command to generate fixtures
-"""
+"""Provides the command to generate fixtures."""
 
 # pylint: disable=too-many-statements,too-many-branches
 import math
@@ -79,13 +77,12 @@ def get_event_to_register_for(member):
 
 
 class Command(BaseCommand):
-    """Command to create fake data to populate the site"""
+    """Command to create fake data to populate the site."""
 
     help = "Creates fake data to test the site with"
 
     def add_arguments(self, parser):
-        """
-        Adds arguments to the argument parser.
+        """Add arguments to the argument parser.
 
         :param parser: the argument parser
         """
@@ -141,8 +138,7 @@ class Command(BaseCommand):
         )
 
     def create_board(self, lecture_year):
-        """
-        Create a new board
+        """Create a new board.
 
         :param int lecture_year: the  lecture year this board was active
         """
@@ -188,9 +184,7 @@ class Command(BaseCommand):
         chair.save()
 
     def create_member_group(self, group_model):
-        """
-        Create a MemberGroup
-        """
+        """Create a MemberGroup."""
         self.stdout.write("Creating a membergroup")
         members = Member.objects.all()
         if len(members) < 6:
@@ -237,8 +231,7 @@ class Command(BaseCommand):
         chair.save()
 
     def create_member_group_membership(self, member, group):
-        """
-        Create member group membership
+        """Create member group membership.
 
         :param member: the member to add to the committee
         :param group: the group to add the member to
@@ -263,9 +256,7 @@ class Command(BaseCommand):
         membership.save()
 
     def create_event(self):
-        """
-        Create an event
-        """
+        """Create an event."""
         groups = MemberGroup.objects.all()
         if len(groups) == 0:
             self.stdout.write("Your database does not contain any member groups.")
@@ -320,7 +311,7 @@ class Command(BaseCommand):
         event.save()
 
     def create_partner(self):
-        """Create a new random partner"""
+        """Create a new random partner."""
         self.stdout.write("Creating a partner")
         partner = Partner()
 
@@ -342,7 +333,7 @@ class Command(BaseCommand):
         partner.save()
 
     def create_pizza(self):
-        """Create a new random pizza product"""
+        """Create a new random pizza product."""
         self.stdout.write("Creating a pizza product")
 
         product = Product()
@@ -354,7 +345,7 @@ class Command(BaseCommand):
         product.save()
 
     def create_user(self):
-        """Create a new random user"""
+        """Create a new random user."""
         self.stdout.write("Creating a user")
 
         fakeprofile = _faker.profile()
@@ -398,8 +389,7 @@ class Command(BaseCommand):
         membership.save()
 
     def create_vacancy(self, partners, categories):
-        """
-        Create a new random vacancy
+        """Create a new random vacancy.
 
         :param partners: the partners to choose a partner from
         :param categories: the categories to choose this vacancy from
@@ -432,7 +422,7 @@ class Command(BaseCommand):
         vacancy.categories.set(random.sample(list(categories), random.randint(0, 3)))
 
     def create_vacancy_category(self):
-        """Create new random vacancy categories"""
+        """Create new random vacancy categories."""
         self.stdout.write("Creating a new vacancy category")
         category = VacancyCategory()
 
@@ -442,7 +432,7 @@ class Command(BaseCommand):
         category.save()
 
     def create_document(self):
-        """Creates new random documents"""
+        """Create new random documents."""
         self.stdout.write("Creating a document")
         doc = Document()
 
@@ -610,8 +600,7 @@ class Command(BaseCommand):
         photo.save()
 
     def handle(self, *args, **options):
-        """
-        Handle the command being executed
+        """Handle the command being executed.
 
         :param options: the passed-in options
         """

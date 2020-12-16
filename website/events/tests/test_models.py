@@ -12,7 +12,7 @@ from members.models import Member
 
 @override_settings(SUSPEND_SIGNALS=True)
 class EventTest(TestCase):
-    """Tests events"""
+    """Tests events."""
 
     fixtures = ["members.json"]
 
@@ -226,7 +226,7 @@ class EventTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class RegistrationTest(TestCase):
-    """Tests event registrations"""
+    """Tests event registrations."""
 
     fixtures = ["members.json", "member_groups.json"]
 

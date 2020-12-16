@@ -12,7 +12,7 @@ from thaliawebsite.api.services import create_image_thumbnail_dict
 
 
 class EventRegistrationListSerializer(serializers.ModelSerializer):
-    """Custom registration list serializer"""
+    """Custom registration list serializer."""
 
     class Meta:
         model = EventRegistration
@@ -45,7 +45,7 @@ class EventRegistrationListSerializer(serializers.ModelSerializer):
 
 
 class EventRegistrationAdminListSerializer(EventRegistrationListSerializer):
-    """Custom registration admin list serializer"""
+    """Custom registration admin list serializer."""
 
     class Meta:
         model = EventRegistration
@@ -85,7 +85,7 @@ class EventRegistrationAdminListSerializer(EventRegistrationListSerializer):
 
 
 class EventRegistrationSerializer(serializers.ModelSerializer):
-    """Registration serializer"""
+    """Registration serializer."""
 
     information_fields = None
 

@@ -1,4 +1,4 @@
-"""Views provided by the events package"""
+"""Views provided by the events package."""
 
 from django.conf import settings
 from django.contrib import messages
@@ -18,9 +18,7 @@ from .models import Event, EventRegistration
 
 
 class EventIndex(TemplateView):
-    """
-    Renders the events calendar overview
-    """
+    """Render the events calendar overview."""
 
     template_name = "events/index.html"
 
@@ -38,9 +36,7 @@ class EventIndex(TemplateView):
 
 
 class EventDetail(DetailView):
-    """
-    Renders a single event detail page
-    """
+    """Render a single event detail page."""
 
     model = Event
     queryset = Event.objects.filter(published=True)
@@ -74,9 +70,7 @@ class EventDetail(DetailView):
 
 
 class AlumniEventsView(TemplateView):
-    """
-    Renders the alumni events page
-    """
+    """Render the alumni events page."""
 
     template_name = "events/alumni.html"
 
@@ -93,9 +87,9 @@ class AlumniEventsView(TemplateView):
 
 @method_decorator(login_required, name="dispatch")
 class EventRegisterView(View):
-    """
-    Defines a view that allows the user to register for an event using a POST
-    request. The user should be authenticated.
+    """Define a view that allows the user to register for an event using a POST request.
+
+    The user should be authenticated.
     """
 
     def get(self, request, *args, **kwargs):
@@ -118,9 +112,9 @@ class EventRegisterView(View):
 
 @method_decorator(login_required, name="dispatch")
 class EventCancelView(View):
-    """
-    Defines a view that allows the user to cancel their event registration
-    using a POSt request. The user should be authenticated.
+    """Define a view that allows the user to cancel their event registration using a POST request.
+
+    The user should be authenticated.
     """
 
     def get(self, request, *args, **kwargs):
@@ -139,9 +133,9 @@ class EventCancelView(View):
 
 @method_decorator(login_required, name="dispatch")
 class RegistrationView(FormView):
-    """
-    Renders a form that allows the user to change the details of their
-    registration. The user should be authenticated.
+    """Render a form that allows the user to change the details of their registration.
+
+    The user should be authenticated.
     """
 
     form_class = FieldsForm

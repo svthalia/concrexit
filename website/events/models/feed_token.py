@@ -3,7 +3,7 @@ from django.utils.crypto import get_random_string
 
 
 class FeedToken(models.Model):
-    """Used to personalize the ical Feed"""
+    """Used to personalize the ical Feed."""
 
     member = models.OneToOneField("members.Member", models.CASCADE)
     token = models.CharField(max_length=32, editable=False)

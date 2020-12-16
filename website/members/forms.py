@@ -1,4 +1,4 @@
-"""Forms defined by the members package"""
+"""Forms defined by the members package."""
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -12,7 +12,7 @@ from .models import Profile
 
 
 class ProfileForm(forms.ModelForm):
-    """Form with all the user editable fields of a Profile model"""
+    """Form with all the user editable fields of a Profile model."""
 
     class Meta:
         fields = [
@@ -47,10 +47,7 @@ class ProfileForm(forms.ModelForm):
 
 
 class UserCreationForm(BaseUserCreationForm):
-    """
-    Custom Form that removes the password fields from user creation
-    and sends a welcome message when a user is created
-    """
+    """Custom Form that removes the password fields from user creation and sends a welcome message when a user is created."""
 
     # Don't forget to edit the formset in admin.py!
     # This is a stupid quirk of the user admin.
@@ -95,8 +92,8 @@ class UserCreationForm(BaseUserCreationForm):
 
 
 class UserChangeForm(BaseUserChangeForm):
-    """
-    Custom user edit form that adds fields for first/last name and email
+    """Custom user edit form that adds fields for first/last name and email.
+
     It also force-lowercases the username on save
     """
 

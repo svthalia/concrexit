@@ -7,8 +7,8 @@ from django.urls import reverse
 
 
 def get_media_url(path, attachment=False):
-    """
-    Get the url of the provided media file to serve in a browser.
+    """Get the url of the provided media file to serve in a browser.
+
     If the file is private a signature will be added.
     Do NOT use this with user input
     :param path: the location of the file
@@ -36,8 +36,8 @@ def get_media_url(path, attachment=False):
 
 
 def get_thumbnail_url(path, size, fit=True):
-    """
-    Get the thumbnail url of a media file. NEVER use this with user input.
+    """Get the thumbnail url of a media file, NEVER use this with user input.
+
     If the thumbnail exists this function will return the url of the
     media file, with signature if necessary. Does it not yet exist a route
     that executes the :func:`utils.media.views.generate_thumbnail`

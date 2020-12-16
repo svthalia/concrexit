@@ -1,4 +1,4 @@
-"""Provides a template handler that renders the menu"""
+"""Provides a template handler that renders the menu."""
 from django import template
 from django.urls import reverse
 
@@ -9,12 +9,10 @@ register = template.Library()
 
 @register.inclusion_tag("menu/menu.html", takes_context=True)
 def render_main_menu(context):
-    """
-    Renders the main menu in this place.
+    """Render the main menu in this place.
 
     Accounts for logged-in status and locale.
     """
-
     path = None
     if "request" in context:
         path = context.get("request").path

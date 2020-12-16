@@ -1,5 +1,4 @@
-"""
-Settings module
+"""Settings module.
 
 This file controls what settings are loaded.
 

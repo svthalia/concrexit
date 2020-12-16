@@ -1,4 +1,4 @@
-"""Announcements app API v2 urls"""
+"""Announcements app API v2 urls."""
 from django.urls import path, include
 
 from announcements.api.v2.views import (

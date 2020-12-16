@@ -18,9 +18,7 @@ from payments.tests.test_services import MockPayable
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True)
 class BankAccountCreateViewTest(TestCase):
-    """
-    Test for the BankAccountCreateView
-    """
+    """Test for the BankAccountCreateView."""
 
     fixtures = ["members.json"]
 
@@ -182,9 +180,7 @@ class BankAccountCreateViewTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class BankAccountRevokeViewTest(TestCase):
-    """
-    Test for the BankAccountRevokeView
-    """
+    """Test for the BankAccountRevokeView."""
 
     fixtures = ["members.json"]
 
@@ -238,9 +234,7 @@ class BankAccountRevokeViewTest(TestCase):
         )
 
     def test_no_post(self):
-        """
-        If the request is not a post it should redirect to the list
-        """
+        """If the request is not a post it should redirect to the list."""
         response = self.client.get(
             reverse("payments:bankaccount-revoke", args=(self.account2.pk,)),
             follow=True,
@@ -251,9 +245,7 @@ class BankAccountRevokeViewTest(TestCase):
         )
 
     def test_cannot_revoke_no_mandate(self):
-        """
-        If the selected account has no valid mandate it should return a 404
-        """
+        """If the selected account has no valid mandate it should return a 404."""
         self.account2.valid_until = "2019-04-01"
         self.account2.save()
 
@@ -323,9 +315,7 @@ class BankAccountRevokeViewTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class BankAccountListViewTest(TestCase):
-    """
-    Test for the BankAccountListView
-    """
+    """Test for the BankAccountListView."""
 
     fixtures = ["members.json"]
 
@@ -370,9 +360,7 @@ class BankAccountListViewTest(TestCase):
         )
 
     def test_accounts(self):
-        """
-        The page should show only accounts of the logged-in user
-        """
+        """The page should show only accounts of the logged-in user."""
         response = self.client.get(reverse("payments:bankaccount-list"), follow=True,)
         self.assertEqual(200, response.status_code)
         self.assertContains(response, "NL91ABNA0417164300")
@@ -382,9 +370,7 @@ class BankAccountListViewTest(TestCase):
 @freeze_time("2019-04-01")
 @override_settings(SUSPEND_SIGNALS=True)
 class PaymentListViewTest(TestCase):
-    """
-    Test for the PaymentListView
-    """
+    """Test for the PaymentListView."""
 
     fixtures = ["members.json"]
 
@@ -430,9 +416,7 @@ class PaymentListViewTest(TestCase):
         )
 
     def test_contents(self):
-        """
-        Test if the view shows payments
-        """
+        """Test if the view shows payments."""
         response = self.client.get(
             reverse("payments:payment-list", kwargs={"year": 2019, "month": 3}),
             follow=True,
@@ -445,9 +429,7 @@ class PaymentListViewTest(TestCase):
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 @patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class PaymentProcessViewTest(TestCase):
-    """
-    Test for the PaymentProcessView
-    """
+    """Test for the PaymentProcessView."""
 
     fixtures = ["members.json"]
 

@@ -28,6 +28,17 @@ jobs:
       - name: Run pylint
         run: make pylint
 
+  docstyle:
+    name: Docstring style
+    runs-on: ubuntu-18.04
+    container: thalia/concrexit-dependencies
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Run pydocstyle
+        run: make pydocstyle
+
   tests:
     name: Django Tests
     runs-on: ubuntu-18.04
@@ -124,7 +135,7 @@ jobs:
   build-docker:
     name: Build Docker Image
     runs-on: ubuntu-18.04
-    needs: [codestyle, tests, documentation-tests]
+    needs: [linting, tests, documentation-tests]
     env:
       DOCKER_TAG: thalia/concrexit:${{ github.sha }}
     steps:

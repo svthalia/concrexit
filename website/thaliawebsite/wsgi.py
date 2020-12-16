@@ -1,5 +1,4 @@
-"""
-WSGI config for thaliawebsite project.
+"""WSGI config for thaliawebsite project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

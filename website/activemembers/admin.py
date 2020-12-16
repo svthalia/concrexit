@@ -15,8 +15,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
-    """
-    Solely here for performance reasons.
+    """Solely here for performance reasons.
 
     Needed because the `__str__()` of `MemberGroupMembership` (which is
     displayed above each inline form) uses the username, name of the member

@@ -1,4 +1,4 @@
-"""Routes defined by the events package"""
+"""Routes defined by the events package."""
 from django.urls import path, include
 
 from events.api.calendarjs.views import (

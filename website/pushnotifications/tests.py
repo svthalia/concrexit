@@ -10,7 +10,7 @@ from mailinglists.models import MailingList
 
 @override_settings(SUSPEND_SIGNALS=True)
 class PushNotificationsTest(TestCase):
-    """Tests push notifications"""
+    """Tests push notifications."""
 
     fixtures = ["members.json"]
 

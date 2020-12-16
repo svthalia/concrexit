@@ -1,4 +1,4 @@
-"""Widgets provided by the payments package"""
+"""Widgets provided by the payments package."""
 from django.contrib.contenttypes.models import ContentType
 from django.forms import Widget
 
@@ -6,9 +6,7 @@ from payments.models import Payment, PaymentUser
 
 
 class PaymentWidget(Widget):
-    """
-    Custom widget for the Payment object, used in registrations
-    """
+    """Custom widget for the Payment object, used in registrations."""
 
     template_name = "payments/widgets/payment.html"
 
@@ -37,9 +35,7 @@ class PaymentWidget(Widget):
 
 
 class SignatureWidget(Widget):
-    """
-    Widget for signature image
-    """
+    """Widget for signature image."""
 
     template_name = "payments/widgets/signature.html"
 

@@ -5,7 +5,7 @@ from members.api.v2.serializers.member import MemberSerializer
 
 
 class MemberGroupMembershipSerializer(serializers.ModelSerializer):
-    """API serializer for member group memberships"""
+    """API serializer for member group memberships."""
 
     class Meta:
         """Meta class for the serializer."""

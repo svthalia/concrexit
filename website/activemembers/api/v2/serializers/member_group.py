@@ -8,7 +8,7 @@ from thaliawebsite.api.v2.serializers.thumbnail import ThumbnailSerializer
 
 
 class MemberGroupSerializer(serializers.ModelSerializer):
-    """API serializer for member groups"""
+    """API serializer for member groups."""
 
     class Meta:
         """Meta class for the serializer."""

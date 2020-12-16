@@ -1,4 +1,4 @@
-"""Tests for models in the mailinglists package"""
+"""Tests for models in the mailinglists package."""
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 
@@ -7,7 +7,7 @@ from mailinglists.models import MailingList, ListAlias
 
 @override_settings(SUSPEND_SIGNALS=True)
 class MailingListTest(TestCase):
-    """Tests mailing lists"""
+    """Tests mailing lists."""
 
     @classmethod
     def setUpTestData(cls):
@@ -40,7 +40,7 @@ class MailingListTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class ListAliasTest(TestCase):
-    """Tests list aliases"""
+    """Tests list aliases."""
 
     @classmethod
     def setUpTestData(cls):

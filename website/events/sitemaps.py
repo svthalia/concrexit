@@ -1,4 +1,4 @@
-"""The sitemaps defined by the events package"""
+"""The sitemaps defined by the events package."""
 from django.contrib import sitemaps
 from django.urls import reverse
 
@@ -6,7 +6,7 @@ from . import models
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
-    """Sitemap of the static event pages"""
+    """Sitemap of the static event pages."""
 
     changefreq = "daily"
 
@@ -18,7 +18,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
 
 class EventSitemap(sitemaps.Sitemap):
-    """Sitemap of the event detail pages"""
+    """Sitemap of the event detail pages."""
 
     def items(self):
         return models.Event.objects.filter(published=True)

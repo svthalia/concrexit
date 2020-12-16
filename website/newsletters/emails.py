@@ -1,4 +1,4 @@
-"""The emails defined by the newsletters package"""
+"""The emails defined by the newsletters package."""
 import logging
 from smtplib import SMTPException
 
@@ -16,13 +16,10 @@ logger = logging.getLogger(__name__)
 
 
 def send_newsletter(newsletter):
-    """
-    Sends the newsletter as HTML and plaintext email
+    """Send the newsletter as HTML and plaintext email.
 
     :param newsletter: the newsletter to be send
-
     """
-
     events = None
     if newsletter.date:
         datetime = (

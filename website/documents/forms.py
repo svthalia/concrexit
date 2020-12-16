@@ -1,4 +1,4 @@
-"""The forms defined by the documents package"""
+"""The forms defined by the documents package."""
 from django import forms
 from django.contrib import admin
 from django.forms import widgets
@@ -9,8 +9,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 class DocumentFileInput(widgets.ClearableFileInput):
-    """
-    Wrapper around Django's :class:`~django.forms.widgets.ClearableFileInput`
+    """Wrapper around Django's :class:`~django.forms.widgets.ClearableFileInput`.
 
     It overrides the URL of the associated file when it is fetched.
     """
@@ -27,7 +26,7 @@ class DocumentFileInput(widgets.ClearableFileInput):
 
 
 class MinutesForm(forms.ModelForm):
-    """Form that overrides the widgets for the files"""
+    """Form that overrides the widgets for the files."""
 
     class Meta:
         model = models.Minutes
@@ -41,7 +40,7 @@ class MinutesForm(forms.ModelForm):
 
 
 class AnnualDocumentForm(forms.ModelForm):
-    """Form that provides custom functionality for annual documents"""
+    """Form that provides custom functionality for annual documents."""
 
     class Meta:
         model = models.AnnualDocument
@@ -53,12 +52,12 @@ class AnnualDocumentForm(forms.ModelForm):
 
     @staticmethod
     def _current_year():
-        """Get the current lecture year"""
+        """Get the current lecture year."""
         return datetime_to_lectureyear(timezone.now())
 
     @staticmethod
     def _year_choices():
-        """Get the lecture years"""
+        """Get the lecture years."""
         current = datetime_to_lectureyear(timezone.now())
         return [
             (year, "{}-{}".format(year, year + 1))
@@ -67,7 +66,7 @@ class AnnualDocumentForm(forms.ModelForm):
 
 
 class AssociationDocumentForm(forms.ModelForm):
-    """Form that overrides the widgets for the files"""
+    """Form that overrides the widgets for the files."""
 
     class Meta:
         model = models.AssociationDocument
@@ -82,7 +81,7 @@ class AssociationDocumentForm(forms.ModelForm):
 
 
 class EventDocumentForm(forms.ModelForm):
-    """Form that overrides the widgets for the files"""
+    """Form that overrides the widgets for the files."""
 
     class Meta:
         model = models.EventDocument
@@ -98,7 +97,7 @@ class EventDocumentForm(forms.ModelForm):
 
 
 class MiscellaneousDocumentForm(forms.ModelForm):
-    """Form that overrides the widgets for the files"""
+    """Form that overrides the widgets for the files."""
 
     class Meta:
         model = models.MiscellaneousDocument
@@ -113,7 +112,7 @@ class MiscellaneousDocumentForm(forms.ModelForm):
 
 
 class GeneralMeetingForm(forms.ModelForm):
-    """Custom form for general meetings with a custom widget for documents"""
+    """Custom form for general meetings with a custom widget for documents."""
 
     class Meta:
         model = models.GeneralMeeting

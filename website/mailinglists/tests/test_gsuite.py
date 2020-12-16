@@ -1,4 +1,4 @@
-"""Test for the GSuite sync in the mailinglists package"""
+"""Test for the GSuite sync in the mailinglists package."""
 from unittest import mock
 from unittest.mock import MagicMock
 

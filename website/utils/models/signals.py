@@ -5,9 +5,8 @@ from django.dispatch import receiver
 
 
 def suspendingreceiver(signal, **decorator_kwargs):
-    """
-    A wrapper around the standard django receiver that prevents the receiver
-    from running if the setting `SUSPEND_SIGNALS` is `True`.
+    """Create wrapper around the standard django receiver that prevents the receiver from running if the setting `SUSPEND_SIGNALS` is `True`.
+
     This is particularly useful if you want to prevent signals running during
     unit testing.
 

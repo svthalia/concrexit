@@ -12,8 +12,8 @@ from payments.exceptions import PaymentError
 
 
 class EventRegistrationViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
-    """
-    Defines the viewset for registrations, requires an authenticated user.
+    """Defines the viewset for registrations, requires an authenticated user.
+
     Has custom update and destroy methods that use the services.
     """
 

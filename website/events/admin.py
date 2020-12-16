@@ -1,4 +1,4 @@
-"""Registers admin interfaces for the events module"""
+"""Registers admin interfaces for the events module."""
 from functools import partial
 
 from django.contrib import admin
@@ -25,7 +25,7 @@ from . import forms, models
 
 
 class RegistrationInformationFieldInline(admin.TabularInline):
-    """The inline for registration information fields in the Event admin"""
+    """The inline for registration information fields in the Event admin."""
 
     form = forms.RegistrationInformationFieldForm
     extra = 0
@@ -43,7 +43,7 @@ class RegistrationInformationFieldInline(admin.TabularInline):
 
 
 class PizzaEventInline(admin.StackedInline):
-    """The inline for pizza events in the Event admin"""
+    """The inline for pizza events in the Event admin."""
 
     model = PizzaEvent
     exclude = ("end_reminder",)
@@ -52,7 +52,7 @@ class PizzaEventInline(admin.StackedInline):
 
 
 class LectureYearFilter(admin.SimpleListFilter):
-    """Filter the events on those started or ended in a lecture year"""
+    """Filter the events on those started or ended in a lecture year."""
 
     title = _("lecture year")
     parameter_name = "lecture_year"
@@ -84,7 +84,7 @@ class LectureYearFilter(admin.SimpleListFilter):
 
 @admin.register(models.Event)
 class EventAdmin(DoNextTranslatedModelAdmin):
-    """Manage the events"""
+    """Manage the events."""
 
     inlines = (
         RegistrationInformationFieldInline,
@@ -156,7 +156,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         )
 
     def has_change_permission(self, request, event=None):
-        """Only allow access to the change form if the user is an organiser"""
+        """Only allow access to the change form if the user is an organiser."""
         if event is not None and not services.is_organiser(request.member, event):
             return False
         return super().has_change_permission(request, event)
@@ -185,7 +185,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
     edit_link.short_description = ""
 
     def num_participants(self, obj):
-        """Pretty-print the number of participants"""
+        """Pretty-print the number of participants."""
         num = obj.eventregistration_set.exclude(
             date_cancelled__lt=timezone.now()
         ).count()
@@ -196,13 +196,13 @@ class EventAdmin(DoNextTranslatedModelAdmin):
     num_participants.short_description = _("Number of participants")
 
     def make_published(self, request, queryset):
-        """Action to change the status of the event"""
+        """Change the status of the event to published."""
         self._change_published(request, queryset, True)
 
     make_published.short_description = _("Publish selected events")
 
     def make_unpublished(self, request, queryset):
-        """Action to change the status of the event"""
+        """Change the status of the event to unpublished."""
         self._change_published(request, queryset, False)
 
     make_unpublished.short_description = _("Unpublish selected events")
@@ -214,7 +214,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         queryset.update(published=published)
 
     def save_formset(self, request, form, formset, change):
-        """Save formsets with their order"""
+        """Save formsets with their order."""
         formset.save()
 
         informationfield_forms = (
@@ -235,7 +235,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         form.instance.save()
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        """Customise formfield for organiser"""
+        """Customise formfield for organiser."""
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == "organiser":
             # Disable add/change/delete buttons
@@ -245,7 +245,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         return field
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """Customise the organiser formfield, limit the options"""
+        """Customise the organiser formfield, limit the options."""
         if db_field.name == "organiser":
             # Use custom queryset for organiser field
             # Only get the current active committees the user is a member of
@@ -312,7 +312,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
 
 @admin.register(models.EventRegistration)
 class RegistrationAdmin(DoNextTranslatedModelAdmin):
-    """Custom admin for registrations"""
+    """Custom admin for registrations."""
 
     form = RegistrationAdminForm
 
@@ -322,7 +322,7 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
         return super().save_model(request, registration, form, change)
 
     def has_view_permission(self, request, registration=None):
-        """Only give view permission if the user is an organiser"""
+        """Only give view permission if the user is an organiser."""
         if registration is not None and not services.is_organiser(
             request.member, registration.event
         ):
@@ -330,7 +330,7 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
         return super().has_view_permission(request, registration)
 
     def has_change_permission(self, request, registration=None):
-        """Only give change permission if the user is an organiser"""
+        """Only give change permission if the user is an organiser."""
         if registration is not None and not services.is_organiser(
             request.member, registration.event
         ):
@@ -338,7 +338,7 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
         return super().has_change_permission(request, registration)
 
     def has_delete_permission(self, request, registration=None):
-        """Only give delete permission if the user is an organiser"""
+        """Only give delete permission if the user is an organiser."""
         if registration is not None and not services.is_organiser(
             request.member, registration.event
         ):
@@ -356,7 +356,7 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
         )
 
     def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
-        """Customise the formfields of event and member"""
+        """Customise the formfields of event and member."""
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name in ("event", "member"):
             # Disable add/change/delete buttons
@@ -370,7 +370,7 @@ class RegistrationAdmin(DoNextTranslatedModelAdmin):
         return field
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """Customise the formfields of event and member"""
+        """Customise the formfields of event and member."""
         if db_field.name == "event":
             # allow to restrict event
             if request.GET.get("event_pk"):

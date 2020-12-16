@@ -9,7 +9,7 @@ from payments.tests.__mocks__ import MockPayable
 
 @override_settings(SUSPEND_SIGNALS=True)
 class PaymentButtonTemplatetagTest(TestCase):
-    """Tests the payment button templatetag"""
+    """Tests the payment button templatetag."""
 
     def test_inserts_data(self):
         payable = MockPayable("test")

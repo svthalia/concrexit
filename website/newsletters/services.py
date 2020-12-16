@@ -12,9 +12,7 @@ from pushnotifications.models import Message, Category
 
 
 def write_to_file(pk, lang, html_message):
-    """
-    Write newsletter to a file
-    """
+    """Write newsletter to a file."""
     cache_dir = os.path.join(settings.MEDIA_ROOT, "newsletters")
     if not os.path.isdir(cache_dir):
         os.makedirs(cache_dir)
@@ -24,9 +22,7 @@ def write_to_file(pk, lang, html_message):
 
 
 def save_to_disk(newsletter):
-    """
-    Writes the newsletter as HTML to file (in all languages)
-    """
+    """Write the newsletter as HTML to file (in all languages)."""
     main_partner = Partner.objects.filter(is_main_partner=True).first()
     local_partner = Partner.objects.filter(is_local_partner=True).first()
 

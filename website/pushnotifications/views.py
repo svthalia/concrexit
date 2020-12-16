@@ -1,4 +1,4 @@
-"""Views provided by the pushnotifications package"""
+"""Views provided by the pushnotifications package."""
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404, redirect
@@ -9,8 +9,7 @@ from pushnotifications.models import Message
 @staff_member_required
 @permission_required("pushnotifications.change_message")
 def admin_send(request, pk):
-    """
-    Send the provided push notification
+    """Send the provided push notification.
 
     :param request: the request
     :param pk: key of the message

@@ -11,10 +11,7 @@ from utils.snippets import extract_date_range
 
 
 class CalendarJSEventListView(ListAPIView):
-    """
-    Defines a custom route that outputs the correctly formatted
-    events information for CalendarJS, published events only
-    """
+    """Define a custom route that outputs the correctly formatted events information for CalendarJS, published events only."""
 
     serializer_class = EventsCalenderJSSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -31,10 +28,7 @@ class CalendarJSEventListView(ListAPIView):
 
 
 class CalendarJSUnpublishedEventListView(ListAPIView):
-    """
-    Defines a custom route that outputs the correctly formatted
-    events information for CalendarJS, unpublished events only
-    """
+    """Define a custom route that outputs the correctly formatted events information for CalendarJS, unpublished events only."""
 
     serializer_class = UnpublishedEventsCalenderJSSerializer
     permission_classes = [IsAdminUser, UnpublishedEventPermissions]

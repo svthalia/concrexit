@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Document(models.Model):
-    """Describes a base document"""
+    """Describes a base document."""
 
     class Meta:
         verbose_name = _("Document")
@@ -49,7 +49,7 @@ class Document(models.Model):
 
 
 class AnnualDocument(Document):
-    """Describes an annual document"""
+    """Describes an annual document."""
 
     class Meta:
         verbose_name = _("Annual document")
@@ -85,14 +85,14 @@ class AnnualDocument(Document):
 
 
 class AssociationDocumentManager(models.Manager):
-    """Custom manager to filter for association documents"""
+    """Custom manager to filter for association documents."""
 
     def get_queryset(self):
         return super().get_queryset().filter(category="association")
 
 
 class AssociationDocument(Document):
-    """Describes an association document"""
+    """Describes an association document."""
 
     class Meta:
         verbose_name = _("Miscellaneous association document")
@@ -107,7 +107,7 @@ class AssociationDocument(Document):
 
 
 class EventDocument(Document):
-    """Describes a document for events"""
+    """Describes a document for events."""
 
     class Meta:
         verbose_name = _("event document")
@@ -124,14 +124,14 @@ class EventDocument(Document):
 
 
 class MiscellaneousDocumentManager(models.Manager):
-    """Custom manager to filter for misc documents"""
+    """Custom manager to filter for misc documents."""
 
     def get_queryset(self):
         return super().get_queryset().filter(category="misc")
 
 
 class MiscellaneousDocument(Document):
-    """Describes a miscellaneous document"""
+    """Describes a miscellaneous document."""
 
     class Meta:
         ordering = ["-created"]
@@ -147,7 +147,7 @@ class MiscellaneousDocument(Document):
 
 
 class GeneralMeeting(models.Model):
-    """Describes a general meeting"""
+    """Describes a general meeting."""
 
     class Meta:
         verbose_name = _("General meeting")
@@ -167,7 +167,7 @@ class GeneralMeeting(models.Model):
 
 
 class Minutes(Document):
-    """Describes a minutes document"""
+    """Describes a minutes document."""
 
     class Meta:
         verbose_name = _("Minutes")

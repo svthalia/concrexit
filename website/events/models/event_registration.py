@@ -10,14 +10,14 @@ from . import Event
 
 
 def registration_member_choices_limit():
-    """Defines queryset filters to only include current members"""
+    """Define queryset filters to only include current members."""
     return Q(membership__until__isnull=True) | Q(
         membership__until__gt=timezone.now().date()
     )
 
 
 class EventRegistration(models.Model, Payable):
-    """Describes a registration for an Event"""
+    """Describes a registration for an Event."""
 
     event = models.ForeignKey(Event, models.CASCADE)
 

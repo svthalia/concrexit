@@ -4,11 +4,10 @@ from django.urls import reverse
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
-    """Sitemap items for static pages"""
+    """Sitemap items for static pages."""
 
     def items(self):
-        """
-        The items of the site map.
+        """Return items of the site map.
 
         >>> sitemap = StaticViewSitemap()
         >>> sitemap.items()[0]
@@ -21,8 +20,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return ["index"]
 
     def location(self, obj):
-        """
-        Get the location for a site map item.
+        """Get the location for a site map item.
 
         Example::
 

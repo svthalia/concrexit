@@ -1,4 +1,4 @@
-"""Registers admin interfaces for the announcements module"""
+"""Registers admin interfaces for the announcements module."""
 from django.contrib import admin
 from django.template.defaultfilters import striptags
 
@@ -9,7 +9,7 @@ from .models import Announcement, FrontpageArticle, Slide
 
 @admin.register(Announcement)
 class AnnouncementAdmin(admin.ModelAdmin):
-    """Manage the admin pages for the announcements"""
+    """Manage the admin pages for the announcements."""
 
     #: show these fields in the admin overview list
     #: see :py:method:content_html for the 'content_html' field
@@ -17,7 +17,7 @@ class AnnouncementAdmin(admin.ModelAdmin):
     list_display = ("content_html", "since", "until", "visible")
 
     def content_html(self, obj):
-        """Get the content of the object as html
+        """Get the content of the object as html.
 
         :param obj: the object to render for
         :return: the stripped html
@@ -27,7 +27,7 @@ class AnnouncementAdmin(admin.ModelAdmin):
         return bleach(striptags(obj.content))
 
     def visible(self, obj):
-        """Is the object visible"""
+        """Is the object visible."""
         return obj.is_visible
 
     visible.boolean = True
@@ -35,13 +35,13 @@ class AnnouncementAdmin(admin.ModelAdmin):
 
 @admin.register(FrontpageArticle)
 class FrontpageArticleAdmin(admin.ModelAdmin):
-    """Manage front page articles"""
+    """Manage front page articles."""
 
     #: available fields in the admin overview list
     list_display = ("title", "since", "until", "visible")
 
     def visible(self, obj):
-        """Is the object visible"""
+        """Is the object visible."""
         return obj.is_visible
 
     visible.boolean = True
@@ -49,14 +49,14 @@ class FrontpageArticleAdmin(admin.ModelAdmin):
 
 @admin.register(Slide)
 class SlideAdmin(admin.ModelAdmin):
-    """Manage the admin pages for the slides"""
+    """Manage the admin pages for the slides."""
 
     #: show these fields in the admin overview list
     #: see :py:method:visible for the visible field
     list_display = ("title", "since", "until", "visible")
 
     def visible(self, obj):
-        """Is the object visible"""
+        """Is the object visible."""
         return obj.is_visible
 
     visible.boolean = True

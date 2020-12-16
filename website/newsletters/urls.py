@@ -1,4 +1,4 @@
-"""The routes defined by the newsletters package"""
+"""The routes defined by the newsletters package."""
 from django.urls import path, include
 
 from . import views

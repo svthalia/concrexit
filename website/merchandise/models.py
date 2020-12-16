@@ -1,12 +1,11 @@
-"""Models for the merchandise database tables"""
+"""Models for the merchandise database tables."""
 from django.db import models
 
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class MerchandiseItem(models.Model, metaclass=ModelTranslateMeta):
-    """
-    Merchandise items
+    """Merchandise items.
 
     This model describes merchandise items.
     """
@@ -24,8 +23,7 @@ class MerchandiseItem(models.Model, metaclass=ModelTranslateMeta):
     image = models.ImageField(upload_to="public/merchandise")
 
     def __str__(self):
-        """Gives the name of the merchandise item in the currently
-        active locale.
+        """Give the name of the merchandise item in the currently active locale.
 
         :return: The name of the merchandise item.
         :rtype: str

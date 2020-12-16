@@ -1,5 +1,4 @@
-"""
-This module makes it easy to define translatable model fields.
+"""This module makes it easy to define translatable model fields.
 
 To use it in a ``models.py``, make sure you;
   - set the metaclass of your model to :class:`ModelTranslateMeta`
@@ -42,17 +41,14 @@ from django.utils.translation import get_language
 
 
 class MultilingualField:
-    """
-    Transformed the passed-in form field into fields appended with the
-    active languages and generates an automatic accessor property that
-    translates based on the currently active language
+    """Transformed the passed-in form field into fields appended with the active languages and generates an automatic accessor property that translates based on the currently active language.
 
     Requires a :class:`~django.db.models.Model` metaclassed by
     :class:`ModelTranslateMeta`.
     """
 
     def __init__(self, cls, *args, **kwargs):
-        """Construct the MultilingualField
+        """Construct the MultilingualField.
 
         :param cls: the form field to instantiate.
             Any additional arguments are passed to the field.
@@ -68,7 +64,7 @@ class MultilingualField:
 
 
 def localize_attr_name(attr_name, language=None):
-    """Generate the localized attribute name"""
+    """Generate the localized attribute name."""
     if language is None:
         language = get_language()
     if language is None:
@@ -86,7 +82,7 @@ def _i18n_attr_accessor(attr):
 
 
 class ModelTranslateMeta(models.base.ModelBase):
-    """Metaclass to handle the :class:`MultilingualField` transformations"""
+    """Metaclass to handle the :class:`MultilingualField` transformations."""
 
     def __new__(mcs, name, bases, dct):
         field_i18n = {"default": {}, "fields": {}}
@@ -138,10 +134,7 @@ class ModelTranslateMeta(models.base.ModelBase):
 
 
 class TranslatedModelAdmin(admin.ModelAdmin):
-    """
-    This class should be used when :class:`~django.contrib.admin.ModelAdmin`
-    is used with a translated model and one refers to such a field in the
-    ``fields`` or ``fieldsets`` attributes, or in ``prepopulated_fields``.
+    """This class should be used when :class:`~django.contrib.admin.ModelAdmin` is used with a translated model and one refers to such a field in the ``fields`` or ``fieldsets`` attributes, or in ``prepopulated_fields``.
 
     This works because :class:`~django.contrib.admin.ModelAdmin` has an empty
     metaclass; we can hook in to ``__init__`` and modify the attributes

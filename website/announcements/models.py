@@ -1,4 +1,4 @@
-"""The models defined by the announcement package"""
+"""The models defined by the announcement package."""
 from django.core.validators import (
     FileExtensionValidator,
     get_available_image_extensions,
@@ -11,10 +11,10 @@ from tinymce.models import HTMLField
 
 
 class VisibleObjectManager(Manager):
-    """Get all active members, i.e. who have a committee membership"""
+    """Get all active members, i.e. who have a committee membership."""
 
     def get_queryset(self):
-        """Select all visible items"""
+        """Select all visible items."""
         return (
             super()
             .get_queryset()
@@ -27,7 +27,7 @@ class VisibleObjectManager(Manager):
 
 
 class Announcement(models.Model):
-    """Describes an announcement"""
+    """Describes an announcement."""
 
     objects = models.Manager()
     visible_objects = VisibleObjectManager()
@@ -69,7 +69,7 @@ class Announcement(models.Model):
 
     @property
     def is_visible(self):
-        """Is this announcement currently visible"""
+        """Is this announcement currently visible."""
         return (
             (self.until is None or self.until > timezone.now())
             and (self.since is None or self.since <= timezone.now())
@@ -78,7 +78,7 @@ class Announcement(models.Model):
 
 
 class FrontpageArticle(models.Model):
-    """Front page articles"""
+    """Front page articles."""
 
     objects = models.Manager()
     visible_objects = VisibleObjectManager()
@@ -118,7 +118,7 @@ class FrontpageArticle(models.Model):
 
     @property
     def is_visible(self):
-        """Is this announcement currently visible"""
+        """Is this announcement currently visible."""
         return (
             (self.until is None or self.until > timezone.now())
             and (self.since is None or self.since <= timezone.now())
@@ -133,7 +133,7 @@ def validate_image(value):
 
 
 class Slide(models.Model):
-    """Describes an announcement"""
+    """Describes an announcement."""
 
     objects = models.Manager()
     visible_objects = VisibleObjectManager()
@@ -201,7 +201,7 @@ class Slide(models.Model):
 
     @property
     def is_visible(self):
-        """Is this slide currently visible"""
+        """Is this slide currently visible."""
         return (
             (self.until is None or self.until > timezone.now())
             and (self.since is None or self.since <= timezone.now())

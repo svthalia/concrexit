@@ -16,7 +16,7 @@ from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Event(models.Model, metaclass=ModelTranslateMeta):
-    """Describes an event"""
+    """Describes an event."""
 
     CATEGORY_ALUMNI = "alumni"
     CATEGORY_EDUCATION = "education"
@@ -199,7 +199,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return self.registrationinformationfield_set.count() > 0
 
     def reached_participants_limit(self):
-        """Is this event up to capacity?"""
+        """Is this event up to capacity?."""
         return (
             self.max_participants is not None
             and self.max_participants
@@ -208,26 +208,26 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def registrations(self):
-        """Queryset with all non-cancelled registrations"""
+        """Queryset with all non-cancelled registrations."""
         return self.eventregistration_set.filter(date_cancelled=None)
 
     @property
     def participants(self):
-        """Return the active participants"""
+        """Return the active participants."""
         if self.max_participants is not None:
             return self.registrations.order_by("date")[: self.max_participants]
         return self.registrations.order_by("date")
 
     @property
     def queue(self):
-        """Return the waiting queue"""
+        """Return the waiting queue."""
         if self.max_participants is not None:
             return self.registrations.order_by("date")[self.max_participants :]
         return []
 
     @property
     def cancellations(self):
-        """Return a queryset with the cancelled events"""
+        """Return a queryset with the cancelled events."""
         return self.eventregistration_set.exclude(date_cancelled=None).order_by(
             "date_cancelled"
         )

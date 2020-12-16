@@ -1,4 +1,4 @@
-"""The forms defined by the education package"""
+"""The forms defined by the education package."""
 import datetime
 
 from django.forms import (
@@ -18,7 +18,7 @@ from .models import Course, Exam, Summary
 
 
 class AddExamForm(ModelForm):
-    """Custom form to add exams, changes the possible years of the date"""
+    """Custom form to add exams, changes the possible years of the date."""
 
     this_year = datetime.date.today().year
     years = list(reversed(range(this_year - 8, this_year + 1)))
@@ -37,10 +37,7 @@ class AddExamForm(ModelForm):
 
 
 class AddSummaryForm(ModelForm):
-    """
-    Custom form to add summaries, orders courses by name and formats the
-    year as lecture years
-    """
+    """Custom form to add summaries, orders courses by name and formats the year as lecture years."""
 
     course = ModelChoiceField(
         queryset=Course.objects.order_by("name"), empty_label=None,
@@ -59,9 +56,7 @@ class AddSummaryForm(ModelForm):
 
 
 class SummaryAdminForm(ModelForm):
-    """
-    Custom form for summaries so that we can show more data in the admin
-    """
+    """Custom form for summaries so that we can show more data in the admin."""
 
     def __init__(self, data=None, files=None, **kwargs):
         super().__init__(data, files, **kwargs)

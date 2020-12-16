@@ -1,10 +1,10 @@
-"""Sitemaps defined by the members package"""
+"""Sitemaps defined by the members package."""
 from django.contrib import sitemaps
 from django.urls import reverse
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
-    """Static sitemap with members page"""
+    """Static sitemap with members page."""
 
     priority = 0.5
     changefreq = "daily"

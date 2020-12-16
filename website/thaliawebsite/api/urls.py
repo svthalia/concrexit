@@ -1,4 +1,4 @@
-"""Concrexit API url schemes"""
+"""Concrexit API url schemes."""
 from django.conf import settings
 from django.urls import path, include
 from django.views.generic import TemplateView

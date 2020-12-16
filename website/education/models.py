@@ -1,4 +1,4 @@
-"""The models defined by the education package"""
+"""The models defined by the education package."""
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -9,7 +9,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 class Category(models.Model):
-    """Describes a course category"""
+    """Describes a course category."""
 
     name = models.CharField(max_length=64,)
 
@@ -25,7 +25,7 @@ class Category(models.Model):
 
 
 class Course(models.Model):
-    """Describes a course"""
+    """Describes a course."""
 
     name = models.CharField(max_length=255)
 
@@ -57,7 +57,7 @@ class Course(models.Model):
 
 
 class Exam(models.Model):
-    """Describes an exam"""
+    """Describes an exam."""
 
     EXAM_TYPES = (
         ("document", _("Document")),
@@ -131,7 +131,7 @@ class Exam(models.Model):
 
 
 class Summary(models.Model):
-    """Describes a summary"""
+    """Describes a summary."""
 
     name = models.CharField(max_length=255, verbose_name=_("summary name"),)
 

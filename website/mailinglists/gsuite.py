@@ -1,4 +1,4 @@
-"""GSuite syncing helpers defined by the mailinglists package"""
+"""GSuite syncing helpers defined by the mailinglists package."""
 import logging
 from time import sleep
 from typing import List
@@ -80,8 +80,8 @@ class GSuiteSyncService:
         }
 
     def create_group(self, group):
-        """
-        Create a new group based on the provided data
+        """Create a new group based on the provided data.
+
         :param group: group data
         """
         try:
@@ -113,8 +113,8 @@ class GSuiteSyncService:
         self._update_group_aliases(group)
 
     def update_group(self, old_name, group):
-        """
-        Update a group based on the provided name and data
+        """Update a group based on the provided name and data.
+
         :param old_name: old group name
         :param group: new group data
         """
@@ -140,8 +140,8 @@ class GSuiteSyncService:
         self._update_group_aliases(group)
 
     def _update_group_aliases(self, group: GroupData):
-        """
-        Update the aliases of a group based on existing values
+        """Update the aliases of a group based on existing values.
+
         :param group: group data
         """
         try:
@@ -196,8 +196,8 @@ class GSuiteSyncService:
         logger.info("List %s aliases updated", group.name)
 
     def delete_group(self, name: str):
-        """
-        Set the specified list to unused, this is not a real delete
+        """Set the specified list to unused, this is not a real delete.
+
         :param name: Group name
         """
         try:
@@ -212,9 +212,8 @@ class GSuiteSyncService:
             logger.error("Could not delete list %s: %s", name, e.content)
 
     def _update_group_members(self, group: GroupData):
-        """
-        Update the group members of the specified group based
-        on the existing members
+        """Update the group members of the specified group based on the existing members.
+
         :param group: group data
         """
         try:
@@ -285,7 +284,7 @@ class GSuiteSyncService:
 
     @staticmethod
     def mailinglist_to_group(mailinglist: MailingList):
-        """Convert a mailinglist model to everything we need for GSuite"""
+        """Convert a mailinglist model to everything we need for GSuite."""
         return GSuiteSyncService.GroupData(
             moderated=mailinglist.moderated,
             name=mailinglist.name,
@@ -302,7 +301,7 @@ class GSuiteSyncService:
 
     @staticmethod
     def _automatic_to_group(automatic_list):
-        """Convert an automatic mailinglist to a GSuite Group data obj"""
+        """Convert an automatic mailinglist to a GSuite Group data obj."""
         return GSuiteSyncService.GroupData(
             moderated=automatic_list["moderated"],
             name=automatic_list["name"],
@@ -317,8 +316,8 @@ class GSuiteSyncService:
         ]
 
     def sync_mailinglists(self, lists: List[GroupData] = None):
-        """
-        Sync mailing lists with GSuite
+        """Sync mailing lists with GSuite.
+
         :param lists: optional parameter to determine which lists to sync
         """
         if lists is None:

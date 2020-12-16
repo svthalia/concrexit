@@ -15,9 +15,7 @@ from payments.tests.__mocks__ import MockPayable
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 @patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class ServicesTest(TestCase):
-    """
-    Test for the services
-    """
+    """Test for the services."""
 
     fixtures = ["members.json"]
 

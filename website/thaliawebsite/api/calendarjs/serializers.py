@@ -6,9 +6,7 @@ from rest_framework import serializers
 
 
 class CalenderJSSerializer(serializers.ModelSerializer):
-    """
-    Serializer using the right format for CalendarJS
-    """
+    """Serializer using the right format for CalendarJS."""
 
     class Meta:
         fields = (

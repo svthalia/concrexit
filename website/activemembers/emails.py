@@ -5,8 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 def send_gsuite_welcome_message(member, email, password):
-    """
-    Send an email to notify a member of G Suite credentials.
+    """Send an email to notify a member of G Suite credentials.
 
     :param member: the member
     :param email: G Suite primary email
@@ -26,8 +25,7 @@ def send_gsuite_welcome_message(member, email, password):
 
 
 def send_gsuite_suspended_message(member):
-    """
-    Send an email to notify a member of G Suite suspension.
+    """Send an email to notify a member of G Suite suspension.
 
     :param member: the member
     """

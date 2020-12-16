@@ -1,4 +1,4 @@
-"""Registers admin interfaces for the documents module"""
+"""Registers admin interfaces for the documents module."""
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
@@ -16,7 +16,7 @@ from utils.translation import TranslatedModelAdmin
 
 
 class MinutesInline(admin.StackedInline):
-    """Inline for minutes of a general meeting"""
+    """Inline for minutes of a general meeting."""
 
     model = Minutes
     form = forms.MinutesForm
@@ -25,7 +25,7 @@ class MinutesInline(admin.StackedInline):
 
 @admin.register(GeneralMeeting)
 class GeneralMeetingAdmin(TranslatedModelAdmin):
-    """Manage the general meetings"""
+    """Manage the general meetings."""
 
     form = forms.GeneralMeetingForm
     inlines = [
@@ -35,7 +35,7 @@ class GeneralMeetingAdmin(TranslatedModelAdmin):
 
 
 class LectureYearFilter(admin.SimpleListFilter):
-    """Filter the memberships on those started or ended in a lecture year"""
+    """Filter the memberships on those started or ended in a lecture year."""
 
     title = _("lecture year")
     parameter_name = "lecture_year"
@@ -62,7 +62,7 @@ class LectureYearFilter(admin.SimpleListFilter):
 
 @admin.register(AnnualDocument)
 class AnnualDocumentAdmin(TranslatedModelAdmin):
-    """Manage the annual documents"""
+    """Manage the annual documents."""
 
     form = forms.AnnualDocumentForm
     list_filter = (
@@ -74,7 +74,7 @@ class AnnualDocumentAdmin(TranslatedModelAdmin):
 
 @admin.register(AssociationDocument)
 class AssociationDocumentAdmin(TranslatedModelAdmin):
-    """Manage the association documents"""
+    """Manage the association documents."""
 
     form = forms.AssociationDocumentForm
     list_filter = (
@@ -85,7 +85,7 @@ class AssociationDocumentAdmin(TranslatedModelAdmin):
 
 @admin.register(EventDocument)
 class EventDocumentAdmin(TranslatedModelAdmin):
-    """Manage the event documents"""
+    """Manage the event documents."""
 
     form = forms.EventDocumentForm
     list_filter = (
@@ -94,13 +94,13 @@ class EventDocumentAdmin(TranslatedModelAdmin):
     )
 
     def has_change_permission(self, request, document=None):
-        """Only allow access to the change form if the user is an owner"""
+        """Only allow access to the change form if the user is an owner."""
         if document is not None and not is_owner(request.member, document):
             return False
         return super().has_change_permission(request, document)
 
     def has_delete_permission(self, request, document=None):
-        """Only allow delete access if the user is an owner"""
+        """Only allow delete access if the user is an owner."""
         if document is not None and not is_owner(request.member, document):
             return False
         return super().has_delete_permission(request, document)
@@ -108,7 +108,7 @@ class EventDocumentAdmin(TranslatedModelAdmin):
 
 @admin.register(MiscellaneousDocument)
 class MiscellaneousDocumentAdmin(TranslatedModelAdmin):
-    """Manage the miscellaneous documents"""
+    """Manage the miscellaneous documents."""
 
     form = forms.MiscellaneousDocumentForm
     list_filter = (

@@ -10,9 +10,7 @@ from payments.models import Payment
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True)
 class PaymentTypeFieldTest(TestCase):
-    """
-    Test for the payment type field
-    """
+    """Test for the payment type field."""
 
     fixtures = ["members.json"]
 

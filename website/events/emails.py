@@ -1,4 +1,4 @@
-"""The emails defined by the events package"""
+"""The emails defined by the events package."""
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
@@ -10,9 +10,7 @@ from members.models import Profile
 
 
 def notify_first_waiting(event):
-    """
-    Send an email to the first person on the waiting list
-    when someone cancels their registration
+    """Send an email to the first person on the waiting list when someone cancels their registration.
 
     :param event: the event
     """
@@ -51,9 +49,7 @@ def notify_first_waiting(event):
 
 
 def notify_organiser(event, registration):
-    """
-    Send an email to the organiser of the event if
-    someone cancels their registration
+    """Send an email to the organiser of the event if someone cancels their registration.
 
     :param event: the event
     :param registration: the registration that was cancelled

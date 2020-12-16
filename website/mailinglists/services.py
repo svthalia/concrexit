@@ -1,4 +1,4 @@
-"""The services defined by the mailinglists package"""
+"""The services defined by the mailinglists package."""
 
 from django.conf import settings
 from django.utils import timezone

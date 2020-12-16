@@ -1,4 +1,4 @@
-"""Views provided by the documents package"""
+"""Views provided by the documents package."""
 import os
 
 from django.conf import settings
@@ -20,9 +20,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 class DocumentsIndexView(TemplateView):
-    """
-    View that renders the documents index page
-    """
+    """View that renders the documents index page."""
 
     template_name = "documents/index.html"
 
@@ -60,18 +58,11 @@ class DocumentsIndexView(TemplateView):
 
 
 class DocumentDownloadView(DetailView):
-    """
-    View that allows you to download a specific document based on it's and your
-    permissions settings
-    """
+    """View that allows you to download a specific document based on it's and your permissions settings."""
 
     model = Document
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        """
-        :return: either a 302 redirect to the login page or
-        a 200 with the document
-        """
         response = super().get(request, *args, **kwargs)
         document = response.context_data["document"]
 

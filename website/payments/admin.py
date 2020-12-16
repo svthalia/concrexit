@@ -1,4 +1,4 @@
-"""Registers admin interfaces for the payments module"""
+"""Registers admin interfaces for the payments module."""
 import csv
 from collections import OrderedDict
 
@@ -34,7 +34,7 @@ def _show_message(
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    """Manage the payments"""
+    """Manage the payments."""
 
     list_display = (
         "created_at",
@@ -162,8 +162,8 @@ class PaymentAdmin(admin.ModelAdmin):
         return super().get_readonly_fields(request, obj)
 
     def get_actions(self, request: HttpRequest) -> OrderedDict:
-        """
-        Get the actions for the payments
+        """Get the actions for the payments.
+
         Hide the processing actions if the right permissions are missing
         """
         actions = super().get_actions(request)
@@ -174,7 +174,7 @@ class PaymentAdmin(admin.ModelAdmin):
         return actions
 
     def add_to_new_batch(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Add selected TPAY payments to a new batch"""
+        """Add selected TPAY payments to a new batch."""
         tpays = queryset.filter(type=Payment.TPAY)
         if len(tpays) > 0:
             batch = Batch.objects.create()
@@ -192,7 +192,7 @@ class PaymentAdmin(admin.ModelAdmin):
     )
 
     def add_to_last_batch(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Add selected TPAY payments to the last batch"""
+        """Add selected TPAY payments to the last batch."""
         tpays = queryset.filter(type=Payment.TPAY)
         if len(tpays) > 0:
             batch = Batch.objects.last()
@@ -235,8 +235,8 @@ class PaymentAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def export_csv(self, request: HttpRequest, queryset: QuerySet) -> HttpResponse:
-        """
-        Export a CSV of payments
+        """Export a CSV of payments.
+
         :param request: Request
         :param queryset: Items to be exported
         """
@@ -273,7 +273,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
 
 class ValidAccountFilter(admin.SimpleListFilter):
-    """Filter the memberships by whether they are active or not"""
+    """Filter the memberships by whether they are active or not."""
 
     title = _("mandates")
     parameter_name = "active"
@@ -303,7 +303,7 @@ class ValidAccountFilter(admin.SimpleListFilter):
 
 
 class PaymentsInline(admin.TabularInline):
-    """The inline for payments in the Batch admin"""
+    """The inline for payments in the Batch admin."""
 
     model = Payment
     readonly_fields = (
@@ -327,7 +327,7 @@ class PaymentsInline(admin.TabularInline):
 
 @admin.register(Batch)
 class BatchAdmin(admin.ModelAdmin):
-    """Manage payment batches"""
+    """Manage payment batches."""
 
     inlines = (PaymentsInline,)
     list_display = (
@@ -434,9 +434,9 @@ class BatchAdmin(admin.ModelAdmin):
         form_url: str = "",
         extra_context: dict = None,
     ) -> HttpResponse:
-        """
-        Renders the change formview
-        Only allow when the batch has not been processed yet
+        """Render the change formview.
+
+        Only allow when the batch has not been processed yet.
         """
         extra_context = extra_context or {}
         obj = None
@@ -449,7 +449,7 @@ class BatchAdmin(admin.ModelAdmin):
 
 @admin.register(BankAccount)
 class BankAccountAdmin(admin.ModelAdmin):
-    """Manage bank accounts"""
+    """Manage bank accounts."""
 
     list_display = ("iban", "owner_link", "last_used", "valid_from", "valid_until")
     list_filter = (ValidAccountFilter, "owner__profile__auto_renew")
@@ -489,7 +489,7 @@ class BankAccountAdmin(admin.ModelAdmin):
     owner_link.short_description = _("owner")
 
     def set_last_used(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Set the last used date of selected accounts"""
+        """Set the last used date of selected accounts."""
         if request.user.has_perm("payments.change_bankaccount"):
             updated = services.update_last_used(queryset)
             _show_message(
@@ -713,7 +713,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
     disallow_thalia_pay.short_description = _("Disallow Thalia Pay for selected users")
 
     def allow_thalia_pay(self, request, queryset):
-        """Disallow Thalia Pay for selected users"""
+        """Disallow Thalia Pay for selected users."""
         count = 0
         for x in queryset:
             if not x.tpay_enabled:

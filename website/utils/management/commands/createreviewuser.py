@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    """Command to create a user we can use to review"""
+    """Command to create a user we can use to review."""
 
     help = "Creates a user for the a review environment"
 

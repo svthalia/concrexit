@@ -1,4 +1,4 @@
-"""The feeds defined by the events package"""
+"""The feeds defined by the events package."""
 from django.conf import settings
 from django.db.models.query_utils import Q
 from django.urls import reverse
@@ -10,7 +10,7 @@ from events.models import Event, FeedToken
 
 
 class EventFeed(ICalFeed):
-    """Output an iCal feed containing all published events"""
+    """Output an iCal feed containing all published events."""
 
     def __init__(self, lang="en"):
         super().__init__()

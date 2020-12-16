@@ -1,11 +1,11 @@
-"""The views for the merchandise package"""
+"""The views for the merchandise package."""
 from django.shortcuts import render
 
 from merchandise.models import MerchandiseItem
 
 
 def index(request):
-    """Renders the index view
+    """Render the index view.
 
     :param request: the request object
     :return: the response

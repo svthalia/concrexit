@@ -10,7 +10,7 @@ from members.models import Member
 
 @override_settings(SUSPEND_SIGNALS=True)
 class GetDocumentTest(TestCase):
-    """tests for the :func:`.get_document` view"""
+    """tests for the :func:`.get_document` view."""
 
     fixtures = ["members.json"]
 

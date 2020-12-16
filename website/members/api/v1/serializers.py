@@ -1,4 +1,4 @@
-"""DRF serializers defined by the members package"""
+"""DRF serializers defined by the members package."""
 from django.templatetags.static import static
 from rest_framework import serializers
 
@@ -8,7 +8,7 @@ from thaliawebsite.api.services import create_image_thumbnail_dict
 
 
 class ProfileRetrieveSerializer(serializers.ModelSerializer):
-    """Serializer that renders a member profile"""
+    """Serializer that renders a member profile."""
 
     class Meta:
         model = Profile
@@ -66,7 +66,7 @@ class ProfileRetrieveSerializer(serializers.ModelSerializer):
 
 
 class MemberListSerializer(serializers.ModelSerializer):
-    """Serializer that renders a list of members"""
+    """Serializer that renders a list of members."""
 
     class Meta:
         model = Member
@@ -102,7 +102,7 @@ class MemberListSerializer(serializers.ModelSerializer):
 
 
 class ProfileEditSerializer(serializers.ModelSerializer):
-    """Serializer that renders a profile to be edited"""
+    """Serializer that renders a profile to be edited."""
 
     class Meta:
         model = Profile
