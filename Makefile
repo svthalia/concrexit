@@ -131,7 +131,7 @@ docs: docs/_build ## Generate docs HTML files
 
 docker: .make/docker
 
-lint: blackcheck pylint ## Run all linters
+lint: blackcheck pylint pydocstyle ## Run all linters
 
 test: check templatecheck migrationcheck tests ## Run every kind of test
 
