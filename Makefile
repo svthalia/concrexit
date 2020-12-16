@@ -104,7 +104,7 @@ coverage: .coverage ## Generate a coverage report after running the tests
 	poetry run coverage report
 
 covhtml: .coverage ## Generate an HTML coverage report
-	poetry run coverage html --directory=covhtml --title="Coverage Report"
+	poetry run coverage html --directory=covhtml --no-skip-covered --title="Coverage Report"
 
 .make/docsdeps: .make .make/deps
 	poetry install $(POETRY_FLAGS) --extras "docs"
