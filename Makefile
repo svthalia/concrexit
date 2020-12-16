@@ -141,4 +141,4 @@ clean: ## Remove all generated files
 
 .PHONY: help run deps migrate createsuperuser createfixtures fmt check \
 		templatecheck migrationcheck tests coverage covhtml doctest docs \
-		docker lint test clean
+		docker lint test clean pydocstyle
