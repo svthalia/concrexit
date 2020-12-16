@@ -4,7 +4,7 @@ from .models import Product, Order, PizzaEvent
 
 def gen_stats_pizza_orders():
     """Generate statistics about number of orders per product.
-    
+
     :return: Dict with key, value being resp. name, order count of a product.
     """
     total = {}

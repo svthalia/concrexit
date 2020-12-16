@@ -6,17 +6,6 @@ on:
   - pull_request
 
 jobs:
-  codestyle:
-    name: Codestyle
-    runs-on: ubuntu-18.04
-    container: thalia/concrexit-dependencies
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Run black
-        run: make blackcheck
-
   linting:
     name: Linting
     runs-on: ubuntu-18.04
@@ -27,6 +16,12 @@ jobs:
 
       - name: Run pylint
         run: make pylint
+
+      - name: Run black
+        run: make blackcheck
+
+      - name: Run pydocstyle
+        run: make pydocstyle
 
   tests:
     name: Django Tests
@@ -124,7 +119,7 @@ jobs:
   build-docker:
     name: Build Docker Image
     runs-on: ubuntu-18.04
-    needs: [codestyle, tests, documentation-tests]
+    needs: [linting, tests, documentation-tests]
     env:
       DOCKER_TAG: thalia/concrexit:${{ github.sha }}
     steps:
