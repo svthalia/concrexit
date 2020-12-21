@@ -65,7 +65,7 @@ let
 
   # Wrapper script that sets the right options for uWSGI
   concrexit-uwsgi = writeScript "concrexit-uwsgi" ''
-    ${concrexit-env}/bin/python ${manage-py} migrate
+    MANAGE_PY=1 ${concrexit-env}/bin/python ${manage-py} migrate
 
     ${uwsgi-python}/bin/uwsgi $@ \
       --plugins python3 \
