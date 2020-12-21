@@ -93,7 +93,7 @@ in
         MEDIA_ROOT = "${cfg.dir}/media";
         POSTGRES_USER = "concrexit";
         POSTGRES_DB = "concrexit";
-        DJANGO_ENV = "production";
+        DJANGO_ENV = "staging";
         DJANGO_EMAIL_HOST = "smtp-relay.gmail.com";
         DJANGO_EMAIL_PORT = "587";
         DJANGO_EMAIL_USE_TLS = "1";
