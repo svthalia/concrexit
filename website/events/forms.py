@@ -14,7 +14,7 @@ class RegistrationAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:
-            if self.instance.event.has_fields():
+            if self.instance.event.has_fields:
                 self.fields["fields"].initial = reverse(
                     "admin:events_registration_fields", args=[self.instance.pk]
                 )

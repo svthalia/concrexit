@@ -49,6 +49,7 @@ def event_permissions(member, event, name=None):
         "create_registration": False,
         "cancel_registration": False,
         "update_registration": False,
+        "manage_event": is_organiser(member, event)
     }
     if not member:
         return perms
@@ -77,7 +78,7 @@ def event_permissions(member, event, name=None):
     perms["update_registration"] = (
         registration is not None
         and registration.date_cancelled is None
-        and event.has_fields()
+        and event.has_fields
         and event.registration_allowed
         and (name or member.can_attend_events)
     )

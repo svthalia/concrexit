@@ -3,9 +3,9 @@ from django.conf import settings
 from rest_framework import serializers
 
 from announcements.models import Slide
+from thaliawebsite.api.v2.serializers.html import CleanedHTMLSerializer
 from thaliawebsite.api.v2.serializers.thumbnail import (
-    ThumbnailSerializer,
-    CleanedHTMLSerializer,
+    ThumbnailSerializer
 )
 
 

@@ -195,6 +195,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def payment_required(self):
         return self.price != 0
 
+    @property
     def has_fields(self):
         return self.registrationinformationfield_set.count() > 0
 
@@ -248,6 +249,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             and self.registration_start <= now < self.start
         )
 
+    @property
     def is_pizza_event(self):
         # pylint: disable=pointless-statement
         try:
@@ -474,7 +476,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             collector.add([self.registration_reminder])
         if self.start_reminder is not None and not self.start_reminder.sent:
             collector.add([self.start_reminder])
-        if self.is_pizza_event():
+        if self.is_pizza_event:
             collector.add([self.pizzaevent])
 
         return collector.delete()
