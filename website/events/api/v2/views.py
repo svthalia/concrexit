@@ -36,8 +36,7 @@ class EventRegistrationListView(ListAPIView):
     serializer_class = EventRegistrationSerializer
 
     def get_queryset(self):
-        event = get_object_or_404(Event, pk=self.kwargs.get('pk'))
-        return EventRegistration.objects.filter(
-            event=event.pk,
-            date_cancelled=None
-        )[:event.max_participants]
+        event = get_object_or_404(Event, pk=self.kwargs.get("pk"))
+        return EventRegistration.objects.filter(event=event.pk, date_cancelled=None)[
+            : event.max_participants
+        ]

@@ -99,9 +99,9 @@
                                 <tr>
                                     <th>{% trans "registration status"|capfirst %}</th>
                                     <td>
-                                        {% if registration.is_registered and registration.queue_position == 0 %}
+                                        {% if registration.is_registered and not registration.queue_position %}
                                             {% trans "You are registered" %}
-                                        {% elif registration.is_registered and registration.queue_position > 0 %}
+                                        {% elif registration.is_registered and registration.queue_position %}
                                             {% blocktrans trimmed with pos=registration.queue_position %}
                                                 Waiting list position {{ pos }}
                                             {% endblocktrans %}
@@ -216,7 +216,7 @@
                                                 Registration is not possible anymore.
                                             {% endblocktrans %}
                                         {% endif %}
-                                        {% if event.after_cancel_deadline and registration.queue_position == 0 %}
+                                        {% if event.after_cancel_deadline and not registration.queue_position %}
                                             {% blocktrans trimmed with costs=event.fine %}
                                                 Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}.
                                                 Also note that you will be unable to re-register.{% endblocktrans %}
@@ -224,7 +224,7 @@
                                                 Note: If you have any COVID-19 symptoms you will not have to pay these fees. Let us know via info@thalia.nu that this is this reason for your cancellation.
                                             {% endblocktrans %}
                                         {% endif %}
-                                        {% if event.after_cancel_deadline and registration.queue_position > 0 %}
+                                        {% if event.after_cancel_deadline and registration.queue_position %}
                                             {% blocktrans trimmed with costs=event.fine %}
                                                 Cancellation while on the waiting list will not result in having to pay a fine.
                                                 Do note that you will be unable to re-register.{% endblocktrans %}

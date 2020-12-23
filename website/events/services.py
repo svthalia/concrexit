@@ -49,7 +49,7 @@ def event_permissions(member, event, name=None):
         "create_registration": False,
         "cancel_registration": False,
         "update_registration": False,
-        "manage_event": is_organiser(member, event)
+        "manage_event": is_organiser(member, event),
     }
     if not member:
         return perms
@@ -144,7 +144,7 @@ def cancel_registration(member, event):
         pass
 
     if event_permissions(member, event)["cancel_registration"] and registration:
-        if registration.queue_position == 0:
+        if not registration.queue_position:
             emails.notify_first_waiting(event)
 
             if event.send_cancel_email and event.after_cancel_deadline:

@@ -21,7 +21,14 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventRegistration
-        fields = "__all__"
+        fields = (
+            "pk",
+            "present",
+            "queue_position",
+            "date",
+            "payment",
+            "member",
+            "name",
+        )
 
     member = MemberSerializer()
-
