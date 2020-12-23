@@ -41,7 +41,7 @@ pydocstyle = "^5.1.1"
 docs = ["recommonmark", "sphinx"]
 
 [tool.poetry.dev-dependencies]
-django-template-check = {git = "https://github.com/joostrijneveld/django-template-check.git", rev = "2d69e43eebd63459d9817f5c9358ed1a9bdb1951"}
+django-template-check = "0.4.0"
 factory_boy = "3.1.0"
 pydenticon = "0.3.1"
 Faker = "5.0.2"
