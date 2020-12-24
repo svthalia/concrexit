@@ -97,15 +97,16 @@ stdenv.mkDerivation {
   # Build all static files beforehand
   buildPhase = ''
     export STATIC_ROOT=static
-    export DJANGO_SECRET=a
+    export DJANGO_ENV=production
 
-    DJANGO_PRODUCTION=1 python website/manage.py collectstatic
-    DJANGO_PRODUCTION=1 python website/manage.py compress
+    MANAGE_PY=1 python website/manage.py collectstatic
+    MANAGE_PY=1 python website/manage.py compress
   '';
 
   doCheck = true;
 
   checkPhase = ''
+    export DJANGO_ENV=development
     python website/manage.py check
     python website/manage.py templatecheck --project-only
     python website/manage.py makemigrations --no-input --check --dry-run

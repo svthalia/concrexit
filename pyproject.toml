@@ -53,7 +53,7 @@ pylint-django = "^2.3.0"
 [tool.coverage.run]
 branch = true
 source = ["website"]
-omit = ["website/manage.py", "website/thaliawebsite/wsgi.py", "website/thaliawebsite/settings/*", "website/*/migrations/*", "website/*/test*"]
+omit = ["website/manage.py", "website/thaliawebsite/wsgi.py", "website/thaliawebsite/settings.py", "website/*/migrations/*", "website/*/test*"]
 
 [tool.coverage.report]
 precision = 2

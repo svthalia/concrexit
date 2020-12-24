@@ -8,8 +8,8 @@ let
     #!${pkgs.stdenv.shell}
 
     set -e
-    export DJANGO_SECRET="a"
     test -f ${cfg.dir}/secrets.env && source ${cfg.dir}/secrets.env
+    export MANAGE_PY=1
     ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"${value}\"") config.concrexit.env-vars)}
     ${pkgs.concrexit}/bin/python ${pkgs.concrexit}/src/website/manage.py $@
   '';
@@ -91,21 +91,18 @@ in
       apply = x: {
         SITE_DOMAIN = if cfg.ssl then cfg.domain else "*";
         MEDIA_ROOT = "${cfg.dir}/media";
-        ENABLE_LOGFILE = "0";
         POSTGRES_USER = "concrexit";
         POSTGRES_DB = "concrexit";
-        DJANGO_PRODUCTION = "1";
-        DJANGO_SSLONLY = if cfg.ssl then "1" else "0";
+        DJANGO_ENV = "staging";
         DJANGO_EMAIL_HOST = "smtp-relay.gmail.com";
         DJANGO_EMAIL_PORT = "587";
-        DJANGO_EMAIL_USE_TLS = "True";
-        SHOW_ALMANAC_PAGE = "False";
+        DJANGO_EMAIL_USE_TLS = "1";
         SEPA_CREDITOR_ID = "NL67ZZZ401464640000";
-        GSUITE_MEMBERS_AUTOSYNC = "True";
+        GSUITE_MEMBERS_AUTOSYNC = "1";
         GSUITE_ADMIN_USER = "concrexit-admin@thalia.nu";
         GSUITE_DOMAIN = "staging.thalia.nu";
         GSUITE_MEMBERS_DOMAIN = "members.staging.thalia.nu";
-        THALIA_PAY_ENABLED = "False";
+        THALIA_PAY_ENABLED = "0";
       } // x;
       default = { };
     };
@@ -197,7 +194,7 @@ in
           if [ -f ${cfg.dir}/secrets.env ]; then
             source ${cfg.dir}/secrets.env
           else
-            export DJANGO_SECRET=$(hostid)
+            export SECRET_KEY=$(hostid)
             echo "You should set the secrets in the env file!" >&2
           fi
 

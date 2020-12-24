@@ -13,7 +13,6 @@ Subpackages
    :maxdepth: 4
 
    thaliawebsite.api
-   thaliawebsite.settings
    thaliawebsite.templatetags
 
 Submodules
@@ -47,6 +46,14 @@ thaliawebsite.menus module
 --------------------------
 
 .. automodule:: thaliawebsite.menus
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+thaliawebsite.settings module
+-----------------------------
+
+.. automodule:: thaliawebsite.settings
    :members:
    :undoc-members:
    :show-inheritance:

@@ -49,6 +49,8 @@ jobs:
           POSTGRES_DB: thalia
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+    env:
+      DJANGO_ENV: testing
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

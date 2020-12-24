@@ -93,5 +93,3 @@ The continuous integration checks if the latest Python modules are included in t
 To update these files run `make apidocs`
 
 To render the docs to HTML run `make docs`
-
-If you have a `localsettings.py` then make sure you do not commit this part of the documentation to version control.

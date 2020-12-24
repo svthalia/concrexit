@@ -1,6 +1,5 @@
 """These context processors can be used to expand the context provided to views."""
 from django.conf import settings
-from django.utils import timezone
 
 
 def source_commit(_):
@@ -14,12 +13,4 @@ def thumbnail_sizes(_):
         "THUMBNAIL_SIZE_SMALL": settings.THUMBNAIL_SIZES["small"],
         "THUMBNAIL_SIZE_MEDIUM": settings.THUMBNAIL_SIZES["medium"],
         "THUMBNAIL_SIZE_LARGE": settings.THUMBNAIL_SIZES["large"],
-    }
-
-
-def lustrum_styling(_):
-    """Whether to enable the lustrum styling."""
-    return {
-        "lustrumstyling": timezone.now().date() == timezone.datetime(2020, 11, 7).date()
-        or settings.LUSTRUM_STYLING
     }
