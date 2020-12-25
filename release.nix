@@ -86,6 +86,17 @@ in
     ];
   };
 
+  github-actions = pkgs.releaseTools.aggregate {
+    name = "ci";
+
+    constituents = [
+      pre-commit-check
+      pkgs.concrexit
+      vm
+      machine
+    ];
+  };
+
   # This is to make sure we can do -A machine to only build the machine in nix-build
   inherit (pkgs) concrexit;
   inherit vm machine test;
