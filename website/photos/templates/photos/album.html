@@ -22,6 +22,12 @@
                 >
                     <i class="fas fa-download"></i>
                 </a>
+                {% if album.event %}
+                <a class="btn btn-primary btn-second"
+                   href={{ album.event.get_absolute_url }}>
+                   Event
+                </a>
+                {% endif %}
             </h1>
 
             <h2 class="text-center mt-2">{{ album.date|date:"d-m-Y" }}</h2>
