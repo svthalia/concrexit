@@ -14,7 +14,16 @@ class AlbumAdmin(TranslatedModelAdmin):
     """Model for Album admin page."""
 
     list_display = ("title", "date", "num_photos", "hidden", "shareable")
-    fields = ("title", "slug", "date", "hidden", "shareable", "album_archive", "_cover")
+    fields = (
+        "title",
+        "slug",
+        "date",
+        "event",
+        "hidden",
+        "shareable",
+        "album_archive",
+        "_cover",
+    )
     search_fields = ("title", "date")
     list_filter = ("hidden", "shareable")
     date_hierarchy = "date"

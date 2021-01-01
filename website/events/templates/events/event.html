@@ -44,6 +44,14 @@
                 <div class="col-12 col-md-6 order-1">
                     <table class="table table-borderless">
                         <tbody>
+                        {% if event.album %}
+                        <tr>
+                            <th>{% trans "photos"|capfirst %}</th>
+                            <td><a href={{ event.album.get_absolute_url }}
+                                class = "btn btn-primary"
+                                >{% trans "Album" %}</a></td>
+                        </tr>
+                        {% endif %}
                         <tr>
                             <th>{% trans "from"|capfirst %}</th>
                             <td>{{ event.start }}</td>
