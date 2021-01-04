@@ -10,13 +10,13 @@ let
     set -e
     test -f ${cfg.dir}/secrets.env && source ${cfg.dir}/secrets.env
     export MANAGE_PY=1
-    ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"${value}\"") config.concrexit.env-vars)}
-    ${pkgs.concrexit}/bin/python ${pkgs.concrexit}/src/website/manage.py $@
+    ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"\${${name}:-${value}}\"") config.concrexit.env-vars)}
+    exec ${pkgs.concrexit}/bin/python ${pkgs.concrexit}/src/website/manage.py $@
   '';
   sudo-concrexit-manage = pkgs.writeScriptBin "concrexit-manage" ''
     #!${pkgs.stdenv.shell}
 
-    ${pkgs.sudo}/bin/sudo -u concrexit ${concrexit-manage} $@
+    exec ${pkgs.sudo}/bin/sudo -E -u concrexit ${concrexit-manage} $@
   '';
 
   securityHeaders = ''
@@ -117,7 +117,6 @@ in
     ];
     # Install the concrexit-manage command globally
     environment.systemPackages = [ pkgs.concrexit-manage ];
-    networking.hostName = "staging";
 
     security.acme.email = "www@thalia.nu";
     security.acme.acceptTerms = true;
@@ -188,6 +187,8 @@ in
         serviceConfig = {
           User = cfg.user;
           KillSignal = "SIGQUIT";
+          Type = "notify";
+          NotifyAccess = "all";
         };
 
         script = ''

@@ -26,6 +26,14 @@ thaliawebsite.admin module
    :undoc-members:
    :show-inheritance:
 
+thaliawebsite.apps module
+-------------------------
+
+.. automodule:: thaliawebsite.apps
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 thaliawebsite.context\_processors module
 ----------------------------------------
 

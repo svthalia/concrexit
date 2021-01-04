@@ -16,6 +16,7 @@ let
 
         nixpkgs.pkgs = pkgs;
 
+        networking.hostName = "staging";
         networking.hosts = pkgs.lib.mkForce { };
 
         services.mingetty.helpLine = ''
@@ -53,6 +54,7 @@ let
 
         nixpkgs.pkgs = pkgs;
 
+        networking.hostName = "staging";
         networking.domain = "thalia.nu";
         # This is needed because otherwise socket.getfqdn() breaks in Python
         # TODO: find a better solution for this?
@@ -66,6 +68,8 @@ let
       system = "x86_64-linux";
     }
   ).system;
+
+  test = pkgs.nixosTest ./nix/test.nix;
 in
 {
   # Instead of a regular attrset we use this aggregate function which might help
@@ -78,10 +82,22 @@ in
       pkgs.concrexit
       vm
       machine
+      test
+    ];
+  };
+
+  github-actions = pkgs.releaseTools.aggregate {
+    name = "ci";
+
+    constituents = [
+      pre-commit-check
+      pkgs.concrexit
+      vm
+      machine
     ];
   };
 
   # This is to make sure we can do -A machine to only build the machine in nix-build
   inherit (pkgs) concrexit;
-  inherit vm machine;
+  inherit vm machine test;
 }

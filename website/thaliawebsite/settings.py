@@ -381,7 +381,7 @@ INSTALLED_APPS = [
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
-    "thaliawebsite",  # include for admin settings
+    "thaliawebsite.apps.ThaliaWebsiteConfig",  # include for admin settings
     # Load django.contrib.admin after thaliawebsite so the admin page gets modified
     "django.contrib.admin",
     "pushnotifications.apps.PushNotificationsConfig",
