@@ -8,7 +8,7 @@
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         border-radius: 0;
-        background-color: var(--preset);
+        background-color: var(--primary);
 
         @for $i from 1 through 100 {
             &.progress#{$i} {

@@ -37,10 +37,10 @@ h6 {
 }
 
 a {
-    color: var(--preset);
+    color: var(--primary);
     @include transition(.2s);
     &:hover, &:active, &:focus {
-        color: var(--preset-hover);
+        color: var(--primary-hover);
         text-decoration: none;
     }
     letter-spacing: $letter-spacing;
@@ -59,13 +59,13 @@ p {
 
 .bg-default {
     color: var(--text-color);
-    background: var(--preset);
+    background: var(--primary);
     padding: 3px 4px;
 }
 
 .bg-primary {
-    color: var(--preset-contrast);
-    background: var(--preset);
+    color: var(--primary-contrast);
+    background: var(--primary);
     padding: 3px 4px;
 }
 
