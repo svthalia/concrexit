@@ -13,7 +13,7 @@
         }
 
         .card-date {
-            color: var(--preset);
+            color: var(--primary);
             margin-bottom: .7rem;
         }
 
@@ -34,7 +34,7 @@
             }
 
             .has-registration {
-                background-color: var(--preset);
+                background-color: var(--primary);
             }
         }
     }
@@ -46,7 +46,7 @@
     }
 
     .fc-now-indicator {
-        border-color: var(--preset);
+        border-color: var(--primary);
 
         &.fc-now-indicator-arrow {
             border-top-color: transparent;
@@ -72,7 +72,7 @@
                 &.regular-event {
                     background-color: $grey;
                     &.has-registration {
-                        background-color: var(--preset);
+                        background-color: var(--primary);
                     }
                 }
 
@@ -87,7 +87,7 @@
                 &.birthday-event {
                     background-color: var(--secondary);
                     &.honorary {
-                        background-color: var(--preset);
+                        background-color: var(--primary);
                     }
                 }
             }
@@ -104,7 +104,7 @@
 
         &.regular-event {
             &.has-registration {
-                background-color: var(--preset);
+                background-color: var(--primary);
                 color: $white;
             }
         }
@@ -115,11 +115,11 @@
         }
 
         &.partner-event {
-            color: var(--preset);
+            color: var(--primary);
             background-color: var(--secondary);
 
             &:active, &:hover {
-                color: var(--preset);
+                color: var(--primary);
             }
         }
 
@@ -127,7 +127,7 @@
             background-color: var(--secondary);
             color: var(--secondary-contrast);
             &.honorary {
-                background-color: var(--preset);
+                background-color: var(--primary);
                 color: var(--secondary);
             }
         }

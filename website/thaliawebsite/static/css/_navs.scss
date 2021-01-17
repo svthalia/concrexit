@@ -5,7 +5,7 @@
 
         &.show {
             .nav-link {
-                color: var(--preset);
+                color: var(--primary);
             }
         }
 
@@ -21,11 +21,11 @@
             border-top-left-radius: 0;
 
             &:hover {
-                color: var(--preset-hover);
+                color: var(--primary-hover);
             }
 
             &.active, &.mixitup-control-active {
-                color: var(--preset);
+                color: var(--primary);
                 border-color: #dee2e6 #dee2e6 var(--background-color);
             }
         }
@@ -42,7 +42,7 @@
             border: 1px solid transparent;
 
             &.active {
-                color: var(--preset);
+                color: var(--primary);
             }
         }
     }
@@ -58,7 +58,7 @@
     .page-item {
 
         .page-link {
-            color: var(--preset);
+            color: var(--primary);
             background-color: var(--background-color);
             border-color: var(--background-shade);
             border-radius: 0;
@@ -73,8 +73,8 @@
         &.active {
             .page-link {
                 color: var(--white);
-                background-color: var(--preset);
-                border-color: var(--preset);
+                background-color: var(--primary);
+                border-color: var(--primary);
             }
         }
     }
