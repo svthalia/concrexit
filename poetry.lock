@@ -478,7 +478,7 @@ google-cloud-storage = ">=1.18.0"
 
 [[package]]
 name = "freezegun"
-version = "1.0.0"
+version = "1.1.0"
 description = "Let your Python tests travel through time"
 category = "main"
 optional = false
@@ -1313,7 +1313,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "b06be96591363c0e10e5c09521401474ca91bca2b4e30babecdf00de52bc4851"
+content-hash = "6e825f69dabe850b198635eccb76557fd43f9322c9e787ee093e774bf084ee48"
 
 [metadata.files]
 alabaster = [
@@ -1575,8 +1575,8 @@ firebase-admin = [
     {file = "firebase_admin-4.5.1.tar.gz", hash = "sha256:561a6e91804501a0cab94d446fc7562db2590fa1ee10db164df14a8c922a33f8"},
 ]
 freezegun = [
-    {file = "freezegun-1.0.0-py2.py3-none-any.whl", hash = "sha256:02b35de52f4699a78f6ac4518e4cd3390dddc43b0aeb978335a8f270a2d9668b"},
-    {file = "freezegun-1.0.0.tar.gz", hash = "sha256:1cf08e441f913ff5e59b19cc065a8faa9dd1ddc442eaf0375294f344581a0643"},
+    {file = "freezegun-1.1.0-py2.py3-none-any.whl", hash = "sha256:2ae695f7eb96c62529f03a038461afe3c692db3465e215355e1bb4b0ab408712"},
+    {file = "freezegun-1.1.0.tar.gz", hash = "sha256:177f9dd59861d871e27a484c3332f35a6e3f5d14626f2bf91be37891f18927f3"},
 ]
 google-api-core = [
     {file = "google-api-core-1.22.4.tar.gz", hash = "sha256:4a9d7ac2527a9e298eebb580a5e24e7e41d6afd97010848dd0f306cae198ec1a"},
