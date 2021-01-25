@@ -38,25 +38,7 @@ class ProfileForm(forms.ModelForm):
         ]
         model = Profile
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if not kwargs["instance"].user.is_staff:
-            self.fields["email_gsuite_only"].widget = self.fields[
-                "email_gsuite_only"
-            ].hidden_widget()
-
-
 class UserCreationForm(BaseUserCreationForm):
-    """Custom Form that removes the password fields from user creation and sends a welcome message when a user is created."""
-
-    # Don't forget to edit the formset in admin.py!
-    # This is a stupid quirk of the user admin.
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Repeat Password', widget=forms.PasswordInput)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def clean(self):
         if "username" in self.cleaned_data:
             self.cleaned_data["username"] = self.cleaned_data["username"].lower()
