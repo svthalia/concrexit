@@ -41,9 +41,7 @@ def __init__(self, *args, **kwargs):
 
 
 class UserCreationForm(BaseUserCreationForm):
-    """
-    Custom Form that lowercases the username on creation.
-    """
+    """Custom Form that lowercases the username on creation."""
 
     def clean(self):
         if "username" in self.cleaned_data:
