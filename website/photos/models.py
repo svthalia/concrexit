@@ -84,9 +84,7 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
         ScheduledMessage, on_delete=models.deletion.SET_NULL, blank=True, null=True
     )
 
-    event = models.OneToOneField(
-        Event, on_delete=models.SET_NULL, blank=True, null=True
-    )
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
 
     _cover = models.OneToOneField(
         Photo,
