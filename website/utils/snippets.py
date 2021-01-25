@@ -43,9 +43,9 @@ def datetime_to_lectureyear(date):
 
 def create_google_maps_url(location, zoom, size):
     if location.lower().strip() == "online":
-        return static("img/locations/online.png")
+        return settings.BASE_URL + static("img/locations/online.png")
     if location.lower().strip() == "discord":
-        return static("img/locations/discord.png")
+        return settings.BASE_URL + static("img/locations/discord.png")
 
     maps_url = (
         f"/maps/api/staticmap?"
