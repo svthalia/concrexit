@@ -1,13 +1,10 @@
 """Forms defined by the members package."""
 from django import forms
-from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
-from members import emails
 from .models import Profile
 
 
