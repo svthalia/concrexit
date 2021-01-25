@@ -44,12 +44,22 @@
                 <div class="col-12 col-md-6 order-1">
                     <table class="table table-borderless">
                         <tbody>
-                        {% if event.album %}
+                        {% if albums %}
                         <tr>
                             <th>{% trans "photos"|capfirst %}</th>
-                            <td><a href={{ event.album.get_absolute_url }}
+                            {% if albums|length == 1 %}
+                            <td><a href={{ albums.0.get_absolute_url }}
                                 class = "btn btn-primary"
                                 >{% trans "Album" %}</a></td>
+                            {% else %}
+                                <td>
+                                {% for album in albums %}
+                                <a href={{ album.get_absolute_url }}
+                                    class = "btn btn-primary"
+                                    >{{ album.title }}</a>
+                                {% endfor %}
+                                </td>
+                            {% endif %}
                         </tr>
                         {% endif %}
                         <tr>
