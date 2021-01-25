@@ -186,9 +186,9 @@ def update_registration(
         name = registration.name
 
     if (
-        (not event_permissions(member, event, name)["update_registration"] and is_organiser(member,event))
-        or not field_values 
-    ):
+        not event_permissions(member, event, name)["update_registration"]
+        and is_organiser(member, event)
+    ) or not field_values:
         return
 
     for field_id, field_value in field_values:
