@@ -36,10 +36,6 @@ class ProfileForm(forms.ModelForm):
         model = Profile
 
 
-def __init__(self, *args, **kwargs):
-    super().__init__(*args, **kwargs)
-
-
 class UserCreationForm(BaseUserCreationForm):
     """Custom Form that lowercases the username on creation."""
 
