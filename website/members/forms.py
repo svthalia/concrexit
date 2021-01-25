@@ -38,6 +38,7 @@ class ProfileForm(forms.ModelForm):
         ]
         model = Profile
 
+
 class UserCreationForm(BaseUserCreationForm):
     def clean(self):
         if "username" in self.cleaned_data:
