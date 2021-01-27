@@ -16,7 +16,7 @@ body {
 #accentbar {
     position: -webkit-sticky;
     position: sticky;
-    background: var(--preset);
+    background: var(--primary);
     height: 5px;
     top: 0;
     z-index: 1020;
@@ -59,7 +59,7 @@ body {
 
             &.active, &:hover {
                 .nav-link {
-                    color: var(--preset);
+                    color: var(--primary);
                 }
             }
         }
@@ -101,7 +101,7 @@ body {
     tbody tr {
         &:hover {
             cursor: pointer;
-            color: var(--preset);
+            color: var(--primary);
             background-color: var(--background-shade);
         }
     }
@@ -208,7 +208,7 @@ body {
             padding: 20px 0 0;
 
             &::before {
-                background: var(--preset);
+                background: var(--primary);
                 content: '';
                 position: absolute;
                 left: 50%;
@@ -236,7 +236,7 @@ body {
 
 footer {
     position: absolute;
-    background: var(--preset);
+    background: var(--primary);
     overflow: hidden;
     font-size: 14px;
     color: var(--footer-text-color);
@@ -275,13 +275,13 @@ footer {
         color: var(--nav-link-color);
 
         &:focus {
-            background-color: var(--preset-hover);
-            color: var(--preset-contrast-hover);
+            background-color: var(--primary-hover);
+            color: var(--primary-contrast-hover);
         }
 
         &:hover, &:active, &.active {
-            background-color: var(--preset);
-            color: var(--preset-contrast);
+            background-color: var(--primary);
+            color: var(--primary-contrast);
         }
     }
 }
@@ -305,7 +305,7 @@ img {
         right: -3px;
 
         .ribbon {
-            color: var(--preset-contrast);
+            color: var(--primary-contrast);
             text-align: center;
             -webkit-transform: rotate(45deg);
             -moz-transform: rotate(45deg);
@@ -316,7 +316,7 @@ img {
             left: -5px;
             top: 28px;
             width: 170px;
-            background-color: var(--preset);
+            background-color: var(--primary);
         }
     }
 
@@ -345,7 +345,7 @@ img {
     .overlay {
         position: absolute;
         opacity: 0;
-        background-color: rgba(var(--preset), .7);
+        background-color: rgba(var(--primary-rgb), .7);
         transition: all 300ms ease-in-out 0s;
         -moz-transition: all 300ms ease-in-out 0s;
         -webkit-transition: all 300ms ease-in-out 0s;
@@ -354,7 +354,7 @@ img {
         height: 100%;
 
         h5, p {
-            color: var(--preset-contrast);
+            color: var(--primary-contrast);
             -webkit-transform: translateY(-50px);
         }
 
@@ -390,7 +390,7 @@ img {
         -webkit-transition: all 300ms ease-in-out 0s;
         -o-transition: all 300ms ease-in-out 0s;
 
-        color: var(--preset-contrast);
+        color: var(--primary-contrast);
         font-size: 15px;
 
         background: rgba(0, 0, 0, 0);

@@ -24,3 +24,11 @@ members.api.v2.urls module
    :members:
    :undoc-members:
    :show-inheritance:
+
+members.api.v2.views module
+---------------------------
+
+.. automodule:: members.api.v2.views
+   :members:
+   :undoc-members:
+   :show-inheritance:

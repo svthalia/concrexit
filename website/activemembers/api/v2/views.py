@@ -6,10 +6,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
     get_object_or_404,
 )
-from rest_framework.permissions import (
-    DjangoModelPermissions,
-    DjangoModelPermissionsOrAnonReadOnly,
-)
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from activemembers.api.v2.serializers.member_group import (
     MemberGroupSerializer,

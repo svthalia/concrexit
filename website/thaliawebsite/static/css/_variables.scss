@@ -29,86 +29,41 @@ $red: #e62a17;
 $red-shade: #ce2816;
 
 :root {
-  --background-color: #{$white};
-  --background-shade: #{$light-grey};
-  --background-shade-light: #{$lightlight-grey};
-  --navbar-background-color: #{$white};
+    --background-color: #{$white};
+    --background-shade: #{$light-grey};
+    --background-shade-light: #{$lightlight-grey};
+    --navbar-background-color: #{$white};
 
-  --card-background: #{$lightlight-grey};
-  --card-background-contrast: #{$black};
-  --card-background-hover: #{$light-grey};
-  --card-background-hover-contrast: #{$magenta};
+    --card-background: #{$lightlight-grey};
+    --card-background-contrast: #{$black};
+    --card-background-hover: #{$light-grey};
+    --card-background-hover-contrast: #{$magenta};
 
-  --banner-background: #{$light-grey};
+    --banner-background: #{$light-grey};
 
-  --form-background: #{$white};
-  --form-background-disabled: #{$light-grey};
-  --form-border: #{$black};
-  --form-text: #{$dark-grey};
+    --form-background: #{$white};
+    --form-background-disabled: #{$light-grey};
+    --form-border: #{$black};
+    --form-text: #{$dark-grey};
 
-  --title-color: #{$black};
-  --sub-title-color: #{$dark-grey};
-  --text-color: #{$dark-grey};
-  --nav-link-color: #{$black};
-
-  --footer-text-color: #{$white};
-  --footer-text-color-hover: #{$lightlight-grey};
-
-  --preset: #{$magenta};
-  --preset-hover: #{$magenta-shade};
-  --preset-contrast: #{$white};
-  --preset-contrast-hover: #{$light-grey};
-  --secondary: #{$black};
-  --secondary-hover: #{$darkdark-grey};
-  --secondary-contrast: #{$white};
-  --success: #{$green};
-  --success-hover: #{$green-shade};
-  --success-contrast: #{$white};
-  --info: #{$blue};
-  --info-hover: #{$blue-shade};
-  --info-contrast: #{$white};
-  --warning: #{$yellow};
-  --warning-hover: #{$yellow-shade};
-  --warning-contrast: #{$white};
-  --danger: #{$red};
-  --danger-hover: #{$red-shade};
-  --danger-contrast: #{$white};
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background-color: #{$black};
-    --background-shade: #{$dark-grey};
-    --background-shade-light: #{$darkdark-grey};
-    --navbar-background-color: #{$black};
-
-    --card-background: #{$darkdark-grey};
-    --card-background-contrast: #{$white};
-    --card-background-hover: #{$dark-grey};
-    --card-background-hover-contrast: #{$white};
-
-    --banner-background: #{$dark-grey};
-
-    --form-background: #{$black};
-    --form-background-disabled: #{$darkdark-grey};
-    --form-border: #{$white};
-    --form-text: #{$light-grey};
-
-    --title-color: #{$white};
-    --sub-title-color: #{$lightlight-grey};
-    --text-color: #{$light-grey};
-    --nav-link-color: #{$white};
+    --title-color: #{$black};
+    --sub-title-color: #{$dark-grey};
+    --text-color: #{$dark-grey};
+    --nav-link-color: #{$black};
 
     --footer-text-color: #{$white};
     --footer-text-color-hover: #{$lightlight-grey};
 
-    --preset: #{$magenta};
-    --preset-hover: #{$magenta-shade};
-    --preset-contrast: #{$white};
-    --preset-contrast-hover: #{$light-grey};
-    --secondary: #{$light-grey};
-    --secondary-hover: #{$lightlight-grey};
-    --secondary-contrast: #{$black};
+    --primary: #{$magenta};
+    --primary-rgb: #{red($magenta), green($magenta), blue($magenta)};
+    --primary-hover: #{$magenta-shade};
+    --primary-contrast: #{$white};
+    --primary-contrast-hover: #{$light-grey};
+
+    --secondary: #{$black};
+    --secondary-hover: #{$darkdark-grey};
+    --secondary-contrast: #{$white};
+
     --success: #{$green};
     --success-hover: #{$green-shade};
     --success-contrast: #{$white};
@@ -121,5 +76,37 @@ $red-shade: #ce2816;
     --danger: #{$red};
     --danger-hover: #{$red-shade};
     --danger-contrast: #{$white};
-  }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #{$black};
+        --background-shade: #{$dark-grey};
+        --background-shade-light: #{$darkdark-grey};
+        --navbar-background-color: #{$black};
+
+        --card-background: #{$darkdark-grey};
+        --card-background-contrast: #{$white};
+        --card-background-hover: #{$dark-grey};
+        --card-background-hover-contrast: #{$white};
+
+        --banner-background: #{$dark-grey};
+
+        --form-background: #{$black};
+        --form-background-disabled: #{$darkdark-grey};
+        --form-border: #{$white};
+        --form-text: #{$light-grey};
+
+        --title-color: #{$white};
+        --sub-title-color: #{$lightlight-grey};
+        --text-color: #{$light-grey};
+        --nav-link-color: #{$white};
+
+        --footer-text-color: #{$white};
+        --footer-text-color-hover: #{$lightlight-grey};
+
+        --secondary: #{$light-grey};
+        --secondary-hover: #{$lightlight-grey};
+        --secondary-contrast: #{$black};
+    }
 }

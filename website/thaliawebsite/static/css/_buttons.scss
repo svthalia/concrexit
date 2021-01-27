@@ -23,27 +23,27 @@
 }
 
 .btn-link {
-    color: var(--preset);
+    color: var(--primary);
 
     &:hover {
-        color: var(--preset-hover);
+        color: var(--primary-hover);
         text-decoration: none;
     }
 
     &:focus {
-        color: var(--preset-hover);
+        color: var(--primary-hover);
         text-decoration: none;
     }
 }
 
 .btn-primary, .btn-primary:active, .btn-primary:focus {
-    background: var(--preset) !important;
-    border-color: var(--preset) !important;
-    color: var(--preset-contrast) !important;
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary-contrast) !important;
 
     &:hover, &.active {
-        background: var(--preset-hover) !important;
-        border-color: var(--preset-hover) !important;
+        background: var(--primary-hover) !important;
+        border-color: var(--primary-hover) !important;
     }
 }
 
