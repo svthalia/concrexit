@@ -1,4 +1,5 @@
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
+from rest_framework import filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
@@ -12,6 +13,12 @@ class EventListView(ListAPIView):
 
     serializer_class = EventSerializer
     queryset = Event.objects.all()
+    filter_backends = (
+        filters.OrderingFilter,
+        filters.SearchFilter,
+    )
+    ordering_fields = ("start", "end")
+    search_fields = ("title_en",)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissionsOrAnonReadOnly,
