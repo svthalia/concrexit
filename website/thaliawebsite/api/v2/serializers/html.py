@@ -6,13 +6,13 @@ from thaliawebsite.templatetags.bleach_tags import bleach
 
 class CleanedHTMLSerializer(serializers.BaseSerializer):
     def to_internal_value(self, data):
-        pass
+        raise NotImplementedError
 
     def update(self, instance, validated_data):
-        pass
+        raise NotImplementedError
 
     def create(self, validated_data):
-        pass
+        raise NotImplementedError
 
     def to_representation(self, instance):
         return strip_spaces_between_tags(bleach(instance))
