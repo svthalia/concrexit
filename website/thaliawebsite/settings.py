@@ -607,10 +607,10 @@ STATIC_PRECOMPILER_LIST_FILES = True
 SUSPEND_SIGNALS = False
 
 THUMBNAIL_SIZES = {
-    "small": "150x150",
-    "medium": "300x300",
+    "small": "300x300",
+    "medium": "600x600",
+    "large": "1200x900",
     "avatar_large": "900x900",
-    "large": "1024x768",
     "slide_small": "500x108",
     "slide_medium": "1000x215",
     "slide": "2000x430",
