@@ -40,7 +40,10 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     title = MultilingualField(models.CharField, _("title"), max_length=100)
 
-    description = MultilingualField(HTMLField, _("description"),)
+    description = MultilingualField(
+        HTMLField,
+        _("description"),
+    )
 
     start = models.DateTimeField(_("start time"))
 
@@ -99,7 +102,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         ),
     )
 
-    location = MultilingualField(models.CharField, _("location"), max_length=255,)
+    location = MultilingualField(
+        models.CharField,
+        _("location"),
+        max_length=255,
+    )
 
     map_location = models.CharField(
         _("location for minimap"),
@@ -131,7 +138,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     )
 
     max_participants = models.PositiveSmallIntegerField(
-        _("maximum number of participants"), blank=True, null=True,
+        _("maximum number of participants"),
+        blank=True,
+        null=True,
     )
 
     no_registration_message = MultilingualField(
@@ -163,7 +172,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     )
 
     documents = models.ManyToManyField(
-        "documents.Document", verbose_name=_("documents"), blank=True,
+        "documents.Document",
+        verbose_name=_("documents"),
+        blank=True,
     )
 
     slide = models.ForeignKey(
@@ -252,10 +263,6 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         return self.participants.filter(present=True)
 
     @property
-    def unpresent_registrations(self):
-        return self.participants.filter(present=False)
-
-    @property
     def unpaid_registrations(self):
         return (
             self.participants.filter(payment__isnull=True)
@@ -272,12 +279,12 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         )
 
     @property
-    def everything_paid(self):
+    def everyone_paid(self):
         if self.payment_required:
             return (
                 False
                 if self.unpaid_registrations is not None
-                and self.unpaid_registrations.count() > 0
+                   and self.unpaid_registrations.count() > 0
                 else True
             )
         return None
