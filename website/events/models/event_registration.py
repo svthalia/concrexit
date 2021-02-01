@@ -68,11 +68,11 @@ class EventRegistration(models.Model, Payable):
                 return list(self.event.queue).index(self) + 1
             except ValueError:
                 pass
-        return 0
+        return None
 
     @property
     def is_invited(self):
-        return self.is_registered and self.queue_position == 0
+        return self.is_registered and not self.queue_position
 
     def is_external(self):
         return bool(self.name)
@@ -107,7 +107,7 @@ class EventRegistration(models.Model, Payable):
 
     def would_cancel_after_deadline(self):
         now = timezone.now()
-        return self.queue_position == 0 and now >= self.event.cancel_deadline
+        return not self.queue_position and now >= self.event.cancel_deadline
 
     def clean(self):
         if (self.member is None and not self.name) or (self.member and self.name):

@@ -114,9 +114,6 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
     registered_on = serializers.DateTimeField(source="date", read_only=True)
     is_cancelled = serializers.SerializerMethodField("_is_cancelled")
     is_late_cancellation = serializers.SerializerMethodField("_is_late_cancellation")
-    queue_position = serializers.SerializerMethodField(
-        "_queue_position", read_only=False
-    )
     fields = serializers.HiddenField(default="")
 
     def _is_late_cancellation(self, instance):
@@ -125,10 +122,6 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
 
     def _is_cancelled(self, instance):
         return instance.date_cancelled is not None
-
-    def _queue_position(self, instance):
-        pos = instance.queue_position
-        return pos if pos > 0 else None
 
     def _member(self, instance):
         if instance.member:

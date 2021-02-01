@@ -88,6 +88,7 @@ class ServicesTest(TestCase):
                 "create_registration": False,
                 "cancel_registration": False,
                 "update_registration": False,
+                "manage_event": False,
             },
             services.event_permissions(AnonymousUser(), self.event),
         )
@@ -99,6 +100,7 @@ class ServicesTest(TestCase):
                 "create_registration": False,
                 "cancel_registration": False,
                 "update_registration": False,
+                "manage_event": False,
             },
             services.event_permissions(self.member, self.event),
         )
@@ -110,6 +112,7 @@ class ServicesTest(TestCase):
                 "create_registration": True,
                 "cancel_registration": False,
                 "update_registration": False,
+                "manage_event": False,
             },
             services.event_permissions(self.member, self.event),
         )
@@ -123,6 +126,7 @@ class ServicesTest(TestCase):
                 "create_registration": False,
                 "cancel_registration": True,
                 "update_registration": False,
+                "manage_event": False,
             },
             services.event_permissions(self.member, self.event),
         )
@@ -139,6 +143,7 @@ class ServicesTest(TestCase):
                 "create_registration": False,
                 "cancel_registration": True,
                 "update_registration": True,
+                "manage_event": False,
             },
             services.event_permissions(self.member, self.event),
         )
@@ -151,6 +156,7 @@ class ServicesTest(TestCase):
                 "create_registration": True,
                 "cancel_registration": False,
                 "update_registration": False,
+                "manage_event": False,
             },
             services.event_permissions(self.member, self.event),
         )

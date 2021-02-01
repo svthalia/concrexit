@@ -100,7 +100,7 @@ class EventRegisterView(View):
         try:
             services.create_registration(request.member, event)
 
-            if event.has_fields():
+            if event.has_fields:
                 return redirect("events:registration", event.pk)
 
             messages.success(request, _("Registration successful."))
@@ -169,7 +169,7 @@ class RegistrationView(FormView):
     def dispatch(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, pk=self.kwargs["pk"])
         try:
-            if self.event.has_fields():
+            if self.event.has_fields:
                 return super().dispatch(request, *args, **kwargs)
         except RegistrationError:
             pass

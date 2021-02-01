@@ -13,7 +13,7 @@ def post_registration_save(sender, instance, **kwargs):
     """Update members on pizza reminder notification."""
     event = instance.event
     if (
-        event.is_pizza_event()
+        event.is_pizza_event
         and event.pizzaevent.send_notification
         and instance.member is not None
     ):

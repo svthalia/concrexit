@@ -113,7 +113,7 @@ class RegistrationAdminFields(FormView):
             EventRegistration, pk=self.kwargs["registration"]
         )
         try:
-            if self.registration.event.has_fields():
+            if self.registration.event.has_fields:
                 return super().dispatch(request, *args, **kwargs)
         except RegistrationError:
             pass

@@ -264,8 +264,8 @@ class RegistrationTest(TestCase):
         self.assertTrue(self.r1.is_late_cancellation())
 
     def test_queue_position(self):
-        self.assertEqual(self.r1.queue_position, 0)
-        self.assertEqual(self.r2.queue_position, 0)
+        self.assertEqual(self.r1.queue_position, None)
+        self.assertEqual(self.r2.queue_position, None)
 
         self.r1.event.max_participants = 0
         self.r2.event = self.r1.event
@@ -274,7 +274,7 @@ class RegistrationTest(TestCase):
 
         self.r1.event.max_participants = 1
         self.r2.event = self.r1.event
-        self.assertEqual(self.r1.queue_position, 0)
+        self.assertEqual(self.r1.queue_position, None)
         self.assertEqual(self.r2.queue_position, 1)
 
     def test_registration_either_name_or_member(self):

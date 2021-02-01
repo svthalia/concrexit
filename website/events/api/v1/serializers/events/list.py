@@ -6,7 +6,6 @@ from rest_framework import serializers
 from announcements.api.v1.serializers import SlideSerializer
 from events import services
 from events.models import Event
-from pizzas.models import PizzaEvent
 
 
 class EventListSerializer(serializers.ModelSerializer):
@@ -50,8 +49,7 @@ class EventListSerializer(serializers.ModelSerializer):
             return False
 
     def _pizza(self, instance):
-        pizza_events = PizzaEvent.objects.filter(event=instance)
-        return pizza_events.exists()
+        return instance.is_pizza_event
 
     def _present(self, instance):
         try:
