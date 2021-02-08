@@ -454,7 +454,7 @@ class BankAccountAdmin(admin.ModelAdmin):
     """Manage bank accounts"""
 
     list_display = ("iban", "owner_link", "last_used", "valid_from", "valid_until")
-    list_filter = (ValidAccountFilter, "owner__profile__auto_renew")
+    list_filter = (ValidAccountFilter, "owner__member__profile__auto_renew")
     fields = (
         "created_at",
         "last_used",
@@ -473,7 +473,7 @@ class BankAccountAdmin(admin.ModelAdmin):
         "created_at",
         "can_be_revoked",
     )
-    search_fields = ("owner__username", "owner__first_name", "owner__last_name", "iban")
+    search_fields = ("owner__member__username", "owner__member__first_name", "owner__member__last_name", "iban")
     autocomplete_fields = ("owner",)
     actions = ["set_last_used"]
     form = BankAccountAdminForm
@@ -483,7 +483,7 @@ class BankAccountAdmin(admin.ModelAdmin):
             return format_html(
                 "<a href='{}'>{}</a>",
                 reverse("admin:auth_user_change", args=[obj.owner.pk]),
-                obj.owner.get_full_name(),
+                obj.owner.member.get_full_name(),
             )
         return ""
 
@@ -635,11 +635,18 @@ class ThaliaPayBalanceFilter(admin.SimpleListFilter):
 class PaymentUserAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
-        "email",
+        "get_email",
         "get_tpay_allowed",
         "get_tpay_enabled",
         "get_tpay_balance",
     )
+
+    def get_email(self, obj):
+        return obj.email
+
+    get_email.short_description = 'Email'
+    get_email.admin_order_field = 'member__email'
+
     list_filter = [
         ThaliaPayAllowedFilter,
         ThaliaPayEnabledFilter,

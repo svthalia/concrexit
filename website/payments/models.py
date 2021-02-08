@@ -18,11 +18,23 @@ from localflavor.generic.models import IBANField, BICField
 from members.models import Member
 
 
-class PaymentUser(Member):
+class PaymentUser(models.Model):
     class Meta:
-        proxy = True
         verbose_name = "payment user"
-        permissions = (("tpay_allowed", "Is allowed to use Thalia Pay"),)
+
+    member = models.OneToOneField(Member, on_delete=models.CASCADE, blank=False)
+
+    _tpay_enabled = models.BooleanField(
+        verbose_name=_("Thalia Pay enabled"),
+        blank=False,
+        default=False,
+    )
+
+    _tpay_allowed = models.BooleanField(
+        verbose_name=_("Allowed to use Thalia Pay"),
+        blank=False,
+        default=False,
+    )
 
     @property
     def tpay_enabled(self):
@@ -49,17 +61,19 @@ class PaymentUser(Member):
     def tpay_allowed(self):
         """Does this user have permissions to use Thalia Pay (but not necessarily enabled)"""
         return (
-            self.has_perm("payments.tpay_allowed")
+            self._tpay_allowed
             and settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
         )
 
     def allow_tpay(self):
         """Give this user Thalia Pay permission"""
-        self.user_permissions.add(Permission.objects.get(codename="tpay_allowed"))
+        self._tpay_allowed = True
+        self.save()
 
     def disallow_tpay(self):
         """Revoke this user's Thalia Pay permission"""
-        self.user_permissions.remove(Permission.objects.get(codename="tpay_allowed"))
+        self._tpay_allowed = False
+        self.save()
 
 
 class Payment(models.Model):
