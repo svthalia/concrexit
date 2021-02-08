@@ -35,6 +35,13 @@ class ProfileForm(forms.ModelForm):
         ]
         model = Profile
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not kwargs["instance"].user.is_staff:
+            self.fields["email_gsuite_only"].widget = self.fields[
+                "email_gsuite_only"
+            ].hidden_widget()
+
 
 class UserCreationForm(BaseUserCreationForm):
     """Custom Form that lowercases the username on creation."""
