@@ -35,6 +35,7 @@ class ProfileForm(forms.ModelForm):
         ]
         model = Profile
 
+
 def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
 
