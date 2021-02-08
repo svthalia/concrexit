@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 
 from members.models import Member, Profile
 from registrations import emails
-from registrations.emails import send_email
+from utils.snippets import send_email
 from registrations.models import Registration, Renewal
 
 
