@@ -14,6 +14,18 @@ jobs:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix-build -j 4 -A github-actions release.nix
     - run: nix-shell --run "echo OK"
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging_environment
+      url: https://staging.thalia.nu
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - uses: cachix/install-nix-action@v12
+    - uses: cachix/cachix-action@v8
+      with:
+        name: svthalia-concrexit
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - name: Deploy if this is master or staging
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging'
       run: |

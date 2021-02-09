@@ -158,6 +158,7 @@ in
       extraGroups = [ "wheel" ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICxVTPZp7bOJhmU3hsK6yCSDALTC68/sQ5NRce531XGK deploykey"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMX25gej25SgihQ5YpiXGS3GsNu0ggHZIIIHqsjkWEsj staging_environment"
       ];
     };
 
