@@ -72,7 +72,16 @@
                 &.regular-event {
                     background-color: $grey;
                     &.has-registration {
-                        background-color: var(--primary);
+                        background-color: $green;
+                        &.pending-registration {
+                            background-color: $yellow;
+                        }
+                    }
+                    &.no-registration { // for events that do not require registration
+                        background-color: $magenta;
+                    }
+                    &.registration-closed {
+                        background-color: rgba(0, 0, 0, 128);
                     }
                 }
 
