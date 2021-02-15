@@ -40,6 +40,10 @@ class PayableTest(TestCase):
         with self.assertRaises(NotImplementedError):
             p.save()
 
+    def test_tpay_allowed_by_default(self):
+        p = Payable()
+        self.assertTrue(p.tpay_allowed)
+
 
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class PaymentTest(TestCase):
