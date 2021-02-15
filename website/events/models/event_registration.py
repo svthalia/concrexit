@@ -153,6 +153,10 @@ class EventRegistration(models.Model, Payable):
     def payment_payer(self):
         return self.member
 
+    @property
+    def tpay_allowed(self):
+        return self.event.tpay_allowed
+
     class Meta:
         verbose_name = _("Registration")
         verbose_name_plural = _("Registrations")

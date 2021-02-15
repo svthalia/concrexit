@@ -130,6 +130,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
                 "fields": (
                     "price",
                     "fine",
+                    "tpay_allowed",
                     "max_participants",
                     "registration_start",
                     "registration_end",

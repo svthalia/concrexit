@@ -419,3 +419,7 @@ class Payable:
 
     def save(self):
         raise NotImplementedError
+
+    @property
+    def tpay_allowed(self):
+        return True
