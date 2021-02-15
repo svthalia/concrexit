@@ -36,6 +36,10 @@
             .has-registration {
                 background-color: var(--primary);
             }
+
+            .pending-registration {
+                background-color: $yellow;
+            }
         }
     }
 }
@@ -113,8 +117,14 @@
 
         &.regular-event {
             &.has-registration {
-                background-color: var(--primary);
+                background-color: $green;
                 color: $white;
+            }
+            &.pending-registration {
+                background-color: $yellow;
+            }
+            &.no-registration {
+                background-color: var(--primary);
             }
         }
 

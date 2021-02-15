@@ -21,6 +21,8 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
                 class_names.append("pending-registration")
             else:
                 class_names.append("has-registration")
+        elif not instance.registration_required:
+            class_names.append("no-registration")
         elif not instance.registration_allowed:
             class_names.append("registration-closed")
         return class_names
