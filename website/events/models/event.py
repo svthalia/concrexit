@@ -180,7 +180,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     )
 
     tpay_allowed = models.BooleanField(
-        _("Is Thalia Pay payment allowed for this event"), default=True, blank=False
+        _("Is Thalia Pay payment allowed for this event"), default=True
     )
 
     @property
