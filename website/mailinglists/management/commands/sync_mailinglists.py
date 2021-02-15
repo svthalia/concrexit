@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    """This command can be run periodically to sync the mailinglists available via GSuite."""
+
     def handle(self, *args, **options):
         """Sync all mailing lists."""
         sync_service = GSuiteSyncService()

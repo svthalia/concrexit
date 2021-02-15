@@ -10,6 +10,8 @@ sync_service = GSuiteUserService()
 
 
 class Command(BaseCommand):
+    """This command can be run periodically to remove all suspended GSuite users permanently."""
+
     def handle(self, *args, **options):
         """Sync all accounts."""
         suspended_users = sync_service.get_suspended_users()
