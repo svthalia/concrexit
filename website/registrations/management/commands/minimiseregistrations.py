@@ -4,6 +4,8 @@ from registrations import services
 
 
 class Command(BaseCommand):
+    """This command needs to be executed periodically to remove all data that is no longer necessary and can be removed."""
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--dry-run",

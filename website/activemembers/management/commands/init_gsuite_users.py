@@ -13,6 +13,8 @@ sync_service = GSuiteUserService()
 
 
 class Command(BaseCommand):
+    """This command allows you to initialise a GSuite organisation with accounts for all members that are staff."""
+
     def handle(self, *args, **options):
         """Sync all accounts."""
         for member in Member.objects.filter(is_staff=True):

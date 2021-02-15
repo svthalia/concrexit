@@ -4,6 +4,8 @@ from members import services
 
 
 class Command(BaseCommand):
+    """This command can be executed periodically to minimise the user information in our database."""
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--dry-run",
