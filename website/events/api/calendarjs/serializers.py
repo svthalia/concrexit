@@ -17,10 +17,10 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         if self.context["member"] and services.is_user_registered(
             self.context["member"], instance
         ):
-            class_names.append("has-registration")
-            # EventRegistration.status should be used
-            if services.user_registration_pending(self.context["member"], instance):
+            if not services.user_registration_pending(self.context["member"], instance):
                 class_names.append("pending-registration")
+            else:
+                class_names.append("has-registration")
         elif not instance.registration_allowed:
             class_names.append("registration-closed")
         return class_names

@@ -73,9 +73,9 @@
                     background-color: $grey;
                     &.has-registration {
                         background-color: $green;
-                        &.pending-registration {
-                            background-color: $yellow;
-                        }
+                    }
+                    &.pending-registration {
+                        background-color: $yellow;
                     }
                     &.no-registration { // for events that do not require registration
                         background-color: $magenta;
