@@ -9,7 +9,10 @@ class ShortLink(models.Model):
         unique=True,
         max_length=32,
         verbose_name=_("name for the url"),
-        help_text=_("This is what you use after the root domain."),
+        help_text=_(
+            "This is what you use after the root domain. Be mindful that the url "
+            "this creates could be overridden by a website update."
+        ),
     )
 
     url = models.URLField(
