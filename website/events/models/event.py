@@ -179,9 +179,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         null=True,
     )
 
-    tpay_allowed = models.BooleanField(
-        _("Is Thalia Pay payment allowed for this event"), default=True
-    )
+    tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
 
     @property
     def after_cancel_deadline(self):
