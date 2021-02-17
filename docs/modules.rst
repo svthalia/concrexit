@@ -19,7 +19,7 @@ website
    pizzas
    pushnotifications
    registrations
-   shortlink
+   shortlinks
    singlepages
    thabloid
    thaliawebsite

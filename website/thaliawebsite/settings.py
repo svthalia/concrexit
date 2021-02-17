@@ -402,7 +402,7 @@ INSTALLED_APPS = [
     "registrations.apps.RegistrationsConfig",
     "payments.apps.PaymentsConfig",
     "singlepages.apps.SinglepagesConfig",
-    "shortlink.apps.ShortlinkConfig",
+    "shortlinks.apps.ShortLinkConfig",
 ]
 
 MIDDLEWARE = [
