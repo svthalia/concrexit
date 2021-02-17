@@ -496,6 +496,22 @@ class PaymentProcessViewTest(TestCase):
         )
         self.assertEqual(403, response.status_code)
 
+    @mock.patch("django.contrib.messages.error")
+    def test_tpay_not_allowed(self, messages_error):
+        with mock.patch("payments.models.Payable.tpay_allowed") as mock_tpay_allowed:
+            mock_tpay_allowed.__get__ = mock.Mock(return_value=False)
+
+            response = self.client.post(
+                reverse("payments:payment-process"), follow=False, data=self.test_body
+            )
+
+            messages_error.assert_called_with(
+                ANY, "You are not allowed to use Thalia Pay for this payment."
+            )
+
+            self.assertEqual(302, response.status_code)
+            self.assertEqual("/mock_next", response.url)
+
     def test_missing_parameters(self):
         response = self.client.post(
             reverse("payments:payment-process"), follow=True, data={}

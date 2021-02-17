@@ -238,6 +238,13 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
             messages.error(self.request, _("This object has already been paid for."))
             return redirect(request.POST["next"])
 
+        if not self.payable.tpay_allowed:
+            messages.error(
+                self.request,
+                _("You are not allowed to use Thalia Pay for this payment."),
+            )
+            return redirect(request.POST["next"])
+
         if "_save" not in request.POST:
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)

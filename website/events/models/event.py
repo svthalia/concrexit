@@ -179,6 +179,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         null=True,
     )
 
+    tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
+
     @property
     def after_cancel_deadline(self):
         return self.cancel_deadline and self.cancel_deadline <= timezone.now()
