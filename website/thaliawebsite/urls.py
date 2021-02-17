@@ -43,7 +43,6 @@ from education.sitemaps import sitemap as education_sitemap
 from events.sitemaps import sitemap as events_sitemap
 from members.sitemaps import sitemap as members_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
-from shortlink.views import ShortLinkView
 from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
@@ -155,7 +154,7 @@ urlpatterns = [
     re_path(
         r"^media/private/(?P<request_path>.*)$", private_media, name="private-media"
     ),
-    re_path(r"^(?P<slug>[^/]+)$", ShortLinkView.as_view(), name="short-url"),
+    path("", include("shortlinks.urls")),
 ] + static(
     settings.MEDIA_URL + "public/",
     document_root=os.path.join(settings.MEDIA_ROOT, "public"),
