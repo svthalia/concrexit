@@ -154,6 +154,7 @@ urlpatterns = [
     re_path(
         r"^media/private/(?P<request_path>.*)$", private_media, name="private-media"
     ),
+    path("", include("shortlinks.urls")),
 ] + static(
     settings.MEDIA_URL + "public/",
     document_root=os.path.join(settings.MEDIA_ROOT, "public"),
