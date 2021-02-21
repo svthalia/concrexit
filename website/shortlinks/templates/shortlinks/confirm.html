@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load static i18n %}
 
-{% block title %}Shortlink for {{ link.key }} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}Shortlink for {{ link.key }} — {{ block.super }}{% endblock %}
+{% block title %}{{ link.slug|title }} redirect — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{{ link.slug|title }} redirect — {{ block.super }}{% endblock %}
 
 {% block body %}
 
