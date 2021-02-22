@@ -11,6 +11,7 @@ from django.utils import timezone
 
 import members
 from members.models import Membership, Profile, Member
+from payments.models import Payment, BankAccount
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -119,6 +120,28 @@ def reject_entries(user_id: int, queryset: QuerySet) -> int:
 
     return rows_updated
 
+def process_tpay_registration(registration: Registration) -> None:
+    """
+    If a registration is labeled to be paid with Thalia Pay, add the payment.
+    This does not use create_payment as the tpay_enabled check cannot be
+    performed.
+
+    :param registration: The registration that should be processed
+    :type registration: Registration
+    """
+    if not registration:
+        return
+
+    if not (registration.bank_account and registration.bank_account.mandate_no):
+        return
+
+    registration.payment = Payment.objects.create(
+        amount=registration.payment_amount,
+        notes=registration.payment_notes,
+        topic=registration.payment_topic,
+        type=Payment.TPAY,
+    )
+    registration.save()
 
 def accept_entries(user_id: int, queryset: QuerySet) -> int:
     """Accept all entries in the queryset.
@@ -168,7 +191,18 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
             )
 
         entry.save()
-        updated_entries.append(entry.pk)
+
+        entry.refresh_from_db()
+
+        if (
+            entry.registration.bank_account
+            and entry.registration.pay_with_tpay
+            and entry.registration.bank_account.mandate_no
+        ):
+            process_tpay_registration(entry.registration)
+            process_entry_save(entry)
+
+    updated_entries.append(entry.pk)
 
     return len(updated_entries)
 
@@ -251,6 +285,15 @@ def _create_member_from_registration(registration: Registration) -> Member:
         show_birthday=registration.optin_birthday,
         receive_optin=registration.optin_mailinglist,
     )
+
+    if registration.pay_with_tpay:
+        BankAccount.objects.create(
+            iban=registration.iban,
+            bic=registration.bic,
+            initials=registration.initials,
+            last_name=registration.last_name,
+            signature=registration.signature
+        )
 
     # Send welcome message to new member
     members.emails.send_welcome_message(user, password, registration.language)

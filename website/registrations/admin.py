@@ -73,6 +73,8 @@ class RegistrationAdmin(admin.ModelAdmin):
                     "membership_type",
                     "status",
                     "payment",
+                    "bank_account",
+                    "pay_with_tpay",
                     "remarks",
                 )
             },

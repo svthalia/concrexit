@@ -9,6 +9,7 @@ from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Membership
+from payments.widgets import SignatureWidget
 from registrations import services
 from .models import Registration, Renewal, Reference
 
@@ -52,6 +53,9 @@ class MemberRegistrationForm(BaseRegistrationForm):
 
     class Meta:
         model = Registration
+        widgets = {
+            "signature": SignatureWidget(),
+        }
         fields = (
             "length",
             "first_name",
@@ -70,8 +74,12 @@ class MemberRegistrationForm(BaseRegistrationForm):
             "optin_birthday",
             "optin_mailinglist",
             "membership_type",
+            "direct_debit",
+            "initials",
+            "iban",
+            "bic",
+            "signature"
         )
-
 
 class BenefactorRegistrationForm(BaseRegistrationForm):
     """Form for benefactor registrations."""
@@ -82,6 +90,9 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
 
     class Meta:
         model = Registration
+        widgets = {
+            "signature": SignatureWidget(),
+        }
         fields = (
             "length",
             "first_name",
@@ -99,6 +110,7 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
             "optin_mailinglist",
             "contribution",
             "membership_type",
+            "direct_debit",
         )
 
 
