@@ -47,7 +47,7 @@ class Partner(models.Model):
     city = models.CharField(max_length=100)
 
     country = models.CharField(
-        max_length=2, choices=countries.EUROPE, verbose_name=_("Country"), null=True,
+        max_length=2, choices=countries.EUROPE, verbose_name=_("Country")
     )
 
     def save(self, **kwargs):
