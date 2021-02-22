@@ -17,6 +17,8 @@ def get_media_url(path, attachment=False):
     """
     if isinstance(path, ImageFieldFile):
         path = path.name
+    if isinstance(path, FieldFile):
+        path = path.name
 
     parts = path.split("/")
     query = ""
