@@ -20,7 +20,7 @@ class EmailsTest(TestCase):
     def setUp(self):
         translation.activate("en")
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_registration_email_confirmation(self, send_email):
         reg = Registration(
             email="test@example.org",
@@ -45,7 +45,7 @@ class EmailsTest(TestCase):
                 },
             )
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_registration_accepted_message(self, send_email):
         reg = Registration(
             email="test@example.org",
@@ -65,7 +65,7 @@ class EmailsTest(TestCase):
                 {"name": reg.get_full_name(), "fees": floatformat(reg.contribution, 2)},
             )
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_registration_rejected_message(self, send_email):
         reg = Registration(
             email="test@example.org", first_name="John", last_name="Doe", pk=0,
@@ -81,7 +81,7 @@ class EmailsTest(TestCase):
                 {"name": reg.get_full_name()},
             )
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_new_registration_board_message(self, send_email):
         registration = Registration(
             email="test@example.org", first_name="John", last_name="Doe", pk=0,
@@ -105,7 +105,7 @@ class EmailsTest(TestCase):
             },
         )
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_renewal_accepted_message(self, send_email):
         member = Member(
             email="test@example.org",
@@ -131,7 +131,7 @@ class EmailsTest(TestCase):
                 },
             )
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_renewal_rejected_message(self, send_email):
         member = Member(
             email="test@example.org",
@@ -152,7 +152,7 @@ class EmailsTest(TestCase):
                 {"name": renewal.member.get_full_name()},
             )
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_renewal_complete_message(self, send_email):
         member = Member(
             email="test@example.org",
@@ -173,7 +173,7 @@ class EmailsTest(TestCase):
                 {"name": renewal.member.get_full_name()},
             )
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_new_renewal_board_message(self, send_email):
         member = Member(
             email="test@example.org",
@@ -199,7 +199,7 @@ class EmailsTest(TestCase):
             },
         )
 
-    @mock.patch("utils.snippets.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_references_information_message(self, send_email):
         with self.subTest("Registrations"):
             registration = Registration(

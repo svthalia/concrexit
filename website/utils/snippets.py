@@ -187,9 +187,7 @@ def overlaps(check, others, can_equal=True):
 
 
 def send_email(to: str, subject: str, body_template: str, context: dict) -> None:
-    """
-    Easily send an email with the right subject and a body template
-
+    """Easily send an email with the right subject and a body template.
     :param to: where should the email go?
     :param subject: what is the email about?
     :param body_template: what is the content of the email?
