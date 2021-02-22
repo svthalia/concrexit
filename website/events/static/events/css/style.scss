@@ -23,21 +23,21 @@
             right: 1.25rem;
             top: 1.25rem;
 
-            .no-registration, .has-registration {
+            .regular-event-no-registration, .regular-event-has-registration .regular-event-pending-registration {
                 border-radius: 20px;
                 width: 12px;
                 height: 12px;
             }
 
-            .no-registration {
+            .regular-event-no-registration {
                 background-color: $grey;
             }
 
-            .has-registration {
+            .regular-event-has-registration {
                 background-color: var(--primary);
             }
 
-            .pending-registration {
+            .regular-event-pending-registration {
                 background-color: $yellow;
             }
         }
@@ -73,22 +73,22 @@
                 margin-right: 1rem;
                 flex-shrink: 0;
 
-                &.regular-event {
+                &.regular-event-not-registered {
                     background-color: $grey;
-                    &.has-registration {
-                        background-color: $green;
-                    }
-                    &.pending-registration {
-                        background-color: $yellow;
-                    }
-                    &.no-registration { // for events that do not require registration
-                        background-color: $magenta;
-                    }
-                    &.registration-closed {
-                        background-color: rgba(0, 0, 0, 128);
-                    }
                 }
-
+                &.regular-event-has-registration {
+                    background-color: $green;
+                }
+                &.regular-event-pending-registration {
+                    background-color: $yellow;
+                }
+                &.regular-event-no-registration { // for events that do not require registration
+                    background-color: $magenta;
+                }
+                &.regular-event-registration-closed {
+                    // background-color: rgba(0, 0, 0, 128);
+                    background-color: $red;
+                }
                 &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
                     background-color: rgba(255, 0, 0, 0.3);
                 }
@@ -115,17 +115,22 @@
         overflow: hidden;
         transition-property: opacity;
 
-        &.regular-event {
-            &.has-registration {
-                background-color: $green;
-                color: $white;
-            }
-            &.pending-registration {
-                background-color: $yellow;
-            }
-            &.no-registration {
-                background-color: var(--primary);
-            }
+        &.regular-event-not-registered {
+            background-color: $grey;
+        }
+        &.regular-event-has-registration {
+            background-color: $green;
+            color: $white;
+        }
+        &.regular-event-pending-registration {
+            background-color: $yellow;
+            color: $black;
+        }
+        &.regular-event-no-registration {
+            background-color: var(--primary);
+        }
+        &.regular-event-registration-closed {
+            background-color: $red;
         }
 
         &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
