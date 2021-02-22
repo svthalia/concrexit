@@ -224,9 +224,9 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = os.environ.get("DATA_UPLOAD_MAX_NUMBER_FIELDS", 
 DEBUG = setting(development=True, production=False, testing=False)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-secure
-SESSION_COOKIE_SECURE = setting(development=True, production=False)
+SESSION_COOKIE_SECURE = setting(development=False, production=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-secure
-CSRF_COOKIE_SECURE = setting(development=True, production=False)
+CSRF_COOKIE_SECURE = setting(development=False, production=True)
 
 ###############################################################################
 # Email settings
