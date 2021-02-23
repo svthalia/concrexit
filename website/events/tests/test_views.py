@@ -433,7 +433,6 @@ class RegistrationTest(TestCase):
         self.event.save()
         EventRegistration.objects.create(event=self.event, member=self.member)
         response = self.client.get("/events/1/")
-        print(response.rendered_content)
         self.assertContains(
             response,
             "Cancellation isn&#x27;t possible anymore without having to pay the full costs of",
