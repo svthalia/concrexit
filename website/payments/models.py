@@ -4,18 +4,56 @@ import uuid
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import DEFERRED, Q, Sum
+from django.db.models import DEFERRED, F, Q, Sum, Value
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
-from members.models import Member
+from members.models import Member, MemberManager
+
+User = get_user_model()
+
+
+class PaymentUserCache(models.Model):
+    user = models.OneToOneField(
+        User,
+        related_name="payment_user_cache",
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    allowed = models.BooleanField(null=True)
+    enabled = models.BooleanField(null=True)
+    balance = models.DecimalField(
+        verbose_name=_("amount"), null=True, max_digits=5, decimal_places=2,
+    )
+
+    def __str__(self):
+        return f"Cache for {self.user}"
+
+
+class PaymentUserManager(MemberManager):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.select_related("payment_user_cache")
+        if settings.THALIA_PAY_ENABLED_PAYMENT_METHOD:
+            qs = qs.annotate(_tpay_allowed_cache=F("payment_user_cache__allowed"))
+            qs = qs.annotate(_tpay_enabled_cache=F("payment_user_cache__enabled"))
+            qs = qs.annotate(_tpay_balance_cache=F("payment_user_cache__balance"))
+        else:
+            qs = qs.annotate(
+                _tpay_allowed_cache=Value(False, output_field=models.BooleanField())
+            )
+            qs = qs.annotate(
+                _tpay_enabled_cache=Value(False, output_field=models.BooleanField())
+            )
+        return qs
 
 
 class PaymentUser(Member):
@@ -24,34 +62,64 @@ class PaymentUser(Member):
         verbose_name = "payment user"
         permissions = (("tpay_allowed", "Is allowed to use Thalia Pay"),)
 
+    objects = PaymentUserManager()
+
     @property
     def tpay_enabled(self):
         """Check if this user has a bank account with Direct Debit enabled."""
+        if getattr(self, "_tpay_enabled_cache", None) is not None:
+            return self._tpay_enabled_cache
+
+        if not PaymentUserCache.objects.filter(user=self):
+            self.payment_user_cache = PaymentUserCache()
+
         bank_accounts = BankAccount.objects.filter(owner=self)
-        return (
+
+        enabled = (
             settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
             and self.tpay_allowed
             and bank_accounts.exists()
             and any(x.valid for x in bank_accounts)
         )
+        self.payment_user_cache.enabled = enabled
+        self.payment_user_cache.save()
+        return enabled
 
     @property
     def tpay_balance(self):
         """Check the Thalia Pay balance for a user."""
+        if getattr(self, "_tpay_balance_cache", None) is not None:
+            return self._tpay_balance_cache
+
+        if not PaymentUserCache.objects.filter(user=self):
+            self.payment_user_cache = PaymentUserCache()
+
         payments = Payment.objects.filter(
             Q(paid_by=self, type=Payment.TPAY)
             & (Q(batch__isnull=True) | Q(batch__processed=False))
         )
         total = payments.aggregate(Sum("amount"))["amount__sum"]
-        return -1 * total if total else 0
+        balance = -1 * total if total else 0
+
+        self.payment_user_cache.balance = balance
+        self.payment_user_cache.save()
+        return balance
 
     @property
     def tpay_allowed(self):
         """Check if this user has permissions to use Thalia Pay (but not necessarily enabled)."""
-        return (
+        if getattr(self, "_tpay_allowed_cache", None) is not None:
+            return self._tpay_allowed_cache
+
+        tpay_allowed = (
             self.has_perm("payments.tpay_allowed")
             and settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
         )
+        if not PaymentUserCache.objects.filter(user=self):
+            self.payment_user_cache = PaymentUserCache()
+        self.payment_user_cache.allowed = tpay_allowed
+        self.payment_user_cache.save()
+        return tpay_allowed
 
     def allow_tpay(self):
         """Give this user Thalia Pay permission."""
