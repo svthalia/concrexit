@@ -357,6 +357,8 @@ if "SENTRY_DSN" in os.environ:
         integrations=[DjangoIntegration()],
         release=SOURCE_COMMIT,
         send_default_pii=True,
+        environment=DJANGO_ENV,
+        traces_sample_rate=0.2,
     )
 
 
