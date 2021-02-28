@@ -11,7 +11,8 @@ from django.utils import timezone
 
 import members
 from members.models import Membership, Profile, Member
-from payments.models import Payment, BankAccount
+from payments.models import BankAccount, PaymentUser, Payment
+from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -120,28 +121,15 @@ def reject_entries(user_id: int, queryset: QuerySet) -> int:
 
     return rows_updated
 
-def process_tpay_registration(registration: Registration) -> None:
-    """
-    If a registration is labeled to be paid with Thalia Pay, add the payment.
-    This does not use create_payment as the tpay_enabled check cannot be
-    performed.
 
-    :param registration: The registration that should be processed
-    :type registration: Registration
-    """
-    if not registration:
-        return
-
-    if not (registration.bank_account and registration.bank_account.mandate_no):
-        return
-
-    registration.payment = Payment.objects.create(
-        amount=registration.payment_amount,
-        notes=registration.payment_notes,
-        topic=registration.payment_topic,
-        type=Payment.TPAY,
-    )
+def _accept_tpay_registration(registration: Registration):
+    member = _create_member_from_registration(registration)
+    membership = _create_membership_from_entry(registration, member)
+    registration.membership = membership
+    registration.status = Entry.STATUS_COMPLETED
+    registration.payment = create_payment(registration, member, Payment.TPAY)
     registration.save()
+
 
 def accept_entries(user_id: int, queryset: QuerySet) -> int:
     """Accept all entries in the queryset.
@@ -171,8 +159,16 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
             if entry.registration.username is None:
                 entry.registration.username = _generate_username(entry.registration)
                 entry.registration.save()
-            emails.send_registration_accepted_message(entry.registration)
+
+            entry.save()
+
+            if entry.registration.direct_debit:
+                _accept_tpay_registration(entry.registration)
+            else:
+                emails.send_registration_accepted_message(entry.registration)
+
             log_obj = entry.registration
+
         except Registration.DoesNotExist:
             try:
                 emails.send_renewal_accepted_message(entry.renewal)
@@ -190,19 +186,7 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
                 change_message="Change status to approved",
             )
 
-        entry.save()
-
-        entry.refresh_from_db()
-
-        if (
-            entry.registration.bank_account
-            and entry.registration.pay_with_tpay
-            and entry.registration.bank_account.mandate_no
-        ):
-            process_tpay_registration(entry.registration)
-            process_entry_save(entry)
-
-    updated_entries.append(entry.pk)
+        updated_entries.append(entry.pk)
 
     return len(updated_entries)
 
@@ -286,13 +270,18 @@ def _create_member_from_registration(registration: Registration) -> Member:
         receive_optin=registration.optin_mailinglist,
     )
 
-    if registration.pay_with_tpay:
+    if registration.direct_debit:
+        payment_user = PaymentUser.objects.get(pk=user.pk)
+        payment_user.allow_tpay()
         BankAccount.objects.create(
+            owner=payment_user,
             iban=registration.iban,
             bic=registration.bic,
             initials=registration.initials,
             last_name=registration.last_name,
-            signature=registration.signature
+            signature=registration.signature,
+            mandate_no=f"{user.pk}-{1}",
+            valid_from=registration.created_at,
         )
 
     # Send welcome message to new member

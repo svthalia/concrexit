@@ -279,9 +279,26 @@ class Registration(Entry):
 
     # ---- Bank account -----
 
-    initials = models.CharField(verbose_name=_("initials"), max_length=20, blank=True, null=True)
+    direct_debit = models.BooleanField(
+        null=False,
+        blank=False,
+        default=False,
+        help_text="If selected, when the registration is accepted, immediately a "
+        "Thalia Pay payment will be created for this user and the registration "
+        "will be completed directly. This can only be selected if a bank "
+        "account is added with direct debit authorization.",
+    )
 
-    iban = IBANField(verbose_name=_("IBAN"), include_countries=IBAN_SEPA_COUNTRIES, blank=True, null=True)
+    initials = models.CharField(
+        verbose_name=_("initials"), max_length=20, blank=True, null=True
+    )
+
+    iban = IBANField(
+        verbose_name=_("IBAN"),
+        include_countries=IBAN_SEPA_COUNTRIES,
+        blank=True,
+        null=True,
+    )
 
     bic = BICField(
         verbose_name=_("BIC"),
@@ -291,16 +308,6 @@ class Registration(Entry):
     )
 
     signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
-
-    direct_debit = models.BooleanField(
-        null=False,
-        blank=False,
-        default=False,
-        help_text="If selected, when the registration is accepted, immediately a "
-                  "Thalia Pay payment will be created for this user and the registration "
-                  "will be completed directly. This can only be selected if a bank "
-                  "account is added with direct debit authorization.",
-    )
 
     @property
     def payment_topic(self):
@@ -368,14 +375,31 @@ class Registration(Entry):
         if self.direct_debit:
 
             if not self.iban:
-                errors.update({"iban": _("This field is required to add a bank account mandate for Thalia Pay.")})
+                errors.update(
+                    {
+                        "iban": _(
+                            "This field is required to add a bank account mandate for Thalia Pay."
+                        )
+                    }
+                )
 
             if not self.initials:
-                    errors.update({"initials": _("This field is required to add a bank account mandate for Thalia Pay.")})
+                errors.update(
+                    {
+                        "initials": _(
+                            "This field is required to add a bank account mandate for Thalia Pay."
+                        )
+                    }
+                )
 
             if not self.signature:
-                errors.update({"signature": _("This field is required to add a bank account mandate for Thalia Pay.")})
-
+                errors.update(
+                    {
+                        "signature": _(
+                            "This field is required to add a bank account mandate for Thalia Pay."
+                        )
+                    }
+                )
 
         if errors:
             raise ValidationError(errors)

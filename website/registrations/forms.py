@@ -35,6 +35,17 @@ class BaseRegistrationForm(forms.ModelForm):
         )
 
 
+class RegistrationAdminForm(forms.ModelForm):
+    """Custom admin form for Registration model to add the widget for the signature."""
+
+    class Meta:
+        fields = "__all__"
+        model = Registration
+        widgets = {
+            "signature": SignatureWidget(),
+        }
+
+
 class MemberRegistrationForm(BaseRegistrationForm):
     """Form for member registrations."""
 
@@ -78,8 +89,9 @@ class MemberRegistrationForm(BaseRegistrationForm):
             "initials",
             "iban",
             "bic",
-            "signature"
+            "signature",
         )
+
 
 class BenefactorRegistrationForm(BaseRegistrationForm):
     """Form for benefactor registrations."""
