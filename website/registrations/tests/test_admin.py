@@ -281,7 +281,7 @@ class RegistrationAdminTest(TestCase):
                 "initials",
                 "iban",
                 "bic",
-                "signature"
+                "signature",
             ],
         )
 
@@ -316,6 +316,11 @@ class RegistrationAdminTest(TestCase):
                 "optin_mailinglist",
                 "optin_birthday",
                 "contribution",
+                "direct_debit",
+                "initials",
+                "iban",
+                "bic",
+                "signature",
             ],
         )
 
@@ -350,6 +355,11 @@ class RegistrationAdminTest(TestCase):
                 "optin_mailinglist",
                 "optin_birthday",
                 "contribution",
+                "direct_debit",
+                "initials",
+                "iban",
+                "bic",
+                "signature",
             ],
         )
 
