@@ -123,6 +123,8 @@ class RenewalForm(forms.ModelForm):
         required=False, label=_("I am an employee of iCIS")
     )
 
+    contribution = forms.IntegerField(required=False,)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["privacy_policy"].label = mark_safe(
