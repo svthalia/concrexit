@@ -66,8 +66,6 @@ class EventDetail(DetailView):
 
         context["slide_size"] = settings.THUMBNAIL_SIZES["slide"]
 
-        context["albums"] = event.album_set.all()
-
         return context
 
 
