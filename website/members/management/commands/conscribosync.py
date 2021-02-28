@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    """This command can be executed periodically to sync the bank accounts of members with the financial administration."""
+
     def handle(self, *args, **options):
         api = ConscriboApi(
             settings.CONSCRIBO_ACCOUNT,

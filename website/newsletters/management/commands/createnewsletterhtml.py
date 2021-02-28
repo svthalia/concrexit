@@ -4,6 +4,8 @@ from newsletters import models, services
 
 
 class Command(BaseCommand):
+    """This command can be run to create HTML files of newsletters."""
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--include-unsent",

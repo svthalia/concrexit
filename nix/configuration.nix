@@ -91,6 +91,7 @@ in
       apply = x: {
         SITE_DOMAIN = if cfg.ssl then cfg.domain else "*";
         MEDIA_ROOT = "${cfg.dir}/media";
+        SENDFILE_ROOT = "${cfg.dir}/media";
         POSTGRES_USER = "concrexit";
         POSTGRES_DB = "concrexit";
         DJANGO_ENV = "staging";
@@ -188,6 +189,7 @@ in
           User = cfg.user;
           KillSignal = "SIGQUIT";
           Type = "notify";
+          TimeoutStartSec = "infinity";
           NotifyAccess = "all";
         };
 

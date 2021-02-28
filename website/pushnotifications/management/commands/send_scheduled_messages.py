@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    """This command can be run periodically to send all the scheduled push notifications."""
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--dry-run",

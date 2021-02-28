@@ -4,6 +4,8 @@ from members import emails
 
 
 class Command(BaseCommand):
+    """This command can be executed once a year to send emails to members to check if the information we have is still correct."""
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--dry-run",

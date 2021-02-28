@@ -73,7 +73,7 @@ class EventRegistrationAdminListSerializer(EventRegistrationListSerializer):
 
     def _queue_position(self, instance):
         pos = instance.queue_position
-        return pos if pos > 0 else None
+        return pos if pos and pos > 0 else None
 
     def _is_cancelled(self, instance):
         return instance.date_cancelled is not None

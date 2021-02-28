@@ -13,7 +13,7 @@ class MemberGroupSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if "get_memberships" not in self.context:
+        if "get_memberships" not in self.context and "members" in self.fields:
             self.fields.pop("members")
 
     class Meta:

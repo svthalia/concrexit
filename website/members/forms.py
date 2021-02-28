@@ -1,13 +1,10 @@
 """Forms defined by the members package."""
 from django import forms
-from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
-from members import emails
 from .models import Profile
 
 
@@ -47,48 +44,15 @@ class ProfileForm(forms.ModelForm):
 
 
 class UserCreationForm(BaseUserCreationForm):
-    """Custom Form that removes the password fields from user creation and sends a welcome message when a user is created."""
-
-    # Don't forget to edit the formset in admin.py!
-    # This is a stupid quirk of the user admin.
-
-    # shadow the password fields to prevent validation errors,
-    #   since we generate the passwords dynamically.
-    password1 = None
-    password2 = None
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in ("email", "first_name", "last_name"):
-            self.fields[field].required = True
-
-    send_welcome_email = forms.BooleanField(
-        label=_("Send welcome email"),
-        help_text=_("This email will include the generated password"),
-        required=False,
-        initial=True,
-    )
+    """Custom Form that lowercases the username on creation."""
 
     def clean(self):
         if "username" in self.cleaned_data:
             self.cleaned_data["username"] = self.cleaned_data["username"].lower()
         super().clean()
 
-    def save(self, commit=True):
-        password = get_user_model().objects.make_random_password(length=15)
-        # pass the password on as if it was filled in, so that save() works
-        self.cleaned_data["password1"] = password
-        user = super().save(commit=False)
-        user.set_password(password)
-        if commit:
-            user.save()
-        if self.cleaned_data["send_welcome_email"]:
-            language = settings.LANGUAGE_CODE
-            emails.send_welcome_message(user, password, language)
-        return user
-
     class Meta:
-        fields = ("username", "first_name", "last_name", "send_welcome_email")
+        fields = ("username", "first_name", "last_name")
 
 
 class UserChangeForm(BaseUserChangeForm):
