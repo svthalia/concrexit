@@ -183,7 +183,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     @property
     def cancel_too_late_message(self):
-        return (
+        return _(
             "Cancellation isn't possible anymore without having to pay "
             "the full costs of €" + str(self.fine) + ". Also note that "
             "you will be unable to re-register. Note: If you have any "

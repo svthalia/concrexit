@@ -217,9 +217,7 @@
                                             {% endblocktrans %}
                                         {% endif %}
                                         {% if event.after_cancel_deadline and not registration.queue_position %}
-                                            {% blocktrans trimmed with no_cancellation=event.cancel_too_late_message%}
-                                                {{ no_cancellation }}
-                                            {% endblocktrans %}
+                                            {{ event.cancel_too_late_message }}
                                         {% endif %}
                                         {% if event.after_cancel_deadline and registration.queue_position %}
                                             {% blocktrans trimmed with costs=event.fine %}
