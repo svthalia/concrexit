@@ -41,6 +41,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
             "google_maps_url",
             "is_admin",
             "slide",
+            "cancel_too_late_message",
         )
 
     description = serializers.SerializerMethodField("_description")

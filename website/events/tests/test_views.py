@@ -435,7 +435,7 @@ class RegistrationTest(TestCase):
         response = self.client.get("/events/1/")
         self.assertContains(
             response,
-            "Cancellation isn't possible anymore without having to pay the full costs of",
+            "Cancellation isn&#x27;t possible anymore without having to pay the full costs of",
         )
 
     def test_registration_cancel_after_deadline_waitinglist_no_warning(self):

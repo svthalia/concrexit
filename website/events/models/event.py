@@ -182,6 +182,17 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
 
     @property
+    def cancel_too_late_message(self):
+        return _(
+            "Cancellation isn't possible anymore without having to pay "
+            "the full costs of €" + str(self.fine) + ". Also note that "
+            "you will be unable to re-register. Note: If you have any "
+            "COVID-19 symptoms you will not have to pay these fees. "
+            "Let us know via info@thalia.nu that this is this reason "
+            "for your cancellation."
+        )
+
+    @property
     def after_cancel_deadline(self):
         return self.cancel_deadline and self.cancel_deadline <= timezone.now()
 

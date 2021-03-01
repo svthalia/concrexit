@@ -217,12 +217,7 @@
                                             {% endblocktrans %}
                                         {% endif %}
                                         {% if event.after_cancel_deadline and not registration.queue_position %}
-                                            {% blocktrans trimmed with costs=event.fine %}
-                                                Cancellation isn't possible anymore without having to pay the full costs of €{{ costs }}.
-                                                Also note that you will be unable to re-register.{% endblocktrans %}
-                                            {% blocktrans trimmed %}
-                                                Note: If you have any COVID-19 symptoms you will not have to pay these fees. Let us know via info@thalia.nu that this is this reason for your cancellation.
-                                            {% endblocktrans %}
+                                            {{ event.cancel_too_late_message }}
                                         {% endif %}
                                         {% if event.after_cancel_deadline and registration.queue_position %}
                                             {% blocktrans trimmed with costs=event.fine %}
