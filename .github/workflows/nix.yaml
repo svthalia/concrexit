@@ -12,7 +12,7 @@ jobs:
       with:
         name: svthalia-concrexit
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix-build -j 4 -A github-actions release.nix
+    - run: nix-build -j 4 --arg version "\"$(git rev-parse HEAD)\"" -A github-actions release.nix
     - run: nix-shell --run "echo OK"
     - name: Deploy if this is master or staging
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging'
@@ -29,4 +29,4 @@ jobs:
         echo "IdentityFile $(pwd)/deploykey" >> ~/.ssh/config
         echo "UserKnownHostsFile $(pwd)/known_hosts" >> ~/.ssh/config
 
-        USER=deploy scripts/send-conf-and-switch.sh
+        USER=deploy scripts/send-conf-and-switch.bash

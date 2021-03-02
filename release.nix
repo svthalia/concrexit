@@ -2,9 +2,9 @@
 # of concrexit. This is not only the concrexit package, but also the NixOS
 # system that runs the web service and database.
 
-{ sources ? import ./nix/sources.nix, system ? builtins.currentSystem }:
+{ sources ? import ./nix/sources.nix, version, system ? builtins.currentSystem }:
 let
-  inherit (import ./nix { inherit sources system; }) pre-commit-check src pkgs;
+  inherit (import ./nix { inherit sources version system; }) pre-commit-check src pkgs;
 
   # We define two variants of the NixOS system, the vm can be used to do local testing.
   # A script to run this VM is included in the scripts directory. Unfortunately this

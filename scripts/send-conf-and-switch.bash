@@ -6,8 +6,10 @@
 
 set -e
 
+cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1
+
 # The arg is needed to allow a macOS system to evaluate the config,
 # building the machine will require a Linux build system though.
-machine=$(nix-build --arg system \"x86_64-linux\" -A machine release.nix --show-trace)
+machine=$(./build-nix.bash machine)
 nix-copy-closure --to $USER@staging.thalia.nu $machine
 ssh $USER@staging.thalia.nu -- sudo $machine/bin/switch-to-configuration switch
