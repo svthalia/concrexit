@@ -120,6 +120,9 @@ doctest: .make/doctest ## Run doctests
 docs: ## Generate docs HTML files
 	cd docs && poetry run sphinx-build -M html . _build
 
+apidocscheck: apidocs # Check whether new apidocs are generated
+	@git diff --name-only | grep 'docs/' >/dev/null && (echo "WARNING: you have uncommitted apidocs changes"; exit 1) || exit 0
+
 .make/docker: .make
 	docker build $(DOCKER_FLAGS) --build-arg "source_commit=$$(git rev-parse HEAD)" --tag "thalia/concrexit:$$(git rev-parse HEAD)" .
 
@@ -129,10 +132,12 @@ lint: blackcheck pylint pydocstyle ## Run all linters
 
 test: check templatecheck migrationcheck tests ## Run every kind of test
 
+ci: blackcheck  pydocstyle coverage doctest docs apidocscheck ## Do all the checks the GitHub Actions CI does
+
 clean: ## Remove all generated files
 	rm -f .coverage website/db.sqlite3
 	rm -rf website/media website/static docs/_build .make
 
-.PHONY: help run deps migrate createsuperuser createfixtures fmt check \
+.PHONY: ci help run deps migrate createsuperuser createfixtures fmt check \
 		templatecheck migrationcheck tests coverage covhtml doctest docs \
-		docker lint test clean pydocstyle
+		docker lint test clean pydocstyle apidocscheck

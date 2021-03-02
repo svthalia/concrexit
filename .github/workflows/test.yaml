@@ -35,7 +35,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       - name: Run pydocstyle
         run: make pydocstyle
 
@@ -87,8 +87,7 @@ jobs:
 
       - name: Run API docs script
         run: |
-          make apidocs
-          git diff --exit-code
+          make apidocscheck
 
       - name: Save documentation HTML
         uses: actions/upload-artifact@v2
