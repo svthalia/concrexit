@@ -493,6 +493,20 @@ class MemberRegistrationFormViewTest(TestCase):
         self.rf = RequestFactory()
         self.view = views.MemberRegistrationFormView()
 
+    @override_settings(
+        THALIA_PAY_ENABLED_PAYMENT_METHOD=True, THALIA_PAY_FOR_NEW_MEMBERS=True
+    )
+    def test_get_context_data_tpay_enabled(self):
+        context = self.view.get_context_data(form=MagicMock())
+        self.assertTrue(context["tpay_enabled"])
+
+    @override_settings(
+        THALIA_PAY_ENABLED_PAYMENT_METHOD=False, THALIA_PAY_FOR_NEW_MEMBERS=False
+    )
+    def test_get_context_data_tpay_disabled(self):
+        context = self.view.get_context_data(form=MagicMock())
+        self.assertFalse(context["tpay_enabled"])
+
     @mock.patch("django.views.generic.FormView.post")
     def test_post(self, super_post):
         request = self.rf.post("/")
@@ -513,6 +527,20 @@ class BenefactorRegistrationFormViewTest(TestCase):
     def setUp(self):
         self.rf = RequestFactory()
         self.view = views.BenefactorRegistrationFormView()
+
+    @override_settings(
+        THALIA_PAY_ENABLED_PAYMENT_METHOD=True, THALIA_PAY_FOR_NEW_MEMBERS=True
+    )
+    def test_get_context_data_tpay_enabled(self):
+        context = self.view.get_context_data(form=MagicMock())
+        self.assertTrue(context["tpay_enabled"])
+
+    @override_settings(
+        THALIA_PAY_ENABLED_PAYMENT_METHOD=False, THALIA_PAY_FOR_NEW_MEMBERS=False
+    )
+    def test_get_context_data_tpay_disabled(self):
+        context = self.view.get_context_data(form=MagicMock())
+        self.assertFalse(context["tpay_enabled"])
 
     @mock.patch("django.views.generic.FormView.post")
     def test_post(self, super_post):
