@@ -14,7 +14,7 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
 from members.models import Membership, Profile
-from payments.models import Payable, BankAccount
+from payments.models import Payable
 from utils import countries
 
 

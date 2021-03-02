@@ -123,6 +123,10 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
             "contribution",
             "membership_type",
             "direct_debit",
+            "initials",
+            "iban",
+            "bic",
+            "signature",
         )
 
 

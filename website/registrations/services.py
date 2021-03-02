@@ -122,15 +122,6 @@ def reject_entries(user_id: int, queryset: QuerySet) -> int:
     return rows_updated
 
 
-def _accept_tpay_registration(registration: Registration):
-    member = _create_member_from_registration(registration)
-    membership = _create_membership_from_entry(registration, member)
-    registration.membership = membership
-    registration.status = Entry.STATUS_COMPLETED
-    registration.payment = create_payment(registration, member, Payment.TPAY)
-    registration.save()
-
-
 def accept_entries(user_id: int, queryset: QuerySet) -> int:
     """Accept all entries in the queryset.
 
@@ -163,7 +154,12 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
             entry.save()
 
             if entry.registration.direct_debit:
-                _accept_tpay_registration(entry.registration)
+                member = _create_member_from_registration(entry.registration)
+                membership = _create_membership_from_entry(entry.registration, member)
+                entry.membership = membership
+                entry.status = Entry.STATUS_COMPLETED
+                entry.payment = create_payment(entry, member, Payment.TPAY)
+                entry.save()
             else:
                 emails.send_registration_accepted_message(entry.registration)
 
