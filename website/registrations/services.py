@@ -186,6 +186,7 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
                 change_message="Change status to approved",
             )
 
+        entry.save()
         updated_entries.append(entry.pk)
 
     return len(updated_entries)
