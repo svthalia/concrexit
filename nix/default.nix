@@ -1,4 +1,4 @@
-{ sources ? import ./sources.nix, system ? builtins.currentSystem }:
+{ sources ? import ./sources.nix, version, system ? builtins.currentSystem }:
 let
   # Helper program that creates a derivation which contains the source without
   # the files ignored by git
@@ -8,7 +8,7 @@ let
   overlay = self: _super: {
     poetry2nix = self.callPackage sources."poetry2nix" { };
     # This allows us to use pkgs.concrexit everywhere we need the concrexit package
-    concrexit = self.callPackage ./concrexit.nix { inherit src; };
+    concrexit = self.callPackage ./concrexit.nix { inherit src version; };
   };
 
   # Import nixpkgs from the sources managed by niv, this makes sure

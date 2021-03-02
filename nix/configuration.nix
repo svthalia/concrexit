@@ -203,6 +203,7 @@ in
 
           export STATIC_ROOT="${pkgs.concrexit}/static"
           export SITE_DOMAIN="${if cfg.ssl then cfg.domain else "*"}"
+          export SOURCE_COMMIT="${pkgs.concrexit.name}"
 
           # Load extra variables from the concrexit.env-vars option
           ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"${value}\"") cfg.env-vars)}
