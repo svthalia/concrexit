@@ -25,6 +25,8 @@ def write(events, albums, file):
 
 
 class Command(BaseCommand):
+    help = "This is the first step in linking albums and events, the second step is link_album_events_read"
+
     def handle(self, *args, **options):
         events = Event.objects.order_by("start").all()
         albums = Album.objects.order_by("date").filter(event__isnull=True)
@@ -82,28 +84,4 @@ class Command(BaseCommand):
         )
         print("If an album or an event is next to an empty cell, it will not be linked")
         print("Don't change cell's content")
-        print("When you are done, press enter and the same file will be read again.")
-
-        while True:
-            input()
-            try:
-                f = open("link_album_events.csv", "r")
-            except FileNotFoundError:
-                print("link_album_events.csv not found")
-            else:
-                break
-
-        f.readline()  # skip header
-        rows = csv.reader(f)
-        for row in rows:
-            if len(row) == 2 and row[0] != "" and row[1] != "":
-                print("Linking " + row[0] + " and " + row[1])
-                event_pk = row[0].split("-")[0]  # get pk from the cell
-                album_pk = row[1].split("-")[0]
-
-                event = events.get(pk=event_pk)
-                album = albums.get(pk=album_pk)
-                album.event = event
-                album.save()
-
-        print("Done linking")
+        print("When you are done, run the command link_album_event_read")
