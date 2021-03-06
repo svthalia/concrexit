@@ -27,7 +27,7 @@ def write(events, albums, file):
 class Command(BaseCommand):
     def handle(self, *args, **options):
         events = Event.objects.order_by("start").all()
-        albums = Album.objects.order_by("date").all()
+        albums = Album.objects.order_by("date").filter(event__isnull=True)
 
         # partition the events and albums by date
         partitioned_events = [[events[0]]]
@@ -52,23 +52,22 @@ class Command(BaseCommand):
         i = 0  # index of partitioned_events
         j = 0  # index of partitioned_albums
         f = open("link_album_events.csv", "w")
-        writer = csv.writer(f)
-        writer.writerow["Event (id-title-startdate)", "Album (id-title-date)\n"]
+        f.write("Event (id-title-startdate), Album (id-title-date)\n")
         while i < len(partitioned_events) or j < len(partitioned_albums):
             if i == len(partitioned_events):
                 # no events left, write albums
-                write([], partitioned_albums[j], writer)
+                write([], partitioned_albums[j], f)
             elif j == len(partitioned_albums):
                 # no albums left, write events
-                write(partitioned_events[i], [], writer)
+                write(partitioned_events[i], [], f)
                 i += 1
             elif partitioned_albums[j][0].date < partitioned_events[i][0].start.date():
                 # write albums
-                write([], partitioned_albums[j], writer)
+                write([], partitioned_albums[j], f)
                 j += 1
             elif partitioned_albums[j][0].date > partitioned_events[i][0].start.date():
                 # write events
-                write(partitioned_events[i], [], writer)
+                write(partitioned_events[i], [], f)
                 i += 1
             elif partitioned_albums[j][0].date == partitioned_events[i][0].start.date():
                 # events and albums on the same day, write both
@@ -97,7 +96,6 @@ class Command(BaseCommand):
         f.readline()  # skip header
         rows = csv.reader(f)
         for row in rows:
-            print(row)
             if len(row) == 2 and row[0] != "" and row[1] != "":
                 print("Linking " + row[0] + " and " + row[1])
                 event_pk = row[0].split("-")[0]  # get pk from the cell
