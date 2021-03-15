@@ -283,10 +283,10 @@ class Registration(Entry):
         null=False,
         blank=False,
         default=False,
-        help_text="If selected, when the registration is accepted, immediately a "
+        help_text=_("When the registration is accepted and this checkbox is enabled, a "
         "Thalia Pay payment will be created for this user and the registration "
-        "will be completed directly. This can only be selected if a bank "
-        "account is added with direct debit authorization.",
+        "will be completed immediately. This can only be selected if a bank "
+        "account is added with direct debit authorisation during registration."),
     )
 
     initials = models.CharField(
