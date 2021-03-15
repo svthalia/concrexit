@@ -373,7 +373,6 @@ class Registration(Entry):
             errors.update({"programme": _("This field is required.")})
 
         if self.direct_debit:
-
             if not self.iban:
                 errors.update(
                     {
