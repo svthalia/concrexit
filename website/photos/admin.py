@@ -3,14 +3,13 @@ from django.contrib import messages
 from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
-from utils.translation import TranslatedModelAdmin
 from .forms import AlbumForm
 from .models import Album, Photo
 from .services import extract_archive, save_photo
 
 
 @admin.register(Album)
-class AlbumAdmin(TranslatedModelAdmin):
+class AlbumAdmin(admin.ModelAdmin):
     """Model for Album admin page."""
 
     list_display = ("title", "date", "num_photos", "hidden", "shareable")
@@ -27,7 +26,7 @@ class AlbumAdmin(TranslatedModelAdmin):
     search_fields = ("title", "date")
     list_filter = ("hidden", "shareable")
     date_hierarchy = "date"
-    prepopulated_fields = {"slug": ("date", "title_en",)}
+    prepopulated_fields = {"slug": ("date", "title",)}
     form = AlbumForm
 
     def get_queryset(self, request):
