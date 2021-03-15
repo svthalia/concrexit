@@ -45,8 +45,8 @@ class RegistrationApiTest(TestCase):
 
     def test_registration_register_not_required(self):
         response = self.client.post("/api/v1/events/1/registrations/", follow=True)
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(self.event.participants.count(), 0)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(self.event.participants.count(), 1)
 
     def test_registration_register(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)

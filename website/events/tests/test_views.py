@@ -158,7 +158,7 @@ class RegistrationTest(TestCase):
     def test_registration_register_not_required(self):
         response = self.client.post("/events/1/registration/register/", follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.event.participants.count(), 0)
+        self.assertEqual(self.event.participants.count(), 1)
 
     def test_registration_register(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
