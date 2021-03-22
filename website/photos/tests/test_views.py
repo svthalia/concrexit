@@ -32,7 +32,7 @@ class AlbumIndexTest(TestCase):
 
         for i in range(12):
             Album.objects.create(
-                title_en="test_album_a%d" % i,
+                title="test_album_a%d" % i,
                 date=date(year=2018, month=9, day=5),
                 slug="test_album_a%d" % i,
             )
@@ -45,7 +45,7 @@ class AlbumIndexTest(TestCase):
 
         for i in range(12):
             Album.objects.create(
-                title_en="test_album_b%d" % i,
+                title="test_album_b%d" % i,
                 date=date(year=2018, month=9, day=5),
                 slug="test_album_b%d" % i,
             )
@@ -58,7 +58,7 @@ class AlbumIndexTest(TestCase):
 
         for i in range(72):
             Album.objects.create(
-                title_en="test_album_c%d" % i,
+                title="test_album_c%d" % i,
                 date=date(year=2018, month=9, day=5),
                 slug="test_album_c%d" % i,
             )
@@ -71,7 +71,7 @@ class AlbumIndexTest(TestCase):
 
     def test_empty_page(self):
         Album.objects.create(
-            title_en="test_album",
+            title="test_album",
             date=date(year=2018, month=9, day=5),
             slug="test_album",
         )
@@ -82,19 +82,19 @@ class AlbumIndexTest(TestCase):
 
     def test_keywords(self):
         Album.objects.create(
-            title_en="test_album1",
+            title="test_album1",
             date=date(year=2018, month=9, day=5),
             slug="test_album1",
         )
 
         Album.objects.create(
-            title_en="test_album12",
+            title="test_album12",
             date=date(year=2018, month=9, day=5),
             slug="test_album2",
         )
 
         Album.objects.create(
-            title_en="test_album3",
+            title="test_album3",
             date=date(year=2018, month=9, day=5),
             slug="test_album3",
         )
@@ -111,7 +111,7 @@ class AlbumIndexTest(TestCase):
     def test_many_pages(self):
         for i in range(120):
             Album.objects.create(
-                title_en="test_album_%d" % i,
+                title="test_album_%d" % i,
                 date=date(year=2018, month=9, day=5),
                 slug="test_album_%d" % i,
             )
@@ -147,7 +147,7 @@ class AlbumTest(TestCase):
 
     def setUp(self):
         self.album = Album.objects.create(
-            title_en="test_album",
+            title="test_album",
             date=date(year=2017, month=9, day=5),
             slug="test_album",
         )
@@ -215,7 +215,7 @@ class SharedAlbumTest(TestCase):
 
     def setUp(self):
         self.album = Album.objects.create(
-            title_en="test_album",
+            title="test_album",
             date=date(year=2017, month=9, day=5),
             shareable=True,
             slug="test_album",
@@ -258,7 +258,7 @@ class DownloadTest(TestCase):
         self.client = Client()
 
         self.album = Album.objects.create(
-            title_en="test_album",
+            title="test_album",
             date=date(year=2017, month=9, day=5),
             slug="test_album",
         )
@@ -295,7 +295,7 @@ class _DownloadBaseTestCase(TestCase):
         self.client = Client()
 
         self.album = Album.objects.create(
-            title_en="test_album",
+            title="test_album",
             date=date(year=2017, month=9, day=5),
             slug="test_album",
         )

@@ -136,12 +136,12 @@ class Album(models.Model):
         super().clean()
         errors = {}
 
-        if (self.title is None or len(self.title) is 0) and self.event is None:
+        if not self.title and not self.event:
             errors.update(
                 {"title": _("This field is required if there is no event selected.")}
             )
 
-        if self.date is None and self.event is None:
+        if not self.date and not self.event:
             errors.update(
                 {"date": _("This field is required if there is no event selected.")}
             )
@@ -155,10 +155,10 @@ class Album(models.Model):
         if self.pk is None:
             self.dirname = self.slug
 
-        if self.title is None or len(self.title) is 0:
+        if not self.title:
             self.title = self.event.title
 
-        if self.date is None:
+        if not self.date:
             self.date = self.event.start.date()
 
         if not self.hidden and (
