@@ -8,6 +8,10 @@ Your password is:   {{ password }}
 
 Please also check the information on your profile.
 
+Now that you're a member, you can join the official Thalia Promotion WhatsApp group.
+Through this group you will be kept up to date with Thalia events and other matters
+in the association. You can join the group via the following link: https://thalia.nu/whatsapp/.
+
 With kind regards,
 
 The board of Study Association Thalia
