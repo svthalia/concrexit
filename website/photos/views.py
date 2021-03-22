@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
-from django.utils.translation import get_language
 from django_sendfile import sendfile
 
 from photos.models import Album, Photo
@@ -25,7 +24,7 @@ def index(request):
     # Only show published albums
     albums = Album.objects.filter(hidden=False)
     for key in keywords:
-        albums = albums.filter(**{f"title_{get_language()}__icontains": key})
+        albums = albums.filter(**{f"title__icontains": key})
 
     albums = get_annotated_accessible_albums(request, albums)
 
