@@ -504,8 +504,8 @@ CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
 # OAuth configuration
 OAUTH2_PROVIDER = {
     "ALLOWED_REDIRECT_URI_SCHEMES": setting(
-        development=["https", APP_OAUTH_SCHEME],
-        production=["http", "https", APP_OAUTH_SCHEME],
+        production=["https", APP_OAUTH_SCHEME],
+        development=["http", "https", APP_OAUTH_SCHEME],
     ),
     "SCOPES": {
         "read": "Authenticated read access to the website",
