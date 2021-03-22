@@ -4,7 +4,7 @@ let
   mapAttrsToList = lib.attrsets.mapAttrsToList;
   concatStringsSep = lib.strings.concatStringsSep;
 
-  concrexit-manage = pkgs.writeScript "concrexit-manage" ''
+  concrexit-manage = pkgs.writeScriptBin "concrexit-manage" ''
     #!${pkgs.stdenv.shell}
 
     set -e
@@ -13,10 +13,10 @@ let
     ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"\${${name}:-${value}}\"") config.concrexit.env-vars)}
     exec ${pkgs.concrexit}/bin/python ${pkgs.concrexit}/src/website/manage.py $@
   '';
-  sudo-concrexit-manage = pkgs.writeScriptBin "concrexit-manage" ''
+  sudo-concrexit-manage = pkgs.writeScriptBin "sudo-concrexit-manage" ''
     #!${pkgs.stdenv.shell}
 
-    exec ${pkgs.sudo}/bin/sudo -E -u concrexit ${concrexit-manage} $@
+    exec /run/wrappers/bin/sudo -E -u concrexit ${concrexit-manage}/bin/concrexit-manage $@
   '';
 
   securityHeaders = ''
@@ -113,7 +113,7 @@ in
     # Allow the concrexit-manage command to be used as pkgs.concrexit-manage
     nixpkgs.overlays = [
       (_self: _super: {
-        concrexit-manage = sudo-concrexit-manage;
+        inherit concrexit-manage sudo-concrexit-manage;
       })
     ];
     # Install the concrexit-manage command globally
