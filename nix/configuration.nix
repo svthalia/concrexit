@@ -103,7 +103,7 @@ in
         GSUITE_ADMIN_USER = "concrexit-admin@thalia.nu";
         GSUITE_DOMAIN = "staging.thalia.nu";
         GSUITE_MEMBERS_DOMAIN = "members.staging.thalia.nu";
-        THALIA_PAY_ENABLED = "0";
+        THALIA_PAY_ENABLED = "1";
       } // x;
       default = { };
     };
