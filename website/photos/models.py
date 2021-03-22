@@ -14,7 +14,6 @@ from django.utils.translation import gettext_lazy as _
 from members.models import Member
 from events.models import Event
 from pushnotifications.models import ScheduledMessage, Category
-from utils.translation import ModelTranslateMeta, MultilingualField
 
 COVER_FILENAME = "cover.jpg"
 

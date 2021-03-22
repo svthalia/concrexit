@@ -10,6 +10,15 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterModelOptions(
+            name='album',
+            options={'ordering': ('-date', 'title')},
+        ),
+        migrations.RenameField(
+            model_name='album',
+            old_name='title_en',
+            new_name='title',
+        ),
         migrations.AlterField(
             model_name='album',
             name='date',
@@ -17,7 +26,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='album',
-            name='title_en',
-            field=models.CharField(blank=True, help_text='Leave empty to take over the title of the event', max_length=200, verbose_name='title (EN)'),
+            name='title',
+            field=models.CharField(blank=True, help_text='Leave empty to take over the title of the event', max_length=200, verbose_name='title'),
         ),
     ]

@@ -24,7 +24,7 @@ def index(request):
     # Only show published albums
     albums = Album.objects.filter(hidden=False)
     for key in keywords:
-        albums = albums.filter(**{f"title__icontains": key})
+        albums = albums.filter(**{"title__icontains": key})
 
     albums = get_annotated_accessible_albums(request, albums)
 
