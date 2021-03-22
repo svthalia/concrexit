@@ -155,15 +155,25 @@
                                     </form>
                                 {% endif %}
                                 {% if permissions.create_registration %}
-                                    <p>
-                                        {% url 'singlepages:event-registration-terms' as terms_url %}
-                                        {% blocktrans trimmed %}
-                                            By registering,
-                                            you confirm that you have read the
-                                            <a target="_blank" href="{{ terms_url }}">terms and conditions</a>,
-                                            that you understand them and that you agree to be bound by them.
-                                        {% endblocktrans %}
-                                    </p>
+                                    {% if event.registration_required %}
+                                        <p>
+                                            {% url 'singlepages:event-registration-terms' as terms_url %}
+                                            {% blocktrans trimmed %}
+                                                By registering,
+                                                you confirm that you have read the
+                                                <a target="_blank" href="{{ terms_url }}">terms and conditions</a>,
+                                                that you understand them and that you agree to be bound by them.
+                                            {% endblocktrans %}
+                                        </p>
+                                    {% else %}
+                                        <p>
+                                            {% blocktrans trimmed %}
+                                                Even though registration is not required for this event,
+                                                you can still register to give an indication of who will be there
+                                                as well as mark the event as 'registered' in your calendar.
+                                            {% endblocktrans %}
+                                        </p>
+                                    {% endif %}
                                     <form action="{% url 'events:register' event.id %}" method="post">{% csrf_token %}
                                         {% if event.reached_participants_limit %}
                                             <input type="submit" class="btn btn-primary"

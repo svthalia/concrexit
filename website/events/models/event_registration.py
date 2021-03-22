@@ -107,6 +107,8 @@ class EventRegistration(models.Model, Payable):
 
     def would_cancel_after_deadline(self):
         now = timezone.now()
+        if not self.event.registration_required:
+            return False
         return not self.queue_position and now >= self.event.cancel_deadline
 
     def clean(self):
