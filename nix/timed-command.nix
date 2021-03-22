@@ -46,6 +46,7 @@ with lib;
           Type = "oneshot";
           RemainAfterExit = false;
           ExecStart = "${pkgs.concrexit-manage}/bin/concrexit-manage ${name}";
+          User = config.concrexit.user;
         };
       })
       cfg;
