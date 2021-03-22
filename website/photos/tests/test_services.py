@@ -81,7 +81,7 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
     def test_get_annotated_accessible_albums(self):
         request = self.rf.get("/")
         request.member = None
-        album = Album(date=datetime(year=2017, month=1, day=1), slug="test")
+        album = Album(title="test_case", date=datetime(year=2017, month=1, day=1), slug="test")
         album.save()
 
         self.assertEqual(Album.objects.count(), 1)

@@ -71,9 +71,7 @@ class AlbumIndexTest(TestCase):
 
     def test_empty_page(self):
         Album.objects.create(
-            title="test_album",
-            date=date(year=2018, month=9, day=5),
-            slug="test_album",
+            title="test_album", date=date(year=2018, month=9, day=5), slug="test_album",
         )
 
         response = self.client.get(reverse("photos:index") + "?page=5")
@@ -147,9 +145,7 @@ class AlbumTest(TestCase):
 
     def setUp(self):
         self.album = Album.objects.create(
-            title="test_album",
-            date=date(year=2017, month=9, day=5),
-            slug="test_album",
+            title="test_album", date=date(year=2017, month=9, day=5), slug="test_album",
         )
 
         self.client.force_login(self.member)
@@ -258,9 +254,7 @@ class DownloadTest(TestCase):
         self.client = Client()
 
         self.album = Album.objects.create(
-            title="test_album",
-            date=date(year=2017, month=9, day=5),
-            slug="test_album",
+            title="test_album", date=date(year=2017, month=9, day=5), slug="test_album",
         )
 
         with open(
@@ -295,9 +289,7 @@ class _DownloadBaseTestCase(TestCase):
         self.client = Client()
 
         self.album = Album.objects.create(
-            title="test_album",
-            date=date(year=2017, month=9, day=5),
-            slug="test_album",
+            title="test_album", date=date(year=2017, month=9, day=5), slug="test_album",
         )
 
         with open(
