@@ -634,9 +634,9 @@ class PaymentUserAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "email",
-        "get_tpay_allowed",
-        "get_tpay_enabled",
-        "get_tpay_balance",
+        "tpay_allowed",
+        "tpay_enabled",
+        "tpay_balance",
     )
     list_filter = [
         ThaliaPayAllowedFilter,
@@ -648,16 +648,16 @@ class PaymentUserAdmin(admin.ModelAdmin):
 
     fields = (
         "user_link",
-        "get_tpay_allowed",
-        "get_tpay_enabled",
-        "get_tpay_balance",
+        "tpay_allowed",
+        "tpay_enabled",
+        "tpay_balance",
     )
 
     readonly_fields = (
         "user_link",
-        "get_tpay_allowed",
-        "get_tpay_enabled",
-        "get_tpay_balance",
+        "tpay_allowed",
+        "tpay_enabled",
+        "tpay_balance",
     )
 
     search_fields = (
@@ -666,23 +666,6 @@ class PaymentUserAdmin(admin.ModelAdmin):
         "username",
         "email",
     )
-
-    def get_tpay_balance(self, obj):
-        return f"€ {obj.tpay_balance:.2f}" if obj.tpay_enabled else "-"
-
-    get_tpay_balance.short_description = _("balance")
-
-    def get_tpay_enabled(self, obj):
-        return obj.tpay_enabled
-
-    get_tpay_enabled.short_description = _("Thalia Pay enabled")
-    get_tpay_enabled.boolean = True
-
-    def get_tpay_allowed(self, obj):
-        return obj.tpay_allowed
-
-    get_tpay_allowed.short_description = _("Thalia Pay allowed")
-    get_tpay_allowed.boolean = True
 
     def user_link(self, obj):
         return (

@@ -117,7 +117,7 @@ in
       })
     ];
     # Install the concrexit-manage command globally
-    environment.systemPackages = [ pkgs.concrexit-manage ];
+    environment.systemPackages = [ pkgs.sudo-concrexit-manage ];
 
     security.acme.email = "www@thalia.nu";
     security.acme.acceptTerms = true;

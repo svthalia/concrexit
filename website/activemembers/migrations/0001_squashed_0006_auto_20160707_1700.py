@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('members', '0001_initial'),
+        ('members', '0001_squashed_0002_auto_20160707_1512'),
         ('auth', '0008_alter_user_username_max_length'),
     ]
 

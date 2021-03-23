@@ -20,38 +20,22 @@ from members.models import Member
 
 class PaymentUser(Member):
     class Meta:
-        proxy = True
+        db_table = "payments_paymentuser"
+        managed = False
         verbose_name = "payment user"
         permissions = (("tpay_allowed", "Is allowed to use Thalia Pay"),)
 
-    @property
-    def tpay_enabled(self):
-        """Check if this user has a bank account with Direct Debit enabled."""
-        bank_accounts = BankAccount.objects.filter(owner=self)
-        return (
-            settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
-            and self.tpay_allowed
-            and bank_accounts.exists()
-            and any(x.valid for x in bank_accounts)
-        )
+    tpay_allowed = models.BooleanField()
+    tpay_balance = models.DecimalField(
+        verbose_name=_("balance"), max_digits=5, decimal_places=2,
+    )
+    tpay_enabled = models.BooleanField()
 
-    @property
-    def tpay_balance(self):
-        """Check the Thalia Pay balance for a user."""
-        payments = Payment.objects.filter(
-            Q(paid_by=self, type=Payment.TPAY)
-            & (Q(batch__isnull=True) | Q(batch__processed=False))
-        )
-        total = payments.aggregate(Sum("amount"))["amount__sum"]
-        return -1 * total if total else 0
+    def save(self, *args, **kwargs):
+        return
 
-    @property
-    def tpay_allowed(self):
-        """Check if this user has permissions to use Thalia Pay (but not necessarily enabled)."""
-        return (
-            self.has_perm("payments.tpay_allowed")
-            and settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
-        )
+    def delete(self, *args, **kwargs):
+        return
 
     def allow_tpay(self):
         """Give this user Thalia Pay permission."""
