@@ -161,6 +161,14 @@ class MemberRegistrationFormView(BaseRegistrationFormView):
     form_class = forms.MemberRegistrationForm
     template_name = "registrations/register_member.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tpay_enabled"] = (
+            settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+            and settings.THALIA_PAY_FOR_NEW_MEMBERS
+        )
+        return context
+
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
         request.POST["language"] = request.LANGUAGE_CODE
@@ -173,6 +181,14 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
 
     form_class = forms.BenefactorRegistrationForm
     template_name = "registrations/register_benefactor.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tpay_enabled"] = (
+            settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+            and settings.THALIA_PAY_FOR_NEW_MEMBERS
+        )
+        return context
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()

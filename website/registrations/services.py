@@ -11,6 +11,8 @@ from django.utils import timezone
 
 import members
 from members.models import Membership, Profile, Member
+from payments.models import BankAccount, PaymentUser, Payment
+from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -148,8 +150,21 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
             if entry.registration.username is None:
                 entry.registration.username = _generate_username(entry.registration)
                 entry.registration.save()
-            emails.send_registration_accepted_message(entry.registration)
+
+            entry.save()
+
+            if entry.registration.direct_debit:
+                member = _create_member_from_registration(entry.registration)
+                membership = _create_membership_from_entry(entry.registration, member)
+                entry.membership = membership
+                entry.status = Entry.STATUS_COMPLETED
+                entry.payment = create_payment(entry, member, Payment.TPAY)
+                entry.save()
+            else:
+                emails.send_registration_accepted_message(entry.registration)
+
             log_obj = entry.registration
+
         except Registration.DoesNotExist:
             try:
                 emails.send_renewal_accepted_message(entry.renewal)
@@ -251,6 +266,20 @@ def _create_member_from_registration(registration: Registration) -> Member:
         show_birthday=registration.optin_birthday,
         receive_optin=registration.optin_mailinglist,
     )
+
+    if registration.direct_debit:
+        payment_user = PaymentUser.objects.get(pk=user.pk)
+        payment_user.allow_tpay()
+        BankAccount.objects.create(
+            owner=payment_user,
+            iban=registration.iban,
+            bic=registration.bic,
+            initials=registration.initials,
+            last_name=registration.last_name,
+            signature=registration.signature,
+            mandate_no=f"{user.pk}-{1}",
+            valid_from=registration.created_at,
+        )
 
     # Send welcome message to new member
     members.emails.send_welcome_message(user, password, registration.language)

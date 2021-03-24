@@ -294,6 +294,26 @@ class RegistrationTest(TestCase):
             "Membership registration member (year). Creation date: Jan. 1, 2019. Completion date: Jan. 1, 2019",
         )
 
+    def test_require_bank_details(self):
+        self.registration.direct_debit = True
+
+        with self.assertRaises(ValidationError):
+            self.registration.clean()
+
+        self.registration.iban = "NL91ABNA0417164300"
+
+        with self.assertRaises(ValidationError):
+            self.registration.clean()
+
+        self.registration.initials = "J"
+
+        with self.assertRaises(ValidationError):
+            self.registration.clean()
+
+        self.registration.signature = "base64,png"
+
+        self.registration.clean()
+
 
 @override_settings(SUSPEND_SIGNALS=True)
 @freeze_time("2019-01-01")

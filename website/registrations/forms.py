@@ -9,6 +9,7 @@ from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Membership
+from payments.widgets import SignatureWidget
 from registrations import services
 from .models import Registration, Renewal, Reference
 
@@ -34,6 +35,17 @@ class BaseRegistrationForm(forms.ModelForm):
         )
 
 
+class RegistrationAdminForm(forms.ModelForm):
+    """Custom admin form for Registration model to add the widget for the signature."""
+
+    class Meta:
+        fields = "__all__"
+        model = Registration
+        widgets = {
+            "signature": SignatureWidget(),
+        }
+
+
 class MemberRegistrationForm(BaseRegistrationForm):
     """Form for member registrations."""
 
@@ -52,6 +64,9 @@ class MemberRegistrationForm(BaseRegistrationForm):
 
     class Meta:
         model = Registration
+        widgets = {
+            "signature": SignatureWidget(),
+        }
         fields = (
             "length",
             "first_name",
@@ -70,6 +85,11 @@ class MemberRegistrationForm(BaseRegistrationForm):
             "optin_birthday",
             "optin_mailinglist",
             "membership_type",
+            "direct_debit",
+            "initials",
+            "iban",
+            "bic",
+            "signature",
         )
 
 
@@ -82,6 +102,9 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
 
     class Meta:
         model = Registration
+        widgets = {
+            "signature": SignatureWidget(),
+        }
         fields = (
             "length",
             "first_name",
@@ -99,6 +122,11 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
             "optin_mailinglist",
             "contribution",
             "membership_type",
+            "direct_debit",
+            "initials",
+            "iban",
+            "bic",
+            "signature",
         )
 
 
@@ -110,6 +138,8 @@ class RenewalForm(forms.ModelForm):
     icis_employee = forms.BooleanField(
         required=False, label=_("I am an employee of iCIS")
     )
+
+    contribution = forms.IntegerField(required=False,)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

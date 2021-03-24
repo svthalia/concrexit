@@ -9,7 +9,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member, Membership
-from payments.models import Payment
+from payments.models import Payment, BankAccount
 from registrations import services
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
@@ -313,6 +313,22 @@ class ServicesTest(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Welcome to Study Association Thalia")
 
+    def test_create_member_from_registration_tpay(self):
+        self.e1.username = "jdoe"
+
+        self.e1.direct_debit = True
+        self.e1.iban = "NL91ABNA0417164300"
+        self.e1.initials = "J"
+        self.e1.signature = "base64,png"
+
+        member = services._create_member_from_registration(self.e1)
+        bankaccount = BankAccount.objects.get(owner=member)
+
+        self.assertEqual(bankaccount.iban, "NL91ABNA0417164300")
+        self.assertEqual(bankaccount.initials, "J")
+        self.assertEqual(bankaccount.last_name, "Doe")
+        self.assertEqual(bankaccount.signature, "base64,png")
+
     def test_create_membership_from_entry(self):
         self.e1.username = "jdoe"
         self.e1.save()
@@ -514,3 +530,29 @@ class ServicesTest(TestCase):
 
         self.e0.status = Entry.STATUS_REVIEW
         self.e0.save()
+
+    def test_accept_tpay_registration(self):
+        self.e2.direct_debit = True
+        self.e2.iban = "NL91ABNA0417164300"
+        self.e2.initials = "J"
+        self.e2.signature = "base64,png"
+
+        self.e2.status = Entry.STATUS_REVIEW
+        self.e2.save()
+
+        rows_updated = services.accept_entries(1, Entry.objects.all())
+
+        self.e2.refresh_from_db()
+
+        self.assertEqual(rows_updated, 3)
+        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_ACCEPTED).count(), 4)
+        self.assertEqual(len(mail.outbox), 2)
+
+        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_COMPLETED).count(), 1)
+
+        registration = Entry.objects.filter(status=Entry.STATUS_COMPLETED).first()
+
+        self.assertIsNotNone(registration.payment)
+
+        self.assertEqual(registration.payment.amount, self.e2.contribution)
+        self.assertEqual(registration.payment.type, Payment.TPAY)

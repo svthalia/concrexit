@@ -751,6 +751,20 @@ class BankAccountAdminTest(TestCase):
 
         self.assertEqual(self.admin.owner_link(bank_account2), "")
 
+    def test_can_be_revoked(self) -> None:
+        """Test that the revocation value of a bank account is correct."""
+        bank_account1 = BankAccount.objects.create(
+            owner=self.user, initials="J", last_name="Test", iban="NL91ABNA0417164300"
+        )
+
+        with patch(
+            "payments.models.BankAccount.can_be_revoked", new_callable=PropertyMock
+        ) as mock:
+            mock.return_value = True
+            self.assertTrue(self.admin.can_be_revoked(bank_account1))
+            mock.return_value = False
+            self.assertFalse(self.admin.can_be_revoked(bank_account1),)
+
     def test_export_csv(self) -> None:
         """Test that the CSV export of accounts is correct."""
         BankAccount.objects.create(

@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from payments.widgets import PaymentWidget
 from . import services
+from .forms import RegistrationAdminForm
 from .models import Entry, Registration, Renewal, Reference
 
 
@@ -104,11 +105,16 @@ class RegistrationAdmin(admin.ModelAdmin):
             },
         ),
         (
+            _("Financial"),
+            {"fields": ("direct_debit", "initials", "iban", "bic", "signature",)},
+        ),
+        (
             _("University information"),
             {"fields": ("student_number", "programme", "starting_year",)},
         ),
     )
     actions = ["accept_selected", "reject_selected"]
+    form = RegistrationAdminForm
 
     def reference_count(self, obj):
         return obj.reference_set.count()

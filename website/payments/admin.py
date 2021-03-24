@@ -488,6 +488,11 @@ class BankAccountAdmin(admin.ModelAdmin):
     owner_link.admin_order_field = "owner"
     owner_link.short_description = _("owner")
 
+    def can_be_revoked(self, obj: BankAccount):
+        return obj.can_be_revoked
+
+    can_be_revoked.boolean = True
+
     def set_last_used(self, request: HttpRequest, queryset: QuerySet) -> None:
         """Set the last used date of selected accounts."""
         if request.user.has_perm("payments.change_bankaccount"):
