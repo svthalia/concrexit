@@ -1,3 +1,5 @@
+{% autoescape off %}
+
 Dear {{ name }},
 
 We would like to inform you that on {{ batch.withdrawal_date|date }}, we will withdraw an amount of € {{ total_amount|floatformat:2 }} from your bank account {{ bank_account.iban }}{% if bank_account.bic %}, {{ bank_account.bic }},{% endif %} to settle the following Thalia Pay payments:
@@ -17,3 +19,5 @@ In case you have any questions, you can contact treasurer@thalia.nu
 ————
 
 This email was automatically generated.
+
+{% endautoescape %}
