@@ -510,7 +510,9 @@ OAUTH2_PROVIDER = {
     "SCOPES": {
         "read": "Authenticated read access to the website",
         "write": "Authenticated write access to the website",
-        "members:read": "Read access to your member profile",
+        "members:read": "Read access to the members directory",
+        "profile:read": "Read access to your member profile",
+        "profile:write": "Write access to your member profile",
         "activemembers:read": "Read access to committee, society and board groups",
     },
 }

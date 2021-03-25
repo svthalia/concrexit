@@ -9,6 +9,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)
+        self.force_show_birthday = kwargs.pop("force_show_birthday", False)
 
         # Instantiate the superclass normally
         super().__init__(*args, **kwargs)
@@ -22,6 +23,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = "__all__"
+        read_only_fields = ["name", "starting_year", "programme", "birthday"]
 
     display_name = serializers.SerializerMethodField("_display_name")
     short_display_name = serializers.SerializerMethodField("_short_display_name")
@@ -41,6 +43,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         return instance.display_name()
 
     def _birthday(self, instance):
-        if instance.show_birthday:
+        if instance.show_birthday or self.force_show_birthday:
             return instance.birthday
         return None

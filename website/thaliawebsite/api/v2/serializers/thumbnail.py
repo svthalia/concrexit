@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.templatetags.static import static
 from rest_framework import serializers
+from rest_framework.fields import FileField
 
 from thaliawebsite.api.services import create_image_thumbnail_dict
 
 
-class ThumbnailSerializer(serializers.BaseSerializer):
+class ThumbnailSerializer(FileField):
     options = {}
 
     def __init__(
@@ -45,10 +46,6 @@ class ThumbnailSerializer(serializers.BaseSerializer):
         )
 
     def to_internal_value(self, data):
-        pass
-
-    def update(self, instance, validated_data):
-        pass
-
-    def create(self, validated_data):
-        pass
+        if data == "":
+            return
+        return super().to_internal_value(data)

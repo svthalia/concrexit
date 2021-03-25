@@ -38,6 +38,13 @@ class MemberSerializer(serializers.ModelSerializer):
             return membership.type
         return None
 
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop("profile")
+        instance.profile = self.fields["profile"].update(
+            instance=instance.profile, validated_data=profile_data
+        )
+        return instance
+
 
 class MemberListSerializer(MemberSerializer):
     class Meta:
@@ -47,3 +54,41 @@ class MemberListSerializer(MemberSerializer):
             "membership_type",
             "profile",
         )
+
+
+class MemberCurrentSerializer(MemberSerializer):
+    class Meta:
+        model = Member
+        fields = ("pk", "membership_type", "profile", "achievements", "societies")
+
+    profile = ProfileSerializer(
+        fields=(
+            "photo",
+            "display_name",
+            "short_display_name",
+            "programme",
+            "starting_year",
+            "birthday",
+            "show_birthday",
+            "website",
+            "profile_description",
+            "address_street",
+            "address_street2",
+            "address_postal_code",
+            "address_city",
+            "address_country",
+            "phone_number",
+            "website",
+            "emergency_contact",
+            "emergency_contact_phone_number",
+            "profile_description",
+            "nickname",
+            "initials",
+            "display_name_preference",
+            "receive_optin",
+            "receive_newsletter",
+            "receive_magazine",
+            "email_gsuite_only",
+        ),
+        force_show_birthday=True,
+    )
