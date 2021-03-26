@@ -417,7 +417,7 @@ jsmin = "*"
 
 [[package]]
 name = "djangorestframework"
-version = "3.12.3"
+version = "3.12.4"
 description = "Web APIs for Django, made easy."
 category = "main"
 optional = false
@@ -1313,7 +1313,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "c78caa708243b59722b65977d3d754304a3c13f39fd172a581e2c1a1be1cff96"
+content-hash = "be9e5ef3c74f8c60ac9d9b36858103fb9d504db35b9d9e37a668f5610b53bb95"
 
 [metadata.files]
 alabaster = [
@@ -1558,8 +1558,8 @@ django-tinymce4-lite = [
     {file = "django_tinymce4_lite-1.8.0-py3-none-any.whl", hash = "sha256:2d53510ddb5fe20f25e525d4eaf7c8f8a567b85c9cc29f8ab2964419d9352d88"},
 ]
 djangorestframework = [
-    {file = "djangorestframework-3.12.3-py3-none-any.whl", hash = "sha256:ef043474687307d4123dc47fecd346594bb98e95b030225ee64bc417578403a7"},
-    {file = "djangorestframework-3.12.3.tar.gz", hash = "sha256:2fbbd5c28a1aaa1ad0b721b29e916797fc9aba9f9b3e7619da11c674880fc7aa"},
+    {file = "djangorestframework-3.12.4-py3-none-any.whl", hash = "sha256:6d1d59f623a5ad0509fe0d6bfe93cbdfe17b8116ebc8eda86d45f6e16e819aaf"},
+    {file = "djangorestframework-3.12.4.tar.gz", hash = "sha256:f747949a8ddac876e879190df194b925c177cdeb725a099db1460872f7c0a7f2"},
 ]
 docutils = [
     {file = "docutils-0.16-py2.py3-none-any.whl", hash = "sha256:0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af"},
