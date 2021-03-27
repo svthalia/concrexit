@@ -510,10 +510,16 @@ OAUTH2_PROVIDER = {
     "SCOPES": {
         "read": "Authenticated read access to the website",
         "write": "Authenticated write access to the website",
+        "announcements:read": "Read access to announcements",
         "members:read": "Read access to the members directory",
         "profile:read": "Read access to your member profile",
         "profile:write": "Write access to your member profile",
         "activemembers:read": "Read access to committee, society and board groups",
+        "events:read": "Read access to events",
+        "events:register": "Write access to the state of your event registrations",
+        "photos:read": "Read access to photos",
+        "pushnotifications:read": "Read access to push notifications",
+        "pushnotifications:write": "Write access to push notifications",
     },
 }
 

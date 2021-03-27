@@ -1,4 +1,9 @@
+import warnings
+
+from django.http import HttpRequest
 from oauth2_provider.scopes import get_scopes_backend
+from rest_framework import exceptions
+from rest_framework.request import Request
 from rest_framework.reverse import reverse
 from rest_framework.schemas.openapi import SchemaGenerator, AutoSchema
 from rest_framework.schemas.utils import is_list_view
@@ -46,3 +51,24 @@ class OAuthAutoSchema(AutoSchema):
         name = self.get_operation_id_base(path, method, action)
 
         return action + name
+
+    def get_serializer(self, path, method):
+        view = self.view
+        http_request = HttpRequest()
+        http_request.method = method
+        http_request.path = path
+        view.request = Request(http_request)
+        view.request.member = view.request.user
+
+        if not hasattr(view, "get_serializer"):
+            return None
+
+        try:
+            return view.get_serializer()
+        except exceptions.APIException:
+            warnings.warn(
+                "{}.get_serializer() raised an exception during "
+                "schema generation. Serializer fields will not be "
+                "generated for {} {}.".format(view.__class__.__name__, method, path)
+            )
+            return None

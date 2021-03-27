@@ -165,7 +165,6 @@ def update_registration(
 ):
     """Update a user registration of an event.
 
-    :param request: http request
     :param member: the user
     :param event: the event
     :param name: the name of a registration not associated with a user
