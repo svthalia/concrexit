@@ -19,7 +19,7 @@ def is_user_registered(member, event):
     :param event: the event
     :return: None if registration is not required or no member else True/False
     """
-    if not event.registration_required or not member.is_authenticated:
+    if not member.is_authenticated:
         return None
 
     return event.registrations.filter(member=member, date_cancelled=None).count() > 0
