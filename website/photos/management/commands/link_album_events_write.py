@@ -4,28 +4,38 @@ from events.models import Event
 from photos.models import Album
 
 import csv
+import sys
 
 
-def write(events, albums, file):
+def write(events, albums, output):
     for j in range(max(len(events), len(albums))):
         if j < len(events):
-            file.write(
+            event = (
                 str(events[j].pk)
                 + "-"
                 + events[j].title
                 + "-"
                 + str(events[j].start.date())
             )
-        file.write(",")
+        else:
+            event = ""
         if j < len(albums):
-            file.write(
+            album = (
                 str(albums[j].pk) + "-" + albums[j].title + "-" + str(albums[j].date)
             )
-        file.write("\n")
+        else:
+            album = ""
+        output.writerow([event, album])
 
 
 class Command(BaseCommand):
-    help = "This is the first step in linking albums and events, the second step is link_album_events_read"
+    help = """This is the first step in linking albums and events, the second step is link_album_events_read
+        How to use this script:
+        Send this output to a csv file.
+        Edit this csv file such that albums and events that should be linked are next to each other
+        If an album is next to an empty cell, it will not be linked 
+        Don't change a cells' contents itself
+        When you are done, input the file into the command link_album_events_read"""
 
     def handle(self, *args, **options):
         events = Event.objects.order_by("start").all()
@@ -50,38 +60,28 @@ class Command(BaseCommand):
                 partitioned_albums.append([a])
                 last_date = a.date
 
-        print("Writing to link_album_events.csv")
         i = 0  # index of partitioned_events
         j = 0  # index of partitioned_albums
-        f = open("link_album_events.csv", "w")
-        f.write("Event (id-title-startdate), Album (id-title-date)\n")
+        output = csv.writer(sys.stdout)
+        output.writerow(["Event (id-title-startdate)", "Album (id-title-date)"])
         while i < len(partitioned_events) or j < len(partitioned_albums):
             if i == len(partitioned_events):
                 # no events left, write albums
-                write([], partitioned_albums[j], f)
+                write([], partitioned_albums[j], output)
             elif j == len(partitioned_albums):
                 # no albums left, write events
-                write(partitioned_events[i], [], f)
+                write(partitioned_events[i], [], output)
                 i += 1
             elif partitioned_albums[j][0].date < partitioned_events[i][0].start.date():
                 # write albums
-                write([], partitioned_albums[j], f)
+                write([], partitioned_albums[j], output)
                 j += 1
             elif partitioned_albums[j][0].date > partitioned_events[i][0].start.date():
                 # write events
-                write(partitioned_events[i], [], f)
+                write(partitioned_events[i], [], output)
                 i += 1
             elif partitioned_albums[j][0].date == partitioned_events[i][0].start.date():
                 # events and albums on the same day, write both
-                write(partitioned_events[i], partitioned_albums[j], f)
+                write(partitioned_events[i], partitioned_albums[j], output)
                 i += 1
                 j += 1
-        f.close()
-
-        print("done")
-        print(
-            "Please edit the file such that albums and events that should be linked are next to eachother"
-        )
-        print("If an album or an event is next to an empty cell, it will not be linked")
-        print("Don't change cell's content")
-        print("When you are done, run the command link_album_event_read")

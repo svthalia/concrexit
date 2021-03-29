@@ -4,22 +4,20 @@ from events.models import Event
 from photos.models import Album
 
 import csv
+import sys
 
 
 class Command(BaseCommand):
-    help = "This is the second step in linking albums and events, the first step is link_album_events_write"
+    help = """This is the second step in linking albums and events, the first step is link_album_events_write
+              To execute input the csv file through stdin.
+    """
 
     def handle(self, *args, **options):
         events = Event.objects.all()
         albums = Album.objects.all()
-        try:
-            f = open("link_album_events.csv", "r")
-        except FileNotFoundError:
-            print("link_album_events.csv not found")
-            exit()
 
-        f.readline()  # skip header
-        rows = csv.reader(f)
+        sys.stdin.readline()  # skip header
+        rows = csv.reader(sys.stdin)
         for row in rows:
             if len(row) == 2 and row[0] != "" and row[1] != "":
                 print("Linking " + row[0] + " and " + row[1])
