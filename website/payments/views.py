@@ -36,15 +36,17 @@ class BankAccountCreateView(SuccessMessageMixin, CreateView):
     success_message = _("Bank account saved successfully.")
 
     def _derive_mandate_no(self) -> str:
-        count = (
+        accounts = (
             BankAccount.objects.filter(
                 owner=PaymentUser.objects.get(pk=self.request.member.pk)
             )
             .exclude(mandate_no=None)
-            .count()
-            + 1
+            .filter(mandate_no__regex=BankAccount.MANDATE_NO_DEFAULT_REGEX)
         )
-        return f"{self.request.member.pk}-{count}"
+        new_mandate_no = 1 + max(
+            [int(account.mandate_no.split("-")[1]) for account in accounts], default=0
+        )
+        return f"{self.request.member.pk}-{new_mandate_no}"
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
