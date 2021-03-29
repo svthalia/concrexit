@@ -125,6 +125,18 @@ def process_batch(batch):
     send_tpay_batch_processing_emails(batch)
 
 
+def derive_next_mandate_no(member) -> str:
+    accounts = (
+        BankAccount.objects.filter(owner=PaymentUser.objects.get(pk=member.pk))
+        .exclude(mandate_no=None)
+        .filter(mandate_no__regex=BankAccount.MANDATE_NO_DEFAULT_REGEX)
+    )
+    new_mandate_no = 1 + max(
+        [int(account.mandate_no.split("-")[1]) for account in accounts], default=0
+    )
+    return f"{member.pk}-{new_mandate_no}"
+
+
 def send_tpay_batch_processing_emails(batch):
     """Send withdrawal notice emails to all members in a batch."""
     member_payments = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
