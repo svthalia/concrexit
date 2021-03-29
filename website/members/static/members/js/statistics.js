@@ -92,7 +92,7 @@ $(function () {
         type: 'bar',
         data: {
             labels: Object.keys(cohortSizes),
-            datasets: ['Benefactor', 'Honorary', 'Members'].map((type, i) => ({
+            datasets: ['Benefactor', 'Honorary', 'Member'].map((type, i) => ({
                 label: gettext(type),
                 backgroundColor: colors[i],
                 data: Object.values(cohortSizes).map((data) =>
