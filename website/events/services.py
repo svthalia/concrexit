@@ -32,11 +32,13 @@ def user_registration_pending(member, event):
     :param event: the event
     :return: None if registration is not required or no member else True/False
     """
-    if not event.registration_required or not member.is_authenticated:
+    if not event.registration_required:
+        return False
+    if not member.is_authenticated:
         return None
 
     reg = event.registrations.filter(member=member, date_cancelled=None)
-    return len(list(filter(lambda r: r.queue_position, reg))) == 0
+    return len(list(filter(lambda r: r.queue_position, reg))) > 0
 
 
 def is_user_present(member, event):
