@@ -515,7 +515,7 @@ OAUTH2_PROVIDER = {
         "profile:read": "Read access to your member profile",
         "profile:write": "Write access to your member profile",
         "activemembers:read": "Read access to committee, society and board groups",
-        "events:read": "Read access to events",
+        "events:read": "Read access to events and your event registrations",
         "events:register": "Write access to the state of your event registrations",
         "photos:read": "Read access to photos",
         "pushnotifications:read": "Read access to push notifications",
