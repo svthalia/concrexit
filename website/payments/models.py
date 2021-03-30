@@ -328,6 +328,7 @@ class BankAccount(models.Model):
 
     signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
 
+    MANDATE_NO_DEFAULT_REGEX = r"^\d+-\d+$"
     mandate_no = models.CharField(
         verbose_name=_("mandate number"),
         max_length=255,

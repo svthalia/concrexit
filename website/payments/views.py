@@ -35,20 +35,9 @@ class BankAccountCreateView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("payments:bankaccount-list")
     success_message = _("Bank account saved successfully.")
 
-    def _derive_mandate_no(self) -> str:
-        count = (
-            BankAccount.objects.filter(
-                owner=PaymentUser.objects.get(pk=self.request.member.pk)
-            )
-            .exclude(mandate_no=None)
-            .count()
-            + 1
-        )
-        return f"{self.request.member.pk}-{count}"
-
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context["mandate_no"] = self._derive_mandate_no()
+        context["mandate_no"] = services.derive_next_mandate_no(self.request.member)
         context["creditor_id"] = settings.SEPA_CREDITOR_ID
         return context
 
@@ -57,7 +46,9 @@ class BankAccountCreateView(SuccessMessageMixin, CreateView):
         request.POST["owner"] = self.request.member.pk
         if "direct_debit" in request.POST:
             request.POST["valid_from"] = timezone.now()
-            request.POST["mandate_no"] = self._derive_mandate_no()
+            request.POST["mandate_no"] = services.derive_next_mandate_no(
+                self.request.member
+            )
         else:
             request.POST["valid_from"] = None
             request.POST["mandate_no"] = None
