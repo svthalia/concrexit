@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework import filters, status
+from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
+from rest_framework import filters as framework_filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from rest_framework.utils import json
 from rest_framework.views import APIView
 
 from events import services
+from events.api.v2 import filters
 from events.api.v2.serializers.event import EventSerializer
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.exceptions import RegistrationError
@@ -23,8 +25,9 @@ class EventListView(ListAPIView):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
     filter_backends = (
-        filters.OrderingFilter,
-        filters.SearchFilter,
+        framework_filters.OrderingFilter,
+        framework_filters.SearchFilter,
+        filters.EventDateFilterBackend
     )
     ordering_fields = ("start", "end")
     search_fields = ("title_en",)
