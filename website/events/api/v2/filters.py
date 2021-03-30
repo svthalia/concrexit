@@ -12,9 +12,9 @@ class EventDateFilterBackend(filters.BaseFilterBackend):
         start, end = extract_date_range(request, allow_empty=True)
 
         if start is not None:
-            queryset = queryset.filter(start__gte=start)
+            queryset = queryset.filter(end__gte=start)
         if end is not None:
-            queryset = queryset.filter(end__lte=end)
+            queryset = queryset.filter(start__lte=end)
 
         return queryset
 
