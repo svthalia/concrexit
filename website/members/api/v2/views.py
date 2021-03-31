@@ -2,7 +2,7 @@
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from django.shortcuts import get_object_or_404
-from rest_framework import filters
+from rest_framework import filters as framework_filters
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
@@ -10,6 +10,7 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
+from members.api.v2 import filters
 from thaliawebsite.api.openapi import OAuthAutoSchema
 from members.api.v2.serializers.member import (
     MemberSerializer,
@@ -31,8 +32,10 @@ class MemberListView(ListAPIView):
     ]
     required_scopes = ["members:read"]
     filter_backends = (
-        filters.OrderingFilter,
-        filters.SearchFilter,
+        framework_filters.OrderingFilter,
+        framework_filters.SearchFilter,
+        filters.MembershipTypeFilter,
+        filters.StartingYearFilter,
     )
     ordering_fields = ("first_name", "last_name", "username")
     search_fields = (
