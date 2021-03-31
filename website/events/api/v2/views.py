@@ -27,7 +27,9 @@ class EventListView(ListAPIView):
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
-        filters.EventDateFilterBackend
+        filters.EventDateFilterBackend,
+        filters.CategoryFilter,
+        filters.OrganiserFilter,
     )
     ordering_fields = ("start", "end")
     search_fields = ("title_en",)
