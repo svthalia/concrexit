@@ -594,18 +594,18 @@ class BatchNewFilledAdminViewTest(TestCase):
 
     def test_permission(self):
         url = "/admin/payments/batch/new_filled/"
-        response = self.client.get(url)
+        response = self.client.post(url)
         self.assertRedirects(response, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
-        response = self.client.get(url)
+        response = self.client.post(url)
 
         b = Batch.objects.exclude(id=self.batch.id).first()
         self.assertRedirects(response, f"/admin/payments/batch/{b.id}/change/")
 
     @freeze_time("2020-03-01")
-    def test_get(self):
+    def test_post(self):
         self._give_user_permissions()
 
         Payment.objects.bulk_create(
@@ -649,7 +649,7 @@ class BatchNewFilledAdminViewTest(TestCase):
             ]
         )
 
-        self.client.get("/admin/payments/batch/new_filled/")
+        self.client.post("/admin/payments/batch/new_filled/")
 
         b = Batch.objects.exclude(id=self.batch.id).first()
 
