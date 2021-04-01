@@ -511,7 +511,7 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2)"]
 
 [[package]]
 name = "google-api-python-client"
-version = "2.0.2"
+version = "2.1.0"
 description = "Google API Client Library for Python"
 category = "main"
 optional = false
@@ -520,7 +520,7 @@ python-versions = ">=3.6"
 [package.dependencies]
 google-api-core = ">=1.21.0,<2dev"
 google-auth = ">=1.16.0,<2dev"
-google-auth-httplib2 = ">=0.0.3"
+google-auth-httplib2 = ">=0.1.0"
 httplib2 = ">=0.15.0,<1dev"
 six = ">=1.13.0,<2dev"
 uritemplate = ">=3.0.0,<4dev"
@@ -544,7 +544,7 @@ aiohttp = ["aiohttp (>=3.6.2,<4.0.0dev)"]
 
 [[package]]
 name = "google-auth-httplib2"
-version = "0.0.4"
+version = "0.1.0"
 description = "Google Authentication Library: httplib2 transport"
 category = "main"
 optional = false
@@ -552,7 +552,7 @@ python-versions = "*"
 
 [package.dependencies]
 google-auth = "*"
-httplib2 = ">=0.9.1"
+httplib2 = ">=0.15.0"
 six = "*"
 
 [[package]]
@@ -1313,7 +1313,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "14aa611d5c9b5ab0e50464b669d1940ac06b224e98512a9bbbf4fb04fcb6d6e4"
+content-hash = "14d2093439815c02f0eda204490c49982bdc2c7b793110b9d51345ac1668beeb"
 
 [metadata.files]
 alabaster = [
@@ -1586,16 +1586,16 @@ google-api-core = [
     {file = "google_api_core-1.22.4-py2.py3-none-any.whl", hash = "sha256:15e00ceb7e6dc44159e2a41a222830744e9ebcb3a553c580b61cb5a66572f2f0"},
 ]
 google-api-python-client = [
-    {file = "google-api-python-client-2.0.2.tar.gz", hash = "sha256:48686cceb0dc8cb8b9ee1920ad7c0d9b499ef4fca0ca51c1c69f1e462a628011"},
-    {file = "google_api_python_client-2.0.2-py2.py3-none-any.whl", hash = "sha256:b665afbb38df357222bac695e76f2ceb3c42346bfbfb64146061285e175c38d8"},
+    {file = "google-api-python-client-2.1.0.tar.gz", hash = "sha256:f9ac377efe69571aea1acc9e15760d4204aca23c4464eb63f963ae4defc95d97"},
+    {file = "google_api_python_client-2.1.0-py2.py3-none-any.whl", hash = "sha256:921fe10cdff22d1f5b8af7473f9a298efb991fb6ea67dadd6c37fbecfb0575f4"},
 ]
 google-auth = [
     {file = "google-auth-1.22.1.tar.gz", hash = "sha256:9c0f71789438d703f77b94aad4ea545afaec9a65f10e6cc1bc8b89ce242244bb"},
     {file = "google_auth-1.22.1-py2.py3-none-any.whl", hash = "sha256:712dd7d140a9a1ea218e5688c7fcb04af71b431a29ec9ce433e384c60e387b98"},
 ]
 google-auth-httplib2 = [
-    {file = "google-auth-httplib2-0.0.4.tar.gz", hash = "sha256:8d092cc60fb16517b12057ec0bba9185a96e3b7169d86ae12eae98e645b7bc39"},
-    {file = "google_auth_httplib2-0.0.4-py2.py3-none-any.whl", hash = "sha256:aeaff501738b289717fac1980db9711d77908a6c227f60e4aa1923410b43e2ee"},
+    {file = "google-auth-httplib2-0.1.0.tar.gz", hash = "sha256:a07c39fd632becacd3f07718dfd6021bf396978f03ad3ce4321d060015cc30ac"},
+    {file = "google_auth_httplib2-0.1.0-py2.py3-none-any.whl", hash = "sha256:31e49c36c6b5643b57e82617cb3e021e3e1d2df9da63af67252c02fa9c1f4a10"},
 ]
 google-cloud-core = [
     {file = "google-cloud-core-1.4.3.tar.gz", hash = "sha256:21afb70c1b0bce8eeb8abb5dca63c5fd37fc8aea18f4b6d60e803bd3d27e6b80"},
