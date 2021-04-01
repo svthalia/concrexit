@@ -13,7 +13,7 @@ class MemberGroupMembershipSerializer(serializers.ModelSerializer):
         model = MemberGroupMembership
         fields = ("member", "chair", "since", "until", "role")
 
-    member = MemberSerializer()
+    member = MemberSerializer(detailed=False)
     since = serializers.SerializerMethodField("_since")
     until = serializers.SerializerMethodField("_until")
 

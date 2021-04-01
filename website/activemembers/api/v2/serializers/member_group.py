@@ -39,7 +39,9 @@ class MemberGroupSerializer(serializers.ModelSerializer):
         memberships = self.context["get_memberships"](instance).prefetch_related(
             "member__membergroupmembership_set"
         )
-        return MemberGroupMembershipSerializer(many=True).to_representation(memberships)
+        return MemberGroupMembershipSerializer(
+            many=True, context=self.context
+        ).to_representation(memberships)
 
     def _type(self, instance):
         if hasattr(instance, "board"):

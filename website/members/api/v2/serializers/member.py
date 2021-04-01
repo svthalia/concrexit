@@ -6,6 +6,19 @@ from members.services import member_achievements, member_societies
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        detailed = kwargs.pop("detailed", True)
+
+        # Instantiate the superclass normally
+        super().__init__(*args, **kwargs)
+
+        if not detailed:
+            hidden_fields = {"achievements", "societies"}
+            existing = set(self.fields.keys())
+            for field_name in existing & hidden_fields:
+                self.fields.pop(field_name)
+
     class Meta:
         model = Member
         fields = ("pk", "membership_type", "profile", "achievements", "societies")
