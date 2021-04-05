@@ -349,8 +349,8 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                         {"registration_start": message, "registration_end": message}
                     )
 
-        if self.published:
-            old_event = Event.objects.get(pk=self.pk)
+        old_event = Event.objects.get(pk=self.pk)
+        if old_event.published:
             if (
                 self.price != old_event.price
                 and old_event.registration_start
