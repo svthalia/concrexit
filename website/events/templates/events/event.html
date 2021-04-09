@@ -251,6 +251,24 @@
                                 </td>
                             </tr>
                         {% endif %}
+                        {% if event.album_set.all %}
+                        <tr>
+                            <th>{% trans "photos"|capfirst %}</th>
+                            {% if event.album_set.all|length == 1 %}
+                            <td><a href={{ event.album_set.all.0.get_absolute_url }}
+                                class = "btn btn-primary"
+                                >{% trans "Album" %}</a></td>
+                            {% else %}
+                                <td>
+                                {% for album in event.album_set.all %}
+                                <a href={{ album.get_absolute_url }}
+                                    class = "btn btn-primary"
+                                    >{{ album.title }}</a>
+                                {% endfor %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>

@@ -11,6 +11,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
+from events.models import Event
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
@@ -82,6 +83,8 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
     new_album_notification = models.ForeignKey(
         ScheduledMessage, on_delete=models.deletion.SET_NULL, blank=True, null=True
     )
+
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
 
     _cover = models.OneToOneField(
         Photo,
