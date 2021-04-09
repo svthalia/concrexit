@@ -29,7 +29,7 @@ class AlbumForm(forms.ModelForm):
 
         model = Album
         fields = (
-            "title_en",
+            "title",
             "date",
             "slug",
             "hidden",

@@ -4,6 +4,7 @@ import os
 import random
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -13,7 +14,6 @@ from django.utils.translation import gettext_lazy as _
 from members.models import Member
 from events.models import Event
 from pushnotifications.models import ScheduledMessage, Category
-from utils.translation import ModelTranslateMeta, MultilingualField
 
 COVER_FILENAME = "cover.jpg"
 
@@ -67,14 +67,23 @@ class Photo(models.Model):
         ordering = ("file",)
 
 
-class Album(models.Model, metaclass=ModelTranslateMeta):
+class Album(models.Model):
     """Model for Album objects."""
 
-    title = MultilingualField(models.CharField, _("title"), max_length=200,)
+    title = models.CharField(
+        _("title"),
+        blank=True,
+        max_length=200,
+        help_text=_("Leave empty to take over the title of the event"),
+    )
 
     dirname = models.CharField(verbose_name=_("directory name"), max_length=200,)
 
-    date = models.DateField(verbose_name=_("date"),)
+    date = models.DateField(
+        verbose_name=_("date"),
+        blank=True,
+        help_text=_("Leave empty to take over the date of the event"),
+    )
 
     slug = models.SlugField(verbose_name=_("slug"), unique=True,)
 
@@ -122,11 +131,34 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
         """Get url of Album."""
         return reverse("photos:album", args=[str(self.slug)])
 
+    def clean(self):
+        super().clean()
+        errors = {}
+
+        if not self.title and not self.event:
+            errors.update(
+                {"title": _("This field is required if there is no event selected.")}
+            )
+
+        if not self.date and not self.event:
+            errors.update(
+                {"date": _("This field is required if there is no event selected.")}
+            )
+
+        if errors:
+            raise ValidationError(errors)
+
     def save(self, **kwargs):
         """Save album and send appropriate notifications."""
         # dirname is only set for new objects, to avoid ever changing it
         if self.pk is None:
             self.dirname = self.slug
+
+        if not self.title:
+            self.title = self.event.title_en
+
+        if not self.date:
+            self.date = self.event.start.date()
 
         if not self.hidden and (
             self.new_album_notification is None or not self.new_album_notification.sent
@@ -142,7 +174,7 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
 
             new_album_notification.title_en = "New album uploaded"
             new_album_notification.body_en = (
-                f"A new photo album '{self.title_en}' has just been uploaded"
+                f"A new photo album '{self.title}' has just been uploaded"
             )
             new_album_notification.category = Category.objects.get(key=Category.PHOTO)
             new_album_notification.url = f"{settings.BASE_URL}{self.get_absolute_url()}"
@@ -171,4 +203,4 @@ class Album(models.Model, metaclass=ModelTranslateMeta):
     class Meta:
         """Meta class for Album."""
 
-        ordering = ("-date", "title_en")
+        ordering = ("-date", "title")

@@ -14,7 +14,7 @@ class AlbumsViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Album.objects.all()
     filter_backends = (filters.SearchFilter,)
-    search_fields = ("title_en", "date", "slug")
+    search_fields = ("title", "date", "slug")
 
     def get_queryset(self):
         """Return albums that are annotated to be accessible by the request user."""
