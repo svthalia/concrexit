@@ -206,7 +206,7 @@ class Payment(models.Model):
         permissions = (("process_payments", _("Process payments")),)
 
     def __str__(self):
-        return _("Payment of {amount}").format(amount=self.amount)
+        return _("Payment of {amount:.2f}").format(amount=self.amount)
 
 
 def _default_batch_description():

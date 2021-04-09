@@ -114,7 +114,7 @@ class PaymentProcessViewTest(TestCase):
         self.assertEqual(201, response.status_code)
         self.assertEqual(
             reverse("v1:payment-detail", kwargs={"pk": self.payable.payment.pk}),
-            response._headers["location"][1],
+            response.headers["Location"],
         )
 
     @mock.patch("payments.services.create_payment")
