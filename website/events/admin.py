@@ -144,6 +144,11 @@ class EventAdmin(DoNextTranslatedModelAdmin):
         (_("Extra"), {"fields": ("slide", "documents"), "classes": ("collapse",)}),
     )
 
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super().get_form(request, obj, change, **kwargs)
+        form.clean = lambda form: form.instance.clean_changes(form.changed_data)
+        return form
+
     def overview_link(self, obj):
         return format_html(
             '<a href="{link}">{title}</a>',

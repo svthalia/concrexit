@@ -271,6 +271,32 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         except ObjectDoesNotExist:
             return False
 
+    def clean_changes(self, changed_data):
+        """Check if changes from `changed_data` are allowed.
+
+        This method should be run from a form clean() method, where changed_data
+        can be retrieved from self.changed_data
+        """
+        errors = {}
+        if self.published:
+            for field in ("price", "registration_start"):
+                if (
+                    field in changed_data
+                    and self.registration_start
+                    and self.registration_start <= timezone.now()
+                ):
+                    errors.update(
+                        {
+                            field: _(
+                                "You cannot change this field after "
+                                "the registration has started."
+                            )
+                        }
+                    )
+
+        if errors:
+            raise ValidationError(errors)
+
     def clean(self):
         # pylint: disable=too-many-branches
         super().clean()
@@ -348,35 +374,6 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     errors.update(
                         {"registration_start": message, "registration_end": message}
                     )
-
-        old_event = Event.objects.get(pk=self.pk)
-        if old_event.published:
-            if (
-                self.price != old_event.price
-                and old_event.registration_start
-                and old_event.registration_start <= timezone.now()
-            ):
-                errors.update(
-                    {
-                        "price": _(
-                            "You cannot change this field after "
-                            "the registration has started."
-                        )
-                    }
-                )
-            if (
-                old_event.registration_start
-                and self.registration_start != old_event.registration_start
-                and old_event.registration_start <= timezone.now()
-            ):
-                errors.update(
-                    {
-                        "registration_start": _(
-                            "You cannot change this field after "
-                            "the registration has started."
-                        )
-                    }
-                )
 
         try:
             if (
