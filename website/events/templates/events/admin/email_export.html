@@ -22,6 +22,9 @@
 {% block content %}
 <div id="content-main">
     <p>
+        <b>Please mind that you put these addresses in the 'bcc', not in 'to' or 'cc'.</b>
+    </p>
+    <p>
         {{ addresses | join:', ' }}
     </p>
     {% if no_addresses %}
