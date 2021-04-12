@@ -4,7 +4,8 @@
 {% block object-tools-items %}
     {% if opts.model_name == "payment" or opts.model_name == "batch" %}
     <li>
-        <a href="{% url 'admin:payments_batch_new_batch_filled' %}">{% trans "New batch from unbatched Thalia Pay payments" %}</a>
+        <form action="{% url 'admin:payments_batch_new_batch_filled' %}" id="new-batch" method="post">{% csrf_token %}</form>
+        <a onclick="document.getElementById('new-batch').submit();" href="#new-filled-batch">{% trans "New batch from unbatched Thalia Pay payments" %}</a>
     </li>
     {% endif %}
     {{ block.super }}

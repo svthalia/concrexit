@@ -220,7 +220,7 @@ class BatchTopicDescriptionAdminView(View):
 class BatchNewFilledAdminView(View):
     """View that adds a new batch filled with all payments that where not already in a batch."""
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         batch = Batch()
         batch.save()
 
