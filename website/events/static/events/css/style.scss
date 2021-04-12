@@ -23,13 +23,13 @@
             right: 1.25rem;
             top: 1.25rem;
 
-            .regular-event-no-registration, .regular-event-has-registration .regular-event-pending-registration {
+            .regular-event-registration-open, .regular-event-has-registration .regular-event-pending-registration {
                 border-radius: 20px;
                 width: 12px;
                 height: 12px;
             }
 
-            .regular-event-no-registration {
+            .regular-event-registration-open {
                 background-color: $grey;
             }
 
@@ -73,21 +73,17 @@
                 margin-right: 1rem;
                 flex-shrink: 0;
 
-                &.regular-event-not-registered {
+                &.regular-event-registration-open {
                     background-color: $grey;
                 }
                 &.regular-event-has-registration {
-                    background-color: $green;
+                    background-color: $magenta;
                 }
                 &.regular-event-pending-registration {
                     background-color: $yellow;
                 }
-                &.regular-event-no-registration { // for events that do not require registration
-                    background-color: $magenta;
-                }
                 &.regular-event-registration-closed {
-                    // background-color: rgba(0, 0, 0, 128);
-                    background-color: $red;
+                    background-color: transparent;
                 }
                 &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
                     background-color: rgba(255, 0, 0, 0.3);
@@ -115,22 +111,19 @@
         overflow: hidden;
         transition-property: opacity;
 
-        &.regular-event-not-registered {
+        &.regular-event-registration-open {
             background-color: $grey;
         }
         &.regular-event-has-registration {
-            background-color: $green;
-            color: $white;
+            background-color: var(--primary);
         }
         &.regular-event-pending-registration {
             background-color: $yellow;
             color: $black;
         }
-        &.regular-event-no-registration {
-            background-color: var(--primary);
-        }
         &.regular-event-registration-closed {
-            background-color: $red;
+            background-color: #8a8a8a30;
+            color: $grey;
         }
 
         &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
