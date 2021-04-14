@@ -13,12 +13,18 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         return reverse("events:event", kwargs={"pk": instance.id})
 
     def _class_names(self, instance):
-        class_names = ["regular-event"]
         if self.context["member"] and services.is_user_registered(
             self.context["member"], instance
         ):
-            class_names.append("has-registration")
-        return class_names
+            if services.user_registration_pending(self.context["member"], instance):
+                return ["regular-event-pending-registration"]
+            else:
+                return ["regular-event-has-registration"]
+        elif (not instance.registration_required) or instance.registration_allowed:
+            return ["regular-event-registration-open"]
+        else:
+            # I think this handles the case that registration is needed, but not yet possible
+            return ["regular-event-registration-closed"]
 
 
 class UnpublishedEventsCalenderJSSerializer(CalenderJSSerializer):

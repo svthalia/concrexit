@@ -23,18 +23,22 @@
             right: 1.25rem;
             top: 1.25rem;
 
-            .no-registration, .has-registration {
+            .regular-event-registration-open, .regular-event-has-registration .regular-event-pending-registration {
                 border-radius: 20px;
                 width: 12px;
                 height: 12px;
             }
 
-            .no-registration {
+            .regular-event-registration-open {
                 background-color: $grey;
             }
 
-            .has-registration {
+            .regular-event-has-registration {
                 background-color: var(--primary);
+            }
+
+            .regular-event-pending-registration {
+                background-color: $yellow;
             }
         }
     }
@@ -69,13 +73,18 @@
                 margin-right: 1rem;
                 flex-shrink: 0;
 
-                &.regular-event {
+                &.regular-event-registration-open {
                     background-color: $grey;
-                    &.has-registration {
-                        background-color: var(--primary);
-                    }
                 }
-
+                &.regular-event-has-registration {
+                    background-color: $magenta;
+                }
+                &.regular-event-pending-registration {
+                    background-color: $yellow;
+                }
+                &.regular-event-registration-closed {
+                    background-color: transparent;
+                }
                 &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
                     background-color: rgba(255, 0, 0, 0.3);
                 }
@@ -102,11 +111,19 @@
         overflow: hidden;
         transition-property: opacity;
 
-        &.regular-event {
-            &.has-registration {
-                background-color: var(--primary);
-                color: $white;
-            }
+        &.regular-event-registration-open {
+            background-color: $grey;
+        }
+        &.regular-event-has-registration {
+            background-color: var(--primary);
+        }
+        &.regular-event-pending-registration {
+            background-color: $yellow;
+            color: $black;
+        }
+        &.regular-event-registration-closed {
+            background-color: #8a8a8a30;
+            color: $grey;
         }
 
         &.unpublished-event, &.unpublished-event:active, &.unpublished-event:hover {
