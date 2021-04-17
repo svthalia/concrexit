@@ -283,7 +283,7 @@ importlib-metadata = {version = "<3", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "django-compressor"
-version = "2.4"
+version = "2.4.1"
 description = "Compresses linked and inline JavaScript or CSS into single cached files."
 category = "main"
 optional = false
@@ -1321,7 +1321,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "c3a2de8d4533f3743ff09ac7e7ffdfed08452b3885bab3f2a51431a009f1abc7"
+content-hash = "1f31ef646eae61b79cfec19c52a573147b4eea2d77e0464d64c503673ba996cb"
 
 [metadata.files]
 alabaster = [
@@ -1523,8 +1523,8 @@ django-bootstrap4 = [
     {file = "django_bootstrap4-3.0.0-py3-none-any.whl", hash = "sha256:76a52fb22a8d3dbb2f7609b21908ce863e941a4462be079bf1d12025e551af37"},
 ]
 django-compressor = [
-    {file = "django_compressor-2.4-py2.py3-none-any.whl", hash = "sha256:57ac0a696d061e5fc6fbc55381d2050f353b973fb97eee5593f39247bc0f30af"},
-    {file = "django_compressor-2.4.tar.gz", hash = "sha256:d2ed1c6137ddaac5536233ec0a819e14009553fee0a869bea65d03e5285ba74f"},
+    {file = "django_compressor-2.4.1-py2.py3-none-any.whl", hash = "sha256:f8313f59d5e65712fc28787d084fe834997c9dfa92d064a1a3ec3d3366594d04"},
+    {file = "django_compressor-2.4.1.tar.gz", hash = "sha256:3358077605c146fdcca5f9eaffb50aa5dbe15f238f8854679115ebf31c0415e0"},
 ]
 django-cors-headers = [
     {file = "django-cors-headers-3.5.0.tar.gz", hash = "sha256:db82b2840f667d47872ae3e4a4e0a0d72fbecb42779b8aa233fa8bb965f7836a"},
