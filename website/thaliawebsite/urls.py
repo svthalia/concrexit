@@ -132,6 +132,7 @@ urlpatterns = [
     path("", include("events.urls")),
     path("", include("pizzas.urls")),
     path("", include("partners.urls")),
+    path("", include("sales.urls")),
     path("api/", include("thaliawebsite.api.urls")),
     # Sitemap
     path(

@@ -5,7 +5,7 @@
     {% elif not payment and obj.payment_amount != 0 %}
         {% trans "Unpaid" %}
         -
-        € {{ obj.payment_amount }}
+        € {{ obj.payment_amount|floatformat:2 }}
         -
         <a data-href="{% url 'admin:payments_payment_create' app_label=content_type.app_label model_name=content_type.model payable=obj.pk %}"
            data-next="true" data-type="cash_payment"

@@ -1,7 +1,7 @@
 {% load i18n static %}
 {% if payable.payment_amount > 0 %}
     {% if member.tpay_allowed and payable.tpay_allowed %}
-        <form action="{% url 'payments:payment-process' %}" method="post">
+        <form name="tpay-payment-form" action="{% url 'payments:payment-process' %}" method="post">
             {% csrf_token %}
             <input
                 type="hidden"

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n event_cards frontpage_articles partner_banners slider %}
+{% load i18n alert event_cards frontpage_articles partner_banners slider %}
 
 {% block body_class %}home{% endblock %}
 
@@ -14,6 +14,11 @@
 {% block body %}
     <section id="thaliawebsite-frontpage" class="page-section">
         <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    {% alert message.tags message dismissible=True %}
+                {% endfor %}
+            {% endif %}
             <h1 class="text-center section-title">{% trans "Study Association Thalia" %}</h1>
             <p class="text-center">{% blocktrans %}Thalia is the study association for the Computing Science and Information Sciences students at Radboud University in Nijmegen. Thalia provides you the necessary distractions during your studies. And via Thalia students can easily connect with teachers and students from other years.{% endblocktrans %}</p>
         </div>
