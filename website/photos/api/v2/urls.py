@@ -10,7 +10,7 @@ urlpatterns = [
             [
                 path("albums/", AlbumListView.as_view(), name="album-list"),
                 path(
-                    "albums/<int:pk>/", AlbumDetailView.as_view(), name="album-detail",
+                    "albums/<str:slug>/", AlbumDetailView.as_view(), name="album-detail",
                 ),
             ]
         ),
