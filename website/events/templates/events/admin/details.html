@@ -53,8 +53,8 @@
         {% endwith %}
         <br>
         <a href="{% url 'admin:events_event_export' pk=event.pk %}" class="button">{% trans "Export registrations" %}</a>
-        <a href="{% url 'admin:events_event_export_email' pk=event.pk %}" class="button">{% trans "Export email addresses of attendees" %}</a>
         <a href="{% url 'admin:events_event_message' pk=event.pk %}" class="button">{% trans "Send pushnotification to registered users" %}</a>
+        <a href="mailto:?bcc={% for p in event.participants %}{% if p.member %}{{p.member.email}},{%endif%}{%endfor%}" class="button"> {% trans "Send email to attendees" %} </a>
     </div>
 </div>
 {% endblock %}
