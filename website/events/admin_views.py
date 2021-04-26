@@ -13,7 +13,7 @@ from django.utils.text import slugify
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import DetailView, TemplateView, FormView
+from django.views.generic import DetailView, FormView
 
 from events import services
 from events.decorators import organiser_only
