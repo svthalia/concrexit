@@ -291,24 +291,3 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
             slugify(event.title)
         )
         return response
-
-
-@method_decorator(staff_member_required, name="dispatch")
-@method_decorator(organiser_only, name="dispatch")
-class EventRegistrationEmailsExport(TemplateView, PermissionRequiredMixin):
-    """Renders a page that outputs all email addresses of registered members for an event."""
-
-    template_name = "events/admin/email_export.html"
-    permission_required = "events.view_event"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        event = get_object_or_404(Event, pk=kwargs["pk"])
-        registrations = event.eventregistration_set.filter(date_cancelled=None)
-        registrations = registrations[: event.max_participants]
-        addresses = [r.member.email for r in registrations if r.member]
-        no_addresses = [r.name for r in registrations if not r.member]
-        context["event"] = event
-        context["addresses"] = addresses
-        context["no_addresses"] = no_addresses
-        return context
