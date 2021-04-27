@@ -108,20 +108,25 @@ class ShiftAdmin(admin.ModelAdmin):
         "end",
         "active",
         "product_list",
+        "managers",
         "product_sales",
         "num_orders",
         "total_revenue",
         "locked",
-        "managers",
     )
 
     readonly_fields = (
-        "title",
         "active",
         "total_revenue",
         "num_orders",
         "product_sales",
     )
+
+    def get_readonly_fields(self, request, obj=None):
+        fields = super().get_readonly_fields(request, obj)
+        if not obj:
+            fields += ("locked",)
+        return fields
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)

@@ -187,21 +187,23 @@ class OrderAdmin(admin.ModelAdmin):
     fields = (
         "shift",
         "created_at",
-        "total_amount",
-        "num_items",
-        "discount",
-        "payment",
         "order_description",
+        "num_items",
         "age_restricted",
-        "payment_url",
+        "subtotal",
+        "discount",
+        "total_amount",
         "payer",
+        "payment",
+        "payment_url",
     )
 
     readonly_fields = (
         "created_at",
-        "total_amount",
-        "num_items",
         "order_description",
+        "num_items",
+        "subtotal",
+        "total_amount",
         "age_restricted",
         "payment_url",
     )
@@ -326,8 +328,23 @@ class OrderAdmin(admin.ModelAdmin):
             )
         return super().changelist_view(request, extra_context)
 
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        object_id
+        return super().change_view(request, object_id, form_url, extra_context)
+        # TODO WARN WHEN ORDER IS AGE RESTRICTED AND PAYER IS UNDERAGE
+
+    def order_description(self, obj):
+        if obj.order_description:
+            return obj.order_description
+        return "-"
+
     def num_items(self, obj):
         return obj.num_items
+
+    def subtotal(self, obj):
+        if obj.subtotal:
+            return f"€{obj.subtotal:.2f}"
+        return "-"
 
     def discount(self, obj):
         if obj.discount:
