@@ -281,22 +281,20 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         """
         errors = {}
         if self.published:
-            if "price" in changed_data:
-                errors.update(
-                    {
-                        "price": _(
-                            "You cannot change this field after the registration has started."
-                        )
-                    }
-                )
-            if "registration_start" in changed_data:
-                errors.update(
-                    {
-                        "registration_start": _(
-                            "You cannot change this field after the registration has started."
-                        )
-                    }
-                )
+            for field in ("price", "registration_start"):
+                if (
+                    field in changed_data
+                    and self.registration_start
+                    and self.registration_start <= timezone.now()
+                ):
+                    errors.update(
+                        {
+                            field: _(
+                                "You cannot change this field after "
+                                "the registration has started."
+                            )
+                        }
+                    )
 
         if errors:
             raise ValidationError(errors)
