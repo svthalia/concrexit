@@ -39,6 +39,6 @@ class NewsletterEventForm(forms.ModelForm):
 
     class Media:
         js = (
-            "js/js.cookie.min.js",
+            "js/js.cookie.js",
             "admin/newsletters/js/forms.js",
         )
