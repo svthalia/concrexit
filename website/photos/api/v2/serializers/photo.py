@@ -11,7 +11,7 @@ class PhotoSerializer(serializers.ModelSerializer):
         """Meta class for the serializer."""
 
         model = Photo
-        fields = ("pk", "rotation", "hidden", "album", "file")
+        fields = ("pk", "rotation", "hidden", "file")
 
     file = ThumbnailSerializer(
         size_medium="1200x900",
@@ -26,4 +26,4 @@ class PhotoListSerializer(PhotoSerializer):
         """Meta class for the serializer."""
 
         model = Photo
-        fields = ("pk", "rotation", "hidden", "album", "file")
+        fields = ("pk", "rotation", "hidden", "file")
