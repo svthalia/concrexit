@@ -33,6 +33,7 @@ class AlbumDetailView(RetrieveAPIView):
         DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["photos:read"]
+    lookup_field = "slug"
 
     def retrieve(self, request, *args, **kwargs):
         if not services.is_album_accessible(request, self.get_object()):
