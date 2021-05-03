@@ -1,5 +1,3 @@
-@import "../../thaliawebsite/static/css/variables";
-
 .dashboard {
     #content {
         width: auto;
@@ -49,11 +47,11 @@
         }
 
         select[name=payment] {
-            background: $red;
+            background: var(--message-error-bg);
             color: white;
 
             &.paid {
-                background: $green;
+                background: var(--message-success-bg);
             }
 
             @media(max-width: 767px) {
@@ -72,7 +70,7 @@ th.sortable {
     outline: none;
 
     &:hover {
-        background-color: #eee;
+        background-color: var(--selected-bg);
     }
 
     .toggle {
@@ -84,7 +82,6 @@ th.sortable {
     }
 
     &.tablesorter-headerAsc {
-        background-color: #eee;
         .toggle {
             display: inline-block;
             background-position: 0 -56px;
@@ -92,7 +89,6 @@ th.sortable {
     }
 
     &.tablesorter-headerDesc {
-        background-color: #eee;
         .toggle {
             display: inline-block;
             background-position: 0 -28px;
