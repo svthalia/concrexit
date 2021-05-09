@@ -11,11 +11,27 @@ from members.models import Member
 from payments.models import Payment
 from payments.services import delete_payment
 from pushnotifications.models import ScheduledMessage, Category
-from utils.translation import ModelTranslateMeta, MultilingualField
 
 
-class PizzaEvent(models.Model):
-    """Describes an event where pizzas can be ordered."""
+class CurrentEventManager(models.Manager):
+    """Only shows available products."""
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(
+                end__gt=timezone.now() - timezone.timedelta(hours=8),
+                start__lte=timezone.now() + timezone.timedelta(hours=8),
+            )
+        )
+
+
+class FoodEvent(models.Model):
+    """Describes an event where food can be ordered."""
+
+    objects = models.Manager()
+    current_objects = CurrentEventManager()
 
     start = models.DateTimeField(_("Order from"))
     end = models.DateTimeField(_("Order until"))
@@ -48,14 +64,11 @@ class PizzaEvent(models.Model):
     def current(cls):
         """Get the currently relevant pizza event: the first one that starts within 8 hours from now."""
         try:
-            events = PizzaEvent.objects.filter(
-                end__gt=timezone.now() - timezone.timedelta(hours=8),
-                start__lte=timezone.now() + timezone.timedelta(hours=8),
-            ).order_by("start")
+            events = FoodEvent.current_objects.order_by("start")
             if events.count() > 1:
                 return events.exclude(end__lt=timezone.now()).first()
             return events.get()
-        except PizzaEvent.DoesNotExist:
+        except FoodEvent.DoesNotExist:
             return None
 
     def __init__(self, *args, **kwargs):
@@ -64,7 +77,7 @@ class PizzaEvent(models.Model):
 
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
-        for other in PizzaEvent.objects.filter(
+        for other in FoodEvent.objects.filter(
             Q(end__gte=self.start, end__lte=self.end)
             | Q(start=self.start, start__lte=self.start)
         ):
@@ -91,8 +104,8 @@ class PizzaEvent(models.Model):
     def save(self, **kwargs):
         if self.send_notification and not self.end_reminder:
             end_reminder = ScheduledMessage()
-            end_reminder.title_en = "Order pizza"
-            end_reminder.body_en = "You can order pizzas for 10 more minutes"
+            end_reminder.title_en = f"{self.event.title}: Order food"
+            end_reminder.body_en = "You can order food for 10 more minutes"
             end_reminder.category = Category.objects.get(key=Category.PIZZA)
             end_reminder.time = self.end - timezone.timedelta(minutes=10)
             end_reminder.save()
@@ -124,7 +137,7 @@ class PizzaEvent(models.Model):
         return super().delete(using, keep_parents)
 
     def __str__(self):
-        return "Pizzas for " + str(self.event)
+        return "Food for " + str(self.event)
 
     class Meta:
         ordering = ("-start",)
@@ -137,14 +150,14 @@ class AvailableProductManager(models.Manager):
         return super().get_queryset().filter(available=True)
 
 
-class Product(models.Model, metaclass=ModelTranslateMeta):
+class Product(models.Model):
     """Describes a product."""
 
     objects = models.Manager()
     available_products = AvailableProductManager()
 
     name = models.CharField(max_length=50)
-    description = MultilingualField(models.TextField)
+    description = models.TextField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     available = models.BooleanField(default=True)
     restricted = models.BooleanField(
@@ -163,8 +176,8 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
         permissions = (("order_restricted_products", _("Order restricted products")),)
 
 
-class Order(models.Model):
-    """Describes an order of an item during an event."""
+class FoodOrder(models.Model):
+    """Describes an order of an item during a food event."""
 
     member = models.ForeignKey(
         members.models.Member, on_delete=models.CASCADE, blank=True, null=True,
@@ -181,7 +194,7 @@ class Order(models.Model):
     payment = models.OneToOneField(
         verbose_name=_("payment"),
         to="payments.Payment",
-        related_name="pizzas_order",
+        related_name="food_order",
         on_delete=models.PROTECT,
         blank=True,
         null=True,
@@ -191,10 +204,33 @@ class Order(models.Model):
         verbose_name=_("product"), to=Product, on_delete=models.PROTECT,
     )
 
-    pizza_event = models.ForeignKey(
-        verbose_name=_("event"), to=PizzaEvent, on_delete=models.CASCADE
+    food_event = models.ForeignKey(
+        verbose_name=_("event"),
+        to=FoodEvent,
+        on_delete=models.CASCADE,
+        related_name="orders",
     )
 
+<<<<<<< HEAD
+=======
+    @property
+    def payment_amount(self):
+        return self.product.price
+
+    @property
+    def payment_topic(self):
+        start_date = date(self.food_event.start, "Y-m-d")
+        return f"Food {self.food_event.event.title} [{start_date}]"
+
+    @property
+    def payment_notes(self):
+        return f"Food order by {self.member_name} " f"for {self.food_event.event.title}"
+
+    @property
+    def payment_payer(self):
+        return self.member
+
+>>>>>>> Rename pizza models and add API v2
     def clean(self):
         if (self.member is None and not self.name) or (self.member and self.name):
             raise ValidationError(
@@ -227,7 +263,7 @@ class Order(models.Model):
         try:
             return (
                 not self.payment or self.payment.type == Payment.TPAY
-            ) and not self.pizza_event.has_ended
+            ) and not self.food_event.has_ended
         except ObjectDoesNotExist:
             return False
 
@@ -238,11 +274,11 @@ class Order(models.Model):
 
     class Meta:
         unique_together = (
-            "pizza_event",
+            "food_event",
             "member",
         )
 
     def __str__(self):
-        return _("Order by {member_name}: {product}").format(
+        return _("Food order by {member_name}: {product}").format(
             member_name=self.member_name, product=self.product
         )

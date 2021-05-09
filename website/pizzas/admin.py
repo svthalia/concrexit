@@ -10,7 +10,7 @@ from events import services
 from events.services import is_organiser
 from pizzas import admin_views
 from utils.admin import DoNextModelAdmin
-from .models import Order, PizzaEvent, Product
+from .models import FoodOrder, FoodEvent, Product
 
 
 @admin.register(Product)
@@ -22,8 +22,8 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
-@admin.register(PizzaEvent)
-class PizzaEventAdmin(admin.ModelAdmin):
+@admin.register(FoodEvent)
+class FoodEventAdmin(admin.ModelAdmin):
     """Manage the pizza events."""
 
     list_display = ("title", "start", "end", "notification_enabled", "orders")
@@ -52,7 +52,7 @@ class PizzaEventAdmin(admin.ModelAdmin):
         return super().has_delete_permission(request, obj)
 
     def orders(self, obj):
-        url = reverse("admin:pizzas_pizzaevent_details", kwargs={"pk": obj.pk})
+        url = reverse("admin:pizzas_foodevent_details", kwargs={"pk": obj.pk})
         return format_html('<a href="{url}">{text}</a>', url=url, text=_("Orders"))
 
     def get_urls(self):
@@ -63,25 +63,25 @@ class PizzaEventAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(
                     admin_views.PizzaOrderDetails.as_view(admin=self)
                 ),
-                name="pizzas_pizzaevent_details",
+                name="pizzas_foodevent_details",
             ),
             path(
                 "<int:pk>/overview/",
                 self.admin_site.admin_view(
                     admin_views.PizzaOrderSummary.as_view(admin=self)
                 ),
-                name="pizzas_pizzaevent_overview",
+                name="pizzas_foodevent_overview",
             ),
         ]
         return custom_urls + urls
 
 
-@admin.register(Order)
-class OrderAdmin(DoNextModelAdmin):
+@admin.register(FoodOrder)
+class FoodOrderAdmin(DoNextModelAdmin):
     """Manage the orders."""
 
     list_display = (
-        "pizza_event",
+        "food_event",
         "member_first_name",
         "member_last_name",
         "product",
@@ -91,14 +91,14 @@ class OrderAdmin(DoNextModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """You can only save the orders if you have permission."""
-        if not is_organiser(request.member, obj.pizza_event.event):
+        if not is_organiser(request.member, obj.food_event.event):
             raise PermissionDenied
         return super().save_model(request, obj, form, change)
 
     def has_view_permission(self, request, order=None):
         """Only give view permission if the user is an organiser."""
         if order is not None and not is_organiser(
-            request.member, order.pizza_event.event
+            request.member, order.food_event.event
         ):
             return False
         return super().has_view_permission(request, order)
@@ -106,7 +106,7 @@ class OrderAdmin(DoNextModelAdmin):
     def has_change_permission(self, request, order=None):
         """Only give change permission if the user is an organiser."""
         if order is not None and not is_organiser(
-            request.member, order.pizza_event.event
+            request.member, order.food_event.event
         ):
             return False
         return super().has_change_permission(request, order)
@@ -114,7 +114,7 @@ class OrderAdmin(DoNextModelAdmin):
     def has_delete_permission(self, request, order=None):
         """Only give delete permission if the user is an organiser."""
         if order is not None and not is_organiser(
-            request.member, order.pizza_event.event
+            request.member, order.food_event.event
         ):
             return False
         return super().has_delete_permission(request, order)

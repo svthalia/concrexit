@@ -16,7 +16,7 @@ from events.api.v2.serializers.event_registration import EventRegistrationSerial
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
-from thaliawebsite.api.v2.serializers.empty import EmptySerializer
+from thaliawebsite.api.v2.serializers import EmptySerializer
 
 
 class EventListView(ListAPIView):

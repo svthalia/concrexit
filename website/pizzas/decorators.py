@@ -2,7 +2,7 @@
 from django.core.exceptions import PermissionDenied
 
 from events import services
-from pizzas.models import PizzaEvent
+from pizzas.models import FoodEvent
 
 
 def organiser_only(view_function):
@@ -27,8 +27,8 @@ class OrganiserOnly:
 
         if "pk" in kwargs:
             try:
-                pizza_event = PizzaEvent.objects.get(pk=kwargs.get("pk"))
-            except PizzaEvent.DoesNotExist:
+                pizza_event = FoodEvent.objects.get(pk=kwargs.get("pk"))
+            except FoodEvent.DoesNotExist:
                 pass
 
         if pizza_event and services.is_organiser(request.member, pizza_event.event):

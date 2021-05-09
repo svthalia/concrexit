@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
-from .models import Order, PizzaEvent, Product
+from .models import FoodOrder, FoodEvent, Product
 
 
 @login_required
@@ -15,10 +15,10 @@ def index(request):
     products = Product.available_products.order_by("name")
     if not request.user.has_perm("pizzas.order_restricted_products"):
         products = products.exclude(restricted=True)
-    event = PizzaEvent.current()
+    event = FoodEvent.current()
     try:
-        obj = Order.objects.get(pizza_event=event, member=request.member)
-    except Order.DoesNotExist:
+        obj = FoodOrder.objects.get(pizza_event=event, member=request.member)
+    except FoodOrder.DoesNotExist:
         obj = None
     context = {"event": event, "products": products, "order": obj}
     return render(request, "pizzas/index.html", context)
@@ -29,7 +29,7 @@ def cancel_order(request):
     """View that cancels a user's order."""
     if "order" in request.POST:
         try:
-            order = get_object_or_404(Order, pk=int(request.POST["order"]))
+            order = get_object_or_404(FoodOrder, pk=int(request.POST["order"]))
             if not order.can_be_changed:
                 messages.error(request, _("You can no longer cancel."))
             elif order.member == request.member:
@@ -43,14 +43,14 @@ def cancel_order(request):
 @login_required
 def place_order(request):
     """View that shows the detail of the current order."""
-    event = PizzaEvent.current()
+    event = FoodEvent.current()
     if not event:
         return redirect("pizzas:index")
 
     try:
-        obj = Order.objects.get(pizza_event=event, member=request.member)
+        obj = FoodOrder.objects.get(pizza_event=event, member=request.member)
         current_order_locked = not obj.can_be_changed
-    except Order.DoesNotExist:
+    except FoodOrder.DoesNotExist:
         obj = None
         current_order_locked = False
 
@@ -63,7 +63,7 @@ def place_order(request):
         except Product.DoesNotExist as e:
             raise Http404("Pizza does not exist") from e
         if not obj:
-            obj = Order(pizza_event=event, member=request.member)
+            obj = FoodOrder(pizza_event=event, member=request.member)
         obj.product = product
         obj.save()
     return redirect("pizzas:index")

@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from payments.api.v1.fields import PaymentTypeField
 from payments.models import Payment
-from pizzas.models import Product, PizzaEvent, Order
+from pizzas.models import Product, FoodEvent, FoodOrder
 from pizzas.services import can_change_order
 
 
@@ -19,7 +19,7 @@ class PizzaSerializer(serializers.ModelSerializer):
 
 class PizzaEventSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PizzaEvent
+        model = FoodEvent
         fields = ("start", "end", "event", "title", "is_admin")
 
     event = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -32,7 +32,7 @@ class PizzaEventSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
+        model = FoodOrder
         fields = ("pk", "payment", "product", "name", "member")
         read_only_fields = ("pk", "payment", "name", "member")
 
@@ -43,7 +43,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class AdminOrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
+        model = FoodOrder
         fields = ("pk", "payment", "product", "name", "member", "display_name")
 
     payment = PaymentTypeField(
