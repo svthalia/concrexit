@@ -49,7 +49,7 @@ class EventListSerializer(serializers.ModelSerializer):
             return False
 
     def _pizza(self, instance):
-        return instance.is_pizza_event
+        return instance.has_food_event
 
     def _present(self, instance):
         try:

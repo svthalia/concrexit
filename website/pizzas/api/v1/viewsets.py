@@ -9,7 +9,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import delete_payment, create_payment
-from pizzas.models import Product, PizzaEvent, Order
+from pizzas.models import Product, FoodEvent, FoodOrder
 from pizzas.services import can_change_order
 
 from . import serializers
@@ -21,7 +21,7 @@ class PizzaViewset(GenericViewSet, ListModelMixin):
     serializer_class = serializers.PizzaSerializer
 
     def list(self, request, *args, **kwargs):
-        if PizzaEvent.current() or request.user.has_perm("pizzas.change_product"):
+        if FoodEvent.current() or request.user.has_perm("pizzas.change_product"):
             queryset = self.get_queryset()
             if not request.user.has_perm("pizzas.order_restricted_products"):
                 queryset = queryset.exclude(restricted=True)
@@ -31,7 +31,7 @@ class PizzaViewset(GenericViewSet, ListModelMixin):
 
     @action(detail=False)
     def event(self, request):
-        event = PizzaEvent.current()
+        event = FoodEvent.current()
 
         if event:
             context = {"request": request}
@@ -43,23 +43,23 @@ class PizzaViewset(GenericViewSet, ListModelMixin):
 
 class OrderViewset(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Order.objects.all()
+    queryset = FoodOrder.objects.all()
 
     def get_queryset(self):
-        event = PizzaEvent.current()
+        event = FoodEvent.current()
         if can_change_order(self.request.member, event):
-            return Order.objects.filter(pizza_event=event)
+            return FoodOrder.objects.filter(food_event=event)
         if self.action == "update" or self.action == "destroy":
             if not event or event.has_ended:
-                return Order.objects.none()
+                return FoodOrder.objects.none()
 
-            return Order.objects.filter(
-                member=self.request.member, payment=None, pizza_event=event,
+            return FoodOrder.objects.filter(
+                member=self.request.member, payment=None, food_event=event,
             )
-        return Order.objects.filter(member=self.request.member, pizza_event=event)
+        return FoodOrder.objects.filter(member=self.request.member, food_event=event)
 
     def get_serializer_class(self):
-        event = PizzaEvent.current()
+        event = FoodEvent.current()
         if can_change_order(self.request.member, event):
             return serializers.AdminOrderSerializer
         return serializers.OrderSerializer
@@ -69,7 +69,7 @@ class OrderViewset(ModelViewSet):
             order = get_object_or_404(
                 self.get_queryset(),
                 member=self.request.member,
-                pizza_event=PizzaEvent.current(),
+                food_event=FoodEvent.current(),
             )
             self.check_object_permissions(self.request, order)
             return order
@@ -78,10 +78,10 @@ class OrderViewset(ModelViewSet):
     def perform_create(self, serializer):
         try:
             if serializer.validated_data.get("name"):
-                serializer.save(pizza_event=PizzaEvent.current())
+                serializer.save(food_event=FoodEvent.current())
             else:
-                if can_change_order(self.request.member, PizzaEvent.current()):
-                    order = serializer.save(pizza_event=PizzaEvent.current())
+                if can_change_order(self.request.member, FoodEvent.current()):
+                    order = serializer.save(food_event=FoodEvent.current())
                     if "payment" in serializer.validated_data:
                         payment_type = serializer.validated_data["payment"]["type"]
                     else:
@@ -90,7 +90,7 @@ class OrderViewset(ModelViewSet):
                     self._update_payment(order, payment_type, self.request.user)
                 else:
                     serializer.save(
-                        member=self.request.member, pizza_event=PizzaEvent.current()
+                        member=self.request.member, food_event=FoodEvent.current()
                     )
         except IntegrityError as e:
             raise ValidationError(
@@ -100,7 +100,7 @@ class OrderViewset(ModelViewSet):
     def perform_update(self, serializer):
         order = serializer.save()
         if "payment" in serializer.validated_data and can_change_order(
-            self.request.member, PizzaEvent.current()
+            self.request.member, FoodEvent.current()
         ):
             self._update_payment(
                 order, serializer.validated_data["payment"]["type"], self.request.user,

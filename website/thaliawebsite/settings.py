@@ -190,7 +190,7 @@ ALLOWED_HOSTS = [
     *from_env("ALLOWED_HOSTS", development="*", production="").split(","),
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#internal-ips
-INTERNAL_IPS = setting(development=["127.0.0.1"], production=[])
+INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 
 # https://django-compressor.readthedocs.io/en/stable/settings/#django.conf.settings.COMPRESS_OFFLINE
 COMPRESS_OFFLINE = setting(development=False, production=True)
@@ -515,14 +515,16 @@ OAUTH2_PROVIDER = {
     "SCOPES": {
         "read": "Authenticated read access to the website",
         "write": "Authenticated write access to the website",
-        "announcements:read": "Read access to announcements",
-        "members:read": "Read access to the members directory",
-        "profile:read": "Read access to your member profile",
-        "profile:write": "Write access to your member profile",
         "activemembers:read": "Read access to committee, society and board groups",
+        "announcements:read": "Read access to announcements",
         "events:read": "Read access to events and your event registrations",
         "events:register": "Write access to the state of your event registrations",
+        "food:read": "Read access to food events",
+        "food:order": "Order access to food events",
+        "members:read": "Read access to the members directory",
         "photos:read": "Read access to photos",
+        "profile:read": "Read access to your member profile",
+        "profile:write": "Write access to your member profile",
         "pushnotifications:read": "Read access to push notifications",
         "pushnotifications:write": "Write access to push notifications",
         "sales:read": "Read access to Point of Sale orders",

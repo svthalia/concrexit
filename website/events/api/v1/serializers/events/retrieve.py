@@ -90,7 +90,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         return instance.has_fields
 
     def _is_pizza_event(self, instance):
-        return instance.is_pizza_event
+        return instance.has_food_event
 
     def _google_maps_url(self, instance):
         return create_google_maps_url(instance.map_location, zoom=13, size="450x250")

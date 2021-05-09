@@ -9,9 +9,9 @@
         &rsaquo; <a
         href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
         &rsaquo; <a
-        href="{% url opts|admin_urlname:'change' pizza_event.pk %}">{{ pizza_event }}</a>
+        href="{% url opts|admin_urlname:'change' food_event.pk %}">{{ food_event }}</a>
         &rsaquo; <a
-        href="{% url opts|admin_urlname:'details' pizza_event.pk %}">{% trans 'Orders' %}</a>
+        href="{% url opts|admin_urlname:'details' food_event.pk %}">{% trans 'Orders' %}</a>
         &rsaquo; {{ original }}
     </div>
 {% endblock %}
@@ -20,7 +20,7 @@
     <div id="content-main">
         <ul class="object-tools">
             <li>
-                <a href="{% url opts|admin_urlname:'details' pizza_event.pk %}"
+                <a href="{% url opts|admin_urlname:'details' food_event.pk %}"
                    class="back">{% trans 'back'|capfirst %}</a>
             </li>
         </ul>
