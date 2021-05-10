@@ -510,6 +510,7 @@ CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
 OAUTH2_PROVIDER = {
     "ALLOWED_REDIRECT_URI_SCHEMES": setting(
         production=["https", APP_OAUTH_SCHEME],
+        staging=["http", "https", APP_OAUTH_SCHEME],
         development=["http", "https", APP_OAUTH_SCHEME],
     ),
     "SCOPES": {
