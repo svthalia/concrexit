@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from members.api.v2.serializers.profile import ProfileSerializer
 from members.models import Member
@@ -52,6 +53,9 @@ class MemberSerializer(serializers.ModelSerializer):
         return None
 
     def update(self, instance, validated_data):
+        if "profile" not in validated_data:
+            raise ValidationError("profile field is missing")
+
         profile_data = validated_data.pop("profile")
         instance.profile = self.fields["profile"].update(
             instance=instance.profile, validated_data=profile_data
