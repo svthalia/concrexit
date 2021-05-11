@@ -1,16 +1,5 @@
-@import "../../thaliawebsite/static/css/variables";
-
 #changelist table {
     width: 100%;
-
-    tr {
-        &:nth-child(even) {
-            background: #f9f9f9;
-        }
-        &:nth-child(odd) {
-            background: #fff;
-        }
-    }
 
     td {
         vertical-align: middle;
@@ -29,7 +18,7 @@
                 outline: none;
 
                 &:not(.sorter-false):hover {
-                    background-color: #eee;
+                    background-color: var(--selected-bg);
                 }
 
                 .toggle {
@@ -41,8 +30,6 @@
                 }
 
                 &.tablesorter-headerAsc {
-                    background-color: #eee;
-
                     .toggle {
                         display: inline-block;
                         background-position: 0 -56px;
@@ -50,8 +37,6 @@
                 }
 
                 &.tablesorter-headerDesc {
-                    background-color: #eee;
-
                     .toggle {
                         display: inline-block;
                         background-position: 0 -28px;
@@ -63,11 +48,11 @@
 }
 
 select[name=payment] {
-    background: $red;
+    background: var(--message-error-bg);
     color: white;
 
     &.paid {
-        background: $green;
+        background: var(--message-success-bg);
     }
 
     @media(max-width: 767px) {
