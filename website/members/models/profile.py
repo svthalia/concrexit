@@ -210,7 +210,6 @@ class Profile(models.Model):
 
     @property
     def language(self):
-        # todo: Remove usage of this property.
         return "en"
 
     receive_optin = models.BooleanField(

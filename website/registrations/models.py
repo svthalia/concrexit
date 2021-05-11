@@ -192,7 +192,6 @@ class Registration(Entry):
 
     @property
     def language(self):
-        """@todo: Remove usage of this property."""
         return "en"
 
     # ---- Contact information -----

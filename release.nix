@@ -57,7 +57,6 @@ let
         networking.hostName = "staging";
         networking.domain = "thalia.nu";
         # This is needed because otherwise socket.getfqdn() breaks in Python
-        # TODO: find a better solution for this?
         networking.hosts = pkgs.lib.mkForce { };
         users.motd = ''
           You are on the concrexit staging server
