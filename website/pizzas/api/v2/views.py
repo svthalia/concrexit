@@ -1,5 +1,4 @@
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
