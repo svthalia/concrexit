@@ -70,7 +70,7 @@ class FoodEventProductsListView(ListAPIView):
 class FoodEventOrderDetailView(
     RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 ):
-    """Returns details of an event registration."""
+    """Returns details of a food order."""
 
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
