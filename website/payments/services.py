@@ -3,7 +3,7 @@ import datetime
 from typing import Union
 
 from django.conf import settings
-from django.db.models import QuerySet, Q, Sum
+from django.db.models import QuerySet, Q, Sum, Model
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
@@ -11,21 +11,27 @@ from django.utils.translation import gettext_lazy as _
 from members.models import Member
 from utils.snippets import send_email
 from .exceptions import PaymentError
-from .models import Payment, BankAccount, Payable, PaymentUser
+from .models import Payment, BankAccount, PaymentUser
+from .payables import payables, Payable
 
 
 def create_payment(
-    payable: Payable,
+    model_payable: Union[Model, Payable],
     processed_by: Member,
     pay_type: Union[Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY],
 ) -> Payment:
     """Create a new payment from a payable object.
 
-    :param payable: Payable object
+    :param model_payable: Payable or Model object
     :param processed_by: PaymentUser that processed this payment
     :param pay_type: Payment type
     :return: Payment object
     """
+    if isinstance(model_payable, Payable):
+        payable = model_payable
+    else:
+        payable = payables.get_payable(model_payable)
+
     payer = (
         PaymentUser.objects.get(pk=payable.payment_payer.pk)
         if payable.payment_payer
@@ -58,12 +64,14 @@ def create_payment(
     return payable.payment
 
 
-def delete_payment(payable: Payable):
+def delete_payment(model: Model):
     """Remove a payment from a payable object.
 
-    :param payable: Payable object
+    :param model: Payable or Model object
     :return:
     """
+    payable = payables.get_payable(model)
+
     payment = payable.payment
     if payment.created_at < timezone.now() - timezone.timedelta(
         seconds=settings.PAYMENT_CHANGE_WINDOW
@@ -75,7 +83,7 @@ def delete_payment(payable: Payable):
         )
 
     payable.payment = None
-    payable.save()
+    payable.model.save()
     payment.delete()
 
 

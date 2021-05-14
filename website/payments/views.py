@@ -22,7 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 
-from payments import services
+from payments import services, payables
 from payments.exceptions import PaymentError
 from payments.forms import BankAccountForm, PaymentCreateForm, BankAccountUserRevokeForm
 from payments.models import BankAccount, Payment, PaymentUser
@@ -210,7 +210,7 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         payable_pk = request.POST["payable"]
 
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
-        self.payable = payable_model.objects.get(pk=payable_pk)
+        self.payable = payables.get_payable(payable_model.objects.get(pk=payable_pk))
 
         if (
             self.payable.payment_payer.pk
@@ -249,7 +249,7 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
                 PaymentUser.objects.get(pk=self.request.member.pk),
                 Payment.TPAY,
             )
-            self.payable.save()
+            self.payable.model.save()
         except PaymentError as e:
             messages.error(self.request, str(e))
         return super().form_valid(form)

@@ -56,7 +56,7 @@ class PaymentViewset(ListModelMixin, RetrieveModelMixin, GenericViewSet):
             services.create_payment(
                 payable, PaymentUser.objects.get(pk=request.user.pk), Payment.TPAY,
             )
-            payable.save()
+            payable.model.save()
         except PaymentError as e:
             raise ValidationError(detail=str(e))
 

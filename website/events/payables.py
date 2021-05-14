@@ -1,0 +1,36 @@
+from django.template.defaultfilters import date
+
+from events.models import EventRegistration
+from events.services import is_organiser
+from payments import Payable, payables
+
+
+class EventRegistrationPayable(Payable):
+    @property
+    def payment_amount(self):
+        return self.model.event.price
+
+    @property
+    def payment_topic(self):
+        return f'{self.model.event.title_en} [{date(self.model.event.start, "Y-m-d")}]'
+
+    @property
+    def payment_notes(self):
+        notes = f"Event registration {self.model.event.title_en}. "
+        notes += f"{date(self.model.event.start)}. Registration date: {date(self.model.date)}."
+        return notes
+
+    @property
+    def payment_payer(self):
+        return self.model.member
+
+    def can_create_payment(self, member):
+        return is_organiser(member, self.model.event)
+
+    @property
+    def tpay_allowed(self):
+        return self.model.event.tpay_allowed
+
+
+def register():
+    payables.register(EventRegistration, EventRegistrationPayable)

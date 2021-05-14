@@ -1,15 +1,22 @@
 from unittest.mock import MagicMock
 
-from payments.models import Payable
+from django.db.models import Model
+
+from payments import Payable
 
 
-class MockPayable(Payable):
-    save = MagicMock()
+class MockModel:
+    class Meta:
+        app_label = "mock_app"
+        model_name = "mock_model"
+
+    payment = None
+    pk = 1
+    _meta = Meta()
 
     def __init__(
         self, payer, amount=5, topic="mock topic", notes="mock notes", payment=None
     ) -> None:
-        super().__init__()
         self.payer = payer
         self.amount = amount
         self.topic = topic
@@ -19,20 +26,29 @@ class MockPayable(Payable):
         # Because we have to do as if this is a model sometimes
         self.verbose_name = "MockPayable"
         self.verbose_name_plural = self.verbose_name + "s"
-        self.pk = 0
+
+    def save(self):
+        pass
+
+
+class MockPayable(Payable):
+    save = MagicMock()
 
     @property
     def payment_amount(self):
-        return self.amount
+        return self.model.amount
 
     @property
     def payment_topic(self):
-        return self.topic
+        return self.model.topic
 
     @property
     def payment_notes(self):
-        return self.notes
+        return self.model.notes
 
     @property
     def payment_payer(self):
-        return self.payer
+        return self.model.payer
+
+    def can_create_payment(self, member):
+        return False

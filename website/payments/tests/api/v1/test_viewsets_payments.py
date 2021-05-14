@@ -10,7 +10,7 @@ from rest_framework.test import APIClient
 from members.models import Member
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, PaymentUser, Payment
-from payments.tests.__mocks__ import MockPayable
+from payments.tests.__mocks__ import MockPayable, MockModel
 
 
 @freeze_time("2020-09-01")
@@ -45,7 +45,7 @@ class PaymentProcessViewTest(TestCase):
         self.client = APIClient()
         self.client.force_login(self.user)
 
-        self.payable = MockPayable(payer=self.user)
+        self.payable = MockPayable(MockModel(payer=self.user))
 
         self.original_get_model = apps.get_model
         mock_get_model = mock_get_model = MagicMock()
@@ -75,7 +75,7 @@ class PaymentProcessViewTest(TestCase):
         self.assertEqual(400, response.status_code)
 
     def test_different_member(self):
-        self.payable.payer = PaymentUser()
+        self.payable.model.payer = PaymentUser()
 
         response = self.client.post(
             reverse("v1:payment-list"), self.test_body, format="json"
@@ -87,7 +87,7 @@ class PaymentProcessViewTest(TestCase):
         )
 
     def test_already_paid(self):
-        self.payable.payment = Payment(amount=8)
+        self.payable.model.payment = Payment(amount=8)
 
         response = self.client.post(
             reverse("v1:payment-list"), self.test_body, format="json"
@@ -101,7 +101,7 @@ class PaymentProcessViewTest(TestCase):
     @mock.patch("payments.services.create_payment")
     def test_creates_payment(self, create_payment):
         def set_payments_side_effect(*args, **kwargs):
-            self.payable.payment = Payment.objects.create(amount=8)
+            self.payable.model.payment = Payment.objects.create(amount=8)
 
         create_payment.side_effect = set_payments_side_effect
 

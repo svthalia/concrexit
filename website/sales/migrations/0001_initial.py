@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 'ordering': ['created_at'],
                 'permissions': [('custom_prices', 'Can use custom prices and discounts in orders')],
             },
-            bases=(models.Model, payments.models.Payable),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Product',

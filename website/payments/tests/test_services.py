@@ -5,10 +5,10 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
-from payments import services
+from payments import services, payables
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment, Batch, PaymentUser
-from payments.tests.__mocks__ import MockPayable
+from payments.tests.__mocks__ import MockPayable, MockModel
 
 
 @freeze_time("2019-01-01")
@@ -21,12 +21,13 @@ class ServicesTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        payables.register(MockModel, MockPayable)
         cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
 
     def test_create_payment(self):
         with self.subTest("Creates new payment with right payment type"):
             p = services.create_payment(
-                MockPayable(self.member), self.member, Payment.CASH
+                MockPayable(MockModel(self.member)), self.member, Payment.CASH
             )
             self.assertEqual(p.amount, 5)
             self.assertEqual(p.topic, "mock topic")
@@ -37,7 +38,7 @@ class ServicesTest(TestCase):
         with self.subTest("Updates payment if one already exists"):
             existing_payment = Payment(amount=2)
             p = services.create_payment(
-                MockPayable(payer=self.member, payment=existing_payment),
+                MockPayable(MockModel(payer=self.member, payment=existing_payment)),
                 self.member,
                 Payment.CASH,
             )
@@ -46,49 +47,52 @@ class ServicesTest(TestCase):
         with self.subTest("Does not allow Thalia Pay when not enabled"):
             with self.assertRaises(PaymentError):
                 services.create_payment(
-                    MockPayable(payer=self.member), self.member, Payment.TPAY
+                    MockPayable(MockModel(payer=self.member)), self.member, Payment.TPAY
                 )
 
         with self.subTest("Do not allow zero euro payments"):
             with self.assertRaises(PaymentError):
                 services.create_payment(
-                    MockPayable(payer=self.member, amount=0), self.member, Payment.TPAY
+                    MockPayable(MockModel(payer=self.member, amount=0)),
+                    self.member,
+                    Payment.TPAY,
                 )
 
     def test_delete_payment(self):
         existing_payment = MagicMock(batch=None)
-        payable = MockPayable(payer=self.member, payment=existing_payment)
-        payable.save.reset_mock()
+        payable = MockPayable(MockModel(payer=self.member, payment=existing_payment))
+        payable.model.save = MagicMock()
+        payable.model.save.reset_mock()
 
         with self.subTest("Within deletion window"):
-            payable.payment = existing_payment
+            payable.model.payment = existing_payment
             existing_payment.created_at = timezone.now()
-            services.delete_payment(payable)
+            services.delete_payment(payable.model)
             self.assertIsNone(payable.payment)
-            payable.save.assert_called_once()
+            payable.model.save.assert_called_once()
             existing_payment.delete.assert_called_once()
 
         with self.subTest("Outside deletion window"):
-            payable.payment = existing_payment
+            payable.model.payment = existing_payment
             existing_payment.created_at = timezone.now() - timezone.timedelta(
                 seconds=settings.PAYMENT_CHANGE_WINDOW + 60
             )
             with self.assertRaisesMessage(
                 PaymentError, "This payment cannot be deleted anymore."
             ):
-                services.delete_payment(payable)
+                services.delete_payment(payable.model)
             self.assertIsNotNone(payable.payment)
 
         existing_payment.created_at = timezone.now()
 
         with self.subTest("Already processed"):
-            payable.payment = existing_payment
+            payable.model.payment = existing_payment
             existing_payment.batch = Batch.objects.create(processed=True)
             with self.assertRaisesMessage(
                 PaymentError,
                 "This payment has already been processed and hence cannot be deleted.",
             ):
-                services.delete_payment(payable)
+                services.delete_payment(payable.model)
             self.assertIsNotNone(payable.payment)
 
     def test_update_last_used(self):
@@ -172,7 +176,7 @@ class ServicesTest(TestCase):
                 signature="base64,png",
             )
             p = services.create_payment(
-                MockPayable(self.member), self.member, Payment.TPAY
+                MockPayable(MockModel(self.member)), self.member, Payment.TPAY
             )
             b = Batch.objects.create()
             p.batch = b

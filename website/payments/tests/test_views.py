@@ -10,8 +10,10 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member
+from payments import payables
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment, PaymentUser
+from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 
 
@@ -455,11 +457,13 @@ class PaymentProcessViewTest(TestCase):
         cls.user = PaymentUser.objects.get(pk=cls.user.pk)
 
     def setUp(self):
+        payables.register(MockModel, MockPayable)
+
         self.account1.refresh_from_db()
         self.client = Client()
         self.client.force_login(self.user)
 
-        self.payable = MockPayable(payer=self.user)
+        self.model = MockModel(payer=self.user)
 
         self.original_get_model = apps.get_model
         mock_get_model = mock_get_model = MagicMock()
@@ -470,7 +474,7 @@ class PaymentProcessViewTest(TestCase):
             return self.original_get_model(*args, **kwargs)
 
         apps.get_model = Mock(side_effect=side_effect)
-        mock_get_model.objects.get.return_value = self.payable
+        mock_get_model.objects.get.return_value = self.model
 
     def tearDown(self):
         apps.get_model = self.original_get_model
@@ -498,7 +502,7 @@ class PaymentProcessViewTest(TestCase):
 
     @mock.patch("django.contrib.messages.error")
     def test_tpay_not_allowed(self, messages_error):
-        with mock.patch("payments.models.Payable.tpay_allowed") as mock_tpay_allowed:
+        with mock.patch("payments.Payable.tpay_allowed") as mock_tpay_allowed:
             mock_tpay_allowed.__get__ = mock.Mock(return_value=False)
 
             response = self.client.post(
@@ -528,7 +532,7 @@ class PaymentProcessViewTest(TestCase):
 
     @mock.patch("django.contrib.messages.error")
     def test_different_member(self, messages_error):
-        self.payable.payer = PaymentUser()
+        self.model.payer = PaymentUser()
 
         response = self.client.post(
             reverse("payments:payment-process"), follow=False, data=self.test_body
@@ -543,7 +547,7 @@ class PaymentProcessViewTest(TestCase):
 
     @mock.patch("django.contrib.messages.error")
     def test_already_paid(self, messages_error):
-        self.payable.payment = Payment(amount=8)
+        self.model.payment = Payment(amount=8)
 
         response = self.client.post(
             reverse("payments:payment-process"), follow=False, data=self.test_body
@@ -556,7 +560,7 @@ class PaymentProcessViewTest(TestCase):
 
     @mock.patch("django.contrib.messages.error")
     def test_zero_payment(self, messages_error):
-        self.payable.amount = 0
+        self.model.amount = 0
 
         response = self.client.post(
             reverse("payments:payment-process"), follow=False, data=self.test_body
@@ -575,7 +579,9 @@ class PaymentProcessViewTest(TestCase):
         )
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(self.payable, response.context_data["payable"])
+        self.assertEqual(
+            payables.get_payable(self.model), response.context_data["payable"]
+        )
         self.assertContains(response, "Please confirm your payment.")
         self.assertContains(response, 'name="_save"')
 
@@ -588,7 +594,9 @@ class PaymentProcessViewTest(TestCase):
             data={**self.test_body, "_save": True},
         )
 
-        create_payment.assert_called_with(self.payable, self.user, Payment.TPAY)
+        create_payment.assert_called_with(
+            payables.get_payable(self.model), self.user, Payment.TPAY
+        )
 
         messages_success.assert_called_with(
             ANY, "Your payment has been processed successfully."
