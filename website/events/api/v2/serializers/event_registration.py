@@ -8,7 +8,7 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for event registrations."""
 
     def __init__(self, *args, **kwargs):
-        # Don't pass the 'show_details' arg up to the superclass
+        # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", {"pk", "member", "name"})
 
         # Instantiate the superclass normally

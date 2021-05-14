@@ -181,7 +181,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
     tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
 
-    shift = models.OneToOneField("sales.Shift", models.SET_NULL, null=True)
+    shift = models.OneToOneField("sales.Shift", models.SET_NULL, null=True, blank=True)
 
     @property
     def cancel_too_late_message(self):

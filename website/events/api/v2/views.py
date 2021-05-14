@@ -1,8 +1,8 @@
 from django.http import HttpResponse
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
+from rest_framework import filters as framework_filters
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
-from rest_framework import filters as framework_filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
@@ -23,7 +23,7 @@ class EventListView(ListAPIView):
     """Returns an overview of all upcoming events."""
 
     serializer_class = EventSerializer
-    queryset = Event.objects.all()
+    queryset = Event.objects.filter(published=True)
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
@@ -44,7 +44,7 @@ class EventDetailView(RetrieveAPIView):
     """Returns details of an event."""
 
     serializer_class = EventSerializer
-    queryset = Event.objects.all()
+    queryset = Event.objects.filter(published=True)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissionsOrAnonReadOnly,
@@ -66,19 +66,41 @@ class EventRegistrationsView(ListAPIView):
         "DELETE": ["events:register"],
     }
 
+    def __init__(self):
+        super(EventRegistrationsView, self).__init__()
+        self.event = None
+
     def get_serializer_class(self):
         if self.request.method.lower() == "post":
             return EmptySerializer
         return super().get_serializer_class()
 
     def get_queryset(self):
-        return EventRegistration.objects.filter(
-            event=self.event.pk, date_cancelled=None
-        )[: self.event.max_participants]
+        if self.event:
+            return EventRegistration.objects.filter(
+                event=self.event, date_cancelled=None
+            )[: self.event.max_participants]
+        return EventRegistration.objects.none()
 
-    def dispatch(self, request, *args, **kwargs):
-        self.event = get_object_or_404(Event, pk=self.kwargs.get("pk"))
-        return super().dispatch(request, *args, **kwargs)
+    def initial(self, request, *args, **kwargs):
+        """Run anything that needs to occur prior to calling the method handler."""
+        self.format_kwarg = self.get_format_suffix(**kwargs)
+
+        # Perform content negotiation and store the accepted info on the request
+        neg = self.perform_content_negotiation(request)
+        request.accepted_renderer, request.accepted_media_type = neg
+
+        # Determine the API version, if versioning is in use.
+        version, scheme = self.determine_version(request, *args, **kwargs)
+        request.version, request.versioning_scheme = version, scheme
+
+        # Ensure that the incoming request is permitted
+        self.perform_authentication(request)
+
+        self.event = get_object_or_404(Event, pk=self.kwargs.get("pk"), published=True)
+
+        self.check_permissions(request)
+        self.check_throttles(request)
 
     def post(self, request, *args, **kwargs):
         try:
@@ -90,13 +112,6 @@ class EventRegistrationsView(ListAPIView):
         except RegistrationError as e:
             raise PermissionDenied(detail=e) from e
 
-    def delete(self, request, *args, **kwargs):
-        try:
-            services.cancel_registration(request.member, self.event)
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except RegistrationError as e:
-            raise PermissionDenied(detail=e) from e
-
 
 class EventRegistrationDetailView(RetrieveAPIView):
     """Returns details of an event registration."""
@@ -104,13 +119,53 @@ class EventRegistrationDetailView(RetrieveAPIView):
     serializer_class = EventRegistrationSerializer
     queryset = EventRegistration.objects.all()
     permission_classes = [
-        IsAuthenticatedOrTokenHasScope,
+        IsAuthenticatedOrTokenHasScopeForMethod,
         DjangoModelPermissionsOrAnonReadOnly,
     ]
-    required_scopes = ["events:read"]
+    required_scopes_per_method = {
+        "GET": ["events:read"],
+        "DELETE": ["events:register"],
+    }
 
     def get_queryset(self):
-        return super().get_queryset().filter(event=self.kwargs["event_id"])
+        return (
+            super()
+            .get_queryset()
+            .filter(
+                event=self.kwargs["event_id"],
+                event__published=True,
+                date_cancelled=None,
+            )
+        )
+
+    def get_serializer(self, *args, **kwargs):
+        if (
+            len(args) > 0
+            and isinstance(args[0], EventRegistration)
+            and args[0].member == self.request.member
+        ):
+            kwargs.update(
+                fields=(
+                    "pk",
+                    "member",
+                    "name",
+                    "present",
+                    "queue_position",
+                    "date",
+                    "payment",
+                )
+            )
+        return super().get_serializer(*args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        if self.get_object().member != request.member:
+            raise PermissionDenied()
+
+        try:
+            services.cancel_registration(request.member, self.get_object().event)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except RegistrationError as e:
+            raise PermissionDenied(detail=e) from e
 
 
 class EventRegistrationFieldsView(APIView):
@@ -127,6 +182,7 @@ class EventRegistrationFieldsView(APIView):
         return get_object_or_404(
             EventRegistration,
             event=self.kwargs["event_id"],
+            event__published=True,
             pk=self.kwargs["registration_id"],
             member=self.request.member,
         )
