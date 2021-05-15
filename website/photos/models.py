@@ -154,7 +154,7 @@ class Album(models.Model):
         if self.pk is None:
             self.dirname = self.slug
 
-        if not self.title:
+        if not self.title and self.event:
             self.title = self.event.title_en
 
         if not self.date:
