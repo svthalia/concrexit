@@ -118,12 +118,7 @@ class Order(models.Model, Payable):
             return
         if self.shift.start > timezone.now():
             return
-        if (
-            self.payment
-            and float(sum(self.order_items.values_list("total", flat=True)))
-            - (self.discount or 0)
-            != self.payment.amount
-        ):
+        if self.payment and self.total_amount != self.payment.amount:
             return
         if self.payment and not self.payer:
             self.payer = self.payment.paid_by
