@@ -118,7 +118,11 @@ class Order(models.Model, Payable):
             raise ValueError("The shift this order belongs to is locked.")
         if self.shift.start > timezone.now():
             raise ValueError("The shift hasn't started yet.")
-        if self.payment and self.total_amount != self.payment.amount:
+        if (
+            self.payment
+            and self.subtotal - Decimal(self.discount or 0) != self.payment.amount
+        ):
+            # We cannot use self.total_amount as it is a requires a database query and hence will not use any updated values
             raise ValueError(
                 "The payment amount does not match the order total amount."
             )

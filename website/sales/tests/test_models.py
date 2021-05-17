@@ -195,29 +195,21 @@ class OrderTest(TestCase):
     def test_create_order_shift_locked(self):
         self.shift.locked = True
         self.shift.save()
-        order = Order.objects.create(shift=self.shift)
 
-        with self.assertRaises(ValidationError):
-            order.clean()
-
-        with self.assertRaises(Order.DoesNotExist):
-            Order.objects.get(pk=order.pk)
+        with self.assertRaises(ValueError):
+            Order.objects.create(shift=self.shift)
 
     def test_create_order_shift_not_started(self):
         self.shift.start = self.shift.start + timezone.timedelta(days=2)
         self.shift.end = self.shift.end + timezone.timedelta(days=2)
         self.shift.save()
-        order = Order.objects.create(shift=self.shift)
 
-        with self.assertRaises(ValidationError):
-            order.clean()
-
-        with self.assertRaises(Order.DoesNotExist):
-            Order.objects.get(pk=order.pk)
+        with self.assertRaises(ValueError):
+            Order.objects.create(shift=self.shift)
 
     def test_update_order_shift_locked(self):
         order = Order.objects.create(shift=self.shift)
-        i1 = OrderItem.objects.create(
+        OrderItem.objects.create(
             order=order,
             product=self.shift.product_list.product_items.get(product=self.beer),
             amount=2,
@@ -250,21 +242,20 @@ class OrderTest(TestCase):
 
         order.discount = 0.5
 
-        order.save()
-        order.refresh_from_db()
-        self.assertIsNone(order.discount)
+        with self.assertRaises(ValueError):
+            order.save()
 
-        i2 = OrderItem.objects.create(
-            order=order,
-            product=self.shift.product_list.product_items.get(product=self.wine),
-            amount=1,
-        )
-        i2.save()
-        with self.assertRaises(OrderItem.DoesNotExist):
-            OrderItem.objects.get(pk=i2.pk)
+        with self.assertRaises(ValueError):
+            OrderItem.objects.create(
+                order=order,
+                product=self.shift.product_list.product_items.get(product=self.wine),
+                amount=1,
+            )
 
         i1.amount = 3
-        i1.save()
+        with self.assertRaises(ValueError):
+            i1.save()
+
         i1.refresh_from_db()
         self.assertEqual(i1.amount, 2)
 
