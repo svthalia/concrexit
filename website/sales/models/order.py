@@ -115,16 +115,17 @@ class Order(models.Model, Payable):
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if self.shift.locked:
-            return
+            raise ValueError("The shift this order belongs to is locked.")
         if self.shift.start > timezone.now():
-            return
+            raise ValueError("The shift hasn't started yet.")
         if (
             self.payment
-            and float(sum(self.order_items.values_list("total", flat=True)))
-            - (self.discount or 0)
-            != self.payment.amount
+            and self.subtotal - Decimal(self.discount or 0) != self.payment.amount
         ):
-            return
+            # We cannot use self.total_amount as it is a requires a database query and hence will not use any updated values
+            raise ValueError(
+                "The payment amount does not match the order total amount."
+            )
         if self.payment and not self.payer:
             self.payer = self.payment.paid_by
 
@@ -228,9 +229,9 @@ class OrderItem(models.Model):
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if self.order.shift.locked:
-            return
+            raise ValueError("The shift this order belongs to is locked.")
         if self.order.payment:
-            return
+            raise ValueError("This order has already been paid for.")
 
         if not self.total:
             self.total = self.product.price * self.amount
