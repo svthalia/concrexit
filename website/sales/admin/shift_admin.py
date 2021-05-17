@@ -131,9 +131,8 @@ class ShiftAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
 
-        if not (
-            request.member
-            or request.member.is_superuser
+        if not request.member or not (
+            request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
             queryset = queryset.filter(

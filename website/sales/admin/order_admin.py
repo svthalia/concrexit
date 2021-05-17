@@ -223,9 +223,8 @@ class OrderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
 
-        if not (
-            request.member
-            or request.member.is_superuser
+        if not request.member or not (
+            request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
             queryset = queryset.filter(
@@ -246,9 +245,8 @@ class OrderAdmin(admin.ModelAdmin):
         return queryset
 
     def has_add_permission(self, request):
-        if not (
-            request.member
-            or request.member.is_superuser
+        if not request.member or not (
+            request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
             if (
@@ -309,12 +307,9 @@ class OrderAdmin(admin.ModelAdmin):
             )
         if db_field.name == "shift":
             field.queryset = Shift.objects.filter(locked=False)
-            if not (
-                (
-                    request.member
-                    or request.member.is_superuser
-                    or request.member.has_perm("sales.override_manager")
-                )
+            if not request.member or not (
+                request.member.is_superuser
+                or request.member.has_perm("sales.override_manager")
             ):
                 field.queryset = field.queryset.filter(
                     managers__in=request.member.get_member_groups()
@@ -322,12 +317,9 @@ class OrderAdmin(admin.ModelAdmin):
         return field
 
     def changelist_view(self, request, extra_context=None):
-        if not (
-            (
-                request.member
-                or request.member.is_superuser
-                or request.member.has_perm("sales.override_manager")
-            )
+        if not request.member or not (
+            request.member.is_superuser
+            or request.member.has_perm("sales.override_manager")
         ):
             self.message_user(
                 request,
