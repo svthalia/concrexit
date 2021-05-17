@@ -1,7 +1,7 @@
 from django.template.defaultfilters import date
 
 from payments import Payable, payables
-from pizzas.models import Order
+from pizzas.models import FoodOrder
 from pizzas.services import can_change_order
 
 
@@ -31,4 +31,4 @@ class FoodOrderPayable(Payable):
 
 
 def register():
-    payables.register(Order, FoodOrderPayable)
+    payables.register(FoodOrder, FoodOrderPayable)
