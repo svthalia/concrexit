@@ -13,7 +13,7 @@ from activemembers.models import Committee, MemberGroupMembership
 from members.models import Member
 from payments.models import Payment
 from payments.services import create_payment
-from sales import admin
+from sales import payables
 from sales.admin.order_admin import OrderAdmin
 from sales.admin.shift_admin import ShiftAdmin
 from sales.models.order import Order, OrderItem
@@ -26,6 +26,8 @@ class OrderAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
+        payables.register()
+
         cls.user = Member.objects.filter(last_name="Wiggers").first()
 
         cls.beer = Product.objects.create(name="beer", age_restricted=True)

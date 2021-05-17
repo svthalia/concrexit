@@ -293,7 +293,7 @@ def update_registration_by_organiser(registration, member, data):
                 delete_payment(registration)
         else:
             registration.payment = create_payment(
-                payable=registration,
+                model_payable=registration,
                 processed_by=member,
                 pay_type=data["payment"]["type"],
             )

@@ -10,7 +10,7 @@ from freezegun import freeze_time
 
 from members.models import Member, Membership
 from payments.models import Payment, BankAccount
-from registrations import services
+from registrations import services, payables
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
 
@@ -21,6 +21,8 @@ class ServicesTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        payables.register()
+
         cls.e0 = Entry.objects.create(
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.MEMBER,

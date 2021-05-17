@@ -7,41 +7,41 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
-from payments import services
-from payments.models import Payment, BankAccount, Batch, Payable, PaymentUser
-from payments.tests.__mocks__ import MockPayable
+from payments import services, Payable
+from payments.models import Payment, BankAccount, Batch, PaymentUser
+from payments.tests.__mocks__ import MockPayable, MockModel
 
 
 class PayableTest(TestCase):
     """Tests for the Payable class."""
 
     def test_payment_amount_not_implemented(self):
-        p = Payable()
+        p = Payable(None)
         with self.assertRaises(NotImplementedError):
             _ = p.payment_amount
 
     def test_payment_topic_not_implemented(self):
-        p = Payable()
+        p = Payable(None)
         with self.assertRaises(NotImplementedError):
             _ = p.payment_topic
 
     def test_payment_notes_not_implemented(self):
-        p = Payable()
+        p = Payable(None)
         with self.assertRaises(NotImplementedError):
             _ = p.payment_notes
 
     def test_payment_payer_not_implemented(self):
-        p = Payable()
+        p = Payable(None)
         with self.assertRaises(NotImplementedError):
             _ = p.payment_payer
 
-    def test_save_not_implemented(self):
-        p = Payable()
+    def test_can_create_payment_not_implemented(self):
+        p = Payable(None)
         with self.assertRaises(NotImplementedError):
-            p.save()
+            p.can_create_payment(None)
 
     def test_tpay_allowed_by_default(self):
-        p = Payable()
+        p = Payable(None)
         self.assertTrue(p.tpay_allowed)
 
 
@@ -455,12 +455,12 @@ class PaymentUserTest(TestCase):
             signature="base64,png",
         )
         p1 = services.create_payment(
-            MockPayable(self.member), self.member, Payment.TPAY
+            MockPayable(MockModel(self.member)), self.member, Payment.TPAY
         )
         self.assertEqual(self.member.tpay_balance, Decimal(-5))
 
         p2 = services.create_payment(
-            MockPayable(self.member), self.member, Payment.TPAY
+            MockPayable(MockModel(self.member)), self.member, Payment.TPAY
         )
         self.assertEqual(self.member.tpay_balance, Decimal(-10))
 

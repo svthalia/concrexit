@@ -13,6 +13,7 @@ from freezegun import freeze_time
 from members.models import Member, Profile
 from payments import admin_views
 from payments.models import Payment, Batch, BankAccount, PaymentUser
+from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 
 
@@ -62,7 +63,7 @@ class PaymentAdminViewTest(TestCase):
     def test_post(self, create_payment, resolve_url, messages_success, messages_error):
         url = "/admin/payments/payment/mock_label/model/pk/create/"
         self._give_user_permissions()
-        payable = MockPayable(payer=self.user)
+        payable = MockPayable(MockModel(payer=self.user))
 
         original_get_model = apps.get_model
         mock_get_model = MagicMock()
@@ -73,7 +74,7 @@ class PaymentAdminViewTest(TestCase):
             return original_get_model(*args, **kwargs)
 
         apps.get_model = Mock(side_effect=side_effect)
-        mock_get_model.objects.get.return_value = payable
+        mock_get_model.objects.get.return_value = payable.model
         create_payment.return_value = self.payment
         resolve_url.return_value = "/resolved_url"
 
@@ -93,7 +94,9 @@ class PaymentAdminViewTest(TestCase):
             self.assertEqual(response.status_code, 302)
             self.assertEqual(response.url, "/resolved_url")
 
-            create_payment.assert_called_once_with(payable, self.user, payment_type)
+            create_payment.assert_called_once_with(
+                payable.model, self.user, payment_type
+            )
             resolve_url.assert_called_once_with(
                 "admin:payments_payment_change", self.payment.pk
             )
@@ -115,7 +118,9 @@ class PaymentAdminViewTest(TestCase):
             self.assertEqual(response.status_code, 302)
             self.assertEqual(response.url, "/resolved_url")
 
-            create_payment.assert_called_once_with(payable, self.user, payment_type)
+            create_payment.assert_called_once_with(
+                payable.model, self.user, payment_type
+            )
             resolve_url.assert_called_once_with("/admin/events/")
 
             messages_success.assert_called_once_with(

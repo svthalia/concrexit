@@ -22,7 +22,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
 from members.models import uuid, Member
-from payments.models import Payable, Payment
+from payments.models import Payment
 from sales.models.product import ProductListItem
 from sales.models.shift import Shift
 
@@ -31,7 +31,7 @@ def default_order_shift():
     return Shift.objects.filter(active=True).first()
 
 
-class Order(models.Model, Payable):
+class Order(models.Model):
 
     objects = QueryablePropertiesManager()
 
@@ -150,26 +150,8 @@ class Order(models.Model, Payable):
             raise ValidationError(errors)
 
     @property
-    def payment_amount(self):
-        return self.total_amount
-
-    @property
-    def payment_topic(self):
-        return f"Sales at {self.shift}"
-
-    @property
     def order_description(self):
         return ", ".join(str(x) for x in self.order_items.all())
-
-    @property
-    def payment_notes(self):
-        return (
-            f"{self.order_description}. Ordered at {self.created_at.time()} ({self.id})"
-        )
-
-    @property
-    def payment_payer(self):
-        return self.payer
 
     @property
     def accept_payment_from_any_user(self):
@@ -180,7 +162,7 @@ class Order(models.Model, Payable):
         return (
             settings.BASE_URL + reverse("sales:order-pay", kwargs={"pk": self.pk})
             if not self.payment
-            and (self.payment_amount is not None and self.payment_amount != 0)
+            and (self.total_amount is not None and self.total_amount != 0)
             else None
         )
 

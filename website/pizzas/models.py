@@ -4,12 +4,11 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.template.defaulttags import date
 
 from events.models import Event
 import members
 from members.models import Member
-from payments.models import Payment, Payable
+from payments.models import Payment
 from payments.services import delete_payment
 from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
@@ -164,7 +163,7 @@ class Product(models.Model, metaclass=ModelTranslateMeta):
         permissions = (("order_restricted_products", _("Order restricted products")),)
 
 
-class Order(models.Model, Payable):
+class Order(models.Model):
     """Describes an order of an item during an event."""
 
     member = models.ForeignKey(
@@ -195,26 +194,6 @@ class Order(models.Model, Payable):
     pizza_event = models.ForeignKey(
         verbose_name=_("event"), to=PizzaEvent, on_delete=models.CASCADE
     )
-
-    @property
-    def payment_amount(self):
-        return self.product.price
-
-    @property
-    def payment_topic(self):
-        start_date = date(self.pizza_event.start, "Y-m-d")
-        return f"Pizzas {self.pizza_event.event.title_en} [{start_date}]"
-
-    @property
-    def payment_notes(self):
-        return (
-            f"Pizza order by {self.member_name} "
-            f"for {self.pizza_event.event.title_en}"
-        )
-
-    @property
-    def payment_payer(self):
-        return self.member
 
     def clean(self):
         if (self.member is None and not self.name) or (self.member and self.name):

@@ -1,12 +1,10 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.template.defaulttags import date
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from payments.models import Payable
-from . import Event
+from .event import Event
 
 
 def registration_member_choices_limit():
@@ -16,7 +14,7 @@ def registration_member_choices_limit():
     )
 
 
-class EventRegistration(models.Model, Payable):
+class EventRegistration(models.Model):
     """Describes a registration for an Event."""
 
     event = models.ForeignKey(Event, models.CASCADE)
@@ -136,28 +134,6 @@ class EventRegistration(models.Model, Payable):
         if self.member:
             return "{}: {}".format(self.member.get_full_name(), self.event)
         return "{}: {}".format(self.name, self.event)
-
-    @property
-    def payment_amount(self):
-        return self.event.price
-
-    @property
-    def payment_topic(self):
-        return f'{self.event.title_en} [{date(self.event.start, "Y-m-d")}]'
-
-    @property
-    def payment_notes(self):
-        notes = f"Event registration {self.event.title_en}. "
-        notes += f"{date(self.event.start)}. Registration date: {date(self.date)}."
-        return notes
-
-    @property
-    def payment_payer(self):
-        return self.member
-
-    @property
-    def tpay_allowed(self):
-        return self.event.tpay_allowed
 
     class Meta:
         verbose_name = _("Registration")

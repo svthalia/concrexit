@@ -8,3 +8,9 @@ class EventsConfig(AppConfig):
 
     name = "events"
     verbose_name = _("Events")
+
+    def ready(self):
+        # pylint: disable=import-outside-toplevel
+        from .payables import register
+
+        register()

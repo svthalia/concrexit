@@ -396,31 +396,3 @@ class BankAccount(models.Model):
 
     class Meta:
         ordering = ("created_at",)
-
-
-class Payable:
-    pk = None
-    payment = None
-
-    @property
-    def payment_amount(self):
-        raise NotImplementedError
-
-    @property
-    def payment_topic(self):
-        raise NotImplementedError
-
-    @property
-    def payment_notes(self):
-        raise NotImplementedError
-
-    @property
-    def payment_payer(self):
-        raise NotImplementedError
-
-    def save(self):
-        raise NotImplementedError
-
-    @property
-    def tpay_allowed(self):
-        return True

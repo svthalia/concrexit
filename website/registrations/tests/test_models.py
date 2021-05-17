@@ -126,27 +126,6 @@ class EntryTest(TestCase):
             entry.contribution = 7.5
             entry.clean()
 
-    @freeze_time("2019-01-01")
-    def test_payable_attributes(self):
-        entry = Entry(
-            contribution=8,
-            length=Entry.MEMBERSHIP_YEAR,
-            registration=self.registration,
-        )
-
-        self.assertEqual(entry.payment_amount, 8)
-        self.assertEqual(
-            entry.payment_notes,
-            "Registration entry. Creation date: Jan. 1, 2019. Completion date: Jan. 1, 2019",
-        )
-
-        with self.subTest("Without membership"):
-            self.assertEqual(entry.payment_payer, None)
-
-        with self.subTest("With membership"):
-            entry.membership = Membership(user=self.member)
-            self.assertEqual(entry.payment_payer, self.member)
-
 
 @override_settings(SUSPEND_SIGNALS=True)
 @freeze_time("2019-01-01")
@@ -286,13 +265,6 @@ class RegistrationTest(TestCase):
         self.registration.membership_type = Membership.BENEFACTOR
         self.registration.contribution = 7.5
         self.registration.clean()
-
-    def test_payable_attributes(self):
-        self.assertEqual(self.registration.payment_amount, 7.5)
-        self.assertEqual(
-            self.registration.payment_notes,
-            "Membership registration member (year). Creation date: Jan. 1, 2019. Completion date: Jan. 1, 2019",
-        )
 
     def test_require_bank_details(self):
         self.registration.direct_debit = True
@@ -436,14 +408,6 @@ class RenewalTest(TestCase):
                     "membership_type": "You currently have an active membership.",
                 },
             )
-
-    def test_payable_attributes(self):
-        self.assertEqual(self.renewal.payment_amount, 8)
-        self.assertEqual(
-            self.renewal.payment_notes,
-            "Membership renewal member (study). Creation date: Jan. 1, 2019. Completion date: Jan. 1, 2019",
-        )
-        self.assertEqual(self.renewal.payment_payer, self.renewal.member)
 
 
 @override_settings(SUSPEND_SIGNALS=True)
