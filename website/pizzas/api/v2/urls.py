@@ -14,7 +14,7 @@ urlpatterns = [
         "food/events/<int:pk>/", FoodEventDetailView.as_view(), name="food-event-detail"
     ),
     path(
-        "food/events/<int:pk>/order",
+        "food/events/<int:pk>/order/",
         FoodEventOrderDetailView.as_view(),
         name="food-event-order-detail",
     ),
