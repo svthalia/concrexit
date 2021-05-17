@@ -212,7 +212,7 @@ class OrderAdmin(admin.ModelAdmin):
         """Disallow changing shift when selected."""
         default_fields = self.readonly_fields
 
-        if request.member and request.member.has_perm("sales.custom_prices"):
+        if not (request.member and request.member.has_perm("sales.custom_prices")):
             default_fields += ("discount",)
 
         if obj and obj.shift:
