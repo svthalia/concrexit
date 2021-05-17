@@ -28,7 +28,7 @@ class RegistrationApiTest(TestCase):
             pk=1,
             organiser=Committee.objects.get(pk=1),
             title_en="testevent",
-            description_en="desc",
+            description="desc",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),

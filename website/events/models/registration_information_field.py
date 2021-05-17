@@ -1,11 +1,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from utils.translation import ModelTranslateMeta, MultilingualField
+from utils.translation import MultilingualField
 from . import Event, EventRegistration
 
 
-class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
+class RegistrationInformationField(models.Model):
     """Describes a field description to ask for when registering."""
 
     BOOLEAN_FIELD = "boolean"
@@ -22,10 +22,10 @@ class RegistrationInformationField(models.Model, metaclass=ModelTranslateMeta):
 
     type = models.CharField(_("field type"), choices=FIELD_TYPES, max_length=10,)
 
-    name = MultilingualField(models.CharField, _("field name"), max_length=100,)
+    name = models.CharField(_("field name"), max_length=100,)
 
-    description = MultilingualField(
-        models.TextField, _("description"), null=True, blank=True,
+    description = models.TextField(
+        _("description"), null=True, blank=True,
     )
 
     required = models.BooleanField(_("required"),)

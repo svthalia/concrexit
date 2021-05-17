@@ -2,6 +2,7 @@
 from functools import partial
 
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Max, Min
 from django.forms import Field
@@ -19,7 +20,6 @@ from events.forms import RegistrationAdminForm
 from members.models import Member
 from payments.widgets import PaymentWidget
 from pizzas.models import FoodEvent
-from utils.admin import DoNextTranslatedModelAdmin
 from utils.snippets import datetime_to_lectureyear
 from . import forms, models
 
@@ -83,7 +83,7 @@ class LectureYearFilter(admin.SimpleListFilter):
 
 
 @admin.register(models.Event)
-class EventAdmin(DoNextTranslatedModelAdmin):
+class EventAdmin(ModelAdmin):
     """Manage the events."""
 
     inlines = (
@@ -308,7 +308,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
 
 
 @admin.register(models.EventRegistration)
-class RegistrationAdmin(DoNextTranslatedModelAdmin):
+class RegistrationAdmin(ModelAdmin):
     """Custom admin for registrations."""
 
     form = RegistrationAdminForm

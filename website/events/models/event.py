@@ -15,7 +15,7 @@ from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
-class Event(models.Model, metaclass=ModelTranslateMeta):
+class Event(models.Model):
     """Describes an event."""
 
     CATEGORY_ALUMNI = "alumni"
@@ -35,12 +35,12 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     )
 
     DEFAULT_NO_REGISTRATION_MESSAGE = _(
-        "No registration required / Geen aanmelding vereist"
+        "No registration required"
     )
 
-    title = MultilingualField(models.CharField, _("title"), max_length=100)
+    title = models.CharField(_("title"), max_length=100)
 
-    description = MultilingualField(HTMLField, _("description"),)
+    description = HTMLField(_("description"),)
 
     start = models.DateTimeField(_("start time"))
 
@@ -99,7 +99,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         ),
     )
 
-    location = MultilingualField(models.CharField, _("location"), max_length=255,)
+    location = models.CharField(_("location"), max_length=255,)
 
     map_location = models.CharField(
         _("location for minimap"),
@@ -135,8 +135,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         _("maximum number of participants"), blank=True, null=True,
     )
 
-    no_registration_message = MultilingualField(
-        models.CharField,
+    no_registration_message = models.CharField(
         _("message when there is no registration"),
         max_length=200,
         blank=True,

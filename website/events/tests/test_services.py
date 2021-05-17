@@ -26,7 +26,7 @@ class ServicesTest(TestCase):
             pk=1,
             organiser=cls.committee,
             title_en="testevent",
-            description_en="desc",
+            description="desc",
             published=True,
             start=(timezone.now() + timedelta(hours=1)),
             end=(timezone.now() + timedelta(hours=2)),
