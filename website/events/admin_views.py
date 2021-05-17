@@ -37,7 +37,7 @@ class EventAdminDetails(DetailView, PermissionRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update({"payment": Payment, "has_permission": True, "site_url": True})
+        context.update({"payment": Payment, "has_permission": True, "site_url": "/"})
 
         return context
 
