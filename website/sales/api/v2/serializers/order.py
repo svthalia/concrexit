@@ -3,7 +3,7 @@ from django.utils.encoding import smart_str
 from rest_framework import serializers
 
 from members.api.v2.serializers.member import MemberSerializer
-from payments.api.v1.serializers import PaymentSerializer
+from payments.api.v2.serializers import PaymentSerializer
 from sales.models.order import Order, OrderItem
 from sales.models.product import ProductListItem
 

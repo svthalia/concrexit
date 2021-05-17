@@ -4,7 +4,7 @@ from activemembers.api.v2.serializers.member_group_membership import (
     MemberGroupMembershipSerializer,
 )
 from activemembers.models import MemberGroup
-from thaliawebsite.api.v2.serializers.thumbnail import ThumbnailSerializer
+from thaliawebsite.api.v2.serializers import ThumbnailSerializer
 
 
 class MemberGroupSerializer(serializers.ModelSerializer):

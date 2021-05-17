@@ -2,7 +2,7 @@ from django.conf import settings
 from rest_framework import serializers
 
 from members.models import Profile
-from thaliawebsite.api.v2.serializers.thumbnail import ThumbnailSerializer
+from thaliawebsite.api.v2.serializers import ThumbnailSerializer
 
 
 class ProfileSerializer(serializers.ModelSerializer):

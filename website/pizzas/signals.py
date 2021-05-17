@@ -13,7 +13,7 @@ def post_registration_save(sender, instance, **kwargs):
     """Update members on pizza reminder notification."""
     event = instance.event
     if (
-        event.is_pizza_event
+        event.has_food_event
         and event.pizzaevent.send_notification
         and instance.member is not None
     ):
@@ -23,21 +23,23 @@ def post_registration_save(sender, instance, **kwargs):
             event.pizzaevent.end_reminder.users.add(instance.member)
 
 
-@suspendingreceiver(pre_save, sender="pizzas.Order", dispatch_uid="pizzas_order_save")
+@suspendingreceiver(
+    pre_save, sender="pizzas.FoodOrder", dispatch_uid="food_foodorder_save"
+)
 def pre_order_save(sender, instance, **kwargs):
     """Remove user from the order reminder when saved."""
     if (
         not instance.pk
-        and instance.pizza_event.end_reminder
-        and not instance.pizza_event.end_reminder.sent
+        and instance.food_event.end_reminder
+        and not instance.food_event.end_reminder.sent
     ):
-        instance.pizza_event.end_reminder.users.remove(instance.member)
+        instance.food_event.end_reminder.users.remove(instance.member)
 
 
 @suspendingreceiver(
-    pre_delete, sender="pizzas.Order", dispatch_uid="pizzas_order_delete"
+    pre_delete, sender="pizzas.FoodOrder", dispatch_uid="food_foodorder_delete"
 )
 def pre_order_delete(sender, instance, **kwargs):
     """Re-add user to reminder to on order deletion."""
-    if instance.pizza_event.end_reminder and not instance.pizza_event.end_reminder.sent:
-        instance.pizza_event.end_reminder.users.add(instance.member)
+    if instance.food_event.end_reminder and not instance.food_event.end_reminder.sent:
+        instance.food_event.end_reminder.users.add(instance.member)

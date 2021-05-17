@@ -18,7 +18,7 @@ from events import services
 from events.forms import RegistrationAdminForm
 from members.models import Member
 from payments.widgets import PaymentWidget
-from pizzas.models import PizzaEvent
+from pizzas.models import FoodEvent
 from utils.admin import DoNextTranslatedModelAdmin
 from utils.snippets import datetime_to_lectureyear
 from . import forms, models
@@ -45,7 +45,7 @@ class RegistrationInformationFieldInline(admin.TabularInline):
 class PizzaEventInline(admin.StackedInline):
     """The inline for pizza events in the Event admin."""
 
-    model = PizzaEvent
+    model = FoodEvent
     exclude = ("end_reminder",)
     extra = 0
     max_num = 1

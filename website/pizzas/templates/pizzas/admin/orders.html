@@ -9,7 +9,7 @@
         &rsaquo; <a
         href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
         &rsaquo; <a
-        href="{% url opts|admin_urlname:'change' pizza_event.pk %}">{{ pizza_event }}</a>
+        href="{% url opts|admin_urlname:'change' food_event.pk %}">{{ food_event }}</a>
         &rsaquo; {{ title }}
     </div>
 {% endblock %}
@@ -40,7 +40,7 @@
     <div id="content-main" data-csrf="{{ csrf_token }}">
         <ul class="object-tools">
             <li>
-                <a href="{% url opts|admin_urlname:'overview' pizza_event.pk %}"
+                <a href="{% url opts|admin_urlname:'overview' food_event.pk %}"
                    class="back">{% trans 'overview'|capfirst %}</a>
             </li>
             <li>
@@ -48,7 +48,7 @@
                    class="back">{% trans 'all products'|capfirst %}</a>
             </li>
             <li>
-                <a href="{% url 'admin:pizzas_pizzaevent_changelist' %}"
+                <a href="{% url 'admin:pizzas_foodevent_changelist' %}"
                    class="back">{% trans 'all events'|capfirst %}</a>
             </li>
         </ul>
@@ -89,7 +89,7 @@
                                 </th>
                                 <th scope="col" class="sorter-false">
                                     <a class="addlink"
-                                       href="{% url 'admin:pizzas_order_add' %}?pizza_event={{ pizza_event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans 'add'|capfirst %}</a>
+                                       href="{% url 'admin:pizzas_foodorder_add' %}?food_event={{ food_event.pk }}&next={{ request.get_full_path | urlencode }}">{% trans 'add'|capfirst %}</a>
                                 </th>
                             </tr>
                             </thead>
@@ -97,10 +97,10 @@
                             {% for order in orders %}
                                 <tr data-id="{{ order.pk }}">
                                     <td>
-                                        <a href="{% url 'admin:pizzas_order_change' order.pk %}?next={{ request.get_full_path | urlencode }}">{{ order.member_first_name }}</a>
+                                        <a href="{% url 'admin:pizzas_foodorder_change' order.pk %}?next={{ request.get_full_path | urlencode }}">{{ order.member_first_name }}</a>
                                     </td>
                                     <td>
-                                        <a href="{% url 'admin:pizzas_order_change' order.pk %}?next={{ request.get_full_path | urlencode }}">{{ order.member_last_name }}</a>
+                                        <a href="{% url 'admin:pizzas_foodorder_change' order.pk %}?next={{ request.get_full_path | urlencode }}">{{ order.member_last_name }}</a>
                                     </td>
                                     <td>
                                         {{ order.product }}

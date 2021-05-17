@@ -5,7 +5,7 @@ from announcements.api.v2.serializers import SlideSerializer
 from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.models import Event, EventRegistration
-from thaliawebsite.api.v2.serializers.html import CleanedHTMLSerializer
+from thaliawebsite.api.v2.serializers import CleanedHTMLSerializer
 from utils.snippets import create_google_maps_url
 
 
@@ -31,7 +31,7 @@ class EventSerializer(serializers.ModelSerializer):
             "max_participants",
             "no_registration_message",
             "has_fields",
-            "is_pizza_event",
+            "food_event",
             "maps_url",
             "user_permissions",
             "user_registration",
