@@ -35,7 +35,9 @@ class FoodEvent(models.Model):
 
     start = models.DateTimeField(_("Order from"))
     end = models.DateTimeField(_("Order until"))
-    event = models.OneToOneField(Event, on_delete=models.CASCADE)
+    event = models.OneToOneField(
+        Event, on_delete=models.CASCADE, related_name="food_event"
+    )
 
     send_notification = models.BooleanField(
         _("Send an order notification"), default=True
@@ -211,26 +213,6 @@ class FoodOrder(models.Model):
         related_name="orders",
     )
 
-<<<<<<< HEAD
-=======
-    @property
-    def payment_amount(self):
-        return self.product.price
-
-    @property
-    def payment_topic(self):
-        start_date = date(self.food_event.start, "Y-m-d")
-        return f"Food {self.food_event.event.title} [{start_date}]"
-
-    @property
-    def payment_notes(self):
-        return f"Food order by {self.member_name} " f"for {self.food_event.event.title}"
-
-    @property
-    def payment_payer(self):
-        return self.member
-
->>>>>>> Rename pizza models and add API v2
     def clean(self):
         if (self.member is None and not self.name) or (self.member and self.name):
             raise ValidationError(

@@ -53,4 +53,10 @@ class Migration(migrations.Migration):
             name='foodorder',
             unique_together={('food_event', 'member')},
         ),
+        migrations.AlterField(
+            model_name='foodevent',
+            name='event',
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='food_event',
+                                       to='events.event'),
+        ),
     ]

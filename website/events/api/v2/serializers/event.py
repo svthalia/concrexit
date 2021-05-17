@@ -31,7 +31,7 @@ class EventSerializer(serializers.ModelSerializer):
             "max_participants",
             "no_registration_message",
             "has_fields",
-            "has_food_event",
+            "food_event",
             "maps_url",
             "user_permissions",
             "user_registration",

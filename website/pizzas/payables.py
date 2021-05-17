@@ -13,12 +13,12 @@ class FoodOrderPayable(Payable):
     @property
     def payment_topic(self):
         start_date = date(self.model.pizza_event.start, "Y-m-d")
-        return f"Pizzas {self.model.pizza_event.event.title_en} [{start_date}]"
+        return f"Food {self.model.pizza_event.event.title_en} [{start_date}]"
 
     @property
     def payment_notes(self):
         return (
-            f"Pizza order by {self.model.member_name} "
+            f"Food order by {self.model.member_name} "
             f"for {self.model.pizza_event.event.title_en}"
         )
 

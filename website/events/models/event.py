@@ -268,7 +268,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
     def has_food_event(self):
         # pylint: disable=pointless-statement
         try:
-            self.foodevent
+            self.food_event
             return True
         except ObjectDoesNotExist:
             return False
@@ -490,7 +490,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         if self.start_reminder is not None and not self.start_reminder.sent:
             collector.add([self.start_reminder])
         if self.has_food_event:
-            collector.add([self.foodevent])
+            collector.add([self.food_event])
 
         return collector.delete()
 
