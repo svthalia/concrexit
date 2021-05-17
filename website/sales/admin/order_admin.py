@@ -212,7 +212,7 @@ class OrderAdmin(admin.ModelAdmin):
         """Disallow changing shift when selected."""
         default_fields = self.readonly_fields
 
-        if not request.member.has_perm("sales.custom_prices"):
+        if request.member and request.member.has_perm("sales.custom_prices"):
             default_fields += ("discount",)
 
         if obj and obj.shift:
@@ -223,8 +223,9 @@ class OrderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
 
-        if request.member and not (
-            request.member.is_superuser
+        if not (
+            request.member
+            or request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
             queryset = queryset.filter(
@@ -245,8 +246,9 @@ class OrderAdmin(admin.ModelAdmin):
         return queryset
 
     def has_add_permission(self, request):
-        if request.member and not (
-            request.member.is_superuser
+        if not (
+            request.member
+            or request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
             if (
@@ -307,9 +309,10 @@ class OrderAdmin(admin.ModelAdmin):
             )
         if db_field.name == "shift":
             field.queryset = Shift.objects.filter(locked=False)
-            if request.member and not (
+            if not (
                 (
-                    request.member.is_superuser
+                    request.member
+                    or request.member.is_superuser
                     or request.member.has_perm("sales.override_manager")
                 )
             ):
@@ -320,9 +323,9 @@ class OrderAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         if not (
-            request.member
-            and (
-                request.member.is_superuser
+            (
+                request.member
+                or request.member.is_superuser
                 or request.member.has_perm("sales.override_manager")
             )
         ):

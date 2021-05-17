@@ -132,7 +132,8 @@ class ShiftAdmin(admin.ModelAdmin):
         queryset = super().get_queryset(request)
 
         if not (
-            request.member.is_superuser
+            request.member
+            or request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
             queryset = queryset.filter(
@@ -170,7 +171,8 @@ class ShiftAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         if not (
-            request.member.is_superuser
+            request.member
+            or request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
             self.message_user(
