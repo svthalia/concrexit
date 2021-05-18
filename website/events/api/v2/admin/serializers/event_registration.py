@@ -22,9 +22,11 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
         )
 
     def to_internal_value(self, data):
-        self.fields['member'] = serializers.PrimaryKeyRelatedField(queryset=Member.objects.all())
+        self.fields["member"] = serializers.PrimaryKeyRelatedField(
+            queryset=Member.objects.all()
+        )
         return super().to_internal_value(data)
 
     def to_representation(self, instance):
-        self.fields['member'] = MemberSerializer(detailed=False)
+        self.fields["member"] = MemberSerializer(detailed=False)
         return super().to_representation(instance)

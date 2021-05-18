@@ -65,10 +65,11 @@ class EventRegistrationsView(ListAPIView):
         "POST": ["events:register"],
         "DELETE": ["events:register"],
     }
-    filter_backends = (
-        framework_filters.OrderingFilter,
+    filter_backends = (framework_filters.OrderingFilter,)
+    ordering_fields = (
+        "date",
+        "member",
     )
-    ordering_fields = ("date", "member",)
 
     def __init__(self):
         super(EventRegistrationsView, self).__init__()

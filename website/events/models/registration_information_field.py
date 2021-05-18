@@ -24,9 +24,7 @@ class RegistrationInformationField(models.Model):
 
     name = models.CharField(_("field name"), max_length=100,)
 
-    description = models.TextField(
-        _("description"), null=True, blank=True,
-    )
+    description = models.TextField(_("description"), null=True, blank=True,)
 
     required = models.BooleanField(_("required"),)
 

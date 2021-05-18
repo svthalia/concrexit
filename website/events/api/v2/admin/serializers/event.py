@@ -25,15 +25,21 @@ class EventSerializer(serializers.ModelSerializer):
     fine = serializers.FloatField()
 
     def to_internal_value(self, data):
-        self.fields['organiser'] = serializers.PrimaryKeyRelatedField(queryset=MemberGroup.active_objects.all())
-        self.fields['slide'] = serializers.PrimaryKeyRelatedField(queryset=Slide.objects.all())
-        self.fields['documents'] = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all(), many=True)
+        self.fields["organiser"] = serializers.PrimaryKeyRelatedField(
+            queryset=MemberGroup.active_objects.all()
+        )
+        self.fields["slide"] = serializers.PrimaryKeyRelatedField(
+            queryset=Slide.objects.all()
+        )
+        self.fields["documents"] = serializers.PrimaryKeyRelatedField(
+            queryset=Document.objects.all(), many=True
+        )
         return super().to_internal_value(data)
 
     def to_representation(self, instance):
-        self.fields['organiser'] = MemberGroupSerializer()
-        self.fields['slide'] = SlideSerializer()
-        self.fields['documents'] = DocumentSerializer(many=True)
+        self.fields["organiser"] = MemberGroupSerializer()
+        self.fields["slide"] = SlideSerializer()
+        self.fields["documents"] = DocumentSerializer(many=True)
         return super().to_representation(instance)
 
 

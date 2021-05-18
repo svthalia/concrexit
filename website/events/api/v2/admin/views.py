@@ -11,7 +11,9 @@ from events import services
 from events.api.v2.admin import filters
 from events.api.v2.admin.permissions import IsOrganiser
 from events.api.v2.admin.serializers.event import EventListSerializer, EventSerializer
-from events.api.v2.admin.serializers.event_registration import EventRegistrationSerializer
+from events.api.v2.admin.serializers.event_registration import (
+    EventRegistrationSerializer,
+)
 from events.models import Event, EventRegistration
 from thaliawebsite.api.v2.admin.views import (
     AdminListAPIView,
@@ -26,15 +28,13 @@ import events.api.v2.filters as normal_filters
 class EventAdminListAPIView(AdminListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventListSerializer
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScope
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
     filter_backends = [
         normal_filters.CategoryFilter,
         normal_filters.OrganiserFilter,
         normal_filters.EventDateFilter,
-        filters.PublishedFilter
+        filters.PublishedFilter,
     ]
 
 
@@ -43,10 +43,7 @@ class EventAdminDetailAPIView(
 ):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [
-        IsOrganiser,
-        IsAuthenticatedOrTokenHasScope
-    ]
+    permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
 
 
@@ -54,10 +51,7 @@ class EventRegistrationsAdminListView(AdminListAPIView, AdminCreateAPIView):
     """Returns a list of registrations."""
 
     serializer_class = EventRegistrationSerializer
-    permission_classes = [
-        IsOrganiser,
-        IsAuthenticatedOrTokenHasScope
-    ]
+    permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
     filter_backends = (
         framework_filters.OrderingFilter,
@@ -68,9 +62,7 @@ class EventRegistrationsAdminListView(AdminListAPIView, AdminCreateAPIView):
     def get_queryset(self):
         event = get_object_or_404(Event, pk=self.kwargs.get("pk"), published=True)
         if event:
-            return EventRegistration.objects.filter(
-                event_id=event
-            )
+            return EventRegistration.objects.filter(event_id=event)
         return EventRegistration.objects.none()
 
 
@@ -79,36 +71,24 @@ class EventRegistrationAdminDetailView(AdminRetrieveAPIView, AdminUpdateAPIView)
 
     serializer_class = EventRegistrationSerializer
     queryset = EventRegistration.objects.all()
-    permission_classes = [
-        IsOrganiser,
-        IsAuthenticatedOrTokenHasScope
-    ]
+    permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
 
     def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .filter(
-                event=self.kwargs["event_id"]
-            )
-        )
+        return super().get_queryset().filter(event=self.kwargs["event_id"])
 
 
 class EventRegistrationAdminFieldsView(APIView):
     """Returns details of an event registration."""
 
-    permission_classes = [
-        IsOrganiser,
-        IsAuthenticatedOrTokenHasScope
-    ]
+    permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
 
     def get_object(self):
         event_registration = get_object_or_404(
             EventRegistration,
             event=self.kwargs["event_id"],
-            pk=self.kwargs["registration_id"]
+            pk=self.kwargs["registration_id"],
         )
 
         if not event_registration.event.has_fields:

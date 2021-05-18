@@ -34,9 +34,7 @@ class Event(models.Model):
         (CATEGORY_OTHER, _("Other")),
     )
 
-    DEFAULT_NO_REGISTRATION_MESSAGE = _(
-        "No registration required"
-    )
+    DEFAULT_NO_REGISTRATION_MESSAGE = _("No registration required")
 
     title = models.CharField(_("title"), max_length=100)
 
@@ -421,8 +419,7 @@ class Event(models.Model):
                 if registration_reminder_time > timezone.now():
                     registration_reminder.title_en = "Event registration"
                     registration_reminder.body_en = (
-                        "Registration for '{}' "
-                        "starts in 1 hour".format(self.title)
+                        "Registration for '{}' " "starts in 1 hour".format(self.title)
                     )
                     registration_reminder.category = Category.objects.get(
                         key=Category.EVENT

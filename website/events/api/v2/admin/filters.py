@@ -25,6 +25,7 @@ class PublishedFilter(filters.BaseFilterBackend):
             }
         ]
 
+
 class EventRegistrationCancelledFilter(filters.BaseFilterBackend):
     """Allows you to filter by event registration status."""
 
