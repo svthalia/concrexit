@@ -32,7 +32,7 @@ class RegistrationApiTest(TestCase):
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
-            location_en="test location",
+            location="test location",
             map_location="test map location",
             price=13.37,
             fine=5.00,
@@ -102,7 +102,7 @@ class RegistrationApiTest(TestCase):
             pk=1,
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
-            name_en="test bool",
+            name="test bool",
             required=False,
         )
 
@@ -110,7 +110,7 @@ class RegistrationApiTest(TestCase):
             pk=2,
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
-            name_en="test int",
+            name="test int",
             required=False,
         )
 
@@ -118,7 +118,7 @@ class RegistrationApiTest(TestCase):
             pk=3,
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
-            name_en="test text",
+            name="test text",
             required=False,
         )
 
@@ -146,7 +146,7 @@ class RegistrationApiTest(TestCase):
             pk=1,
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
-            name_en="test bool",
+            name="test bool",
             required=False,
         )
 
@@ -154,7 +154,7 @@ class RegistrationApiTest(TestCase):
             pk=2,
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
-            name_en="test int",
+            name="test int",
             required=False,
         )
 
@@ -162,7 +162,7 @@ class RegistrationApiTest(TestCase):
             pk=3,
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
-            name_en="test text",
+            name="test text",
             required=False,
         )
 
@@ -180,7 +180,7 @@ class RegistrationApiTest(TestCase):
         RegistrationInformationField.objects.create(
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
-            name_en="test",
+            name="test",
             required=True,
         )
 
@@ -199,7 +199,7 @@ class RegistrationApiTest(TestCase):
             pk=1,
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
-            name_en="test bool",
+            name="test bool",
             required=False,
         )
 
@@ -207,7 +207,7 @@ class RegistrationApiTest(TestCase):
             pk=2,
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
-            name_en="test int",
+            name="test int",
             required=False,
         )
 
@@ -215,7 +215,7 @@ class RegistrationApiTest(TestCase):
             pk=3,
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
-            name_en="test text",
+            name="test text",
             required=False,
         )
 
@@ -254,7 +254,7 @@ class RegistrationApiTest(TestCase):
             pk=1,
             event=self.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
-            name_en="test bool",
+            name="test bool",
             required=False,
         )
 
@@ -262,7 +262,7 @@ class RegistrationApiTest(TestCase):
             pk=2,
             event=self.event,
             type=RegistrationInformationField.INTEGER_FIELD,
-            name_en="test int",
+            name="test int",
             required=False,
         )
 
@@ -270,7 +270,7 @@ class RegistrationApiTest(TestCase):
             pk=3,
             event=self.event,
             type=RegistrationInformationField.TEXT_FIELD,
-            name_en="test text",
+            name="test text",
             required=False,
         )
 

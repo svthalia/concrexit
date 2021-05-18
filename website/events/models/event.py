@@ -317,17 +317,15 @@ class Event(models.Model):
                             )
                         }
                     )
-                for lang in settings.LANGUAGES:
-                    field = "no_registration_message_" + lang[0]
-                    if getattr(self, field):
-                        errors.update(
-                            {
-                                field: _(
-                                    "Doesn't make sense to have this "
-                                    "if you require registrations."
-                                )
-                            }
-                        )
+                if self.no_registration_message:
+                    errors.update(
+                        {
+                            "no_registration_message": _(
+                                "Doesn't make sense to have this "
+                                "if you require registrations."
+                            )
+                        }
+                    )
                 if not self.registration_start:
                     errors.update(
                         {

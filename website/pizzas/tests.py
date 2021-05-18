@@ -34,24 +34,24 @@ class PizzaEventTestCase(TestCase):
 
         cls.committee = Committee.objects.get(pk=1)
         cls.event = Event.objects.create(
-            title_en="testevent en",
-            description_en="desc",
+            title="testevent en",
+            description="desc",
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
             organiser=cls.committee,
-            location_en="test location",
+            location="test location",
             map_location="test map location",
             price=0.00,
             fine=5.00,
         )
 
         cls.event2 = Event.objects.create(
-            title_en="testevent2 en",
-            description_en="desc2",
+            title="testevent2 en",
+            description="desc2",
             start=(timezone.now() + datetime.timedelta(hours=4)),
             end=(timezone.now() + datetime.timedelta(hours=8)),
             organiser=cls.committee,
-            location_en="test location2",
+            location="test location2",
             map_location="test map location",
             price=0.00,
             fine=5.00,

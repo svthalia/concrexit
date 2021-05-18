@@ -405,6 +405,8 @@ class ShiftAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
+        payables.register()
+
         cls.user = Member.objects.filter(last_name="Wiggers").first()
 
         cls.beer = Product.objects.create(name="beer", age_restricted=True)
