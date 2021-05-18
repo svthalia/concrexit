@@ -28,7 +28,7 @@ class FoodEventListView(ListAPIView):
     """Returns an overview of all food events."""
 
     serializer_class = FoodEventSerializer
-    queryset = FoodEvent.current_objects.all()
+    queryset = FoodEvent.objects.all()
     filter_backends = (
         framework_filters.OrderingFilter,
         filters.FoodEventDateFilterBackend,
@@ -45,7 +45,7 @@ class FoodEventDetailView(RetrieveAPIView):
     """Returns one single food event."""
 
     serializer_class = FoodEventSerializer
-    queryset = FoodEvent.current_objects.all()
+    queryset = FoodEvent.objects.all()
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissionsOrAnonReadOnly,
