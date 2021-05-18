@@ -27,12 +27,12 @@ class EventListView(ListAPIView):
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
-        filters.EventDateFilterBackend,
+        filters.EventDateFilter,
         filters.CategoryFilter,
         filters.OrganiserFilter,
     )
     ordering_fields = ("start", "end")
-    search_fields = ("title_en",)
+    search_fields = ("title",)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissionsOrAnonReadOnly,
@@ -65,6 +65,10 @@ class EventRegistrationsView(ListAPIView):
         "POST": ["events:register"],
         "DELETE": ["events:register"],
     }
+    filter_backends = (
+        framework_filters.OrderingFilter,
+    )
+    ordering_fields = ("date", "member",)
 
     def __init__(self):
         super(EventRegistrationsView, self).__init__()

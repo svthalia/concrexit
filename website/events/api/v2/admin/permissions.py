@@ -1,6 +1,7 @@
 from django.db.models import QuerySet
 from rest_framework.permissions import BasePermission
 
+from events.models import EventRegistration
 from events.services import is_organiser
 
 
@@ -10,4 +11,6 @@ class IsOrganiser(BasePermission):
             return True
         if not request.member:
             return False
+        if isinstance(obj, EventRegistration):
+            obj = obj.event
         return is_organiser(request.member, obj)

@@ -25,7 +25,7 @@ class ServicesTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_en="testevent",
+            title="testevent",
             description="desc",
             published=True,
             start=(timezone.now() + timedelta(hours=1)),

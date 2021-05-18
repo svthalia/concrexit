@@ -1,6 +1,18 @@
+import json
+
+from django.http import HttpResponse, Http404
+from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
+from rest_framework import status
+from rest_framework.generics import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework import filters as framework_filters
+
+from events import services
+from events.api.v2.admin import filters
 from events.api.v2.admin.permissions import IsOrganiser
 from events.api.v2.admin.serializers.event import EventListSerializer, EventSerializer
-from events.models import Event
+from events.api.v2.admin.serializers.event_registration import EventRegistrationSerializer
+from events.models import Event, EventRegistration
 from thaliawebsite.api.v2.admin.views import (
     AdminListAPIView,
     AdminRetrieveAPIView,
@@ -8,11 +20,22 @@ from thaliawebsite.api.v2.admin.views import (
     AdminUpdateAPIView,
     AdminDestroyAPIView,
 )
+import events.api.v2.filters as normal_filters
 
 
 class EventAdminListAPIView(AdminListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventListSerializer
+    permission_classes = [
+        IsAuthenticatedOrTokenHasScope
+    ]
+    required_scopes = ["events:admin"]
+    filter_backends = [
+        normal_filters.CategoryFilter,
+        normal_filters.OrganiserFilter,
+        normal_filters.EventDateFilter,
+        filters.PublishedFilter
+    ]
 
 
 class EventAdminDetailAPIView(
@@ -20,4 +43,112 @@ class EventAdminDetailAPIView(
 ):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [IsOrganiser]
+    permission_classes = [
+        IsOrganiser,
+        IsAuthenticatedOrTokenHasScope
+    ]
+    required_scopes = ["events:admin"]
+
+
+class EventRegistrationsAdminListView(AdminListAPIView, AdminCreateAPIView):
+    """Returns a list of registrations."""
+
+    serializer_class = EventRegistrationSerializer
+    permission_classes = [
+        IsOrganiser,
+        IsAuthenticatedOrTokenHasScope
+    ]
+    required_scopes = ["events:admin"]
+    filter_backends = (
+        framework_filters.OrderingFilter,
+        filters.EventRegistrationCancelledFilter,
+    )
+    ordering_fields = ("queue_position", "date", "date_cancelled")
+
+    def get_queryset(self):
+        event = get_object_or_404(Event, pk=self.kwargs.get("pk"), published=True)
+        if event:
+            return EventRegistration.objects.filter(
+                event_id=event
+            )
+        return EventRegistration.objects.none()
+
+
+class EventRegistrationAdminDetailView(AdminRetrieveAPIView, AdminUpdateAPIView):
+    """Returns details of an event registration."""
+
+    serializer_class = EventRegistrationSerializer
+    queryset = EventRegistration.objects.all()
+    permission_classes = [
+        IsOrganiser,
+        IsAuthenticatedOrTokenHasScope
+    ]
+    required_scopes = ["events:admin"]
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(
+                event=self.kwargs["event_id"]
+            )
+        )
+
+
+class EventRegistrationAdminFieldsView(APIView):
+    """Returns details of an event registration."""
+
+    permission_classes = [
+        IsOrganiser,
+        IsAuthenticatedOrTokenHasScope
+    ]
+    required_scopes = ["events:admin"]
+
+    def get_object(self):
+        event_registration = get_object_or_404(
+            EventRegistration,
+            event=self.kwargs["event_id"],
+            pk=self.kwargs["registration_id"]
+        )
+
+        if not event_registration.event.has_fields:
+            raise Http404
+
+        return event_registration
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(
+            content=json.dumps(
+                services.registration_fields(request, registration=self.get_object())
+            ),
+            status=status.HTTP_200_OK,
+        )
+
+    def put(self, request, *args, **kwargs):
+        original = services.registration_fields(request, registration=self.get_object())
+        required_keys = set(original.keys()) - set(request.data.keys())
+        if len(required_keys) > 0:
+            return HttpResponse(
+                content=f"Missing keys '{', '.join(required_keys)}' in request",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        services.update_registration(
+            registration=self.get_object(), field_values=request.data.items()
+        )
+        return HttpResponse(
+            content=json.dumps(
+                services.registration_fields(request, registration=self.get_object())
+            ),
+            status=status.HTTP_200_OK,
+        )
+
+    def patch(self, request, *args, **kwargs):
+        services.update_registration(
+            registration=self.get_object(), field_values=request.data.items()
+        )
+        return HttpResponse(
+            content=json.dumps(
+                services.registration_fields(request, registration=self.get_object())
+            ),
+            status=status.HTTP_200_OK,
+        )

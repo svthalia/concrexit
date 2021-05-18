@@ -25,7 +25,7 @@ class EventTest(TestCase):
         )
 
         cls.event = Event.objects.create(
-            title_en="testevent",
+            title="testevent",
             organiser=cls.committee,
             description="desc",
             start=(timezone.now() + datetime.timedelta(hours=1)),
@@ -233,7 +233,7 @@ class RegistrationTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.event = Event.objects.create(
-            title_en="testevent",
+            title="testevent",
             organiser=Committee.objects.get(pk=1),
             description="desc",
             start=timezone.now(),

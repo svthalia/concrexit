@@ -4,7 +4,7 @@ from rest_framework import filters
 from utils.snippets import extract_date_range
 
 
-class EventDateFilterBackend(filters.BaseFilterBackend):
+class EventDateFilter(filters.BaseFilterBackend):
     """Allows you to filter by event start/end dates."""
 
     def filter_queryset(self, request, queryset, view):

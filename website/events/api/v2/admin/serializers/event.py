@@ -1,8 +1,11 @@
 from rest_framework import serializers
 
 from activemembers.api.v2.serializers.member_group import MemberGroupSerializer
+from activemembers.models import MemberGroup
 from announcements.api.v2.serializers import SlideSerializer
+from announcements.models import Slide
 from documents.api.v2.serializers.document import DocumentSerializer
+from documents.models import Document
 from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.models import Event, EventRegistration
@@ -18,11 +21,20 @@ class EventSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     description = CleanedHTMLSerializer()
-    organiser = MemberGroupSerializer()
     price = serializers.FloatField()
     fine = serializers.FloatField()
-    slide = SlideSerializer()
-    documents = DocumentSerializer(many=True)
+
+    def to_internal_value(self, data):
+        self.fields['organiser'] = serializers.PrimaryKeyRelatedField(queryset=MemberGroup.active_objects.all())
+        self.fields['slide'] = serializers.PrimaryKeyRelatedField(queryset=Slide.objects.all())
+        self.fields['documents'] = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all(), many=True)
+        return super().to_internal_value(data)
+
+    def to_representation(self, instance):
+        self.fields['organiser'] = MemberGroupSerializer()
+        self.fields['slide'] = SlideSerializer()
+        self.fields['documents'] = DocumentSerializer(many=True)
+        return super().to_representation(instance)
 
 
 class EventListSerializer(serializers.ModelSerializer):
@@ -37,6 +49,7 @@ class EventListSerializer(serializers.ModelSerializer):
             "start",
             "end",
             "category",
+            "published",
             "registration_start",
             "registration_end",
             "cancel_deadline",
@@ -44,8 +57,8 @@ class EventListSerializer(serializers.ModelSerializer):
             "price",
             "fine",
             "max_participants",
-            "no_registration_message",
             "has_fields",
+            "tpay_allowed",
             "organiser",
             "slide",
         )

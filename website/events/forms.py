@@ -80,8 +80,8 @@ class FieldsForm(forms.Form):
 class EventMessageForm(forms.Form):
     """Form that outputs a widget to get info to send a push notification."""
 
-    title_en = forms.CharField(label=_("Title (EN)"), max_length=150)
-    body_en = forms.CharField(label=_("Body (EN)"), widget=forms.Textarea)
+    title = forms.CharField(label=_("title"), max_length=150)
+    body = forms.CharField(label=_("body"), widget=forms.Textarea)
     url = forms.CharField(
         max_length=256,
         required=False,

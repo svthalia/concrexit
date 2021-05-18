@@ -83,12 +83,12 @@ class RegistrationInformationFieldInlineTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_en="testevent",
+            title="testevent",
             description="desc",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
-            location_en="test location",
+            location="test location",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -149,7 +149,7 @@ class EventAdminTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_en="testevent",
+            title="testevent",
             description="desc",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
