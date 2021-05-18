@@ -2,7 +2,6 @@
 from functools import partial
 
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Max, Min
 from django.forms import Field
