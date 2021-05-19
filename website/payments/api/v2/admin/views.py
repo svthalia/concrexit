@@ -98,7 +98,7 @@ class PayableDetailView(
     """View that allows you to manipulate the payment for the payable. Permissions of this view are based on the payable."""
 
     def get_serializer_class(self, *args, **kwargs):
-        if self.request.method.lower() in ["put", "patch"]:
+        if self.request.method.lower() == "patch":
             return PayableCreateSerializer
         return PayableSerializer
 
@@ -123,9 +123,6 @@ class PayableDetailView(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request, *args, **kwargs):
-        return self.put(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

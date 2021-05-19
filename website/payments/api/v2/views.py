@@ -2,8 +2,6 @@ import rest_framework.filters as framework_filters
 from django.apps import apps
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
-from rest_framework.reverse import reverse
-from rest_framework.settings import api_settings
 from rest_framework import status, serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import (
@@ -11,9 +9,9 @@ from rest_framework.generics import (
     CreateAPIView,
     RetrieveAPIView,
     get_object_or_404,
-    UpdateAPIView,
 )
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 
 from payments import services, payables, NotRegistered
 from payments.api.v2 import filters
@@ -67,12 +65,11 @@ class PayableDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
     required_scopes_per_method = {
         "GET": ["payments:read"],
-        "PUT": ["payments:write"],
         "PATCH": ["payments:write"],
     }
 
     def get_serializer_class(self, *args, **kwargs):
-        if self.request.method.lower() == "put":
+        if self.request.method.lower() == "patch":
             return EmptySerializer
         return PayableSerializer
 
@@ -122,7 +119,7 @@ class PayableDetailView(RetrieveAPIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def put(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         payable = self.get_payable()
 
         if payable.payment:
