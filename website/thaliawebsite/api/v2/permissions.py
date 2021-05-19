@@ -1,8 +1,4 @@
-from oauth2_provider.contrib.rest_framework import (
-    IsAuthenticatedOrTokenHasScope,
-    TokenHasScope,
-    OAuth2Authentication,
-)
+from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from oauth2_provider.settings import oauth2_settings
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, IsAuthenticated

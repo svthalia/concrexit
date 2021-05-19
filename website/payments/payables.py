@@ -45,7 +45,7 @@ class Payable:
     def tpay_allowed(self):
         return True
 
-    def can_create_payment(self, member):
+    def can_manage_payment(self, member):
         raise NotImplementedError
 
 

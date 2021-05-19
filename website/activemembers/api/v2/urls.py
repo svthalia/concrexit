@@ -6,6 +6,8 @@ from activemembers.api.v2.views import (
     MemberGroupDetailView,
 )
 
+app_name = "activemembers"
+
 urlpatterns = [
     path(
         "activemembers/",

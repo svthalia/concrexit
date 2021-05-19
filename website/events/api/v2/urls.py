@@ -9,6 +9,8 @@ from events.api.v2.views import (
     EventRegistrationFieldsView,
 )
 
+app_name = "events"
+
 urlpatterns = [
     path("events/", EventListView.as_view(), name="events-list"),
     path("events/<int:pk>/", EventDetailView.as_view(), name="event-detail",),

@@ -64,13 +64,13 @@ class PaymentProcessViewTest(TestCase):
     def test_not_logged_in(self):
         self.client.logout()
 
-        response = self.client.post(reverse("v1:payment-list"))
+        response = self.client.post(reverse("api:v1:payment-list"))
         self.assertEqual(403, response.status_code)
 
     @override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=False)
     def test_member_has_tpay_enabled(self):
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
         self.assertEqual(400, response.status_code)
 
@@ -78,7 +78,7 @@ class PaymentProcessViewTest(TestCase):
         self.payable.model.payer = PaymentUser()
 
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
 
         self.assertEqual(403, response.status_code)
@@ -90,7 +90,7 @@ class PaymentProcessViewTest(TestCase):
         self.payable.model.payment = Payment(amount=8)
 
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
 
         self.assertEqual(409, response.status_code)
@@ -106,14 +106,14 @@ class PaymentProcessViewTest(TestCase):
         create_payment.side_effect = set_payments_side_effect
 
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
 
         create_payment.assert_called_with(self.payable, self.user, Payment.TPAY)
 
         self.assertEqual(201, response.status_code)
         self.assertEqual(
-            reverse("v1:payment-detail", kwargs={"pk": self.payable.payment.pk}),
+            reverse("api:v1:payment-detail", kwargs={"pk": self.payable.payment.pk}),
             response.headers["Location"],
         )
 
@@ -122,7 +122,7 @@ class PaymentProcessViewTest(TestCase):
         create_payment.side_effect = PaymentError("Test error")
 
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
 
         self.assertEqual(400, response.status_code)

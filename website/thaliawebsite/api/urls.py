@@ -6,6 +6,8 @@ from rest_framework.schemas import get_schema_view
 
 from thaliawebsite.api.openapi import OAuthSchemaGenerator
 
+app_name = "api"
+
 urlpatterns = [
     path(
         "",
@@ -40,7 +42,9 @@ urlpatterns = [
                     "docs",
                     TemplateView.as_view(
                         template_name="swagger/index.html",
-                        extra_context={"schema_urls": ["schema-v1", "schema-v2"]},
+                        extra_context={
+                            "schema_urls": ["api:schema-v1", "api:schema-v2"]
+                        },
                     ),
                     name="swagger",
                 ),

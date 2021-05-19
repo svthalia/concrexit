@@ -3,6 +3,8 @@ from django.urls import path, include
 
 from photos.api.v2.views import AlbumListView, AlbumDetailView
 
+app_name = "photos"
+
 urlpatterns = [
     path(
         "photos/",

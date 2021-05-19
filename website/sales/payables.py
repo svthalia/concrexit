@@ -19,8 +19,8 @@ class OrderPayable(Payable):
     def payment_payer(self):
         return self.model.payer
 
-    def can_create_payment(self, member):
-        return True
+    def can_manage_payment(self, member):
+        return member.has_perm("sales.change_order")
 
 
 def register():

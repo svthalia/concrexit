@@ -28,7 +28,7 @@ class EntryPayableTest(TestCase):
             self.payable.payment_notes,
             "Registration entry. Creation date: March 4, 2018. Completion date: March 5, 2018",
         )
-        self.assertFalse(self.payable.can_create_payment(None))
+        self.assertFalse(self.payable.can_manage_payment(None))
 
 
 class RegistrationPayableTest(TestCase):

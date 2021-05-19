@@ -288,7 +288,7 @@ def update_registration_by_organiser(registration, member, data):
     if "payment" in data:
         if data["payment"]["type"] == PaymentTypeField.NO_PAYMENT:
             if registration.payment is not None:
-                delete_payment(registration)
+                delete_payment(registration, member)
         else:
             registration.payment = create_payment(
                 model_payable=registration,

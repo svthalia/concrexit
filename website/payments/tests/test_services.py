@@ -67,7 +67,7 @@ class ServicesTest(TestCase):
         with self.subTest("Within deletion window"):
             payable.model.payment = existing_payment
             existing_payment.created_at = timezone.now()
-            services.delete_payment(payable.model)
+            services.delete_payment(payable.model, self.member)
             self.assertIsNone(payable.payment)
             payable.model.save.assert_called_once()
             existing_payment.delete.assert_called_once()
@@ -80,7 +80,7 @@ class ServicesTest(TestCase):
             with self.assertRaisesMessage(
                 PaymentError, "This payment cannot be deleted anymore."
             ):
-                services.delete_payment(payable.model)
+                services.delete_payment(payable.model, self.member)
             self.assertIsNotNone(payable.payment)
 
         existing_payment.created_at = timezone.now()

@@ -14,7 +14,7 @@
     <script type="application/javascript">
     window.onload = function() {
         const ui = SwaggerUIBundle({
-            oauth2RedirectUrl: "{{ request.scheme }}://{{ request.get_host }}{% url "swagger-oauth-redirect" %}",
+            oauth2RedirectUrl: "{{ request.scheme }}://{{ request.get_host }}{% url "api:swagger-oauth-redirect" %}",
             urls: [
                 {% for schema_url in schema_urls %}
                     {"url": "{% url schema_url %}", name: "{% url schema_url %}"},

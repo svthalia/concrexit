@@ -3,6 +3,7 @@ from django.template.defaultfilters import date
 from events.models import EventRegistration
 from events.services import is_organiser
 from payments import Payable, payables
+from payments.models import PaymentUser
 
 
 class EventRegistrationPayable(Payable):
@@ -24,12 +25,17 @@ class EventRegistrationPayable(Payable):
     def payment_payer(self):
         return self.model.member
 
-    def can_create_payment(self, member):
-        return is_organiser(member, self.model.event)
+    def can_manage_payment(self, member):
+        return is_organiser(member, self.model.event) and member.has_perm(
+            "events.change_eventregistration"
+        )
 
     @property
     def tpay_allowed(self):
-        return self.model.event.tpay_allowed
+        return (
+            self.model.event.tpay_allowed
+            and PaymentUser.objects.get(pk=self.model.member.pk).tpay_enabled
+        )
 
 
 def register():

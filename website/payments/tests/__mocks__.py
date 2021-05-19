@@ -50,5 +50,5 @@ class MockPayable(Payable):
     def payment_payer(self):
         return self.model.payer
 
-    def can_create_payment(self, member):
-        return False
+    def can_manage_payment(self, member):
+        return True

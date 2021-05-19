@@ -2,37 +2,34 @@ import rest_framework.filters as framework_filters
 from django.apps import apps
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
-from rest_framework.reverse import reverse
-from rest_framework.settings import api_settings
+from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import status, serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import (
-    ListAPIView,
-    CreateAPIView,
-    RetrieveAPIView,
-    get_object_or_404, UpdateAPIView,
-)
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from rest_framework.settings import api_settings
 
 from payments import services, payables, NotRegistered
 from payments.api.v2 import filters
+from payments.api.v2.admin.serializers.payable_create import PayableCreateSerializer
+from payments.api.v2.admin.serializers.payable_detail import PayableDetailSerializer
 from payments.api.v2.serializers import PaymentSerializer
-from payments.api.v2.serializers.payable_detail import PayableDetailSerializer
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
-from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
-from thaliawebsite.api.v2.serializers import EmptySerializer
+from thaliawebsite.api.v2.admin import (
+    AdminListAPIView,
+    AdminCreateAPIView,
+    AdminRetrieveAPIView,
+    AdminDestroyAPIView, AdminUpdateAPIView,
+)
 
 
-class PaymentListCreateView(ListAPIView, CreateAPIView):
+class PaymentListCreateView(AdminListAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
-    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
-    required_scopes_per_method = {
-        "GET": ["payments:read"],
-        "POST": ["payments:write"],
-    }
+    required_scopes = ["payments:admin"]
     filter_backends = (
         framework_filters.OrderingFilter,
         filters.CreatedAtFilter,
@@ -40,45 +37,19 @@ class PaymentListCreateView(ListAPIView, CreateAPIView):
     )
     ordering_fields = ("created_at",)
 
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .filter(paid_by=PaymentUser.objects.get(pk=self.request.member.pk))
-        )
 
-
-class PaymentDetailView(RetrieveAPIView):
+class PaymentDetailView(AdminRetrieveAPIView, AdminDestroyAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
-    required_scopes_per_method = {
-        "GET": ["payments:read"]
-    }
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
+    required_scopes = ["payments:admin"]
 
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .filter(paid_by=PaymentUser.objects.get(pk=self.request.member.pk))
-        )
 
-class PayableDetailView(RetrieveAPIView):
-    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
-    required_scopes_per_method = {
-        "GET": ["payments:read"],
-        "PUT": ["payments:write"],
-        "PATCH": ["payments:write"],
-    }
+class PayableBaseView:
+    required_scopes = ["payments:admin"]
 
-    def get_serializer_class(self, *args, **kwargs):
-        if self.request.method.lower() == "put":
-            return EmptySerializer
-        return PayableDetailSerializer
-
-    def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(self.get_payable())
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get_permissions(self):
+        return [IsAuthenticatedOrTokenHasScope()]
 
     def get_payable(self):
         app_label = self.kwargs["app_label"]
@@ -95,16 +66,25 @@ class PayableDetailView(RetrieveAPIView):
                 {api_settings.NON_FIELD_ERRORS_KEY: [_("Payable model not found")]}
             ) from e
 
-        if (
-            not payable.payment_payer
-            or not payable.tpay_allowed
-            or payable.payment_payer != PaymentUser.objects.get(pk=self.request.user.pk)
-        ):
+        if not payable.can_manage_payment(self.request.member):
             raise PermissionDenied(
                 detail=_("You do not have permission to perform this action.")
             )
 
         return payable
+
+
+class PayableDetailView(PayableBaseView, AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView):
+    """View that allows you to manipulate the payment for the payable. Permissions of this view are based on the payable."""
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.request.method.lower() in ["put", "patch"]:
+            return PayableCreateSerializer
+        return PayableDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.get_payable())
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
         payable = self.get_payable()
@@ -122,18 +102,20 @@ class PayableDetailView(RetrieveAPIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def put(self, request, *args, **kwargs):
-        payable = self.get_payable()
+    def patch(self, request, *args, **kwargs):
+        return self.put(request, *args, **kwargs)
 
-        if payable.payment:
-            return Response(
-                data={"detail": _("This object has already been paid for.")},
-                status=status.HTTP_409_CONFLICT,
-            )
+    def put(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        payable = self.get_payable()
 
         try:
             services.create_payment(
-                payable, PaymentUser.objects.get(pk=request.user.pk), Payment.TPAY,
+                payable,
+                PaymentUser.objects.get(pk=request.user.pk),
+                serializer.data["payment_type"],
             )
             payable.model.save()
         except PaymentError as e:
