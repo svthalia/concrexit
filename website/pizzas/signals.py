@@ -14,13 +14,13 @@ def post_registration_save(sender, instance, **kwargs):
     event = instance.event
     if (
         event.has_food_event
-        and event.pizzaevent.send_notification
+        and event.food_event.send_notification
         and instance.member is not None
     ):
         if instance.date_cancelled:
-            event.pizzaevent.end_reminder.users.remove(instance.member)
+            event.food_event.end_reminder.users.remove(instance.member)
         else:
-            event.pizzaevent.end_reminder.users.add(instance.member)
+            event.food_event.end_reminder.users.add(instance.member)
 
 
 @suspendingreceiver(
