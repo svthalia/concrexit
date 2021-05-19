@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from payments import services
+from payments import services, payables
 from payments.api.v1.serializers import PaymentSerializer, PaymentCreateSerializer
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
@@ -36,7 +36,7 @@ class PaymentViewset(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         payable_pk = serializer.data["payable_pk"]
 
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
-        payable = payable_model.objects.get(pk=payable_pk)
+        payable = payables.get_payable(payable_model.objects.get(pk=payable_pk))
 
         if (
             payable.payment_payer.pk

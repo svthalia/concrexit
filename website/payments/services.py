@@ -38,6 +38,14 @@ def create_payment(
         else None
     )
 
+    if not (
+        (payer and payer == processed_by and pay_type == Payment.TPAY)
+        or payable.can_create_payment(processed_by)
+    ):
+        raise PaymentError(
+            _("User processing payment does not have the right permissions")
+        )
+
     if payable.payment_amount == 0:
         raise PaymentError(_("Payment amount 0 is not accepted"))
 
