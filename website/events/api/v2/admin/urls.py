@@ -6,7 +6,7 @@ from events.api.v2.admin.views import (
     EventAdminDetailAPIView,
     EventRegistrationAdminFieldsView,
     EventRegistrationAdminDetailView,
-    EventRegistrationsAdminListView,
+    EventRegistrationAdminListView,
 )
 
 urlpatterns = [
@@ -14,7 +14,7 @@ urlpatterns = [
     path("events/<int:pk>/", EventAdminDetailAPIView.as_view(), name="event-detail",),
     path(
         "events/<int:pk>/registrations/",
-        EventRegistrationsAdminListView.as_view(),
+        EventRegistrationAdminListView.as_view(),
         name="event-registrations",
     ),
     path(

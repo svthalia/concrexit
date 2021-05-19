@@ -31,11 +31,13 @@ class EventAdminListAPIView(AdminListAPIView):
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
     filter_backends = [
+        framework_filters.OrderingFilter,
         normal_filters.CategoryFilter,
         normal_filters.OrganiserFilter,
         normal_filters.EventDateFilter,
         filters.PublishedFilter,
     ]
+    ordering_fields = ("start", "end", "published", "registration_start", "registration_end")
 
 
 class EventAdminDetailAPIView(
@@ -47,7 +49,7 @@ class EventAdminDetailAPIView(
     required_scopes = ["events:admin"]
 
 
-class EventRegistrationsAdminListView(AdminListAPIView, AdminCreateAPIView):
+class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
     """Returns a list of registrations."""
 
     serializer_class = EventRegistrationSerializer
@@ -60,7 +62,7 @@ class EventRegistrationsAdminListView(AdminListAPIView, AdminCreateAPIView):
     ordering_fields = ("queue_position", "date", "date_cancelled")
 
     def get_queryset(self):
-        event = get_object_or_404(Event, pk=self.kwargs.get("pk"), published=True)
+        event = get_object_or_404(Event, pk=self.kwargs.get("pk"))
         if event:
             return EventRegistration.objects.filter(event_id=event)
         return EventRegistration.objects.none()
@@ -73,6 +75,7 @@ class EventRegistrationAdminDetailView(AdminRetrieveAPIView, AdminUpdateAPIView)
     queryset = EventRegistration.objects.all()
     permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
+    event_lookup_field = 'event_id'
 
     def get_queryset(self):
         return super().get_queryset().filter(event=self.kwargs["event_id"])
