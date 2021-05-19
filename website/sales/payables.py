@@ -21,7 +21,9 @@ class OrderPayable(Payable):
         return self.model.payer
 
     def can_manage_payment(self, member):
-        return is_manager(member, self.model.shift) and member.has_perm("sales.change_order")
+        return is_manager(member, self.model.shift) and member.has_perm(
+            "sales.change_order"
+        )
 
 
 def register():

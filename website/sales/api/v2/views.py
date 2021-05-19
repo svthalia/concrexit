@@ -32,10 +32,7 @@ class ShiftListView(ListAPIView):
         filters.SearchFilter,
     )
     ordering_fields = ("start", "end")
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissions
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScope, DjangoModelPermissions]
     required_scopes = ["sales:read"]
 
     def get_queryset(self):
@@ -66,7 +63,7 @@ class ShiftDetailView(RetrieveAPIView):
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissions,
-        IsManager
+        IsManager,
     ]
     required_scopes = ["sales:read"]
 
@@ -79,7 +76,7 @@ class OrderListView(ListCreateAPIView):
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
         DjangoModelPermissions,
-        IsManager
+        IsManager,
     ]
     required_scopes_per_method = {
         "GET": ["sales:read"],
@@ -143,7 +140,7 @@ class OrderDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
         DjangoModelPermissions,
-        IsManager
+        IsManager,
     ]
     required_scopes_per_method = {
         "GET": ["sales:read"],

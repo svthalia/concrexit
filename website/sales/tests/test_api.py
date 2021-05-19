@@ -321,7 +321,9 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.put(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -352,7 +354,9 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.put(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -378,7 +382,9 @@ class OrderAPITest(TestCase):
         with self.subTest("Write discount"):
             data = {"discount": 0.2}
             response = self.client.patch(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -404,7 +410,9 @@ class OrderAPITest(TestCase):
         with self.subTest("Reset discount"):
             data = {"discount": 0}
             response = self.client.patch(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -435,7 +443,9 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.patch(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -466,7 +476,9 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.patch(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -497,7 +509,9 @@ class OrderAPITest(TestCase):
 
             data = {"discount": 0.2}
             response = self.client.patch(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -528,7 +542,9 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.patch(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -554,7 +570,9 @@ class OrderAPITest(TestCase):
         with self.subTest("Delete one product item"):
             data = {"order_items": [{"product": "wine", "amount": 1},]}
             response = self.client.patch(
-                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}),
+                data,
+                format="json",
             )
             self.assertEqual(200, response.status_code)
             expected_response = {

@@ -13,6 +13,7 @@ from sales.models.product import Product, ProductList, ProductListItem
 from sales.models.shift import Shift
 from sales.services import is_manager
 
+
 @freeze_time("2021-01-01")
 class SalesServicesTest(TestCase):
     fixtures = ["members.json", "member_groups.json"]
@@ -25,8 +26,8 @@ class SalesServicesTest(TestCase):
         cls.wine = Product.objects.create(name="wine", age_restricted=True)
         cls.soda = Product.objects.create(name="soda", age_restricted=False)
 
-        cls.normal = ProductList.objects.create(name="normal", )
-        cls.free = ProductList.objects.create(name="free", )
+        cls.normal = ProductList.objects.create(name="normal",)
+        cls.free = ProductList.objects.create(name="free",)
 
         cls.normal.product_items.bulk_create(
             [
