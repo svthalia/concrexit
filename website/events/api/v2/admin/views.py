@@ -37,7 +37,13 @@ class EventAdminListAPIView(AdminListAPIView):
         normal_filters.EventDateFilter,
         filters.PublishedFilter,
     ]
-    ordering_fields = ("start", "end", "published", "registration_start", "registration_end")
+    ordering_fields = (
+        "start",
+        "end",
+        "published",
+        "registration_start",
+        "registration_end",
+    )
 
 
 class EventAdminDetailAPIView(
@@ -75,7 +81,7 @@ class EventRegistrationAdminDetailView(AdminRetrieveAPIView, AdminUpdateAPIView)
     queryset = EventRegistration.objects.all()
     permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
-    event_lookup_field = 'event_id'
+    event_lookup_field = "event_id"
 
     def get_queryset(self):
         return super().get_queryset().filter(event=self.kwargs["event_id"])

@@ -43,7 +43,7 @@ class CategoryFilter(filters.BaseFilterBackend):
         category = request.query_params.get("category", None)
 
         if category:
-            queryset = queryset.filter(category__in=category.split(','))
+            queryset = queryset.filter(category__in=category.split(","))
 
         return queryset
 
