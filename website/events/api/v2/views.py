@@ -33,9 +33,7 @@ class EventListView(ListAPIView):
     )
     ordering_fields = ("start", "end")
     search_fields = ("title",)
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScope
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
 
 
@@ -44,9 +42,7 @@ class EventDetailView(RetrieveAPIView):
 
     serializer_class = EventSerializer
     queryset = Event.objects.filter(published=True)
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScope
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
 
 
@@ -54,9 +50,7 @@ class EventRegistrationsView(ListAPIView):
     """Returns a list of registrations."""
 
     serializer_class = EventRegistrationSerializer
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScopeForMethod
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
     required_scopes_per_method = {
         "GET": ["events:read"],
         "POST": ["events:register"],
@@ -120,9 +114,7 @@ class EventRegistrationDetailView(RetrieveAPIView):
 
     serializer_class = EventRegistrationSerializer
     queryset = EventRegistration.objects.all()
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScopeForMethod
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
     required_scopes_per_method = {
         "GET": ["events:read"],
         "DELETE": ["events:register"],
