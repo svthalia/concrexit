@@ -7,14 +7,16 @@ from rest_framework import status, serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from rest_framework.settings import api_settings
 
 from payments import services, payables, NotRegistered
 from payments.api.v2 import filters
 from payments.api.v2.admin.serializers.payable_create import PayableCreateSerializer
 from payments.api.v2.admin.serializers.payable_detail import PayableSerializer
-from payments.api.v2.serializers import PaymentSerializer
+from payments.api.v2.admin.serializers.payment import (
+    PaymentSerializer,
+    PaymentCreateSerializer,
+)
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
 from thaliawebsite.api.v2.admin import (
@@ -26,9 +28,8 @@ from thaliawebsite.api.v2.admin import (
 )
 
 
-class PaymentListCreateView(AdminListAPIView):
+class PaymentListCreateView(AdminListAPIView, AdminCreateAPIView):
     queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
 
     required_scopes = ["payments:admin"]
     filter_backends = (
@@ -37,6 +38,22 @@ class PaymentListCreateView(AdminListAPIView):
         filters.PaymentTypeFilter,
     )
     ordering_fields = ("created_at",)
+
+    def get_serializer_class(self):
+        if self.request.method.lower() == "post":
+            return PaymentCreateSerializer
+        return PaymentSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            PaymentSerializer(
+                serializer.instance, context=self.get_serializer_context()
+            ).data,
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class PaymentDetailView(AdminRetrieveAPIView, AdminDestroyAPIView):

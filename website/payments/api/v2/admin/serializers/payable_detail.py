@@ -2,9 +2,7 @@ from rest_framework.fields import CharField, empty, ListField, DecimalField
 from rest_framework.serializers import Serializer
 
 from members.api.v2.serializers.member import MemberSerializer
-from payments.api.v2.admin.serializers.payment import PaymentSerializer
-from payments.models import Payment
-from payments.payables import Payable
+from payments.models import Payment, PaymentUser
 
 
 class PayableSerializer(Serializer):
@@ -20,7 +18,11 @@ class PayableSerializer(Serializer):
             self.notes = instance.payment_notes
             self.payment = instance.payment
 
-            if instance.tpay_allowed:
+            if (
+                instance.tpay_allowed
+                and instance.payment_payer
+                and PaymentUser.objects.get(pk=instance.payment_payer.pk).tpay_allowed
+            ):
                 self.allowed_payment_types.append(Payment.TPAY)
 
     allowed_payment_types = ListField(child=CharField())

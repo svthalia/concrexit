@@ -32,10 +32,7 @@ class EventRegistrationPayable(Payable):
 
     @property
     def tpay_allowed(self):
-        return (
-            self.model.event.tpay_allowed
-            and PaymentUser.objects.get(pk=self.model.member.pk).tpay_enabled
-        )
+        return self.model.event.tpay_allowed
 
 
 def register():
