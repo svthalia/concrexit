@@ -7,22 +7,17 @@ from payments.models import Payment
 from payments.payables import Payable
 
 
-class PayableDetailSerializer(Serializer):
+class PayableSerializer(Serializer):
     """Serializer to show payable information."""
 
-    def __init__(self, payable: Payable = None, instance=None, data=empty, **kwargs):
+    def __init__(self, instance=None, data=empty, **kwargs):
         super().__init__(instance, data, **kwargs)
-        self.payable = payable
-
-    def get_initial(self):
-        initial_data = {}
-
-        if self.payable:
-            initial_data["payment"] = PaymentSerializer().to_representation(self.payable.payment) if self.payable.payment else None
-            initial_data["amount"] = self.payable.payment_amount
-            initial_data["topic"] = self.payable.payment_topic
-            initial_data["notes"] = self.payable.payment_notes
-        return initial_data
+        self.allowed_payment_types = [Payment.CASH, Payment.CARD, Payment.WIRE]
+        if instance:
+            self.amount = instance.payment_amount
+            self.topic = instance.payment_topic
+            self.notes = instance.payment_notes
+            self.payment = instance.payment
 
     amount = DecimalField(decimal_places=2, max_digits=1000)
     topic = CharField()

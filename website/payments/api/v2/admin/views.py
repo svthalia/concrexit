@@ -13,7 +13,7 @@ from rest_framework.settings import api_settings
 from payments import services, payables, NotRegistered
 from payments.api.v2 import filters
 from payments.api.v2.admin.serializers.payable_create import PayableCreateSerializer
-from payments.api.v2.admin.serializers.payable_detail import PayableDetailSerializer
+from payments.api.v2.admin.serializers.payable_detail import PayableSerializer
 from payments.api.v2.serializers import PaymentSerializer
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
@@ -21,7 +21,8 @@ from thaliawebsite.api.v2.admin import (
     AdminListAPIView,
     AdminCreateAPIView,
     AdminRetrieveAPIView,
-    AdminDestroyAPIView, AdminUpdateAPIView,
+    AdminDestroyAPIView,
+    AdminUpdateAPIView,
 )
 
 
@@ -74,13 +75,15 @@ class PayableBaseView:
         return payable
 
 
-class PayableDetailView(PayableBaseView, AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView):
+class PayableDetailView(
+    PayableBaseView, AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView
+):
     """View that allows you to manipulate the payment for the payable. Permissions of this view are based on the payable."""
 
     def get_serializer_class(self, *args, **kwargs):
         if self.request.method.lower() in ["put", "patch"]:
             return PayableCreateSerializer
-        return PayableDetailSerializer
+        return PayableSerializer
 
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_payable())
@@ -121,4 +124,7 @@ class PayableDetailView(PayableBaseView, AdminRetrieveAPIView, AdminUpdateAPIVie
         except PaymentError as e:
             raise ValidationError(detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]})
 
-        return Response(PayableDetailSerializer(payable, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)
+        return Response(
+            PayableSerializer(payable, context=self.get_serializer_context()).data,
+            status=status.HTTP_201_CREATED,
+        )

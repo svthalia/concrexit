@@ -10,14 +10,15 @@ from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
     RetrieveAPIView,
-    get_object_or_404, UpdateAPIView,
+    get_object_or_404,
+    UpdateAPIView,
 )
 from rest_framework.response import Response
 
 from payments import services, payables, NotRegistered
 from payments.api.v2 import filters
 from payments.api.v2.serializers import PaymentSerializer
-from payments.api.v2.serializers.payable_detail import PayableDetailSerializer
+from payments.api.v2.serializers.payable_detail import PayableSerializer
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
@@ -52,9 +53,7 @@ class PaymentDetailView(RetrieveAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
-    required_scopes_per_method = {
-        "GET": ["payments:read"]
-    }
+    required_scopes_per_method = {"GET": ["payments:read"]}
 
     def get_queryset(self):
         return (
@@ -62,6 +61,7 @@ class PaymentDetailView(RetrieveAPIView):
             .get_queryset()
             .filter(paid_by=PaymentUser.objects.get(pk=self.request.member.pk))
         )
+
 
 class PayableDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
@@ -74,7 +74,7 @@ class PayableDetailView(RetrieveAPIView):
     def get_serializer_class(self, *args, **kwargs):
         if self.request.method.lower() == "put":
             return EmptySerializer
-        return PayableDetailSerializer
+        return PayableSerializer
 
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_payable())
@@ -139,4 +139,7 @@ class PayableDetailView(RetrieveAPIView):
         except PaymentError as e:
             raise ValidationError(detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]})
 
-        return Response(PayableDetailSerializer(payable, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)
+        return Response(
+            PayableSerializer(payable, context=self.get_serializer_context()).data,
+            status=status.HTTP_201_CREATED,
+        )

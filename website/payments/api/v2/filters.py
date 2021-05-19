@@ -36,7 +36,7 @@ class CreatedAtFilter(filters.BaseFilterBackend):
 
 
 class PaymentTypeFilter(filters.BaseFilterBackend):
-    """"Allows you to filter by payment type."""
+    """Allows you to filter by payment type."""
 
     def filter_queryset(self, request, queryset, view):
         payment_type = request.query_params.get("type", None)
