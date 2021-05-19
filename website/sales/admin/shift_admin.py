@@ -169,9 +169,8 @@ class ShiftAdmin(admin.ModelAdmin):
         return super().has_delete_permission(request, obj)
 
     def changelist_view(self, request, extra_context=None):
-        if not (
-            request.member
-            or request.member.is_superuser
+        if not request.member and not (
+            request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
             self.message_user(
