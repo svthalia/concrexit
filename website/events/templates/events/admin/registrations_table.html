@@ -28,7 +28,11 @@
         </thead>
         <tbody>
             {% for registration in registrations %}
-            <tr class="{% if forloop.first %}row1 {% endif %}" data-url="/api/v1/registrations/{{ registration.id }}/">
+            <tr
+                class="{% if forloop.first %}row1 {% endif %}"
+                data-url="{% url "api:v2:admin:events:event-registration-detail" registration.event.id registration.id %}"
+                data-payable-url="{% url "api:v2:admin:payments:payments-payable-detail" "events" "eventregistration" registration.id %}"
+            >
                 {% if registration.member %}
                 <td>
                   <a href="{{ registration.member.get_absolute_url }}">{{ registration.member.get_full_name }}</a>
