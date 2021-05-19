@@ -3,7 +3,6 @@ from django.template.defaultfilters import date
 from events.models import EventRegistration
 from events.services import is_organiser
 from payments import Payable, payables
-from payments.models import PaymentUser
 
 
 class EventRegistrationPayable(Payable):
