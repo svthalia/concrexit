@@ -10,6 +10,7 @@ from activemembers.models import Committee, MemberGroupMembership
 from members.models import Member
 from payments.models import Payment
 from payments.services import create_payment
+from sales import payables
 from sales.models.order import Order, OrderItem
 from sales.models.product import Product, ProductList, ProductListItem
 from sales.models.shift import Shift
@@ -21,6 +22,8 @@ class OrderAPITest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        payables.register()
+
         cls.member = Member.objects.filter(last_name="Wiggers").first()
 
         cls.beer = Product.objects.create(name="beer", age_restricted=True)
@@ -133,13 +136,13 @@ class OrderAPITest(TestCase):
     def test_detail_not_logged_in(self):
         self.client.logout()
         response = self.client.get(
-            reverse("v2:order-detail", kwargs={"pk": self.o0.pk})
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o0.pk})
         )
         self.assertEqual(403, response.status_code)
 
     def test_detail_not_authorized__get(self):
         response = self.client.get(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk})
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk})
         )
         self.assertEqual(200, response.status_code)
 
@@ -147,7 +150,7 @@ class OrderAPITest(TestCase):
         self.member.save()
 
         response = self.client.get(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk})
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk})
         )
         self.assertEqual(403, response.status_code)
 
@@ -155,7 +158,7 @@ class OrderAPITest(TestCase):
         self.shift.save()
 
         response = self.client.get(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk})
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk})
         )
         self.assertEqual(200, response.status_code)
 
@@ -163,7 +166,7 @@ class OrderAPITest(TestCase):
         data = {"discount": "0.5"}
 
         response = self.client.patch(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk}), data
         )
         self.assertEqual(200, response.status_code)
 
@@ -171,7 +174,7 @@ class OrderAPITest(TestCase):
         self.member.save()
 
         response = self.client.patch(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk}), data
         )
         self.assertEqual(403, response.status_code)
 
@@ -179,7 +182,7 @@ class OrderAPITest(TestCase):
         self.shift.save()
 
         response = self.client.patch(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk}), data
         )
         self.assertEqual(200, response.status_code)
 
@@ -187,7 +190,7 @@ class OrderAPITest(TestCase):
         data = {"discount": "0.5"}
 
         response = self.client.put(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk}), data
         )
         self.assertEqual(200, response.status_code)
 
@@ -195,7 +198,7 @@ class OrderAPITest(TestCase):
         self.member.save()
 
         response = self.client.put(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk}), data
         )
         self.assertEqual(403, response.status_code)
 
@@ -203,13 +206,13 @@ class OrderAPITest(TestCase):
         self.shift.save()
 
         response = self.client.put(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk}), data
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk}), data
         )
         self.assertEqual(200, response.status_code)
 
     def test_detail_not_authorized__delete(self):
         response = self.client.delete(
-            reverse("v2:order-detail", kwargs={"pk": self.o1.pk})
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk})
         )
         self.assertEqual(204, response.status_code)
 
@@ -217,7 +220,7 @@ class OrderAPITest(TestCase):
         self.member.save()
 
         response = self.client.delete(
-            reverse("v2:order-detail", kwargs={"pk": self.o2.pk})
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o2.pk})
         )
         self.assertEqual(403, response.status_code)
 
@@ -225,20 +228,20 @@ class OrderAPITest(TestCase):
         self.shift.save()
 
         response3 = self.client.delete(
-            reverse("v2:order-detail", kwargs={"pk": self.o2.pk})
+            reverse("api:v2:sales:order-detail", kwargs={"pk": self.o2.pk})
         )
         self.assertEqual(204, response3.status_code)
 
     def test_list_not_logged_in(self):
         self.client.logout()
         response = self.client.get(
-            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk})
+            reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk})
         )
         self.assertEqual(403, response.status_code)
 
     def test_list_not_authorized__get(self):
         response = self.client.get(
-            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk})
+            reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk})
         )
         self.assertEqual(200, response.status_code)
 
@@ -246,7 +249,7 @@ class OrderAPITest(TestCase):
         self.member.save()
 
         response = self.client.get(
-            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk})
+            reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk})
         )
         self.assertEqual(403, response.status_code)
 
@@ -254,7 +257,7 @@ class OrderAPITest(TestCase):
         self.shift.save()
 
         response = self.client.get(
-            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk})
+            reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk})
         )
         self.assertEqual(200, response.status_code)
 
@@ -262,7 +265,7 @@ class OrderAPITest(TestCase):
         data = {"discount": "0.5"}
 
         response = self.client.post(
-            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}), data
+            reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk}), data
         )
         self.assertEqual(201, response.status_code)
 
@@ -270,7 +273,7 @@ class OrderAPITest(TestCase):
         self.member.save()
 
         response = self.client.post(
-            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}), data
+            reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk}), data
         )
         self.assertEqual(403, response.status_code)
 
@@ -278,7 +281,7 @@ class OrderAPITest(TestCase):
         self.shift.save()
 
         response = self.client.post(
-            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}), data
+            reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk}), data
         )
         self.assertEqual(201, response.status_code)
 
@@ -287,7 +290,7 @@ class OrderAPITest(TestCase):
         with self.subTest("Create new order with single item"):
             data = {"order_items": [{"product": "beer", "amount": 4}]}
             response = self.client.post(
-                reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}),
+                reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk}),
                 data,
                 format="json",
             )
@@ -318,7 +321,7 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.put(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -349,7 +352,7 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.put(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -375,7 +378,7 @@ class OrderAPITest(TestCase):
         with self.subTest("Write discount"):
             data = {"discount": 0.2}
             response = self.client.patch(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -401,7 +404,7 @@ class OrderAPITest(TestCase):
         with self.subTest("Reset discount"):
             data = {"discount": 0}
             response = self.client.patch(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -432,7 +435,7 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.patch(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -463,7 +466,7 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.patch(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -494,7 +497,7 @@ class OrderAPITest(TestCase):
 
             data = {"discount": 0.2}
             response = self.client.patch(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -525,7 +528,7 @@ class OrderAPITest(TestCase):
                 ]
             }
             response = self.client.patch(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -551,7 +554,7 @@ class OrderAPITest(TestCase):
         with self.subTest("Delete one product item"):
             data = {"order_items": [{"product": "wine", "amount": 1},]}
             response = self.client.patch(
-                reverse("v2:order-detail", kwargs={"pk": pk}), data, format="json"
+                reverse("api:v2:sales:order-detail", kwargs={"pk": pk}), data, format="json"
             )
             self.assertEqual(200, response.status_code)
             expected_response = {
@@ -574,7 +577,7 @@ class OrderAPITest(TestCase):
     def test_invalid_product(self):
         data = {"order_items": [{"product": "invalidproduct", "amount": 4}]}
         response = self.client.post(
-            reverse("v2:shift-orders", kwargs={"pk": self.shift.pk}),
+            reverse("api:v2:sales:shift-orders", kwargs={"pk": self.shift.pk}),
             data,
             format="json",
         )
@@ -704,13 +707,13 @@ class ShiftAPITest(TestCase):
     def test_detail_not_logged_in(self):
         self.client.logout()
         response = self.client.get(
-            reverse("v2:shift-detail", kwargs={"pk": self.shift.pk})
+            reverse("api:v2:sales:shift-detail", kwargs={"pk": self.shift.pk})
         )
         self.assertEqual(403, response.status_code)
 
     def test_detail_not_authorized__get(self):
         response = self.client.get(
-            reverse("v2:shift-detail", kwargs={"pk": self.shift.pk})
+            reverse("api:v2:sales:shift-detail", kwargs={"pk": self.shift.pk})
         )
         self.assertEqual(200, response.status_code)
 
@@ -718,7 +721,7 @@ class ShiftAPITest(TestCase):
         self.member.save()
 
         response = self.client.get(
-            reverse("v2:shift-detail", kwargs={"pk": self.shift.pk})
+            reverse("api:v2:sales:shift-detail", kwargs={"pk": self.shift.pk})
         )
         self.assertEqual(403, response.status_code)
 
@@ -726,30 +729,30 @@ class ShiftAPITest(TestCase):
         self.shift.save()
 
         response = self.client.get(
-            reverse("v2:shift-detail", kwargs={"pk": self.shift.pk})
+            reverse("api:v2:sales:shift-detail", kwargs={"pk": self.shift.pk})
         )
         self.assertEqual(200, response.status_code)
 
     def test_list_not_logged_in(self):
         self.client.logout()
-        response = self.client.get(reverse("v2:shift-list"))
+        response = self.client.get(reverse("api:v2:sales:shift-list"))
         self.assertEqual(403, response.status_code)
 
     def test_list_not_authorized__get(self):
-        response = self.client.get(reverse("v2:shift-list"))
+        response = self.client.get(reverse("api:v2:sales:shift-list"))
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, response.data["count"])
 
         self.member.is_superuser = False
         self.member.save()
 
-        response = self.client.get(reverse("v2:shift-list"))
+        response = self.client.get(reverse("api:v2:sales:shift-list"))
         self.assertEqual(200, response.status_code)
         self.assertEqual(0, response.data["count"])
 
         self.shift.managers.add(self.cie)
         self.shift.save()
 
-        response = self.client.get(reverse("v2:shift-list"))
+        response = self.client.get(reverse("api:v2:sales:shift-list"))
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, response.data["count"])

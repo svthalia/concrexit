@@ -1,5 +1,6 @@
 from payments import Payable, payables
 from sales.models.order import Order
+from sales.services import is_manager
 
 
 class OrderPayable(Payable):
@@ -20,7 +21,7 @@ class OrderPayable(Payable):
         return self.model.payer
 
     def can_manage_payment(self, member):
-        return member.has_perm("sales.change_order")
+        return is_manager(member, self.model.shift) and member.has_perm("sales.change_order")
 
 
 def register():

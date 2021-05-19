@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from payments.widgets import PaymentWidget
 from sales.models.order import Order, OrderItem
 from sales.models.shift import Shift
+from sales.services import is_manager
 
 
 class OrderItemInline(admin.TabularInline):
@@ -52,7 +53,7 @@ class OrderItemInline(admin.TabularInline):
             return False
         if obj and obj.shift.locked:
             return False
-        if obj and not obj.shift.is_manager(request.member):
+        if obj and not is_manager(request.member, obj.shift):
             return False
         return True
 
@@ -61,7 +62,7 @@ class OrderItemInline(admin.TabularInline):
             return False
         if obj and obj.shift.locked:
             return False
-        if obj and not obj.shift.is_manager(request.member):
+        if obj and not is_manager(request.member, obj.shift):
             return False
         return True
 
@@ -259,7 +260,7 @@ class OrderAdmin(admin.ModelAdmin):
         return super().has_view_permission(request)
 
     def has_view_permission(self, request, obj=None):
-        if obj and not obj.shift.is_manager(request.member):
+        if obj and not is_manager(request.member, obj.shift):
             return False
         return super().has_view_permission(request, obj)
 
@@ -269,7 +270,7 @@ class OrderAdmin(admin.ModelAdmin):
         if obj and obj.payment:
             return False
 
-        if obj and not obj.shift.is_manager(request.member):
+        if obj and not is_manager(request.member, obj.shift):
             return False
 
         return super().has_change_permission(request, obj)
@@ -280,7 +281,7 @@ class OrderAdmin(admin.ModelAdmin):
         if obj and obj.payment:
             return False
 
-        if obj and not obj.shift.is_manager(request.member):
+        if obj and not is_manager(request.member, obj.shift):
             return False
 
         return super().has_delete_permission(request, obj)

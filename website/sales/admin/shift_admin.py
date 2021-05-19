@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from sales.models.order import Order
 from sales.models.shift import Shift
+from sales.services import is_manager
 
 
 class OrderInline(admin.TabularInline):
@@ -41,7 +42,7 @@ class OrderInline(admin.TabularInline):
         if obj and obj.locked:
             return False
 
-        if obj and obj.is_manager(request.member):
+        if obj and is_manager(request.member, obj):
             return False
 
         return super().has_change_permission(request, obj)
@@ -149,21 +150,21 @@ class ShiftAdmin(admin.ModelAdmin):
         return queryset
 
     def has_view_permission(self, request, obj=None):
-        if obj and not obj.is_manager(request.member):
+        if obj and not is_manager(request.member, obj):
             return False
         return super().has_view_permission(request, obj)
 
     def has_change_permission(self, request, obj=None):
         if obj and obj.locked:
             return False
-        if obj and not obj.is_manager(request.member):
+        if obj and not is_manager(request.member, obj):
             return False
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
         if obj and obj.locked:
             return False
-        if obj and not obj.is_manager(request.member):
+        if obj and not is_manager(request.member, obj):
             return False
         return super().has_delete_permission(request, obj)
 
