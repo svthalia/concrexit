@@ -530,6 +530,7 @@ OAUTH2_PROVIDER = {
         "pushnotifications:write": "Write access to push notifications",
         "payments:read": "Read access to payments",
         "payments:write": "Write access to payments",
+        "payments:admin": "Admin access to payments",
         "sales:read": "Read access to Point of Sale orders",
         "sales:write": "Write access to Point of Sale orders",
     },
