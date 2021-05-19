@@ -24,7 +24,7 @@ class PayableSerializer(Serializer):
                 self.allowed_payment_types.append(Payment.TPAY)
 
     allowed_payment_types = ListField(child=CharField())
-    amount = DecimalField(decimal_places=2, max_digits=1000)
+    amount = DecimalField(decimal_places=2, max_digits=6)
     payer = MemberSerializer(detailed=False)
     topic = CharField()
     notes = CharField()
