@@ -117,8 +117,10 @@ class FoodEventOrderDetailView(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        instance = serializer.save(food_event=self.food_event)
+        self.perform_create(serializer)
         return Response(
-            FoodOrderSerializer(instance, context=self.get_serializer_context()).data,
+            FoodOrderSerializer(
+                serializer.instance, context=self.get_serializer_context()
+            ).data,
             status=status.HTTP_201_CREATED,
         )
