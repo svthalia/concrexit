@@ -212,7 +212,7 @@ class OrderAdmin(admin.ModelAdmin):
         """Disallow changing shift when selected."""
         default_fields = self.readonly_fields
 
-        if not request.member.has_perm("sales.custom_prices"):
+        if not (request.member and request.member.has_perm("sales.custom_prices")):
             default_fields += ("discount",)
 
         if obj and obj.shift:
@@ -223,7 +223,7 @@ class OrderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
 
-        if request.member and not (
+        if not request.member or not (
             request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
@@ -245,7 +245,7 @@ class OrderAdmin(admin.ModelAdmin):
         return queryset
 
     def has_add_permission(self, request):
-        if request.member and not (
+        if not request.member or not (
             request.member.is_superuser
             or request.member.has_perm("sales.override_manager")
         ):
@@ -307,11 +307,9 @@ class OrderAdmin(admin.ModelAdmin):
             )
         if db_field.name == "shift":
             field.queryset = Shift.objects.filter(locked=False)
-            if request.member and not (
-                (
-                    request.member.is_superuser
-                    or request.member.has_perm("sales.override_manager")
-                )
+            if not request.member or not (
+                request.member.is_superuser
+                or request.member.has_perm("sales.override_manager")
             ):
                 field.queryset = field.queryset.filter(
                     managers__in=request.member.get_member_groups()
@@ -319,12 +317,9 @@ class OrderAdmin(admin.ModelAdmin):
         return field
 
     def changelist_view(self, request, extra_context=None):
-        if not (
-            request.member
-            and (
-                request.member.is_superuser
-                or request.member.has_perm("sales.override_manager")
-            )
+        if not request.member or not (
+            request.member.is_superuser
+            or request.member.has_perm("sales.override_manager")
         ):
             self.message_user(
                 request,
