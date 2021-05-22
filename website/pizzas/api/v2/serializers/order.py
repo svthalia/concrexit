@@ -1,11 +1,14 @@
-from rest_framework import serializers
+from rest_framework import serializers, fields
 from rest_framework.validators import UniqueTogetherValidator
 
 from members.api.v2.serializers.member import MemberSerializer
 from payments.api.v2.serializers import PaymentSerializer
 from pizzas.api.v2.serializers.product import ProductSerializer
-from pizzas.models import FoodOrder
-from thaliawebsite.api.v2 import fields
+from pizzas.models import FoodOrder, FoodEvent
+from thaliawebsite.api.v2.fields import (
+    CurrentMemberDefault,
+    CurrentRequestObjectDefault,
+)
 
 
 class FoodOrderSerializer(serializers.ModelSerializer):
@@ -22,14 +25,17 @@ class FoodOrderSerializer(serializers.ModelSerializer):
 class FoodOrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoodOrder
-        fields = ("product", "member")
+        fields = ("product", "member", "food_event")
         validators = [
             UniqueTogetherValidator(
-                queryset=FoodOrder.objects.all(), fields=["product", "member"],
+                queryset=FoodOrder.objects.all(), fields=["food_event", "member"],
             )
         ]
 
-    member = fields.CurrentMemberField()
+    food_event = fields.HiddenField(
+        default=CurrentRequestObjectDefault(FoodEvent, url_field="pk")
+    )
+    member = fields.HiddenField(default=CurrentMemberDefault())
 
 
 class FoodOrderUpdateSerializer(serializers.ModelSerializer):

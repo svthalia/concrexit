@@ -1,13 +1,14 @@
-from rest_framework.fields import HiddenField
+class CurrentMemberDefault:
+    """A default class that can be used to represent the current member.
 
+    In order to use this, the 'request' must have been provided as part
+    of the context dictionary when instantiating the serializer.
+    """
 
-class CurrentMemberField(HiddenField):
-    """The current member field does not take input from the user, or present any output, but it does populate a \
-    field in `validated_data`, based on the member in the current request."""
+    requires_context = True
 
-    def __init__(self, **kwargs):
-        kwargs["default"] = None
-        super().__init__(**kwargs)
+    def __call__(self, serializer_field):
+        return serializer_field.context["request"].member
 
-    def get_value(self, dictionary):
-        return self.context["request"].member
+    def __repr__(self):
+        return "%s()" % self.__class__.__name__
