@@ -12,14 +12,14 @@ class FoodOrderPayable(Payable):
 
     @property
     def payment_topic(self):
-        start_date = date(self.model.pizza_event.start, "Y-m-d")
-        return f"Food {self.model.pizza_event.event.title_en} [{start_date}]"
+        start_date = date(self.model.food_event.start, "Y-m-d")
+        return f"Food {self.model.food_event.event.title_en} [{start_date}]"
 
     @property
     def payment_notes(self):
         return (
             f"Food order by {self.model.member_name} "
-            f"for {self.model.pizza_event.event.title_en}"
+            f"for {self.model.food_event.event.title_en}"
         )
 
     @property
@@ -27,7 +27,7 @@ class FoodOrderPayable(Payable):
         return self.model.member
 
     def can_create_payment(self, member):
-        return can_change_order(member, self.model.pizza_event)
+        return can_change_order(member, self.model.food_event)
 
 
 def register():
