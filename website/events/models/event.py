@@ -438,7 +438,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                     self.registration_reminder = registration_reminder
                     self.registration_reminder.users.set(Member.current_members.all())
                 elif registration_reminder.pk is not None:
-                    delete_collector.add([self.registration_reminder])
+                    delete_collector.collect([self.registration_reminder])
                     self.registration_reminder = None
 
             start_reminder_time = self.start - timezone.timedelta(hours=1)
@@ -460,18 +460,18 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 else:
                     self.start_reminder.users.set(Member.current_members.all())
             elif start_reminder.pk is not None:
-                delete_collector.add([self.start_reminder])
+                delete_collector.collect([self.start_reminder])
                 self.start_reminder = None
         else:
             if (
                 self.registration_reminder is not None
                 and not self.registration_reminder.sent
             ):
-                delete_collector.add([self.registration_reminder])
+                delete_collector.collect([self.registration_reminder])
                 self.registration_reminder = None
 
             if self.start_reminder is not None and not self.start_reminder.sent:
-                delete_collector.add([self.start_reminder])
+                delete_collector.collect([self.start_reminder])
                 self.start_reminder = None
 
         super().save()
@@ -486,9 +486,9 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
             self.registration_reminder is not None
             and not self.registration_reminder.sent
         ):
-            collector.add([self.registration_reminder])
+            collector.collect([self.registration_reminder], keep_parents=keep_parents)
         if self.start_reminder is not None and not self.start_reminder.sent:
-            collector.add([self.start_reminder])
+            collector.collect([self.start_reminder], keep_parents=keep_parents)
         if self.has_food_event:
             collector.add([self.food_event])
 
