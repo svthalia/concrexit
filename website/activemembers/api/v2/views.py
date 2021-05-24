@@ -1,22 +1,19 @@
 """API views of the activemembers app."""
-
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
+from rest_framework import filters as framework_filters
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
-    get_object_or_404,
 )
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
+from activemembers.api.v2 import filters
 from activemembers.api.v2.serializers.member_group import (
     MemberGroupSerializer,
     MemberGroupListSerializer,
 )
 from activemembers.models import (
     MemberGroupMembership,
-    Committee,
-    Society,
-    Board,
     MemberGroup,
 )
 
@@ -26,6 +23,12 @@ class MemberGroupListView(ListAPIView):
 
     serializer_class = MemberGroupListSerializer
     queryset = MemberGroup.active_objects.all()
+    filter_backends = (
+        framework_filters.SearchFilter,
+        filters.MemberGroupTypeFilter,
+        filters.MemberGroupDateFilter,
+    )
+    search_fields = ("name",)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissionsOrAnonReadOnly,
@@ -53,48 +56,3 @@ class MemberGroupDetailView(RetrieveAPIView):
         context = super().get_serializer_context()
         context["get_memberships"] = self._get_memberships
         return context
-
-
-class CommitteeListView(MemberGroupListView):
-    """Returns an overview of all committees."""
-
-    queryset = Committee.active_objects.all()
-
-
-class CommitteeDetailView(MemberGroupDetailView):
-    """Returns details of a committee."""
-
-    queryset = Committee.active_objects.all()
-
-
-class SocietyListView(MemberGroupListView):
-    """Returns an overview of all societies."""
-
-    queryset = Society.active_objects.all()
-
-
-class SocietyDetailView(MemberGroupDetailView):
-    """Returns details of a society."""
-
-    queryset = Society.active_objects.all()
-
-
-class BoardListView(MemberGroupListView):
-    """Returns an overview of all boards."""
-
-    queryset = Board.objects.all()
-
-
-class BoardDetailView(MemberGroupDetailView):
-    """Returns details of a board."""
-
-    queryset = Board.objects.all()
-
-    def get_object(self) -> Board:
-        if self.kwargs.get("since") and self.kwargs.get("until"):
-            return get_object_or_404(
-                Board,
-                since__year=self.kwargs.get("since"),
-                until__year=self.kwargs.get("until"),
-            )
-        return super().get_object()
