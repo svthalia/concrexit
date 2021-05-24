@@ -39,7 +39,7 @@ class MemberGroupDateFilter(filters.BaseFilterBackend):
         start, end = extract_date_range(request, allow_empty=True)
 
         if start is not None:
-            queryset = queryset.filter(Q(until__isnull=True) | Q(until_gte=start))
+            queryset = queryset.filter(Q(until__isnull=True) | Q(until__gte=start))
         if end is not None:
             queryset = queryset.filter(Q(since__isnull=True) | Q(since__lte=end))
 
