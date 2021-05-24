@@ -131,10 +131,9 @@ class ShiftAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
 
-        if not request.member or not (
-            request.member.is_superuser
-            or request.member.has_perm("sales.override_manager")
-        ):
+        if not request.member:
+            queryset = queryset.none()
+        elif not request.member.has_perm("sales.override_manager"):
             queryset = queryset.filter(
                 managers__in=request.member.get_member_groups()
             ).distinct()
@@ -169,10 +168,7 @@ class ShiftAdmin(admin.ModelAdmin):
         return super().has_delete_permission(request, obj)
 
     def changelist_view(self, request, extra_context=None):
-        if not request.member or not (
-            request.member.is_superuser
-            or request.member.has_perm("sales.override_manager")
-        ):
+        if not (request.member and request.member.has_perm("sales.override_manager")):
             self.message_user(
                 request,
                 _("You are only seeing shifts that you are managing."),
