@@ -672,6 +672,13 @@ class PaymentUserAdmin(admin.ModelAdmin):
         "email",
     )
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.select_properties(
+            "tpay_balance", "tpay_enabled", "tpay_allowed",
+        )
+        return queryset
+
     def get_tpay_balance(self, obj):
         return f"€ {obj.tpay_balance:.2f}" if obj.tpay_enabled else "-"
 
