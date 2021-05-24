@@ -39,10 +39,9 @@ class ShiftListView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset().filter(locked=False)
 
-        if not (
-            self.request.member.is_superuser
-            or self.request.member.has_perm("sales.override_manager")
-        ):
+        if not self.request.member:
+            queryset = queryset.none()
+        elif not self.request.member.has_perm("sales.override_manager"):
             queryset = queryset.filter(
                 managers__in=self.request.member.get_member_groups()
             ).distinct()
@@ -198,10 +197,9 @@ class OrderDetailView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        if not (
-            self.request.member.is_superuser
-            or self.request.member.has_perm("sales.override_manager")
-        ):
+        if not self.request.member:
+            queryset = queryset.none()
+        elif not self.request.member.has_perm("sales.override_manager"):
             queryset = queryset.filter(
                 shift__managers__in=self.request.member.get_member_groups()
             ).distinct()

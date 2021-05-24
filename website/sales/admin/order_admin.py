@@ -24,7 +24,7 @@ class OrderItemInline(admin.TabularInline):
     def get_readonly_fields(self, request: HttpRequest, obj: Order = None):
         default_fields = self.readonly_fields
 
-        if not request.member.has_perm("sales.custom_prices"):
+        if not (request.member and request.member.has_perm("sales.custom_prices")):
             default_fields += ("total",)
 
         return default_fields
@@ -223,10 +223,9 @@ class OrderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
 
-        if not request.member or not (
-            request.member.is_superuser
-            or request.member.has_perm("sales.override_manager")
-        ):
+        if not request.member:
+            queryset = queryset.none()
+        elif not request.member.has_perm("sales.override_manager"):
             queryset = queryset.filter(
                 shift__managers__in=request.member.get_member_groups()
             ).distinct()
@@ -245,10 +244,9 @@ class OrderAdmin(admin.ModelAdmin):
         return queryset
 
     def has_add_permission(self, request):
-        if not request.member or not (
-            request.member.is_superuser
-            or request.member.has_perm("sales.override_manager")
-        ):
+        if not request.member:
+            return False
+        elif not request.member.has_perm("sales.override_manager"):
             if (
                 Shift.objects.filter(
                     start__lte=timezone.now(),
@@ -307,20 +305,16 @@ class OrderAdmin(admin.ModelAdmin):
             )
         if db_field.name == "shift":
             field.queryset = Shift.objects.filter(locked=False)
-            if not request.member or not (
-                request.member.is_superuser
-                or request.member.has_perm("sales.override_manager")
-            ):
+            if not request.member:
+                field.queryset = field.queryset.none()
+            elif not request.member.has_perm("sales.override_manager"):
                 field.queryset = field.queryset.filter(
                     managers__in=request.member.get_member_groups()
                 )
         return field
 
     def changelist_view(self, request, extra_context=None):
-        if not request.member or not (
-            request.member.is_superuser
-            or request.member.has_perm("sales.override_manager")
-        ):
+        if not (request.member and request.member.has_perm("sales.override_manager")):
             self.message_user(
                 request,
                 _("You are only seeing orders that are relevant to you."),
