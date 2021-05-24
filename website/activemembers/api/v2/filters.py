@@ -11,13 +11,12 @@ class MemberGroupTypeFilter(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         type = request.query_params.get("type", None)
 
-        if type:
-            if type == "board":
-                queryset = Board.objects.all()
-            elif type == "committee":
-                queryset = Committee.objects.all()
-            elif type == "society":
-                queryset = Society.objects.all()
+        if type == "board":
+            queryset = Board.active_objects.all()
+        elif type == "committee":
+            queryset = Committee.active_objects.all()
+        elif type == "society":
+            queryset = Society.active_objects.all()
 
         return queryset
 
