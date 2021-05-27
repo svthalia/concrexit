@@ -26,7 +26,7 @@ import events.api.v2.filters as normal_filters
 
 
 class EventAdminListAPIView(AdminListAPIView):
-    queryset = Event.objects.all()
+    queryset = Event.objects.prefetch_related("organiser")
     serializer_class = EventListSerializer
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
@@ -70,7 +70,9 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
     def get_queryset(self):
         event = get_object_or_404(Event, pk=self.kwargs.get("pk"))
         if event:
-            return EventRegistration.objects.filter(event_id=event)
+            return EventRegistration.objects.filter(event_id=event).prefetch_related(
+                "member", "member__profile"
+            )
         return EventRegistration.objects.none()
 
 
