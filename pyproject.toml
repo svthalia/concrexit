@@ -7,7 +7,7 @@ license = "AGPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-django-localflavor = "3.0.1"
+django-localflavor = "3.1"
 freezegun = "1.1.0"
 bleach = "3.3.0"
 django-tinymce4-lite = "1.8.0"
