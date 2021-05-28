@@ -363,7 +363,7 @@ libsass = ">=0.7.0,<1"
 
 [[package]]
 name = "django-localflavor"
-version = "3.0.1"
+version = "3.1"
 description = "Country-specific Django helpers"
 category = "main"
 optional = false
@@ -1366,7 +1366,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "e770738aab41c3e4ca6052b2324e4051e1931eed99b1a42564373f7605d3240d"
+content-hash = "7f25d7bf29df4b47ce53721a92eac54acdf371ad7f53b81f73ffdd2168d32796"
 
 [metadata.files]
 alabaster = [
@@ -1593,8 +1593,8 @@ django-libsass = [
     {file = "django_libsass-0.8-py3-none-any.whl", hash = "sha256:3e74fd8e75ac0e6ebc0443efc3e530167981bf279fecc2294094c820ae266fbb"},
 ]
 django-localflavor = [
-    {file = "django-localflavor-3.0.1.tar.gz", hash = "sha256:24e9a03bc11ced92365821d3cfdd96eb4e2f3e44a6f40e86c645d3e0ec65ec53"},
-    {file = "django_localflavor-3.0.1-py2.py3-none-any.whl", hash = "sha256:3c3034dc64a1f7e5efd9eb53d653af905c20482d438c0e8b825d02e3121b86fa"},
+    {file = "django-localflavor-3.1.tar.gz", hash = "sha256:ac2fa377bbcba4cae95e97077d9e77c7f22b3d93e4845e2e133ba7e664043a44"},
+    {file = "django_localflavor-3.1-py3-none-any.whl", hash = "sha256:6593865dc671333b3edc88e729e6d384d00b6db7891ef5d3a65db831a40050d2"},
 ]
 django-oauth-toolkit = [
     {file = "django-oauth-toolkit-1.3.2.tar.gz", hash = "sha256:28508f83385ab4313936ddedfb310eaa8a1dcb737153d2956383ce47e75c2fab"},
