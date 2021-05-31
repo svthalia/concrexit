@@ -215,7 +215,9 @@ class Payment(models.Model):
         if (
             (self._state.adding or self._type != Payment.TPAY)
             and self.type == Payment.TPAY
-            and not self.paid_by.tpay_enabled
+            and not PaymentUser.objects.select_properties("tpay_enabled")
+            .filter(pk=self.paid_by.pk, tpay_enabled=True)
+            .exists()
         ):
             raise ValidationError(
                 {"paid_by": _("This user does not have Thalia Pay enabled")}
