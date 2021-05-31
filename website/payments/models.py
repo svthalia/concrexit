@@ -4,7 +4,6 @@ import uuid
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -33,7 +32,6 @@ class PaymentUser(Member):
     @classmethod
     def tpay_enabled(cls):
         today = timezone.now().date()
-        """Check if this user has a bank account with Direct Debit enabled."""
         return Case(
             When(
                 Q(
