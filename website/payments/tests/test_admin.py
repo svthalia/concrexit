@@ -891,6 +891,13 @@ class PaymentUserAdminTest(TestCase):
         tpay_allowed.return_value = True
         self.assertTrue(self.admin.get_tpay_allowed(self.user))
 
+    def test_get_queryset(self):
+        self.assertQuerysetEqual(
+            self.admin.get_queryset(None).all(),
+            PaymentUser.objects.all(),
+            ordered=False,
+        )
+
     def test_tpay_allowed_filter(self):
         filter_all = admin.ThaliaPayAllowedFilter(
             None, {}, PaymentUser, admin.PaymentUserAdmin
