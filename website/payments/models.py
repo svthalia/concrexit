@@ -87,6 +87,9 @@ class BlacklistedPaymentUser(models.Model):
         PaymentUser, on_delete=models.CASCADE, primary_key=True,
     )
 
+    def __str__(self):
+        return f"{self.payment_user} (blacklisted from using Thalia Pay)"
+
 
 class Payment(models.Model):
     """Describes a payment."""

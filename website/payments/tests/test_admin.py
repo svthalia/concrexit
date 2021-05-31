@@ -900,6 +900,7 @@ class PaymentUserAdminTest(TestCase):
                 None, PaymentUser.objects.select_properties("tpay_allowed")
             ),
             PaymentUser.objects.select_properties("tpay_allowed"),
+            ordered=False,
         )
 
         filter_true = admin.ThaliaPayAllowedFilter(
@@ -912,6 +913,7 @@ class PaymentUserAdminTest(TestCase):
             .values_list("pk", flat=True)
             .all(),
             ["3", "4", "2", "1"],
+            ordered=False,
         )
         filter_false = admin.ThaliaPayAllowedFilter(
             None, {"tpay_allowed": "0"}, PaymentUser, admin.PaymentUserAdmin
@@ -923,6 +925,7 @@ class PaymentUserAdminTest(TestCase):
             .values_list("pk", flat=True)
             .all(),
             [],
+            ordered=False,
         )
 
     def test_tpay_enabled_filter(self):
@@ -941,6 +944,7 @@ class PaymentUserAdminTest(TestCase):
             .values_list("pk", flat=True)
             .all(),
             ["2", "1"],
+            ordered=False,
         )
         filter_false = admin.ThaliaPayEnabledFilter(
             None, {"tpay_enabled": "0"}, PaymentUser, admin.PaymentUserAdmin
@@ -950,6 +954,7 @@ class PaymentUserAdminTest(TestCase):
             .values_list("pk", flat=True)
             .all(),
             ["3", "4"],
+            ordered=False,
         )
 
     def test_tpay_balance_filter(self):
@@ -998,6 +1003,7 @@ class PaymentUserAdminTest(TestCase):
             .values_list("pk", flat=True)
             .all(),
             ["1", "2", "3", "4"],
+            ordered=False,
         )
         filter_false = admin.ThaliaPayBalanceFilter(
             None, {"tpay_balance": "1"}, PaymentUser, admin.PaymentUserAdmin
