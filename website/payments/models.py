@@ -26,7 +26,6 @@ class PaymentUser(Member):
     class Meta:
         proxy = True
         verbose_name = "payment user"
-        permissions = (("tpay_allowed", "Is allowed to use Thalia Pay"),)
 
     objects = QueryablePropertiesManager()
 
@@ -45,7 +44,7 @@ class PaymentUser(Member):
                     Q(bank_accounts__valid_until__isnull=True)
                     | Q(bank_accounts__valid_until__gt=today)
                 ),
-                then=True,
+                then=settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
             ),
             default=False,
             output_field=BooleanField(),
@@ -70,15 +69,25 @@ class PaymentUser(Member):
     @queryable_property(annotation_based=True)
     @classmethod
     def tpay_allowed(cls):
-        return Value(True)
+        return Case(
+            When(blacklistedpaymentuser__isnull=False, then=False),
+            default=True,
+            output_field=BooleanField(),
+        )
 
     def allow_tpay(self):
         """Give this user Thalia Pay permission."""
-        self.user_permissions.add(Permission.objects.get(codename="tpay_allowed"))
+        BlacklistedPaymentUser.objects.filter(payment_user=self).delete()
 
     def disallow_tpay(self):
         """Revoke this user's Thalia Pay permission."""
-        self.user_permissions.remove(Permission.objects.get(codename="tpay_allowed"))
+        return BlacklistedPaymentUser.objects.get_or_create(payment_user=self)
+
+
+class BlacklistedPaymentUser(models.Model):
+    payment_user = models.OneToOneField(
+        PaymentUser, on_delete=models.CASCADE, primary_key=True,
+    )
 
 
 class Payment(models.Model):

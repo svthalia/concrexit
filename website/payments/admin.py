@@ -591,11 +591,10 @@ class ThaliaPayAllowedFilter(admin.SimpleListFilter):
         return ("1", _("Yes")), ("0", _("No"))
 
     def queryset(self, request, queryset):
-        tpay_allowed = [x.id for x in queryset.all() if x.tpay_allowed]
         if self.value() == "1":
-            return queryset.filter(id__in=tpay_allowed)
+            return queryset.filter(tpay_allowed=True)
         if self.value() == "0":
-            return queryset.exclude(id__in=tpay_allowed)
+            return queryset.exclude(tpay_allowed=True)
         return queryset
 
 
@@ -607,11 +606,10 @@ class ThaliaPayEnabledFilter(admin.SimpleListFilter):
         return ("1", _("Yes")), ("0", _("No"))
 
     def queryset(self, request, queryset):
-        tpay_enabled = [x.id for x in queryset.all() if x.tpay_enabled]
         if self.value() == "1":
-            return queryset.filter(id__in=tpay_enabled)
+            return queryset.filter(tpay_enabled=True)
         if self.value() == "0":
-            return queryset.exclude(id__in=tpay_enabled)
+            return queryset.exclude(tpay_enabled=True)
         return queryset
 
 
@@ -626,11 +624,10 @@ class ThaliaPayBalanceFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
-        tpay_balance = [x.id for x in queryset.all() if x.tpay_balance != 0]
         if self.value() == "0":
-            return queryset.exclude(id__in=tpay_balance)
+            return queryset.filter(tpay_balance=0)
         if self.value() == "1":
-            return queryset.filter(id__in=tpay_balance)
+            return queryset.exclude(tpay_balance=0)
         return queryset
 
 
@@ -674,6 +671,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
+        queryset = queryset.prefetch_related("bank_accounts", "paid_payment_set")
         queryset = queryset.select_properties(
             "tpay_balance", "tpay_enabled", "tpay_allowed",
         )
@@ -715,9 +713,8 @@ class PaymentUserAdmin(admin.ModelAdmin):
     def disallow_thalia_pay(self, request, queryset):
         count = 0
         for x in queryset:
-            if x.tpay_enabled:
-                x.disallow_tpay()
-                count += 1
+            x.disallow_tpay()
+            count += 1
         messages.success(
             request, _(f"Succesfully disallowed Thalia Pay for {count} users."),
         )
@@ -728,9 +725,8 @@ class PaymentUserAdmin(admin.ModelAdmin):
         """Disallow Thalia Pay for selected users."""
         count = 0
         for x in queryset:
-            if not x.tpay_enabled:
-                x.allow_tpay()
-                count += 1
+            x.allow_tpay()
+            count += 1
         messages.success(
             request, _(f"Succesfully allowed Thalia Pay for {count} users."),
         )
