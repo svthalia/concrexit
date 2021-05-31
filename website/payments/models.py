@@ -83,9 +83,7 @@ class PaymentUser(Member):
 
 
 class BlacklistedPaymentUser(models.Model):
-    payment_user = models.OneToOneField(
-        PaymentUser, on_delete=models.CASCADE, primary_key=True,
-    )
+    payment_user = models.OneToOneField(PaymentUser, on_delete=models.CASCADE,)
 
     def __str__(self):
         return f"{self.payment_user} (blacklisted from using Thalia Pay)"
