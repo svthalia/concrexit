@@ -75,11 +75,13 @@ class PaymentUser(Member):
 
     def allow_tpay(self):
         """Give this user Thalia Pay permission."""
-        BlacklistedPaymentUser.objects.filter(payment_user=self).delete()
+        deleted, _ = BlacklistedPaymentUser.objects.filter(payment_user=self).delete()
+        return deleted > 0
 
     def disallow_tpay(self):
         """Revoke this user's Thalia Pay permission."""
-        return BlacklistedPaymentUser.objects.get_or_create(payment_user=self)
+        _, created = BlacklistedPaymentUser.objects.get_or_create(payment_user=self)
+        return created
 
 
 class BlacklistedPaymentUser(models.Model):

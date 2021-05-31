@@ -495,9 +495,12 @@ class PaymentUserTest(TestCase):
 
 
 class BlacklistedPaymentUserTest(TestCase):
+    fixtures = ["members.json"]
+
     def test_str(self):
         member = PaymentUser.objects.filter(last_name="Wiggers").first()
-        blacklisted = BlacklistedPaymentUser.objects.create(payment_user=member)
+        member.disallow_tpay()
         self.assertEqual(
-            str(blacklisted), "Thom Wiggers (blacklisted from using Thalia Pay)"
+            str(member.blacklistedpaymentuser),
+            "Thom Wiggers (thom) (blacklisted from using Thalia Pay)",
         )
