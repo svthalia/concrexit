@@ -8,7 +8,13 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from payments import services, Payable
-from payments.models import Payment, BankAccount, Batch, PaymentUser
+from payments.models import (
+    Payment,
+    BankAccount,
+    Batch,
+    PaymentUser,
+    BlacklistedPaymentUser,
+)
 from payments.tests.__mocks__ import MockPayable, MockModel
 
 
@@ -343,6 +349,7 @@ class BankAccountTest(TestCase):
         or unbatched Thalia Pay payments that hence cannot be revoked by users directly
         """
         self.assertTrue(self.with_mandate.can_be_revoked)
+        self.member.refresh_from_db()
         payment = Payment.objects.create(
             paid_by=self.member, type=Payment.TPAY, topic="test", amount=3
         )
@@ -479,9 +486,21 @@ class PaymentUserTest(TestCase):
         self.assertEqual(self.member.tpay_balance, 0)
 
     def test_allow_disallow_tpay(self):
-        self.member.is_superuser = False
-        self.member.save()
+        self.assertTrue(self.member.tpay_allowed)
         self.member.allow_tpay()
         self.assertTrue(self.member.tpay_allowed)
         self.member.disallow_tpay()
-        self.assertFalse(PaymentUser.objects.first().tpay_allowed)
+        self.member.refresh_from_db()
+        self.assertFalse(self.member.tpay_allowed)
+
+
+class BlacklistedPaymentUserTest(TestCase):
+    fixtures = ["members.json"]
+
+    def test_str(self):
+        member = PaymentUser.objects.filter(last_name="Wiggers").first()
+        member.disallow_tpay()
+        self.assertEqual(
+            str(member.blacklistedpaymentuser),
+            "Thom Wiggers (thom) (blacklisted from using Thalia Pay)",
+        )

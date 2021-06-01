@@ -847,7 +847,6 @@ class BankAccountAdminTest(TestCase):
 
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
-@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
 class PaymentUserAdminTest(TestCase):
     fixtures = ["members.json", "bank_accounts.json"]
 
@@ -892,31 +891,48 @@ class PaymentUserAdminTest(TestCase):
         tpay_allowed.return_value = True
         self.assertTrue(self.admin.get_tpay_allowed(self.user))
 
+    def test_get_queryset(self):
+        self.assertQuerysetEqual(
+            self.admin.get_queryset(None).all(),
+            PaymentUser.objects.all(),
+            ordered=False,
+        )
+
     def test_tpay_allowed_filter(self):
         filter_all = admin.ThaliaPayAllowedFilter(
             None, {}, PaymentUser, admin.PaymentUserAdmin
         )
-        self.assertEqual(
-            filter_all.queryset(None, PaymentUser.objects), PaymentUser.objects
+        self.assertQuerysetEqual(
+            filter_all.queryset(
+                None, PaymentUser.objects.select_properties("tpay_allowed")
+            ),
+            PaymentUser.objects.select_properties("tpay_allowed"),
+            ordered=False,
         )
 
         filter_true = admin.ThaliaPayAllowedFilter(
             None, {"tpay_allowed": "1"}, PaymentUser, admin.PaymentUserAdmin
         )
         self.assertQuerysetEqual(
-            filter_true.queryset(None, PaymentUser.objects)
+            filter_true.queryset(
+                None, PaymentUser.objects.select_properties("tpay_allowed")
+            )
             .values_list("pk", flat=True)
             .all(),
             ["3", "4", "2", "1"],
+            ordered=False,
         )
         filter_false = admin.ThaliaPayAllowedFilter(
             None, {"tpay_allowed": "0"}, PaymentUser, admin.PaymentUserAdmin
         )
         self.assertQuerysetEqual(
-            filter_false.queryset(None, PaymentUser.objects)
+            filter_false.queryset(
+                None, PaymentUser.objects.select_properties("tpay_allowed")
+            )
             .values_list("pk", flat=True)
             .all(),
             [],
+            ordered=False,
         )
 
     def test_tpay_enabled_filter(self):
@@ -935,6 +951,7 @@ class PaymentUserAdminTest(TestCase):
             .values_list("pk", flat=True)
             .all(),
             ["2", "1"],
+            ordered=False,
         )
         filter_false = admin.ThaliaPayEnabledFilter(
             None, {"tpay_enabled": "0"}, PaymentUser, admin.PaymentUserAdmin
@@ -944,54 +961,68 @@ class PaymentUserAdminTest(TestCase):
             .values_list("pk", flat=True)
             .all(),
             ["3", "4"],
+            ordered=False,
         )
 
-    @mock.patch("payments.models.PaymentUser.tpay_balance", new_callable=PropertyMock)
-    def test_tpay_balance_filter(self, tpay_balance):
+    def test_tpay_balance_filter(self):
         filter_all = admin.ThaliaPayBalanceFilter(
             None, {}, PaymentUser, admin.PaymentUserAdmin
         )
-        self.assertEqual(
-            filter_all.queryset(None, PaymentUser.objects), PaymentUser.objects
+        self.assertQuerysetEqual(
+            filter_all.queryset(
+                None, PaymentUser.objects.select_properties("tpay_balance")
+            ),
+            PaymentUser.objects.select_properties("tpay_balance"),
+            ordered=False,
         )
 
-        tpay_balance.return_value = Decimal(0)
         filter_true = admin.ThaliaPayBalanceFilter(
             None, {"tpay_balance": "0"}, PaymentUser, admin.PaymentUserAdmin
         )
         self.assertQuerysetEqual(
-            filter_true.queryset(None, PaymentUser.objects)
+            filter_true.queryset(
+                None, PaymentUser.objects.select_properties("tpay_balance")
+            )
             .values_list("pk", flat=True)
             .all(),
             ["3", "4", "2", "1"],
+            ordered=False,
         )
         filter_false = admin.ThaliaPayBalanceFilter(
             None, {"tpay_balance": "1"}, PaymentUser, admin.PaymentUserAdmin
         )
         self.assertQuerysetEqual(
-            filter_false.queryset(None, PaymentUser.objects)
+            filter_false.queryset(
+                None, PaymentUser.objects.select_properties("tpay_balance")
+            )
             .values_list("pk", flat=True)
             .all(),
             [],
+            ordered=False,
         )
-        tpay_balance.return_value = Decimal(10)
         filter_true = admin.ThaliaPayBalanceFilter(
             None, {"tpay_balance": "0"}, PaymentUser, admin.PaymentUserAdmin
         )
         self.assertQuerysetEqual(
-            filter_true.queryset(None, PaymentUser.objects)
+            filter_true.queryset(
+                None, PaymentUser.objects.select_properties("tpay_balance")
+            )
             .values_list("pk", flat=True)
             .all(),
-            [],
+            ["1", "2", "3", "4"],
+            ordered=False,
         )
         filter_false = admin.ThaliaPayBalanceFilter(
             None, {"tpay_balance": "1"}, PaymentUser, admin.PaymentUserAdmin
         )
         self.assertQuerysetEqual(
-            filter_false.queryset(None, PaymentUser.objects)
+            filter_false.queryset(
+                None, PaymentUser.objects.select_properties("tpay_balance")
+            )
             .values_list("pk", flat=True)
             .all(),
-            ["3", "4", "2", "1"],
+            [],
+            ordered=False,
         )
 
     def test_user_link(self):

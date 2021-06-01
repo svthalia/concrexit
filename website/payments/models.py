@@ -4,16 +4,19 @@ import uuid
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import DEFERRED, Q, Sum
+from django.db.models import DEFERRED, Q, Sum, BooleanField, DecimalField
+from django.db.models.expressions import Case, When, Value
+from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
+from queryable_properties.managers import QueryablePropertiesManager
+from queryable_properties.properties import queryable_property, AggregateProperty
 
 from members.models import Member
 
@@ -22,44 +25,70 @@ class PaymentUser(Member):
     class Meta:
         proxy = True
         verbose_name = "payment user"
-        permissions = (("tpay_allowed", "Is allowed to use Thalia Pay"),)
 
-    @property
-    def tpay_enabled(self):
-        """Check if this user has a bank account with Direct Debit enabled."""
-        bank_accounts = BankAccount.objects.filter(owner=self)
-        return (
-            settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
-            and self.tpay_allowed
-            and bank_accounts.exists()
-            and any(x.valid for x in bank_accounts)
+    objects = QueryablePropertiesManager()
+
+    @queryable_property(annotation_based=True)
+    @classmethod
+    def tpay_enabled(cls):
+        today = timezone.now().date()
+        return Case(
+            When(
+                Q(
+                    bank_accounts__valid_from__isnull=False,
+                    bank_accounts__valid_from__lte=today,
+                )
+                & (
+                    Q(bank_accounts__valid_until__isnull=True)
+                    | Q(bank_accounts__valid_until__gt=today)
+                ),
+                then=settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
+            ),
+            default=False,
+            output_field=BooleanField(),
         )
 
-    @property
-    def tpay_balance(self):
-        """Check the Thalia Pay balance for a user."""
-        payments = Payment.objects.filter(
-            Q(paid_by=self, type=Payment.TPAY)
-            & (Q(batch__isnull=True) | Q(batch__processed=False))
+    tpay_balance = AggregateProperty(
+        -1
+        * Coalesce(
+            Sum(
+                "paid_payment_set__amount",
+                filter=Q(paid_payment_set__type="tpay_payment")
+                & (
+                    Q(paid_payment_set__batch__isnull=True)
+                    | Q(paid_payment_set__batch__processed=False)
+                ),
+            ),
+            Value(0.00),
+            output_field=DecimalField(decimal_places=2, max_digits=6),
         )
-        total = payments.aggregate(Sum("amount"))["amount__sum"]
-        return -1 * total if total else 0
+    )
 
-    @property
-    def tpay_allowed(self):
-        """Check if this user has permissions to use Thalia Pay (but not necessarily enabled)."""
-        return (
-            self.has_perm("payments.tpay_allowed")
-            and settings.THALIA_PAY_ENABLED_PAYMENT_METHOD
+    @queryable_property(annotation_based=True)
+    @classmethod
+    def tpay_allowed(cls):
+        return Case(
+            When(blacklistedpaymentuser__isnull=False, then=False),
+            default=True,
+            output_field=BooleanField(),
         )
 
     def allow_tpay(self):
         """Give this user Thalia Pay permission."""
-        self.user_permissions.add(Permission.objects.get(codename="tpay_allowed"))
+        deleted, _ = BlacklistedPaymentUser.objects.filter(payment_user=self).delete()
+        return deleted > 0
 
     def disallow_tpay(self):
         """Revoke this user's Thalia Pay permission."""
-        self.user_permissions.remove(Permission.objects.get(codename="tpay_allowed"))
+        _, created = BlacklistedPaymentUser.objects.get_or_create(payment_user=self)
+        return created
+
+
+class BlacklistedPaymentUser(models.Model):
+    payment_user = models.OneToOneField(PaymentUser, on_delete=models.CASCADE,)
+
+    def __str__(self):
+        return f"{self.payment_user} (blacklisted from using Thalia Pay)"
 
 
 class Payment(models.Model):
@@ -187,7 +216,9 @@ class Payment(models.Model):
         if (
             (self._state.adding or self._type != Payment.TPAY)
             and self.type == Payment.TPAY
-            and not self.paid_by.tpay_enabled
+            and not PaymentUser.objects.select_properties("tpay_enabled")
+            .filter(pk=self.paid_by.pk, tpay_enabled=True)
+            .exists()
         ):
             raise ValidationError(
                 {"paid_by": _("This user does not have Thalia Pay enabled")}

@@ -174,7 +174,6 @@ PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET = timezone.timedelta(days=14)
 THALIA_PAY_ENABLED_PAYMENT_METHOD = (
     from_env("THALIA_PAY_ENABLED", development="1", staging="1", production="0") == "1"
 )
-THALIA_PAY_FOR_NEW_MEMBERS = os.environ.get("THALIA_PAY_FOR_NEW_MEMBERS", "1") == "1"
 
 ###############################################################################
 # Django settings
