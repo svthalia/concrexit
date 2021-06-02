@@ -1078,3 +1078,35 @@ class PaymentUserAdminTest(TestCase):
             request._messages = Mock()
             self.admin.allow_thalia_pay(request, PaymentUser.objects.all())
             mock.assert_called()
+
+    def test_paymentuser_two_bankaccounts(self):
+        p = PaymentUser.objects.get(pk=self.user.pk)
+        self.user.is_superuser = True
+        self.user.save()
+        self.client = Client()
+        self.client.force_login(self.user)
+        response = self.client.get(f"/admin/payments/paymentuser/{p.pk}/change/")
+        self.assertEqual(response.status_code, 200)
+        b1 = BankAccount.objects.create(
+            owner=p,
+            initials="J",
+            last_name="Test2",
+            iban="NL91ABNA0417164300",
+            mandate_no="test1",
+            valid_from=timezone.now().date() - timezone.timedelta(days=5),
+            valid_until=timezone.now().date() - timezone.timedelta(days=3),
+            last_used=timezone.now().date() - timezone.timedelta(days=4),
+            signature="base64,png",
+        )
+        b2 = BankAccount.objects.create(
+            owner=p,
+            initials="J",
+            last_name="Test2",
+            iban="NL91ABNA0417164300",
+            mandate_no="test2",
+            valid_from=timezone.now().date() - timezone.timedelta(days=3),
+            last_used=timezone.now().date() - timezone.timedelta(days=2),
+            signature="base64,png",
+        )
+        response = self.client.get(f"/admin/payments/paymentuser/{p.pk}/change/")
+        self.assertEqual(response.status_code, 200)

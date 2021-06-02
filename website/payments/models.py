@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import DEFERRED, Q, Sum, BooleanField, DecimalField
-from django.db.models.expressions import Case, When, Value
+from django.db.models.expressions import Case, When, Value, Exists, OuterRef
 from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils import timezone
@@ -34,13 +34,11 @@ class PaymentUser(Member):
         today = timezone.now().date()
         return Case(
             When(
-                Q(
-                    bank_accounts__valid_from__isnull=False,
-                    bank_accounts__valid_from__lte=today,
-                )
-                & (
-                    Q(bank_accounts__valid_until__isnull=True)
-                    | Q(bank_accounts__valid_until__gt=today)
+                Exists(
+                    BankAccount.objects.filter(owner=OuterRef("pk")).filter(
+                        Q(valid_from__isnull=False, valid_from__lte=today,)
+                        & (Q(valid_until__isnull=True) | Q(valid_until__gt=today))
+                    )
                 ),
                 then=settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
             ),
