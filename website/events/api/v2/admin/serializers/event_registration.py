@@ -20,6 +20,7 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
             "member",
             "name",
         )
+        read_only_fields = ("payment",)
 
     def to_internal_value(self, data):
         self.fields["member"] = serializers.PrimaryKeyRelatedField(
