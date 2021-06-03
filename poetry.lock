@@ -1008,7 +1008,7 @@ six = ">=1.5"
 
 [[package]]
 name = "python-magic"
-version = "0.4.23"
+version = "0.4.24"
 description = "File type identification using libmagic"
 category = "main"
 optional = false
@@ -1366,7 +1366,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "f1cc8ad22b612feccf2596af278e9de654d898649dfbdf14f225102ae3739053"
+content-hash = "37b1cad85a34ded2807db3ed6c6d6eb7e7017c976411165ebe5a72518e783269"
 
 [metadata.files]
 alabaster = [
@@ -2069,8 +2069,8 @@ python-dateutil = [
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
 ]
 python-magic = [
-    {file = "python-magic-0.4.23.tar.gz", hash = "sha256:88f71d04fde4318da32fa03930362f1c6127caa833614563fd53a0fd3438cc3e"},
-    {file = "python_magic-0.4.23-py2.py3-none-any.whl", hash = "sha256:3790dc06e5abf9d618d288adf831f159ca9a3872aac7bcb8b7008b4a08d9809c"},
+    {file = "python-magic-0.4.24.tar.gz", hash = "sha256:de800df9fb50f8ec5974761054a708af6e4246b03b4bdaee993f948947b0ebcf"},
+    {file = "python_magic-0.4.24-py2.py3-none-any.whl", hash = "sha256:4fec8ee805fea30c07afccd1592c0f17977089895bdfaae5fec870a84e997626"},
 ]
 python-stdnum = [
     {file = "python-stdnum-1.14.tar.gz", hash = "sha256:fd3a92b8ec82a159c41dbaa3c5397934d090090c92b04e346412e0fd7e6a1b1c"},
