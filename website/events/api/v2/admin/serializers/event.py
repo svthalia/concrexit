@@ -71,7 +71,5 @@ class EventListSerializer(serializers.ModelSerializer):
 
     description = CleanedHTMLSerializer()
     organiser = MemberGroupSerializer()
-    price = serializers.DecimalField(
-        max_digits=6, decimal_places=2, min_value=0
-    )
+    price = serializers.DecimalField(max_digits=6, decimal_places=2, min_value=0)
     fine = serializers.FloatField()
