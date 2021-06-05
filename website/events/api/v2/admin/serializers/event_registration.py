@@ -29,5 +29,5 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
     def to_representation(self, instance):
-        self.fields["member"] = MemberSerializer(detailed=False)
+        self.fields["member"] = MemberSerializer(detailed=False, read_only=True)
         return super().to_representation(instance)

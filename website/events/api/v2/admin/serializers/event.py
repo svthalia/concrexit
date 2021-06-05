@@ -37,9 +37,9 @@ class EventSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
     def to_representation(self, instance):
-        self.fields["organiser"] = MemberGroupSerializer()
-        self.fields["slide"] = SlideSerializer()
-        self.fields["documents"] = DocumentSerializer(many=True)
+        self.fields["organiser"] = MemberGroupSerializer(read_only=True)
+        self.fields["slide"] = SlideSerializer(read_only=True)
+        self.fields["documents"] = DocumentSerializer(many=True, read_only=True)
         return super().to_representation(instance)
 
 
