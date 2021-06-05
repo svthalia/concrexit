@@ -65,7 +65,7 @@ class RegistrationAdminFields(FormView):
                 "has_view_permission": True,
                 "has_add_permission": False,
                 "has_change_permission": self.request.user.has_perms(
-                    "events.change_registration"
+                    "events.change_eventregistration"
                 ),
                 "has_delete_permission": False,
                 "has_editable_inline_admin_formsets": False,
@@ -166,8 +166,8 @@ class EventMessage(FormView):
         if not values["url"]:
             values["url"] = settings.BASE_URL + self.event.get_absolute_url()
         message = Message(
-            title_en=values["title_en"],
-            body_en=values["body_en"],
+            title_en=values["title"],
+            body_en=values["body"],
             url=values["url"],
             category=Category.objects.get(key=Category.EVENT),
         )

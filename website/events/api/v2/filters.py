@@ -4,7 +4,7 @@ from rest_framework import filters
 from utils.snippets import extract_date_range
 
 
-class EventDateFilterBackend(filters.BaseFilterBackend):
+class EventDateFilter(filters.BaseFilterBackend):
     """Allows you to filter by event start/end dates."""
 
     def filter_queryset(self, request, queryset, view):
@@ -43,7 +43,7 @@ class CategoryFilter(filters.BaseFilterBackend):
         category = request.query_params.get("category", None)
 
         if category:
-            queryset = queryset.filter(category=category)
+            queryset = queryset.filter(category__in=category.split(","))
 
         return queryset
 
@@ -53,7 +53,7 @@ class CategoryFilter(filters.BaseFilterBackend):
                 "name": "category",
                 "required": False,
                 "in": "query",
-                "description": "Filter by category",
+                "description": "Filter by category, accepts a comma separated list",
                 "schema": {"type": "string",},
             }
         ]

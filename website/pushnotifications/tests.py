@@ -23,12 +23,12 @@ class PushNotificationsTest(TestCase):
         )
 
         cls.event = Event.objects.create(
-            title_en="testevent",
+            title="testevent",
             organiser=cls.committee,
-            description_en="desc",
+            description="desc",
             start=(timezone.now() + datetime.timedelta(hours=2)),
             end=(timezone.now() + datetime.timedelta(hours=3)),
-            location_en="test location",
+            location="test location",
             map_location="test map location",
             price=0.00,
             fine=5.00,

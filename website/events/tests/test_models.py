@@ -25,12 +25,12 @@ class EventTest(TestCase):
         )
 
         cls.event = Event.objects.create(
-            title_en="testevent",
+            title="testevent",
             organiser=cls.committee,
-            description_en="desc",
+            description="desc",
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
-            location_en="test location",
+            location="test location",
             map_location="test map location",
             price=0.00,
             fine=5.00,
@@ -82,11 +82,11 @@ class EventTest(TestCase):
         self.event.registration_start = timezone.now()
         self.event.registration_end = timezone.now() + datetime.timedelta(hours=1)
         self.event.cancel_deadline = timezone.now()
-        self.event.no_registration_message_en = "Not registered"
+        self.event.no_registration_message = "Not registered"
         with self.assertRaises(ValidationError):
             self.event.clean()
 
-        self.event.no_registration_message_en = ""
+        self.event.no_registration_message = ""
         self.event.clean()
 
     def test_registration_end_after_registration_start(self):
@@ -233,12 +233,12 @@ class RegistrationTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.event = Event.objects.create(
-            title_en="testevent",
+            title="testevent",
             organiser=Committee.objects.get(pk=1),
-            description_en="desc",
+            description="desc",
             start=timezone.now(),
             end=(timezone.now() + datetime.timedelta(hours=1)),
-            location_en="test location",
+            location="test location",
             map_location="test map location",
             price=0.00,
             fine=0.00,

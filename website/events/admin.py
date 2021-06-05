@@ -19,7 +19,7 @@ from events.forms import RegistrationAdminForm
 from members.models import Member
 from payments.widgets import PaymentWidget
 from pizzas.models import FoodEvent
-from utils.admin import DoNextTranslatedModelAdmin
+from utils.admin import DoNextModelAdmin
 from utils.snippets import datetime_to_lectureyear
 from . import forms, models
 
@@ -83,7 +83,7 @@ class LectureYearFilter(admin.SimpleListFilter):
 
 
 @admin.register(models.Event)
-class EventAdmin(DoNextTranslatedModelAdmin):
+class EventAdmin(DoNextModelAdmin):
     """Manage the events."""
 
     inlines = (
@@ -308,7 +308,7 @@ class EventAdmin(DoNextTranslatedModelAdmin):
 
 
 @admin.register(models.EventRegistration)
-class RegistrationAdmin(DoNextTranslatedModelAdmin):
+class RegistrationAdmin(DoNextModelAdmin):
     """Custom admin for registrations."""
 
     form = RegistrationAdminForm

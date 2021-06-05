@@ -27,16 +27,13 @@ class EventListView(ListAPIView):
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
-        filters.EventDateFilterBackend,
+        filters.EventDateFilter,
         filters.CategoryFilter,
         filters.OrganiserFilter,
     )
     ordering_fields = ("start", "end")
-    search_fields = ("title_en",)
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
-    ]
+    search_fields = ("title",)
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
 
 
@@ -45,10 +42,7 @@ class EventDetailView(RetrieveAPIView):
 
     serializer_class = EventSerializer
     queryset = Event.objects.filter(published=True)
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
 
 
@@ -56,15 +50,17 @@ class EventRegistrationsView(ListAPIView):
     """Returns a list of registrations."""
 
     serializer_class = EventRegistrationSerializer
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScopeForMethod,
-        DjangoModelPermissionsOrAnonReadOnly,
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
     required_scopes_per_method = {
         "GET": ["events:read"],
         "POST": ["events:register"],
         "DELETE": ["events:register"],
     }
+    filter_backends = (framework_filters.OrderingFilter,)
+    ordering_fields = (
+        "date",
+        "member",
+    )
 
     def __init__(self):
         super(EventRegistrationsView, self).__init__()
@@ -118,10 +114,7 @@ class EventRegistrationDetailView(RetrieveAPIView):
 
     serializer_class = EventRegistrationSerializer
     queryset = EventRegistration.objects.all()
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScopeForMethod,
-        DjangoModelPermissionsOrAnonReadOnly,
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
     required_scopes_per_method = {
         "GET": ["events:read"],
         "DELETE": ["events:register"],

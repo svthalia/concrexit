@@ -42,7 +42,7 @@ class EventRegistrationViewSet(RetrieveModelMixin, UpdateModelMixin, GenericView
             member = self.request.member
             if (
                 member
-                and member.has_perm("events.change_registration")
+                and member.has_perm("events.change_eventregistration")
                 and services.is_organiser(member, registration.event)
             ):
                 services.update_registration_by_organiser(

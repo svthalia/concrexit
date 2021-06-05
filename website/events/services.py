@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from django.utils import timezone
 from django.utils.datetime_safe import date
-from django.utils.translation import gettext_lazy as _, get_language
+from django.utils.translation import gettext_lazy as _
 
 from events import emails
 from events.exceptions import RegistrationError
@@ -271,10 +271,8 @@ def registration_fields(request, member=None, event=None, registration=None, nam
 
             fields["info_field_{}".format(field.id)] = {
                 "type": field.type,
-                "label": getattr(field, "{}_{}".format("name", get_language())),
-                "description": getattr(
-                    field, "{}_{}".format("description", get_language())
-                ),
+                "label": field.name,
+                "description": field.description,
                 "value": information_field["value"],
                 "required": field.required,
             }

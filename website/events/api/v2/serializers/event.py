@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from activemembers.api.v2.serializers.member_group import MemberGroupSerializer
 from announcements.api.v2.serializers import SlideSerializer
+from documents.api.v2.serializers.document import DocumentSerializer
 from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.models import Event, EventRegistration
@@ -37,6 +38,7 @@ class EventSerializer(serializers.ModelSerializer):
             "user_registration",
             "organiser",
             "slide",
+            "documents",
         )
 
     description = CleanedHTMLSerializer()
@@ -44,9 +46,10 @@ class EventSerializer(serializers.ModelSerializer):
     user_registration = serializers.SerializerMethodField("_user_registration")
     num_participants = serializers.SerializerMethodField("_num_participants")
     maps_url = serializers.SerializerMethodField("_maps_url")
-    price = serializers.FloatField()
-    fine = serializers.FloatField()
+    price = serializers.DecimalField(max_digits=5, decimal_places=2)
+    fine = serializers.DecimalField(max_digits=5, decimal_places=2)
     slide = SlideSerializer()
+    documents = DocumentSerializer(many=True)
     user_permissions = serializers.SerializerMethodField("_user_permissions")
 
     def _user_registration(self, instance):

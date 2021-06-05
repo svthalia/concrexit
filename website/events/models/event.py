@@ -15,7 +15,7 @@ from pushnotifications.models import ScheduledMessage, Category
 from utils.translation import ModelTranslateMeta, MultilingualField
 
 
-class Event(models.Model, metaclass=ModelTranslateMeta):
+class Event(models.Model):
     """Describes an event."""
 
     CATEGORY_ALUMNI = "alumni"
@@ -34,13 +34,11 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         (CATEGORY_OTHER, _("Other")),
     )
 
-    DEFAULT_NO_REGISTRATION_MESSAGE = _(
-        "No registration required / Geen aanmelding vereist"
-    )
+    DEFAULT_NO_REGISTRATION_MESSAGE = _("No registration required")
 
-    title = MultilingualField(models.CharField, _("title"), max_length=100)
+    title = models.CharField(_("title"), max_length=100)
 
-    description = MultilingualField(HTMLField, _("description"),)
+    description = HTMLField(_("description"),)
 
     start = models.DateTimeField(_("start time"))
 
@@ -99,7 +97,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         ),
     )
 
-    location = MultilingualField(models.CharField, _("location"), max_length=255,)
+    location = models.CharField(_("location"), max_length=255,)
 
     map_location = models.CharField(
         _("location for minimap"),
@@ -135,8 +133,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
         _("maximum number of participants"), blank=True, null=True,
     )
 
-    no_registration_message = MultilingualField(
-        models.CharField,
+    no_registration_message = models.CharField(
         _("message when there is no registration"),
         max_length=200,
         blank=True,
@@ -320,17 +317,15 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                             )
                         }
                     )
-                for lang in settings.LANGUAGES:
-                    field = "no_registration_message_" + lang[0]
-                    if getattr(self, field):
-                        errors.update(
-                            {
-                                field: _(
-                                    "Doesn't make sense to have this "
-                                    "if you require registrations."
-                                )
-                            }
-                        )
+                if self.no_registration_message:
+                    errors.update(
+                        {
+                            "no_registration_message": _(
+                                "Doesn't make sense to have this "
+                                "if you require registrations."
+                            )
+                        }
+                    )
                 if not self.registration_start:
                     errors.update(
                         {
@@ -422,8 +417,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
                 if registration_reminder_time > timezone.now():
                     registration_reminder.title_en = "Event registration"
                     registration_reminder.body_en = (
-                        "Registration for '{}' "
-                        "starts in 1 hour".format(self.title_en)
+                        "Registration for '{}' " "starts in 1 hour".format(self.title)
                     )
                     registration_reminder.category = Category.objects.get(
                         key=Category.EVENT
@@ -448,7 +442,7 @@ class Event(models.Model, metaclass=ModelTranslateMeta):
 
             if start_reminder_time > timezone.now():
                 start_reminder.title_en = "Event"
-                start_reminder.body_en = f"'{self.title_en}' starts in 1 hour"
+                start_reminder.body_en = f"'{self.title}' starts in 1 hour"
                 start_reminder.category = Category.objects.get(key=Category.EVENT)
                 start_reminder.time = start_reminder_time
                 start_reminder.save()

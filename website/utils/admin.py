@@ -3,8 +3,6 @@ from django.core.exceptions import DisallowedRedirect
 from django.http import HttpResponseRedirect
 from django.utils.http import url_has_allowed_host_and_scheme
 
-from utils.translation import TranslatedModelAdmin
-
 
 def _do_next(request, response):
     """See DoNextModelAdmin."""
@@ -20,21 +18,6 @@ def _do_next(request, response):
                 "{}?{}".format(response.url, request.GET.urlencode())
             )
     return response
-
-
-class DoNextTranslatedModelAdmin(TranslatedModelAdmin):
-    """This class adds processing of a `next` parameter in the urls of the add and change admin forms.
-
-    If it is set and safe this override will redirect the user to the provided url.
-    """
-
-    def response_add(self, request, obj, **kwargs):
-        res = super().response_add(request, obj, **kwargs)
-        return _do_next(request, res)
-
-    def response_change(self, request, obj):
-        res = super().response_change(request, obj)
-        return _do_next(request, res)
 
 
 class DoNextModelAdmin(ModelAdmin):

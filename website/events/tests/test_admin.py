@@ -12,16 +12,16 @@ from activemembers.models import Committee, MemberGroupMembership
 from events.admin import RegistrationInformationFieldInline, EventAdmin
 from events.models import Event, RegistrationInformationField, EventRegistration
 from members.models import Member
-from utils.admin import DoNextTranslatedModelAdmin
+from utils.admin import DoNextModelAdmin
 
 
 class DoNextModelAdminTest(TestCase):
     def setUp(self):
         self.site = AdminSite()
-        self.admin = DoNextTranslatedModelAdmin(Event, admin_site=self.site)
+        self.admin = DoNextModelAdmin(Event, admin_site=self.site)
         self.rf = RequestFactory()
 
-    @mock.patch("utils.translation.TranslatedModelAdmin.response_add")
+    @mock.patch("django.contrib.admin.ModelAdmin.response_add")
     def test_response_add(self, super_mock):
         super_mock.return_value = None
 
@@ -46,7 +46,7 @@ class DoNextModelAdminTest(TestCase):
         response = self.admin.response_add(request, None)
         self.assertNotIsInstance(response, HttpResponseRedirect, "Should not redirect")
 
-    @mock.patch("utils.translation.TranslatedModelAdmin.response_change")
+    @mock.patch("django.contrib.admin.ModelAdmin.response_change")
     def test_response_change(self, super_mock):
         super_mock.return_value = None
 
@@ -83,12 +83,12 @@ class RegistrationInformationFieldInlineTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_en="testevent",
-            description_en="desc",
+            title="testevent",
+            description="desc",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
-            location_en="test location",
+            location="test location",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -102,7 +102,7 @@ class RegistrationInformationFieldInlineTest(TestCase):
             pk=1,
             event=cls.event,
             type=RegistrationInformationField.BOOLEAN_FIELD,
-            name_en="test bool",
+            name="test bool",
             required=False,
         )
 
@@ -110,7 +110,7 @@ class RegistrationInformationFieldInlineTest(TestCase):
             pk=2,
             event=cls.event,
             type=RegistrationInformationField.INTEGER_FIELD,
-            name_en="test int",
+            name="test int",
             required=False,
         )
 
@@ -118,7 +118,7 @@ class RegistrationInformationFieldInlineTest(TestCase):
             pk=3,
             event=cls.event,
             type=RegistrationInformationField.TEXT_FIELD,
-            name_en="test text",
+            name="test text",
             required=False,
         )
 
@@ -149,12 +149,12 @@ class EventAdminTest(TestCase):
         cls.event = Event.objects.create(
             pk=1,
             organiser=cls.committee,
-            title_en="testevent",
-            description_en="desc",
+            title="testevent",
+            description="desc",
             published=True,
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
-            location_en="test location",
+            location="test location",
             map_location="test map location",
             price=0.00,
             fine=0.00,
@@ -176,7 +176,7 @@ class EventAdminTest(TestCase):
             '<a href="/admin/events/event/1/details/">' "testevent</a>",
         )
 
-    @mock.patch("utils.admin.DoNextTranslatedModelAdmin.has_change_permission")
+    @mock.patch("utils.admin.DoNextModelAdmin.has_change_permission")
     @mock.patch("events.services.is_organiser")
     def test_has_change_permission(self, organiser_mock, permission_mock):
         permission_mock.return_value = None
