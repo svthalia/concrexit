@@ -20,7 +20,8 @@ from thaliawebsite.api.v2.admin.views import (
     AdminRetrieveAPIView,
     AdminCreateAPIView,
     AdminUpdateAPIView,
-    AdminDestroyAPIView, AdminPermissionsMixin,
+    AdminDestroyAPIView,
+    AdminPermissionsMixin,
 )
 import events.api.v2.filters as normal_filters
 
