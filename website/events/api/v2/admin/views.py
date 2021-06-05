@@ -20,7 +20,7 @@ from thaliawebsite.api.v2.admin.views import (
     AdminRetrieveAPIView,
     AdminCreateAPIView,
     AdminUpdateAPIView,
-    AdminDestroyAPIView,
+    AdminDestroyAPIView, AdminPermissionsMixin,
 )
 import events.api.v2.filters as normal_filters
 
@@ -93,7 +93,7 @@ class EventRegistrationAdminDetailView(AdminRetrieveAPIView, AdminUpdateAPIView)
         return super().get_queryset().filter(event=self.kwargs["event_id"])
 
 
-class EventRegistrationAdminFieldsView(APIView):
+class EventRegistrationAdminFieldsView(AdminPermissionsMixin, APIView):
     """Returns details of an event registration."""
 
     permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
