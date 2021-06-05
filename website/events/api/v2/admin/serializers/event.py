@@ -21,8 +21,8 @@ class EventSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     description = CleanedHTMLSerializer()
-    price = serializers.FloatField()
-    fine = serializers.FloatField()
+    price = serializers.DecimalField(max_digits=5, decimal_places=2,)
+    fine = serializers.DecimalField(max_digits=5, decimal_places=2,)
 
     def to_internal_value(self, data):
         self.fields["organiser"] = serializers.PrimaryKeyRelatedField(
@@ -71,5 +71,5 @@ class EventListSerializer(serializers.ModelSerializer):
 
     description = CleanedHTMLSerializer()
     organiser = MemberGroupSerializer()
-    price = serializers.DecimalField(max_digits=6, decimal_places=2, min_value=0)
-    fine = serializers.FloatField()
+    price = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0)
+    fine = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0)
