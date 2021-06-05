@@ -25,9 +25,8 @@ from thaliawebsite.api.v2.admin.views import (
 import events.api.v2.filters as normal_filters
 
 
-class EventAdminListAPIView(AdminListAPIView):
+class EventAdminListCreateAPIView(AdminListAPIView, AdminCreateAPIView):
     queryset = Event.objects.prefetch_related("organiser")
-    serializer_class = EventListSerializer
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
     filter_backends = [
@@ -45,9 +44,14 @@ class EventAdminListAPIView(AdminListAPIView):
         "registration_end",
     )
 
+    def get_serializer_class(self):
+        if self.request.method.lower() == "post":
+            return EventSerializer
+        return EventListSerializer
+
 
 class EventAdminDetailAPIView(
-    AdminRetrieveAPIView, AdminCreateAPIView, AdminUpdateAPIView, AdminDestroyAPIView
+    AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView
 ):
     queryset = Event.objects.all()
     serializer_class = EventSerializer

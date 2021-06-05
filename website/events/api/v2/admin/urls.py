@@ -2,7 +2,7 @@
 from django.urls import path
 
 from events.api.v2.admin.views import (
-    EventAdminListAPIView,
+    EventAdminListCreateAPIView,
     EventAdminDetailAPIView,
     EventRegistrationAdminFieldsView,
     EventRegistrationAdminDetailView,
@@ -10,7 +10,7 @@ from events.api.v2.admin.views import (
 )
 
 urlpatterns = [
-    path("events/", EventAdminListAPIView.as_view(), name="events-list"),
+    path("events/", EventAdminListCreateAPIView.as_view(), name="events-index"),
     path("events/<int:pk>/", EventAdminDetailAPIView.as_view(), name="event-detail",),
     path(
         "events/<int:pk>/registrations/",

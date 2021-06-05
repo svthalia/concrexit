@@ -520,6 +520,7 @@ OAUTH2_PROVIDER = {
         "announcements:read": "Read access to announcements",
         "events:read": "Read access to events and your event registrations",
         "events:register": "Write access to the state of your event registrations",
+        "events:admin": "Admin access to the events",
         "food:read": "Read access to food events",
         "food:order": "Order access to food events",
         "members:read": "Read access to the members directory",
