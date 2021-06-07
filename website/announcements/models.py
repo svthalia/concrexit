@@ -5,6 +5,7 @@ from django.core.validators import (
 )
 from django.db import models
 from django.db.models import CharField, Manager, Q
+from django.db.models.functions import Now
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
@@ -19,8 +20,8 @@ class VisibleObjectManager(Manager):
             super()
             .get_queryset()
             .filter(
-                (Q(until__isnull=True) | Q(until__gt=timezone.now()))
-                & (Q(since__isnull=True) | Q(since__lte=timezone.now()))
+                (Q(until__isnull=True) | Q(until__gt=Now()))
+                & (Q(since__isnull=True) | Q(since__lte=Now()))
                 & ~(Q(since__isnull=True) & Q(until__isnull=True))
             )
         )
