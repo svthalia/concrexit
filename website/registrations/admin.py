@@ -221,6 +221,14 @@ class RegistrationAdmin(admin.ModelAdmin):
         """Check if the user has the review permission."""
         return request.user.has_perm("registrations.review_entries")
 
+    def has_change_permission(self, request, obj=None):
+        """Completed registrations are read-only."""
+        return (
+            False
+            if obj and obj.status == Entry.STATUS_COMPLETED
+            else super().has_change_permission(request, obj)
+        )
+
     def save_model(self, request, obj, form, change):
         if not (
             obj.status == Entry.STATUS_REJECTED
