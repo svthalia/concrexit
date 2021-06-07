@@ -24,6 +24,7 @@ class MemberGroupSerializer(serializers.ModelSerializer):
             "pk",
             "name",
             "type",
+            "description",
             "since",
             "until",
             "contact_address",
@@ -58,4 +59,13 @@ class MemberGroupListSerializer(MemberGroupSerializer):
         """Meta class for the serializer."""
 
         model = MemberGroup
-        fields = ("pk", "name", "type", "since", "until", "contact_address", "photo")
+        fields = (
+            "pk",
+            "name",
+            "type",
+            "description",
+            "since",
+            "until",
+            "contact_address",
+            "photo",
+        )
