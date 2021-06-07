@@ -1,7 +1,9 @@
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, override_settings
 
+from payments import payables
 from payments.models import Payment, PaymentUser
+from payments.tests.__mocks__ import MockModel, MockPayable
 from payments.widgets import PaymentWidget
 
 
@@ -13,24 +15,21 @@ class PaymentWidgetTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        payables.register(MockModel, MockPayable)
         cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.payment = Payment.objects.create(
             amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.CASH
         )
+        cls.obj = MockModel(payer=cls.member, payment=cls.payment)
 
     def test_get_context(self):
-        obj = Payment.objects.create(
-            amount=8, paid_by=self.member, processed_by=self.member, type=Payment.CASH
-        )
-        widget = PaymentWidget(obj=obj)
+        widget = PaymentWidget(obj=self.obj)
 
         with self.subTest("With object only"):
             context = widget.get_context("payment", None, {})
-            self.assertEqual(context["obj"], obj)
-            self.assertEqual(
-                context["content_type"],
-                ContentType.objects.get(app_label="payments", model="payment"),
-            )
+            self.assertEqual(context["obj"], payables.get_payable(self.obj))
+            self.assertEqual(context["app_label"], "mock_app")
+            self.assertEqual(context["model_name"], "mock_model")
 
         with self.subTest("With payment primary key"):
             context = widget.get_context("payment", self.payment.pk, {})
