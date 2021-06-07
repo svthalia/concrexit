@@ -2,7 +2,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.forms import Widget
 
-from payments import Payable, payables
+from payments import payables
 from payments.models import Payment, PaymentUser
 
 
@@ -18,14 +18,11 @@ class PaymentWidget(Widget):
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
         if self.obj and not value:
-            if isinstance(self.obj, Payable):
-                payable = self.obj
-            else:
-                payable = payables.get_payable(self.obj)
+            payable = payables.get_payable(self.obj)
             context["obj"] = payable
             context["payable_payer"] = (
-                PaymentUser.objects.get(pk=self.obj.payment_payer.pk)
-                if getattr(self.obj, "payment_payer", None) is not None
+                PaymentUser.objects.get(pk=payable.payment_payer.pk)
+                if getattr(payable, "payment_payer", None) is not None
                 else None
             )
             context["content_type"] = ContentType.objects.get_for_model(self.obj)
