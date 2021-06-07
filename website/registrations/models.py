@@ -98,7 +98,7 @@ class Entry(models.Model):
         null=True,
     )
 
-    membership = models.OneToOneField(
+    membership = models.ForeignKey(
         "members.Membership", on_delete=models.SET_NULL, blank=True, null=True,
     )
 
