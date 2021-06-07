@@ -44,6 +44,7 @@ class PaymentAdminView(View):
             result = services.create_payment(
                 payable_obj, self.request.member, request.POST["type"],
             )
+            payable_obj.payment = result
             payable_obj.save()
         # pylint: disable=broad-except
         except Exception as e:
