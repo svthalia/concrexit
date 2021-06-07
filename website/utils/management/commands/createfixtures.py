@@ -265,8 +265,8 @@ class Command(BaseCommand):
             groups = MemberGroup.objects.all()
         event = Event()
 
-        event.description_en = _faker.paragraph()
-        event.title_en = _generate_title()
+        event.description = _faker.paragraph()
+        event.title = _generate_title()
         event.start = _faker.date_time_between("-30d", "+120d", _current_tz)
         duration = math.ceil(random.expovariate(0.2))
         event.end = event.start + timedelta(hours=duration)
