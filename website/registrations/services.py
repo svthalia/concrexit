@@ -60,6 +60,8 @@ def check_unique_user(entry: Entry) -> bool:
             get_user_model()
             .objects.filter(Q(email=registration.email) | Q(username=username))
             .exists()
+        ) and not (
+            Registration.objects.filter(username=username).exclude(pk=entry.pk).exists()
         )
     except Registration.DoesNotExist:
         pass

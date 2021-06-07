@@ -340,7 +340,9 @@ class Registration(Entry):
 
         if self.username is not None and (
             get_user_model().objects.filter(username=self.username).exists()
-            or Registration.objects.filter(username=self.username).exists()
+            or Registration.objects.filter(username=self.username)
+            .exclude(pk=self.pk)
+            .exists()
         ):
             errors.update({"username": _("A user with that username already exists.")})
 
