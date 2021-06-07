@@ -1,5 +1,4 @@
 """Widgets provided by the payments package."""
-from django.contrib.contenttypes.models import ContentType
 from django.forms import Widget
 
 from payments import payables
@@ -25,7 +24,8 @@ class PaymentWidget(Widget):
                 if getattr(payable, "payment_payer", None) is not None
                 else None
             )
-            context["content_type"] = ContentType.objects.get_for_model(self.obj)
+            context["app_label"] = self.obj._meta.app_label
+            context["model_name"] = self.obj._meta.model_name
         elif value:
             payment = Payment.objects.get(pk=value)
             context["url"] = payment.get_admin_url()
