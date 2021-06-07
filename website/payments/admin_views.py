@@ -16,6 +16,7 @@ from django.utils.decorators import method_decorator
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from sentry_sdk import capture_exception
 
 from payments import services
 from .models import Payment, Batch, PaymentUser
@@ -40,10 +41,21 @@ class PaymentAdminView(View):
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
         payable_obj = payable_model.objects.get(pk=payable)
 
-        result = services.create_payment(
-            payable_obj, self.request.member, request.POST["type"],
-        )
-        payable_obj.save()
+        try:
+            result = services.create_payment(
+                payable_obj, self.request.member, request.POST["type"],
+            )
+            payable_obj.payment = result
+            payable_obj.save()
+        # pylint: disable=broad-except
+        except Exception as e:
+            capture_exception(e)
+            messages.error(
+                request,
+                _("Something went wrong paying %s: %s")
+                % (model_ngettext(payable_obj, 1), str(e)),
+            )
+            return redirect(f"admin:{app_label}_{model_name}_change", payable_obj.pk)
 
         if result:
             messages.success(

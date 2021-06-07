@@ -60,6 +60,8 @@ def check_unique_user(entry: Entry) -> bool:
             get_user_model()
             .objects.filter(Q(email=registration.email) | Q(username=username))
             .exists()
+        ) and not (
+            Registration.objects.filter(username=username).exclude(pk=entry.pk).exists()
         )
     except Registration.DoesNotExist:
         pass
@@ -188,7 +190,7 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
     return len(updated_entries)
 
 
-def revert_entry(user_id: int, entry: Entry) -> None:
+def revert_entry(user_id: int or None, entry: Entry) -> None:
     """Revert status of entry to review so that it can be corrected.
 
     :param user_id: Id of the user executing this action
@@ -215,7 +217,7 @@ def revert_entry(user_id: int, entry: Entry) -> None:
         except Renewal.DoesNotExist:
             pass
 
-    if log_obj:
+    if log_obj and user_id is not None:
         LogEntry.objects.log_action(
             user_id=user_id,
             content_type_id=get_content_type_for_model(log_obj).pk,

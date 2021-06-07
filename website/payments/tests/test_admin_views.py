@@ -150,6 +150,15 @@ class PaymentAdminViewTest(TestCase):
                 response.wsgi_request, "Could not pay MockPayable.",
             )
 
+        with self.subTest("Send post with exception during processing"):
+            create_payment.side_effect = Exception("A test exception was thrown.")
+            response = self.client.post(url, {"type": payment_type,})
+
+            messages_error.assert_called_with(
+                response.wsgi_request,
+                "Something went wrong paying MockPayable: A test exception was thrown.",
+            )
+
 
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 @patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
