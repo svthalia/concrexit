@@ -2,7 +2,7 @@
 from django.db.models.signals import post_save
 
 from registrations import services
-from registrations.models import Registration, Renewal, Entry
+from registrations.models import Registration, Renewal
 from utils.models.signals import suspendingreceiver
 
 

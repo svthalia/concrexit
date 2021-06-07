@@ -45,6 +45,7 @@ class PaymentAdminView(View):
                 payable_obj, self.request.member, request.POST["type"],
             )
             payable_obj.save()
+        # pylint: disable=broad-except
         except Exception as e:
             messages.error(
                 request,
