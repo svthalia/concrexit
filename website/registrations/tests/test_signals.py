@@ -3,12 +3,16 @@ from unittest import mock
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from members.models import Membership
+from members.models import Membership, Member
+from payments.models import Payment
+from payments.services import create_payment
 from registrations.models import Registration, Entry
 
 
 @override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
 class ServicesTest(TestCase):
+    fixtures = ["members.json"]
+
     @classmethod
     def setUpTestData(cls):
         # pylint: disable=unused-import,import-outside-toplevel
@@ -33,9 +37,56 @@ class ServicesTest(TestCase):
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
+        cls.user = Member.objects.filter(last_name="Wiggers").first()
 
     @mock.patch("registrations.services.process_entry_save")
     def test_post_entry_save(self, process_entry_save):
         self.registration.save()
 
         process_entry_save.assert_called_with(self.registration)
+
+    def test_entry_save_error(self):
+        self.registration.status = Entry.STATUS_ACCEPTED
+        with mock.patch(
+            "registrations.services.process_entry_save"
+        ) as process_entry_save:
+            process_entry_save.side_effect = [
+                Exception("An exception occurred"),
+                mock.DEFAULT,
+            ]
+            with self.assertRaises(Exception):
+                self.registration.save()
+            self.registration.refresh_from_db()
+            self.assertEqual(Entry.STATUS_REVIEW, self.registration.status)
+
+        self.registration.status = Entry.STATUS_CONFIRM
+        self.registration.save()
+
+        with mock.patch(
+            "registrations.services.process_entry_save"
+        ) as process_entry_save:
+            process_entry_save.side_effect = [
+                Exception("An exception occurred"),
+                mock.DEFAULT,
+            ]
+            with self.assertRaises(Exception):
+                self.registration.save()
+            self.registration.refresh_from_db()
+            self.assertEqual(Entry.STATUS_CONFIRM, self.registration.status)
+
+        self.registration.status = Entry.STATUS_ACCEPTED
+        self.registration.save()
+
+        with mock.patch(
+            "registrations.services.process_entry_save"
+        ) as process_entry_save:
+            process_entry_save.side_effect = [Exception("An exception occurred"), None]
+            self.registration.payment = create_payment(
+                self.registration, self.user, Payment.CASH
+            )
+            with self.assertRaises(Exception):
+                self.registration.save()
+            self.registration.refresh_from_db()
+            self.assertEqual(Entry.STATUS_REVIEW, self.registration.status)
+            self.assertIsNone(self.registration.payment)
+            self.assertQuerysetEqual(Payment.objects.all(), Payment.objects.none())

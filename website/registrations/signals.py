@@ -14,8 +14,7 @@ def post_entry_save(sender, instance, **kwargs):
         services.process_entry_save(instance)
     except Exception as e:
         # if something goes wrong creating the member,
-        # make sure the payment is deleted
+        # revert the entry: remove the payment
         # and mark the entry again as 'ready for review'
-        instance.payment.delete()
-        instance.status = Entry.STATUS_REVIEW
+        services.revert_entry(None, instance)
         raise e

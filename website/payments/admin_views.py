@@ -40,10 +40,18 @@ class PaymentAdminView(View):
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
         payable_obj = payable_model.objects.get(pk=payable)
 
-        result = services.create_payment(
-            payable_obj, self.request.member, request.POST["type"],
-        )
-        payable_obj.save()
+        try:
+            result = services.create_payment(
+                payable_obj, self.request.member, request.POST["type"],
+            )
+            payable_obj.save()
+        except Exception as e:
+            messages.error(
+                request,
+                _("Something went wrong paying %s: %s")
+                % (model_ngettext(payable_obj, 1), str(e)),
+            )
+            return redirect(f"admin:{app_label}_{model_name}_change", payable_obj.pk)
 
         if result:
             messages.success(
