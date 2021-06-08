@@ -24,7 +24,7 @@ class EntryPayable(Payable):
         return f"{self.payment_topic}. Creation date: {date(self.model.created_at)}. Completion date: {date(self.model.updated_at)}"
 
     def can_manage_payment(self, member):
-        return member.has_perm("registrations.change_entry")
+        return member and member.has_perm("registrations.change_entry")
 
 
 class RegistrationPayable(EntryPayable):
@@ -33,7 +33,7 @@ class RegistrationPayable(EntryPayable):
         return f"Membership registration {self.model.membership_type} ({self.model.length})"
 
     def can_manage_payment(self, member):
-        return member.has_perm("registrations.change_registration")
+        return member and member.has_perm("registrations.change_registration")
 
 
 class RenewalPayable(EntryPayable):
@@ -46,7 +46,7 @@ class RenewalPayable(EntryPayable):
         return f"Membership renewal {self.model.membership_type} ({self.model.length})"
 
     def can_manage_payment(self, member):
-        return member.has_perm("registrations.change_renewal")
+        return member and member.has_perm("registrations.change_renewal")
 
 
 def register():

@@ -1,8 +1,9 @@
+from rest_framework.fields import HiddenField
 from rest_framework.serializers import ModelSerializer
 
 from members.api.v2.serializers.member import MemberSerializer
 from payments.models import Payment
-from thaliawebsite.api.v2.fields import CurrentMemberField
+from thaliawebsite.api.v2.fields import CurrentMemberDefault
 
 
 class PaymentCreateSerializer(ModelSerializer):
@@ -20,7 +21,7 @@ class PaymentCreateSerializer(ModelSerializer):
         )
         read_only_fields = ("created_at",)
 
-    processed_by = CurrentMemberField()
+    processed_by = HiddenField(default=CurrentMemberDefault())
 
 
 class PaymentSerializer(ModelSerializer):

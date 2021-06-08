@@ -48,6 +48,7 @@ class RegistrationPayableTest(TestCase):
         self.assertEqual(
             self.payable.payment_topic, "Membership registration benefactor (1 year)"
         )
+        self.assertFalse(self.payable.can_manage_payment(None))
 
 
 class RenewalPayableTest(TestCase):
@@ -68,3 +69,4 @@ class RenewalPayableTest(TestCase):
         self.assertEqual(
             self.payable.payment_topic, "Membership renewal benefactor (1 year)"
         )
+        self.assertFalse(self.payable.can_manage_payment(None))

@@ -152,7 +152,7 @@ class OrderAPITest(TestCase):
         response = self.client.get(
             reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk})
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(404, response.status_code)
 
         self.shift.managers.add(self.cie)
         self.shift.save()
@@ -176,7 +176,7 @@ class OrderAPITest(TestCase):
         response = self.client.patch(
             reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk}), data
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(404, response.status_code)
 
         self.shift.managers.add(self.cie)
         self.shift.save()
@@ -200,7 +200,7 @@ class OrderAPITest(TestCase):
         response = self.client.put(
             reverse("api:v2:sales:order-detail", kwargs={"pk": self.o1.pk}), data
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(404, response.status_code)
 
         self.shift.managers.add(self.cie)
         self.shift.save()
@@ -222,7 +222,7 @@ class OrderAPITest(TestCase):
         response = self.client.delete(
             reverse("api:v2:sales:order-detail", kwargs={"pk": self.o2.pk})
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(404, response.status_code)
 
         self.shift.managers.add(self.cie)
         self.shift.save()

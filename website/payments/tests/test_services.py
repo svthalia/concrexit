@@ -44,12 +44,20 @@ class ServicesTest(TestCase):
             )
             self.assertEqual(p, existing_payment)
             self.assertEqual(p.amount, 5)
+        with self.subTest(
+            "Does not allow when user cannot manage payments for payable"
+        ):
+            with self.assertRaisesMessage(
+                PaymentError,
+                "User processing payment does not have the right permissions",
+            ):
+                payable = MockPayable(MockModel(payer=None, can_manage=False))
+                services.create_payment(payable, self.member, Payment.TPAY)
         with self.subTest("Does not allow Thalia Pay when not enabled"):
             with self.assertRaises(PaymentError):
                 services.create_payment(
                     MockPayable(MockModel(payer=self.member)), self.member, Payment.TPAY
                 )
-
         with self.subTest("Do not allow zero euro payments"):
             with self.assertRaises(PaymentError):
                 services.create_payment(
@@ -63,6 +71,20 @@ class ServicesTest(TestCase):
         payable = MockPayable(MockModel(payer=self.member, payment=existing_payment))
         payable.model.save = MagicMock()
         payable.model.save.reset_mock()
+
+        with self.subTest(
+            "Does not allow when user cannot manage payments for payable"
+        ):
+            with self.assertRaisesMessage(
+                PaymentError,
+                "User deleting payment does not have the right permissions.",
+            ):
+                services.delete_payment(
+                    MockModel(
+                        payer=self.member, payment=existing_payment, can_manage=False
+                    ),
+                    self.member,
+                )
 
         with self.subTest("Within deletion window"):
             payable.model.payment = existing_payment

@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from freezegun import freeze_time
 
 from members.models import Member, Profile
-from payments import admin_views
+from payments import admin_views, payables
 from payments.models import Payment, Batch, BankAccount, PaymentUser
 from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
@@ -34,6 +34,7 @@ class PaymentAdminViewTest(TestCase):
         )
 
     def setUp(self):
+        payables.register(MockModel, MockPayable)
         self.client = Client()
         self.client.force_login(self.user)
         self.view = admin_views.PaymentAdminView()
@@ -60,7 +61,10 @@ class PaymentAdminViewTest(TestCase):
     @mock.patch("django.contrib.messages.success")
     @mock.patch("django.shortcuts.resolve_url")
     @mock.patch("payments.services.create_payment")
-    def test_post(self, create_payment, resolve_url, messages_success, messages_error):
+    @mock.patch("payments.payables.get_payable")
+    def test_post(
+        self, get_payable, create_payment, resolve_url, messages_success, messages_error
+    ):
         url = "/admin/payments/payment/mock_label/model/pk/create/"
         self._give_user_permissions()
         payable = MockPayable(MockModel(payer=self.user))
@@ -74,7 +78,7 @@ class PaymentAdminViewTest(TestCase):
             return original_get_model(*args, **kwargs)
 
         apps.get_model = Mock(side_effect=side_effect)
-        mock_get_model.objects.get.return_value = payable.model
+        get_payable.return_value = payable
         create_payment.return_value = self.payment
         resolve_url.return_value = "/resolved_url"
 
@@ -94,9 +98,7 @@ class PaymentAdminViewTest(TestCase):
             self.assertEqual(response.status_code, 302)
             self.assertEqual(response.url, "/resolved_url")
 
-            create_payment.assert_called_once_with(
-                payable.model, self.user, payment_type
-            )
+            create_payment.assert_called_once_with(payable, self.user, payment_type)
             resolve_url.assert_called_once_with(
                 "admin:payments_payment_change", self.payment.pk
             )
@@ -118,9 +120,7 @@ class PaymentAdminViewTest(TestCase):
             self.assertEqual(response.status_code, 302)
             self.assertEqual(response.url, "/resolved_url")
 
-            create_payment.assert_called_once_with(
-                payable.model, self.user, payment_type
-            )
+            create_payment.assert_called_once_with(payable, self.user, payment_type)
             resolve_url.assert_called_once_with("/admin/events/")
 
             messages_success.assert_called_once_with(
@@ -141,6 +141,12 @@ class PaymentAdminViewTest(TestCase):
             create_payment.assert_not_called()
             messages_error.assert_not_called()
             messages_success.assert_not_called()
+
+        with self.subTest("Send post without permission to process the payment"):
+            payable.model.can_manage = False
+            response = self.client.post(url, {"type": payment_type,}, follow=True)
+            self.assertEqual(response.status_code, 403)
+            payable.model.can_manage = True
 
         with self.subTest("Send post with failed processing"):
             create_payment.return_value = None

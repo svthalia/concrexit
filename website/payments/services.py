@@ -82,7 +82,7 @@ def delete_payment(model: Model, member: Member = None):
 
     if member and not payable.can_manage_payment(member):
         raise PaymentError(
-            _("User deleting payment does not have the right permissions")
+            _("User deleting payment does not have the right permissions.")
         )
 
     payment = payable.payment

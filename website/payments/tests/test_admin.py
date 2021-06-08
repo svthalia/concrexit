@@ -62,10 +62,6 @@ class PaymentAdminTest(TestCase):
         self.admin = admin.PaymentAdmin(Payment, admin_site=self.site)
 
         self._give_user_permissions()
-        process_perm = Permission.objects.get(
-            content_type__model="payment", codename="process_payments"
-        )
-        self.user.user_permissions.remove(process_perm)
         process_perm_batch = Permission.objects.get(
             content_type__model="batch", codename="process_batches"
         )
@@ -561,10 +557,6 @@ class BatchAdminTest(TestCase):
         self.user.refresh_from_db()
 
         self._give_user_permissions()
-        process_perm = Permission.objects.get(
-            content_type__model="payment", codename="process_payments"
-        )
-        self.user.user_permissions.remove(process_perm)
         process_perm_batch = Permission.objects.get(
             content_type__model="batch", codename="process_batches"
         )
