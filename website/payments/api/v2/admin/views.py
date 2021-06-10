@@ -5,9 +5,11 @@ from django.utils.translation import gettext_lazy as _
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import status, serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404, GenericAPIView
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
+from rest_framework.views import APIView
 
 from payments import services, payables, NotRegistered
 from payments.api.v2 import filters
@@ -24,8 +26,6 @@ from thaliawebsite.api.v2.admin import (
     AdminCreateAPIView,
     AdminRetrieveAPIView,
     AdminDestroyAPIView,
-    AdminUpdateAPIView,
-    AdminPermissionsMixin,
 )
 
 
@@ -73,14 +73,17 @@ class PaymentDetailView(AdminRetrieveAPIView, AdminDestroyAPIView):
     required_scopes = ["payments:admin"]
 
 
-class PayableDetailView(AdminPermissionsMixin, GenericAPIView):
+class PayableDetailView(APIView):
     """View that allows you to manipulate the payment for the payable.
 
     Permissions of this view are based on the payable.
     """
 
     required_scopes = ["payments:admin"]
-    permission_classes = [IsAuthenticatedOrTokenHasScope]
+    permission_classes = [IsAuthenticatedOrTokenHasScope, IsAdminUser]
+
+    def get_serializer_context(self):
+        return {"request": self.request, "format": self.format_kwarg, "view": self}
 
     def get_payable(self):
         app_label = self.kwargs["app_label"]
@@ -104,14 +107,11 @@ class PayableDetailView(AdminPermissionsMixin, GenericAPIView):
 
         return payable
 
-    def get_serializer_class(self, *args, **kwargs):
-        if self.request.method.lower() == "patch":
-            return PayableCreateSerializer
-        return PayableSerializer
-
     def get(self, request, *args, **kwargs):
         """Get information about a payable."""
-        serializer = self.get_serializer(self.get_payable())
+        serializer = PayableSerializer(
+            self.get_payable(), context=self.get_serializer_context()
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
@@ -133,7 +133,9 @@ class PayableDetailView(AdminPermissionsMixin, GenericAPIView):
 
     def patch(self, request, *args, **kwargs):
         """Mark the payable as paid by creating a payment for it."""
-        serializer = self.get_serializer(data=request.data)
+        serializer = PayableCreateSerializer(
+            data=request.data, context=self.get_serializer_context()
+        )
         serializer.is_valid(raise_exception=True)
 
         payable = self.get_payable()
