@@ -2,7 +2,7 @@
 from django.urls import path
 
 from payments.api.v2.views import (
-    PaymentListCreateView,
+    PaymentListView,
     PaymentDetailView,
     PayableDetailView,
 )
@@ -10,7 +10,7 @@ from payments.api.v2.views import (
 app_name = "payments"
 
 urlpatterns = [
-    path("payments/", PaymentListCreateView.as_view(), name="payments-list"),
+    path("payments/", PaymentListView.as_view(), name="payments-list"),
     path("payments/<uuid:pk>/", PaymentDetailView.as_view(), name="payment-detail"),
     path(
         "payments/payables/<str:app_label>/<str:model_name>/<str:payable_pk>/",

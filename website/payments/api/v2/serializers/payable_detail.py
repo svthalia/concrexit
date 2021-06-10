@@ -1,10 +1,7 @@
-from rest_framework.fields import CharField, empty, ListField, DecimalField
+from rest_framework.fields import CharField, empty, DecimalField
 from rest_framework.serializers import Serializer
 
-from members.api.v2.serializers.member import MemberSerializer
 from payments.api.v2.serializers import PaymentSerializer
-from payments.models import Payment
-from payments.payables import Payable
 
 
 class PayableSerializer(Serializer):
@@ -12,7 +9,6 @@ class PayableSerializer(Serializer):
 
     def __init__(self, instance=None, data=empty, **kwargs):
         super().__init__(instance, data, **kwargs)
-        self.allowed_payment_types = [Payment.CASH, Payment.CARD, Payment.WIRE]
         if instance:
             self.amount = instance.payment_amount
             self.topic = instance.payment_topic
@@ -22,4 +18,4 @@ class PayableSerializer(Serializer):
     amount = DecimalField(decimal_places=2, max_digits=1000)
     topic = CharField()
     notes = CharField()
-    payment = CharField()
+    payment = PaymentSerializer(read_only=True)

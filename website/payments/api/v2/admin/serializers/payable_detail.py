@@ -27,7 +27,7 @@ class PayableSerializer(Serializer):
 
     allowed_payment_types = ListField(child=CharField())
     amount = DecimalField(decimal_places=2, max_digits=6)
-    payer = MemberSerializer(detailed=False)
+    payer = MemberSerializer(detailed=False, read_only=True)
     topic = CharField()
     notes = CharField()
     payment = CharField()

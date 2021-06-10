@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import status, serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import get_object_or_404, GenericAPIView
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
@@ -25,11 +25,19 @@ from thaliawebsite.api.v2.admin import (
     AdminRetrieveAPIView,
     AdminDestroyAPIView,
     AdminUpdateAPIView,
+    AdminPermissionsMixin,
 )
 
 
 class PaymentListCreateView(AdminListAPIView, AdminCreateAPIView):
-    queryset = Payment.objects.all()
+    """View that allows you to create and list payments as admin."""
+
+    queryset = Payment.objects.prefetch_related(
+        "paid_by__profile",
+        "paid_by__membership_set",
+        "processed_by__profile",
+        "processed_by__membership_set",
+    )
 
     required_scopes = ["payments:admin"]
     filter_backends = (
@@ -57,17 +65,21 @@ class PaymentListCreateView(AdminListAPIView, AdminCreateAPIView):
 
 
 class PaymentDetailView(AdminRetrieveAPIView, AdminDestroyAPIView):
+    """View that allows you to manage a single payment as admin."""
+
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["payments:admin"]
 
 
-class PayableBaseView:
-    required_scopes = ["payments:admin"]
+class PayableDetailView(AdminPermissionsMixin, GenericAPIView):
+    """View that allows you to manipulate the payment for the payable.
 
-    def get_permissions(self):
-        return [IsAuthenticatedOrTokenHasScope()]
+    Permissions of this view are based on the payable."""
+
+    required_scopes = ["payments:admin"]
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
 
     def get_payable(self):
         app_label = self.kwargs["app_label"]
@@ -91,22 +103,18 @@ class PayableBaseView:
 
         return payable
 
-
-class PayableDetailView(
-    PayableBaseView, AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView
-):
-    """View that allows you to manipulate the payment for the payable. Permissions of this view are based on the payable."""
-
     def get_serializer_class(self, *args, **kwargs):
         if self.request.method.lower() == "patch":
             return PayableCreateSerializer
         return PayableSerializer
 
     def get(self, request, *args, **kwargs):
+        """Get information about a payable."""
         serializer = self.get_serializer(self.get_payable())
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
+        """Remove the current payment for a payable."""
         payable = self.get_payable()
 
         if not payable.model.payment:
@@ -123,6 +131,7 @@ class PayableDetailView(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request, *args, **kwargs):
+        """Mark the payable as paid by creating a payment for it."""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

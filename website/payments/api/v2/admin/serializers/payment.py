@@ -48,5 +48,5 @@ class PaymentSerializer(ModelSerializer):
             "notes",
         )
 
-    paid_by = MemberSerializer(detailed=False)
-    processed_by = MemberSerializer(detailed=False)
+    paid_by = MemberSerializer(detailed=False, read_only=False)
+    processed_by = MemberSerializer(detailed=False, read_only=False)

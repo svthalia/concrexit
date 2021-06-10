@@ -23,15 +23,14 @@ from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMe
 from thaliawebsite.api.v2.serializers import EmptySerializer
 
 
-class PaymentListCreateView(ListAPIView, CreateAPIView):
+class PaymentListView(ListAPIView):
+    """Returns an overview of all an authenticated user's payments."""
+
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
     permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
-    required_scopes_per_method = {
-        "GET": ["payments:read"],
-        "POST": ["payments:write"],
-    }
+    required_scopes_per_method = {"GET": ["payments:read"]}
     filter_backends = (
         framework_filters.OrderingFilter,
         filters.CreatedAtFilter,
@@ -48,6 +47,8 @@ class PaymentListCreateView(ListAPIView, CreateAPIView):
 
 
 class PaymentDetailView(RetrieveAPIView):
+    """Returns a single payment made by the authenticated user."""
+
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
@@ -62,6 +63,8 @@ class PaymentDetailView(RetrieveAPIView):
 
 
 class PayableDetailView(RetrieveAPIView):
+    """Allow you to get information about a payable and process it."""
+
     permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
     required_scopes_per_method = {
         "GET": ["payments:read"],
@@ -102,22 +105,6 @@ class PayableDetailView(RetrieveAPIView):
             )
 
         return payable
-
-    def delete(self, request, *args, **kwargs):
-        payable = self.get_payable()
-
-        if not payable.model.payment:
-            raise Http404
-
-        try:
-            services.delete_payment(
-                payable.model, request.member,
-            )
-            payable.model.save()
-        except PaymentError as e:
-            raise PermissionDenied(detail=str(e))
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request, *args, **kwargs):
         payable = self.get_payable()
