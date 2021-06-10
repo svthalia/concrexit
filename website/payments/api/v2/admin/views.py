@@ -13,10 +13,12 @@ from rest_framework.views import APIView
 
 from payments import services, payables, NotRegistered
 from payments.api.v2 import filters
-from payments.api.v2.admin.serializers.payable_create import PayableCreateSerializer
-from payments.api.v2.admin.serializers.payable_detail import PayableSerializer
+from payments.api.v2.admin.serializers.payable_create import (
+    PayableCreateAdminSerializer,
+)
+from payments.api.v2.admin.serializers.payable_detail import PayableAdminSerializer
 from payments.api.v2.admin.serializers.payment import (
-    PaymentSerializer,
+    PaymentAdminSerializer,
     PaymentCreateSerializer,
 )
 from payments.exceptions import PaymentError
@@ -50,14 +52,14 @@ class PaymentListCreateView(AdminListAPIView, AdminCreateAPIView):
     def get_serializer_class(self):
         if self.request.method.lower() == "post":
             return PaymentCreateSerializer
-        return PaymentSerializer
+        return PaymentAdminSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(
-            PaymentSerializer(
+            PaymentAdminSerializer(
                 serializer.instance, context=self.get_serializer_context()
             ).data,
             status=status.HTTP_201_CREATED,
@@ -68,7 +70,7 @@ class PaymentDetailView(AdminRetrieveAPIView, AdminDestroyAPIView):
     """View that allows you to manage a single payment as admin."""
 
     queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
+    serializer_class = PaymentAdminSerializer
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["payments:admin"]
 
@@ -109,7 +111,7 @@ class PayableDetailView(APIView):
 
     def get(self, request, *args, **kwargs):
         """Get information about a payable."""
-        serializer = PayableSerializer(
+        serializer = PayableAdminSerializer(
             self.get_payable(), context=self.get_serializer_context()
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -133,7 +135,7 @@ class PayableDetailView(APIView):
 
     def patch(self, request, *args, **kwargs):
         """Mark the payable as paid by creating a payment for it."""
-        serializer = PayableCreateSerializer(
+        serializer = PayableCreateAdminSerializer(
             data=request.data, context=self.get_serializer_context()
         )
         serializer.is_valid(raise_exception=True)
@@ -151,6 +153,6 @@ class PayableDetailView(APIView):
             raise ValidationError(detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]})
 
         return Response(
-            PayableSerializer(payable, context=self.get_serializer_context()).data,
+            PayableAdminSerializer(payable, context=self.get_serializer_context()).data,
             status=status.HTTP_201_CREATED,
         )

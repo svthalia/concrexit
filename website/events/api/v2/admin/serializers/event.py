@@ -6,14 +6,11 @@ from announcements.api.v2.serializers import SlideSerializer
 from announcements.models import Slide
 from documents.api.v2.serializers.document import DocumentSerializer
 from documents.models import Document
-from events import services
-from events.api.v2.serializers.event_registration import EventRegistrationSerializer
-from events.models import Event, EventRegistration
+from events.models import Event
 from thaliawebsite.api.v2.serializers.html import CleanedHTMLSerializer
-from utils.snippets import create_google_maps_url
 
 
-class EventSerializer(serializers.ModelSerializer):
+class EventAdminSerializer(serializers.ModelSerializer):
     """Serializer for events."""
 
     class Meta:
@@ -43,7 +40,7 @@ class EventSerializer(serializers.ModelSerializer):
         return super().to_representation(instance)
 
 
-class EventListSerializer(serializers.ModelSerializer):
+class EventListAdminSerializer(serializers.ModelSerializer):
     """Serializer for events."""
 
     class Meta:

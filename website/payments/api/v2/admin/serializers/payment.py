@@ -24,7 +24,7 @@ class PaymentCreateSerializer(ModelSerializer):
     processed_by = HiddenField(default=CurrentMemberDefault())
 
 
-class PaymentSerializer(ModelSerializer):
+class PaymentAdminSerializer(ModelSerializer):
     class Meta:
         model = Payment
         fields = (
