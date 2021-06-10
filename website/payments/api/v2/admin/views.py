@@ -76,7 +76,8 @@ class PaymentDetailView(AdminRetrieveAPIView, AdminDestroyAPIView):
 class PayableDetailView(AdminPermissionsMixin, GenericAPIView):
     """View that allows you to manipulate the payment for the payable.
 
-    Permissions of this view are based on the payable."""
+    Permissions of this view are based on the payable.
+    """
 
     required_scopes = ["payments:admin"]
     permission_classes = [IsAuthenticatedOrTokenHasScope]

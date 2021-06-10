@@ -92,7 +92,7 @@ class PayableDetailView(RetrieveAPIView):
             )
         except (LookupError, NotRegistered) as e:
             raise serializers.ValidationError(
-                {api_settings.NON_FIELD_ERRORS_KEY: [_("Payable model not found")]}
+                {api_settings.NON_FIELD_ERRORS_KEY: [_("Payable model not found.")]}
             ) from e
 
         if (
