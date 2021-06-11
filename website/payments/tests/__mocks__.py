@@ -15,13 +15,20 @@ class MockModel:
     _meta = Meta()
 
     def __init__(
-        self, payer, amount=5, topic="mock topic", notes="mock notes", payment=None
+        self,
+        payer,
+        amount=5,
+        topic="mock topic",
+        notes="mock notes",
+        payment=None,
+        can_manage=True,
     ) -> None:
         self.payer = payer
         self.amount = amount
         self.topic = topic
         self.notes = notes
         self.payment = payment
+        self.can_manage = can_manage
 
         # Because we have to do as if this is a model sometimes
         self.verbose_name = "MockPayable"
@@ -33,6 +40,8 @@ class MockModel:
 
 class MockPayable(Payable):
     save = MagicMock()
+    verbose_name = "MockPayable"
+    verbose_name_plural = "MockPayables"
 
     @property
     def payment_amount(self):
@@ -50,5 +59,5 @@ class MockPayable(Payable):
     def payment_payer(self):
         return self.model.payer
 
-    def can_create_payment(self, member):
-        return False
+    def can_manage_payment(self, member):
+        return self.model.can_manage

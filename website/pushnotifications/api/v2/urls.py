@@ -8,6 +8,8 @@ from pushnotifications.api.v2.views import (
     MessageListView,
 )
 
+app_name = "pushnotifications"
+
 urlpatterns = [
     path(
         "pushnotifications/",

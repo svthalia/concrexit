@@ -28,7 +28,7 @@ class EntryPayableTest(TestCase):
             self.payable.payment_notes,
             "Registration entry. Creation date: March 4, 2018. Completion date: March 5, 2018",
         )
-        self.assertFalse(self.payable.can_create_payment(None))
+        self.assertFalse(self.payable.can_manage_payment(None))
 
 
 class RegistrationPayableTest(TestCase):
@@ -48,6 +48,7 @@ class RegistrationPayableTest(TestCase):
         self.assertEqual(
             self.payable.payment_topic, "Membership registration benefactor (1 year)"
         )
+        self.assertFalse(self.payable.can_manage_payment(None))
 
 
 class RenewalPayableTest(TestCase):
@@ -68,3 +69,4 @@ class RenewalPayableTest(TestCase):
         self.assertEqual(
             self.payable.payment_topic, "Membership renewal benefactor (1 year)"
         )
+        self.assertFalse(self.payable.can_manage_payment(None))

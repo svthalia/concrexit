@@ -8,6 +8,8 @@ from pizzas.api.v2.views import (
     FoodEventOrderDetailView,
 )
 
+app_name = "food"
+
 urlpatterns = [
     path("food/events/", FoodEventListView.as_view(), name="food-events-list"),
     path(

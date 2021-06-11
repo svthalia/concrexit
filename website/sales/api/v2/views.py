@@ -13,10 +13,12 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import DjangoModelPermissions
 
+from sales.api.v2.permissions import IsManager
 from sales.api.v2.serializers.order import OrderSerializer, OrderListSerializer
 from sales.api.v2.serializers.shift import ShiftSerializer
 from sales.models.order import Order
 from sales.models.shift import Shift
+from sales.services import is_manager
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 
@@ -30,10 +32,7 @@ class ShiftListView(ListAPIView):
         filters.SearchFilter,
     )
     ordering_fields = ("start", "end")
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissions,
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScope, DjangoModelPermissions]
     required_scopes = ["sales:read"]
 
     def get_queryset(self):
@@ -64,13 +63,9 @@ class ShiftDetailView(RetrieveAPIView):
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissions,
+        IsManager,
     ]
     required_scopes = ["sales:read"]
-
-    def retrieve(self, request, *args, **kwargs):
-        if not Shift.objects.get(pk=kwargs["pk"]).is_manager(self.request.member):
-            raise PermissionDenied
-        return super(ShiftDetailView, self).retrieve(request, args, kwargs)
 
 
 class OrderListView(ListCreateAPIView):
@@ -81,11 +76,13 @@ class OrderListView(ListCreateAPIView):
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
         DjangoModelPermissions,
+        IsManager,
     ]
     required_scopes_per_method = {
         "GET": ["sales:read"],
         "POST": ["sales:write"],
     }
+    shift_lookup_field = "pk"
 
     def get_serializer_class(self):
         for methods, serializer_cls in self.method_serializer_classes.items():
@@ -93,17 +90,9 @@ class OrderListView(ListCreateAPIView):
                 return serializer_cls
         raise exceptions.MethodNotAllowed(self.request.method)
 
-    def list(self, request, *args, **kwargs):
-        if not Shift.objects.get(pk=kwargs["pk"]).is_manager(self.request.member):
-            raise PermissionDenied
-        return super(OrderListView, self).list(request, args, kwargs)
-
     def create(self, request, *args, **kwargs):
         shift = Shift.objects.get(pk=kwargs["pk"])
         if shift.locked:
-            raise PermissionDenied
-
-        if not shift.is_manager(self.request.member):
             raise PermissionDenied
 
         response = super(OrderListView, self).create(request, args, kwargs)
@@ -118,7 +107,7 @@ class OrderListView(ListCreateAPIView):
         return response
 
     def get_queryset(self):
-        queryset = Order.objects
+        queryset = Order.objects.all()
 
         pk = self.kwargs.get("pk")
         if pk:
@@ -151,6 +140,7 @@ class OrderDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
         DjangoModelPermissions,
+        IsManager,
     ]
     required_scopes_per_method = {
         "GET": ["sales:read"],
@@ -159,20 +149,7 @@ class OrderDetailView(RetrieveUpdateDestroyAPIView):
         "DELETE": ["sales:write"],
     }
 
-    def retrieve(self, request, *args, **kwargs):
-        if not Order.objects.get(pk=kwargs["pk"]).shift.is_manager(self.request.member):
-            raise PermissionDenied
-        return super(OrderDetailView, self).retrieve(request, args, kwargs)
-
     def update(self, request, *args, **kwargs):
-        try:
-            order_pk = kwargs["pk"]
-        except KeyError:
-            order_pk = args[1]["pk"]
-
-        if not Order.objects.get(pk=order_pk).shift.is_manager(self.request.member):
-            raise PermissionDenied
-
         response = super(OrderDetailView, self).update(request, args, kwargs)
         LogEntry.objects.log_action(
             user_id=request.user.pk,
@@ -183,16 +160,6 @@ class OrderDetailView(RetrieveUpdateDestroyAPIView):
             change_message=f"Updated order (API){': ' if response.data['order_description'] else ''}{response.data['order_description']}",
         )
         return response
-
-    def partial_update(self, request, *args, **kwargs):
-        if not Order.objects.get(pk=kwargs["pk"]).shift.is_manager(self.request.member):
-            raise PermissionDenied
-        return super(OrderDetailView, self).partial_update(request, args, kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        if not Order.objects.get(pk=kwargs["pk"]).shift.is_manager(self.request.member):
-            raise PermissionDenied
-        return super(OrderDetailView, self).delete(request, args, kwargs)
 
     def get_queryset(self):
         queryset = super().get_queryset()

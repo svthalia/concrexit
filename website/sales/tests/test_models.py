@@ -12,6 +12,7 @@ from payments.services import create_payment
 from sales.models.order import Order, OrderItem
 from sales.models.product import Product, ProductList, ProductListItem
 from sales.models.shift import Shift
+from sales.services import is_manager
 
 
 class ProductTest(TestCase):
@@ -464,20 +465,21 @@ class ShiftTest(TestCase):
         )
 
     def test_is_manager(self):
+        # @todo Move this test to test_services
         self.member.is_superuser = False
-        self.assertFalse(self.shift.is_manager(self.member))
+        self.assertFalse(is_manager(self.member, self.shift))
 
         cie = Committee.objects.get(pk=1)
         MemberGroupMembership.objects.create(group=cie, member=self.member)
         self.shift.managers.add(cie)
-        self.assertTrue(self.shift.is_manager(self.member))
+        self.assertTrue(is_manager(self.member, self.shift))
 
         self.shift.managers.remove(cie)
-        self.assertFalse(self.shift.is_manager(self.member))
+        self.assertFalse(is_manager(self.member, self.shift))
 
         self.member.is_superuser = True
-        self.assertTrue(self.shift.is_manager(self.member))
+        self.assertTrue(is_manager(self.member, self.shift))
         self.member.is_superuser = False
         self.member.has_perm = MagicMock()
         self.member.has_perm.return_value = True
-        self.assertTrue(self.shift.is_manager(self.member))
+        self.assertTrue(is_manager(self.member, self.shift))

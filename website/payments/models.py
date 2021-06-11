@@ -232,7 +232,6 @@ class Payment(models.Model):
     class Meta:
         verbose_name = _("payment")
         verbose_name_plural = _("payments")
-        permissions = (("process_payments", _("Process payments")),)
 
     def __str__(self):
         return _("Payment of {amount:.2f}").format(amount=self.amount)

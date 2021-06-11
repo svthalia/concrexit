@@ -8,7 +8,11 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Sum, Count, Min, Max
 from django.http import HttpResponse
-from django.core.exceptions import SuspiciousOperation, DisallowedRedirect
+from django.core.exceptions import (
+    SuspiciousOperation,
+    DisallowedRedirect,
+    PermissionDenied,
+)
 from django.shortcuts import redirect, get_object_or_404, render
 from django.utils import timezone
 from django.utils.text import capfirst
@@ -18,14 +22,11 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from sentry_sdk import capture_exception
 
-from payments import services
+from payments import services, payables
 from .models import Payment, Batch, PaymentUser
 
 
 @method_decorator(staff_member_required, name="dispatch")
-@method_decorator(
-    permission_required("payments.process_payments"), name="dispatch",
-)
 class PaymentAdminView(View):
     """View that creates a payment."""
 
@@ -39,14 +40,17 @@ class PaymentAdminView(View):
             raise DisallowedRedirect
 
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
-        payable_obj = payable_model.objects.get(pk=payable)
+        payable_obj = payables.get_payable(get_object_or_404(payable_model, pk=payable))
+
+        if not payable_obj.can_manage_payment(request.member):
+            raise PermissionDenied(_("You are not allowed to process this payment."))
 
         try:
             result = services.create_payment(
                 payable_obj, self.request.member, request.POST["type"],
             )
-            payable_obj.payment = result
-            payable_obj.save()
+            payable_obj.model.payment = result
+            payable_obj.model.save()
         # pylint: disable=broad-except
         except Exception as e:
             capture_exception(e)
@@ -59,13 +63,16 @@ class PaymentAdminView(View):
 
         if result:
             messages.success(
-                request, _("Successfully paid %s.") % model_ngettext(payable_obj, 1),
+                request,
+                _("Successfully paid %s.") % model_ngettext(payable_obj.model, 1),
             )
         else:
             messages.error(
-                request, _("Could not pay %s.") % model_ngettext(payable_obj, 1),
+                request, _("Could not pay %s.") % model_ngettext(payable_obj.model, 1),
             )
-            return redirect(f"admin:{app_label}_{model_name}_change", payable_obj.pk)
+            return redirect(
+                f"admin:{app_label}_{model_name}_change", payable_obj.model.pk
+            )
 
         if "next" in request.POST:
             return redirect(request.POST["next"])

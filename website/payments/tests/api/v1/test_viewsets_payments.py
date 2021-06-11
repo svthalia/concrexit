@@ -8,6 +8,7 @@ from freezegun import freeze_time
 from rest_framework.test import APIClient
 
 from members.models import Member
+from payments import payables
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, PaymentUser, Payment
 from payments.tests.__mocks__ import MockPayable, MockModel
@@ -41,11 +42,16 @@ class PaymentProcessViewTest(TestCase):
         cls.user = PaymentUser.objects.get(pk=cls.user.pk)
 
     def setUp(self):
+        payables.register(MockModel, MockPayable)
+
         self.account1.refresh_from_db()
         self.client = APIClient()
         self.client.force_login(self.user)
 
         self.payable = MockPayable(MockModel(payer=self.user))
+        self.original_get_payable = payables.get_payable
+        payables.get_payable = MagicMock()
+        payables.get_payable.return_value = self.payable
 
         self.original_get_model = apps.get_model
         mock_get_model = mock_get_model = MagicMock()
@@ -56,21 +62,21 @@ class PaymentProcessViewTest(TestCase):
             return self.original_get_model(*args, **kwargs)
 
         apps.get_model = Mock(side_effect=side_effect)
-        mock_get_model.objects.get.return_value = self.payable
 
     def tearDown(self):
         apps.get_model = self.original_get_model
+        payables.get_payable = self.original_get_payable
 
     def test_not_logged_in(self):
         self.client.logout()
 
-        response = self.client.post(reverse("v1:payment-list"))
+        response = self.client.post(reverse("api:v1:payment-list"))
         self.assertEqual(403, response.status_code)
 
     @override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=False)
     def test_member_has_tpay_enabled(self):
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
         self.assertEqual(400, response.status_code)
 
@@ -78,7 +84,7 @@ class PaymentProcessViewTest(TestCase):
         self.payable.model.payer = PaymentUser()
 
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
 
         self.assertEqual(403, response.status_code)
@@ -90,7 +96,7 @@ class PaymentProcessViewTest(TestCase):
         self.payable.model.payment = Payment(amount=8)
 
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
 
         self.assertEqual(409, response.status_code)
@@ -99,21 +105,23 @@ class PaymentProcessViewTest(TestCase):
         )
 
     @mock.patch("payments.services.create_payment")
-    def test_creates_payment(self, create_payment):
+    @mock.patch("payments.payables.get_payable")
+    def test_creates_payment(self, get_payable, create_payment):
         def set_payments_side_effect(*args, **kwargs):
             self.payable.model.payment = Payment.objects.create(amount=8)
 
         create_payment.side_effect = set_payments_side_effect
+        get_payable.return_value = self.payable
 
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
 
         create_payment.assert_called_with(self.payable, self.user, Payment.TPAY)
 
         self.assertEqual(201, response.status_code)
         self.assertEqual(
-            reverse("v1:payment-detail", kwargs={"pk": self.payable.payment.pk}),
+            reverse("api:v1:payment-detail", kwargs={"pk": self.payable.payment.pk}),
             response.headers["Location"],
         )
 
@@ -122,7 +130,7 @@ class PaymentProcessViewTest(TestCase):
         create_payment.side_effect = PaymentError("Test error")
 
         response = self.client.post(
-            reverse("v1:payment-list"), self.test_body, format="json"
+            reverse("api:v1:payment-list"), self.test_body, format="json"
         )
 
         self.assertEqual(400, response.status_code)

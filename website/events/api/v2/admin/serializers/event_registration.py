@@ -5,7 +5,7 @@ from members.api.v2.serializers.member import MemberSerializer
 from members.models import Member
 
 
-class EventRegistrationSerializer(serializers.ModelSerializer):
+class EventRegistrationAdminSerializer(serializers.ModelSerializer):
     """Serializer for event registrations."""
 
     class Meta:

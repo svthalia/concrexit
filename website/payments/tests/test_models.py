@@ -44,7 +44,7 @@ class PayableTest(TestCase):
     def test_can_create_payment_not_implemented(self):
         p = Payable(None)
         with self.assertRaises(NotImplementedError):
-            p.can_create_payment(None)
+            p.can_manage_payment(None)
 
     def test_tpay_allowed_by_default(self):
         p = Payable(None)

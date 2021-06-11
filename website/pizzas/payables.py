@@ -26,7 +26,7 @@ class FoodOrderPayable(Payable):
     def payment_payer(self):
         return self.model.member
 
-    def can_create_payment(self, member):
+    def can_manage_payment(self, member):
         return can_change_order(member, self.model.food_event)
 
 

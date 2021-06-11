@@ -163,17 +163,3 @@ class Shift(models.Model):
         if self.title and self.title != "":
             return f"Shift {self.pk} - {self.title}"
         return f"Shift {self.pk}"
-
-    def is_manager(self, member):
-        if member and member.is_authenticated:
-            return (
-                member.is_superuser
-                or member.has_perm("sales.override_manager")
-                or (
-                    member.get_member_groups()
-                    .filter(pk__in=self.managers.values_list("pk"))
-                    .count()
-                    != 0
-                )
-            )
-        return False

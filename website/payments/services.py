@@ -38,6 +38,14 @@ def create_payment(
         else None
     )
 
+    if not (
+        (payer and payer == processed_by and pay_type == Payment.TPAY)
+        or (payable.can_manage_payment(processed_by) and pay_type != Payment.TPAY)
+    ):
+        raise PaymentError(
+            _("User processing payment does not have the right permissions")
+        )
+
     if payable.payment_amount == 0:
         raise PaymentError(_("Payment amount 0 is not accepted"))
 
@@ -64,13 +72,18 @@ def create_payment(
     return payable.payment
 
 
-def delete_payment(model: Model):
+def delete_payment(model: Model, member: Member = None):
     """Remove a payment from a payable object.
 
     :param model: Payable or Model object
     :return:
     """
     payable = payables.get_payable(model)
+
+    if member and not payable.can_manage_payment(member):
+        raise PaymentError(
+            _("User deleting payment does not have the right permissions.")
+        )
 
     payment = payable.payment
     if payment.created_at < timezone.now() - timezone.timedelta(

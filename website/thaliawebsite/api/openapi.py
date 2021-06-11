@@ -37,6 +37,12 @@ class OAuthAutoSchema(AutoSchema):
             operation["security"] = [{"oauth2": ["read", "write"]}]
         return operation
 
+    def get_operation_id_base(self, path, method, action):
+        name = super().get_operation_id_base(path, method, action)
+        if "admin" in path:
+            return "Admin" + name.capitalize()
+        return name
+
     def get_operation_id(self, path, method):
         method_name = getattr(self.view, "action", method.lower())
         if is_list_view(path, method, self.view):

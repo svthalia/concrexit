@@ -9,6 +9,8 @@ from events.api.v2.admin.views import (
     EventRegistrationAdminListView,
 )
 
+app_name = "events"
+
 urlpatterns = [
     path("events/", EventAdminListCreateAPIView.as_view(), name="events-index"),
     path("events/<int:pk>/", EventAdminDetailAPIView.as_view(), name="event-detail",),

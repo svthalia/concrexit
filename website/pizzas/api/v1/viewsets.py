@@ -109,7 +109,7 @@ class OrderViewset(ModelViewSet):
     @staticmethod
     def _update_payment(order, payment_type=None, processed_by=None):
         if order.payment and payment_type == PaymentTypeField.NO_PAYMENT:
-            delete_payment(order)
+            delete_payment(order, processed_by)
         else:
             order.payment = create_payment(order, processed_by, payment_type)
             order.save()

@@ -7,6 +7,8 @@ from sales.api.v2.views import (
     OrderDetailView,
 )
 
+app_name = "sales"
+
 urlpatterns = [
     path("sales/shifts/", ShiftListView.as_view(), name="shift-list"),
     path("sales/shifts/<int:pk>/", ShiftDetailView.as_view(), name="shift-detail",),

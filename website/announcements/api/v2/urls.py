@@ -8,6 +8,8 @@ from announcements.api.v2.views import (
     FrontpageArticleDetailView,
 )
 
+app_name = "announcements"
+
 urlpatterns = [
     path(
         "announcements/",
