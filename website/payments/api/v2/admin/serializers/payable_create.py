@@ -8,5 +8,5 @@ class PayableCreateAdminSerializer(Serializer):
     """Serializer to create a payment from a payable."""
 
     payment_type = ChoiceField(
-        choices=[Payment.TPAY, Payment.CASH, Payment.CARD, Payment.WIRE]
+        choices=[Payment.CASH, Payment.CARD, Payment.WIRE]
     )

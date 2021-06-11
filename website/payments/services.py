@@ -40,7 +40,7 @@ def create_payment(
 
     if not (
         (payer and payer == processed_by and pay_type == Payment.TPAY)
-        or payable.can_manage_payment(processed_by)
+        or (payable.can_manage_payment(processed_by) and pay_type != Payment.TPAY)
     ):
         raise PaymentError(
             _("User processing payment does not have the right permissions")
