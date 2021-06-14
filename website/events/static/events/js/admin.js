@@ -5,7 +5,7 @@ django.jQuery(function () {
         var checkbox = $(this);
         var url = checkbox.parent().parent().data("url");
         var checked = checkbox.prop('checked');
-        patch(url, { present: checked }, function(result) {
+        request('PATCH', url, { present: checked }, function(result) {
             checkbox.prop('checked', result.present);
             $("table").trigger("update");
         }, function() {
@@ -18,7 +18,7 @@ django.jQuery(function () {
         payment_previous = this.value;
     }).change(function() {
         var select = $(this);
-        var url = $(this).parents('tr').data("url");
+        var url = $(this).parents('tr').data("payable-url");
         var none = $(this).data('none');
 
         if (payment_previous === $(this).val()) {
@@ -26,21 +26,17 @@ django.jQuery(function () {
         }
         $('table').trigger('update', false).trigger('sortReset');
 
-        if ($(this).val() === none) {
-            $(this).removeClass('paid');
-        } else {
-            $(this).addClass('paid');
-        }
-
-        patch(url, { payment: $(this).val() }, function(data) {
-            if (data.payment === none) {
+        var successCallback = function(data) {
+            if (!data) {
                 select.removeClass('paid');
             } else {
                 select.addClass('paid');
             }
-            select.val(data.payment);
+            select.val(data ? data.payment.type: none);
             $('table').trigger('update', false);
-        }, function(xhr) {
+        };
+
+        var failCallback = function(xhr) {
             select.val(payment_previous);
             $('table').trigger('update', false);
 
@@ -54,7 +50,17 @@ django.jQuery(function () {
             if (data.detail !== undefined) {
                 alert(data.detail);
             }
-        });
+        };
+
+        if ($(this).val() === none) {
+            $(this).removeClass('paid');
+            request('DELETE', url, null, successCallback, failCallback);
+        } else {
+            $(this).addClass('paid');
+            request('PATCH', url, { payment_type: $(this).val() }, successCallback, failCallback);
+        }
+
+
     });
 
     $.tablesorter.addParser({
@@ -100,10 +106,10 @@ django.jQuery(function () {
 	});
 });
 
-function patch(url, data, success, error) {
+function request(method, url, data, success, error) {
     django.jQuery.ajax({
         url: url,
-        type: 'PATCH',
+        type: method,
         data: data,
         headers: {
             "X-CSRFToken": Cookies.get('csrftoken')
