@@ -481,7 +481,7 @@ doc = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "faker"
-version = "8.6.0"
+version = "8.8.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
@@ -1366,7 +1366,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "25663ef9164f3ba72c0179d6fbd6a869da1ce9a4572fe7b8e6cc53776615e04d"
+content-hash = "194853855d4898cdddbd8b5682ffe9eff4e50f9f7848c5ee78b332751889a019"
 
 [metadata.files]
 alabaster = [
@@ -1632,8 +1632,8 @@ factory-boy = [
     {file = "factory_boy-3.2.0.tar.gz", hash = "sha256:401cc00ff339a022f84d64a4339503d1689e8263a4478d876e58a3295b155c5b"},
 ]
 faker = [
-    {file = "Faker-8.6.0-py3-none-any.whl", hash = "sha256:8f2800605b55cbf92d30c1a9db2cc11d0bfb200732590f597603a7789a43f5f4"},
-    {file = "Faker-8.6.0.tar.gz", hash = "sha256:69febb4db797d2c463e5bd56263aa0068c99480ace3beeb6ba0e14bf82d46607"},
+    {file = "Faker-8.8.0-py3-none-any.whl", hash = "sha256:0129599c0d35e79471d116460b1c51d8c183980f28e14517228be4601cf87192"},
+    {file = "Faker-8.8.0.tar.gz", hash = "sha256:7be0d9309bde6624e1a6062d0dc37859f95ca883fa047a11db8e5e305b1446a1"},
 ]
 firebase-admin = [
     {file = "firebase_admin-5.0.0-py3-none-any.whl", hash = "sha256:1004695da81393a6c782537bb98eb7eb3bf186914412e9e879be967b7356690c"},
