@@ -1,12 +1,10 @@
 import rest_framework.filters as framework_filters
 from django.apps import apps
-from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status, serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import (
     ListAPIView,
-    CreateAPIView,
     RetrieveAPIView,
     get_object_or_404,
 )
@@ -17,6 +15,7 @@ from payments import services, payables, NotRegistered
 from payments.api.v2 import filters
 from payments.api.v2.serializers import PaymentSerializer
 from payments.api.v2.serializers.payable_detail import PayableSerializer
+from payments.api.v2.serializers.payment_user import PaymentUserSerializer
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
@@ -127,3 +126,18 @@ class PayableDetailView(RetrieveAPIView):
             PayableSerializer(payable, context=self.get_serializer_context()).data,
             status=status.HTTP_201_CREATED,
         )
+
+
+class PaymentUserCurrentView(RetrieveAPIView):
+    """Returns details of the authenticated member."""
+
+    queryset = PaymentUser
+    serializer_class = PaymentUserSerializer
+    permission_classes = [
+        IsAuthenticatedOrTokenHasScopeForMethod,
+    ]
+
+    required_scopes_per_method = {"GET": ["payments:read"]}
+
+    def get_object(self):
+        return get_object_or_404(PaymentUser, pk=self.request.user.pk)
