@@ -13,7 +13,7 @@ app_name = "payments"
 urlpatterns = [
     path("payments/", PaymentListView.as_view(), name="payments-list"),
     path(
-        "payments/tpay-status/",
+        "payments/users/me/",
         PaymentUserCurrentView.as_view(),
         name="payments-tpay-status",
     ),
