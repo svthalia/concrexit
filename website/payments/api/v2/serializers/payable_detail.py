@@ -1,4 +1,4 @@
-from rest_framework.fields import CharField, empty, DecimalField
+from rest_framework.fields import CharField, DecimalField, BooleanField
 from rest_framework.serializers import Serializer
 
 from payments.api.v2.serializers import PaymentSerializer
