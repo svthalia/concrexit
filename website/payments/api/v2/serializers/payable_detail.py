@@ -11,3 +11,4 @@ class PayableSerializer(Serializer):
     topic = CharField(source="payment_topic")
     notes = CharField(source="payment_notes")
     payment = PaymentSerializer(read_only=True)
+    tpay_allowed = BooleanField()
