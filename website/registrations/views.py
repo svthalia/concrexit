@@ -11,6 +11,7 @@ from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -229,6 +230,33 @@ class RenewalFormView(FormView):
         ).exists()
         context["benefactor_type"] = Membership.BENEFACTOR
         return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        member = self.request.member
+        if member is not None and member.latest_membership is not None:
+            latest_membership = member.latest_membership
+            # If latest membership has not ended or does not ends
+            # within 1 month: do not show 'year' length and disable benefactor option
+            hide_year_choice = not (
+                latest_membership is not None
+                and latest_membership.until is not None
+                and (latest_membership.until - timezone.now().date()).days <= 31
+            )
+
+            if hide_year_choice:
+                form.fields["length"].choices = [
+                    c
+                    for c in form.fields["length"].choices
+                    if c[0] != Entry.MEMBERSHIP_YEAR
+                ]
+                form.fields["membership_type"].choices = [
+                    c
+                    for c in form.fields["membership_type"].choices
+                    if c[0] != Membership.BENEFACTOR
+                ]
+
+        return form
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
