@@ -151,7 +151,14 @@ class RenewalForm(forms.ModelForm):
 
     class Meta:
         model = Renewal
-        fields = ("member", "length", "contribution", "membership_type")
+        fields = (
+            "member",
+            "length",
+            "contribution",
+            "membership_type",
+            "no_references",
+            "remarks",
+        )
 
 
 class ReferenceForm(forms.ModelForm):
