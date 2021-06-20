@@ -533,7 +533,9 @@ class ServicesTest(TestCase):
         self.e0.status = Entry.STATUS_REVIEW
         self.e0.save()
 
+    @freeze_time("2019-01-01")
     def test_accept_tpay_registration(self):
+        self.e2.created_at = timezone.now()
         self.e2.direct_debit = True
         self.e2.iban = "NL91ABNA0417164300"
         self.e2.initials = "J"
