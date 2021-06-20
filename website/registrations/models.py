@@ -111,7 +111,8 @@ class Entry(models.Model):
         if self.membership_type == Membership.BENEFACTOR:
             self.length = self.MEMBERSHIP_YEAR
         else:
-            self.contribution = settings.MEMBERSHIP_PRICES[self.length]
+            if not self.contribution:
+                self.contribution = settings.MEMBERSHIP_PRICES[self.length]
 
         super().save(force_insert, force_update, using, update_fields)
 
@@ -407,6 +408,19 @@ class Renewal(Entry):
     ):
         if self.pk is None:
             self.status = Entry.STATUS_REVIEW
+
+        if (
+            self.contribution is None
+            and self.length == Entry.MEMBERSHIP_STUDY
+            and self.member.current_membership is not None
+            and self.member.current_membership.length - Entry.MEMBERSHIP_YEAR
+            and self.member.current_membership.membership_type == Membership.MEMBER
+        ):
+            # The membership upgrade discount applies
+            self.contribution = (
+                settings.MEMBERSHIP_PRICES["study"] - settings.MEMBERSHIP_PRICES["year"]
+            )
+
         super().save(force_insert, force_update, using, update_fields)
 
     def clean(self):
