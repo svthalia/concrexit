@@ -1,9 +1,9 @@
-from rest_framework.fields import CharField, ListField, DecimalField, empty
+from rest_framework.fields import CharField, ListField, DecimalField
 from rest_framework.serializers import Serializer
 
 from members.api.v2.serializers.member import MemberSerializer
 from payments.api.v2.admin.serializers.payment import PaymentAdminSerializer
-from payments.models import Payment, PaymentUser
+from payments.models import Payment
 
 
 class PayableAdminSerializer(Serializer):
