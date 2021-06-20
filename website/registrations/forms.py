@@ -139,7 +139,7 @@ class RenewalForm(forms.ModelForm):
         required=False, label=_("I am an employee of iCIS")
     )
 
-    contribution = forms.IntegerField(required=False,)
+    contribution = forms.DecimalField(required=False, max_digits=5, decimal_places=2,)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
