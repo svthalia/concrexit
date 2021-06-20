@@ -125,9 +125,17 @@ class OrderAPITest(TestCase):
         permission3 = Permission.objects.get(
             content_type=content_type, codename="delete_order"
         )
+        permission4 = Permission.objects.get(
+            content_type=content_type, codename="view_order"
+        )
+        permission5 = Permission.objects.get(
+            content_type=ContentType.objects.get_for_model(Shift), codename="view_shift"
+        )
         cls.cie.permissions.add(permission1)
         cls.cie.permissions.add(permission2)
         cls.cie.permissions.add(permission3)
+        cls.cie.permissions.add(permission4)
+        cls.cie.permissions.add(permission5)
 
     def setUp(self):
         self.client = APIClient()
@@ -152,7 +160,7 @@ class OrderAPITest(TestCase):
         response = self.client.get(
             reverse("api:v2:admin:sales:order-detail", kwargs={"pk": self.o1.pk})
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(404, response.status_code)
 
         self.shift.managers.add(self.cie)
         self.shift.save()
@@ -719,9 +727,17 @@ class ShiftAPITest(TestCase):
         permission3 = Permission.objects.get(
             content_type=content_type, codename="delete_order"
         )
+        permission4 = Permission.objects.get(
+            content_type=content_type, codename="view_order"
+        )
+        permission5 = Permission.objects.get(
+            content_type=ContentType.objects.get_for_model(Shift), codename="view_shift"
+        )
         cls.cie.permissions.add(permission1)
         cls.cie.permissions.add(permission2)
         cls.cie.permissions.add(permission3)
+        cls.cie.permissions.add(permission4)
+        cls.cie.permissions.add(permission5)
 
     def setUp(self):
         self.client = APIClient()
