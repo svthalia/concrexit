@@ -5,6 +5,7 @@
 	border: 1px solid #ccc;
 	height: 9rem;
 	width: 26rem;
+    background: white;
 }
 
 .signature-row #canvas-container canvas {
@@ -48,4 +49,5 @@
     margin-left: 2rem;
 	height: 9rem;
 	width: 26rem;
+    background: white;
 }
