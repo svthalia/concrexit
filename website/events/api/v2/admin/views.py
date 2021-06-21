@@ -84,7 +84,9 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
         return EventRegistration.objects.none()
 
 
-class EventRegistrationAdminDetailView(AdminRetrieveAPIView, AdminUpdateAPIView):
+class EventRegistrationAdminDetailView(
+    AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView
+):
     """Returns details of an event registration."""
 
     serializer_class = EventRegistrationAdminSerializer
