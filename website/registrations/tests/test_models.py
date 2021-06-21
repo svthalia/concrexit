@@ -103,10 +103,14 @@ class EntryTest(TestCase):
 
         entry.membership_type = Membership.MEMBER
 
-        with self.subTest("Type `Member` should set contribution by length"):
+        with self.subTest(
+            "Type `Member` should get contribution upgrade when already member"
+        ):
             entry.save()
             self.assertEqual(
-                entry.contribution, settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
+                entry.contribution,
+                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
+                - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR],
             )
 
     def test_clean(self):
