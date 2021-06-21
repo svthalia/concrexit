@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="readonly signature-row">
     {% include 'payments/includes/signature_canvas.html' %}
-    {% if widget.value %}<img id="signature-img" alt="Signature" src="{{ widget.value }}" />{% endif %}
+    {% if widget.value %}<img id="signature-img" alt="Signature" src="{{ widget.value }}" style="background: white" />{% endif %}
     <input type="hidden" id="id_signature" value="{% if widget.value %}{{ widget.value }}{% endif %}" name="{{ widget.name }}" />
 </div>
