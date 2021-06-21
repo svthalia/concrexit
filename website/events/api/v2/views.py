@@ -201,35 +201,34 @@ class EventRegistrationFieldsView(APIView):
         required_keys = set(original.keys()) - set(request.data.keys())
         if len(required_keys) > 0:
             raise ValidationError(
-                f"Missing keys '{', '.join(required_keys)}' in request",
-                status.HTTP_400_BAD_REQUEST,
+                f"Missing keys '{', '.join(required_keys)}' in request"
             )
 
-        if not event_permissions(
-            self.get_object().member, self.get_object().event, self.get_object().name
-        )["update_registration"]:
-            raise PermissionDenied("You cannot update this registration.")
+        try:
+            services.update_registration(
+                registration=self.get_object(), field_values=request.data.items()
+            )
 
-        services.update_registration(
-            registration=self.get_object(), field_values=request.data.items()
-        )
-
-        return Response(
-            data=services.registration_fields(request, registration=self.get_object()),
-            status=status.HTTP_200_OK,
-        )
+            return Response(
+                data=services.registration_fields(
+                    request, registration=self.get_object()
+                ),
+                status=status.HTTP_200_OK,
+            )
+        except RegistrationError as e:
+            raise ValidationError(e)
 
     def patch(self, request, *args, **kwargs):
-        if not event_permissions(
-            self.get_object().member, self.get_object().event, self.get_object().name
-        )["update_registration"]:
-            raise PermissionDenied("You cannot update this registration.")
+        try:
+            services.update_registration(
+                registration=self.get_object(), field_values=request.data.items()
+            )
 
-        services.update_registration(
-            registration=self.get_object(), field_values=request.data.items()
-        )
-
-        return Response(
-            data=services.registration_fields(request, registration=self.get_object()),
-            status=status.HTTP_200_OK,
-        )
+            return Response(
+                data=services.registration_fields(
+                    request, registration=self.get_object()
+                ),
+                status=status.HTTP_200_OK,
+            )
+        except RegistrationError as e:
+            raise ValidationError(e)

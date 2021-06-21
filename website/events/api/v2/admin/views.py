@@ -105,7 +105,9 @@ class EventRegistrationAdminFieldsView(AdminPermissionsMixin, APIView):
 
     permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
-    queryset = EventRegistration.objects.filter(event=self.kwargs["event_id"])
+
+    def get_queryset(self):
+        return EventRegistration.objects.filter(event=self.kwargs["event_id"])
 
     def get_object(self):
         event_registration = get_object_or_404(

@@ -201,10 +201,9 @@ def update_registration(
         event = registration.event
         name = registration.name
 
-    if (
-        not event_permissions(member, event, name)["update_registration"]
-        or not field_values
-    ):
+    if not event_permissions(member, event, name)["update_registration"]:
+        raise RegistrationError(_("You cannot update this registration."))
+    if not field_values:
         return
 
     for field_id, field_value in field_values:
