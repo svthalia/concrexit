@@ -31,4 +31,4 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
             "name",
         )
 
-    member = MemberSerializer(detailed=False)
+    member = MemberSerializer(detailed=False, read_only=True)
