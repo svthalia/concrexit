@@ -1,6 +1,6 @@
 from django.urls import path
 
-from sales.api.v2.views import (
+from sales.api.v2.admin.views import (
     ShiftListView,
     ShiftDetailView,
     OrderListView,

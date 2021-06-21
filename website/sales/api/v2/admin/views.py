@@ -1,28 +1,25 @@
-import django.contrib.admin.models
-from django.contrib.admin.models import LogEntry
-from django.contrib.contenttypes.models import ContentType
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework import filters, exceptions, status
+from rest_framework import filters, exceptions
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    get_object_or_404,
-    RetrieveUpdateDestroyAPIView,
-    ListCreateAPIView,
-)
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import DjangoModelPermissions
 
-from sales.api.v2.permissions import IsManager
-from sales.api.v2.serializers.order import OrderSerializer, OrderListSerializer
-from sales.api.v2.serializers.shift import ShiftSerializer
+from sales.api.v2.admin.permissions import IsManager
+from sales.api.v2.admin.serializers.order import OrderSerializer, OrderListSerializer
+from sales.api.v2.admin.serializers.shift import ShiftSerializer
 from sales.models.order import Order
 from sales.models.shift import Shift
-from sales.services import is_manager
+from thaliawebsite.api.v2.admin import (
+    AdminCreateAPIView,
+    AdminListAPIView,
+    AdminRetrieveAPIView,
+    AdminUpdateAPIView,
+    AdminDestroyAPIView,
+)
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 
-class ShiftListView(ListAPIView):
+class ShiftListView(AdminListAPIView):
     """Returns an overview of all sales shifts."""
 
     serializer_class = ShiftSerializer
@@ -57,7 +54,7 @@ class ShiftListView(ListAPIView):
         return queryset
 
 
-class ShiftDetailView(RetrieveAPIView):
+class ShiftDetailView(AdminRetrieveAPIView):
     serializer_class = ShiftSerializer
     queryset = Shift.objects.all()
     permission_classes = [
@@ -68,7 +65,7 @@ class ShiftDetailView(RetrieveAPIView):
     required_scopes = ["sales:read"]
 
 
-class OrderListView(ListCreateAPIView):
+class OrderListView(AdminListAPIView, AdminCreateAPIView):
     method_serializer_classes = {
         ("GET",): OrderListSerializer,
         ("POST",): OrderSerializer,
@@ -95,16 +92,7 @@ class OrderListView(ListCreateAPIView):
         if shift.locked:
             raise PermissionDenied
 
-        response = super(OrderListView, self).create(request, args, kwargs)
-        LogEntry.objects.log_action(
-            user_id=request.user.pk,
-            content_type_id=ContentType.objects.get_for_model(Order).pk,
-            object_id=response.data["pk"],
-            object_repr=f"Order {response.data['pk']}",
-            action_flag=django.contrib.admin.models.ADDITION,
-            change_message=f"Created order (API){': ' if response.data['order_description'] else ''}{response.data['order_description']}",
-        )
-        return response
+        return super(OrderListView, self).create(request, args, kwargs)
 
     def get_queryset(self):
         queryset = Order.objects.all()
@@ -134,7 +122,7 @@ class OrderListView(ListCreateAPIView):
         return context
 
 
-class OrderDetailView(RetrieveUpdateDestroyAPIView):
+class OrderDetailView(AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
     permission_classes = [
@@ -148,18 +136,6 @@ class OrderDetailView(RetrieveUpdateDestroyAPIView):
         "PUT": ["sales:write"],
         "DELETE": ["sales:write"],
     }
-
-    def update(self, request, *args, **kwargs):
-        response = super(OrderDetailView, self).update(request, args, kwargs)
-        LogEntry.objects.log_action(
-            user_id=request.user.pk,
-            content_type_id=ContentType.objects.get_for_model(Order).pk,
-            object_id=response.data["pk"],
-            object_repr=f"Order {response.data['pk']}",
-            action_flag=django.contrib.admin.models.CHANGE,
-            change_message=f"Updated order (API){': ' if response.data['order_description'] else ''}{response.data['order_description']}",
-        )
-        return response
 
     def get_queryset(self):
         queryset = super().get_queryset()
