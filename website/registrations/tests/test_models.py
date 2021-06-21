@@ -103,14 +103,10 @@ class EntryTest(TestCase):
 
         entry.membership_type = Membership.MEMBER
 
-        with self.subTest(
-            "Type `Member` should get contribution upgrade when already member"
-        ):
+        with self.subTest("Type `Member` should set contribution by length"):
             entry.save()
             self.assertEqual(
-                entry.contribution,
-                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
-                - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR],
+                entry.contribution, settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
             )
 
     def test_clean(self):
@@ -412,6 +408,20 @@ class RenewalTest(TestCase):
                     "membership_type": "You currently have an active membership.",
                 },
             )
+
+    def test_discount_membership_upgrade(self):
+        membership = self.member.current_membership
+        membership.until = timezone.now().date() + timezone.timedelta(days=3)
+        membership.save()
+
+        self.renewal.save()
+        self.renewal.refresh_from_db()
+
+        self.assertEqual(
+            self.renewal.contribution,
+            settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
+            - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR],
+        )
 
 
 @override_settings(SUSPEND_SIGNALS=True)

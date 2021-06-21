@@ -104,16 +104,20 @@ class Entry(models.Model):
 
     @property
     def membership_upgrade_discount_applies(self):
-        try:
-            return (
-                self.renewal
-                and self.length == Entry.MEMBERSHIP_STUDY
-                and self.renewal.member.current_membership is not None
-                and self.renewal.member.current_membership.until is not None
-                and self.renewal.member.current_membership.type == Membership.MEMBER
-            )
-        except ObjectDoesNotExist:
-            return False
+        if isinstance(self, Renewal):
+            member = self.member
+        else:
+            try:
+                member = self.renewal.member
+            except ObjectDoesNotExist:
+                return False
+
+        return (
+            self.length == Entry.MEMBERSHIP_STUDY
+            and member.current_membership is not None
+            and member.current_membership.until is not None
+            and member.current_membership.type == Membership.MEMBER
+        )
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
