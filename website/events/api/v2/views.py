@@ -1,17 +1,14 @@
-from django.http import HttpResponse
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework import status
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
     get_object_or_404,
     DestroyAPIView,
 )
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
-from rest_framework.utils import json
 from rest_framework.views import APIView
 
 from events import services
@@ -20,6 +17,7 @@ from events.api.v2.serializers.event import EventSerializer
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
+from events.services import event_permissions
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
 
@@ -193,10 +191,8 @@ class EventRegistrationFieldsView(APIView):
         )
 
     def get(self, request, *args, **kwargs):
-        return HttpResponse(
-            content=json.dumps(
-                services.registration_fields(request, registration=self.get_object())
-            ),
+        return Response(
+            data=services.registration_fields(request, registration=self.get_object()),
             status=status.HTTP_200_OK,
         )
 
@@ -204,27 +200,36 @@ class EventRegistrationFieldsView(APIView):
         original = services.registration_fields(request, registration=self.get_object())
         required_keys = set(original.keys()) - set(request.data.keys())
         if len(required_keys) > 0:
-            return HttpResponse(
-                content=f"Missing keys '{', '.join(required_keys)}' in request",
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                f"Missing keys '{', '.join(required_keys)}' in request",
+                status.HTTP_400_BAD_REQUEST,
             )
+
+        if not event_permissions(
+            self.get_object().member, self.get_object().event, self.get_object().name
+        )["update_registration"]:
+            raise PermissionDenied("You cannot update this registration.")
+
         services.update_registration(
             registration=self.get_object(), field_values=request.data.items()
         )
-        return HttpResponse(
-            content=json.dumps(
-                services.registration_fields(request, registration=self.get_object())
-            ),
+
+        return Response(
+            data=services.registration_fields(request, registration=self.get_object()),
             status=status.HTTP_200_OK,
         )
 
     def patch(self, request, *args, **kwargs):
+        if not event_permissions(
+            self.get_object().member, self.get_object().event, self.get_object().name
+        )["update_registration"]:
+            raise PermissionDenied("You cannot update this registration.")
+
         services.update_registration(
             registration=self.get_object(), field_values=request.data.items()
         )
-        return HttpResponse(
-            content=json.dumps(
-                services.registration_fields(request, registration=self.get_object())
-            ),
+
+        return Response(
+            data=services.registration_fields(request, registration=self.get_object()),
             status=status.HTTP_200_OK,
         )
