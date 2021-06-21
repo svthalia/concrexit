@@ -3,7 +3,12 @@ from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScop
 from rest_framework import filters as framework_filters
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveAPIView,
+    get_object_or_404,
+    DestroyAPIView,
+)
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 from rest_framework.utils import json
@@ -46,7 +51,7 @@ class EventDetailView(RetrieveAPIView):
     required_scopes = ["events:read"]
 
 
-class EventRegistrationsView(ListAPIView):
+class EventRegistrationsView(ListAPIView, DestroyAPIView):
     """Returns a list of registrations."""
 
     serializer_class = EventRegistrationSerializer
@@ -108,8 +113,15 @@ class EventRegistrationsView(ListAPIView):
         except RegistrationError as e:
             raise PermissionDenied(detail=e) from e
 
+    def delete(self, request, *args, **kwargs):
+        try:
+            services.cancel_registration(request.member, self.event)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except RegistrationError as e:
+            raise PermissionDenied(detail=e) from e
 
-class EventRegistrationDetailView(RetrieveAPIView):
+
+class EventRegistrationDetailView(RetrieveAPIView, DestroyAPIView):
     """Returns details of an event registration."""
 
     serializer_class = EventRegistrationSerializer
