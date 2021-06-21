@@ -51,7 +51,7 @@ class EventDetailView(RetrieveAPIView):
     required_scopes = ["events:read"]
 
 
-class EventRegistrationsView(ListAPIView, DestroyAPIView):
+class EventRegistrationsView(ListAPIView):
     """Returns a list of registrations."""
 
     serializer_class = EventRegistrationSerializer
@@ -110,13 +110,6 @@ class EventRegistrationsView(ListAPIView, DestroyAPIView):
                 instance=registration, context=self.get_serializer_context()
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except RegistrationError as e:
-            raise PermissionDenied(detail=e) from e
-
-    def delete(self, request, *args, **kwargs):
-        try:
-            services.cancel_registration(request.member, self.event)
-            return Response(status=status.HTTP_204_NO_CONTENT)
         except RegistrationError as e:
             raise PermissionDenied(detail=e) from e
 
