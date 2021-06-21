@@ -74,6 +74,11 @@ class PaymentDetailView(AdminRetrieveAPIView, AdminDestroyAPIView):
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["payments:admin"]
 
+    def delete(self, request, *args, **kwargs):
+        if self.get_object().batch and self.get_object().batch.processed:
+            raise PermissionDenied("This payment cannot be deleted.")
+        return super().delete(request, *args, **kwargs)
+
 
 class PayableDetailView(APIView):
     """View that allows you to manipulate the payment for the payable.
