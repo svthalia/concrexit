@@ -50,7 +50,9 @@ class EventRegistrationViewSet(RetrieveModelMixin, UpdateModelMixin, GenericView
                 )
 
             services.update_registration(
-                registration=registration, field_values=serializer.field_values(), actor=self.request.member
+                registration=registration,
+                field_values=serializer.field_values(),
+                actor=self.request.member,
             )
             serializer.information_fields = services.registration_fields(
                 serializer.context["request"], registration=registration

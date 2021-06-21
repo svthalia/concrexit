@@ -209,10 +209,7 @@ def update_registration(
 
     if not field_values:
         return
-    if not (
-        permissions["update_registration"]
-        or permissions["manage_event"]
-    ):
+    if not (permissions["update_registration"] or permissions["manage_event"]):
         raise RegistrationError(_("You are not allowed to update this registration."))
 
     for field_id, field_value in field_values:
