@@ -17,7 +17,7 @@ def index(request):
         products = products.exclude(restricted=True)
     event = FoodEvent.current()
     try:
-        obj = FoodOrder.objects.get(pizza_event=event, member=request.member)
+        obj = FoodOrder.objects.get(food_event=event, member=request.member)
     except FoodOrder.DoesNotExist:
         obj = None
     context = {"event": event, "products": products, "order": obj}
@@ -48,7 +48,7 @@ def place_order(request):
         return redirect("pizzas:index")
 
     try:
-        obj = FoodOrder.objects.get(pizza_event=event, member=request.member)
+        obj = FoodOrder.objects.get(food_event=event, member=request.member)
         current_order_locked = not obj.can_be_changed
     except FoodOrder.DoesNotExist:
         obj = None
@@ -63,7 +63,7 @@ def place_order(request):
         except Product.DoesNotExist as e:
             raise Http404("Pizza does not exist") from e
         if not obj:
-            obj = FoodOrder(pizza_event=event, member=request.member)
+            obj = FoodOrder(food_event=event, member=request.member)
         obj.product = product
         obj.save()
     return redirect("pizzas:index")

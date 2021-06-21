@@ -36,7 +36,7 @@ def gen_stats_current_pizza_orders():
         total.update(
             {
                 product.name: FoodOrder.objects.filter(
-                    product=product, pizza_event=current_pizza_event,
+                    product=product, food_event=current_pizza_event,
                 ).count(),
             }
         )
