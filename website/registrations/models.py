@@ -129,7 +129,6 @@ class Entry(models.Model):
             self.length = self.MEMBERSHIP_YEAR
         else:
             if self.membership_upgrade_discount_applies:
-                # The membership upgrade discount applies
                 self.contribution = (
                     settings.MEMBERSHIP_PRICES["study"]
                     - settings.MEMBERSHIP_PRICES["year"]
