@@ -4,7 +4,7 @@ import uuid
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import validators
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.template.defaultfilters import floatformat
@@ -102,6 +102,23 @@ class Entry(models.Model):
         "members.Membership", on_delete=models.SET_NULL, blank=True, null=True,
     )
 
+    @property
+    def membership_upgrade_discount_applies(self):
+        if isinstance(self, Renewal):
+            member = self.member
+        else:
+            try:
+                member = self.renewal.member
+            except ObjectDoesNotExist:
+                return False
+
+        return (
+            self.length == Entry.MEMBERSHIP_STUDY
+            and member.current_membership is not None
+            and member.current_membership.until is not None
+            and member.current_membership.type == Membership.MEMBER
+        )
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
@@ -111,7 +128,13 @@ class Entry(models.Model):
         if self.membership_type == Membership.BENEFACTOR:
             self.length = self.MEMBERSHIP_YEAR
         else:
-            self.contribution = settings.MEMBERSHIP_PRICES[self.length]
+            if self.membership_upgrade_discount_applies:
+                self.contribution = (
+                    settings.MEMBERSHIP_PRICES["study"]
+                    - settings.MEMBERSHIP_PRICES["year"]
+                )
+            else:
+                self.contribution = settings.MEMBERSHIP_PRICES[self.length]
 
         super().save(force_insert, force_update, using, update_fields)
 

@@ -153,15 +153,12 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
                 entry.registration.username = _generate_username(entry.registration)
                 entry.registration.save()
 
-            entry.save()
-
             if entry.registration.direct_debit:
                 member = _create_member_from_registration(entry.registration)
                 membership = _create_membership_from_entry(entry.registration, member)
                 entry.membership = membership
                 entry.status = Entry.STATUS_COMPLETED
                 entry.payment = create_payment(entry, member, Payment.TPAY)
-                entry.save()
             else:
                 emails.send_registration_accepted_message(entry.registration)
 
