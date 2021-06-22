@@ -25,6 +25,10 @@ class OrderPayable(Payable):
             "sales.change_order"
         )
 
+    @property
+    def immutable_after_payment(self):
+        return True
+
 
 def register():
     payables.register(Order, OrderPayable)
