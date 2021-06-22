@@ -67,6 +67,6 @@ def place_order(request):
             obj = FoodOrder(food_event=event, member=request.member)
         obj.product = product
         if obj.payment:
-            delete_payment(obj.payment)
+            delete_payment(obj)
         obj.save()
     return redirect("pizzas:index")
