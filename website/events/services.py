@@ -177,7 +177,7 @@ def cancel_registration(member, event):
 
 
 def update_registration(
-    member=None, event=None, name=None, registration=None, field_values=None
+    member=None, event=None, name=None, registration=None, field_values=None, actor=None
 ):
     """Update a user registration of an event.
 
@@ -186,6 +186,7 @@ def update_registration(
     :param name: the name of a registration not associated with a user
     :param registration: the registration
     :param field_values: values for the information fields
+    :param actor: Member executing this action
     """
     if not registration:
         try:
@@ -201,11 +202,15 @@ def update_registration(
         event = registration.event
         name = registration.name
 
-    if (
-        not event_permissions(member, event, name)["update_registration"]
-        or not field_values
-    ):
+    if not actor:
+        actor = member
+
+    permissions = event_permissions(actor, event, name)
+
+    if not field_values:
         return
+    if not (permissions["update_registration"] or permissions["manage_event"]):
+        raise RegistrationError(_("You are not allowed to update this registration."))
 
     for field_id, field_value in field_values:
         field = RegistrationInformationField.objects.get(

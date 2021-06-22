@@ -1,9 +1,9 @@
-import json
-
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import status
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import filters as framework_filters
 
@@ -17,6 +17,7 @@ from events.api.v2.admin.serializers.event import (
 from events.api.v2.admin.serializers.event_registration import (
     EventRegistrationAdminSerializer,
 )
+from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
 from thaliawebsite.api.v2.admin.views import (
     AdminListAPIView,
@@ -105,6 +106,9 @@ class EventRegistrationAdminFieldsView(AdminPermissionsMixin, APIView):
     permission_classes = [IsOrganiser, IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
 
+    def get_queryset(self):
+        return EventRegistration.objects.filter(event=self.kwargs["event_id"])
+
     def get_object(self):
         event_registration = get_object_or_404(
             EventRegistration,
@@ -118,10 +122,8 @@ class EventRegistrationAdminFieldsView(AdminPermissionsMixin, APIView):
         return event_registration
 
     def get(self, request, *args, **kwargs):
-        return HttpResponse(
-            content=json.dumps(
-                services.registration_fields(request, registration=self.get_object())
-            ),
+        return Response(
+            data=services.registration_fields(request, registration=self.get_object()),
             status=status.HTTP_200_OK,
         )
 
@@ -129,17 +131,17 @@ class EventRegistrationAdminFieldsView(AdminPermissionsMixin, APIView):
         original = services.registration_fields(request, registration=self.get_object())
         required_keys = set(original.keys()) - set(request.data.keys())
         if len(required_keys) > 0:
-            return HttpResponse(
-                content=f"Missing keys '{', '.join(required_keys)}' in request",
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                f"Missing keys '{', '.join(required_keys)}' in request",
+                status.HTTP_400_BAD_REQUEST,
             )
+
         services.update_registration(
             registration=self.get_object(), field_values=request.data.items()
         )
-        return HttpResponse(
-            content=json.dumps(
-                services.registration_fields(request, registration=self.get_object())
-            ),
+
+        return Response(
+            data=services.registration_fields(request, registration=self.get_object()),
             status=status.HTTP_200_OK,
         )
 
@@ -147,9 +149,8 @@ class EventRegistrationAdminFieldsView(AdminPermissionsMixin, APIView):
         services.update_registration(
             registration=self.get_object(), field_values=request.data.items()
         )
-        return HttpResponse(
-            content=json.dumps(
-                services.registration_fields(request, registration=self.get_object())
-            ),
+
+        return Response(
+            data=services.registration_fields(request, registration=self.get_object()),
             status=status.HTTP_200_OK,
         )
