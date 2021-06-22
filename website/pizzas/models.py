@@ -44,6 +44,8 @@ class FoodEvent(models.Model):
     )
     end_reminder = models.OneToOneField(ScheduledMessage, models.CASCADE, null=True)
 
+    tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
+
     @property
     def title(self):
         return self.event.title
