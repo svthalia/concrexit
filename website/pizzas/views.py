@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
+from payments.exceptions import PaymentError
 from payments.services import delete_payment
 from .models import FoodOrder, FoodEvent, Product
 
@@ -67,6 +68,13 @@ def place_order(request):
             obj = FoodOrder(food_event=event, member=request.member)
         obj.product = product
         if obj.payment:
-            delete_payment(obj, member=request.member, ignore_change_window=True)
+            try:
+                delete_payment(obj, member=request.member, ignore_change_window=True)
+            except PaymentError:
+                messages.error(
+                    request,
+                    _("Your order could not be updated because it was already paid."),
+                )
+                return redirect("pizzas:index")
         obj.save()
     return redirect("pizzas:index")
