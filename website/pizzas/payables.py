@@ -29,6 +29,10 @@ class FoodOrderPayable(Payable):
     def can_manage_payment(self, member):
         return can_change_order(member, self.model.food_event)
 
+    @property
+    def tpay_allowed(self):
+        return self.model.food_event.tpay_allowed
+
 
 def register():
     payables.register(FoodOrder, FoodOrderPayable)
