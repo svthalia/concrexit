@@ -72,10 +72,12 @@ def create_payment(
     return payable.payment
 
 
-def delete_payment(model: Model, member: Member = None):
+def delete_payment(model: Model, member: Member = None, ignore_change_window=False):
     """Remove a payment from a payable object.
 
     :param model: Payable or Model object
+    :param member: member deleting the payment
+    :param ignore_change_window: ignore the payment change window
     :return:
     """
     payable = payables.get_payable(model)
@@ -86,8 +88,10 @@ def delete_payment(model: Model, member: Member = None):
         )
 
     payment = payable.payment
-    if payment.created_at < timezone.now() - timezone.timedelta(
-        seconds=settings.PAYMENT_CHANGE_WINDOW
+    if (
+        payment.created_at
+        < timezone.now() - timezone.timedelta(seconds=settings.PAYMENT_CHANGE_WINDOW)
+        and not ignore_change_window
     ):
         raise PaymentError(_("This payment cannot be deleted anymore."))
     if payment.batch and payment.batch.processed:

@@ -116,7 +116,7 @@ class PaymentAdmin(admin.ModelAdmin):
     def batch_link(self, obj: Payment) -> str:
         return self._batch_link(obj, obj.batch)
 
-    batch_link.admin_order_field = "in batch"
+    batch_link.admin_order_field = "batch"
     batch_link.short_description = _("in batch")
 
     def processed_by_link(self, obj: Payment) -> str:
