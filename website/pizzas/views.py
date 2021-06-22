@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
+from payments.services import delete_payment
 from .models import FoodOrder, FoodEvent, Product
 
 
@@ -65,5 +66,7 @@ def place_order(request):
         if not obj:
             obj = FoodOrder(food_event=event, member=request.member)
         obj.product = product
+        if obj.payment and obj.can_be_changed:
+            delete_payment(obj.payment)
         obj.save()
     return redirect("pizzas:index")
