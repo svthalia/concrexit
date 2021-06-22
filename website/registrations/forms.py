@@ -148,7 +148,7 @@ class RenewalForm(forms.ModelForm):
                 reverse_lazy("singlepages:privacy-policy")
             )
         )
-        self.fields["length"].help_text = (
+        self.fields["length"].help_text = _(
             "A discount of €7,50 will be applied if you upgrade your year membership to"
             " a membership until graduation. You will only have to pay €22,50 in that case."
         )
