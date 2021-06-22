@@ -199,7 +199,7 @@ class FoodOrder(models.Model):
         verbose_name=_("payment"),
         to="payments.Payment",
         related_name="food_order",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
