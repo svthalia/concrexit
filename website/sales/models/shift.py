@@ -153,6 +153,7 @@ class Shift(models.Model):
             .values("order_items__product")
             .distinct()
             .annotate(sold=Sum("order_items__amount"))
+            .order_by()
         )
         return {
             item[0]: item[1]
