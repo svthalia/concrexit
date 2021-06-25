@@ -151,7 +151,6 @@ class Shift(models.Model):
         qs = (
             self.orders.exclude(order_items__isnull=True)
             .values("order_items__product")
-            .distinct()
             .annotate(sold=Sum("order_items__amount"))
             .order_by()
         )
