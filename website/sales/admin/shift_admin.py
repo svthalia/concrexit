@@ -4,8 +4,26 @@ from django.contrib.admin import register
 from django.utils.translation import gettext_lazy as _
 
 from sales.models.order import Order
-from sales.models.shift import Shift
+from sales.models.shift import Shift, SelfOrderPeriod
 from sales.services import is_manager
+
+
+class SelfOrderPeriodInline(admin.TabularInline):
+    model = SelfOrderPeriod
+    ordering = ("start",)
+    extra = 0
+    fields = (
+        "start",
+        "end",
+        "product_list",
+    )
+
+    def has_change_permission(self, request, obj=None):
+        if obj and obj.locked:
+            return False
+        if obj and not is_manager(request.member, obj):
+            return False
+        return super().has_change_permission(request, obj)
 
 
 class OrderInline(admin.TabularInline):
@@ -42,7 +60,7 @@ class OrderInline(admin.TabularInline):
         if obj and obj.locked:
             return False
 
-        if obj and is_manager(request.member, obj):
+        if obj and not is_manager(request.member, obj):
             return False
 
         return super().has_change_permission(request, obj)
@@ -78,6 +96,7 @@ class OrderInline(admin.TabularInline):
 @register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
     inlines = [
+        SelfOrderPeriodInline,
         OrderInline,
     ]
     search_fields = (
