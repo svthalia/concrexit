@@ -453,6 +453,17 @@ class ShiftTest(TestCase):
         o5.payment = create_payment(o5, processed_by=self.member, pay_type=Payment.CASH)
         o5.save()
 
+        # The test was accidentally passing because orders had the same created at,
+        # resulting in the distinct seeing them as the same order
+        o2.created_at += timezone.timedelta(minutes=1)
+        o3.created_at += timezone.timedelta(minutes=2)
+        o4.created_at += timezone.timedelta(minutes=3)
+        o5.created_at += timezone.timedelta(minutes=4)
+        o2.save()
+        o3.save()
+        o4.save()
+        o5.save()
+
         self.assertEqual(self.shift.total_revenue, 6)
         self.assertEqual(self.shift.total_revenue_paid, 3)
 
