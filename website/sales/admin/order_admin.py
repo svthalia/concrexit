@@ -83,7 +83,9 @@ class OrderItemInline(admin.TabularInline):
             if request is not None:
                 parent = self.get_parent_object_from_request(request)
                 if parent:
-                    field.queryset = parent.shift.product_list.product_items
+                    field.queryset = (
+                        parent.shift.product_list.product_items
+                    )  # TODO allow products from user-order shifts
             else:
                 field.queryset = field.queryset.none()
 
