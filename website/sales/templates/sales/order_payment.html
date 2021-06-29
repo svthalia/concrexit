@@ -20,7 +20,8 @@
     {{ block.super }}
     <script type="text/javascript">
         window.onload=function() {
-            document.forms['tpay-payment-form'].submit();
+            if (!document.getElementById("tpay-submit-button").disabled)
+                document.forms['tpay-payment-form'].submit();
         }
     </script>
 {% endblock %}
