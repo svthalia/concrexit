@@ -136,6 +136,7 @@ class EventAdmin(DoNextModelAdmin):
                     "registration_end",
                     "cancel_deadline",
                     "send_cancel_email",
+                    "optional_registrations",
                     "no_registration_message",
                 ),
                 "classes": ("collapse",),
