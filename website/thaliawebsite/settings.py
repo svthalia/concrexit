@@ -533,7 +533,8 @@ OAUTH2_PROVIDER = {
         "payments:write": "Write access to payments",
         "payments:admin": "Admin access to payments",
         "sales:read": "Read access to Point of Sale orders",
-        "sales:write": "Write access to Point of Sale orders",
+        "sales:order": "Write access to Point of Sale orders",
+        "sales:admin": "Admin access to Point of Sale orders",
     },
 }
 
