@@ -12,6 +12,8 @@ from rest_framework import filters as framework_filters, status
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 
+from payments.exceptions import PaymentError
+from payments.services import delete_payment
 from pizzas.api.v2 import filters
 from pizzas.api.v2.serializers import (
     ProductSerializer,
@@ -110,6 +112,18 @@ class FoodEventOrderDetailView(
     def update(self, request, *args, **kwargs):
         super().update(request, *args, **kwargs)
         instance = self.get_object()
+
+        if instance.payment:
+            try:
+                delete_payment(
+                    instance, member=request.member, ignore_change_window=True
+                )
+            except PaymentError:
+                return Response(
+                    "Your order could not be updated because it was already paid.",
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
         return Response(
             FoodOrderSerializer(instance, context=self.get_serializer_context()).data
         )
