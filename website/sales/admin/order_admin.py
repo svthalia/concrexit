@@ -229,7 +229,7 @@ class OrderAdmin(admin.ModelAdmin):
                 self.message_user(
                     request,
                     _(
-                        "The payer for this user is under-age while the order is age restricted!"
+                        "The payer for this order is under-age while the order is age restricted!"
                     ),
                     messages.WARNING,
                 )
