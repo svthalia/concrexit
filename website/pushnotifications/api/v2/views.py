@@ -1,9 +1,5 @@
 from django.utils.translation import get_language_from_request
-from oauth2_provider.contrib.rest_framework import (
-    IsAuthenticatedOrTokenHasScope,
-    TokenMatchesOASRequirements,
-    OAuth2Authentication,
-)
+from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
     ListAPIView,
@@ -14,7 +10,11 @@ from rest_framework.generics import (
 
 from pushnotifications.api.v2.filters import CategoryFilter
 from pushnotifications.api.v2.permissions import IsAuthenticatedOwnerOrReadOnly
-from pushnotifications.api.v2.serializers import DeviceSerializer, MessageSerializer
+from pushnotifications.api.v2.serializers import (
+    DeviceSerializer,
+    MessageSerializer,
+    CategorySerializer,
+)
 from pushnotifications.models import Device, Category, Message
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
@@ -72,6 +72,16 @@ class DeviceDetailView(RetrieveAPIView, UpdateAPIView):
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class CategoryListView(ListAPIView):
+    """Returns an overview of all available categories for push notifications."""
+
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+    required_scopes_per_method = {
+        "GET": ["pushnotifications:read"],
+    }
 
 
 class MessageListView(ListAPIView):
