@@ -28,15 +28,17 @@
                      data-html="true" title="To start using Thalia Pay, you need to <a href='{% url 'payments:bankaccount-add' %}' target='_blank'>sign a direct debit mandate</a>."
                 >
                     <input
-                    type="submit"
-                    disabled="disabled"
-                    class="btn btn-primary"
-                    style="pointer-events: none;"
-                    value="{% trans "Pay with Thalia Pay" %}"
+                        id="tpay-submit-button"
+                        type="submit"
+                        disabled="disabled"
+                        class="btn btn-primary"
+                        style="pointer-events: none;"
+                        value="{% trans "Pay with Thalia Pay" %}"
                     />
                 </span>
             {% else %}
                 <input
+                    id="tpay-submit-button"
                     type="submit"
                     class="btn btn-primary"
                     value="{% trans "Pay with Thalia Pay" %}"
