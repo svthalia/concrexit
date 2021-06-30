@@ -30,7 +30,7 @@ class ShiftListView(AdminListAPIView):
     )
     ordering_fields = ("start", "end")
     permission_classes = [IsAuthenticatedOrTokenHasScope, DjangoModelPermissions]
-    required_scopes = ["sales:read"]
+    required_scopes = ["sales:admin"]
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(locked=False)
@@ -62,7 +62,7 @@ class ShiftDetailView(AdminRetrieveAPIView):
         DjangoModelPermissions,
         IsManager,
     ]
-    required_scopes = ["sales:read"]
+    required_scopes = ["sales:admin"]
 
 
 class OrderListView(AdminListAPIView, AdminCreateAPIView):
@@ -75,10 +75,7 @@ class OrderListView(AdminListAPIView, AdminCreateAPIView):
         DjangoModelPermissions,
         IsManager,
     ]
-    required_scopes_per_method = {
-        "GET": ["sales:read"],
-        "POST": ["sales:write"],
-    }
+    required_scopes = ["sales:admin"]
     shift_lookup_field = "pk"
 
     def get_serializer_class(self):
@@ -130,12 +127,7 @@ class OrderDetailView(AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIV
         DjangoModelPermissions,
         IsManager,
     ]
-    required_scopes_per_method = {
-        "GET": ["sales:read"],
-        "PATCH": ["sales:write"],
-        "PUT": ["sales:write"],
-        "DELETE": ["sales:write"],
-    }
+    required_scopes = ["sales:admin"]
 
     def get_queryset(self):
         queryset = super().get_queryset()
