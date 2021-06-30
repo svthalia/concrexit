@@ -48,7 +48,6 @@
 
         select[name=payment] {
             background: var(--message-error-bg);
-            color: white;
 
             &.paid {
                 background: var(--message-success-bg);
