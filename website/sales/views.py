@@ -23,10 +23,6 @@ class OrderPaymentView(View):
         order.payer = request.member
         order.save()
 
-        if order.total_amount == 0:
-            messages.warning(request, _("This order doesn't require payment."))
-            return redirect("index")
-
         if order.age_restricted and not services.is_adult(request.member):
             messages.error(
                 request,
@@ -35,4 +31,19 @@ class OrderPaymentView(View):
                 ),
             )
             return redirect("index")
+
+        if (
+            order.age_restricted
+            and services.is_adult(request.member)
+            and order.total_amount == 0
+        ):
+            messages.success(
+                request, _("You have successfully identified yourself for this order.")
+            )
+            return redirect("index")
+
+        if order.total_amount == 0:
+            messages.info(request, _("This order doesn't require payment."))
+            return redirect("index")
+
         return render(request, "sales/order_payment.html", {"order": order})

@@ -162,7 +162,6 @@ class Order(models.Model):
         return (
             settings.BASE_URL + reverse("sales:order-pay", kwargs={"pk": self.pk})
             if not self.payment
-            and (self.total_amount is not None and self.total_amount != 0)
             else None
         )
 
