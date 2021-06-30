@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from payments.widgets import PaymentWidget
+from sales import services
 from sales.models.order import Order, OrderItem
 from sales.models.shift import Shift
 from sales.services import is_manager
@@ -220,6 +221,19 @@ class OrderAdmin(admin.ModelAdmin):
             default_fields += ("shift",)
 
         return default_fields
+
+    def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
+        if object_id:
+            obj = self.model.objects.get(pk=object_id)
+            if obj.age_restricted and obj.payer and not services.is_adult(obj.payer):
+                self.message_user(
+                    request,
+                    _(
+                        "The payer for this order is under-age while the order is age restricted!"
+                    ),
+                    messages.WARNING,
+                )
+        return super().changeform_view(request, object_id, form_url, extra_context)
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
