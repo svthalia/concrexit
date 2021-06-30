@@ -37,6 +37,3 @@ result-*
 # direnv
 .envrc
 .env*
-
-# macOS
-.DS_Store
