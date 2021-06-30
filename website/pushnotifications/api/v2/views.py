@@ -79,9 +79,7 @@ class CategoryListView(ListAPIView):
 
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
-    required_scopes_per_method = {
-        "GET": ["pushnotifications:read"],
-    }
+    required_scopes = ["pushnotifications:read"]
 
 
 class MessageListView(ListAPIView):
