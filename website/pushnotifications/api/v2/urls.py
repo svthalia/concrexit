@@ -6,6 +6,7 @@ from pushnotifications.api.v2.views import (
     DeviceListView,
     MessageDetailView,
     MessageListView,
+    CategoryListView,
 )
 
 app_name = "pushnotifications"
@@ -27,6 +28,7 @@ urlpatterns = [
                     DeviceDetailView.as_view(),
                     name="device-detail",
                 ),
+                path("categories/", CategoryListView.as_view(), name="category-list",),
             ]
         ),
     ),
