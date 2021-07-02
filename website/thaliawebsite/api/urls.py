@@ -13,35 +13,8 @@ urlpatterns = [
         "",
         include(
             [
-                path("v1/", include(([
-                    path("", include("thaliawebsite.api.v1.urls")),
-                    path(
-                        "schema",
-                        get_schema_view(
-                            title="API v1",
-                            version=settings.SOURCE_COMMIT,
-                            url="/api/v1/",
-                            urlconf="thaliawebsite.api.v1.urls",
-                            generator_class=OAuthSchemaGenerator,
-                        ),
-                        name="schema",
-                    ),
-                ], "thaliawebsite"), namespace="v1")),
-                path("v2/", include(([
-                    path("", include("thaliawebsite.api.v2.urls")),
-                    path(
-                        "schema",
-                        get_schema_view(
-                            title="API v2",
-                            version=settings.SOURCE_COMMIT,
-                            url="/api/v2/",
-                            urlconf="thaliawebsite.api.v2.urls",
-                            generator_class=OAuthSchemaGenerator,
-                            public=True,
-                        ),
-                        name="schema",
-                    ),
-                ], "thaliawebsite"), namespace="v2")),
+                path("v1/", include("thaliawebsite.api.v1.urls", namespace="v1")),
+                path("v2/", include("thaliawebsite.api.v2.urls", namespace="v2")),
                 path(
                     "docs",
                     TemplateView.as_view(

@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.urls import path, include
+from rest_framework.schemas import get_schema_view
 
-from thaliawebsite.api.v2 import admin
+from thaliawebsite.api.openapi import OAuthSchemaGenerator
 
 app_name = "thaliawebsite"
 
@@ -15,4 +17,16 @@ urlpatterns = [
     path("", include("photos.api.v2.urls")),
     path("", include("pizzas.api.v2.urls")),
     path("", include("pushnotifications.api.v2.urls")),
+    path(
+        "schema",
+        get_schema_view(
+            title="API v2",
+            version=settings.SOURCE_COMMIT,
+            url="/api/v2/",
+            urlconf="thaliawebsite.api.v2.urls",
+            generator_class=OAuthSchemaGenerator,
+            public=True,
+        ),
+        name="schema",
+    ),
 ]
