@@ -200,15 +200,6 @@ class SelfOrderPeriod(models.Model):
             "After this moment, users cannot place orders themselves anymore in this shift."
         ),
     )
-    product_list = models.ForeignKey(
-        ProductList, blank=False, null=False, on_delete=models.CASCADE
-    )
-
-    def clean(self):
-        pass
-        # TODO no overlap with other periods for same shift?
-        # product_list subset of shift?
-        # no change if shift is locked
 
     def __str__(self):
         return f"Self-order period for shift {self.shift.pk}"

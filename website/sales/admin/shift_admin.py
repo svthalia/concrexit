@@ -15,7 +15,6 @@ class SelfOrderPeriodInline(admin.TabularInline):
     fields = (
         "start",
         "end",
-        "product_list",
     )
 
     def has_change_permission(self, request, obj=None):

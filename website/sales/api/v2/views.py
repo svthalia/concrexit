@@ -69,9 +69,7 @@ class UserOrderListView(OrderListView):
         return queryset.filter(payer=self.request.member)
 
 
-class UserOrderDetailView(
-    OrderDetailView
-):  # TODO Prevent users changing non-self-orders, for example by introducing is-delivered
+class UserOrderDetailView(OrderDetailView):
     serializer_class = UserOrderSerializer
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
@@ -90,14 +88,20 @@ class UserOrderDetailView(
     def update(self, request, *args, **kwargs):
         if not self.get_object().shift.user_orders_allowed:
             raise PermissionDenied
+        if self.get_object().payment:
+            raise PermissionDenied
         return super(UserOrderDetailView, self).update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         if not self.get_object().shift.user_orders_allowed:
             raise PermissionDenied
+        if self.get_object().payment:
+            raise PermissionDenied
         return super(UserOrderDetailView, self).partial_update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         if not self.get_object().shift.user_orders_allowed:
+            raise PermissionDenied
+        if self.get_object().payment:
             raise PermissionDenied
         return super(UserOrderDetailView, self).destroy(request, *args, **kwargs)

@@ -629,7 +629,6 @@ class OrderAPITest(TestCase):
             shift=self.shift,
             start=(timezone.now() - timezone.timedelta(hours=1)),
             end=timezone.now() + timezone.timedelta(hours=1),
-            product_list=self.shift.product_list,
         )
         data = {"order_items": [{"product": "beer", "amount": 4}]}
         response = self.client.post(

@@ -245,9 +245,7 @@ class OrderItem(models.Model):
         if self.order.shift.locked:
             errors.update({"order": _("The shift is locked.")})
 
-        if (
-            self.product not in self.order.shift.product_list.product_items.all()
-        ):  # TODO allow products from user-order shifts
+        if self.product not in self.order.shift.product_list.product_items.all():
             errors.update({"product": _("This product is not available.")})
 
         if errors:
