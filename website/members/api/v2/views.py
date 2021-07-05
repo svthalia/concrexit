@@ -8,7 +8,6 @@ from rest_framework.generics import (
     RetrieveAPIView,
     UpdateAPIView,
 )
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from members.api.v2 import filters
 from thaliawebsite.api.openapi import OAuthAutoSchema
@@ -28,7 +27,6 @@ class MemberListView(ListAPIView):
     queryset = Member.current_members.all()
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["members:read"]
     filter_backends = (
@@ -54,7 +52,6 @@ class MemberDetailView(RetrieveAPIView):
     queryset = Member.current_members.all()
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["members:read"]
 
@@ -66,7 +63,6 @@ class MemberCurrentView(MemberDetailView, UpdateAPIView):
     schema = OAuthAutoSchema(operation_id_base="CurrentMember")
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes_per_method = {
         "GET": ["profile:read"],

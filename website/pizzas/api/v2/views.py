@@ -9,7 +9,6 @@ from rest_framework.generics import (
 )
 
 from rest_framework import filters as framework_filters, status
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 
 from payments.exceptions import PaymentError
@@ -38,7 +37,6 @@ class FoodEventListView(ListAPIView):
     ordering_fields = ("start", "end")
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["food:read"]
 
@@ -50,7 +48,6 @@ class FoodEventDetailView(RetrieveAPIView):
     queryset = FoodEvent.objects.all()
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["food:read"]
 
@@ -64,7 +61,6 @@ class FoodEventProductsListView(ListAPIView):
     search_fields = ("name",)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["food:read"]
 
@@ -76,7 +72,6 @@ class FoodEventOrderDetailView(
 
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes_per_method = {
         "GET": ["food:read"],
