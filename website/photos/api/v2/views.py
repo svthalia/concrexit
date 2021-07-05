@@ -2,7 +2,6 @@ from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScop
 from rest_framework import filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from photos import services
 from photos.api.v2.serializers.album import AlbumListSerializer, AlbumSerializer
@@ -16,7 +15,6 @@ class AlbumListView(ListAPIView):
     queryset = Album.objects.filter(hidden=False)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["photos:read"]
     filter_backends = (filters.SearchFilter,)
@@ -30,7 +28,6 @@ class AlbumDetailView(RetrieveAPIView):
     queryset = Album.objects.filter(hidden=False)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["photos:read"]
     lookup_field = "slug"

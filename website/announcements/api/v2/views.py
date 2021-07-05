@@ -5,7 +5,6 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
 )
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from announcements.api.v2.serializers import SlideSerializer, FrontpageArticleSerializer
 from announcements.models import Slide, FrontpageArticle
@@ -14,7 +13,6 @@ from announcements.models import Slide, FrontpageArticle
 class AnnouncementsAPIViewMixin:
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["announcements:read"]
 

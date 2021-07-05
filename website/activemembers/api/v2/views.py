@@ -5,7 +5,6 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
 )
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from activemembers.api.v2 import filters
 from activemembers.api.v2.serializers.member_group import (
@@ -31,7 +30,6 @@ class MemberGroupListView(ListAPIView):
     search_fields = ("name",)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["activemembers:read"]
 
@@ -43,7 +41,6 @@ class MemberGroupDetailView(RetrieveAPIView):
     queryset = MemberGroup.active_objects.all()
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["activemembers:read"]
 
