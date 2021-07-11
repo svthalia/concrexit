@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from events.models import EventRegistration
 from members.api.v2.serializers.member import MemberSerializer
+from payments.api.v2.serializers import PaymentSerializer
 
 
 class EventRegistrationSerializer(serializers.ModelSerializer):
@@ -31,4 +32,5 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
             "name",
         )
 
+    payment = PaymentSerializer()
     member = MemberSerializer(detailed=False, read_only=True)
