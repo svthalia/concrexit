@@ -99,7 +99,7 @@ class Event(models.Model):
 
     optional_registrations = models.BooleanField(
         _("allow optional registrations"),
-        default=False,
+        default=True,
         help_text=_(
             "Participants can indicate their optional presence, even though "
             "registration is not actually required. This ignores registration "
