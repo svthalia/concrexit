@@ -11,7 +11,9 @@ class UserProductNameRelatedField(ProductNameRelatedField):
         shift = self.root.context.get("shift", None)
         if shift is None:
             shift = self.root.instance.shift
-        return ProductListItem.objects.filter(product_list=shift.product_list)
+        return ProductListItem.objects.filter(
+            product_list=shift.user_order_period.product_list
+        )
 
 
 class UserOrderItemSerializer(OrderItemSerializer):
