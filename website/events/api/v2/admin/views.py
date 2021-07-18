@@ -72,9 +72,17 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
     required_scopes = ["events:admin"]
     filter_backends = (
         framework_filters.OrderingFilter,
+        framework_filters.SearchFilter,
         filters.EventRegistrationCancelledFilter,
     )
     ordering_fields = ("queue_position", "date", "date_cancelled")
+    search_fields = (
+        "member__profile__nickname",
+        "member__first_name",
+        "member__last_name",
+        "member__username",
+        "name",
+    )
 
     def get_queryset(self):
         event = get_object_or_404(Event, pk=self.kwargs.get("pk"))
