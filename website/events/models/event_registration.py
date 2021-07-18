@@ -5,7 +5,6 @@ from django.db.models import Q, F, Count
 from django.db.models.functions import NullIf, Greatest
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.utils.functional import cached_property
 from queryable_properties.properties import AnnotationProperty
 from queryable_properties.managers import QueryablePropertiesManager
 
@@ -89,6 +88,10 @@ class EventRegistration(models.Model):
         blank=True,
         null=True,
     )
+
+    @property
+    def price(self):
+        return self.event.price
 
     @property
     def phone_number(self):

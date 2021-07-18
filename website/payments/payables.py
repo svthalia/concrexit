@@ -2,6 +2,7 @@ from functools import lru_cache
 
 from django.db.models import Model
 from django.db.models.signals import pre_save
+from django.utils.functional import classproperty
 
 from payments.exceptions import PaymentError
 
@@ -51,9 +52,17 @@ class Payable:
     def can_manage_payment(self, member):
         raise NotImplementedError
 
-    @property
+    @classproperty
     def immutable_after_payment(self):
         return False
+
+    @classproperty
+    def immutable_foreign_key_models(self):
+        return {}
+
+    @classproperty
+    def immutable_model_fields_after_payment(self):
+        return []
 
     def __hash__(self):
         return hash((self.payment_amount, self.payment_topic, self.payment_notes))
@@ -73,23 +82,66 @@ class Payables:
 
     def register(self, model: Model, payable_class: Payable):
         self._registry[self._get_key(model)] = payable_class
-        pre_save.connect(prevent_saving_paid_after_immutable, sender=model)
+        if payable_class.immutable_after_payment:
+            pre_save.connect(prevent_saving, sender=model)
+
+            for foreign_model in payable_class.immutable_foreign_key_models:
+                foreign_key_field = payable_class.immutable_foreign_key_models[
+                    foreign_model
+                ]
+                pre_save.connect(
+                    prevent_saving_related(foreign_key_field), sender=foreign_model
+                )
 
 
 payables = Payables()
 
-def prevent_saving_paid_after_immutable(sender, instance, **kwargs):
-    """Remove user from the order reminder when saved."""
-    if not payables.get_payable(instance).immutable_after_payment:
+
+def prevent_saving(sender, instance, **kwargs):
+    payable = payables.get_payable(instance)
+    if not payable.immutable_after_payment:
+        # Do nothing is the model is not marked as immutable
+        return
+    if not payable.payment:
+        # Do nothing is the model is not actually paid
         return
     try:
         old_instance = sender.objects.get(pk=instance.pk)
     except sender.DoesNotExist:
         return
 
-    immutable_fields = ["payment_payer", "payment_amount", "payment_topic", "payment_notes"]
+    immutable_fields = (
+        payable.immutable_model_fields_after_payment[sender]
+        if type(payable.immutable_model_fields_after_payment) is dict
+        else payable.immutable_model_fields_after_payment
+    )
+    for field in immutable_fields:
+        if getattr(old_instance, field) != getattr(instance, field):
+            raise PaymentError("Cannot change this model")
 
-    if old_instance.payment and any(
-        getattr(payables.get_payable(old_instance), x) != getattr(payables.get_payable(instance), x) for x in immutable_fields
-    ): # THIS DOESNT WORK YET, AS THE OLD AND NEW PAYABLE ARE THE SAME
-        raise PaymentError("Cannot change this model")
+
+def prevent_saving_related(foreign_key_field):
+    def prevent_related_saving_paid_after_immutable(sender, instance, **kwargs):
+        nonlocal foreign_key_field
+        payable = payables.get_payable(getattr(instance, foreign_key_field))
+        if not payable.immutable_after_payment:
+            # Do nothing is the parent is not marked as immutable
+            return
+        if not payable.payment:
+            # Do nothing is the parent is not actually paid
+            return
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            return
+
+        immutable_fields = (
+            payable.immutable_model_fields_after_payment[sender]
+            if type(payable.immutable_model_fields_after_payment) is dict
+            else []
+        )
+        for field in immutable_fields:
+            if getattr(old_instance, field) != getattr(instance, field):
+                raise PaymentError("Cannot change this model")
+
+    return prevent_related_saving_paid_after_immutable

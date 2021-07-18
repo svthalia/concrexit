@@ -1,5 +1,7 @@
+from django.utils.functional import classproperty
+
 from payments import Payable, payables
-from sales.models.order import Order
+from sales.models.order import Order, OrderItem
 from sales.services import is_manager
 
 
@@ -25,9 +27,28 @@ class OrderPayable(Payable):
             "sales.change_order"
         )
 
-    @property
+    @classproperty
     def immutable_after_payment(self):
         return True
+
+    @classproperty
+    def immutable_foreign_key_models(self):
+        return {OrderItem: "order"}
+
+    @classproperty
+    def immutable_model_fields_after_payment(self):
+        return {
+            Order: [
+                "items",
+                "discount",
+                "order_description",
+                "subtotal",
+                "total_amount",
+                "payer",
+                "shift",
+            ],
+            OrderItem: ["product", "order", "total", "amount"],
+        }
 
 
 def register():

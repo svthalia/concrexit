@@ -1,4 +1,5 @@
 from django.template.defaultfilters import date
+from django.utils.functional import classproperty
 
 from payments.payables import Payable, payables
 from registrations.models import Renewal, Registration, Entry
@@ -25,6 +26,14 @@ class EntryPayable(Payable):
 
     def can_manage_payment(self, member):
         return member and member.has_perm("registrations.change_entry")
+
+    @classproperty
+    def immutable_after_payment(self):
+        return True
+
+    @classproperty
+    def immutable_model_fields_after_payment(self):
+        return ["length", "contribution"]
 
 
 class RegistrationPayable(EntryPayable):
