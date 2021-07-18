@@ -97,6 +97,18 @@ class Event(models.Model):
         ),
     )
 
+    optional_registrations = models.BooleanField(
+        _("allow optional registrations"),
+        default=True,
+        help_text=_(
+            "Participants can indicate their optional presence, even though "
+            "registration is not actually required. This ignores registration "
+            "start and end time or cancellation deadlines, optional "
+            "registration will be enabled directly after publishing until the "
+            "end of the event."
+        ),
+    )
+
     location = models.CharField(_("location"), max_length=255,)
 
     map_location = models.CharField(
@@ -262,6 +274,10 @@ class Event(models.Model):
         )
 
     @property
+    def optional_registration_allowed(self):
+        return not self.registration_required and self.end >= timezone.now()
+
+    @property
     def has_food_event(self):
         # pylint: disable=pointless-statement
         try:
@@ -308,6 +324,14 @@ class Event(models.Model):
             if self.end < self.start:
                 errors.update({"end": _("Can't have an event travel back in time")})
             if self.registration_required:
+                if self.optional_registrations:
+                    errors.update(
+                        {
+                            "optional_registrations": _(
+                                "This is not possible when actual registrations are required."
+                            )
+                        }
+                    )
                 if self.fine < 5:
                     errors.update(
                         {
