@@ -82,20 +82,30 @@ def event_permissions(member, event, name=None):
 
     perms["create_registration"] = (
         (registration is None or registration.date_cancelled is not None)
-        and (event.registration_allowed or event.optional_registration_allowed)
+        and (
+            event.registration_allowed
+            or (event.optional_registration_allowed and not event.registration_required)
+        )
         and (name or member.can_attend_events)
     )
     perms["cancel_registration"] = (
         registration is not None
         and registration.date_cancelled is None
-        and (event.cancellation_allowed or name or event.optional_registration_allowed)
+        and (
+            event.cancellation_allowed
+            or name
+            or (event.optional_registration_allowed and not event.registration_required)
+        )
         and registration.payment is None
     )
     perms["update_registration"] = (
         registration is not None
         and registration.date_cancelled is None
         and event.has_fields
-        and (event.registration_allowed or event.optional_registration_allowed)
+        and (
+            event.registration_allowed
+            or (event.optional_registration_allowed and not event.registration_required)
+        )
         and (name or member.can_attend_events)
     )
     return perms

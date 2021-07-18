@@ -34,6 +34,7 @@ class EventTest(TestCase):
             map_location="test map location",
             price=0.00,
             fine=5.00,
+            optional_registrations=False,
         )
         cls.member = Member.objects.first()
 
