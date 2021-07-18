@@ -77,10 +77,8 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
     )
     ordering_fields = ("queue_position", "date", "date_cancelled")
     search_fields = (
-        "member__profile__nickname",
         "member__first_name",
         "member__last_name",
-        "member__username",
         "name",
     )
 
