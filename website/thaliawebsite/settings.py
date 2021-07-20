@@ -206,7 +206,11 @@ SENDFILE_BACKEND = setting(
 )
 # https://github.com/johnsensible/django-sendfile#nginx-backend
 SENDFILE_URL = "/media/sendfile/"
-SENDFILE_ROOT = from_env("SENDFILE_ROOT", production="/concrexit/media/")
+SENDFILE_ROOT = from_env(
+    "SENDFILE_ROOT",
+    production="/concrexit/media/",
+    development=os.path.join(BASE_DIR, "media"),
+)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = "/media/"
