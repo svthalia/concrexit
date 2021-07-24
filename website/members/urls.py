@@ -67,16 +67,4 @@ urlpatterns = [
             ]
         ),
     ),
-    path(
-        "api/calendarjs/",
-        include(
-            [
-                path(
-                    "birthdays/",
-                    CalendarJSBirthdayListView.as_view(),
-                    name="calendarjs-birthdays",
-                ),
-            ]
-        ),
-    ),
 ]

@@ -3,7 +3,6 @@ import copy
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from events.models import Event
 from members.api.calendarjs.serializers import MemberBirthdaySerializer
 from members.models import Member
 from utils.snippets import extract_date_range

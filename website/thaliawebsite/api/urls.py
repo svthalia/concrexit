@@ -16,6 +16,10 @@ urlpatterns = [
                 path("v1/", include("thaliawebsite.api.v1.urls", namespace="v1")),
                 path("v2/", include("thaliawebsite.api.v2.urls", namespace="v2")),
                 path(
+                    "calendarjs/",
+                    include("thaliawebsite.api.calendarjs.urls", namespace="v2"),
+                ),
+                path(
                     "docs",
                     TemplateView.as_view(
                         template_name="swagger/index.html",
