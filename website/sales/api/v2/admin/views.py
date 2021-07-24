@@ -16,7 +16,6 @@ from thaliawebsite.api.v2.admin import (
     AdminUpdateAPIView,
     AdminDestroyAPIView,
 )
-from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 
 class ShiftListView(AdminListAPIView):
@@ -71,7 +70,7 @@ class OrderListView(AdminListAPIView, AdminCreateAPIView):
         ("POST",): OrderSerializer,
     }
     permission_classes = [
-        IsAuthenticatedOrTokenHasScopeForMethod,
+        IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissions,
         IsManager,
     ]
@@ -123,7 +122,7 @@ class OrderDetailView(AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIV
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
     permission_classes = [
-        IsAuthenticatedOrTokenHasScopeForMethod,
+        IsAuthenticatedOrTokenHasScope,
         DjangoModelPermissions,
         IsManager,
     ]
