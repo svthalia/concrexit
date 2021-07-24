@@ -2,7 +2,6 @@
 from django.urls import path, include
 from django.views.generic import RedirectView
 
-from members.api.calendarjs.views import CalendarJSBirthdayListView
 from members.views import (
     MembersIndex,
     StatisticsView,
