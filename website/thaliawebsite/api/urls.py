@@ -17,7 +17,9 @@ urlpatterns = [
                 path("v2/", include("thaliawebsite.api.v2.urls", namespace="v2")),
                 path(
                     "calendarjs/",
-                    include("thaliawebsite.api.calendarjs.urls", namespace="v2"),
+                    include(
+                        "thaliawebsite.api.calendarjs.urls", namespace="calendarjs"
+                    ),
                 ),
                 path(
                     "docs",
