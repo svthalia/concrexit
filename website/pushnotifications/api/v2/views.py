@@ -22,10 +22,7 @@ from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMe
 class DeviceListView(ListAPIView, CreateAPIView):
     """Returns an overview of all devices that are owner by the user."""
 
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScopeForMethod,
-        IsAuthenticatedOwnerOrReadOnly,
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
     serializer_class = DeviceSerializer
     queryset = Device.objects.all()
     required_scopes_per_method = {
