@@ -65,7 +65,7 @@ class ProductAdminDetailAPIView(
 
     queryset = Product.objects.all()
     serializer_class = ProductAdminSerializer
-    permission_classes = [IsAuthenticatedOrTokenHasScope, IsOrganiser]
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["food:admin"]
 
 

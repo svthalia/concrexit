@@ -13,7 +13,7 @@ class IsOrganiser(BasePermission):
         )
         if event_lookup_field in view.kwargs:
             obj = get_object_or_404(FoodEvent, pk=view.kwargs.get(event_lookup_field))
-            return is_organiser(request.member, obj)
+            return is_organiser(request.member, obj.event)
         return super().has_permission(request, view)
 
     def has_object_permission(self, request, view, obj):
@@ -22,5 +22,5 @@ class IsOrganiser(BasePermission):
         if not request.member:
             return False
         if isinstance(obj, FoodOrder):
-            obj = obj.food_event
+            obj = obj.food_event.event
         return is_organiser(request.member, obj)
