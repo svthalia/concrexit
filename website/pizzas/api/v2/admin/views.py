@@ -61,7 +61,7 @@ class ProductsAdminListView(AdminListAPIView, AdminCreateAPIView):
 class ProductAdminDetailAPIView(
     AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView
 ):
-    """Returns details of one product"""
+    """Returns details of one product."""
 
     queryset = Product.objects.all()
     serializer_class = ProductAdminSerializer

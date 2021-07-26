@@ -3,8 +3,7 @@ from rest_framework.exceptions import ValidationError
 
 
 class MutuallyExclusiveValidator:
-    """
-    Validator that corresponds to `unique=True` on a model field.
+    """Validator that corresponds to `unique=True` on a model field.
 
     Should be applied to an individual field on the serializer.
     """
