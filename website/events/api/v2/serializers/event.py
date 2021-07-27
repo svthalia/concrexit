@@ -32,6 +32,7 @@ class EventSerializer(serializers.ModelSerializer):
             "num_participants",
             "max_participants",
             "no_registration_message",
+            "cancel_too_late_message",
             "has_fields",
             "food_event",
             "maps_url",
