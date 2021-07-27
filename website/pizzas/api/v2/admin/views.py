@@ -34,7 +34,7 @@ class FoodEventAdminListView(AdminListAPIView, AdminCreateAPIView):
 
 
 class FoodEventAdminDetailView(AdminRetrieveAPIView, AdminUpdateAPIView):
-    """Returns or updating one single food event."""
+    """Returns or updates one single food event."""
 
     serializer_class = FoodEventAdminSerializer
     queryset = FoodEvent.objects.all()
@@ -79,11 +79,9 @@ class FoodEventOrdersAdminListView(AdminListAPIView, AdminCreateAPIView):
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
     )
-    ordering_fields = (
-        "product",
-        "payment",
-    )
+    ordering_fields = ("product", "payment", "member__first_name", "member__last_name")
     search_fields = (
+        "product__name",
         "member__first_name",
         "member__last_name",
         "name",

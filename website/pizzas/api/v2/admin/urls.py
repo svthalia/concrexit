@@ -11,7 +11,7 @@ from pizzas.api.v2.admin.views import (
     ProductAdminDetailAPIView,
 )
 
-app_name = "pizzas"
+app_name = "food"
 
 urlpatterns = [
     path("food/events/", FoodEventAdminListView.as_view(), name="food-events-index"),

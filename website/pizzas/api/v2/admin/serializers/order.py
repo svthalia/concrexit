@@ -26,7 +26,6 @@ class FoodOrderAdminSerializer(serializers.ModelSerializer):
     payment = PaymentSerializer()
     product = ProductAdminSerializer()
     member = MemberSerializer(detailed=False, required=False)
-    food_event = FoodEventAdminSerializer()
 
     def to_internal_value(self, data):
         self.fields["member"] = serializers.PrimaryKeyRelatedField(
@@ -35,13 +34,9 @@ class FoodOrderAdminSerializer(serializers.ModelSerializer):
         self.fields["product"] = serializers.PrimaryKeyRelatedField(
             queryset=Product.objects.all()
         )
-        self.fields["food_event"] = serializers.PrimaryKeyRelatedField(
-            queryset=FoodEvent.objects.all()
-        )
         return super().to_internal_value(data)
 
     def to_representation(self, instance):
         self.fields["member"] = MemberSerializer(detailed=False, read_only=True)
         self.fields["product"] = ProductAdminSerializer(read_only=True)
-        self.fields["food_event"] = FoodEventAdminSerializer(read_only=True)
         return super().to_representation(instance)
