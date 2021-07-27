@@ -33,7 +33,6 @@ class PartnerEventDetailView(RetrieveAPIView):
     required_scopes = ["partners:read"]
 
 
-
 class PartnerListView(ListAPIView):
     serializer_class = PartnerSerializer
     queryset = Partner.objects.filter(is_active=True)
