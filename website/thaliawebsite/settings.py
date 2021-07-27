@@ -533,6 +533,7 @@ OAUTH2_PROVIDER = {
         "profile:write": "Write access to your member profile",
         "pushnotifications:read": "Read access to push notifications",
         "pushnotifications:write": "Write access to push notifications",
+        "partners:read": "Read access to partners",
         "payments:read": "Read access to payments",
         "payments:write": "Write access to payments",
         "payments:admin": "Admin access to payments",
