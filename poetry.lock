@@ -242,7 +242,7 @@ toml = ["toml"]
 
 [[package]]
 name = "django"
-version = "3.2.5"
+version = "3.2.6"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
@@ -1362,7 +1362,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "b1319cebfbc4ee5f6a5da40c4a5d218e71307b99a76b4f3f5e98f516970bc69d"
+content-hash = "038259e0d43a067d9e473923673f149cfb5996fea6ab9c3f6e9c3fa25d147f1f"
 
 [metadata.files]
 alabaster = [
@@ -1556,8 +1556,8 @@ coverage = [
     {file = "coverage-5.5.tar.gz", hash = "sha256:ebe78fe9a0e874362175b02371bdfbee64d8edc42a044253ddf4ee7d3c15212c"},
 ]
 django = [
-    {file = "Django-3.2.5-py3-none-any.whl", hash = "sha256:c58b5f19c5ae0afe6d75cbdd7df561e6eb929339985dbbda2565e1cabb19a62e"},
-    {file = "Django-3.2.5.tar.gz", hash = "sha256:3da05fea54fdec2315b54a563d5b59f3b4e2b1e69c3a5841dda35019c01855cd"},
+    {file = "Django-3.2.6-py3-none-any.whl", hash = "sha256:7f92413529aa0e291f3be78ab19be31aefb1e1c9a52cd59e130f505f27a51f13"},
+    {file = "Django-3.2.6.tar.gz", hash = "sha256:f27f8544c9d4c383bbe007c57e3235918e258364577373d4920e9162837be022"},
 ]
 django-admin-autocomplete-filter = [
     {file = "django-admin-autocomplete-filter-0.7.tar.gz", hash = "sha256:20246758625f0aabab26c54e0972c0db5fd4742ff9eb89621cb460d4f2021c82"},
