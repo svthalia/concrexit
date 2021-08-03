@@ -71,6 +71,17 @@ jobs:
           name: coverage-html
           path: covhtml
 
+  django-doctor:
+    name: Djanco-doctor antipatterns
+    runs-on: ubuntu-18.04
+    container: thalia/concrexit-dependencies
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run django_doctor check
+        run: poetry run django_doctor check
+
   documentation-tests:
     name: Documentation Tests
     runs-on: ubuntu-18.04

@@ -48,9 +48,10 @@ factory_boy = "3.2.0"
 pydenticon = "0.3.1"
 Faker = "8.10.3"
 coverage = {extras = ["toml"], version = "^5.0.3"}
-black = "19.10b0"
+black = "20.8b0"
 pylint = "^2.6.0"
 pylint-django = "^2.3.0"
+django-doctor = "^2.5.0"
 
 [tool.coverage.run]
 branch = true
