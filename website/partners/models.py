@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from tinymce.models import HTMLField
 
-from utils.translation import ModelTranslateMeta, MultilingualField
 from utils import countries
 
 

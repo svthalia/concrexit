@@ -12,7 +12,6 @@ from tinymce.models import HTMLField
 from announcements.models import Slide
 from members.models import Member
 from pushnotifications.models import ScheduledMessage, Category
-from utils.translation import ModelTranslateMeta, MultilingualField
 
 
 class Event(models.Model):
