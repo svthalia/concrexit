@@ -58,12 +58,20 @@ class EventSerializer(serializers.ModelSerializer):
         try:
             if self.context["request"].member:
                 reg = instance.eventregistration_set.get(
-                    member=self.context["request"].member, date_cancelled=None
+                    member=self.context["request"].member
                 )
                 return EventRegistrationSerializer(
                     reg,
                     context=self.context,
-                    fields=("pk", "present", "queue_position", "date", "payment"),
+                    fields=(
+                        "pk",
+                        "present",
+                        "queue_position",
+                        "is_cancelled",
+                        "is_late_cancellation",
+                        "date",
+                        "payment",
+                    ),
                 ).data
         except EventRegistration.DoesNotExist:
             pass

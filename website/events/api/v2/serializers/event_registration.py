@@ -34,3 +34,16 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
 
     payment = PaymentSerializer()
     member = MemberSerializer(detailed=False, read_only=True)
+    is_cancelled = serializers.SerializerMethodField("_is_cancelled")
+    is_late_cancellation = serializers.SerializerMethodField("_is_late_cancellation")
+    queue_position = serializers.SerializerMethodField("_queue_position")
+
+    def _is_late_cancellation(self, instance):
+        return instance.is_late_cancellation()
+
+    def _queue_position(self, instance):
+        pos = instance.queue_position
+        return pos if pos and pos > 0 else None
+
+    def _is_cancelled(self, instance):
+        return instance.date_cancelled is not None
