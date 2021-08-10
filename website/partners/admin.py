@@ -52,10 +52,10 @@ class PartnerAdmin(admin.ModelAdmin):
 
 
 @admin.register(VacancyCategory)
-class VacancyCategoryAdmin(TranslatedModelAdmin):
+class VacancyCategoryAdmin(admin.ModelAdmin):
     """Class to show vacancy categories in the admin."""
 
-    prepopulated_fields = {"slug": ("name_en",)}
+    prepopulated_fields = {"slug": ("name",)}
     fields = ["name", "slug"]
 
 
@@ -78,7 +78,7 @@ class VacancyAdmin(admin.ModelAdmin):
 
 
 @admin.register(PartnerEvent)
-class PartnerEventAdmin(TranslatedModelAdmin):
+class PartnerEventAdmin(admin.ModelAdmin):
     """Class to show partner events in the admin."""
 
     fields = (
