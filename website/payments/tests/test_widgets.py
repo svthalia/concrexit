@@ -27,7 +27,7 @@ class PaymentWidgetTest(TestCase):
 
         with self.subTest("With object only"):
             context = widget.get_context("payment", None, {})
-            self.assertEqual(context["obj"], payables.get_payable(self.obj))
+            self.assertEqual(context["obj"].pk, payables.get_payable(self.obj).pk)
             self.assertEqual(context["app_label"], "mock_app")
             self.assertEqual(context["model_name"], "mock_model")
 
