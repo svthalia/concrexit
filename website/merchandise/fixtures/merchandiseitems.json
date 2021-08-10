@@ -5,8 +5,8 @@
     "fields": {
       "price": "901.00",
       "image": "hoedje.png",
-      "name_en": "Fancy hat",
-      "description_en": "Extremely fancy hat"
+      "name": "Fancy hat",
+      "description": "Extremely fancy hat"
     }
   },
   {
@@ -15,8 +15,8 @@
     "fields": {
       "price": "9.00",
       "image": "badjas.png",
-      "name_en": "bathrobe",
-      "description_en": "Limited edition bathrobe"
+      "name": "bathrobe",
+      "description": "Limited edition bathrobe"
     }
   }
 ]

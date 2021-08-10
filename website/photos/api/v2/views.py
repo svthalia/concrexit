@@ -18,7 +18,7 @@ class AlbumListView(ListAPIView):
     ]
     required_scopes = ["photos:read"]
     filter_backends = (filters.SearchFilter,)
-    search_fields = ("title_en", "date", "slug")
+    search_fields = ("title", "date", "slug")
 
 
 class AlbumDetailView(RetrieveAPIView):

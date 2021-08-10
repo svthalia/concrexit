@@ -449,27 +449,27 @@ class Command(BaseCommand):
         self.stdout.write("Creating a new newsletter")
         newsletter = Newsletter()
 
-        newsletter.title_en = _generate_title()
-        newsletter.description_en = _faker.paragraph()
+        newsletter.title = _generate_title()
+        newsletter.description = _faker.paragraph()
         newsletter.date = _faker.date_time_between("-3m", "+3m", _current_tz)
 
         newsletter.save()
 
         for _ in range(random.randint(1, 5)):
             item = NewsletterItem()
-            item.title_en = _generate_title()
-            item.description_en = _faker.paragraph()
+            item.title = _generate_title()
+            item.description = _faker.paragraph()
             item.newsletter = newsletter
             item.save()
 
         for _ in range(random.randint(1, 5)):
             item = NewsletterEvent()
-            item.title_en = _generate_title()
-            item.description_en = _faker.paragraph()
+            item.title = _generate_title()
+            item.description = _faker.paragraph()
             item.newsletter = newsletter
 
-            item.what_en = item.title_en
-            item.where_en = _faker.city()
+            item.what = item.title
+            item.where = _faker.city()
             item.start_datetime = _faker.date_time_between("-1y", "+3m", _current_tz)
             duration = math.ceil(random.expovariate(0.2))
             item.end_datetime = item.start_datetime + timedelta(hours=duration)
@@ -568,11 +568,11 @@ class Command(BaseCommand):
         self.stdout.write("Creating a photo album")
         album = Album()
 
-        album.title_en = _generate_title()
+        album.title = _generate_title()
 
         album.date = _faker.date_between("-1y", "today")
 
-        album.slug = slugify("-".join([str(album.date), album.title_en]))
+        album.slug = slugify("-".join([str(album.date), album.title]))
 
         if random.random() < 0.25:
             album.hidden = True
@@ -714,7 +714,7 @@ class Command(BaseCommand):
             if len(Category.objects.all()) < 5:
                 for _ in range(5):
                     category = Category()
-                    category.name_en = _generate_title()
+                    category.name = _generate_title()
 
                     category.save()
 

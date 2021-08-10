@@ -108,8 +108,8 @@ class FoodEvent(models.Model):
     def save(self, **kwargs):
         if self.send_notification and not self.end_reminder:
             end_reminder = ScheduledMessage()
-            end_reminder.title_en = f"{self.event.title}: Order food"
-            end_reminder.body_en = "You can order food for 10 more minutes"
+            end_reminder.title = f"{self.event.title}: Order food"
+            end_reminder.body = "You can order food for 10 more minutes"
             end_reminder.category = Category.objects.get(key=Category.PIZZA)
             end_reminder.time = self.end - timezone.timedelta(minutes=10)
             end_reminder.save()

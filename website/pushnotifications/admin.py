@@ -1,10 +1,10 @@
 """The admin interfaces registered by the pushnotifications package."""
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.utils.translation import gettext_lazy as _
 
 from pushnotifications import models
 from pushnotifications.models import Message
-from utils.translation import TranslatedModelAdmin
 
 
 class MessageSentFilter(admin.SimpleListFilter):
@@ -65,7 +65,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Message)
-class MessageAdmin(TranslatedModelAdmin):
+class MessageAdmin(ModelAdmin):
     """Manage normal messages."""
 
     list_display = ("title", "body", "category", "url", "sent", "success", "failure")
@@ -77,8 +77,8 @@ class MessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_en",
-                "body_en",
+                "title",
+                "body",
                 "url",
                 "category",
                 "sent",
@@ -87,8 +87,8 @@ class MessageAdmin(TranslatedModelAdmin):
             )
         return (
             "users",
-            "title_en",
-            "body_en",
+            "title",
+            "body",
             "url",
             "category",
         )
@@ -97,8 +97,8 @@ class MessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_en",
-                "body_en",
+                "title",
+                "body",
                 "url",
                 "category",
                 "sent",
@@ -113,7 +113,7 @@ class MessageAdmin(TranslatedModelAdmin):
 
 
 @admin.register(models.ScheduledMessage)
-class ScheduledMessageAdmin(TranslatedModelAdmin):
+class ScheduledMessageAdmin(ModelAdmin):
     """Manage scheduled messages."""
 
     list_display = ("title", "body", "time", "category", "sent", "success", "failure")
@@ -125,8 +125,8 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_en",
-                "body_en",
+                "title",
+                "body",
                 "url",
                 "category",
                 "sent",
@@ -137,8 +137,8 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
             )
         return (
             "users",
-            "title_en",
-            "body_en",
+            "title",
+            "body",
             "url",
             "category",
             "time",
@@ -148,8 +148,8 @@ class ScheduledMessageAdmin(TranslatedModelAdmin):
         if obj and obj.sent:
             return (
                 "users",
-                "title_en",
-                "body_en",
+                "title",
+                "body",
                 "url",
                 "category",
                 "sent",

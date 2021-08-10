@@ -438,8 +438,8 @@ class Event(models.Model):
                     registration_reminder = self.registration_reminder
 
                 if registration_reminder_time > timezone.now():
-                    registration_reminder.title_en = "Event registration"
-                    registration_reminder.body_en = (
+                    registration_reminder.title = "Event registration"
+                    registration_reminder.body = (
                         "Registration for '{}' " "starts in 1 hour".format(self.title)
                     )
                     registration_reminder.category = Category.objects.get(
@@ -464,8 +464,8 @@ class Event(models.Model):
                 start_reminder = self.start_reminder
 
             if start_reminder_time > timezone.now():
-                start_reminder.title_en = "Event"
-                start_reminder.body_en = f"'{self.title}' starts in 1 hour"
+                start_reminder.title = "Event"
+                start_reminder.body = f"'{self.title}' starts in 1 hour"
                 start_reminder.category = Category.objects.get(key=Category.EVENT)
                 start_reminder.time = start_reminder_time
                 start_reminder.save()
