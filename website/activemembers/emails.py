@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.template import loader
-from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 
@@ -11,7 +10,6 @@ def send_gsuite_welcome_message(member, email, password):
     :param email: G Suite primary email
     :param password: randomly generated password
     """
-
     email_body = loader.render_to_string(
         "activemembers/email/gsuite_info.txt",
         {
@@ -29,7 +27,6 @@ def send_gsuite_suspended_message(member):
 
     :param member: the member
     """
-
     email_body = loader.render_to_string(
         "activemembers/email/gsuite_suspend.txt",
         {"full_name": member.get_full_name(), "url": settings.BASE_URL},

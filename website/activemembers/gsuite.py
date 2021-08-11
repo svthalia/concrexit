@@ -1,7 +1,7 @@
 import hashlib
 import logging
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _, override as lang_override
+from django.utils.translation import gettext_lazy as _
 
 from googleapiclient.errors import HttpError
 

@@ -2,11 +2,9 @@
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
-from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
-from members.models import Profile
 
 
 def notify_first_waiting(event):
