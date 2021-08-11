@@ -11,17 +11,17 @@ def send_gsuite_welcome_message(member, email, password):
     :param email: G Suite primary email
     :param password: randomly generated password
     """
-    with translation.override(member.profile.language):
-        email_body = loader.render_to_string(
-            "activemembers/email/gsuite_info.txt",
-            {
-                "full_name": member.get_full_name(),
-                "username": email,
-                "password": password,
-                "url": settings.BASE_URL,
-            },
-        )
-        member.email_user(_("Your new G Suite credentials"), email_body)
+
+    email_body = loader.render_to_string(
+        "activemembers/email/gsuite_info.txt",
+        {
+            "full_name": member.get_full_name(),
+            "username": email,
+            "password": password,
+            "url": settings.BASE_URL,
+        },
+    )
+    member.email_user(_("Your new G Suite credentials"), email_body)
 
 
 def send_gsuite_suspended_message(member):
@@ -29,9 +29,9 @@ def send_gsuite_suspended_message(member):
 
     :param member: the member
     """
-    with translation.override(member.profile.language):
-        email_body = loader.render_to_string(
-            "activemembers/email/gsuite_suspend.txt",
-            {"full_name": member.get_full_name(), "url": settings.BASE_URL},
-        )
-        member.email_user(_("G Suite account suspended"), email_body)
+
+    email_body = loader.render_to_string(
+        "activemembers/email/gsuite_suspend.txt",
+        {"full_name": member.get_full_name(), "url": settings.BASE_URL},
+    )
+    member.email_user(_("G Suite account suspended"), email_body)

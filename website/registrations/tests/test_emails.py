@@ -31,19 +31,18 @@ class EmailsTest(TestCase):
 
         emails.send_registration_email_confirmation(reg)
 
-        with translation.override(reg.language):
-            send_email.assert_called_once_with(
-                reg.email,
-                _("Confirm email address"),
-                "registrations/email/registration_confirm_mail.txt",
-                {
-                    "name": reg.get_full_name(),
-                    "confirm_link": (
-                        "https://thalia.localhost"
-                        + reverse("registrations:confirm-email", args=[reg.pk])
-                    ),
-                },
-            )
+        send_email.assert_called_once_with(
+            reg.email,
+            _("Confirm email address"),
+            "registrations/email/registration_confirm_mail.txt",
+            {
+                "name": reg.get_full_name(),
+                "confirm_link": (
+                    "https://thalia.localhost"
+                    + reverse("registrations:confirm-email", args=[reg.pk])
+                ),
+            },
+        )
 
     @mock.patch("registrations.emails.send_email")
     def test_send_registration_accepted_message(self, send_email):
@@ -57,13 +56,12 @@ class EmailsTest(TestCase):
 
         emails.send_registration_accepted_message(reg)
 
-        with translation.override(reg.language):
-            send_email.assert_called_once_with(
-                reg.email,
-                _("Registration accepted"),
-                "registrations/email/registration_accepted.txt",
-                {"name": reg.get_full_name(), "fees": floatformat(reg.contribution, 2)},
-            )
+        send_email.assert_called_once_with(
+            reg.email,
+            _("Registration accepted"),
+            "registrations/email/registration_accepted.txt",
+            {"name": reg.get_full_name(), "fees": floatformat(reg.contribution, 2)},
+        )
 
     @mock.patch("registrations.emails.send_email")
     def test_send_registration_rejected_message(self, send_email):
@@ -73,13 +71,12 @@ class EmailsTest(TestCase):
 
         emails.send_registration_rejected_message(reg)
 
-        with translation.override(reg.language):
-            send_email.assert_called_once_with(
-                reg.email,
-                _("Registration rejected"),
-                "registrations/email/registration_rejected.txt",
-                {"name": reg.get_full_name()},
-            )
+        send_email.assert_called_once_with(
+            reg.email,
+            _("Registration rejected"),
+            "registrations/email/registration_rejected.txt",
+            {"name": reg.get_full_name()},
+        )
 
     @mock.patch("registrations.emails.send_email")
     def test_send_new_registration_board_message(self, send_email):
@@ -118,18 +115,17 @@ class EmailsTest(TestCase):
 
         emails.send_renewal_accepted_message(renewal)
 
-        with translation.override(renewal.member.profile.language):
-            send_email.assert_called_once_with(
-                renewal.member.email,
-                _("Renewal accepted"),
-                "registrations/email/renewal_accepted.txt",
-                {
-                    "name": renewal.member.get_full_name(),
-                    "fees": floatformat(renewal.contribution, 2),
-                    "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
-                    "url": (settings.BASE_URL + reverse("registrations:renew",)),
-                },
-            )
+        send_email.assert_called_once_with(
+            renewal.member.email,
+            _("Renewal accepted"),
+            "registrations/email/renewal_accepted.txt",
+            {
+                "name": renewal.member.get_full_name(),
+                "fees": floatformat(renewal.contribution, 2),
+                "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
+                "url": (settings.BASE_URL + reverse("registrations:renew",)),
+            },
+        )
 
     @mock.patch("registrations.emails.send_email")
     def test_send_renewal_rejected_message(self, send_email):
@@ -144,13 +140,12 @@ class EmailsTest(TestCase):
 
         emails.send_renewal_rejected_message(renewal)
 
-        with translation.override(renewal.member.profile.language):
-            send_email.assert_called_once_with(
-                renewal.member.email,
-                _("Renewal rejected"),
-                "registrations/email/renewal_rejected.txt",
-                {"name": renewal.member.get_full_name()},
-            )
+        send_email.assert_called_once_with(
+            renewal.member.email,
+            _("Renewal rejected"),
+            "registrations/email/renewal_rejected.txt",
+            {"name": renewal.member.get_full_name()},
+        )
 
     @mock.patch("registrations.emails.send_email")
     def test_send_renewal_complete_message(self, send_email):
@@ -165,13 +160,12 @@ class EmailsTest(TestCase):
 
         emails.send_renewal_complete_message(renewal)
 
-        with translation.override(renewal.member.profile.language):
-            send_email.assert_called_once_with(
-                renewal.member.email,
-                _("Renewal successful"),
-                "registrations/email/renewal_complete.txt",
-                {"name": renewal.member.get_full_name()},
-            )
+        send_email.assert_called_once_with(
+            renewal.member.email,
+            _("Renewal successful"),
+            "registrations/email/renewal_complete.txt",
+            {"name": renewal.member.get_full_name()},
+        )
 
     @mock.patch("registrations.emails.send_email")
     def test_send_new_renewal_board_message(self, send_email):

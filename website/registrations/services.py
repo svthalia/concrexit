@@ -281,7 +281,7 @@ def _create_member_from_registration(registration: Registration) -> Member:
         )
 
     # Send welcome message to new member
-    members.emails.send_welcome_message(user, password, registration.language)
+    members.emails.send_welcome_message(user, password)
 
     return Member.objects.get(pk=user.pk)
 

@@ -16,19 +16,18 @@ def send_registration_email_confirmation(registration: Registration) -> None:
 
     :param registration: the registration entry
     """
-    with translation.override(registration.language):
-        send_email(
-            registration.email,
-            _("Confirm email address"),
-            "registrations/email/registration_confirm_mail.txt",
-            {
-                "name": registration.get_full_name(),
-                "confirm_link": (
-                    settings.BASE_URL
-                    + reverse("registrations:confirm-email", args=[registration.pk])
-                ),
-            },
-        )
+    send_email(
+        registration.email,
+        _("Confirm email address"),
+        "registrations/email/registration_confirm_mail.txt",
+        {
+            "name": registration.get_full_name(),
+            "confirm_link": (
+                settings.BASE_URL
+                + reverse("registrations:confirm-email", args=[registration.pk])
+            ),
+        },
+    )
 
 
 def send_registration_accepted_message(registration: Registration) -> None:
@@ -36,16 +35,15 @@ def send_registration_accepted_message(registration: Registration) -> None:
 
     :param registration: the registration entry
     """
-    with translation.override(registration.language):
-        send_email(
-            registration.email,
-            _("Registration accepted"),
-            "registrations/email/registration_accepted.txt",
-            {
-                "name": registration.get_full_name(),
-                "fees": floatformat(registration.contribution, 2),
-            },
-        )
+    send_email(
+        registration.email,
+        _("Registration accepted"),
+        "registrations/email/registration_accepted.txt",
+        {
+            "name": registration.get_full_name(),
+            "fees": floatformat(registration.contribution, 2),
+        },
+    )
 
 
 def send_registration_rejected_message(registration: Registration) -> None:
@@ -53,13 +51,12 @@ def send_registration_rejected_message(registration: Registration) -> None:
 
     :param registration: the registration entry
     """
-    with translation.override(registration.language):
-        send_email(
-            registration.email,
-            _("Registration rejected"),
-            "registrations/email/registration_rejected.txt",
-            {"name": registration.get_full_name()},
-        )
+    send_email(
+        registration.email,
+        _("Registration rejected"),
+        "registrations/email/registration_rejected.txt",
+        {"name": registration.get_full_name()},
+    )
 
 
 def send_new_registration_board_message(registration: Registration) -> None:
@@ -88,18 +85,17 @@ def send_renewal_accepted_message(renewal: Renewal) -> None:
 
     :param renewal: the renewal entry
     """
-    with translation.override(renewal.member.profile.language):
-        send_email(
-            renewal.member.email,
-            _("Renewal accepted"),
-            "registrations/email/renewal_accepted.txt",
-            {
-                "name": renewal.member.get_full_name(),
-                "fees": floatformat(renewal.contribution, 2),
-                "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
-                "url": (settings.BASE_URL + reverse("registrations:renew",)),
-            },
-        )
+    send_email(
+        renewal.member.email,
+        _("Renewal accepted"),
+        "registrations/email/renewal_accepted.txt",
+        {
+            "name": renewal.member.get_full_name(),
+            "fees": floatformat(renewal.contribution, 2),
+            "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
+            "url": (settings.BASE_URL + reverse("registrations:renew",)),
+        },
+    )
 
 
 def send_renewal_rejected_message(renewal: Renewal) -> None:
@@ -107,13 +103,12 @@ def send_renewal_rejected_message(renewal: Renewal) -> None:
 
     :param renewal: the renewal entry
     """
-    with translation.override(renewal.member.profile.language):
-        send_email(
-            renewal.member.email,
-            _("Renewal rejected"),
-            "registrations/email/renewal_rejected.txt",
-            {"name": renewal.member.get_full_name()},
-        )
+    send_email(
+        renewal.member.email,
+        _("Renewal rejected"),
+        "registrations/email/renewal_rejected.txt",
+        {"name": renewal.member.get_full_name()},
+    )
 
 
 def send_renewal_complete_message(renewal: Renewal) -> None:
@@ -121,13 +116,12 @@ def send_renewal_complete_message(renewal: Renewal) -> None:
 
     :param renewal: the renewal entry
     """
-    with translation.override(renewal.member.profile.language):
-        send_email(
-            renewal.member.email,
-            _("Renewal successful"),
-            "registrations/email/renewal_complete.txt",
-            {"name": renewal.member.get_full_name()},
-        )
+    send_email(
+        renewal.member.email,
+        _("Renewal successful"),
+        "registrations/email/renewal_complete.txt",
+        {"name": renewal.member.get_full_name()},
+    )
 
 
 def send_new_renewal_board_message(renewal: Renewal) -> None:
@@ -160,22 +154,18 @@ def send_references_information_message(entry: Union[Registration, Renewal]) -> 
     if type(entry).__name__ == "Registration":
         email = entry.email
         name = entry.get_full_name()
-        language = entry.language
     else:
         email = entry.member.email
         name = entry.member.get_full_name()
-        language = entry.member.profile.language
 
-    with translation.override(language):
-        send_email(
-            email,
-            _("Information about references"),
-            "registrations/email/references_information.txt",
-            {
-                "name": name,
-                "reference_link": (
-                    settings.BASE_URL
-                    + reverse("registrations:reference", args=[entry.pk])
-                ),
-            },
-        )
+    send_email(
+        email,
+        _("Information about references"),
+        "registrations/email/references_information.txt",
+        {
+            "name": name,
+            "reference_link": (
+                settings.BASE_URL + reverse("registrations:reference", args=[entry.pk])
+            ),
+        },
+    )
