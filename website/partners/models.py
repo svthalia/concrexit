@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from tinymce.models import HTMLField
 
-from utils.translation import ModelTranslateMeta, MultilingualField
 from utils import countries
 
 
@@ -115,10 +114,10 @@ class PartnerImage(models.Model):
         return gettext("image of {}").format(self.partner.name)
 
 
-class VacancyCategory(models.Model, metaclass=ModelTranslateMeta):
+class VacancyCategory(models.Model):
     """Model describing vacancy categories."""
 
-    name = MultilingualField(models.CharField, max_length=30)
+    name = models.CharField(max_length=30)
     slug = models.SlugField()
 
     def __str__(self):
@@ -218,7 +217,7 @@ class Vacancy(models.Model):
         verbose_name_plural = _("Vacancies")
 
 
-class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
+class PartnerEvent(models.Model):
     """Model describing partner event."""
 
     partner = models.ForeignKey(
@@ -232,11 +231,11 @@ class PartnerEvent(models.Model, metaclass=ModelTranslateMeta):
 
     other_partner = models.CharField(max_length=255, blank=True)
 
-    title = MultilingualField(models.CharField, _("title"), max_length=100)
+    title = models.CharField(_("title"), max_length=100)
 
-    description = MultilingualField(models.TextField, _("description"))
+    description = models.TextField(_("description"))
 
-    location = MultilingualField(models.CharField, _("location"), max_length=255,)
+    location = models.CharField(_("location"), max_length=255,)
 
     start = models.DateTimeField(_("start time"))
 
