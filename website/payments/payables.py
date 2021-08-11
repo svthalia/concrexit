@@ -56,7 +56,6 @@ class Payables:
     def _get_key(self, model):
         return f"{model._meta.app_label}_{model._meta.model_name}"
 
-    @lru_cache(maxsize=None)
     def get_payable(self, model: Model) -> Payable:
         if self._get_key(model) not in self._registry:
             raise NotRegistered(f"No Payable registered for {self._get_key(model)}")

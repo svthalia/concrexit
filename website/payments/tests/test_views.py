@@ -580,7 +580,7 @@ class PaymentProcessViewTest(TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            payables.get_payable(self.model), response.context_data["payable"]
+            payables.get_payable(self.model).pk, response.context_data["payable"].pk
         )
         self.assertContains(response, "Please confirm your payment.")
         self.assertContains(response, 'name="_save"')
@@ -594,9 +594,8 @@ class PaymentProcessViewTest(TestCase):
             data={**self.test_body, "_save": True},
         )
 
-        create_payment.assert_called_with(
-            payables.get_payable(self.model), self.user, Payment.TPAY
-        )
+        create_payment.assert_called_with(ANY, self.user, Payment.TPAY)
+        self.assertEqual(create_payment.call_args.args[0].pk, self.model.pk)
 
         messages_success.assert_called_with(
             ANY, "Your payment has been processed successfully."
