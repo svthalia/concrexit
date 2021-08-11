@@ -8,7 +8,6 @@ from partners.models import (
     Vacancy,
     VacancyCategory,
 )
-from utils.translation import TranslatedModelAdmin
 
 
 class PartnerImageInline(admin.StackedInline):
