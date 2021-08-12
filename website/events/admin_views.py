@@ -166,8 +166,8 @@ class EventMessage(FormView):
         if not values["url"]:
             values["url"] = settings.BASE_URL + self.event.get_absolute_url()
         message = Message(
-            title_en=values["title"],
-            body_en=values["body"],
+            title=values["title"],
+            body=values["body"],
             url=values["url"],
             category=Category.objects.get(key=Category.EVENT),
         )

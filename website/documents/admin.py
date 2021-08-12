@@ -1,5 +1,6 @@
 """Registers admin interfaces for the documents module."""
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.utils.translation import gettext_lazy as _
 
 from documents import forms
@@ -12,7 +13,6 @@ from documents.models import (
     MiscellaneousDocument,
 )
 from documents.services import is_owner
-from utils.translation import TranslatedModelAdmin
 
 
 class MinutesInline(admin.StackedInline):
@@ -24,7 +24,7 @@ class MinutesInline(admin.StackedInline):
 
 
 @admin.register(GeneralMeeting)
-class GeneralMeetingAdmin(TranslatedModelAdmin):
+class GeneralMeetingAdmin(ModelAdmin):
     """Manage the general meetings."""
 
     form = forms.GeneralMeetingForm
@@ -61,7 +61,7 @@ class LectureYearFilter(admin.SimpleListFilter):
 
 
 @admin.register(AnnualDocument)
-class AnnualDocumentAdmin(TranslatedModelAdmin):
+class AnnualDocumentAdmin(ModelAdmin):
     """Manage the annual documents."""
 
     form = forms.AnnualDocumentForm
@@ -73,7 +73,7 @@ class AnnualDocumentAdmin(TranslatedModelAdmin):
 
 
 @admin.register(AssociationDocument)
-class AssociationDocumentAdmin(TranslatedModelAdmin):
+class AssociationDocumentAdmin(ModelAdmin):
     """Manage the association documents."""
 
     form = forms.AssociationDocumentForm
@@ -84,7 +84,7 @@ class AssociationDocumentAdmin(TranslatedModelAdmin):
 
 
 @admin.register(EventDocument)
-class EventDocumentAdmin(TranslatedModelAdmin):
+class EventDocumentAdmin(ModelAdmin):
     """Manage the event documents."""
 
     form = forms.EventDocumentForm
@@ -107,7 +107,7 @@ class EventDocumentAdmin(TranslatedModelAdmin):
 
 
 @admin.register(MiscellaneousDocument)
-class MiscellaneousDocumentAdmin(TranslatedModelAdmin):
+class MiscellaneousDocumentAdmin(ModelAdmin):
     """Manage the miscellaneous documents."""
 
     form = forms.MiscellaneousDocumentForm

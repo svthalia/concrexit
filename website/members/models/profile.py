@@ -208,10 +208,6 @@ class Profile(models.Model):
 
     # --- Communication preference ----
 
-    @property
-    def language(self):
-        return "en"
-
     receive_optin = models.BooleanField(
         verbose_name=_("Receive opt-in mailings"),
         help_text=_(

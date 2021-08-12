@@ -194,10 +194,6 @@ class Registration(Entry):
 
     birthday = models.DateField(verbose_name=_("birthday"), blank=False,)
 
-    @property
-    def language(self):
-        return "en"
-
     # ---- Contact information -----
 
     email = models.EmailField(_("Email address"), blank=False,)

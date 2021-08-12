@@ -17,8 +17,8 @@ class GetDocumentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.file_en = Mock(spec=File)
-        cls.file_en.name = "file_en.pdf"
-        cls.file_en.chunks.return_value = [b"file_en"]
+        cls.file_en.name = "file.pdf"
+        cls.file_en.chunks.return_value = [b"file"]
 
         cls.document = Document.objects.create(
             pk=1, name="Test document (EN)", category="misc", file=cls.file_en,

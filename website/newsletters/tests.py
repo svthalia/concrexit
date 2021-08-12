@@ -81,10 +81,10 @@ class NewslettersTest(TestCase):
         cls.user.save()
 
         cls.testletter_sent = Newsletter.objects.create(
-            title_en="testletter", description_en="testdesc", sent=True,
+            title="testletter", description="testdesc", sent=True,
         )
         cls.testletter_concept = Newsletter.objects.create(
-            title_en="testletter", description_en="testdesc", sent=False,
+            title="testletter", description="testdesc", sent=False,
         )
 
     def setUp(self):
@@ -120,7 +120,7 @@ class NewslettersTest(TestCase):
 
     def test_email_sent_per_lang(self):
         testletter = Newsletter.objects.create(
-            title_en="testletter", description_en="testdesc", sent=False,
+            title="testletter", description="testdesc", sent=False,
         )
 
         self.client.post(
@@ -130,7 +130,7 @@ class NewslettersTest(TestCase):
 
     def test_email_html_and_text(self):
         testletter = Newsletter.objects.create(
-            title_en="testletter", description_en="testdesc", sent=False,
+            title="testletter", description="testdesc", sent=False,
         )
 
         self.client.post(
@@ -144,7 +144,7 @@ class NewslettersTest(TestCase):
 
     def test_email_sent_database_changed(self):
         testletter = Newsletter.objects.create(
-            title_en="testletter", description_en="testdesc", sent=False,
+            title="testletter", description="testdesc", sent=False,
         )
 
         self.client.post(
@@ -157,7 +157,7 @@ class NewslettersTest(TestCase):
 
     def test_email_sent_redirect(self):
         testletter = Newsletter.objects.create(
-            title_en="testletter", description_en="testdesc", sent=False,
+            title="testletter", description="testdesc", sent=False,
         )
 
         response = self.client.post(
@@ -174,9 +174,9 @@ class NewslettersTest(TestCase):
 class NewsletterEventsTest(TestCase):
     def test_until_date(self):
         m = NewsletterEvent(
-            title_en="testevent",
-            description_en="testdesc",
-            where_en="where",
+            title="testevent",
+            description="testdesc",
+            where="where",
             start_datetime=timezone.now().date().replace(year=2014, month=2, day=1),
             end_datetime=timezone.now().date().replace(year=2014, month=1, day=1),
         )

@@ -172,8 +172,8 @@ class Album(models.Model):
             ):
                 new_album_notification = self.new_album_notification
 
-            new_album_notification.title_en = "New album uploaded"
-            new_album_notification.body_en = (
+            new_album_notification.title = "New album uploaded"
+            new_album_notification.body = (
                 f"A new photo album '{self.title}' has just been uploaded"
             )
             new_album_notification.category = Category.objects.get(key=Category.PHOTO)

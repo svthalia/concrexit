@@ -65,8 +65,8 @@ def send_newsletter(newsletter):
     newsletter.sent = True
     newsletter.save()
     message = Message.objects.create(
-        title_en=newsletter.title_en,
-        body_en="Tap to view",
+        title=newsletter.title,
+        body="Tap to view",
         url=settings.BASE_URL + newsletter.get_absolute_url(),
         category=Category.objects.get(key=Category.NEWSLETTER),
     )

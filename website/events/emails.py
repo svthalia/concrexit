@@ -2,11 +2,9 @@
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
-from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
-from members.models import Profile
 
 
 def notify_first_waiting(event):
@@ -27,25 +25,19 @@ def notify_first_waiting(event):
 
         text_template = get_template("events/member_email.txt")
 
-        if first_waiting_member.profile:
-            language = first_waiting_member.profile.language
-        else:
-            language = Profile._meta.get_field("language").default
+        subject = _("[THALIA] Notification about your registration for '{}'").format(
+            event.title
+        )
+        text_message = text_template.render(
+            {
+                "event": event,
+                "registration": first_waiting,
+                "member": first_waiting_member,
+                "base_url": settings.BASE_URL,
+            }
+        )
 
-        with translation.override(language):
-            subject = _(
-                "[THALIA] Notification about your registration for '{}'"
-            ).format(event.title)
-            text_message = text_template.render(
-                {
-                    "event": event,
-                    "registration": first_waiting,
-                    "member": first_waiting_member,
-                    "base_url": settings.BASE_URL,
-                }
-            )
-
-            EmailMessage(subject, text_message, to=[first_waiting_member.email]).send()
+        EmailMessage(subject, text_message, to=[first_waiting_member.email]).send()
 
 
 def notify_organiser(event, registration):

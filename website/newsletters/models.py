@@ -6,14 +6,11 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
-from utils.translation import ModelTranslateMeta, MultilingualField
 
-
-class Newsletter(models.Model, metaclass=ModelTranslateMeta):
+class Newsletter(models.Model):
     """Describes a newsletter."""
 
-    title = MultilingualField(
-        models.CharField,
+    title = models.CharField(
         max_length=150,
         verbose_name=_("Title"),
         help_text=_("The title is used for the email subject."),
@@ -36,8 +33,7 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
         verbose_name=_("Send date"), blank=True, null=True,
     )
 
-    description = MultilingualField(
-        HTMLField,
+    description = HTMLField(
         verbose_name=_("Introduction"),
         help_text=_(
             "This is the text that starts the newsletter. It always "
@@ -57,10 +53,10 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
 
         errors = {}
         url = "admin/newsletters/"
-        if url in self.description_en:
+        if url in self.description:
             errors.update(
                 {
-                    "description_en": _(
+                    "description": _(
                         "Please make sure all urls are absolute "
                         "and contain http(s)://."
                     )
@@ -81,15 +77,11 @@ class Newsletter(models.Model, metaclass=ModelTranslateMeta):
         return str(self.title)
 
 
-class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
+class NewsletterContent(models.Model):
     """Describes one piece of basic content of a newsletter."""
 
-    title = MultilingualField(
-        models.CharField,
-        max_length=150,
-        verbose_name=_("Title"),
-        blank=False,
-        null=False,
+    title = models.CharField(
+        max_length=150, verbose_name=_("Title"), blank=False, null=False,
     )
 
     url = models.URLField(
@@ -99,9 +91,7 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
         help_text=_("If filled, it will make the title a link to this URL"),
     )
 
-    description = MultilingualField(
-        HTMLField, verbose_name=_("Description"), blank=False, null=False,
-    )
+    description = HTMLField(verbose_name=_("Description"), blank=False, null=False,)
 
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
 
@@ -114,10 +104,10 @@ class NewsletterContent(models.Model, metaclass=ModelTranslateMeta):
 
         errors = {}
         url = "admin/newsletters/"
-        if url in self.description_en:
+        if url in self.description:
             errors.update(
                 {
-                    "description_en": _(
+                    "description": _(
                         "Please make sure all urls are absolute "
                         "and start with http(s)://."
                     )
@@ -141,12 +131,8 @@ class NewsletterItem(NewsletterContent):
 class NewsletterEvent(NewsletterContent):
     """Describes one piece of event content of a newsletter."""
 
-    where = MultilingualField(
-        models.CharField,
-        max_length=150,
-        verbose_name=_("Where"),
-        blank=False,
-        null=False,
+    where = models.CharField(
+        max_length=150, verbose_name=_("Where"), blank=False, null=False,
     )
 
     start_datetime = models.DateTimeField(

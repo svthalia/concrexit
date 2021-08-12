@@ -4,14 +4,12 @@ import datetime
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import override
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import override
 from firebase_admin import messaging, exceptions
 
-from utils.translation import MultilingualField, ModelTranslateMeta
 
-
-class Category(models.Model, metaclass=ModelTranslateMeta):
+class Category(models.Model):
     """Describes a Message category."""
 
     # These should be the keys of the categories that we automatically created
@@ -26,12 +24,12 @@ class Category(models.Model, metaclass=ModelTranslateMeta):
 
     key = models.CharField(max_length=16, primary_key=True)
 
-    name = MultilingualField(models.CharField, _("name"), max_length=32,)
+    name = models.CharField(_("name"), max_length=32,)
 
-    description = MultilingualField(models.TextField, _("description"), default="")
+    description = models.TextField(_("description"), default="")
 
     def __str__(self):
-        return self.name_en
+        return self.name
 
 
 def default_receive_category():
@@ -90,15 +88,15 @@ class MessageManager(models.Manager):
     """Returns all messages."""
 
 
-class Message(models.Model, metaclass=ModelTranslateMeta):
+class Message(models.Model):
     """Describes a push notification."""
 
     objects = NormalMessageManager()
     all_objects = MessageManager()
 
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    title = MultilingualField(models.CharField, max_length=150, verbose_name=_("title"))
-    body = MultilingualField(models.TextField, verbose_name=_("body"))
+    title = models.CharField(max_length=150, verbose_name=_("title"))
+    body = models.TextField(verbose_name=_("body"))
     url = models.CharField(
         verbose_name=_("url"), max_length=256, null=True, blank=True,
     )
@@ -180,7 +178,7 @@ class ScheduledMessageManager(models.Manager):
     """Returns scheduled messages only."""
 
 
-class ScheduledMessage(Message, metaclass=ModelTranslateMeta):
+class ScheduledMessage(Message):
     """Describes a scheduled push notification."""
 
     objects = ScheduledMessageManager()

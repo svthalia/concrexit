@@ -196,7 +196,7 @@ class EmailsTest(TestCase):
 
     @freeze_time("2018-08-15")
     def test_send_welcome_message(self):
-        emails.send_welcome_message(self.year_member_nl, "password1", "en")
+        emails.send_welcome_message(self.year_member_nl, "password1")
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])

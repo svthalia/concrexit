@@ -1,7 +1,7 @@
 import hashlib
 import logging
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _, override as lang_override
+from django.utils.translation import gettext_lazy as _
 
 from googleapiclient.errors import HttpError
 
@@ -82,10 +82,7 @@ class GSuiteUserService:
                 alias=f"{username}@{settings.GSUITE_MEMBERS_DOMAIN}",
             ).execute()
 
-        with lang_override(member.profile.language):
-            password = _("known by the user")
-
-        return response["primaryEmail"], password
+        return response["primaryEmail"], _("known by the user")
 
     def suspend_user(self, username):
         """Suspend the user in GSuite.

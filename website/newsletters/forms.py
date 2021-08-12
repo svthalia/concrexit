@@ -25,10 +25,10 @@ class NewsletterEventForm(forms.ModelForm):
         fields = (
             "order",
             "event",
-            "title_en",
+            "title",
             "url",
-            "description_en",
-            "where_en",
+            "description",
+            "where",
             "start_datetime",
             "end_datetime",
             "show_costs_warning",

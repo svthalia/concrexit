@@ -1,9 +1,9 @@
 """Registers admin interfaces for the newsletters module."""
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.shortcuts import redirect
 
 from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
-from utils.translation import TranslatedModelAdmin
 from .forms import NewsletterEventForm
 
 
@@ -14,9 +14,9 @@ class NewsletterItemInline(admin.StackedInline):
     extra = 0
     fields = (
         "order",
-        "title_en",
+        "title",
         "url",
-        "description_en",
+        "description",
     )
 
 
@@ -29,7 +29,7 @@ class NewsletterEventInline(admin.StackedInline):
 
 
 @admin.register(Newsletter)
-class NewsletterAdmin(TranslatedModelAdmin):
+class NewsletterAdmin(ModelAdmin):
     """Manage the newsletters."""
 
     #: available fields in the admin overview list
@@ -51,7 +51,7 @@ class NewsletterAdmin(TranslatedModelAdmin):
     #: field to use for date filtering
     date_hierarchy = "date"
 
-    def change_view(self, request, object_id, form_url=""):
+    def change_view(self, request, object_id, form_url="", extra_context=None):
         """Render the change view.
 
         Disallow change access if a newsletter is marked as sent
@@ -59,7 +59,7 @@ class NewsletterAdmin(TranslatedModelAdmin):
         obj = Newsletter.objects.filter(id=object_id)[0]
         if obj is not None and obj.sent is True:
             return redirect(obj)
-        return super().change_view(request, object_id, form_url, {"newsletter": obj})
+        return super().change_view(request, object_id, form_url, extra_context)
 
     def has_delete_permission(self, request, obj=None):
         """Check if delete permission is granted.

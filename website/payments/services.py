@@ -5,7 +5,7 @@ from typing import Union
 from django.conf import settings
 from django.db.models import QuerySet, Q, Sum, Model
 from django.urls import reverse
-from django.utils import timezone, translation
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
@@ -169,23 +169,20 @@ def send_tpay_batch_processing_emails(batch):
         member = PaymentUser.objects.get(pk=member_row["paid_by"])
         total_amount = member_row["total"]
 
-        with translation.override(member.profile.language):
-            send_email(
-                member.email,
-                _("Thalia Pay withdrawal notice"),
-                "payments/email/tpay_withdrawal_notice_mail.txt",
-                {
-                    "name": member.get_full_name(),
-                    "batch": batch,
-                    "bank_account": member.bank_accounts.filter(
-                        mandate_no__isnull=False
-                    ).last(),
-                    "creditor_id": settings.SEPA_CREDITOR_ID,
-                    "payments": batch.payments_set.filter(paid_by=member),
-                    "total_amount": total_amount,
-                    "payments_url": (
-                        settings.BASE_URL + reverse("payments:payment-list",)
-                    ),
-                },
-            )
+        send_email(
+            member.email,
+            _("Thalia Pay withdrawal notice"),
+            "payments/email/tpay_withdrawal_notice_mail.txt",
+            {
+                "name": member.get_full_name(),
+                "batch": batch,
+                "bank_account": member.bank_accounts.filter(
+                    mandate_no__isnull=False
+                ).last(),
+                "creditor_id": settings.SEPA_CREDITOR_ID,
+                "payments": batch.payments_set.filter(paid_by=member),
+                "total_amount": total_amount,
+                "payments_url": (settings.BASE_URL + reverse("payments:payment-list",)),
+            },
+        )
     return len(member_payments)
