@@ -68,9 +68,7 @@
                     {% bootstrap_field form.address_postal_code %}
                     {% bootstrap_field form.address_city %}
                     {% bootstrap_field form.address_country %}
-                </fieldset>
 
-                <fieldset class="col-12 col-lg-6">
                     {% bootstrap_field form.email %}
 
                     <div class="form-group">
@@ -81,9 +79,10 @@
                                    for="id_optin_mailinglist">{% trans "Receive emails about (amongst others) job opportunities and in-house days from partners of Thalia." %}</label>
                         </div>
                     </div>
+                </fieldset>
 
+                <fieldset class="col-12 col-lg-6">
                     {% bootstrap_field form.phone_number %}
-
                     {% bootstrap_field form.birthday %}
 
                     <div class="form-group">
@@ -95,9 +94,14 @@
                         </div>
                     </div>
 
+                    {% bootstrap_field form.photo %}
+
                     {% bootstrap_field form.student_number %}
                     {% bootstrap_field form.programme %}
                     {% bootstrap_field form.starting_year %}
+
+                    {% bootstrap_field form.emergency_contact %}
+                    {% bootstrap_field form.emergency_contact_phone_number %}
 
                     {% bootstrap_field form.privacy_policy %}
                 </fieldset>

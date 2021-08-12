@@ -6,6 +6,7 @@ from typing import Union
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
+from django.core.files.storage import DefaultStorage
 from django.db.models import Q, QuerySet
 from django.utils import timezone
 
@@ -264,7 +265,13 @@ def _create_member_from_registration(registration: Registration) -> Member:
         birthday=registration.birthday,
         show_birthday=registration.optin_birthday,
         receive_optin=registration.optin_mailinglist,
+        emergency_contact=registration.emergency_contact,
+        emergency_contact_phone_number=registration.emergency_contact_phone_number,
+        photo=registration.photo,  # TODO change the image path to the correct directory and verify thumbnails
     )
+
+    storage = DefaultStorage()
+    storage.delete(registration.photo.name)
 
     if registration.direct_debit:
         payment_user = PaymentUser.objects.get(pk=user.pk)

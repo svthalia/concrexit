@@ -57,9 +57,6 @@
                     {% bootstrap_field form.address_postal_code %}
                     {% bootstrap_field form.address_city %}
                     {% bootstrap_field form.address_country %}
-                </fieldset>
-
-                <fieldset class="col-12 col-lg-6">
                     {% bootstrap_field form.email %}
 
                     <div class="form-group">
@@ -71,6 +68,9 @@
                         </div>
                     </div>
 
+                </fieldset>
+
+                <fieldset class="col-12 col-lg-6">
                     {% bootstrap_field form.phone_number %}
 
                     {% bootstrap_field form.birthday %}
@@ -85,6 +85,11 @@
                                    for="id_optin_birthday">{% trans "Display birthday in calendar" %}</label>
                         </div>
                     </div>
+
+                    {% bootstrap_field form.photo %}
+
+                    {% bootstrap_field form.emergency_contact %}
+                    {% bootstrap_field form.emergency_contact_phone_number %}
 
                     {% bootstrap_field form.student_number %}
                     {% bootstrap_field form.icis_employee %}

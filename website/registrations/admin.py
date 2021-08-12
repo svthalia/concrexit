@@ -4,9 +4,12 @@ from functools import partial
 from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
 from django.forms import Field
+from django.utils.html import escape, format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from payments.widgets import PaymentWidget
+from utils.media.services import get_media_url
 from . import services
 from .forms import RegistrationAdminForm
 from .models import Entry, Registration, Renewal, Reference
@@ -89,6 +92,10 @@ class RegistrationAdmin(admin.ModelAdmin):
                     "email",
                     "optin_mailinglist",
                     "phone_number",
+                    "photo",
+                    "_photo",
+                    "emergency_contact",
+                    "emergency_contact_phone_number",
                 )
             },
         ),
@@ -113,8 +120,18 @@ class RegistrationAdmin(admin.ModelAdmin):
             {"fields": ("student_number", "programme", "starting_year",)},
         ),
     )
+    readonly_fields = ("_photo",)
     actions = ["accept_selected", "reject_selected"]
     form = RegistrationAdminForm
+
+    def _photo(self, obj):
+        return mark_safe(
+            format_html(
+                '<img src="{}" height="150px" />'.format(get_media_url(obj.photo))
+            )
+        )
+
+    _photo.short_description = _("Photo")
 
     def reference_count(self, obj):
         return obj.reference_set.count()
@@ -171,13 +188,21 @@ class RegistrationAdmin(admin.ModelAdmin):
         )
 
     def get_readonly_fields(self, request, obj=None):
+        default_fields = super().get_readonly_fields(request, obj)
+
         if obj is None or not (
             obj.status == Entry.STATUS_REJECTED
             or obj.status == Entry.STATUS_ACCEPTED
             or obj.status == Entry.STATUS_COMPLETED
         ):
-            return ["status", "created_at", "updated_at", "payment", "contribution"]
-        return [
+            return list(default_fields) + [
+                "status",
+                "created_at",
+                "updated_at",
+                "payment",
+                "contribution",
+            ]
+        return list(default_fields) + [
             field.name
             for field in self.model._meta.get_fields()
             if field.name not in ["payment", "no_references"] and field.editable

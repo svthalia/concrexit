@@ -9,6 +9,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.template.defaultfilters import floatformat
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
@@ -164,6 +165,19 @@ class Entry(models.Model):
         )
 
 
+def _registration_profile_image_path(_instance, _filename):
+    """Set the upload path for profile images in registrations
+
+    Makes sure any user-picked filenames don't survive
+
+    >>> _registration_profile_image_path(None, "bla.jpg")
+    private/registration_avatars/...
+    >>> "swearword" in _registration_profile_image_path(None, "swearword.jpg")
+    False
+    """
+    return f"private/registration_avatars/{get_random_string(length=16)}"
+
+
 class Registration(Entry):
     """Describes a new registration for the association."""
 
@@ -278,6 +292,35 @@ class Registration(Entry):
 
     optin_birthday = models.BooleanField(
         verbose_name=_("birthday calendar opt-in"), default=False
+    )
+
+    emergency_contact = models.CharField(
+        max_length=255,
+        verbose_name=_("Emergency contact name"),
+        help_text=_("Who should we contact in case of emergencies"),
+        null=True,
+        blank=True,
+    )
+
+    emergency_contact_phone_number = models.CharField(
+        max_length=20,
+        verbose_name=_("Emergency contact phone number"),
+        help_text=_("The phone number for the emergency contact"),
+        validators=[
+            validators.RegexValidator(
+                regex=r"^\+?\d+$", message=_("Please enter a valid phone number"),
+            )
+        ],
+        null=True,
+        blank=True,
+    )
+
+    photo = models.ImageField(
+        verbose_name=_("Photo"),
+        help_text=_("An optional profile picture that will be shown to other members"),
+        upload_to=_registration_profile_image_path,
+        null=True,
+        blank=True,
     )
 
     # ---- Bank account -----
