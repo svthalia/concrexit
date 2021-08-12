@@ -274,7 +274,11 @@ class Event(models.Model):
 
     @property
     def optional_registration_allowed(self):
-        return not self.registration_required and self.end >= timezone.now()
+        return (
+            self.optional_registrations
+            and not self.registration_required
+            and self.end >= timezone.now()
+        )
 
     @property
     def has_food_event(self):
