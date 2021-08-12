@@ -102,22 +102,17 @@ class FoodEventOrderDetailView(
 
     def dispatch(self, request, *args, **kwargs):
         self.food_event = get_object_or_404(FoodEvent, pk=self.kwargs.get("pk"))
-        return super().dispatch(request, *args, **kwargs)
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except PaymentError as e:
+            return Response(str(e), status=status.HTTP_403_FORBIDDEN,)
 
     def update(self, request, *args, **kwargs):
         super().update(request, *args, **kwargs)
         instance = self.get_object()
 
         if instance.payment:
-            try:
-                delete_payment(
-                    instance, member=request.member, ignore_change_window=True
-                )
-            except PaymentError:
-                return Response(
-                    "Your order could not be updated because it was already paid.",
-                    status=status.HTTP_403_FORBIDDEN,
-                )
+            delete_payment(instance, member=request.member, ignore_change_window=True)
 
         return Response(
             FoodOrderSerializer(instance, context=self.get_serializer_context()).data

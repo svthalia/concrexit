@@ -35,8 +35,11 @@ def cancel_order(request):
             if not order.can_be_changed:
                 messages.error(request, _("You can no longer cancel."))
             elif order.member == request.member:
-                order.delete()
-                messages.success(request, _("Your order has been cancelled."))
+                try:
+                    order.delete()
+                    messages.success(request, _("Your order has been cancelled."))
+                except PaymentError as e:
+                    messages.error(request, str(e))
         except Http404:
             messages.error(request, _("Your order could not be found."))
     return redirect("pizzas:index")
