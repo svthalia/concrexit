@@ -71,8 +71,8 @@ class Entry(models.Model):
         verbose_name=_("contribution"),
         max_digits=5,
         decimal_places=2,
-        validators=[MinValueValidator(settings.MEMBERSHIP_PRICES["year"])],
-        default=settings.MEMBERSHIP_PRICES["year"],
+        validators=[MinValueValidator(settings.MEMBERSHIP_PRICES[MEMBERSHIP_YEAR])],
+        default=settings.MEMBERSHIP_PRICES[MEMBERSHIP_YEAR],
         blank=False,
         null=False,
     )
@@ -130,8 +130,8 @@ class Entry(models.Model):
         else:
             if self.membership_upgrade_discount_applies:
                 self.contribution = (
-                    settings.MEMBERSHIP_PRICES["study"]
-                    - settings.MEMBERSHIP_PRICES["year"]
+                    settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
+                    - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
                 )
             else:
                 self.contribution = settings.MEMBERSHIP_PRICES[self.length]
