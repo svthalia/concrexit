@@ -30,6 +30,8 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
             "payment",
             "member",
             "name",
+            "is_cancelled",
+            "is_late_cancellation",
         )
 
     payment = PaymentSerializer()
