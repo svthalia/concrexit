@@ -125,7 +125,6 @@ class ProfileEditSerializer(serializers.ModelSerializer):
             "profile_description",
             "nickname",
             "display_name_preference",
-            "language",
             "receive_optin",
             "receive_newsletter",
             "receive_magazine",
