@@ -9,40 +9,47 @@
 {% block body %}
     <section class="page-section" id="education-courses">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "Course overview" %}</h1>
+            <h1 class="section-title">{% trans "Course overview" %}</h1>
 
-            <p class="text-center">
-                {% blocktrans trimmed %}
-                    This overview contains all courses for which Thalia has
-                    exams, summaries or other documents. Select a course to
-                    find out more.<br/>
-                    Can't find a course? Let the
-                    <a href="mailto:educacie@thalia.nu">Educacie</a>
-                    know.
-                {% endblocktrans %}
-            </p>
+            <div class="row">
+                <div class="col-12 col-lg-6">
+                    <p>
+                        {% blocktrans trimmed %}
+                            This overview contains all courses for which Thalia has
+                            exams, summaries or other documents. Select a course to
+                            find out more.<br/>
+                            Can't find a course? Let the
+                            <a href="mailto:educacie@thalia.nu">Educacie</a>
+                            know.
+                        {% endblocktrans %}
+                    </p>
 
-            <p class="text-center">
-                {% blocktrans trimmed %}
-                    You can submit your own exams and summaries!<br />
-                    Better even, you might even get a monetary reward if you submit a summary:
-                {% endblocktrans %}
-                <ul class="text-center list-unstyled">
-                    <li>{% trans "In the current language of the course" %}</li>
-                    <li>{% trans "Adds significant information that was not already present in the summary overview" %}</li>
-                    <li>{% trans "Corresponds to the current course" %}</li>
-                    <li>{% trans "Is positively peer-reviewed by people appointed by the Educacie" %}</li>
-                </ul>
-            </p>
-
-            <p class="text-center mt-4">
-                <a class="btn btn-primary d-inline"
+            <p class="mt-4">
+                <a class="btn btn-primary d-inline mr-2"
                    href="{% url 'education:submit-exam' %}">{% trans "Submit Exam" %}</a>
                 <a class="btn btn-primary d-inline"
                    href="{% url 'education:submit-summary' %}">{% trans "Submit Summary" %}</a>
             </p>
+                </div>
 
-            <ul class="nav nav-tabs justify-content-center mt-4 border-bottom-0">
+                <div class="mt-4 mt-lg-0 col-12 col-lg-6">
+                    <p>
+                        {% blocktrans trimmed %}
+                            You can submit your own exams and summaries!<br/>
+                            Better even, you might even get a monetary reward if you submit a summary:
+                        {% endblocktrans %}
+                    </p>
+
+                    <ul class="list-unstyled">
+                        <li>{% trans "In the current language of the course" %}</li>
+                        <li>{% trans "Adds significant information that was not already present in the summary overview" %}</li>
+                        <li>{% trans "Corresponds to the current course" %}</li>
+                        <li>{% trans "Is positively peer-reviewed by people appointed by the Educacie" %}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs mt-4 border-bottom-0">
                 <li class="nav-item">
                     <a class="nav-link" data-filter="all" href="#all">
                         {% trans "all courses"|upper %}
@@ -60,7 +67,7 @@
             </ul>
 
             <div class="table-responsive">
-                <table class="table text-center table-clickable">
+                <table class="table table-clickable">
                     <thead>
                     <tr>
                         <th scope="col">{% trans "Course code" %}</th>

@@ -10,12 +10,12 @@
 {% block body %}
     <section id="members-profile" class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">
+            <h1 class="section-title">
                 {{ member.profile.display_name }}
             </h1>
 
             <div class="row">
-                <div class="pb-4 pb-lg-0 col-12 col-lg-7 text-center">
+                <div class="pb-4 pb-lg-0 col-12 col-lg-7">
                     {% if not member.profile.photo %}
                         <img src="{% static "members/images/default-avatar.jpg" %}"
                              alt="{{ member.profile.display_name }}"/>

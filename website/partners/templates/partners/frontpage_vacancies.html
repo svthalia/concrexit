@@ -1,6 +1,6 @@
 {% load i18n bleach_tags alert %}
 <div class="frontpage-vacancies">
-        <h1 class="text-center section-title">{% trans "Recent vacancies" %}</h1>
+        <h1 class="section-title">{% trans "Recent vacancies" %}</h1>
 
     {% if not vacancies %}
         <div class="mt-4">
@@ -18,7 +18,7 @@
             {% endfor %}
         </div>
     {% endif %}
-    <p class="text-center mt-3">
+    <p class="mt-3">
         {% url 'partners:vacancies' as vacancies_index %}
         {% blocktrans trimmed %}
             <a href="{{ vacancies_index }}">Check out the vacancies page</a>

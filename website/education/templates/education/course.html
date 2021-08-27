@@ -9,12 +9,12 @@
 {% block body %}
     <section class="page-section" id="education-course">
         <div class="container">
-            <h1 class="text-center section-title">{{ course.name }}</h1>
+            <h1 class="section-title">{{ course.name }}</h1>
 
             <div class="row">
                 <div class="col-12 col-md-8">
                     {% if items|length  == 0 %}
-                        <p class="text-center">
+                        <p>
                             <i>
                                 {% blocktrans trimmed %}
                                     Thalia does not have any documents for this

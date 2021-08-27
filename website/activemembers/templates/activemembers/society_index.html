@@ -6,11 +6,11 @@
 {% block body %}
     <section id="activemembers-committees" class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">
+            <h1 class="section-title">
                 {% trans 'societies'|capfirst %}
             </h1>
 
-            <p class="text-center">
+            <p>
                 {% url 'documents:index' as documents_page %}
                 {% blocktrans trimmed %}
                     Interested in forming a society? Read the Society policy and application form document,
@@ -26,8 +26,10 @@
                         {% membergroup_card society %}
                     </div>
                 {% empty %}
-                    {% trans 'There are no societies!' as no_societies %}
-                    {% alert 'danger' no_societies extra_classes='col-10 offset-1' %}
+                    <div class="col-12">
+                        {% trans 'There are no societies!' as no_societies %}
+                        {% alert 'danger' no_societies %}
+                    </div>
                 {% endfor %}
             </div>
         </div>

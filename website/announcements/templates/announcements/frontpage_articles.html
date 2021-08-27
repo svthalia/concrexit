@@ -2,8 +2,8 @@
 <section id="announcements-frontpage" class="page-section">
     <div class="container">
         {% for article in articles %}
-            <h1 class="text-center section-title">{{ article.title }}</h1>
-            <p class="text-center">{{ article.content | bleach }}</p>
+            <h1 class="section-title">{{ article.title }}</h1>
+            <p>{{ article.content | bleach }}</p>
         {% endfor %}
     </div>
 </section>

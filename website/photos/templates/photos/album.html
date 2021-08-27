@@ -9,7 +9,7 @@
 {% block body %}
     <section id="photos-album" class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">
+            <h1 class="section-title">
                 {{ album.title }}
                 {% if album.event %}
                 <a href="{{ album.event.get_absolute_url }}"
@@ -23,9 +23,9 @@
                 {% endif %}
             </h1>
 
-            <h2 class="text-center mt-2">{{ album.date|date:"d-m-Y" }}</h2>
+            <h2 class="mt-2">{{ album.date|date:"d-m-Y" }}</h2>
             {% if album.shareable %}
-                <p class="text-center">
+                <p>
                     {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>
                     <small><a href="{% url 'photos:shared-album' album.slug album.access_token %}">
                         {{ request.get_host }}{% url 'photos:shared-album' album.slug album.access_token %}
