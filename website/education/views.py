@@ -14,6 +14,7 @@ from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from django_sendfile import sendfile
 
 from members.decorators import membership_required
+from . import emails
 from .forms import AddExamForm, AddSummaryForm
 from .models import Category, Course, Exam, Summary
 
@@ -168,6 +169,7 @@ class ExamCreateView(SuccessMessageMixin, CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
+        emails.send_document_notification(self.object)
         return super().form_valid(form)
 
 
@@ -193,6 +195,7 @@ class SummaryCreateView(SuccessMessageMixin, CreateView):
         self.object.uploader = self.request.member
         self.object.uploader_date = datetime.now()
         self.object.save()
+        emails.send_document_notification(self.object)
         return super().form_valid(form)
 
 
