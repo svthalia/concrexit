@@ -23,13 +23,18 @@ class StatisticsTest(TestCase):
         profiles = [Profile(user_id=i) for i in range(10)]
         Profile.objects.bulk_create(profiles)
 
-    def sum_members(self, members, member_type=None):
-        if member_type is None:
-            return sum(sum(i.values()) for i in members.values())
-        return sum(i[member_type] for i in members.values())
+    def sum_members(self, members, membership_type=None):
+        if membership_type is None:
+            return sum(sum(dataset["data"]) for dataset in members["datasets"])
+
+        membership_type_index = [key for key, _ in Membership.MEMBERSHIP_TYPES].index(
+            membership_type
+        )
+
+        return sum(members["datasets"][membership_type_index]["data"])
 
     def sum_member_types(self, members):
-        return sum(members.values())
+        return sum(sum(dataset["data"]) for dataset in members["datasets"])
 
     def test_gen_stats_year_no_members(self):
         result = gen_stats_year()
@@ -62,8 +67,8 @@ class StatisticsTest(TestCase):
 
         result = gen_stats_member_type()
         self.assertEqual(10, self.sum_member_types(result))
-        self.assertEqual(9, result[Membership.MEMBERSHIP_TYPES[0][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
+        self.assertEqual(9, result["datasets"][0]["data"][0])
+        self.assertEqual(1, result["datasets"][0]["data"][1])
 
         # Same for honorary members
         m = Membership.objects.all()[1]
@@ -78,9 +83,9 @@ class StatisticsTest(TestCase):
 
         result = gen_stats_member_type()
         self.assertEqual(10, self.sum_member_types(result))
-        self.assertEqual(8, result[Membership.MEMBERSHIP_TYPES[0][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[2][1]])
+        self.assertEqual(8, result["datasets"][0]["data"][0])
+        self.assertEqual(1, result["datasets"][0]["data"][1])
+        self.assertEqual(1, result["datasets"][0]["data"][2])
 
         # Terminate one membership by setting end date to current_year -1,
         # should decrease total amount and total members
@@ -95,9 +100,9 @@ class StatisticsTest(TestCase):
 
         result = gen_stats_member_type()
         self.assertEqual(9, self.sum_member_types(result))
-        self.assertEqual(7, result[Membership.MEMBERSHIP_TYPES[0][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[2][1]])
+        self.assertEqual(7, result["datasets"][0]["data"][0])
+        self.assertEqual(1, result["datasets"][0]["data"][1])
+        self.assertEqual(1, result["datasets"][0]["data"][2])
 
     def test_gen_stats_different_years(self):
         current_year = datetime_to_lectureyear(date.today())
@@ -135,22 +140,22 @@ class StatisticsTest(TestCase):
         self.assertEqual(4, self.sum_members(result, Membership.MEMBER))
 
         # one first year student
-        self.assertEqual(1, result["2019"][Membership.MEMBER])
+        self.assertEqual(1, result["datasets"][0]["data"][4])
 
         # one second year student
-        self.assertEqual(1, result["2018"][Membership.MEMBER])
+        self.assertEqual(1, result["datasets"][0]["data"][3])
 
         # no third year students
-        self.assertEqual(0, result["2017"][Membership.MEMBER])
+        self.assertEqual(0, result["datasets"][0]["data"][2])
 
         # one fourth year student
-        self.assertEqual(1, result["2016"][Membership.MEMBER])
+        self.assertEqual(1, result["datasets"][0]["data"][1])
 
         # no fifth year students
-        self.assertEqual(0, result["2015"][Membership.MEMBER])
+        self.assertEqual(0, result["datasets"][0]["data"][0])
 
         # one >5 year student
-        self.assertEqual(1, result["Older"][Membership.MEMBER])
+        self.assertEqual(1, result["datasets"][0]["data"][-1])
 
 
 @override_settings(SUSPEND_SIGNALS=True)

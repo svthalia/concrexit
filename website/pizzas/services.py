@@ -1,51 +1,20 @@
 from events.services import is_organiser
-from .models import Product, FoodOrder, FoodEvent
+from .models import Product, FoodOrder
 
 
-def gen_stats_pizza_orders():
-    """Generate statistics about number of orders per product.
-
-    :return: Dict with key, value being resp. name, order count of a product.
-    """
-    total = {}
+def gen_stats_pizza_orders() -> dict:
+    """Generate statistics about number of orders per product."""
+    data = {"labels": [], "datasets": [{"data": []},]}
 
     for product in Product.objects.all():
-        total.update(
-            {product.name: FoodOrder.objects.filter(product=product).count(),}
-        )
 
-    return {
-        i[0]: i[1]
-        for i in sorted(total.items(), key=lambda x: x[1], reverse=True)[:5]
-        if i[1] > 0
-    }
+        orders = FoodOrder.objects.filter(product=product).count()
 
+        if orders > 0:
+            data["labels"].append(product.name)
+            data["datasets"][0]["data"].append(orders)
 
-def gen_stats_current_pizza_orders():
-    """Generate statistics about number of orders per product of the active pizza event.
-
-    :return: Dict with key, value being resp. name, order count of a product.
-    """
-    total = {}
-
-    current_pizza_event = FoodEvent.current()
-    if not current_pizza_event:
-        return None
-
-    for product in Product.objects.filter():
-        total.update(
-            {
-                product.name: FoodOrder.objects.filter(
-                    product=product, food_event=current_pizza_event,
-                ).count(),
-            }
-        )
-
-    return {
-        i[0]: i[1]
-        for i in sorted(total.items(), key=lambda x: x[1], reverse=True)[:5]
-        if i[1] > 0
-    }
+    return data
 
 
 def can_change_order(member, food_event):
