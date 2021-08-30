@@ -150,6 +150,21 @@ def gen_stats_year() -> Dict:
     return stats_year
 
 
+def gen_stats_active_members() -> Dict:
+    """Generate statistics about active members."""
+    return {
+        "labels": ["Active Members", "Non-active Members"],
+        "datasets": [
+            {
+                "data": [
+                    Member.active_members.count(),
+                    Member.current_members.count() - Member.active_members.count(),
+                ]
+            }
+        ],
+    }
+
+
 def verify_email_change(change_request) -> None:
     """Mark the email change request as verified.
 

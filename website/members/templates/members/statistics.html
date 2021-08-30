@@ -51,12 +51,22 @@
 
             <hr>
 
-            <div class="col-6">
-                <canvas id="pizza-total-type-chart"
-                        data-data="{{ total_pizza_orders }}"
-                        data-title="Pizza Orders"
-                        data-chart-type="pie">
-                </canvas>
+            <div class="row">
+                <div class="col-6">
+                    <canvas id="pizza-total-type-chart"
+                            data-data="{{ total_pizza_orders }}"
+                            data-title="Pizza Orders"
+                            data-chart-type="pie">
+                    </canvas>
+                </div>
+
+                <div class="col-6">
+                    <canvas id="active-members-chart"
+                            data-data="{{ active_members }}"
+                            data-title="Active vs Non-active members"
+                            data-chart-type="pie">
+                    </canvas>
+                </div>
             </div>
 
         </div>

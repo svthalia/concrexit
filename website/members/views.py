@@ -235,6 +235,7 @@ class StatisticsView(TemplateView):
                 "total_pizza_orders": json.dumps(
                     pizzas.services.gen_stats_pizza_orders()
                 ),
+                "active_members": json.dumps(services.gen_stats_active_members()),
             }
         )
 
