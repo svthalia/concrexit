@@ -114,11 +114,11 @@ def gen_stats_member_type() -> Dict:
 
 
 def gen_stats_year() -> Dict:
-    """Generate statistics about membership types of current members, benefactors and honorary members."""
-    current_year = datetime_to_lectureyear(date.today())
+    """Generate statistics on how many members (and other membership types) there were in each cohort."""
+    years = range(2015, datetime_to_lectureyear(date.today()))
 
-    stats_year = {
-        "labels": [str(current_year - 4 + i) for i in range(5)] + ["Older"],
+    data = {
+        "labels": list(years),
         "datasets": [
             {"label": str(display), "data": []}
             for _, display in Membership.MEMBERSHIP_TYPES
@@ -126,28 +126,17 @@ def gen_stats_year() -> Dict:
     }
 
     for index, (key, _) in enumerate(Membership.MEMBERSHIP_TYPES):
-        for i in range(5):
-            stats_year["datasets"][index]["data"].append(
-                Membership.objects.filter(
-                    user__profile__starting_year=current_year - 4 + i
+        for year in years:
+            data["datasets"][index]["data"].append(
+                Membership.objects.filter(since__lte=date(year=year, month=9, day=1))
+                .filter(
+                    Q(until__isnull=True) | Q(until__gt=date(year=year, month=9, day=1))
                 )
-                .filter(since__lte=date.today())
-                .filter(Q(until__isnull=True) | Q(until__gt=date.today()))
                 .filter(type=key)
                 .count()
             )
 
-    # Add multi year members
-    for index, (key, _) in enumerate(Membership.MEMBERSHIP_TYPES):
-        stats_year["datasets"][index]["data"].append(
-            Membership.objects.filter(user__profile__starting_year__lt=current_year - 4)
-            .filter(since__lte=date.today())
-            .filter(Q(until__isnull=True) | Q(until__gt=date.today()))
-            .filter(type=key)
-            .count()
-        )
-
-    return stats_year
+    return data
 
 
 def gen_stats_active_members() -> Dict:
