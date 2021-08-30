@@ -68,7 +68,6 @@ $(function () {
                 }
             }]
         },
-        plugins: {labels: false}
     });
 
     new Chart($('#members-type-chart'), {
@@ -185,7 +184,6 @@ $(function () {
                 title: {
                     text: gettext(text),
                 },
-                plugins: { labels: false },
             }
         });
 

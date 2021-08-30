@@ -46,7 +46,6 @@
     {{ block.super }}
     {% compress js %}
         <script type="text/javascript" src="{% static 'members/js/chart.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'members/js/chartjs-plugin-labels.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'members/js/statistics.js' %}"></script>
     {% endcompress %}
 {% endblock %}
