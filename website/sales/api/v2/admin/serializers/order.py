@@ -1,6 +1,7 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.utils.encoding import smart_str
 from rest_framework import serializers
+from rest_framework.settings import api_settings
 
 from members.api.v2.serializers.member import MemberSerializer
 from payments.api.v2.serializers import PaymentSerializer
@@ -63,7 +64,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
         order = self.context["order"]
         instance.order = order
         instance.total = None  # Always recalculate the total amount if updating using API (note the difference from the model that only recalculates if the total is None, to deal with historic data and allow for special discounts)
-        super().update(instance, validated_data)
+        try:
+            super().update(instance, validated_data)
+        except ValueError as e:
+            raise ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [e]})
         return instance
 
 
