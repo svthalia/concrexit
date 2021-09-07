@@ -27,7 +27,7 @@ def send_document_notification(document):
         },
     )
     mail.EmailMessage(
-        "New document submitted",
+        "Education document ready for review",
         email_body,
         settings.DEFAULT_FROM_EMAIL,
         [settings.EDUCATION_NOTIFICATION_ADDRESS],
