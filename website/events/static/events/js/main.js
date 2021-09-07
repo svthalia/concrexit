@@ -124,9 +124,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.open(event.url, '_blank');
             }
         },
-        eventRender: function ({ el, event }) {
+        eventRender: function ({ el, event, isStart, view }) {
             el.setAttribute(
                 'title', event.extendedProps.description);
+            if (isStart && view.type !== 'list') {
+                const regInfoElem = document.createElement('div');
+                regInfoElem.classList.add('mt-2');
+                regInfoElem.textContent = event.extendedProps.registration_info;
+                el.children[0].appendChild(regInfoElem);
+            }
         },
         viewSkeletonRender: function ({ view }) {
             const prevView = Cookies.get(VIEW_COOKIE);

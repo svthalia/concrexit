@@ -19,6 +19,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
             "description",
             "classNames",
             "blank",
+            "registration_info",
         )
 
     start = serializers.SerializerMethodField("_start")
@@ -30,6 +31,7 @@ class CalenderJSSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField("_description")
     classNames = serializers.SerializerMethodField("_class_names")
     blank = serializers.SerializerMethodField("_target_blank")
+    registration_info = serializers.SerializerMethodField("_registration_info")
 
     def _start(self, instance):
         return timezone.localtime(instance.start)
@@ -57,3 +59,6 @@ class CalenderJSSerializer(serializers.ModelSerializer):
 
     def _target_blank(self, instance):
         return False
+
+    def _registration_info(self, instance):
+        return ""
