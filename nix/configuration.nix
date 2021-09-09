@@ -166,7 +166,9 @@ in
     services.openssh.enable = true;
 
     # Make concrexit user
-    users.users.${cfg.user} = { };
+    users.users.${cfg.user} = {
+      isSystemUser = true;
+    };
 
     systemd.services = {
       # Create the directory that concrexit uses to place files and the secrets
