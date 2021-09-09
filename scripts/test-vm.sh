@@ -1,6 +1,6 @@
 set -e
 
-machine=$(nix-build -A vm ./release.nix)
+machine=$(./scripts/build-nix.sh vm)
 
 # Remove the VM disk after this script finishes
 trap 'rm --force staging.qcow2' EXIT

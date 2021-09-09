@@ -225,7 +225,7 @@ CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))
 DATA_UPLOAD_MAX_NUMBER_FIELDS = os.environ.get("DATA_UPLOAD_MAX_NUMBER_FIELDS", 10000)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = setting(development=True, production=False, testing=False)
+DEBUG = from_env("DJANGO_DEBUG", development="1", production="0", testing="0") == "1"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-secure
 SESSION_COOKIE_SECURE = setting(development=False, production=True)
@@ -434,7 +434,7 @@ MIDDLEWARE = [
 if DJANGO_ENV in ("development", "testing"):
     INSTALLED_APPS += ["django_template_check"]
 
-if DJANGO_ENV == "testing":
+if DJANGO_ENV == "testing" or DEBUG:
     for x in (
         "debug_toolbar.middleware.DebugToolbarMiddleware",
         "django.middleware.http.ConditionalGetMiddleware",
