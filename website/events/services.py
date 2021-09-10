@@ -37,7 +37,7 @@ def user_registration_pending(member, event):
     if not member.is_authenticated:
         return None
 
-   try:
+    try:
         registration = event.registrations.get(member=member, date_cancelled=None)
         if registration.queue_position:
             return registration.queue_position

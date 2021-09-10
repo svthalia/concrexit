@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.template.defaultfilters import date
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse
 
 from events import services
@@ -39,23 +40,29 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
                 self.context["member"], instance
             )
             if isinstance(queue_pos, int):
-                return f"In waiting list at position {queue_pos}"
+                return _("In waiting list at position {queue_pos}").format(
+                    queue_pos=queue_pos
+                )
             else:
-                return "You are registered for this event"
+                return _("You are registered for this event")
         elif instance.optional_registration_allowed:
-            return "You can optionally register for this event"
+            return _("You can optionally register for this event")
         elif instance.reached_participants_limit:
-            return "You can put yourself on the waiting list for this event"
+            return _("You can put yourself on the waiting list for this event")
         elif instance.registration_allowed:
-            return "You can register for this event"
+            return _("You can register for this event")
         elif instance.registration_end:
             now = timezone.now()
             if instance.registration_end < now:
-                return "Registrations have been closed"
+                return _("Registrations have been closed")
             elif instance.registration_end <= now + timedelta(days=2):
-                return "You can register " + naturaltime(instance.registration_end)
+                return _("You can register {at_time}").format(
+                    at_time=naturaltime(instance.registration_end)
+                )
             else:
-                return "You can register on " + date(instance.registration_end)
+                return _("You can register on {date}").format(
+                    date=date(instance.registration_end)
+                )
 
 
 class UnpublishedEventsCalenderJSSerializer(CalenderJSSerializer):
