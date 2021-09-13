@@ -557,10 +557,17 @@ class Command(BaseCommand):
 
         registration = event.registrations.order_by("?")[0]
 
-        processed_by = Member.objects.order_by("?")[0]
+        superusers = Member.objects.filter(is_superuser=True)
+        if not superusers:
+            print(
+                "There is no member which is also a superuser. Creating payments without this isn't possible!"
+            )
+            print("Please add an membership to the superuser.")
+            return
+
         create_payment(
             registration,
-            processed_by,
+            superusers[0],
             random.choice([Payment.CASH, Payment.CARD, Payment.WIRE]),
         )
 
