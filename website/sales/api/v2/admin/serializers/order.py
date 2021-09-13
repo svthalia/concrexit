@@ -1,6 +1,7 @@
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.encoding import smart_str
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.settings import api_settings
 
 from members.api.v2.serializers.member import MemberSerializer
