@@ -37,8 +37,13 @@ def user_registration_pending(member, event):
     if not member.is_authenticated:
         return None
 
-    reg = event.registrations.filter(member=member, date_cancelled=None)
-    return len(list(filter(lambda r: r.queue_position, reg))) > 0
+    try:
+        registration = event.registrations.get(member=member, date_cancelled=None)
+        if registration.queue_position:
+            return registration.queue_position
+        return False
+    except EventRegistration.DoesNotExist:
+        return False
 
 
 def is_user_present(member, event):

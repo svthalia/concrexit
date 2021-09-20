@@ -48,6 +48,9 @@ class ListView extends FullCalendar.View {
             const eventIndicator = document.createElement('div');
             eventIndicator.classList.add('event-indication');
             eventIndicator.classList.add(def.ui.classNames);
+            eventIndicator.dataset.toggle = 'tooltip';
+            eventIndicator.dataset.originalTitle = def.extendedProps.registration_info;
+            eventIndicator.title = def.extendedProps.registration_info;
 
             const cardHead = document.createElement('div');
             cardHead.classList.add('card-header', 'collapsed');
@@ -89,6 +92,7 @@ class ListView extends FullCalendar.View {
             skeleton.append(eventCard);
         }
         this.el.append(skeleton);
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
     unrenderEvents() {
