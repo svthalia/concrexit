@@ -152,6 +152,9 @@ BOARD_NOTIFICATION_ADDRESS = (
 PARTNER_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_COLLABORATION', 'samenwerking')}@{SITE_DOMAIN}"
 )
+EDUCATION_NOTIFICATION_ADDRESS = (
+    f"{os.environ.get('ADDRESS_EDUCATION', 'educacie')}@{SITE_DOMAIN}"
+)
 
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")
