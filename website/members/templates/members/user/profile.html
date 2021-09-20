@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="pb-4 pb-lg-0 col-12 col-lg-7 text-center">
                     {% if not member.profile.photo %}
-                        <img src="{% static "members/images/default-avatar.jpg" %}"
+                        <img src="{% static 'members/images/default-avatar.jpg' %}"
                              alt="{{ member.profile.display_name }}"/>
                     {% else %}
                         <img src="{{ member.profile.photo.url }}"
@@ -40,7 +40,7 @@
                     <h4>{% trans "Personal information" %}</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <strong>{% trans "Membership type" %}: </strong> {{ membership_type }} (since {{ member.latest_membership.since }})<br>
+                            <strong>{% trans "Membership type" %}: </strong> {{ membership_type }} (since {{ member.oldest_membership_of_current_type.since }})<br>
                         </li>
 
                         {% if member.profile.starting_year %}

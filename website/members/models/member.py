@@ -118,6 +118,17 @@ class Member(User):
         return self.membership_set.latest("since")
 
     @property
+    def oldest_membership_of_current_type(self):
+        """Get the first membership of the most recent membership's type."""
+        if not self.membership_set.exists():
+            return None
+        return (
+            self.membership_set.filter(type=self.latest_membership.type)
+            .order_by("since")
+            .first()
+        )
+
+    @property
     def earliest_membership(self):
         """Get the earliest membership of this user."""
         if not self.membership_set.exists():
