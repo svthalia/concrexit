@@ -239,28 +239,35 @@
                             </td>
                         </tr>
 
-                        {% if event.food_event %}
-                            <tr>
-                                <th>
-                                    Pizza
-                                </th>
-                                <td>
-                                    {% if event.food_event.current == event.food_event %}
+                        {% if event.food_event %} 
+                            {% if event.food_event == event.food_event.current or event.food_event.just_ended %}
+                                <tr>
+                                    <th>
+                                        Pizza
+                                    </th>
+                                    <td>
                                         <a href="{% url "pizzas:index" %}" class="btn btn-primary">
                                             {% trans "Order" context "pizzas" %}
                                         </a>
-                                    {% else %}
-                                    <div>
-                                        <a class="btn btn-primary disabled">
-                                            {% trans "Order" context "pizzas" %}
-                                        </a>
-                                    </div>
-                                    <div class="mt-3">
-                                        <em>Ordering pizza for this event isn't possible yet</em>
-                                    </div>
-                                    {% endif %}
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            {% elif event.food_event.in_the_future %}
+                                <tr>
+                                    <th>
+                                        Pizza
+                                    </th>
+                                    <td>
+                                        <div>
+                                            <a class="btn btn-primary disabled">
+                                                {% trans "Order" context "pizzas" %}
+                                            </a>
+                                        </div>
+                                        <div class="mt-3">
+                                            <em>Ordering pizza for this event isn't possible yet</em>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
                         {% endif %}
                         {% if event.album_set.all %}
                         <tr>
