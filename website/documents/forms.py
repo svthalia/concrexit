@@ -64,6 +64,10 @@ class AnnualDocumentForm(forms.ModelForm):
             for year in range(current + 1, 1989, -1)
         ]
 
+    year = forms.TypedChoiceField(
+        coerce=int, choices=_year_choices.__func__, initial=_current_year.__func__
+    )
+
 
 class AssociationDocumentForm(forms.ModelForm):
     """Form that overrides the widgets for the files."""
