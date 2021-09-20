@@ -138,6 +138,8 @@ class Vacancy(models.Model):
     link = models.CharField(
         _("link"), max_length=255, blank=True, validators=[URLValidator()]
     )
+    location = models.CharField(_("location"), max_length=255, default="")
+    keywords = models.TextField(_("keywords"), default="")
 
     partner = models.ForeignKey(
         Partner,
