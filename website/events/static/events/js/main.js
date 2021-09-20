@@ -130,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (isStart && view.type !== 'list') {
                 const regInfoElem = document.createElement('div');
                 regInfoElem.classList.add('mt-2');
+                regInfoElem.title = event.extendedProps.registration_info;
                 regInfoElem.textContent = event.extendedProps.registration_info;
                 el.children[0].appendChild(regInfoElem);
             }
