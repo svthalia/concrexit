@@ -245,9 +245,20 @@
                                     Pizza
                                 </th>
                                 <td>
-                                    <a href="{% url "pizzas:index" %}" class="btn btn-primary">
-                                        {% trans "Order" context "pizzas" %}
-                                    </a>
+                                    {% if event.food_event.current == event.food_event %}
+                                        <a href="{% url "pizzas:index" %}" class="btn btn-primary">
+                                            {% trans "Order" context "pizzas" %}
+                                        </a>
+                                    {% else %}
+                                    <div>
+                                        <a class="btn btn-primary disabled">
+                                            {% trans "Order" context "pizzas" %}
+                                        </a>
+                                    </div>
+                                    <div class="mt-3">
+                                        <em>Ordering pizza for this event isn't possible yet</em>
+                                    </div>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endif %}
