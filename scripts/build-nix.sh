@@ -15,4 +15,4 @@ if [[ $# -gt 1 ]] ; then
 fi
 
 
-nix-build --argstr system "x86_64-linux" --argstr version "$(git rev-parse HEAD)" -A $attribute release.nix --show-trace
+nix-build --arg system \"x86_64-linux\" --arg version "\"$(git rev-parse HEAD)\"" -A $attribute release.nix --show-trace

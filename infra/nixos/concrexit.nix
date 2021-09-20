@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, modulesPath, ... }:
 let
   # Aliases so other definitions are shorter
   mapAttrsToList = lib.attrsets.mapAttrsToList;
@@ -11,7 +11,7 @@ let
     test -f ${cfg.dir}/secrets.env && source ${cfg.dir}/secrets.env
     export MANAGE_PY=1
     ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"\${${name}:-${value}}\"") config.concrexit.env-vars)}
-    exec ${pkgs.concrexit}/bin/python ${pkgs.concrexit}/src/website/manage.py $@
+    exec ${pkgs.concrexit}/bin/python ${pkgs.concrexit}/website/manage.py $@
   '';
   sudo-concrexit-manage = pkgs.writeScriptBin "sudo-concrexit-manage" ''
     #!${pkgs.stdenv.shell}
@@ -50,7 +50,7 @@ let
 
 in
 {
-  imports = [ ./timed-command.nix ];
+  imports = [ ./timed-command.nix "${modulesPath}/virtualisation/amazon-image.nix" ];
 
   # The options we define here can be applied in any of the included configuration files.
   # The defaults should be good though.
@@ -75,21 +75,26 @@ in
       default = "concrexit";
     };
 
+    concrexit.local-testing = mkOption {
+      type = types.bool;
+      default = false;
+    };
+
     concrexit.ssl = mkOption {
       type = types.bool;
-      default = true;
+      default = !cfg.local-testing;
     };
 
     concrexit.allowUnknownHost = mkOption {
       type = types.bool;
-      default = !cfg.ssl;
+      default = cfg.local-testing;
       description = "If this option is enabled we allow any hostname to link to Concrexit";
     };
 
     concrexit.env-vars = mkOption {
       type = types.attrsOf types.str;
       apply = x: {
-        SITE_DOMAIN = if cfg.ssl then cfg.domain else "*";
+        SITE_DOMAIN = if !cfg.local-testing then cfg.domain else "*";
         MEDIA_ROOT = "${cfg.dir}/media";
         SENDFILE_ROOT = "${cfg.dir}/media";
         POSTGRES_USER = "concrexit";
@@ -110,6 +115,7 @@ in
   };
 
   config = {
+    ec2.hvm = true;
     # Allow the concrexit-manage command to be used as pkgs.concrexit-manage
     nixpkgs.overlays = [
       (_self: _super: {
@@ -152,23 +158,15 @@ in
       ];
     };
 
-    # This user is used by the GitHub Action to place the new configuration
-    users.users.deploy = {
-      isNormalUser = true;
-      description = "Deploy user";
-      extraGroups = [ "wheel" ];
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICxVTPZp7bOJhmU3hsK6yCSDALTC68/sQ5NRce531XGK deploykey"
-      ];
-    };
-
     # Enable the SSH server, this also opens port 22 automatically
     services.openssh.enable = true;
 
     # Make concrexit user
     users.users.${cfg.user} = {
       isSystemUser = true;
+      group = "concrexit";
     };
+    users.groups.concrexit = {};
 
     systemd.services = {
       # Create the directory that concrexit uses to place files and the secrets
@@ -182,35 +180,45 @@ in
         '';
       };
 
+      concrexit-oidc-key = lib.mkIf cfg.local-testing {
+        wantedBy = [ "multi-user.target" ];
+        after = [ "concrexit-dir.service" ];
+        script = ''
+          ${pkgs.openssl}/bin/openssl genrsa -out ${cfg.dir}/oidc.key 4096
+          chown ${cfg.user} ${cfg.dir}/oidc.key
+          chmod 600 ${cfg.dir}/oidc.key
+        '';
+      };
+
       # The main systemd service which runs concrexit via uwsgi
       concrexit = {
-        after = [ "networking.target" "postgresql.service" "concrexit-dir.service" ];
+        after = [ "networking.target" "postgresql.service" "concrexit-dir.service" (lib.mkIf cfg.local-testing "concrexit-oidc-key.service") ];
         wantedBy = [ "multi-user.target" ];
 
         serviceConfig = {
           User = cfg.user;
           KillSignal = "SIGQUIT";
-          Type = "notify";
-          TimeoutStartSec = "infinity";
-          NotifyAccess = "all";
         };
 
         script = ''
           if [ -f ${cfg.dir}/secrets.env ]; then
             source ${cfg.dir}/secrets.env
-          else
+          elif [ "1" = "${toString cfg.local-testing}" ]; then
             export SECRET_KEY=$(hostid)
+            export OIDC_RSA_PRIVATE_KEY=$(base64 --wrap=0 < ${cfg.dir}/oidc.key | tr '/+' '_-' | tr -d '=')
             echo "You should set the secrets in the env file!" >&2
+          else
+            echo "You should set the secrets in the env file!" >&2
+            exit 0
           fi
 
           export STATIC_ROOT="${pkgs.concrexit}/static"
-          export SITE_DOMAIN="${if cfg.ssl then cfg.domain else "*"}"
           export SOURCE_COMMIT="${pkgs.concrexit.name}"
 
           # Load extra variables from the concrexit.env-vars option
           ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"${value}\"") cfg.env-vars)}
 
-          ${pkgs.concrexit}/bin/concrexit-uwsgi --socket :${toString cfg.app-port}
+          exec ${pkgs.concrexit}/bin/concrexit-uwsgi --socket :${toString cfg.app-port}
         '';
       };
     };
@@ -244,22 +252,6 @@ in
         recommendedOptimisation = true;
         recommendedTlsSettings = true;
 
-        commonHttpConfig = ''
-          log_format logfmt 'time="$time_local" client=$remote_addr '
-               'method=$request_method url="$request_uri" '
-               'request_length=$request_length '
-               'status=$status bytes_sent=$bytes_sent '
-               'body_bytes_sent=$body_bytes_sent '
-               'referer=$http_referer '
-               'user_agent="$http_user_agent" '
-               'upstream_addr=$upstream_addr '
-               'upstream_status=$upstream_status '
-               'request_time=$request_time '
-               'upstream_response_time=$upstream_response_time '
-               'upstream_connect_time=$upstream_connect_time '
-               'upstream_header_time=$upstream_header_time';
-        '';
-
         virtualHosts =
           let
             # Because this is used for multiple vhosts below, we just define it once
@@ -288,12 +280,11 @@ in
                 extraConfig = "internal;";
               };
               locations."= /maintenance.html" = {
-                alias = ../resources/maintenance.html;
+                alias = ../../resources/maintenance.html;
                 extraConfig = "internal;";
               };
               extraConfig = ''
                 error_page 502 /maintenance.html;
-                access_log /var/log/nginx/concrexit.access.log logfmt;
 
                 ${securityHeaders}
               '';
@@ -334,5 +325,7 @@ in
 
     # These open the web ports, the SSH port is opened automatically
     networking.firewall.allowedTCPPorts = [ 80 443 ];
+
+    system.stateVersion = "21.05";
   };
 }
