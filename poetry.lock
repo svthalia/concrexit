@@ -1105,7 +1105,7 @@ pyasn1 = ">=0.1.3"
 
 [[package]]
 name = "sentry-sdk"
-version = "1.3.1"
+version = "1.4.0"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -1361,7 +1361,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "fedb8e7518ae2fd22cbe4c14aca98d19438849f96d892f543b804e2082e482ce"
+content-hash = "ef9d1fc343429b34238d8515bb57375e3bee505889bf436da5d31999ac1c297f"
 
 [metadata.files]
 alabaster = [
@@ -2155,8 +2155,8 @@ rsa = [
     {file = "rsa-4.6.tar.gz", hash = "sha256:109ea5a66744dd859bf16fe904b8d8b627adafb9408753161e766a92e7d681fa"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.3.1.tar.gz", hash = "sha256:ebe99144fa9618d4b0e7617e7929b75acd905d258c3c779edcd34c0adfffe26c"},
-    {file = "sentry_sdk-1.3.1-py2.py3-none-any.whl", hash = "sha256:f33d34c886d0ba24c75ea8885a8b3a172358853c7cbde05979fc99c29ef7bc52"},
+    {file = "sentry-sdk-1.4.0.tar.gz", hash = "sha256:963326914aa219ad5abda5b479b871fed2b3d2ddc9d27037340637647c9a4cdb"},
+    {file = "sentry_sdk-1.4.0-py2.py3-none-any.whl", hash = "sha256:494bf9990a54400710b7b6eb7d8174fc89039a4c82feedcf498d800d54e2ee81"},
 ]
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
