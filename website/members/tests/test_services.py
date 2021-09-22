@@ -7,150 +7,27 @@ from freezegun import freeze_time
 
 from members import services
 from members.models import Member, Membership, Profile, EmailChange
-from members.services import gen_stats_year, gen_stats_member_type
-from utils.snippets import datetime_to_lectureyear
+from members.services import gen_stats_year
 
 
 @freeze_time("2020-01-01")
 class StatisticsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # Add 10 members with default membership
-        members = [Member(id=i, username=i) for i in range(10)]
-        Member.objects.bulk_create(members)
-        memberships = [Membership(user_id=i, type=Membership.MEMBER) for i in range(10)]
-        Membership.objects.bulk_create(memberships)
-        profiles = [Profile(user_id=i) for i in range(10)]
-        Profile.objects.bulk_create(profiles)
+        for i in range(10):
+            Member.objects.create(id=i, username=i)
 
-    def sum_members(self, members, member_type=None):
-        if member_type is None:
-            return sum(sum(i.values()) for i in members.values())
-        return sum(i[member_type] for i in members.values())
+            Membership.objects.create(
+                user_id=i,
+                type=Membership.MEMBER,
+                since=date(year=(2017 if i < 5 else 2018), month=1, day=1),
+            )
 
-    def sum_member_types(self, members):
-        return sum(members.values())
-
-    def test_gen_stats_year_no_members(self):
+    def test_gen_stats_year(self):
         result = gen_stats_year()
-        self.assertEqual(0, self.sum_members(result))
 
-    def test_gen_stats_active(self):
-        """Testing if active and non-active objects are counted correctly."""
-        current_year = datetime_to_lectureyear(date.today())
-
-        # Set start date to current year - 1:
-        for m in Member.objects.all():
-            m.profile.starting_year = current_year - 1
-            m.profile.save()
-        result = gen_stats_year()
-        self.assertEqual(10, self.sum_members(result))
-        self.assertEqual(10, self.sum_members(result, Membership.MEMBER))
-
-        result = gen_stats_member_type()
-        self.assertEqual(10, self.sum_member_types(result))
-
-        # Change one membership to benefactor should decrease amount of members
-        m = Membership.objects.all()[0]
-        m.type = Membership.BENEFACTOR
-        m.save()
-
-        result = gen_stats_year()
-        self.assertEqual(10, self.sum_members(result))
-        self.assertEqual(9, self.sum_members(result, Membership.MEMBER))
-        self.assertEqual(1, self.sum_members(result, Membership.BENEFACTOR))
-
-        result = gen_stats_member_type()
-        self.assertEqual(10, self.sum_member_types(result))
-        self.assertEqual(9, result[Membership.MEMBERSHIP_TYPES[0][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
-
-        # Same for honorary members
-        m = Membership.objects.all()[1]
-        m.type = Membership.HONORARY
-        m.save()
-
-        result = gen_stats_year()
-        self.assertEqual(10, self.sum_members(result))
-        self.assertEqual(8, self.sum_members(result, Membership.MEMBER))
-        self.assertEqual(1, self.sum_members(result, Membership.BENEFACTOR))
-        self.assertEqual(1, self.sum_members(result, Membership.HONORARY))
-
-        result = gen_stats_member_type()
-        self.assertEqual(10, self.sum_member_types(result))
-        self.assertEqual(8, result[Membership.MEMBERSHIP_TYPES[0][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[2][1]])
-
-        # Terminate one membership by setting end date to current_year -1,
-        # should decrease total amount and total members
-        m = Membership.objects.all()[2]
-        m.until = timezone.now() - timedelta(days=365)
-        m.save()
-        result = gen_stats_year()
-        self.assertEqual(9, self.sum_members(result))
-        self.assertEqual(7, self.sum_members(result, Membership.MEMBER))
-        self.assertEqual(1, self.sum_members(result, Membership.BENEFACTOR))
-        self.assertEqual(1, self.sum_members(result, Membership.HONORARY))
-
-        result = gen_stats_member_type()
-        self.assertEqual(9, self.sum_member_types(result))
-        self.assertEqual(7, result[Membership.MEMBERSHIP_TYPES[0][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[1][1]])
-        self.assertEqual(1, result[Membership.MEMBERSHIP_TYPES[2][1]])
-
-    def test_gen_stats_different_years(self):
-        current_year = datetime_to_lectureyear(date.today())
-
-        # postgres does not define random access directly on unsorted querysets
-        members = list(Member.objects.all())
-
-        # one first year student
-        m = members[0]
-        m.profile.starting_year = current_year
-        m.profile.save()
-
-        # one second year student
-        m = members[1]
-        m.profile.starting_year = current_year - 1
-        m.profile.save()
-
-        # no third year students
-
-        # one fourth year student
-        m = members[2]
-        m.profile.starting_year = current_year - 3
-        m.profile.save()
-
-        # no fifth year students
-
-        # one >5 year student
-        m = members[3]
-        m.profile.starting_year = current_year - 5
-        m.profile.save()
-
-        # 4 active members
-        result = gen_stats_year()
-        self.assertEqual(4, self.sum_members(result))
-        self.assertEqual(4, self.sum_members(result, Membership.MEMBER))
-
-        # one first year student
-        self.assertEqual(1, result["2019"][Membership.MEMBER])
-
-        # one second year student
-        self.assertEqual(1, result["2018"][Membership.MEMBER])
-
-        # no third year students
-        self.assertEqual(0, result["2017"][Membership.MEMBER])
-
-        # one fourth year student
-        self.assertEqual(1, result["2016"][Membership.MEMBER])
-
-        # no fifth year students
-        self.assertEqual(0, result["2015"][Membership.MEMBER])
-
-        # one >5 year student
-        self.assertEqual(1, result["Older"][Membership.MEMBER])
+        # We should have 5 members in 2017 and 10 members in 2018
+        self.assertEqual([0, 0, 5, 10], result["datasets"][0]["data"][:4])
 
 
 @override_settings(SUSPEND_SIGNALS=True)

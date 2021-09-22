@@ -5,7 +5,6 @@ from typing import Callable, List, Dict, Any
 from django.conf import settings
 from django.db.models import Q, Count
 from django.utils import timezone
-from django.utils.translation import gettext
 
 from members import emails
 from members.models import Membership, Member
@@ -98,52 +97,61 @@ def member_societies(member) -> List:
     return sorted(societies.values(), key=lambda x: x["earliest"])
 
 
-def gen_stats_member_type() -> Dict[str, int]:
-    """Generate a dictionary where every key is a member type with the value being the number of current members of that type."""
-    data = {}
+def gen_stats_member_type() -> Dict:
+    """Generate statistics about membership types."""
+    data = {"labels": [], "datasets": [{"data": []},]}
+
     for key, display in Membership.MEMBERSHIP_TYPES:
-        data[str(display)] = (
+        data["labels"].append(str(display))
+        data["datasets"][0]["data"].append(
             Membership.objects.filter(since__lte=date.today())
             .filter(Q(until__isnull=True) | Q(until__gt=date.today()))
             .filter(type=key)
             .count()
         )
+
     return data
 
 
-def gen_stats_year() -> Dict[str, Dict[str, int]]:
-    """Generate list with 6 entries, where each entry represents the total amount of Thalia members in a year.
+def gen_stats_year() -> Dict:
+    """Generate statistics on how many members (and other membership types) there were in each cohort."""
+    years = range(2015, datetime_to_lectureyear(date.today()))
 
-    The sixth element contains all the multi-year students.
-    """
-    stats_year = {}
-    current_year = datetime_to_lectureyear(date.today())
+    data = {
+        "labels": list(years),
+        "datasets": [
+            {"label": str(display), "data": []}
+            for _, display in Membership.MEMBERSHIP_TYPES
+        ],
+    }
 
-    for i in range(5):
-        new = {}
-        for key, _ in Membership.MEMBERSHIP_TYPES:
-            new[key] = (
-                Membership.objects.filter(user__profile__starting_year=current_year - i)
-                .filter(since__lte=date.today())
-                .filter(Q(until__isnull=True) | Q(until__gt=date.today()))
+    for index, (key, _) in enumerate(Membership.MEMBERSHIP_TYPES):
+        for year in years:
+            data["datasets"][index]["data"].append(
+                Membership.objects.filter(since__lte=date(year=year, month=9, day=1))
+                .filter(
+                    Q(until__isnull=True) | Q(until__gt=date(year=year, month=9, day=1))
+                )
                 .filter(type=key)
                 .count()
             )
-        stats_year[str(current_year - i)] = new
 
-    # Add multi year members
-    new = {}
-    for key, _ in Membership.MEMBERSHIP_TYPES:
-        new[key] = (
-            Membership.objects.filter(user__profile__starting_year__lt=current_year - 4)
-            .filter(since__lte=date.today())
-            .filter(Q(until__isnull=True) | Q(until__gt=date.today()))
-            .filter(type=key)
-            .count()
-        )
-    stats_year[str(gettext("Older"))] = new
+    return data
 
-    return stats_year
+
+def gen_stats_active_members() -> Dict:
+    """Generate statistics about active members."""
+    return {
+        "labels": ["Active Members", "Non-active Members"],
+        "datasets": [
+            {
+                "data": [
+                    Member.active_members.count(),
+                    Member.current_members.count() - Member.active_members.count(),
+                ]
+            }
+        ],
+    }
 
 
 def verify_email_change(change_request) -> None:

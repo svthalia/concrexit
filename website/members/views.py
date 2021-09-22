@@ -219,22 +219,23 @@ class StatisticsView(TemplateView):
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-
-        total = models.Member.current_members.count()
-
         context.update(
             {
-                "total_members": total,
-                "statistics": json.dumps(
-                    {
-                        "cohort_sizes": services.gen_stats_year(),
-                        "member_type_distribution": services.gen_stats_member_type(),
-                        "total_pizza_orders": pizzas.services.gen_stats_pizza_orders(),
-                        "current_pizza_orders": pizzas.services.gen_stats_current_pizza_orders(),
-                        "committee_sizes": activemembers_services.generate_statistics(),
-                        "event_categories": event_services.generate_category_statistics(),
-                    }
+                "total_members": models.Member.current_members.count(),
+                "cohort_sizes": json.dumps(services.gen_stats_year()),
+                "member_type_distribution": json.dumps(
+                    services.gen_stats_member_type()
                 ),
+                "committee_sizes": json.dumps(
+                    activemembers_services.generate_statistics()
+                ),
+                "event_categories": json.dumps(
+                    event_services.generate_category_statistics()
+                ),
+                "total_pizza_orders": json.dumps(
+                    pizzas.services.gen_stats_pizza_orders()
+                ),
+                "active_members": json.dumps(services.gen_stats_active_members()),
             }
         )
 

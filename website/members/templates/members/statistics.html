@@ -12,32 +12,63 @@
             <h2 class="text-center mb-4">{% trans "Total amount of Thalia members" %}: {{ total_members }}</h2>
 
             <div class="row">
-                <div class="col-12 col-md-6">
-                    <canvas id="members-type-chart"></canvas>
+                <div class="col-6">
+                    <canvas id="members-type-chart"
+                            data-data="{{ member_type_distribution }}"
+                            data-title="Membership Types (currently)"
+                            data-chart-type="bar">
+                    </canvas>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <canvas id="total-year-chart"></canvas>
+                <div class="col-6 ">
+                    <canvas id="total-year-chart"
+                            data-data="{{ cohort_sizes }}"
+                            data-title="Membership Types (previous cohorts)"
+                            data-chart-type="bar">
+                    </canvas>
                 </div>
-
-                <div class="col-12 my-5">
-                    <canvas id="committees-members-chart"></canvas>
-                </div>
-
-                <div class="col-12 mb-5">
-                    <canvas id="event-category-chart"></canvas>
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <canvas id="pizza-total-type-chart"></canvas>
-                </div>
-
-                {% if current_pizza_orders != 'null' %} {# None is json-serialized to 'null' #}
-                    <div class="col-12 col-md-6">
-                            <canvas id="pizza-current-type-chart"></canvas>
-                    </div>
-                {% endif %}
             </div>
+
+            <hr>
+
+            <div class="col-12">
+                <canvas id="committees-members-chart"
+                        data-data="{{ committee_sizes }}"
+                        data-title="Committee Size"
+                        data-chart-type="bar">
+                </canvas>
+            </div>
+
+            <hr>
+
+            <div class="col-12">
+                <canvas id="event-category-chart"
+                        data-data="{{ event_categories }}"
+                        data-title="Number of Events"
+                        data-chart-type="bar">
+                </canvas>
+            </div>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-6">
+                    <canvas id="pizza-total-type-chart"
+                            data-data="{{ total_pizza_orders }}"
+                            data-title="Pizza Orders"
+                            data-chart-type="pie">
+                    </canvas>
+                </div>
+
+                <div class="col-6">
+                    <canvas id="active-members-chart"
+                            data-data="{{ active_members }}"
+                            data-title="Active vs Non-active members"
+                            data-chart-type="pie">
+                    </canvas>
+                </div>
+            </div>
+
         </div>
     </section>
 {% endblock %}
@@ -46,7 +77,6 @@
     {{ block.super }}
     {% compress js %}
         <script type="text/javascript" src="{% static 'members/js/chart.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'members/js/chartjs-plugin-labels.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'members/js/statistics.js' %}"></script>
     {% endcompress %}
 {% endblock %}

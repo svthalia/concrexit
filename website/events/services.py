@@ -322,22 +322,26 @@ def update_registration_by_organiser(registration, member, data):
     registration.save()
 
 
-def generate_category_statistics():
-    """Generate statistics about events, number of events per category.
+def generate_category_statistics() -> dict:
+    """Generate statistics about events per category."""
+    current_year = datetime_to_lectureyear(timezone.now())
 
-    :return: Dict with key, value resp. being category, event count.
-    """
-    year = datetime_to_lectureyear(timezone.now())
+    data = {
+        "labels": [str(current_year - 4 + i) for i in range(5)],
+        "datasets": [
+            {"label": str(display), "data": []} for _, display in Event.EVENT_CATEGORIES
+        ],
+    }
 
-    data = {}
-    for i in range(5):
-        year_start = date(year=year - i, month=9, day=1)
-        year_end = date(year=year - i + 1, month=9, day=1)
-        data[str(year - i)] = {
-            str(display): Event.objects.filter(
-                category=key, start__gte=year_start, end__lte=year_end
-            ).count()
-            for key, display in Event.EVENT_CATEGORIES
-        }
+    for index, (key, _) in enumerate(Event.EVENT_CATEGORIES):
+        for i in range(5):
+            year_start = date(year=current_year - 4 + i, month=9, day=1)
+            year_end = date(year=current_year - 3 + i, month=9, day=1)
+
+            data["datasets"][index]["data"].append(
+                Event.objects.filter(
+                    category=key, start__gte=year_start, end__lte=year_end
+                ).count()
+            )
 
     return data

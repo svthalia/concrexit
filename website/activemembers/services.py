@@ -4,11 +4,8 @@ from django.utils import timezone
 from activemembers.models import Committee
 
 
-def generate_statistics():
-    """Generate statistics about number of members in each committee.
-
-    :return: Dict with key, value being resp. name, member count of committees.
-    """
+def generate_statistics() -> dict:
+    """Generate statistics about number of members in each committee."""
     committees = Committee.active_objects.annotate(
         member_count=(
             Count(
@@ -21,8 +18,9 @@ def generate_statistics():
         )
     )
 
-    data = {}
+    data = {"labels": [], "datasets": [{"data": []},]}
     for committee in committees:
-        data.update({committee.name: committee.member_count})
+        data["labels"].append(committee.name)
+        data["datasets"][0]["data"].append(committee.member_count)
 
     return data
