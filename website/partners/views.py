@@ -23,7 +23,7 @@ def index(request):
 
 def partner(request, slug):
     """View to show partner page."""
-    obj = get_object_or_404(Partner, slug=slug)
+    obj = get_object_or_404(Partner, slug=slug, is_active=True)
     context = {
         "partner": obj,
         "vacancies": Vacancy.objects.filter(partner=obj),
