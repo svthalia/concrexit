@@ -15,7 +15,7 @@ class Partner(models.Model):
     is_main_partner = models.BooleanField(default=False)
     is_local_partner = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     link = models.CharField(max_length=255, blank=True, validators=[URLValidator()])
     company_profile = HTMLField(blank=True)
     logo = models.ImageField(upload_to="public/partners/logos/")
@@ -118,7 +118,7 @@ class VacancyCategory(models.Model):
     """Model describing vacancy categories."""
 
     name = models.CharField(max_length=30)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
 
     def __str__(self):
         """Return the category name."""
