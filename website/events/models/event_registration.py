@@ -75,6 +75,16 @@ class EventRegistration(models.Model):
     def is_external(self):
         return bool(self.name)
 
+    def registration_status(self):
+        if self.is_registered and not self.queue_position:
+            return "You are registered"
+        elif self.is_registered and self.queue_position:
+            return "Waiting list position {}".format(self.queue_position)
+        elif (not self.is_registered) and self.is_late_cancellation():
+            return "Your registration is cancelled after the cancellation deadline"
+        else:
+            return "Your registration is cancelled"
+
     def is_late_cancellation(self):
         # First check whether or not the user cancelled
         # If the user cancelled then check if this was after the deadline

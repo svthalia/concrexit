@@ -66,6 +66,8 @@ class EventDetail(DetailView):
 
         context["slide_size"] = settings.THUMBNAIL_SIZES["slide"]
 
+        context["registration_status"] = context["registration"].registration_status()
+
         return context
 
 
