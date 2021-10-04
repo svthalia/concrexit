@@ -1,0 +1,14 @@
+{% load i18n partner_cards %}
+<section class="page-section" id="partners-vacancies">
+    <div class="container">
+        <h1 class="text-center section-title">{% trans "Recent vacancies" %}</h1>
+
+        <div class="row">
+            {% for vacancy in vacancies %}
+            <div class="col-12 col-md-6 col-lg-4 my-3 mix">
+                {% frontpage_vacancy_card vacancy %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

@@ -5,6 +5,7 @@ from django.template.defaultfilters import striptags, truncatechars
 from thaliawebsite.templatetags.bleach_tags import bleach
 from thaliawebsite.templatetags.grid_item import grid_item
 from utils.media.services import get_thumbnail_url
+from partners.models import Vacancy
 
 register = template.Library()
 
@@ -46,6 +47,37 @@ def partner_image_card(image):
 
 @register.inclusion_tag("partners/vacancy_card.html")
 def vacancy_card(vacancy):
+    """Return grid item showing vacancy."""
+    image_url = None
+    if vacancy.get_company_logo():
+        image_url = get_thumbnail_url(
+            vacancy.get_company_logo(), settings.THUMBNAIL_SIZES["medium"], fit=False
+        )
+
+    description = truncatechars(bleach(striptags(vacancy.description)), 150)
+    extra_class = "external-vacancy"
+    url = "#vacancy-{}".format(vacancy.id)
+    if vacancy.partner:
+        url = "{}#vacancy-{}".format(vacancy.partner.get_absolute_url(), vacancy.id)
+        extra_class = ""
+
+    return {
+        "title": vacancy.title,
+        "company_name": vacancy.get_company_name(),
+        "image_url": image_url,
+        "description": description,
+        "url": url,
+        "extra_class": extra_class,
+    }
+
+@register.inclusion_tag("partners/frontpage_vacancy_cards.html", takes_context=True)
+def render_frontpage_vacancies(context):
+    vacancies = Vacancy.objects.filter()
+
+    return {"vacancies": vacancies}
+
+@register.inclusion_tag("partners/frontpage_vacancy_card.html")
+def frontpage_vacancy_card(vacancy):
     """Return grid item showing vacancy."""
     image_url = None
     if vacancy.get_company_logo():

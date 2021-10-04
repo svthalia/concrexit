@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n alert event_cards frontpage_articles partner_banners slider %}
+{% load i18n alert event_cards frontpage_articles partner_banners partner_cards slider %}
 
 {% block body_class %}home{% endblock %}
 
@@ -26,4 +26,5 @@
 
     {% render_frontpage_articles %}
     {% render_event_cards %}
+    {% render_frontpage_vacancies %}
 {% endblock %}
