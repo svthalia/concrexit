@@ -61,6 +61,3 @@ class MockPayable(Payable):
 
     def can_manage_payment(self, member):
         return self.model.can_manage
-
-    def __hash__(self):
-        return 123456789

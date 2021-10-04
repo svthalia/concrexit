@@ -439,7 +439,7 @@ class PaymentProcessViewTest(TestCase):
         "app_label": "mock_app",
         "model_name": "mock_model",
         "payable": "mock_payable_pk",
-        "payable_hash": "123456789",
+        "payable_hash": "placeholder",
         "next": "/mock_next",
     }
 
@@ -476,6 +476,8 @@ class PaymentProcessViewTest(TestCase):
 
         apps.get_model = Mock(side_effect=side_effect)
         mock_get_model.objects.get.return_value = self.model
+
+        self.test_body["payable_hash"] = str(hash(payables.get_payable(self.model)))
 
     def tearDown(self):
         apps.get_model = self.original_get_model
