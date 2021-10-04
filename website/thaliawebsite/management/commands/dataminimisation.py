@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
-from members import services
+from members import services as members_services
+from events import services as events_services
 
 
 class Command(BaseCommand):
@@ -16,6 +17,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        processed = services.execute_data_minimisation(options["dry-run"])
+        processed = members_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
             self.stdout.write("Removed data for {}".format(p))
+
+        processed = events_services.execute_data_minimization(options["dry-run"])
+        for p in processed:
+            self.stdout.write("Removed registration information for {}".format(p))

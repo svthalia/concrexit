@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.translation import gettext_lazy as _
@@ -345,3 +346,16 @@ def generate_category_statistics() -> dict:
             )
 
     return data
+
+
+def execute_data_minimization(dry_run=False):
+    """Delete information about very old events."""
+    # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
+    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 5))
+
+    queryset = EventRegistration.objects.filter(event__end__lte=deletion_period).filter(
+        Q(payment__isnull=False) | Q(member__isnull=False) | ~Q(name__exact="<removed>")
+    )
+    if not dry_run:
+        queryset.update(payment=None, member=None, name="<removed>")
+    return queryset.all()
