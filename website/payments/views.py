@@ -197,6 +197,29 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         )
         return context
 
+    def _check_payment_allowed(self, request, payable_hash):
+        if (
+            self.payable.payment_payer.pk
+            != PaymentUser.objects.get(pk=self.request.member.pk).pk
+        ):
+            return _("You are not allowed to process this payment.")
+
+        if self.payable.payment_amount == 0:
+            return _("No payment required for amount of €0.00")
+
+        if self.payable.payment:
+            return _("This object has already been paid for.")
+
+        if not self.payable.tpay_allowed:
+            return _("You are not allowed to use Thalia Pay for this payment.")
+
+        if str(hash(self.payable)) != str(payable_hash):
+            return _(
+                "This object has been changed in the mean time. You have not paid."
+            )
+
+        return None
+
     def post(self, request, *args, **kwargs):
         if not (
             request.POST.keys()
@@ -217,40 +240,14 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
         self.payable = payables.get_payable(payable_model.objects.get(pk=payable_pk))
 
-        if (
-            self.payable.payment_payer.pk
-            != PaymentUser.objects.get(pk=self.request.member.pk).pk
-        ):
-            messages.error(
-                self.request, _("You are not allowed to process this payment.")
-            )
-            return redirect(request.POST["next"])
-
-        if self.payable.payment_amount == 0:
-            messages.error(self.request, _("No payment required for amount of €0.00"))
-            return redirect(request.POST["next"])
-
-        if self.payable.payment:
-            messages.error(self.request, _("This object has already been paid for."))
-            return redirect(request.POST["next"])
-
-        if not self.payable.tpay_allowed:
-            messages.error(
-                self.request,
-                _("You are not allowed to use Thalia Pay for this payment."),
-            )
+        error = self._check_payment_allowed(request, payable_hash)
+        if error:
+            messages.error(self.request, error)
             return redirect(request.POST["next"])
 
         if "_save" not in request.POST:
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
-
-        if str(hash(self.payable)) != str(payable_hash):
-            messages.error(
-                self.request,
-                _("This object has been changed in the mean time. You have not paid."),
-            )
-            return redirect(request.POST["next"])
 
         return super().post(request, *args, **kwargs)
 
