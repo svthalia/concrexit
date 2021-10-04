@@ -619,3 +619,17 @@ class PaymentProcessViewTest(TestCase):
 
         self.assertEqual(302, response.status_code)
         self.assertEqual("/mock_next", response.url)
+
+    def test_payment_deleted_error(self):
+        response = self.client.post(
+            reverse("payments:payment-process"),
+            follow=True,
+            data={**self.test_body, "_save": True, "payable": "something_else"},
+        )
+        self.assertEqual(404, response.status_code)
+
+    def test_payment_does_not_exist(self):
+        response = self.client.post(reverse("payments:payment-process"),
+                                    follow=True,
+                                    data={**self.test_body, "_save": False, "payable": "something_else"}, )
+        self.assertEqual(404, response.status_code)
