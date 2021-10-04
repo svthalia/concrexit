@@ -27,6 +27,9 @@ def create_payment(
     :param pay_type: Payment type
     :return: Payment object
     """
+    if pay_type not in (Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY):
+        raise PaymentError("Invalid payment type")
+
     if isinstance(model_payable, Payable):
         payable = model_payable
     else:
