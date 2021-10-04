@@ -759,7 +759,7 @@ i18n = ["Babel (>=0.8)"]
 
 [[package]]
 name = "jsmin"
-version = "2.2.2"
+version = "3.0.0"
 description = "JavaScript minifier."
 category = "main"
 optional = false
@@ -1763,7 +1763,7 @@ jinja2 = [
     {file = "Jinja2-2.11.2.tar.gz", hash = "sha256:89aab215427ef59c34ad58735269eb58b1a5808103067f7bb9d5836c651b3bb0"},
 ]
 jsmin = [
-    {file = "jsmin-2.2.2.tar.gz", hash = "sha256:b6df99b2cd1c75d9d342e4335b535789b8da9107ec748212706ef7bbe5c2553b"},
+    {file = "jsmin-3.0.0.tar.gz", hash = "sha256:88fc1bd6033a47c5911dbcada7d279c7a8b7ad0841909590f6a742c20c4d2e08"},
 ]
 lazy-object-proxy = [
     {file = "lazy-object-proxy-1.4.3.tar.gz", hash = "sha256:f3900e8a5de27447acbf900b4750b0ddfd7ec1ea7fbaf11dfa911141bc522af0"},
