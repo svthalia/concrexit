@@ -5,6 +5,8 @@ from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from tinymce.models import HTMLField
 
+from members.models.member import Member
+
 from utils import countries
 
 
@@ -119,6 +121,7 @@ class VacancyCategory(models.Model):
 
     name = models.CharField(max_length=30)
     slug = models.SlugField(unique=True)
+    subscriptions = models.ManyToManyField(Member)
 
     def __str__(self):
         """Return the category name."""
