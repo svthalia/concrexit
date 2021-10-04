@@ -198,7 +198,10 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if not (request.POST.keys() >= {"app_label", "model_name", "payable", "payable_hash", "next"}):
+        if not (
+            request.POST.keys()
+            >= {"app_label", "model_name", "payable", "payable_hash", "next"}
+        ):
             raise SuspiciousOperation("Missing POST parameters")
 
         if not url_has_allowed_host_and_scheme(
@@ -238,16 +241,16 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
             )
             return redirect(request.POST["next"])
 
+        if "_save" not in request.POST:
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+
         if str(hash(self.payable)) != str(payable_hash):
             messages.error(
                 self.request,
                 _("This object has been changed in the mean time. You have not paid."),
             )
             return redirect(request.POST["next"])
-
-        if "_save" not in request.POST:
-            context = self.get_context_data(**kwargs)
-            return self.render_to_response(context)
 
         return super().post(request, *args, **kwargs)
 
