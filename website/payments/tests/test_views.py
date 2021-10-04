@@ -627,15 +627,15 @@ class PaymentProcessViewTest(TestCase):
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
             "next": "/mock_next",
         }
-        response = self.client.post(
+        response = self.client.get(
             reverse("payments:payment-process"), follow=False, data=test_body
         )
         self.assertEqual(404, response.status_code)
-        
+
     def test_payment_accept_deleted_error(self):
         test_body = {
             "app_label": "sales",
-            "model_name": "orders",
+            "model_name": "order",
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
             "next": "/mock_next",
             "_save": True
