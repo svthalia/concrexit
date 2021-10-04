@@ -116,7 +116,7 @@ class FoodEvent(models.Model):
 
             if self.event.registration_required:
                 end_reminder.users.set(
-                    self.event.registrations.select_related("member").values_list(
+                    self.event.registrations.select_related("member").filter(author__isnull=False).values_list(
                         "member", flat=True
                     )
                 )
