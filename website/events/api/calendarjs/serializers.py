@@ -33,24 +33,31 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
             return ["regular-event-registration-closed"]
 
     def _registration_info(self, instance: Event):
+        # If registered in some way
         if self.context["member"] and services.is_user_registered(
             self.context["member"], instance
         ):
             queue_pos = services.user_registration_pending(
                 self.context["member"], instance
             )
-            if isinstance(queue_pos, int):
+            # In waiting list
+            if type(queue_pos) is int:
                 return _("In waiting list at position {queue_pos}").format(
                     queue_pos=queue_pos
                 )
+            # Actually registered
             else:
                 return _("You are registered for this event")
+        # Optional registration possible
         elif instance.optional_registration_allowed:
             return _("You can optionally register for this event")
-        elif instance.reached_participants_limit:
+        # No places left
+        elif instance.reached_participants_limit():
             return _("You can put yourself on the waiting list for this event")
+        # Registration still possible
         elif instance.registration_allowed:
             return _("You can register for this event")
+        # Not registration time yet
         elif instance.registration_end:
             now = timezone.now()
             if instance.registration_end < now:
