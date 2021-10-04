@@ -163,6 +163,7 @@ class Vacancy(models.Model):
     )
 
     categories = models.ManyToManyField(VacancyCategory, blank=True)
+    mail_sent = models.BooleanField(default=False)
 
     def get_company_name(self):
         """Return company or partner name."""
