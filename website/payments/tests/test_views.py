@@ -638,7 +638,7 @@ class PaymentProcessViewTest(TestCase):
             "model_name": "order",
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
             "next": "/mock_next",
-            "_save": True
+            "_save": True,
         }
         response = self.client.post(
             reverse("payments:payment-process"), follow=False, data=test_body
@@ -652,9 +652,9 @@ class PaymentProcessViewTest(TestCase):
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
             "next": "/mock_next",
         }
-        response = self.client.post(reverse("payments:payment-process"),
-                                    follow=False,
-                                    data=test_body)
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=test_body
+        )
         self.assertEqual(404, response.status_code)
 
     def test_model_does_not_exist(self):
@@ -664,7 +664,7 @@ class PaymentProcessViewTest(TestCase):
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
             "next": "/mock_next",
         }
-        response = self.client.post(reverse("payments:payment-process"),
-                                    follow=False,
-                                    data=test_body)
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=test_body
+        )
         self.assertEqual(404, response.status_code)
