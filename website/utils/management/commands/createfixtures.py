@@ -427,7 +427,7 @@ class Command(BaseCommand):
         self.stdout.write("Creating a new vacancy category")
         category = VacancyCategory()
 
-        category.name_en = _faker.text(max_nb_chars=30)
+        category.name = _faker.text(max_nb_chars=30)
         category.slug = _faker.slug()
 
         category.save()
