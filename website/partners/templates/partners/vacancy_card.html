@@ -9,7 +9,7 @@
     <div class="col-md-8">
       <div class="card-body">
         <h4 class="card-title mb-1">{{ title }}</h4>
-        <p class="mt-0">{{ company_name }} - {{ location }} - {% for keyword in keywords %} <span class="badge btn-primary">{{ keyword }}</span> {% endfor %}</p>
+        <p class="mt-0">{{ company_name }} {% if not location is None %}- {{ location }}{% endif %} - {% for keyword in keywords %} <span class="badge btn-primary">{{ keyword }}</span> {% endfor %}</p>
         <p class="card-text">{{ description }}</p>
         <a href="{{ url }}"
            class="btn card-btn btn-primary {{ extra_class }}">
