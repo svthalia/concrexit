@@ -186,6 +186,7 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({"payable": self.payable})
+        context.update({"payable_hash": hash(self.payable)})
         context.update(
             {
                 "new_balance": PaymentUser.objects.get(
@@ -197,7 +198,7 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if not (request.POST.keys() >= {"app_label", "model_name", "payable", "next"}):
+        if not (request.POST.keys() >= {"app_label", "model_name", "payable", "payable_hash", "next"}):
             raise SuspiciousOperation("Missing POST parameters")
 
         if not url_has_allowed_host_and_scheme(
@@ -208,6 +209,7 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         app_label = request.POST["app_label"]
         model_name = request.POST["model_name"]
         payable_pk = request.POST["payable"]
+        payable_hash = request.POST["payable_hash"]
 
         payable_model = apps.get_model(app_label=app_label, model_name=model_name)
         self.payable = payables.get_payable(payable_model.objects.get(pk=payable_pk))
@@ -233,6 +235,13 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
             messages.error(
                 self.request,
                 _("You are not allowed to use Thalia Pay for this payment."),
+            )
+            return redirect(request.POST["next"])
+
+        if str(hash(self.payable)) != str(payable_hash):
+            messages.error(
+                self.request,
+                _("This object has been changed in the mean time. You have not paid."),
             )
             return redirect(request.POST["next"])
 

@@ -19,6 +19,11 @@
                 value="{{ payable.pk }}"
             />
             <input
+                    type="hidden"
+                    name="payable_hash"
+                    value="{{ payable_hash }}"
+            />
+            <input
                 type="hidden"
                 name="next"
                 value="{{ redirect_to }}"

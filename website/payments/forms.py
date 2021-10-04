@@ -55,6 +55,7 @@ class PaymentCreateForm(forms.Form):
     model_name = forms.CharField(max_length=255, widget=forms.HiddenInput())
     payable = forms.CharField(max_length=255, widget=forms.HiddenInput())
     next = forms.CharField(max_length=255, widget=forms.HiddenInput())
+    payable_hash = forms.CharField(max_length=255, widget=forms.HiddenInput())
 
     class Meta:
         fields = "__all__"
