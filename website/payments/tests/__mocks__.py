@@ -38,6 +38,39 @@ class MockModel:
         pass
 
 
+class MockModelNoObjects:
+    class Meta:
+        app_label = "mock_app_no_objects"
+        model_name = "mock_model"
+
+    payment = None
+    pk = 1
+    _meta = Meta()
+
+    def __init__(
+        self,
+        payer,
+        amount=5,
+        topic="mock topic",
+        notes="mock notes",
+        payment=None,
+        can_manage=True,
+    ) -> None:
+        self.payer = payer
+        self.amount = amount
+        self.topic = topic
+        self.notes = notes
+        self.payment = payment
+        self.can_manage = can_manage
+
+        # Because we have to do as if this is a model sometimes
+        self.verbose_name = "MockPayable"
+        self.verbose_name_plural = self.verbose_name + "s"
+
+    def save(self):
+        pass
+
+
 class MockPayable(Payable):
     save = MagicMock()
     verbose_name = "MockPayable"

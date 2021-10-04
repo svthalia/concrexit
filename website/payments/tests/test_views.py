@@ -13,7 +13,7 @@ from members.models import Member
 from payments import payables
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment, PaymentUser
-from payments.tests.__mocks__ import MockModel
+from payments.tests.__mocks__ import MockModel, MockModelNoObjects
 from payments.tests.test_services import MockPayable
 
 
@@ -466,7 +466,7 @@ class PaymentProcessViewTest(TestCase):
         self.model = MockModel(payer=self.user)
 
         self.original_get_model = apps.get_model
-        mock_get_model = mock_get_model = MagicMock()
+        mock_get_model = MagicMock()
 
         def side_effect(*args, **kwargs):
             if "app_label" in kwargs and kwargs["app_label"] == "mock_app":
@@ -621,15 +621,50 @@ class PaymentProcessViewTest(TestCase):
         self.assertEqual("/mock_next", response.url)
 
     def test_payment_deleted_error(self):
+        test_body = {
+            "app_label": "sales",
+            "model_name": "orders",
+            "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "next": "/mock_next",
+        }
         response = self.client.post(
-            reverse("payments:payment-process"),
-            follow=True,
-            data={**self.test_body, "_save": True, "payable": "something_else"},
+            reverse("payments:payment-process"), follow=False, data=test_body
+        )
+        self.assertEqual(404, response.status_code)
+        
+    def test_payment_accept_deleted_error(self):
+        test_body = {
+            "app_label": "sales",
+            "model_name": "orders",
+            "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "next": "/mock_next",
+            "_save": True
+        }
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=test_body
         )
         self.assertEqual(404, response.status_code)
 
-    def test_payment_does_not_exist(self):
+    def test_app_does_not_exist(self):
+        test_body = {
+            "app_label": "payments",
+            "model_name": "does_not_exist",
+            "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "next": "/mock_next",
+        }
         response = self.client.post(reverse("payments:payment-process"),
-                                    follow=True,
-                                    data={**self.test_body, "_save": False, "payable": "something_else"}, )
+                                    follow=False,
+                                    data=test_body)
+        self.assertEqual(404, response.status_code)
+
+    def test_model_does_not_exist(self):
+        test_body = {
+            "app_label": "does_not_exist",
+            "model_name": "does_not_exist",
+            "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "next": "/mock_next",
+        }
+        response = self.client.post(reverse("payments:payment-process"),
+                                    follow=False,
+                                    data=test_body)
         self.assertEqual(404, response.status_code)

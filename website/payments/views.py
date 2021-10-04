@@ -211,7 +211,10 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         model_name = request.POST["model_name"]
         payable_pk = request.POST["payable"]
 
-        payable_model = apps.get_model(app_label=app_label, model_name=model_name)
+        try:
+            payable_model = apps.get_model(app_label=app_label, model_name=model_name)
+        except LookupError:
+            raise Http404("This app model does not exist.")
 
         try:
             payable_obj = payable_model.objects.get(pk=payable_pk)
