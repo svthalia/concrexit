@@ -39,6 +39,11 @@ $red-shade: #ce2816;
     --card-background-hover: #{$light-grey};
     --card-background-hover-contrast: #{$magenta};
 
+    --list-background: #{$lightlight-grey};
+    --list-background-contrast: #{$black};
+    --list-background-hover: #{$light-grey};
+    --list-background-hover-contrast: #{$magenta};
+
     --banner-background: #{$light-grey};
 
     --form-background: #{$white};
@@ -89,6 +94,11 @@ $red-shade: #ce2816;
         --card-background-contrast: #{$white};
         --card-background-hover: #{$dark-grey};
         --card-background-hover-contrast: #{$white};
+
+        --list-background: #{$darkdark-grey};
+        --list-background-contrast: #{$white};
+        --list-background-hover: #{$dark-grey};
+        --list-background-hover-contrast: #{$white};
 
         --banner-background: #{$dark-grey};
 

@@ -104,3 +104,15 @@
         }
     }
 }
+
+.frontpage-vacancies {
+    .list-group-item {
+        .vacancy-company {
+            color: var(--primary);
+        }
+
+        .vacancy-title {
+            color: var(--list-background-contrast);
+        }
+    }
+}

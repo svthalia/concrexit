@@ -1,43 +1,40 @@
-#events-cards {
-    .card {
-        -moz-transition: 0.2s ease-in;
-        -o-transition: 0.2s ease-in;
-        -webkit-transition: 0.2s ease-in;
-        -ms-transition: 0.2s ease-in;
-        transition: 0.2s ease-in;
-
-        height: calc(100% - 15px);
-
-        &:hover {
-            background-color: var(--card-background-hover);
+.frontpage-events {
+    .list-group-item {
+        .event-date {
+            color: var(--primary);
         }
 
-        .card-date {
-            color: var(--primary);
-            margin-bottom: .7rem;
+        .event-title {
+            color: var(--list-background-contrast);
+            width: calc(100% - 90px);
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            text-overflow: ellipsis;
+            line-height: 16px;
         }
 
         .event-indication {
             float: right;
-            position: absolute;
-            right: 1.25rem;
-            top: 1.25rem;
+            width: 12px;
+            height: 12px;
+            margin-top: 6px;
 
-            .regular-event-registration-open, .regular-event-has-registration .regular-event-pending-registration {
+            .open-registration, .has-registration, .pending-registration {
                 border-radius: 20px;
                 width: 12px;
                 height: 12px;
             }
 
-            .regular-event-registration-open {
+            .open-registration {
                 background-color: $grey;
             }
 
-            .regular-event-has-registration {
+            .has-registration {
                 background-color: var(--primary);
             }
 
-            .regular-event-pending-registration {
+            .pending-registration {
                 background-color: $yellow;
             }
         }

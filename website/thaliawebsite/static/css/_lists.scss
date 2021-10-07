@@ -1,0 +1,25 @@
+.list-group {
+    border: 1px solid rgba(0,0,0,.125);
+}
+
+.list-group-item {
+    background-color: var(--list-background);
+    font-family: $header-font;
+    font-weight: $regular;
+    font-size: 16px;
+    letter-spacing: $letter-spacing;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+    border-width: 0;
+
+    &:first-child, &:last-child {
+        border-radius: 0;
+    }
+
+    &:hover {
+        background-color: var(--list-background-hover);
+    }
+}

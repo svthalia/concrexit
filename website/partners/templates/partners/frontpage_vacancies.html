@@ -1,0 +1,28 @@
+{% load i18n bleach_tags alert %}
+<div class="frontpage-vacancies">
+        <h1 class="text-center section-title">{% trans "Recent vacancies" %}</h1>
+
+    {% if not vacancies %}
+        <div class="mt-4">
+            {% trans 'There are currently no vacancies' as info_text %}
+            {% alert 'info' info_text dismissible=False %}
+        </div>
+    {% else %}
+        <div class="list-group">
+            {% for vacancy in vacancies %}
+                <a class="list-group-item py-3"
+                   href="{{ vacancy.url }}">
+                    <span class="vacancy-title mr-3">{{ vacancy.title }}</span>
+                    <span class="vacancy-company" title="{{ vacancy.company_name }}">{{ vacancy.company_name }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <p class="text-center mt-3">
+        {% url 'partners:vacancies' as vacancies_index %}
+        {% blocktrans trimmed %}
+            <a href="{{ vacancies_index }}">Check out the other vacancies</a>
+            if this does not match your interests.
+        {% endblocktrans %}
+    </p>
+</div>
