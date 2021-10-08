@@ -2,12 +2,14 @@
 from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
+from django.forms import Field
 from django.urls import reverse, path
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from events import services
 from events.services import is_organiser
+from payments.widgets import PaymentWidget
 from pizzas import admin_views
 from utils.admin import DoNextModelAdmin
 from .models import FoodOrder, FoodEvent, Product
@@ -87,7 +89,23 @@ class FoodOrderAdmin(DoNextModelAdmin):
         "product",
         "payment",
     )
-    exclude = ("payment",)
+
+    fields = (
+        "food_event",
+        "member",
+        "name",
+        "product",
+        "payment",
+    )
+
+    def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
+        """Payment field widget."""
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == "payment":
+            return Field(
+                widget=PaymentWidget(obj=obj), initial=field.initial, required=False,
+            )
+        return field
 
     def save_model(self, request, obj, form, change):
         """You can only save the orders if you have permission."""
