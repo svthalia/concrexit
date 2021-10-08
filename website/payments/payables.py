@@ -48,6 +48,9 @@ class Payable:
     def can_manage_payment(self, member):
         raise NotImplementedError
 
+    def __hash__(self):
+        return hash((self.payment_amount, self.payment_topic, self.payment_notes))
+
 
 class Payables:
     _registry = {}

@@ -439,6 +439,7 @@ class PaymentProcessViewTest(TestCase):
         "app_label": "mock_app",
         "model_name": "mock_model",
         "payable": "mock_payable_pk",
+        "payable_hash": "placeholder",
         "next": "/mock_next",
     }
 
@@ -475,6 +476,8 @@ class PaymentProcessViewTest(TestCase):
 
         apps.get_model = Mock(side_effect=side_effect)
         mock_get_model.objects.get.return_value = self.model
+
+        self.test_body["payable_hash"] = str(hash(payables.get_payable(self.model)))
 
     def tearDown(self):
         apps.get_model = self.original_get_model
@@ -616,6 +619,22 @@ class PaymentProcessViewTest(TestCase):
         )
 
         messages_error.assert_called_with(ANY, "Test error")
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual("/mock_next", response.url)
+
+    @mock.patch("django.contrib.messages.error")
+    def test_payment_changed_payable(self, messages_error):
+        body = self.test_body
+        body["payable_hash"] = "987654321"
+        response = self.client.post(
+            reverse("payments:payment-process"),
+            follow=False,
+            data={**body, "_save": True},
+        )
+        messages_error.assert_called_with(
+            ANY, "This object has been changed in the mean time. You have not paid."
+        )
 
         self.assertEqual(302, response.status_code)
         self.assertEqual("/mock_next", response.url)
