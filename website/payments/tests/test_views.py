@@ -628,6 +628,7 @@ class PaymentProcessViewTest(TestCase):
             "app_label": "sales",
             "model_name": "orders",
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "payable_hash": "non_existent",
             "next": "/mock_next",
         }
         response = self.client.get(
@@ -641,6 +642,7 @@ class PaymentProcessViewTest(TestCase):
             "model_name": "order",
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
             "next": "/mock_next",
+            "payable_hash": "non_existent",
             "_save": True,
         }
         response = self.client.post(
@@ -654,6 +656,7 @@ class PaymentProcessViewTest(TestCase):
             "model_name": "does_not_exist",
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
             "next": "/mock_next",
+            "payable_hash": "non_existent",
         }
         response = self.client.post(
             reverse("payments:payment-process"), follow=False, data=test_body
@@ -666,6 +669,7 @@ class PaymentProcessViewTest(TestCase):
             "model_name": "does_not_exist",
             "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
             "next": "/mock_next",
+            "payable_hash": "non_existent",
         }
         response = self.client.post(
             reverse("payments:payment-process"), follow=False, data=test_body
