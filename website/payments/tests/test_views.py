@@ -691,4 +691,3 @@ class PaymentProcessViewTest(TestCase):
 
         self.assertEqual(302, response.status_code)
         self.assertEqual("/mock_next", response.url)
-
