@@ -13,7 +13,7 @@ from members.models import Member
 from payments import payables
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment, PaymentUser
-from payments.tests.__mocks__ import MockModel, MockModelNoObjects
+from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 
 
