@@ -241,7 +241,7 @@ toml = ["toml"]
 
 [[package]]
 name = "django"
-version = "3.2.7"
+version = "3.2.8"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
@@ -476,7 +476,7 @@ doc = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "faker"
-version = "8.14.1"
+version = "9.2.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
@@ -536,7 +536,7 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2)"]
 
 [[package]]
 name = "google-api-python-client"
-version = "2.23.0"
+version = "2.24.0"
 description = "Google API Client Library for Python"
 category = "main"
 optional = false
@@ -759,7 +759,7 @@ i18n = ["Babel (>=0.8)"]
 
 [[package]]
 name = "jsmin"
-version = "2.2.2"
+version = "3.0.0"
 description = "JavaScript minifier."
 category = "main"
 optional = false
@@ -1321,7 +1321,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "uwsgi"
-version = "2.0.19.1"
+version = "2.0.20"
 description = "The uWSGI server"
 category = "main"
 optional = false
@@ -1361,7 +1361,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "ef9069b9e0dbf30495d32b4b5b61ac40b6c5be596f3f9cb518735cc19d1f5381"
+content-hash = "041e3726c83ee82fd8d6ab558feef9c8da23bcdbb1c9a661fa03efe3af0bc314"
 
 [metadata.files]
 alabaster = [
@@ -1544,8 +1544,8 @@ coverage = [
     {file = "coverage-5.5.tar.gz", hash = "sha256:ebe78fe9a0e874362175b02371bdfbee64d8edc42a044253ddf4ee7d3c15212c"},
 ]
 django = [
-    {file = "Django-3.2.7-py3-none-any.whl", hash = "sha256:e93c93565005b37ddebf2396b4dc4b6913c1838baa82efdfb79acedd5816c240"},
-    {file = "Django-3.2.7.tar.gz", hash = "sha256:95b318319d6997bac3595517101ad9cc83fe5672ac498ba48d1a410f47afecd2"},
+    {file = "Django-3.2.8-py3-none-any.whl", hash = "sha256:42573831292029639b798fe4d3812996bfe4ff3275f04566da90764daec011a5"},
+    {file = "Django-3.2.8.tar.gz", hash = "sha256:f6d2c4069c9b9bfac03bedff927ea1f9e0d29e34525cec8a68fd28eb2a8df7af"},
 ]
 django-admin-autocomplete-filter = [
     {file = "django-admin-autocomplete-filter-0.7.tar.gz", hash = "sha256:20246758625f0aabab26c54e0972c0db5fd4742ff9eb89621cb460d4f2021c82"},
@@ -1619,8 +1619,8 @@ factory-boy = [
     {file = "factory_boy-3.2.0.tar.gz", hash = "sha256:401cc00ff339a022f84d64a4339503d1689e8263a4478d876e58a3295b155c5b"},
 ]
 faker = [
-    {file = "Faker-8.14.1-py3-none-any.whl", hash = "sha256:30e10d959191b30fd89f7a180940b930bafcaf371c41cfb740d9cefacfe3555f"},
-    {file = "Faker-8.14.1.tar.gz", hash = "sha256:17225e20fed6b958108ad278974b5eb63a797496e43d5c337366fa128473d94f"},
+    {file = "Faker-9.2.0-py3-none-any.whl", hash = "sha256:526da15fd36801427b8af91af854bbe7d6b979d696d3ecef91bf4d81e9b004f2"},
+    {file = "Faker-9.2.0.tar.gz", hash = "sha256:ae9bf986d75caa9c9011eed400bb2ed6e94f2208e987ee2aa013f8a0ae495772"},
 ]
 firebase-admin = [
     {file = "firebase_admin-5.0.3-py3-none-any.whl", hash = "sha256:2456278255512822f7e8b2f1c86153d56e780eae4a9caa1b12e43710d1326e7d"},
@@ -1635,8 +1635,8 @@ google-api-core = [
     {file = "google_api_core-1.22.4-py2.py3-none-any.whl", hash = "sha256:15e00ceb7e6dc44159e2a41a222830744e9ebcb3a553c580b61cb5a66572f2f0"},
 ]
 google-api-python-client = [
-    {file = "google-api-python-client-2.23.0.tar.gz", hash = "sha256:f117a595717fc384446f6235019e6a83fc9df821bd9d05dba7ff14aa96c70f52"},
-    {file = "google_api_python_client-2.23.0-py2.py3-none-any.whl", hash = "sha256:a7b364eff63ca75d827cfb241a0f8567157976e879046c1ff20ddf735bad618e"},
+    {file = "google-api-python-client-2.24.0.tar.gz", hash = "sha256:1c6267c7f018d86afc62dd8ec844a3e7189022a35ee239ed704cbda010888998"},
+    {file = "google_api_python_client-2.24.0-py2.py3-none-any.whl", hash = "sha256:75edc13a5c6dd9ff6f47721162a845edc343b4987ee059842e9a7905ad62e917"},
 ]
 google-auth = [
     {file = "google-auth-1.22.1.tar.gz", hash = "sha256:9c0f71789438d703f77b94aad4ea545afaec9a65f10e6cc1bc8b89ce242244bb"},
@@ -1763,7 +1763,7 @@ jinja2 = [
     {file = "Jinja2-2.11.2.tar.gz", hash = "sha256:89aab215427ef59c34ad58735269eb58b1a5808103067f7bb9d5836c651b3bb0"},
 ]
 jsmin = [
-    {file = "jsmin-2.2.2.tar.gz", hash = "sha256:b6df99b2cd1c75d9d342e4335b535789b8da9107ec748212706ef7bbe5c2553b"},
+    {file = "jsmin-3.0.0.tar.gz", hash = "sha256:88fc1bd6033a47c5911dbcada7d279c7a8b7ad0841909590f6a742c20c4d2e08"},
 ]
 lazy-object-proxy = [
     {file = "lazy-object-proxy-1.4.3.tar.gz", hash = "sha256:f3900e8a5de27447acbf900b4750b0ddfd7ec1ea7fbaf11dfa911141bc522af0"},
@@ -2256,7 +2256,7 @@ urllib3 = [
     {file = "urllib3-1.25.10.tar.gz", hash = "sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a"},
 ]
 uwsgi = [
-    {file = "uWSGI-2.0.19.1.tar.gz", hash = "sha256:faa85e053c0b1be4d5585b0858d3a511d2cd10201802e8676060fd0a109e5869"},
+    {file = "uwsgi-2.0.20.tar.gz", hash = "sha256:88ab9867d8973d8ae84719cf233b7dafc54326fcaec89683c3f9f77c002cdff9"},
 ]
 webencodings = [
     {file = "webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78"},

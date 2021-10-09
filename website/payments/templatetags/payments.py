@@ -20,6 +20,7 @@ def payment_button(model: Model, redirect_to: str):
         if payable.payment_payer
         else None,
         "payable": payable,
+        "payable_hash": hash(payable),
         "app_label": model._meta.app_label,
         "model_name": model._meta.model_name,
         "redirect_to": redirect_to,

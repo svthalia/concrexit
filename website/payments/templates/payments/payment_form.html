@@ -9,7 +9,7 @@
 {% block body %}
     <section class="page-section" id="payments-account-overview">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "confirm payment"|capfirst %}</h1>
+            <h1 class="text-center section-title">{% trans "confirm payment of"|capfirst %} € {{ payable.payment_amount|floatformat:2 }}</h1>
 
             {% if messages %}
                 {% for message in messages %}
@@ -45,6 +45,7 @@
                 {% bootstrap_field form.app_label %}
                 {% bootstrap_field form.payable %}
                 {% bootstrap_field form.next %}
+                {% bootstrap_field form.payable_hash %}
 
                 <div class="form-group col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
                     <input type="submit" name="_save" value="{% trans "confirm"|capfirst %}"
