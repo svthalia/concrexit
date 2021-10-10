@@ -2,7 +2,7 @@ name: "Build with Nix and deploy if master"
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
 jobs:
   build:
