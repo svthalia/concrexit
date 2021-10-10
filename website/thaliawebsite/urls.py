@@ -34,7 +34,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
-from oauth2_provider.urls import base_urlpatterns
+from oauth2_provider.urls import base_urlpatterns, oidc_urlpatterns
 from oauth2_provider.views import AuthorizedTokensListView, AuthorizedTokenDeleteView
 
 from activemembers.sitemaps import sitemap as activemembers_sitemap
@@ -77,6 +77,7 @@ urlpatterns = [
                     include(
                         (
                             base_urlpatterns
+                            + oidc_urlpatterns
                             + [
                                 path(
                                     "authorised-apps/",
