@@ -91,7 +91,7 @@ django.jQuery(function() {
 
     $('#searchbar').on('input', function() {
         var input = this.value.toLowerCase();
-        $('tbody tr').each(function(i, e) {
+        $('#result_list tbody tr').each(function(i, e) {
             var tr = $(this);
             var show = false;
             $(this).find('td').each(function(j, t) {

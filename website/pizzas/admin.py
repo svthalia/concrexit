@@ -1,5 +1,4 @@
 """Registers admin interfaces for the pizzas module."""
-from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.forms import Field
@@ -31,7 +30,7 @@ class FoodEventAdmin(admin.ModelAdmin):
     list_display = ("title", "start", "end", "notification_enabled", "orders")
     date_hierarchy = "start"
     exclude = ("end_reminder",)
-    search_fields = [f"event__title_{l[0]}" for l in settings.LANGUAGES]
+    search_fields = ("event__title",)
     autocomplete_fields = ("event",)
 
     def notification_enabled(self, obj):
