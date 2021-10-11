@@ -19,9 +19,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         return reverse("events:event", kwargs={"pk": instance.id})
 
     def _class_names(self, instance):
-        if self.context["member"] and services.is_user_registered(
-            self.context["member"], instance
-        ):
+        if self.context["member"] and instance.user_reg:
             if services.user_registration_pending(self.context["member"], instance):
                 return ["regular-event-pending-registration"]
             else:
@@ -34,9 +32,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
 
     def _registration_info(self, instance: Event):
         # If registered in some way
-        if self.context["member"] and services.is_user_registered(
-            self.context["member"], instance
-        ):
+        if self.context["member"] and instance.user_reg:
             queue_pos = services.user_registration_pending(
                 self.context["member"], instance
             )
