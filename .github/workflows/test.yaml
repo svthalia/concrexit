@@ -2,8 +2,10 @@
 
 name: Linting and Testing
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   codestyle:
