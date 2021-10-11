@@ -1,0 +1,38 @@
+{% load i18n bleach_tags alert %}
+<div class="frontpage-events">
+    <h1 class="text-center section-title">{% trans "Upcoming events" %}</h1>
+    {% if not events %}
+        <div class="mt-4">
+            {% trans 'There are currently no events planned' as info_text %}
+            {% alert 'info' info_text dismissible=False %}
+        </div>
+    {% else %}
+        <div class="list-group">
+            {% for next_event in events %}
+                <a class="list-group-item py-3"
+                   href="{{ next_event.event.get_absolute_url }}">
+                    <span class="mr-3 event-date">{{ next_event.event.start|date:"d M" }}</span>
+                    <span class="event-title" title="{{ next_event.event.title }}">{{ next_event.event.title }}</span>
+
+                    {% if next_event.current_user_registration is not None %}
+                        {% if next_event.current_user_registration %}
+                            <div class="event-indication"
+                                 data-toggle="tooltip"
+                                 data-placement="top"
+                                 title="{{ next_event.current_user_registration.text }}">
+                                <div class="{{ next_event.current_user_registration.class }}"></div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <p class="text-center mt-3">
+        {% url 'events:index' as events_index %}
+        {% blocktrans trimmed %}
+            Searching for another event?
+            <a href="{{ events_index }}">Take a look at the entire agenda.</a>
+        {% endblocktrans %}
+    </p>
+</div>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n event_cards %}
+{% load i18n frontpage_events %}
 
 {% block title %}{% trans "Alumni" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Alumni" %} — {{ block.super }}{% endblock %}
@@ -21,5 +21,9 @@
         </div>
     </section>
 
-    {% render_event_cards events %}
+    <section class="page-section">
+        <div class="container">
+            {% render_frontpage_events events %}
+        </div>
+    </section>
 {% endblock body %}
