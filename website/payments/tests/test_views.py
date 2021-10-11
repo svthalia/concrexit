@@ -467,7 +467,7 @@ class PaymentProcessViewTest(TestCase):
         self.model = MockModel(payer=self.user)
 
         self.original_get_model = apps.get_model
-        mock_get_model = mock_get_model = MagicMock()
+        mock_get_model = MagicMock()
 
         def side_effect(*args, **kwargs):
             if "app_label" in kwargs and kwargs["app_label"] == "mock_app":
@@ -622,6 +622,59 @@ class PaymentProcessViewTest(TestCase):
 
         self.assertEqual(302, response.status_code)
         self.assertEqual("/mock_next", response.url)
+
+    def test_payment_deleted_error(self):
+        test_body = {
+            "app_label": "sales",
+            "model_name": "orders",
+            "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "payable_hash": "non_existent",
+            "next": "/mock_next",
+        }
+        response = self.client.get(
+            reverse("payments:payment-process"), follow=False, data=test_body
+        )
+        self.assertEqual(404, response.status_code)
+
+    def test_payment_accept_deleted_error(self):
+        test_body = {
+            "app_label": "sales",
+            "model_name": "order",
+            "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "next": "/mock_next",
+            "payable_hash": "non_existent",
+            "_save": True,
+        }
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=test_body
+        )
+        self.assertEqual(404, response.status_code)
+
+    def test_app_does_not_exist(self):
+        test_body = {
+            "app_label": "payments",
+            "model_name": "does_not_exist",
+            "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "next": "/mock_next",
+            "payable_hash": "non_existent",
+        }
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=test_body
+        )
+        self.assertEqual(404, response.status_code)
+
+    def test_model_does_not_exist(self):
+        test_body = {
+            "app_label": "does_not_exist",
+            "model_name": "does_not_exist",
+            "payable": "63be888b-2852-4811-8b72-82cd86ea0b9f",
+            "next": "/mock_next",
+            "payable_hash": "non_existent",
+        }
+        response = self.client.post(
+            reverse("payments:payment-process"), follow=False, data=test_body
+        )
+        self.assertEqual(404, response.status_code)
 
     @mock.patch("django.contrib.messages.error")
     def test_payment_changed_payable(self, messages_error):

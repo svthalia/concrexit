@@ -12,7 +12,7 @@ from django.core.exceptions import (
     SuspiciousOperation,
 )
 from django.db.models import QuerySet, Sum
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -184,6 +184,8 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        if self.payable is None:
+            raise Http404("Payable does not exist")
         context = super().get_context_data(**kwargs)
         context.update({"payable": self.payable})
         context.update({"payable_hash": hash(self.payable)})
@@ -237,8 +239,17 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         payable_pk = request.POST["payable"]
         payable_hash = request.POST["payable_hash"]
 
-        payable_model = apps.get_model(app_label=app_label, model_name=model_name)
-        self.payable = payables.get_payable(payable_model.objects.get(pk=payable_pk))
+        try:
+            payable_model = apps.get_model(app_label=app_label, model_name=model_name)
+        except LookupError as error:
+            raise Http404("This app model does not exist.") from error
+
+        try:
+            payable_obj = payable_model.objects.get(pk=payable_pk)
+        except payable_model.DoesNotExist as error:
+            raise Http404("This payable does not exist.") from error
+
+        self.payable = payables.get_payable(payable_obj)
 
         error = self._check_payment_allowed(request, payable_hash)
         if error:

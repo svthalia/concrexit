@@ -161,7 +161,7 @@ class Order(models.Model):
     def payment_url(self):
         return (
             settings.BASE_URL + reverse("sales:order-pay", kwargs={"pk": self.pk})
-            if not self.payment
+            if not self.payment and self.pk
             else None
         )
 
