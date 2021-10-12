@@ -239,17 +239,27 @@
                             </td>
                         </tr>
 
-                        {% if event.food_event %}
-                            <tr>
-                                <th>
-                                    Pizza
-                                </th>
-                                <td>
-                                    <a href="{% url "pizzas:index" %}" class="btn btn-primary">
-                                        {% trans "Order" context "pizzas" %}
-                                    </a>
-                                </td>
-                            </tr>
+                        {% if event.food_event %} 
+                            {% if event.food_event == event.food_event.current or event.food_event.just_ended or event.food_event.in_the_future %}
+                                <tr>
+                                    <th>
+                                        Pizza
+                                    </th>
+                                    <td>
+                                    {% if event.food_event == event.food_event.current or event.food_event.just_ended %}
+                                        <a href="{% url "pizzas:index" %}" class="btn btn-primary">
+                                            {% trans "Order" context "pizzas" %}
+                                        </a>
+                                    {% elif event.food_event.in_the_future %}
+                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="auto" title="{% trans 'Ordering pizza for this event will be possible starting '%} {{event.food_event.start}}">
+                                            <a class="btn btn-primary disabled">
+                                                {% trans "Order" context "pizzas" %}
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
                         {% endif %}
                         {% if event.album_set.all %}
                         <tr>
