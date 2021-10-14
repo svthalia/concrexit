@@ -313,7 +313,7 @@
             <div class="container">
                 <h1 class="text-center section-title">{% trans "Registrations" %}</h1>
                 <div id="results" class="row mt-4">
-                    {% for registration in event.participants %}
+                    {% for registration in participants %}
                         <div class="col-4 col-md-3 my-3">
                             {% if registration.is_external %}
                                 {% static 'members/images/default-avatar.jpg' as image %}
