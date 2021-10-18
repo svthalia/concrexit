@@ -219,8 +219,6 @@ class OrderItem(models.Model):
     ):
         if self.order.shift.locked:
             raise ValueError("The shift this order belongs to is locked.")
-        if self.order.payment:
-            raise ValueError("This order has already been paid for.")
 
         if not self.total:
             self.total = self.product.price * self.amount

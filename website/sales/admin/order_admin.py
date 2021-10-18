@@ -206,6 +206,7 @@ class OrderAdmin(admin.ModelAdmin):
         "num_items",
         "subtotal",
         "total_amount",
+        "payment",
         "age_restricted",
         "payment_url",
     )

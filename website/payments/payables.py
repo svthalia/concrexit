@@ -125,10 +125,10 @@ def prevent_saving_related(foreign_key_field):
         nonlocal foreign_key_field
         payable = payables.get_payable(getattr(instance, foreign_key_field))
         if not payable.immutable_after_payment:
-            # Do nothing is the parent is not marked as immutable
+            # Do nothing if the parent is not marked as immutable
             return
         if not payable.payment:
-            # Do nothing is the parent is not actually paid
+            # Do nothing if the parent is not actually paid
             return
         try:
             old_instance = sender.objects.get(pk=instance.pk)
