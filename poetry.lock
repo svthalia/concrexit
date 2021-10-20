@@ -536,7 +536,7 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2)"]
 
 [[package]]
 name = "google-api-python-client"
-version = "2.26.1"
+version = "2.27.0"
 description = "Google API Client Library for Python"
 category = "main"
 optional = false
@@ -1361,7 +1361,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "ca85b3076aa4b29a78c365eaeb9a3c989913bebd9cb0912691454893f15fd050"
+content-hash = "32ab6d8b9910b99d796ca13514aa2a1942bba55830c279faa52a2e0621ea1aad"
 
 [metadata.files]
 alabaster = [
@@ -1635,8 +1635,8 @@ google-api-core = [
     {file = "google_api_core-1.22.4-py2.py3-none-any.whl", hash = "sha256:15e00ceb7e6dc44159e2a41a222830744e9ebcb3a553c580b61cb5a66572f2f0"},
 ]
 google-api-python-client = [
-    {file = "google-api-python-client-2.26.1.tar.gz", hash = "sha256:66389e23fdd23dc7fabf3235afc4bd9bf4d1332e960aa7c058f17ea8848dae35"},
-    {file = "google_api_python_client-2.26.1-py2.py3-none-any.whl", hash = "sha256:faac5b276f90de1258d553b4dcf1cad92827b047ea31819927514b60e62616da"},
+    {file = "google-api-python-client-2.27.0.tar.gz", hash = "sha256:659e9955f0f1e02fcce5dec85622eb5af1807572ef0f09c49d68d8426da670e7"},
+    {file = "google_api_python_client-2.27.0-py2.py3-none-any.whl", hash = "sha256:0b1bd4fe6cbe3c22e4ed264cadf257bc981ebc745e959bdf8fd9ae7c3fffb984"},
 ]
 google-auth = [
     {file = "google-auth-1.22.1.tar.gz", hash = "sha256:9c0f71789438d703f77b94aad4ea545afaec9a65f10e6cc1bc8b89ce242244bb"},
