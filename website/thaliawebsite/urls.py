@@ -34,8 +34,14 @@ from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
-from oauth2_provider.urls import base_urlpatterns, oidc_urlpatterns
-from oauth2_provider.views import AuthorizedTokensListView, AuthorizedTokenDeleteView
+from oauth2_provider.urls import base_urlpatterns
+from oauth2_provider.views import (
+    AuthorizedTokensListView,
+    AuthorizedTokenDeleteView,
+    ConnectDiscoveryInfoView,
+    JwksInfoView,
+    UserInfoView,
+)
 
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
@@ -69,15 +75,14 @@ urlpatterns = [
     path("", IndexView.as_view(), name="index"),
     # Default helpers
     path(
-        "user/",
+        "",
         include(
-            [
-                path(
-                    "oauth/",
-                    include(
-                        (
+            (
+                [
+                    path(
+                        "user/oauth/",
+                        include(
                             base_urlpatterns
-                            + oidc_urlpatterns
                             + [
                                 path(
                                     "authorised-apps/",
@@ -89,12 +94,30 @@ urlpatterns = [
                                     AuthorizedTokenDeleteView.as_view(),
                                     name="authorized-token-delete",
                                 ),
-                            ],
-                            "oauth2_provider",
+                                path(
+                                    "keys/", JwksInfoView.as_view(), name="jwks-info",
+                                ),
+                                path(
+                                    "info/", UserInfoView.as_view(), name="user-info",
+                                ),
+                            ]
                         ),
-                        namespace="oauth2_provider",
                     ),
-                ),
+                    path(
+                        ".well-known/openid-configuration/",
+                        ConnectDiscoveryInfoView.as_view(),
+                        name="oidc-connect-discovery-info",
+                    ),
+                ],
+                "oauth2_provider",
+            ),
+            namespace="oauth2_provider",
+        ),
+    ),
+    path(
+        "user/",
+        include(
+            [
                 path(
                     "login/",
                     LoginView.as_view(
