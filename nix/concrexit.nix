@@ -16,7 +16,6 @@ let
       _self: _super: {
         pillow = pkgs.python3.pkgs.pillow;
         python-magic = pkgs.python3.pkgs.python_magic;
-        cryptography = pkgs.python3.pkgs.cryptography;
         # We don't install uswgi from pypi but instead use the nixpkgs version
         uwsgi = { };
       }
