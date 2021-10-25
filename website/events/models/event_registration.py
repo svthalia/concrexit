@@ -63,7 +63,8 @@ class EventRegistration(models.Model):
     def queue_position(self):
         if self.event.max_participants is not None:
             try:
-                return list(self.event.queue).index(self) + 1
+                queue_ids = [r.member_id for r in self.event.queue]
+                return list(queue_ids).index(self.member_id) + 1
             except ValueError:
                 pass
         return None
