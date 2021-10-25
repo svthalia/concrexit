@@ -19,7 +19,7 @@ let
         networking.hostName = "staging";
         networking.hosts = pkgs.lib.mkForce { };
 
-        services.mingetty.helpLine = ''
+        services.getty.helpLine = ''
           You can log in to the root user with an empty password. To exit this console, type Ctrl+A then x.
         '';
 
