@@ -24,6 +24,7 @@ class MailingListAdmin(admin.ModelAdmin):
     filter_horizontal = ("members",)
     inlines = (VerbatimAddressInline, ListAliasInline)
     list_display = ("name", "alias_names", "moderated", "description")
+    readonly_fields = ("active_gsuite_name",)
     search_fields = ["name", "aliases__alias"]
 
     def alias_names(self, obj):
