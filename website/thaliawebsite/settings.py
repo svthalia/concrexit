@@ -515,12 +515,15 @@ CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
 
 # OAuth configuration
 OAUTH2_PROVIDER = {
+    "OIDC_ENABLED": True,
+    "OIDC_RSA_PRIVATE_KEY": from_env("OIDC_RSA_PRIVATE_KEY", testing=None),
     "ALLOWED_REDIRECT_URI_SCHEMES": setting(
         production=["https", APP_OAUTH_SCHEME],
         staging=["http", "https", APP_OAUTH_SCHEME],
         development=["http", "https", APP_OAUTH_SCHEME],
     ),
     "SCOPES": {
+        "openid": "OpenID Connect",
         "read": "Authenticated read access to the website",
         "write": "Authenticated write access to the website",
         "activemembers:read": "Read access to committee, society and board groups",
