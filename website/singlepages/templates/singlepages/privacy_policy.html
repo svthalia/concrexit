@@ -9,7 +9,7 @@
         <div class="container">
             <h1 class="section-title text-center">{% trans "privacy policy"|capfirst %}</h1>
 
-            <h3>{% trans "Version" %} 2.3, 29-01-2020</h3>
+            <h3>{% trans "Version" %} 2.4, 25-10-2021</h3>
 
             <p>
                 {% blocktrans trimmed %}
@@ -127,12 +127,23 @@
                     Certain actions on the website may cause data to be collected (such as ordering a pizza on the
                     website or registering to attend an event). Processing of these data happens on the basis of
                     it being a legitimate interest of Thalia.
+                {% endblocktrans %}<br/>
+
+                {% blocktrans trimmed %}
                     We additionally may collect data (logs) on anything happening on the site and app to ensure
                     the correct functioning of the services provided, the username of a authenticated user is sent along
                     with the logs. See the <a href="#sentry">section below on Functional Software, Inc.</a> for
                     information on where this data is sent. Thalia tries to only collect data when errors occur.
                     The logs are used to fix bugs in the website and app. Processing of these data
                     happens on the basis of it being a legitimate interest of Thalia.
+                {% endblocktrans %}
+            </p>
+
+            <p>
+                <strong>{% trans "Sales" %}</strong><br/>
+                {% blocktrans trimmed %}
+                    When making a purchase at (an event of) Thalia, this can be recorded. This happens on the basis of
+                    it being a legal requirement of Thalia to keep their financial administration up-to-date.
                 {% endblocktrans %}
             </p>
 
@@ -154,10 +165,14 @@
             <p>
                 <strong>{% trans "Photos" %}</strong><br/>
                 {% blocktrans trimmed %}
-                    Thalia uses photo’s which are made during her events for the promotion of events and the
-                    association.
-                    These photo’s can show persons. Processing of these data happens on the basis of it being a
-                    legitimate interest of Thalia.
+                    Thalia uses photo’s which are made during her events for the promotion of events and the association.
+                    These photo's can be made available on the website of Thalia for members or they can be posted on social media accounts of Thalia.
+                    If such image is posted on a social media platform other than the website of Thalia, permission will be asked to all recognisable persons in the picture if this is feasible.
+                    It is possible to ask for the removal of a certain photo from social media when someone on that photo desires so, by sending a mail to info@thalia.nu.
+                    Processing of this data happens on the basis of it being a legitimate interest of Thalia.
+
+                    When someone wishes not to be photographed, they can indicate this to the photographer.
+                    A request of deletion of a certain photo can also be made after it has been taken, by sending a mail to info@thalia.nu.
                 {% endblocktrans %}
             </p>
 
@@ -251,7 +266,7 @@
 
             <ul>
                 <li>
-                    <strong>{% trans "Radboud University Nijmegen" %}</strong><br/>
+                    <strong id="radboud-university">{% trans "Radboud University Nijmegen" %}</strong><br/>
                     {% blocktrans trimmed %}
                         Thalia shares names and student numbers with the university (and organizations working on
                         behalf of the Radboud University) to request grants and subsidies and
@@ -259,7 +274,7 @@
                     {% endblocktrans %}
                 </li>
                 <li>
-                    <strong>{% trans "Banks and other financial parties" %}</strong><br/>
+                    <strong id="banks">{% trans "Banks and other financial parties" %}</strong><br/>
                     {% blocktrans trimmed %}
                         For making payments, data is shared with banks and other financial parties.
                         Data will only be shared as far as they are necessary to make or receive payments.
@@ -267,13 +282,25 @@
                 </li>
 
                 <li>
-                    <strong>{% trans "Google" %}</strong><br/>
+                    <strong id="amazon">{% trans "Amazon Web Services EMEA SARL ('AWS Europe')" %}</strong><br/>
                     {% blocktrans trimmed %}
-                        When a member joins a committee or society, a GSuite account will be created for that user
+                        Thalia's servers are hosted on Amazon Web Services. Therefore, all (personal) data Thalia keeps,
+                        is processed by Amazon.
+                    {% endblocktrans %}
+                </li>
+                <li>
+                    <strong id="google">{% trans "Google Ireland Limited" %}</strong><br/>
+                    {% blocktrans trimmed %}
+                        When a member joins a committee or society, a Google Workspace account will be created for that user
                         to allow them to share files with their committee for example. The website will automatically create
-                        GSuite accounts for these members, and shares the name and email address of the member with
+                        Google Workspace accounts for these members, and shares the name and email address of the member with
                         Google to facilitate this. If a member stops being a member of committees and societies,
-                        their GSuite account will automatically be deleted after one month.
+                        their Google Workspace account will automatically be deleted after one month.
+                    {% endblocktrans %}<br />
+                    {% blocktrans trimmed %}
+                        Additionally, Thalia can post videos, captured during events, on
+                        <a href="https://www.youtube.com/channel/UCEjYSaa_iSEUDCzKPESdPFg" target="_blank">its YouTube channel</a>
+                        for promotional purposes.
                     {% endblocktrans %}
                 </li>
 
@@ -285,6 +312,32 @@
                         or crashes in the app some data is sent to the Sentry platform. For authenticated users,
                         the username is sent along with an error log. We always try to filter out any personal
                         information from the error logs.
+                    {% endblocktrans %}
+                </li>
+
+                <li>
+                    <strong id="facebook">{% trans "Facebook, Inc." %}</strong>
+                    {% blocktrans trimmed %}
+                        For promotional purposes, Thalia can share photos or videos of members, that are taken during activities,
+                        on the <a href="https://www.instagram.com/thalia_nijmegen/" target="_blank">Instagram account</a> or
+                        <a href="https://www.facebook.com/svThalia/" target="_blank">Facebook page</a> of Thalia.
+                    {% endblocktrans %}
+                </li>
+
+                <li>
+                    <strong id="snap">{% trans "Snap, Inc." %}</strong>
+                    {% blocktrans trimmed %}
+                        For promotional purposes, Thalia can share photos or videos of members, that are taken during activities,
+                        on the <a href="https://www.snapchat.com/add/svthalia" target="_blank">Snapchat account</a> of Thalia.
+                        Read also the provisions about
+                    {% endblocktrans %}
+                </li>
+
+                <li>
+                    <strong id="discord">{% trans "Discord, Inc." %}</strong>
+                    {% blocktrans trimmed %}
+                        Users that choose to join the Thalia Discord and connect their Discord account with their Thalia account,
+                        will share their Thalia profile with Discord.
                     {% endblocktrans %}
                 </li>
             </ul>
