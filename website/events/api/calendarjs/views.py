@@ -27,13 +27,20 @@ class CalendarJSEventListView(ListAPIView):
     def get_queryset(self):
         start, end = extract_date_range(self.request)
         if self.request.member:
-            objects = Event.objects.filter(end__gte=start, start__lte=end, published=True)\
-                .annotate(user_reg=Subquery(EventRegistration.objects
-                                            .filter(event=OuterRef('id'), member=self.request.member)
-                                            .values('member')))
-                # .annotate(user_reg=Count('eventregistration', filter=Q(member=self.request.member)))
+            objects = Event.objects.filter(
+                end__gte=start, start__lte=end, published=True
+            ).annotate(
+                user_reg=Subquery(
+                    EventRegistration.objects.filter(
+                        event=OuterRef("id"), member=self.request.member
+                    ).values("member")
+                )
+            )
+            # .annotate(user_reg=Count('eventregistration', filter=Q(member=self.request.member)))
         else:
-            objects = Event.objects.filter(end__gte=start, start__lte=end, published=True)
+            objects = Event.objects.filter(
+                end__gte=start, start__lte=end, published=True
+            )
         return objects
 
 
