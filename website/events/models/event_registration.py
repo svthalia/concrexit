@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.functional import cached_property
 
 from .event import Event
 
@@ -59,7 +60,7 @@ class EventRegistration(models.Model):
     def is_registered(self):
         return self.date_cancelled is None
 
-    @property
+    @cached_property
     def queue_position(self):
         if self.event.max_participants is not None:
             try:
