@@ -48,7 +48,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         elif instance.optional_registration_allowed:
             return _("Registering for this event is optional")
         # No places left
-        elif instance.reached_participants_limit():
+        elif instance.max_participants is not None and instance.max_participants <= instance.number_regs:
             return _("You can put yourself on the waiting list for this event")
         # Registration still possible
         elif instance.registration_allowed:
