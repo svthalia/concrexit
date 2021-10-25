@@ -29,7 +29,9 @@ class CalendarJSEventListView(ListAPIView):
         objects = Event.objects.filter(
             end__gte=start, start__lte=end, published=True
         ).annotate(
-            number_regs=Count('eventregistration', filter=Q(eventregistration__date_cancelled=None))
+            number_regs=Count(
+                "eventregistration", filter=Q(eventregistration__date_cancelled=None)
+            )
         )
         if self.request.member:
             objects = objects.annotate(
