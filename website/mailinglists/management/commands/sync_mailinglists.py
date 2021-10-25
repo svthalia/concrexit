@@ -14,4 +14,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Sync all mailing lists."""
         sync_service = GSuiteSyncService()
-        sync_service.sync_mailinglists()
+        sync_service.sync_mailing_lists()
