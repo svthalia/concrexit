@@ -357,7 +357,7 @@ Django = ">=2.2"
 
 [[package]]
 name = "django-debug-toolbar"
-version = "3.2.1"
+version = "3.2.2"
 description = "A configurable set of panels that display various debug information about the current request/response."
 category = "main"
 optional = false
@@ -1414,7 +1414,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "fba887838c40fceaeef51c9e624687de082316f04c6c79310f48782e05ea66c3"
+content-hash = "d9b3e80113830fc36cc2928723b0acb59de61e6a0b5556eba2227be73daad2f8"
 
 [metadata.files]
 alabaster = [
@@ -1660,8 +1660,8 @@ django-cors-headers = [
     {file = "django_cors_headers-3.5.0-py3-none-any.whl", hash = "sha256:9322255c296d5f75089571f29e520c83ff9693df17aa3cf9f6a4bea7c6740169"},
 ]
 django-debug-toolbar = [
-    {file = "django-debug-toolbar-3.2.1.tar.gz", hash = "sha256:a5ff2a54f24bf88286f9872836081078f4baa843dc3735ee88524e89f8821e33"},
-    {file = "django_debug_toolbar-3.2.1-py3-none-any.whl", hash = "sha256:e759e63e3fe2d3110e0e519639c166816368701eab4a47fed75d7de7018467b9"},
+    {file = "django-debug-toolbar-3.2.2.tar.gz", hash = "sha256:8c5b13795d4040008ee69ba82dcdd259c49db346cf7d0de6e561a49d191f0860"},
+    {file = "django_debug_toolbar-3.2.2-py3-none-any.whl", hash = "sha256:d7bab7573fab35b0fd029163371b7182f5826c13da69734beb675c761d06a4d3"},
 ]
 django-ical = [
     {file = "django-ical-1.8.0.tar.gz", hash = "sha256:0552d71595712129b78f104de175f6be6719c94b35f0e3b3679cf4e83938ec48"},
