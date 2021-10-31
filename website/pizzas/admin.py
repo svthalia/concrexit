@@ -1,4 +1,6 @@
 """Registers admin interfaces for the pizzas module."""
+from functools import partial
+
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.forms import Field
@@ -96,6 +98,16 @@ class FoodOrderAdmin(DoNextModelAdmin):
         "product",
         "payment",
     )
+
+    def get_form(self, request, obj=None, **kwargs):
+        return super().get_form(
+            request,
+            obj,
+            formfield_callback=partial(
+                self.formfield_for_dbfield, request=request, obj=obj
+            ),
+            **kwargs
+        )
 
     def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
         """Payment field widget."""
