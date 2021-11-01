@@ -18,7 +18,6 @@ let
         python-magic = pkgs.python3.pkgs.python_magic;
         # We don't install uswgi from pypi but instead use the nixpkgs version
         uwsgi = { };
-        # TODO: change when https://github.com/nix-community/poetry2nix/issues/413 is fixed
         cryptography = super.cryptography.overridePythonAttrs (old: {
           cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
             inherit (old) src;
