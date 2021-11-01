@@ -975,7 +975,7 @@ Pillow = "*"
 
 [[package]]
 name = "pydocstyle"
-version = "6.0.0"
+version = "6.1.1"
 description = "Python docstring style checker"
 category = "main"
 optional = false
@@ -983,6 +983,9 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 snowballstemmer = "*"
+
+[package.extras]
+toml = ["toml"]
 
 [[package]]
 name = "pygments"
@@ -1414,7 +1417,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "12125131f5ea77e6093aa4d89c0f20909b8966f8f134274878ad93f3a10a5e85"
+content-hash = "d0e2683d408bebfed160ce2f2ec7abe51900f77ed114543e41337d6582e19892"
 
 [metadata.files]
 alabaster = [
@@ -2183,8 +2186,8 @@ pydenticon = [
     {file = "pydenticon-0.3.1.tar.gz", hash = "sha256:2ef363cdd6f4f0193ce62257486027e36884570f6140bbde51de72df321b77f1"},
 ]
 pydocstyle = [
-    {file = "pydocstyle-6.0.0-py3-none-any.whl", hash = "sha256:d4449cf16d7e6709f63192146706933c7a334af7c0f083904799ccb851c50f6d"},
-    {file = "pydocstyle-6.0.0.tar.gz", hash = "sha256:164befb520d851dbcf0e029681b91f4f599c62c5cd8933fd54b1bfbd50e89e1f"},
+    {file = "pydocstyle-6.1.1-py3-none-any.whl", hash = "sha256:6987826d6775056839940041beef5c08cc7e3d71d63149b48e36727f70144dc4"},
+    {file = "pydocstyle-6.1.1.tar.gz", hash = "sha256:1d41b7c459ba0ee6c345f2eb9ae827cab14a7533a88c5c6f7e94923f72df92dc"},
 ]
 pygments = [
     {file = "Pygments-2.10.0-py3-none-any.whl", hash = "sha256:b8e67fe6af78f492b3c4b3e2970c0624cbf08beb1e493b2c99b9fa1b67a20380"},
