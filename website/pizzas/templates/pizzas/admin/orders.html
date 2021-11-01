@@ -98,10 +98,9 @@
                             {% for order in orders %}
                                 <tr
                                     class="{% if forloop.first %}row1 {% endif %}"
-                                    data-url="{% url "api:v2:admin:food:food-event-order-detail" order.food_event.id %}"
+                                    data-url="{% url "api:v2:admin:food:food-event-order-detail" order.food_event.id order.id %}"
                                     data-payable-url="{% url "api:v2:admin:payments:payments-payable-detail" "pizzas" "foodorder" order.id %}"
                                 >
-                                <tr data-id="{{ order.pk }}">
                                     <td>
                                         <a href="{% url 'admin:pizzas_foodorder_change' order.pk %}?next={{ request.get_full_path | urlencode }}">{{ order.member_first_name }}</a>
                                     </td>

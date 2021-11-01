@@ -28,7 +28,7 @@ urlpatterns = [
     path(
         "food/events/<int:event_id>/orders/<int:pk>/",
         FoodOrderAdminDetailView.as_view(),
-        name="event-registration-detail",
+        name="food-event-order-detail",
     ),
     path("food/products/", ProductsAdminListView.as_view(), name="food-products-index"),
     path(
