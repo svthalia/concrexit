@@ -13,11 +13,26 @@ let
     # The overrides we do here are patches copied from nixpkgs, some patches are also included
     # in poetry2nix but for Pillow they don't work well enough and python-magic isn't included
     overrides = poetry2nix.overrides.withDefaults (
-      _self: _super: {
+      _self: super: {
         pillow = pkgs.python3.pkgs.pillow;
         python-magic = pkgs.python3.pkgs.python_magic;
         # We don't install uswgi from pypi but instead use the nixpkgs version
         uwsgi = { };
+        # TODO: change when https://github.com/nix-community/poetry2nix/issues/413 is fixed
+        cryptography = super.cryptography.overridePythonAttrs (old: {
+          cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
+            inherit (old) src;
+            name = "${old.pname}-${old.version}";
+            sourceRoot = "${old.pname}-${old.version}/src/rust/";
+            sha256 = "sha256-tQoQfo+TAoqAea86YFxyj/LNQCiViu5ij/3wj7ZnYLI=";
+          };
+          cargoRoot = "src/rust";
+          nativeBuildInputs = old.nativeBuildInputs ++ (with pkgs.rustPlatform; [
+            rust.rustc
+            rust.cargo
+            cargoSetupHook
+          ]);
+        });
       }
     );
   };
