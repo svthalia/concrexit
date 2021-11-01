@@ -33,7 +33,7 @@ django-cors-headers = "3.10.0"
 django-debug-toolbar = "3.2.2"
 django-admin-autocomplete-filter = "0.7.1"
 PyYAML = "5.4.1"
-pydocstyle = "6.0.0"
+pydocstyle = "6.1.1"
 
 # docs requirements
 recommonmark = { version = "0.7.1", optional = true }
