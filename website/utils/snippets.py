@@ -195,7 +195,7 @@ def send_email(to: str, subject: str, body_template: str, context: dict) -> None
     :param context: add some context to the body
     """
     mail.EmailMessage(
-        "[THALIA] {}".format(subject),
+        f"[THALIA] {subject}",
         loader.render_to_string(body_template, context),
         settings.DEFAULT_FROM_EMAIL,
         [to],

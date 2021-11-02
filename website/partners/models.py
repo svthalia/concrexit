@@ -175,14 +175,14 @@ class Vacancy(models.Model):
 
     def __str__(self):
         """Return vacancy partner or company and title."""
-        return "{} — {}".format(self.get_company_name(), self.title)
+        return f"{self.get_company_name()} — {self.title}"
 
     def get_absolute_url(self):
         """Return partner or vacancy url."""
         url = reverse("partners:vacancies")
         if self.partner:
             url = reverse("partners:partner", args=(self.partner.slug,))
-        return "{}#vacancy-{}".format(url, self.pk)
+        return f"{url}#vacancy-{self.pk}"
 
     def clean(self):
         """Validate the vacancy."""

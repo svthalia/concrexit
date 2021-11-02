@@ -65,7 +65,7 @@ class LectureYearFilter(admin.SimpleListFilter):
             year_start = datetime_to_lectureyear(objects_start["start__min"])
 
             return [
-                (year, "{}-{}".format(year, year + 1))
+                (year, f"{year}-{year + 1}")
                 for year in range(year_end, year_start - 1, -1)
             ]
         return []
@@ -194,8 +194,8 @@ class EventAdmin(DoNextModelAdmin):
             date_cancelled__lt=timezone.now()
         ).count()
         if not obj.max_participants:
-            return "{}/∞".format(num)
-        return "{}/{}".format(num, obj.max_participants)
+            return f"{num}/∞"
+        return f"{num}/{obj.max_participants}"
 
     num_participants.short_description = _("Number of participants")
 
@@ -343,7 +343,7 @@ class RegistrationAdmin(DoNextModelAdmin):
             formfield_callback=partial(
                 self.formfield_for_dbfield, request=request, obj=obj
             ),
-            **kwargs
+            **kwargs,
         )
 
     def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):

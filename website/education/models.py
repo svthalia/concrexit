@@ -45,7 +45,7 @@ class Course(models.Model):
     until = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return "{} ({})".format(self.name, self.course_code)
+        return f"{self.name} ({self.course_code})"
 
     def get_absolute_url(self):
         return reverse("education:course", args=[str(self.pk)])
@@ -110,13 +110,7 @@ class Exam(models.Model):
     )
 
     def __str__(self):
-        return "{} {} ({}, {}, {})".format(
-            self.name.capitalize(),
-            self.type.capitalize(),
-            self.course.name,
-            self.course.course_code,
-            self.exam_date,
-        )
+        return f"{self.name.capitalize()} {self.type.capitalize()} ({self.course.name}, {self.course.course_code}, {self.exam_date})"
 
     def get_absolute_url(self):
         return reverse("education:exam", args=[str(self.pk)])
@@ -170,8 +164,8 @@ class Summary(models.Model):
     )
 
     def __str__(self):
-        return "{} ({}, {}, {})".format(
-            self.name, self.course.name, self.course.course_code, self.year
+        return (
+            f"{self.name} ({self.course.name}, {self.course.course_code}, {self.year})"
         )
 
     def get_absolute_url(self):

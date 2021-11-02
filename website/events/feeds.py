@@ -29,7 +29,7 @@ class EventFeed(ICalFeed):
         return f"-//{settings.SITE_DOMAIN}//EventCalendar//{self.lang.upper()}"
 
     def file_name(self):
-        return "thalia_{}.ics".format(self.lang)
+        return f"thalia_{self.lang}.ics"
 
     def title(self):
         activate(self.lang)
@@ -62,4 +62,4 @@ class EventFeed(ICalFeed):
         return settings.BASE_URL + reverse("events:event", kwargs={"pk": item.id})
 
     def item_location(self, item):
-        return "{} - {}".format(item.location, item.map_location)
+        return f"{item.location} - {item.map_location}"

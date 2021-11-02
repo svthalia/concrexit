@@ -14,8 +14,10 @@ def send_document_notification(document):
 
     :param document: The document we are sending the email for
     """
-    info = (document._meta.app_label, document._meta.model_name)
-    admin_url = reverse("admin:%s_%s_change" % info, args=(document.pk,))
+    admin_url = reverse(
+        f"admin:{document._meta.app_label}_{document._meta.model_name}_change",
+        args=(document.pk,),
+    )
 
     email_body = loader.render_to_string(
         "education/email/document_notification.txt",

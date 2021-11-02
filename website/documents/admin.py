@@ -46,7 +46,7 @@ class LectureYearFilter(admin.SimpleListFilter):
             last_year = AnnualDocument.objects.order_by("year").last().year
 
             return [
-                (year, "{}-{}".format(year, year + 1))
+                (year, f"{year}-{year + 1}")
                 for year in range(last_year, first_year - 1, -1)
             ]
         return []

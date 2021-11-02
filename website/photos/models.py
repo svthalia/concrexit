@@ -125,7 +125,8 @@ class Album(models.Model):
 
     def __str__(self):
         """Get string representation of Album."""
-        return "{} {}".format(self.date.strftime("%Y-%m-%d"), self.title)
+        date = self.date.strftime("%Y-%m-%d")
+        return f"{date} {self.title}"
 
     def get_absolute_url(self):
         """Get url of Album."""
@@ -197,7 +198,7 @@ class Album(models.Model):
     def access_token(self):
         """Return access token for album."""
         return hashlib.sha256(
-            "{}album{}".format(settings.SECRET_KEY, self.pk).encode("utf-8")
+            f"{settings.SECRET_KEY}album{self.pk}".encode("utf-8")
         ).hexdigest()
 
     class Meta:

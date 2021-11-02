@@ -177,7 +177,7 @@ def save_photo(photo_obj):
         return False
 
     image_path, _ext = os.path.splitext(original_path)
-    image_path = "{}.jpg".format(image_path)
+    image_path = f"{image_path}.jpg"
 
     photo_obj.rotation = photo_determine_rotation(image)
 
@@ -188,7 +188,7 @@ def save_photo(photo_obj):
     image.convert("RGB").save(image_path, "JPEG")
     photo_obj.original_file = image_path
     image_name, _ext = os.path.splitext(photo_obj.file.name)
-    photo_obj.file.name = "{}.jpg".format(image_name)
+    photo_obj.file.name = f"{image_name}.jpg"
 
     photo_obj.save()
 

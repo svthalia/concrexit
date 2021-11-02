@@ -59,10 +59,7 @@ class AnnualDocumentForm(forms.ModelForm):
     def _year_choices():
         """Get the lecture years."""
         current = datetime_to_lectureyear(timezone.now())
-        return [
-            (year, "{}-{}".format(year, year + 1))
-            for year in range(current + 1, 1989, -1)
-        ]
+        return [(year, f"{year}-{year + 1}") for year in range(current + 1, 1989, -1)]
 
     year = forms.TypedChoiceField(
         coerce=int, choices=_year_choices.__func__, initial=_current_year.__func__

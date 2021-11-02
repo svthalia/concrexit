@@ -311,7 +311,7 @@ class Registration(Entry):
     signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
 
     def get_full_name(self):
-        full_name = "{} {}".format(self.first_name, self.last_name)
+        full_name = f"{self.first_name} {self.last_name}"
         return full_name.strip()
 
     def clean(self):
@@ -403,7 +403,7 @@ class Registration(Entry):
             raise ValidationError(errors)
 
     def __str__(self):
-        return "{} {} ({})".format(self.first_name, self.last_name, self.email)
+        return f"{self.first_name} {self.last_name} ({self.email})"
 
     class Meta:
         verbose_name = _("registration")
@@ -480,9 +480,7 @@ class Renewal(Entry):
             raise ValidationError(errors)
 
     def __str__(self):
-        return "{} {} ({})".format(
-            self.member.first_name, self.member.last_name, self.member.email
-        )
+        return f"{self.member.first_name} {self.member.last_name} ({self.member.email})"
 
     class Meta:
         verbose_name = _("renewal")

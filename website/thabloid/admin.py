@@ -12,7 +12,7 @@ def association_year_choices():
 
     choices = []
     for year in range(1990, current_year + 2):
-        choices.append((year, "{}-{}".format(year, year + 1)))
+        choices.append((year, f"{year}-{year + 1}"))
     choices.reverse()
 
     return choices
