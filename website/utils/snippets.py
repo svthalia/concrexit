@@ -3,7 +3,7 @@ import datetime
 import hmac
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from collections import namedtuple
-from _sha1 import sha1
+from hashlib import sha1
 
 from django.conf import settings
 from django.core import mail

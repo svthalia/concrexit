@@ -12,9 +12,8 @@ from django.utils.datetime_safe import date
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-import events.admin_views as admin_views
 from activemembers.models import MemberGroup
-from events import services
+from events import admin_views, services
 from events.forms import RegistrationAdminForm
 from members.models import Member
 from payments.widgets import PaymentWidget
@@ -160,11 +159,11 @@ class EventAdmin(DoNextModelAdmin):
             title=obj.title,
         )
 
-    def has_change_permission(self, request, event=None):
+    def has_change_permission(self, request, obj=None):
         """Only allow access to the change form if the user is an organiser."""
-        if event is not None and not services.is_organiser(request.member, event):
+        if obj is not None and not services.is_organiser(request.member, obj):
             return False
-        return super().has_change_permission(request, event)
+        return super().has_change_permission(request, obj)
 
     def event_date(self, obj):
         event_date = timezone.make_naive(obj.start)
@@ -314,34 +313,28 @@ class RegistrationAdmin(DoNextModelAdmin):
 
     form = RegistrationAdminForm
 
-    def save_model(self, request, registration, form, change):
-        if not services.is_organiser(request.member, registration.event):
+    def save_model(self, request, obj, form, change):
+        if not services.is_organiser(request.member, obj.event):
             raise PermissionDenied
-        return super().save_model(request, registration, form, change)
+        return super().save_model(request, obj, form, change)
 
-    def has_view_permission(self, request, registration=None):
+    def has_view_permission(self, request, obj=None):
         """Only give view permission if the user is an organiser."""
-        if registration is not None and not services.is_organiser(
-            request.member, registration.event
-        ):
+        if obj is not None and not services.is_organiser(request.member, obj.event):
             return False
-        return super().has_view_permission(request, registration)
+        return super().has_view_permission(request, obj)
 
-    def has_change_permission(self, request, registration=None):
+    def has_change_permission(self, request, obj=None):
         """Only give change permission if the user is an organiser."""
-        if registration is not None and not services.is_organiser(
-            request.member, registration.event
-        ):
+        if obj is not None and not services.is_organiser(request.member, obj.event):
             return False
-        return super().has_change_permission(request, registration)
+        return super().has_change_permission(request, obj)
 
-    def has_delete_permission(self, request, registration=None):
+    def has_delete_permission(self, request, obj=None):
         """Only give delete permission if the user is an organiser."""
-        if registration is not None and not services.is_organiser(
-            request.member, registration.event
-        ):
+        if obj is not None and not services.is_organiser(request.member, obj.event):
             return False
-        return super().has_delete_permission(request, registration)
+        return super().has_delete_permission(request, obj)
 
     def get_form(self, request, obj=None, **kwargs):
         return super().get_form(

@@ -124,26 +124,20 @@ class FoodOrderAdmin(DoNextModelAdmin):
             raise PermissionDenied
         return super().save_model(request, obj, form, change)
 
-    def has_view_permission(self, request, order=None):
+    def has_view_permission(self, request, obj=None):
         """Only give view permission if the user is an organiser."""
-        if order is not None and not is_organiser(
-            request.member, order.food_event.event
-        ):
+        if obj is not None and not is_organiser(request.member, obj.food_event.event):
             return False
-        return super().has_view_permission(request, order)
+        return super().has_view_permission(request, obj)
 
-    def has_change_permission(self, request, order=None):
+    def has_change_permission(self, request, obj=None):
         """Only give change permission if the user is an organiser."""
-        if order is not None and not is_organiser(
-            request.member, order.food_event.event
-        ):
+        if obj is not None and not is_organiser(request.member, obj.food_event.event):
             return False
-        return super().has_change_permission(request, order)
+        return super().has_change_permission(request, obj)
 
-    def has_delete_permission(self, request, order=None):
+    def has_delete_permission(self, request, obj=None):
         """Only give delete permission if the user is an organiser."""
-        if order is not None and not is_organiser(
-            request.member, order.food_event.event
-        ):
+        if obj is not None and not is_organiser(request.member, obj.food_event.event):
             return False
-        return super().has_delete_permission(request, order)
+        return super().has_delete_permission(request, obj)

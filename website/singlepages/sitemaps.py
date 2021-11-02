@@ -23,7 +23,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
             "singlepages:contact",
         ]
 
-    def location(self, obj):
+    def location(self, item):
         """Get the location for a site map item.
 
         Example::
@@ -32,11 +32,11 @@ class StaticViewSitemap(sitemaps.Sitemap):
             >>> sitemap.location('singlepages:become-active')
             '/members/become-active/'
 
-        :param obj: the item to reverse.
-        :type obj: str
+        :param item: the item to reverse.
+        :type item: str
         :return: the URI to the item.
         """
-        return reverse(obj)
+        return reverse(item)
 
 
 sitemap = {

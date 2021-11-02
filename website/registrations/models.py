@@ -122,7 +122,7 @@ class Entry(models.Model):
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
-        if self.status != self.STATUS_ACCEPTED and self.status != self.STATUS_REJECTED:
+        if self.status not in (self.STATUS_ACCEPTED, self.STATUS_REJECTED):
             self.updated_at = timezone.now()
 
         if self.membership_type == Membership.BENEFACTOR:
