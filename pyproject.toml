@@ -47,7 +47,7 @@ django-template-check = "0.4.0"
 factory_boy = "3.2.1"
 pydenticon = "0.3.1"
 Faker = "9.7.1"
-coverage = {extras = ["toml"], version = "^6.0.0"}
+coverage = {extras = ["toml"], version = "^5.0.3"}
 black = "19.10b0"
 pylint = "2.6.0"
 pylint-django = "2.4.4"
