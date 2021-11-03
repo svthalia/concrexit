@@ -1,19 +1,21 @@
 {% load i18n %}
-<div class="card">
-    <div class="card-top">
-        <div class="card-image">
-            {% if image_url %}
-                <img alt="{{ title }}" src="{{ image_url }}">
-            {% endif %}
-        </div>
+<div class="card mb-0">
+  <div class="row g-0">
+    <div class="col-md-4 d-flex align-items-center bg">
+      <a href="{{ url }}" class="p-3">
+        <img alt="{{ company_name }} logo" src="{{ image_url }}" class="img-fluid rounded-start card-img">
+      </a>
     </div>
-    <div class="card-block">
+    <div class="col-md-8">
+      <div class="card-body">
         <h4 class="card-title mb-1">{{ title }}</h4>
-        <h5 class="mt-0">{{ company_name }}</h5>
+        <p class="mt-0">{{ company_name }} {% if not location is None %}- {{ location }}{% endif %} - {% for keyword in keywords %} <span class="badge btn-primary">{{ keyword }}</span> {% endfor %}</p>
         <p class="card-text">{{ description }}</p>
         <a href="{{ url }}"
            class="btn card-btn btn-primary {{ extra_class }}">
             {% trans "Learn more" %}
         </a>
+      </div>
     </div>
+  </div>
 </div>

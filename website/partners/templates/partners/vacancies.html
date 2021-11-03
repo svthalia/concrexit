@@ -34,7 +34,7 @@
 
             <div class="row">
                 {% for vacancy in vacancies %}
-                <div class="col-12 col-md-6 col-lg-4 my-3 mix {% for cat in vacancy.categories.all %}category-{{ cat.id }} {% endfor %}">
+                <div class="my-3 mix {% for cat in vacancy.categories.all %}category-{{ cat.id }} {% endfor %}">
                     {% vacancy_card vacancy %}
                 </div>
                 {% endfor %}
