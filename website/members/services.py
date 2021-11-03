@@ -74,7 +74,7 @@ def member_achievements(member) -> List:
 
     mentor_years = member.mentorship_set.all()
     for mentor_year in mentor_years:
-        name = "Mentor in {}".format(mentor_year.year)
+        name = f"Mentor in {mentor_year.year}"
         # Ensure mentorships appear last but are sorted
         earliest = date.today()
         earliest = earliest.replace(year=earliest.year + mentor_year.year)

@@ -58,7 +58,7 @@ class DeviceAdmin(admin.ModelAdmin):
     disable.short_description = _("Disable selected devices")
 
     def name(self, obj):
-        return "{} ({})".format(obj.user.get_full_name(), obj.user.username)
+        return f"{obj.user.get_full_name()} ({obj.user.username})"
 
     name.short_description = _("Name")
     name.admin_order_field = "user__first_name"

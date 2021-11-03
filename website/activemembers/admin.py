@@ -144,8 +144,7 @@ class LectureYearFilter(admin.SimpleListFilter):
         )
 
         return [
-            (year, "{}-{}".format(year, year + 1))
-            for year in range(first_year, current_year + 1)
+            (year, f"{year}-{year + 1}") for year in range(first_year, current_year + 1)
         ]
 
     def queryset(self, request, queryset):

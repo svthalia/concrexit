@@ -278,7 +278,7 @@ class ValidAccountFilter(admin.SimpleListFilter):
     title = _("mandates")
     parameter_name = "active"
 
-    def lookups(self, request, model_name) -> tuple:
+    def lookups(self, request, model_admin) -> tuple:
         return (
             ("valid", _("Valid")),
             ("invalid", _("Invalid")),

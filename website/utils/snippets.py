@@ -3,7 +3,7 @@ import datetime
 import hmac
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from collections import namedtuple
-from _sha1 import sha1
+from hashlib import sha1
 
 from django.conf import settings
 from django.core import mail
@@ -195,7 +195,7 @@ def send_email(to: str, subject: str, body_template: str, context: dict) -> None
     :param context: add some context to the body
     """
     mail.EmailMessage(
-        "[THALIA] {}".format(subject),
+        f"[THALIA] {subject}",
         loader.render_to_string(body_template, context),
         settings.DEFAULT_FROM_EMAIL,
         [to],

@@ -39,7 +39,7 @@ def send_membership_announcement(dry_run=False):
                     {"name": member.get_full_name()},
                 )
                 mail.EmailMessage(
-                    "[THALIA] {}".format(_("Membership announcement")),
+                    f"[THALIA] {_('Membership announcement')}",
                     email_body,
                     settings.DEFAULT_FROM_EMAIL,
                     [member.email],
@@ -130,6 +130,7 @@ def send_expiration_announcement(dry_run=False):
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
             if not dry_run:
 
+                renewal_url = settings.BASE_URL + reverse("registrations:renew")
                 email_body = loader.render_to_string(
                     "members/email/expiration_announcement.txt",
                     {
@@ -137,13 +138,11 @@ def send_expiration_announcement(dry_run=False):
                         "membership_price": floatformat(
                             settings.MEMBERSHIP_PRICES["year"], 2
                         ),
-                        "renewal_url": "{}{}".format(
-                            settings.BASE_URL, reverse("registrations:renew")
-                        ),
+                        "renewal_url": renewal_url,
                     },
                 )
                 mail.EmailMessage(
-                    "[THALIA] {}".format(_("Membership expiration announcement")),
+                    f"[THALIA] {_('Membership expiration announcement')}",
                     email_body,
                     settings.DEFAULT_FROM_EMAIL,
                     [member.email],
@@ -187,38 +186,27 @@ def send_email_change_confirmation_messages(change_request):
     """
     member = change_request.member
 
+    confirm_link = settings.BASE_URL + reverse(
+        "members:email-change-confirm", args=[change_request.confirm_key],
+    )
     mail.EmailMessage(
-        "[THALIA] {}".format(_("Please confirm your email change")),
+        f"[THALIA] {_('Please confirm your email change')}",
         loader.render_to_string(
             "members/email/email_change_confirm.txt",
-            {
-                "confirm_link": "{}{}".format(
-                    settings.BASE_URL,
-                    reverse(
-                        "members:email-change-confirm",
-                        args=[change_request.confirm_key],
-                    ),
-                ),
-                "name": member.first_name,
-            },
+            {"confirm_link": confirm_link, "name": member.first_name,},
         ),
         settings.DEFAULT_FROM_EMAIL,
         [member.email],
     ).send()
 
+    confirm_link = settings.BASE_URL + reverse(
+        "members:email-change-verify", args=[change_request.verify_key],
+    )
     mail.EmailMessage(
-        "[THALIA] {}".format(_("Please verify your email address")),
+        f"[THALIA] {_('Please verify your email address')}",
         loader.render_to_string(
             "members/email/email_change_verify.txt",
-            {
-                "confirm_link": "{}{}".format(
-                    settings.BASE_URL,
-                    reverse(
-                        "members:email-change-verify", args=[change_request.verify_key],
-                    ),
-                ),
-                "name": member.first_name,
-            },
+            {"confirm_link": confirm_link, "name": member.first_name,},
         ),
         settings.DEFAULT_FROM_EMAIL,
         [change_request.email],
@@ -231,7 +219,7 @@ def send_email_change_completion_message(change_request):
     :param change_request the email change request entered by the user
     """
     change_request.member.email_user(
-        "[THALIA] {}".format(_("Your email address has been changed")),
+        "[THALIA] {_('Your email address has been changed')}",
         loader.render_to_string(
             "members/email/email_change_completed.txt",
             {"name": change_request.member.first_name},

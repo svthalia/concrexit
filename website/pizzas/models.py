@@ -240,7 +240,7 @@ class FoodOrder(models.Model):
     def member_first_name(self):
         if self.member is not None:
             return self.member.first_name
-        return self.name.strip(" ").split(" ")[0]
+        return self.name.strip(" ").split(" ", maxsplit=1)[0]
 
     @property
     def can_be_changed(self):

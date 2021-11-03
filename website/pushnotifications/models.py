@@ -111,7 +111,7 @@ class Message(models.Model):
     success = models.IntegerField(verbose_name=_("success"), blank=True, null=True,)
 
     def __str__(self):
-        return "{}: {}".format(self.title, self.body)
+        return f"{self.title}: {self.body}"
 
     def send(self, **kwargs):
         if self:

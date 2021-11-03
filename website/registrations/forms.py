@@ -51,7 +51,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
 
     this_year = timezone.now().year
     years = reversed(
-        [(x, "{} - {}".format(x, x + 1)) for x in range(this_year - 20, this_year + 1)]
+        [(x, f"{x} - {x + 1}") for x in range(this_year - 20, this_year + 1)]
     )
 
     starting_year = TypedChoiceField(

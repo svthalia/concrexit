@@ -51,16 +51,16 @@ class Thabloid(models.Model):
 
     def __str__(self):
         """Return string representation of a Thabloid object."""
-        return "Thabloid {}-{}, #{}".format(self.year, self.year + 1, self.issue)
+        return f"Thabloid {self.year}-{self.year + 1}, #{self.issue}"
 
     def page_url(self, page=None, second_page=None):
         """Return path of Thabloid pages image."""
         if page is None:
             page = "%03d.png"
         elif second_page is None:
-            page = "{:03}.png".format(page)
+            page = f"{page:03}.png"
         else:
-            page = "{:03}-{:03}.png".format(page, second_page)
+            page = "f{page:03}-{second_page:03}.png"
         dst, _ = os.path.splitext(self.file.name)
         return os.path.join(os.path.dirname(dst), "pages", os.path.basename(dst), page)
 
