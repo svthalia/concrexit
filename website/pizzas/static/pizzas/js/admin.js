@@ -5,7 +5,7 @@ django.jQuery(function () {
         payment_previous = this.value;
     }).change(function () {
         var select = $(this);
-        var url = $(this).parents('tr').data("payable-url");
+        var url = $(this).parents('tr').data('payable-url');
         var none = $(this).data('none');
 
         if (payment_previous === $(this).val()) {
