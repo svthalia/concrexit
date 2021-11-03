@@ -514,9 +514,13 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
 
 # OAuth configuration
+OIDC_RSA_PRIVATE_KEY = from_env("OIDC_RSA_PRIVATE_KEY", testing=None)
+if OIDC_RSA_PRIVATE_KEY is not None:
+    OIDC_RSA_PRIVATE_KEY = base64.urlsafe_b64decode(OIDC_RSA_PRIVATE_KEY)
+
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
-    "OIDC_RSA_PRIVATE_KEY": from_env("OIDC_RSA_PRIVATE_KEY", testing=None),
+    "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,
     "ALLOWED_REDIRECT_URI_SCHEMES": setting(
         production=["https", APP_OAUTH_SCHEME],
         staging=["http", "https", APP_OAUTH_SCHEME],
