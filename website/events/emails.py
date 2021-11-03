@@ -50,7 +50,7 @@ def notify_organiser(event, registration):
         return
 
     text_template = get_template("events/organiser_email.txt")
-    subject = "Registration for {} cancelled by member".format(event.title)
+    subject = f"Registration for {event.title} cancelled by member"
     text_message = text_template.render({"event": event, "registration": registration})
 
     EmailMessage(

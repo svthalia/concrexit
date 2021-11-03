@@ -17,7 +17,9 @@ def write_to_file(pk, lang, html_message):
     if not os.path.isdir(cache_dir):
         os.makedirs(cache_dir)
 
-    with open(os.path.join(cache_dir, f"{pk}_{lang}.html"), "w+") as cache_file:
+    with open(
+        os.path.join(cache_dir, f"{pk}_{lang}.html"), "w+", encoding="utf-8"
+    ) as cache_file:
         cache_file.write(html_message)
 
 

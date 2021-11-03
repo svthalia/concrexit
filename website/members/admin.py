@@ -292,7 +292,7 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(models.Member)
 class MemberAdmin(UserAdmin):
-    def has_module_permission(self, reuqest):
+    def has_module_permission(self, request):
         return False
 
 

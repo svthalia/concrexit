@@ -46,7 +46,7 @@ class LectureYearFilter(admin.SimpleListFilter):
             last_year = AnnualDocument.objects.order_by("year").last().year
 
             return [
-                (year, "{}-{}".format(year, year + 1))
+                (year, f"{year}-{year + 1}")
                 for year in range(last_year, first_year - 1, -1)
             ]
         return []
@@ -93,17 +93,17 @@ class EventDocumentAdmin(ModelAdmin):
         "last_updated",
     )
 
-    def has_change_permission(self, request, document=None):
+    def has_change_permission(self, request, obj=None):
         """Only allow access to the change form if the user is an owner."""
-        if document is not None and not is_owner(request.member, document):
+        if obj is not None and not is_owner(request.member, obj):
             return False
-        return super().has_change_permission(request, document)
+        return super().has_change_permission(request, obj)
 
-    def has_delete_permission(self, request, document=None):
+    def has_delete_permission(self, request, obj=None):
         """Only allow delete access if the user is an owner."""
-        if document is not None and not is_owner(request.member, document):
+        if obj is not None and not is_owner(request.member, obj):
             return False
-        return super().has_delete_permission(request, document)
+        return super().has_delete_permission(request, obj)
 
 
 @admin.register(MiscellaneousDocument)

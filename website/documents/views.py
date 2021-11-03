@@ -67,7 +67,7 @@ class DocumentDownloadView(DetailView):
         document = response.context_data["document"]
 
         if document.members_only and not request.user.is_authenticated:
-            return redirect("{}?next={}".format(settings.LOGIN_URL, request.path))
+            return redirect(f"{settings.LOGIN_URL}?next={request.path}")
         if document.members_only and not request.member.has_active_membership():
             raise PermissionDenied
 

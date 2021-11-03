@@ -14,9 +14,7 @@ def _do_next(request, response):
         if "_save" in request.POST:
             return HttpResponseRedirect(request.GET["next"])
         if response is not None:
-            return HttpResponseRedirect(
-                "{}?{}".format(response.url, request.GET.urlencode())
-            )
+            return HttpResponseRedirect(f"{response.url}?{request.GET.urlencode()}")
     return response
 
 

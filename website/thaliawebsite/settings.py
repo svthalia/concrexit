@@ -127,6 +127,8 @@ def from_env(
             return development
         if DJANGO_ENV == "testing":
             return testing
+        # pylint: disable=raise-missing-from
+        raise Misconfiguration(f"DJANGO_ENV set to unsupported value: {DJANGO_ENV}")
 
 
 ###############################################################################
@@ -362,6 +364,8 @@ if "SENTRY_DSN" in os.environ:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 
+    # Pylint sees the faked init class that sentry uses for typing purposes
+    # pylint: disable=abstract-class-instantiated
     sentry_sdk.init(
         dsn=os.environ.get("SENTRY_DSN"),
         integrations=[DjangoIntegration()],

@@ -19,7 +19,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         # Need to be valid entries for reverse()
         return ["index"]
 
-    def location(self, obj):
+    def location(self, item):
         """Get the location for a site map item.
 
         Example::
@@ -28,8 +28,8 @@ class StaticViewSitemap(sitemaps.Sitemap):
             >>> sitemap.location('index')
             '/'
 
-        :param obj: the item to reverse.
-        :type obj: str
+        :param item: the item to reverse.
+        :type item: str
         :return: the URI to the item.
         """
-        return reverse(obj)
+        return reverse(item)

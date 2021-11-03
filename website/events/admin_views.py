@@ -287,7 +287,7 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
         for row in rows:
             writer.writerow(row)
 
-        response["Content-Disposition"] = 'attachment; filename="{}.csv"'.format(
-            slugify(event.title)
-        )
+        response[
+            "Content-Disposition"
+        ] = f'attachment; filename="{slugify(event.title)}.csv"'
         return response

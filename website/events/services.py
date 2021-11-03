@@ -290,7 +290,7 @@ def registration_fields(request, member=None, event=None, registration=None, nam
         for information_field in information_fields:
             field = information_field["field"]
 
-            fields["info_field_{}".format(field.id)] = {
+            fields[f"info_field_{field.id}"] = {
                 "type": field.type,
                 "label": field.name,
                 "description": field.description,
