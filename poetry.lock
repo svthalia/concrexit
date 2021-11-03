@@ -280,7 +280,7 @@ dev = ["tox", "bump2version (<1)", "sphinx (<2)", "importlib-metadata (<3)", "im
 
 [[package]]
 name = "django"
-version = "3.2.8"
+version = "3.2.9"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
@@ -1417,7 +1417,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "c1ebf5dc4668e4a63b276d9f36a9aff10f8140c6abf7524320516c1a8c5b30cf"
+content-hash = "8e37757a0970236c6d2f27420a578c643cbe29b4c9cca73d6d3415d8dfac42d1"
 
 [metadata.files]
 alabaster = [
@@ -1639,8 +1639,8 @@ deprecated = [
     {file = "Deprecated-1.2.13.tar.gz", hash = "sha256:43ac5335da90c31c24ba028af536a91d41d53f9e6901ddb021bcc572ce44e38d"},
 ]
 django = [
-    {file = "Django-3.2.8-py3-none-any.whl", hash = "sha256:42573831292029639b798fe4d3812996bfe4ff3275f04566da90764daec011a5"},
-    {file = "Django-3.2.8.tar.gz", hash = "sha256:f6d2c4069c9b9bfac03bedff927ea1f9e0d29e34525cec8a68fd28eb2a8df7af"},
+    {file = "Django-3.2.9-py3-none-any.whl", hash = "sha256:e22c9266da3eec7827737cde57694d7db801fedac938d252bf27377cec06ed1b"},
+    {file = "Django-3.2.9.tar.gz", hash = "sha256:51284300f1522ffcdb07ccbdf676a307c6678659e1284f0618e5a774127a6a08"},
 ]
 django-admin-autocomplete-filter = [
     {file = "django-admin-autocomplete-filter-0.7.1.tar.gz", hash = "sha256:5a8c9a7016e03104627b80b40811dcc567f26759971e4407f933951546367ba0"},
