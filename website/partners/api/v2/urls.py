@@ -5,6 +5,9 @@ from partners.api.v2.views import (
     PartnerEventListView,
     PartnerListView,
     PartnerEventDetailView,
+    PartnerDetailView,
+    VacancyListView,
+    VacancyDetailView,
 )
 
 app_name = "partners"
@@ -18,5 +21,12 @@ urlpatterns = [
         PartnerEventDetailView.as_view(),
         name="partner-events-detail",
     ),
+    path("partners/vacancies/", VacancyListView.as_view(), name="vacancies-list"),
+    path(
+        "partners/vacancies/<int:pk>/",
+        VacancyDetailView.as_view(),
+        name="vacancies-detail",
+    ),
     path("partners/", PartnerListView.as_view(), name="partners-list"),
+    path("partners/<int:pk>/", PartnerDetailView.as_view(), name="partners-detail"),
 ]
