@@ -516,7 +516,7 @@ CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
 # OAuth configuration
 OIDC_RSA_PRIVATE_KEY = from_env("OIDC_RSA_PRIVATE_KEY", testing=None)
 if OIDC_RSA_PRIVATE_KEY is not None:
-    OIDC_RSA_PRIVATE_KEY = base64.urlsafe_b64decode(OIDC_RSA_PRIVATE_KEY)
+    OIDC_RSA_PRIVATE_KEY = base64.b64decode(OIDC_RSA_PRIVATE_KEY)
 
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
