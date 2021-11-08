@@ -104,17 +104,6 @@ django.jQuery(function () {
         type: "text",
     });
 
-    $.tablesorter.addParser({
-        id: "sortval",
-        is: function(s) {
-            return false;
-        },
-        format: function(s, t, node) {
-            return $(node).data("sortval");
-        },
-        type: "text"
-    });
-
     $("table").tablesorter({
         sortList: [[1,0]],
         cssHeader: 'sortable',
