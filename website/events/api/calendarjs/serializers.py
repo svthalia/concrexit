@@ -50,7 +50,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
                 return _("You are registered for this event")
         # Optional registration possible
         elif instance.optional_registration_allowed:
-            return _("You can optionally register for this event")
+            return _("Registering for this event is optional")
         # No places left
         elif instance.reached_participants_limit():
             return _("You can put yourself on the waiting list for this event")
@@ -62,13 +62,13 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
             now = timezone.now()
             if instance.registration_end < now:
                 return _("Registrations have been closed")
-            elif instance.registration_end <= now + timedelta(days=2):
-                return _("You can register {at_time}").format(
-                    at_time=naturaltime(instance.registration_end)
+            elif instance.registration_start <= now + timedelta(days=2):
+                return _("Registrations open {at_time}").format(
+                    at_time=naturaltime(instance.registration_start)
                 )
             else:
-                return _("You can register on {date}").format(
-                    date=date(instance.registration_end)
+                return _("Registrations open {date}").format(
+                    date=date(instance.registration_start)
                 )
 
 
