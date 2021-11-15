@@ -58,12 +58,13 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         return strip_spaces_between_tags(bleach(instance.description))
 
     def _num_participants(self, instance):
+        p_count = instance.participants.count()
         if (
             instance.max_participants
-            and instance.participants.count() > instance.max_participants
+            and p_count > instance.max_participants
         ):
             return instance.max_participants
-        return instance.participants.count()
+        return p_count
 
     def _user_registration(self, instance):
         try:
