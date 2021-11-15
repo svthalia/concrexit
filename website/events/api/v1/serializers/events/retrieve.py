@@ -59,10 +59,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
 
     def _num_participants(self, instance):
         p_count = instance.participants.count()
-        if (
-            instance.max_participants
-            and p_count > instance.max_participants
-        ):
+        if instance.max_participants and p_count > instance.max_participants:
             return instance.max_participants
         return p_count
 
