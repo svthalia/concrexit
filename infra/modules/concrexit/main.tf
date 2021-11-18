@@ -202,24 +202,49 @@ resource "tls_private_key" "ssh" {
   rsa_bits  = "4096"
 }
 
-module "deploy_nixos" {
-  source = "../deploy_nixos"
-
-  nixos_config = "${path.module}/../../nixos/configuration.nix"
-  hermetic = true
-  arguments = {
-    "deploy_public_key" = chomp(tls_private_key.ssh.public_key_openssh)
-  }
-
-  target_user = "root"
-  target_host = aws_eip.eip.public_ip
-
-  // Will not be logged so can be marked as nonsensitive
-  // Adviced by: https://github.com/hashicorp/terraform/issues/27154#issuecomment-814339127
-  ssh_private_key = nonsensitive(tls_private_key.ssh.private_key_pem)
-
-  triggers = {
-    // Also re-deploy whenever the VM is re-created
-    instance_id = aws_instance.concrexit.id
-  }
+resource "local_file" "private_key" {
+  filename = "id_rsa"
+  file_permission = "0600"
+  content = tls_private_key.ssh.private_key_pem
 }
+
+resource "local_file" "configuration_nix" {
+  filename = "settings.nix"
+  content = <<EOF
+{ config, pkgs, ... }:
+{
+  config = {
+    # After the first deploy the generated root key should still be usable
+    users.users.root.openssh.authorizedKeys.keys = [ "${chomp(tls_private_key.ssh.public_key_openssh)} terraform" ];
+
+    concrexit.domain = "staging-tf.thalia.nu";
+  };
+}
+  EOF
+}
+
+output "command" {
+  value = "You can now run the following command to setup the Nix OS configuration:\n"
+}
+
+# module "deploy_nixos" {
+#   source = "../deploy_nixos"
+
+#   nixos_config = "${path.module}/../../nixos/configuration.nix"
+#   hermetic = true
+#   arguments = {
+#     "deploy_public_key" = chomp(tls_private_key.ssh.public_key_openssh)
+#   }
+
+#   target_user = "root"
+#   target_host = aws_eip.eip.public_ip
+
+#   // Will not be logged so can be marked as nonsensitive
+#   // Adviced by: https://github.com/hashicorp/terraform/issues/27154#issuecomment-814339127
+#   ssh_private_key = nonsensitive(tls_private_key.ssh.private_key_pem)
+
+#   triggers = {
+#     // Also re-deploy whenever the VM is re-created
+#     instance_id = aws_instance.concrexit.id
+#   }
+# }

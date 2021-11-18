@@ -1,9 +1,10 @@
 {
   description = "Concrexit";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-21.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
 
   outputs = { self, nixpkgs, flake-utils, poetry2nix }:
     let
@@ -22,12 +23,9 @@
       in
       rec {
 
-        devShells = (flake-utils.lib.flattenTree
-          {
-            concrexit = pkgs.concrexit;
-          });
-        
-        devShell = pkgs.mkShell { packages = with pkgs; [ poetry ]; };
+        devShell = pkgs.mkShell {
+          packages = with pkgs; [ poetry pkgs.concrexit ];
+        };
 
         packages = (flake-utils.lib.flattenTree
           {
@@ -93,6 +91,24 @@
       })) // {
       overlay = final: prev: {
         concrexit = final.callPackage ./default.nix { inherit version; };
+      };
+
+      nixosConfigurations."staging.thalia.nu" = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules =
+          [
+            ./infra/nixos/concrexit.nix
+            ./infra/nixos/swapfile.nix
+            ./infra/stages/staging/settings.nix
+            {
+              nixpkgs.overlays = [ self.overlay ];
+
+              swapfile = {
+                enable = true;
+                size = "2GiB";
+              };
+            }
+          ];
       };
     };
 }
