@@ -112,7 +112,7 @@ def prevent_saving(sender, instance, **kwargs):
 
     immutable_fields = (
         payable.immutable_model_fields_after_payment[sender]
-        if type(payable.immutable_model_fields_after_payment) is dict
+        if isinstance(payable.immutable_model_fields_after_payment, dict)
         else payable.immutable_model_fields_after_payment
     )
     for field in immutable_fields:
@@ -133,11 +133,13 @@ def prevent_saving_related(foreign_key_field):
         try:
             old_instance = sender.objects.get(pk=instance.pk)
         except sender.DoesNotExist:
-            raise PaymentError("Cannot save this model with foreign key to immutable payment")
+            raise PaymentError(  # pylint: disable=W0707
+                "Cannot save this model with foreign key to immutable payment"
+            )
 
         immutable_fields = (
             payable.immutable_model_fields_after_payment[sender]
-            if type(payable.immutable_model_fields_after_payment) is dict
+            if isinstance(payable.immutable_model_fields_after_payment, dict)
             else []
         )
         for field in immutable_fields:
