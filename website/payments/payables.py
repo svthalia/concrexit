@@ -133,7 +133,7 @@ def prevent_saving_related(foreign_key_field):
         try:
             old_instance = sender.objects.get(pk=instance.pk)
         except sender.DoesNotExist:
-            return
+            raise PaymentError("Cannot save this model with foreign key to immutable payment")
 
         immutable_fields = (
             payable.immutable_model_fields_after_payment[sender]

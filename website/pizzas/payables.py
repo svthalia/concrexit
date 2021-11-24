@@ -31,10 +31,6 @@ class FoodOrderPayable(Payable):
         return can_change_order(member, self.model.food_event)
 
     @property
-    def immutable_after_payment(self):
-        return True
-
-    @property
     def tpay_allowed(self):
         return self.model.food_event.tpay_allowed
 

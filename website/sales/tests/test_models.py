@@ -7,6 +7,7 @@ from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership
 from members.models import Member
+from payments import PaymentError
 from payments.models import Payment
 from payments.services import create_payment
 from sales.models.order import Order, OrderItem
@@ -254,7 +255,7 @@ class OrderTest(TestCase):
         with self.assertRaises(ValueError):
             order.save()
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PaymentError):
             OrderItem.objects.create(
                 order=order,
                 product=self.shift.product_list.product_items.get(product=self.wine),
@@ -262,7 +263,7 @@ class OrderTest(TestCase):
             )
 
         i1.amount = 3
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PaymentError):
             i1.save()
 
         i1.refresh_from_db()
