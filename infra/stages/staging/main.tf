@@ -23,4 +23,10 @@ module "concrexit" {
   stage                = "staging"
   tags                 = var.aws_tags
   customer             = var.customer
+  webhostname          = "staging-tf"
+  domain               = "thalia.nu"
+}
+
+output "command" {
+  value = module.concrexit.command
 }

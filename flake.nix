@@ -93,22 +93,36 @@
         concrexit = final.callPackage ./default.nix { inherit version; };
       };
 
-      nixosConfigurations."staging.thalia.nu" = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules =
-          [
-            ./infra/nixos/concrexit.nix
-            ./infra/nixos/swapfile.nix
-            ./infra/stages/staging/settings.nix
-            {
-              nixpkgs.overlays = [ self.overlay ];
+      concrexitSystem =
+        { hostname
+        , deploy_public_key
+        , domain ? "thalia.nu"
+        , webdomain ? "${hostname}.${domain}"
+        , concrexitOptions ? {}
+        }: (nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules =
+            [
+              ./infra/nixos/concrexit.nix
+              ./infra/nixos/swapfile.nix
+              {
+                nixpkgs.overlays = [ self.overlay ];
 
-              swapfile = {
-                enable = true;
-                size = "2GiB";
-              };
-            }
-          ];
-      };
+                networking = {
+                  hostName = hostname;
+                  domain = domain;
+                };
+
+                concrexit = { domain = webdomain; } // concrexitOptions;
+
+                users.users.root.openssh.authorizedKeys.keys = [ deploy_public_key ];
+
+                swapfile = {
+                  enable = true;
+                  size = "2GiB";
+                };
+              }
+            ];
+        }).config.system.build.toplevel;
     };
 }

@@ -144,7 +144,7 @@ resource "aws_security_group" "concrexit-firewall" {
 }
 
 data "aws_route53_zone" "primary" {
-  name = "thalia.nu"
+  name = var.domain
 }
 
 resource "aws_eip" "eip" {
@@ -154,7 +154,7 @@ resource "aws_eip" "eip" {
 
 resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.primary.zone_id
-  name    = "staging-tf"
+  name    = var.webhostname
   type    = "A"
   ttl     = "300"
   records = [aws_eip.eip.public_ip]
@@ -208,23 +208,10 @@ resource "local_file" "private_key" {
   content = tls_private_key.ssh.private_key_pem
 }
 
-resource "local_file" "configuration_nix" {
-  filename = "settings.nix"
-  content = <<EOF
-{ config, pkgs, ... }:
-{
-  config = {
-    # After the first deploy the generated root key should still be usable
-    users.users.root.openssh.authorizedKeys.keys = [ "${chomp(tls_private_key.ssh.public_key_openssh)} terraform" ];
-
-    concrexit.domain = "staging-tf.thalia.nu";
-  };
-}
-  EOF
-}
-
 output "command" {
-  value = "You can now run the following command to setup the Nix OS configuration:\n"
+  value = <<EOF
+nix build --impure --expr '(builtins.getFlake (builtins.toString ./.)).concrexitSystem' --argstr hostname "${var.webhostname}" --argstr deploy_public_key "${chomp(tls_private_key.ssh.public_key_openssh)}" --json
+EOF
 }
 
 # module "deploy_nixos" {

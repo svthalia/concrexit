@@ -12,3 +12,13 @@ variable "customer" {
   description = "Customer prefix for resource names"
   type        = string
 }
+
+variable "domain" {
+  description = "The domain/route53 hosted zone to use"
+  type        = string
+}
+
+variable "webhostname" {
+  description = "The name to use on the hosted zone to receive web requests"
+  type        = string
+}
