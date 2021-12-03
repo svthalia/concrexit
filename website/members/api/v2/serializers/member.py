@@ -10,19 +10,32 @@ class MemberSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
         detailed = kwargs.pop("detailed", True)
+        admin = kwargs.pop("admin", False)
 
         # Instantiate the superclass normally
         super().__init__(*args, **kwargs)
 
+        hidden_fields = set()
         if not detailed:
-            hidden_fields = {"achievements", "societies"}
-            existing = set(self.fields.keys())
-            for field_name in existing & hidden_fields:
-                self.fields.pop(field_name)
+            hidden_fields.update({"achievements", "societies"})
+        if not admin:
+            hidden_fields.update({"first_name", "last_name"})
+
+        existing = set(self.fields.keys())
+        for field_name in existing & hidden_fields:
+            self.fields.pop(field_name)
 
     class Meta:
         model = Member
-        fields = ("pk", "membership_type", "profile", "achievements", "societies")
+        fields = (
+            "pk",
+            "first_name",
+            "last_name",
+            "membership_type",
+            "profile",
+            "achievements",
+            "societies",
+        )
 
     membership_type = serializers.SerializerMethodField("_membership_type")
     profile = ProfileSerializer(
