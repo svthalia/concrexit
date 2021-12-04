@@ -45,7 +45,8 @@ class EventRegistration(models.Model):
         _("special price"),
         max_digits=5,
         decimal_places=2,
-        default=0,
+        blank=True,
+        null=True,
         validators=[validators.MinValueValidator(0)],
     )
 
@@ -121,13 +122,29 @@ class EventRegistration(models.Model):
         return not self.queue_position and now >= self.event.cancel_deadline
 
     def clean(self):
+        errors = {}
         if (self.member is None and not self.name) or (self.member and self.name):
-            raise ValidationError(
+            errors.update(
                 {
                     "member": _("Either specify a member or a name"),
                     "name": _("Either specify a member or a name"),
                 }
             )
+        if (
+            self.payment
+            and self.special_price
+            and self.special_price != self.payment.amount
+        ):
+            errors.update(
+                {
+                    "special_prize": _(
+                        "Cannot change price of already paid registration"
+                    ),
+                }
+            )
+
+        if errors:
+            raise ValidationError(errors)
 
     def save(self, **kwargs):
         super().save(**kwargs)
