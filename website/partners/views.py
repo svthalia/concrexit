@@ -11,11 +11,11 @@ def index(request):
         is_active=True, is_main_partner=False, is_local_partner=False
     )
     main_partner = Partner.objects.filter(is_main_partner=True).first()
-    local_partner = Partner.objects.filter(is_local_partner=True).first()
+    local_partners = Partner.objects.filter(is_local_partner=True)
 
     context = {
         "main_partner": main_partner,
-        "local_partner": local_partner,
+        "local_partners": local_partners,
         "partners": sorted(partners, key=lambda x: random()),
     }
     return render(request, "partners/index.html", context)

@@ -20,29 +20,34 @@
                 {% endblocktrans %}
             </p>
 
-            <div class="row mt-4">
+            <div class="row mt-4 justify-content-center">
                 <div class="col-12 col-md-6 mt-auto">
-                <div class="text-center">
-                    <img src="{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
-                </div>
-                <div class="mt-3">
-                    <h2>{% trans "our main partner"|capfirst %}</h2>
-                    <h3>{{ main_partner.name }}</h3>
-                    <p>{{ main_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
-                    <a href="{{ main_partner.get_absolute_url }}" class="btn btn-primary">{% trans "Learn more" %}</a>
-                </div>
+                    <div class="text-center">
+                        <img src="{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
                     </div>
-                <div class="col-12 col-md-6 mt-auto">
-                <div class="text-center">
-                    <img src="{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
+                    <div class="mt-3">
+                        <h2>{% trans "our main partner"|capfirst %}</h2>
+                        <h3>{{ main_partner.name }}</h3>
+                        <p>{{ main_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
+                        <a href="{{ main_partner.get_absolute_url }}" class="btn btn-primary">{% trans "Learn more" %}</a>
+                    </div>
                 </div>
-                <div class="mt-3">
-                    <h2>{% trans "our local partner"|capfirst %}</h2>
-                    <h3>{{ local_partner.name }}</h3>
-                    <p>{{ local_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
-                    <a href="{{ local_partner.get_absolute_url }}" class="btn btn-primary">{% trans "Learn more" %}</a>
-                </div>
-                </div>
+            </div>
+
+            <div class="row mt-4 justify-content-center">
+                {% for local_partner in local_partners %}
+                    <div class="col-12 col-md-6 mt-auto">
+                        <div class="text-center">
+                            <img src="{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
+                        </div>
+                        <div class="mt-3">
+                            <h2>{% trans "our local partner"|capfirst %}</h2>
+                            <h3>{{ local_partner.name }}</h3>
+                            <p>{{ local_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
+                            <a href="{{ local_partner.get_absolute_url }}" class="btn btn-primary">{% trans "Learn more" %}</a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
 
             <div class="row mt-4">

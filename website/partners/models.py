@@ -54,8 +54,6 @@ class Partner(models.Model):
         if self.is_main_partner:
             self.is_local_partner = False
             self._reset_main_partner()
-        if self.is_local_partner:
-            self._reset_local_partner()
 
         super().save(**kwargs)
 
@@ -70,20 +68,6 @@ class Partner(models.Model):
             if self != current_main_partner:
                 current_main_partner.is_main_partner = False
                 current_main_partner.save()
-        except Partner.DoesNotExist:
-            pass
-
-    def _reset_local_partner(self):
-        """Reset the local partner status.
-
-        If this partner is not local partner,
-        remove the local partner status from the local partner.
-        """
-        try:
-            current_local_partner = Partner.objects.get(is_local_partner=True)
-            if self != current_local_partner:
-                current_local_partner.is_local_partner = False
-                current_local_partner.save()
         except Partner.DoesNotExist:
             pass
 
