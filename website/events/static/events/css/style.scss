@@ -1,3 +1,49 @@
+#events-cards {
+    .card {
+        -moz-transition: 0.2s ease-in;
+        -o-transition: 0.2s ease-in;
+        -webkit-transition: 0.2s ease-in;
+        -ms-transition: 0.2s ease-in;
+        transition: 0.2s ease-in;
+
+        height: calc(100% - 15px);
+
+        &:hover {
+            background-color: var(--card-background-hover);
+        }
+
+        .card-date {
+            color: var(--primary);
+            margin-bottom: .7rem;
+        }
+
+        .event-indication {
+            float: right;
+            position: absolute;
+            right: 1.25rem;
+            top: 1.25rem;
+
+            .regular-event-registration-open, .regular-event-has-registration .regular-event-pending-registration {
+                border-radius: 20px;
+                width: 12px;
+                height: 12px;
+            }
+
+            .regular-event-registration-open {
+                background-color: $grey;
+            }
+
+            .regular-event-has-registration {
+                background-color: var(--primary);
+            }
+
+            .regular-event-pending-registration {
+                background-color: $yellow;
+            }
+        }
+    }
+}
+
 .frontpage-events {
     .list-group-item {
         .event-date {
