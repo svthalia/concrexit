@@ -13,6 +13,7 @@
                 {% if cancellations %}
                 <th scope="col" class="sorter-sortval">{% trans "cancellation date"|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
+                <th scope="col" class="sorter-sortval">{% trans "remarks"|capfirst %} <span class="toggle"></span></th>
                 {% for field in fields %}
                 <th scope="col">{{ field.name }} <span class="toggle"></span></th>
                 {% endfor %}
@@ -51,15 +52,15 @@
                             data-none="no_payment"
                             {% if registration.payment %}class="paid"{% endif %}>
                         <option value="no_payment"
-                                {% if not registration.payment %}selected{% endif %}>{% trans 'None' %}</option>
+                                {% if not registration.payment %}selected{% endif %}>{% trans 'None' %} {% if registration.special_price %}(€ {{ registration.special_price }}) {% endif %}</option>
                         <option value="{{ payment.CARD }}"
-                                {% if registration.payment and registration.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %}</option>
+                                {% if registration.payment and registration.payment.type == payment.CARD %}selected{% endif %}>{% trans 'Card' %} {% if registration.special_price %}(€ {{ registration.special_price }}) {% endif %}</option>
                         <option value="{{ payment.CASH }}"
-                                {% if registration.payment and registration.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %}</option>
+                                {% if registration.payment and registration.payment.type == payment.CASH %}selected{% endif %}>{% trans 'Cash' %} {% if registration.special_price %}(€ {{ registration.special_price }}) {% endif %}</option>
                         <option value="{{ payment.TPAY }}" disabled
-                                {% if registration.payment and registration.payment.type == payment.TPAY %}selected{% endif %}>{% trans 'Thalia Pay' %}</option>
+                                {% if registration.payment and registration.payment.type == payment.TPAY %}selected{% endif %}>{% trans 'Thalia Pay' %} {% if registration.special_price %}(€ {{ registration.special_price }}) {% endif %}</option>
                         <option value="{{ payment.WIRE }}"
-                                {% if registration.payment and registration.payment.type == payment.WIRE %}selected{% endif %}>{% trans 'Wire' %}</option>
+                                {% if registration.payment and registration.payment.type == payment.WIRE %}selected{% endif %}>{% trans 'Wire' %} {% if registration.special_price %}(€ {{ registration.special_price }}) {% endif %}</option>
                     </select>
                 </td>
                 {% endif %}
@@ -68,6 +69,7 @@
                 {% if cancellations %}
                 <td data-sortval="{{ registration.date_cancelled|date:'c' }}">{{ registration.date_cancelled }}</td>
                 {% endif %}
+                <td data-sortval="{{ registration.remarks }}">{% if registration.remarks %}{{ registration.remarks }}{% endif %}</td>
                 {% for field in registration.information_fields %}
                     {% if not field.value and not field.field.type == 'boolean' %}
                     <td></td>

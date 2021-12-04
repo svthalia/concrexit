@@ -1,3 +1,4 @@
+from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -39,6 +40,16 @@ class EventRegistration(models.Model):
     date_cancelled = models.DateTimeField(_("cancellation date"), null=True, blank=True)
 
     present = models.BooleanField(_("present"), default=False,)
+
+    special_price = models.DecimalField(
+        _("special price"),
+        max_digits=5,
+        decimal_places=2,
+        default=0,
+        validators=[validators.MinValueValidator(0)],
+    )
+
+    remarks = models.TextField(_("remarks"), null=True, blank=True)
 
     payment = models.OneToOneField(
         "payments.Payment",

@@ -20,6 +20,8 @@ class EventRegistrationAdminSerializer(serializers.ModelSerializer):
             "payment",
             "member",
             "name",
+            "special_price",
+            "remarks",
         )
         read_only_fields = ("payment",)
 
