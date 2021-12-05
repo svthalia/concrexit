@@ -21,7 +21,7 @@ from events.exceptions import RegistrationError
 from events.forms import FieldsForm, EventMessageForm
 from payments.models import Payment
 from pushnotifications.models import Message, Category
-from .models import Event, EventRegistration
+from events.models import Event, EventRegistration
 
 
 @method_decorator(staff_member_required, name="dispatch")

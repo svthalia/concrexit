@@ -1,25 +1,31 @@
 """Partners app API v2 urls."""
+from django.shortcuts import redirect
 from django.urls import path
+from django.views.generic import RedirectView
 
 from partners.api.v2.views import (
-    PartnerEventListView,
-    PartnerListView,
-    PartnerEventDetailView,
     PartnerDetailView,
     VacancyListView,
     VacancyDetailView,
     VacancyCategoryListView,
 )
+from partners.api.v2.views import PartnerListView
 
 app_name = "partners"
 
 urlpatterns = [
     path(
-        "partners/events/", PartnerEventListView.as_view(), name="partner-events-list"
+        "partners/events/",
+        RedirectView.as_view(
+            pattern_name="api:v2:events:external-events-list", permanent=False
+        ),
+        name="partner-events-list",
     ),
     path(
         "partners/events/<int:pk>/",
-        PartnerEventDetailView.as_view(),
+        RedirectView.as_view(
+            pattern_name="api:v2:events:external-event-detail", permanent=False
+        ),
         name="partner-events-detail",
     ),
     path("partners/vacancies/", VacancyListView.as_view(), name="vacancies-list"),

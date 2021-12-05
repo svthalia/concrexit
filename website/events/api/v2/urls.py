@@ -7,6 +7,8 @@ from events.api.v2.views import (
     EventRegistrationsView,
     EventRegistrationDetailView,
     EventRegistrationFieldsView,
+    ExternalEventListView,
+    ExternalEventDetailView,
 )
 
 app_name = "events"
@@ -32,5 +34,13 @@ urlpatterns = [
         "events/<int:event_id>/registrations/<int:registration_id>/fields/",
         EventRegistrationFieldsView.as_view(),
         name="event-registration-fields",
+    ),
+    path(
+        "events/external/", ExternalEventListView.as_view(), name="external-events-list"
+    ),
+    path(
+        "events/external/<int:pk>/",
+        ExternalEventDetailView.as_view(),
+        name="external-event-detail",
     ),
 ]

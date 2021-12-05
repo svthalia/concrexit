@@ -3,7 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 from partners.models import (
     Partner,
-    PartnerEvent,
     PartnerImage,
     Vacancy,
     VacancyCategory,
@@ -82,23 +81,3 @@ class VacancyAdmin(admin.ModelAdmin):
         ),
         (_("Categories"), {"fields": ("categories",)}),
     )
-
-
-@admin.register(PartnerEvent)
-class PartnerEventAdmin(admin.ModelAdmin):
-    """Class to show partner events in the admin."""
-
-    fields = (
-        "partner",
-        "other_partner",
-        "title",
-        "description",
-        "location",
-        "start",
-        "end",
-        "url",
-        "published",
-    )
-    list_display = ("title", "start", "end", "partner", "published")
-    list_filter = ("start", "published")
-    search_fields = ("title", "partner__name")
