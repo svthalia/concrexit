@@ -49,7 +49,7 @@ pydenticon = "0.3.1"
 Faker = "9.9.0"
 coverage = {extras = ["toml"], version = "^5.0.3"}
 black = "19.10b0"
-pylint = "2.12.1"
+pylint = "2.12.2"
 pylint-django = "2.4.4"
 
 [tool.coverage.run]
