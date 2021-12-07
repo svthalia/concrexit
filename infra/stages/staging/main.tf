@@ -25,8 +25,7 @@ module "concrexit" {
   customer             = var.customer
   webhostname          = "staging-tf"
   domain               = "thalia.nu"
-}
-
-output "command" {
-  value = module.concrexit.command
+  deploy_dir           = var.deploy_dir
+  ssh_private_key      = chomp(file("~/.ssh/id_ed25519"))
+  ssh_public_key       = chomp(file("~/.ssh/id_ed25519.pub"))
 }

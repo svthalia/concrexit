@@ -230,7 +230,7 @@ in
         description = "Send scheduled push notifications";
       };
       sendplannednewsletters = {
-        every = 60;
+        every = 60 * 5;
         description = "Send planned newsletters";
       };
       sync_mailinglists.calendar = "*-*-* *:30:00";

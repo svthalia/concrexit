@@ -56,6 +56,7 @@ with lib;
         enable = true;
         description = if value.description != null then value.description else "Runs the ${name} concrexit management command";
         after = [ "concrexit.service" ];
+        requires = [ "concrexit.service" ];
         wantedBy = [ "timers.target" ];
         timerConfig =
           if (value.every != null) then {

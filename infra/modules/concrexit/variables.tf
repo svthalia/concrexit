@@ -22,3 +22,16 @@ variable "webhostname" {
   description = "The name to use on the hosted zone to receive web requests"
   type        = string
 }
+
+variable "deploy_dir" {
+  description = "Directory outside of the repository to place deployment files"
+  type        = string
+}
+
+variable "ssh_private_key" {
+  type        = string
+}
+
+variable "ssh_public_key" {
+  type        = string
+}

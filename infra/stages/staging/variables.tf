@@ -27,3 +27,8 @@ variable "aws_tags" {
   description = "AWS tags that should be part of every resource for identification and billing"
   type        = map(string)
 }
+
+variable "deploy_dir" {
+  description = "Directory outside of the repository to place deployment files"
+  type        = string
+}

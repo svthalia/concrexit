@@ -26,7 +26,7 @@ data "aws_ami" "nixos" {
 
   filter {
     name   = "name"
-    values = ["NixOS-21.05.*-x86_64-linux"]
+    values = ["NixOS-21.11.*-x86_64-linux"]
   }
 }
 
@@ -158,6 +158,17 @@ resource "aws_route53_record" "www" {
   type    = "A"
   ttl     = "300"
   records = [aws_eip.eip.public_ip]
+  allow_overwrite = true
+}
+
+
+resource "aws_route53_record" "wildcard" {
+  zone_id = data.aws_route53_zone.primary.zone_id
+  name    = "*.${var.webhostname}"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [ "${var.webhostname}.${var.domain}" ]
+  allow_overwrite = true
 }
 
 resource "aws_instance" "concrexit" {
@@ -194,44 +205,100 @@ resource "aws_volume_attachment" "media-att" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "${var.customer}-${var.stage}-concrexit-deployer-key"
-  public_key = chomp(tls_private_key.ssh.public_key_openssh)
-}
-
-resource "tls_private_key" "ssh" {
-  algorithm = "RSA"
-  rsa_bits  = "4096"
+  public_key = var.ssh_public_key
 }
 
 resource "local_file" "private_key" {
-  filename = "id_rsa"
+  filename = "${var.deploy_dir}/ssh_private_key"
   file_permission = "0600"
-  content = tls_private_key.ssh.private_key_pem
+  content = var.ssh_private_key
 }
 
-output "command" {
-  value = <<EOF
-nix build --impure --expr '(builtins.getFlake (builtins.toString ./.)).concrexitSystem' --argstr hostname "${var.webhostname}" --argstr deploy_public_key "${chomp(tls_private_key.ssh.public_key_openssh)}" --json
+resource "local_file" "deploy_flake" {
+  filename = "${var.deploy_dir}/flake.nix"
+  content = <<EOF
+{
+  description = "Concrexit deployment flake";
+
+  inputs.concrexit.url = "${abspath("${path.module}/../../..")}";
+  inputs.nixpkgs.follows = "concrexit/nixpkgs";
+
+  outputs = { self, nixpkgs, concrexit }: {
+
+    defaultPackage.x86_64-linux = (nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules =
+        [
+          "$${concrexit}/infra/nixos/concrexit.nix"
+          "$${concrexit}/infra/nixos/swapfile.nix"
+          {
+            nixpkgs.overlays = [ concrexit.overlay ];
+
+            networking = {
+              hostName = "${var.webhostname}";
+              domain = "thalia.nu";
+            };
+
+            concrexit.domain = "${var.webhostname}.thalia.nu";
+
+            users.users.root.openssh.authorizedKeys.keys = [ "${var.ssh_public_key}" ];
+
+            swapfile = {
+              enable = true;
+              size = "2GiB";
+            };
+          }
+        ];
+    }).config.system.build.toplevel;
+  };
+}
 EOF
 }
 
-# module "deploy_nixos" {
-#   source = "../deploy_nixos"
+# used to detect changes in the configuration
+data "external" "nix-flake-build" {
+  depends_on = [ resource.local_file.deploy_flake ]
+  program = [
+    "bash", "${abspath(path.module)}/nix-build-flake.sh"
+  ]
+  working_dir = var.deploy_dir
+}
 
-#   nixos_config = "${path.module}/../../nixos/configuration.nix"
-#   hermetic = true
-#   arguments = {
-#     "deploy_public_key" = chomp(tls_private_key.ssh.public_key_openssh)
-#   }
+resource "null_resource" "deploy_nixos" {
+  depends_on = [ aws_route53_record.www, aws_route53_record.wildcard ]
+  triggers = {
+    nix_build_output = data.external.nix-flake-build.result.out
+    force = "a"
+  }
 
-#   target_user = "root"
-#   target_host = aws_eip.eip.public_ip
+  connection {
+    type        = "ssh"
+    host        = aws_eip.eip.public_ip
+    user        = "root"
+    timeout     = "100s"
+    agent = false
+    private_key = chomp(var.ssh_private_key)
+  }
 
-#   // Will not be logged so can be marked as nonsensitive
-#   // Adviced by: https://github.com/hashicorp/terraform/issues/27154#issuecomment-814339127
-#   ssh_private_key = nonsensitive(tls_private_key.ssh.private_key_pem)
+  // Wait for the connection to succeed
+  provisioner "remote-exec" {
+    inline = [
+      "true"
+    ]
+  }
 
-#   triggers = {
-#     // Also re-deploy whenever the VM is re-created
-#     instance_id = aws_instance.concrexit.id
-#   }
-# }
+  provisioner "local-exec" {
+    command = <<EOF
+NIX_SSHOPTS='-i ssh_private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null -o BatchMode=yes' \
+  nix copy -s --to ssh://root@${aws_eip.eip.public_ip} ${data.external.nix-flake-build.result.out}
+EOF
+    working_dir = var.deploy_dir
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "nix-env --profile /nix/var/nix/profiles/system --set ${data.external.nix-flake-build.result.out}",
+      "${data.external.nix-flake-build.result.out}/bin/switch-to-configuration switch"
+    ]
+  }
+}
