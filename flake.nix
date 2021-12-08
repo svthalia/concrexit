@@ -23,9 +23,20 @@
       in
       rec {
 
-        devShell = pkgs.mkShell {
-          packages = with pkgs; [ poetry pkgs.concrexit ];
-        };
+        devShells =
+          let basePackages = with pkgs; [ poetry pkgs.concrexit ghostscript file ];
+          in
+          (flake-utils.lib.flattenTree
+            {
+              concrexit = pkgs.mkShell {
+                packages = basePackages;
+              };
+              deployment = pkgs.mkShell {
+                packages = with pkgs; basePackages ++ [ terraform ];
+              };
+            });
+
+        devShell = devShells.concrexit;
 
         packages = (flake-utils.lib.flattenTree
           {
@@ -45,7 +56,8 @@
               inherit system;
             }
           ).config.system.build.amazonImage;
-          # We define two variants of the NixOS system, the vm can be used to do local testing.
+
+          # This vm can be used to do local testing.
           # A script to run this VM is included in the scripts directory. Unfortunately this
           # will only work on a Linux system.
           vm = (
@@ -92,37 +104,5 @@
       overlay = final: prev: {
         concrexit = final.callPackage ./default.nix { inherit version; };
       };
-
-      concrexitSystem =
-        { hostname
-        , deploy_public_key
-        , domain ? "thalia.nu"
-        , webdomain ? "${hostname}.${domain}"
-        , concrexitOptions ? {}
-        }: (nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules =
-            [
-              ./infra/nixos/concrexit.nix
-              ./infra/nixos/swapfile.nix
-              {
-                nixpkgs.overlays = [ self.overlay ];
-
-                networking = {
-                  hostName = hostname;
-                  domain = domain;
-                };
-
-                concrexit = { domain = webdomain; } // concrexitOptions;
-
-                users.users.root.openssh.authorizedKeys.keys = [ deploy_public_key ];
-
-                swapfile = {
-                  enable = true;
-                  size = "2GiB";
-                };
-              }
-            ];
-        }).config.system.build.toplevel;
     };
 }
