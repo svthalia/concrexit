@@ -131,7 +131,7 @@ in
     nix = {
       gc.automatic = true;
       # This is required to be able to use nix-copy-closure
-      trustedUsers = [ "root" "deploy" "jelle" "wouter" ];
+      trustedUsers = [ "root" "jelle" "wouter" ];
     };
 
     # Allow passwordless sudo for easier deployment

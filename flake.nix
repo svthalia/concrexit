@@ -32,7 +32,7 @@
                 packages = basePackages;
               };
               deployment = pkgs.mkShell {
-                packages = with pkgs; basePackages ++ [ terraform ];
+                packages = with pkgs; basePackages ++ [ terraform jq ];
               };
             });
 

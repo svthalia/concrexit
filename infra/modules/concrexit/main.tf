@@ -268,7 +268,6 @@ resource "null_resource" "deploy_nixos" {
   depends_on = [ aws_route53_record.www, aws_route53_record.wildcard ]
   triggers = {
     nix_build_output = data.external.nix-flake-build.result.out
-    force = "a"
   }
 
   connection {
