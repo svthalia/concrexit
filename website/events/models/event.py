@@ -39,6 +39,13 @@ class Event(models.Model):
 
     description = HTMLField(_("description"),)
 
+    short = models.TextField(_("short description"), 
+        max_length=500,
+        null=False,
+        blank=False,
+        help_text=_(
+            "A short text of max 500 characters for promotion and the newsletter."),)
+
     start = models.DateTimeField(_("start time"))
 
     end = models.DateTimeField(_("end time"))
