@@ -2,9 +2,104 @@
 {% load static %}
 
 {% block extrahead %}
+    {{ block.super }}
     {% if debug %}
         <link rel="icon" href="{% static "img/browser/icon-debug.png" %}">
     {% else %}
         <link rel="icon" href="{% static "img/browser/icon.png" %}">
     {% endif %}
+    <meta name="msapplication-TileColor" content="#E62272">
+    <meta name="theme-color" content="#E62272">
+    <style>
+        @font-face {
+            font-family: 'Open Sans';
+            src: url("{% static 'fonts/OpenSans-Italic.eot' %}");
+            src: url("{% static 'fonts/OpenSans-Italic.eot' %}'?#iefix'") format('embedded-opentype'),
+            url("{% static 'fonts/OpenSans-Italic.woff2' %}") format('woff2'),
+            url("{% static 'fonts/OpenSans-Italic.woff' %}") format('woff'),
+            url("{% static 'fonts/OpenSans-Italic.ttf' %}") format('truetype'),
+            url("{% static 'fonts/OpenSans-Italic.svg' %}'#OpenSans-Italic'") format('svg');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Open Sans';
+            src: url("{% static 'fonts/OpenSans-BoldItalic.eot' %}");
+            src: url("{% static 'fonts/OpenSans-BoldItalic.eot' %}'?#iefix'") format('embedded-opentype'),
+            url("{% static 'fonts/OpenSans-BoldItalic.woff2' %}") format('woff2'),
+            url("{% static 'fonts/OpenSans-BoldItalic.woff' %}") format('woff'),
+            url("{% static 'fonts/OpenSans-BoldItalic.ttf' %}") format('truetype'),
+            url("{% static 'fonts/OpenSans-BoldItalic.svg' %}'#OpenSans-BoldItalic'") format('svg');
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Open Sans';
+            src: url("{% static 'fonts/OpenSans-Bold.eot' %}");
+            src: url("{% static 'fonts/OpenSans-Bold.eot' %}'?#iefix'") format('embedded-opentype'),
+            url("{% static 'fonts/OpenSans-Bold.woff2' %}") format('woff2'),
+            url("{% static 'fonts/OpenSans-Bold.woff' %}") format('woff'),
+            url("{% static 'fonts/OpenSans-Bold.ttf' %}") format('truetype'),
+            url("{% static 'fonts/OpenSans-Bold.svg' %}'#OpenSans-Bold'") format('svg');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Open Sans';
+            src: url("{% static 'fonts/OpenSans.eot' %}");
+            src: url("{% static 'fonts/OpenSans.eot' %}'?#iefix'") format('embedded-opentype'),
+            url("{% static 'fonts/OpenSans.woff2' %}") format('woff2'),
+            url("{% static 'fonts/OpenSans.woff' %}") format('woff'),
+            url("{% static 'fonts/OpenSans.ttf' %}") format('truetype'),
+            url("{% static 'fonts/OpenSans.svg' %}'#OpenSans'") format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Oswald';
+            src: url("{% static 'fonts/Oswald-Regular.eot' %}");
+            src: url("{% static 'fonts/Oswald-Regular.eot' %}'?#iefix'") format('embedded-opentype'),
+            url("{% static 'fonts/Oswald-Regular.woff2' %}") format('woff2'),
+            url("{% static 'fonts/Oswald-Regular.woff' %}") format('woff'),
+            url("{% static 'fonts/Oswald-Regular.ttf' %}") format('truetype'),
+            url("{% static 'fonts/Oswald-Regular.svg' %}'#Oswald-Regular'") format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+        :root {
+            --thalia-base: #E62272;
+            --thalia-dark: #CF1760;
+            --thalia-accent: #FFFFFF;
+            --thalia-accent-contrast: #000000;
+            --accent: var(--thalia-accent);
+            --primary: var(--thalia-base);
+            --secondary: var(--thalia-accent);
+            --link-fg: var(--body-fg);
+            --link-hover-color: var(--thalia-dark);
+            --link-selected-fg: var(--thalia-base);
+            --header-bg: var(--thalia-base);
+            --header-color: var(--thalia-accent);
+            --default-button-bg: var(--thalia-dark);
+            --default-button-hover-bg: var(--thalia-base);
+            --button-hover-bg: var(--thalia-dark);
+            --breadcrumbs-link-fg: var(--thalia-accent);
+            --breadcrumbs-fg: var(--thalia-accent-contrast);
+            --breadcrumbs-bg: var(--thalia-dark);
+        }
+        #user-tools a:focus, #user-tools a:hover {
+            color: var(--thalia-accent-contrast);
+        }
+        body {
+            font-family: "Open Sans","Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+        }
+        h1, h2, strong,.section, #header, #branding, #user-tools, #breadcrumbs, #changelist-filter, .submit-row, input[type=submit], a.button, .object-tools a {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-weight: 800 !important;
+        }
+    </style>
 {% endblock %}
