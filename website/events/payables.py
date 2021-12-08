@@ -8,11 +8,7 @@ from payments import Payable, payables
 class EventRegistrationPayable(Payable):
     @property
     def payment_amount(self):
-        return (
-            self.model.event.price
-            if not self.model.special_price
-            else self.model.special_price
-        )
+        return self.model.payment_amount
 
     @property
     def payment_topic(self):

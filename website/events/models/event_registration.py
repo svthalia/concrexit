@@ -115,6 +115,10 @@ class EventRegistration(models.Model):
     def is_paid(self):
         return self.payment
 
+    @property
+    def payment_amount(self):
+        return self.event.price if not self.special_price else self.special_price
+
     def would_cancel_after_deadline(self):
         now = timezone.now()
         if not self.event.registration_required:
