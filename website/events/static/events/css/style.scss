@@ -1,3 +1,28 @@
+.event-indication {
+    float: right;
+    position: absolute;
+    right: 1.25rem;
+    top: 1.25rem;
+
+    .open-registration, .has-registration, .pending-registration {
+        border-radius: 20px;
+        width: 12px;
+        height: 12px;
+    }
+
+    .open-registration {
+        background-color: $grey;
+    }
+
+    .has-registration {
+        background-color: var(--primary);
+    }
+
+    .pending-registration {
+        background-color: $yellow;
+    }
+}
+
 #events-cards {
     .card {
         -moz-transition: 0.2s ease-in;
@@ -16,31 +41,6 @@
             color: var(--primary);
             margin-bottom: .7rem;
         }
-
-        .event-indication {
-            float: right;
-            position: absolute;
-            right: 1.25rem;
-            top: 1.25rem;
-
-            .regular-event-registration-open, .regular-event-has-registration .regular-event-pending-registration {
-                border-radius: 20px;
-                width: 12px;
-                height: 12px;
-            }
-
-            .regular-event-registration-open {
-                background-color: $grey;
-            }
-
-            .regular-event-has-registration {
-                background-color: var(--primary);
-            }
-
-            .regular-event-pending-registration {
-                background-color: $yellow;
-            }
-        }
     }
 }
 
@@ -58,31 +58,6 @@
             display: inline-block;
             text-overflow: ellipsis;
             line-height: 16px;
-        }
-
-        .event-indication {
-            float: right;
-            width: 12px;
-            height: 12px;
-            margin-top: 6px;
-
-            .open-registration, .has-registration, .pending-registration {
-                border-radius: 20px;
-                width: 12px;
-                height: 12px;
-            }
-
-            .open-registration {
-                background-color: $grey;
-            }
-
-            .has-registration {
-                background-color: var(--primary);
-            }
-
-            .pending-registration {
-                background-color: $yellow;
-            }
         }
     }
 }

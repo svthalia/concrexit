@@ -15,17 +15,14 @@
                         <div class="card animated fadeIn">
                             <div class="card-body">
                                 {% if next_event.current_user_registration is not None %}
-                                {% if next_event.current_user_registration %}
-                                    <div class="event-indication" data-toggle="tooltip"
-                                     data-placement="top" title="{% trans "Registered for this event" %}">
-                                        <div class="has-registration"></div>
-                                    </div>
-                                {% else %}
-                                    <div class="event-indication" data-toggle="tooltip"
-                                     data-placement="top" title="{%  trans "Not registered for this event" %}">
-                                        <div class="no-registration"></div>
-                                    </div>
-                                {% endif %}
+                                    {% if next_event.current_user_registration %}
+                                        <div class="event-indication"
+                                             data-toggle="tooltip"
+                                             data-placement="top"
+                                             title="{{ next_event.current_user_registration.text }}">
+                                            <div class="{{ next_event.current_user_registration.class }}"></div>
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
 
                                 <h6 class="card-date">{{ next_event.event.start|date:"d F Y" }}</h6>
