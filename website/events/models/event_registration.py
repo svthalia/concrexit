@@ -60,7 +60,7 @@ class EventRegistration(models.Model):
     def is_registered(self):
         return self.date_cancelled is None
 
-    @cached_property
+    @property
     def queue_position(self):
         if self.event.max_participants is not None:
             try:
