@@ -13,7 +13,9 @@ class PayableAdminSerializer(Serializer):
         child=CharField(), default=[Payment.CASH, Payment.CARD, Payment.WIRE,]
     )
     amount = DecimalField(decimal_places=2, max_digits=1000, source="payment_amount")
-    payer = MemberSerializer(detailed=False, read_only=True, source="payment_payer")
+    payer = MemberSerializer(
+        admin=True, detailed=False, read_only=True, source="payment_payer"
+    )
     topic = CharField(source="payment_topic")
     notes = CharField(source="payment_notes")
     payment = PaymentAdminSerializer(read_only=True)

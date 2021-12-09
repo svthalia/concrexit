@@ -25,7 +25,7 @@ class FoodOrderAdminSerializer(serializers.ModelSerializer):
 
     payment = PaymentSerializer()
     product = ProductAdminSerializer()
-    member = MemberSerializer(detailed=False, required=False)
+    member = MemberSerializer(admin=True, detailed=False, required=False)
 
     def to_internal_value(self, data):
         self.fields["member"] = serializers.PrimaryKeyRelatedField(
