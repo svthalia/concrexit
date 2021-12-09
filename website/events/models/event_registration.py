@@ -141,7 +141,7 @@ class EventRegistration(models.Model):
         ):
             errors.update(
                 {
-                    "special_prize": _(
+                    "special_price": _(
                         "Cannot change price of already paid registration"
                     ),
                 }
