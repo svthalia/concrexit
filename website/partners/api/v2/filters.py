@@ -66,11 +66,7 @@ class VacancyCategoryFilter(filters.BaseFilterBackend):
         categories = request.query_params.get("categories", None)
 
         if categories:
-            categories_set = VacancyCategory.objects.filter(
-                slug__in=categories.split(",")
-            ).all()
-
-            queryset = queryset.filter(categories__in=categories_set)
+            queryset = queryset.filter(categories__slug__in=categories.split(","))
 
         return queryset
 

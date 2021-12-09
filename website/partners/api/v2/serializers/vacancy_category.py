@@ -11,4 +11,3 @@ class VacancyCategorySerializer(serializers.ModelSerializer):
 
         model = VacancyCategory
         fields = ("name", "slug")
-
