@@ -1,6 +1,7 @@
 from rest_framework import filters
 
 from utils.snippets import extract_date_range
+from partners.models import VacancyCategory
 
 
 class PartnerEventDateFilter(filters.BaseFilterBackend):
@@ -54,5 +55,32 @@ class VacancyPartnerFilter(filters.BaseFilterBackend):
                 "in": "query",
                 "description": "Filter by partner id",
                 "schema": {"type": "number"},
+            }
+        ]
+
+
+class VacancyCategoryFilter(filters.BaseFilterBackend):
+    """Allows you to filter by category slug."""
+
+    def filter_queryset(self, request, queryset, view):
+        categories = request.query_params.get("categories", None)
+
+        if categories:
+            categories_set = VacancyCategory.objects.filter(
+                slug__in=categories.split(",")
+            ).all()
+
+            queryset = queryset.filter(categories__in=categories_set)
+
+        return queryset
+
+    def get_schema_operation_parameters(self, view):
+        return [
+            {
+                "name": "categories",
+                "required": False,
+                "in": "query",
+                "description": "Filter by category slugs, accepts a comma separated list. Return vacancies that have at least one of the specified categories",
+                "schema": {"type": "string"},
             }
         ]

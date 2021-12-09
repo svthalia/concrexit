@@ -8,6 +8,7 @@ from partners.api.v2.views import (
     PartnerDetailView,
     VacancyListView,
     VacancyDetailView,
+    VacancyCategoryListView,
 )
 
 app_name = "partners"
@@ -22,6 +23,11 @@ urlpatterns = [
         name="partner-events-detail",
     ),
     path("partners/vacancies/", VacancyListView.as_view(), name="vacancies-list"),
+    path(
+        "partners/vacancies/categories/",
+        VacancyCategoryListView.as_view(),
+        name="vacancy-categories-list",
+    ),
     path(
         "partners/vacancies/<int:pk>/",
         VacancyDetailView.as_view(),
