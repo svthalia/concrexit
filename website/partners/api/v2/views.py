@@ -1,4 +1,3 @@
-from django.db.models import query
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -82,6 +81,6 @@ class VacancyDetailView(RetrieveAPIView):
     """Returns a single vacancy."""
 
     serializer_class = VacancySerializer
-    queryset = Partner.objects.all()
+    queryset = Vacancy.objects.all()
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["partners:read"]
