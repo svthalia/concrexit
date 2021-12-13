@@ -2,9 +2,12 @@ from rest_framework import serializers
 
 from partners.models import Partner
 from thaliawebsite.api.v2.serializers import CleanedHTMLSerializer, ThumbnailSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class PartnerSerializer(serializers.ModelSerializer):
+class PartnerSerializer(CleanedModelSerializer):
     """Partner serializer."""
 
     class Meta:

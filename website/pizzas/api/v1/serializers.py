@@ -9,15 +9,16 @@ from payments.api.v1.fields import PaymentTypeField
 from payments.models import Payment
 from pizzas.models import Product, FoodEvent, FoodOrder
 from pizzas.services import can_change_order
+from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
-class PizzaSerializer(serializers.ModelSerializer):
+class PizzaSerializer(CleanedModelSerializer):
     class Meta:
         model = Product
         fields = ("pk", "name", "description", "price", "available")
 
 
-class PizzaEventSerializer(serializers.ModelSerializer):
+class PizzaEventSerializer(CleanedModelSerializer):
     class Meta:
         model = FoodEvent
         fields = ("start", "end", "event", "title", "is_admin")
@@ -30,7 +31,7 @@ class PizzaEventSerializer(serializers.ModelSerializer):
         return can_change_order(member, instance)
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderSerializer(CleanedModelSerializer):
     class Meta:
         model = FoodOrder
         fields = ("pk", "payment", "product", "name", "member")
@@ -41,7 +42,7 @@ class OrderSerializer(serializers.ModelSerializer):
     )
 
 
-class AdminOrderSerializer(serializers.ModelSerializer):
+class AdminOrderSerializer(CleanedModelSerializer):
     class Meta:
         model = FoodOrder
         fields = ("pk", "payment", "product", "name", "member", "display_name")

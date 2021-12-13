@@ -3,9 +3,12 @@ from rest_framework import serializers
 
 from members.models import Profile
 from thaliawebsite.api.v2.serializers import ThumbnailSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(CleanedModelSerializer):
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)

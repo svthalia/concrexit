@@ -3,9 +3,12 @@ from rest_framework import serializers
 from events.models import EventRegistration
 from members.api.v2.serializers.member import MemberSerializer
 from payments.api.v2.serializers import PaymentSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class EventRegistrationSerializer(serializers.ModelSerializer):
+class EventRegistrationSerializer(CleanedModelSerializer):
     """Serializer for event registrations."""
 
     def __init__(self, *args, **kwargs):

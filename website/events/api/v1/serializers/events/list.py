@@ -6,9 +6,10 @@ from rest_framework import serializers
 from announcements.api.v1.serializers import SlideSerializer
 from events import services
 from events.models import Event
+from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
-class EventListSerializer(serializers.ModelSerializer):
+class EventListSerializer(CleanedModelSerializer):
     """Custom list serializer for events."""
 
     class Meta:

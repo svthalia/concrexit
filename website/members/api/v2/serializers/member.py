@@ -4,9 +4,12 @@ from rest_framework.exceptions import ValidationError
 from members.api.v2.serializers.profile import ProfileSerializer
 from members.models import Member
 from members.services import member_achievements, member_societies
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class MemberSerializer(serializers.ModelSerializer):
+class MemberSerializer(CleanedModelSerializer):
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
         detailed = kwargs.pop("detailed", True)

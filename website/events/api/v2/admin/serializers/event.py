@@ -7,10 +7,13 @@ from announcements.models import Slide
 from documents.api.v2.serializers.document import DocumentSerializer
 from documents.models import Document
 from events.models import Event
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 from thaliawebsite.api.v2.serializers.html import CleanedHTMLSerializer
 
 
-class EventAdminSerializer(serializers.ModelSerializer):
+class EventAdminSerializer(CleanedModelSerializer):
     """Serializer for events."""
 
     class Meta:

@@ -4,9 +4,12 @@ from rest_framework import serializers
 
 from announcements.models import Slide
 from thaliawebsite.api.v2.serializers import ThumbnailSerializer, CleanedHTMLSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class SlideSerializer(serializers.ModelSerializer):
+class SlideSerializer(CleanedModelSerializer):
     """Slide serializer."""
 
     class Meta:

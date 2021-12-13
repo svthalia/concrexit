@@ -2,9 +2,12 @@ from rest_framework import serializers
 
 from activemembers.models import MemberGroupMembership
 from members.api.v2.serializers.member import MemberSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class MemberGroupMembershipSerializer(serializers.ModelSerializer):
+class MemberGroupMembershipSerializer(CleanedModelSerializer):
     """API serializer for member group memberships."""
 
     class Meta:

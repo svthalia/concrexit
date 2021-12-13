@@ -1,10 +1,11 @@
-from rest_framework import serializers
-
 from photos.models import Photo
 from thaliawebsite.api.v2.serializers import ThumbnailSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class PhotoSerializer(serializers.ModelSerializer):
+class PhotoSerializer(CleanedModelSerializer):
     """API serializer for photos."""
 
     class Meta:

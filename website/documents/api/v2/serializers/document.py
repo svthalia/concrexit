@@ -1,11 +1,13 @@
 from rest_framework.fields import SerializerMethodField
 from rest_framework.reverse import reverse
-from rest_framework.serializers import ModelSerializer
 
 from documents.models import Document
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class DocumentSerializer(ModelSerializer):
+class DocumentSerializer(CleanedModelSerializer):
     class Meta:
         model = Document
         fields = ("pk", "name", "url", "category", "members_only")

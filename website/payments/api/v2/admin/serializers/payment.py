@@ -1,12 +1,14 @@
 from rest_framework.fields import HiddenField
-from rest_framework.serializers import ModelSerializer
 
 from members.api.v2.serializers.member import MemberSerializer
 from payments.models import Payment
 from thaliawebsite.api.v2.fields import CurrentMemberDefault
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class PaymentCreateSerializer(ModelSerializer):
+class PaymentCreateSerializer(CleanedModelSerializer):
     class Meta:
         model = Payment
         fields = (
@@ -24,7 +26,7 @@ class PaymentCreateSerializer(ModelSerializer):
     processed_by = HiddenField(default=CurrentMemberDefault())
 
 
-class PaymentAdminSerializer(ModelSerializer):
+class PaymentAdminSerializer(CleanedModelSerializer):
     class Meta:
         model = Payment
         fields = (

@@ -5,9 +5,10 @@ from rest_framework import serializers
 from members.models import Member, Profile
 from members.services import member_achievements, member_societies
 from thaliawebsite.api.services import create_image_thumbnail_dict
+from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
-class ProfileRetrieveSerializer(serializers.ModelSerializer):
+class ProfileRetrieveSerializer(CleanedModelSerializer):
     """Serializer that renders a member profile."""
 
     class Meta:
@@ -101,7 +102,7 @@ class MemberListSerializer(serializers.ModelSerializer):
         return None
 
 
-class ProfileEditSerializer(serializers.ModelSerializer):
+class ProfileEditSerializer(CleanedModelSerializer):
     """Serializer that renders a profile to be edited."""
 
     class Meta:

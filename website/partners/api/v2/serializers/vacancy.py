@@ -1,9 +1,10 @@
-from rest_framework import serializers
-
 from partners.models import Vacancy
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class VacancySerializer(serializers.ModelSerializer):
+class VacancySerializer(CleanedModelSerializer):
     """Vacancy serializer."""
 
     class Meta:

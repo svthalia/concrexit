@@ -119,6 +119,8 @@ class EventRegistration(models.Model):
             )
 
     def save(self, **kwargs):
+        self.full_clean()
+
         super().save(**kwargs)
 
         if self.event.start_reminder and self.date_cancelled:

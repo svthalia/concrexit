@@ -3,10 +3,11 @@ from django.conf import settings
 from rest_framework import serializers
 
 from announcements.models import Slide
+from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 from utils.media.services import get_thumbnail_url
 
 
-class SlideSerializer(serializers.ModelSerializer):
+class SlideSerializer(CleanedModelSerializer):
     """Slide serializer."""
 
     class Meta:
