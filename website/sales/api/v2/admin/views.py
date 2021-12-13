@@ -1,9 +1,10 @@
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework import filters, exceptions
+from rest_framework import filters as framework_filters, exceptions
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import DjangoModelPermissions
 
+from sales.api.v2 import filters
 from sales.api.v2.admin.permissions import IsManager
 from sales.api.v2.admin.serializers.order import OrderSerializer, OrderListSerializer
 from sales.api.v2.admin.serializers.shift import ShiftSerializer
@@ -24,8 +25,11 @@ class ShiftListView(AdminListAPIView):
     serializer_class = ShiftSerializer
     queryset = Shift.objects.all()
     filter_backends = (
-        filters.OrderingFilter,
-        filters.SearchFilter,
+        framework_filters.OrderingFilter,
+        framework_filters.SearchFilter,
+        filters.ShiftActiveFilter,
+        filters.ShiftLockedFilter,
+        filters.ShiftDateFilter,
     )
     ordering_fields = ("start", "end")
     permission_classes = [IsAuthenticatedOrTokenHasScope, DjangoModelPermissions]
