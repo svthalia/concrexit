@@ -23,11 +23,6 @@ variable "webhostname" {
   type        = string
 }
 
-variable "deploy_dir" {
-  description = "Directory outside of the repository to place deployment files"
-  type        = string
-}
-
 variable "ssh_private_key" {
   type        = string
 }

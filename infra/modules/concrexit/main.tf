@@ -208,15 +208,13 @@ resource "aws_key_pair" "deployer" {
   public_key = var.ssh_public_key
 }
 
-resource "local_file" "private_key" {
-  filename = "${var.deploy_dir}/ssh_private_key"
-  file_permission = "0600"
-  content = var.ssh_private_key
-}
+data "external" "nix-flake-build" {
+  program = [
+    "bash", "${abspath(path.module)}/nix-build-flake.sh"
+  ]
 
-resource "local_file" "deploy_flake" {
-  filename = "${var.deploy_dir}/flake.nix"
-  content = <<EOF
+  query = {
+    flake_content = <<EOF
 {
   description = "Concrexit deployment flake";
 
@@ -253,15 +251,7 @@ resource "local_file" "deploy_flake" {
   };
 }
 EOF
-}
-
-# used to detect changes in the configuration
-data "external" "nix-flake-build" {
-  depends_on = [ resource.local_file.deploy_flake ]
-  program = [
-    "bash", "${abspath(path.module)}/nix-build-flake.sh"
-  ]
-  working_dir = var.deploy_dir
+  }
 }
 
 resource "null_resource" "deploy_nixos" {
@@ -288,10 +278,14 @@ resource "null_resource" "deploy_nixos" {
 
   provisioner "local-exec" {
     command = <<EOF
-NIX_SSHOPTS='-i ssh_private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null -o BatchMode=yes' \
-  nix copy -s --to ssh://root@${aws_eip.eip.public_ip} ${data.external.nix-flake-build.result.out}
+workDir=$(mktemp -d)
+trap 'rm -rf "$workDir"' EXIT
+cd $workDir
+echo "chomp(var.ssh_private_key)" > ./deploykey
+chmod 600 ./deploykey
+export NIX_SSHOPTS="-i ./deploykey -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null -o BatchMode=yes"
+nix copy -s --to ssh://root@${aws_eip.eip.public_ip} ${data.external.nix-flake-build.result.out}
 EOF
-    working_dir = var.deploy_dir
   }
 
   provisioner "remote-exec" {

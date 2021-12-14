@@ -45,7 +45,7 @@ let
   concrexit-env = poetryPython.python.buildEnv.override { extraLibs = poetryPackages; };
 
   # We want to enable the python3 plugin for uwsgi, so we override here
-  uwsgi-python = (uwsgi.override { plugins = [ "python3" ]; }).overrideAttrs (old: { buildInputs = old.buildInputs ++ [ pkgs.zlib pkgs.expat ]; });
+  uwsgi-python = (uwsgi.override { plugins = [ "python3" ]; python3 = concrexit-python; }).overrideAttrs (old: { buildInputs = old.buildInputs ++ [ pkgs.zlib pkgs.expat ]; });
 
   # Wrapper script that sets the right options for uWSGI
   concrexit-uwsgi = writeScriptBin "concrexit-uwsgi" ''

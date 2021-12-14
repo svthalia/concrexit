@@ -28,7 +28,12 @@ variable "aws_tags" {
   type        = map(string)
 }
 
-variable "deploy_dir" {
-  description = "Directory outside of the repository to place deployment files"
+variable "ssh_private_key" {
+  description = "The private key used to create the EC2 instance and connect to, public key is used in the Nix OS configuration"
+  type        = string
+}
+
+variable "ssh_public_key" {
+  description = "The public key used to create the EC2 instance, also used in the Nix OS configuration"
   type        = string
 }
