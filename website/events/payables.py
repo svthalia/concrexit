@@ -8,7 +8,7 @@ from payments import Payable, payables
 class EventRegistrationPayable(Payable):
     @property
     def payment_amount(self):
-        return self.model.event.price
+        return self.model.payment_amount
 
     @property
     def payment_topic(self):
@@ -18,6 +18,8 @@ class EventRegistrationPayable(Payable):
     def payment_notes(self):
         notes = f"Event registration {self.model.event.title}. "
         notes += f"{date(self.model.event.start)}. Registration date: {date(self.model.date)}."
+        if self.model.special_price:
+            notes += " [special price]"
         return notes
 
     @property

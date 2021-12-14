@@ -1,3 +1,4 @@
+from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -39,6 +40,17 @@ class EventRegistration(models.Model):
     date_cancelled = models.DateTimeField(_("cancellation date"), null=True, blank=True)
 
     present = models.BooleanField(_("present"), default=False,)
+
+    special_price = models.DecimalField(
+        _("special price"),
+        max_digits=5,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        validators=[validators.MinValueValidator(0)],
+    )
+
+    remarks = models.TextField(_("remarks"), null=True, blank=True)
 
     payment = models.OneToOneField(
         "payments.Payment",
@@ -103,6 +115,10 @@ class EventRegistration(models.Model):
     def is_paid(self):
         return self.payment
 
+    @property
+    def payment_amount(self):
+        return self.event.price if not self.special_price else self.special_price
+
     def would_cancel_after_deadline(self):
         now = timezone.now()
         if not self.event.registration_required:
@@ -110,13 +126,29 @@ class EventRegistration(models.Model):
         return not self.queue_position and now >= self.event.cancel_deadline
 
     def clean(self):
+        errors = {}
         if (self.member is None and not self.name) or (self.member and self.name):
-            raise ValidationError(
+            errors.update(
                 {
                     "member": _("Either specify a member or a name"),
                     "name": _("Either specify a member or a name"),
                 }
             )
+        if (
+            self.payment
+            and self.special_price
+            and self.special_price != self.payment.amount
+        ):
+            errors.update(
+                {
+                    "special_price": _(
+                        "Cannot change price of already paid registration"
+                    ),
+                }
+            )
+
+        if errors:
+            raise ValidationError(errors)
 
     def save(self, **kwargs):
         self.full_clean()

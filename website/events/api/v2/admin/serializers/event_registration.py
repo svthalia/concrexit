@@ -23,6 +23,8 @@ class EventRegistrationAdminSerializer(CleanedModelSerializer):
             "payment",
             "member",
             "name",
+            "special_price",
+            "remarks",
         )
         read_only_fields = ("payment",)
 
