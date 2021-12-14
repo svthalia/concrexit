@@ -208,6 +208,11 @@ resource "aws_key_pair" "deployer" {
   public_key = var.ssh_public_key
 }
 
+locals {
+  postgres_volname = replace(aws_volume_attachment.postgres-att.volume_id, "-", "")
+  media_volname = replace(aws_volume_attachment.media-att.volume_id, "-", "")
+}
+
 data "external" "nix-flake-build" {
   program = [
     "bash", "${abspath(path.module)}/nix-build-flake.sh"
@@ -229,7 +234,7 @@ data "external" "nix-flake-build" {
         [
           "$${concrexit}/infra/nixos/concrexit.nix"
           "$${concrexit}/infra/nixos/swapfile.nix"
-          {
+          ({ config, ... }: {
             nixpkgs.overlays = [ concrexit.overlay ];
 
             networking = {
@@ -237,7 +242,16 @@ data "external" "nix-flake-build" {
               domain = "thalia.nu";
             };
 
-            concrexit.domain = "${var.webhostname}.thalia.nu";
+            concrexit = {
+              dir = "/volume/concrexit_media/data";
+              domain = "${var.webhostname}.thalia.nu";
+            };
+
+            services.postgresql.dataDir = "/volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema}";
+
+            systemd.tmpfiles.rules = [
+              "d '/volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema}' 0750 postgres postgres - -"
+            ];
 
             users.users.root.openssh.authorizedKeys.keys = [ "${var.ssh_public_key}" ];
 
@@ -245,7 +259,19 @@ data "external" "nix-flake-build" {
               enable = true;
               size = "2GiB";
             };
-          }
+
+            fileSystems."/volume/concrexit_postgres" = {
+              autoFormat = true;
+              fsType = "ext4";
+              device = "/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_${local.postgres_volname}-ns-1";
+            };
+
+            fileSystems."/volume/concrexit_media" = {
+              autoFormat = true;
+              fsType = "ext4";
+              device = "/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_${local.media_volname}-ns-1";
+            };
+          })
         ];
     }).config.system.build.toplevel;
   };
