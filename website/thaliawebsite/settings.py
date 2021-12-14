@@ -402,6 +402,7 @@ INSTALLED_APPS = [
     # Load django.contrib.admin after thaliawebsite so the admin page gets modified
     "django.contrib.admin",
     "pushnotifications.apps.PushNotificationsConfig",
+    "promotion.apps.PromotionConfig",
     "members.apps.MembersConfig",
     "documents.apps.DocumentsConfig",
     "activemembers.apps.ActiveMembersConfig",

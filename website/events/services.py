@@ -11,6 +11,7 @@ from events.models import EventRegistration, RegistrationInformationField, Event
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
+from activemembers.models import MemberGroup
 
 
 def is_user_registered(member, event):
@@ -127,6 +128,19 @@ def is_organiser(member, event):
         if event:
             return member.get_member_groups().filter(pk=event.organiser.pk).count() != 0
 
+    return False
+
+
+def is_editor(member):
+    if member and member.is_authenticated:
+        if member.is_superuser or member.has_perm("promotion_requests.edit_status"):
+            return True
+        
+        member_in_paparazcie = member.get_member_groups().filter(pk=MemberGroup.objects.filter(name = "Paparazcie").pk).count() != 0
+        member_in_board = True
+
+        return member_in_paparazcie or member_in_board
+    
     return False
 
 

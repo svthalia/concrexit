@@ -3,8 +3,9 @@ from functools import partial
 
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
+from django.db import models
 from django.db.models import Max, Min
-from django.forms import Field
+from django.forms import Field, CheckboxSelectMultiple
 from django.template.defaultfilters import date as _date
 from django.urls import reverse, path
 from django.utils import timezone
@@ -21,6 +22,7 @@ from pizzas.models import FoodEvent
 from utils.admin import DoNextModelAdmin
 from utils.snippets import datetime_to_lectureyear
 from . import forms, models
+from promotion.models import PromotionRequest
 
 
 class RegistrationInformationFieldInline(admin.TabularInline):
@@ -48,6 +50,13 @@ class PizzaEventInline(admin.StackedInline):
     exclude = ("end_reminder",)
     extra = 0
     max_num = 1
+
+
+class PromotionRequestInline(admin.StackedInline):
+
+    model = PromotionRequest
+    exclude = ("assigned_to", "status", "drive_folder",)
+    extra = 0
 
 
 class LectureYearFilter(admin.SimpleListFilter):
@@ -88,6 +97,7 @@ class EventAdmin(DoNextModelAdmin):
     inlines = (
         RegistrationInformationFieldInline,
         PizzaEventInline,
+        PromotionRequestInline,
     )
     list_display = (
         "overview_link",
@@ -147,6 +157,7 @@ class EventAdmin(DoNextModelAdmin):
             {"fields": ("slide", "documents", "shift"), "classes": ("collapse",)},
         ),
     )
+
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
