@@ -27,3 +27,13 @@ variable "aws_tags" {
   description = "AWS tags that should be part of every resource for identification and billing"
   type        = map(string)
 }
+
+variable "ssh_private_key" {
+  description = "The private key used to create the EC2 instance and connect to, public key is used in the Nix OS configuration"
+  type        = string
+}
+
+variable "ssh_public_key" {
+  description = "The public key used to create the EC2 instance, also used in the Nix OS configuration"
+  type        = string
+}

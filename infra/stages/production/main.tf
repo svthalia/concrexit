@@ -23,4 +23,8 @@ module "concrexit" {
   stage                = "production"
   tags                 = var.aws_tags
   customer             = var.customer
+  webhostname          = "production"
+  domain               = "thalia.nu"
+  ssh_private_key      = var.ssh_private_key
+  ssh_public_key       = var.ssh_public_key
 }

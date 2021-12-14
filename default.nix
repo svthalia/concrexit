@@ -89,17 +89,7 @@ let
       MANAGE_PY=1 python website/manage.py collectstatic
       MANAGE_PY=1 python website/manage.py compress
     '';
-
-    # doCheck = true;
-
-    # checkPhase = ''
-    #   export DJANGO_ENV=development
-    #   python website/manage.py check
-    #   python website/manage.py templatecheck --project-only
-    #   python website/manage.py makemigrations --no-input --check --dry-run
-    #   python website/manage.py test website/
-    # '';
-
+    
     # Place the static files and the python env in the right location
     installPhase = ''
       mkdir $out
