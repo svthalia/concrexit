@@ -3,9 +3,12 @@ from rest_framework import serializers
 from events.api.v2.serializers.event import EventSerializer
 from events.models import Event
 from pizzas.models import FoodEvent
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class FoodEventAdminSerializer(serializers.ModelSerializer):
+class FoodEventAdminSerializer(CleanedModelSerializer):
     class Meta:
         model = FoodEvent
         fields = (

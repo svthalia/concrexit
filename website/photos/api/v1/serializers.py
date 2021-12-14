@@ -3,9 +3,10 @@ from rest_framework import serializers
 from thaliawebsite.api.services import create_image_thumbnail_dict
 from photos import services
 from photos.models import Photo, Album
+from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
-class PhotoRetrieveSerializer(serializers.ModelSerializer):
+class PhotoRetrieveSerializer(CleanedModelSerializer):
     """ModelSerializer class to get a Photo object set."""
 
     file = serializers.SerializerMethodField("_file")
@@ -25,7 +26,7 @@ class PhotoRetrieveSerializer(serializers.ModelSerializer):
         fields = ("pk", "rotation", "hidden", "album", "file")
 
 
-class PhotoCreateSerializer(serializers.ModelSerializer):
+class PhotoCreateSerializer(CleanedModelSerializer):
     """ModelSerializer class to create or update a Photo object set."""
 
     class Meta:
@@ -35,7 +36,7 @@ class PhotoCreateSerializer(serializers.ModelSerializer):
         fields = ("pk", "rotation", "hidden", "album", "file")
 
 
-class AlbumSerializer(serializers.ModelSerializer):
+class AlbumSerializer(CleanedModelSerializer):
     """ModelSerializer for an Album object."""
 
     photos = serializers.SerializerMethodField("_photos")
@@ -74,7 +75,7 @@ class AlbumSerializer(serializers.ModelSerializer):
         fields = ("pk", "title", "date", "hidden", "shareable", "accessible", "photos")
 
 
-class AlbumListSerializer(serializers.ModelSerializer):
+class AlbumListSerializer(CleanedModelSerializer):
     """ModelSerializer class for a list of Albums."""
 
     cover = PhotoRetrieveSerializer()

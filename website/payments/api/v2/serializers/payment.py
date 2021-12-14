@@ -1,9 +1,10 @@
-from rest_framework.serializers import ModelSerializer
-
 from payments.models import Payment
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class PaymentSerializer(ModelSerializer):
+class PaymentSerializer(CleanedModelSerializer):
     class Meta:
         model = Payment
         fields = ["pk", "type", "amount", "created_at", "topic", "notes"]

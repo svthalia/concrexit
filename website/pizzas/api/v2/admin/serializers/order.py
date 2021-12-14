@@ -4,14 +4,16 @@ from rest_framework.validators import UniqueTogetherValidator
 from members.api.v2.serializers.member import MemberSerializer
 from members.models import Member
 from payments.api.v2.serializers import PaymentSerializer
-from pizzas.api.v2.admin.serializers.food_event import FoodEventAdminSerializer
 from pizzas.api.v2.admin.serializers.product import ProductAdminSerializer
 from pizzas.api.v2.admin.validators import MutuallyExclusiveValidator
 from pizzas.api.v2.serializers import Product
 from pizzas.models import FoodOrder, FoodEvent
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class FoodOrderAdminSerializer(serializers.ModelSerializer):
+class FoodOrderAdminSerializer(CleanedModelSerializer):
     class Meta:
         model = FoodOrder
         fields = ("pk", "payment", "product", "name", "member", "food_event")

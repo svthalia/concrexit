@@ -1,10 +1,10 @@
 from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
-from rest_framework.serializers import ModelSerializer
 
 from pushnotifications.models import Device, Category, Message
+from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
-class DeviceSerializer(ModelSerializer):
+class DeviceSerializer(CleanedModelSerializer):
 
     receive_category = ManyRelatedField(
         allow_empty=True,
@@ -30,14 +30,14 @@ class DeviceSerializer(ModelSerializer):
         extra_kwargs = {"active": {"default": True}}
 
 
-class CategorySerializer(ModelSerializer):
+class CategorySerializer(CleanedModelSerializer):
     class Meta:
         model = Category
 
         fields = ("key", "name", "description")
 
 
-class MessageSerializer(ModelSerializer):
+class MessageSerializer(CleanedModelSerializer):
     class Meta:
         model = Message
 

@@ -3,9 +3,12 @@ from rest_framework import serializers
 from photos import services
 from photos.api.v2.serializers.photo import PhotoSerializer, PhotoListSerializer
 from photos.models import Album
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class AlbumSerializer(serializers.ModelSerializer):
+class AlbumSerializer(CleanedModelSerializer):
     """API serializer for albums."""
 
     class Meta:

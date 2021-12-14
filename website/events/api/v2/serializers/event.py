@@ -7,10 +7,13 @@ from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.models import Event, EventRegistration
 from thaliawebsite.api.v2.serializers import CleanedHTMLSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 from utils.snippets import create_google_maps_url
 
 
-class EventSerializer(serializers.ModelSerializer):
+class EventSerializer(CleanedModelSerializer):
     """Serializer for events."""
 
     class Meta:

@@ -4,9 +4,10 @@ from django.utils.html import strip_tags
 from rest_framework import serializers
 
 from partners.models import PartnerEvent, Partner
+from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
-class PartnerSerializer(serializers.ModelSerializer):
+class PartnerSerializer(CleanedModelSerializer):
     """Partner serializer."""
 
     class Meta:
@@ -25,7 +26,7 @@ class PartnerSerializer(serializers.ModelSerializer):
         )
 
 
-class PartnerEventSerializer(serializers.ModelSerializer):
+class PartnerEventSerializer(CleanedModelSerializer):
     """Partner events serializer."""
 
     class Meta:

@@ -5,9 +5,12 @@ from activemembers.api.v2.serializers.member_group_membership import (
 )
 from activemembers.models import MemberGroup
 from thaliawebsite.api.v2.serializers import ThumbnailSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class MemberGroupSerializer(serializers.ModelSerializer):
+class MemberGroupSerializer(CleanedModelSerializer):
     """API serializer for member groups."""
 
     def __init__(self, *args, **kwargs):

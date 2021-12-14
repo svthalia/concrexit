@@ -9,9 +9,10 @@ from events.models import EventRegistration, RegistrationInformationField
 from payments.api.v1.fields import PaymentTypeField
 from payments.models import Payment
 from thaliawebsite.api.services import create_image_thumbnail_dict
+from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
-class EventRegistrationListSerializer(serializers.ModelSerializer):
+class EventRegistrationListSerializer(CleanedModelSerializer):
     """Custom registration list serializer."""
 
     class Meta:

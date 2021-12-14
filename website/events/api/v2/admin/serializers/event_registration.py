@@ -4,9 +4,12 @@ from events.models import EventRegistration
 from members.api.v2.serializers.member import MemberSerializer
 from members.models import Member
 from payments.api.v2.serializers import PaymentSerializer
+from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
+    CleanedModelSerializer,
+)
 
 
-class EventRegistrationAdminSerializer(serializers.ModelSerializer):
+class EventRegistrationAdminSerializer(CleanedModelSerializer):
     """Serializer for event registrations."""
 
     class Meta:
@@ -36,3 +39,8 @@ class EventRegistrationAdminSerializer(serializers.ModelSerializer):
             admin=True, detailed=False, read_only=True
         )
         return super().to_representation(instance)
+
+    # def validate(self, attrs):
+    #     instance = EventRegistration(**attrs)
+    #     instance.clean()
+    #     return attrs
