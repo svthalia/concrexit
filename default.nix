@@ -19,6 +19,7 @@ let
     projectDir = src;
     overrides = poetry2nix.overrides.withDefaults (
       _self: super: {
+        uwsgi = {};
         python-magic = concrexit-python.pkgs.python_magic;
         cryptography = super.cryptography.overridePythonAttrs (old: {
           cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
