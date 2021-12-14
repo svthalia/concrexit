@@ -161,6 +161,14 @@ resource "aws_route53_record" "www" {
   allow_overwrite = true
 }
 
+resource "aws_route53_record" "www-ipv6" {
+  zone_id = data.aws_route53_zone.primary.zone_id
+  name    = var.webhostname
+  type    = "AAAA"
+  ttl     = "300"
+  records = [aws_instance.concrexit.ipv6_addresses[0]]
+  allow_overwrite = true
+}
 
 resource "aws_route53_record" "wildcard" {
   zone_id = data.aws_route53_zone.primary.zone_id
