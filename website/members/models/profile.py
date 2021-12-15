@@ -228,17 +228,6 @@ class Profile(models.Model):
         default=True,
     )
 
-    # --- Membership preference ----
-
-    auto_renew = models.BooleanField(
-        choices=(
-            (True, _("Yes, enable auto renewal.")),
-            (False, _("No, manual renewal required.")),
-        ),
-        verbose_name=_("Automatically renew membership"),
-        default=False,
-    )
-
     # --- Active Member preference ---
     email_gsuite_only = models.BooleanField(
         verbose_name=_("Only receive Thalia emails on G Suite-account"),

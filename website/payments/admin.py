@@ -452,7 +452,6 @@ class BankAccountAdmin(admin.ModelAdmin):
     """Manage bank accounts."""
 
     list_display = ("iban", "owner_link", "last_used", "valid_from", "valid_until")
-    list_filter = (ValidAccountFilter, "owner__profile__auto_renew")
     fields = (
         "created_at",
         "last_used",
