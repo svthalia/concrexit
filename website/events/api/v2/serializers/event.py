@@ -78,10 +78,10 @@ class EventSerializer(serializers.ModelSerializer):
         return None
 
     def _num_participants(self, instance):
-        p_count = instance.participants.count()
-        if instance.max_participants and p_count > instance.max_participants:
+        participant_count = instance.participants.count()
+        if instance.max_participants and participant_count > instance.max_participants:
             return instance.max_participants
-        return p_count
+        return participant_count
 
     def _user_permissions(self, instance):
         member = self.context["request"].member

@@ -26,7 +26,7 @@ class CalendarJSEventListView(ListAPIView):
 
     def get_queryset(self):
         start, end = extract_date_range(self.request)
-        objects = Event.objects.filter(
+        events = Event.objects.filter(
             end__gte=start, start__lte=end, published=True
         ).annotate(
             number_regs=Count(
@@ -34,14 +34,14 @@ class CalendarJSEventListView(ListAPIView):
             )
         )
         if self.request.member:
-            objects = objects.annotate(
+            events = events.annotate(
                 user_reg=Subquery(
                     EventRegistration.objects.filter(
                         event=OuterRef("id"), member=self.request.member
                     ).values("member")
                 )
             )
-        return objects
+        return events
 
 
 class CalendarJSUnpublishedEventListView(ListAPIView):
