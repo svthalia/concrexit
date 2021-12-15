@@ -13,18 +13,18 @@ terraform {
   }
 }
 
-provider "aws" {
-  profile = var.aws_profile
-  region  = var.aws_region
-}
-
 module "concrexit" {
   source               = "../../modules/concrexit"
   stage                = "production"
-  tags                 = var.aws_tags
+  tags                 = {
+    "Category"    = "concrexit",
+    "Owner"       = "technicie",
+    "Environment" = "production",
+    "Terraform"   = true
+  }
   customer             = var.customer
   webhostname          = "production"
-  domain               = "thalia.nu"
+  domain               = var.domain_name
   ssh_private_key      = var.ssh_private_key
   ssh_public_key       = var.ssh_public_key
 }
