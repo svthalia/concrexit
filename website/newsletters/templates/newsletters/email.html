@@ -93,7 +93,7 @@
                 {% if item.newsletterevent %}
                 <tr>
                     <td style="{{ item_tr_style }}">
-                        {{ item.short|safe }}
+                        {{ item.caption|safe }}
 
                         {% if item.newsletterevent.show_costs_warning %}
                             <p style="font-family: Arial, sans-serif">
