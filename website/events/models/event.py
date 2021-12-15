@@ -37,9 +37,7 @@ class Event(models.Model):
 
     title = models.CharField(_("title"), max_length=100)
 
-    description = HTMLField(
-        _("description"),
-    )
+    description = HTMLField(_("description"),)
 
     caption = models.TextField(
         _("caption"),
@@ -120,10 +118,7 @@ class Event(models.Model):
         ),
     )
 
-    location = models.CharField(
-        _("location"),
-        max_length=255,
-    )
+    location = models.CharField(_("location"), max_length=255,)
 
     map_location = models.CharField(
         _("location for minimap"),
@@ -156,9 +151,7 @@ class Event(models.Model):
     )
 
     max_participants = models.PositiveSmallIntegerField(
-        _("maximum number of participants"),
-        blank=True,
-        null=True,
+        _("maximum number of participants"), blank=True, null=True,
     )
 
     no_registration_message = models.CharField(
@@ -189,9 +182,7 @@ class Event(models.Model):
     )
 
     documents = models.ManyToManyField(
-        "documents.Document",
-        verbose_name=_("documents"),
-        blank=True,
+        "documents.Document", verbose_name=_("documents"), blank=True,
     )
 
     slide = models.ForeignKey(
