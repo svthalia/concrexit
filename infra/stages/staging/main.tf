@@ -21,10 +21,15 @@ provider "aws" {
 module "concrexit" {
   source               = "../../modules/concrexit"
   stage                = "staging"
-  tags                 = var.aws_tags
+  tags                 = {
+    "Category"    = "concrexit",
+    "Owner"       = "technicie",
+    "Environment" = "staging",
+    "Terraform"   = true
+  }
   customer             = var.customer
   webhostname          = "staging-tf"
-  domain               = "thalia.nu"
+  domain               = var.domain_name
   ssh_private_key      = var.ssh_private_key
   ssh_public_key       = var.ssh_public_key
 }

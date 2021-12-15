@@ -1,4 +1,4 @@
-name: "Build with Nix and deploy if master"
+name: "Build with Nix"
 on:
   push:
     branches:
@@ -15,21 +15,3 @@ jobs:
         name: svthalia
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN_SVTHALIA }}'
     - run: nix build --log-format raw --verbose
-    - name: Deploy if this is master or staging
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging'
-      env:
-        # Environment variables starting with TF_VAR define values for the variables used in the stages
-        TF_VAR_ssh_private_key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
-        TF_VAR_ssh_public_key: ${{ secrets.STAGING_SSH_PUBLIC_KEY }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
-      # Make sure the required program dependencies are available with a nix shell
-      shell: nix develop .#deployment --command bash --noprofile --norc -eo pipefail {0}
-      run: |
-        if [ "${{ github.ref }}" = "refs/heads/master" ] && git rev-parse --quiet --verify staging; then
-          echo "Not deploying 'master' branch because 'staging' already exists!"
-          exit 0
-        fi
-        cd infra/stages/staging
-        terraform init
-        terraform apply -auto-approve
