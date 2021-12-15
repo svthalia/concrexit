@@ -2,6 +2,9 @@ from django.core.management.base import BaseCommand
 
 from members import services as members_services
 from events import services as events_services
+from payments import services as payments_services
+from pizzas import services as pizzas_services
+from sales import services as sales_services
 
 
 class Command(BaseCommand):
@@ -24,3 +27,15 @@ class Command(BaseCommand):
         processed = events_services.execute_data_minimization(options["dry-run"])
         for p in processed:
             self.stdout.write("Removed registration information for {}".format(p))
+
+        processed = payments_services.execute_data_minimization(options["dry-run"])
+        for p in processed:
+            self.stdout.write("Removed payments information for {}".format(p))
+
+        processed = pizzas_services.execute_data_minimization(options["dry-run"])
+        for p in processed:
+            self.stdout.write("Removed food events information for {}".format(p))
+
+        processed = sales_services.execute_data_minimization(options["dry-run"])
+        for p in processed:
+            self.stdout.write("Removed sales orders for {}".format(p))

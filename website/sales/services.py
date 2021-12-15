@@ -1,5 +1,7 @@
 from django.utils import timezone
 
+from sales.models.order import Order
+
 
 def is_adult(member):
     today = timezone.now().date()
@@ -19,3 +21,16 @@ def is_manager(member, shift):
             )
         )
     return False
+
+
+def execute_data_minimization(dry_run=False):
+    """Anonymizes orders older than 3 years."""
+    # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
+    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 3))
+
+    queryset = Order.objects.filter(created_at__lte=deletion_period).exclude(
+        member__isnull=True
+    )
+    if not dry_run:
+        queryset.update(payer=None)
+    return queryset.all()

@@ -217,3 +217,40 @@ class ServicesTest(TestCase):
             mock_mails.assert_called_once()
             ba.refresh_from_db()
             self.assertEqual(b.withdrawal_date.date(), ba.last_used)
+
+    def test_data_minimisation(self):
+        with self.subTest("Payments that are 7 years old must be minimised"):
+            p = Payment.objects.create(
+                paid_by=self.member,
+                amount=123,
+                created_at=timezone.now() - timezone.timedelta(days=(365 * 7) + 1),
+                topic="test",
+                notes="to be deleted",
+            )
+            services.execute_data_minimization(dry_run=False)
+            payment = Payment.objects.get(pk=p.pk)
+            self.assertIsNone(payment.paid_by)
+
+        with self.subTest("Payments that are not 7 years old must not be minimised"):
+            p = Payment.objects.create(
+                paid_by=self.member,
+                amount=123,
+                created_at=timezone.now() - timezone.timedelta(days=(365 * 7) - 1),
+                topic="test",
+                notes="to be deleted",
+            )
+            services.execute_data_minimization(dry_run=False)
+            payment = Payment.objects.get(pk=p.pk)
+            self.assertIsNotNone(payment.paid_by)
+
+        with self.subTest("Dry run should not actually delete"):
+            p = Payment.objects.create(
+                paid_by=self.member,
+                amount=123,
+                created_at=timezone.now() - timezone.timedelta(days=(365 * 7) + 1),
+                topic="test",
+                notes="to be deleted",
+            )
+            services.execute_data_minimization(dry_run=True)
+            payment = Payment.objects.get(pk=p.pk)
+            self.assertIsNotNone(payment.paid_by)

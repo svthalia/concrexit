@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from events.services import is_organiser
 from .models import Product, FoodOrder
 
@@ -29,3 +31,22 @@ def can_change_order(member, food_event):
         and member.has_perm("pizzas.change_foodorder")
         and is_organiser(member, food_event.event)
     )
+
+
+def execute_data_minimization(dry_run=False):
+    """Anonymizes pizzas orders older than 3 years."""
+    # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
+    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 3))
+
+    queryset_members = FoodOrder.objects.filter(created_at__lte=deletion_period).filter(
+        payer__isnull=False
+    )
+    queryset_nonmembers = (
+        FoodOrder.objects.filter(created_at__lte=deletion_period)
+        .filter(name__isnull=False)
+        .exclude(name="<deleted>")
+    )
+    if not dry_run:
+        queryset_members.update(payer=None)
+        queryset_nonmembers.update(name="<deleted>")
+    return queryset_members.union(queryset_nonmembers).all()
