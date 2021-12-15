@@ -12,23 +12,24 @@ jobs:
     - uses: cachix/install-nix-action@v16
     - uses: cachix/cachix-action@v10
       with:
-        name: svthalia-concrexit
-        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix-build -j 4 --arg version "\"$(git rev-parse HEAD)\"" -A github-actions release.nix
-    - run: nix-shell --run "echo OK"
+        name: svthalia
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN_SVTHALIA }}'
+    - run: nix build --log-format raw --verbose
     - name: Deploy if this is master or staging
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging'
+      env:
+        # Environment variables starting with TF_VAR define values for the variables used in the stages
+        TF_VAR_ssh_private_key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+        TF_VAR_ssh_public_key: ${{ secrets.STAGING_SSH_PUBLIC_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+      # Make sure the required program dependencies are available with a nix shell
+      shell: nix develop '.#deployment' --command bash --noprofile --norc -eo pipefail {0}
       run: |
         if [ "${{ github.ref }}" = "refs/heads/master" ] && git rev-parse --quiet --verify staging; then
           echo "Not deploying 'master' branch because 'staging' already exists!"
           exit 0
         fi
-
-        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ./deploykey
-        chmod 600 ./deploykey
-        echo "staging.thalia.nu ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL9Fs2GLgTzFK/8ib18cC+uehhE9tpd4efVmvo0C9RtJ" > ./known_hosts
-        mkdir --mode 700 ~/.ssh
-        echo "IdentityFile $(pwd)/deploykey" >> ~/.ssh/config
-        echo "UserKnownHostsFile $(pwd)/known_hosts" >> ~/.ssh/config
-
-        USER=deploy scripts/send-conf-and-switch.sh
+        cd infra/stages/staging
+        terraform init
+        terraform apply -auto-approve
