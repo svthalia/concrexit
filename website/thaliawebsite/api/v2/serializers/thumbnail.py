@@ -22,7 +22,7 @@ class ThumbnailSerializer(FileField):
         fit_large=True,
         **kwargs
     ):
-        super().__init__(instance, data, **kwargs)
+        super().__init__(**kwargs)
 
         self.placeholder = placeholder
         self.options = {
