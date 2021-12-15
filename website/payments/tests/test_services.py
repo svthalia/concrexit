@@ -222,7 +222,7 @@ class ServicesTest(TestCase):
         with self.subTest("Payments that are 7 years old must be minimised"):
             p = Payment.objects.create(
                 paid_by=self.member,
-                amount=123,
+                amount=1,
                 created_at=timezone.now() - timezone.timedelta(days=(365 * 7) + 1),
                 topic="test",
                 notes="to be deleted",
@@ -234,7 +234,7 @@ class ServicesTest(TestCase):
         with self.subTest("Payments that are not 7 years old must not be minimised"):
             p = Payment.objects.create(
                 paid_by=self.member,
-                amount=123,
+                amount=1,
                 created_at=timezone.now() - timezone.timedelta(days=(365 * 7) - 1),
                 topic="test",
                 notes="to be deleted",
@@ -246,7 +246,7 @@ class ServicesTest(TestCase):
         with self.subTest("Dry run should not actually delete"):
             p = Payment.objects.create(
                 paid_by=self.member,
-                amount=123,
+                amount=1,
                 created_at=timezone.now() - timezone.timedelta(days=(365 * 7) + 1),
                 topic="test",
                 notes="to be deleted",
