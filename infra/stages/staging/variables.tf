@@ -36,5 +36,4 @@ variable "ssh_private_key" {
 variable "ssh_public_key" {
   description = "The public key used to create the EC2 instance, also used in the Nix OS configuration"
   type        = string
-  default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINgNaleedXX3iDZu8KlafjjURMVwXO+YZU1498tWu2m8 deploykey"
 }
