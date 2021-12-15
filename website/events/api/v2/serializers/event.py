@@ -22,6 +22,7 @@ class EventSerializer(CleanedModelSerializer):
             "pk",
             "title",
             "description",
+            "caption",
             "start",
             "end",
             "category",
