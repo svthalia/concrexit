@@ -40,7 +40,7 @@
                     <h4>{% trans "Personal information" %}</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <strong>{% trans "Membership type" %}: </strong> {{ membership_type }} (since {{ member.latest_membership.since }})<br>
+                            <strong>{% trans "Membership type" %}: </strong> {{ membership_type }} (since {{ current_membership_type_since }})<br>
                         </li>
 
                         {% if member.profile.starting_year %}

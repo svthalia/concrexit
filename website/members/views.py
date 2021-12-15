@@ -191,6 +191,7 @@ class ProfileDetailView(DetailView):
                 "achievements": achievements,
                 "societies": societies,
                 "membership_type": membership_type,
+                "current_membership_type_since": member.memberships_grouped()[-1][0].since
             }
         )
 

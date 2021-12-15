@@ -4,6 +4,7 @@ import logging
 import operator
 from datetime import timedelta
 from functools import reduce
+from itertools import groupby
 
 from django.contrib.auth.models import User, UserManager
 from django.db.models import Q
@@ -138,6 +139,14 @@ class Member(User):
         Tested by checking if the expiration date has passed.
         """
         return self.current_membership is not None
+
+    def memberships_grouped(self):
+        """Group memberships of the same type which where continuous."""
+        if not self.membership_set.exists():
+            return None
+        return [list(group) for key, group in
+                groupby(list(self.membership_set.order_by("since")), key=lambda membership: membership.type)]
+
 
     # Special properties for admin site
     has_active_membership.boolean = True

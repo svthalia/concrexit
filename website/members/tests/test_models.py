@@ -1,5 +1,6 @@
 from datetime import datetime
 import doctest
+from itertools import groupby
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -85,6 +86,32 @@ class MemberTest(TestCase):
         m1.type = "honorary"
         m1.save()
         self.assertTrue(member.has_been_honorary_member())
+
+    def test_memberships_grouped(self):
+        member = Member.objects.get(pk=1)
+
+        memberships = ["member", "benefactor", "member", "member"]
+        lengths = [1, 1, 2]
+        _set = member.membership_set
+
+        to_check = []
+        for m in memberships:
+            membership = _set.next()
+            membership.type = m
+            to_check.append((membership.since, membership.type))
+        _set.save()
+
+        to_check = [list(group) for key, group in groupby(to_check, key=lambda x: x[1])]
+        for check, length in zip(to_check, lengths):
+            self.assertEqual(len(check), length, "Test is faulty")
+
+        for grouped, check_grouped in zip(member.memberships_grouped(), to_check):
+            self.assertEqual(len(grouped), len(check_grouped), "Group length is wrong")
+            for membership, check_membership in zip(grouped, check_grouped):
+                self.assertTrue(
+                    membership.since == check_membership[0] and membership.type == check_membership[1],
+                    "membership order was not maintained in groups"
+                )
 
 
 class MemberDisplayNameTest(TestCase):
