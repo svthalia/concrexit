@@ -64,7 +64,7 @@
                     </select>
                 </td>
                 {% endif %}
-                <td class="text-center"><input type="checkbox" {{ registration.present|yesno:'checked="checked",' }} data-id="{{ registration.id }}" class="present-check" /></td>
+                <td><input type="checkbox" {{ registration.present|yesno:'checked="checked",' }} data-id="{{ registration.id }}" class="present-check" /></td>
                 <td data-sortval="{{ registration.date|date:'c' }}">{{ registration.date }}</td>
                 {% if cancellations %}
                 <td data-sortval="{{ registration.date_cancelled|date:'c' }}">{{ registration.date_cancelled }}</td>

@@ -9,11 +9,11 @@
 {% block body %}
     <section class="page-section" id="payments-account-overview">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "delete application"|capfirst %}</h1>
+            <h1 class="section-title">{% trans "delete application"|capfirst %}</h1>
 
-            <p class="text-center">{% trans "Are you sure you want to revoke the access for this application?" %}</p>
+            <p>{% trans "Are you sure you want to revoke the access for this application?" %}</p>
 
-            <form action="" method="post" class="text-center">
+            <form action="" method="post">
                 {% csrf_token %}
 
                 <div class="form-group col-6 col-lg-2 offset-3 offset-lg-5 mt-4">

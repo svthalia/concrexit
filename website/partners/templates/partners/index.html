@@ -7,24 +7,22 @@
 {% block body %}
     <section class="page-section" id="partners-index">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "Our partners" %}</h1>
-            <p class="text-center">
+            <h1 class="section-title">{% trans "Our partners" %}</h1>
+            <p>
                 {% blocktrans trimmed %}
-                    A brief introduction about our study association for Computer and Information Sciences, Thalia. As a
-                    study association we put great effort in entertaining our members with a lot of activities. These
+                    As a study association we put great effort in entertaining our members with a lot of activities. These
                     activities range from educational events to informal activities. Examples of these events are
                     lectures, workshops, get togethers and programming competitions. We also produce a magazine called
-                    the Thabloid. We are always looking to create new partnerships. If your company is interessed in
-                    creating such a partnership or are you interested in what such a partnership can do for you, please
+                    the Thabloid. We are always looking to create new partnerships. If your company is interested in
+                    creating such a partnership or if you are interested in what such a partnership can do for you, please
                     contact us at <a href="mailto:collaboration@thalia.nu" rel="noopener" target="_blank">collaboration@thalia.nu</a>.
                 {% endblocktrans %}
             </p>
 
             <div class="row mt-4 justify-content-center">
                 <div class="col-12 col-md-6 mt-auto">
-                    <div class="text-center">
                         <img src="{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
-                    </div>
+
                     <div class="mt-3">
                         <h2>{% trans "our main partner"|capfirst %}</h2>
                         <h3>{{ main_partner.name }}</h3>
@@ -37,9 +35,8 @@
             <div class="row mt-4 justify-content-center">
                 {% for local_partner in local_partners %}
                     <div class="col-12 col-md-6 mt-auto">
-                        <div class="text-center">
-                            <img src="{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
-                        </div>
+                        <img src="{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
+
                         <div class="mt-3">
                             <h2>{% trans "our local partner"|capfirst %}</h2>
                             <h3>{{ local_partner.name }}</h3>

@@ -7,54 +7,50 @@
 {% block body %}
     <section class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "Contact" %}</h1>
+            <h1 class="section-title">{% trans "Contact" %}</h1>
 
-            <div class="row">
-                <div class="col-lg-8 offset-lg-2">
-                    <table class="table">
-                        <tr>
-                            <td>{% trans "Faculty:" %}</td>
-                            <td>{% trans "Faculty of Science" %}</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Room:" %}</td>
-                            <td>M1.0.08</td>
-                        </tr>
-                        <tr>
-                            <td valign="top">{% trans "Address:" %}</td>
-                            <td>Toernooiveld 212<br>6525 EC Nijmegen<br>{% trans "Board room: M1.0.08 (ground floor)" %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top">{% trans "Postal address:" %}</td>
-                            <td>Postbus 9010<br>6500 GL Nijmegen</td>
-                        </tr>
-                        <tr>
-                            <td>{% trans "Telephone:" %}</td>
-                            <td>+31 (0)24 3653498</td>
-                        </tr>
-                        <tr>
-                            <td valign="top">{% trans "Email:" %}</td>
-                            <td>
-                                <a href="mailto:info@thalia.nu">info@thalia.nu</a> {% trans "general" %}<br>
-                                <a href="mailto:{% trans "collaboration@thalia.nu" %}">{% trans "collaboration@thalia.nu" %}</a> {% trans "communication w.r.t. promoting your company (activities)" %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top">{% trans "Chamber of Commerce" %}:</td>
-                            <td>40146464</td>
-                        </tr>
-                        <tr>
-                            <td valign="top">IBAN:</td>
-                            <td>NL23INGB0006234184</td>
-                        </tr>
-                        <tr>
-                            <td valign="top">{% trans "VAT number:" %}</td>
-                            <td>NL800232483B02</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+            <table class="table">
+                <tr>
+                    <td>{% trans "Faculty:" %}</td>
+                    <td>{% trans "Faculty of Science" %}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Room:" %}</td>
+                    <td>M1.0.08</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Address:" %}</td>
+                    <td>Toernooiveld 212<br>6525 EC Nijmegen<br>{% trans "Board room: M1.0.08 (ground floor)" %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "Postal address:" %}</td>
+                    <td>Postbus 9010<br>6500 GL Nijmegen</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Telephone:" %}</td>
+                    <td>+31 (0)24 3653498</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Email:" %}</td>
+                    <td>
+                        <a href="mailto:info@thalia.nu">info@thalia.nu</a> {% trans "general" %}<br>
+                        <a href="mailto:{% trans "collaboration@thalia.nu" %}">{% trans "collaboration@thalia.nu" %}</a> {% trans "communication w.r.t. promoting your company (activities)" %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "Chamber of Commerce" %}:</td>
+                    <td>40146464</td>
+                </tr>
+                <tr>
+                    <td>IBAN:</td>
+                    <td>NL23INGB0006234184</td>
+                </tr>
+                <tr>
+                    <td>{% trans "VAT number:" %}</td>
+                    <td>NL800232483B02</td>
+                </tr>
+            </table>
         </div>
     </section>
 {% endblock %}

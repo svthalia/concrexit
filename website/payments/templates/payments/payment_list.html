@@ -9,7 +9,7 @@
 {% block body %}
     <section class="page-section" id="payments-account-overview">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "payments"|capfirst %}</h1>
+            <h1 class="section-title">{% trans "payments"|capfirst %}</h1>
 
             {% if messages %}
                 {% for message in messages %}
@@ -18,12 +18,12 @@
             {% endif %}
 
             {% if tpay_balance and tpay_balance != 0 %}
-                 <h5 class="text-center mb-4">
+                 <h5 class="mb-4">
                     {% trans "Your current Thalia Pay balance is" %}: € {{ tpay_balance|floatformat:2 }}
                  </h5>
             {% endif %}
 
-            <ul class="nav nav-tabs justify-content-center mb-4">
+            <ul class="nav nav-tabs mb-4">
                 {% for filter in filters|slice:':6' %}
                     <li class="nav-item">
                         <a class="nav-link {% if filter.year == year and filter.month == month %}active{% endif %}"
@@ -49,7 +49,7 @@
             </ul>
 
             {% if object_list %}
-                <table class="table text-center">
+                <table class="table">
                     <thead>
                     <tr>
                         <th scope="col">{% trans "type"|capfirst %}</th>

@@ -4,11 +4,9 @@
 {% block body %}
     <section class="page-section">
         <div class="container">
-            <h1 class="section-title text-center">{% trans "Pay for order" %}</h1>
-            <div class="text-center">
-                {{ order.order_description }}
-            </div>
-            <div class="text-center mt-4">
+            <h1 class="section-title">{% trans "Pay for order" %}</h1>
+            {{ order.order_description }}
+            <div class="mt-4">
                 {% url 'index' as next %}
                 {% payment_button order next %}
             </div>

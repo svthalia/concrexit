@@ -7,7 +7,7 @@
 {% block body %}
     <section class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}</h1>
+            <h1 class="section-title">{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}</h1>
             {% if messages %}
                 {% for message in messages %}
                     {% alert message.tags message dismissible=True %}

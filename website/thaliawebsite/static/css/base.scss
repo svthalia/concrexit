@@ -205,14 +205,20 @@ body {
             position: relative;
             margin-bottom: 1.5rem;
             border-top: solid 1px var(--background-shade);
-            padding: 20px 0 0;
+            padding-top: 20px;
+
+            @media(min-width: 992px) {
+                &.center-lg-50 {
+                    padding-left: calc(25% + 6px);
+                    padding-right: calc(25% + 6px);
+                    width: auto;
+                }
+            }
 
             &::before {
                 background: var(--primary);
                 content: '';
                 position: absolute;
-                left: 50%;
-                margin-left: -40px;
                 height: 5px;
                 width: 80px;
                 top: -1px;

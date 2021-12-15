@@ -16,14 +16,14 @@
 {% block body %}
     <section class="page-section" id="partners-index">
         <div class="container">
-            <h1 class="text-center section-title">{{ partner.name }}</h1>
+            <h1 class="section-title">{{ partner.name }}</h1>
 
             <div class="row">
                 <div class="col-12 col-md-4">
                     <img src="{% thumbnail partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" alt="Logo {{ partner.name }}"/>
 
-                    <h4 class="mt-4 text-center text-md-left">{% trans "Address" %}</h4>
-                    <p class="text-center text-md-left">
+                    <h4 class="mt-4">{% trans "Address" %}</h4>
+                    <p>
                         {{ partner.address }}<br/>
                         {% if partner.adress2 %}
                             {{ partner.address2 }}<br/>
@@ -36,13 +36,13 @@
                     </p>
 
                     {% if partner.link %}
-                        <h4 class="text-center text-md-left">{% trans "Website" %}</h4>
-                        <p class="text-center text-md-left">
+                        <h4>{% trans "Website" %}</h4>
+                        <p>
                             <a href="{{ partner.link }}" rel="noopener" target="_blank">{{ partner.link }}</a>
                         </p>
                     {% endif %}
 
-                    <p class="text-center">
+                    <p>
                         {% with partner.address|add:" "|add:partner.zip_code|add:" "|add:partner.city|add:" "|add:partner.get_country_display|urlize as location %}
                             <img src="{% google_map_url location zoom=10 size='400x300' %}"/>
                         {% endwith %}
@@ -66,7 +66,7 @@
     {% if vacancies.all|length > 0 %}
         <section class="page-section" id="partners-partner-vacancies">
             <div class="container">
-                <h1 class="text-center section-title">{% trans 'Vacancies' %}</h1>
+                <h1 class="section-title">{% trans 'Vacancies' %}</h1>
                 <div class="accordion bordered">
                     {% for vacancy in vacancies %}
                         <div class="card mb-0">

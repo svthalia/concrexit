@@ -9,7 +9,7 @@
 {% block body %}
     <section class="page-section" id="payments-account-overview">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "confirm payment of"|capfirst %} € {{ payable.payment_amount|floatformat:2 }}</h1>
+            <h1 class="section-title">{% trans "confirm payment of"|capfirst %} € {{ payable.payment_amount|floatformat:2 }}</h1>
 
             {% if messages %}
                 {% for message in messages %}
@@ -23,18 +23,18 @@
                 {% endfor %}
             {% endfor %}
 
-            <p class="text-center">
+            <p>
                 <em>{{ payable.payment_notes }}</em>
             </p>
 
-            <p class="text-center">
+            <p>
                 {% blocktrans trimmed %}
                     Please confirm your payment.
                     Be aware that this confirmation is final.
                 {% endblocktrans %}
             </p>
 
-            <p class="text-center">
+            <p>
                  {% trans "After this payment, your Thalia Pay balance will be" %} € {{ new_balance|floatformat:2 }}.
             </p>
 

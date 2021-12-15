@@ -28,7 +28,7 @@
 {% block body %}
     <section class="page-section" id="events-detail">
         <div class="container">
-            <h1 class="text-center section-title">{{ event.title }}</h1>
+            <h1 class="section-title">{{ event.title }}</h1>
 
             {% if messages %}
                 {% for message in messages %}
@@ -295,7 +295,7 @@
     {% if event.documents.exists %}
         <section class="page-section" id="events-documents">
             <div class="container">
-                <h1 class="text-center section-title">{% trans "Documents" %}</h1>
+                <h1 class="section-title">{% trans "Documents" %}</h1>
 
                 <div class="row mt-4">
                     {% for doc in event.documents.all %}
@@ -311,7 +311,7 @@
     {% if user.is_authenticated and participants|length > 0 %}
         <section class="page-section" id="events-registrations">
             <div class="container">
-                <h1 class="text-center section-title">{% trans "Registrations" %}</h1>
+                <h1 class="section-title">{% trans "Registrations" %}</h1>
                 <div id="results" class="row mt-4">
                     {% for registration in participants %}
                         <div class="col-4 col-md-3 my-3">

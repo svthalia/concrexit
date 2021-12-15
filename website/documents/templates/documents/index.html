@@ -16,9 +16,9 @@
 {% block body %}
     <section class="page-section" id="documents-misc">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "Association Documents" %}</h1>
+            <h1 class="section-title">{% trans "Association Documents" %}</h1>
 
-            <p class="text-center">
+            <p>
                 {% blocktrans trimmed %}
                     Thalia was officially founded on November 7th, 1990. The
                     relevant statutes and internal rules can be
@@ -45,17 +45,17 @@
 
     <section class="page-section" id="documents-annual">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "Annual documents" %}</h1>
+            <h1 class="section-title">{% trans "Annual documents" %}</h1>
 
-            <p class="text-center">
+            <p>
                 {% trans "Every candidate board of Thalia drafts a policy document before being installed, to detail their plans for the next year. This also includes a general planning of all activities, as well as the budget for that year. Furthermore, the association is obliged to deliver an annual report and provide a financial overview. These documents show the financial developments over the year, what contacts Thalia maintained and what activities were organized. All historical policy documents and reports are made available, below." %}
             </p>
 
-            <p class="text-center">
+            <p>
                 {% trans "The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well." %}
             </p>
 
-            <ul class="nav nav-tabs justify-content-center mt-4">
+            <ul class="nav nav-tabs mt-4">
                 {% for year, data in years|slice:":6" %}
                     <li class="nav-item">
                         <a class="nav-link{% if forloop.counter0 == 0 %} active{% endif %}"
@@ -127,9 +127,9 @@
                         {% else %}
                             <div
                                 class="col-12 col-md-6 my-3 d-flex justify-content-center align-items-center">
-                                <div class="text-center">
+
                                     {% trans "There have not been any general meetings yet." %}
-                                </div>
+
                             </div>
                         {% endif %}
                         {% for type, doc in data.documents.items %}

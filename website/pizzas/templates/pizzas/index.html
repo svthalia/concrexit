@@ -36,7 +36,7 @@
     {% if event %}
         <section class="page-section" id="pizzas-index">
             <div class="container">
-                <h1 class="text-center section-title">
+                <h1 class="section-title">
                     {% blocktrans trimmed with title=event.title %}
                         Order food for {{ title }}
                     {% endblocktrans %}
@@ -70,20 +70,20 @@
                 </div>
 
                 {% if event.in_the_future %}
-                    <h3 class="text-center">
+                    <h3>
                         {% blocktrans trimmed with start=event.start|date:"Y-m-d H:i:s" %}
                             It will be possible to order from {{ start }}.
                         {% endblocktrans %}
                     </h3>
                 {% else %}
                     {% if event.just_ended %}
-                        <h3 class="text-center">
+                        <h3>
                             {% blocktrans trimmed with end=event.end|date:"Y-m-d H:i:s" %}
                                 It was possible to order until {{ end }}.
                             {% endblocktrans %}
                         </h3>
                     {% else %}
-                        <h3 class="text-center">
+                        <h3>
                             {% blocktrans trimmed with end=event.end|date:"Y-m-d H:i:s" %}
                                 It is possible to order until {{ end }}.
                             {% endblocktrans %}
@@ -97,7 +97,7 @@
                             {% trans "The order has not yet been paid for." as danger_text %}
                             {% alert 'danger' danger_text extra_classes="mt-3" %}
                         {% endif %}
-                        <h4 class="text-center">{% trans "Current order" %}</h4>
+                        <h4>{% trans "Current order" %}</h4>
                         <div class="table-responsive mt-3">
                             <table class="table table-bordered">
                                 <thead>
@@ -144,10 +144,10 @@
                             </table>
                         </div>
                         {% if not event.just_ended and order.can_be_changed %}
-                            <h4 class="text-center">{% trans "Changing your order" %}</h4>
+                            <h4>{% trans "Changing your order" %}</h4>
                         {% endif %}
                     {% elif event.just_ended %}
-                        <p class="text-center">
+                        <p>
                             {% trans "You did not place an order." %}
                         </p>
                     {% endif %}
@@ -206,8 +206,8 @@
     {% else %}
         <section class="page-section" id="pizzas-index">
             <div class="container">
-                <h1 class="text-center section-title">{% trans 'pizzas'|capfirst %}</h1>
-                <p class="text-center">
+                <h1 class="section-title">{% trans 'pizzas'|capfirst %}</h1>
+                <p>
                     {% trans "There is no current event for which you can order food" %}l
                 </p>
             </div>

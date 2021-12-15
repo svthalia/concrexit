@@ -9,7 +9,7 @@
 {% block body %}
     <section class="page-section" id="payments-account-overview">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "bank accounts"|capfirst %}</h1>
+            <h1 class="section-title">{% trans "bank accounts"|capfirst %}</h1>
 
             {% if messages %}
                 {% for message in messages %}
@@ -17,7 +17,7 @@
                 {% endfor %}
             {% endif %}
 
-            <p class="text-center">
+            <p>
                 {% blocktrans trimmed %}
                     Thalia keeps your bank account saved to your profile to
                     ease the processing of digital financial transactions like
@@ -27,7 +27,7 @@
                 {% endblocktrans %}
             </p>
 
-            <p class="text-center">
+            <p>
                 {% blocktrans trimmed %}
                     We only keep a history of bank accounts with a direct debit
                     authorisation. Bank accounts that do not have such an
@@ -39,8 +39,8 @@
 
 
             {% if payment_user.tpay_allowed %}
-                <h3 class="text-center section-title mt-5">{% trans "Thalia Pay" %}</h3>
-                <p class="text-center mb-5">
+                <h3 class="section-title mt-5">{% trans "Thalia Pay" %}</h3>
+                <p class="mb-5">
                     {% blocktrans trimmed %}
                         If you agree to using your bank account for direct debit transactions,
                         you can make use of Thalia Pay. With Thalia Pay, you can pay for things
@@ -53,12 +53,12 @@
 
 
             {% if object_list %}
-                <p class="text-center mb-4">
+                <p class="mb-4">
                     <a href="{% url 'payments:bankaccount-add' %}"
                        class="btn btn-primary">Change bank account</a>
                 </p>
 
-                <table class="table text-center">
+                <table class="table">
                     <thead>
                     <tr>
                         <th scope="col">
@@ -134,7 +134,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <p class="text-center mb-4">
+                <p class="mb-4">
                     <a href="{% url 'payments:bankaccount-add' %}"
                        class="btn btn-primary">Add bank account</a>
                 </p>

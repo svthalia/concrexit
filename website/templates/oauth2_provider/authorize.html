@@ -10,7 +10,7 @@
     <section class="page-section" id="payments-account-overview">
         <div class="container">
             {% if not error %}
-                <h1 class="text-center section-title">{% trans "authorise"|capfirst %} {{ application.name }}</h1>
+                <h1 class="section-title">{% trans "authorise"|capfirst %} {{ application.name }}</h1>
 
                 <form method="post">
                     {% csrf_token %}
@@ -21,7 +21,7 @@
                         {% endif %}
                     {% endfor %}
 
-                    <p class="text-center">{% trans "Application requires following permissions" %}:</p>
+                    <p>{% trans "Application requires following permissions" %}:</p>
                     <ul class="text-center list-unstyled">
                         {% for scope in scopes_descriptions %}
                             <li>{{ scope }}</li>
@@ -38,9 +38,9 @@
                 </form>
 
             {% else %}
-                <h1 class="text-center section-title">{% trans "error"|capfirst %}</h1>
-                <h4 class="text-center">{{ error.error }}</h4>
-                <p class="text-center">{{ error.description }}</p>
+                <h1 class="section-title">{% trans "error"|capfirst %}</h1>
+                <h4>{{ error.error }}</h4>
+                <p>{{ error.description }}</p>
             {% endif %}
         </div>
     </section>

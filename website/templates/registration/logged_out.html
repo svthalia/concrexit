@@ -9,11 +9,11 @@
 {% block body %}
     <section class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "Logout" %}</h1>
+            <h1 class="section-title">{% trans "Logout" %}</h1>
 
-            <p class="text-center">{% trans "You've been logged out successfully." %}</p>
+            <p>{% trans "You've been logged out successfully." %}</p>
 
-            <p class="text-center"><a href="{% url 'login' %}">{% trans 'Log in again' %}</a></p>
+            <p><a href="{% url 'login' %}">{% trans 'Log in again' %}</a></p>
         </div>
     </section>
 {% endblock %}

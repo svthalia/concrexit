@@ -6,7 +6,7 @@
 {% block body %}
     <section id="activemembers-committees" class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">
+            <h1 class="section-title">
                 {% trans 'committees'|capfirst %}
             </h1>
 
@@ -16,8 +16,10 @@
                         {% membergroup_card committee %}
                     </div>
                 {% empty %}
-                    {% trans 'There are no committees!' as no_committees %}
-                    {% alert 'danger' no_committees extra_classes='col-10 offset-1' %}
+                    <div class="col-12">
+                        {% trans 'There are no committees!' as no_committees %}
+                        {% alert 'danger' no_committees %}
+                    </div>
                 {% endfor %}
             </div>
         </div>

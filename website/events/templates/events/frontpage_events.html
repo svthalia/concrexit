@@ -1,6 +1,6 @@
 {% load i18n bleach_tags alert %}
 <div class="frontpage-events">
-    <h1 class="text-center section-title">{% trans "Upcoming events" %}</h1>
+    <h1 class="section-title">{% trans "Upcoming events" %}</h1>
     {% if not events %}
         <div class="mt-4">
             {% trans 'There are currently no events planned' as info_text %}
@@ -28,7 +28,7 @@
             {% endfor %}
         </div>
     {% endif %}
-    <p class="text-center mt-3">
+    <p class="mt-3">
         {% url 'events:index' as events_index %}
         {% blocktrans trimmed %}
             Searching for another event?

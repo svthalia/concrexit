@@ -17,9 +17,9 @@
 {% block body %}
     <section class="page-section" id="registrations-form">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "registration" %} {% trans "Member" %}</h1>
+            <h1 class="section-title">{% trans "registration" %} {% trans "Member" %}</h1>
 
-            <p class="text-center">
+            <p>
                 {% url 'registrations:register-benefactor' as benefactor_register %}
                 {% blocktrans trimmed %}
                     A membership costs € {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration.
@@ -37,7 +37,7 @@
                 {% endblocktrans %}
             </p>
 
-            <p class="text-center">
+            <p>
                 {% blocktrans trimmed %}
                     If you've been a member before you should login using your existing account and renew your
                     membership by visiting the account settings.
@@ -45,7 +45,7 @@
                 {% endblocktrans %}
             </p>
 
-            <p class="text-center">
+            <p>
                 {% blocktrans trimmed %}
                     If you have any other questions about Thalia and/or your membership, feel free to email
                     <a href="mailto:info@thalia.nu" rel="noopener" target="_blank">info@thalia.nu</a>!
@@ -105,7 +105,7 @@
                 {% if tpay_enabled %}
                     <hr/>
 
-                    <div class="text-center mt-3 mb-3">
+                    <div class="mt-3 mb-3">
                         <h4>{% trans "SEPA Direct Debit Mandate" %}</h4>
                         {% bootstrap_field form.direct_debit show_help=False %}
                         {% blocktrans trimmed %}

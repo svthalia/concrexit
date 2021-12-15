@@ -7,9 +7,9 @@
 {% block body %}
     <section class="page-section" id="partners-vacancies">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "Vacancies" %}</h1>
+            <h1 class="section-title">{% trans "Vacancies" %}</h1>
 
-            <p class="text-center">
+            <p>
                 {% blocktrans trimmed %}
                     If you want to work besides studying or when you are (almost) graduated you can look here for
                     interesting vacancies. When you want to post a vacancy on this page as a company you can contact us
@@ -17,7 +17,7 @@
                 {% endblocktrans %}
             </p>
 
-            <ul class="nav nav-tabs justify-content-center mt-4">
+            <ul class="nav nav-tabs mt-4">
                 <li class="nav-item">
                     <a class="nav-link" data-filter="all" href="#">
                         {% trans "Everything" %}
@@ -45,7 +45,7 @@
     {% if vacancies.all|length > 0 %}
         <section class="page-section" id="partners-partner-vacancies">
             <div class="container">
-                <h1 class="text-center section-title">{% trans 'All vacancies' %}</h1>
+                <h1 class="section-title">{% trans 'All vacancies' %}</h1>
                 <div class="accordion bordered">
                     {% for vacancy in vacancies %}
                         <div class="card mb-0">

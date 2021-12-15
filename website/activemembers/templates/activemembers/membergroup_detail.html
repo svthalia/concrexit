@@ -5,7 +5,7 @@
 {% block body %}
     <section id="activemembers-membergroup" class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">
+            <h1 class="section-title">
                 {{ membergroup.name }}
             </h1>
 
@@ -24,18 +24,18 @@
     {% if membergroup.description %}
     <section id="activemembers-membergroup-description" class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">
+            <h1 class="section-title">
                 {% trans 'Description' %}
             </h1>
 
-            <div class="text-center">
+            <p>
                 {{ membergroup.description|safe }}
-            </div>
+            </p>
             {% if membergroup.committee or membergroup.society %}
-            <div class="text-center">
+            <p>
                     <strong>{% trans 'contact email address'|capfirst %}:</strong>
                 <a href="mailto:{{ membergroup.contact_address }}">{{ membergroup.contact_address }}</a>
-            </div>
+            </p>
             {% endif %}
         </div>
     </section>
@@ -44,7 +44,7 @@
 	{% if membergroup.display_members or request.user.is_authenticated %}
 		<section id="activemembers-membergroup-members" class="page-section">
 			<div class="container">
-				<h1 class="text-center section-title">
+				<h1 class="section-title">
 					{% trans 'Members' %}
 				</h1>
 

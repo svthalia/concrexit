@@ -7,11 +7,13 @@
 {% block body %}
     <section class="page-section">
         <div class="container">
-            <h1 class="text-center section-title">{% trans "Become a Member" %}</h1>
-
-            <p class="text-center">{% trans "Thalia is the study association for Computing Science and Information Sciences students at the Radboud University in Nijmegen. Thalia organises a wide variety of activities, such as bowling events, go cart racing, lunch lectures, drinks and much more! Furthermore, members get access to our tests and summaries database, as well as discounts on books. There's no reason not to become a member!" %}</p>
+            <h1 class="section-title">{% trans "Become a Member" %}</h1>
 
             <div class="row">
+                <p class="col-12">{% trans "Thalia is the study association for Computing Science and Information Sciences students at the Radboud University in Nijmegen. Thalia organises a wide variety of activities, such as bowling events, go cart racing, lunch lectures, drinks and much more! Furthermore, members get access to our tests and summaries database, as well as discounts on books. There's no reason not to become a member!" %}</p>
+            </div>
+
+            <div class="row mt-3">
                 <div class="col-12 col-lg-6 order-0">
                     <h4>{% trans "I'm a Computing Science or Information Sciences student at the Radboud University" %}</h4>
 
@@ -26,7 +28,7 @@
                 </div>
 
                 <div class="col-12 col-lg-6 order-1 order-lg-3">
-                    <p class="text-center my-4">
+                    <p class="my-4">
                         <a href="{% url 'registrations:register-member' %}" class="btn btn-primary btn-lg btn-block">
                             {% trans "Become a member" %}
                         </a>
@@ -47,7 +49,7 @@
                 </div>
 
                 <div class="col-12 col-lg-6 order-3">
-                    <p class="text-center my-4">
+                    <p class="my-4">
                         <a href="{% url 'registrations:register-benefactor' %}" class="btn btn-primary btn-lg btn-block">
                             {% trans "Become a benefactor" %}
                         </a>
@@ -55,7 +57,7 @@
                 </div>
             </div>
 
-            <p class="text-center">
+            <p>
                 {% blocktrans trimmed %}
                     Payment can be made both in cash or by card. If you have any other questions about Thalia
                     and/or your membership, feel free to email
