@@ -35,7 +35,7 @@ class CalendarJSEventListView(ListAPIView):
         )
         if self.request.member:
             events = events.annotate(
-                user_reg=Subquery(
+                member_registration=Subquery(
                     EventRegistration.objects.filter(
                         event=OuterRef("id"), member=self.request.member
                     ).values("member")
