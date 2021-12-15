@@ -648,7 +648,8 @@ COMPRESS_FILTERS = {
     "css": [
         "compressor.filters.css_default.CssAbsoluteFilter",
         "compressor.filters.cssmin.rCSSMinFilter",
-    ]
+    ],
+    "js": ["compressor.filters.jsmin.JSMinFilter"],
 }
 
 # Precompiler settings
