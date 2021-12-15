@@ -32,6 +32,7 @@ class ProfileInline(admin.StackedInline):
         "address_country",
         "student_number",
         "phone_number",
+        "shoe_size",
         "receive_optin",
         "receive_newsletter",
         "receive_magazine",

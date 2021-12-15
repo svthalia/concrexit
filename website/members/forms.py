@@ -20,6 +20,7 @@ class ProfileForm(forms.ModelForm):
             "address_city",
             "address_country",
             "phone_number",
+            "shoe_size",
             "emergency_contact",
             "emergency_contact_phone_number",
             "website",

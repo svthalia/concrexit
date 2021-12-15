@@ -54,6 +54,21 @@ class Profile(models.Model):
         null=True,
     )
 
+    shoe_size = models.IntegerField(
+        verbose_name=_("Shoe size"),
+        validators = [ 
+            validators.MinValueValidator(
+                limit_value = 39, 
+                message =_("Please enter a size between 39 and 47, or leave empty")),
+            validators.MaxValueValidator(
+                limit_value = 47,
+                message=_("Please enter a size between 39 and 47, or leave empty")
+            )
+        ],
+        blank = True,
+        null = True,
+    )
+
     student_number = models.CharField(
         verbose_name=_("Student number"),
         max_length=8,
