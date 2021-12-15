@@ -18,8 +18,9 @@ jobs:
     - name: Deploy if this is master or staging
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging'
       env:
+        # Environment variables starting with TF_VAR define values for the variables used in the stages
         TF_VAR_ssh_private_key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
-        TF_VAR_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINgNaleedXX3iDZu8KlafjjURMVwXO+YZU1498tWu2m8 deploykey"
+        TF_VAR_ssh_public_key: ${{ secrets.STAGING_SSH_PUBLIC_KEY }}
         AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
       # Make sure the required program dependencies are available with a nix shell
