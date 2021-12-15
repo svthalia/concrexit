@@ -299,7 +299,7 @@ resource "null_resource" "deploy_nixos" {
     host        = aws_eip.eip.public_ip
     user        = "root"
     timeout     = "100s"
-    agent = false
+    agent       = false
     private_key = chomp(var.ssh_private_key)
   }
 
@@ -315,7 +315,7 @@ resource "null_resource" "deploy_nixos" {
 workDir=$(mktemp -d)
 trap 'rm -rf "$workDir"' EXIT
 cd $workDir
-echo "chomp(var.ssh_private_key)" > ./deploykey
+echo "${chomp(var.ssh_private_key)}" > ./deploykey
 chmod 600 ./deploykey
 export NIX_SSHOPTS="-i ./deploykey -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null -o BatchMode=yes"
 nix copy -s --to ssh://root@${aws_eip.eip.public_ip} ${data.external.nix-flake-build.result.out}
