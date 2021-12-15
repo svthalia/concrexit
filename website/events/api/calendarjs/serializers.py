@@ -19,9 +19,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         return reverse("events:event", kwargs={"pk": instance.id})
 
     def _class_names(self, instance):
-        if self.context["member"] and services.is_user_registered(
-            self.context["member"], instance
-        ):
+        if self.context["member"] and instance.member_registration:
             if services.user_registration_pending(self.context["member"], instance):
                 return ["regular-event-pending-registration"]
             else:
@@ -34,9 +32,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
 
     def _registration_info(self, instance: Event):
         # If registered in some way
-        if self.context["member"] and services.is_user_registered(
-            self.context["member"], instance
-        ):
+        if self.context["member"] and instance.member_registration:
             queue_pos = services.user_registration_pending(
                 self.context["member"], instance
             )
@@ -52,7 +48,10 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         elif instance.optional_registration_allowed:
             return _("Registering for this event is optional")
         # No places left
-        elif instance.reached_participants_limit():
+        elif (
+            instance.max_participants is not None
+            and instance.max_participants <= instance.number_regs
+        ):
             return _("You can put yourself on the waiting list for this event")
         # Registration still possible
         elif instance.registration_allowed:

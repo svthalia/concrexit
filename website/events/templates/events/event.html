@@ -79,7 +79,7 @@
                                 <tr>
                                     <th>{% trans "number of registrations"|capfirst %}</th>
                                     <td>
-                                        {% blocktrans count counter=event.participants|length trimmed %}
+                                        {% blocktrans count counter=participants|length trimmed %}
                                             {{ counter }} registration
                                         {% plural %}
                                             {{ counter }} registrations
@@ -308,12 +308,12 @@
         </section>
     {% endif %}
 
-    {% if user.is_authenticated and event.participants|length > 0 %}
+    {% if user.is_authenticated and participants|length > 0 %}
         <section class="page-section" id="events-registrations">
             <div class="container">
                 <h1 class="text-center section-title">{% trans "Registrations" %}</h1>
                 <div id="results" class="row mt-4">
-                    {% for registration in event.participants %}
+                    {% for registration in participants %}
                         <div class="col-4 col-md-3 my-3">
                             {% if registration.is_external %}
                                 {% static 'members/images/default-avatar.jpg' as image %}

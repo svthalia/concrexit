@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.functional import cached_property
 
 from .event import Event
 
@@ -75,7 +76,10 @@ class EventRegistration(models.Model):
     def queue_position(self):
         if self.event.max_participants is not None:
             try:
-                return list(self.event.queue).index(self) + 1
+                queue_ids = [
+                    registration.member_id for registration in self.event.queue
+                ]
+                return list(queue_ids).index(self.member_id) + 1
             except ValueError:
                 pass
         return None

@@ -26,7 +26,9 @@ class EventListView(ListAPIView):
     """Returns an overview of all upcoming events."""
 
     serializer_class = EventSerializer
-    queryset = Event.objects.filter(published=True)
+    queryset = Event.objects.filter(published=True).select_related(
+        "organiser", "food_event"
+    )
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,

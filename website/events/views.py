@@ -66,6 +66,10 @@ class EventDetail(DetailView):
 
         context["slide_size"] = settings.THUMBNAIL_SIZES["slide"]
 
+        context["participants"] = event.participants.select_related(
+            "member", "member__profile"
+        )
+
         return context
 
 
