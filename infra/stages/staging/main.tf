@@ -28,7 +28,7 @@ module "concrexit" {
     "Terraform"   = true
   }
   customer             = var.customer
-  webhostname          = "staging-tf"
+  webhostname          = "staging"
   domain               = var.domain_name
   ssh_private_key      = var.ssh_private_key
   ssh_public_key       = var.ssh_public_key
