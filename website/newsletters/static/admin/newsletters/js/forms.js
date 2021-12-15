@@ -25,7 +25,7 @@ django.jQuery(function () {
         $('#id_newsletterevent_set-' +  id + '-title')
             .val(data['title']);
         tinyMCE.get('id_newsletterevent_set-' +  id + '-description')
-            .setContent(data['description']);
+            .setContent(data['caption']);
         $('#id_newsletterevent_set-' +  id + '-what')
             .val(data['title']);
         $('#id_newsletterevent_set-' +  id + '-where')

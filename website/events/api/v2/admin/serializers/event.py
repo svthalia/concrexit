@@ -52,6 +52,7 @@ class EventListAdminSerializer(serializers.ModelSerializer):
             "pk",
             "title",
             "description",
+            "caption",
             "start",
             "end",
             "category",

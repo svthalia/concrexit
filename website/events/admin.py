@@ -117,6 +117,7 @@ class EventAdmin(DoNextModelAdmin):
                     "start",
                     "end",
                     "description",
+                    "caption",
                     "location",
                     "map_location",
                 ),
