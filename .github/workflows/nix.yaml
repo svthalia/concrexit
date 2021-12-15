@@ -24,7 +24,7 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
       # Make sure the required program dependencies are available with a nix shell
-      shell: nix develop '.#deployment' --command bash --noprofile --norc -eo pipefail {0}
+      shell: nix develop .#deployment --command bash --noprofile --norc -eo pipefail {0}
       run: |
         if [ "${{ github.ref }}" = "refs/heads/master" ] && git rev-parse --quiet --verify staging; then
           echo "Not deploying 'master' branch because 'staging' already exists!"
