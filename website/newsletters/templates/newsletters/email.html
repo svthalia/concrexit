@@ -3,8 +3,11 @@
 {% load baseurl %}
 {% load static %}
 
-{% with primary_color="#EE227A" item_h2_style="color:#EE227A;font-family:Calibri, 'Trebuchet MS', sans-serif; font-size: 18px; margin-bottom: 10px; margin-top: 30px;" item_tr_style="padding-left: 30px; padding-right: 30px; padding-bottom: 10px; margin: 0px; vertical-align: top;" %}
+{% with primary_color="#EE227A" item_h2_style="color:#EE227A;font-family:Calibri, 'Trebuchet MS', sans-serif; font-size:
+18px; margin-bottom: 10px; margin-top: 30px;" item_tr_style="padding-left: 30px; padding-right: 30px; padding-bottom:
+10px; margin: 0px; vertical-align: top;" %}
 <html style="background-color: #F0F0F0;">
+
 <head>
     <title>{{ newsletter.title }}</title>
     <style type="text/css">
@@ -19,147 +22,168 @@
     </style>
     <meta charset="utf-8">
 </head>
+
 <body>
 
-<div style="background-color: #F0F0F0; padding: 20px;">
+    <div style="background-color: #F0F0F0; padding: 20px;">
 
-    <p style="margin:0px 0px 10px 0px; background-color: #F0F0F0; font-family: Arial, sans-serif; text-align: center; font-size: 11px;">
-        <a style="color: {{ primary_color }}; text-decoration: underline;" href="{% baseurl %}{{ newsletter.get_absolute_url }}">{% trans "view this email in your browser"|capfirst %}</a>
-    </p>
+        <p
+            style="margin:0px 0px 10px 0px; background-color: #F0F0F0; font-family: Arial, sans-serif; text-align: center; font-size: 11px;">
+            <a style="color: {{ primary_color }}; text-decoration: underline;"
+                href="{% baseurl %}{{ newsletter.get_absolute_url }}">{% trans "view this email in your
+                browser"|capfirst %}</a>
+        </p>
 
-    <div style="background-color: white; width: 700px ; margin-left: auto ; margin-right: auto;">
-        <table width="100%" style="border-spacing: 0px; font-size: 15px; font-family: Arial, sans-serif">
-            <col width="500px">
-            <col width="200px">
+        <div style="background-color: white; width: 700px ; margin-left: auto ; margin-right: auto;">
+            <table width="100%" style="border-spacing: 0px; font-size: 15px; font-family: Arial, sans-serif">
+                <col width="500px">
+                <col width="200px">
 
-            <tr style="height: 127px; color: white; overflow: hidden; ">
-                <td style="background-color: {{ primary_color }}; text-align:center;">
-                    <a href="{% baseurl %}{% url 'index' %}"><img src="{% baseurl %}{% static 'newsletters/logo-'|add:lang_code|add:'.png' %}" alt="Thalia" style="margin: 10px" width="280" height="107" style="width: 280px; height: 107px;"></a>
-                </td>
-                <td style="background-color: black;text-align:center;valign:middle;">
-                    {% if newsletter.date %}
-                        <span style="font-size: 20px; font-family: Calibri, 'Trebuchet MS', sans-serif">WEEK</span><br/>
-                        <span style="font-size: 45px; font-family: Calibri, 'Trebuchet MS', sans-serif">{{ newsletter.date.isocalendar.1 }}</span>
-                    {% endif %}
-                </td>
-            </tr>
+                <tr style="height: 127px; color: white; overflow: hidden; ">
+                    <td style="background-color: {{ primary_color }}; text-align:center;">
+                        <a href="{% baseurl %}{% url 'index' %}"><img
+                                src="{% baseurl %}{% static 'newsletters/logo-'|add:lang_code|add:'.png' %}"
+                                alt="Thalia" style="margin: 10px" width="280" height="107"
+                                style="width: 280px; height: 107px;"></a>
+                    </td>
+                    <td style="background-color: black;text-align:center;valign:middle;">
+                        {% if newsletter.date %}
+                        <span
+                            style="font-size: 20px; font-family: Calibri, 'Trebuchet MS', sans-serif">WEEK</span><br />
+                        <span style="font-size: 45px; font-family: Calibri, 'Trebuchet MS', sans-serif">{{
+                            newsletter.date.isocalendar.1 }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
 
-            <tr>
-                <td colspan="2" style="{{ item_tr_style }}">
-                    <h2 style="{{ item_h2_style }}">
-                        {% trans "dear members"|upper %},
-                    </h2>
-            </tr>
-            <tr>
-                <td style="{{ item_tr_style }}" colspan="2">
-                    {{ newsletter.description|safe }}
-                </td>
-            </tr>
-            {% if agenda_events %}
-            <tr>
-                <td colspan="2" style="{{ item_tr_style }}">
-                    <h2 style="{{ item_h2_style }}">{% trans "agenda"|upper %}</h2>
-                </td>
-            </tr>
-            <tr>
-                <td style="{{ item_tr_style }}" colspan="2">
-                    <table style="width: 100%">
-                        <tbody>
-                        <td>
-                            {% for row in agenda_events|rows_distributed:2 %}
-                             <td style="vertical-align: top;">
-                                {% for item in row %}
-                                <li style="font-family: Arial, sans-serif;"><i><a href="{% baseurl %}{% url 'events:event' item.pk %}" style="text-decoration: none; color: {{ primary_color }};">{{ item.title }} - {{ item.start|date:"d F" }}</a></i></li>
+                <tr>
+                    <td colspan="2" style="{{ item_tr_style }}">
+                        <h2 style="{{ item_h2_style }}">
+                            {% trans "dear members"|upper %},
+                        </h2>
+                </tr>
+                <tr>
+                    <td style="{{ item_tr_style }}" colspan="2">
+                        {{ newsletter.description|safe }}
+                    </td>
+                </tr>
+                {% if agenda_events %}
+                <tr>
+                    <td colspan="2" style="{{ item_tr_style }}">
+                        <h2 style="{{ item_h2_style }}">{% trans "agenda"|upper %}</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="{{ item_tr_style }}" colspan="2">
+                        <table style="width: 100%">
+                            <tbody>
+                                <td>
+                                    {% for row in agenda_events|rows_distributed:2 %}
+                                <td style="vertical-align: top;">
+                                    {% for item in row %}
+                                    <li style="font-family: Arial, sans-serif;"><i><a
+                                                href="{% baseurl %}{% url 'events:event' item.pk %}"
+                                                style="text-decoration: none; color: {{ primary_color }};">{{ item.title
+                                                }} - {{ item.start|date:"d F" }}</a></i></li>
+                                    {% endfor %}
+                                </td>
                                 {% endfor %}
-                             </td>
-                            {% endfor %}
-                        </tr>
-                        </tbody>
-                    </table>
-                </td>
+                </tr>
+                </tbody>
+            </table>
+            </td>
             </tr>
             {% endif %}
             {% for item in newsletter.newslettercontent_set.all %}
             <tr>
                 <td colspan="2" style="{{ item_tr_style }}">
                     {% if item.url %}
-                    <h2 style="{{ item_h2_style }}"><a href="{{ item.url }}" style="text-decoration: none; color: inherit;">{{ item.title.upper }}</a></h2>
+                    <h2 style="{{ item_h2_style }}"><a href="{{ item.url }}"
+                            style="text-decoration: none; color: inherit;">{{ item.title.upper }}</a></h2>
                     {% else %}
                     <h2 style="{{ item_h2_style }}">{{ item.title.upper }}</h2>
                     {% endif %}
                 </td>
             </tr>
 
-                {% if item.newsletterevent %}
-                <tr>
-                    <td style="{{ item_tr_style }}">
-                        {{ item.description|safe }}
+            {% if item.newsletterevent %}
+            <tr>
+                <td style="{{ item_tr_style }}">
+                    {{ item.description|safe }}
 
-                        {% if item.newsletterevent.show_costs_warning %}
-                            <p style="font-family: Arial, sans-serif">
-                                <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
-                                {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
-                                {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}
-                                    {% trans "These costs are" %}: <b>&euro;{{ item.newsletterevent.penalty_costs }}.</b>
-                                {% endif %}
-                                </i>
-                            </p>
-                        {% endif %}
-                    </td>
-
-                    <td style="vertical-align: top;">
-                        <div style="padding: 20px; background-color: black; border-left: 5px solid {{ primary_color }};">
-                            <div style="margin-bottom: 5px;">
-                                <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                    {% trans "Where"|upper %}
-                                </b>
-                                <br>
-                                <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
-                                    {{ item.newsletterevent.where }}
-                                </span>
-                            </div>
-
-                            <div style="margin-bottom: 5px;">
-                                <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                    {% trans "When"|upper %}
-                                </b>
-                                <br>
-                                <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
-                                    {% if item.newsletterevent.start_datetime|date:'d-M-Y H:i' == item.newsletterevent.end_datetime|date:'d-M-Y H:i' %}
-                                        {{ item.newsletterevent.start_datetime|date:'D d M, Y H:i' }}
-                                    {% elif item.newsletterevent.start_datetime|date:'d-M-Y' == item.newsletterevent.end_datetime|date:'d-M-Y' %}
-                                        {{ item.newsletterevent.start_datetime|date:'D d M, Y H:i' }} - {{ item.newsletterevent.end_datetime|date:'H:i' }}
-                                    {% else %}
-                                        {{ item.newsletterevent.start_datetime|date:'D d M, Y H:i'}} - {{ item.newsletterevent.end_datetime|date:'D d M, Y H:i' }}
-                                    {% endif %}
-                                </span>
-                            </div>
-
-                            {% if item.newsletterevent.price is not None %}
-                            <div style="margin-bottom: 5px;">
-                                <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                    {% trans "Price"|upper %}
-                                </b>
-                                <br>
-                                <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
-                                    {% if item.newsletterevent.price == 0 %}
-                                        {% trans "Free" %}
-                                    {% else %}
-                                        &euro;{{ item.newsletterevent.price }}
-                                    {% endif %}
-                                </span>
-                            </div>
+                    {% if item.newsletterevent.show_costs_warning %}
+                    <p style="font-family: Arial, sans-serif">
+                        <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline"
+                            %}!
+                            {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
+                            {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}
+                            {% trans "These costs are" %}: <b>&euro;{{ item.newsletterevent.penalty_costs }}.</b>
                             {% endif %}
+                        </i>
+                    </p>
+                    {% endif %}
+                </td>
+
+                <td style="vertical-align: top;">
+                    <div style="padding: 20px; background-color: black; border-left: 5px solid {{ primary_color }};">
+                        <div style="margin-bottom: 5px;">
+                            <b
+                                style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
+                                {% trans "Where"|upper %}
+                            </b>
+                            <br>
+                            <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
+                                {{ item.newsletterevent.where }}
+                            </span>
                         </div>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="2" style="{{ item_tr_style }}">
-                        {{ item.description|safe }}
-                    </td>
-                </tr>
-                {% endif %}
+
+                        <div style="margin-bottom: 5px;">
+                            <b
+                                style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
+                                {% trans "When"|upper %}
+                            </b>
+                            <br>
+                            <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
+                                {% if item.newsletterevent.start_datetime|date:'d-M-Y H:i' ==
+                                item.newsletterevent.end_datetime|date:'d-M-Y H:i' %}
+                                {{ item.newsletterevent.start_datetime|date:'D d M, Y H:i' }}
+                                {% elif item.newsletterevent.start_datetime|date:'d-M-Y' ==
+                                item.newsletterevent.end_datetime|date:'d-M-Y' %}
+                                {{ item.newsletterevent.start_datetime|date:'D d M, Y H:i' }} - {{
+                                item.newsletterevent.end_datetime|date:'H:i' }}
+                                {% else %}
+                                {{ item.newsletterevent.start_datetime|date:'D d M, Y H:i'}} - {{
+                                item.newsletterevent.end_datetime|date:'D d M, Y H:i' }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        {% if item.newsletterevent.price is not None %}
+                        <div style="margin-bottom: 5px;">
+                            <b
+                                style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
+                                {% trans "Price"|upper %}
+                            </b>
+                            <br>
+                            <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
+                                {% if item.newsletterevent.price == 0 %}
+                                {% trans "Free" %}
+                                {% else %}
+                                &euro;{{ item.newsletterevent.price }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2" style="{{ item_tr_style }}">
+                    {{ item.description|safe }}
+                </td>
+            </tr>
+            {% endif %}
             {% endfor %}
 
             <tr>
@@ -167,51 +191,61 @@
             </tr>
 
             <tr style="margin-top: 20px;">
-                <td style="background-color: {{ primary_color }}; overflow: hidden; padding-left:30px; padding-top: 10px; padding-bottom: 10px;">
-                    <a href="{% baseurl %}{% url 'index' %}"><img src="{% baseurl %}{% static 'img/logo-magenta-bg-'|add:lang_code|add:'.png' %}" alt="Thalia" width="180" height="75" style="float:left;width: 180px; height: 75px;"></a>
+                <td
+                    style="background-color: {{ primary_color }}; overflow: hidden; padding-left:30px; padding-top: 10px; padding-bottom: 10px;">
+                    <a href="{% baseurl %}{% url 'index' %}"><img
+                            src="{% baseurl %}{% static 'img/logo-magenta-bg-'|add:lang_code|add:'.png' %}" alt="Thalia"
+                            width="180" height="75" style="float:left;width: 180px; height: 75px;"></a>
                 </td>
                 <td align="center" style="background-color: black; color: white;font-size: 12px; padding: 10px;">
                     <p style="font-size: 18px; color: white; font-family: 'Calibri', 'Trebuchet MS', sans-serif;">
                         M1.0.08<br>
-                        <a href="https://www.thalia.nu" style="text-decoration:none; color: white; font-family: Calibri, 'Trebuchet MS', sans-serif">WWW.THALIA.NU</a><br>
-                        <a href="mailto:info@thalia.nu" style="text-decoration:none; color: white; font-family: Calibri, 'Trebuchet MS', sans-serif">INFO@THALIA.NU</a>
+                        <a href="https://www.thalia.nu"
+                            style="text-decoration:none; color: white; font-family: Calibri, 'Trebuchet MS', sans-serif">WWW.THALIA.NU</a><br>
+                        <a href="mailto:info@thalia.nu"
+                            style="text-decoration:none; color: white; font-family: Calibri, 'Trebuchet MS', sans-serif">INFO@THALIA.NU</a>
                     </p>
                 </td>
             </tr>
-        </table>
-    </div>
-    {% if local_partner or main_partner %}
-    <div style="width: 700px ; margin-top: 30px; margin-left: auto ; margin-right: auto;">
-        <table cellspacing="0" cellpadding="0">
-            {% if local_partner and main_partner and local_partner.is_active and main_partner.is_active %}
+            </table>
+        </div>
+        {% if local_partner or main_partner %}
+        <div style="width: 700px ; margin-top: 30px; margin-left: auto ; margin-right: auto;">
+            <table cellspacing="0" cellpadding="0">
+                {% if local_partner and main_partner and local_partner.is_active and main_partner.is_active %}
                 <col width="350px">
                 <col width="350px">
-            {% else %}
+                {% else %}
                 <col width="700px">
-            {% endif %}
-            <tr>
-                {% if local_partner and local_partner.is_active %}
-                <td align="center" style="color: black; font-size: 12px;">
-                    <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
-                        <a href="{{ local_partner.link }}"><img src="{% baseurl %}{% static 'newsletters/yoast-logo.png' %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/></a><br/>
-                        {% trans "our local partner"|upper %}
-                    </p>
-                </td>
                 {% endif %}
-                {% if main_partner and main_partner.is_active %}
-                <td align="center" style="color: black; font-size: 12px;">
-                    <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
-                        <a href="{{ main_partner.link }}">
-                            <img src="{% baseurl %}{% static 'newsletters/nedap-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
-                        </a><br/>
-                        {% trans "our main partner"|upper %}
-                    </p>
-                </td>
-                {% endif %}
-            </tr>
-        </table>
-    </div>
-    {% endif %}
+                <tr>
+                    {% if local_partner and local_partner.is_active %}
+                    <td align="center" style="color: black; font-size: 12px;">
+                        <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
+                            <a href="{{ local_partner.link }}"><img
+                                    src="{% baseurl %}{% static 'newsletters/yoast-logo.png' %}" height="70"
+                                    style="height: 70px; margin-bottom: 25px"
+                                    alt="{{ local_partner.name }}" /></a><br />
+                            {% trans "our local partner"|upper %}
+                        </p>
+                    </td>
+                    {% endif %}
+                    {% if main_partner and main_partner.is_active %}
+                    <td align="center" style="color: black; font-size: 12px;">
+                        <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
+                            <a href="{{ main_partner.link }}">
+                                <img src="{% baseurl %}{% static 'newsletters/nedap-logo.png' %}" height="95"
+                                    style="height: 95px;" alt="{{ main_partner.name }}" />
+                            </a><br />
+                            {% trans "our main partner"|upper %}
+                        </p>
+                    </td>
+                    {% endif %}
+                </tr>
+            </table>
+        </div>
+        {% endif %}
 </body>
+
 </html>
 {% endwith %}
