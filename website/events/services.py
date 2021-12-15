@@ -296,7 +296,6 @@ def registration_fields(request, member=None, event=None, registration=None, nam
                 "type": field.type,
                 "label": field.name,
                 "description": field.description,
-                "caption": field.short,
                 "value": information_field["value"],
                 "required": field.required,
             }
