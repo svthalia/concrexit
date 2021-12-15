@@ -19,32 +19,13 @@ class PromotionRequestAdmin(admin.ModelAdmin):
         "assigned_to",
         "status"
     )
-
-    form = RequestAdminForm
-
-    #: Included fields in the admin interface
-    fields = (
-        "event",
+    list_filter = (
         "publish_date",
-        "channel",
         "assigned_to",
         "status",
-        "drive_folder"
     )
-
-    formfield_overrides = {
-        models.ManyToManyField: {
-            'widget': CheckboxSelectMultiple
-        },
-    }
 
 
 @admin.register(PromotionChannel)
 class PromotionChannelAdmin(ModelAdmin):
-    list_display = (
-        "name",
-    )
-
-    fields = (
-        "name",
-    )
+    pass

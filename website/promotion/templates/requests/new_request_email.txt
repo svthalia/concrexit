@@ -1,10 +1,10 @@
-{% load i18n %}{% blocktrans with request_event_title=request.event.title request_publish_date=request.publish_date request_channel=request.channel%}Hi Paparazcie,
+{% load i18n %}{% blocktrans %}Hi Paparazcie,
 
 A new request for promotion has been created.
 
-Event: {{ request_event_title }}
-Promotion channel: {{ request_channel }}
-Publish date: {{ request_publish_date }}
+Event: {{ request.event.title }}
+Promotion channel: {{ request.channel }}
+Publish date: {{ request.publish_date }}
 
 Best regards,
 Study Association Thalia{% endblocktrans %}

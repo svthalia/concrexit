@@ -55,7 +55,7 @@ class PizzaEventInline(admin.StackedInline):
 class PromotionRequestInline(admin.StackedInline):
 
     model = PromotionRequest
-    exclude = ("assigned_to", "status", "drive_folder",)
+    readonly_fields = ("assigned_to", "status", "drive_folder",)
     extra = 0
 
 
