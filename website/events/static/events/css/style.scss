@@ -1,3 +1,49 @@
+.event-indication {
+    float: right;
+    position: absolute;
+    right: 1.25rem;
+    top: 1.25rem;
+
+    .open-registration, .has-registration, .pending-registration {
+        border-radius: 20px;
+        width: 12px;
+        height: 12px;
+    }
+
+    .open-registration {
+        background-color: $grey;
+    }
+
+    .has-registration {
+        background-color: var(--primary);
+    }
+
+    .pending-registration {
+        background-color: $yellow;
+    }
+}
+
+#events-cards {
+    .card {
+        -moz-transition: 0.2s ease-in;
+        -o-transition: 0.2s ease-in;
+        -webkit-transition: 0.2s ease-in;
+        -ms-transition: 0.2s ease-in;
+        transition: 0.2s ease-in;
+
+        height: calc(100% - 15px);
+
+        &:hover {
+            background-color: var(--card-background-hover);
+        }
+
+        .card-date {
+            color: var(--primary);
+            margin-bottom: .7rem;
+        }
+    }
+}
+
 .frontpage-events {
     .list-group-item {
         .event-date {
@@ -12,31 +58,6 @@
             display: inline-block;
             text-overflow: ellipsis;
             line-height: 16px;
-        }
-
-        .event-indication {
-            float: right;
-            width: 12px;
-            height: 12px;
-            margin-top: 6px;
-
-            .open-registration, .has-registration, .pending-registration {
-                border-radius: 20px;
-                width: 12px;
-                height: 12px;
-            }
-
-            .open-registration {
-                background-color: $grey;
-            }
-
-            .has-registration {
-                background-color: var(--primary);
-            }
-
-            .pending-registration {
-                background-color: $yellow;
-            }
         }
     }
 }

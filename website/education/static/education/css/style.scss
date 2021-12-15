@@ -2,3 +2,14 @@ img.lang-flag {
     vertical-align: middle;
     width: 20px;
 }
+.frontpage-summaries {
+    .list-group-item {
+        .summary-course-title {
+            color: var(--primary);
+        }
+
+        .summary-name {
+            color: var(--list-background-contrast);
+        }
+    }
+}
