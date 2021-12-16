@@ -128,3 +128,7 @@ output "aws_interface_id" {
 output "public_ipv4" {
   value = aws_eip.eip.public_ip
 }
+
+output "public_ipv6" {
+  value = one(aws_network_interface.concrexit-interface.ipv6_addresses)
+}

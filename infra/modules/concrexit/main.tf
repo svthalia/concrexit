@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_ebs_volume" "concrexit-postgres" {
-  availability_zone = "${data.aws_region.current.name}a"
+  availability_zone = "eu-west-1a"
   size              = 20
 
   tags = merge(var.tags, {
@@ -12,7 +12,7 @@ resource "aws_ebs_volume" "concrexit-postgres" {
 }
 
 resource "aws_ebs_volume" "concrexit-media" {
-  availability_zone = "${data.aws_region.current.name}a"
+  availability_zone = "eu-west-1a"
   size              = 100
 
   tags = merge(var.tags, {

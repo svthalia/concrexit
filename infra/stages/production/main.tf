@@ -18,18 +18,6 @@ provider "aws" {
   region  = var.aws_region
 }
 
-module "concrexit_network" {
-  source = "../../modules/concrexit_network"
-  stage  = "production"
-  tags = {
-    "Category"    = "concrexit",
-    "Owner"       = "technicie",
-    "Environment" = "production",
-    "Terraform"   = true
-  }
-  customer = var.customer
-}
-
 module "concrexit" {
   source = "../../modules/concrexit"
   stage  = "production"
@@ -46,4 +34,24 @@ module "concrexit" {
   ssh_public_key   = var.ssh_public_key
   aws_interface_id = module.concrexit_network.aws_interface_id
   public_ipv4      = module.concrexit_network.public_ipv4
+}
+
+module "concrexit_network" {
+  source = "../../modules/concrexit_network"
+  stage  = "production"
+  tags = {
+    "Category"    = "concrexit",
+    "Owner"       = "technicie",
+    "Environment" = "production",
+    "Terraform"   = true
+  }
+  customer = var.customer
+}
+
+module "concrexit_dns" {
+  source      = "../../modules/concrexit_dns"
+  zone_name   = var.domain_name
+  webdomain   = var.domain_name
+  public_ipv4 = module.concrexit_network.public_ipv4
+  public_ipv6 = module.concrexit_network.public_ipv6
 }
