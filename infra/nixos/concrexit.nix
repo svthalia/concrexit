@@ -272,6 +272,7 @@ in
             # here as a variable
             pizzaConfig = {
               enableACME = cfg.ssl;
+              addSSL = true;
               locations."/".return = "301 https://${cfg.domain}/pizzas";
               extraConfig = securityHeaders;
             };
@@ -306,6 +307,7 @@ in
             };
             "www.${cfg.domain}" = {
               enableACME = cfg.ssl;
+              addSSL = true;
               locations."/".return = "301 https://${cfg.domain}$request_uri";
               extraConfig = securityHeaders;
             };

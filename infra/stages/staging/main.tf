@@ -19,17 +19,40 @@ provider "aws" {
 }
 
 module "concrexit" {
-  source               = "../../modules/concrexit"
-  stage                = "staging"
-  tags                 = {
+  source     = "../../modules/concrexit"
+  depends_on = [module.concrexit_dns]
+  stage      = "staging"
+  tags = {
     "Category"    = "concrexit",
     "Owner"       = "technicie",
     "Environment" = "staging",
     "Terraform"   = true
   }
-  customer             = var.customer
-  webhostname          = "staging"
-  domain               = var.domain_name
-  ssh_private_key      = var.ssh_private_key
-  ssh_public_key       = var.ssh_public_key
+  customer         = var.customer
+  webhostname      = "staging"
+  domain           = var.domain_name
+  ssh_private_key  = var.ssh_private_key
+  ssh_public_key   = var.ssh_public_key
+  aws_interface_id = module.concrexit_network.aws_interface_id
+  public_ipv4      = module.concrexit_network.public_ipv4
+}
+
+module "concrexit_network" {
+  source = "../../modules/concrexit_network"
+  stage  = "staging"
+  tags = {
+    "Category"    = "concrexit",
+    "Owner"       = "technicie",
+    "Environment" = "staging",
+    "Terraform"   = true
+  }
+  customer = var.customer
+}
+
+module "concrexit_dns" {
+  source      = "../../modules/concrexit_dns"
+  zone_name   = var.domain_name
+  webdomain   = "staging.${var.domain_name}"
+  public_ipv4 = module.concrexit_network.public_ipv4
+  public_ipv6 = module.concrexit_network.public_ipv6
 }
