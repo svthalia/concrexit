@@ -4,8 +4,6 @@ from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.forms import CheckboxSelectMultiple
 
-from promotion.forms import RequestAdminForm
-
 from .models import PromotionChannel, PromotionRequest
 
 
@@ -24,6 +22,7 @@ class PromotionRequestAdmin(admin.ModelAdmin):
         "assigned_to",
         "status",
     )
+    date_hierarchy = "publish_date"
 
 
 @admin.register(PromotionChannel)

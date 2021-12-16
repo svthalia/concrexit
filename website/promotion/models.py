@@ -38,6 +38,8 @@ class PromotionRequest(models.Model):
         on_delete=models.CASCADE
     )
     assigned_to = models.CharField(
+        null = True,
+        blank = True,
         max_length = 40,
         verbose_name=_("Assigned to"),
         default = ""
@@ -62,11 +64,14 @@ class PromotionRequest(models.Model):
         default = NOT_STARTED,
     )
     drive_folder = models.URLField(
-        max_length = 200,
+        null = True,
+        blank = True,
+        max_length = 400,
         default = ""
     )
-    remarks = HTMLField(("remarks"),)
+    remarks = HTMLField(verbose_name=_("remarks"),)
     created_at = models.DateTimeField(
+        verbose_name=_("created_at"),
         auto_now_add=True
     )
 
