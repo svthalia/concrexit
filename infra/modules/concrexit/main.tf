@@ -2,10 +2,6 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
-data "aws_network_interface" "concrexit-interface" {
-  id = var.aws_interface_id
-}
-
 resource "aws_ebs_volume" "concrexit-postgres" {
   availability_zone = "${data.aws_region.current.name}a"
   size              = 20
@@ -57,7 +53,7 @@ resource "aws_instance" "concrexit" {
   }
 
   network_interface {
-    network_interface_id = data.aws_network_interface.concrexit-interface.id
+    network_interface_id = var.aws_interface_id
     device_index         = 0
   }
 
