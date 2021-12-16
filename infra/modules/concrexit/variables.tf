@@ -23,10 +23,18 @@ variable "webhostname" {
   type        = string
 }
 
+variable "aws_interface_id" {
+  type = string
+}
+
+variable "public_ipv4" {
+  type = string
+}
+
 variable "ssh_private_key" {
-  type        = string
+  type = string
 }
 
 variable "ssh_public_key" {
-  type        = string
+  type = string
 }
