@@ -7,7 +7,9 @@ on:
 jobs:
   deployment:
     runs-on: ubuntu-latest
-    environment: staging_environment
+    environment: 
+      name: staging_environment
+      url: https://staging.thalia.nu
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v16
