@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import DEFERRED, Q, Sum, BooleanField, DecimalField
+from django.db.models import DEFERRED, Q, Sum, BooleanField
 from django.db.models.expressions import Case, When, Value, Exists, OuterRef
 from django.db.models.functions import Coalesce
 from django.urls import reverse
@@ -19,6 +19,22 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import queryable_property, AggregateProperty
 
 from members.models import Member
+
+
+def validate_not_zero(value):
+    if value == 0:
+        raise ValidationError(_("0 is not allowed."),)
+
+
+class PaymentAmountField(models.DecimalField):
+    def __init__(self, **kwargs):
+        kwargs["max_digits"] = 8
+        kwargs["decimal_places"] = 2
+        validators = kwargs.pop("validators", [])
+        if validate_not_zero not in validators:
+            validators.append(validate_not_zero)
+        kwargs["validators"] = validators
+        super().__init__(**kwargs)
 
 
 class PaymentUser(Member):
@@ -58,7 +74,7 @@ class PaymentUser(Member):
                 ),
             ),
             Value(0.00),
-            output_field=DecimalField(decimal_places=2, max_digits=6),
+            output_field=PaymentAmountField(),
         )
     )
 
@@ -116,13 +132,7 @@ class Payment(models.Model):
         choices=PAYMENT_TYPE,
     )
 
-    amount = models.DecimalField(
-        verbose_name=_("amount"),
-        blank=False,
-        null=False,
-        max_digits=5,
-        decimal_places=2,
-    )
+    amount = PaymentAmountField(verbose_name=_("amount"), blank=False, null=False,)
 
     paid_by = models.ForeignKey(
         PaymentUser,

@@ -14,6 +14,7 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
 from members.models import Membership, Profile
+from payments.models import PaymentAmountField
 from utils import countries
 
 
@@ -67,10 +68,8 @@ class Entry(models.Model):
         m for m in Membership.MEMBERSHIP_TYPES if m[0] != Membership.HONORARY
     ]
 
-    contribution = models.DecimalField(
+    contribution = PaymentAmountField(
         verbose_name=_("contribution"),
-        max_digits=5,
-        decimal_places=2,
         validators=[MinValueValidator(settings.MEMBERSHIP_PRICES[MEMBERSHIP_YEAR])],
         default=settings.MEMBERSHIP_PRICES[MEMBERSHIP_YEAR],
         blank=False,

@@ -3,6 +3,8 @@ from django.db import models
 
 from django.utils.translation import gettext_lazy as _
 
+from payments.models import PaymentAmountField
+
 
 class Product(models.Model):
     """Products that can be ordered."""
@@ -63,11 +65,8 @@ class ProductListItem(models.Model):
         blank=False,
         on_delete=models.CASCADE,
     )
-    price = models.DecimalField(
-        verbose_name=_("price"),
-        max_digits=6,
-        decimal_places=2,
-        validators=[MinValueValidator(0)],
+    price = PaymentAmountField(
+        verbose_name=_("price"), validators=[MinValueValidator(0)],
     )
 
     def __str__(self):

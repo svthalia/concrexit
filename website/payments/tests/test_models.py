@@ -1,4 +1,5 @@
 import datetime
+import decimal
 from decimal import Decimal
 from unittest.mock import PropertyMock, patch
 
@@ -162,6 +163,50 @@ class PaymentTest(TestCase):
     def test_str(self) -> None:
         """Tests that the output is a description with the amount."""
         self.assertEqual("Payment of 10.00", str(self.payment))
+
+    def test_payment_amount(self):
+        """Test the maximal payment amount."""
+        with self.subTest("Payments max. amount is 999999.99"):
+            Payment.objects.create(
+                type=Payment.WIRE,
+                paid_by=self.member,
+                processed_by=self.member,
+                amount=999999.99,
+            )
+
+        with self.subTest("Negative payments are actually allowed"):
+            Payment.objects.create(
+                type=Payment.WIRE,
+                paid_by=self.member,
+                processed_by=self.member,
+                amount=-999999.99,
+            )
+
+        with self.subTest("Payments can't have an amount of higher than 1000000"):
+            with self.assertRaises(ValidationError):
+                p = Payment(
+                    type=Payment.WIRE,
+                    paid_by=self.member,
+                    processed_by=self.member,
+                    amount=1000000,
+                )
+                p.full_clean()
+            with self.assertRaises(decimal.InvalidOperation):
+                Payment.objects.create(
+                    type=Payment.WIRE,
+                    paid_by=self.member,
+                    processed_by=self.member,
+                    amount=1000000,
+                )
+
+        with self.subTest("Payments of amount 0 are not allowed"):
+            with self.assertRaises(ValidationError):
+                Payment.objects.create(
+                    type=Payment.WIRE,
+                    paid_by=self.member,
+                    processed_by=self.member,
+                    amount=0,
+                )
 
 
 @freeze_time("2019-01-01")

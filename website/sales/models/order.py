@@ -22,7 +22,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
 from members.models import uuid, Member
-from payments.models import Payment
+from payments.models import Payment, PaymentAmountField
 from sales.models.product import ProductListItem
 from sales.models.shift import Shift
 
@@ -72,10 +72,8 @@ class Order(models.Model):
         null=True,
     )
 
-    discount = models.DecimalField(
+    discount = PaymentAmountField(
         verbose_name=_("discount"),
-        max_digits=6,
-        decimal_places=2,
         null=True,
         blank=True,
         validators=[MinValueValidator(Decimal("0.00"))],
@@ -99,12 +97,16 @@ class Order(models.Model):
     )
 
     subtotal = AnnotationProperty(
-        Coalesce(Sum("order_items__total"), Value(0.00), output_field=DecimalField())
+        Coalesce(
+            Sum("order_items__total"), Value(0.00), output_field=PaymentAmountField()
+        )
     )
 
     total_amount = AnnotationProperty(
-        Coalesce(Sum("order_items__total"), Value(0.00), output_field=DecimalField())
-        - Coalesce(F("discount"), Value(0.00), output_field=DecimalField())
+        Coalesce(
+            Sum("order_items__total"), Value(0.00), output_field=PaymentAmountField()
+        )
+        - Coalesce(F("discount"), Value(0.00), output_field=PaymentAmountField())
     )
 
     num_items = AnnotationProperty(
@@ -193,10 +195,8 @@ class OrderItem(models.Model):
         blank=False,
         on_delete=models.CASCADE,
     )
-    total = models.DecimalField(
+    total = PaymentAmountField(
         verbose_name=_("total"),
-        max_digits=6,
-        decimal_places=2,
         null=False,
         blank=True,
         validators=[MinValueValidator(Decimal("0.00"))],
