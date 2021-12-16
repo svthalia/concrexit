@@ -15,6 +15,7 @@ from payments.models import (
     Batch,
     PaymentUser,
     BlacklistedPaymentUser,
+    validate_not_zero,
 )
 from payments.tests.__mocks__ import MockPayable, MockModel
 
@@ -200,6 +201,18 @@ class PaymentTest(TestCase):
                     processed_by=self.member,
                     amount=0,
                 )
+
+    def test_validator(self):
+        validate_not_zero(1)
+        validate_not_zero(-1)
+        validate_not_zero(0.01)
+        validate_not_zero(-0.01)
+        validate_not_zero(1000000)
+        validate_not_zero(-1000000)
+        validate_not_zero(10000000)
+        validate_not_zero(-10000000)
+        with self.assertRaises(ValidationError):
+            validate_not_zero(0)
 
 
 @freeze_time("2019-01-01")
