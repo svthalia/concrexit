@@ -27,7 +27,7 @@
 
                                 <h6 class="card-date">{{ next_event.event.start|date:"d F Y" }}</h6>
                                 <h5 class="card-title">{{ next_event.event.title }}</h5>
-                                <p class="card-text">{{ next_event.event.description|striptags|bleach|truncatechars:110 }}</p>
+                                <p class="card-text">{{ next_event.event.caption|striptags|bleach|truncatechars:110 }}</p>
                             </div>
                         </div>
                     </a>
