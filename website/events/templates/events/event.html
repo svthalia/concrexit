@@ -6,7 +6,7 @@
 {% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block opengraph %}
-    <meta property="og:description" content="{{ event.description|striptags|truncatewords:10 }}"/>
+    <meta property="og:description" content="{{ event.caption|striptags }}"/>
 {% endblock %}
 
 
@@ -239,7 +239,7 @@
                             </td>
                         </tr>
 
-                        {% if event.food_event %} 
+                        {% if event.food_event %}
                             {% if event.food_event == event.food_event.current or event.food_event.just_ended or event.food_event.in_the_future %}
                                 <tr>
                                     <th>
