@@ -21,7 +21,7 @@ from activemembers.models import (
 )
 from documents.models import Document
 from education.models import Course, Category
-from events.models import Event, EventRegistration
+from events.models import Event, EventRegistration, EVENT_CATEGORIES
 from members.models import Profile, Member, Membership
 from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
@@ -275,7 +275,7 @@ class Command(BaseCommand):
         duration = math.ceil(random.expovariate(0.2))
         event.end = event.start + timedelta(hours=duration)
         event.organiser = random.choice(groups)
-        event.category = random.choice(Event.EVENT_CATEGORIES)[0]
+        event.category = random.choice(EVENT_CATEGORIES)[0]
         event.fine = 5
 
         if random.random() < 0.5:
