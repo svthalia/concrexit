@@ -191,13 +191,6 @@ class PaymentTest(TestCase):
                     amount=1000000,
                 )
                 p.full_clean()
-            with self.assertRaises(decimal.InvalidOperation):
-                Payment.objects.create(
-                    type=Payment.WIRE,
-                    paid_by=self.member,
-                    processed_by=self.member,
-                    amount=1000000,
-                )
 
         with self.subTest("Payments of amount 0 are not allowed"):
             with self.assertRaises(ValidationError):
