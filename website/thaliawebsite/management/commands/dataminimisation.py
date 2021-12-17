@@ -24,18 +24,18 @@ class Command(BaseCommand):
         for p in processed:
             self.stdout.write("Removed data for {}".format(p))
 
-        processed = events_services.execute_data_minimization(options["dry-run"])
+        processed = events_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
             self.stdout.write("Removed registration information for {}".format(p))
 
-        processed = payments_services.execute_data_minimization(options["dry-run"])
+        processed = payments_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
             self.stdout.write("Removed payments information for {}".format(p))
 
-        processed = pizzas_services.execute_data_minimization(options["dry-run"])
+        processed = pizzas_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
             self.stdout.write("Removed food events information for {}".format(p))
 
-        processed = sales_services.execute_data_minimization(options["dry-run"])
+        processed = sales_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
             self.stdout.write("Removed sales orders for {}".format(p))

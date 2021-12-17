@@ -227,7 +227,7 @@ class ServicesTest(TestCase):
                 topic="test",
                 notes="to be deleted",
             )
-            services.execute_data_minimization(dry_run=False)
+            services.execute_data_minimisation(dry_run=False)
             payment = Payment.objects.get(pk=p.pk)
             self.assertIsNone(payment.paid_by)
 
@@ -239,7 +239,7 @@ class ServicesTest(TestCase):
                 topic="test",
                 notes="to be deleted",
             )
-            services.execute_data_minimization(dry_run=False)
+            services.execute_data_minimisation(dry_run=False)
             payment = Payment.objects.get(pk=p.pk)
             self.assertIsNotNone(payment.paid_by)
 
@@ -251,6 +251,6 @@ class ServicesTest(TestCase):
                 topic="test",
                 notes="to be deleted",
             )
-            services.execute_data_minimization(dry_run=True)
+            services.execute_data_minimisation(dry_run=True)
             payment = Payment.objects.get(pk=p.pk)
             self.assertIsNotNone(payment.paid_by)

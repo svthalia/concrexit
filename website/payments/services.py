@@ -191,7 +191,7 @@ def send_tpay_batch_processing_emails(batch):
     return len(member_payments)
 
 
-def execute_data_minimization(dry_run=False):
+def execute_data_minimisation(dry_run=False):
     """Anonymizes payments older than 7 years."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
     deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 7))
