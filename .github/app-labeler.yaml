@@ -25,6 +25,8 @@ photos:
   - website/photos/**
 pizzas:
   - website/pizzas/**
+promotion:
+  - website/promotion/**
 push-notifications:
   - website/pushnotifications/**
 registrations:
