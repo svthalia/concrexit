@@ -6,7 +6,11 @@
 {% block opengraph_title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block opengraph %}
-    <meta property="og:description" content="{{ event.caption|striptags }}"/>
+    {% if event.caption != 'N/A' %}
+        <meta property="og:description" content="{{ event.caption|striptags }}"/>
+    {% else %}
+        <meta property="og:description" content="{{ event.description|striptags|truncatewords:10 }}"/>
+    {% endif %}
 {% endblock %}
 
 
