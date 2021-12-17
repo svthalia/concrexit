@@ -201,4 +201,4 @@ def execute_data_minimization(dry_run=False):
     )
     if not dry_run:
         queryset.update(paid_by=None)
-    return queryset.all()
+    return queryset
