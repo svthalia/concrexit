@@ -1,4 +1,4 @@
-{% load i18n bleach_tags %}{% blocktrans %}Hi Paparazcie,
+{% load i18n bleach_tags %}{% blocktrans %}Hi,
 
 A new request for promotion has been created.
 {% endblocktrans %}
