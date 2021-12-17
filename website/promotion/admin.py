@@ -10,13 +10,8 @@ from .models import PromotionChannel, PromotionRequest
 @admin.register(PromotionRequest)
 class PromotionRequestAdmin(admin.ModelAdmin):
     """This manages the admin interface for the model items."""
-    list_display = (
-        "event", 
-        "publish_date", 
-        "channel",
-        "assigned_to",
-        "status"
-    )
+
+    list_display = ("event", "publish_date", "channel", "assigned_to", "status")
     list_filter = (
         "publish_date",
         "assigned_to",

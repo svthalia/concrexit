@@ -55,7 +55,11 @@ class PizzaEventInline(admin.StackedInline):
 class PromotionRequestInline(admin.StackedInline):
 
     model = PromotionRequest
-    readonly_fields = ("assigned_to", "status", "drive_folder",)
+    readonly_fields = (
+        "assigned_to",
+        "status",
+        "drive_folder",
+    )
     extra = 0
 
 
@@ -157,7 +161,6 @@ class EventAdmin(DoNextModelAdmin):
             {"fields": ("slide", "documents", "shift"), "classes": ("collapse",)},
         ),
     )
-
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)

@@ -1,8 +1,7 @@
 {% load i18n %}{% blocktrans %}Hi Paparazcie,
 
-A new request for promotion has been created.
+A new request for promotion has been created, not attached to an event
 
-Event: {{ request.event.title }}
 Promotion channel: {{ request.channel }}
 Publish date: {{ request.publish_date }}
 Remarks: {{ request.remarks }}

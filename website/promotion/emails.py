@@ -1,24 +1,22 @@
 """The emails defined by the promotion request package."""
-from django.core.mail import EmailMessage
-from django.template.loader import get_template
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-from members.models import MemberGroup
+from utils.snippets import send_email
+
 
 def notify_new_request(request):
-
-    text_template = get_template("requests/new_request_email.txt")
-
-    subject = _("[THALIA][PAPARAZCIE] New promtion request for '{}'").format(
-        request.event.title
-    )
-    text_message = text_template.render(
-        {
-            "event": request,
-        }
-    )
-
-    paparazcie_object = MemberGroup.objects.filter(name = "Paparazcie")
-    paparazcie_email = paparazcie_object.values().first()["contact_email"]
-
-    EmailMessage(subject, text_message, to=[paparazcie_email]).send()
+    if request.event:
+        send_email(
+            settings.PROMO_REQUEST_NOTIFICATION_ADDRESS,
+            _(f"[THALIA][PROMO] New promotion request for {request.event}"),
+            "requests/new_request_email.txt",
+            {"event": request,},
+        )
+    else:
+        send_email(
+            settings.PROMO_REQUEST_NOTIFICATION_ADDRESS,
+            _(f"[THALIA][PROMO] New promotion request"),
+            "requests/new_request_email_no_event.txt",
+            {"request": request,},
+        )
