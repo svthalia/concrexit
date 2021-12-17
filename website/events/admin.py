@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Max, Min
-from django.forms import Field, CheckboxSelectMultiple
+from django.forms import Field
 from django.template.defaultfilters import date as _date
 from django.urls import reverse, path
 from django.utils import timezone
@@ -19,10 +19,10 @@ from events.forms import RegistrationAdminForm
 from members.models import Member
 from payments.widgets import PaymentWidget
 from pizzas.models import FoodEvent
+from promotion.models import PromotionRequest
 from utils.admin import DoNextModelAdmin
 from utils.snippets import datetime_to_lectureyear
 from . import forms, models
-from promotion.models import PromotionRequest
 
 
 class RegistrationInformationFieldInline(admin.TabularInline):
@@ -55,7 +55,11 @@ class PizzaEventInline(admin.StackedInline):
 class PromotionRequestInline(admin.StackedInline):
 
     model = PromotionRequest
-    readonly_fields = ("assigned_to", "status", "drive_folder",)
+    readonly_fields = (
+        "assigned_to",
+        "status",
+        "drive_folder",
+    )
     extra = 0
 
 
@@ -157,7 +161,6 @@ class EventAdmin(DoNextModelAdmin):
             {"fields": ("slide", "documents", "shift"), "classes": ("collapse",)},
         ),
     )
-
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)

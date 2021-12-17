@@ -2,9 +2,12 @@
 
 A new request for promotion has been created.
 
+{% if request.event %}
 Event: {{ request.event.title }}
+{% endif %}
 Promotion channel: {{ request.channel }}
 Publish date: {{ request.publish_date }}
+Remarks: {{ request.remarks }}
 
 Best regards,
 Study Association Thalia{% endblocktrans %}

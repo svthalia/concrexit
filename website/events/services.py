@@ -11,7 +11,6 @@ from events.models import EventRegistration, RegistrationInformationField, Event
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
-from activemembers.models import MemberGroup
 
 
 def is_user_registered(member, event):
