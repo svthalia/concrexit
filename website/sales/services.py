@@ -29,7 +29,7 @@ def execute_data_minimization(dry_run=False):
     deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 3))
 
     queryset = Order.objects.filter(created_at__lte=deletion_period).exclude(
-        member__isnull=True
+        payer__isnull=True
     )
     if not dry_run:
         queryset.update(payer=None)
