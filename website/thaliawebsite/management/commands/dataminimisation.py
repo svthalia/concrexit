@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 
+from utils.snippets import minimise_logentries_data
 from members import services as members_services
 from events import services as events_services
 from payments import services as payments_services
@@ -39,3 +40,7 @@ class Command(BaseCommand):
         processed = sales_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
             self.stdout.write("Removed sales orders for {}".format(p))
+
+        processed = minimise_logentries_data(options["dry-run"])
+        for p in processed:
+            self.stdout.write("Removed user from logentries for {}".format(p))
