@@ -38,15 +38,7 @@ def execute_data_minimization(dry_run=False):
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
     deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 3))
 
-    queryset_members = FoodOrder.objects.filter(created_at__lte=deletion_period).filter(
-        payer__isnull=False
-    )
-    queryset_nonmembers = (
-        FoodOrder.objects.filter(created_at__lte=deletion_period)
-        .filter(name__isnull=False)
-        .exclude(name="<deleted>")
-    )
+    queryset = FoodOrder.objects.filter(food_event__end__lte=deletion_period).exclude(name="<removed>")
     if not dry_run:
-        queryset_members.update(payer=None)
-        queryset_nonmembers.update(name="<deleted>")
-    return queryset_members.union(queryset_nonmembers).all()
+        queryset.update(member=None, name="<removed>")
+    return queryset
