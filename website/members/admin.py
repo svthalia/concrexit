@@ -6,11 +6,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.db.models import Q, Count
 from django.http import HttpResponse
-from django.urls import path
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from members import services, admin_views
+from members import services
 from members.models import EmailChange, Member
 from . import forms, models
 
@@ -37,7 +36,6 @@ class ProfileInline(admin.StackedInline):
         "receive_magazine",
         "birthday",
         "show_birthday",
-        "auto_renew",
         "initials",
         "nickname",
         "display_name_preference",
@@ -136,7 +134,6 @@ class HasPermissionsFilter(admin.SimpleListFilter):
 
 
 class UserAdmin(BaseUserAdmin):
-    change_list_template = "admin/members/change_list.html"
     form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 
@@ -158,7 +155,6 @@ class UserAdmin(BaseUserAdmin):
         "groups",
         AgeListFilter,
         "profile__event_permissions",
-        "profile__auto_renew",
         "profile__receive_optin",
         "profile__receive_newsletter",
         "profile__receive_magazine",
@@ -277,17 +273,6 @@ class UserAdmin(BaseUserAdmin):
             )
 
     minimise_data.short_description = _("Minimise data for the selected users")
-
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path(
-                "iban-export/",
-                self.admin_site.admin_view(admin_views.IbanExportView.as_view()),
-                name="members_member_ibanexport",
-            ),
-        ]
-        return custom_urls + urls
 
 
 @admin.register(models.Member)

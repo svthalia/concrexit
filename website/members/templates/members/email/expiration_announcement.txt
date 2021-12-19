@@ -1,8 +1,6 @@
 {% load i18n %}{% blocktrans %}Dear {{ name }},
 
 The past year you've been a member or benificiary of Study Association Thalia.
-You've not given us permission to prolong it automatically, thus your membership will
-end on the 1st of September.
 
 If you still want to enjoy all the benefits a membership gives you the coming year
 then you'll have to renew it. This'll give you access to activities, the book sale,
