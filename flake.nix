@@ -24,7 +24,7 @@
       rec {
 
         devShells =
-          let basePackages = with pkgs; [ poetry pkgs.concrexit ghostscript file ];
+          let basePackages = with pkgs; [ poetry ghostscript file ];
           in
           (flake-utils.lib.flattenTree
             {

@@ -27,13 +27,18 @@ module "concrexit" {
     "Environment" = "production",
     "Terraform"   = true
   }
-  customer         = var.customer
-  webhostname      = "production"
-  domain           = var.domain_name
   ssh_private_key  = var.ssh_private_key
   ssh_public_key   = var.ssh_public_key
   aws_interface_id = module.concrexit_network.aws_interface_id
   public_ipv4      = module.concrexit_network.public_ipv4
+
+  customer              = var.customer
+  hostname              = "production"
+  hostdomain            = var.domain_name
+  webdomain             = var.domain_name
+  gsuite_domain         = var.domain_name
+  gsuite_members_domain = "members.${var.domain_name}"
+  django_env            = "production"
 }
 
 module "concrexit_network" {

@@ -3,21 +3,21 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_ebs_volume" "concrexit-postgres" {
-  availability_zone = "eu-west-1a"
+  availability_zone = data.aws_network_interface.concrexit-interface.availability_zone
   size              = 20
 
   tags = merge(var.tags, {
-    Name = "${var.customer}-${var.stage}-postgres",
+    Name     = "${var.customer}-${var.stage}-postgres",
     Snapshot = true
   })
 }
 
 resource "aws_ebs_volume" "concrexit-media" {
-  availability_zone = "eu-west-1a"
+  availability_zone = data.aws_network_interface.concrexit-interface.availability_zone
   size              = 100
 
   tags = merge(var.tags, {
-    Name = "${var.customer}-${var.stage}-media",
+    Name     = "${var.customer}-${var.stage}-media",
     Snapshot = true
   })
 }
@@ -44,9 +44,14 @@ data "aws_ami" "nixos" {
   }
 }
 
+data "aws_network_interface" "concrexit-interface" {
+  id = var.aws_interface_id
+}
+
 resource "aws_instance" "concrexit" {
   ami           = data.aws_ami.nixos.id
   instance_type = "t3a.small"
+  availability_zone = data.aws_network_interface.concrexit-interface.availability_zone
 
   key_name = aws_key_pair.deployer.key_name
 
@@ -72,12 +77,15 @@ resource "aws_key_pair" "deployer" {
 locals {
   postgres_volname = replace(aws_volume_attachment.postgres-att.volume_id, "-", "")
   media_volname    = replace(aws_volume_attachment.media-att.volume_id, "-", "")
+  public_ipv4      = coalesce(var.public_ipv4, aws_instance.concrexit.public_ip)
 }
 
 data "external" "nix-flake-build" {
   program = [
     "bash", "${abspath(path.module)}/nix-build-flake.sh"
   ]
+
+  working_dir = path.module
 
   query = {
     flake_content = <<EOF
@@ -99,23 +107,30 @@ data "external" "nix-flake-build" {
             nixpkgs.overlays = [ concrexit.overlay ];
 
             networking = {
-              hostName = "${var.webhostname}";
-              domain = "thalia.nu";
+              hostName = "${var.hostname}";
+              domain = "${var.hostdomain}";
             };
 
             concrexit = {
               dir = "/volume/concrexit_media/data";
-              domain = "${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
-              env-vars.GSUITE_DOMAIN = "${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
-              env-vars.GSUITE_MEMBERS_DOMAIN = "members.${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
-              env-vars.DJANGO_ENV = "${var.stage}";
+              domain = "${var.webdomain}";
+              env-vars.GSUITE_DOMAIN = ${jsonencode(var.gsuite_domain)};
+              env-vars.GSUITE_MEMBERS_DOMAIN = ${jsonencode(var.gsuite_members_domain)};
+              env-vars.DJANGO_ENV = "${var.django_env}";
             };
 
             services.postgresql.dataDir = "/volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema}";
 
-            systemd.tmpfiles.rules = [
-              "d /volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema} 0750 postgres postgres - -"
-            ];
+            systemd.services.postgres-dir = {
+              wantedBy = [ "multi-user.target" ];
+              after = [ "volume-concrexit_postgres.mount" ];
+              script = ''
+                mkdir --parents "/volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema}"
+                chown postgres:postgres "/volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema}"
+              '';
+            };
+            systemd.services.postgresql.after = [ "postgres-dir.service" ];
+            systemd.services.concrexit-dir.after = [ "volume-concrexit_media.mount" ];
 
             users.users.root.openssh.authorizedKeys.keys = [ "${var.ssh_public_key}" ];
 
@@ -151,7 +166,7 @@ resource "null_resource" "deploy_nixos" {
 
   connection {
     type        = "ssh"
-    host        = var.public_ipv4
+    host        = local.public_ipv4
     user        = "root"
     timeout     = "100s"
     agent       = false
@@ -173,7 +188,7 @@ cd $workDir
 echo "${chomp(var.ssh_private_key)}" > ./deploykey
 chmod 600 ./deploykey
 export NIX_SSHOPTS="-i ./deploykey -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o GlobalKnownHostsFile=/dev/null -o BatchMode=yes"
-nix copy -s --to ssh://root@${var.public_ipv4} ${data.external.nix-flake-build.result.out}
+nix copy -s --to ssh://root@${local.public_ipv4} ${data.external.nix-flake-build.result.out}
 EOF
   }
 
@@ -183,6 +198,10 @@ EOF
       "${data.external.nix-flake-build.result.out}/bin/switch-to-configuration switch"
     ]
   }
+}
+
+output "public_ipv4" {
+  value = local.public_ipv4
 }
 
 output "public_ipv6" {

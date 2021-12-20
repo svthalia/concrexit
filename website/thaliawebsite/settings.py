@@ -201,7 +201,7 @@ ALLOWED_HOSTS = [
 INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 
 # https://django-compressor.readthedocs.io/en/stable/settings/#django.conf.settings.COMPRESS_OFFLINE
-COMPRESS_OFFLINE = setting(development=False, production=True)
+COMPRESS_OFFLINE = from_env("COMPRESS_OFFLINE", development="0", production="1") == "1"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"

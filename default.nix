@@ -13,13 +13,20 @@
 let
   concrexit-python = python39;
 
-  src = ./.;
+  src = lib.sources.cleanSourceWith {
+    src = lib.sources.cleanSource ./.;
+    filter = path: type:
+      let
+        baseName = baseNameOf (toString path);
+      in
+      lib.strings.hasInfix "website" path || baseName == "pyproject.toml" || baseName == "poetry.lock";
+  };
 
   poetryPython = poetry2nix.mkPoetryPackages {
     projectDir = src;
     overrides = poetry2nix.overrides.withDefaults (
       self: super: {
-        uwsgi = {};
+        uwsgi = { };
         python-magic = concrexit-python.pkgs.python_magic;
         typing-extensions = super.typing-extensions.overridePythonAttrs (
           old: {
@@ -99,7 +106,7 @@ let
       MANAGE_PY=1 python website/manage.py collectstatic
       MANAGE_PY=1 python website/manage.py compress
     '';
-    
+
     # Place the static files and the python env in the right location
     installPhase = ''
       mkdir $out

@@ -3,6 +3,9 @@ let
   # Aliases so other definitions are shorter
   mapAttrsToList = lib.attrsets.mapAttrsToList;
   concatStringsSep = lib.strings.concatStringsSep;
+  filterAttrs = lib.attrsets.filterAttrs;
+
+  formatExports = attrs: concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"${value}\"") (filterAttrs (_: v: v != null) attrs));
 
   concrexit-manage = pkgs.writeScriptBin "concrexit-manage" ''
     #!${pkgs.stdenv.shell}
@@ -10,7 +13,7 @@ let
     set -e
     test -f ${cfg.dir}/secrets.env && source ${cfg.dir}/secrets.env
     export MANAGE_PY=1
-    ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"\${${name}:-${value}}\"") config.concrexit.env-vars)}
+    ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"\${${name}:-${value}}\"") (filterAttrs (_: v: v != null) cfg.env-vars))}
     exec ${pkgs.concrexit}/bin/python ${pkgs.concrexit}/website/manage.py $@
   '';
   sudo-concrexit-manage = pkgs.writeScriptBin "sudo-concrexit-manage" ''
@@ -47,6 +50,42 @@ let
   '';
 
   cfg = config.concrexit;
+  local-testing = cfg.stage == "development";
+  base-env-vars = {
+    MEDIA_ROOT = "${cfg.dir}/media";
+    SENDFILE_ROOT = "${cfg.dir}/media";
+    POSTGRES_USER = "concrexit";
+    POSTGRES_DB = "concrexit";
+    DJANGO_EMAIL_HOST = "smtp-relay.gmail.com";
+    DJANGO_EMAIL_PORT = "587";
+    SEPA_CREDITOR_ID = "NL67ZZZ401464640000";
+    GSUITE_ADMIN_USER = "concrexit-admin@thalia.nu";
+    THALIA_PAY_ENABLED = "1";
+  };
+  env-vars = {
+    production = base-env-vars // {
+      SITE_DOMAIN = cfg.domain;
+      DJANGO_ENV = "production";
+      GSUITE_MEMBERS_AUTOSYNC = "1";
+      GSUITE_DOMAIN = "thalia.nu";
+      GSUITE_MEMBERS_DOMAIN = "members.thalia.nu";
+    };
+    staging = base-env-vars // {
+      SITE_DOMAIN = cfg.domain;
+      DJANGO_ENV = "staging";
+      GSUITE_MEMBERS_AUTOSYNC = "1";
+      GSUITE_DOMAIN = "staging.thalia.nu";
+      GSUITE_MEMBERS_DOMAIN = "members.staging.thalia.nu";
+    };
+    development = base-env-vars // {
+      SITE_DOMAIN = "*";
+      DJANGO_ENV = "development";
+      GSUITE_MEMBERS_AUTOSYNC = "0";
+      DATABASE_ENGINE = "postgresql";
+      COMPRESS_OFFLINE = "1";
+    };
+
+  };
 
 in
 {
@@ -55,6 +94,11 @@ in
   # The options we define here can be applied in any of the included configuration files.
   # The defaults should be good though.
   options = with lib; {
+    concrexit.stage = mkOption {
+      type = types.enum [ "production" "staging" "development" ];
+      default = "development";
+    };
+
     concrexit.app-port = mkOption {
       type = types.port;
       default = 8000;
@@ -75,11 +119,6 @@ in
       default = "concrexit";
     };
 
-    concrexit.local-testing = mkOption {
-      type = types.bool;
-      default = false;
-    };
-
     concrexit.ssl = mkOption {
       type = types.bool;
       default = !cfg.local-testing;
@@ -92,24 +131,8 @@ in
     };
 
     concrexit.env-vars = mkOption {
-      type = types.attrsOf types.str;
-      apply = x: {
-        SITE_DOMAIN = if !cfg.local-testing then cfg.domain else "*";
-        MEDIA_ROOT = "${cfg.dir}/media";
-        SENDFILE_ROOT = "${cfg.dir}/media";
-        POSTGRES_USER = "concrexit";
-        POSTGRES_DB = "concrexit";
-        DJANGO_ENV = "staging";
-        DJANGO_EMAIL_HOST = "smtp-relay.gmail.com";
-        DJANGO_EMAIL_PORT = "587";
-        DJANGO_EMAIL_USE_TLS = "1";
-        SEPA_CREDITOR_ID = "NL67ZZZ401464640000";
-        GSUITE_MEMBERS_AUTOSYNC = "1";
-        GSUITE_ADMIN_USER = "concrexit-admin@thalia.nu";
-        GSUITE_DOMAIN = "staging.thalia.nu";
-        GSUITE_MEMBERS_DOMAIN = "members.staging.thalia.nu";
-        THALIA_PAY_ENABLED = "1";
-      } // x;
+      type = types.attrsOf (types.nullOr types.str);
+      apply = x: env-vars."${cfg.stage}" // x;
       default = { };
     };
   };
@@ -123,7 +146,10 @@ in
       })
     ];
     # Install the concrexit-manage command globally
-    environment.systemPackages = [ pkgs.concrexit-manage ];
+    environment.systemPackages = with pkgs; [
+      concrexit-manage
+      angle-grinder # To analyse nginx logs
+    ];
 
     security.acme.email = "www@thalia.nu";
     security.acme.acceptTerms = true;
@@ -167,7 +193,7 @@ in
       isSystemUser = true;
       group = "concrexit";
     };
-    users.groups.concrexit = {};
+    users.groups.concrexit = { };
 
     systemd.services = {
       # Create the directory that concrexit uses to place files and the secrets
@@ -181,7 +207,7 @@ in
         '';
       };
 
-      concrexit-oidc-key = lib.mkIf cfg.local-testing {
+      concrexit-oidc-key = lib.mkIf local-testing {
         wantedBy = [ "multi-user.target" ];
         after = [ "concrexit-dir.service" ];
         script = ''
@@ -193,7 +219,7 @@ in
 
       # The main systemd service which runs concrexit via uwsgi
       concrexit = {
-        after = [ "networking.target" "postgresql.service" "concrexit-dir.service" (lib.mkIf cfg.local-testing "concrexit-oidc-key.service") ];
+        after = [ "networking.target" "postgresql.service" "concrexit-dir.service" (lib.mkIf local-testing "concrexit-oidc-key.service") ];
         wantedBy = [ "multi-user.target" ];
 
         serviceConfig = {
@@ -204,9 +230,9 @@ in
         script = ''
           if [ -f ${cfg.dir}/secrets.env ]; then
             source ${cfg.dir}/secrets.env
-          elif [ "1" = "${toString cfg.local-testing}" ]; then
+          elif [ "1" = "${toString local-testing}" ]; then
             export SECRET_KEY=$(hostid)
-            export OIDC_RSA_PRIVATE_KEY=$(base64 --wrap=0 < ${cfg.dir}/oidc.key | tr '/+' '_-' | tr -d '=')
+            export OIDC_RSA_PRIVATE_KEY=$(base64 --wrap=0 < ${cfg.dir}/oidc.key | tr '/+' '_-')
             echo "You should set the secrets in the env file!" >&2
           else
             echo "You should set the secrets in the env file!" >&2
@@ -217,7 +243,7 @@ in
           export SOURCE_COMMIT="${pkgs.concrexit.name}"
 
           # Load extra variables from the concrexit.env-vars option
-          ${concatStringsSep "\n" (mapAttrsToList (name: value: "export ${name}=\"${value}\"") cfg.env-vars)}
+          ${formatExports cfg.env-vars}
 
           exec ${pkgs.concrexit}/bin/concrexit-uwsgi --socket :${toString cfg.app-port}
         '';
@@ -269,6 +295,8 @@ in
               'upstream_response_time=$upstream_response_time '
               'upstream_connect_time=$upstream_connect_time '
               'upstream_header_time=$upstream_header_time';
+
+          server_names_hash_bucket_size 128;
         '';
 
         virtualHosts =

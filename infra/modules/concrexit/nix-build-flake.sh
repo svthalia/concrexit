@@ -1,9 +1,15 @@
 #! /usr/bin/env bash
 
-set -euo pipefail
+set -eo pipefail
 
-workDir=$(mktemp -d)
-trap 'rm -rf "$workDir"' EXIT
+if [[ -n "$CONCREXIT_NIX_DEBUG" ]]; then
+    workDir="../../../../concrexit_flake"
+    mkdir -p $workDir
+else
+    workDir=$(mktemp -d)
+    trap 'rm -rf "$workDir"' EXIT
+fi
+
 cd $workDir
 
 jq -r '.flake_content' > flake.nix
