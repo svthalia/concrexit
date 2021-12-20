@@ -18,15 +18,20 @@ let
   poetryPython = poetry2nix.mkPoetryPackages {
     projectDir = src;
     overrides = poetry2nix.overrides.withDefaults (
-      _self: super: {
+      self: super: {
         uwsgi = {};
         python-magic = concrexit-python.pkgs.python_magic;
+        typing-extensions = super.typing-extensions.overridePythonAttrs (
+          old: {
+            buildInputs = (old.buildInputs or [ ]) ++ [ self.flit-core ];
+          }
+        );
         cryptography = super.cryptography.overridePythonAttrs (old: {
           cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
             inherit (old) src;
             name = "${old.pname}-${old.version}";
             sourceRoot = "${old.pname}-${old.version}/src/rust/";
-            sha256 = "sha256-tQoQfo+TAoqAea86YFxyj/LNQCiViu5ij/3wj7ZnYLI=";
+            sha256 = "sha256-kozYXkqt1Wpqyo9GYCwN08J+zV92ZWFJY/f+rulxmeQ=";
           };
           cargoRoot = "src/rust";
           buildInputs = old.buildInputs ++ [ pkgs.libiconv ];
