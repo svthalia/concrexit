@@ -26,6 +26,11 @@ let
             buildInputs = (old.buildInputs or [ ]) ++ [ self.flit-core ];
           }
         );
+        argon2-cffi = super.argon2-cffi.overridePythonAttrs (
+          old: {
+            buildInputs = (old.buildInputs or [ ]) ++ [ self.flit-core ];
+          }
+        );
         cryptography = super.cryptography.overridePythonAttrs (old: {
           cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
             inherit (old) src;
