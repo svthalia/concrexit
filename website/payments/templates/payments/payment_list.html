@@ -92,6 +92,9 @@
                 {% trans "You have not made any payments during this period." as no_payments %}
                 {% alert 'info' no_payments %}
             {% endif %}
+            <span class="mt-3 font-italic">
+                {% trans "Thalia only stores your payments for 7 years." %}
+            </span>
         </div>
     </section>
 {% endblock %}

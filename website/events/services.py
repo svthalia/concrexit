@@ -350,7 +350,7 @@ def generate_category_statistics() -> dict:
     return data
 
 
-def execute_data_minimization(dry_run=False):
+def execute_data_minimisation(dry_run=False):
     """Delete information about very old events."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
     deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 5))
