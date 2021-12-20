@@ -12,7 +12,7 @@ The latest Thalia Website built on Django.
 Getting started
 ---------------
 
-0. Get at least Python 3.8 and install poetry and the Pillow requirements as per below.
+0. Get at least Python 3.9 and install poetry and the Pillow requirements as per below.
 1. Clone this repository
 2. `make superuser` to create the first user (note that this user won't be a member!)
 3. `make fixtures` to generate a bunch of test data
