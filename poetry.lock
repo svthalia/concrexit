@@ -406,18 +406,17 @@ python-stdnum = ">=1.6"
 
 [[package]]
 name = "django-oauth-toolkit"
-version = "1.5.0"
+version = "1.6.0"
 description = "OAuth2 Provider for Django"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-django = ">=2.2"
+django = ">=2.2,<4.0.0 || >4.0.0"
 jwcrypto = ">=0.8.0"
 oauthlib = ">=3.1.0"
 requests = ">=2.13.0"
-six = "*"
 
 [[package]]
 name = "django-queryable-properties"
@@ -1432,7 +1431,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "93cf926e80c64b7d2b11035eeefb03da105df02a8ac8a81a978cc4a9db04b681"
+content-hash = "91af799be4e6c17165d962c08b0a9506a9392208616c65ffb2ec6c63135c36aa"
 
 [metadata.files]
 alabaster = [
@@ -1694,8 +1693,8 @@ django-localflavor = [
     {file = "django_localflavor-3.1-py3-none-any.whl", hash = "sha256:6593865dc671333b3edc88e729e6d384d00b6db7891ef5d3a65db831a40050d2"},
 ]
 django-oauth-toolkit = [
-    {file = "django-oauth-toolkit-1.5.0.tar.gz", hash = "sha256:650e5ef2244d1d8db8f507137e0d1e8b8aad1f4086a4a610526e8851f9a38308"},
-    {file = "django_oauth_toolkit-1.5.0-py3-none-any.whl", hash = "sha256:b2e346a7c1e222774bfb370f21b556b92b408395b4c23914e2d1b241b2e5376a"},
+    {file = "django-oauth-toolkit-1.6.0.tar.gz", hash = "sha256:5e2a98518fcef3566d5632c7341fd2444323a0b2ae78fd77f89d0046a05905b8"},
+    {file = "django_oauth_toolkit-1.6.0-py3-none-any.whl", hash = "sha256:3a488cb87a4dd803487f735d88c21aeec563eac7fb603902031ee7fdb722ae3e"},
 ]
 django-queryable-properties = [
     {file = "django-queryable-properties-1.8.0.tar.gz", hash = "sha256:2112efc9ef92298753a628b5f2a3b3570cdbfd8e890503da9e722fd4a171c09d"},
