@@ -39,7 +39,7 @@ class Document(models.Model):
         validators=[FileExtensionValidator(["txt", "pdf", "jpg", "jpeg", "png"])],
     )
 
-    members_only = models.BooleanField(verbose_name=_("members only"), default=False)
+    members_only = models.BooleanField(verbose_name=_("members only"), default=True)
 
     def get_absolute_url(self):
         return reverse("documents:document", kwargs={"pk": self.pk})
