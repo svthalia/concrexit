@@ -6,12 +6,12 @@
 , pkgs
 , lib
 , runCommand
-, python38
+, python39
 , writeScriptBin
 , version ? "git"
 }:
 let
-  concrexit-python = python38;
+  concrexit-python = python39;
 
   src = ./.;
 
