@@ -157,6 +157,9 @@ PARTNER_NOTIFICATION_ADDRESS = (
 EDUCATION_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_EDUCATION', 'educacie')}@{SITE_DOMAIN}"
 )
+PROMO_REQUEST_NOTIFICATION_ADDRESS = (
+    f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'paparazcie')}@{SITE_DOMAIN}"
+)
 
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")
@@ -402,6 +405,7 @@ INSTALLED_APPS = [
     # Load django.contrib.admin after thaliawebsite so the admin page gets modified
     "django.contrib.admin",
     "pushnotifications.apps.PushNotificationsConfig",
+    "promotion.apps.PromotionConfig",
     "members.apps.MembersConfig",
     "documents.apps.DocumentsConfig",
     "activemembers.apps.ActiveMembersConfig",

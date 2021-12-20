@@ -3,6 +3,7 @@ from functools import partial
 
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
+from django.db import models
 from django.db.models import Max, Min
 from django.forms import Field
 from django.template.defaultfilters import date as _date
@@ -18,6 +19,7 @@ from events.forms import RegistrationAdminForm
 from members.models import Member
 from payments.widgets import PaymentWidget
 from pizzas.models import FoodEvent
+from promotion.models import PromotionRequest
 from utils.admin import DoNextModelAdmin
 from utils.snippets import datetime_to_lectureyear
 from . import forms, models
@@ -48,6 +50,17 @@ class PizzaEventInline(admin.StackedInline):
     exclude = ("end_reminder",)
     extra = 0
     max_num = 1
+
+
+class PromotionRequestInline(admin.StackedInline):
+
+    model = PromotionRequest
+    readonly_fields = (
+        "assigned_to",
+        "status",
+        "drive_folder",
+    )
+    extra = 0
 
 
 class LectureYearFilter(admin.SimpleListFilter):
@@ -88,6 +101,7 @@ class EventAdmin(DoNextModelAdmin):
     inlines = (
         RegistrationInformationFieldInline,
         PizzaEventInline,
+        PromotionRequestInline,
     )
     list_display = (
         "overview_link",
