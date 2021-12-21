@@ -180,34 +180,49 @@
             </tr>
         </table>
     </div>
-    {% if local_partner or main_partner %}
+    {% if main_partner %}
     <div style="width: 700px ; margin-top: 30px; margin-left: auto ; margin-right: auto;">
         <table cellspacing="0" cellpadding="0">
-            {% if local_partner and main_partner and local_partner.is_active and main_partner.is_active %}
-                <col width="350px">
-                <col width="350px">
-            {% else %}
-                <col width="700px">
-            {% endif %}
+            <col width="700px">
             <tr>
-                {% if local_partner and local_partner.is_active %}
-                <td align="center" style="color: black; font-size: 12px;">
-                    <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
-                        <a href="{{ local_partner.link }}"><img src="{% baseurl %}{% static 'newsletters/yoast-logo.png' %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/></a><br/>
-                        {% trans "our local partner"|upper %}
-                    </p>
-                </td>
-                {% endif %}
                 {% if main_partner and main_partner.is_active %}
                 <td align="center" style="color: black; font-size: 12px;">
                     <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                         <a href="{{ main_partner.link }}">
-                            <img src="{% baseurl %}{% static 'newsletters/nedap-logo.png' %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
+                            <img src="{{ main_partner.logo.url }}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
                         </a><br/>
                         {% trans "our main partner"|upper %}
                     </p>
                 </td>
                 {% endif %}
+            </tr>
+        </table>
+    </div>
+    {% endif %}
+    {% if local_partners.all %}
+    <div style="width: 700px ; margin-top: 30px; margin-left: auto ; margin-right: auto;">
+        <table cellspacing="0" cellpadding="0">
+            {% if local_partners|length < 2 %}
+                <col width="700px">
+            {% elif local_partners|length < 3 %}
+                <col width="350px">
+                <col width="350px">
+            {% else %}
+                <col width="233px">
+                <col width="234px">
+                <col width="233px">
+            {% endif %}
+            <tr>
+                {% for local_partner in local_partners %}
+                    {% if local_partner and local_partner.is_active %}
+                    <td align="center" style="color: black; font-size: 12px;">
+                        <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
+                            <a href="{{ local_partner.link }}"><img src="{{ local_partner.logo.url }}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/></a><br/>
+                            {% trans "our local partner"|upper %}
+                        </p>
+                    </td>
+                    {% endif %}
+                {% endfor %}
             </tr>
         </table>
     </div>
