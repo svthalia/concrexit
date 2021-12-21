@@ -11,6 +11,7 @@ from tinymce.models import HTMLField
 
 from announcements.models import Slide
 from members.models import Member
+from payments.models import PaymentAmountField
 from pushnotifications.models import ScheduledMessage, Category
 
 
@@ -131,18 +132,14 @@ class Event(models.Model):
         ),
     )
 
-    price = models.DecimalField(
-        _("price"),
-        max_digits=5,
-        decimal_places=2,
+    price = PaymentAmountField(
+        verbose_name=_("price"),
         default=0,
         validators=[validators.MinValueValidator(0)],
     )
 
-    fine = models.DecimalField(
-        _("fine"),
-        max_digits=5,
-        decimal_places=2,
+    fine = PaymentAmountField(
+        verbose_name=_("fine"),
         default=0,
         # Minimum fine is checked in this model's clean(), as it is only for
         # events that require registration.

@@ -1,4 +1,5 @@
 import datetime
+import decimal
 from decimal import Decimal
 from unittest.mock import PropertyMock, patch
 
@@ -14,6 +15,7 @@ from payments.models import (
     Batch,
     PaymentUser,
     BlacklistedPaymentUser,
+    validate_not_zero,
 )
 from payments.tests.__mocks__ import MockPayable, MockModel
 
@@ -162,6 +164,55 @@ class PaymentTest(TestCase):
     def test_str(self) -> None:
         """Tests that the output is a description with the amount."""
         self.assertEqual("Payment of 10.00", str(self.payment))
+
+    def test_payment_amount(self):
+        """Test the maximal payment amount."""
+        with self.subTest("Payments max. amount is 999999.99"):
+            Payment.objects.create(
+                type=Payment.WIRE,
+                paid_by=self.member,
+                processed_by=self.member,
+                amount=999999.99,
+            )
+
+        with self.subTest("Negative payments are actually allowed"):
+            Payment.objects.create(
+                type=Payment.WIRE,
+                paid_by=self.member,
+                processed_by=self.member,
+                amount=-999999.99,
+            )
+
+        with self.subTest("Payments can't have an amount of higher than 1000000"):
+            with self.assertRaises(ValidationError):
+                p = Payment(
+                    type=Payment.WIRE,
+                    paid_by=self.member,
+                    processed_by=self.member,
+                    amount=1000000,
+                )
+                p.full_clean()
+
+        with self.subTest("Payments of amount 0 are not allowed"):
+            with self.assertRaises(ValidationError):
+                Payment.objects.create(
+                    type=Payment.WIRE,
+                    paid_by=self.member,
+                    processed_by=self.member,
+                    amount=0,
+                )
+
+    def test_validator(self):
+        validate_not_zero(1)
+        validate_not_zero(-1)
+        validate_not_zero(0.01)
+        validate_not_zero(-0.01)
+        validate_not_zero(1000000)
+        validate_not_zero(-1000000)
+        validate_not_zero(10000000)
+        validate_not_zero(-10000000)
+        with self.assertRaises(ValidationError):
+            validate_not_zero(0)
 
 
 @freeze_time("2019-01-01")

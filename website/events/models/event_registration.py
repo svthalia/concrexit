@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
 
+from payments.models import PaymentAmountField
 from .event import Event
 
 
@@ -42,10 +43,8 @@ class EventRegistration(models.Model):
 
     present = models.BooleanField(_("present"), default=False,)
 
-    special_price = models.DecimalField(
-        _("special price"),
-        max_digits=5,
-        decimal_places=2,
+    special_price = PaymentAmountField(
+        verbose_name=_("special price"),
         blank=True,
         null=True,
         validators=[validators.MinValueValidator(0)],
