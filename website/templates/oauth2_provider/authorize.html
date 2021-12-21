@@ -10,9 +10,9 @@
     <section class="page-section">
         <div class="container">
             {% if not error %}
-                <h1 class="section-title">{% trans "authorise"|capfirst %} {{ application.name }}</h1>
+                <h1 class="section-title center-lg-50">{% trans "authorise"|capfirst %} {{ application.name }}</h1>
 
-                <form method="post">
+                <form class="col-12 col-lg-6 offset-lg-3" method="post">
                     {% csrf_token %}
 
                     {% for field in form %}
@@ -31,7 +31,7 @@
                     {{ form.errors }}
                     {{ form.non_field_errors }}
 
-                    <div class="form-group col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
+                    <div class="form-group mt-4">
                         <input type="submit" class="btn btn-success w-100" name="allow" value="{% trans "confirm"|capfirst %}" />
                         <input type="submit" class="btn btn-danger w-100 mt-4" value="{% trans "cancel"|capfirst %}" />
                     </div>
