@@ -7,7 +7,7 @@
 {% block opengraph_title %}{% trans "authorise application"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-    <section class="page-section" id="payments-account-overview">
+    <section class="page-section">
         <div class="container">
             {% if not error %}
                 <h1 class="section-title">{% trans "authorise"|capfirst %} {{ application.name }}</h1>
@@ -22,7 +22,7 @@
                     {% endfor %}
 
                     <p>{% trans "Application requires following permissions" %}:</p>
-                    <ul class="text-center list-unstyled">
+                    <ul>
                         {% for scope in scopes_descriptions %}
                             <li>{{ scope }}</li>
                         {% endfor %}
