@@ -41,8 +41,3 @@ class EventRegistrationAdminSerializer(CleanedModelSerializer):
             admin=True, detailed=False, read_only=True
         )
         return super().to_representation(instance)
-
-    # def validate(self, attrs):
-    #     instance = EventRegistration(**attrs)
-    #     instance.clean()
-    #     return attrs
