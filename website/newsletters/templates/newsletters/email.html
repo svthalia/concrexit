@@ -2,6 +2,7 @@
 {% load listutil %}
 {% load baseurl %}
 {% load static %}
+{% load thumbnail %}
 
 {% with primary_color="#EE227A" item_h2_style="color:#EE227A;font-family:Calibri, 'Trebuchet MS', sans-serif; font-size: 18px; margin-bottom: 10px; margin-top: 30px;" item_tr_style="padding-left: 30px; padding-right: 30px; padding-bottom: 10px; margin: 0px; vertical-align: top;" %}
 <html style="background-color: #F0F0F0;">
@@ -189,7 +190,7 @@
                 <td align="center" style="color: black; font-size: 12px;">
                     <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                         <a href="{{ main_partner.link }}">
-                            <img src="{% baseurl %}{{ main_partner.logo.url }}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
+                            <img src="{% baseurl %}{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
                         </a><br/>
                         {% trans "our main partner"|upper %}
                     </p>
@@ -218,7 +219,7 @@
                     <td align="center" style="color: black; font-size: 12px;">
                         <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                             <a href="{{ local_partner.link }}">
-                                <img src="{% baseurl %}{{ local_partner.logo.url }}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/>
+                                <img src="{% baseurl %}{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/>
                             </a><br/>
                             {% trans "our local partner"|upper %}
                         </p>
