@@ -315,9 +315,7 @@ in
               extraConfig = securityHeaders;
             };
             "pizza.${cfg.domain}" = pizzaConfig;
-            "pasta.${cfg.domain}" = pizzaConfig;
             "xn--vi8h.${cfg.domain}" = pizzaConfig;
-            "xn--3i8h.${cfg.domain}" = pizzaConfig;
 
             # Disallow other Host headers when this server is configured for ssl
             # (so it's not added for local testing in the VM)
