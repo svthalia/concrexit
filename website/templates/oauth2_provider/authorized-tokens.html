@@ -7,7 +7,7 @@
 {% block opengraph_title %}{% trans "authorised applications"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-    <section class="page-section" id="payments-account-overview">
+    <section class="page-section">
         <div class="container">
             <h1 class="section-title">{% trans "authorised applications"|capfirst %}</h1>
 
@@ -18,7 +18,7 @@
             </p>
 
             {% if authorized_tokens %}
-                <table class="table text-center mt-4">
+                <table class="table mt-4">
                     <thead>
                     <tr>
                         <th scope="col">
@@ -38,7 +38,7 @@
                                 {{ token.application }}
                             </th>
                             <td>
-                                <ul class="list-unstyled">
+                                <ul>
                                 {% for scope_name, scope_description in token.scopes.items %}
                                     <li>{{ scope_description }}</li>
                                 {% endfor %}
