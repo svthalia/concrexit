@@ -51,7 +51,7 @@ class NewsletterAdmin(ModelAdmin):
     #: field to use for date filtering
     date_hierarchy = "date"
 
-    def change_view(self, request, object_id, form_url="", extra_context=None):
+    def change_view(self, request, object_id, form_url=""):
         """Render the change view.
 
         Disallow change access if a newsletter is marked as sent
@@ -59,7 +59,7 @@ class NewsletterAdmin(ModelAdmin):
         obj = Newsletter.objects.filter(id=object_id)[0]
         if obj is not None and obj.sent is True:
             return redirect(obj)
-        return super().change_view(request, object_id, form_url, extra_context)
+        return super().change_view(request, object_id, form_url, {"newsletter": obj})
 
     def has_delete_permission(self, request, obj=None):
         """Check if delete permission is granted.
