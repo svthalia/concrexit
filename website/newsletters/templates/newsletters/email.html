@@ -189,7 +189,7 @@
                 <td align="center" style="color: black; font-size: 12px;">
                     <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                         <a href="{{ main_partner.link }}">
-                            <img src="{{ main_partner.logo.url }}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
+                            <img src="{% baseurl %}{{ main_partner.logo.url }}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
                         </a><br/>
                         {% trans "our main partner"|upper %}
                     </p>
@@ -217,7 +217,9 @@
                     {% if local_partner and local_partner.is_active %}
                     <td align="center" style="color: black; font-size: 12px;">
                         <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
-                            <a href="{{ local_partner.link }}"><img src="{{ local_partner.logo.url }}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/></a><br/>
+                            <a href="{{ local_partner.link }}">
+                                <img src="{% baseurl %}{{ local_partner.logo.url }}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/>
+                            </a><br/>
                             {% trans "our local partner"|upper %}
                         </p>
                     </td>
