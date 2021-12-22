@@ -25,8 +25,6 @@
 {% trans "email"|capfirst %}: info@thalia.nu
 
 {% if main_partner and main_partner.is_active %}{% trans "our main partner"|capfirst %}: {{ main_partner.name }} - {{ main_partner.link }}{% endif %}
-{% for local_partner in local_partners %}
 {% if local_partner and local_partner.is_active %}{% trans "our local partner"|capfirst %}: {{ local_partner.name }} - {{ local_partner.link }}{% endif %}
-{% endfor %}
 
 {% trans "view this email in your browser"|capfirst %}: {% baseurl %}{{ newsletter.get_absolute_url }}

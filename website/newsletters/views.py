@@ -49,7 +49,7 @@ def preview(request, pk, lang=None):
             "newsletter": newsletter,
             "agenda_events": events,
             "main_partner": Partner.objects.filter(is_main_partner=True).first(),
-            "local_partners": Partner.objects.filter(is_local_partner=True),
+            "local_partner": Partner.objects.filter(is_local_partner=True).first(),
             "lang_code": lang_code,
         },
     )
