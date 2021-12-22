@@ -200,7 +200,7 @@
         </table>
     </div>
     {% endif %}
-    {% if local_partners.all %}
+    {% if local_partners.exists %}
     <div style="width: 700px ; margin-top: 30px; margin-left: auto ; margin-right: auto;">
         <table cellspacing="0" cellpadding="0">
             {% if local_partners|length < 2 %}
