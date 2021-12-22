@@ -132,6 +132,9 @@ in
       gc.automatic = true;
     };
 
+    # This is needed because otherwise socket.getfqdn() breaks in Python
+    networking.hosts = lib.mkForce { };
+
     # Allow passwordless sudo for easier deployment
     security.sudo.wheelNeedsPassword = false;
 
