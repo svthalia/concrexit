@@ -105,9 +105,9 @@ data "external" "nix-flake-build" {
 
             concrexit = {
               dir = "/volume/concrexit_media/data";
-              domain = "${var.stage == "production" ? "thalia.nu" : var.webhostname + ".thalia.nu"}";
-              env-vars.GSUITE_DOMAIN = "${var.stage == "production" ? "thalia.nu" : var.webhostname + ".thalia.nu"}";
-              env-vars.GSUITE_MEMBERS_DOMAIN = "members.${var.stage == "production" ? "thalia.nu" : var.webhostname + ".thalia.nu"}";
+              domain = "${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
+              env-vars.GSUITE_DOMAIN = "${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
+              env-vars.GSUITE_MEMBERS_DOMAIN = "members.${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
               env-vars.DJANGO_ENV = "${var.stage}";
             };
 
