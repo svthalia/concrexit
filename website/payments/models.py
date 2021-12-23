@@ -30,8 +30,9 @@ class PaymentAmountField(models.DecimalField):
     def __init__(self, **kwargs):
         kwargs["max_digits"] = 8
         kwargs["decimal_places"] = 2
+        allow_zero = kwargs.pop("allow_zero", False)
         validators = kwargs.pop("validators", [])
-        if validate_not_zero not in validators:
+        if not allow_zero and validate_not_zero not in validators:
             validators.append(validate_not_zero)
         kwargs["validators"] = validators
         super().__init__(**kwargs)
