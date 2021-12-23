@@ -31,7 +31,7 @@ def get_automatic_mailinglists():
     ]
     if Board.objects.exists():
         for year in range(Board.objects.earliest("since").since.year, lectureyear):
-            board = Board.objects.get(since__year=year)
+            board = Board.objects.filter(since__year=year).first()
             if board is not None:
                 years = str(board.since.year)[-2:] + str(board.until.year)[-2:]
                 list_names += [f"bestuur{years}", f"board{years}"]
