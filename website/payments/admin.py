@@ -2,6 +2,7 @@
 import csv
 from collections import OrderedDict
 
+from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
 from django.contrib.admin.utils import model_ngettext
@@ -18,6 +19,7 @@ from payments import admin_views, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
 
 from .models import BankAccount, Batch, Payment, PaymentUser
+from .services import get_payable_content_types
 
 
 def _show_message(
@@ -33,6 +35,28 @@ def _show_message(
         )
 
 
+class PaidByFilter(AutocompleteFilter):
+    title = _("paid by")
+    field_name = "paid_by"
+    rel_model = Payment
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(paid_by=self.value())
+        return queryset
+
+
+class ProcessedByFilter(AutocompleteFilter):
+    title = _("processed by")
+    field_name = "processed_by"
+    rel_model = Payment
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(processed_by=self.value())
+        return queryset
+
+
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
     """Manage the payments."""
@@ -46,7 +70,13 @@ class PaymentAdmin(admin.ModelAdmin):
         "batch_link",
         "topic",
     )
-    list_filter = ("type", "batch")
+    list_filter = (
+        "type",
+        "batch",
+        ("payable_model", admin.EmptyFieldListFilter),
+        PaidByFilter,
+        ProcessedByFilter,
+    )
     list_select_related = ("paid_by", "processed_by", "batch")
     date_hierarchy = "created_at"
     fields = (
@@ -58,6 +88,8 @@ class PaymentAdmin(admin.ModelAdmin):
         "topic",
         "notes",
         "batch",
+        "payable_model",
+        "payable_object_id",
     )
     readonly_fields = (
         "created_at",
@@ -145,6 +177,8 @@ class PaymentAdmin(admin.ModelAdmin):
     def get_field_queryset(self, db, db_field, request):
         if str(db_field) == "payments.Payment.batch":
             return Batch.objects.filter(processed=False)
+        if str(db_field) == "payments.Payment.payable_model":
+            return get_payable_content_types()
         return super().get_field_queryset(db, db_field, request)
 
     def get_readonly_fields(self, request: HttpRequest, obj: Payment = None):

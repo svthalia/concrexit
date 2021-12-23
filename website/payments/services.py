@@ -4,7 +4,9 @@ from typing import Union
 
 from django.conf import settings
 from django.core import mail
-from django.db.models import Model, Q, QuerySet, Sum
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import QuerySet, Q, Sum, Model
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +16,7 @@ from utils.snippets import send_email
 
 from .exceptions import PaymentError
 from .models import BankAccount, Payment, PaymentUser
-from .payables import Payable, payables
+from .payables import Payable, payables, NotRegistered
 from .signals import processed_batch
 
 
@@ -68,7 +70,18 @@ def create_payment(
         payable.payment.paid_by = payer
         payable.payment.processed_by = processed_by
         payable.payment.type = pay_type
+        payable.payment.payable_model = (
+            ContentType.objects.get_for_model(payable.model),
+        )
+        payable.payment.payable_object_id = payable.model.pk
         payable.payment.save()
+        LogEntry.objects.log_action(
+            user_id=processed_by.id,
+            content_type_id=ContentType.objects.get_for_model(Payment).pk,
+            object_id=payable.payment.id,
+            object_repr=str(payable.payment),
+            action_flag=CHANGE,
+        )
     else:
         payable.payment = Payment.objects.create(
             processed_by=processed_by,
@@ -77,6 +90,15 @@ def create_payment(
             topic=payable.payment_topic,
             paid_by=payer,
             type=pay_type,
+            payable_model=ContentType.objects.get_for_model(payable.model),
+            payable_object_id=payable.model.pk,
+        )
+        LogEntry.objects.log_action(
+            user_id=processed_by.id,
+            content_type_id=ContentType.objects.get_for_model(Payment).pk,
+            object_id=payable.payment.id,
+            object_repr=str(payable.payment),
+            action_flag=ADDITION,
         )
     return payable.payment
 
@@ -247,3 +269,15 @@ def execute_data_minimisation(dry_run=False):
         queryset_payments.update(paid_by=None, processed_by=None)
         queryset_bankaccounts.delete()
     return queryset_payments
+
+
+def get_payable_content_types():
+    results = []
+    for content_type in ContentType.objects.all():
+        try:
+            payables.get_payable(content_type.model_class())
+        except NotRegistered:
+            pass
+        else:
+            results.append(content_type.id)
+    return ContentType.objects.filter(id__in=results)
