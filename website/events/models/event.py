@@ -134,12 +134,14 @@ class Event(models.Model):
 
     price = PaymentAmountField(
         verbose_name=_("price"),
+        allow_zero=True,
         default=0,
         validators=[validators.MinValueValidator(0)],
     )
 
     fine = PaymentAmountField(
         verbose_name=_("fine"),
+        allow_zero=True,
         default=0,
         # Minimum fine is checked in this model's clean(), as it is only for
         # events that require registration.
