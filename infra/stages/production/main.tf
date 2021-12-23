@@ -51,7 +51,7 @@ module "concrexit_network" {
 module "concrexit_dns" {
   source      = "../../modules/concrexit_dns"
   zone_name   = var.domain_name
-  webdomain   = var.domain_name
+  webdomain   = "production.thalia.nu"
   public_ipv4 = module.concrexit_network.public_ipv4
   public_ipv6 = module.concrexit_network.public_ipv6
 }
