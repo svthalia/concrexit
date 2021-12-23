@@ -9,14 +9,22 @@ class CleanedModelSerializer(serializers.ModelSerializer):
     """Custom ModelSerializer that explicitly clean's a model before it is saved."""
 
     def create(self, validated_data):
-        """Reraise ValidationErrors as DRF validation errors. No need to explicitly clean(), because under the hood, DRF uses .create() which does perform a clean()."""
+        """Reraise ValidationErrors as DRF validation errors.
+
+        No need to explicitly clean(), because under the hood, DRF uses
+        .create() which does perform a clean().
+        """
         try:
             return super().create(validated_data)
         except ValidationError as e:
             raise DRFValidationError(e)
 
     def update(self, instance, validated_data, **kwargs):
-        """Overriding the default implementation of DRF's ModelSerializer, adding `instance.clean()`."""
+        """Override the default implementation of DRF's ModelSerializer.
+
+        Adds `instance.clean()` to make sure all updates still clean().
+        Also re-raises ValidationErrors to DRF ValidationErrors.
+        """
         raise_errors_on_nested_writes("update", self, validated_data)
         info = model_meta.get_field_info(instance)
 
