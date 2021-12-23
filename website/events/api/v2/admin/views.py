@@ -90,6 +90,12 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
             )
         return EventRegistration.objects.none()
 
+    def get_serializer_context(self):
+        context = super(EventRegistrationAdminListView, self).get_serializer_context()
+        event = get_object_or_404(Event, pk=self.kwargs.get("pk"))
+        context.update({"event": event})
+        return context
+
 
 class EventRegistrationAdminDetailView(
     AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView
@@ -103,7 +109,7 @@ class EventRegistrationAdminDetailView(
     event_lookup_field = "event_id"
 
     def get_queryset(self):
-        return super().get_queryset().filter(event=self.kwargs["event_id"])
+        return super().get_queryset().filter(event=self.kwargs[self.event_lookup_field])
 
 
 class EventRegistrationAdminFieldsView(AdminPermissionsMixin, APIView):
