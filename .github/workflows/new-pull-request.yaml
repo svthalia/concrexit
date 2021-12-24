@@ -23,4 +23,3 @@ jobs:
             Thank you for opening a pull request.
             * A coverage report will be available on [thalia-coverage.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html](https://thalia-coverage.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html) after the "Deploy Coverage Report" job finishes.
             * Branch specific documentation will be available on [thalia-documentation.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html](https://thalia-documentation.s3.amazonaws.com/${{ env.GITHUB_REF_SLUG }}/index.html) after the "Deploy Documentation" job finishes.
-            * Once the "Build Docker Image" job finishes you can comment "**deploy review**" to this pull request to setup a review environment. When you are done, you can remove the review environment by commenting "**remove review**".

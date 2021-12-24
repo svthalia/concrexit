@@ -24,12 +24,9 @@
 
 # SPECIAL SERVER-RELATED CONFIG
 /website/thaliawebsite/settings.py @svthalia/server  
-/resources @svthalia/server  
 /scripts @svthalia/server  
-/nix @svthalia/server  
+/infra @svthalia/server  
 /*.nix @svthalia/server  
-.dockerignore @svthalia/server  
-Dockerfile @svthalia/server  
 
 # ANYTHING WORKFLOW-RELATED
 /.github @svthalia/illuminati

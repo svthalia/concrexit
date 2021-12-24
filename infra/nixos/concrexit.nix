@@ -275,7 +275,7 @@ in
             # here as a variable
             pizzaConfig = {
               enableACME = cfg.ssl;
-              addSSL = true;
+              addSSL = cfg.ssl;
               locations."/".return = "301 https://${cfg.domain}/pizzas";
               extraConfig = securityHeaders;
             };
@@ -298,7 +298,7 @@ in
                 extraConfig = "internal;";
               };
               locations."= /maintenance.html" = {
-                alias = ../../resources/maintenance.html;
+                alias = ../resources/maintenance.html;
                 extraConfig = "internal;";
               };
               extraConfig = ''
@@ -310,7 +310,7 @@ in
             };
             "www.${cfg.domain}" = {
               enableACME = cfg.ssl;
-              addSSL = true;
+              addSSL = cfg.ssl;
               locations."/".return = "301 https://${cfg.domain}$request_uri";
               extraConfig = securityHeaders;
             };
