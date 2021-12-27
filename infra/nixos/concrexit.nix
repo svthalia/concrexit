@@ -253,6 +253,8 @@ in
         recommendedOptimisation = true;
         recommendedTlsSettings = true;
 
+        clientMaxBodySize = "2G";
+
         commonHttpConfig = ''
           log_format logfmt 'time="$time_local" client=$remote_addr '
               'method=$request_method url="$request_uri" '
