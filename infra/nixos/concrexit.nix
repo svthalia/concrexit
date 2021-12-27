@@ -238,7 +238,7 @@ in
       clearsessions.calendar = "*-*-* 23:00:00";
       minimiseregistrations.calendar = "*-*-01 03:00:00";
       delete_gsuite_users.calendar = "*-*-01 03:00:00";
-      dataminimisation.calendar = "*-03-01 03:00:00";
+      dataminimisation.calendar = "*-*-* 03:00:00";
       sendexpirationnotification.calendar = "*-08-15 06:00:00";
       sendmembershipnotification.calendar = "*-08-31 06:00:00";
       sendinformationcheck.calendar = "*-10-15 06:00:00";
