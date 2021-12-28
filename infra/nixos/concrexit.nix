@@ -121,12 +121,12 @@ in
 
     concrexit.ssl = mkOption {
       type = types.bool;
-      default = !cfg.local-testing;
+      default = !local-testing;
     };
 
     concrexit.allowUnknownHost = mkOption {
       type = types.bool;
-      default = cfg.local-testing;
+      default = local-testing;
       description = "If this option is enabled we allow any hostname to link to Concrexit";
     };
 

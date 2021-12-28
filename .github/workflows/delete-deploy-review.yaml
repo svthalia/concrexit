@@ -1,12 +1,13 @@
-name: "Deploy review environment"
+name: "Remove review environment"
 on:
-  pull_request:
+  pull_request: [closed]
 jobs:
   deployment:
     runs-on: ubuntu-latest
     environment: 
       name: review
-      url: https://${{ github.sha }}.technicie.nl/
+      url: https://${{ env.COMMIT_SHA }}.technicie.nl/
+    concurrency: review-${{ env.COMMIT_SHA }}
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v16
@@ -14,7 +15,7 @@ jobs:
       with:
         name: svthalia
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN_SVTHALIA }}'
-    - name: Deploy to a review instance
+    - name: Remove the review instance
       env:
         # Environment variables starting with TF_VAR define values for the variables used in the stages
         TF_VAR_ssh_private_key: ${{ secrets.REVIEW_SSH_PRIVATE_KEY }}
@@ -26,4 +27,4 @@ jobs:
       run: |
         cd infra/stages/review
         terraform init -lockfile=readonly -backend-config="key=concrexit/review-${{ env.COMMIT_SHA }}.tfstate"
-        terraform apply -auto-approve -var 'sha_hash=${{ env.COMMIT_SHA }}'
+        terraform destroy -auto-approve -var 'sha_hash=${{ env.COMMIT_SHA }}'
