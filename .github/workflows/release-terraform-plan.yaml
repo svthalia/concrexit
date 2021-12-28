@@ -21,6 +21,7 @@ jobs:
         TF_VAR_ssh_public_key: ${{ secrets.PRODUCTION_SSH_PUBLIC_KEY }}
         AWS_ACCESS_KEY_ID: ${{ secrets.PLANNING_AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.PLANNING_AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: eu-west-1
       # Make sure the required program dependencies are available with a nix shell
       shell: nix develop .#deployment --log-format raw --verbose --command bash --noprofile --norc -eo pipefail {0}
       run: |
@@ -29,5 +30,5 @@ jobs:
         terraform plan -out=tfplan
         
         filename="${GITHUB_REF_NAME}-${GITHUB_SHA}-tfplan"
-        echo -e "Plan has been saved to\n${filename}"
-        aws s3 sync --only-show-errors tfplan "s3://thalia-tfplans/${filename}"
+        echo -e "Plan has been saved to\n${filename}\n"
+        aws s3 sync tfplan "s3://thalia-tfplans/${filename}"
