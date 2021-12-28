@@ -31,4 +31,4 @@ jobs:
         
         filename="${GITHUB_REF_NAME}-${GITHUB_SHA}-tfplan"
         echo -e "Plan has been saved to\n${filename}\n"
-        aws s3 sync tfplan "s3://thalia-tfplans/${filename}"
+        aws s3 cp tfplan "s3://thalia-tfplans/${filename}"
