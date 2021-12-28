@@ -7,7 +7,7 @@ terraform {
 
   backend "s3" {
     bucket  = "thalia-terraform-state"
-    key     = "concrexit/review-network.tfstate"
+    key     = "concrexit/reviewnetwork.tfstate"
     region  = "eu-west-1"
     profile = "thalia"
   }
