@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: review
-      url: http://${{ steps.slug.outputs.slug }}.technicie.nl/
+      url: https://${{ steps.slug.outputs.slug }}.technicie.nl/
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v16

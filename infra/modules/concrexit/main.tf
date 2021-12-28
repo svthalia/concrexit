@@ -117,6 +117,7 @@ data "external" "nix-flake-build" {
               env-vars.GSUITE_DOMAIN = ${jsonencode(var.gsuite_domain)};
               env-vars.GSUITE_MEMBERS_DOMAIN = ${jsonencode(var.gsuite_members_domain)};
               env-vars.DJANGO_ENV = "${var.django_env}";
+              ssl = true;
             };
 
             services.postgresql.dataDir = "/volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema}";
