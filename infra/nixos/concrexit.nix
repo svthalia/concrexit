@@ -202,6 +202,8 @@ in
         };
 
         script = ''
+          export PATH=$PATH:${pkgs.concrexit}/bin
+
           if [ -f ${cfg.dir}/secrets.env ]; then
             source ${cfg.dir}/secrets.env
           elif [ "1" = "${toString cfg.local-testing}" ]; then
