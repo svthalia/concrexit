@@ -330,11 +330,11 @@ django = "*"
 
 [[package]]
 name = "django-bootstrap4"
-version = "21.1"
+version = "21.2"
 description = "Bootstrap 4 for Django"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 beautifulsoup4 = ">=4.8.0"
@@ -1430,7 +1430,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "cebb5fdaf3bbfe1ce1306b8c61db3945e7f09021d77cb18f761cc9b603c95443"
+content-hash = "aabf0c60e651f71b1554d0712719b55da19eef682e49fbf440e66d7f1643842a"
 
 [metadata.files]
 alabaster = [
@@ -1681,8 +1681,8 @@ django-appconf = [
     {file = "django_appconf-1.0.5-py3-none-any.whl", hash = "sha256:ae9f864ee1958c815a965ed63b3fba4874eec13de10236ba063a788f9a17389d"},
 ]
 django-bootstrap4 = [
-    {file = "django-bootstrap4-21.1.tar.gz", hash = "sha256:e6bfe54038ce77d8b7b8ebf00b5b054f197519caa3d8e3a9ea2d63842407fa59"},
-    {file = "django_bootstrap4-21.1-py3-none-any.whl", hash = "sha256:662d5d552bd947dbd09df7f76a5caaa2daef4e0e82b14e8ce08c8b75786abc52"},
+    {file = "django-bootstrap4-21.2.tar.gz", hash = "sha256:0b9eeafecd132c0e6af8688493816fc2ae172d2eb3d98e66dc5eb48757da65df"},
+    {file = "django_bootstrap4-21.2-py3-none-any.whl", hash = "sha256:46f9ea3789bc1a2fa5db94b9439e2a755cca582af06af0c6cfc76d70b6e5702c"},
 ]
 django-compressor = [
     {file = "django_compressor-3.1-py2.py3-none-any.whl", hash = "sha256:89f7ba86777b30672c2f9c7557bf2aff87c5890903c73b1fa3ae38acd143e855"},
