@@ -1,4 +1,4 @@
-{% load i18n static menu compress pick_header_image %}
+{% load django_bootstrap5 i18n static menu compress pick_header_image %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="en">
@@ -35,6 +35,7 @@
     {% block opengraph %}{% endblock %}
 
     {% block css_head %}
+        {% bootstrap_css %}
         {% compress css %}
             <link href="{% static "css/main.scss" %}" rel="stylesheet"
                   type="text/x-scss">
@@ -42,6 +43,7 @@
     {% endblock %}
 
     {% block js_head %}
+        {% bootstrap_javascript %}
     {% endblock %}
 
     <!-- served by: {{ SOURCE_COMMIT }} -->
@@ -89,18 +91,18 @@
         </a>
         <div class="flex-grow-1"></div>
         <div class="navbar-user order-1 d-flex">
-            <div class="btn-group">
+            <div class="btn-group dropdown">
                 {% if not user.is_authenticated %}
                     <a href="{% url 'login' %}" class="btn btn-primary"><i
                         class="fas fa-user"></i></a>
                 {% else %}
                     <button type="button"
                             class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-                            data-toggle="dropdown" aria-haspopup="true"
+                            data-bs-toggle="dropdown" aria-haspopup="true" id="user-menu-dropdown-button"
                             aria-expanded="false">
-                        <i class="fas fa-user pr-2"></i>
+                        <i class="fas fa-user pe-2"></i>
                     </button>
-                    <div class="dropdown-menu">
+                    <div class="dropdown-menu" aria-labelledby="user-menu-dropdown-button">
                         <a class="dropdown-item"
                            href="{% url 'members:profile' %}">
                             {% trans "show public profile"|capfirst %}
@@ -212,8 +214,6 @@
                 src="{% static "js/jquery.min.js" %}"></script>
         <script type="text/javascript"
                 src="{% static "js/js.cookie.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "js/bootstrap.bundle.min.js" %}"></script>
         <script type="text/javascript"
                 src="{% static "js/jquery.fancybox.min.js" %}"></script>
         <script type="text/javascript"

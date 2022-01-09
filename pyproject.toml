@@ -22,7 +22,6 @@ psycopg2-binary = "2.9.3"
 bcrypt = "3.2.0"
 argon2_cffi = "21.3.0"
 uWSGI = "2.0.20"
-django-bootstrap4 = "21.2"
 firebase-admin = "5.2.0"
 sentry-sdk = "1.5.2"
 django-sendfile2 = "0.6.0"
@@ -38,6 +37,7 @@ pydocstyle = "6.1.1"
 # docs requirements
 recommonmark = { version = "0.7.1", optional = true }
 sphinx = { version = "4.3.2", optional = true }
+django-bootstrap5 = "^21.3"
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]

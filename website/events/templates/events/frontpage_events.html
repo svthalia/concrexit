@@ -11,7 +11,7 @@
             {% for next_event in events %}
                 <a class="list-group-item py-3"
                    href="{{ next_event.event.get_absolute_url }}">
-                    <span class="mr-3 event-date">{{ next_event.event.start|date:"d M" }}</span>
+                    <span class="me-3 event-date">{{ next_event.event.start|date:"d M" }}</span>
                     <span class="event-title" title="{{ next_event.event.title }}">{{ next_event.event.title }}</span>
 
                     {% if next_event.current_user_registration is not None %}
