@@ -91,8 +91,8 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
         return EventRegistration.objects.none()
 
     def get_serializer_context(self):
-        context = super(EventRegistrationAdminListView, self).get_serializer_context()
-        event = get_object_or_404(Event, pk=self.kwargs.get("pk"))
+        context = super().get_serializer_context()
+        event = Event.objects.filter(pk=self.kwargs.get("pk")).first()
         context.update({"event": event})
         return context
 
