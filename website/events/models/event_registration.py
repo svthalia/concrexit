@@ -159,9 +159,17 @@ class EventRegistration(models.Model):
                 }
             )
         if self.member and self.email:
-            errors.update( {"email": _("Email should only be specified for non-members")} )
+            errors.update(
+                {"email": _("Email should only be specified for non-members")}
+            )
         if self.member and self.phone_number:
-            errors.update( {"phone_number": _("Phone number should only be specified for non-members")} )
+            errors.update(
+                {
+                    "phone_number": _(
+                        "Phone number should only be specified for non-members"
+                    )
+                }
+            )
         if (
             self.payment
             and self.special_price
