@@ -38,6 +38,27 @@ class EventRegistration(models.Model):
         blank=True,
     )
 
+    email = models.EmailField(
+        _("email"),
+        help_text=_("Email address for non-members"),
+        max_length=254,
+        null=True,
+        blank=True,
+    )
+
+    phone_number = models.CharField(
+        max_length=20,
+        verbose_name=_("Phone number"),
+        help_text=_("Phone number for non-members"),
+        validators=[
+            validators.RegexValidator(
+                regex=r"^\+?\d+$", message=_("Please enter a valid phone number"),
+            )
+        ],
+        null=True,
+        blank=True,
+    )
+
     date = models.DateTimeField(_("registration date"), default=timezone.now)
     date_cancelled = models.DateTimeField(_("cancellation date"), null=True, blank=True)
 
@@ -137,6 +158,10 @@ class EventRegistration(models.Model):
                     "name": _("Either specify a member or a name"),
                 }
             )
+        if self.member and self.email:
+            errors.update( {"email": _("Email should only be specified for non-members")} )
+        if self.member and self.phone_number:
+            errors.update( {"phone_number": _("Phone number should only be specified for non-members")} )
         if (
             self.payment
             and self.special_price
