@@ -168,9 +168,13 @@
     {% endblock header_image_container %}
 </header>
 
-{% block pre-body %}{% endblock pre-body %}
+{% block pre-body %}
+{% endblock pre-body %}
 
 <div id="page-content" class="clearfix">
+    <div class="container">
+        {% bootstrap_messages %}
+    </div>
     {% block body %}{% endblock body %}
 </div>
 

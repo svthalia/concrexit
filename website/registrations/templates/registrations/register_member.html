@@ -105,14 +105,9 @@
                 {% if tpay_enabled %}
                     <hr/>
 
-                    <div class="mt-3 mb-3">
+                    <div class="">
                         <h4>{% trans "SEPA Direct Debit Mandate" %}</h4>
-                        {% bootstrap_field form.direct_debit show_help=False %}
-                        {% blocktrans trimmed %}
-                            This will allow you to sign a Direct Debit mandate, allowing Thalia to withdraw the membership
-                            fees from your bank account. Also, you will be able to use this bank account for future payments
-                            to Thalia via Thalia Pay.
-                        {% endblocktrans %}
+                        {% bootstrap_field form.direct_debit %}
                     </div>
 
                     <fieldset class="form-group col-12 col-lg-6 direct-debit-fields">

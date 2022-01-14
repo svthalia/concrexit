@@ -11,12 +11,6 @@
         <div class="container">
             <h1 class="section-title">{% trans "payments"|capfirst %}</h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message %}
-                {% endfor %}
-            {% endif %}
-
             {% if tpay_balance and tpay_balance != 0 %}
                  <h5 class="mb-4">
                     {% trans "Your current Thalia Pay balance is" %}: € {{ tpay_balance|floatformat:2 }}

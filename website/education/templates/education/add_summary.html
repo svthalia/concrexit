@@ -12,12 +12,6 @@
                 {% trans "Submit Summary" %}
             </h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message dismissible=True %}
-                {% endfor %}
-            {% endif %}
-
             <form method="post" enctype="multipart/form-data"
                   class="col-lg-6 offset-lg-3">
                 {% csrf_token %}

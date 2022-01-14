@@ -11,12 +11,6 @@
         <div class="container">
             <h1 class="section-title">{% trans "confirm payment of"|capfirst %} € {{ payable.payment_amount|floatformat:2 }}</h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message %}
-                {% endfor %}
-            {% endif %}
-
             {% for error in form.errors.items %}
                 {% for message in error.1 %}
                     {% alert 'danger' message dismissible=True %}

@@ -11,12 +11,6 @@
         <div class="container">
             <h1 class="section-title">{% trans "bank accounts"|capfirst %}</h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message %}
-                {% endfor %}
-            {% endif %}
-
             <p>
                 {% blocktrans trimmed %}
                     Thalia keeps your bank account saved to your profile to

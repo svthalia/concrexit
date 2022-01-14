@@ -34,12 +34,6 @@
         <div class="container">
             <h1 class="section-title">{{ event.title }}</h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message dismissible=True %}
-                {% endfor %}
-            {% endif %}
-
             <div class="mx-4 m-lg-4">
                 {{ event.description|bleach }}
             </div>

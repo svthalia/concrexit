@@ -14,12 +14,6 @@
 {% block body %}
     <section id="thaliawebsite-frontpage" class="page-section">
         <div class="container">
-            {% bootstrap_messages %}
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message dismissible=True %}
-                {% endfor %}
-            {% endif %}
             <h1 class="section-title">{% trans "Study Association Thalia" %}</h1>
             <p class="">{% blocktrans %}Thalia is the study association for the Computing Science and Information Sciences students at Radboud University in Nijmegen. Thalia provides you the necessary distractions during your studies. And via Thalia students can easily connect with teachers and students from other years.{% endblocktrans %}</p>
         </div>
