@@ -19,12 +19,14 @@
                         {% endblocktrans %}
                     </p>
 
-                    <form class="search-form form-inline col-6 mt-4 mt-lg-0 mb-4" method="get"
+                    <form class="search-form form-inline col-12 mt-4 mt-lg-0 mb-4 col-lg-6" method="get"
                       action="#members-directory">
-                        <input class="form-control col-12 col-md-9" name="keywords" type="text" value="{{ keys|default_if_none:'' }}"
-                               placeholder="{% trans "Who are you looking for?" %}"/>
-                        <input class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3" type="submit"
-                               value="{% trans "Search" %}"/>
+                        <div class="input-group">
+                            <input class="form-control col-12 col-md-9" style="width: available" name="keywords" type="search" value="{{ keys|default_if_none:'' }}"
+                                   placeholder="{% trans "Who are you looking for?" %}" aria-label="{% trans "Search the Thalia's members directory" %}" aria-describedby="memberlist-search-button">
+                            <input id="memberlist-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3" type="submit"
+                                    value="{% trans "Search" %}"/>
+                        </div>
                     </form>
                 </div>
 

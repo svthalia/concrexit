@@ -62,7 +62,7 @@
                 <fieldset class="col-12 col-lg-6">
                     {% bootstrap_field form.email %}
 
-                    <div class="form-group">
+                    <div class="form-row">
                         <div class="form-check">
                             <input name="optin_mailinglist" class="form-check-input" id="id_optin_mailinglist"
                                    type="checkbox">
@@ -75,7 +75,7 @@
 
                     {% bootstrap_field form.birthday %}
 
-                    <div class="form-group">
+                    <div class="form-row">
                         <div class="form-check">
                             <input name="optin_birthday"
                                    class="form-check-input"
@@ -100,12 +100,12 @@
                         {% bootstrap_field form.direct_debit %}
                     </div>
 
-                    <fieldset class="form-group col-12 col-lg-6 direct-debit-fields">
+                    <fieldset class="form-row col-12 col-lg-6 direct-debit-fields">
                         {% bootstrap_field form.initials %}
                         {% bootstrap_field form.iban placeholder='NL99BANK1234567890' %}
                         {% bootstrap_field form.bic placeholder='BANKNL2A' %}
                     </fieldset>
-                    <fieldset id="payments-account-form" class="form-group col-12 col-lg-6 h-100 direct-debit-fields">
+                    <fieldset id="payments-account-form" class="form-row col-12 col-lg-6 h-100 direct-debit-fields">
                         <p>
                             {% blocktrans trimmed %}
                                 By signing this mandate form, you authorise
@@ -132,7 +132,7 @@
                             {% endblocktrans %}
                         </p>
 
-                        <div class="form-group">
+                        <div class="form-row">
                             <label for="id_signature">Signature</label>
                             <input type="hidden"
                                    name="signature"

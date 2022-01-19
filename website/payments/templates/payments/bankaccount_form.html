@@ -15,7 +15,7 @@
                 {% csrf_token %}
 
                 <fieldset class="col-12 col-lg-6 normal-fields">
-                    <div class="form-group">
+                    <div class="form-row">
                         <label for="id_initials">{% trans "Initials" %}</label>
                         &
                         <label
@@ -24,7 +24,7 @@
                             <input type="text"
                                    name="initials"
                                    maxlength="20"
-                                   class="form-control mr-1 {% if form.errors.initials %}is-invalid{% elif form.initials.value %}is-valid{% endif %}"
+                                   class="form-control me-1 {% if form.errors.initials %}is-invalid{% elif form.initials.value %}is-valid{% endif %}"
                                    placeholder="Initials"
                                    required
                                    value="{% if form.initials.value %}{{ form.initials.value }}{% endif %}"
@@ -46,9 +46,9 @@
                     {% bootstrap_field form.bic placeholder='BANKNL2A' %}
                     {% bootstrap_field form.direct_debit %}
 
-                    <div class="form-group direct-debit-fields">
+                    <div class="form-row direct-debit-fields">
                         <label for="id_creditor">{% trans "Address" %}</label>
-                        <div class="form-group">
+                        <div class="form-row">
                             <input
                                 type="text"
                                 name="address_street"
@@ -73,7 +73,7 @@
                                 <input type="text"
                                        name="address_postal_code"
                                        value="{{ request.member.profile.address_postal_code }}"
-                                       class="form-control mr-1"
+                                       class="form-control me-1"
                                        readonly
                                        id="id_address_postal_code"
                                 />
@@ -158,7 +158,7 @@
                             {% endblocktrans %}
                         </p>
 
-                        <div class="form-group">
+                        <div class="form-row">
                             <label for="id_signature">Signature</label>
                             <input type="hidden"
                                    name="signature"
@@ -173,7 +173,7 @@
                     </fieldset>
                 </div>
 
-                <div class="form-group col-6 col-lg-3 offset-3 offset-lg-9">
+                <div class="form-row col-6 col-lg-3 offset-3 offset-lg-9">
                     <input type="submit" value="{% trans "submit"|capfirst %}"
                            class="btn btn-primary w-100">
                 </div>

@@ -49,7 +49,7 @@
                 <div class="accordion bordered">
                     {% for vacancy in vacancies %}
                         <div class="card mb-0">
-                            <div class="card-header collapsed" data-toggle="collapse"
+                            <div class="card-header collapsed" data-bs-toggle="collapse"
                                  data-target="#vacancy-{{ vacancy.id }}">
                                 <a href="#vacancy-{{ vacancy.id }}">{{ vacancy.get_company_name }} | {{ vacancy.title }}</a>
                             </div>

@@ -43,7 +43,7 @@
                 {% bootstrap_field form.next %}
                 {% bootstrap_field form.payable_hash %}
 
-                <div class="form-group col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
+                <div class="form-row col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
                     <input type="submit" name="_save" value="{% trans "confirm"|capfirst %}"
                            class="btn btn-success w-100">
                     <a href="{{ form.next.value }}" class="btn btn-secondary w-100 mt-4">{% trans "cancel"|capfirst %}</a>

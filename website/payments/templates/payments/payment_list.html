@@ -30,7 +30,7 @@
                 {% endfor %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {% if filters.6.year == year and filters.6.month >= month or filters.6.year > year and filters.6.month < month %}active{% endif %}"
-                       data-toggle="dropdown"
+                       data-bs-toggle="dropdown"
                        href="#" role="button" aria-haspopup="true"
                        aria-expanded="false">{% trans 'Older' %}</a>
                     <div class="dropdown-menu">
@@ -53,7 +53,7 @@
                         <th scope="col">
                             {% trans "date"|capfirst %}
                         </th>
-                        <th scope="col" class="text-left">
+                        <th scope="col" class="text-start">
                             {% trans "notes"|capfirst %}
                         </th>
                         <th scope="col">{% trans "settled"|capfirst %}</th>
@@ -65,7 +65,7 @@
                             <th scope="row">{{ payment.get_type_display }}</th>
                             <td>€ {{ payment.amount }}</td>
                             <td>{{ payment.created_at }}</td>
-                            <td class="text-left">{{ payment.notes }}</td>
+                            <td class="text-start">{{ payment.notes }}</td>
                             <td>
                             {% if payment.type == "tpay_payment" %}
                                 {% if payment.batch.processed %}

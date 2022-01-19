@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bleach_tags thumbnail member_card google_map_url grid_item alert document_cards slider payments %}
+{% load i18n static django_bootstrap5 bleach_tags thumbnail member_card google_map_url grid_item alert document_cards slider payments %}
 
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -251,7 +251,7 @@
                                             {% trans "Order" context "pizzas" %}
                                         </a>
                                     {% elif event.food_event.in_the_future %}
-                                        <div class="d-inline-block" data-toggle="tooltip" data-placement="auto" title="{% trans 'Ordering pizza for this event will be possible starting '%} {{event.food_event.start}}">
+                                        <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="auto" title="{% trans 'Ordering pizza for this event will be possible starting '%} {{event.food_event.start}}">
                                             <a class="btn btn-primary disabled">
                                                 {% trans "Order" context "pizzas" %}
                                             </a>
@@ -283,7 +283,7 @@
                     </table>
                 </div>
 
-                <div class="col-12 col-md-6 order-0 order-md-1 mb-4 mb-md-0">
+                <div class="col-12 col-md-6 order-1 mb-4 mb-md-0">
                     <div class="location-map">
                         <img src="{% google_map_url event.map_location %}" alt="{{ event.location }}" />
                     </div>
