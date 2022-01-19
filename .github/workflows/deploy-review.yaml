@@ -16,7 +16,7 @@ jobs:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN_SVTHALIA }}'
     - name: Create slug from ref name
       id: slug
-      run: echo "::set-output name=slug::$(echo \"${GITHUB_REF#refs/heads/}\" | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)"
+      run: echo "::set-output name=slug::review-$(echo \"${GITHUB_REF#refs/heads/}\" | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)"
     - name: Deploy to a review instance
       env:
         # Environment variables starting with TF_VAR define values for the variables used in the stages
