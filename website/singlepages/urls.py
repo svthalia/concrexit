@@ -9,6 +9,7 @@ from .views import (
     BecomeActiveView,
     StyleGuideView,
     ContactView,
+    TrustContactPersonsView,
 )
 
 app_name = "singlepages"
@@ -33,7 +34,12 @@ urlpatterns = [
                     "sibling-associations/",
                     SiblingAssociationsView.as_view(),
                     name="sibling-associations",
-                )
+                ),
+                path(
+                    "trust-contacts/",
+                    TrustContactPersonsView.as_view(),
+                    name="trust-contacts",
+                ),
             ]
         ),
     ),
