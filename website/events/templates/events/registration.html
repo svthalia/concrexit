@@ -9,6 +9,8 @@
         <div class="container">
             <h1 class="section-title">{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}</h1>
 
+            {% bootstrap_messages %}
+
             <form method="post" class="col-lg-6 offset-lg-3">
                 {% csrf_token %}
 

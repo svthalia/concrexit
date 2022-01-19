@@ -10,6 +10,8 @@
         <div class="container">
             <h1 class="section-title">{% trans "edit profile"|capfirst %}</h1>
 
+            {% bootstrap_messages %}
+
             {% if form.errors %}
                 {% trans "Please check your profile for errors." as error_text %}
                 {% alert 'danger' error_text dismissible=True %}
