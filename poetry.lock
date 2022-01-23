@@ -454,7 +454,7 @@ pytz = "*"
 
 [[package]]
 name = "django-sendfile2"
-version = "0.6.0"
+version = "0.6.1"
 description = "Abstraction to offload file uploads to web-server (e.g. Apache with mod_xsendfile) once Django has checked permissions etc."
 category = "main"
 optional = false
@@ -1431,7 +1431,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "703ad2f2aea5a0fab08de5451b63d891cd22650e503a54b865a21a4cfa4d7764"
+content-hash = "8c3ac74045c85222bb43b32d3f66dc5c8e8c72b325b8129bd78f21bae6c5dedb"
 
 [metadata.files]
 alabaster = [
@@ -1722,7 +1722,8 @@ django-recurrence = [
     {file = "django_recurrence-1.10.3-py3-none-any.whl", hash = "sha256:9053b44b78b7fbfe3530673edfdd6d2f562105f8a192bc6a4b906a3df4f95f59"},
 ]
 django-sendfile2 = [
-    {file = "django-sendfile2-0.6.0.tar.gz", hash = "sha256:7f850040ddc29c9c42192ed85b915465a3ed7cced916c4fafdd5eda057dd06ec"},
+    {file = "django-sendfile2-0.6.1.tar.gz", hash = "sha256:312b4501960e6b3a3390c48a6bdcfdae2c0516efacf24bdd0c97c6f2f2d2fc30"},
+    {file = "django_sendfile2-0.6.1-py3-none-any.whl", hash = "sha256:80cba260b4b0569dfe4bb04eed807a90765c65a200747df931e70dc22b935267"},
 ]
 django-template-check = [
     {file = "django-template-check-0.4.0.tar.gz", hash = "sha256:43f85b3e9624a39117a6e003bcf0a46f1769f239129830ec9608c86f7ad33447"},
