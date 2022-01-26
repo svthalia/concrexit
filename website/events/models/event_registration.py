@@ -172,11 +172,11 @@ class EventRegistration(models.Model):
                     "name": _("Either specify a member or a name"),
                 }
             )
-        if self.member and self.email:
+        if self.member and self.alt_email:
             errors.update(
                 {"email": _("Email should only be specified for non-members")}
             )
-        if self.member and self.phone_number:
+        if self.member and self.alt_phone_number:
             errors.update(
                 {
                     "phone_number": _(
