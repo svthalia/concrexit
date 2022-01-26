@@ -13,6 +13,10 @@ body {
     background-color: var(--form-background-disabled);
 }
 
+.form-row {
+    margin-bottom: 1rem;
+}
+
 #accentbar {
     position: -webkit-sticky;
     position: sticky;
@@ -290,6 +294,10 @@ footer {
             color: var(--primary-contrast);
         }
     }
+}
+
+hr {
+    color: var(--primary-contrast);
 }
 
 img {

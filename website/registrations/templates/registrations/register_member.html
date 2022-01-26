@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static compress bootstrap4 %}
+{% load i18n static compress django_bootstrap5 %}
 
 {% block title %}{% trans "registration"|capfirst %} — {{ block.super }}{% endblock %}
 
@@ -73,7 +73,7 @@
                 <fieldset class="col-12 col-lg-6">
                     {% bootstrap_field form.email %}
 
-                    <div class="form-group">
+                    <div class="form-row">
                         <div class="form-check">
                             <input name="optin_mailinglist" class="form-check-input" id="id_optin_mailinglist"
                                    type="checkbox">
@@ -86,7 +86,7 @@
 
                     {% bootstrap_field form.birthday %}
 
-                    <div class="form-group">
+                    <div class="form-row">
                         <div class="form-check">
                             <input name="optin_birthday" class="form-check-input" id="id_optin_birthday"
                                    type="checkbox">
@@ -105,22 +105,17 @@
                 {% if tpay_enabled %}
                     <hr/>
 
-                    <div class="mt-3 mb-3">
+                    <div>
                         <h4>{% trans "SEPA Direct Debit Mandate" %}</h4>
-                        {% bootstrap_field form.direct_debit show_help=False %}
-                        {% blocktrans trimmed %}
-                            This will allow you to sign a Direct Debit mandate, allowing Thalia to withdraw the membership
-                            fees from your bank account. Also, you will be able to use this bank account for future payments
-                            to Thalia via Thalia Pay.
-                        {% endblocktrans %}
+                        {% bootstrap_field form.direct_debit %}
                     </div>
 
-                    <fieldset class="form-group col-12 col-lg-6 direct-debit-fields">
+                    <fieldset class="form-row col-12 col-lg-6 direct-debit-fields">
                         {% bootstrap_field form.initials %}
                         {% bootstrap_field form.iban placeholder='NL99BANK1234567890' %}
                         {% bootstrap_field form.bic placeholder='BANKNL2A' %}
                     </fieldset>
-                    <fieldset id="payments-account-form" class="form-group col-12 col-lg-6 h-100 direct-debit-fields">
+                    <fieldset id="payments-account-form" class="form-row col-12 col-lg-6 h-100 direct-debit-fields">
                         <p>
                             {% blocktrans trimmed %}
                                 By signing this mandate form, you authorise
@@ -147,7 +142,7 @@
                             {% endblocktrans %}
                         </p>
 
-                        <div class="form-group">
+                        <div class="form-row">
                             <label for="id_signature">Signature</label>
                             <input type="hidden"
                                    name="signature"

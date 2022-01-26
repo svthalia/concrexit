@@ -3,8 +3,8 @@
     <div class="announcement">
         <i class="fas fa-{{ announcement.icon }}"></i> {{ announcement.content|bleach }}
         {% if announcement.closeable %}
-            <button type="button" class="close" aria-label="Close"
-                    data-announcement-id="{{ announcement.pk }}">
+            <button type="button" class="btn-close" aria-label="Close"
+                    data-bs-announcement-id="{{ announcement.pk }}">
                 <i class="fas fa-times"></i>
             </button>
         {% endif %}

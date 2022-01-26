@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bootstrap4 compress alert %}
+{% load i18n static django_bootstrap5 compress alert %}
 
 {% comment %}This page is automatically used by django-oauth-toolkit{% endcomment %}
 
@@ -16,7 +16,7 @@
             <form class="col-12 col-lg-6 offset-lg-3" action="" method="post">
                 {% csrf_token %}
 
-                <div class="form-group mt-4">
+                <div class="form-row mt-4">
                     <input type="submit" class="btn btn-danger w-100" value="{% trans "confirm"|capfirst %}" />
                     <a href="{% url 'oauth2_provider:authorized-token-list' %}" class="btn btn-secondary w-100 mt-4">{% trans "cancel"|capfirst %}</a>
                 </div>

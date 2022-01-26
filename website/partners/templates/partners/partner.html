@@ -70,8 +70,8 @@
                 <div class="accordion bordered">
                     {% for vacancy in vacancies %}
                         <div class="card mb-0">
-                            <div class="card-header collapsed" data-toggle="collapse"
-                                 data-target="#vacancy-{{ vacancy.id }}">
+                            <div class="card-header collapsed" data-bs-toggle="collapse"
+                                 data-bs-target="#vacancy-{{ vacancy.id }}">
                                 <a href="#vacancy-{{ vacancy.id }}">{{ vacancy.title }}</a>
                             </div>
                             <div class="collapse" id="vacancy-{{ vacancy.id }}">

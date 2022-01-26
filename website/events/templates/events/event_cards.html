@@ -17,8 +17,8 @@
                                 {% if next_event.current_user_registration is not None %}
                                     {% if next_event.current_user_registration %}
                                         <div class="event-indication"
-                                             data-toggle="tooltip"
-                                             data-placement="top"
+                                             data-bs-toggle="tooltip"
+                                             data-bs-placement="top"
                                              title="{{ next_event.current_user_registration.text }}">
                                             <div class="{{ next_event.current_user_registration.class }}"></div>
                                         </div>

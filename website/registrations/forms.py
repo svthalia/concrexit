@@ -17,14 +17,17 @@ from .models import Registration, Renewal, Reference
 class BaseRegistrationForm(forms.ModelForm):
     """Base form for membership registrations."""
 
-    birthday = forms.DateField(
-        widget=forms.widgets.SelectDateWidget(
-            years=range(timezone.now().year - 50, timezone.now().year - 10)
-        ),
-        label=capfirst(_("birthday")),
-    )
+    birthday = forms.DateField(label=capfirst(_("birthday")),)
 
     privacy_policy = forms.BooleanField(required=True,)
+
+    direct_debit = forms.BooleanField(
+        required=False,
+        label=_("Pay via direct debit"),
+        help_text=_(
+            "This will allow you to sign a Direct Debit mandate, allowing Thalia to withdraw the membership fees from your bank account. Also, you will be able to use this bank account for future payments to Thalia via Thalia Pay."
+        ),
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,6 +36,7 @@ class BaseRegistrationForm(forms.ModelForm):
                 reverse_lazy("singlepages:privacy-policy")
             )
         )
+        self.fields["birthday"].widget.input_type = "date"
 
 
 class RegistrationAdminForm(forms.ModelForm):
