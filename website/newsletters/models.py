@@ -150,11 +150,16 @@ class NewsletterEvent(NewsletterContent):
     )
 
     price = PaymentAmountField(
-        verbose_name=_("Price (in Euro)"), blank=True, null=True, default=None,
+        verbose_name=_("Price (in Euro)"),
+        allow_zero=True,
+        blank=True,
+        null=True,
+        default=None,
     )
 
     penalty_costs = PaymentAmountField(
         verbose_name=_("Costs (in Euro)"),
+        allow_zero=True,
         blank=True,
         null=True,
         default=None,
