@@ -1,9 +1,12 @@
 name: "Deploy review environment"
 on:
-  pull_request:
+  pull_request: {}
+  issue_comment:
+    types: [created, edited]
 jobs:
   deployment:
     runs-on: ubuntu-latest
+    if: github.event.issue.pull_request
     environment: 
       name: review
       url: https://${{ steps.slug.outputs.slug }}.technicie.nl/
