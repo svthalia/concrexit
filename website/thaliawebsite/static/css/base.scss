@@ -334,6 +334,10 @@ img {
         }
     }
 
+    &.contain-logo .image img {
+        object-fit: contain;
+    }
+
     .image {
         position: absolute;
         width: 100%;
