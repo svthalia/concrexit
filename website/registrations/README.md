@@ -1,17 +1,14 @@
-*************
-Registrations
-*************
+# Registrations
 
 This document explains how the registrations module behaviour is defined.
 The behaviour of upgrading an existing 'year' membership to a 'study' membership (until graduation) are taken from the Rules and Regulations. If the Rules and Regulations ever change this behaviour should be changed to reflect those changes.
 
 This module both provides registration for members and for benefactors. The only difference is the form and view used for their registration since the information we ask from them is different.
 
-New member/benefactor registration
-==================================
 
-Frontend
---------
+## New member/benefactor registration
+
+### Frontend
 
 - User enters information
     - If the membership type is 'benefactor':
@@ -38,8 +35,7 @@ Frontend
 - If the registration is for a benefactor an email is sent with a link to get references
     - Existing members of Thalia add references using the link
 
-Backend
--------
+### Backend
 
 1. Admin accepts registration
     - System checks if username is unique
@@ -48,16 +44,14 @@ Backend
         - If it's unique the generated username will be added to the registration
     - If the membership type is 'benefactor':
         - Amount is determined by the value entered during registration
-    - Email is sent as acceptance confirmation containing instructions for `Payment processing`_
+    - Email is sent as acceptance confirmation containing instructions for [Payment processing](#payment-processing)
 2. Admin rejects registration
     - Email is sent as rejection message
 
 
-Existing user membership renewal
-================================
+## Existing user membership renewal
 
-Frontend
---------
+### Frontend
 
 - User enters information (length, type)
     - If latest membership has not ended yet: always allow 'study' length
@@ -67,25 +61,22 @@ Frontend
         - Contribution is calculated based on selected length ('study' or 'year')
             - Values are located in thaliawebsite.settings
             - If the current membership has not ended yet and an until date is present for that membership and
-             the selected length is 'study' the amount will be `price['study'] - price['year']`
+              the selected length is 'study' the amount will be `price['study'] - price['year']`
 - Renewal model created (status: Ready for review)
 - If the renewal is for a benefactor an email is sent with a link to get references
     - Existing members of Thalia add references using the link
 
-Backend
--------
+### Backend
 
 1. Admin accepts renewal
-    - Email is sent as acceptance confirmation containing instructions for `Payment processing`_
+    - Email is sent as acceptance confirmation containing instructions for [Payment processing](#payment-processing)
 2. Admin rejects renewal
     - Email is sent as rejection message
 
 
-Payment processing
-==================
+## Payment processing
 
-Backend
--------
+## Backend
 
 - Admin (or the system, if automated using e.g. iDeal) creates payment
     - If this is a Registration model then User and Member models are created

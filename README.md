@@ -1,16 +1,13 @@
-Thalia Website 
-==============
+# Thalia Website
 
 [![Linting and Testing](https://github.com/svthalia/concrexit/workflows/Linting%20and%20Testing/badge.svg)](https://github.com/svthalia/concrexit/actions)
-[![coverage](https://img.shields.io/badge/coverage-view-important)](https://thalia-coverage.s3.amazonaws.com/master/index.html)
-[![documentation](https://img.shields.io/badge/documentation-view-blueviolet)](https://thalia-documentation.s3.amazonaws.com/master/index.html)
 [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Code Climate](https://codeclimate.com/github/svthalia/concrexit/badges/gpa.svg)](https://codeclimate.com/github/svthalia/concrexit)
 
 The latest Thalia Website built on Django.
 
-Getting started
----------------
+
+## Getting started
 
 0. Get at least Python 3.9 and install poetry and the Pillow requirements as per below.
 1. Clone this repository
@@ -19,7 +16,8 @@ Getting started
 4. `make run` to run a testing server
 5. Go to the user you created and complete the profile and add a membership for full access
 
-### If you have Nix (OS)
+
+### If you have Nix(OS)
 
 There are only two steps you need if you have [Nix installed](https://nixos.org/download.html#nix-quick-install):
 
@@ -31,8 +29,8 @@ make run
 You can speed up the process of entering the development shell by [installing Cachix](https://github.com/cachix/cachix#installation)
 and setting up the svthalia cache: `cachix use svthalia`.
 
-Testing and linting
--------------------
+
+## Testing and linting
 
 You can use [`pyenv`](https://github.com/pyenv/pyenv) (on Unix systems) to test in different python
 environments.
@@ -42,23 +40,27 @@ If you want to integrate `black` with your editor look in the [`black` docs](htt
 
 You can run all the tests with `make test`, afterwards you can check the coverage with `make coverage`.
 
-poetry
-------
+
+## poetry
 
 Install poetry per the [poetry documentation][poetry install]. Make sure you install at least version 1.x.x.
 
 [poetry install]: https://github.com/sdispater/poetry#installation
 
-Pillow dependencies
--------------------
+
+## Pillow dependencies
 
 For Ubuntu 18.04, use:
 
-    apt-get install python3-dev gettext gcc build-essential libtiff5-dev libjpeg-turbo8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+```bash
+apt-get install python3-dev gettext gcc build-essential libtiff5-dev libjpeg-turbo8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+```
 
 Or try:
 
-    apt-get build-dep python3-pil
+```bash
+apt-get build-dep python3-pil
+```
 
 For other operating systems, see the [Pillow Documentation][pillow-install].
 
@@ -68,24 +70,28 @@ For other operating systems, see the [Pillow Documentation][pillow-install].
 
 On macOS you will also need to install `libmagic`, using the brew package manager by running `brew install libmagic`.
 
-Thabloid dependencies
----------------------
+
+## Thabloid dependencies
 
 To be able to generate JPGs from PDFs, we need ghostscript:
 
-    apt-get install ghostscript
+```bash
+apt-get install ghostscript
+```
 
 Or for macOS:
 
-    brew install ghostscript
+```bash
+brew install ghostscript
+```
 
-Language
-------------------
+
+## Language
 
 Make sure to use British English.
 
-Settings
-------------------
+
+## Settings
 
 The settings of our project are located in `website/thaliawebsite/settings`.
 This is a Python module that loads the included settings files based on the environment you are running in.
@@ -96,8 +102,8 @@ This is a Python module that loads the included settings files based on the envi
 
 `settings.py` contains the default included settings.
 
-Documentation
-------------------
+
+## Documentation
 
 The documentation for our code is located inside the files and is combined using [Sphinx](https://www.sphinx-doc.org/en/master/) into an HTML output.
 The continuous integration checks if the latest Python modules are included in the Sphinx files located in the `docs` folder
