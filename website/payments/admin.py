@@ -570,6 +570,7 @@ class PaymentInline(admin.TabularInline):
         "notes",
         "batch",
     )
+    ordering = ("-created_at",)
 
     show_change_link = True
 
