@@ -42,8 +42,6 @@
     {% endblock %}
 
     {% block js_head %}
-        <script type="text/javascript"
-                src="{% static "js/bootstrap.bundle.min.js" %}"></script>
     {% endblock %}
 
     <!-- served by: {{ SOURCE_COMMIT }} -->
@@ -228,18 +226,18 @@
 {% block js_body %}
     <script type="text/javascript"
             src="{% url 'javascript-catalog' %}"></script>
-    {% compress js %}
-        <script type="text/javascript"
-                src="{% static "js/jquery.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "js/js.cookie.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "js/jquery.fancybox.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "js/main.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "announcements/js/announcements.js" %}"></script>
-    {% endcompress %}
+    <script type="text/javascript"
+            src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/jquery.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/js.cookie.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/jquery.fancybox.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/main.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "announcements/js/announcements.js" %}"></script>
 {% endblock %}
 </body>
 </html>
