@@ -69,7 +69,7 @@
                                 <div
                                         class="card-header {% if forloop.counter0 == 0 %}show{% else %}collapsed{% endif %}"
                                         data-bs-toggle="collapse"
-                                        data-target="#membership-{{ membership.pk }}">
+                                        data-bs-target="#membership-{{ membership.pk }}">
                                     <a href="#membership-{{ membership.id }}">
                                         {% if not membership.until %}
                                             {% blocktrans trimmed with type=membership.get_type_display since=membership.since %}

@@ -50,7 +50,7 @@
                     {% for vacancy in vacancies %}
                         <div class="card mb-0">
                             <div class="card-header collapsed" data-bs-toggle="collapse"
-                                 data-target="#vacancy-{{ vacancy.id }}">
+                                 data-bs-target="#vacancy-{{ vacancy.id }}">
                                 <a href="#vacancy-{{ vacancy.id }}">{{ vacancy.get_company_name }} | {{ vacancy.title }}</a>
                             </div>
                             <div class="collapse" id="vacancy-{{ vacancy.id }}">

@@ -24,7 +24,7 @@
             <ol class="carousel-indicators">
                 {% for slide in slides %}
                     <li
-                        data-target="#announcements-slider"
+                        data-bs-target="#announcements-slider"
                         data-slide-to="{{ forloop.counter0 }}"
                         {% if forloop.counter0 == 0 %}class="active"{% endif %}
                     ></li>
