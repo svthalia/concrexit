@@ -26,7 +26,7 @@ class EventRegistrationAdminSerializer(CleanedModelSerializer):
             "special_price",
             "remarks",
             "phone_number",
-            "email"
+            "email",
         )
         read_only_fields = ("payment",)
         optional_fields = ["payment", "member", "name", "special_price", "remarks"]
