@@ -8,7 +8,6 @@ from django.db.models import (
     Sum,
     Value,
     F,
-    DecimalField,
     Q,
     IntegerField,
     BooleanField,
@@ -98,15 +97,21 @@ class Order(models.Model):
 
     subtotal = AnnotationProperty(
         Coalesce(
-            Sum("order_items__total"), Value(0.00), output_field=PaymentAmountField()
+            Sum("order_items__total"),
+            Value(0.00),
+            output_field=PaymentAmountField(allow_zero=True),
         )
     )
 
     total_amount = AnnotationProperty(
         Coalesce(
-            Sum("order_items__total"), Value(0.00), output_field=PaymentAmountField()
+            Sum("order_items__total"),
+            Value(0.00),
+            output_field=PaymentAmountField(allow_zero=True),
         )
-        - Coalesce(F("discount"), Value(0.00), output_field=PaymentAmountField())
+        - Coalesce(
+            F("discount"), Value(0.00), output_field=PaymentAmountField(allow_zero=True)
+        )
     )
 
     num_items = AnnotationProperty(
@@ -197,6 +202,7 @@ class OrderItem(models.Model):
     )
     total = PaymentAmountField(
         verbose_name=_("total"),
+        allow_zero=True,
         null=False,
         blank=True,
         validators=[MinValueValidator(Decimal("0.00"))],
