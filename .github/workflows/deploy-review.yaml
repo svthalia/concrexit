@@ -8,16 +8,27 @@ jobs:
       name: review
       url: https://${{ steps.slug.outputs.slug }}.technicie.nl/
     steps:
+    - name: Find Comment
+      uses: peter-evans/find-comment@v1
+      id: fc
+      with:
+        issue-number: ${{ github.event.number }}
+        body-includes: allow-deploy
     - uses: actions/checkout@v2.4.0
+      if: ${{ steps.fc.outputs.comment-id > 0 }}
     - uses: cachix/install-nix-action@v16
+      if: ${{ steps.fc.outputs.comment-id > 0 }}
     - uses: cachix/cachix-action@v10
+      if: ${{ steps.fc.outputs.comment-id > 0 }}
       with:
         name: svthalia
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN_SVTHALIA }}'
     - name: Create slug from ref name
+      if: ${{ steps.fc.outputs.comment-id > 0 }}
       id: slug
       run: echo "::set-output name=slug::review-$(echo \"${GITHUB_REF#refs/heads/}\" | iconv -t ascii//TRANSLIT | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+|-+$//g' | tr A-Z a-z)"
     - name: Deploy to a review instance
+      if: ${{ steps.fc.outputs.comment-id > 0 }}
       env:
         # Environment variables starting with TF_VAR define values for the variables used in the stages
         TF_VAR_ssh_private_key: ${{ secrets.REVIEW_SSH_PRIVATE_KEY }}

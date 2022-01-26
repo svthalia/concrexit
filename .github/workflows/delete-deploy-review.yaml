@@ -1,12 +1,12 @@
 name: "Remove review environment"
 on:
-  pull_request: [closed]
+  pull_request: 
+    - closed
 jobs:
   deployment:
     runs-on: ubuntu-latest
     environment: 
       name: review
-    concurrency: review-${{ steps.slug.outputs.slug }}
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v16
