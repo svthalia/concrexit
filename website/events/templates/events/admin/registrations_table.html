@@ -5,6 +5,7 @@
             <tr>
                 <th scope="col">{% trans "name"|capfirst %} <span class="toggle"></span></th>
                 <th scope="col"></th>
+                <th scope="col"></th>
                 {% if event.payment_required %}
                 <th scope="col" class="sorter-payment">{% trans 'payment'|capfirst %} <span class="toggle"></span></th>
                 {% endif %}
@@ -34,18 +35,23 @@
                 data-url="{% url "api:v2:admin:events:event-registration-detail" registration.event.id registration.id %}"
                 data-payable-url="{% url "api:v2:admin:payments:payments-payable-detail" "events" "eventregistration" registration.id %}"
             >
+                <td>
                 {% if registration.member %}
-                <td>
                   <a href="{{ registration.member.get_absolute_url }}">{{ registration.member.get_full_name }}</a>
+                {% else %}
+                  {{ registration.name }}
+                {% endif %}
                 </td>
                 <td>
-                  <a href="tel:{{ registration.member.profile.phone_number }}" title="{{ registration.member.profile.phone_number }}" class="member-phone"></a>
-                  <a href="mailto:{{ registration.member.email }}" title="{{ registration.member.email }}" class="member-email"></a>
+                  {% if registration.phone_number %}
+                    <a href="tel:{{ registration.phone_number }}" title="{{ registration.phone_number }}" class="member-phone"></a>
+                  {% endif %}
                 </td>
-                {% else %}
-                <td>{{ registration.name }}</td>
-                <td></td>
-                {% endif %}
+                <td>
+                  {% if registration.email %}
+                    <a href="mailto:{{ registration.email }}" title="{{ registration.email }}" class="member-email"></a>
+                  {% endif %}
+                </td>
                 {% if event.payment_required %}
                 <td>
                     <select name="payment"
