@@ -29,8 +29,8 @@
                 value="{{ redirect_to }}"
             />
             {% if not member.tpay_enabled %}
-                <span data-bs-toggle="tooltip" data-placement="right" data-delay='{"show":"100", "hide":"2000"}' tabindex="0" data-trigger="hover focus" style="display: inline-block"
-                     data-html="true" title="To start using Thalia Pay, you need to <a href='{% url 'payments:bankaccount-add' %}' target='_blank'>sign a direct debit mandate</a>."
+                <span data-bs-toggle="tooltip" data-bs-placement="right" data-bs-delay='{"show":"100", "hide":"2000"}' tabindex="0" data-bs-trigger="hover focus" style="display: inline-block"
+                     data-bs-html="true" title="To start using Thalia Pay, you need to <a href='{% url 'payments:bankaccount-add' %}' target='_blank'>sign a direct debit mandate</a>."
                 >
                     <input
                         id="tpay-submit-button"

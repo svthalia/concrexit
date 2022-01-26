@@ -29,7 +29,7 @@
                    target="_blank"
                    class="btn btn-primary btn-first"
                    data-bs-toggle="tooltip"
-                   data-placement="top"
+                   data-bs-placement="top"
                    title="{% trans 'iCal feed (all events)' %}"
                 >
                     <i class="fas fa-calendar-alt"></i>
@@ -38,7 +38,7 @@
                     <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}?u={% personal_feed %}"
                        target="_blank"
                        data-bs-toggle="tooltip"
-                       data-placement="top"
+                       data-bs-placement="top"
                        class="btn btn-primary btn-second"
                        title="{% trans 'iCal feed (personal)' %}"
                     >

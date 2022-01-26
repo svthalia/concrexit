@@ -12,6 +12,8 @@
                 {% trans "Submit Exam" %}
             </h1>
 
+            {% bootstrap_messages %}
+
             <form method="post" enctype="multipart/form-data"
                   class="col-lg-6 offset-lg-3">
                 {% csrf_token %}

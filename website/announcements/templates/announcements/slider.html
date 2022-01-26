@@ -2,7 +2,7 @@
 
 {% if slides|length > 0 %}
     <div id="announcements-slider" class="carousel slide w-100 h-100"
-         data-ride="carousel">
+         data-bs-ride="carousel">
         <div class="carousel-inner h-100">
             {% for slide in slides %}
                 <div
@@ -25,19 +25,19 @@
                 {% for slide in slides %}
                     <li
                         data-bs-target="#announcements-slider"
-                        data-slide-to="{{ forloop.counter0 }}"
+                        data-bs-slide-to="{{ forloop.counter0 }}"
                         {% if forloop.counter0 == 0 %}class="active"{% endif %}
                     ></li>
                 {% endfor %}
             </ol>
             <a class="carousel-control-prev"
                href="#announcements-slider"
-               role="button" data-slide="prev">
+               role="button" data-bs-slide="prev">
                 <i class="fas fa-chevron-left"></i>
             </a>
             <a class="carousel-control-next"
                href="#announcements-slider"
-               role="button" data-slide="next">
+               role="button" data-bs-slide="next">
                 <i class="fas fa-chevron-right"></i>
             </a>
         {% endif %}

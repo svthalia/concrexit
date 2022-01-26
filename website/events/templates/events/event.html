@@ -19,7 +19,7 @@
 {% block header_image_container %}
     {% if event.slide %}
         <div id="announcements-slider" class="carousel slide w-100 h-100"
-             data-ride="carousel">
+             data-bs-ride="carousel">
             <img class="image"
                  src="{% thumbnail event.slide.content slide_size %}"
                  alt="{{ event.slide.title }}">
