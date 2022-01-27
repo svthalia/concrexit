@@ -91,14 +91,13 @@
         <div class="navbar-user order-1 d-flex">
             <div class="btn-group dropdown">
                 {% if not user.is_authenticated %}
-                    <a href="{% url 'login' %}" class="btn btn-primary"><i
-                        class="fas fa-user"></i></a>
+                    <a href="{% url 'login' %}" class="btn btn-primary" title="Login"><i aria-hidden="true" class="fas fa-user"></i></a>
                 {% else %}
                     <button type="button"
                             class="btn btn-primary dropdown-toggle dropdown-toggle-split"
                             data-bs-toggle="dropdown" aria-haspopup="true" id="user-menu-dropdown-button"
-                            aria-expanded="false">
-                        <i class="fas fa-user pe-2"></i>
+                            title="User options">
+                        <i aria-hidden="true" class="fas fa-user pe-2"></i>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="user-menu-dropdown-button">
                             <li>
@@ -204,20 +203,20 @@
             <a href="{% url 'singlepages:responsible-disclosure' %}">{% trans "responsible disclosure policy"|capfirst %}</a>
         </div>
         <div class="social float-end">
-            <a target="_blank" rel="noopener" href="https://www.facebook.com/svThalia">
-                <i class="fab fa-facebook"></i>
+            <a target="_blank" rel="noopener" href="https://www.facebook.com/svThalia" title="Facebook page for Thalia">
+                <i aria-hidden="true" class="fab fa-facebook"></i>
             </a>
-            <a target="_blank" rel="noopener" href="https://twitter.com/svThalia">
-                <i class="fab fa-twitter"></i>
+            <a target="_blank" rel="noopener" href="https://twitter.com/svThalia" title="Twitter account for Thalia">
+                <i aria-hidden="true" class="fab fa-twitter"></i>
             </a>
-            <a target="_blank" rel="noopener" href="https://www.instagram.com/thalia_nijmegen/">
-                <i class="fab fa-instagram"></i>
+            <a target="_blank" rel="noopener" href="https://www.instagram.com/thalia_nijmegen/" title="Instagram page for Thalia">
+                <i aria-hidden="true" class="fab fa-instagram"></i>
             </a>
-            <a target="_blank" rel="noopener" href="http://www.linkedin.com/groups?gid=54887">
-                <i class="fab fa-linkedin"></i>
+            <a target="_blank" rel="noopener" href="http://www.linkedin.com/groups?gid=54887" title="LinkedIn group for Thalia">
+                <i aria-hidden="true" class="fab fa-linkedin"></i>
             </a>
-            <a target="_blank" rel="noopener" href="https://github.com/svthalia/">
-                <i class="fab fa-github"></i>
+            <a target="_blank" rel="noopener" href="https://github.com/svthalia/" title="GitHub page for Thalia">
+                <i aria-hidden="true" class="fab fa-github"></i>
             </a>
         </div>
     </div>
