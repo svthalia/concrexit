@@ -1,14 +1,18 @@
-(function() {
-    $('.announcement .close').click(function() {
-        $(this).parent().remove();
-        $.ajax({
-            // make sure this matches the url defined in announcements/urls.py
-            url: "/announcements/close-announcement",
-            type: "POST",
-            beforeSend: function(xhr){
-                xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
-            },
-            data: {id: $(this).data('announcement-id')},
+(function () {
+    const announcementClose = document.querySelectorAll(
+        ".announcement .btn-close"
+    );
+    announcementClose.forEach((button) =>
+        button.addEventListener("click", async () => {
+            button.parentElement.parentNode.removeChild(button.parentElement);
+            await fetch("/announcements/close-announcement", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": Cookies.get("csrftoken"),
+                },
+                body: "id=" + button.dataset["announcementId"],
+            });
         })
-    });
+    );
 })();
