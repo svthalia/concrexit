@@ -378,15 +378,15 @@ sqlparse = ">=0.2.0"
 
 [[package]]
 name = "django-ical"
-version = "1.8.2"
+version = "1.8.3"
 description = "iCal feeds for Django based on Django's syndication feed framework."
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-Django = ">=2.2"
-django-recurrence = ">=1.10.0"
+django = ">=2.2"
+django-recurrence = ">=1.11.1"
 icalendar = ">=4.0.3"
 
 [[package]]
@@ -1429,7 +1429,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2cc534518ec009e534f3ae0ff8393d82081ab9746f4b5f596c6ee12ebc02e355"
+content-hash = "a795763ce4390bc8b206ad8f14e01aba660b4c7d59032cbb310a923ca7b3b26f"
 
 [metadata.files]
 alabaster = [
@@ -1696,8 +1696,8 @@ django-debug-toolbar = [
     {file = "django_debug_toolbar-3.2.4-py3-none-any.whl", hash = "sha256:6b633b6cfee24f232d73569870f19aa86c819d750e7f3e833f2344a9eb4b4409"},
 ]
 django-ical = [
-    {file = "django-ical-1.8.2.tar.gz", hash = "sha256:e5b853047b5d6ac052e827b2c7adb1aa2534266dc863c5173451105a2a4cef18"},
-    {file = "django_ical-1.8.2-py3-none-any.whl", hash = "sha256:47d57bfd4a8c7789c38b1cad437a1d48763cbeaf8a4acb75f1948f89f6ed2d0f"},
+    {file = "django-ical-1.8.3.tar.gz", hash = "sha256:0d5595c5bc954e401b59b27a9a86962557f0d3b965e9f5860244cd6bc450e8ab"},
+    {file = "django_ical-1.8.3-py3-none-any.whl", hash = "sha256:d3f97d163c03ea795e0722d5031e7f3806037ac913c814b0cfee54464f06978e"},
 ]
 django-libsass = [
     {file = "django-libsass-0.8.tar.gz", hash = "sha256:38fab4ce1245542f3afd7248dc48f8a0b261f5f6c61e7cc43969a9c9079b5ffd"},
