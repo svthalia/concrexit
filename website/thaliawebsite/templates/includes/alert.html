@@ -1,9 +1,8 @@
-<div class="alert alert-{{ type }} {{ extra_classes }}">
+<div class="alert alert-{{ type }} fade show {{ extra_classes }}">
     {{ message }}
     {% if dismissible %}
-        <button type="button" class="btn-close" data-dismiss="alert"
+        <button type="button" class="btn-close" data-bs-dismiss="alert"
                 aria-label="Close">
-            <span aria-hidden="true">&times;</span>
         </button>
     {% endif %}
 </div>
