@@ -11,33 +11,46 @@
                 {% trans 'The board' %}
             </h1>
 
-            <p>
-                {% blocktrans trimmed %}
-                    Thalia's board makes sure all operations during the academic year are taken care of, in front or
-                    behind the scenes. If you have any questions then you can address them during the day or, if you're
-                    not always on the campus, you're always welcome to
-                    <a href="mailto:info@thalia.nu">send them an email</a>.
-                {% endblocktrans %}
-            </p>
-            {% if current_board %}
             <div class="row">
-                <a href="{{ current_board.get_absolute_url }}" class="current-board col-12 text-center">
-                    {% if current_board.photo %}
-                        <img alt="{{ current_board.name }}"
-                             src="{% thumbnail current_board.photo THUMBNAIL_SIZE_LARGE fit=False %}">
-                    {% else %}
-                        <img alt="{{ current_board.name }}"
-                             src="/static/activemembers/images/placeholder.png">
-                    {% endif %}
-                </a>
+                <div class="col-12{% if current_board %} col-md-4{% endif %} mb-3 mb-md-0">
+                    <p>
+                        {% blocktrans trimmed %}
+                            Thalia's board makes sure all operations during the academic year are taken care of, in front or
+                            behind the scenes. If you have any questions then you can address them during the day or, if you're
+                            not always on the campus, you're always welcome to
+                            <a href="mailto:info@thalia.nu">send them an email</a>.
+                        {% endblocktrans %}
+                    </p>
+                    {% for membership in current_board.membergroupmembership_set.all %}
+                        {% if forloop.first %}
+                            <h4 class="mt-4">{{ current_board }}</h4>
+                        {% endif %}
+                        {% if membership.is_active %}
+                            <li>{{ membership.member.get_full_name }} <span class="fst-italic">({{ membership.role }})</span></li>
+                        {% endif %}
+                    {% empty %}
+                    {% endfor %}
+                </div>
+                {% if current_board %}
+                    <div class="col-12 col-md-8">
+                        <a href="{{ current_board.get_absolute_url }}" class="current-board col-12 text-center">
+                            {% if current_board.photo %}
+                                <img alt="{{ current_board.name }}"
+                                     src="{% thumbnail current_board.photo THUMBNAIL_SIZE_LARGE fit=False %}">
+                            {% else %}
+                                <img alt="{{ current_board.name }}"
+                                     src="/static/activemembers/images/placeholder.png">
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </section>
     <section class="page-section">
         <div class="container">
             <h1 class="section-title">
-                {% trans 'Old boards' %}
+                {% trans 'Former boards' %}
             </h1>
 
             <div class="row mt-4">

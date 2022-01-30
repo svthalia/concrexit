@@ -9,37 +9,32 @@
                 {{ membergroup.name }}
             </h1>
 
-            <div class="row align-items-start">
-                {% if membergroup.photo %}
-                    <img alt="{{ membergroup.name }}" class="col-12"
-                         src="{% thumbnail membergroup.photo THUMBNAIL_SIZE_LARGE fit=False %}">
-                {% else %}
-                    <img alt="{{ membergroup.name }}" class="col-12"
-                         src="/static/activemembers/images/placeholder.png">
+            <div class="row">
+                {% if membergroup.description %}
+                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                        <p>
+                            {{ membergroup.description|safe }}
+                        </p>
+                        {% if membergroup.committee or membergroup.society %}
+                            <p>
+                                <strong>{% trans 'contact email address'|capfirst %}:</strong>
+                                <a href="mailto:{{ membergroup.contact_address }}">{{ membergroup.contact_address }}</a>
+                            </p>
+                        {% endif %}
+                    </div>
                 {% endif %}
+                <div class="col12{% if membergroup.description %} col-md-8{% endif %} align-items-start">
+                    {% if membergroup.photo %}
+                        <img alt="{{ membergroup.name }}" class="col-12"
+                             src="{% thumbnail membergroup.photo THUMBNAIL_SIZE_LARGE fit=False %}">
+                    {% else %}
+                        <img alt="{{ membergroup.name }}" class="col-12"
+                             src="/static/activemembers/images/placeholder.png">
+                    {% endif %}
+                </div>
             </div>
         </div>
     </section>
-
-    {% if membergroup.description %}
-    <section id="activemembers-membergroup-description" class="page-section">
-        <div class="container">
-            <h1 class="section-title">
-                {% trans 'Description' %}
-            </h1>
-
-            <p>
-                {{ membergroup.description|safe }}
-            </p>
-            {% if membergroup.committee or membergroup.society %}
-            <p>
-                    <strong>{% trans 'contact email address'|capfirst %}:</strong>
-                <a href="mailto:{{ membergroup.contact_address }}">{{ membergroup.contact_address }}</a>
-            </p>
-            {% endif %}
-        </div>
-    </section>
-    {% endif %}
 
 	{% if membergroup.display_members or request.user.is_authenticated %}
 		<section id="activemembers-membergroup-members" class="page-section">
