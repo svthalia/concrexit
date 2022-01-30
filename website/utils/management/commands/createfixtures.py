@@ -201,7 +201,11 @@ class Command(BaseCommand):
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            member_group.name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+            member_group.name,
+            480,
+            480,
+            padding=(10, 10, 10, 10),
+            output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
         member_group.photo.save(member_group.name + ".jpeg", ContentFile(icon))
 
@@ -323,7 +327,11 @@ class Command(BaseCommand):
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            partner.name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+            partner.name,
+            480,
+            480,
+            padding=(10, 10, 10, 10),
+            output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
         partner.logo.save(partner.name + ".jpeg", ContentFile(icon))
 
@@ -366,7 +374,11 @@ class Command(BaseCommand):
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            user.username, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+            user.username,
+            480,
+            480,
+            padding=(10, 10, 10, 10),
+            output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
         profile.photo.save(fakeprofile["username"] + ".jpeg", ContentFile(icon))
 
@@ -601,7 +613,11 @@ class Command(BaseCommand):
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
-            name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg",
+            name,
+            480,
+            480,
+            padding=(10, 10, 10, 10),
+            output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
         photo.file.save(f"{name}.jpeg", ContentFile(icon))
 

@@ -17,7 +17,9 @@ urlpatterns = [
             [
                 path("slides/", SlideListView.as_view(), name="slide-list"),
                 path(
-                    "slides/<int:pk>/", SlideDetailView.as_view(), name="slide-detail",
+                    "slides/<int:pk>/",
+                    SlideDetailView.as_view(),
+                    name="slide-detail",
                 ),
                 path(
                     "frontpage-articles/",

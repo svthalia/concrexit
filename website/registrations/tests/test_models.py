@@ -357,7 +357,9 @@ class RenewalTest(TestCase):
         except ValidationError as e:
             self.assertCountEqual(
                 e.error_dict,
-                {"length": "You cannot renew your membership at this moment.",},
+                {
+                    "length": "You cannot renew your membership at this moment.",
+                },
             )
 
     def test_within_renew_period(self):

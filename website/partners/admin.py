@@ -71,7 +71,15 @@ class VacancyAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("title", "description", "link", "location", "keywords")}),
         (_("Existing partner"), {"fields": ("partner",)}),
-        (_("Other partner"), {"fields": ("company_name", "company_logo",)}),
+        (
+            _("Other partner"),
+            {
+                "fields": (
+                    "company_name",
+                    "company_logo",
+                )
+            },
+        ),
         (_("Categories"), {"fields": ("categories",)}),
     )
 

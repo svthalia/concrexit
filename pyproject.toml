@@ -48,7 +48,7 @@ factory_boy = "3.2.1"
 pydenticon = "0.3.1"
 Faker = "11.3.0"
 coverage = {extras = ["toml"], version = "^5.0.3"}
-black = "19.10b0"
+black = "22.1.0"
 pylint = "2.12.2"
 pylint-django = "2.5.0"
 

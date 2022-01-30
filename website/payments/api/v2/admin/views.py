@@ -130,7 +130,8 @@ class PayableDetailView(APIView):
 
         try:
             services.delete_payment(
-                payable.model, request.member,
+                payable.model,
+                request.member,
             )
             payable.model.save()
         except PaymentError as e:

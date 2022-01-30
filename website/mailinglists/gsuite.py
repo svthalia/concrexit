@@ -56,7 +56,9 @@ class GSuiteSyncService:
             return False
 
     def __init__(
-        self, groups_settings_api=None, directory_api=None,
+        self,
+        groups_settings_api=None,
+        directory_api=None,
     ):
         """Create GSuite Sync Service.
 
@@ -113,7 +115,7 @@ class GSuiteSyncService:
             # wait a minute.
             n = 0
             while True:
-                sleep(min(2 ** n + random(), 64))
+                sleep(min(2**n + random(), 64))
                 try:
                     self._groups_settings_api.groups().update(
                         groupUniqueId=f"{group.name}@{settings.GSUITE_DOMAIN}",
@@ -175,7 +177,9 @@ class GSuiteSyncService:
             aliases_response = (
                 self._directory_api.groups()
                 .aliases()
-                .list(groupKey=f"{group.name}@{settings.GSUITE_DOMAIN}",)
+                .list(
+                    groupKey=f"{group.name}@{settings.GSUITE_DOMAIN}",
+                )
                 .execute()
             )
         except HttpError:
@@ -267,7 +271,9 @@ class GSuiteSyncService:
         try:
             members_response = (
                 self._directory_api.members()
-                .list(groupKey=f"{group.name}@{settings.GSUITE_DOMAIN}",)
+                .list(
+                    groupKey=f"{group.name}@{settings.GSUITE_DOMAIN}",
+                )
                 .execute()
             )
             members_list = members_response.get("members", [])

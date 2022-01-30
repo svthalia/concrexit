@@ -184,7 +184,10 @@ class FoodOrder(models.Model):
     """Describes an order of an item during a food event."""
 
     member = models.ForeignKey(
-        members.models.Member, on_delete=models.CASCADE, blank=True, null=True,
+        members.models.Member,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     name = models.CharField(
@@ -205,7 +208,9 @@ class FoodOrder(models.Model):
     )
 
     product = models.ForeignKey(
-        verbose_name=_("product"), to=Product, on_delete=models.PROTECT,
+        verbose_name=_("product"),
+        to=Product,
+        on_delete=models.PROTECT,
     )
 
     food_event = models.ForeignKey(

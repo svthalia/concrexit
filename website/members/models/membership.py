@@ -19,11 +19,15 @@ class Membership(models.Model):
     )
 
     type = models.CharField(
-        max_length=40, choices=MEMBERSHIP_TYPES, verbose_name=_("Membership type"),
+        max_length=40,
+        choices=MEMBERSHIP_TYPES,
+        verbose_name=_("Membership type"),
     )
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("User"),
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("User"),
     )
 
     since = models.DateField(

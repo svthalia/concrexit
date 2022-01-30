@@ -8,6 +8,10 @@ app_name = "pushnotifications"
 urlpatterns = [
     path(
         "pushnotifications/",
-        include([path("admin/send/<int:pk>/", views.admin_send, name="admin-send"),]),
+        include(
+            [
+                path("admin/send/<int:pk>/", views.admin_send, name="admin-send"),
+            ]
+        ),
     )
 ]

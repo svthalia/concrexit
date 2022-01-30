@@ -50,12 +50,22 @@ class MemberGroup(models.Model):
     )
 
     permissions = models.ManyToManyField(
-        Permission, verbose_name=_("permissions"), blank=True,
+        Permission,
+        verbose_name=_("permissions"),
+        blank=True,
     )
 
-    since = models.DateField(_("founded in"), null=True, blank=True,)
+    since = models.DateField(
+        _("founded in"),
+        null=True,
+        blank=True,
+    )
 
-    until = models.DateField(_("existed until"), null=True, blank=True,)
+    until = models.DateField(
+        _("existed until"),
+        null=True,
+        blank=True,
+    )
 
     active = models.BooleanField(
         default=False,
@@ -67,7 +77,9 @@ class MemberGroup(models.Model):
     )
 
     contact_email = models.EmailField(
-        _("contact email address"), blank=True, null=True,
+        _("contact email address"),
+        blank=True,
+        null=True,
     )
 
     contact_mailinglist = models.OneToOneField(
@@ -78,7 +90,9 @@ class MemberGroup(models.Model):
         on_delete=models.SET_NULL,
     )
 
-    display_members = models.BooleanField(default=False,)
+    display_members = models.BooleanField(
+        default=False,
+    )
 
     @property
     def contact_address(self):
@@ -199,11 +213,15 @@ class MemberGroupMembership(models.Model):
     active_objects = ActiveMembershipManager()
 
     member = models.ForeignKey(
-        "members.Member", on_delete=models.CASCADE, verbose_name=_("Member"),
+        "members.Member",
+        on_delete=models.CASCADE,
+        verbose_name=_("Member"),
     )
 
     group = models.ForeignKey(
-        MemberGroup, on_delete=models.CASCADE, verbose_name=_("Group"),
+        MemberGroup,
+        on_delete=models.CASCADE,
+        verbose_name=_("Group"),
     )
 
     since = models.DateField(
@@ -342,7 +360,9 @@ class Mentorship(models.Model):
     """Describe a mentorship during the orientation."""
 
     member = models.ForeignKey(
-        "members.Member", on_delete=models.CASCADE, verbose_name=_("Member"),
+        "members.Member",
+        on_delete=models.CASCADE,
+        verbose_name=_("Member"),
     )
     year = models.IntegerField(validators=[MinValueValidator(1990)])
 

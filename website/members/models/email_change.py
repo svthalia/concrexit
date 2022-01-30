@@ -11,7 +11,9 @@ class EmailChange(models.Model):
     created_at = models.DateTimeField(_("created at"), default=timezone.now)
 
     member = models.ForeignKey(
-        "members.Member", on_delete=models.CASCADE, verbose_name=_("member"),
+        "members.Member",
+        on_delete=models.CASCADE,
+        verbose_name=_("member"),
     )
 
     email = models.EmailField(_("email"), max_length=254)

@@ -52,7 +52,8 @@ class EventRegistration(models.Model):
         help_text=_("Phone number for non-members"),
         validators=[
             validators.RegexValidator(
-                regex=r"^\+?\d+$", message=_("Please enter a valid phone number"),
+                regex=r"^\+?\d+$",
+                message=_("Please enter a valid phone number"),
             )
         ],
         null=True,
@@ -62,7 +63,10 @@ class EventRegistration(models.Model):
     date = models.DateTimeField(_("registration date"), default=timezone.now)
     date_cancelled = models.DateTimeField(_("cancellation date"), null=True, blank=True)
 
-    present = models.BooleanField(_("present"), default=False,)
+    present = models.BooleanField(
+        _("present"),
+        default=False,
+    )
 
     special_price = PaymentAmountField(
         verbose_name=_("special price"),

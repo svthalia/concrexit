@@ -293,7 +293,8 @@ class BatchModelTest(TestCase):
     def test_description_batch(self) -> None:
         batch = Batch.objects.create(id=1)
         self.assertEqual(
-            batch.description, "Thalia Pay payments for 2019-1",
+            batch.description,
+            "Thalia Pay payments for 2019-1",
         )
 
     def test_process_batch(self) -> None:

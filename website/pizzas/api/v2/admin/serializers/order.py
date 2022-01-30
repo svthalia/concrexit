@@ -19,9 +19,12 @@ class FoodOrderAdminSerializer(CleanedModelSerializer):
         fields = ("pk", "payment", "product", "name", "member", "food_event")
         validators = [
             UniqueTogetherValidator(
-                queryset=FoodOrder.objects.all(), fields=["food_event", "member"],
+                queryset=FoodOrder.objects.all(),
+                fields=["food_event", "member"],
             ),
-            MutuallyExclusiveValidator(fields=["name", "member"],),
+            MutuallyExclusiveValidator(
+                fields=["name", "member"],
+            ),
         ]
         read_only_fields = ("payment",)
 

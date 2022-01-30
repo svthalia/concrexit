@@ -22,7 +22,8 @@ class AddExamForm(ModelForm):
     years = list(reversed(range(this_year - 8, this_year + 1)))
 
     course = ModelChoiceField(
-        queryset=Course.objects.order_by("name"), empty_label=None,
+        queryset=Course.objects.order_by("name"),
+        empty_label=None,
     )
     type = ChoiceField(choices=Exam.EXAM_TYPES)
 
@@ -39,7 +40,8 @@ class AddSummaryForm(ModelForm):
     """Custom form to add summaries, orders courses by name and formats the year as lecture years."""
 
     course = ModelChoiceField(
-        queryset=Course.objects.order_by("name"), empty_label=None,
+        queryset=Course.objects.order_by("name"),
+        empty_label=None,
     )
 
     this_year = datetime_to_lectureyear(timezone.now())

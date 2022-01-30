@@ -29,7 +29,9 @@ class CommitteeMembersTest(TestCase):
     def test_unique(self):
         with self.assertRaises(IntegrityError):
             Committee.objects.create(
-                name="testcie1", description="desc3", photo="",
+                name="testcie1",
+                description="desc3",
+                photo="",
             )
 
     def test_join(self):

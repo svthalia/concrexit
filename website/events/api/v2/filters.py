@@ -24,14 +24,18 @@ class EventDateFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter events by ISO date, starting with this parameter (i.e. 2021-03-30T04:20:00) where `event.end >= value`",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             },
             {
                 "name": "end",
                 "required": False,
                 "in": "query",
                 "description": "Filter events by ISO date, ending with this parameter (i.e. 2021-05-16T13:37:00) where `event.start <= value`",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             },
         ]
 
@@ -54,7 +58,9 @@ class CategoryFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by category, accepts a comma separated list",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             }
         ]
 
@@ -77,6 +83,8 @@ class OrganiserFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by organiser id",
-                "schema": {"type": "number",},
+                "schema": {
+                    "type": "number",
+                },
             }
         ]
