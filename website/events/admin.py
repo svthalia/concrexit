@@ -122,7 +122,16 @@ class EventAdmin(DoNextModelAdmin):
     filter_horizontal = ("documents",)
 
     fieldsets = (
-        (_("General"), {"fields": ("title", "published", "organiser",)}),
+        (
+            _("General"),
+            {
+                "fields": (
+                    "title",
+                    "published",
+                    "organiser",
+                )
+            },
+        ),
         (
             _("Detail"),
             {
@@ -371,7 +380,9 @@ class RegistrationAdmin(DoNextModelAdmin):
             field.widget.can_delete_related = False
         elif db_field.name == "payment":
             return Field(
-                widget=PaymentWidget(obj=obj), initial=field.initial, required=False,
+                widget=PaymentWidget(obj=obj),
+                initial=field.initial,
+                required=False,
             )
         return field
 

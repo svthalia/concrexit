@@ -379,7 +379,10 @@ class RegistrationAdminTest(TestCase):
         )
 
     def test_name(self):
-        reg = Registration(first_name="John", last_name="Doe",)
+        reg = Registration(
+            first_name="John",
+            last_name="Doe",
+        )
         self.assertEqual(self.admin.name(reg), reg.get_full_name())
 
     def test_reference_count(self):
@@ -555,7 +558,12 @@ class RenewalAdminTest(TestCase):
         )
 
     def test_name(self):
-        renewal = Renewal(member=Member(first_name="John", last_name="Doe",))
+        renewal = Renewal(
+            member=Member(
+                first_name="John",
+                last_name="Doe",
+            )
+        )
         self.assertEqual(self.admin.name(renewal), renewal.member.get_full_name())
 
     def test_email(self):

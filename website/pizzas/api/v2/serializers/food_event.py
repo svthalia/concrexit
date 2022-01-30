@@ -26,7 +26,10 @@ class FoodEventSerializer(serializers.ModelSerializer):
     def _member_order(self, instance):
         try:
             order = instance.orders.get(member=self.context["request"].member)
-            return FoodOrderSerializer(order, context=self.context,).data
+            return FoodOrderSerializer(
+                order,
+                context=self.context,
+            ).data
         except FoodOrder.DoesNotExist:
             pass
         return None

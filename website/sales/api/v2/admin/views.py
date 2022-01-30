@@ -53,7 +53,9 @@ class ShiftListView(AdminListAPIView):
             "num_orders_paid",
         )
         queryset = queryset.prefetch_related("event", "product_list")
-        queryset = queryset.prefetch_related("orders__order_items",)
+        queryset = queryset.prefetch_related(
+            "orders__order_items",
+        )
         return queryset
 
 

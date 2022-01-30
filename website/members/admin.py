@@ -193,7 +193,11 @@ class UserAdmin(BaseUserAdmin):
         writer.writerow([_("First name"), _("Last name"), _("Email")])
         for user in queryset:
             writer.writerow(
-                [user.first_name, user.last_name, user.email,]
+                [
+                    user.first_name,
+                    user.last_name,
+                    user.email,
+                ]
             )
         return response
 

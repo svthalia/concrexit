@@ -99,7 +99,11 @@ class Command(BaseCommand):
             delete_commands = []
             for code in current_relations.values():
                 delete_commands.append(
-                    ApiCommand(command="DeleteRelation", entityType="lid_2", code=code,)
+                    ApiCommand(
+                        command="DeleteRelation",
+                        entityType="lid_2",
+                        code=code,
+                    )
                 )
 
             delete_responses = api.multi_request(delete_commands)

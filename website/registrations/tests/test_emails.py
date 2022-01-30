@@ -66,7 +66,10 @@ class EmailsTest(TestCase):
     @mock.patch("registrations.emails.send_email")
     def test_send_registration_rejected_message(self, send_email):
         reg = Registration(
-            email="test@example.org", first_name="John", last_name="Doe", pk=0,
+            email="test@example.org",
+            first_name="John",
+            last_name="Doe",
+            pk=0,
         )
 
         emails.send_registration_rejected_message(reg)
@@ -81,7 +84,10 @@ class EmailsTest(TestCase):
     @mock.patch("registrations.emails.send_email")
     def test_send_new_registration_board_message(self, send_email):
         registration = Registration(
-            email="test@example.org", first_name="John", last_name="Doe", pk=0,
+            email="test@example.org",
+            first_name="John",
+            last_name="Doe",
+            pk=0,
         )
 
         emails.send_new_registration_board_message(registration)
@@ -123,7 +129,12 @@ class EmailsTest(TestCase):
                 "name": renewal.member.get_full_name(),
                 "fees": floatformat(renewal.contribution, 2),
                 "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
-                "url": (settings.BASE_URL + reverse("registrations:renew",)),
+                "url": (
+                    settings.BASE_URL
+                    + reverse(
+                        "registrations:renew",
+                    )
+                ),
             },
         )
 
@@ -250,7 +261,10 @@ class EmailsTest(TestCase):
             subject="Subject",
             to="test@example.org",
             body_template="registrations/email/renewal_board.txt",
-            context={"name": "name", "url": "",},
+            context={
+                "name": "name",
+                "url": "",
+            },
         )
 
         self.assertEqual(mail.outbox[0].subject, "[THALIA] Subject")
@@ -258,6 +272,10 @@ class EmailsTest(TestCase):
         self.assertEqual(
             mail.outbox[0].body,
             loader.render_to_string(
-                "registrations/email/renewal_board.txt", {"name": "name", "url": "",}
+                "registrations/email/renewal_board.txt",
+                {
+                    "name": "name",
+                    "url": "",
+                },
             ),
         )

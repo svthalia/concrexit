@@ -17,9 +17,13 @@ from .models import Registration, Renewal, Reference
 class BaseRegistrationForm(forms.ModelForm):
     """Base form for membership registrations."""
 
-    birthday = forms.DateField(label=capfirst(_("birthday")),)
+    birthday = forms.DateField(
+        label=capfirst(_("birthday")),
+    )
 
-    privacy_policy = forms.BooleanField(required=True,)
+    privacy_policy = forms.BooleanField(
+        required=True,
+    )
 
     direct_debit = forms.BooleanField(
         required=False,
@@ -137,13 +141,19 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
 class RenewalForm(forms.ModelForm):
     """Form for membership renewals."""
 
-    privacy_policy = forms.BooleanField(required=True,)
+    privacy_policy = forms.BooleanField(
+        required=True,
+    )
 
     icis_employee = forms.BooleanField(
         required=False, label=_("I am an employee of iCIS")
     )
 
-    contribution = forms.DecimalField(required=False, max_digits=5, decimal_places=2,)
+    contribution = forms.DecimalField(
+        required=False,
+        max_digits=5,
+        decimal_places=2,
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

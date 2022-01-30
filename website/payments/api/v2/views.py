@@ -116,7 +116,9 @@ class PayableDetailView(RetrieveAPIView):
 
         try:
             services.create_payment(
-                payable, PaymentUser.objects.get(pk=request.user.pk), Payment.TPAY,
+                payable,
+                PaymentUser.objects.get(pk=request.user.pk),
+                Payment.TPAY,
             )
             payable.model.save()
         except PaymentError as e:

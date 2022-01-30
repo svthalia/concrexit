@@ -24,7 +24,10 @@ class Category(models.Model):
 
     key = models.CharField(max_length=16, primary_key=True)
 
-    name = models.CharField(_("name"), max_length=32,)
+    name = models.CharField(
+        _("name"),
+        max_length=32,
+    )
 
     description = models.TextField(_("description"), default="")
 
@@ -98,7 +101,10 @@ class Message(models.Model):
     title = models.CharField(max_length=150, verbose_name=_("title"))
     body = models.TextField(verbose_name=_("body"))
     url = models.CharField(
-        verbose_name=_("url"), max_length=256, null=True, blank=True,
+        verbose_name=_("url"),
+        max_length=256,
+        null=True,
+        blank=True,
     )
     category = models.ForeignKey(
         Category,
@@ -106,9 +112,20 @@ class Message(models.Model):
         verbose_name=_("category"),
         default="general",
     )
-    sent = models.DateTimeField(verbose_name=_("sent"), null=True,)
-    failure = models.IntegerField(verbose_name=_("failure"), blank=True, null=True,)
-    success = models.IntegerField(verbose_name=_("success"), blank=True, null=True,)
+    sent = models.DateTimeField(
+        verbose_name=_("sent"),
+        null=True,
+    )
+    failure = models.IntegerField(
+        verbose_name=_("failure"),
+        blank=True,
+        null=True,
+    )
+    success = models.IntegerField(
+        verbose_name=_("success"),
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return f"{self.title}: {self.body}"
@@ -138,14 +155,16 @@ class Message(models.Model):
 
                     message = messaging.Message(
                         notification=messaging.Notification(
-                            title=data["title"], body=data["body"],
+                            title=data["title"],
+                            body=data["body"],
                         ),
                         data=data,
                         android=messaging.AndroidConfig(
                             ttl=datetime.timedelta(seconds=ttl),
                             priority="normal",
                             notification=messaging.AndroidNotification(
-                                color="#E62272", sound="default",
+                                color="#E62272",
+                                sound="default",
                             ),
                         ),
                     )

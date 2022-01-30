@@ -81,10 +81,14 @@ class NewslettersTest(TestCase):
         cls.user.save()
 
         cls.testletter_sent = Newsletter.objects.create(
-            title="testletter", description="testdesc", sent=True,
+            title="testletter",
+            description="testdesc",
+            sent=True,
         )
         cls.testletter_concept = Newsletter.objects.create(
-            title="testletter", description="testdesc", sent=False,
+            title="testletter",
+            description="testdesc",
+            sent=False,
         )
 
     def setUp(self):
@@ -120,7 +124,9 @@ class NewslettersTest(TestCase):
 
     def test_email_sent_per_lang(self):
         testletter = Newsletter.objects.create(
-            title="testletter", description="testdesc", sent=False,
+            title="testletter",
+            description="testdesc",
+            sent=False,
         )
 
         self.client.post(
@@ -130,7 +136,9 @@ class NewslettersTest(TestCase):
 
     def test_email_html_and_text(self):
         testletter = Newsletter.objects.create(
-            title="testletter", description="testdesc", sent=False,
+            title="testletter",
+            description="testdesc",
+            sent=False,
         )
 
         self.client.post(
@@ -144,7 +152,9 @@ class NewslettersTest(TestCase):
 
     def test_email_sent_database_changed(self):
         testletter = Newsletter.objects.create(
-            title="testletter", description="testdesc", sent=False,
+            title="testletter",
+            description="testdesc",
+            sent=False,
         )
 
         self.client.post(
@@ -157,7 +167,9 @@ class NewslettersTest(TestCase):
 
     def test_email_sent_redirect(self):
         testletter = Newsletter.objects.create(
-            title="testletter", description="testdesc", sent=False,
+            title="testletter",
+            description="testdesc",
+            sent=False,
         )
 
         response = self.client.post(

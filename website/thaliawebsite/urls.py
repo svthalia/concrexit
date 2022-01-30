@@ -95,10 +95,14 @@ urlpatterns = [
                                     name="authorized-token-delete",
                                 ),
                                 path(
-                                    "keys/", JwksInfoView.as_view(), name="jwks-info",
+                                    "keys/",
+                                    JwksInfoView.as_view(),
+                                    name="jwks-info",
                                 ),
                                 path(
-                                    "info/", UserInfoView.as_view(), name="user-info",
+                                    "info/",
+                                    UserInfoView.as_view(),
+                                    name="user-info",
                                 ),
                             ]
                         ),

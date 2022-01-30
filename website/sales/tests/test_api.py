@@ -30,8 +30,12 @@ class OrderAPITest(TestCase):
         cls.wine = Product.objects.create(name="wine", age_restricted=True)
         cls.soda = Product.objects.create(name="soda", age_restricted=False)
 
-        cls.normal = ProductList.objects.create(name="normal",)
-        cls.free = ProductList.objects.create(name="free",)
+        cls.normal = ProductList.objects.create(
+            name="normal",
+        )
+        cls.free = ProductList.objects.create(
+            name="free",
+        )
 
         cls.normal.product_items.bulk_create(
             [
@@ -581,7 +585,11 @@ class OrderAPITest(TestCase):
             self.assertJSONEqual(response.content, expected_response)
 
         with self.subTest("Delete one product item"):
-            data = {"order_items": [{"product": "wine", "amount": 1},]}
+            data = {
+                "order_items": [
+                    {"product": "wine", "amount": 1},
+                ]
+            }
             response = self.client.patch(
                 reverse("api:v2:admin:sales:order-detail", kwargs={"pk": pk}),
                 data,
@@ -592,7 +600,9 @@ class OrderAPITest(TestCase):
                 "pk": pk,
                 "shift": self.shift.pk,
                 "created_at": "2021-01-01T01:00:00+01:00",
-                "order_items": [{"product": "wine", "amount": 1, "total": "0.50"},],
+                "order_items": [
+                    {"product": "wine", "amount": 1, "total": "0.50"},
+                ],
                 "order_description": "1x wine",
                 "age_restricted": True,
                 "subtotal": "0.50",
@@ -626,8 +636,12 @@ class ShiftAPITest(TestCase):
         cls.wine = Product.objects.create(name="wine", age_restricted=True)
         cls.soda = Product.objects.create(name="soda", age_restricted=False)
 
-        cls.normal = ProductList.objects.create(name="normal",)
-        cls.free = ProductList.objects.create(name="free",)
+        cls.normal = ProductList.objects.create(
+            name="normal",
+        )
+        cls.free = ProductList.objects.create(
+            name="free",
+        )
 
         cls.normal.product_items.bulk_create(
             [

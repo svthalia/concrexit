@@ -54,7 +54,9 @@ class OrderViewset(ModelViewSet):
                 return FoodOrder.objects.none()
 
             return FoodOrder.objects.filter(
-                member=self.request.member, payment=None, food_event=event,
+                member=self.request.member,
+                payment=None,
+                food_event=event,
             )
         return FoodOrder.objects.filter(member=self.request.member, food_event=event)
 
@@ -103,7 +105,9 @@ class OrderViewset(ModelViewSet):
             self.request.member, FoodEvent.current()
         ):
             self._update_payment(
-                order, serializer.validated_data["payment"]["type"], self.request.user,
+                order,
+                serializer.validated_data["payment"]["type"],
+                self.request.user,
             )
 
     @staticmethod

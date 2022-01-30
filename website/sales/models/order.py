@@ -59,7 +59,9 @@ class Order(models.Model):
     )
 
     items = models.ManyToManyField(
-        ProductListItem, through="OrderItem", verbose_name=_("items"),
+        ProductListItem,
+        through="OrderItem",
+        verbose_name=_("items"),
     )
 
     payment = models.OneToOneField(

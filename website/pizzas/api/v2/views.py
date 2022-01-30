@@ -105,7 +105,10 @@ class FoodEventOrderDetailView(
         try:
             return super().dispatch(request, *args, **kwargs)
         except PaymentError as e:
-            return Response(str(e), status=status.HTTP_403_FORBIDDEN,)
+            return Response(
+                str(e),
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
     def update(self, request, *args, **kwargs):
         super().update(request, *args, **kwargs)

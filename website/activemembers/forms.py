@@ -11,7 +11,8 @@ class MemberGroupMembershipForm(forms.ModelForm):
     """Custom form for group memberships that orders the members."""
 
     member = forms.ModelChoiceField(
-        queryset=Member.objects.order_by("first_name", "last_name"), label=_("Member"),
+        queryset=Member.objects.order_by("first_name", "last_name"),
+        label=_("Member"),
     )
 
     class Meta:

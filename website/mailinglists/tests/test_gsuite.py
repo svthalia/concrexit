@@ -275,8 +275,8 @@ class GSuiteSyncTestCase(TestCase):
     @mock.patch("mailinglists.gsuite.logger")
     def test_update_group_aliases(self, logger_mock):
         with self.subTest("Error getting existing list"):
-            self.directory_api.groups().aliases().list().execute.side_effect = HttpError(
-                Response({"status": 500}), bytes()
+            self.directory_api.groups().aliases().list().execute.side_effect = (
+                HttpError(Response({"status": 500}), bytes())
             )
             self.sync_service._update_group_aliases(
                 GSuiteSyncService.GroupData(name="update_group")

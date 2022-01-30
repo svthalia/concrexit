@@ -21,7 +21,10 @@ class GetDocumentTest(TestCase):
         cls.file_en.chunks.return_value = [b"file"]
 
         cls.document = Document.objects.create(
-            pk=1, name="Test document (EN)", category="misc", file=cls.file_en,
+            pk=1,
+            name="Test document (EN)",
+            category="misc",
+            file=cls.file_en,
         )
 
         cls.member = Member.objects.filter(last_name="Wiggers").first()

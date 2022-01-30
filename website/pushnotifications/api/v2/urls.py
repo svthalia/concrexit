@@ -22,13 +22,21 @@ urlpatterns = [
                     MessageDetailView.as_view(),
                     name="device-detail",
                 ),
-                path("devices/", DeviceListView.as_view(), name="device-list",),
+                path(
+                    "devices/",
+                    DeviceListView.as_view(),
+                    name="device-list",
+                ),
                 path(
                     "devices/<int:pk>/",
                     DeviceDetailView.as_view(),
                     name="device-detail",
                 ),
-                path("categories/", CategoryListView.as_view(), name="category-list",),
+                path(
+                    "categories/",
+                    CategoryListView.as_view(),
+                    name="category-list",
+                ),
             ]
         ),
     ),
