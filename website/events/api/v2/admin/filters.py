@@ -49,7 +49,9 @@ class EventRegistrationCancelledFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by event registration cancellation status",
-                "schema": {"type": "boolean",},
+                "schema": {
+                    "type": "boolean",
+                },
             }
         ]
 
@@ -75,6 +77,8 @@ class EventRegistrationQueuedFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by event registration if they're in the queue",
-                "schema": {"type": "boolean",},
+                "schema": {
+                    "type": "boolean",
+                },
             }
         ]
