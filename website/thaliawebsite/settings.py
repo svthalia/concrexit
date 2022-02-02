@@ -682,14 +682,10 @@ THUMBNAIL_SIZES = {
 PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
-TINYMCE_JS_URL = "/static/tinymce/js/tinymce/tinymce.min.js"
-
 TINYMCE_DEFAULT_CONFIG = {
     "selector": "textarea",
-    "theme": "modern",
-    "plugins": "link image paste code contextmenu",
-    "toolbar1": "bold italic underline strikethrough | link unlink | "
-    "bullist numlist | undo redo | code",
+    "plugins": "advlist anchor autolink autosave charmap code codesample fullscreen hr image media link lists table",
+    "toolbar1": "styleselect | bold italic underline strikethrough | hr charmap codesample | link unlink | bullist numlist outdent indent | table image media | undo redo | code",
     "contextmenu": "bold italic underline strikethrough | image",
     "menubar": False,
     "inline": False,
@@ -700,6 +696,7 @@ TINYMCE_DEFAULT_CONFIG = {
     "relative_urls": False,
     "remove_script_host": False,
 }
+TINYMCE_COMPRESSOR = True
 
 BOOTSTRAP5 = {"required_css_class": "required-field"}
 

@@ -10,7 +10,6 @@ python = "^3.9"
 django-localflavor = "3.1"
 freezegun = "1.1.0"
 bleach = "4.1.0"
-django-tinymce4-lite = "1.8.0"
 djangorestframework = "3.13.1"
 django-ical = "1.8.3"
 django-libsass = "0.8.0"
@@ -38,6 +37,7 @@ pydocstyle = "6.1.1"
 recommonmark = { version = "0.7.1", optional = true }
 sphinx = { version = "4.3.2", optional = true }
 django-bootstrap5 = "^21.3"
+django-tinymce = "^3.4.0"
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]
