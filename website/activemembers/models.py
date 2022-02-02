@@ -14,7 +14,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from tinymce import HTMLField
+from tinymce.models import HTMLField
 
 from utils.snippets import overlaps
 

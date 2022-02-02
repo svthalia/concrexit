@@ -170,7 +170,7 @@ urlpatterns = [
         name="django.contrib.sitemaps.views.sitemap",
     ),
     # Dependencies
-    path(r"tinymce", include("tinymce.urls")),
+    path("tinymce/", include("tinymce.urls")),
     path("__debug__/", include(debug_toolbar.urls)),
     # Provide something to test error handling. Limited to admins.
     path("crash/", TestCrashView.as_view()),

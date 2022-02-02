@@ -682,11 +682,10 @@ THUMBNAIL_SIZES = {
 PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
-TINYMCE_JS_URL = "/static/tinymce/js/tinymce/tinymce.min.js"
+TINYMCE_JS_URL = "/static/tinymce/tinymce.min.js"
 
 TINYMCE_DEFAULT_CONFIG = {
     "selector": "textarea",
-    "theme": "modern",
     "plugins": "link image paste code contextmenu",
     "toolbar1": "bold italic underline strikethrough | link unlink | "
     "bullist numlist | undo redo | code",
