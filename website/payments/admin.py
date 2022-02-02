@@ -565,6 +565,7 @@ class BankAccountInline(admin.TabularInline):
 
 class PaymentInline(admin.TabularInline):
     model = Payment
+    fk_name = "paid_by"
     fields = (
         "created_at",
         "type",
