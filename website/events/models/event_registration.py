@@ -1,10 +1,12 @@
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, F, Count
+from django.db.models.functions import NullIf, Greatest
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
+from queryable_properties.properties import AnnotationProperty
 
 from payments.models import PaymentAmountField
 from .event import Event
@@ -71,17 +73,26 @@ class EventRegistration(models.Model):
     def is_registered(self):
         return self.date_cancelled is None
 
-    @property
-    def queue_position(self):
-        if self.event.max_participants is not None:
-            try:
-                queue_ids = [
-                    registration.member_id for registration in self.event.queue
-                ]
-                return list(queue_ids).index(self.member_id) + 1
-            except ValueError:
-                pass
-        return None
+    queue_position = AnnotationProperty(
+        # Get queue position by counting amount of registrations with lower date and in case of same date lower id
+        # Subsequently cast to None if this is 0 or lower, in which case it isn't in the queue
+        NullIf(
+            Greatest(
+                Count(
+                    "event__eventregistration",
+                    filter=Q(event__eventregistration__date_cancelled=None)
+                    & Q(event__eventregistration__date__lt=F("date"))
+                    | (
+                        Q(event__eventregistration__id__lte=F("id"))
+                        & Q(event__eventregistration__date__exact=F("date"))
+                    ),
+                )
+                - F("event__max_participants"),
+                0,
+            ),
+            0,
+        )
+    )
 
     @property
     def is_invited(self):
