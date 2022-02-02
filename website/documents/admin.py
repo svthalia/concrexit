@@ -69,6 +69,11 @@ class AnnualDocumentAdmin(ModelAdmin):
         LectureYearFilter,
         "created",
         "last_updated",
+        "members_only",
+    )
+    list_display = (
+        "__str__",
+        "members_only",
     )
 
 
@@ -80,6 +85,11 @@ class AssociationDocumentAdmin(ModelAdmin):
     list_filter = (
         "created",
         "last_updated",
+        "members_only",
+    )
+    list_display = (
+        "__str__",
+        "members_only",
     )
 
 
@@ -91,6 +101,11 @@ class EventDocumentAdmin(ModelAdmin):
     list_filter = (
         "created",
         "last_updated",
+        "members_only",
+    )
+    list_display = (
+        "__str__",
+        "members_only",
     )
 
     def has_change_permission(self, request, obj=None):
@@ -114,4 +129,9 @@ class MiscellaneousDocumentAdmin(ModelAdmin):
     list_filter = (
         "created",
         "last_updated",
+        "members_only",
+    )
+    list_display = (
+        "__str__",
+        "members_only",
     )
