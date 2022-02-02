@@ -22,6 +22,7 @@ def registration_member_choices_limit():
 
 class EventRegistration(models.Model):
     """Describes a registration for an Event."""
+
     objects = QueryablePropertiesManager()
 
     event = models.ForeignKey(Event, models.CASCADE)
