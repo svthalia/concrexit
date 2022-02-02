@@ -40,7 +40,7 @@ def send_newsletter(newsletter):
     text_template = get_template("newsletters/email.txt")
 
     main_partner = Partner.objects.filter(is_main_partner=True).first()
-    local_partner = Partner.objects.filter(is_local_partner=True).first()
+    local_partners = Partner.objects.filter(is_local_partner=True)
 
     with mail.get_connection() as connection:
         language = ("en", "English")
@@ -52,7 +52,7 @@ def send_newsletter(newsletter):
             "newsletter": newsletter,
             "agenda_events": events,
             "main_partner": main_partner,
-            "local_partner": local_partner,
+            "local_partners": local_partners,
             "lang_code": language[0],
         }
 
