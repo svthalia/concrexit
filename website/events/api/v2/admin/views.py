@@ -74,6 +74,7 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
         filters.EventRegistrationCancelledFilter,
+        filters.EventRegistrationQueuedFilter,
     )
     ordering_fields = ("queue_position", "date", "date_cancelled")
     search_fields = (
