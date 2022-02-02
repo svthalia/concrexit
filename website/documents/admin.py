@@ -72,7 +72,7 @@ class AnnualDocumentAdmin(ModelAdmin):
         "members_only",
     )
     list_display = (
-        '__str__',
+        "__str__",
         "members_only",
     )
 
@@ -88,7 +88,7 @@ class AssociationDocumentAdmin(ModelAdmin):
         "members_only",
     )
     list_display = (
-        '__str__',
+        "__str__",
         "members_only",
     )
 
@@ -104,7 +104,7 @@ class EventDocumentAdmin(ModelAdmin):
         "members_only",
     )
     list_display = (
-        '__str__',
+        "__str__",
         "members_only",
     )
 
@@ -132,6 +132,6 @@ class MiscellaneousDocumentAdmin(ModelAdmin):
         "members_only",
     )
     list_display = (
-        '__str__',
+        "__str__",
         "members_only",
     )
