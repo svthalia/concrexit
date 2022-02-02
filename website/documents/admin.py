@@ -70,6 +70,10 @@ class AnnualDocumentAdmin(ModelAdmin):
         "created",
         "last_updated",
     )
+    list_display = (
+        '__str__',
+        "members_only",
+    )
 
 
 @admin.register(AssociationDocument)
@@ -81,6 +85,10 @@ class AssociationDocumentAdmin(ModelAdmin):
         "created",
         "last_updated",
     )
+    list_display = (
+        '__str__',
+        "members_only",
+    )
 
 
 @admin.register(EventDocument)
@@ -91,6 +99,10 @@ class EventDocumentAdmin(ModelAdmin):
     list_filter = (
         "created",
         "last_updated",
+    )
+    list_display = (
+        '__str__',
+        "members_only",
     )
 
     def has_change_permission(self, request, obj=None):
@@ -114,4 +126,8 @@ class MiscellaneousDocumentAdmin(ModelAdmin):
     list_filter = (
         "created",
         "last_updated",
+    )
+    list_display = (
+        '__str__',
+        "members_only",
     )
