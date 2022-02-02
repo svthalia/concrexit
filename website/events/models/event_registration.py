@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
 from queryable_properties.properties import AnnotationProperty
+from queryable_properties.managers import QueryablePropertiesManager
 
 from payments.models import PaymentAmountField
 from .event import Event
@@ -21,6 +22,7 @@ def registration_member_choices_limit():
 
 class EventRegistration(models.Model):
     """Describes a registration for an Event."""
+    objects = QueryablePropertiesManager()
 
     event = models.ForeignKey(Event, models.CASCADE)
 
