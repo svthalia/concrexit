@@ -269,11 +269,13 @@ class RegistrationTest(TestCase):
         self.assertEqual(self.r2.queue_position, None)
 
         self.r1.event.max_participants = 0
+        self.r1.event.save()
         self.r2.event = self.r1.event
         self.assertEqual(self.r1.queue_position, 1)
         self.assertEqual(self.r2.queue_position, 2)
 
         self.r1.event.max_participants = 1
+        self.r1.event.save()
         self.r2.event = self.r1.event
         self.assertEqual(self.r1.queue_position, None)
         self.assertEqual(self.r2.queue_position, 1)
