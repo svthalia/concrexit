@@ -38,10 +38,15 @@ class Partner(models.Model):
     )
 
     address2 = models.CharField(
-        max_length=100, verbose_name=_("Second address line"), blank=True, null=True,
+        max_length=100,
+        verbose_name=_("Second address line"),
+        blank=True,
+        null=True,
     )
 
-    zip_code = models.CharField(max_length=12,)
+    zip_code = models.CharField(
+        max_length=12,
+    )
 
     city = models.CharField(max_length=100)
 
@@ -196,7 +201,11 @@ class Vacancy(models.Model):
                 errors.update({"company_logo": msg})
         if not self.partner and not self.company_name and not self.company_logo:
             errors.update(
-                {"partner": msg, "company_name": msg, "company_logo": msg,}
+                {
+                    "partner": msg,
+                    "company_name": msg,
+                    "company_logo": msg,
+                }
             )
 
         if errors:
@@ -227,7 +236,10 @@ class PartnerEvent(models.Model):
 
     description = models.TextField(_("description"))
 
-    location = models.CharField(_("location"), max_length=255,)
+    location = models.CharField(
+        _("location"),
+        max_length=255,
+    )
 
     start = models.DateTimeField(_("start time"))
 

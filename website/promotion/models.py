@@ -36,7 +36,10 @@ class PromotionRequest(models.Model):
         blank=False,
     )
     assigned_to = models.CharField(
-        null=True, blank=True, max_length=50, verbose_name=_("Assigned to"),
+        null=True,
+        blank=True,
+        max_length=50,
+        verbose_name=_("Assigned to"),
     )
 
     NOT_STARTED = "not_started"
@@ -65,7 +68,11 @@ class PromotionRequest(models.Model):
         blank=True,
         max_length=2000,  # This appears to be the max allowed url length
     )
-    remarks = HTMLField(verbose_name=_("remarks"), null=True, blank=True,)
+    remarks = HTMLField(
+        verbose_name=_("remarks"),
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         if self.event:

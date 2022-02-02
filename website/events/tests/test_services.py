@@ -253,7 +253,8 @@ class ServicesTest(TestCase):
             services.cancel_registration(self.member, self.event)
 
         registration = EventRegistration.objects.create(
-            event=self.event, member=self.member,
+            event=self.event,
+            member=self.member,
         )
 
         with self.assertRaises(RegistrationError):
@@ -303,7 +304,8 @@ class ServicesTest(TestCase):
             services.update_registration(self.member, self.event, field_values=None)
 
         registration = EventRegistration.objects.create(
-            event=self.event, member=self.member,
+            event=self.event,
+            member=self.member,
         )
 
         services.update_registration(self.member, self.event, field_values=None)
@@ -370,7 +372,10 @@ class ServicesTest(TestCase):
         with self.assertRaises(RegistrationError):
             services.update_registration(self.member, self.event, field_values=None)
 
-        registration = EventRegistration.objects.create(event=self.event, name="test",)
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            name="test",
+        )
 
         services.update_registration(event=self.event, name="test", field_values=None)
 
@@ -437,7 +442,8 @@ class ServicesTest(TestCase):
             services.registration_fields(mock_request, self.member, self.event)
 
         registration = EventRegistration.objects.create(
-            event=self.event, member=self.member,
+            event=self.event,
+            member=self.member,
         )
 
         with self.assertRaises(RegistrationError):

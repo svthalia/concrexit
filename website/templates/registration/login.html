@@ -36,20 +36,20 @@
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ next }}">
 
-                    <div class="form-group">
+                    <div class="form-row">
                         <input name="{{ form.username.name }}" autofocus class="form-control"
                                placeholder="{% trans "Username" %}">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-row">
                         <input name="{{ form.password.name }}" class="form-control" type="password"
                                placeholder="{% trans "Password" %}">
                     </div>
 
-                    <div class="form-group">
-                        <input type="submit" value="{% trans "Login" %}" class="btn btn-primary float-right">
+                    <div class="form-row">
+                        <input type="submit" value="{% trans "Login" %}" class="btn btn-primary float-end">
                         <a href="{% url 'password_reset' %}"
-                           class="forgot btn float-left btn-secondary">{% trans "Forgot password" %}</a>
+                           class="forgot btn float-start btn-secondary">{% trans "Forgot password" %}</a>
                     </div>
                 </form>
             </div>

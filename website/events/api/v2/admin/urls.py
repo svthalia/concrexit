@@ -13,7 +13,11 @@ app_name = "events"
 
 urlpatterns = [
     path("events/", EventAdminListCreateAPIView.as_view(), name="events-index"),
-    path("events/<int:pk>/", EventAdminDetailAPIView.as_view(), name="event-detail",),
+    path(
+        "events/<int:pk>/",
+        EventAdminDetailAPIView.as_view(),
+        name="event-detail",
+    ),
     path(
         "events/<int:pk>/registrations/",
         EventRegistrationAdminListView.as_view(),

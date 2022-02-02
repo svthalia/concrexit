@@ -17,12 +17,14 @@
                     {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
                 </p>
 
-                <form class="search-form form-inline col-12 col-lg-6 mt-4 mt-lg-0 mb-4" method="get"
-                          action="{% url 'photos:index' %}#photos-albums">
-                    <input class="form-control col-12 col-md-9" name="keywords" type="text" value="{{ keys }}"
-                           placeholder="{% trans "What are you looking for?" %}"/>
-                    <input class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3" type="submit"
-                           value="{% trans "Search" %}"/>
+                <form class="search-form form-inline col-12 mt-4 mt-lg-0 mb-4 col-lg-6" method="get"
+                      action="{% url 'photos:index' %}#photos-albums">
+                    <div class="input-group">
+                        <input class="form-control col-12 col-md-9" style="width: available" name="keywords" type="search" value="{{ keys|default_if_none:'' }}"
+                               placeholder="{% trans "What are you looking for?" %}" aria-label="{% trans "Search the Thalia's photo albums" %}" aria-describedby="photoalbums-search-button">
+                        <input id="photoalbums-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit"
+                               value="{% trans "Search" %}"/>
+                    </div>
                 </form>
             </div>
 

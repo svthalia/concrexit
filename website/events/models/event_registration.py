@@ -43,10 +43,35 @@ class EventRegistration(models.Model):
         blank=True,
     )
 
+    alt_email = models.EmailField(
+        _("email"),
+        help_text=_("Email address for non-members"),
+        max_length=254,
+        null=True,
+        blank=True,
+    )
+
+    alt_phone_number = models.CharField(
+        max_length=20,
+        verbose_name=_("Phone number"),
+        help_text=_("Phone number for non-members"),
+        validators=[
+            validators.RegexValidator(
+                regex=r"^\+?\d+$",
+                message=_("Please enter a valid phone number"),
+            )
+        ],
+        null=True,
+        blank=True,
+    )
+
     date = models.DateTimeField(_("registration date"), default=timezone.now)
     date_cancelled = models.DateTimeField(_("cancellation date"), null=True, blank=True)
 
-    present = models.BooleanField(_("present"), default=False,)
+    present = models.BooleanField(
+        _("present"),
+        default=False,
+    )
 
     special_price = PaymentAmountField(
         verbose_name=_("special price"),
@@ -64,6 +89,20 @@ class EventRegistration(models.Model):
         blank=True,
         null=True,
     )
+
+    @property
+    def phone_number(self):
+        if self.member:
+            return self.member.profile.phone_number
+        else:
+            return self.alt_phone_number
+
+    @property
+    def email(self):
+        if self.member:
+            return self.member.email
+        else:
+            return self.alt_email
 
     @property
     def information_fields(self):
@@ -149,6 +188,18 @@ class EventRegistration(models.Model):
                 {
                     "member": _("Either specify a member or a name"),
                     "name": _("Either specify a member or a name"),
+                }
+            )
+        if self.member and self.alt_email:
+            errors.update(
+                {"alt_email": _("Email should only be specified for non-members")}
+            )
+        if self.member and self.alt_phone_number:
+            errors.update(
+                {
+                    "alt_phone_number": _(
+                        "Phone number should only be specified for non-members"
+                    )
                 }
             )
         if (

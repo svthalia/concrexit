@@ -32,7 +32,9 @@ class Newsletter(models.Model):
     )
 
     send_date = models.DateTimeField(
-        verbose_name=_("Send date"), blank=True, null=True,
+        verbose_name=_("Send date"),
+        blank=True,
+        null=True,
     )
 
     description = HTMLField(
@@ -83,7 +85,10 @@ class NewsletterContent(models.Model):
     """Describes one piece of basic content of a newsletter."""
 
     title = models.CharField(
-        max_length=150, verbose_name=_("Title"), blank=False, null=False,
+        max_length=150,
+        verbose_name=_("Title"),
+        blank=False,
+        null=False,
     )
 
     url = models.URLField(
@@ -93,7 +98,11 @@ class NewsletterContent(models.Model):
         help_text=_("If filled, it will make the title a link to this URL"),
     )
 
-    description = HTMLField(verbose_name=_("Description"), blank=False, null=False,)
+    description = HTMLField(
+        verbose_name=_("Description"),
+        blank=False,
+        null=False,
+    )
 
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
 
@@ -134,15 +143,22 @@ class NewsletterEvent(NewsletterContent):
     """Describes one piece of event content of a newsletter."""
 
     where = models.CharField(
-        max_length=150, verbose_name=_("Where"), blank=False, null=False,
+        max_length=150,
+        verbose_name=_("Where"),
+        blank=False,
+        null=False,
     )
 
     start_datetime = models.DateTimeField(
-        verbose_name=_("Start date and time"), blank=False, null=False,
+        verbose_name=_("Start date and time"),
+        blank=False,
+        null=False,
     )
 
     end_datetime = models.DateTimeField(
-        verbose_name=_("End date and time"), blank=False, null=False,
+        verbose_name=_("End date and time"),
+        blank=False,
+        null=False,
     )
 
     show_costs_warning = models.BooleanField(
@@ -150,11 +166,16 @@ class NewsletterEvent(NewsletterContent):
     )
 
     price = PaymentAmountField(
-        verbose_name=_("Price (in Euro)"), blank=True, null=True, default=None,
+        verbose_name=_("Price (in Euro)"),
+        allow_zero=True,
+        blank=True,
+        null=True,
+        default=None,
     )
 
     penalty_costs = PaymentAmountField(
         verbose_name=_("Costs (in Euro)"),
+        allow_zero=True,
         blank=True,
         null=True,
         default=None,

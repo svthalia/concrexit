@@ -106,11 +106,25 @@ class RegistrationAdmin(admin.ModelAdmin):
         ),
         (
             _("Financial"),
-            {"fields": ("direct_debit", "initials", "iban", "bic", "signature",)},
+            {
+                "fields": (
+                    "direct_debit",
+                    "initials",
+                    "iban",
+                    "bic",
+                    "signature",
+                )
+            },
         ),
         (
             _("University information"),
-            {"fields": ("student_number", "programme", "starting_year",)},
+            {
+                "fields": (
+                    "student_number",
+                    "programme",
+                    "starting_year",
+                )
+            },
         ),
     )
     actions = ["accept_selected", "reject_selected"]

@@ -1,5 +1,5 @@
 {% extends 'education/base.html' %}
-{% load i18n fieldtype bootstrap4 alert %}
+{% load i18n fieldtype django_bootstrap5 alert %}
 
 {% block title %}{% trans "Submit Summary" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Submit Summary" %} —
@@ -12,11 +12,7 @@
                 {% trans "Submit Summary" %}
             </h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message dismissible=True %}
-                {% endfor %}
-            {% endif %}
+            {% bootstrap_messages %}
 
             <form method="post" enctype="multipart/form-data"
                   class="col-lg-6 offset-lg-3">
@@ -27,9 +23,9 @@
                     {% bootstrap_field field show_help=False %}
                 {% endfor %}
 
-                <div class="form-group">
+                <div class="form-row">
                     <input type="submit" value="{% trans "submit"|capfirst %}"
-                           class="btn btn-primary float-right">
+                           class="btn btn-primary float-end">
                 </div>
             </form>
         </div>

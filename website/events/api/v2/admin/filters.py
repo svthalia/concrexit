@@ -21,7 +21,9 @@ class PublishedFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by published status",
-                "schema": {"type": "boolean",},
+                "schema": {
+                    "type": "boolean",
+                },
             }
         ]
 

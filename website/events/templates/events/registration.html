@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bootstrap4 alert %}
+{% load i18n static django_bootstrap5 alert %}
 
 {% block title %}{% trans "Registration" %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Registration" %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
@@ -8,11 +8,8 @@
     <section class="page-section">
         <div class="container">
             <h1 class="section-title">{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}</h1>
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message dismissible=True %}
-                {% endfor %}
-            {% endif %}
+
+            {% bootstrap_messages %}
 
             <form method="post" class="col-lg-6 offset-lg-3">
                 {% csrf_token %}
@@ -21,7 +18,7 @@
                     {% bootstrap_field field %}
                 {% endfor %}
 
-                <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary float-right"/>
+                <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary float-end"/>
             </form>
         </div>
     </section>

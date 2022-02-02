@@ -22,7 +22,10 @@ class Document(models.Model):
 
     name = models.CharField(verbose_name=_("name"), max_length=200)
 
-    created = models.DateTimeField(verbose_name=_("created"), auto_now_add=True,)
+    created = models.DateTimeField(
+        verbose_name=_("created"),
+        auto_now_add=True,
+    )
 
     last_updated = models.DateTimeField(verbose_name=_("last updated"), auto_now=True)
 
@@ -70,7 +73,8 @@ class AnnualDocument(Document):
     )
 
     year = models.IntegerField(
-        verbose_name=_("year"), validators=[MinValueValidator(1990)],
+        verbose_name=_("year"),
+        validators=[MinValueValidator(1990)],
     )
 
     def save(self, **kwargs):
@@ -115,7 +119,9 @@ class EventDocument(Document):
         permissions = (("override_owner", "Can access event document as if owner"),)
 
     owner = models.ForeignKey(
-        "activemembers.MemberGroup", verbose_name=_("owner"), on_delete=models.CASCADE,
+        "activemembers.MemberGroup",
+        verbose_name=_("owner"),
+        on_delete=models.CASCADE,
     )
 
     def save(self, **kwargs):
@@ -155,10 +161,14 @@ class GeneralMeeting(models.Model):
         ordering = ["datetime"]
 
     documents = models.ManyToManyField(
-        Document, verbose_name=_("documents"), blank=True,
+        Document,
+        verbose_name=_("documents"),
+        blank=True,
     )
 
-    datetime = models.DateTimeField(verbose_name=_("datetime"),)
+    datetime = models.DateTimeField(
+        verbose_name=_("datetime"),
+    )
 
     location = models.CharField(verbose_name=_("location"), max_length=200)
 

@@ -28,7 +28,8 @@ class FoodOrderCreateSerializer(serializers.ModelSerializer):
         fields = ("product", "member", "food_event")
         validators = [
             UniqueTogetherValidator(
-                queryset=FoodOrder.objects.all(), fields=["food_event", "member"],
+                queryset=FoodOrder.objects.all(),
+                fields=["food_event", "member"],
             )
         ]
 

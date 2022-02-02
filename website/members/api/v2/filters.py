@@ -21,7 +21,9 @@ class StartingYearFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by starting year",
-                "schema": {"type": "number",},
+                "schema": {
+                    "type": "number",
+                },
             }
         ]
 
@@ -45,6 +47,8 @@ class MembershipTypeFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by membership type",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             }
         ]

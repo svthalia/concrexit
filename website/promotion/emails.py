@@ -10,5 +10,7 @@ def notify_new_promo_request(promo_request):
         settings.PROMO_REQUEST_NOTIFICATION_ADDRESS,
         _("[PROMO] New ") + str(promo_request),
         "requests/new_request_email.txt",
-        {"promo_request": promo_request,},
+        {
+            "promo_request": promo_request,
+        },
     )

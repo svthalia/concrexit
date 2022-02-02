@@ -71,7 +71,9 @@ class AlbumIndexTest(TestCase):
 
     def test_empty_page(self):
         Album.objects.create(
-            title="test_album", date=date(year=2018, month=9, day=5), slug="test_album",
+            title="test_album",
+            date=date(year=2018, month=9, day=5),
+            slug="test_album",
         )
 
         response = self.client.get(reverse("photos:index") + "?page=5")
@@ -145,7 +147,9 @@ class AlbumTest(TestCase):
 
     def setUp(self):
         self.album = Album.objects.create(
-            title="test_album", date=date(year=2017, month=9, day=5), slug="test_album",
+            title="test_album",
+            date=date(year=2017, month=9, day=5),
+            slug="test_album",
         )
 
         self.client.force_login(self.member)
@@ -233,7 +237,11 @@ class SharedAlbumTest(TestCase):
 
         response = self.client.get(
             reverse(
-                "photos:shared-album", args=(self.album.slug, self.album.access_token,)
+                "photos:shared-album",
+                args=(
+                    self.album.slug,
+                    self.album.access_token,
+                ),
             )
         )
         self.assertEqual(response.status_code, 200)
@@ -254,7 +262,9 @@ class DownloadTest(TestCase):
         self.client = Client()
 
         self.album = Album.objects.create(
-            title="test_album", date=date(year=2017, month=9, day=5), slug="test_album",
+            title="test_album",
+            date=date(year=2017, month=9, day=5),
+            slug="test_album",
         )
 
         with open(
@@ -272,14 +282,26 @@ class DownloadTest(TestCase):
         self.client.force_login(self.member)
 
         response = self.client.get(
-            reverse("photos:download", args=(self.album.slug, self.photo,))
+            reverse(
+                "photos:download",
+                args=(
+                    self.album.slug,
+                    self.photo,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "image/jpeg")
 
     def test_logged_out(self):
         response = self.client.get(
-            reverse("photos:download", args=(self.album.slug, self.photo,))
+            reverse(
+                "photos:download",
+                args=(
+                    self.album.slug,
+                    self.photo,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 302)
 
@@ -289,7 +311,9 @@ class _DownloadBaseTestCase(TestCase):
         self.client = Client()
 
         self.album = Album.objects.create(
-            title="test_album", date=date(year=2017, month=9, day=5), slug="test_album",
+            title="test_album",
+            date=date(year=2017, month=9, day=5),
+            slug="test_album",
         )
 
         with open(
@@ -319,7 +343,11 @@ class SharedDownloadTest(_DownloadBaseTestCase):
             response = self.client.get(
                 reverse(
                     "photos:shared-download",
-                    args=(self.album.slug, self.album.access_token, self.photo,),
+                    args=(
+                        self.album.slug,
+                        self.album.access_token,
+                        self.photo,
+                    ),
                 )
             )
             self.assertEqual(response.status_code, 200)
@@ -331,7 +359,11 @@ class SharedDownloadTest(_DownloadBaseTestCase):
             response = self.client.get(
                 reverse(
                     "photos:shared-download",
-                    args=(self.album.slug, self.album.access_token, self.photo,),
+                    args=(
+                        self.album.slug,
+                        self.album.access_token,
+                        self.photo,
+                    ),
                 )
             )
             self.assertEqual(response.status_code, 200)

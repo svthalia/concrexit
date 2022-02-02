@@ -66,7 +66,9 @@ class ProductListItem(models.Model):
         on_delete=models.CASCADE,
     )
     price = PaymentAmountField(
-        verbose_name=_("price"), validators=[MinValueValidator(0)],
+        verbose_name=_("price"),
+        allow_zero=True,
+        validators=[MinValueValidator(0)],
     )
 
     def __str__(self):

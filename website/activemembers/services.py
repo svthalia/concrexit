@@ -18,7 +18,12 @@ def generate_statistics() -> dict:
         )
     )
 
-    data = {"labels": [], "datasets": [{"data": []},]}
+    data = {
+        "labels": [],
+        "datasets": [
+            {"data": []},
+        ],
+    }
     for committee in committees:
         data["labels"].append(committee.name)
         data["datasets"][0]["data"].append(committee.member_count)

@@ -42,7 +42,8 @@ class BecomeAMemberView(TemplateView):
 
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(
-    permission_required("registrations.review_entries"), name="dispatch",
+    permission_required("registrations.review_entries"),
+    name="dispatch",
 )
 class EntryAdminView(View):
     """View that handles the processing of entries."""
@@ -93,7 +94,8 @@ class EntryAdminView(View):
             content_type = ContentType.objects.get_for_model(Renewal)
 
         return redirect(
-            f"admin:{content_type.app_label}_{content_type.model}_change", kwargs["pk"],
+            f"admin:{content_type.app_label}_{content_type.model}_change",
+            kwargs["pk"],
         )
 
 

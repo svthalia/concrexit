@@ -10,7 +10,12 @@ class PayableAdminSerializer(Serializer):
     """Serializer to show payable information."""
 
     allowed_payment_types = ListField(
-        child=CharField(), default=[Payment.CASH, Payment.CARD, Payment.WIRE,]
+        child=CharField(),
+        default=[
+            Payment.CASH,
+            Payment.CARD,
+            Payment.WIRE,
+        ],
     )
     amount = DecimalField(decimal_places=2, max_digits=1000, source="payment_amount")
     payer = MemberSerializer(

@@ -47,7 +47,10 @@ class Photo(models.Model):
 
     hidden = models.BooleanField(_("hidden"), default=False)
 
-    _digest = models.CharField("digest", max_length=40,)
+    _digest = models.CharField(
+        "digest",
+        max_length=40,
+    )
 
     def __init__(self, *args, **kwargs):
         """Initialize Photo object and set the file if it exists."""
@@ -77,7 +80,10 @@ class Album(models.Model):
         help_text=_("Leave empty to take over the title of the event"),
     )
 
-    dirname = models.CharField(verbose_name=_("directory name"), max_length=200,)
+    dirname = models.CharField(
+        verbose_name=_("directory name"),
+        max_length=200,
+    )
 
     date = models.DateField(
         verbose_name=_("date"),
@@ -85,7 +91,10 @@ class Album(models.Model):
         help_text=_("Leave empty to take over the date of the event"),
     )
 
-    slug = models.SlugField(verbose_name=_("slug"), unique=True,)
+    slug = models.SlugField(
+        verbose_name=_("slug"),
+        unique=True,
+    )
 
     hidden = models.BooleanField(verbose_name=_("hidden"), default=False)
 

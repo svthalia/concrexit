@@ -246,11 +246,9 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
                 _("Date"): timezone.localtime(registration.date),
                 _("Present"): _("Yes") if registration.present else "",
                 _("Phone number"): (
-                    registration.member.profile.phone_number
-                    if registration.member
-                    else ""
+                    registration.phone_number if registration.phone_number else ""
                 ),
-                _("Email"): (registration.member.email if registration.member else ""),
+                _("Email"): (registration.email if registration.email else ""),
                 _("Status"): status,
                 _("Date cancelled"): cancelled,
             }

@@ -27,7 +27,9 @@ class PaymentAdminViewTest(TestCase):
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(user=cls.user,)
+        Profile.objects.create(
+            user=cls.user,
+        )
         cls.user = PaymentUser.objects.get(pk=cls.user.pk)
         cls.payment = Payment.objects.create(
             amount=7.5, processed_by=cls.user, paid_by=cls.user, type=Payment.CARD
@@ -54,7 +56,12 @@ class PaymentAdminViewTest(TestCase):
 
     def test_redirect_without_permissions(self):
         url = "/admin/payments/payment/app_label/model/pk/create/"
-        response = self.client.post(url, {"type": "cash_payment",})
+        response = self.client.post(
+            url,
+            {
+                "type": "cash_payment",
+            },
+        )
         self.assertRedirects(response, "/admin/login/?next=%s" % url)
 
     @mock.patch("django.contrib.messages.error")
@@ -93,7 +100,12 @@ class PaymentAdminViewTest(TestCase):
 
         with self.subTest("Send post with successful processing, no next"):
             payment_type = "cash_payment"
-            response = self.client.post(url, {"type": payment_type,},)
+            response = self.client.post(
+                url,
+                {
+                    "type": payment_type,
+                },
+            )
 
             self.assertEqual(response.status_code, 302)
             self.assertEqual(response.url, "/resolved_url")
@@ -114,7 +126,8 @@ class PaymentAdminViewTest(TestCase):
         with self.subTest("Send post with successful processing and next"):
             payment_type = "cash_payment"
             response = self.client.post(
-                url, {"type": payment_type, "next": "/admin/events/"},
+                url,
+                {"type": payment_type, "next": "/admin/events/"},
             )
 
             self.assertEqual(response.status_code, 302)
@@ -124,7 +137,8 @@ class PaymentAdminViewTest(TestCase):
             resolve_url.assert_called_once_with("/admin/events/")
 
             messages_success.assert_called_once_with(
-                response.wsgi_request, "Successfully paid MockPayable.",
+                response.wsgi_request,
+                "Successfully paid MockPayable.",
             )
 
         create_payment.reset_mock()
@@ -133,7 +147,8 @@ class PaymentAdminViewTest(TestCase):
 
         with self.subTest("Send post with insecure next"):
             response = self.client.post(
-                url, {"type": "cash_payment", "next": "https://ru.nl/"},
+                url,
+                {"type": "cash_payment", "next": "https://ru.nl/"},
             )
 
             self.assertEqual(response.status_code, 400)
@@ -144,21 +159,38 @@ class PaymentAdminViewTest(TestCase):
 
         with self.subTest("Send post without permission to process the payment"):
             payable.model.can_manage = False
-            response = self.client.post(url, {"type": payment_type,}, follow=True)
+            response = self.client.post(
+                url,
+                {
+                    "type": payment_type,
+                },
+                follow=True,
+            )
             self.assertEqual(response.status_code, 403)
             payable.model.can_manage = True
 
         with self.subTest("Send post with failed processing"):
             create_payment.return_value = None
-            response = self.client.post(url, {"type": payment_type,})
+            response = self.client.post(
+                url,
+                {
+                    "type": payment_type,
+                },
+            )
 
             messages_error.assert_called_once_with(
-                response.wsgi_request, "Could not pay MockPayable.",
+                response.wsgi_request,
+                "Could not pay MockPayable.",
             )
 
         with self.subTest("Send post with exception during processing"):
             create_payment.side_effect = Exception("A test exception was thrown.")
-            response = self.client.post(url, {"type": payment_type,})
+            response = self.client.post(
+                url,
+                {
+                    "type": payment_type,
+                },
+            )
 
             messages_error.assert_called_with(
                 response.wsgi_request,

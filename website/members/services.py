@@ -99,7 +99,12 @@ def member_societies(member) -> List:
 
 def gen_stats_member_type() -> Dict:
     """Generate statistics about membership types."""
-    data = {"labels": [], "datasets": [{"data": []},]}
+    data = {
+        "labels": [],
+        "datasets": [
+            {"data": []},
+        ],
+    }
 
     for key, display in Membership.MEMBERSHIP_TYPES:
         data["labels"].append(str(display))

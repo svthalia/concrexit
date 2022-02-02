@@ -6,7 +6,12 @@ from .models import Product, FoodOrder
 
 def gen_stats_pizza_orders() -> dict:
     """Generate statistics about number of orders per product."""
-    data = {"labels": [], "datasets": [{"data": []},]}
+    data = {
+        "labels": [],
+        "datasets": [
+            {"data": []},
+        ],
+    }
 
     for product in Product.objects.all():
 

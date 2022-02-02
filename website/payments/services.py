@@ -185,7 +185,12 @@ def send_tpay_batch_processing_emails(batch):
                 "creditor_id": settings.SEPA_CREDITOR_ID,
                 "payments": batch.payments_set.filter(paid_by=member),
                 "total_amount": total_amount,
-                "payments_url": (settings.BASE_URL + reverse("payments:payment-list",)),
+                "payments_url": (
+                    settings.BASE_URL
+                    + reverse(
+                        "payments:payment-list",
+                    )
+                ),
             },
         )
     return len(member_payments)

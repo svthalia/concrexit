@@ -1,18 +1,20 @@
 #announcements-alerts {
     .announcement {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         background: var(--primary);
         color: var(--primary-contrast);
         text-align: center;
         padding: 0.5rem 1rem;
-        position: relative;
 
-        .close {
+        .btn-close {
             color: var(--primary-contrast);
         }
 
         p {
             display: inline;
-            margin-left: 0.5rem;
+            margin: 0;
             color: var(--primary-contrast);
             font-size: 0.9rem;
             font-weight: $bold;
@@ -28,10 +30,7 @@
         }
 
         button {
-            line-height: 0.8;
-            i {
-                font-size: 1rem;
-            }
+            background-size: .6rem;
         }
     }
 }

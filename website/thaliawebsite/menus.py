@@ -46,7 +46,10 @@ MAIN_MENU = [
             },
         ],
     },
-    {"title": _("Calendar"), "name": "events:index",},
+    {
+        "title": _("Calendar"),
+        "name": "events:index",
+    },
     {
         "title": _("Career"),
         "submenu": [
@@ -57,7 +60,10 @@ MAIN_MENU = [
     {
         "title": _("Education"),
         "submenu": [
-            {"title": _("Summaries & Exams"), "name": "education:courses",},
+            {
+                "title": _("Summaries & Exams"),
+                "name": "education:courses",
+            },
             {"title": _("Book Sale"), "name": "education:books"},
             {
                 "title": _("Student Participation"),

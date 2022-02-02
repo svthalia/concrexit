@@ -45,5 +45,9 @@ def annual_document_card(doc_type, document):
         class_name += " empty"
 
     return grid_item(
-        title=name, meta_text="", url=url, image_url=image_url, class_name=class_name,
+        title=name,
+        meta_text="",
+        url=url,
+        image_url=image_url,
+        class_name=class_name,
     )

@@ -9,7 +9,11 @@ from events.api.calendarjs.views import (
 app_name = "events"
 
 urlpatterns = [
-    path("events/", CalendarJSEventListView.as_view(), name="calendarjs-published",),
+    path(
+        "events/",
+        CalendarJSEventListView.as_view(),
+        name="calendarjs-published",
+    ),
     path(
         "events/unpublished/",
         CalendarJSUnpublishedEventListView.as_view(),

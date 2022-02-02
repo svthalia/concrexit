@@ -32,8 +32,8 @@
                             {% for year, data in items reversed %}
                                 <div class="card mb-0">
                                     <div class="card-header collapsed"
-                                         data-toggle="collapse"
-                                         data-target="#year-{{ year }}">
+                                         data-bs-toggle="collapse"
+                                         data-bs-target="#year-{{ year }}">
                                         <a href="#year-{{ year }}">
                                             {{ year }} - {{ year|add:1 }}
                                         </a>
@@ -125,7 +125,7 @@
                     {% if request.user.is_authenticated %}
                         <hr>
                         <a href="{% url 'education:submit-exam' course.id %}"
-                           class="btn btn-primary mt-2">
+                           class="btn btn-primary mt-2 me-2">
                             {% trans "Submit Exam" %}
                         </a>
                         <a href="{% url 'education:submit-summary' course.id %}"

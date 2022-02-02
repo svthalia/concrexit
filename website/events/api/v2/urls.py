@@ -13,7 +13,11 @@ app_name = "events"
 
 urlpatterns = [
     path("events/", EventListView.as_view(), name="events-list"),
-    path("events/<int:pk>/", EventDetailView.as_view(), name="event-detail",),
+    path(
+        "events/<int:pk>/",
+        EventDetailView.as_view(),
+        name="event-detail",
+    ),
     path(
         "events/<int:pk>/registrations/",
         EventRegistrationsView.as_view(),

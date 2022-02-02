@@ -391,7 +391,7 @@ INSTALLED_APPS = [
     # Dependencies
     "oauth2_provider",
     "corsheaders",
-    "bootstrap4",
+    "django_bootstrap5",
     "tinymce",
     "rest_framework",
     "rest_framework.authtoken",
@@ -571,9 +571,15 @@ AUTH_PASSWORD_VALIDATORS = [
             "password_validation.UserAttributeSimilarityValidator"
         ),
     },
-    {"NAME": ("django.contrib.auth.password_validation.MinimumLengthValidator"),},
-    {"NAME": ("django.contrib.auth.password_validation.CommonPasswordValidator"),},
-    {"NAME": ("django.contrib.auth.password_validation.NumericPasswordValidator"),},
+    {
+        "NAME": ("django.contrib.auth.password_validation.MinimumLengthValidator"),
+    },
+    {
+        "NAME": ("django.contrib.auth.password_validation.CommonPasswordValidator"),
+    },
+    {
+        "NAME": ("django.contrib.auth.password_validation.NumericPasswordValidator"),
+    },
 ]
 
 PASSWORD_HASHERS = setting(
@@ -695,7 +701,7 @@ TINYMCE_DEFAULT_CONFIG = {
     "remove_script_host": False,
 }
 
-BOOTSTRAP4 = {"required_css_class": "required-field"}
+BOOTSTRAP5 = {"required_css_class": "required-field"}
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-exception-reporter-filter
 DEFAULT_EXCEPTION_REPORTER_FILTER = (

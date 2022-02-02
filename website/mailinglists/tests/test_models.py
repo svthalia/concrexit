@@ -11,7 +11,9 @@ class MailingListTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.mailinglist = MailingList.objects.create(name="mailtest",)
+        cls.mailinglist = MailingList.objects.create(
+            name="mailtest",
+        )
 
     def setUp(self):
         self.mailinglist.refresh_from_db()
@@ -44,7 +46,9 @@ class ListAliasTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.mailinglist = MailingList.objects.create(name="mailtest",)
+        cls.mailinglist = MailingList.objects.create(
+            name="mailtest",
+        )
         cls.listalias = ListAlias.objects.create(
             alias="mailalias", mailinglist=cls.mailinglist
         )

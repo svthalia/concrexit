@@ -34,8 +34,12 @@ class OrderAdminTest(TestCase):
         cls.wine = Product.objects.create(name="wine", age_restricted=True)
         cls.soda = Product.objects.create(name="soda", age_restricted=False)
 
-        cls.normal = ProductList.objects.create(name="normal",)
-        cls.free = ProductList.objects.create(name="free",)
+        cls.normal = ProductList.objects.create(
+            name="normal",
+        )
+        cls.free = ProductList.objects.create(
+            name="free",
+        )
 
         cls.normal.product_items.bulk_create(
             [
@@ -413,8 +417,12 @@ class ShiftAdminTest(TestCase):
         cls.wine = Product.objects.create(name="wine", age_restricted=True)
         cls.soda = Product.objects.create(name="soda", age_restricted=False)
 
-        cls.normal = ProductList.objects.create(name="normal",)
-        cls.free = ProductList.objects.create(name="free",)
+        cls.normal = ProductList.objects.create(
+            name="normal",
+        )
+        cls.free = ProductList.objects.create(
+            name="free",
+        )
 
         cls.normal.product_items.bulk_create(
             [

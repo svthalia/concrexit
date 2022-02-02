@@ -7,6 +7,8 @@ app_name = "members"
 
 urlpatterns = [
     path(
-        "birthdays/", CalendarJSBirthdayListView.as_view(), name="calendarjs-birthdays",
+        "birthdays/",
+        CalendarJSBirthdayListView.as_view(),
+        name="calendarjs-birthdays",
     ),
 ]
