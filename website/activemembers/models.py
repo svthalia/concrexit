@@ -292,8 +292,10 @@ class MemberGroupMembership(models.Model):
                 raise ValidationError(
                     {"until": _("End date can't be before start date")}
                 )
-            if self.until and self.until > timezone.now().date():
-                raise ValidationError({"until": _("End date can't be in the future")})
+            if self.until and self.group.until and self.until > self.group.until:
+                raise ValidationError(
+                    {"until": _("End date can't be after the group end date")}
+                )
             if self.since and self.group.since and self.since < self.group.since:
                 raise ValidationError(
                     {"since": _("Start date can't be before group start date")}
