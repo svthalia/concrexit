@@ -69,6 +69,7 @@ class AnnualDocumentAdmin(ModelAdmin):
         LectureYearFilter,
         "created",
         "last_updated",
+        "members_only",
     )
     list_display = (
         '__str__',
@@ -84,6 +85,7 @@ class AssociationDocumentAdmin(ModelAdmin):
     list_filter = (
         "created",
         "last_updated",
+        "members_only",
     )
     list_display = (
         '__str__',
@@ -99,6 +101,7 @@ class EventDocumentAdmin(ModelAdmin):
     list_filter = (
         "created",
         "last_updated",
+        "members_only",
     )
     list_display = (
         '__str__',
@@ -126,6 +129,7 @@ class MiscellaneousDocumentAdmin(ModelAdmin):
     list_filter = (
         "created",
         "last_updated",
+        "members_only",
     )
     list_display = (
         '__str__',
