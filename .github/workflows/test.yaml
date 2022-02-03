@@ -10,9 +10,14 @@ on:
 jobs:
   codestyle:
     name: Codestyle
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     container: thalia/concrexit-dependencies
     steps:
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -21,9 +26,14 @@ jobs:
 
   linting:
     name: Linting
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     container: thalia/concrexit-dependencies
     steps:
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -32,9 +42,14 @@ jobs:
 
   docstyle:
     name: Docstring style
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     container: thalia/concrexit-dependencies
     steps:
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -43,7 +58,7 @@ jobs:
 
   tests:
     name: Django Tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     container: thalia/concrexit-dependencies
     services:
       postgres:
@@ -55,6 +70,11 @@ jobs:
     env:
       DJANGO_ENV: testing
     steps:
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -75,9 +95,14 @@ jobs:
 
   documentation-tests:
     name: Documentation Tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     container: thalia/concrexit-dependencies
     steps:
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -99,7 +124,7 @@ jobs:
 
   upload-coverage:
     name: Deploy Coverage Report
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [tests]
     steps:
       - uses: actions/download-artifact@v2
@@ -118,7 +143,7 @@ jobs:
 
   upload-docs:
     name: Deploy Documentation
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [documentation-tests]
     steps:
       - uses: actions/download-artifact@v2
