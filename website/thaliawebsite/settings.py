@@ -683,15 +683,16 @@ PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
 TINYMCE_DEFAULT_CONFIG = {
-    "height": 500,
+    "max_height": 500,
     "menubar": False,
-    "plugins": "autolink link image code media paste",
+    "plugins": "autolink autoresize link image code media paste",
     "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink | "
                "bullist numlist | undo redo | code",
     "contextmenu": "bold italic underline strikethrough | link",
     "paste_as_text": True,
     "relative_urls": False,
     "remove_script_host": False,
+    "autoresize_bottom_margin": 50,
 }
 
 BOOTSTRAP5 = {"required_css_class": "required-field"}
