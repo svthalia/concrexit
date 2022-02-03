@@ -683,20 +683,19 @@ PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
 TINYMCE_DEFAULT_CONFIG = {
-    "selector": "textarea",
-    "plugins": "advlist anchor autolink autosave charmap code codesample fullscreen hr image media link lists table",
-    "toolbar1": "styleselect | bold italic underline strikethrough | hr charmap codesample | link unlink | bullist numlist outdent indent | table image media | undo redo | code",
-    "contextmenu": "bold italic underline strikethrough | image",
+    "height": 500,
     "menubar": False,
-    "inline": False,
-    "statusbar": True,
-    "width": "auto",
-    "height": 240,
+    "plugins": "advlist,autolink,lists,link,image,charmap,hr,codesample,print,preview,anchor,"
+               "searchreplace,visualblocks,code,fullscreen,insertdatetime,media,table,paste,"
+               "code,help,wordcount",
+    "toolbar": "undo redo | formatselect | bold italic underline strikethrough backcolor | "
+               "hr codesample table image | alignleft aligncenter alignright alignjustify | "
+               "bullist numlist outdent indent | "
+               "removeformat | code help",
     "paste_as_text": True,
     "relative_urls": False,
     "remove_script_host": False,
 }
-TINYMCE_COMPRESSOR = True
 
 BOOTSTRAP5 = {"required_css_class": "required-field"}
 
