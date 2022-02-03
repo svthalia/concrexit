@@ -11,15 +11,29 @@ jobs:
   codestyle:
     name: Codestyle
     runs-on: ubuntu-latest
-    container: thalia/concrexit-dependencies
     steps:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Restore any cached Poetry dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install any new dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run black
         run: make blackcheck
@@ -27,15 +41,29 @@ jobs:
   linting:
     name: Linting
     runs-on: ubuntu-latest
-    container: thalia/concrexit-dependencies
     steps:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Restore any cached Poetry dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install any new dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run pylint
         run: make pylint
@@ -43,15 +71,29 @@ jobs:
   docstyle:
     name: Docstring style
     runs-on: ubuntu-latest
-    container: thalia/concrexit-dependencies
     steps:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Restore any cached Poetry dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install any new dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run pydocstyle
         run: make pydocstyle
@@ -59,7 +101,6 @@ jobs:
   tests:
     name: Django Tests
     runs-on: ubuntu-latest
-    container: thalia/concrexit-dependencies
     services:
       postgres:
         image: postgres:latest
@@ -75,8 +116,23 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Restore any cached Poetry dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install any new dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run tests
         run: make test
@@ -96,15 +152,29 @@ jobs:
   documentation-tests:
     name: Documentation Tests
     runs-on: ubuntu-latest
-    container: thalia/concrexit-dependencies
     steps:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Restore any cached Poetry dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install any new dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run doctest
         run: make doctest
