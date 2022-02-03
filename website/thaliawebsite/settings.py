@@ -687,7 +687,7 @@ TINYMCE_DEFAULT_CONFIG = {
     "menubar": False,
     "plugins": "autolink autoresize link image code media paste",
     "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink | "
-               "bullist numlist | undo redo | code",
+    "bullist numlist | undo redo | code",
     "contextmenu": "bold italic underline strikethrough | link",
     "paste_as_text": True,
     "relative_urls": False,
