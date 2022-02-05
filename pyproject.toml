@@ -46,7 +46,7 @@ docs = ["recommonmark", "sphinx"]
 django-template-check = "0.4.0"
 factory_boy = "3.2.1"
 pydenticon = "0.3.1"
-Faker = "11.3.0"
+Faker = "11.4.0"
 coverage = {extras = ["toml"], version = "^5.0.3"}
 black = "22.1.0"
 pylint = "2.12.2"
