@@ -9,24 +9,24 @@
 {% block body %}
     <section id="photos-album" class="page-section">
         <div class="container">
-                <h1 style="float: left" class="section-title">
-                    {{ album.title }}
-                </h1>
-                <h1 style="float: right; padding-top: 20px">
-                    {{ album.date|date:"d-m-Y" }}
-                    {% if album.event %}
-                        <a href="{{ album.event.get_absolute_url }}"
-                           class="btn btn-primary btn-first"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="top"
-                           title=""
-                           data-original-title="{% trans "Event" %}">
-                           <i class="fas fa-calendar"></i>
-                        </a>
-                    {% endif %}
-                </h1>
+            <h1 class="section-title">
+                {{ album.title }}
+                {% if album.event %}
+                    <a href="{{ album.event.get_absolute_url }}"
+                       style="top: auto"
+                       class="btn btn-primary btn-first"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       title=""
+                       data-original-title="{% trans "Event" %}">
+                        <i class="fas fa-calendar"></i>
+                    </a>
+                    <span style="position: absolute; right: 50px">{{ album.date|date:"d-m-Y" }}</span>
+                {% else %}
+                    <span style="position: absolute; right: 0px">{{ album.date|date:"d-m-Y" }}</span>
+                {% endif %}
+            </h1>
 
-{#            <h2 class="mt-2">{{ album.date|date:"d-m-Y" }}</h2>#}
             {% if album.shareable %}
                 <p>
                     {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>
