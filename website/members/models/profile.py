@@ -158,6 +158,17 @@ class Profile(models.Model):
 
     # ---- Personal information ------
 
+    shoe_size = models.IntegerField(
+        verbose_name=_('shoe size'),
+        help_text=_("The size of your shoes, must be between 37 and 47"),
+        validators=[
+            validators.MaxValueValidator(47),
+            validators.MinValueValidator(37)
+        ],
+        null=True,
+        blank=True,
+    ) 
+
     birthday = models.DateField(verbose_name=_("Birthday"), null=True)
 
     show_birthday = models.BooleanField(

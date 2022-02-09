@@ -19,7 +19,6 @@ class MembershipInline(admin.StackedInline):
     classes = ["collapse"]
     extra = 0
 
-
 class ProfileInline(admin.StackedInline):
     fields = [
         "starting_year",
@@ -45,6 +44,7 @@ class ProfileInline(admin.StackedInline):
         "emergency_contact",
         "emergency_contact_phone_number",
         "event_permissions",
+        "shoe_size",
     ]
     classes = ["collapse"]
     model = models.Profile
