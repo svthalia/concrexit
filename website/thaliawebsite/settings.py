@@ -627,13 +627,15 @@ REST_FRAMEWORK = {
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
+DATETIME_FORMAT = 'j M, Y, H:i'
+
 LANGUAGE_CODE = "en"
 
 TIME_ZONE = "Europe/Amsterdam"
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
