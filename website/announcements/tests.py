@@ -16,7 +16,7 @@ class AnnouncementCloseTestCase(TestCase):
             email="test@example.com",
             password="top secret",
         )
-        self.middleware = SessionMiddleware()
+        self.middleware = SessionMiddleware(get_response=self.factory)
 
     def test_get_request(self):
         for user in [self.user, AnonymousUser()]:
