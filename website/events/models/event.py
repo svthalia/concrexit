@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
+from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
 from payments.models import PaymentAmountField
 from pushnotifications.models import ScheduledMessage, Category
@@ -17,22 +18,6 @@ from pushnotifications.models import ScheduledMessage, Category
 
 class Event(models.Model):
     """Describes an event."""
-
-    CATEGORY_ALUMNI = "alumni"
-    CATEGORY_EDUCATION = "education"
-    CATEGORY_CAREER = "career"
-    CATEGORY_LEISURE = "leisure"
-    CATEGORY_ASSOCIATION = "association"
-    CATEGORY_OTHER = "other"
-
-    EVENT_CATEGORIES = (
-        (CATEGORY_ALUMNI, _("Alumni")),
-        (CATEGORY_EDUCATION, _("Education")),
-        (CATEGORY_CAREER, _("Career")),
-        (CATEGORY_LEISURE, _("Leisure")),
-        (CATEGORY_ASSOCIATION, _("Association Affairs")),
-        (CATEGORY_OTHER, _("Other")),
-    )
 
     DEFAULT_NO_REGISTRATION_MESSAGE = _("No registration required")
 

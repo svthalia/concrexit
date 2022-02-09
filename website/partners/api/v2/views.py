@@ -3,38 +3,10 @@ from rest_framework import filters as framework_filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from partners.api.v2 import filters
-from partners.api.v2.serializers import (
-    PartnerSerializer,
-    PartnerEventSerializer,
-    VacancySerializer,
-    VacancyCategorySerializer,
-)
-from partners.models import PartnerEvent, Partner, Vacancy, VacancyCategory
-
-
-class PartnerEventListView(ListAPIView):
-    """Returns an overview of all partner events."""
-
-    serializer_class = PartnerEventSerializer
-    queryset = PartnerEvent.objects.filter(published=True)
-    filter_backends = (
-        framework_filters.OrderingFilter,
-        framework_filters.SearchFilter,
-        filters.PartnerEventDateFilter,
-    )
-    ordering_fields = ("start", "end", "title")
-    search_fields = ("title",)
-    permission_classes = [IsAuthenticatedOrTokenHasScope]
-    required_scopes = ["partners:read"]
-
-
-class PartnerEventDetailView(RetrieveAPIView):
-    """Returns a single partner event."""
-
-    serializer_class = PartnerEventSerializer
-    queryset = PartnerEvent.objects.filter(published=True)
-    permission_classes = [IsAuthenticatedOrTokenHasScope]
-    required_scopes = ["partners:read"]
+from partners.api.v2.serializers import VacancyCategorySerializer
+from partners.api.v2.serializers.partner import PartnerSerializer
+from partners.api.v2.serializers.vacancy import VacancySerializer
+from partners.models import Vacancy, Partner, VacancyCategory
 
 
 class PartnerListView(ListAPIView):

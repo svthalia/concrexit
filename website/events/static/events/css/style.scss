@@ -107,7 +107,7 @@
                     background-color: rgba(255, 0, 0, 0.3);
                 }
 
-                &.partner-event {
+                &.external-event {
                     background-color: var(--secondary);
                 }
 
@@ -149,7 +149,7 @@
             color: var(--secondary);
         }
 
-        &.partner-event {
+        &.external-event {
             color: var(--primary);
             background-color: var(--secondary);
 

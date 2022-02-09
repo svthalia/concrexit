@@ -3,7 +3,8 @@ from html import unescape
 from django.utils.html import strip_tags
 from rest_framework import serializers
 
-from partners.models import PartnerEvent, Partner
+from events.models.external_event import ExternalEvent
+from partners.models import Partner
 from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
@@ -32,7 +33,7 @@ class PartnerEventSerializer(CleanedModelSerializer):
     class Meta:
         """Meta class for partner events serializer."""
 
-        model = PartnerEvent
+        model = ExternalEvent
         fields = ("pk", "title", "description", "start", "end", "location", "url")
 
     description = serializers.SerializerMethodField("_description")

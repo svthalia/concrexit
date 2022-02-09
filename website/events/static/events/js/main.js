@@ -10,9 +10,9 @@ const SOURCES = {
         id: 'birthdays',
         url: '/api/calendarjs/birthdays/',
     },
-    partners: {
-        id: 'partners',
-        url: '/api/calendarjs/partners/',
+    external: {
+        id: 'external',
+        url: '/api/calendarjs/external/',
     },
     unpublished: {
         id: 'unpublished',
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const isAuthenticated = calendarEl.dataset.authenticated === 'true';
     const language = calendarEl.dataset.language;
 
-    const eventSources = [SOURCES.events, SOURCES.partners];
+    const eventSources = [SOURCES.events, SOURCES.external];
     if (showUnpublished) {
         eventSources.push(SOURCES.unpublished);
     }

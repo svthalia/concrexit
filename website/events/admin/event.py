@@ -1,97 +1,24 @@
-"""Registers admin interfaces for the events module."""
-from functools import partial
+"""Registers admin interfaces for the event model."""
 
 from django.contrib import admin
-from django.core.exceptions import PermissionDenied
-from django.db import models
-from django.db.models import Max, Min
-from django.forms import Field
 from django.template.defaultfilters import date as _date
 from django.urls import reverse, path
 from django.utils import timezone
-from django.utils.datetime_safe import date
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from activemembers.models import MemberGroup
-from events import admin_views, services
-from events.forms import RegistrationAdminForm
-from members.models import Member
-from payments.widgets import PaymentWidget
-from pizzas.models import FoodEvent
-from promotion.models import PromotionRequest
+from events import services
+from events.admin.filters import LectureYearFilter
+from events.admin.forms import RegistrationInformationFieldForm
+from events.admin.inlines import (
+    RegistrationInformationFieldInline,
+    PizzaEventInline,
+    PromotionRequestInline,
+)
+from events.admin.views import EventAdminDetails, EventRegistrationsExport, EventMessage
 from utils.admin import DoNextModelAdmin
-from utils.snippets import datetime_to_lectureyear
-from . import forms, models
-
-
-class RegistrationInformationFieldInline(admin.TabularInline):
-    """The inline for registration information fields in the Event admin."""
-
-    form = forms.RegistrationInformationFieldForm
-    extra = 0
-    model = models.RegistrationInformationField
-    ordering = ("_order",)
-
-    radio_fields = {"type": admin.VERTICAL}
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if obj is not None:
-            count = obj.registrationinformationfield_set.count()
-            formset.form.declared_fields["order"].initial = count
-        return formset
-
-
-class PizzaEventInline(admin.StackedInline):
-    """The inline for pizza events in the Event admin."""
-
-    model = FoodEvent
-    exclude = ("end_reminder",)
-    extra = 0
-    max_num = 1
-
-
-class PromotionRequestInline(admin.StackedInline):
-
-    model = PromotionRequest
-    readonly_fields = (
-        "assigned_to",
-        "status",
-        "drive_folder",
-    )
-    extra = 0
-
-
-class LectureYearFilter(admin.SimpleListFilter):
-    """Filter the events on those started or ended in a lecture year."""
-
-    title = _("lecture year")
-    parameter_name = "lecture_year"
-
-    def lookups(self, request, model_admin):
-        objects_end = models.Event.objects.aggregate(Max("end"))
-        objects_start = models.Event.objects.aggregate(Min("start"))
-
-        if objects_end["end__max"] and objects_start["start__min"]:
-            year_end = datetime_to_lectureyear(objects_end["end__max"])
-            year_start = datetime_to_lectureyear(objects_start["start__min"])
-
-            return [
-                (year, f"{year}-{year + 1}")
-                for year in range(year_end, year_start - 1, -1)
-            ]
-        return []
-
-    def queryset(self, request, queryset):
-        if not self.value():
-            return queryset
-
-        year = int(self.value())
-        year_start = date(year=year, month=9, day=1)
-        year_end = date(year=year + 1, month=9, day=1)
-
-        return queryset.filter(start__gte=year_start, end__lte=year_end)
+from events import models
 
 
 @admin.register(models.Event)
@@ -248,7 +175,7 @@ class EventAdmin(DoNextModelAdmin):
         informationfield_forms = (
             x
             for x in formset.forms
-            if isinstance(x, forms.RegistrationInformationFieldForm)
+            if isinstance(x, RegistrationInformationFieldForm)
             and "DELETE" not in x.changed_data
         )
         form.instance.set_registrationinformationfield_order(
@@ -310,114 +237,18 @@ class EventAdmin(DoNextModelAdmin):
         custom_urls = [
             path(
                 "<int:pk>/details/",
-                self.admin_site.admin_view(admin_views.EventAdminDetails.as_view()),
+                self.admin_site.admin_view(EventAdminDetails.as_view()),
                 name="events_event_details",
             ),
             path(
                 "<int:pk>/export/",
-                self.admin_site.admin_view(
-                    admin_views.EventRegistrationsExport.as_view()
-                ),
+                self.admin_site.admin_view(EventRegistrationsExport.as_view()),
                 name="events_event_export",
             ),
             path(
                 "<int:pk>/message/",
-                self.admin_site.admin_view(
-                    admin_views.EventMessage.as_view(admin=self)
-                ),
+                self.admin_site.admin_view(EventMessage.as_view(admin=self)),
                 name="events_event_message",
-            ),
-        ]
-        return custom_urls + urls
-
-
-@admin.register(models.EventRegistration)
-class RegistrationAdmin(DoNextModelAdmin):
-    """Custom admin for registrations."""
-
-    form = RegistrationAdminForm
-
-    def save_model(self, request, obj, form, change):
-        if not services.is_organiser(request.member, obj.event):
-            raise PermissionDenied
-        return super().save_model(request, obj, form, change)
-
-    def has_view_permission(self, request, obj=None):
-        """Only give view permission if the user is an organiser."""
-        if obj is not None and not services.is_organiser(request.member, obj.event):
-            return False
-        return super().has_view_permission(request, obj)
-
-    def has_change_permission(self, request, obj=None):
-        """Only give change permission if the user is an organiser."""
-        if obj is not None and not services.is_organiser(request.member, obj.event):
-            return False
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        """Only give delete permission if the user is an organiser."""
-        if obj is not None and not services.is_organiser(request.member, obj.event):
-            return False
-        return super().has_delete_permission(request, obj)
-
-    def get_form(self, request, obj=None, **kwargs):
-        return super().get_form(
-            request,
-            obj,
-            formfield_callback=partial(
-                self.formfield_for_dbfield, request=request, obj=obj
-            ),
-            **kwargs,
-        )
-
-    def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
-        """Customise the formfields of event and member."""
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)
-        if db_field.name in ("event", "member"):
-            # Disable add/change/delete buttons
-            field.widget.can_add_related = False
-            field.widget.can_change_related = False
-            field.widget.can_delete_related = False
-        elif db_field.name == "payment":
-            return Field(
-                widget=PaymentWidget(obj=obj),
-                initial=field.initial,
-                required=False,
-            )
-        return field
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """Customise the formfields of event and member."""
-        if db_field.name == "event":
-            # allow to restrict event
-            if request.GET.get("event_pk"):
-                kwargs["queryset"] = models.Event.objects.filter(
-                    pk=int(request.GET["event_pk"])
-                )
-            else:
-                kwargs["queryset"] = models.Event.objects
-            # restrict to events organised by user
-            if not (
-                request.user.is_superuser
-                or request.user.has_perm("events.override_organiser")
-            ):
-                kwargs["queryset"] = kwargs["queryset"].filter(
-                    organiser__in=request.member.get_member_groups()
-                )
-        elif db_field.name == "member":
-            # Filter the queryset to current members only
-            kwargs["queryset"] = Member.current_members.all()
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path(
-                "<int:registration>/fields/",
-                self.admin_site.admin_view(
-                    admin_views.RegistrationAdminFields.as_view(admin=self)
-                ),
-                name="events_registration_fields",
             ),
         ]
         return custom_urls + urls
