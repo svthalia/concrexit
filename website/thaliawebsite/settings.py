@@ -651,6 +651,9 @@ STATICFILES_FINDERS = (
     "compressor.finders.CompressorFinder",
 )
 
+STATICFILES_STORAGE = "thaliawebsite.storage.ManifestStaticFilesStorage"
+STATICFILES_STORAGE_STRICT = setting(development=False, testing=False, production=True)
+
 # Compressor settings
 COMPRESS_ENABLED = True
 
