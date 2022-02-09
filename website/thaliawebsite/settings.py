@@ -627,7 +627,7 @@ REST_FRAMEWORK = {
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
-DATETIME_FORMAT = 'j M, Y, H:i'
+DATETIME_FORMAT = "j M, Y, H:i"
 
 LANGUAGE_CODE = "en"
 
