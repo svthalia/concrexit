@@ -69,6 +69,10 @@ MAIN_MENU = [
                 "title": _("Student Participation"),
                 "name": "education:student-participation",
             },
+            {
+                "title": _("Student well-being"),
+                "name": "singlepages:student-well-being",
+            },
         ],
     },
     {"title": _("Contact"), "name": "singlepages:contact"},

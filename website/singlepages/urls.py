@@ -9,6 +9,7 @@ from .views import (
     BecomeActiveView,
     StyleGuideView,
     ContactView,
+    StudentWellBeingView,
 )
 
 app_name = "singlepages"
@@ -33,7 +34,19 @@ urlpatterns = [
                     "sibling-associations/",
                     SiblingAssociationsView.as_view(),
                     name="sibling-associations",
-                )
+                ),
+            ]
+        ),
+    ),
+    path(
+        "education/",
+        include(
+            [
+                path(
+                    "student-well-being/",
+                    StudentWellBeingView.as_view(),
+                    name="student-well-being",
+                ),
             ]
         ),
     ),

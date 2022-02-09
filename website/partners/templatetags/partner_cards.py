@@ -26,7 +26,7 @@ def partner_card(partner):
         meta_text='<p class="px-2 d-none d-md-block">{}</p>'.format(meta_text),
         url=partner.get_absolute_url,
         image_url=image_url,
-        class_name="partner-card",
+        class_name="partner-card contain-logo",
     )
 
 
