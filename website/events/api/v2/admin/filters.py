@@ -76,7 +76,7 @@ class EventRegistrationQueuedFilter(filters.BaseFilterBackend):
                 "name": "queued",
                 "required": False,
                 "in": "query",
-                "description": "Filter by event registration if they're in the queue",
+                "description": "Filter by event registration queue position",
                 "schema": {
                     "type": "boolean",
                 },
