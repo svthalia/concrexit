@@ -150,11 +150,11 @@
         }
 
         &.external-event {
-            color: var(--primary);
+            color: var(--secondary-contrast);
             background-color: var(--secondary);
 
             &:active, &:hover {
-                color: var(--primary);
+                color: var(--secondary-contrast);
             }
         }
 
