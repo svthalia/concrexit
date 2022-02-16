@@ -37,6 +37,4 @@ jobs:
         cd infra/stages/production
         terraform init -lockfile=readonly
 
-        aws s3 cp "s3://thalia-tfplans/${{ github.event.inputs.filename }}" tfplan
-
-        terraform apply -auto-approve tfplan
+        terraform apply -auto-approve
