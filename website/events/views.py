@@ -12,6 +12,7 @@ from django.views.generic import DetailView, TemplateView, FormView
 
 from events import services
 from events.exceptions import RegistrationError
+from events.models import categories
 from payments.models import Payment
 from .forms import FieldsForm
 from .models import Event, EventRegistration
@@ -82,7 +83,7 @@ class AlumniEventsView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         events = Event.objects.filter(
-            published=True, category=Event.CATEGORY_ALUMNI, end__gte=timezone.now()
+            published=True, category=categories.CATEGORY_ALUMNI, end__gte=timezone.now()
         ).order_by("end")[:3]
         context["events"] = events
 
