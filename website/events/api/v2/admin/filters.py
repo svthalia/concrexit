@@ -29,7 +29,7 @@ class PublishedFilter(filters.BaseFilterBackend):
 
 
 class EventRegistrationCancelledFilter(filters.BaseFilterBackend):
-    """Allows you to filter by event registration status."""
+    """Allows you to filter by event registration cancellation status."""
 
     def filter_queryset(self, request, queryset, view):
         cancelled = request.query_params.get("cancelled", None)
@@ -48,7 +48,35 @@ class EventRegistrationCancelledFilter(filters.BaseFilterBackend):
                 "name": "cancelled",
                 "required": False,
                 "in": "query",
-                "description": "Filter by event registration status",
+                "description": "Filter by event registration cancellation status",
+                "schema": {
+                    "type": "boolean",
+                },
+            }
+        ]
+
+
+class EventRegistrationQueuedFilter(filters.BaseFilterBackend):
+    """Allows you to filter by event registration by if they're in the queue."""
+
+    def filter_queryset(self, request, queryset, view):
+        queued = request.query_params.get("queued", None)
+
+        if queued is None:
+            return queryset
+
+        if strtobool(queued):
+            return queryset.exclude(queue_position=None)
+
+        return queryset.filter(queue_position=None)
+
+    def get_schema_operation_parameters(self, view):
+        return [
+            {
+                "name": "queued",
+                "required": False,
+                "in": "query",
+                "description": "Filter by event registration queue position",
                 "schema": {
                     "type": "boolean",
                 },
