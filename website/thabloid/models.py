@@ -60,7 +60,7 @@ class Thabloid(models.Model):
         elif second_page is None:
             page = f"{page:03}.png"
         else:
-            page = "f{page:03}-{second_page:03}.png"
+            page = f"{page:03}-{second_page:03}.png"
         dst, _ = os.path.splitext(self.file.name)
         return os.path.join(os.path.dirname(dst), "pages", os.path.basename(dst), page)
 
