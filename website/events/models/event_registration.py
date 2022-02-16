@@ -123,8 +123,8 @@ class EventRegistration(models.Model):
                 Count(
                     "event__eventregistration",
                     filter=Q(event__eventregistration__date_cancelled=None)
-                    & Q(event__eventregistration__date__lt=F("date"))
-                    | (
+                    & (Q(event__eventregistration__date__lt=F("date"))
+                    | 
                         Q(event__eventregistration__id__lte=F("id"))
                         & Q(event__eventregistration__date__exact=F("date"))
                     ),
