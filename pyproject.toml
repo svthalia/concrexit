@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "concrexit"
-version = "DEV"
+version = "0.0-development"
 description = "New new Thalia website, now with extra Django."
 authors = ["Thalia Technicie <www@thalia.nu>"]
 license = "AGPL-3.0-or-later"
