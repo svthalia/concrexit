@@ -36,7 +36,7 @@ def revoke_staff_permission_for_users_in_no_commitee():
     members = Member.objects.filter(is_staff=True)
     revoked = []
     for member in members:
-        if member.get_member_groups().count() == 0:
+        if member.get_member_groups().count() == 0 and not member.is_superuser:
             revoked.append(member.id)
             member.is_staff = False
             member.save()
