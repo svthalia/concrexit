@@ -5,6 +5,7 @@ from events.api.calendarjs.views import (
     CalendarJSEventListView,
     CalendarJSUnpublishedEventListView,
     CalendarJSExternalEventListView,
+    CalendarJSUnpublishedExternalEventListView,
 )
 
 app_name = "events"
@@ -25,4 +26,10 @@ urlpatterns = [
         CalendarJSUnpublishedEventListView.as_view(),
         name="calendarjs-unpublished",
     ),
+    path(
+        "external/unpublished/",
+        CalendarJSUnpublishedExternalEventListView.as_view(),
+        name="calendarjs-external-unpublished",
+    ),
+
 ]

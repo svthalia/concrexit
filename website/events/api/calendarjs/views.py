@@ -7,6 +7,7 @@ from events.api.calendarjs.serializers import (
     EventsCalenderJSSerializer,
     UnpublishedEventsCalenderJSSerializer,
     ExternalEventCalendarJSSerializer,
+    UnpublishedExternalEventCalendarJSSerializer,
 )
 from events.api.calendarjs.permissions import UnpublishedEventPermissions
 from events.api.v2 import filters
@@ -56,8 +57,26 @@ class CalendarJSEventListView(ListAPIView):
 class CalendarJSUnpublishedEventListView(ListAPIView):
     """Define a custom route that outputs the correctly formatted external events information for CalendarJS, unpublished events only."""
 
-    queryset = ExternalEvent.objects.filter(published=False)
+    queryset = Event.objects.filter(published=False)
     serializer_class = UnpublishedEventsCalenderJSSerializer
+    permission_classes = [IsAdminUser, UnpublishedEventPermissions]
+    pagination_class = None
+    filter_backends = (
+        filters.EventDateFilter,
+        filters.CategoryFilter,
+        filters.OrganiserFilter,
+    )
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["member"] = self.request.member
+        return context
+
+class CalendarJSUnpublishedExternalEventListView(ListAPIView):
+    """Define a custom route that outputs the correctly formatted external events information for CalendarJS, unpublished events only."""
+
+    queryset = ExternalEvent.objects.filter(published=False)
+    serializer_class = UnpublishedExternalEventCalendarJSSerializer
     permission_classes = [IsAdminUser, UnpublishedEventPermissions]
     pagination_class = None
     filter_backends = (

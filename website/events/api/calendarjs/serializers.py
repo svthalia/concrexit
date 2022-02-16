@@ -87,6 +87,21 @@ class UnpublishedEventsCalenderJSSerializer(CalenderJSSerializer):
     def _registration_info(self, instance):
         return "Unpublished event"
 
+class UnpublishedExternalEventCalendarJSSerializer(CalenderJSSerializer):
+    """See CalenderJSSerializer, customised classes."""
+
+    class Meta(CalenderJSSerializer.Meta):
+        model = Event
+
+    def _class_names(self, instance):
+        return ["unpublished-event"]
+
+    def _url(self, instance):
+        return reverse("admin:events_externalevent_change", kwargs={"object_id": instance.id})
+
+    def _registration_info(self, instance):
+        return "Unpublished event"
+
 
 class ExternalEventCalendarJSSerializer(CalenderJSSerializer):
     """External event calender serializer."""
