@@ -56,7 +56,7 @@ class CalendarJSEventListView(ListAPIView):
 class CalendarJSUnpublishedEventListView(ListAPIView):
     """Define a custom route that outputs the correctly formatted external events information for CalendarJS, unpublished events only."""
 
-    queryset = ExternalEvent.objects.filter(published=False)
+    queryset = Event.objects.filter(published=False)
     serializer_class = UnpublishedEventsCalenderJSSerializer
     permission_classes = [IsAdminUser, UnpublishedEventPermissions]
     pagination_class = None
