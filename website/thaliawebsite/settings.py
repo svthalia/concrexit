@@ -651,8 +651,14 @@ STATICFILES_FINDERS = (
     "compressor.finders.CompressorFinder",
 )
 
-STATICFILES_STORAGE = "thaliawebsite.storage.ManifestStaticFilesStorage"
-STATICFILES_STORAGE_STRICT = setting(development=False, testing=False, production=True)
+NORMAL_STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+MANIFEST_STATICFILES_STORAGE = (
+    "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+)
+STATICFILES_STORAGE = setting(
+    development=NORMAL_STATICFILES_STORAGE,
+    production=MANIFEST_STATICFILES_STORAGE,
+)
 
 # Compressor settings
 COMPRESS_ENABLED = True
