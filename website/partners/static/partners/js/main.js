@@ -8,7 +8,7 @@ $(function () {
 
     var windowhash = window.location.hash;
     if (windowhash) {
-        var element = $('[data-target="' + windowhash + '"]');
+        var element = $('[data-bs-target="' + windowhash + '"]');
         element.click();
         $([document.documentElement, document.body]).scrollTop(element.offset().top);
     }
@@ -20,7 +20,7 @@ $(function () {
     $('.external-vacancy').click(function (e) {
         e.preventDefault();
         var href = $(e.target).attr('href');
-        var element = $('[data-target="' + href + '"]');
+        var element = $('[data-bs-target="' + href + '"]');
         element.click();
         $([document.documentElement, document.body]).scrollTop(element.offset().top);
     });
