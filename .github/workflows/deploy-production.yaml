@@ -29,11 +29,6 @@ jobs:
       # Make sure the required program dependencies are available with a nix shell
       shell: nix develop .#deployment --log-format raw --verbose --command bash --noprofile --norc -eo pipefail {0}
       run: |
-        if [[ "${GITHUB_REF_NAME}" != *"${{ github.event.inputs.filename }}"* ]]; then
-          echo "Filename must contain the selected branch/tag name" >2
-          exit 1
-        fi
-
         cd infra/stages/production
         terraform init -lockfile=readonly
 
