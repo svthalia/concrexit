@@ -67,24 +67,19 @@
     }
 }
 
-#partners-vacancies {
+#partners-vacancies {//TODO flexbox centering image
     .card {
         height: 100%;
-
-        .card-top {
-            position: relative;
-            overflow: hidden;
 
             &:after {
                 content: "";
                 display: block;
-                padding-bottom: 100%;
             }
 
             .card-image {
-                position: absolute;
-                width: 100%;
-                height: 100%;
+                position: relative;
+                width: auto;
+                height: 400px;
 
                 display: flex;
                 align-items: center;
@@ -96,12 +91,12 @@
 
                 img {
                     width: auto;
-                    height: auto;
+                    height: 100px;
                     max-width: 90%;
                     max-height: 90%;
                 }
             }
-        }
+
     }
 }
 
