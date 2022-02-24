@@ -1,37 +1,32 @@
 {% extends "base.html" %}
 {% load i18n thumbnail static activemembers_cards alert %}
+
 {% block title %}{% trans 'societies'|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans 'societies'|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block body %}
-    <section id="activemembers-committees" class="page-section">
-        <div class="container">
-            <h1 class="section-title">
-                {% trans 'societies'|capfirst %}
-            </h1>
+{% block page_title %}{% trans 'societies'|capfirst %}{% endblock %}
+{% block section_tags %}id="activemembers-societies"{% endblock %}
 
-            <p>
-                {% url 'documents:index' as documents_page %}
-                {% blocktrans trimmed %}
-                    Interested in forming a society? Read the Society policy and application form document,
-                    which can be found on <a href="{{ documents_page }}">the documents page</a>, carefully.
-                    The application form can be found at the bottom of the document.
-                    To request a society you must submit the filled in form to the board.
-                {% endblocktrans %}
-            </p>
-
-            <div class="row mt-4">
-                {% for society in societies %}
-                    <div class="col-4 col-md-3 my-3">
-                        {% membergroup_card society %}
-                    </div>
-                {% empty %}
-                    <div class="col-12">
-                        {% trans 'There are no societies!' as no_societies %}
-                        {% alert 'danger' no_societies %}
-                    </div>
-                {% endfor %}
+{% block page_content %}
+    <p>
+        {% url 'documents:index' as documents_page %}
+        {% blocktrans trimmed %}
+            Interested in forming a society? Read the Society policy and application form document,
+            which can be found on <a href="{{ documents_page }}">the documents page</a>, carefully.
+            The application form can be found at the bottom of the document.
+            To request a society you must submit the filled in form to the board.
+        {% endblocktrans %}
+    </p>
+    <div class="row mt-4">
+        {% for society in societies %}
+            <div class="col-4 col-md-3 my-3">
+                {% membergroup_card society %}
             </div>
-        </div>
-    </section>
+        {% empty %}
+            <div class="col-12">
+                {% trans 'There are no societies!' as no_societies %}
+                {% alert 'danger' no_societies %}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

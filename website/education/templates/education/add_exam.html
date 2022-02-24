@@ -1,33 +1,22 @@
-{% extends 'education/base.html' %}
+{% extends 'education/base_small.html' %}
 {% load i18n fieldtype django_bootstrap5 alert %}
 
 {% block title %}{% trans "Submit Exam" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Submit Exam" %} —
     {{ block.super }}{% endblock %}
 
-{% block body %}
-    <section class="page-section">
-        <div class="container">
-            <h1 class="section-title">
-                {% trans "Submit Exam" %}
-            </h1>
+{% block page_title %}{% trans "Submit Exam" %}{% endblock %}
 
-            {% bootstrap_messages %}
-
-            <form method="post" enctype="multipart/form-data"
-                  class="col-lg-6 offset-lg-3">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}">
-
-                {% for field in form %}
-                    {% bootstrap_field field show_help=False %}
-                {% endfor %}
-
-                <div class="form-row">
-                    <input type="submit" value="{% trans "submit"|capfirst %}"
-                           class="btn btn-primary float-end">
-                </div>
-            </form>
+{% block page_content %}
+    {% bootstrap_messages %}
+    <form method="post" enctype="multipart/form-data" class="col-12">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% for field in form %}
+            {% bootstrap_field field show_help=False %}
+        {% endfor %}
+        <div class="form-row">
+            <input type="submit" value="{% trans "submit"|capfirst %}" class="btn btn-primary float-end">
         </div>
-    </section>
+    </form>
 {% endblock %}

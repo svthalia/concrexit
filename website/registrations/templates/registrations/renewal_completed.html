@@ -1,18 +1,15 @@
-{% extends "base.html" %}
+{% extends "small_page.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "completed"|capfirst %} - {% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block body %}
-  <section class="page-section">
-      <div class="container">
-          <h1 class="section-title">{% trans "renewal" %}</h1>
-          <p>
-              {% blocktrans trimmed %}
-                  Congratulations!
-                  Your payment has been processed and your renewal is now complete.
-              {% endblocktrans %}
-          </p>
-      </div>
-  </section>
+{% block page_title %}{% trans "renewal" %}{% endblock %}
+
+{% block page_content %}
+    <p>
+        {% blocktrans trimmed %}
+            Congratulations!
+            Your payment has been processed and your renewal is now complete.
+        {% endblocktrans %}
+    </p>
 {% endblock %}

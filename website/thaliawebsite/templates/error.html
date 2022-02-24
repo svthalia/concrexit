@@ -1,18 +1,16 @@
-{% extends 'base.html' %}
+{% extends 'small_page.html' %}
 {% load i18n %}
 
 {% block title %}Error — {{ block.super }}{% endblock %}
 {% block opengraph_title %}Error — {{ block.super }}{% endblock %}
 
-{% block body %}
-    <section id="thaliawebsite-error" class="page-section">
-        <div class="container">
-            <h1 class="section-title">{% blocktrans %}Error{% endblocktrans %}</h1>
-            <p>{% block error_message %}{% trans "An error occurred." %}{% endblock %}</p>
-            <p>
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/t3otBjVZzT0?autoplay=0"
-                        frameborder="0" allowfullscreen></iframe>
-            </p>
-        </div>
-    </section>
+{% block page_title %}
+    {% trans "Error" %}
+{% endblock %}
+
+{% block page_content %}
+    <p>{% block error_message %}{% trans "An error occurred." %}{% endblock %}</p>
+    <p>
+        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/t3otBjVZzT0?autoplay=0" frameborder="0" allowfullscreen></iframe>
+    </p>
 {% endblock %}

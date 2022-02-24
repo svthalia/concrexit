@@ -6,72 +6,67 @@
 
 {% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock header_image %}
 
-{% block body %}
+{% block page_title %}{% trans "Photos" %}{% endblock %}
+{% block section_tags %}id="photos-index"{% endblock %}
+
+{% block page_content %}
     {% with keys=keywords|join:" " %}
-        <section id="photos-index" class="page-section">
-            <div class="container">
-                <h1 class="section-title">{% trans "Photos" %}</h1>
+        <div class="row">
+            <p class="col-12 col-lg-6">
+                {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
+            </p>
 
-            <div class="row">
-                <p class="col-12 col-lg-6">
-                    {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
-                </p>
-
-                <form class="search-form form-inline col-12 mt-4 mt-lg-0 mb-4 col-lg-6" method="get"
-                      action="{% url 'photos:index' %}#photos-albums">
-                    <div class="input-group">
-                        <input class="form-control col-12 col-md-9" style="width: available" name="keywords" type="search" value="{{ keys|default_if_none:'' }}"
-                               placeholder="{% trans "What are you looking for?" %}" aria-label="{% trans "Search the Thalia's photo albums" %}" aria-describedby="photoalbums-search-button">
-                        <input id="photoalbums-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit"
-                               value="{% trans "Search" %}"/>
-                    </div>
-                </form>
-            </div>
-
-                {% if not albums %}
-                    <div class="mt-4">
-                        {% trans 'No albums found' as info_text %}
-                        {% alert 'info' info_text dismissible=False %}
-                    </div>
-                {% else %}
-                <div class="row">
-                    {% for album in albums %}
-                        <div class="col-4 col-md-3 my-3">
-                            {% album_card album %}
-                        </div>
-                    {% endfor %}
+            <form class="search-form form-inline col-12 mt-4 mt-lg-0 mb-4 col-lg-6" method="get"
+                  action="{% url 'photos:index' %}#photos-albums">
+                <div class="input-group">
+                    <input class="form-control col-12 col-md-9" style="width: available" name="keywords" type="search" value="{{ keys|default_if_none:'' }}"
+                           placeholder="{% trans "What are you looking for?" %}" aria-label="{% trans "Search the Thalia's photo albums" %}" aria-describedby="photoalbums-search-button">
+                    <input id="photoalbums-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit"
+                           value="{% trans "Search" %}"/>
                 </div>
-                {% endif %}
-
-                <nav>
-                    <ul class="pagination mt-4">
-                        {% if albums.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link"
-                                   href="{% url 'photos:index' %}?page={{ albums.previous_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}#photos-albums">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% for page in page_range %}
-                            <li class="page-item{% if page == albums.number %} active{% endif %}">
-                                <a class="page-link" href="{% url 'photos:index' %}?page={{ page }}{% if keywords %}&keywords={{ keys }}{% endif %}#photos-albums">{{ page }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                        {% if albums.has_next %}
-                            <li class="page-item">
-                                <a class="page-link"
-                                   href="{% url 'photos:index' %}?page={{ albums.next_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+            </form>
+        </div>
+        {% if not albums %}
+            <div class="mt-4">
+                {% trans 'No albums found' as info_text %}
+                {% alert 'info' info_text dismissible=False %}
             </div>
-        </section>
+        {% else %}
+        <div class="row">
+            {% for album in albums %}
+                <div class="col-4 col-md-3 my-3">
+                    {% album_card album %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <nav>
+            <ul class="pagination mt-4">
+                {% if albums.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="{% url 'photos:index' %}?page={{ albums.previous_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}#photos-albums">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% for page in page_range %}
+                    <li class="page-item{% if page == albums.number %} active{% endif %}">
+                        <a class="page-link" href="{% url 'photos:index' %}?page={{ page }}{% if keywords %}&keywords={{ keys }}{% endif %}#photos-albums">{{ page }}
+                        </a>
+                    </li>
+                {% endfor %}
+                {% if albums.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="{% url 'photos:index' %}?page={{ albums.next_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     {% endwith %}
 {% endblock %}

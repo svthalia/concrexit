@@ -5,13 +5,10 @@
 {% block opengraph_title %}{{ link.slug|title }} redirect — {{ block.super }}{% endblock %}
 
 {% block body %}
-
     <div class="container">
         <p class="text-center mt-5">This is a redirection page to a non-Thalia site.</p>
-
         <p>Click this link to be redirected:
             <a href="{{ link.url }}" rel="noopener noreferrer nofollow" target="_blank" >{{ link.url }}</a>
         </p>
     </div>
-
 {% endblock %}
