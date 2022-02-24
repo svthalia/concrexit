@@ -54,6 +54,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
         request = self.context.get("request", None)
         if request and request.user and request.user.has_perm("sales.custom_prices"):
             fields["total"].read_only = False
+        if request and request.method == "GET":
+            fields["product"] = serializers.CharField(source="product_name")
         return fields
 
     def create(self, validated_data, **kwargs):
