@@ -1,16 +1,17 @@
-{% extends 'small_page.html' %}
+{% extends 'base.html' %}
 {% load i18n payments %}
 
-{% block page_title %}{% trans "Pay for order" %}{% endblock %}
-
-{% block page_content %}
-    <p>
-        {{ order.order_description }}
-    </p>
-    <div class="mt-4">
-        {% url 'index' as next %}
-        {% payment_button order next %}
-    </div>
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "Pay for order" %}</h1>
+            {{ order.order_description }}
+            <div class="mt-4">
+                {% url 'index' as next %}
+                {% payment_button order next %}
+            </div>
+        </div>
+    </section>
 {% endblock %}
 
 {% block js_body %}

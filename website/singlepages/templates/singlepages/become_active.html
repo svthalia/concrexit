@@ -1,29 +1,28 @@
-{% extends "simple_page.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Become active" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Become active" %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "Become active" %}{% endblock %}
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "Become active" %}</h1>
+            <p>{% blocktrans trimmed %}Throughout the year, Thalia organizes a wide variety of activities, both educational
+                (such as symposiums and programming contests) as well as social (such as drinks, paintballing and LAN
+                parties). All in all, this adds up to around 80 activities each year. The board and Thalia's committees
+                organize these events. Furthermore, Thalia members are involved in e.g. writing the Thabloid,
+                maintaining this website and our servers, and taking pictures during events. Altogether, a group of 50
+                to 60 members commits to making all these amazing activities happen every year.{% endblocktrans %}</p>
 
-{% block page_content %}
-    <p>
-        {% blocktrans trimmed %}Throughout the year, Thalia organizes a wide variety of activities, both educational
-        (such as symposiums and programming contests) as well as social (such as drinks, paintballing and LAN
-        parties). All in all, this adds up to around 80 activities each year. The board and Thalia's committees
-        organize these events. Furthermore, Thalia members are involved in e.g. writing the Thabloid,
-        maintaining this website and our servers, and taking pictures during events. Altogether, a group of 50
-        to 60 members commits to making all these amazing activities happen every year.{% endblocktrans %}
-    </p>
-    <p>
-        {% blocktrans trimmed %}Does it seem like fun to join a committee and do your bit to contribute to the
-        association? Then become a member of one of the committees! You can do this by sending an e-mail to
-        <a href="mailto:intern@thalia.nu">intern@thalia.nu</a>, sending a Facebook message or speaking to a
-        board or committee member in person.{% endblocktrans %}
-    </p>
-    <p>
-        {% blocktrans trimmed %}Are you not sure if being part of a committee is for you? You can always sit in on a
-        meeting to see if you like it. Again, feel free to ask committee members or the board in person. The
-        committees are always looking for enthusiastic new members!{% endblocktrans %}
-    </p>
-{% endblock %}
+            <p>{% blocktrans trimmed %}Does it seem like fun to join a committee and do your bit to contribute to the
+                association? Then become a member of one of the committees! You can do this by sending an e-mail to
+                <a href="mailto:intern@thalia.nu">intern@thalia.nu</a>, sending a Facebook message or speaking to a
+                board or committee member in person.{% endblocktrans %}</p>
+
+            <p>{% blocktrans trimmed %}Are you not sure if being part of a committee is for you? You can always sit in on a
+                meeting to see if you like it. Again, feel free to ask committee members or the board in person. The
+                committees are always looking for enthusiastic new members!{% endblocktrans %}</p>
+        </div>
+    </section>
+{% endblock body %}

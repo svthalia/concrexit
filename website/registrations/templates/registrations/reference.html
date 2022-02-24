@@ -1,36 +1,43 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 {% load i18n django_bootstrap5 alert %}
 
 {% block title %}{% trans "reference"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "give reference" %}{% endblock %}
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "give reference" %}</h1>
 
-{% block page_content %}
-    <p>
-        {% blocktrans trimmed %}
-            It is still possible to be associated with Thalia, even if you do not study Computing
-            Science or Information Sciences (anymore): You can become a benefactor.
-            If you are not a former Thalia member, iCIS staff member or alumni,
-            you must collect two references of current Thalia members.
-            <br /><br />
-            <strong>{{ name }}</strong> wants to become a benefactor of Thalia and
-            needs such a reference and has asked you to give it to them.
-        {% endblocktrans %}
-    </p>
-    <hr/>
-    {% if success %}
-        {% trans "Your reference has been saved." as alert_text %}
-        {% alert 'success' alert_text extra_classes="mt-3" %}
-    {% elif form.errors %}
-        {% for error in form.non_field_errors %}
-            {% alert 'danger' error extra_classes="mt-3" %}
-        {% endfor %}
-    {% else %}
-        <form method="post" class="">
-            {% csrf_token %}
-            <input type="submit"
-                   value="{% trans 'give reference'|capfirst %}"
-                   class="btn btn-primary col-12"/>
-        </form>
-    {% endif %}
+            <p>
+                {% blocktrans trimmed %}
+                    It is still possible to be associated with Thalia, even if you do not study Computing
+                    Science or Information Sciences (anymore): You can become a benefactor.
+                    If you are not a former Thalia member, iCIS staff member or alumni,
+                    you must collect two references of current Thalia members.
+                    <br /><br />
+                    <strong>{{ name }}</strong> wants to become a benefactor of Thalia and
+                    needs such a reference and has asked you to give it to them.
+                {% endblocktrans %}
+            </p>
+
+            <hr/>
+
+            {% if success %}
+                {% trans "Your reference has been saved." as alert_text %}
+                {% alert 'success' alert_text extra_classes="mt-3" %}
+            {% elif form.errors %}
+                {% for error in form.non_field_errors %}
+                    {% alert 'danger' error extra_classes="mt-3" %}
+                {% endfor %}
+            {% else %}
+            <form method="post" class="">
+                {% csrf_token %}
+
+                <input type="submit"
+                       value="{% trans 'give reference'|capfirst %}"
+                       class="btn btn-primary col-12"/>
+            </form>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

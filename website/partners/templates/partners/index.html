@@ -1,56 +1,62 @@
-{% extends 'simple_page.html' %}
+{% extends 'base.html' %}
 {% load i18n bleach_tags partner_cards thumbnail %}
 
 {% block title %}{% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "Our partners" %}{% endblock %}
-{% block section_tags %}id="partners-index"{% endblock %}
+{% block body %}
+    <section class="page-section" id="partners-index">
+        <div class="container">
+            <h1 class="section-title">{% trans "Our partners" %}</h1>
+            <p>
+                {% blocktrans trimmed %}
+                    As a study association we put great effort in entertaining our members with a lot of activities. These
+                    activities range from educational events to informal activities. Examples of these events are
+                    lectures, workshops, get togethers and programming competitions. We also produce a magazine called
+                    the Thabloid. We are always looking to create new partnerships. If your company is interested in
+                    creating such a partnership or if you are interested in what such a partnership can do for you, please
+                    contact us at <a href="mailto:collaboration@thalia.nu" rel="noopener" target="_blank">collaboration@thalia.nu</a>.
+                {% endblocktrans %}
+            </p>
 
-{% block page_content %}
-    <p>
-        {% blocktrans trimmed %}
-            As a study association we put great effort in entertaining our members with a lot of activities. These
-            activities range from educational events to informal activities. Examples of these events are
-            lectures, workshops, get togethers and programming competitions. We also produce a magazine called
-            the Thabloid. We are always looking to create new partnerships. If your company is interested in
-            creating such a partnership or if you are interested in what such a partnership can do for you, please
-            contact us at <a href="mailto:collaboration@thalia.nu" rel="noopener" target="_blank">collaboration@thalia.nu</a>.
-        {% endblocktrans %}
-    </p>
-    <div class="row mt-4 justify-content-center">
-        <div class="col-12 col-md-6 mt-auto">
-                <img src="{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
+            <div class="row mt-4 justify-content-center">
+                <div class="col-12 col-md-6 mt-auto">
+                        <img src="{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
 
-            <div class="mt-3">
-                <h2>{% trans "our main partner"|capfirst %}</h2>
-                <h3>{{ main_partner.name }}</h3>
-                <p>{{ main_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
-                <a href="{{ main_partner.get_absolute_url }}" class="btn btn-primary">{% trans "Learn more" %}</a>
-            </div>
-        </div>
-    </div>
-    <div class="row mt-4 justify-content-center">
-        {% for local_partner in local_partners %}
-            <div class="col-12 col-md-6 mt-4">
-                <img src="{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
-
-                <div class="mt-3">
-                    <h2>{% trans "our local partner"|capfirst %}</h2>
-                    <h3>{{ local_partner.name }}</h3>
-                    <p>{{ local_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
-                    <a href="{{ local_partner.get_absolute_url }}" class="btn btn-primary">{% trans "Learn more" %}</a>
+                    <div class="mt-3">
+                        <h2>{% trans "our main partner"|capfirst %}</h2>
+                        <h3>{{ main_partner.name }}</h3>
+                        <p>{{ main_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
+                        <a href="{{ main_partner.get_absolute_url }}" class="btn btn-primary">{% trans "Learn more" %}</a>
+                    </div>
                 </div>
             </div>
-        {% endfor %}
-    </div>
-    <div class="row mt-4">
-    </div>
-    <div class="row mt-4">
-        {% for partner in partners %}
-            <div class="col-4 col-md-3 my-3">
-                {% partner_card partner %}
+
+            <div class="row mt-4 justify-content-center">
+                {% for local_partner in local_partners %}
+                    <div class="col-12 col-md-6 mt-4">
+                        <img src="{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}"/>
+
+                        <div class="mt-3">
+                            <h2>{% trans "our local partner"|capfirst %}</h2>
+                            <h3>{{ local_partner.name }}</h3>
+                            <p>{{ local_partner.company_profile|striptags|bleach|truncatechars:425 }}</p>
+                            <a href="{{ local_partner.get_absolute_url }}" class="btn btn-primary">{% trans "Learn more" %}</a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
-{% endblock %}
+
+            <div class="row mt-4">
+            </div>
+
+            <div class="row mt-4">
+                {% for partner in partners %}
+                    <div class="col-4 col-md-3 my-3">
+                        {% partner_card partner %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock body %}

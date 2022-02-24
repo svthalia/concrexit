@@ -1,18 +1,25 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 {% load i18n static django_bootstrap5 alert %}
 
 {% block title %}{% trans "Registration" %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Registration" %} — {{ event.title }} — {% trans "Calendar" %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}{% endblock %}
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}</h1>
 
-{% block page_content %}
-    {% bootstrap_messages %}
-    <form method="post" class="col-12">
-        {% csrf_token %}
-        {% for field in form %}
-            {% bootstrap_field field %}
-        {% endfor %}
-        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary float-end"/>
-    </form>
+            {% bootstrap_messages %}
+
+            <form method="post" class="col-lg-6 offset-lg-3">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    {% bootstrap_field field %}
+                {% endfor %}
+
+                <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary float-end"/>
+            </form>
+        </div>
+    </section>
 {% endblock %}

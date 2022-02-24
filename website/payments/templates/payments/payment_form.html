@@ -1,4 +1,4 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 {% load i18n static django_bootstrap5 compress alert %}
 
 {% block title %}{% trans "confirm payment"|capfirst %} —
@@ -6,35 +6,49 @@
 {% block opengraph_title %}{% trans "confirm payment"|capfirst %} —
     {% trans "Thalia Pay"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "confirm payment of"|capfirst %} € {{ payable.payment_amount|floatformat:2 }}{% endblock %}
-{% block section_tags %}id="payments-account-overview"{% endblock %}
+{% block body %}
+    <section class="page-section" id="payments-account-overview">
+        <div class="container">
+            <h1 class="section-title">{% trans "confirm payment of"|capfirst %} € {{ payable.payment_amount|floatformat:2 }}</h1>
 
-{% block page_content %}
-    {% bootstrap_messages %}
-    {% for error in form.errors.items %}
-        {% for message in error.1 %}
-            {% alert 'danger' message dismissible=True %}
-        {% endfor %}
-    {% endfor %}
-    <p><em>{{ payable.payment_notes }}</em></p>
-    <p>
-        {% blocktrans trimmed %}
-            Please confirm your payment.
-            Be aware that this confirmation is final.
-        {% endblocktrans %}
-    </p>
-    <p>{% trans "After this payment, your Thalia Pay balance will be" %} € {{ new_balance|floatformat:2 }}.</p>
-    <form class="form-horizontal row" method="post" class="row">
-        {% csrf_token %}
-        {% bootstrap_field form.model_name %}
-        {% bootstrap_field form.app_label %}
-        {% bootstrap_field form.payable %}
-        {% bootstrap_field form.next %}
-        {% bootstrap_field form.payable_hash %}
-        <div class="form-row col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
-            <input type="submit" name="_save" value="{% trans "confirm"|capfirst %}"
-                   class="btn btn-success w-100">
-            <a href="{{ form.next.value }}" class="btn btn-secondary w-100 mt-4">{% trans "cancel"|capfirst %}</a>
+            {% bootstrap_messages %}
+
+            {% for error in form.errors.items %}
+                {% for message in error.1 %}
+                    {% alert 'danger' message dismissible=True %}
+                {% endfor %}
+            {% endfor %}
+
+            <p>
+                <em>{{ payable.payment_notes }}</em>
+            </p>
+
+            <p>
+                {% blocktrans trimmed %}
+                    Please confirm your payment.
+                    Be aware that this confirmation is final.
+                {% endblocktrans %}
+            </p>
+
+            <p>
+                 {% trans "After this payment, your Thalia Pay balance will be" %} € {{ new_balance|floatformat:2 }}.
+            </p>
+
+            <form class="form-horizontal row" method="post" class="row">
+                {% csrf_token %}
+
+                {% bootstrap_field form.model_name %}
+                {% bootstrap_field form.app_label %}
+                {% bootstrap_field form.payable %}
+                {% bootstrap_field form.next %}
+                {% bootstrap_field form.payable_hash %}
+
+                <div class="form-row col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
+                    <input type="submit" name="_save" value="{% trans "confirm"|capfirst %}"
+                           class="btn btn-success w-100">
+                    <a href="{{ form.next.value }}" class="btn btn-secondary w-100 mt-4">{% trans "cancel"|capfirst %}</a>
+                </div>
+            </form>
         </div>
-    </form>
+    </section>
 {% endblock %}

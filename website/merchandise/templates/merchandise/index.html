@@ -1,28 +1,34 @@
-{% extends 'simple_page.html' %}
+{% extends 'base.html' %}
 {% load static i18n thumbnail %}
 
 {% block title %}{% trans "Merchandise" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Merchandise" %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "Merchandise" %}{% endblock %}
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "Merchandise" %}</h1>
 
-{% block page_content %}
-    <p>{% trans "Below you can find all the merchandise Thalia has available. During every lunch break, the merchandise is for sale in the board room (M1.0.08). Outside those hours, please make an appointment or approach the board over drinks." %}</p>
-    {% for item in items %}
-        <hr />
-        <div class="row">
-            <div class="col-12 col-md-3">
-                <img src="{% thumbnail item.image THUMBNAIL_SIZE_MEDIUM fit=False %}" id="image" alt="{{ item.name }}" />
-            </div>
-            <div class="col-12 col-md-9 pt-4 pt-md-0">
-                <h2>{{ item.name }}</h2>
-                <p>{{ item.description }}</p>
-                <p class="mb-0">
-                    {% blocktrans trimmed with price=item.price %}
-                        Price: € {{ price }}
-                    {% endblocktrans %}
-                </p>
-            </div>
+            <p>{% trans "Below you can find all the merchandise Thalia has available. During every lunch break, the merchandise is for sale in the board room (M1.0.08). Outside those hours, please make an appointment or approach the board over drinks." %}</p>
+
+            {% for item in items %}
+                <hr />
+
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <img src="{% thumbnail item.image THUMBNAIL_SIZE_MEDIUM fit=False %}" id="image" alt="{{ item.name }}" />
+                    </div>
+                    <div class="col-12 col-md-9 pt-4 pt-md-0">
+                        <h2>{{ item.name }}</h2>
+                        <p>{{ item.description }}</p>
+                        <p class="mb-0">
+                            {% blocktrans trimmed with price=item.price %}
+                                Price: € {{ price }}
+                            {% endblocktrans %}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </section>
 {% endblock %}

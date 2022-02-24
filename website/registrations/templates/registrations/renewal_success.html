@@ -1,15 +1,18 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "success"|capfirst %} - {% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "renewal" %}{% endblock %}
-
-{% block page_content %}
-    <p>
-        {% blocktrans trimmed %}
-            Thank you!
-            We'll review your submission as soon as possible.
-        {% endblocktrans %}
-    </p>
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "renewal" %}</h1>
+            <p>
+                {% blocktrans trimmed %}
+                    Thank you!
+                    We'll review your submission as soon as possible.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </section>
 {% endblock %}

@@ -1,65 +1,69 @@
-{% extends 'simple_page.html' %}
+{% extends 'base.html' %}
 {% load i18n static compress thabloid_cards %}
 
 {% block title %}{% trans "Thabloid" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Thabloid" %} —
     {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "Thabloid" %}{% endblock %}
-{% block section_tags %}id="thabloid-index"{% endblock %}
+{% block body %}
+    <section class="page-section" id="thabloid-index">
+        <div class="container">
+            <h1 class="section-title">{% trans "Thabloid" %}</h1>
 
-{% block page_content %}
-    <ul class="nav nav-tabs mt-4">
-        <li class="nav-item">
-            <a class="nav-link"
-               href="#all"
-               data-filter="all">
-                {% trans "All Thabloids" %}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-               href="#year-{{ year }}"
-               data-filter=".year-{{ year }}">
-                {{ year }}-{{ year|add:1 }}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-               href="#year-{{ year|add:-1 }}"
-               data-filter=".year-{{ year|add:-1 }}">
-                {{ year|add:-1 }}-{{ year }}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-               href="#year-{{ year|add:-2 }}"
-               data-filter=".year-{{ year|add:-2 }}">
-                {{ year|add:-2 }}-{{ year|add:-1 }}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-               href="#year-{{ year|add:-3 }}"
-               data-filter=".year-{{ year|add:-3 }}">
-                {{ year|add:-3 }}-{{ year|add:-2 }}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link"
-               href="#year-older"
-               data-filter=".year-older">
-                {% trans "Older" %}
-            </a>
-        </li>
-    </ul>
-    <div class="row">
-        {% for thabloid in thabloids %}
-            <div class="mix {% if thabloid.year >= year|add:-3 %}year-{{ thabloid.year }}{% else %}year-older{% endif %} col-6 col-md-3 my-3">
-                {% thabloid_card year thabloid %}
+            <ul class="nav nav-tabs mt-4">
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#all"
+                       data-filter="all">
+                        {% trans "All Thabloids" %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-{{ year }}"
+                       data-filter=".year-{{ year }}">
+                        {{ year }}-{{ year|add:1 }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-{{ year|add:-1 }}"
+                       data-filter=".year-{{ year|add:-1 }}">
+                        {{ year|add:-1 }}-{{ year }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-{{ year|add:-2 }}"
+                       data-filter=".year-{{ year|add:-2 }}">
+                        {{ year|add:-2 }}-{{ year|add:-1 }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-{{ year|add:-3 }}"
+                       data-filter=".year-{{ year|add:-3 }}">
+                        {{ year|add:-3 }}-{{ year|add:-2 }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#year-older"
+                       data-filter=".year-older">
+                        {% trans "Older" %}
+                    </a>
+                </li>
+            </ul>
+
+            <div class="row">
+                {% for thabloid in thabloids %}
+                    <div class="mix {% if thabloid.year >= year|add:-3 %}year-{{ thabloid.year }}{% else %}year-older{% endif %} col-6 col-md-3 my-3">
+                        {% thabloid_card year thabloid %}
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    </section>
 {% endblock %}
 
 {% block js_body %}

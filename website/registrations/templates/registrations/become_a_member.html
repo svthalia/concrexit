@@ -1,58 +1,69 @@
-{% extends "simple_page.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Become a Member" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Become a Member" %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "Become a Member" %}{% endblock %}
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "Become a Member" %}</h1>
 
-{% block page_content %}
-    <div class="row">
-        <p class="col-12">{% trans "Thalia is the study association for Computing Science and Information Sciences students at the Radboud University in Nijmegen. Thalia organises a wide variety of activities, such as bowling events, go cart racing, lunch lectures, drinks and much more! Furthermore, members get access to our tests and summaries database, as well as discounts on books. There's no reason not to become a member!" %}</p>
-    </div>
-    <div class="row mt-5 mb-3">
-        <div class="col-12 col-lg-6 order-1">
-            <h4>{% trans "I'm a Computing Science or Information Sciences student at the Radboud University" %}</h4>
+            <div class="row">
+                <p class="col-12">{% trans "Thalia is the study association for Computing Science and Information Sciences students at the Radboud University in Nijmegen. Thalia organises a wide variety of activities, such as bowling events, go cart racing, lunch lectures, drinks and much more! Furthermore, members get access to our tests and summaries database, as well as discounts on books. There's no reason not to become a member!" %}</p>
+            </div>
+
+            <div class="row mt-5 mb-3">
+                <div class="col-12 col-lg-6 order-1">
+                    <h4>{% trans "I'm a Computing Science or Information Sciences student at the Radboud University" %}</h4>
+
+                    <p>
+                        {% blocktrans trimmed %}
+                            You can become a member of Thalia at any time during the year. A membership costs €
+                            {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration. Click on the button
+                            below to go to the registration form. Note: Only Computing Science and Information Sciences students
+                            at the Radboud University can become a member.
+                        {% endblocktrans %}
+                    </p>
+                </div>
+
+                <div class="col-12 col-lg-6 order-1 order-lg-3">
+                    <p class="my-4">
+                        <a href="{% url 'registrations:register-member' %}" class="btn btn-primary btn-lg">
+                            {% trans "Become a member" %}
+                        </a>
+                    </p>
+                </div>
+
+                <div class="col-12 col-lg-6 h-100 order-2 order-lg-2">
+                    <h4>{% trans "I'm not a Computing Science and Information Sciences student at the Radboud University" %}</h4>
+
+                    <p>
+                        {% blocktrans trimmed %}
+                            It is still possible to be associated with Thalia, even if you do not study Computing
+                            Science or Information Sciences (anymore): You can become a benefactor. For at least €
+                            {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.
+                            If you are not a former Thalia member, iCIS staff member or alumni, you must collect two references of current Thalia members.
+                        {% endblocktrans %}
+                    </p>
+                </div>
+
+                <div class="col-12 col-lg-6 order-3">
+                    <p class="my-4">
+                        <a href="{% url 'registrations:register-benefactor' %}" class="btn btn-primary btn-lg">
+                            {% trans "Become a benefactor" %}
+                        </a>
+                    </p>
+                </div>
+            </div>
+
             <p>
                 {% blocktrans trimmed %}
-                    You can become a member of Thalia at any time during the year. A membership costs €
-                    {{ year_fees }} per year, or € {{ study_fees }} for your entire study duration. Click on the button
-                    below to go to the registration form. Note: Only Computing Science and Information Sciences students
-                    at the Radboud University can become a member.
+                    Payment can be made both in cash or by card. If you have any other questions about Thalia
+                    and/or your membership, feel free to email
+                    <a href="mailto:info@thalia.nu" rel="noopener" target="_blank">info@thalia.nu</a>!
                 {% endblocktrans %}
             </p>
         </div>
-        <div class="col-12 col-lg-6 order-1 order-lg-3">
-            <p class="my-4">
-                <a href="{% url 'registrations:register-member' %}" class="btn btn-primary btn-lg">
-                    {% trans "Become a member" %}
-                </a>
-            </p>
-        </div>
-        <div class="col-12 col-lg-6 h-100 order-2 order-lg-2">
-            <h4>{% trans "I'm not a Computing Science and Information Sciences student at the Radboud University" %}</h4>
-            <p>
-                {% blocktrans trimmed %}
-                    It is still possible to be associated with Thalia, even if you do not study Computing
-                    Science or Information Sciences (anymore): You can become a benefactor. For at least €
-                    {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.
-                    If you are not a former Thalia member, iCIS staff member or alumni, you must collect two references of current Thalia members.
-                {% endblocktrans %}
-            </p>
-        </div>
-        <div class="col-12 col-lg-6 order-3">
-            <p class="my-4">
-                <a href="{% url 'registrations:register-benefactor' %}" class="btn btn-primary btn-lg">
-                    {% trans "Become a benefactor" %}
-                </a>
-            </p>
-        </div>
-    </div>
-    <p>
-        {% blocktrans trimmed %}
-            Payment can be made both in cash or by card. If you have any other questions about Thalia
-            and/or your membership, feel free to email
-            <a href="mailto:info@thalia.nu" rel="noopener" target="_blank">info@thalia.nu</a>!
-        {% endblocktrans %}
-    </p>
+    </section>
 {% endblock %}

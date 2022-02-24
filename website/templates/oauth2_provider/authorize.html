@@ -1,4 +1,4 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 {% load i18n static django_bootstrap5 compress alert %}
 
 {% comment %}This page is automatically used by django-oauth-toolkit{% endcomment %}
@@ -6,38 +6,42 @@
 {% block title %}{% trans "authorise application"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "authorise application"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}
-    {% if not error %}
-        {% trans "authorise"|capfirst %} {{ application.name }}
-    {% else %}
-        {% trans "error"|capfirst %}
-    {% endif %}
-{% endblock %}
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            {% if not error %}
+                <h1 class="section-title center-lg-50">{% trans "authorise"|capfirst %} {{ application.name }}</h1>
 
-{% block page_content %}
-     {% if not error %}
-        <form class="col-12" method="post">
-            {% csrf_token %}
-            {% for field in form %}
-                {% if field.is_hidden %}
-                    {{ field }}
-                {% endif %}
-            {% endfor %}
-            <p>{% trans "Application requires following permissions" %}:</p>
-            <ul>
-                {% for scope in scopes_descriptions %}
-                    <li>{{ scope }}</li>
-                {% endfor %}
-            </ul>
-            {{ form.errors }}
-            {{ form.non_field_errors }}
-            <div class="form-row mt-4">
-                <input type="submit" class="btn btn-success w-100" name="allow" value="{% trans "confirm"|capfirst %}" />
-                <input type="submit" class="btn btn-danger w-100 mt-4" value="{% trans "cancel"|capfirst %}" />
-            </div>
-        </form>
-     {% else %}
-         <h4>{{ error.error }}</h4>
-         <p>{{ error.description }}</p>
-     {% endif %}
+                <form class="col-12 col-lg-6 offset-lg-3" method="post">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        {% if field.is_hidden %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+
+                    <p>{% trans "Application requires following permissions" %}:</p>
+                    <ul>
+                        {% for scope in scopes_descriptions %}
+                            <li>{{ scope }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    {{ form.errors }}
+                    {{ form.non_field_errors }}
+
+                    <div class="form-row mt-4">
+                        <input type="submit" class="btn btn-success w-100" name="allow" value="{% trans "confirm"|capfirst %}" />
+                        <input type="submit" class="btn btn-danger w-100 mt-4" value="{% trans "cancel"|capfirst %}" />
+                    </div>
+                </form>
+
+            {% else %}
+                <h1 class="section-title">{% trans "error"|capfirst %}</h1>
+                <h4>{{ error.error }}</h4>
+                <p>{{ error.description }}</p>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

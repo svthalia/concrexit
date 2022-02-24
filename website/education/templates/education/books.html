@@ -5,25 +5,28 @@
 {% block opengraph_title %}{% trans "Book Sale" %} —
     {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "Book Sale" %}{% endblock %}
-{% block section_tags %}id="education-booksale"{% endblock %}
+{% block body %}
+    <section class="page-section" id="education-booksale">
+        <div class="container">
+            <h1 class="section-title">{% trans "Book Sale" %}</h1>
 
-{% block page_content %}
-    <p>
-        {% blocktrans trimmed %}
-            Thalia's book sale goes through Studystore. You can find
-            the personalized webshop
-            <a href="https://betabooks.itdepartment.nl/en"
-               target="_blank" rel="noopener">here</a>.
-            As a member of Thalia you receive a 15% discount on study
-            books ordered at this webshop.
-        {% endblocktrans %}
-    </p>
-    <p>
-        {% blocktrans trimmed %}
-            If you cannot find a certain book or you find another
-            error, please contact the board at
-            <a href="mailto:books@thalia.nu" rel="noopener" target="_blank">books@thalia.nu</a>.
-        {% endblocktrans %}
-    </p>
+            <p>
+                {% blocktrans trimmed %}
+                    Thalia's book sale goes through Studystore. You can find
+                    the personalized webshop
+                    <a href="https://betabooks.itdepartment.nl/en"
+                       target="_blank" rel="noopener">here</a>.
+                    As a member of Thalia you receive a 15% discount on study
+                    books ordered at this webshop.
+                {% endblocktrans %}
+            </p>
+            <p>
+                {% blocktrans trimmed %}
+                    If you cannot find a certain book or you find another
+                    error, please contact the board at
+                    <a href="mailto:books@thalia.nu" rel="noopener" target="_blank">books@thalia.nu</a>.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </section>
 {% endblock %}}

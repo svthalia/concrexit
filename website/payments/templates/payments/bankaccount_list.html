@@ -1,4 +1,4 @@
-{% extends "simple_page.html" %}
+{% extends "base.html" %}
 {% load i18n static django_bootstrap5 compress alert %}
 
 {% block title %}{% trans "bank accounts"|capfirst %} —
@@ -6,127 +6,138 @@
 {% block opengraph_title %}{% trans "bank accounts"|capfirst %} —
     {% trans "finances"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "bank accounts"|capfirst %}{% endblock %}
-{% block section_tags %}id="bank-accounts-overview"{% endblock %}
+{% block body %}
+    <section class="page-section" id="payments-account-overview">
+        <div class="container">
+            <h1 class="section-title">{% trans "bank accounts"|capfirst %}</h1>
 
-{% block page_content %}
-    {% bootstrap_messages %}
-    <p>
-        {% blocktrans trimmed %}
-            Thalia keeps your bank account saved to your profile to
-            ease the processing of digital financial transactions like
-            reimbursements or invoices. You can change the bank account
-            saved to your profile and manage your authorisation for
-            direct debit transactions.
-        {% endblocktrans %}
-    </p>
-    <p>
-        {% blocktrans trimmed %}
-            We only keep a history of bank accounts with a direct debit
-            authorisation. Bank accounts that do not have such an
-            authorisation are not kept when you change your account.
-            Changing your bank account automatically revokes any
-            previously given direct debit authorisations.
-        {% endblocktrans %}
-    </p>
-    {% if payment_user.tpay_allowed %}
-        <h3 class="section-title mt-3">{% trans "Thalia Pay" %}</h3>
-        <p class="mb-3">
-            {% blocktrans trimmed %}
-                If you agree to using your bank account for direct debit transactions,
-                you can make use of Thalia Pay. With Thalia Pay, you can pay for things
-                like events or pizzas via direct debit. You just hit the
-                'Pay with Thalia Pay'-button on the website and confirm your payment.
-                These amounts will then later be withdrawn from your bank account.
-            {% endblocktrans %}
-        </p>
-    {% endif %}
-    {% if object_list %}
-        <p class="mb-4">
-            <a href="{% url 'payments:bankaccount-add' %}"
-               class="btn btn-primary">Change bank account</a>
-        </p>
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">
-                    {% trans "IBAN" %}
-                </th>
-                <th scope="col">
-                    {% trans "name"|capfirst %}
-                </th>
-                <th scope="col">
-                    {% trans "created"|capfirst %}
-                </th>
-                <th scope="col">
-                    {% trans "direct debit"|capfirst %}
-                </th>
-                <th scope="col">
-                    {% trans "reference"|capfirst %}
-                </th>
-                <th scope="col">
-                    {% trans "valid from"|capfirst %}
-                </th>
-                <th scope="col">
-                    {% trans "valid until"|capfirst %}
-                </th>
-                <th scope="col">
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for account in object_list reversed %}
-                <tr>
-                    <th scope="row">
-                        {{ account.iban }}
-                        {% if account.bic %}
-                            ({{ account.bic }})
-                        {% endif %}
-                    </th>
-                    <td>
-                        {{ account.name }}
-                    </td>
-                    <td>
-                        {{ account.created_at }}
-                    </td>
-                    <td>
-                        <i class="fas fa-{{ account.valid|yesno:'check-circle,times-circle' }}"></i>
-                    </td>
-                    <td>
-                        {{ account.mandate_no|default_if_none:"-" }}
-                    </td>
-                    <td>
-                        {{ account.valid_from|default_if_none:"-" }}
-                    </td>
-                    <td>
-                        {{ account.valid_until|default_if_none:"-" }}
-                    </td>
-                    <td>
-                        {% if account.valid %}
-                            <form
-                                method="post"
-                                action="{% url 'payments:bankaccount-revoke' account.pk %}"
-                            >
-                                {% csrf_token %}
-                                <input
-                                    type="submit"
-                                    class="btn btn-secondary"
-                                    value="{% trans 'Revoke' %}"
-                                    onclick="return confirm('{% trans 'Are you sure you want to revoke the mandate for this bank account?' %}');"
-                                />
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p class="mb-4">
-            <a href="{% url 'payments:bankaccount-add' %}"
-               class="btn btn-primary">Add bank account</a>
-        </p>
-        {% trans "You don't have any saved accounts yet." as no_accounts %}
-        {% alert 'info' no_accounts %}
-    {% endif %}
+            {% bootstrap_messages %}
+
+            <p>
+                {% blocktrans trimmed %}
+                    Thalia keeps your bank account saved to your profile to
+                    ease the processing of digital financial transactions like
+                    reimbursements or invoices. You can change the bank account
+                    saved to your profile and manage your authorisation for
+                    direct debit transactions.
+                {% endblocktrans %}
+            </p>
+
+            <p>
+                {% blocktrans trimmed %}
+                    We only keep a history of bank accounts with a direct debit
+                    authorisation. Bank accounts that do not have such an
+                    authorisation are not kept when you change your account.
+                    Changing your bank account automatically revokes any
+                    previously given direct debit authorisations.
+                {% endblocktrans %}
+            </p>
+
+
+            {% if payment_user.tpay_allowed %}
+                <h3 class="section-title mt-3">{% trans "Thalia Pay" %}</h3>
+                <p class="mb-3">
+                    {% blocktrans trimmed %}
+                        If you agree to using your bank account for direct debit transactions,
+                        you can make use of Thalia Pay. With Thalia Pay, you can pay for things
+                        like events or pizzas via direct debit. You just hit the
+                        'Pay with Thalia Pay'-button on the website and confirm your payment.
+                        These amounts will then later be withdrawn from your bank account.
+                    {% endblocktrans %}
+                </p>
+            {% endif %}
+
+
+            {% if object_list %}
+                <p class="mb-4">
+                    <a href="{% url 'payments:bankaccount-add' %}"
+                       class="btn btn-primary">Change bank account</a>
+                </p>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">
+                            {% trans "IBAN" %}
+                        </th>
+                        <th scope="col">
+                            {% trans "name"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "created"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "direct debit"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "reference"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "valid from"|capfirst %}
+                        </th>
+                        <th scope="col">
+                            {% trans "valid until"|capfirst %}
+                        </th>
+                        <th scope="col">
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for account in object_list reversed %}
+                        <tr>
+                            <th scope="row">
+                                {{ account.iban }}
+                                {% if account.bic %}
+                                    ({{ account.bic }})
+                                {% endif %}
+                            </th>
+                            <td>
+                                {{ account.name }}
+                            </td>
+                            <td>
+                                {{ account.created_at }}
+                            </td>
+                            <td>
+                                <i class="fas fa-{{ account.valid|yesno:'check-circle,times-circle' }}"></i>
+                            </td>
+                            <td>
+                                {{ account.mandate_no|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ account.valid_from|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {{ account.valid_until|default_if_none:"-" }}
+                            </td>
+                            <td>
+                                {% if account.valid %}
+                                    <form
+                                        method="post"
+                                        action="{% url 'payments:bankaccount-revoke' account.pk %}"
+                                    >
+                                        {% csrf_token %}
+                                        <input
+                                            type="submit"
+                                            class="btn btn-secondary"
+                                            value="{% trans 'Revoke' %}"
+                                            onclick="return confirm('{% trans 'Are you sure you want to revoke the mandate for this bank account?' %}');"
+                                        />
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="mb-4">
+                    <a href="{% url 'payments:bankaccount-add' %}"
+                       class="btn btn-primary">Add bank account</a>
+                </p>
+
+                {% trans "You don't have any saved accounts yet." as no_accounts %}
+                {% alert 'info' no_accounts %}
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

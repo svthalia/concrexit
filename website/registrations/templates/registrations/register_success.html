@@ -1,18 +1,21 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "registration success"|capfirst %} - {% trans "registration"|capfirst %} —
     {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "registration" %}{% endblock %}
-
-{% block page_content %}
-    <p>
-        {% blocktrans trimmed %}
-            Thank you!
-            Before we can review your membership registration we need confirmation that the email address you
-            entered during the registration process is valid.
-            Please check your mailbox for the confirmation email.
-        {% endblocktrans %}
-    </p>
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "registration" %}</h1>
+            <p>
+                {% blocktrans trimmed %}
+                    Thank you!
+                    Before we can review your membership registration we need confirmation that the email address you
+                    entered during the registration process is valid.
+                    Please check your mailbox for the confirmation email.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </section>
 {% endblock %}

@@ -6,132 +6,135 @@
 {% block opengraph_title %}{{ course.name }} — {% trans "Course" %} —
     {{ block.super }}{% endblock %}
 
-{% block page_title %}{{ course.name }}{% endblock %}
-{% block section_tags %}id="education-course"{% endblock %}
+{% block body %}
+    <section class="page-section" id="education-course">
+        <div class="container">
+            <h1 class="section-title">{{ course.name }}</h1>
 
-{% block page_content %}
-    <div class="row">
-        <div class="col-12 col-md-8">
-            {% if items|length  == 0 %}
-                <p>
-                    <i>
-                        {% blocktrans trimmed %}
-                            Thalia does not have any documents for this
-                            course, unfortunately. Are you in
-                            possession of
-                            exams or summaries for this course? Then
-                            let us
-                            know or add them to the catalog using the
-                            submission page!
-                        {% endblocktrans %}
-                    </i>
-                </p>
-            {% else %}
-                <div class="accordion bordered">
-                    {% for year, data in items reversed %}
-                        <div class="card mb-0">
-                            <div class="card-header collapsed"
-                                 data-bs-toggle="collapse"
-                                 data-bs-target="#year-{{ year }}">
-                                <a href="#year-{{ year }}">
-                                    {{ year }} - {{ year|add:1 }}
-                                </a>
-                            </div>
-                            <div
-                                class="collapse"
-                                id="year-{{ year }}"
-                            >
-                                <div class="card-body">
-                                    {% if data.legacy %}
-                                        <div
-                                            class="alert alert-warning">
-                                            {% blocktrans trimmed with course_url=data.legacy.get_absolute_url course_name=data.legacy.name %}
-                                                These documents were collected for <a href="{{ course_url }}">{{ course_name }}</a>, a
-                                                predecessor of this course.
-                                            {% endblocktrans %}
+            <div class="row">
+                <div class="col-12 col-md-8">
+                    {% if items|length  == 0 %}
+                        <p>
+                            <i>
+                                {% blocktrans trimmed %}
+                                    Thalia does not have any documents for this
+                                    course, unfortunately. Are you in
+                                    possession of
+                                    exams or summaries for this course? Then
+                                    let us
+                                    know or add them to the catalog using the
+                                    submission page!
+                                {% endblocktrans %}
+                            </i>
+                        </p>
+                    {% else %}
+                        <div class="accordion bordered">
+                            {% for year, data in items reversed %}
+                                <div class="card mb-0">
+                                    <div class="card-header collapsed"
+                                         data-bs-toggle="collapse"
+                                         data-bs-target="#year-{{ year }}">
+                                        <a href="#year-{{ year }}">
+                                            {{ year }} - {{ year|add:1 }}
+                                        </a>
+                                    </div>
+                                    <div
+                                        class="collapse"
+                                        id="year-{{ year }}"
+                                    >
+                                        <div class="card-body">
+                                            {% if data.legacy %}
+                                                <div
+                                                    class="alert alert-warning">
+                                                    {% blocktrans trimmed with course_url=data.legacy.get_absolute_url course_name=data.legacy.name %}
+                                                        These documents were collected for <a href="{{ course_url }}">{{ course_name }}</a>, a
+                                                        predecessor of this course.
+                                                    {% endblocktrans %}
+                                                </div>
+                                            {% endif %}
+
+                                            {% if data.exams|length != 0 %}
+                                                <h5>{% trans "Exams" %}</h5>
+                                                <ul
+                                                    {% if data.summaries|length == 0 %}
+                                                        class="mb-0"{% endif %}>
+                                                    {% for item in data.exams %}
+                                                        <li>
+                                                            <a href="{% url 'education:exam' item.id %}"
+                                                               target="_blank">
+                                                                {{ item.name }}
+                                                                {% if item.language %}
+                                                                    <img class="lang-flag" src="{% static 'img/flags/'|add:item.language|add:'.svg' %}"/>
+                                                                {% endif %}
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+
+                                            {% if data.summaries|length != 0 %}
+                                                <h5>{% trans "Summaries" %}</h5>
+                                                <ul class="mb-0">
+                                                    {% for item in data.summaries %}
+                                                        <li>
+                                                            <a href="{% url 'education:summary' item.id %}"
+                                                               target="_blank">
+                                                                {{ item.name }}
+                                                                {% if item.language %}
+                                                                    <img class="lang-flag" src="{% static 'img/flags/'|add:item.language|add:'.svg' %}"/>
+                                                                {% endif %}
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
-                                    {% endif %}
-
-                                    {% if data.exams|length != 0 %}
-                                        <h5>{% trans "Exams" %}</h5>
-                                        <ul
-                                            {% if data.summaries|length == 0 %}
-                                                class="mb-0"{% endif %}>
-                                            {% for item in data.exams %}
-                                                <li>
-                                                    <a href="{% url 'education:exam' item.id %}"
-                                                       target="_blank">
-                                                        {{ item.name }}
-                                                        {% if item.language %}
-                                                            <img class="lang-flag" src="{% static 'img/flags/'|add:item.language|add:'.svg' %}"/>
-                                                        {% endif %}
-                                                    </a>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% endif %}
-
-                                    {% if data.summaries|length != 0 %}
-                                        <h5>{% trans "Summaries" %}</h5>
-                                        <ul class="mb-0">
-                                            {% for item in data.summaries %}
-                                                <li>
-                                                    <a href="{% url 'education:summary' item.id %}"
-                                                       target="_blank">
-                                                        {{ item.name }}
-                                                        {% if item.language %}
-                                                            <img class="lang-flag" src="{% static 'img/flags/'|add:item.language|add:'.svg' %}"/>
-                                                        {% endif %}
-                                                    </a>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% endif %}
+                                    </div>
                                 </div>
-                            </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
-            {% endif %}
+                <div class="col-12 col-md-4">
+                    <p>
+                        {% blocktrans trimmed with name=course.name %}
+                            This is the overview for <b>{{ name }}</b>. You can
+                            find all the exams and summaries that Thalia has
+                            here.
+                        {% endblocktrans %}
+                    </p>
+                    <p>
+                        {% blocktrans trimmed %}
+                            Keep in mind that old exams and summaries may not
+                            always test the same material as this year.
+                        {% endblocktrans %}
+                    </p>
+
+                    <hr/>
+
+                    <ul class="list-unstyled">
+                        <li>
+                            <strong>{% trans "Course code" %}: </strong>
+                            {{ course.course_code }}
+                        </li>
+                        <li><strong>{% trans "EC" %}: </strong>
+                            {{ course.ec }}
+                        </li>
+                    </ul>
+
+                    {% if request.user.is_authenticated %}
+                        <hr>
+                        <a href="{% url 'education:submit-exam' course.id %}"
+                           class="btn btn-primary mt-2 me-2">
+                            {% trans "Submit Exam" %}
+                        </a>
+                        <a href="{% url 'education:submit-summary' course.id %}"
+                           class="btn btn-primary mt-2">
+                            {% trans "Submit Summary" %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div class="col-12 col-md-4">
-            <p>
-                {% blocktrans trimmed with name=course.name %}
-                    This is the overview for <b>{{ name }}</b>. You can
-                    find all the exams and summaries that Thalia has
-                    here.
-                {% endblocktrans %}
-            </p>
-            <p>
-                {% blocktrans trimmed %}
-                    Keep in mind that old exams and summaries may not
-                    always test the same material as this year.
-                {% endblocktrans %}
-            </p>
-
-            <hr/>
-
-            <ul class="list-unstyled">
-                <li>
-                    <strong>{% trans "Course code" %}: </strong>
-                    {{ course.course_code }}
-                </li>
-                <li><strong>{% trans "EC" %}: </strong>
-                    {{ course.ec }}
-                </li>
-            </ul>
-
-            {% if request.user.is_authenticated %}
-                <hr>
-                <a href="{% url 'education:submit-exam' course.id %}"
-                   class="btn btn-primary mt-2 me-2">
-                    {% trans "Submit Exam" %}
-                </a>
-                <a href="{% url 'education:submit-summary' course.id %}"
-                   class="btn btn-primary mt-2">
-                    {% trans "Submit Summary" %}
-                </a>
-            {% endif %}
-        </div>
-    </div>
+    </section>
 {% endblock %}

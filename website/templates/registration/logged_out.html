@@ -1,4 +1,4 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% comment %}This page is automatically used by django.contrib.auth.views{% endcomment %}
@@ -6,9 +6,14 @@
 {% block title %}{% trans "Logout" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Logout" %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "Logout" %}{% endblock %}
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "Logout" %}</h1>
 
-{% block page_content %}
-    <p>{% trans "You've been logged out successfully." %}</p>
-    <p><a href="{% url 'login' %}">{% trans 'Log in again' %}</a></p>
+            <p>{% trans "You've been logged out successfully." %}</p>
+
+            <p><a href="{% url 'login' %}">{% trans 'Log in again' %}</a></p>
+        </div>
+    </section>
 {% endblock %}

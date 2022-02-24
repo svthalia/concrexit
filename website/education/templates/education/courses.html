@@ -6,95 +6,98 @@
 {% block opengraph_title %}{% trans "Course overview" %} —
     {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "Course overview" %}{% endblock %}
-{% block section_tags %}id="education-courses"{% endblock %}
+{% block body %}
+    <section class="page-section" id="education-courses">
+        <div class="container">
+            <h1 class="section-title">{% trans "Course overview" %}</h1>
 
-{% block page_content %}
-    <div class="row">
-        <div class="col-12 col-lg-6">
-            <p>
-                {% blocktrans trimmed %}
-                    This overview contains all courses for which Thalia has
-                    exams, summaries or other documents. Select a course to
-                    find out more.<br/>
-                    Can't find a course? Let the
-                    <a href="mailto:educacie@thalia.nu">Educacie</a>
-                    know.
-                {% endblocktrans %}
+            <div class="row">
+                <div class="col-12 col-lg-6">
+                    <p>
+                        {% blocktrans trimmed %}
+                            This overview contains all courses for which Thalia has
+                            exams, summaries or other documents. Select a course to
+                            find out more.<br/>
+                            Can't find a course? Let the
+                            <a href="mailto:educacie@thalia.nu">Educacie</a>
+                            know.
+                        {% endblocktrans %}
+                    </p>
+
+            <p class="mt-4">
+                <a class="btn btn-primary d-inline me-2"
+                   href="{% url 'education:submit-exam' %}">{% trans "Submit Exam" %}</a>
+                <a class="btn btn-primary d-inline"
+                   href="{% url 'education:submit-summary' %}">{% trans "Submit Summary" %}</a>
             </p>
+                </div>
 
-    <p class="mt-4">
-        <a class="btn btn-primary d-inline me-2"
-           href="{% url 'education:submit-exam' %}">{% trans "Submit Exam" %}</a>
-        <a class="btn btn-primary d-inline"
-           href="{% url 'education:submit-summary' %}">{% trans "Submit Summary" %}</a>
-    </p>
-        </div>
+                <div class="mt-4 mt-lg-0 col-12 col-lg-6">
+                    <p>
+                        {% blocktrans trimmed %}
+                            You can submit your own exams and summaries!<br/>
+                            Better even, you might even get a monetary reward if you submit a summary:
+                        {% endblocktrans %}
+                    </p>
 
-        <div class="mt-4 mt-lg-0 col-12 col-lg-6">
-            <p>
-                {% blocktrans trimmed %}
-                    You can submit your own exams and summaries!<br/>
-                    Better even, you might even get a monetary reward if you submit a summary:
-                {% endblocktrans %}
-            </p>
+                    <ul class="ps-3">
+                        <li>{% trans "In the current language of the course" %}</li>
+                        <li>{% trans "Adds significant information that was not already present in the summary overview" %}</li>
+                        <li>{% trans "Corresponds to the current course" %}</li>
+                        <li>{% trans "Is positively peer-reviewed by people appointed by the Educacie" %}</li>
+                    </ul>
+                </div>
+            </div>
 
-            <ul class="ps-3">
-                <li>{% trans "In the current language of the course" %}</li>
-                <li>{% trans "Adds significant information that was not already present in the summary overview" %}</li>
-                <li>{% trans "Corresponds to the current course" %}</li>
-                <li>{% trans "Is positively peer-reviewed by people appointed by the Educacie" %}</li>
+            <ul class="nav nav-tabs mt-4">
+                <li class="nav-item">
+                    <a class="nav-link" data-filter="all" href="#all">
+                        {% trans "all courses"|upper %}
+                    </a>
+                </li>
+                {% for category in categories %}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           data-filter=".category-{{ category.id }}"
+                           href="#category-{{ category.id }}">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                {% endfor %}
             </ul>
+
+            <div class="table-responsive">
+                <table class="table table-clickable">
+                    <thead>
+                    <tr>
+                        <th scope="col">{% trans "Course code" %}</th>
+                        <th scope="col">{% trans "Name" %}</th>
+                        <th scope="col"
+                            class="d-md-table-cell d-none">{% trans "Categories" %}</th>
+                        <th scope="col" class="d-md-table-cell d-none">
+                            {% trans "Available documents" %}
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for course in courses %}
+                        <tr class="mix {% for cat in course.categories %}category-{{ cat.id }} {% endfor %}"
+                            data-link="{{ course.url }}">
+                            <td>{{ course.course_code }}</td>
+                            <td>{{ course.name }}</td>
+                            <td class="d-md-table-cell d-none">
+                                {% for category in course.categories %}
+                                    {{ category.name }}{% if not forloop.last %},{% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="d-md-table-cell d-none">{{ course.document_count }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-
-    <ul class="nav nav-tabs mt-4">
-        <li class="nav-item">
-            <a class="nav-link" data-filter="all" href="#all">
-                {% trans "all courses"|upper %}
-            </a>
-        </li>
-        {% for category in categories %}
-            <li class="nav-item">
-                <a class="nav-link"
-                   data-filter=".category-{{ category.id }}"
-                   href="#category-{{ category.id }}">
-                    {{ category.name }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <div class="table-responsive">
-        <table class="table table-clickable">
-            <thead>
-            <tr>
-                <th scope="col">{% trans "Course code" %}</th>
-                <th scope="col">{% trans "Name" %}</th>
-                <th scope="col"
-                    class="d-md-table-cell d-none">{% trans "Categories" %}</th>
-                <th scope="col" class="d-md-table-cell d-none">
-                    {% trans "Available documents" %}
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for course in courses %}
-                <tr class="mix {% for cat in course.categories %}category-{{ cat.id }} {% endfor %}"
-                    data-link="{{ course.url }}">
-                    <td>{{ course.course_code }}</td>
-                    <td>{{ course.name }}</td>
-                    <td class="d-md-table-cell d-none">
-                        {% for category in course.categories %}
-                            {{ category.name }}{% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                    </td>
-                    <td class="d-md-table-cell d-none">{{ course.document_count }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    </section>
 {% endblock %}
 
 {% block js_body %}
