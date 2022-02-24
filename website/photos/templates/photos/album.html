@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'simple_page.html' %}
 {% load static i18n compress photos_cards %}
 
 {% block title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
@@ -6,42 +6,38 @@
 
 {% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock %}
 
-{% block body %}
-    <section id="photos-album" class="page-section">
-        <div class="container">
-            <h1 class="section-title">
-                {{ album.title }}
-                {% if album.event %}
-                <a href="{{ album.event.get_absolute_url }}"
-                   class="btn btn-primary btn-first"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title=""
-                   data-original-title="{% trans "Event" %}">
-                    <i class="fas fa-calendar"></i>
-                </a>
-                {% endif %}
-            </h1>
+{% block page_title %}
+    {{ album.title }}
+    {% if album.event %}
+        <a href="{{ album.event.get_absolute_url }}"
+           class="btn btn-primary btn-first"
+           data-bs-toggle="tooltip"
+           data-bs-placement="top"
+           title=""
+           data-original-title="{% trans "Event" %}">
+            <i class="fas fa-calendar"></i>
+        </a>
+    {% endif %}
+{% endblock %}
+{% block section_tags %}id="photos-album"{% endblock %}
 
-            <h2 class="mt-2">{{ album.date|date:"d-m-Y" }}</h2>
-            {% if album.shareable %}
-                <p>
-                    {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>
-                    <small><a href="{% url 'photos:shared-album' album.slug album.access_token %}">
-                        {{ request.get_host }}{% url 'photos:shared-album' album.slug album.access_token %}
-                    </a></small>
-                </p>
-            {% endif %}
-
-            <div class="row">
-                {% for photo in photos %}
-                    <div class="col-4 col-md-3 my-3">
-                        {% photo_card photo %}
-                    </div>
-                {% endfor %}
+{% block page_content %}
+    <h2 class="mt-2">{{ album.date|date:"d-m-Y" }}</h2>
+    {% if album.shareable %}
+        <p>
+            {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>
+            <small><a href="{% url 'photos:shared-album' album.slug album.access_token %}">
+                {{ request.get_host }}{% url 'photos:shared-album' album.slug album.access_token %}
+            </a></small>
+        </p>
+    {% endif %}
+    <div class="row">
+        {% for photo in photos %}
+            <div class="col-4 col-md-3 my-3">
+                {% photo_card photo %}
             </div>
-        </div>
-    </section>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block js_body %}

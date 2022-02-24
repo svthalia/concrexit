@@ -1,122 +1,119 @@
-{% extends "base.html" %}
+{% extends "simple_page.html" %}
 {% load static i18n thumbnail django_bootstrap5 member_card alert urlparams %}
 
 {% block title %}{% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block body %}
+{% block page_title %}{% trans "members"|capfirst %}{% endblock %}
+{% block section_tags %}id="members-directory"{% endblock %}
+
+{% block page_content %}
     {% with keys=keywords|join:" " %}
-        <section class="page-section" id="members-directory">
-            <div class="container">
-                <h1 class="section-title">{% trans "members"|capfirst %}</h1>
+        <div class="row">
+            <p class="col-lg-6 col-12">
+                {% blocktrans trimmed %}
+                    Ever wondered what the name of that person in the back row of the lecture room is?
+                    There is a high probability that this person is a member of Thalia,
+                    and thus you can use this directory to find them.
+                {% endblocktrans %}
+            </p>
 
-                <div class="row">
-                    <p class="col-lg-6 col-12">
-                        {% blocktrans trimmed %}
-                            Ever wondered what the name of that person in the back row of the lecture room is?
-                            There is a high probability that this person is a member of Thalia,
-                            and thus you can use this directory to find them.
-                        {% endblocktrans %}
-                    </p>
-
-                    <form class="search-form form-inline col-12 col-lg-6 mt-4 mt-lg-0 mb-4" method="get"
-                      action="#members-directory">
-                        <div class="input-group">
-                            <input class="form-control col-12 col-md-9" style="width: available" name="keywords" type="search" value="{{ keys|default_if_none:'' }}"
-                                   placeholder="{% trans "Who are you looking for?" %}" aria-label="{% trans "Search the Thalia's members directory" %}" aria-describedby="memberlist-search-button">
-                            <input id="memberlist-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit"
-                                    value="{% trans "Search" %}"/>
-                        </div>
-                    </form>
+            <form class="search-form form-inline col-12 col-lg-6 mt-4 mt-lg-0 mb-4" method="get"
+              action="#members-directory">
+                <div class="input-group">
+                    <input class="form-control col-12 col-md-9" style="width: available" name="keywords" type="search" value="{{ keys|default_if_none:'' }}"
+                           placeholder="{% trans "Who are you looking for?" %}" aria-label="{% trans "Search the Thalia's members directory" %}" aria-describedby="memberlist-search-button">
+                    <input id="memberlist-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit"
+                            value="{% trans "Search" %}"/>
                 </div>
+            </form>
+        </div>
 
-                <ul class="nav nav-tabs mt-4">
-                    <li class="nav-item">
-                        <a class="nav-link{% if not filter or filter == "all" %} active{% endif %}"
-                           href="{% url 'members:index' %}{% urlparams keywords=keys %}#members-directory">
-                            {% trans "All members" %}
-                        </a>
-                    </li>
-                    {% for year in year_range %}
-                        <li class="nav-item">
-                            <a class="nav-link{% if filter == year|stringformat:"i" %} active{% endif %}"
-                               href="{% url 'members:index' year %}{% urlparams keywords=keys %}#members-directory">
-                                {{ year }}
+        <ul class="nav nav-tabs mt-4">
+            <li class="nav-item">
+                <a class="nav-link{% if not filter or filter == "all" %} active{% endif %}"
+                   href="{% url 'members:index' %}{% urlparams keywords=keys %}#members-directory">
+                    {% trans "All members" %}
+                </a>
+            </li>
+            {% for year in year_range %}
+                <li class="nav-item">
+                    <a class="nav-link{% if filter == year|stringformat:"i" %} active{% endif %}"
+                       href="{% url 'members:index' year %}{% urlparams keywords=keys %}#members-directory">
+                        {{ year }}
+                    </a>
+                </li>
+            {% endfor %}
+            <li class="nav-item">
+                <a class="nav-link{% if filter == "older" %} active{% endif %}"
+                   href="{% url 'members:index' 'older' %}{% urlparams keywords=keys %}#members-directory">
+                    {% trans "Older" %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link{% if filter == "benefactors" %} active{% endif %}"
+                   href="{% url 'members:index' 'benefactors' %}{% urlparams keywords=keys %}#members-directory">
+                    {% trans "Benefactors" %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link{% if filter == "honorary" %} active{% endif %}"
+                   href="{% url 'members:index' 'honorary' %}{% urlparams keywords=keys %}#members-directory">
+                    {% trans "Honorary Members" %}
+                    </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link{% if filter == "former" %} active{% endif %}"
+                   href="{% url 'members:index' 'former' %}{% urlparams keywords=keys %}#members-directory">
+                    {% trans "Former Members" %}
+                </a>
+            </li>
+        </ul>
+
+        {% if not members %}
+            <div class="mt-4">
+                {% trans 'No members found' as info_text %}
+                {% alert 'info' info_text dismissible=False %}
+            </div>
+        {% else %}
+            <div class="row mt-4">
+                {% for member in members %}
+                    <div class="col-4 col-md-3 my-3">
+                        {% member_card member %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <nav>
+                <ul class="pagination mt-4">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?page={{ page_obj.previous_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}#members-directory">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for page in page_range %}
+                        <li class="page-item{% if page == page_obj.number %} active{% endif %}">
+                            <a class="page-link"
+                               href="?page={{ page }}{% if keywords %}&keywords={{ keys }}{% endif %}#members-director">
+                                {{ page }}
                             </a>
                         </li>
                     {% endfor %}
-                    <li class="nav-item">
-                        <a class="nav-link{% if filter == "older" %} active{% endif %}"
-                           href="{% url 'members:index' 'older' %}{% urlparams keywords=keys %}#members-directory">
-                            {% trans "Older" %}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{% if filter == "benefactors" %} active{% endif %}"
-                           href="{% url 'members:index' 'benefactors' %}{% urlparams keywords=keys %}#members-directory">
-                            {% trans "Benefactors" %}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{% if filter == "honorary" %} active{% endif %}"
-                           href="{% url 'members:index' 'honorary' %}{% urlparams keywords=keys %}#members-directory">
-                            {% trans "Honorary Members" %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?page={{ page_obj.next_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
                             </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{% if filter == "former" %} active{% endif %}"
-                           href="{% url 'members:index' 'former' %}{% urlparams keywords=keys %}#members-directory">
-                            {% trans "Former Members" %}
-                        </a>
-                    </li>
+                        </li>
+                    {% endif %}
                 </ul>
-
-                {% if not members %}
-                    <div class="mt-4">
-                        {% trans 'No members found' as info_text %}
-                        {% alert 'info' info_text dismissible=False %}
-                    </div>
-                {% else %}
-                    <div class="row mt-4">
-                        {% for member in members %}
-                            <div class="col-4 col-md-3 my-3">
-                                {% member_card member %}
-                            </div>
-                        {% endfor %}
-                    </div>
-
-                    <nav>
-                        <ul class="pagination mt-4">
-                            {% if page_obj.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="?page={{ page_obj.previous_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}#members-directory">
-                                        <span aria-hidden="true">&laquo;</span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                            {% endif %}
-                            {% for page in page_range %}
-                                <li class="page-item{% if page == page_obj.number %} active{% endif %}">
-                                    <a class="page-link"
-                                       href="?page={{ page }}{% if keywords %}&keywords={{ keys }}{% endif %}#members-director">
-                                        {{ page }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                            {% if page_obj.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="?page={{ page_obj.next_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}">
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                {% endif %}
-            </div>
-        </section>
+            </nav>
+        {% endif %}
     {% endwith %}
 {% endblock %}

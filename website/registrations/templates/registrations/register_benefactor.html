@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "simple_page.html" %}
 {% load i18n static compress django_bootstrap5 %}
 
 {% block title %}{% trans "registration"|capfirst %} — {{ block.super }}{% endblock %}
@@ -14,141 +14,118 @@
     {% endcompress %}
 {% endblock %}
 
-{% block body %}
-    <section class="page-section" id="registrations-form">
-        <div class="container">
-            <h1 class="section-title">{% trans "registration" %} {% trans "Benefactor" %}</h1>
+{% block page_title %}{% trans "registration" %} {% trans "Benefactor" %}{% endblock %}
+{% block section_tags %}id="registrations-form"{% endblock %}
 
-            <p>
-                {% blocktrans trimmed %}
-                    It is still possible to be associated with Thalia, even if you do not study Computing
-                    Science or Information Sciences (anymore): You can become a benefactor. For at least €
-                    {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.
-                    If you are not a former Thalia member, iCIS staff member or alumni, you must collect two references of current Thalia members.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                {% blocktrans trimmed %}
-                    If you've been a member before you should login using your existing account and renew your
-                    membership by visiting the account settings.
-                    You'll be unable to re-register using this form.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                {% blocktrans trimmed %}
-                    If you have any other questions about Thalia and/or your membership, feel free to email
-                    <a href="mailto:info@thalia.nu" rel="noopener" target="_blank">info@thalia.nu</a>!
-                {% endblocktrans %}
-            </p>
-
+{% block page_content %}
+    <p>
+        {% blocktrans trimmed %}
+            It is still possible to be associated with Thalia, even if you do not study Computing
+            Science or Information Sciences (anymore): You can become a benefactor. For at least €
+            {{ year_fees }} per year, you too can enjoy everything Thalia has to offer.
+            If you are not a former Thalia member, iCIS staff member or alumni, you must collect two references of current Thalia members.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans trimmed %}
+            If you've been a member before you should login using your existing account and renew your
+            membership by visiting the account settings.
+            You'll be unable to re-register using this form.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans trimmed %}
+            If you have any other questions about Thalia and/or your membership, feel free to email
+            <a href="mailto:info@thalia.nu" rel="noopener" target="_blank">info@thalia.nu</a>!
+        {% endblocktrans %}
+    </p>
+    <hr/>
+    <form method="post" enctype="multipart/form-data" class="row">
+        {% csrf_token %}
+        <fieldset class="col-12 col-lg-6">
+            {% bootstrap_field form.first_name %}
+            {% bootstrap_field form.last_name %}
+            {% bootstrap_field form.address_street %}
+            {% bootstrap_field form.address_street2 %}
+            {% bootstrap_field form.address_postal_code %}
+            {% bootstrap_field form.address_city %}
+            {% bootstrap_field form.address_country %}
+        </fieldset>
+        <fieldset class="col-12 col-lg-6">
+            {% bootstrap_field form.email %}
+            <div class="form-row">
+                <div class="form-check">
+                    <input name="optin_mailinglist" class="form-check-input" id="id_optin_mailinglist"
+                           type="checkbox">
+                    <label class="form-check-label"
+                           for="id_optin_mailinglist">{% trans "Receive emails about (amongst others) job opportunities and in-house days from partners of Thalia." %}</label>
+                </div>
+            </div>
+            {% bootstrap_field form.phone_number %}
+            {% bootstrap_field form.birthday %}
+            <div class="form-row">
+                <div class="form-check">
+                    <input name="optin_birthday"
+                           class="form-check-input"
+                           id="id_optin_birthday"
+                           type="checkbox">
+                    <label class="form-check-label"
+                           for="id_optin_birthday">{% trans "Display birthday in calendar" %}</label>
+                </div>
+            </div>
+            {% bootstrap_field form.student_number %}
+            {% bootstrap_field form.icis_employee %}
+            {% bootstrap_field form.contribution %}
+            {% bootstrap_field form.privacy_policy %}
+        </fieldset>
+        {% if tpay_enabled %}
             <hr/>
-
-            <form method="post" enctype="multipart/form-data" class="row">
-                {% csrf_token %}
-
-                <fieldset class="col-12 col-lg-6">
-                    {% bootstrap_field form.first_name %}
-                    {% bootstrap_field form.last_name %}
-
-                    {% bootstrap_field form.address_street %}
-                    {% bootstrap_field form.address_street2 %}
-                    {% bootstrap_field form.address_postal_code %}
-                    {% bootstrap_field form.address_city %}
-                    {% bootstrap_field form.address_country %}
-                </fieldset>
-
-                <fieldset class="col-12 col-lg-6">
-                    {% bootstrap_field form.email %}
-
-                    <div class="form-row">
-                        <div class="form-check">
-                            <input name="optin_mailinglist" class="form-check-input" id="id_optin_mailinglist"
-                                   type="checkbox">
-                            <label class="form-check-label"
-                                   for="id_optin_mailinglist">{% trans "Receive emails about (amongst others) job opportunities and in-house days from partners of Thalia." %}</label>
-                        </div>
-                    </div>
-
-                    {% bootstrap_field form.phone_number %}
-
-                    {% bootstrap_field form.birthday %}
-
-                    <div class="form-row">
-                        <div class="form-check">
-                            <input name="optin_birthday"
-                                   class="form-check-input"
-                                   id="id_optin_birthday"
-                                   type="checkbox">
-                            <label class="form-check-label"
-                                   for="id_optin_birthday">{% trans "Display birthday in calendar" %}</label>
-                        </div>
-                    </div>
-
-                    {% bootstrap_field form.student_number %}
-                    {% bootstrap_field form.icis_employee %}
-                    {% bootstrap_field form.contribution %}
-                    {% bootstrap_field form.privacy_policy %}
-                </fieldset>
-
-                {% if tpay_enabled %}
-                    <hr/>
-
-                    <div>
-                        <h4>{% trans "SEPA Direct Debit Mandate" %}</h4>
-                        {% bootstrap_field form.direct_debit %}
-                    </div>
-
-                    <fieldset class="form-row col-12 col-lg-6 direct-debit-fields">
-                        {% bootstrap_field form.initials %}
-                        {% bootstrap_field form.iban placeholder='NL99BANK1234567890' %}
-                        {% bootstrap_field form.bic placeholder='BANKNL2A' %}
-                    </fieldset>
-                    <fieldset id="payments-account-form" class="form-row col-12 col-lg-6 h-100 direct-debit-fields">
-                        <p>
-                            {% blocktrans trimmed %}
-                                By signing this mandate form, you authorise
-                                Study Association Thalia, when your membership
-                                registration will be accepted, to send instructions to
-                                your bank to debit your account in accordance with
-                                the instructions from Study Association Thalia.
-                            {% endblocktrans %}
-                        </p>
-
-                        <p>
-                            {% blocktrans trimmed %}
-                                As part of your rights, you are entitled to a refund
-                                from your bank under the terms and conditions of
-                                your agreement with your bank. A refund must be
-                                claimed within 8 weeks starting from the date on
-                                which your account was debited.
-                            {% endblocktrans %}
-                        </p>
-
-                        <p>
-                            {% blocktrans trimmed %}
-                                Your rights are explained in a statement that you can obtain from your bank.
-                            {% endblocktrans %}
-                        </p>
-
-                        <div class="form-row">
-                            <label for="id_signature">Signature</label>
-                            <input type="hidden"
-                                   name="signature"
-                                   class="form-control"
-                                   placeholder="Signature"
-                                   required=""
-                                   id="id_signature"
-                            >
-
-                            {% include 'payments/includes/signature_canvas.html' %}
-                        </div>
-                    </fieldset>
-                {% endif %}
-
-                <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-primary col-6 offset-3 col-lg-2 offset-lg-10"/>
-            </form>
-        </div>
-    </section>
+            <div>
+                <h4>{% trans "SEPA Direct Debit Mandate" %}</h4>
+                {% bootstrap_field form.direct_debit %}
+            </div>
+            <fieldset class="form-row col-12 col-lg-6 direct-debit-fields">
+                {% bootstrap_field form.initials %}
+                {% bootstrap_field form.iban placeholder='NL99BANK1234567890' %}
+                {% bootstrap_field form.bic placeholder='BANKNL2A' %}
+            </fieldset>
+            <fieldset id="payments-account-form" class="form-row col-12 col-lg-6 h-100 direct-debit-fields">
+                <p>
+                    {% blocktrans trimmed %}
+                        By signing this mandate form, you authorise
+                        Study Association Thalia, when your membership
+                        registration will be accepted, to send instructions to
+                        your bank to debit your account in accordance with
+                        the instructions from Study Association Thalia.
+                    {% endblocktrans %}
+                </p>
+                <p>
+                    {% blocktrans trimmed %}
+                        As part of your rights, you are entitled to a refund
+                        from your bank under the terms and conditions of
+                        your agreement with your bank. A refund must be
+                        claimed within 8 weeks starting from the date on
+                        which your account was debited.
+                    {% endblocktrans %}
+                </p>
+                <p>
+                    {% blocktrans trimmed %}
+                        Your rights are explained in a statement that you can obtain from your bank.
+                    {% endblocktrans %}
+                </p>
+                <div class="form-row">
+                    <label for="id_signature">Signature</label>
+                    <input type="hidden"
+                           name="signature"
+                           class="form-control"
+                           placeholder="Signature"
+                           required=""
+                           id="id_signature"
+                    >
+                    {% include 'payments/includes/signature_canvas.html' %}
+                </div>
+            </fieldset>
+        {% endif %}
+        <input type="submit" value="{% trans 'send'|capfirst %}" class="btn btn-primary col-6 offset-3 col-lg-2 offset-lg-10"/>
+    </form>
 {% endblock %}

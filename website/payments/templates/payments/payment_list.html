@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "simple_page.html" %}
 {% load i18n static django_bootstrap5 compress alert %}
 
 {% block title %}{% trans "payments"|capfirst %} —
@@ -6,91 +6,85 @@
 {% block opengraph_title %}{% trans "payments"|capfirst %} —
     {% trans "finances"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block body %}
-    <section class="page-section" id="payments-account-overview">
-        <div class="container">
-            <h1 class="section-title">{% trans "payments"|capfirst %}</h1>
+{% block page_title %}{% trans "payments"|capfirst %}{% endblock %}
+{% block section_tags %}id="payments-account-overview"{% endblock %}
 
-            {% bootstrap_messages %}
-
-            {% if tpay_balance and tpay_balance != 0 %}
-                 <h5 class="mb-4">
-                    {% trans "Your current Thalia Pay balance is" %}: € {{ tpay_balance|floatformat:2 }}
-                 </h5>
-            {% endif %}
-
-            <ul class="nav nav-tabs mb-4">
-                {% for filter in filters|slice:':6' %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if filter.year == year and filter.month == month %}active{% endif %}"
-                           href="{% url 'payments:payment-list' filter.year filter.month %}">
-                            {{ filter.year }}-{{ filter.month|stringformat:"02d" }}
-                        </a>
-                    </li>
+{% block page_content %}
+    {% bootstrap_messages %}
+    {% if tpay_balance and tpay_balance != 0 %}
+         <h5 class="mb-4">
+            {% trans "Your current Thalia Pay balance is" %}: € {{ tpay_balance|floatformat:2 }}
+         </h5>
+    {% endif %}
+    <ul class="nav nav-tabs mb-4">
+        {% for filter in filters|slice:':6' %}
+            <li class="nav-item">
+                <a class="nav-link {% if filter.year == year and filter.month == month %}active{% endif %}"
+                   href="{% url 'payments:payment-list' filter.year filter.month %}">
+                    {{ filter.year }}-{{ filter.month|stringformat:"02d" }}
+                </a>
+            </li>
+        {% endfor %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle {% if filters.6.year == year and filters.6.month >= month or filters.6.year > year and filters.6.month < month %}active{% endif %}"
+               data-bs-toggle="dropdown"
+               href="#" role="button" aria-haspopup="true"
+               aria-expanded="false">{% trans 'Older' %}</a>
+            <div class="dropdown-menu">
+                {% for filter in filters|slice:'6:' %}
+                    <a class="dropdown-item {% if filter.year == year and filter.month == month %}active{% endif %}"
+                       href="{% url 'payments:payment-list' filter.year filter.month %}">
+                        {{ filter.year }}-{{ filter.month|stringformat:"02d" }}
+                    </a>
                 {% endfor %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {% if filters.6.year == year and filters.6.month >= month or filters.6.year > year and filters.6.month < month %}active{% endif %}"
-                       data-bs-toggle="dropdown"
-                       href="#" role="button" aria-haspopup="true"
-                       aria-expanded="false">{% trans 'Older' %}</a>
-                    <div class="dropdown-menu">
-                        {% for filter in filters|slice:'6:' %}
-                            <a class="dropdown-item {% if filter.year == year and filter.month == month %}active{% endif %}"
-                               href="{% url 'payments:payment-list' filter.year filter.month %}">
-                                {{ filter.year }}-{{ filter.month|stringformat:"02d" }}
-                            </a>
-                        {% endfor %}
-                    </div>
-                </li>
-            </ul>
-
-            {% if object_list %}
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">{% trans "type"|capfirst %}</th>
-                        <th scope="col">{% trans "amount"|capfirst %}</th>
-                        <th scope="col">
-                            {% trans "date"|capfirst %}
-                        </th>
-                        <th scope="col" class="text-start">
-                            {% trans "notes"|capfirst %}
-                        </th>
-                        <th scope="col">{% trans "settled"|capfirst %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for payment in object_list reversed %}
-                        <tr>
-                            <th scope="row">{{ payment.get_type_display }}</th>
-                            <td>€ {{ payment.amount }}</td>
-                            <td>{{ payment.created_at }}</td>
-                            <td class="text-start">{{ payment.notes }}</td>
-                            <td>
-                            {% if payment.type == "tpay_payment" %}
-                                {% if payment.batch.processed %}
-                                    {{ payment.batch.withdrawal_date|date }}
-                                {% else %}
-                                    no
-                                {% endif %}
-                            {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                        <tr>
-                            <th scope="row">{% trans 'Total' %}</th>
-                            <td>€ {{ total|floatformat:2 }}</td>
-                            <td></td><td></td><td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            {% else %}
-                {% trans "You have not made any payments during this period." as no_payments %}
-                {% alert 'info' no_payments %}
-            {% endif %}
-            <span class="mt-3 font-italic">
-                {% trans "Thalia only stores your payments for 7 years." %}
-            </span>
-        </div>
-    </section>
+            </div>
+        </li>
+    </ul>
+    {% if object_list %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">{% trans "type"|capfirst %}</th>
+                <th scope="col">{% trans "amount"|capfirst %}</th>
+                <th scope="col">
+                    {% trans "date"|capfirst %}
+                </th>
+                <th scope="col" class="text-start">
+                    {% trans "notes"|capfirst %}
+                </th>
+                <th scope="col">{% trans "settled"|capfirst %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for payment in object_list reversed %}
+                <tr>
+                    <th scope="row">{{ payment.get_type_display }}</th>
+                    <td>€ {{ payment.amount }}</td>
+                    <td>{{ payment.created_at }}</td>
+                    <td class="text-start">{{ payment.notes }}</td>
+                    <td>
+                    {% if payment.type == "tpay_payment" %}
+                        {% if payment.batch.processed %}
+                            {{ payment.batch.withdrawal_date|date }}
+                        {% else %}
+                            no
+                        {% endif %}
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <th scope="row">{% trans 'Total' %}</th>
+                    <td>€ {{ total|floatformat:2 }}</td>
+                    <td></td><td></td><td></td>
+                </tr>
+            </tbody>
+        </table>
+    {% else %}
+        {% trans "You have not made any payments during this period." as no_payments %}
+        {% alert 'info' no_payments %}
+    {% endif %}
+    <span class="mt-3 font-italic">
+        {% trans "Thalia only stores your payments for 7 years." %}
+    </span>
 {% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title center-lg-50">{% block page_title %}{% endblock %}</h1>
+            {% bootstrap_messages %}
+            {% if form.errors %}
+                {% bootstrap_form_errors form %}
+            {% endif %}
+            <div class="col-lg-6 offset-lg-3">
+                {% block page_content %}{% endblock %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
