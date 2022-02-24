@@ -1,4 +1,4 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 
 {% load static i18n fieldtype django_bootstrap5 %}
 
@@ -6,12 +6,18 @@
 {% block opengraph_title %}{% trans "change email"|capfirst %} — {% trans "members"|capfirst %} —
     {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "change email"|capfirst %}{% endblock %}
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "change email"|capfirst %}</h1>
 
-{% block page_content %}
-    <form method="post" enctype="multipart/form-data" class="col-12">
-        {% csrf_token %}
-        {% bootstrap_field form.email %}
-        <input type="submit" value="{% trans 'change'|capfirst %}" class="btn btn-primary float-end"/>
-    </form>
+            <form method="post" enctype="multipart/form-data" class="col-lg-8 offset-lg-2">
+                {% csrf_token %}
+
+                {% bootstrap_field form.email %}
+
+                <input type="submit" value="{% trans 'change'|capfirst %}" class="btn btn-primary float-end"/>
+            </form>
+        </div>
+    </section>
 {% endblock %}

@@ -1,15 +1,18 @@
-{% extends "small_page.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "change email"|capfirst %} - {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "change email"|capfirst %}{% endblock %}
-
-{% block page_content %}
-    <p>
-        {% blocktrans trimmed %}
-            The confirmation of your email change was successful. Check your new inbox for the verification
-            email.
-        {% endblocktrans %}
-    </p>
+{% block body %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "change email" %}</h1>
+            <p>
+                {% blocktrans trimmed %}
+                    The confirmation of your email change was successful. Check your new inbox for the verification
+                    email.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </section>
 {% endblock %}
