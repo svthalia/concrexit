@@ -1,71 +1,58 @@
-{% extends "base.html" %}
+{% extends "simple_page.html" %}
 {% load static i18n fieldtype django_bootstrap5 alert %}
 
 {% block title %}{% trans "edit profile"|capfirst %} — {% trans "members"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "edit profile"|capfirst %} — {% trans "members"|capfirst %} —
     {{ block.super }}{% endblock %}
 
-{% block body %}
-    <section class="page-section">
-        <div class="container">
-            <h1 class="section-title">{% trans "edit profile"|capfirst %}</h1>
+{% block page_title %}{% trans "edit profile"|capfirst %}{% endblock %}
 
-            {% bootstrap_messages %}
-
-            {% if form.errors %}
-                {% trans "Please check your profile for errors." as error_text %}
-                {% alert 'danger' error_text dismissible=True %}
-            {% endif %}
-
-            <form method="post" enctype="multipart/form-data" class="row">
-                {% csrf_token %}
-
-                <fieldset class="col-12 col-lg-6">
-                    <div class="form-row">
-                        <label>{% trans "First Name" %}</label>
-                        <input type="text" class="form-control" readonly="readonly"
-                               value="{{ request.member.first_name }}"/>
-                    </div>
-
-                    <div class="form-row">
-                        <label>{% trans "Last Name" %}</label>
-                        <input type="text" class="form-control" readonly="readonly"
-                               value="{{ request.member.last_name }}"/>
-                    </div>
-
-                    <div class="form-row">
-                        <label>{% trans "Email Address" %}</label>
-                        <input type="text" class="form-control" readonly="readonly" value="{{ request.member.email }}"/>
-                        <span class="form-text">
-                            <a href="{% url 'members:email-change' %}">
-                                {% trans "Click here to change your email address." %}
-                            </a>
-                        </span>
-                    </div>
-
-                    <div class="form-row">
-                        <label>{% trans "Birthday" %}</label>
-                        <input type="text" class="form-control" readonly="readonly"
-                               value="{{ request.member.profile.birthday }}"/>
-                    </div>
-
-                    {% for field in form %}
-                        {% if forloop.counter < 9 %}
-                            {% bootstrap_field field %}
-                        {% endif %}
-                    {% endfor %}
-                </fieldset>
-
-                <fieldset class="col-12 col-lg-6">
-                    {% for field in form %}
-                        {% if forloop.counter > 8 %}
-                            {% bootstrap_field field %}
-                        {% endif %}
-                    {% endfor %}
-                </fieldset>
-
-                <input type="submit" value="{% trans 'save'|capfirst %}" class="btn btn-primary col-6 offset-3 col-lg-2 offset-lg-10"/>
-            </form>
-        </div>
-    </section>
+{% block page_content %}
+    {% bootstrap_messages %}
+    {% if form.errors %}
+        {% trans "Please check your profile for errors." as error_text %}
+        {% alert 'danger' error_text dismissible=True %}
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="row">
+        {% csrf_token %}
+        <fieldset class="col-12 col-lg-6">
+            <div class="form-row">
+                <label>{% trans "First Name" %}</label>
+                <input type="text" class="form-control" readonly="readonly"
+                       value="{{ request.member.first_name }}"/>
+            </div>
+            <div class="form-row">
+                <label>{% trans "Last Name" %}</label>
+                <input type="text" class="form-control" readonly="readonly"
+                       value="{{ request.member.last_name }}"/>
+            </div>
+            <div class="form-row">
+                <label>{% trans "Email Address" %}</label>
+                <input type="text" class="form-control" readonly="readonly" value="{{ request.member.email }}"/>
+                <span class="form-text">
+                    <a href="{% url 'members:email-change' %}">
+                        {% trans "Click here to change your email address." %}
+                    </a>
+                </span>
+            </div>
+            <div class="form-row">
+                <label>{% trans "Birthday" %}</label>
+                <input type="text" class="form-control" readonly="readonly"
+                       value="{{ request.member.profile.birthday }}"/>
+            </div>
+            {% for field in form %}
+                {% if forloop.counter < 9 %}
+                    {% bootstrap_field field %}
+                {% endif %}
+            {% endfor %}
+        </fieldset>
+        <fieldset class="col-12 col-lg-6">
+            {% for field in form %}
+                {% if forloop.counter > 8 %}
+                    {% bootstrap_field field %}
+                {% endif %}
+            {% endfor %}
+        </fieldset>
+        <input type="submit" value="{% trans 'save'|capfirst %}" class="btn btn-primary col-6 offset-3 col-lg-2 offset-lg-10"/>
+    </form>
 {% endblock %}
