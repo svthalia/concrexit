@@ -1,9 +1,12 @@
 """Models for the promotion requests database tables."""
 import datetime
+from tabnanny import verbose
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
+from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from events.models import Event
 
@@ -16,7 +19,7 @@ class PromotionChannel(models.Model):
 
 
 class PromotionRequest(models.Model):
-    created_at = models.DateTimeField(
+    created_at = models.DateField(
         verbose_name=_("created at"), auto_now_add=True, null=False, blank=False
     )
     event = models.ForeignKey(
@@ -28,6 +31,7 @@ class PromotionRequest(models.Model):
         null=False,
         blank=False,
     )
+
     channel = models.ForeignKey(
         PromotionChannel,
         verbose_name=_("channel"),
@@ -35,6 +39,7 @@ class PromotionRequest(models.Model):
         null=False,
         blank=False,
     )
+
     assigned_to = models.CharField(
         null=True, blank=True, max_length=50, verbose_name=_("Assigned to"),
     )
@@ -71,6 +76,15 @@ class PromotionRequest(models.Model):
         if self.event:
             return _("Promotion request for ") + str(self.event)
         return _("Promotion request ") + str(self.pk)
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        if self.publish_date is None:
+            errors.update({"publish_date": _("Publish date cannot have an empty date field")})
+        
+        if errors:
+            raise ValidationError(errors)
 
     def save(self, **kwargs):
         if not self.publish_date and self.event:
