@@ -38,6 +38,13 @@ class PaymentWidget(Widget):
             context["payment"] = payment
         return context
 
+    def value_from_datadict(self, data, files, name):
+        if self.obj:
+            payable = payables.get_payable(self.obj)
+            if payable.payment:
+                return payable.payment.pk
+        return None
+
     class Media:
         js = ("admin/payments/js/payments.js",)
 
