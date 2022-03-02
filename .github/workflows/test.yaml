@@ -21,7 +21,7 @@ jobs:
         uses: snok/install-poetry@v1
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Restore any cached Poetry dependencies
         uses: actions/cache@v2
@@ -51,7 +51,7 @@ jobs:
         uses: snok/install-poetry@v1
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Restore any cached Poetry dependencies
         uses: actions/cache@v2
@@ -81,7 +81,7 @@ jobs:
         uses: snok/install-poetry@v1
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Restore any cached Poetry dependencies
         uses: actions/cache@v2
@@ -122,7 +122,7 @@ jobs:
         uses: snok/install-poetry@v1
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Restore any cached Poetry dependencies
         uses: actions/cache@v2
@@ -164,7 +164,7 @@ jobs:
         uses: snok/install-poetry@v1
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Restore any cached Poetry dependencies
         uses: actions/cache@v2
