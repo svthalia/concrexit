@@ -90,10 +90,6 @@ class EventRegistration(models.Model):
     )
 
     @property
-    def price(self):
-        return self.event.price
-
-    @property
     def phone_number(self):
         if self.member:
             return self.member.profile.phone_number
