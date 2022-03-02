@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from freezegun import freeze_time
 
 from members.models import Member, Membership, Profile
+from registrations import payables
 from registrations.models import Entry, Registration, Renewal, Reference
 
 
@@ -39,6 +40,9 @@ class EntryTest(TestCase):
             length=Entry.MEMBERSHIP_STUDY,
             membership_type=Membership.MEMBER,
         )
+
+    def setUp(self) -> None:
+        payables.register()
 
     def test_str(self):
         entry = Entry(registration=self.registration)

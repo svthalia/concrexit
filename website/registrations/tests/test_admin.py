@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
 from payments.widgets import PaymentWidget
-from registrations import admin
+from registrations import admin, payables
 from registrations.models import Entry, Registration, Renewal, Reference
 
 
@@ -54,6 +54,7 @@ class RegistrationAdminTest(TestCase):
     def setUp(self):
         self.site = AdminSite()
         self.admin = admin.RegistrationAdmin(Registration, admin_site=self.site)
+        payables.register()
 
     @mock.patch("django.contrib.admin.ModelAdmin.changeform_view")
     @mock.patch("registrations.models.Entry.objects.get")

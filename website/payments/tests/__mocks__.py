@@ -37,6 +37,9 @@ class MockModel:
     def save(self):
         pass
 
+    def refresh_from_db(self):
+        pass
+
 
 class MockPayable(Payable):
     save = MagicMock()

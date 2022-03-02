@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Model
 from django.db.models.signals import pre_save
 from django.utils.functional import classproperty
@@ -30,9 +31,12 @@ class Payable:
         self.model.payment = payment
 
     def get_payment(self):
-        if self.model.pk:
+        try:
             self.model.refresh_from_db(fields=["payment"])
-        return self.payment
+        except ObjectDoesNotExist:
+            return None
+        else:
+            return self.payment
 
     @property
     def payment_amount(self):

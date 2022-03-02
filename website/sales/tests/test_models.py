@@ -255,7 +255,7 @@ class OrderTest(TestCase):
         with self.assertRaises(ValueError):
             order.save()
 
-        with self.assertRaises(PaymentError):
+        with self.assertRaises(ValueError):
             OrderItem.objects.create(
                 order=order,
                 product=self.shift.product_list.product_items.get(product=self.wine),
@@ -263,7 +263,7 @@ class OrderTest(TestCase):
             )
 
         i1.amount = 3
-        with self.assertRaises(PaymentError):
+        with self.assertRaises(ValueError):
             i1.save()
 
         i1.refresh_from_db()
