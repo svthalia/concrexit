@@ -16,6 +16,12 @@ class PaymentWidget(Widget):
 
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
+        if self.obj:
+            # Make sure to ALWAYS use committed data from the database, and never invalid data that is not saved, for example from an invalid form
+            self.obj.refresh_from_db()
+            payable = payables.get_payable(self.obj)
+            if payable.payment:
+                value = payable.payment.pk
         if self.obj and not value:
             payable = payables.get_payable(self.obj)
             context["obj"] = payable
