@@ -29,6 +29,10 @@ class Payable:
     def payment(self, payment):
         self.model.payment = payment
 
+    def get_payment(self):
+        self.model.refresh_from_db(fields=["payment"])
+        return self.payment
+
     @property
     def payment_amount(self):
         raise NotImplementedError
@@ -102,7 +106,7 @@ def prevent_saving(sender, instance, **kwargs):
     if not payable.immutable_after_payment:
         # Do nothing is the model is not marked as immutable
         return
-    if not payable.payment:
+    if not payable.get_payment():
         # Do nothing is the model is not actually paid
         return
     try:
