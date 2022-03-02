@@ -42,7 +42,7 @@ class EventRegistrationPayable(Payable):
 
     @classproperty
     def immutable_model_fields_after_payment(self):
-        return ["member", "event", "name", "price"]
+        return ["member", "event", "name", "payment_amount"]
 
 
 def register():
