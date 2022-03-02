@@ -30,7 +30,8 @@ class Payable:
         self.model.payment = payment
 
     def get_payment(self):
-        self.model.refresh_from_db(fields=["payment"])
+        if self.model.pk:
+            self.model.refresh_from_db(fields=["payment"])
         return self.payment
 
     @property
@@ -102,12 +103,19 @@ payables = Payables()
 
 
 def prevent_saving(sender, instance, **kwargs):
+    if not instance.pk:
+        # Do nothing if the model is not created yet
+        return
+
     payable = payables.get_payable(instance)
     if not payable.immutable_after_payment:
-        # Do nothing is the model is not marked as immutable
+        # Do nothing if the model is not marked as immutable
         return
-    if not payable.get_payment():
-        # Do nothing is the model is not actually paid
+    if not payable.payment:
+        # Do nothing if the model is not actually paid
+        if payable.get_payment() is not None:
+            # If this happens, there was a payment, but it is being deleted
+            raise PaymentError("You are trying to unlink a payment from its payable.")
         return
     try:
         old_instance = sender.objects.get(pk=instance.pk)
