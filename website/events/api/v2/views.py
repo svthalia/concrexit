@@ -15,8 +15,10 @@ from events import services
 from events.api.v2 import filters
 from events.api.v2.serializers.event import EventSerializer
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
+from events.api.v2.serializers.external_event import ExternalEventSerializer
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
+from events.models.external_event import ExternalEvent
 from events.services import event_permissions
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
@@ -227,3 +229,28 @@ class EventRegistrationFieldsView(APIView):
             )
         except RegistrationError as e:
             raise ValidationError(e)
+
+
+class ExternalEventListView(ListAPIView):
+    """Returns an overview of all partner events."""
+
+    serializer_class = ExternalEventSerializer
+    queryset = ExternalEvent.objects.filter(published=True)
+    filter_backends = (
+        framework_filters.OrderingFilter,
+        framework_filters.SearchFilter,
+        filters.EventDateFilter,
+    )
+    ordering_fields = ("start", "end", "title")
+    search_fields = ("title",)
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
+    required_scopes = ["events:read"]
+
+
+class ExternalEventDetailView(RetrieveAPIView):
+    """Returns a single partner event."""
+
+    serializer_class = ExternalEventSerializer
+    queryset = ExternalEvent.objects.filter(published=True)
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
+    required_scopes = ["events:read"]

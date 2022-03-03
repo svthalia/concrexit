@@ -96,7 +96,10 @@ def send_information_request(dry_run=False):
                 text_message = text_template.render(email_context)
 
                 msg = EmailMultiAlternatives(
-                    subject, text_message, settings.DEFAULT_FROM_EMAIL, [member.email],
+                    subject,
+                    text_message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [member.email],
                 )
                 msg.attach_alternative(html_message, "text/html")
                 msg.send()
@@ -187,26 +190,34 @@ def send_email_change_confirmation_messages(change_request):
     member = change_request.member
 
     confirm_link = settings.BASE_URL + reverse(
-        "members:email-change-confirm", args=[change_request.confirm_key],
+        "members:email-change-confirm",
+        args=[change_request.confirm_key],
     )
     mail.EmailMessage(
         f"[THALIA] {_('Please confirm your email change')}",
         loader.render_to_string(
             "members/email/email_change_confirm.txt",
-            {"confirm_link": confirm_link, "name": member.first_name,},
+            {
+                "confirm_link": confirm_link,
+                "name": member.first_name,
+            },
         ),
         settings.DEFAULT_FROM_EMAIL,
         [member.email],
     ).send()
 
     confirm_link = settings.BASE_URL + reverse(
-        "members:email-change-verify", args=[change_request.verify_key],
+        "members:email-change-verify",
+        args=[change_request.verify_key],
     )
     mail.EmailMessage(
         f"[THALIA] {_('Please verify your email address')}",
         loader.render_to_string(
             "members/email/email_change_verify.txt",
-            {"confirm_link": confirm_link, "name": member.first_name,},
+            {
+                "confirm_link": confirm_link,
+                "name": member.first_name,
+            },
         ),
         settings.DEFAULT_FROM_EMAIL,
         [change_request.email],

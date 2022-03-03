@@ -185,7 +185,25 @@ def send_tpay_batch_processing_emails(batch):
                 "creditor_id": settings.SEPA_CREDITOR_ID,
                 "payments": batch.payments_set.filter(paid_by=member),
                 "total_amount": total_amount,
-                "payments_url": (settings.BASE_URL + reverse("payments:payment-list",)),
+                "payments_url": (
+                    settings.BASE_URL
+                    + reverse(
+                        "payments:payment-list",
+                    )
+                ),
             },
         )
     return len(member_payments)
+
+
+def execute_data_minimisation(dry_run=False):
+    """Anonymizes payments older than 7 years."""
+    # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
+    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 7))
+
+    queryset = Payment.objects.filter(created_at__lte=deletion_period).exclude(
+        paid_by__isnull=True
+    )
+    if not dry_run:
+        queryset.update(paid_by=None, processed_by=None)
+    return queryset

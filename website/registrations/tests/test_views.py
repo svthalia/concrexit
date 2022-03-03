@@ -117,7 +117,10 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
                 request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/", {"action": "accept",}
+                    f"/registration/admin/process/{entry.pk}/",
+                    {
+                        "action": "accept",
+                    },
                 )
                 request.user = _get_mock_user()
                 request.member = request.user
@@ -126,7 +129,8 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
+                    response.url,
+                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 accept_entries.assert_called_once_with(1, entry_qs)
@@ -177,7 +181,10 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
                 request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/", {"action": "reject",}
+                    f"/registration/admin/process/{entry.pk}/",
+                    {
+                        "action": "reject",
+                    },
                 )
                 request.user = _get_mock_user()
                 request.member = request.user
@@ -187,7 +194,8 @@ class EntryAdminViewTest(TestCase):
                 self.assertEqual(response.status_code, 302)
 
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
+                    response.url,
+                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 reject_entries.assert_called_once_with(1, entry_qs)
@@ -224,7 +232,10 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
                 request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/", {"action": "resend",}
+                    f"/registration/admin/process/{entry.pk}/",
+                    {
+                        "action": "resend",
+                    },
                 )
                 request.user = _get_mock_user()
                 request.member = request.user
@@ -233,7 +244,8 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
+                    response.url,
+                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 if reg_type == "registration":
@@ -256,7 +268,10 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
                 request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/", {"action": "revert",}
+                    f"/registration/admin/process/{entry.pk}/",
+                    {
+                        "action": "revert",
+                    },
                 )
                 request.user = _get_mock_user()
                 request.member = request.user
@@ -265,7 +280,8 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
+                    response.url,
+                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
                 revert.assert_called_once_with(1, entry.entry_ptr)
@@ -273,7 +289,10 @@ class EntryAdminViewTest(TestCase):
     @mock.patch("registrations.models.Entry.objects.filter")
     def test_post_not_exists(self, qs_mock):
         qs_mock.return_value = MagicMock(
-            get=Mock(side_effect=Entry.DoesNotExist, return_value=4,)
+            get=Mock(
+                side_effect=Entry.DoesNotExist,
+                return_value=4,
+            )
         )
 
         request = self.rf.post(
@@ -304,7 +323,9 @@ class EntryAdminViewTest(TestCase):
                 qs_mock.return_value = entry_qs
                 qs_mock.get = Mock(return_value=entry_qs.get())
 
-                request = self.rf.post(f"/registration/admin/process/{entry.pk}/",)
+                request = self.rf.post(
+                    f"/registration/admin/process/{entry.pk}/",
+                )
                 request.user = _get_mock_user()
                 request.member = request.user
                 request._messages = Mock()
@@ -315,7 +336,8 @@ class EntryAdminViewTest(TestCase):
 
                 self.assertEqual(response.status_code, 302)
                 self.assertEqual(
-                    response.url, f"/admin/registrations/{reg_type}/{entry.pk}/change/",
+                    response.url,
+                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
                 )
 
 

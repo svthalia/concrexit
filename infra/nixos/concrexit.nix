@@ -132,6 +132,9 @@ in
       gc.automatic = true;
     };
 
+    # This is needed because otherwise socket.getfqdn() breaks in Python
+    networking.hosts = lib.mkForce { };
+
     # Allow passwordless sudo for easier deployment
     security.sudo.wheelNeedsPassword = false;
 
@@ -199,6 +202,8 @@ in
         };
 
         script = ''
+          export PATH=$PATH:${pkgs.concrexit}/bin
+
           if [ -f ${cfg.dir}/secrets.env ]; then
             source ${cfg.dir}/secrets.env
           elif [ "1" = "${toString cfg.local-testing}" ]; then
@@ -235,11 +240,12 @@ in
       clearsessions.calendar = "*-*-* 23:00:00";
       minimiseregistrations.calendar = "*-*-01 03:00:00";
       delete_gsuite_users.calendar = "*-*-01 03:00:00";
-      dataminimisation.calendar = "*-03-01 03:00:00";
+      dataminimisation.calendar = "*-*-* 03:00:00";
       sendexpirationnotification.calendar = "*-08-15 06:00:00";
       sendmembershipnotification.calendar = "*-08-31 06:00:00";
       sendinformationcheck.calendar = "*-10-15 06:00:00";
       revokeoldmandates.calendar = "*-*-* 03:00:00";
+      revoke_staff.calendar = "*-*-* 03:00:00";
     };
 
     services = {
@@ -249,6 +255,8 @@ in
         recommendedGzipSettings = true;
         recommendedOptimisation = true;
         recommendedTlsSettings = true;
+
+        clientMaxBodySize = "2G";
 
         commonHttpConfig = ''
           log_format logfmt 'time="$time_local" client=$remote_addr '
@@ -272,7 +280,7 @@ in
             # here as a variable
             pizzaConfig = {
               enableACME = cfg.ssl;
-              addSSL = true;
+              addSSL = cfg.ssl;
               locations."/".return = "301 https://${cfg.domain}/pizzas";
               extraConfig = securityHeaders;
             };
@@ -295,7 +303,7 @@ in
                 extraConfig = "internal;";
               };
               locations."= /maintenance.html" = {
-                alias = ../../resources/maintenance.html;
+                alias = ../resources/maintenance.html;
                 extraConfig = "internal;";
               };
               extraConfig = ''
@@ -307,14 +315,12 @@ in
             };
             "www.${cfg.domain}" = {
               enableACME = cfg.ssl;
-              addSSL = true;
+              addSSL = cfg.ssl;
               locations."/".return = "301 https://${cfg.domain}$request_uri";
               extraConfig = securityHeaders;
             };
             "pizza.${cfg.domain}" = pizzaConfig;
-            "pasta.${cfg.domain}" = pizzaConfig;
             "xn--vi8h.${cfg.domain}" = pizzaConfig;
-            "xn--3i8h.${cfg.domain}" = pizzaConfig;
 
             # Disallow other Host headers when this server is configured for ssl
             # (so it's not added for local testing in the VM)

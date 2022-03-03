@@ -39,7 +39,9 @@ class MemberGroupBackend:
                 .order_by()
             )
             setattr(
-                user, perm_cache_name, set(f"{ct}.{name}" for ct, name in perms),
+                user,
+                perm_cache_name,
+                set(f"{ct}.{name}" for ct, name in perms),
             )
         return getattr(user, perm_cache_name)
 

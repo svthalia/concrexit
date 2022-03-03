@@ -74,6 +74,7 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
         filters.EventRegistrationCancelledFilter,
+        filters.EventRegistrationQueuedFilter,
     )
     ordering_fields = ("queue_position", "date", "date_cancelled")
     search_fields = (
@@ -90,6 +91,12 @@ class EventRegistrationAdminListView(AdminListAPIView, AdminCreateAPIView):
             )
         return EventRegistration.objects.none()
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        event = Event.objects.filter(pk=self.kwargs.get("pk")).first()
+        context.update({"event": event})
+        return context
+
 
 class EventRegistrationAdminDetailView(
     AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIView
@@ -103,7 +110,7 @@ class EventRegistrationAdminDetailView(
     event_lookup_field = "event_id"
 
     def get_queryset(self):
-        return super().get_queryset().filter(event=self.kwargs["event_id"])
+        return super().get_queryset().filter(event=self.kwargs[self.event_lookup_field])
 
 
 class EventRegistrationAdminFieldsView(AdminPermissionsMixin, APIView):

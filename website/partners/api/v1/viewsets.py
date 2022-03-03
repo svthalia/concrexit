@@ -2,11 +2,9 @@ from django.utils import timezone
 from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 
-from partners.models import Partner, PartnerEvent
-from .serializers import (
-    PartnerEventSerializer,
-    PartnerSerializer,
-)
+from events.models.external_event import ExternalEvent
+from partners.models import Partner
+from .serializers import PartnerSerializer, PartnerEventSerializer
 
 
 class PartnerViewset(viewsets.ReadOnlyModelViewSet):
@@ -19,7 +17,7 @@ class PartnerViewset(viewsets.ReadOnlyModelViewSet):
 class PartnerEventViewset(viewsets.ReadOnlyModelViewSet):
     """View set for partner events."""
 
-    queryset = PartnerEvent.objects.filter(end__gte=timezone.now(), published=True)
+    queryset = ExternalEvent.objects.filter(end__gte=timezone.now(), published=True)
     permission_classes = [IsAuthenticated]
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ("start", "end")

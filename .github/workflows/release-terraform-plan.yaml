@@ -1,0 +1,36 @@
+name: "Store terraform plan"
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+    - uses: actions/checkout@v3.0.0
+    - uses: cachix/install-nix-action@v16
+    - uses: cachix/cachix-action@v10
+      with:
+        name: svthalia
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN_SVTHALIA }}'
+    - name: Create and publish the terraform plan
+      env:
+        # Environment variables starting with TF_VAR define values for the variables used in the stages
+        TF_VAR_ssh_private_key: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
+        TF_VAR_ssh_public_key: ${{ secrets.PRODUCTION_SSH_PUBLIC_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: eu-west-1
+      # Make sure the required program dependencies are available with a nix shell
+      shell: nix develop .#deployment --log-format raw --verbose --command bash --noprofile --norc -eo pipefail {0}
+      run: |
+        cd infra/stages/production
+        terraform init -lockfile=readonly
+        terraform plan -out=tfplan
+        
+        filename="${GITHUB_REF_NAME}-${GITHUB_SHA}-tfplan"
+        echo -e "Plan has been saved to\n${filename}\n"
+        aws s3 cp tfplan "s3://thalia-tfplans/${filename}"

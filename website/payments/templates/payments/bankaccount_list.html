@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bootstrap4 compress alert %}
+{% load i18n static django_bootstrap5 compress alert %}
 
 {% block title %}{% trans "bank accounts"|capfirst %} —
     {% trans "finances"|capfirst %} — {{ block.super }}{% endblock %}
@@ -11,11 +11,7 @@
         <div class="container">
             <h1 class="section-title">{% trans "bank accounts"|capfirst %}</h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message %}
-                {% endfor %}
-            {% endif %}
+            {% bootstrap_messages %}
 
             <p>
                 {% blocktrans trimmed %}
@@ -39,8 +35,8 @@
 
 
             {% if payment_user.tpay_allowed %}
-                <h3 class="section-title mt-5">{% trans "Thalia Pay" %}</h3>
-                <p class="mb-5">
+                <h3 class="section-title mt-3">{% trans "Thalia Pay" %}</h3>
+                <p class="mb-3">
                     {% blocktrans trimmed %}
                         If you agree to using your bank account for direct debit transactions,
                         you can make use of Thalia Pay. With Thalia Pay, you can pay for things

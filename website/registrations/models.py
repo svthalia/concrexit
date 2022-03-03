@@ -14,6 +14,7 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import IBANField, BICField
 
 from members.models import Membership, Profile
+from payments.models import PaymentAmountField
 from utils import countries
 
 
@@ -40,7 +41,10 @@ class Entry(models.Model):
     )
 
     status = models.CharField(
-        verbose_name=_("status"), choices=STATUS_TYPE, max_length=20, default="confirm",
+        verbose_name=_("status"),
+        choices=STATUS_TYPE,
+        max_length=20,
+        default="confirm",
     )
 
     MEMBERSHIP_YEAR = "year"
@@ -60,17 +64,17 @@ class Entry(models.Model):
     )
 
     length = models.CharField(
-        verbose_name=_("membership length"), choices=MEMBERSHIP_LENGTHS, max_length=20,
+        verbose_name=_("membership length"),
+        choices=MEMBERSHIP_LENGTHS,
+        max_length=20,
     )
 
     MEMBERSHIP_TYPES = [
         m for m in Membership.MEMBERSHIP_TYPES if m[0] != Membership.HONORARY
     ]
 
-    contribution = models.DecimalField(
+    contribution = PaymentAmountField(
         verbose_name=_("contribution"),
-        max_digits=5,
-        decimal_places=2,
         validators=[MinValueValidator(settings.MEMBERSHIP_PRICES[MEMBERSHIP_YEAR])],
         default=settings.MEMBERSHIP_PRICES[MEMBERSHIP_YEAR],
         blank=False,
@@ -88,7 +92,11 @@ class Entry(models.Model):
         default=Membership.MEMBER,
     )
 
-    remarks = models.TextField(_("remarks"), blank=True, null=True,)
+    remarks = models.TextField(
+        _("remarks"),
+        blank=True,
+        null=True,
+    )
 
     payment = models.OneToOneField(
         "payments.Payment",
@@ -99,7 +107,10 @@ class Entry(models.Model):
     )
 
     membership = models.ForeignKey(
-        "members.Membership", on_delete=models.SET_NULL, blank=True, null=True,
+        "members.Membership",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
     )
 
     @property
@@ -188,22 +199,37 @@ class Registration(Entry):
         ],
     )
 
-    first_name = models.CharField(_("First name"), max_length=30, blank=False,)
+    first_name = models.CharField(
+        _("First name"),
+        max_length=30,
+        blank=False,
+    )
 
-    last_name = models.CharField(_("Last name"), max_length=200, blank=False,)
+    last_name = models.CharField(
+        _("Last name"),
+        max_length=200,
+        blank=False,
+    )
 
-    birthday = models.DateField(verbose_name=_("birthday"), blank=False,)
+    birthday = models.DateField(
+        verbose_name=_("birthday"),
+        blank=False,
+    )
 
     # ---- Contact information -----
 
-    email = models.EmailField(_("Email address"), blank=False,)
+    email = models.EmailField(
+        _("Email address"),
+        blank=False,
+    )
 
     phone_number = models.CharField(
         max_length=20,
         verbose_name=_("phone number"),
         validators=[
             validators.RegexValidator(
-                regex=r"^\+?\d+$", message=_("please enter a valid phone number"),
+                regex=r"^\+?\d+$",
+                message=_("please enter a valid phone number"),
             )
         ],
         blank=True,
@@ -235,7 +261,9 @@ class Registration(Entry):
     )
 
     starting_year = models.IntegerField(
-        verbose_name=_("starting year"), blank=True, null=True,
+        verbose_name=_("starting year"),
+        blank=True,
+        null=True,
     )
 
     # ---- Address information -----
@@ -253,17 +281,29 @@ class Registration(Entry):
     )
 
     address_street2 = models.CharField(
-        max_length=100, verbose_name=_("second address line"), blank=True, null=True,
+        max_length=100,
+        verbose_name=_("second address line"),
+        blank=True,
+        null=True,
     )
 
     address_postal_code = models.CharField(
-        max_length=10, verbose_name=_("postal code"), blank=False,
+        max_length=10,
+        verbose_name=_("postal code"),
+        blank=False,
     )
 
-    address_city = models.CharField(max_length=40, verbose_name=_("city"), blank=False,)
+    address_city = models.CharField(
+        max_length=40,
+        verbose_name=_("city"),
+        blank=False,
+    )
 
     address_country = models.CharField(
-        max_length=2, choices=countries.EUROPE, verbose_name=_("Country"), null=True,
+        max_length=2,
+        choices=countries.EUROPE,
+        verbose_name=_("Country"),
+        null=True,
     )
 
     # ---- Opt-ins -----
@@ -308,7 +348,11 @@ class Registration(Entry):
         help_text=_("This field is optional for Dutch bank accounts."),
     )
 
-    signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
+    signature = models.TextField(
+        verbose_name=_("signature"),
+        blank=True,
+        null=True,
+    )
 
     def get_full_name(self):
         full_name = f"{self.first_name} {self.last_name}"

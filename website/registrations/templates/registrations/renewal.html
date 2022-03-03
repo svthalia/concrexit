@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n bootstrap4 alert compress static payments %}
+{% load i18n django_bootstrap5 alert compress static payments %}
 
 {% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
 
@@ -68,8 +68,8 @@
                             <div class="card mb-0">
                                 <div
                                         class="card-header {% if forloop.counter0 == 0 %}show{% else %}collapsed{% endif %}"
-                                        data-toggle="collapse"
-                                        data-target="#membership-{{ membership.pk }}">
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#membership-{{ membership.pk }}">
                                     <a href="#membership-{{ membership.id }}">
                                         {% if not membership.until %}
                                             {% blocktrans trimmed with type=membership.get_type_display since=membership.since %}
@@ -163,9 +163,9 @@
                                 {% if not latest_membership.type == 'benefactor' %}
                                     {% bootstrap_field form.membership_type %}
                                     {% bootstrap_field form.length %}
-                                    {% bootstrap_field form.contribution form_group_class='form-group required-field d-none' %}
+                                    {% bootstrap_field form.contribution form_group_class='form-row required-field d-none' %}
                                 {% else %}
-                                    <div class="form-group">
+                                    <div class="form-row">
                                         <label
                                                 for="id_membership_type">{% trans 'membership type'|capfirst %}</label>
                                         <input readonly disabled
@@ -173,7 +173,7 @@
                                                id="id_membership_type"
                                                type="text" class="form-control"/>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-row">
                                         <label
                                                 for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
                                         <input readonly disabled
@@ -194,7 +194,7 @@
                             </fieldset>
 
                             <input type="submit" value="{% trans 'send'|capfirst %}"
-                                   class="btn btn-primary float-right"/>
+                                   class="btn btn-primary float-end"/>
                         </form>
                     {% endif %}
                 </div>

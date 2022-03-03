@@ -21,8 +21,14 @@ class EventAdminSerializer(CleanedModelSerializer):
         fields = "__all__"
 
     description = CleanedHTMLSerializer()
-    price = serializers.DecimalField(max_digits=5, decimal_places=2,)
-    fine = serializers.DecimalField(max_digits=5, decimal_places=2,)
+    price = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+    )
+    fine = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+    )
 
     def to_internal_value(self, data):
         self.fields["organiser"] = serializers.PrimaryKeyRelatedField(

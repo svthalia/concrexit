@@ -82,7 +82,7 @@ class CourseDetailView(DetailView):
                 items[summary.year]["summaries"].append(
                     {
                         "year": summary.year,
-                        "name": f'{_("Summary")} {summary.name}',
+                        "name": summary.name,
                         "language": summary.language,
                         "id": summary.id,
                     }

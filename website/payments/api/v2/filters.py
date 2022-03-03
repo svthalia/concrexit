@@ -23,14 +23,18 @@ class CreatedAtFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter payments by ISO date, starting with this parameter (i.e. 2021-03-30T04:20:00) where `payment.created_at >= value`",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             },
             {
                 "name": "end",
                 "required": False,
                 "in": "query",
                 "description": "Filter payments by ISO date, ending with this parameter (i.e. 2021-05-16T13:37:00) where `payment.created_at <= value`",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             },
         ]
 
@@ -53,6 +57,8 @@ class PaymentTypeFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by payment type, accepts a comma separated list",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             }
         ]

@@ -62,7 +62,7 @@ def get_automatic_lists():
             "description": "Automatic moderated mailinglist that can be used "
             "to send mail to all members",
             "addresses": _get_members_email_addresses(
-                Member.all_with_membership("member")
+                Member.all_with_membership(Membership.MEMBER)
             ),
             "moderated": True,
         },
@@ -82,7 +82,19 @@ def get_automatic_lists():
             "description": "Automatic moderated mailinglist that can be used "
             "to send mail to all honorary members",
             "addresses": _get_members_email_addresses(
-                Member.all_with_membership("honorary")
+                Member.all_with_membership(Membership.HONORARY)
+            ),
+            "moderated": True,
+        },
+        {
+            "name": "all",
+            "aliases": ["allen"],
+            "description": "Automatic moderated mailinglist that can be used "
+            "to send mail to all members, benefactors, honorary members",
+            "addresses": _get_members_email_addresses(
+                Member.all_with_membership(Membership.MEMBER)
+                + Member.all_with_membership(Membership.BENEFACTOR)
+                + Member.all_with_membership(Membership.HONORARY)
             ),
             "moderated": True,
         },

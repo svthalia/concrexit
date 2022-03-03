@@ -95,10 +95,14 @@ urlpatterns = [
                                     name="authorized-token-delete",
                                 ),
                                 path(
-                                    "keys/", JwksInfoView.as_view(), name="jwks-info",
+                                    "keys/",
+                                    JwksInfoView.as_view(),
+                                    name="jwks-info",
                                 ),
                                 path(
-                                    "info/", UserInfoView.as_view(), name="user-info",
+                                    "info/",
+                                    UserInfoView.as_view(),
+                                    name="user-info",
                                 ),
                             ]
                         ),
@@ -166,7 +170,7 @@ urlpatterns = [
         name="django.contrib.sitemaps.views.sitemap",
     ),
     # Dependencies
-    path(r"tinymce", include("tinymce.urls")),
+    path("tinymce/", include("tinymce.urls")),
     path("__debug__/", include(debug_toolbar.urls)),
     # Provide something to test error handling. Limited to admins.
     path("crash/", TestCrashView.as_view()),

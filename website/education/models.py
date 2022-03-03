@@ -11,7 +11,9 @@ from utils.snippets import datetime_to_lectureyear
 class Category(models.Model):
     """Describes a course category."""
 
-    name = models.CharField(max_length=64,)
+    name = models.CharField(
+        max_length=64,
+    )
 
     def __str__(self):
         return str(self.name)
@@ -72,20 +74,32 @@ class Exam(models.Model):
     )
 
     type = models.CharField(
-        max_length=40, choices=EXAM_TYPES, verbose_name=_("exam type"),
+        max_length=40,
+        choices=EXAM_TYPES,
+        verbose_name=_("exam type"),
     )
 
     name = models.CharField(max_length=255, verbose_name=_("exam name"), blank=True)
 
     uploader = models.ForeignKey(
-        Member, verbose_name=_("uploader"), on_delete=models.SET_NULL, null=True,
+        Member,
+        verbose_name=_("uploader"),
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
-    uploader_date = models.DateField(default=timezone.now,)
+    uploader_date = models.DateField(
+        default=timezone.now,
+    )
 
-    accepted = models.BooleanField(verbose_name=_("accepted"), default=False,)
+    accepted = models.BooleanField(
+        verbose_name=_("accepted"),
+        default=False,
+    )
 
-    exam_date = models.DateField(verbose_name=_("exam date"),)
+    exam_date = models.DateField(
+        verbose_name=_("exam date"),
+    )
 
     file = models.FileField(
         upload_to="education/files/exams/",
@@ -95,7 +109,9 @@ class Exam(models.Model):
     )
 
     course = models.ForeignKey(
-        Course, verbose_name=_("course"), on_delete=models.CASCADE,
+        Course,
+        verbose_name=_("course"),
+        on_delete=models.CASCADE,
     )
 
     language = models.CharField(
@@ -106,7 +122,9 @@ class Exam(models.Model):
     )
 
     download_count = models.IntegerField(
-        verbose_name=_("amount of downloads"), default=0, blank=False,
+        verbose_name=_("amount of downloads"),
+        default=0,
+        blank=False,
     )
 
     def __str__(self):
@@ -127,23 +145,39 @@ class Exam(models.Model):
 class Summary(models.Model):
     """Describes a summary."""
 
-    name = models.CharField(max_length=255, verbose_name=_("summary name"),)
-
-    uploader = models.ForeignKey(
-        Member, verbose_name=_("uploader"), on_delete=models.SET_NULL, null=True,
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_("summary name"),
     )
 
-    uploader_date = models.DateField(default=timezone.now,)
+    uploader = models.ForeignKey(
+        Member,
+        verbose_name=_("uploader"),
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    uploader_date = models.DateField(
+        default=timezone.now,
+    )
 
     year = models.IntegerField()
 
-    author = models.CharField(max_length=64, verbose_name=_("author"),)
-
-    course = models.ForeignKey(
-        Course, verbose_name=_("course"), on_delete=models.CASCADE,
+    author = models.CharField(
+        max_length=64,
+        verbose_name=_("author"),
     )
 
-    accepted = models.BooleanField(verbose_name=_("accepted"), default=False,)
+    course = models.ForeignKey(
+        Course,
+        verbose_name=_("course"),
+        on_delete=models.CASCADE,
+    )
+
+    accepted = models.BooleanField(
+        verbose_name=_("accepted"),
+        default=False,
+    )
 
     file = models.FileField(
         upload_to="education/files/summary/",
@@ -160,7 +194,9 @@ class Summary(models.Model):
     )
 
     download_count = models.IntegerField(
-        verbose_name=_("amount of downloads"), default=0, blank=False,
+        verbose_name=_("amount of downloads"),
+        default=0,
+        blank=False,
     )
 
     def __str__(self):

@@ -19,13 +19,26 @@ class RegistrationInformationField(models.Model):
 
     event = models.ForeignKey(Event, models.CASCADE)
 
-    type = models.CharField(_("field type"), choices=FIELD_TYPES, max_length=10,)
+    type = models.CharField(
+        _("field type"),
+        choices=FIELD_TYPES,
+        max_length=10,
+    )
 
-    name = models.CharField(_("field name"), max_length=100,)
+    name = models.CharField(
+        _("field name"),
+        max_length=100,
+    )
 
-    description = models.TextField(_("description"), null=True, blank=True,)
+    description = models.TextField(
+        _("description"),
+        null=True,
+        blank=True,
+    )
 
-    required = models.BooleanField(_("required"),)
+    required = models.BooleanField(
+        _("required"),
+    )
 
     def get_value_for(self, registration):
         if self.type == self.TEXT_FIELD:

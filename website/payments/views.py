@@ -109,7 +109,9 @@ class BankAccountListView(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context.update(
-            {"payment_user": PaymentUser.objects.get(pk=self.request.member.pk),}
+            {
+                "payment_user": PaymentUser.objects.get(pk=self.request.member.pk),
+            }
         )
         return context
 

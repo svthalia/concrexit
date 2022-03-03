@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import DEFERRED, Q, Sum, BooleanField, DecimalField
+from django.db.models import DEFERRED, Q, Sum, BooleanField
 from django.db.models.expressions import Case, When, Value, Exists, OuterRef
 from django.db.models.functions import Coalesce
 from django.urls import reverse
@@ -19,6 +19,25 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import queryable_property, AggregateProperty
 
 from members.models import Member
+
+
+def validate_not_zero(value):
+    if value == 0:
+        raise ValidationError(
+            _("0 is not allowed."),
+        )
+
+
+class PaymentAmountField(models.DecimalField):
+    def __init__(self, **kwargs):
+        kwargs["max_digits"] = 8
+        kwargs["decimal_places"] = 2
+        allow_zero = kwargs.pop("allow_zero", False)
+        validators = kwargs.pop("validators", [])
+        if not allow_zero and validate_not_zero not in validators:
+            validators.append(validate_not_zero)
+        kwargs["validators"] = validators
+        super().__init__(**kwargs)
 
 
 class PaymentUser(Member):
@@ -36,7 +55,10 @@ class PaymentUser(Member):
             When(
                 Exists(
                     BankAccount.objects.filter(owner=OuterRef("pk")).filter(
-                        Q(valid_from__isnull=False, valid_from__lte=today,)
+                        Q(
+                            valid_from__isnull=False,
+                            valid_from__lte=today,
+                        )
                         & (Q(valid_until__isnull=True) | Q(valid_until__gt=today))
                     )
                 ),
@@ -58,7 +80,7 @@ class PaymentUser(Member):
                 ),
             ),
             Value(0.00),
-            output_field=DecimalField(decimal_places=2, max_digits=6),
+            output_field=PaymentAmountField(),
         )
     )
 
@@ -83,7 +105,10 @@ class PaymentUser(Member):
 
 
 class BlacklistedPaymentUser(models.Model):
-    payment_user = models.OneToOneField(PaymentUser, on_delete=models.CASCADE,)
+    payment_user = models.OneToOneField(
+        PaymentUser,
+        on_delete=models.CASCADE,
+    )
 
     def __str__(self):
         return f"{self.payment_user} (blacklisted from using Thalia Pay)"
@@ -116,16 +141,14 @@ class Payment(models.Model):
         choices=PAYMENT_TYPE,
     )
 
-    amount = models.DecimalField(
+    amount = PaymentAmountField(
         verbose_name=_("amount"),
         blank=False,
         null=False,
-        max_digits=5,
-        decimal_places=2,
     )
 
     paid_by = models.ForeignKey(
-        PaymentUser,
+        "members.Member",
         models.CASCADE,
         verbose_name=_("paid by"),
         related_name="paid_payment_set",
@@ -249,14 +272,20 @@ def _default_withdrawal_date():
 class Batch(models.Model):
     """Describes a batch of payments for export."""
 
-    processed = models.BooleanField(verbose_name=_("processing status"), default=False,)
+    processed = models.BooleanField(
+        verbose_name=_("processing status"),
+        default=False,
+    )
 
     processing_date = models.DateTimeField(
-        verbose_name=_("processing date"), blank=True, null=True,
+        verbose_name=_("processing date"),
+        blank=True,
+        null=True,
     )
 
     description = models.TextField(
-        verbose_name=_("description"), default=_default_batch_description,
+        verbose_name=_("description"),
+        default=_default_batch_description,
     )
 
     withdrawal_date = models.DateField(
@@ -319,7 +348,11 @@ class BankAccount(models.Model):
 
     created_at = models.DateTimeField(_("created at"), default=timezone.now)
 
-    last_used = models.DateField(verbose_name=_("last used"), blank=True, null=True,)
+    last_used = models.DateField(
+        verbose_name=_("last used"),
+        blank=True,
+        null=True,
+    )
 
     owner = models.ForeignKey(
         to=PaymentUser,
@@ -330,11 +363,20 @@ class BankAccount(models.Model):
         null=True,
     )
 
-    initials = models.CharField(verbose_name=_("initials"), max_length=20,)
+    initials = models.CharField(
+        verbose_name=_("initials"),
+        max_length=20,
+    )
 
-    last_name = models.CharField(verbose_name=_("last name"), max_length=255,)
+    last_name = models.CharField(
+        verbose_name=_("last name"),
+        max_length=255,
+    )
 
-    iban = IBANField(verbose_name=_("IBAN"), include_countries=IBAN_SEPA_COUNTRIES,)
+    iban = IBANField(
+        verbose_name=_("IBAN"),
+        include_countries=IBAN_SEPA_COUNTRIES,
+    )
 
     bic = BICField(
         verbose_name=_("BIC"),
@@ -343,7 +385,11 @@ class BankAccount(models.Model):
         help_text=_("This field is optional for Dutch bank accounts."),
     )
 
-    valid_from = models.DateField(verbose_name=_("valid from"), blank=True, null=True,)
+    valid_from = models.DateField(
+        verbose_name=_("valid from"),
+        blank=True,
+        null=True,
+    )
 
     valid_until = models.DateField(
         verbose_name=_("valid until"),
@@ -354,7 +400,11 @@ class BankAccount(models.Model):
         ),
     )
 
-    signature = models.TextField(verbose_name=_("signature"), blank=True, null=True,)
+    signature = models.TextField(
+        verbose_name=_("signature"),
+        blank=True,
+        null=True,
+    )
 
     MANDATE_NO_DEFAULT_REGEX = r"^\d+-\d+$"
     mandate_no = models.CharField(

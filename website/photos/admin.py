@@ -26,7 +26,12 @@ class AlbumAdmin(admin.ModelAdmin):
     search_fields = ("title", "date")
     list_filter = ("hidden", "shareable")
     date_hierarchy = "date"
-    prepopulated_fields = {"slug": ("date", "title",)}
+    prepopulated_fields = {
+        "slug": (
+            "date",
+            "title",
+        )
+    }
     form = AlbumForm
 
     def get_queryset(self, request):

@@ -47,7 +47,9 @@ class PaymentAdminView(View):
 
         try:
             result = services.create_payment(
-                payable_obj, self.request.member, request.POST["type"],
+                payable_obj,
+                self.request.member,
+                request.POST["type"],
             )
             payable_obj.model.payment = result
             payable_obj.model.save()
@@ -68,7 +70,8 @@ class PaymentAdminView(View):
             )
         else:
             messages.error(
-                request, _("Could not pay %s.") % model_ngettext(payable_obj.model, 1),
+                request,
+                _("Could not pay %s.") % model_ngettext(payable_obj.model, 1),
             )
             return redirect(
                 f"admin:{app_label}_{model_name}_change", payable_obj.model.pk
@@ -82,7 +85,8 @@ class PaymentAdminView(View):
 
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(
-    permission_required("payments.process_batches"), name="dispatch",
+    permission_required("payments.process_batches"),
+    name="dispatch",
 )
 class BatchProcessAdminView(View):
     """View that processes a batch."""
@@ -114,7 +118,8 @@ class BatchProcessAdminView(View):
 
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(
-    permission_required("payments.process_batches"), name="dispatch",
+    permission_required("payments.process_batches"),
+    name="dispatch",
 )
 class BatchExportAdminView(View):
     """View that exports a batch."""
@@ -155,7 +160,8 @@ class BatchExportAdminView(View):
 
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(
-    permission_required("payments.process_batches"), name="dispatch",
+    permission_required("payments.process_batches"),
+    name="dispatch",
 )
 class BatchTopicExportAdminView(View):
     """View that exports a batch per topic."""
@@ -201,7 +207,8 @@ class BatchTopicExportAdminView(View):
 
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(
-    permission_required("payments.process_batches"), name="dispatch",
+    permission_required("payments.process_batches"),
+    name="dispatch",
 )
 class BatchTopicDescriptionAdminView(View):
     """Shows the topic export as plain text."""
@@ -234,7 +241,8 @@ class BatchTopicDescriptionAdminView(View):
 
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(
-    permission_required("payments.process_batches"), name="dispatch",
+    permission_required("payments.process_batches"),
+    name="dispatch",
 )
 class BatchNewFilledAdminView(View):
     """View that adds a new batch filled with all payments that where not already in a batch."""
@@ -243,7 +251,10 @@ class BatchNewFilledAdminView(View):
         batch = Batch()
         batch.save()
 
-        payments = Payment.objects.filter(type=Payment.TPAY, batch=None,)
+        payments = Payment.objects.filter(
+            type=Payment.TPAY,
+            batch=None,
+        )
 
         payments.update(batch=batch)
 

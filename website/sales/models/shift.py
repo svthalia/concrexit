@@ -26,7 +26,11 @@ class Shift(models.Model):
 
     objects = QueryablePropertiesManager()
 
-    start = models.DateTimeField(verbose_name=_("start"), blank=False, null=False,)
+    start = models.DateTimeField(
+        verbose_name=_("start"),
+        blank=False,
+        null=False,
+    )
     end = models.DateTimeField(
         verbose_name=_("end"),
         blank=False,

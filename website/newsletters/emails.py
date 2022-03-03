@@ -11,6 +11,7 @@ from django.utils.timezone import make_aware
 
 from newsletters import services
 from partners.models import Partner
+from thaliawebsite.context_processors import thumbnail_sizes
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ def send_newsletter(newsletter):
     text_template = get_template("newsletters/email.txt")
 
     main_partner = Partner.objects.filter(is_main_partner=True).first()
-    local_partner = Partner.objects.filter(is_local_partner=True).first()
+    local_partners = Partner.objects.filter(is_local_partner=True)
 
     with mail.get_connection() as connection:
         language = ("en", "English")
@@ -52,9 +53,10 @@ def send_newsletter(newsletter):
             "newsletter": newsletter,
             "agenda_events": events,
             "main_partner": main_partner,
-            "local_partner": local_partner,
+            "local_partners": local_partners,
             "lang_code": language[0],
         }
+        context.update(thumbnail_sizes(None))
 
         html_message = html_template.render(context)
         text_message = text_template.render(context)

@@ -10,34 +10,22 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
+from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
+from payments.models import PaymentAmountField
 from pushnotifications.models import ScheduledMessage, Category
 
 
 class Event(models.Model):
     """Describes an event."""
 
-    CATEGORY_ALUMNI = "alumni"
-    CATEGORY_EDUCATION = "education"
-    CATEGORY_CAREER = "career"
-    CATEGORY_LEISURE = "leisure"
-    CATEGORY_ASSOCIATION = "association"
-    CATEGORY_OTHER = "other"
-
-    EVENT_CATEGORIES = (
-        (CATEGORY_ALUMNI, _("Alumni")),
-        (CATEGORY_EDUCATION, _("Education")),
-        (CATEGORY_CAREER, _("Career")),
-        (CATEGORY_LEISURE, _("Leisure")),
-        (CATEGORY_ASSOCIATION, _("Association Affairs")),
-        (CATEGORY_OTHER, _("Other")),
-    )
-
     DEFAULT_NO_REGISTRATION_MESSAGE = _("No registration required")
 
     title = models.CharField(_("title"), max_length=100)
 
-    description = HTMLField(_("description"),)
+    description = HTMLField(
+        _("description"),
+    )
 
     caption = models.TextField(
         _("caption"),
@@ -118,7 +106,10 @@ class Event(models.Model):
         ),
     )
 
-    location = models.CharField(_("location"), max_length=255,)
+    location = models.CharField(
+        _("location"),
+        max_length=255,
+    )
 
     map_location = models.CharField(
         _("location for minimap"),
@@ -131,18 +122,16 @@ class Event(models.Model):
         ),
     )
 
-    price = models.DecimalField(
-        _("price"),
-        max_digits=5,
-        decimal_places=2,
+    price = PaymentAmountField(
+        verbose_name=_("price"),
+        allow_zero=True,
         default=0,
         validators=[validators.MinValueValidator(0)],
     )
 
-    fine = models.DecimalField(
-        _("fine"),
-        max_digits=5,
-        decimal_places=2,
+    fine = PaymentAmountField(
+        verbose_name=_("fine"),
+        allow_zero=True,
         default=0,
         # Minimum fine is checked in this model's clean(), as it is only for
         # events that require registration.
@@ -151,7 +140,9 @@ class Event(models.Model):
     )
 
     max_participants = models.PositiveSmallIntegerField(
-        _("maximum number of participants"), blank=True, null=True,
+        _("maximum number of participants"),
+        blank=True,
+        null=True,
     )
 
     no_registration_message = models.CharField(
@@ -182,7 +173,9 @@ class Event(models.Model):
     )
 
     documents = models.ManyToManyField(
-        "documents.Document", verbose_name=_("documents"), blank=True,
+        "documents.Document",
+        verbose_name=_("documents"),
+        blank=True,
     )
 
     slide = models.ForeignKey(

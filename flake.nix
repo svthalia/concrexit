@@ -32,7 +32,7 @@
                 packages = basePackages;
               };
               deployment = pkgs.mkShell {
-                packages = with pkgs; basePackages ++ [ terraform jq ];
+                packages = with pkgs; [ terraform jq ];
               };
             });
 
@@ -81,7 +81,7 @@
                   (but first check if concrexit has started up with journalctl -fu concrexit)
                 '';
 
-                concrexit.local-testing = true;
+                concrexit.stage = "development";
 
                 users = {
                   users.root.password = "";

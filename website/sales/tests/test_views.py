@@ -27,8 +27,12 @@ class SalesOrderPaymentView(TestCase):
         cls.wine = Product.objects.create(name="wine", age_restricted=True)
         cls.soda = Product.objects.create(name="soda", age_restricted=False)
 
-        cls.normal = ProductList.objects.create(name="normal",)
-        cls.free = ProductList.objects.create(name="free",)
+        cls.normal = ProductList.objects.create(
+            name="normal",
+        )
+        cls.free = ProductList.objects.create(
+            name="free",
+        )
 
         cls.normal.product_items.bulk_create(
             [
@@ -146,7 +150,8 @@ class SalesOrderPaymentView(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [("/", 302)], response.redirect_chain,
+            [("/", 302)],
+            response.redirect_chain,
         )
 
     def test_other_persons_order(self):
@@ -166,7 +171,8 @@ class SalesOrderPaymentView(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [("/", 302)], response.redirect_chain,
+            [("/", 302)],
+            response.redirect_chain,
         )
 
     def test_empty_order(self):
@@ -175,7 +181,8 @@ class SalesOrderPaymentView(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [("/", 302)], response.redirect_chain,
+            [("/", 302)],
+            response.redirect_chain,
         )
 
     def test_free_order(self):
@@ -184,7 +191,8 @@ class SalesOrderPaymentView(TestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [("/", 302)], response.redirect_chain,
+            [("/", 302)],
+            response.redirect_chain,
         )
         self.o2.refresh_from_db()
         self.assertEqual(self.o2.payer, self.member)
@@ -197,7 +205,8 @@ class SalesOrderPaymentView(TestCase):
             )
             self.assertEqual(200, response.status_code)
             self.assertEqual(
-                [("/", 302)], response.redirect_chain,
+                [("/", 302)],
+                response.redirect_chain,
             )
             self.o1.refresh_from_db()
             self.assertEqual(self.o1.payer, self.member)

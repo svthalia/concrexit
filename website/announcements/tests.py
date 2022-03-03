@@ -12,9 +12,11 @@ class AnnouncementCloseTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.user = get_user_model().objects.create_user(
-            username="thom", email="test@example.com", password="top secret",
+            username="thom",
+            email="test@example.com",
+            password="top secret",
         )
-        self.middleware = SessionMiddleware()
+        self.middleware = SessionMiddleware(get_response=self.factory)
 
     def test_get_request(self):
         for user in [self.user, AnonymousUser()]:

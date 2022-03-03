@@ -90,7 +90,9 @@ class GSuiteUserService:
         :param username: username of the user
         """
         self.directory_api.users().patch(
-            body={"suspended": "true",},
+            body={
+                "suspended": "true",
+            },
             userKey=f"{username}@{settings.GSUITE_MEMBERS_DOMAIN}",
         ).execute()
 

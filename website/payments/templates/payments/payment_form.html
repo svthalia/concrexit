@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static bootstrap4 compress alert %}
+{% load i18n static django_bootstrap5 compress alert %}
 
 {% block title %}{% trans "confirm payment"|capfirst %} —
     {% trans "Thalia Pay"|capfirst %} — {{ block.super }}{% endblock %}
@@ -11,11 +11,7 @@
         <div class="container">
             <h1 class="section-title">{% trans "confirm payment of"|capfirst %} € {{ payable.payment_amount|floatformat:2 }}</h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% alert message.tags message %}
-                {% endfor %}
-            {% endif %}
+            {% bootstrap_messages %}
 
             {% for error in form.errors.items %}
                 {% for message in error.1 %}
@@ -47,7 +43,7 @@
                 {% bootstrap_field form.next %}
                 {% bootstrap_field form.payable_hash %}
 
-                <div class="form-group col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
+                <div class="form-row col-6 col-lg-2 offset-3 offset-lg-5 mt-4">
                     <input type="submit" name="_save" value="{% trans "confirm"|capfirst %}"
                            class="btn btn-success w-100">
                     <a href="{{ form.next.value }}" class="btn btn-secondary w-100 mt-4">{% trans "cancel"|capfirst %}</a>

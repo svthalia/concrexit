@@ -41,7 +41,8 @@ class EventListSerializer(CleanedModelSerializer):
     def _registered(self, instance):
         try:
             registered = services.is_user_registered(
-                self.context["request"].user, instance,
+                self.context["request"].user,
+                instance,
             )
             if registered is None:
                 return False
@@ -54,7 +55,10 @@ class EventListSerializer(CleanedModelSerializer):
 
     def _present(self, instance):
         try:
-            present = services.is_user_present(self.context["request"].user, instance,)
+            present = services.is_user_present(
+                self.context["request"].user,
+                instance,
+            )
             if present is None:
                 return False
             return present

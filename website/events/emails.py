@@ -37,7 +37,7 @@ def notify_first_waiting(event):
             }
         )
 
-        EmailMessage(subject, text_message, to=[first_waiting_member.email]).send()
+        EmailMessage(subject, text_message, to=[first_waiting.email]).send()
 
 
 def notify_organiser(event, registration):

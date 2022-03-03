@@ -20,6 +20,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             "singlepages:become-active",
             "singlepages:sibling-associations",
+            "singlepages:student-well-being",
             "singlepages:contact",
         ]
 

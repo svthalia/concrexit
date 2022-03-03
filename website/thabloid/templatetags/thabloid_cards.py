@@ -13,11 +13,11 @@ def thabloid_card(year, thabloid):
     view_url = reverse("thabloid:pages", args=[thabloid.year, thabloid.issue])
     buttons = (
         '<div class="text-center mt-2">'
-        '<a href="{}" class="btn btn-secondary d-inline-flex open mr-1">'
+        '<a href="{}" class="btn btn-secondary d-inline-flex open me-1">'
         '<i class="fas fa-book-open"></i>'
         "</a>"
         '<a href="{}" download '
-        'class="btn btn-secondary d-inline-flex download ml-1">'
+        'class="btn btn-secondary d-inline-flex download ms-1">'
         '<i class="fas fa-download"></i>'
         "</a>"
         "</div>"

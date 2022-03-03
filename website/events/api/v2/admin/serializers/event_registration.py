@@ -25,14 +25,22 @@ class EventRegistrationAdminSerializer(CleanedModelSerializer):
             "name",
             "special_price",
             "remarks",
+            "phone_number",
+            "email",
         )
         read_only_fields = ("payment",)
+        optional_fields = ["payment", "member", "name", "special_price", "remarks"]
 
-    payment = PaymentSerializer()
+    payment = PaymentSerializer(required=False)
+
+    def create(self, validated_data):
+        event = self.context["event"]
+        validated_data.update({"event": event})
+        return super().create(validated_data)
 
     def to_internal_value(self, data):
         self.fields["member"] = serializers.PrimaryKeyRelatedField(
-            queryset=Member.objects.all()
+            queryset=Member.objects.all(), required=False
         )
         return super().to_internal_value(data)
 
@@ -41,8 +49,3 @@ class EventRegistrationAdminSerializer(CleanedModelSerializer):
             admin=True, detailed=False, read_only=True
         )
         return super().to_representation(instance)
-
-    # def validate(self, attrs):
-    #     instance = EventRegistration(**attrs)
-    #     instance.clean()
-    #     return attrs

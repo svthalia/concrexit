@@ -363,7 +363,10 @@ class BatchAdmin(admin.ModelAdmin):
             "total_amount",
         )
         if obj and obj.processed:
-            return ("description", "withdrawal_date",) + default_fields
+            return (
+                "description",
+                "withdrawal_date",
+            ) + default_fields
         return default_fields
 
     def has_delete_permission(self, request, obj=None):
@@ -452,7 +455,6 @@ class BankAccountAdmin(admin.ModelAdmin):
     """Manage bank accounts."""
 
     list_display = ("iban", "owner_link", "last_used", "valid_from", "valid_until")
-    list_filter = (ValidAccountFilter, "owner__profile__auto_renew")
     fields = (
         "created_at",
         "last_used",
@@ -563,6 +565,7 @@ class BankAccountInline(admin.TabularInline):
 
 class PaymentInline(admin.TabularInline):
     model = Payment
+    fk_name = "paid_by"
     fields = (
         "created_at",
         "type",
@@ -571,6 +574,7 @@ class PaymentInline(admin.TabularInline):
         "notes",
         "batch",
     )
+    ordering = ("-created_at",)
 
     show_change_link = True
 
@@ -673,7 +677,9 @@ class PaymentUserAdmin(admin.ModelAdmin):
         queryset = super().get_queryset(request)
         queryset = queryset.prefetch_related("bank_accounts", "paid_payment_set")
         queryset = queryset.select_properties(
-            "tpay_balance", "tpay_enabled", "tpay_allowed",
+            "tpay_balance",
+            "tpay_enabled",
+            "tpay_allowed",
         )
         return queryset
 
@@ -716,7 +722,8 @@ class PaymentUserAdmin(admin.ModelAdmin):
             changed = x.disallow_tpay()
             count += 1 if changed else 0
         messages.success(
-            request, _(f"Succesfully disallowed Thalia Pay for {count} users."),
+            request,
+            _(f"Succesfully disallowed Thalia Pay for {count} users."),
         )
 
     disallow_thalia_pay.short_description = _("Disallow Thalia Pay for selected users")
@@ -727,7 +734,8 @@ class PaymentUserAdmin(admin.ModelAdmin):
             changed = x.allow_tpay()
             count += 1 if changed else 0
         messages.success(
-            request, _(f"Succesfully allowed Thalia Pay for {count} users."),
+            request,
+            _(f"Succesfully allowed Thalia Pay for {count} users."),
         )
 
     allow_thalia_pay.short_description = _("Allow Thalia Pay for selected users")

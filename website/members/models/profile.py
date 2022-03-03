@@ -42,7 +42,10 @@ class Profile(models.Model):
 
     # Preferably this would have been a foreign key to Member instead,
     # but the UserAdmin requires that this is a foreign key to User.
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
 
     # ----- Registration information -----
 
@@ -90,17 +93,29 @@ class Profile(models.Model):
     )
 
     address_street2 = models.CharField(
-        max_length=100, verbose_name=_("Second address line"), blank=True, null=True,
+        max_length=100,
+        verbose_name=_("Second address line"),
+        blank=True,
+        null=True,
     )
 
     address_postal_code = models.CharField(
-        max_length=10, verbose_name=_("Postal code"), null=True,
+        max_length=10,
+        verbose_name=_("Postal code"),
+        null=True,
     )
 
-    address_city = models.CharField(max_length=40, verbose_name=_("City"), null=True,)
+    address_city = models.CharField(
+        max_length=40,
+        verbose_name=_("City"),
+        null=True,
+    )
 
     address_country = models.CharField(
-        max_length=2, choices=countries.EUROPE, verbose_name=_("Country"), null=True,
+        max_length=2,
+        choices=countries.EUROPE,
+        verbose_name=_("Country"),
+        null=True,
     )
 
     phone_number = models.CharField(
@@ -109,7 +124,8 @@ class Profile(models.Model):
         help_text=_("Enter a phone number so Thalia may reach you"),
         validators=[
             validators.RegexValidator(
-                regex=r"^\+?\d+$", message=_("Please enter a valid phone number"),
+                regex=r"^\+?\d+$",
+                message=_("Please enter a valid phone number"),
             )
         ],
         null=True,
@@ -132,7 +148,8 @@ class Profile(models.Model):
         help_text=_("The phone number for the emergency contact"),
         validators=[
             validators.RegexValidator(
-                regex=r"^\+?\d+$", message=_("Please enter a valid phone number"),
+                regex=r"^\+?\d+$",
+                message=_("Please enter a valid phone number"),
             )
         ],
         null=True,
@@ -169,11 +186,17 @@ class Profile(models.Model):
     )
 
     initials = models.CharField(
-        max_length=20, verbose_name=_("Initials"), blank=True, null=True,
+        max_length=20,
+        verbose_name=_("Initials"),
+        blank=True,
+        null=True,
     )
 
     nickname = models.CharField(
-        max_length=30, verbose_name=_("Nickname"), blank=True, null=True,
+        max_length=30,
+        verbose_name=_("Nickname"),
+        blank=True,
+        null=True,
     )
 
     display_name_preference = models.CharField(
@@ -191,7 +214,10 @@ class Profile(models.Model):
     )
 
     photo = models.ImageField(
-        verbose_name=_("Photo"), upload_to=_profile_image_path, null=True, blank=True,
+        verbose_name=_("Photo"),
+        upload_to=_profile_image_path,
+        null=True,
+        blank=True,
     )
 
     event_permissions = models.CharField(
@@ -226,17 +252,6 @@ class Profile(models.Model):
         verbose_name=_("Receive the Thabloid"),
         help_text=_("Receive printed Thabloid magazines"),
         default=True,
-    )
-
-    # --- Membership preference ----
-
-    auto_renew = models.BooleanField(
-        choices=(
-            (True, _("Yes, enable auto renewal.")),
-            (False, _("No, manual renewal required.")),
-        ),
-        verbose_name=_("Automatically renew membership"),
-        default=False,
     )
 
     # --- Active Member preference ---

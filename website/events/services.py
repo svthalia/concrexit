@@ -7,7 +7,12 @@ from django.utils.translation import gettext_lazy as _
 
 from events import emails
 from events.exceptions import RegistrationError
-from events.models import EventRegistration, RegistrationInformationField, Event
+from events.models import (
+    categories,
+    EventRegistration,
+    RegistrationInformationField,
+    Event,
+)
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
@@ -332,11 +337,12 @@ def generate_category_statistics() -> dict:
     data = {
         "labels": [str(current_year - 4 + i) for i in range(5)],
         "datasets": [
-            {"label": str(display), "data": []} for _, display in Event.EVENT_CATEGORIES
+            {"label": str(display), "data": []}
+            for _, display in categories.EVENT_CATEGORIES
         ],
     }
 
-    for index, (key, _) in enumerate(Event.EVENT_CATEGORIES):
+    for index, (key, _) in enumerate(categories.EVENT_CATEGORIES):
         for i in range(5):
             year_start = date(year=current_year - 4 + i, month=9, day=1)
             year_end = date(year=current_year - 3 + i, month=9, day=1)
@@ -350,7 +356,7 @@ def generate_category_statistics() -> dict:
     return data
 
 
-def execute_data_minimization(dry_run=False):
+def execute_data_minimisation(dry_run=False):
     """Delete information about very old events."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
     deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 5))

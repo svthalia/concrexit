@@ -49,7 +49,11 @@ class MemberViewset(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
         return (
             self.request.user
             and self.request.user.is_authenticated
-            and lookup_arg in ("me", str(self.request.member.pk),)
+            and lookup_arg
+            in (
+                "me",
+                str(self.request.member.pk),
+            )
         )
 
     def get_permissions(self):

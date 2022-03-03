@@ -92,8 +92,7 @@
         "profile_description": "",
         "nickname": "",
         "display_name_preference": "full",
-        "receive_optin": true,
-        "auto_renew": false
+        "receive_optin": true
     }
 },
 {
@@ -117,8 +116,7 @@
         "profile_description": "",
         "nickname": "",
         "display_name_preference": "full",
-        "receive_optin": true,
-        "auto_renew": false
+        "receive_optin": true
     }
 },
 {
@@ -142,8 +140,7 @@
         "profile_description": "",
         "nickname": "",
         "display_name_preference": "full",
-        "receive_optin": true,
-        "auto_renew": false
+        "receive_optin": true
     }
 },
 {
@@ -167,8 +164,7 @@
         "profile_description": "",
         "nickname": "",
         "display_name_preference": "full",
-        "receive_optin": true,
-        "auto_renew": false
+        "receive_optin": true
     }
 },
 {

@@ -1,4 +1,4 @@
-{% load i18n static menu compress pick_header_image %}
+{% load django_bootstrap5 i18n static menu compress pick_header_image %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="en">
@@ -35,9 +35,9 @@
     {% block opengraph %}{% endblock %}
 
     {% block css_head %}
+        <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet" type="text/css">
         {% compress css %}
-            <link href="{% static "css/main.scss" %}" rel="stylesheet"
-                  type="text/x-scss">
+            <link href="{% static "css/main.scss" %}" rel="stylesheet" type="text/x-scss">
         {% endcompress %}
     {% endblock %}
 
@@ -89,71 +89,89 @@
         </a>
         <div class="flex-grow-1"></div>
         <div class="navbar-user order-1 d-flex">
-            <div class="btn-group">
+            <div class="btn-group dropdown">
                 {% if not user.is_authenticated %}
-                    <a href="{% url 'login' %}" class="btn btn-primary"><i
-                        class="fas fa-user"></i></a>
+                    <a href="{% url 'login' %}" class="btn btn-primary" title="Login"><i aria-hidden="true" class="fas fa-user"></i></a>
                 {% else %}
                     <button type="button"
                             class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-                            data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                        <i class="fas fa-user pr-2"></i>
+                            data-bs-toggle="dropdown" aria-haspopup="true" id="user-menu-dropdown-button"
+                            title="User options">
+                        <i aria-hidden="true" class="fas fa-user pe-2"></i>
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item"
-                           href="{% url 'members:profile' %}">
-                            {% trans "show public profile"|capfirst %}
-                        </a>
-                        <a class="dropdown-item"
-                           href="{% url 'members:edit-profile' %}">
-                            {% trans "edit profile"|capfirst %}
-                        </a>
-                        <a class="dropdown-item"
-                           href="{% url 'oauth2_provider:authorized-token-list' %}">
-                            {% trans "authorised applications"|capfirst %}
-                        </a>
-                        <a class="dropdown-item"
-                           href="{% url 'password_change' %}">
-                            {% trans "change password"|capfirst %}
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item"
-                           href="{% url 'registrations:renew' %}">
-                            {% trans "manage membership"|capfirst %}
-                        </a>
-                        <a class="dropdown-item"
-                           href="{% url 'payments:bankaccount-list' %}">
-                            {% trans "manage bank account(s)"|capfirst %}
-                        </a>
-                        <a class="dropdown-item"
-                           href="{% url 'payments:payment-list' %}">
-                            {% trans "view payments"|capfirst %}
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item"
-                           href="{% url 'admin:index' %}">
-                            {% trans "Site administration" %}
-                        </a>
-                        <a class="dropdown-item"
-                           href="{% url 'logout' %}">
-                            {% trans "Logout" %}
-                        </a>
-                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="user-menu-dropdown-button">
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'members:profile' %}">
+                                    {% trans "show public profile"|capfirst %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'members:edit-profile' %}">
+                                    {% trans "edit profile"|capfirst %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'oauth2_provider:authorized-token-list' %}">
+                                    {% trans "authorised applications"|capfirst %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'password_change' %}">
+                                    {% trans "change password"|capfirst %}
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'registrations:renew' %}">
+                                    {% trans "manage membership"|capfirst %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'payments:bankaccount-list' %}">
+                                    {% trans "manage bank account(s)"|capfirst %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'payments:payment-list' %}">
+                                    {% trans "view payments"|capfirst %}
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'admin:index' %}">
+                                    {% trans "Site administration" %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{% url 'logout' %}">
+                                    {% trans "Logout" %}
+                                </a>
+                            </li>
+                    </ul>
                 {% endif %}
             </div>
         </div>
-        <button class="navbar-toggler order-0 justify-content-end"
-                type="button" data-toggle="collapse"
-                data-target="#navbarCollapse" aria-controls="navbarCollapse"
-                aria-expanded="false"
+        <button class="navbar-toggler order-1 justify-content-end"
+                type="button" data-bs-toggle="collapse" id="navbarCollapseButton"
+                data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false"
                 aria-label="Toggle navigation"><i class="fa fa-bars"></i>
         </button>
         <div
-            class="collapse navbar-collapse justify-content-end pr-lg-4 order-lg-0 order-2"
-            id="navbarCollapse">
+            class="collapse navbar-collapse justify-content-end pe-lg-4 order-lg-0 order-2"
+            id="navbarCollapse" aria-labelledby="navbarCollapseButton">
             {% render_main_menu %}
         </div>
+    </div>
     </div>
 </nav>
 
@@ -184,21 +202,21 @@
             <span class="divider">&#9679;</span>
             <a href="{% url 'singlepages:responsible-disclosure' %}">{% trans "responsible disclosure policy"|capfirst %}</a>
         </div>
-        <div class="social float-right">
-            <a target="_blank" rel="noopener" href="https://www.facebook.com/svThalia">
-                <i class="fab fa-facebook"></i>
+        <div class="social float-end">
+            <a target="_blank" rel="noopener" href="https://www.facebook.com/svThalia" title="Facebook page for Thalia">
+                <i aria-hidden="true" class="fab fa-facebook"></i>
             </a>
-            <a target="_blank" rel="noopener" href="https://twitter.com/svThalia">
-                <i class="fab fa-twitter"></i>
+            <a target="_blank" rel="noopener" href="https://twitter.com/svThalia" title="Twitter account for Thalia">
+                <i aria-hidden="true" class="fab fa-twitter"></i>
             </a>
-            <a target="_blank" rel="noopener" href="https://www.instagram.com/thalia_nijmegen/">
-                <i class="fab fa-instagram"></i>
+            <a target="_blank" rel="noopener" href="https://www.instagram.com/thalia_nijmegen/" title="Instagram page for Thalia">
+                <i aria-hidden="true" class="fab fa-instagram"></i>
             </a>
-            <a target="_blank" rel="noopener" href="http://www.linkedin.com/groups?gid=54887">
-                <i class="fab fa-linkedin"></i>
+            <a target="_blank" rel="noopener" href="http://www.linkedin.com/groups?gid=54887" title="LinkedIn group for Thalia">
+                <i aria-hidden="true" class="fab fa-linkedin"></i>
             </a>
-            <a target="_blank" rel="noopener" href="https://github.com/svthalia/">
-                <i class="fab fa-github"></i>
+            <a target="_blank" rel="noopener" href="https://github.com/svthalia/" title="GitHub page for Thalia">
+                <i aria-hidden="true" class="fab fa-github"></i>
             </a>
         </div>
     </div>
@@ -207,20 +225,18 @@
 {% block js_body %}
     <script type="text/javascript"
             src="{% url 'javascript-catalog' %}"></script>
-    {% compress js %}
-        <script type="text/javascript"
-                src="{% static "js/jquery.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "js/js.cookie.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "js/bootstrap.bundle.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "js/jquery.fancybox.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "js/main.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "announcements/js/announcements.js" %}"></script>
-    {% endcompress %}
+    <script type="text/javascript"
+            src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/jquery.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/js.cookie.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/jquery.fancybox.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/main.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "announcements/js/announcements.js" %}"></script>
 {% endblock %}
 </body>
 </html>

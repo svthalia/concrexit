@@ -114,7 +114,9 @@ class FoodOrderAdmin(DoNextModelAdmin):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == "payment":
             return Field(
-                widget=PaymentWidget(obj=obj), initial=field.initial, required=False,
+                widget=PaymentWidget(obj=obj),
+                initial=field.initial,
+                required=False,
             )
         return field
 

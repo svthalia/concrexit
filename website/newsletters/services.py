@@ -26,7 +26,7 @@ def write_to_file(pk, lang, html_message):
 def save_to_disk(newsletter):
     """Write the newsletter as HTML to file (in all languages)."""
     main_partner = Partner.objects.filter(is_main_partner=True).first()
-    local_partner = Partner.objects.filter(is_local_partner=True).first()
+    local_partners = Partner.objects.filter(is_local_partner=True)
 
     html_template = get_template("newsletters/email.html")
 
@@ -41,7 +41,7 @@ def save_to_disk(newsletter):
                 )
             ),
             "main_partner": main_partner,
-            "local_partner": local_partner,
+            "local_partners": local_partners,
             "lang_code": language[0],
         }
 

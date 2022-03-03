@@ -1,18 +1,12 @@
 # CODEOWNERS FOR CONCREXIT APPS
-/website/pushnotifications @9Y0 
 /website/members @Jorritboer 
 /website/documents @LCKnol 
-/website/activemembers @9Y0 
-/website/photos @KiOui 
 /website/mailinglists @wdoeland
 /website/merchandise @LCKnol 
 /website/thabloid @ColonelPhantom 
 /website/partners @wdoeland 
 /website/events @ColonelPhantom 
-/website/pizzas @PeaceDucko 
 /website/newsletters @Jorritboer 
-/website/education @PeaceDucko 
-/website/announcements @9Y0 
 /website/registrations @se-bastiaan 
 /website/payments @JobDoesburg 
 /website/promotion @nvoers
@@ -24,12 +18,9 @@
 
 # SPECIAL SERVER-RELATED CONFIG
 /website/thaliawebsite/settings.py @svthalia/server  
-/resources @svthalia/server  
 /scripts @svthalia/server  
-/nix @svthalia/server  
+/infra @svthalia/server  
 /*.nix @svthalia/server  
-.dockerignore @svthalia/server  
-Dockerfile @svthalia/server  
 
 # ANYTHING WORKFLOW-RELATED
 /.github @svthalia/illuminati

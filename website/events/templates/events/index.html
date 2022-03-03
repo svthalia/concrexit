@@ -28,8 +28,8 @@
                 <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}"
                    target="_blank"
                    class="btn btn-primary btn-first"
-                   data-toggle="tooltip"
-                   data-placement="top"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
                    title="{% trans 'iCal feed (all events)' %}"
                 >
                     <i class="fas fa-calendar-alt"></i>
@@ -37,8 +37,8 @@
                 {% if request.user.is_authenticated %}
                     <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}?u={% personal_feed %}"
                        target="_blank"
-                       data-toggle="tooltip"
-                       data-placement="top"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
                        class="btn btn-primary btn-second"
                        title="{% trans 'iCal feed (personal)' %}"
                     >

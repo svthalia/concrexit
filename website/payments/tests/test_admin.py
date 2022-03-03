@@ -339,7 +339,11 @@ class PaymentAdminTest(TestCase):
 
         self.client.post(
             change_url,
-            {"action": "add_to_last_batch", "index": 1, "_selected_action": [p3.id],},
+            {
+                "action": "add_to_last_batch",
+                "index": 1,
+                "_selected_action": [p3.id],
+            },
         )
 
     def test_add_to_last_batch_no_batch(self):
@@ -376,7 +380,12 @@ class PaymentAdminTest(TestCase):
         actions = self.admin.get_actions(response.wsgi_request)
         self.assertCountEqual(
             actions,
-            ["delete_selected", "add_to_new_batch", "add_to_last_batch", "export_csv",],
+            [
+                "delete_selected",
+                "add_to_new_batch",
+                "add_to_last_batch",
+                "export_csv",
+            ],
         )
 
     def test_get_readonly_fields(self) -> None:
@@ -500,7 +509,11 @@ class ValidAccountFilterTest(TestCase):
         )
 
         self.assertEqual(
-            (("valid", "Valid"), ("invalid", "Invalid"), ("none", "None"),),
+            (
+                ("valid", "Valid"),
+                ("invalid", "Invalid"),
+                ("none", "None"),
+            ),
             account_filter.lookups(None, None),
         )
 
@@ -592,7 +605,8 @@ class BatchAdminTest(TestCase):
     def test_delete_model_fail(self) -> None:
         batch = Batch.objects.create(processed=True)
         response = self.client.post(
-            reverse("admin:payments_batch_delete", args=(batch.id,)), {"post": "yes"},
+            reverse("admin:payments_batch_delete", args=(batch.id,)),
+            {"post": "yes"},
         )
         self.assertEqual(response.status_code, 403)
         self.assertTrue(Batch.objects.filter(id=batch.id).exists())
@@ -636,7 +650,12 @@ class BatchAdminTest(TestCase):
         b = Batch.objects.create()
         self.assertCountEqual(
             self.admin.get_readonly_fields(None, b),
-            ["id", "processed", "processing_date", "total_amount",],
+            [
+                "id",
+                "processed",
+                "processing_date",
+                "total_amount",
+            ],
         )
 
         b.processed = True
@@ -755,7 +774,9 @@ class BankAccountAdminTest(TestCase):
             mock.return_value = True
             self.assertTrue(self.admin.can_be_revoked(bank_account1))
             mock.return_value = False
-            self.assertFalse(self.admin.can_be_revoked(bank_account1),)
+            self.assertFalse(
+                self.admin.can_be_revoked(bank_account1),
+            )
 
     def test_export_csv(self) -> None:
         """Test that the CSV export of accounts is correct."""

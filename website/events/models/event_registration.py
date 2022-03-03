@@ -1,11 +1,15 @@
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, F, Count
+from django.db.models.functions import NullIf, Greatest
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
+from queryable_properties.properties import AnnotationProperty
+from queryable_properties.managers import QueryablePropertiesManager
 
+from payments.models import PaymentAmountField
 from .event import Event
 
 
@@ -18,6 +22,8 @@ def registration_member_choices_limit():
 
 class EventRegistration(models.Model):
     """Describes a registration for an Event."""
+
+    objects = QueryablePropertiesManager()
 
     event = models.ForeignKey(Event, models.CASCADE)
 
@@ -37,15 +43,38 @@ class EventRegistration(models.Model):
         blank=True,
     )
 
+    alt_email = models.EmailField(
+        _("email"),
+        help_text=_("Email address for non-members"),
+        max_length=254,
+        null=True,
+        blank=True,
+    )
+
+    alt_phone_number = models.CharField(
+        max_length=20,
+        verbose_name=_("Phone number"),
+        help_text=_("Phone number for non-members"),
+        validators=[
+            validators.RegexValidator(
+                regex=r"^\+?\d+$",
+                message=_("Please enter a valid phone number"),
+            )
+        ],
+        null=True,
+        blank=True,
+    )
+
     date = models.DateTimeField(_("registration date"), default=timezone.now)
     date_cancelled = models.DateTimeField(_("cancellation date"), null=True, blank=True)
 
-    present = models.BooleanField(_("present"), default=False,)
+    present = models.BooleanField(
+        _("present"),
+        default=False,
+    )
 
-    special_price = models.DecimalField(
-        _("special price"),
-        max_digits=5,
-        decimal_places=2,
+    special_price = PaymentAmountField(
+        verbose_name=_("special price"),
         blank=True,
         null=True,
         validators=[validators.MinValueValidator(0)],
@@ -62,6 +91,20 @@ class EventRegistration(models.Model):
     )
 
     @property
+    def phone_number(self):
+        if self.member:
+            return self.member.profile.phone_number
+        else:
+            return self.alt_phone_number
+
+    @property
+    def email(self):
+        if self.member:
+            return self.member.email
+        else:
+            return self.alt_email
+
+    @property
     def information_fields(self):
         fields = self.event.registrationinformationfield_set.all()
         return [
@@ -72,17 +115,26 @@ class EventRegistration(models.Model):
     def is_registered(self):
         return self.date_cancelled is None
 
-    @property
-    def queue_position(self):
-        if self.event.max_participants is not None:
-            try:
-                queue_ids = [
-                    registration.member_id for registration in self.event.queue
-                ]
-                return list(queue_ids).index(self.member_id) + 1
-            except ValueError:
-                pass
-        return None
+    queue_position = AnnotationProperty(
+        # Get queue position by counting amount of registrations with lower date and in case of same date lower id
+        # Subsequently cast to None if this is 0 or lower, in which case it isn't in the queue
+        NullIf(
+            Greatest(
+                Count(
+                    "event__eventregistration",
+                    filter=Q(event__eventregistration__date_cancelled=None)
+                    & (
+                        Q(event__eventregistration__date__lt=F("date"))
+                        | Q(event__eventregistration__id__lte=F("id"))
+                        & Q(event__eventregistration__date__exact=F("date"))
+                    ),
+                )
+                - F("event__max_participants"),
+                0,
+            ),
+            0,
+        )
+    )
 
     @property
     def is_invited(self):
@@ -136,6 +188,18 @@ class EventRegistration(models.Model):
                 {
                     "member": _("Either specify a member or a name"),
                     "name": _("Either specify a member or a name"),
+                }
+            )
+        if self.member and self.alt_email:
+            errors.update(
+                {"alt_email": _("Email should only be specified for non-members")}
+            )
+        if self.member and self.alt_phone_number:
+            errors.update(
+                {
+                    "alt_phone_number": _(
+                        "Phone number should only be specified for non-members"
+                    )
                 }
             )
         if (

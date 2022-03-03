@@ -8,5 +8,12 @@ app_name = "merchandise"
 
 #: the urls provided by this package
 urlpatterns = [
-    path("association/merchandise/", include([path("", views.index, name="index"),]))
+    path(
+        "association/merchandise/",
+        include(
+            [
+                path("", views.index, name="index"),
+            ]
+        ),
+    )
 ]

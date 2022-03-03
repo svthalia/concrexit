@@ -13,8 +13,8 @@
                 <p class="col-12">{% trans "Thalia is the study association for Computing Science and Information Sciences students at the Radboud University in Nijmegen. Thalia organises a wide variety of activities, such as bowling events, go cart racing, lunch lectures, drinks and much more! Furthermore, members get access to our tests and summaries database, as well as discounts on books. There's no reason not to become a member!" %}</p>
             </div>
 
-            <div class="row mt-3">
-                <div class="col-12 col-lg-6 order-0">
+            <div class="row mt-5 mb-3">
+                <div class="col-12 col-lg-6 order-1">
                     <h4>{% trans "I'm a Computing Science or Information Sciences student at the Radboud University" %}</h4>
 
                     <p>
@@ -29,7 +29,7 @@
 
                 <div class="col-12 col-lg-6 order-1 order-lg-3">
                     <p class="my-4">
-                        <a href="{% url 'registrations:register-member' %}" class="btn btn-primary btn-lg btn-block">
+                        <a href="{% url 'registrations:register-member' %}" class="btn btn-primary btn-lg">
                             {% trans "Become a member" %}
                         </a>
                     </p>
@@ -50,7 +50,7 @@
 
                 <div class="col-12 col-lg-6 order-3">
                     <p class="my-4">
-                        <a href="{% url 'registrations:register-benefactor' %}" class="btn btn-primary btn-lg btn-block">
+                        <a href="{% url 'registrations:register-benefactor' %}" class="btn btn-primary btn-lg">
                             {% trans "Become a benefactor" %}
                         </a>
                     </p>

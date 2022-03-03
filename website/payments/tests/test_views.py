@@ -309,7 +309,10 @@ class BankAccountRevokeViewTest(TestCase):
         )
 
         self.assertFalse(
-            BankAccount.objects.filter(owner=self.login_user, iban="BE68539007547034",)
+            BankAccount.objects.filter(
+                owner=self.login_user,
+                iban="BE68539007547034",
+            )
             .first()
             .valid
         )
@@ -354,16 +357,27 @@ class BankAccountListViewTest(TestCase):
         """
         self.client.logout()
 
-        response = self.client.post(reverse("payments:bankaccount-list"), follow=True,)
+        response = self.client.post(
+            reverse("payments:bankaccount-list"),
+            follow=True,
+        )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [("/user/login/?next=" + reverse("payments:bankaccount-list"), 302,)],
+            [
+                (
+                    "/user/login/?next=" + reverse("payments:bankaccount-list"),
+                    302,
+                )
+            ],
             response.redirect_chain,
         )
 
     def test_accounts(self):
         """The page should show only accounts of the logged-in user."""
-        response = self.client.get(reverse("payments:bankaccount-list"), follow=True,)
+        response = self.client.get(
+            reverse("payments:bankaccount-list"),
+            follow=True,
+        )
         self.assertEqual(200, response.status_code)
         self.assertContains(response, "NL91ABNA0417164300")
         self.assertNotContains(response, "BE68539007547034")
@@ -410,10 +424,18 @@ class PaymentListViewTest(TestCase):
         """
         self.client.logout()
 
-        response = self.client.post(reverse("payments:payment-list"), follow=True,)
+        response = self.client.post(
+            reverse("payments:payment-list"),
+            follow=True,
+        )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [("/user/login/?next=" + reverse("payments:payment-list"), 302,)],
+            [
+                (
+                    "/user/login/?next=" + reverse("payments:payment-list"),
+                    302,
+                )
+            ],
             response.redirect_chain,
         )
 
@@ -489,10 +511,18 @@ class PaymentProcessViewTest(TestCase):
         """
         self.client.logout()
 
-        response = self.client.post(reverse("payments:payment-process"), follow=True,)
+        response = self.client.post(
+            reverse("payments:payment-process"),
+            follow=True,
+        )
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [("/user/login/?next=" + reverse("payments:payment-process"), 302,)],
+            [
+                (
+                    "/user/login/?next=" + reverse("payments:payment-process"),
+                    302,
+                )
+            ],
             response.redirect_chain,
         )
 

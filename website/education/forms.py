@@ -3,10 +3,8 @@ import datetime
 
 from django.forms import (
     ChoiceField,
-    DateField,
     ModelChoiceField,
     ModelForm,
-    SelectDateWidget,
     TypedChoiceField,
     CharField,
 )
@@ -23,11 +21,9 @@ class AddExamForm(ModelForm):
     this_year = datetime.date.today().year
     years = list(reversed(range(this_year - 8, this_year + 1)))
 
-    exam_date = DateField(
-        widget=SelectDateWidget(years=years), initial=datetime.date.today
-    )
     course = ModelChoiceField(
-        queryset=Course.objects.order_by("name"), empty_label=None,
+        queryset=Course.objects.order_by("name"),
+        empty_label=None,
     )
     type = ChoiceField(choices=Exam.EXAM_TYPES)
 
@@ -35,12 +31,17 @@ class AddExamForm(ModelForm):
         model = Exam
         fields = ("file", "course", "type", "language", "exam_date")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["exam_date"].widget.input_type = "date"
+
 
 class AddSummaryForm(ModelForm):
     """Custom form to add summaries, orders courses by name and formats the year as lecture years."""
 
     course = ModelChoiceField(
-        queryset=Course.objects.order_by("name"), empty_label=None,
+        queryset=Course.objects.order_by("name"),
+        empty_label=None,
     )
 
     this_year = datetime_to_lectureyear(timezone.now())

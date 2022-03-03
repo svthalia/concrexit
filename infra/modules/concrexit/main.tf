@@ -7,7 +7,8 @@ resource "aws_ebs_volume" "concrexit-postgres" {
   size              = 20
 
   tags = merge(var.tags, {
-    Name = "${var.customer}-${var.stage}-postgres"
+    Name = "${var.customer}-${var.stage}-postgres",
+    Snapshot = true
   })
 }
 
@@ -16,7 +17,8 @@ resource "aws_ebs_volume" "concrexit-media" {
   size              = 100
 
   tags = merge(var.tags, {
-    Name = "${var.customer}-${var.stage}-media"
+    Name = "${var.customer}-${var.stage}-media",
+    Snapshot = true
   })
 }
 
@@ -103,7 +105,10 @@ data "external" "nix-flake-build" {
 
             concrexit = {
               dir = "/volume/concrexit_media/data";
-              domain = "${var.webhostname}.thalia.nu";
+              domain = "${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
+              env-vars.GSUITE_DOMAIN = "${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
+              env-vars.GSUITE_MEMBERS_DOMAIN = "members.${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
+              env-vars.DJANGO_ENV = "${var.stage}";
             };
 
             services.postgresql.dataDir = "/volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema}";

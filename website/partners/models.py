@@ -38,10 +38,15 @@ class Partner(models.Model):
     )
 
     address2 = models.CharField(
-        max_length=100, verbose_name=_("Second address line"), blank=True, null=True,
+        max_length=100,
+        verbose_name=_("Second address line"),
+        blank=True,
+        null=True,
     )
 
-    zip_code = models.CharField(max_length=12,)
+    zip_code = models.CharField(
+        max_length=12,
+    )
 
     city = models.CharField(max_length=100)
 
@@ -196,7 +201,11 @@ class Vacancy(models.Model):
                 errors.update({"company_logo": msg})
         if not self.partner and not self.company_name and not self.company_logo:
             errors.update(
-                {"partner": msg, "company_name": msg, "company_logo": msg,}
+                {
+                    "partner": msg,
+                    "company_name": msg,
+                    "company_logo": msg,
+                }
             )
 
         if errors:
@@ -207,55 +216,3 @@ class Vacancy(models.Model):
 
         ordering = ["-pk"]
         verbose_name_plural = _("Vacancies")
-
-
-class PartnerEvent(models.Model):
-    """Model describing partner event."""
-
-    partner = models.ForeignKey(
-        Partner,
-        verbose_name=_("partner"),
-        on_delete=models.CASCADE,
-        related_name="events",
-        blank=True,
-        null=True,
-    )
-
-    other_partner = models.CharField(max_length=255, blank=True)
-
-    title = models.CharField(_("title"), max_length=100)
-
-    description = models.TextField(_("description"))
-
-    location = models.CharField(_("location"), max_length=255,)
-
-    start = models.DateTimeField(_("start time"))
-
-    end = models.DateTimeField(_("end time"))
-
-    url = models.URLField(_("website"))
-
-    published = models.BooleanField(_("published"), default=False)
-
-    def clean(self):
-        """Validate the partner event."""
-        super().clean()
-        errors = {}
-        if (not self.partner and not self.other_partner) or (
-            self.partner and self.other_partner
-        ):
-            errors.update(
-                {
-                    "partner": _("Please select or enter a partner for this event."),
-                    "other_partner": _(
-                        "Please select or enter a partner for this event."
-                    ),
-                }
-            )
-
-        if errors:
-            raise ValidationError(errors)
-
-    def __str__(self):
-        """Return the event title."""
-        return str(self.title)

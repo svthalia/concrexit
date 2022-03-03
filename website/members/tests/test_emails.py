@@ -14,7 +14,9 @@ class EmailsTest(TestCase):
         cls.member_no_mail = Member.objects.create(
             username="no_mail_test", first_name="Nomail", last_name="Example"
         )
-        Profile.objects.create(user=cls.member_no_mail,)
+        Profile.objects.create(
+            user=cls.member_no_mail,
+        )
         Membership.objects.create(
             user=cls.member_no_mail,
             type=Membership.MEMBER,
@@ -53,7 +55,9 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test3@example.org",
         )
-        Profile.objects.create(user=cls.year_member_no_expiry,)
+        Profile.objects.create(
+            user=cls.year_member_no_expiry,
+        )
         Membership.objects.create(
             user=cls.year_member_no_expiry,
             type=Membership.MEMBER,
@@ -66,7 +70,9 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test4@example.org",
         )
-        Profile.objects.create(user=cls.study_member,)
+        Profile.objects.create(
+            user=cls.study_member,
+        )
         Membership.objects.create(
             user=cls.study_member,
             type=Membership.MEMBER,
@@ -79,7 +85,9 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test5@example.org",
         )
-        Profile.objects.create(user=cls.study_member_2,)
+        Profile.objects.create(
+            user=cls.study_member_2,
+        )
         Membership.objects.create(
             user=cls.study_member_2,
             type=Membership.MEMBER,
@@ -104,14 +112,18 @@ class EmailsTest(TestCase):
             since=timezone.now().replace(year=2017, month=9, day=1),
             until=timezone.now().replace(year=2018, month=9, day=1),
         )
-        Profile.objects.create(user=cls.benefactor,)
+        Profile.objects.create(
+            user=cls.benefactor,
+        )
         cls.honorary_member = Member.objects.create(
             username="test7",
             first_name="Test7",
             last_name="Example",
             email="test7@example.org",
         )
-        Profile.objects.create(user=cls.honorary_member,)
+        Profile.objects.create(
+            user=cls.honorary_member,
+        )
         Membership.objects.create(
             user=cls.honorary_member,
             type=Membership.HONORARY,
@@ -130,7 +142,9 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test8@example.org",
         )
-        Profile.objects.create(user=cls.old_member,)
+        Profile.objects.create(
+            user=cls.old_member,
+        )
         Membership.objects.create(
             user=cls.old_member,
             type=Membership.MEMBER,
@@ -143,7 +157,9 @@ class EmailsTest(TestCase):
             last_name="Example",
             email="test9@example.org",
         )
-        Profile.objects.create(user=cls.future_member,)
+        Profile.objects.create(
+            user=cls.future_member,
+        )
         Membership.objects.create(
             user=cls.future_member,
             type=Membership.MEMBER,

@@ -24,7 +24,9 @@ class ShiftActiveFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by active status",
-                "schema": {"type": "boolean",},
+                "schema": {
+                    "type": "boolean",
+                },
             }
         ]
 
@@ -47,7 +49,9 @@ class ShiftLockedFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter by locked status",
-                "schema": {"type": "boolean",},
+                "schema": {
+                    "type": "boolean",
+                },
             }
         ]
 
@@ -72,13 +76,17 @@ class ShiftDateFilter(filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": "Filter shifts by ISO date, starting with this parameter (i.e. 2021-03-30T04:20:00) where `event.end >= value`",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             },
             {
                 "name": "end",
                 "required": False,
                 "in": "query",
                 "description": "Filter shifts by ISO date, ending with this parameter (i.e. 2021-05-16T13:37:00) where `event.start <= value`",
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             },
         ]

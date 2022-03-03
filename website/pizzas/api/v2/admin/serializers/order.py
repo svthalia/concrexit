@@ -7,7 +7,7 @@ from payments.api.v2.serializers import PaymentSerializer
 from pizzas.api.v2.admin.serializers.product import ProductAdminSerializer
 from pizzas.api.v2.admin.validators import MutuallyExclusiveValidator
 from pizzas.api.v2.serializers import Product
-from pizzas.models import FoodOrder, FoodEvent
+from pizzas.models import FoodOrder
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
 )
@@ -19,9 +19,12 @@ class FoodOrderAdminSerializer(CleanedModelSerializer):
         fields = ("pk", "payment", "product", "name", "member", "food_event")
         validators = [
             UniqueTogetherValidator(
-                queryset=FoodOrder.objects.all(), fields=["food_event", "member"],
+                queryset=FoodOrder.objects.all(),
+                fields=["food_event", "member"],
             ),
-            MutuallyExclusiveValidator(fields=["name", "member"],),
+            MutuallyExclusiveValidator(
+                fields=["name", "member"],
+            ),
         ]
         read_only_fields = ("payment",)
 
@@ -39,6 +42,8 @@ class FoodOrderAdminSerializer(CleanedModelSerializer):
         return super().to_internal_value(data)
 
     def to_representation(self, instance):
-        self.fields["member"] = MemberSerializer(detailed=False, read_only=True)
         self.fields["product"] = ProductAdminSerializer(read_only=True)
+        self.fields["member"] = MemberSerializer(
+            admin=True, detailed=False, read_only=True
+        )
         return super().to_representation(instance)

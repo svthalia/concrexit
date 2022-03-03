@@ -12,7 +12,7 @@
             {% for summary in summaries %}
                 <a class="list-group-item py-3"
                    href="{{ summary.course.get_absolute_url }}">
-                    <span class="summary-course-title mr-3">{{ summary.course.name }}</span>
+                    <span class="summary-course-title me-3">{{ summary.course.name }}</span>
                     <span class="summary-name" title="{{ summary.name }}">{{ summary.name }}</span>
                 </a>
             {% endfor %}

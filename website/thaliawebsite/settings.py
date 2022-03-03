@@ -297,7 +297,7 @@ if DJANGO_ENV == "testing":
             "NAME": "thalia",
             "USER": "postgres",
             "PASSWORD": "postgres",
-            "HOST": "postgres",
+            "HOST": "127.0.0.1",
             "PORT": 5432,
         },
     }
@@ -391,7 +391,7 @@ INSTALLED_APPS = [
     # Dependencies
     "oauth2_provider",
     "corsheaders",
-    "bootstrap4",
+    "django_bootstrap5",
     "tinymce",
     "rest_framework",
     "rest_framework.authtoken",
@@ -571,9 +571,15 @@ AUTH_PASSWORD_VALIDATORS = [
             "password_validation.UserAttributeSimilarityValidator"
         ),
     },
-    {"NAME": ("django.contrib.auth.password_validation.MinimumLengthValidator"),},
-    {"NAME": ("django.contrib.auth.password_validation.CommonPasswordValidator"),},
-    {"NAME": ("django.contrib.auth.password_validation.NumericPasswordValidator"),},
+    {
+        "NAME": ("django.contrib.auth.password_validation.MinimumLengthValidator"),
+    },
+    {
+        "NAME": ("django.contrib.auth.password_validation.CommonPasswordValidator"),
+    },
+    {
+        "NAME": ("django.contrib.auth.password_validation.NumericPasswordValidator"),
+    },
 ]
 
 PASSWORD_HASHERS = setting(
@@ -621,13 +627,15 @@ REST_FRAMEWORK = {
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
+DATETIME_FORMAT = "j M, Y, H:i"
+
 LANGUAGE_CODE = "en"
 
 TIME_ZONE = "Europe/Amsterdam"
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
@@ -676,26 +684,20 @@ THUMBNAIL_SIZES = {
 PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
-TINYMCE_JS_URL = "/static/tinymce/js/tinymce/tinymce.min.js"
-
 TINYMCE_DEFAULT_CONFIG = {
-    "selector": "textarea",
-    "theme": "modern",
-    "plugins": "link image paste code contextmenu",
-    "toolbar1": "bold italic underline strikethrough | link unlink | "
-    "bullist numlist | undo redo | code",
-    "contextmenu": "bold italic underline strikethrough | image",
+    "max_height": 500,
     "menubar": False,
-    "inline": False,
-    "statusbar": True,
-    "width": "auto",
-    "height": 240,
+    "plugins": "autolink autoresize link image code media paste",
+    "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink | "
+    "bullist numlist | undo redo | code",
+    "contextmenu": "bold italic underline strikethrough | link",
     "paste_as_text": True,
     "relative_urls": False,
     "remove_script_host": False,
+    "autoresize_bottom_margin": 50,
 }
 
-BOOTSTRAP4 = {"required_css_class": "required-field"}
+BOOTSTRAP5 = {"required_css_class": "required-field"}
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-exception-reporter-filter
 DEFAULT_EXCEPTION_REPORTER_FILTER = (

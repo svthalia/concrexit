@@ -6,6 +6,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
+from payments.models import PaymentAmountField
+
 
 class Newsletter(models.Model):
     """Describes a newsletter."""
@@ -30,7 +32,9 @@ class Newsletter(models.Model):
     )
 
     send_date = models.DateTimeField(
-        verbose_name=_("Send date"), blank=True, null=True,
+        verbose_name=_("Send date"),
+        blank=True,
+        null=True,
     )
 
     description = HTMLField(
@@ -81,7 +85,10 @@ class NewsletterContent(models.Model):
     """Describes one piece of basic content of a newsletter."""
 
     title = models.CharField(
-        max_length=150, verbose_name=_("Title"), blank=False, null=False,
+        max_length=150,
+        verbose_name=_("Title"),
+        blank=False,
+        null=False,
     )
 
     url = models.URLField(
@@ -91,7 +98,11 @@ class NewsletterContent(models.Model):
         help_text=_("If filled, it will make the title a link to this URL"),
     )
 
-    description = HTMLField(verbose_name=_("Description"), blank=False, null=False,)
+    description = HTMLField(
+        verbose_name=_("Description"),
+        blank=False,
+        null=False,
+    )
 
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE)
 
@@ -132,34 +143,39 @@ class NewsletterEvent(NewsletterContent):
     """Describes one piece of event content of a newsletter."""
 
     where = models.CharField(
-        max_length=150, verbose_name=_("Where"), blank=False, null=False,
+        max_length=150,
+        verbose_name=_("Where"),
+        blank=False,
+        null=False,
     )
 
     start_datetime = models.DateTimeField(
-        verbose_name=_("Start date and time"), blank=False, null=False,
+        verbose_name=_("Start date and time"),
+        blank=False,
+        null=False,
     )
 
     end_datetime = models.DateTimeField(
-        verbose_name=_("End date and time"), blank=False, null=False,
+        verbose_name=_("End date and time"),
+        blank=False,
+        null=False,
     )
 
     show_costs_warning = models.BooleanField(
         verbose_name=_("Show warnings about costs"), default=True
     )
 
-    price = models.DecimalField(
+    price = PaymentAmountField(
         verbose_name=_("Price (in Euro)"),
-        max_digits=5,
-        decimal_places=2,
+        allow_zero=True,
         blank=True,
         null=True,
         default=None,
     )
 
-    penalty_costs = models.DecimalField(
+    penalty_costs = PaymentAmountField(
         verbose_name=_("Costs (in Euro)"),
-        max_digits=5,
-        decimal_places=2,
+        allow_zero=True,
         blank=True,
         null=True,
         default=None,

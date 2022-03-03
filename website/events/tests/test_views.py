@@ -134,7 +134,8 @@ class RegistrationTest(TestCase):
     def setUpTestData(cls):
         cls.mailinglist = MailingList.objects.create(name="testmail")
         cls.committee = Committee.objects.create(
-            name="committee", contact_mailinglist=cls.mailinglist,
+            name="committee",
+            contact_mailinglist=cls.mailinglist,
         )
         cls.event = Event.objects.create(
             pk=1,

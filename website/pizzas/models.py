@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from events.models import Event
 import members
 from members.models import Member
-from payments.models import Payment
+from payments.models import Payment, PaymentAmountField
 from payments.services import delete_payment
 from pushnotifications.models import ScheduledMessage, Category
 
@@ -162,7 +162,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=50)
     description = models.TextField()
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = PaymentAmountField()
     available = models.BooleanField(default=True)
     restricted = models.BooleanField(
         default=False,
@@ -184,7 +184,10 @@ class FoodOrder(models.Model):
     """Describes an order of an item during a food event."""
 
     member = models.ForeignKey(
-        members.models.Member, on_delete=models.CASCADE, blank=True, null=True,
+        members.models.Member,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     name = models.CharField(
@@ -205,7 +208,9 @@ class FoodOrder(models.Model):
     )
 
     product = models.ForeignKey(
-        verbose_name=_("product"), to=Product, on_delete=models.PROTECT,
+        verbose_name=_("product"),
+        to=Product,
+        on_delete=models.PROTECT,
     )
 
     food_event = models.ForeignKey(

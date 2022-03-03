@@ -8,6 +8,7 @@ from rest_framework.reverse import reverse
 
 from events import services
 from events.models import Event
+from events.models.external_event import ExternalEvent
 from thaliawebsite.api.calendarjs.serializers import CalenderJSSerializer
 
 
@@ -85,3 +86,27 @@ class UnpublishedEventsCalenderJSSerializer(CalenderJSSerializer):
 
     def _registration_info(self, instance):
         return "Unpublished event"
+
+
+class ExternalEventCalendarJSSerializer(CalenderJSSerializer):
+    """External event calender serializer."""
+
+    class Meta(CalenderJSSerializer.Meta):
+        """Meta class for partner event calendar serializer."""
+
+        model = ExternalEvent
+
+    def _title(self, instance):
+        return "{} ({})".format(instance.title, instance.organiser)
+
+    def _class_names(self, instance):
+        """Return the color of the background."""
+        return ["external-event"]
+
+    def _url(self, instance):
+        """Return the url of the partner event."""
+        return instance.url
+
+    def _target_blank(self, instance):
+        """Return whether the anchor tag should have 'target="_blank"'."""
+        return True

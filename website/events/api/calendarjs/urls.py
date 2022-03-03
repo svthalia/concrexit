@@ -4,12 +4,22 @@ from django.urls import path
 from events.api.calendarjs.views import (
     CalendarJSEventListView,
     CalendarJSUnpublishedEventListView,
+    CalendarJSExternalEventListView,
 )
 
 app_name = "events"
 
 urlpatterns = [
-    path("events/", CalendarJSEventListView.as_view(), name="calendarjs-published",),
+    path(
+        "events/",
+        CalendarJSEventListView.as_view(),
+        name="calendarjs-published",
+    ),
+    path(
+        "external/",
+        CalendarJSExternalEventListView.as_view(),
+        name="calendarjs-external",
+    ),
     path(
         "events/unpublished/",
         CalendarJSUnpublishedEventListView.as_view(),

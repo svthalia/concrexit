@@ -46,3 +46,9 @@ class ContactView(TemplateView):
     """Static page with contact info."""
 
     template_name = "singlepages/contact.html"
+
+
+class StudentWellBeingView(TemplateView):
+    """Static page with info on student well-being."""
+
+    template_name = "singlepages/student_well-being.html"
