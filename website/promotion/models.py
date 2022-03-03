@@ -78,6 +78,15 @@ class PromotionRequest(models.Model):
         if self.event:
             return _("Promotion request for ") + str(self.event)
         return _("Promotion request ") + str(self.pk)
+    
+    def clean(self):
+        super().clean()
+        errors = {}
+        if self.publish_date is None:
+            errors.update({"publish_date": _("Publish date cannot have an empty date field")})
+        
+        if errors:
+            raise ValidationError(errors)
 
     def save(self, **kwargs):
         if not self.publish_date and self.event:
