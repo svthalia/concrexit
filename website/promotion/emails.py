@@ -45,9 +45,9 @@ def send_weekly_overview():
 
         try:
             msg.send()
-            logger.info("Sent weekly overview", language[1])
+            logger.info("Sent weekly overview")
         except SMTPException:
-            logger.exception("Failed to send the weekly overview", language[1])
+            logger.exception("Failed to send the weekly overview")
 
         translation.deactivate()
 
