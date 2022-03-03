@@ -146,7 +146,7 @@ jobs:
         run: make covhtml
 
       - name: Save coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-html
           path: covhtml
@@ -189,7 +189,7 @@ jobs:
           make apidocscheck
 
       - name: Save documentation HTML
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: docs-html
           path: docs/_build
