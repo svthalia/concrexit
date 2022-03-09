@@ -207,17 +207,12 @@ body {
 
         h1.section-title {
             position: relative;
+            display: flex;
+            gap: 10px;
             margin-bottom: 1.5rem;
             border-top: solid 1px var(--background-shade);
             padding-top: 20px;
-
-            @media(min-width: 992px) {
-                &.center-lg-50 {
-                    padding-left: calc(25% + 6px);
-                    padding-right: calc(25% + 6px);
-                    width: auto;
-                }
-            }
+            align-items: start;
 
             &::before {
                 background: var(--primary);
@@ -228,17 +223,8 @@ body {
                 top: -1px;
             }
 
-            .btn {
-                position: absolute;
-                top: 15px;
-
-                &.btn-first {
-                    right: 0;
-                }
-
-                &.btn-second {
-                    right: 50px
-                }
+            .first-right {
+                margin-left: auto;
             }
         }
     }
