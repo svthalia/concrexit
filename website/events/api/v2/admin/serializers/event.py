@@ -22,11 +22,11 @@ class EventAdminSerializer(CleanedModelSerializer):
 
     description = CleanedHTMLSerializer()
     price = serializers.DecimalField(
-        max_digits=5,
+        max_digits=8,
         decimal_places=2,
     )
     fine = serializers.DecimalField(
-        max_digits=5,
+        max_digits=8,
         decimal_places=2,
     )
 
@@ -79,5 +79,5 @@ class EventListAdminSerializer(serializers.ModelSerializer):
 
     description = CleanedHTMLSerializer()
     organiser = MemberGroupSerializer()
-    price = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0)
-    fine = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0)
+    price = serializers.DecimalField(max_digits=8, decimal_places=2, min_value=0)
+    fine = serializers.DecimalField(max_digits=8, decimal_places=2, min_value=0)

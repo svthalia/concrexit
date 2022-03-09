@@ -46,7 +46,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductNameRelatedField("product")
 
     total = serializers.DecimalField(
-        max_digits=6, decimal_places=2, min_value=0, read_only=True
+        max_digits=8, decimal_places=2, min_value=0, read_only=True
     )
 
     def get_fields(self):
@@ -111,15 +111,15 @@ class OrderSerializer(serializers.ModelSerializer):
     order_items = order_item_serializer_class(many=True, required=False)
 
     subtotal = serializers.DecimalField(
-        max_digits=6, decimal_places=2, min_value=0, read_only=True
+        max_digits=8, decimal_places=2, min_value=0, read_only=True
     )
 
     discount = serializers.DecimalField(
-        max_digits=6, decimal_places=2, min_value=0, read_only=True
+        max_digits=8, decimal_places=2, min_value=0, read_only=True
     )
 
     total_amount = serializers.DecimalField(
-        max_digits=6, decimal_places=2, min_value=0, read_only=True
+        max_digits=8, decimal_places=2, min_value=0, read_only=True
     )
 
     payment = PaymentSerializer(read_only=True)
