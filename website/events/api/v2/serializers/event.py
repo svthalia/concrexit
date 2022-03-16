@@ -6,6 +6,7 @@ from documents.api.v2.serializers.document import DocumentSerializer
 from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.models import Event, EventRegistration
+from payments.api.v2.serializers.payment_amount import PaymentAmountSerializer
 from thaliawebsite.api.v2.serializers import CleanedHTMLSerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
@@ -52,8 +53,8 @@ class EventSerializer(CleanedModelSerializer):
     user_registration = serializers.SerializerMethodField("_user_registration")
     num_participants = serializers.SerializerMethodField("_num_participants")
     maps_url = serializers.SerializerMethodField("_maps_url")
-    price = serializers.DecimalField(max_digits=8, decimal_places=2)
-    fine = serializers.DecimalField(max_digits=8, decimal_places=2)
+    price = PaymentAmountSerializer()
+    fine = PaymentAmountSerializer()
     slide = SlideSerializer()
     documents = DocumentSerializer(many=True)
     user_permissions = serializers.SerializerMethodField("_user_permissions")
