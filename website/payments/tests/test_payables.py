@@ -62,8 +62,27 @@ class ImmutablePayablesTest(TestCase):
         exception = test.exception
         self.assertEqual(str(exception), "Cannot change this model")
 
-    # def test_allow_saving_payable_without_immutable_field(self):
-    #     pass
-    #     # subtest: no payment
-    #     # subtest: unsaved payment
-    #     # subtest: with payment
+    def test_mutable_model(self):
+        payable = payables.get_payable(MockModel)
+        self.assertTrue(payable.immutable_after_payment)
+        MockPayable.immutable_after_payment = False
+        self.assertFalse(payable.immutable_after_payment)
+        MockPayable.immutable_after_payment = True
+        self.assertTrue(payable.immutable_after_payment)
+
+    def test_immutable_fields(self):
+        payable = payables.get_payable(MockModel)
+        self.assertEqual(["test_field"], payable.immutable_model_fields_after_payment)
+        MockPayable.immutable_model_fields_after_payment = ["test1", "test2"]
+        self.assertEqual(
+            ["test1", "test2"], payable.immutable_model_fields_after_payment
+        )
+        MockPayable.immutable_model_fields_after_payment = []
+        self.assertEqual([], payable.immutable_model_fields_after_payment)
+
+
+# def test_allow_saving_payable_without_immutable_field(self):
+#     pass
+#     # subtest: no payment
+#     # subtest: unsaved payment
+#     # subtest: with payment

@@ -52,3 +52,20 @@ class PaymentWidgetTest(TestCase):
             context = widget.get_context("payment", None, {})
             self.assertNotIn("url", context)
             self.assertNotIn("payment", context)
+
+    def test_value_from_datadict(self):
+        with self.subTest("Empty value"):
+            widget = PaymentWidget()
+            value = widget.value_from_datadict([], [], None)
+            self.assertIsNone(value)
+
+        with self.subTest("With payment"):
+            widget = PaymentWidget(obj=self.obj)
+            value = widget.value_from_datadict([], [], None)
+            self.assertEqual(value, self.payment.pk)
+
+        with self.subTest("With unpaid payable"):
+            self.obj.payment = None
+            widget = PaymentWidget(obj=self.obj)
+            value = widget.value_from_datadict([], [], None)
+            self.assertIsNone(value)
