@@ -174,6 +174,9 @@ class ImmutablePayablesTest(TestCase):
         with self.subTest(
             "Do nothing if related model changed fields are not labelled immutable"
         ):
+            model.payment = Payment.objects.create(
+                type=Payment.CARD, amount=2, notes="test payment", topic="test topic"
+            )
             MockPayable.immutable_after_payment = True
             MockPayable.immutable_model_fields_after_payment = {MockModel2: []}
             prevent_saving_related("test_related_field")(
