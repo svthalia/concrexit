@@ -164,6 +164,13 @@ class ImmutablePayablesTest(TestCase):
                 MockModel2, related_model_after
             )
 
+        with self.subTest("Do nothing if parent is not paid"):
+            MockPayable.immutable_after_payment = True
+            model.payment = None
+            prevent_saving_related("test_related_field")(
+                MockModel2, related_model_after
+            )
+
         with self.subTest(
             "Do nothing if related model changed fields are not labelled immutable"
         ):
