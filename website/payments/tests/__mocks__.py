@@ -73,7 +73,7 @@ class MockPayable(Payable):
 
     @classproperty
     def immutable_after_payment(self):
-        return True
+        return False
 
     @classproperty
     def immutable_foreign_key_models(self):
@@ -81,4 +81,4 @@ class MockPayable(Payable):
 
     @classproperty
     def immutable_model_fields_after_payment(self):
-        return ["test_field"]
+        return []
