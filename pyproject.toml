@@ -8,7 +8,7 @@ license = "AGPL-3.0-or-later"
 [tool.poetry.dependencies]
 python = "^3.9"
 django-localflavor = "3.1"
-freezegun = "1.1.0"
+freezegun = "1.2.1"
 bleach = "4.1.0"
 djangorestframework = "3.13.1"
 django-ical = "1.8.3"
