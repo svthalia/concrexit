@@ -1,6 +1,6 @@
 """These context processors can be used to expand the context provided to views."""
-from datetime import datetime
 from django.conf import settings
+from django.utils import timezone
 
 
 def source_commit(_):
@@ -18,5 +18,5 @@ def thumbnail_sizes(_):
 
 
 def aprilfools(_):
-    now = datetime.now()
+    now = timezone.now()
     return {"APRIL_FOOLS": now.month == 4 and now.day == 1}
