@@ -472,6 +472,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "announcements.context_processors.announcements",
                 "thaliawebsite.context_processors.thumbnail_sizes",
+                "thaliawebsite.context_processors.aprilfools",
             ],
         },
     },
