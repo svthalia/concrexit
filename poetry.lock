@@ -409,7 +409,7 @@ requests = ">=2.13.0"
 
 [[package]]
 name = "django-queryable-properties"
-version = "1.8.0"
+version = "1.8.1"
 description = "Write Django model properties that can be used in database queries."
 category = "main"
 optional = false
@@ -1425,7 +1425,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "aa672a8ad4cb4ddbfcabbcd9dcfc7e03d8594553d2cc106f75952cdb5adf2462"
+content-hash = "e38eaaf12621a98a3a27f7d7eaf4660c776a878ebdba4bcf92c7728d9780e160"
 
 [metadata.files]
 alabaster = [
@@ -1721,8 +1721,8 @@ django-oauth-toolkit = [
     {file = "django_oauth_toolkit-1.7.0-py3-none-any.whl", hash = "sha256:596b1884a3351a7952ddab37ad151da4c15ef27c057bc99c37c703cfff7af59c"},
 ]
 django-queryable-properties = [
-    {file = "django-queryable-properties-1.8.0.tar.gz", hash = "sha256:2112efc9ef92298753a628b5f2a3b3570cdbfd8e890503da9e722fd4a171c09d"},
-    {file = "django_queryable_properties-1.8.0-py2.py3-none-any.whl", hash = "sha256:6332eada8bdd6b820526f50023cd4d37c2625a5a80fa4ce65ee8d8908b56135a"},
+    {file = "django-queryable-properties-1.8.1.tar.gz", hash = "sha256:c8025ca45c79a6fa257e8d76c0555e57429759820b956a88818053710f9ca812"},
+    {file = "django_queryable_properties-1.8.1-py2.py3-none-any.whl", hash = "sha256:e467e3e9add107cafc81ea31da4713f3f5f28d28a1130b4a5cecab1ddb2e67e5"},
 ]
 django-recurrence = [
     {file = "django-recurrence-1.11.1.tar.gz", hash = "sha256:9c89444e651a78c587f352c5f63eda48ab2f53996347b9fcdff2d248f4fcff70"},
