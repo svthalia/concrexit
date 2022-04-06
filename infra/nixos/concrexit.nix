@@ -296,7 +296,12 @@ in
                 uwsgi_pass 127.0.0.1:${toString cfg.app-port};
               '';
               locations."/.well-known/change-password".return = "301 https://$host/password_change/";
-              locations."/static/".alias = "${pkgs.concrexit}/static/";
+              locations."/static/" = {
+                alias = "${pkgs.concrexit}/static/";
+                extraConfig = ''
+                  add_header Cache-Control "public, max-age=31536000, immutable";
+                '';
+              };
               locations."/media/public/".alias = "${cfg.dir}/media/public/";
               locations."/media/sendfile/" = {
                 alias = "${cfg.dir}/media/";
