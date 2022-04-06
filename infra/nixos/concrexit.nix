@@ -298,8 +298,13 @@ in
               locations."/.well-known/change-password".return = "301 https://$host/password_change/";
               locations."/static/" = {
                 alias = "${pkgs.concrexit}/static/";
+                # We add not only the cache header but also the security headers again
+                # This is because nginx replaces all the previous set add_header directives
+                # if you add one to a lower level (location is lower than server)
+                # see https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheaderredefinition.md
                 extraConfig = ''
                   add_header Cache-Control "public, max-age=31536000, immutable";
+                  ${securityHeaders}
                 '';
               };
               locations."/media/public/".alias = "${cfg.dir}/media/public/";
