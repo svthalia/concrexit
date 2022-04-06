@@ -6,7 +6,8 @@ log in at {{ url }}.
 Your username is:   {{ username }}
 Your password is:   {{ password }}
 
-Please also check the information on your profile.
+Please also check the information on your profile. You can also add more information about yourself, including a profile picture.
+This can be done here: https://thalia.nu/user/edit-profile/. 
 
 Now that you're a member, you can join the official Thalia Promotion WhatsApp group.
 Through this group you will be kept up to date with Thalia events and other matters
