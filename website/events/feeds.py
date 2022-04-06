@@ -39,11 +39,10 @@ class EventFeed(ICalFeed):
         query = Q(published=True)
 
         if self.user:
-            query &= (
-                Q(eventregistration__member=self.user) 
-                & Q(eventregistration__date_cancelled=None)
+            query &= Q(eventregistration__member=self.user) & Q(
+                eventregistration__date_cancelled=None
             )
-            
+
         return Event.objects.filter(query).order_by("-start")
 
     def item_title(self, item):
