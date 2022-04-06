@@ -2,8 +2,6 @@ from functools import lru_cache
 
 from django.db.models import Model
 
-_registry = {}
-
 
 class NotRegistered(Exception):
     pass
@@ -53,7 +51,8 @@ class Payable:
 
 
 class Payables:
-    _registry = {}
+    def __init__(self):
+        self._registry = {}
 
     @lru_cache(maxsize=None)
     def _get_key(self, model):
