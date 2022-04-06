@@ -3,6 +3,14 @@
 from django.db import migrations, models
 import django.db.models.deletion
 
+def populate_product_name(apps, schema_editor):
+    OrderItem = apps.get_model('sales', 'orderitem')
+    db_alias = schema_editor.connection.alias
+    items = list(OrderItem.objects.using(db_alias).all())
+    for item in items:
+        item.product_name = item.product.product_name
+    OrderItem.objects.using(db_alias).bulk_update(items, ['product_name'])
+
 
 class Migration(migrations.Migration):
 
@@ -21,4 +29,5 @@ class Migration(migrations.Migration):
             name='product',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='sales.productlistitem', verbose_name='product'),
         ),
+        migrations.RunPython(populate_product_name)
     ]
