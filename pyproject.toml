@@ -50,7 +50,7 @@ Faker = "13.3.4"
 coverage = {extras = ["toml"], version = "^5.0.3"}
 black = "22.3.0"
 pylint = "2.12.2"
-pylint-django = "2.5.2"
+pylint-django = "2.5.3"
 
 [tool.coverage.run]
 branch = true
