@@ -138,7 +138,6 @@ def prevent_saving(sender, instance, **kwargs):
 
 def prevent_saving_related(foreign_key_field):
     def prevent_related_saving_paid_after_immutable(sender, instance, **kwargs):
-        nonlocal foreign_key_field
         payable = payables.get_payable(getattr(instance, foreign_key_field))
         if not payable.immutable_after_payment:
             # Do nothing if the parent is not marked as immutable
