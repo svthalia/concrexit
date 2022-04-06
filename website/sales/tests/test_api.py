@@ -274,7 +274,7 @@ class OrderAPITest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_list_not_authorized__post(self):
-        data = {"discount": "0.5"}
+        data = {"order_items": [{"product": "beer", "amount": 4}]}
 
         response = self.client.post(
             reverse("api:v2:admin:sales:shift-orders", kwargs={"pk": self.shift.pk}),

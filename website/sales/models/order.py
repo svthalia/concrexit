@@ -228,6 +228,12 @@ class OrderItem(models.Model):
         if self.order.payment:
             raise ValueError("This order has already been paid for.")
 
+        if self.amount == 0:
+            if self.pk:
+                self.delete()
+            else:
+                return
+
         if not self.total:
             self.total = self.product.price * self.amount
 

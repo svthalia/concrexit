@@ -145,6 +145,12 @@ class OrderSerializer(serializers.ModelSerializer):
             order = Order.objects.create(shift=shift, **validated_data)
             for item_data in items_data:
                 OrderItem.objects.create(order=order, **item_data)
+
+            order.refresh_from_db()
+            if order.num_items == 0:
+                order.delete()  # Delete if the order has no products anymore
+                raise ValidationError("You cannot order 0 products")
+
         else:
             order = Order.objects.create(shift=shift, **validated_data)
         self.is_valid(raise_exception=True)
@@ -178,6 +184,11 @@ class OrderSerializer(serializers.ModelSerializer):
         instance = Order.objects.get(
             pk=instance.pk
         )  # refresh from database to update queryable properties
+
+        if instance.num_items == 0:
+            instance.delete()  # Delete if the order has no products anymore
+            raise ValidationError("You cannot order 0 products")
+
         return instance
 
 
