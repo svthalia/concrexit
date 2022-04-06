@@ -62,7 +62,9 @@ class UserOrderListView(OrderListView):
         return super(UserOrderListView, self).create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(payer_id=self.request.member.pk)
+        serializer.save(
+            payer_id=self.request.member.pk, created_by_id=self.request.member.pk
+        )
 
     def get_queryset(self):
         queryset = super(UserOrderListView, self).get_queryset()

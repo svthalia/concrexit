@@ -191,7 +191,11 @@ class SelfOrderPeriod(models.Model):
         ordering = ["start"]
 
     shift = models.ForeignKey(Shift, blank=False, null=False, on_delete=models.CASCADE)
-    start = models.DateTimeField(verbose_name=_("start"), blank=False, null=False,)
+    start = models.DateTimeField(
+        verbose_name=_("start"),
+        blank=False,
+        null=False,
+    )
     end = models.DateTimeField(
         verbose_name=_("end"),
         blank=False,

@@ -96,6 +96,9 @@ class OrderListView(AdminListAPIView, AdminCreateAPIView):
 
         return super(OrderListView, self).create(request, args, kwargs)
 
+    def perform_create(self, serializer):
+        serializer.save(created_by_id=self.request.member.pk)
+
     def get_queryset(self):
         queryset = Order.objects.all()
 
