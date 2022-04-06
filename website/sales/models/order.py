@@ -190,9 +190,9 @@ class OrderItem(models.Model):
     product = models.ForeignKey(
         ProductListItem,
         verbose_name=_("product"),
-        null=False,
+        null=True,
         blank=False,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
     )
     order = models.ForeignKey(
         Order,
@@ -213,6 +213,12 @@ class OrderItem(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name=_("amount"), null=False, blank=False
     )
+    product_name = models.CharField(
+        verbose_name=_("product name"),
+        max_length=50,
+        null=False,
+        blank=True,
+    )
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -224,6 +230,9 @@ class OrderItem(models.Model):
 
         if not self.total:
             self.total = self.product.price * self.amount
+
+        if self.product:
+            self.product_name = self.product.product_name
 
         return super(OrderItem, self).save(
             force_insert, force_update, using, update_fields
@@ -243,4 +252,4 @@ class OrderItem(models.Model):
             raise ValidationError(errors)
 
     def __str__(self):
-        return f"{self.amount}x {self.product.product.name}"
+        return f"{self.amount}x {self.product_name}"
