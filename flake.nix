@@ -81,8 +81,6 @@
                   (but first check if concrexit has started up with journalctl -fu concrexit)
                 '';
 
-                concrexit.stage = "development";
-
                 users = {
                   users.root.password = "";
                 };
