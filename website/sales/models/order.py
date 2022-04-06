@@ -68,7 +68,7 @@ class Order(models.Model):
         Payment,
         verbose_name=_("payment"),
         related_name="sales_order",
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         blank=True,
         null=True,
     )
