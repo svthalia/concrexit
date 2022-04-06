@@ -231,7 +231,7 @@ class OrderItem(models.Model):
         if not self.total:
             self.total = self.product.price * self.amount
 
-        if not self.product_name:
+        if self.product:
             self.product_name = self.product.product_name
 
         return super(OrderItem, self).save(
