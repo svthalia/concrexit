@@ -8,9 +8,10 @@
 
 {% block page_title %}
     {{ album.title }}
+    <span class="first-right">{{ album.date|date:"d-m-Y" }}</span>
     {% if album.event %}
         <a href="{{ album.event.get_absolute_url }}"
-           class="btn btn-primary btn-first"
+           class="btn btn-primary"
            data-bs-toggle="tooltip"
            data-bs-placement="top"
            title=""
@@ -22,7 +23,6 @@
 {% block section_tags %}id="photos-album"{% endblock %}
 
 {% block page_content %}
-    <h2 class="mt-2">{{ album.date|date:"d-m-Y" }}</h2>
     {% if album.shareable %}
         <p>
             {% trans "Note: This album can be shared with people outside the association by sending them the following link:" %}<br>

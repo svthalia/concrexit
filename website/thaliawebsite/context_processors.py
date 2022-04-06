@@ -1,5 +1,6 @@
 """These context processors can be used to expand the context provided to views."""
 from django.conf import settings
+from django.utils import timezone
 
 
 def source_commit(_):
@@ -14,3 +15,8 @@ def thumbnail_sizes(_):
         "THUMBNAIL_SIZE_MEDIUM": settings.THUMBNAIL_SIZES["medium"],
         "THUMBNAIL_SIZE_LARGE": settings.THUMBNAIL_SIZES["large"],
     }
+
+
+def aprilfools(_):
+    now = timezone.now()
+    return {"APRIL_FOOLS": now.month == 4 and now.day == 1}

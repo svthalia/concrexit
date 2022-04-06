@@ -23,7 +23,7 @@
     {% trans "Calendar" %}
     <a href="{% url 'events:ical-'|add:LANGUAGE_CODE %}"
        target="_blank"
-       class="btn btn-primary btn-first"
+       class="btn btn-primary first-right"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
        title="{% trans 'iCal feed (all events)' %}"
@@ -35,7 +35,7 @@
            target="_blank"
            data-bs-toggle="tooltip"
            data-bs-placement="top"
-           class="btn btn-primary btn-second"
+           class="btn btn-primary"
            title="{% trans 'iCal feed (personal)' %}"
         >
             <i class="fas fa-calendar-check"></i>

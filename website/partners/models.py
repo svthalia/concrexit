@@ -177,7 +177,7 @@ class Vacancy(models.Model):
     def get_absolute_url(self):
         """Return partner or vacancy url."""
         url = reverse("partners:vacancies")
-        if self.partner:
+        if self.partner and self.partner.is_active:
             url = reverse("partners:partner", args=(self.partner.slug,))
         return f"{url}#vacancy-{self.pk}"
 

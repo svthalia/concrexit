@@ -472,6 +472,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "announcements.context_processors.announcements",
                 "thaliawebsite.context_processors.thumbnail_sizes",
+                "thaliawebsite.context_processors.aprilfools",
             ],
         },
     },
@@ -649,6 +650,15 @@ STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     # other finders
     "compressor.finders.CompressorFinder",
+)
+
+NORMAL_STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+MANIFEST_STATICFILES_STORAGE = (
+    "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+)
+STATICFILES_STORAGE = setting(
+    development=NORMAL_STATICFILES_STORAGE,
+    production=MANIFEST_STATICFILES_STORAGE,
 )
 
 # Compressor settings

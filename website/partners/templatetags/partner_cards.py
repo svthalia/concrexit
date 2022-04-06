@@ -59,7 +59,7 @@ def vacancy_card(vacancy):
     url = "#vacancy-{}".format(vacancy.id)
     keywords = vacancy.keywords.split(",")
     location = vacancy.location
-    if vacancy.partner:
+    if vacancy.partner and vacancy.partner.is_active:
         url = "{}#vacancy-{}".format(vacancy.partner.get_absolute_url(), vacancy.id)
         extra_class = ""
 
