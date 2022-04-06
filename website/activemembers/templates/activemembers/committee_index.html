@@ -1,27 +1,23 @@
-{% extends "base.html" %}
+{% extends "simple_page.html" %}
 {% load i18n thumbnail static activemembers_cards alert %}
+
 {% block title %}{% trans 'committees'|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans 'committees'|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block body %}
-    <section id="activemembers-committees" class="page-section">
-        <div class="container">
-            <h1 class="section-title">
-                {% trans 'committees'|capfirst %}
-            </h1>
+{% block page_title %}{% trans 'committees'|capfirst %}{% endblock %}
+{% block section_tags %}id="activemembers-committees"{% endblock %}
 
-            <div class="row mt-4">
-                {% for committee in committees %}
-                    <div class="col-4 col-md-3 my-3">
-                        {% membergroup_card committee %}
-                    </div>
-                {% empty %}
-                    <div class="col-12">
-                        {% trans 'There are no committees!' as no_committees %}
-                        {% alert 'danger' no_committees %}
-                    </div>
-                {% endfor %}
+{% block page_content %}
+    <div class="row mt-4">
+        {% for committee in committees %}
+            <div class="col-4 col-md-3 my-3">
+                {% membergroup_card committee %}
             </div>
-        </div>
-    </section>
+        {% empty %}
+            <div class="col-12">
+                {% trans 'There are no committees!' as no_committees %}
+                {% alert 'danger' no_committees %}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

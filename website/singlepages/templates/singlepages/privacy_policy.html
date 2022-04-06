@@ -1,363 +1,320 @@
-{% extends "base.html" %}
+{% extends "simple_page.html" %}
 {% load i18n static %}
 
 {% block title %}{% trans "privacy policy"|capfirst %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "privacy policy"|capfirst %} — {{ block.super }}{% endblock %}
 
-{% block body %}
-    <section class="page-section">
-        <div class="container">
-            <h1 class="section-title">{% trans "privacy policy"|capfirst %}</h1>
+{% block page_title %}{% trans "privacy policy"|capfirst %}{% endblock %}
 
-            <h3>{% trans "Version" %} 2.4, 25-10-2021</h3>
+{% block page_content %}
+    <h3>{% trans "Version" %} 2.4, 25-10-2021</h3>
+    <p>
+        {% blocktrans trimmed %}
+            This document contains the privacy conditions of Study Association Thalia.
+            The conditions are applicable on all members, benefactors, honorary members of Thalia and
+            people who have started the registration process.
+            Where there are differences in the applicability of the conditions on the mentioned groups this will
+            be stated.
+        {% endblocktrans %}
+    </p>
+    <h4>1. {% trans "Categories of personal data" %}</h4>
+    <p>
+        {% blocktrans trimmed %}
+            All data are stored at least for the length of the membership, unless stated otherwise.
+            At the end of the membership the address information will be deleted, the name, email address and
+            history with Thalia will be collected in the alumni database.
+            The account on the Thalia-website will be operational even after the end of the membership or
+            benefactorship to allow easy renewals. The deletion of data will happen on a yearly basis
+            (on March 1st), so on average the data will be saved for six months, at most a year after the
+            end of the membership. Data is not deleted immediately since the data is needed in case the
+            membership gets extended. A person can request immediate deletion of their data by sending an
+            email to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
+        {% endblocktrans %}
+    </p>
+    <h5>{% trans "Applicable to members, benefactors and honorary members:" %}</h5>
+    <p>
+        <strong>{% trans "Full name" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Thalia uses the name of members, benefactors and honorary members for its administration and for
+            personalising its communication.
+            Processing of these data happens on the basis of it being necessary to fulfill the membership
+            agreement.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "Address" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Thalia uses the address of the members, benefactors and honorary members for its administration and
+            for sending the association magazine.
+            Processing of these data happens on the basis of it being necessary to fulfill the membership
+            agreement.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "Email address" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Thalia uses the email addresses of members, benefactors and honorary members to communicate about
+            policy and financial matters and
+            for sending the weekly newsletter as well as member specific communication (about an event for
+            example). The email addresses are also used to enable functionality provided by the
+            website (such as to reset passwords). Processing of these data happens on the basis of it being
+            necessary to fulfill the membership agreement.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "Phone number" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Thalia uses the phone number of members, benefactors and honorary members to communicate with members
+            about activities of Thalia.
+            Think about calling a participant who is too late for an activity or communicating a last-minute
+            change. The processing of phone numbers by Thalia is optional.
+            Processing of these data happens based on consent, which is given implicitly when the phone number
+            is entered during registration or on the user profile on the website.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans trimmed %}
+            NB: For some events, processing of the phone number is needed because of the nature of the event.
+            Processing will happen per activity and will be explained where applicable.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "Date of birth" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Thalia uses the date of birth of members, benefactors and honorary members to determine
+            whether they are of age.
+            Besides this the date of birth is processed to display the birthday in the calendar if the
+            member, benefactor or honorary member explicitly chose to allow this in their profile.
+            Processing of these data happens on the basis of it being a legitimate interest of Thalia.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "Bank account number" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Thalia uses the bank account number of members, benefactors and honorary members when they pay via
+            bank transfer or when they declare costs with Thalia.
+            These data are saved for as long is required by law for the financial administration of Thalia.
+            Processing of these data happens on the basis of it being necessary to fulfill the membership
+            agreement.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "Emergency contact" %}</strong><br/>
+        {% blocktrans trimmed %}
+            There is a possibility to add an emergency contact to the user profile on the website, so this
+            person can be contacted if it’s needed.
+            Adding an emergency contact is optional.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "Data collected on the website" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Certain actions on the website may cause data to be collected (such as ordering a pizza on the
+            website or registering to attend an event). Processing of these data happens on the basis of
+            it being a legitimate interest of Thalia.
+        {% endblocktrans %}<br/>
 
-            <p>
-                {% blocktrans trimmed %}
-                    This document contains the privacy conditions of Study Association Thalia.
-                    The conditions are applicable on all members, benefactors, honorary members of Thalia and
-                    people who have started the registration process.
-                    Where there are differences in the applicability of the conditions on the mentioned groups this will
-                    be stated.
-                {% endblocktrans %}
-            </p>
+        {% blocktrans trimmed %}
+            We additionally may collect data (logs) on anything happening on the site and app to ensure
+            the correct functioning of the services provided, the username of a authenticated user is sent along
+            with the logs. See the <a href="#sentry">section below on Functional Software, Inc.</a> for
+            information on where this data is sent. Thalia tries to only collect data when errors occur.
+            The logs are used to fix bugs in the website and app. Processing of these data
+            happens on the basis of it being a legitimate interest of Thalia.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "Sales" %}</strong><br/>
+        {% blocktrans trimmed %}
+            When making a purchase at (an event of) Thalia, this can be recorded. This happens on the basis of
+            it being a legal requirement of Thalia to keep their financial administration up-to-date.
+        {% endblocktrans %}
+    </p>
+    <h5>{% trans "Applicable to members:" %}</h5>
+    <p>
+        <strong>{% trans "Student number" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Thalia uses the student number of members to check if they are still studying and to receive
+            grants and subsidies.
+            Processing of these data happens on the basis of it being a legitimate interest of Thalia.
+            Student numbers are only shared with the Radboud University or organisations which operate on
+            behalf of the Radboud University.
+        {% endblocktrans %}
+    </p>
+    <h5>{% trans "Applicable to everyone:" %}</h5>
+    <p>
+        <strong>{% trans "Photos" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Thalia uses photo’s which are made during her events for the promotion of events and the association.
+            These photo's can be made available on the website of Thalia for members or they can be posted on social media accounts of Thalia.
+            If such image is posted on a social media platform other than the website of Thalia, permission will be asked to all recognisable persons in the picture if this is feasible.
+            It is possible to ask for the removal of a certain photo from social media when someone on that photo desires so, by sending a mail to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
+            Processing of this data happens on the basis of it being a legitimate interest of Thalia.
 
-            <h4>1. {% trans "Categories of personal data" %}</h4>
-
-            <p>
-                {% blocktrans trimmed %}
-                    All data are stored at least for the length of the membership, unless stated otherwise.
-                    At the end of the membership the address information will be deleted, the name, email address and
-                    history with Thalia will be collected in the alumni database.
-                    The account on the Thalia-website will be operational even after the end of the membership or
-                    benefactorship to allow easy renewals. The deletion of data will happen on a yearly basis
-                    (on March 1st), so on average the data will be saved for six months, at most a year after the
-                    end of the membership. Data is not deleted immediately since the data is needed in case the
-                    membership gets extended. A person can request immediate deletion of their data by sending an
-                    email to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
-                {% endblocktrans %}
-            </p>
-
-            <h5>{% trans "Applicable to members, benefactors and honorary members:" %}</h5>
-
-            <p>
-                <strong>{% trans "Full name" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Thalia uses the name of members, benefactors and honorary members for its administration and for
-                    personalising its communication.
-                    Processing of these data happens on the basis of it being necessary to fulfill the membership
-                    agreement.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                <strong>{% trans "Address" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Thalia uses the address of the members, benefactors and honorary members for its administration and
-                    for sending the association magazine.
-                    Processing of these data happens on the basis of it being necessary to fulfill the membership
-                    agreement.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                <strong>{% trans "Email address" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Thalia uses the email addresses of members, benefactors and honorary members to communicate about
-                    policy and financial matters and
-                    for sending the weekly newsletter as well as member specific communication (about an event for
-                    example). The email addresses are also used to enable functionality provided by the
-                    website (such as to reset passwords). Processing of these data happens on the basis of it being
-                    necessary to fulfill the membership agreement.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                <strong>{% trans "Phone number" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Thalia uses the phone number of members, benefactors and honorary members to communicate with members
-                    about activities of Thalia.
-                    Think about calling a participant who is too late for an activity or communicating a last-minute
-                    change. The processing of phone numbers by Thalia is optional.
-                    Processing of these data happens based on consent, which is given implicitly when the phone number
-                    is entered during registration or on the user profile on the website.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                {% blocktrans trimmed %}
-                    NB: For some events, processing of the phone number is needed because of the nature of the event.
-                    Processing will happen per activity and will be explained where applicable.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                <strong>{% trans "Date of birth" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Thalia uses the date of birth of members, benefactors and honorary members to determine
-                    whether they are of age.
-                    Besides this the date of birth is processed to display the birthday in the calendar if the
-                    member, benefactor or honorary member explicitly chose to allow this in their profile.
-                    Processing of these data happens on the basis of it being a legitimate interest of Thalia.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                <strong>{% trans "Bank account number" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Thalia uses the bank account number of members, benefactors and honorary members when they pay via
-                    bank transfer or when they declare costs with Thalia.
-                    These data are saved for as long is required by law for the financial administration of Thalia.
-                    Processing of these data happens on the basis of it being necessary to fulfill the membership
-                    agreement.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                <strong>{% trans "Emergency contact" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    There is a possibility to add an emergency contact to the user profile on the website, so this
-                    person can be contacted if it’s needed.
-                    Adding an emergency contact is optional.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                <strong>{% trans "Data collected on the website" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Certain actions on the website may cause data to be collected (such as ordering a pizza on the
-                    website or registering to attend an event). Processing of these data happens on the basis of
-                    it being a legitimate interest of Thalia.
-                {% endblocktrans %}<br/>
-
-                {% blocktrans trimmed %}
-                    We additionally may collect data (logs) on anything happening on the site and app to ensure
-                    the correct functioning of the services provided, the username of a authenticated user is sent along
-                    with the logs. See the <a href="#sentry">section below on Functional Software, Inc.</a> for
-                    information on where this data is sent. Thalia tries to only collect data when errors occur.
-                    The logs are used to fix bugs in the website and app. Processing of these data
-                    happens on the basis of it being a legitimate interest of Thalia.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                <strong>{% trans "Sales" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    When making a purchase at (an event of) Thalia, this can be recorded. This happens on the basis of
-                    it being a legal requirement of Thalia to keep their financial administration up-to-date.
-                {% endblocktrans %}
-            </p>
-
-            <h5>{% trans "Applicable to members:" %}</h5>
-
-            <p>
-                <strong>{% trans "Student number" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Thalia uses the student number of members to check if they are still studying and to receive
-                    grants and subsidies.
-                    Processing of these data happens on the basis of it being a legitimate interest of Thalia.
-                    Student numbers are only shared with the Radboud University or organisations which operate on
-                    behalf of the Radboud University.
-                {% endblocktrans %}
-            </p>
-
-            <h5>{% trans "Applicable to everyone:" %}</h5>
-
-            <p>
-                <strong>{% trans "Photos" %}</strong><br/>
-                {% blocktrans trimmed %}
-                    Thalia uses photo’s which are made during her events for the promotion of events and the association.
-                    These photo's can be made available on the website of Thalia for members or they can be posted on social media accounts of Thalia.
-                    If such image is posted on a social media platform other than the website of Thalia, permission will be asked to all recognisable persons in the picture if this is feasible.
-                    It is possible to ask for the removal of a certain photo from social media when someone on that photo desires so, by sending a mail to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
-                    Processing of this data happens on the basis of it being a legitimate interest of Thalia.
-
-                    When someone wishes not to be photographed, they can indicate this to the photographer.
-                    A request of deletion of a certain photo can also be made after it has been taken, by sending a mail to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
-                {% endblocktrans %}
-            </p>
-
-            <h5>{% trans "Applicable to upcoming members:" %}</h5>
-            <p>
-                {% blocktrans trimmed %}
-                    Registrations which have been completed or rejected will be removed after 31 days.
-                {% endblocktrans %}
-            </p>
-            <p>
-                {% blocktrans trimmed %}
-                    A registration that is still in the process of collecting references, reviewing by the board,
-                    or waiting for payment is not removed automatically. A person can request immediate deletion
-                    of their data by sending an email to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
-                {% endblocktrans %}
-            </p>
-
-            <h5>{% trans "Other processing of personal data" %}</h5>
-
-            <p>
-                {% blocktrans trimmed %}
-                    For activities of Thalia, additional personal data may be needed.
-                    Think about data like allergy information or dietary preferences when there is an event with food,
-                    or shirt size when clothing is given to participants of an event.
-                    These data will be processed and explained per event.
-                {% endblocktrans %}
-            </p>
-
-            <h4>
-                2. {% trans "Rights of members, benefactors and honorary members concerning processing of personal data" %}</h4>
-
-            <p>
-                {% blocktrans trimmed %}
-                    The relevant rights of members, benefactors and honorary members concerning the processing of
-                    personal data is as follows:
-                {% endblocktrans %}
-            </p>
-
-            <ul>
-                <li>
-                    {% trans "Right of access. The person concerned to view their data." %}
-                </li>
-                <li>
-                    {% trans "Right to rectification. The person concerned may correct or supplement their data." %}
-                </li>
-                <li>
-                    {% trans "Right to erasure. The person concerned may let their data be deleted." %}
-                </li>
-                <li>
-                    {% trans "Right to data portability. The person concerned may let their data be transferred to another party." %}
-                </li>
-                <li>
-                    {% trans "Right to restriction of processing. The person concerned may restrict the processing of their personal data." %}
-                </li>
-                <li>
-                    {% trans "Right to object. The person concerned may object to the processing of their data." %}
-                </li>
-            </ul>
-
-            <p>
-                {% blocktrans trimmed %}
-                    More information on the applicability of these rights can be found on the website of
-                    <em>Autoriteit Persoonsgegevens</em> (<a href="https://autoriteitpersoonsgegevens.nl/en">https://autoriteitpersoonsgegevens.nl/en</a>).
-                {% endblocktrans %}
-            </p>
-
-            <h5>{% trans "Contact details for processing of personal data" %}</h5>
-
-            <p>
-                {% blocktrans trimmed %}
-                    Within Thalia, the secretary is the contact person for all matters concerning the processing of
-                    personal data.
-                    Requests and notifications of leaked data can be sent by email to
-                    <a href="mailto:info@thalia.nu">info@thalia.nu</a> or by post to
-                    <em>Studievereniging Thalia, Toernooiveld 212, 6525EC Nijmegen</em>.
-                {% endblocktrans %}
-            </p>
-
-            <h4>3. {% trans "Processing of personal data by third parties" %}</h4>
-
-            <p>
-                {% trans "Thalia can share personal data with the following parties:" %}
-            </p>
-
-            <ul>
-                <li>
-                    <strong id="radboud-university">{% trans "Radboud University Nijmegen" %}</strong><br/>
-                    {% blocktrans trimmed %}
-                        Thalia shares names and student numbers with the university (and organizations working on
-                        behalf of the Radboud University) to request grants and subsidies and
-                        to check the administration.
-                    {% endblocktrans %}
-                </li>
-                <li>
-                    <strong id="banks">{% trans "Banks and other financial parties" %}</strong><br/>
-                    {% blocktrans trimmed %}
-                        For making payments, data is shared with banks and other financial parties.
-                        Data will only be shared as far as they are necessary to make or receive payments.
-                    {% endblocktrans %}
-                </li>
-
-                <li>
-                    <strong id="amazon">{% trans "Amazon Web Services EMEA SARL ('AWS Europe')" %}</strong><br/>
-                    {% blocktrans trimmed %}
-                        Thalia's servers are hosted on Amazon Web Services. Therefore, all (personal) data Thalia keeps,
-                        is processed by Amazon.
-                    {% endblocktrans %}
-                </li>
-                <li>
-                    <strong id="google">{% trans "Google Ireland Limited" %}</strong><br/>
-                    {% blocktrans trimmed %}
-                        When a member joins a committee or society, a Google Workspace account will be created for that user
-                        to allow them to share files with their committee for example. The website will automatically create
-                        Google Workspace accounts for these members, and shares the name and email address of the member with
-                        Google to facilitate this. If a member stops being a member of committees and societies,
-                        their Google Workspace account will automatically be deleted after one month.
-                    {% endblocktrans %}<br />
-                    {% blocktrans trimmed %}
-                        Additionally, Thalia can post videos, captured during events, on
-                        <a href="https://www.youtube.com/channel/UCEjYSaa_iSEUDCzKPESdPFg" target="_blank">its YouTube channel</a>
-                        for promotional purposes.
-                    {% endblocktrans %}
-                </li>
-
-                <li>
-                    <strong id="sentry">{% trans "Functional Software, Inc." %}</strong>
-                    {% blocktrans trimmed %}
-                        Thalia uses <a href="https://sentry.io">Sentry</a>, a platform by Functional Software, Inc.,
-                        for error monitoring. This means that when server errors occur on the website
-                        or crashes in the app some data is sent to the Sentry platform. For authenticated users,
-                        the username is sent along with an error log. We always try to filter out any personal
-                        information from the error logs.
-                    {% endblocktrans %}
-                </li>
-
-                <li>
-                    <strong id="facebook">{% trans "Facebook, Inc." %}</strong>
-                    {% blocktrans trimmed %}
-                        For promotional purposes, Thalia can share photos or videos of members, that are taken during activities,
-                        on the <a href="https://www.instagram.com/thalia_nijmegen/" target="_blank">Instagram account</a> or
-                        <a href="https://www.facebook.com/svThalia/" target="_blank">Facebook page</a> of Thalia.
-                    {% endblocktrans %}
-                </li>
-
-                <li>
-                    <strong id="snap">{% trans "Snap, Inc." %}</strong>
-                    {% blocktrans trimmed %}
-                        For promotional purposes, Thalia can share photos or videos of members, that are taken during activities,
-                        on the <a href="https://www.snapchat.com/add/svthalia" target="_blank">Snapchat account</a> of Thalia.
-                        Read also the provisions about
-                    {% endblocktrans %}
-                </li>
-
-                <li>
-                    <strong id="discord">{% trans "Discord, Inc." %}</strong>
-                    {% blocktrans trimmed %}
-                        Users that choose to join the Thalia Discord and connect their Discord account with their Thalia account,
-                        will share their Thalia profile with Discord.
-                    {% endblocktrans %}
-                </li>
-            </ul>
-
-            <p>
-                {% blocktrans trimmed %}
-                    Thalia will not share personal data with partners, unless a member, benefactor or an honorary member
-                    registers for a partner event for which sharing personal data is required.
-                {% endblocktrans %}
-            </p>
-
-            <p>
-                {% blocktrans trimmed %}
-                    Email addresses will not be shared with partners. There is an opt-in mailing list to receive
-                    messages from partners, but the partners don’t have access to the email addresses in the list.
-                {% endblocktrans %}
-            </p>
-
-            <h4>4. {% trans "Updating the privacy conditions" %}</h4>
-
-            <p>
-                {% blocktrans trimmed %}
-                    Thalia reserves the right to change the privacy conditions.
-                    The new conditions will be shared as soon as possible with members, benefactors and honorary members.
-                    When changes require consent to be given anew, this will be done accordingly.
-                {% endblocktrans %}
-            </p>
-        </div>
-    </section>
+            When someone wishes not to be photographed, they can indicate this to the photographer.
+            A request of deletion of a certain photo can also be made after it has been taken, by sending a mail to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
+        {% endblocktrans %}
+    </p>
+    <h5>{% trans "Applicable to upcoming members:" %}</h5>
+    <p>
+        {% blocktrans trimmed %}
+            Registrations which have been completed or rejected will be removed after 31 days.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans trimmed %}
+            A registration that is still in the process of collecting references, reviewing by the board,
+            or waiting for payment is not removed automatically. A person can request immediate deletion
+            of their data by sending an email to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
+        {% endblocktrans %}
+    </p>
+    <h5>{% trans "Other processing of personal data" %}</h5>
+    <p>
+        {% blocktrans trimmed %}
+            For activities of Thalia, additional personal data may be needed.
+            Think about data like allergy information or dietary preferences when there is an event with food,
+            or shirt size when clothing is given to participants of an event.
+            These data will be processed and explained per event.
+        {% endblocktrans %}
+    </p>
+    <h4>
+        2. {% trans "Rights of members, benefactors and honorary members concerning processing of personal data" %}</h4>
+    <p>
+        {% blocktrans trimmed %}
+            The relevant rights of members, benefactors and honorary members concerning the processing of
+            personal data is as follows:
+        {% endblocktrans %}
+    </p>
+    <ul>
+        <li>
+            {% trans "Right of access. The person concerned to view their data." %}
+        </li>
+        <li>
+            {% trans "Right to rectification. The person concerned may correct or supplement their data." %}
+        </li>
+        <li>
+            {% trans "Right to erasure. The person concerned may let their data be deleted." %}
+        </li>
+        <li>
+            {% trans "Right to data portability. The person concerned may let their data be transferred to another party." %}
+        </li>
+        <li>
+            {% trans "Right to restriction of processing. The person concerned may restrict the processing of their personal data." %}
+        </li>
+        <li>
+            {% trans "Right to object. The person concerned may object to the processing of their data." %}
+        </li>
+    </ul>
+    <p>
+        {% blocktrans trimmed %}
+            More information on the applicability of these rights can be found on the website of
+            <em>Autoriteit Persoonsgegevens</em> (<a href="https://autoriteitpersoonsgegevens.nl/en">https://autoriteitpersoonsgegevens.nl/en</a>).
+        {% endblocktrans %}
+    </p>
+    <h5>{% trans "Contact details for processing of personal data" %}</h5>
+    <p>
+        {% blocktrans trimmed %}
+            Within Thalia, the secretary is the contact person for all matters concerning the processing of
+            personal data.
+            Requests and notifications of leaked data can be sent by email to
+            <a href="mailto:info@thalia.nu">info@thalia.nu</a> or by post to
+            <em>Studievereniging Thalia, Toernooiveld 212, 6525EC Nijmegen</em>.
+        {% endblocktrans %}
+    </p>
+    <h4>3. {% trans "Processing of personal data by third parties" %}</h4>
+    <p>
+        {% trans "Thalia can share personal data with the following parties:" %}
+    </p>
+    <ul>
+        <li>
+            <strong id="radboud-university">{% trans "Radboud University Nijmegen" %}</strong><br/>
+            {% blocktrans trimmed %}
+                Thalia shares names and student numbers with the university (and organizations working on
+                behalf of the Radboud University) to request grants and subsidies and
+                to check the administration.
+            {% endblocktrans %}
+        </li>
+        <li>
+            <strong id="banks">{% trans "Banks and other financial parties" %}</strong><br/>
+            {% blocktrans trimmed %}
+                For making payments, data is shared with banks and other financial parties.
+                Data will only be shared as far as they are necessary to make or receive payments.
+            {% endblocktrans %}
+        </li>
+        <li>
+            <strong id="amazon">{% trans "Amazon Web Services EMEA SARL ('AWS Europe')" %}</strong><br/>
+            {% blocktrans trimmed %}
+                Thalia's servers are hosted on Amazon Web Services. Therefore, all (personal) data Thalia keeps,
+                is processed by Amazon.
+            {% endblocktrans %}
+        </li>
+        <li>
+            <strong id="google">{% trans "Google Ireland Limited" %}</strong><br/>
+            {% blocktrans trimmed %}
+                When a member joins a committee or society, a Google Workspace account will be created for that user
+                to allow them to share files with their committee for example. The website will automatically create
+                Google Workspace accounts for these members, and shares the name and email address of the member with
+                Google to facilitate this. If a member stops being a member of committees and societies,
+                their Google Workspace account will automatically be deleted after one month.
+            {% endblocktrans %}<br />
+            {% blocktrans trimmed %}
+                Additionally, Thalia can post videos, captured during events, on
+                <a href="https://www.youtube.com/channel/UCEjYSaa_iSEUDCzKPESdPFg" target="_blank">its YouTube channel</a>
+                for promotional purposes.
+            {% endblocktrans %}
+        </li>
+        <li>
+            <strong id="sentry">{% trans "Functional Software, Inc." %}</strong>
+            {% blocktrans trimmed %}
+                Thalia uses <a href="https://sentry.io">Sentry</a>, a platform by Functional Software, Inc.,
+                for error monitoring. This means that when server errors occur on the website
+                or crashes in the app some data is sent to the Sentry platform. For authenticated users,
+                the username is sent along with an error log. We always try to filter out any personal
+                information from the error logs.
+            {% endblocktrans %}
+        </li>
+        <li>
+            <strong id="facebook">{% trans "Facebook, Inc." %}</strong>
+            {% blocktrans trimmed %}
+                For promotional purposes, Thalia can share photos or videos of members, that are taken during activities,
+                on the <a href="https://www.instagram.com/thalia_nijmegen/" target="_blank">Instagram account</a> or
+                <a href="https://www.facebook.com/svThalia/" target="_blank">Facebook page</a> of Thalia.
+            {% endblocktrans %}
+        </li>
+        <li>
+            <strong id="snap">{% trans "Snap, Inc." %}</strong>
+            {% blocktrans trimmed %}
+                For promotional purposes, Thalia can share photos or videos of members, that are taken during activities,
+                on the <a href="https://www.snapchat.com/add/svthalia" target="_blank">Snapchat account</a> of Thalia.
+                Read also the provisions about
+            {% endblocktrans %}
+        </li>
+        <li>
+            <strong id="discord">{% trans "Discord, Inc." %}</strong>
+            {% blocktrans trimmed %}
+                Users that choose to join the Thalia Discord and connect their Discord account with their Thalia account,
+                will share their Thalia profile with Discord.
+            {% endblocktrans %}
+        </li>
+    </ul>
+    <p>
+        {% blocktrans trimmed %}
+            Thalia will not share personal data with partners, unless a member, benefactor or an honorary member
+            registers for a partner event for which sharing personal data is required.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans trimmed %}
+            Email addresses will not be shared with partners. There is an opt-in mailing list to receive
+            messages from partners, but the partners don’t have access to the email addresses in the list.
+        {% endblocktrans %}
+    </p>
+    <h4>4. {% trans "Updating the privacy conditions" %}</h4>
+    <p>
+        {% blocktrans trimmed %}
+            Thalia reserves the right to change the privacy conditions.
+            The new conditions will be shared as soon as possible with members, benefactors and honorary members.
+            When changes require consent to be given anew, this will be done accordingly.
+        {% endblocktrans %}
+    </p>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "simple_page.html" %}
 {% load i18n static %}
 
 {% block title %}{% trans "event registration terms and conditions"|capfirst %} —
@@ -6,70 +6,64 @@
 {% block opengraph_title %}{% trans "event registration terms and conditions"|capfirst %} —
     {{ block.super }}{% endblock %}
 
-{% block body %}
-    <section class="page-section">
-        <div class="container">
-            <h1 class="section-title">{% trans "event registration terms and conditions"|capfirst %}</h1>
+{% block page_title %}{% trans "event registration terms and conditions"|capfirst %}{% endblock %}
 
-            <h3>{% trans "Version 1.1, 17-04-2019" %} </h3>
-
-            <p>
-                {% blocktrans trimmed %}
-                    These terms and conditions were drafted to ensure that Thalia doesn’t incur
-                    costs for people who register for an event, but don’t show up. Through this,
-                    there will be more spots at events for people who will actually participate.
-                {% endblocktrans %}
-            </p>
-
-            <h4> {% trans "1. Stipulations" %} </h4>
-            <ol>
-                <li>
-                    {% blocktrans trimmed %}
-                        A cancellation deadline will be disclosed for each event where a
-                        registration is needed. When a person who is registered wants to cancel their
-                        registration, they should do this prior to the cancellation deadline.
-                    {% endblocktrans %}
-                </li>
-                <li>
-                    {% blocktrans trimmed %}
-                        When someone doesn’t cancel his registration on time and doesn’t attend
-                        the event, they owe Thalia a compensation of the expenses for the event
-                        per person, with a minimum of €5.
-                    {% endblocktrans %}
-                </li>
-                <li>
-                    {% blocktrans trimmed %}
-                        It is the responsibility of the registered person to make sure that this
-                        person is on the attendance list: it is leading for determining whether
-                        they attended the event.
-                    {% endblocktrans %}
-                </li>
-                <li>
-                    {% blocktrans trimmed %}
-                        The compensation stated on the event page is only an estimate of the
-                        actual figure.
-                    {% endblocktrans %}
-                </li>
-                <li>
-                    {% blocktrans trimmed %}
-                        This compensation needs to be paid within two weeks from the invoice
-                        date. If the payment isn’t fulfilled within two weeks from the invoice
-                        date, the person concerned will not be allowed to attend events with the
-                        exception of borrels of S.A. Thalia. If the payment isn’t fulfilled within
-                        four weeks from the invoice date, the person concerned will not be allowed
-                        to attend borrels of S.A. Thalia. These prohibitions to visit borrels and
-                        events will end as soon as the payment of the compensation is fulfilled.
-                    {% endblocktrans %}
-                </li>
-                <li>
-                    {% blocktrans trimmed %}
-                        The board can exempt people from paying the compensation if there are
-                        significant reasons for not attending the event. For this, an e-mail should
-                        be sent to treasurer@thalia.nu. The board will decide if reasons for not
-                        attending an event are significant.
-                    {% endblocktrans %}
-                </li>
-            </ol>
-        </div>
-    </section>
+{% block page_content %}
+    <h3>{% trans "Version 1.1, 17-04-2019" %} </h3>
+    <p>
+        {% blocktrans trimmed %}
+            These terms and conditions were drafted to ensure that Thalia doesn’t incur
+            costs for people who register for an event, but don’t show up. Through this,
+            there will be more spots at events for people who will actually participate.
+        {% endblocktrans %}
+    </p>
+    <h4> {% trans "1. Stipulations" %} </h4>
+    <ol>
+        <li>
+            {% blocktrans trimmed %}
+                A cancellation deadline will be disclosed for each event where a
+                registration is needed. When a person who is registered wants to cancel their
+                registration, they should do this prior to the cancellation deadline.
+            {% endblocktrans %}
+        </li>
+        <li>
+            {% blocktrans trimmed %}
+                When someone doesn’t cancel his registration on time and doesn’t attend
+                the event, they owe Thalia a compensation of the expenses for the event
+                per person, with a minimum of €5.
+            {% endblocktrans %}
+        </li>
+        <li>
+            {% blocktrans trimmed %}
+                It is the responsibility of the registered person to make sure that this
+                person is on the attendance list: it is leading for determining whether
+                they attended the event.
+            {% endblocktrans %}
+        </li>
+        <li>
+            {% blocktrans trimmed %}
+                The compensation stated on the event page is only an estimate of the
+                actual figure.
+            {% endblocktrans %}
+        </li>
+        <li>
+            {% blocktrans trimmed %}
+                This compensation needs to be paid within two weeks from the invoice
+                date. If the payment isn’t fulfilled within two weeks from the invoice
+                date, the person concerned will not be allowed to attend events with the
+                exception of borrels of S.A. Thalia. If the payment isn’t fulfilled within
+                four weeks from the invoice date, the person concerned will not be allowed
+                to attend borrels of S.A. Thalia. These prohibitions to visit borrels and
+                events will end as soon as the payment of the compensation is fulfilled.
+            {% endblocktrans %}
+        </li>
+        <li>
+            {% blocktrans trimmed %}
+                The board can exempt people from paying the compensation if there are
+                significant reasons for not attending the event. For this, an e-mail should
+                be sent to treasurer@thalia.nu. The board will decide if reasons for not
+                attending an event are significant.
+            {% endblocktrans %}
+        </li>
+    </ol>
 {% endblock %}

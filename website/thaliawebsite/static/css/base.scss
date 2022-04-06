@@ -214,6 +214,14 @@ body {
             padding-top: 20px;
             align-items: start;
 
+            @media(min-width: 992px) {
+                &.center-lg-50 {
+                    padding-left: 25%;
+                    padding-right: 25%;
+                    width: auto;
+                }
+            }
+
             &::before {
                 background: var(--primary);
                 content: '';

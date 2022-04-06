@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "simple_page.html" %}
 {% load i18n django_bootstrap5 alert compress static payments %}
 
 {% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
@@ -11,193 +11,181 @@
     {% endcompress %}
 {% endblock %}
 
-{% block body %}
-    <section class="page-section">
-        <div class="container">
-            <h1 class="section-title">{% trans "renewal" %}</h1>
+{% block page_title %}{% trans "renewal" %}{% endblock %}
 
-            <div class="row pd-md-1">
-                <div class="col-md-6">
-                    <p>
-                        {% blocktrans trimmed %}
-                            A membership costs € {{ year_fees }} per year, or €
-                            {{ study_fees }} for your entire study duration.
-                        {% endblocktrans %}
-                    </p>
-
-                    <p>
-                        {% blocktrans trimmed %}
-                            Note: Only Computing Science and Information Sciences
-                            students at the Radboud University can become
-                            a member.
-                        {% endblocktrans %}
-                    </p>
-
-                    <p>
-                        {% blocktrans trimmed %}
-                            It is still possible to be associated with Thalia, even if
-                            you do not study Computing Science or
-                            Information Sciences (anymore): You can become a
-                            benefactor. For at least € {{ year_fees }}
-                            per year, you too can enjoy everything Thalia has to offer.
-                        {% endblocktrans %}
-                    </p>
-
-                    <p>
-                        {% blocktrans trimmed %}
-                            Are you currently paying per year for your membership?
-                            During the lecture year you're allowed to
-                            change your membership to one for your entire study
-                            duration without paying a double fee.
-                            Choose 'until graduation' option in the form below and
-                            click send. Just make you currently have an
-                            active membership.
-                            <br/><br/>
-                            If your membership is almost expiring or has expired you
-                            can renew it starting one month before
-                            expiration.
-                        {% endblocktrans %}
-                    </p>
-                </div>
-
-                <div class="col-md-6">
-                    <h3>{% trans "Membership history" %}</h3>
-
-                    <div class="accordion bordered mt-4 mb-4">
-                        {% for membership in request.member.membership_set.all %}
-                            <div class="card mb-0">
-                                <div
-                                        class="card-header {% if forloop.counter0 == 0 %}show{% else %}collapsed{% endif %}"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#membership-{{ membership.pk }}">
-                                    <a href="#membership-{{ membership.id }}">
-                                        {% if not membership.until %}
-                                            {% blocktrans trimmed with type=membership.get_type_display since=membership.since %}
-                                                Membership of type {{ type }}
-                                                starting {{ since }}
-                                            {% endblocktrans %}
-                                        {% else %}
-                                            {% blocktrans trimmed with type=membership.get_type_display since=membership.since until=membership.until %}
-                                                Membership of type {{ type }}
-                                                from {{ since }} to {{ until }}
-                                            {% endblocktrans %}
-                                        {% endif %}
-                                    </a>
-                                </div>
-                                <div
-                                        class="collapse{% if forloop.counter0 == 0 %} show{% endif %}"
-                                        id="membership-{{ membership.id }}">
-                                    <div class="card-body">
-                                        <p>
-                                            <strong>{% trans "membership type"|capfirst %}:</strong>
-                                            {{ membership.get_type_display }}<br/>
-                                            <strong>{% trans "since"|capfirst %}:</strong>
-                                            {{ membership.since }}<br/>
-                                            {% if membership.until is not None %}
-                                                <strong>{% trans "until"|capfirst %}:</strong>
-                                                {{ membership.until }}<br/>
-                                            {% endif %}
-                                            <strong>{% trans "active"|capfirst %}:</strong> {{ membership.is_active|yesno }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-
-                    {% if latest_renewal and latest_renewal.status == latest_renewal.STATUS_ACCEPTED %}
-                        <p>
-                            {% blocktrans trimmed %}
-                                Congratulations, your renewal request has been approved!
-                                The renewal will be completed once you have paid your
-                                contribution.
-                            {% endblocktrans %}
-                        </p>
-                        <div>
-                            {% url 'registrations:renewal-completed' as renewal_completed %}
-                            {% payment_button latest_renewal renewal_completed %}
-                        </div>
-                    {% elif latest_renewal and latest_renewal.status == latest_renewal.STATUS_REVIEW %}
-                        <p>
-                            {% blocktrans trimmed %}
-                                You have a renewal request queued for review.
-                                You will receive an email once your request has been
-                                reviewed.
-                            {% endblocktrans %}
-                        </p>
-                    {% elif latest_membership is None %}
-                        <p>
-                            {% blocktrans trimmed %}
-                                We do not have any previous memberships in our system.
-                                Contact the board to renew your
-                                membership.
-                            {% endblocktrans %}
-                        </p>
-                    {% elif latest_membership.type == 'honorary' %}
-                        <p>
-                            {% blocktrans trimmed %}
-                                You're a honorary member. That means that you never
-                                have to renew your membership.
-                            {% endblocktrans %}
-                        </p>
-                    {% elif latest_membership.until is None %}
-                        <p>
-                            {% blocktrans trimmed %}
-                                You currently have an active membership for your entire
-                                study duration. Did you graduate or stop with your
-                                studies for some other reason? Please let us know by
-                                sending an email to info@thalia.nu.
-                            {% endblocktrans %}
-                        </p>
-                    {% else %}
-                        {% for error in form.errors.items %}
-                            {% for message in error.1 %}
-                                {% alert 'danger' message dismissible=True %}
-                            {% endfor %}
-                        {% endfor %}
-                        <form method="post" enctype="multipart/form-data"
-                              data-benefactor-type="{{ benefactor_type }}">
-                            {% csrf_token %}
-
-                            <fieldset>
-                                {% if not latest_membership.type == 'benefactor' %}
-                                    {% bootstrap_field form.membership_type %}
-                                    {% bootstrap_field form.length %}
-                                    {% bootstrap_field form.contribution form_group_class='form-row required-field d-none' %}
+{% block page_content %}
+    <div class="row pd-md-1">
+        <div class="col-md-6">
+            <p>
+                {% blocktrans trimmed %}
+                    A membership costs € {{ year_fees }} per year, or €
+                    {{ study_fees }} for your entire study duration.
+                {% endblocktrans %}
+            </p>
+            <p>
+                {% blocktrans trimmed %}
+                    Note: Only Computing Science and Information Sciences
+                    students at the Radboud University can become
+                    a member.
+                {% endblocktrans %}
+            </p>
+            <p>
+                {% blocktrans trimmed %}
+                    It is still possible to be associated with Thalia, even if
+                    you do not study Computing Science or
+                    Information Sciences (anymore): You can become a
+                    benefactor. For at least € {{ year_fees }}
+                    per year, you too can enjoy everything Thalia has to offer.
+                {% endblocktrans %}
+            </p>
+            <p>
+                {% blocktrans trimmed %}
+                    Are you currently paying per year for your membership?
+                    During the lecture year you're allowed to
+                    change your membership to one for your entire study
+                    duration without paying a double fee.
+                    Choose 'until graduation' option in the form below and
+                    click send. Just make you currently have an
+                    active membership.
+                    <br/><br/>
+                    If your membership is almost expiring or has expired you
+                    can renew it starting one month before
+                    expiration.
+                {% endblocktrans %}
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h3>{% trans "Membership history" %}</h3>
+            <div class="accordion bordered mt-4 mb-4">
+                {% for membership in request.member.membership_set.all %}
+                    <div class="card mb-0">
+                        <div
+                                class="card-header {% if forloop.counter0 == 0 %}show{% else %}collapsed{% endif %}"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#membership-{{ membership.pk }}">
+                            <a href="#membership-{{ membership.id }}">
+                                {% if not membership.until %}
+                                    {% blocktrans trimmed with type=membership.get_type_display since=membership.since %}
+                                        Membership of type {{ type }}
+                                        starting {{ since }}
+                                    {% endblocktrans %}
                                 {% else %}
-                                    <div class="form-row">
-                                        <label
-                                                for="id_membership_type">{% trans 'membership type'|capfirst %}</label>
-                                        <input readonly disabled
-                                               value="{% trans 'Benefactor' %}"
-                                               id="id_membership_type"
-                                               type="text" class="form-control"/>
-                                    </div>
-                                    <div class="form-row">
-                                        <label
-                                                for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
-                                        <input readonly disabled
-                                               value="{% trans 'One year' %}"
-                                               type="text"
-                                               id="id_membership_length"
-                                               class="form-control"/>
-                                    </div>
-                                    {% bootstrap_field form.contribution %}
+                                    {% blocktrans trimmed with type=membership.get_type_display since=membership.since until=membership.until %}
+                                        Membership of type {{ type }}
+                                        from {{ since }} to {{ until }}
+                                    {% endblocktrans %}
                                 {% endif %}
-                            </fieldset>
-
-                            <fieldset>
-                                {% bootstrap_field form.privacy_policy %}
-                                {% if latest_membership.type == 'benefactor' %}
-                                    {% bootstrap_field form.icis_employee %}
-                                {% endif %}
-                            </fieldset>
-
-                            <input type="submit" value="{% trans 'send'|capfirst %}"
-                                   class="btn btn-primary float-end"/>
-                        </form>
-                    {% endif %}
-                </div>
+                            </a>
+                        </div>
+                        <div
+                                class="collapse{% if forloop.counter0 == 0 %} show{% endif %}"
+                                id="membership-{{ membership.id }}">
+                            <div class="card-body">
+                                <p>
+                                    <strong>{% trans "membership type"|capfirst %}:</strong>
+                                    {{ membership.get_type_display }}<br/>
+                                    <strong>{% trans "since"|capfirst %}:</strong>
+                                    {{ membership.since }}<br/>
+                                    {% if membership.until is not None %}
+                                        <strong>{% trans "until"|capfirst %}:</strong>
+                                        {{ membership.until }}<br/>
+                                    {% endif %}
+                                    <strong>{% trans "active"|capfirst %}:</strong> {{ membership.is_active|yesno }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-    </section>
+            {% if latest_renewal and latest_renewal.status == latest_renewal.STATUS_ACCEPTED %}
+                <p>
+                    {% blocktrans trimmed %}
+                        Congratulations, your renewal request has been approved!
+                        The renewal will be completed once you have paid your
+                        contribution.
+                    {% endblocktrans %}
+                </p>
+                <div>
+                    {% url 'registrations:renewal-completed' as renewal_completed %}
+                    {% payment_button latest_renewal renewal_completed %}
+                </div>
+            {% elif latest_renewal and latest_renewal.status == latest_renewal.STATUS_REVIEW %}
+                <p>
+                    {% blocktrans trimmed %}
+                        You have a renewal request queued for review.
+                        You will receive an email once your request has been
+                        reviewed.
+                    {% endblocktrans %}
+                </p>
+            {% elif latest_membership is None %}
+                <p>
+                    {% blocktrans trimmed %}
+                        We do not have any previous memberships in our system.
+                        Contact the board to renew your
+                        membership.
+                    {% endblocktrans %}
+                </p>
+            {% elif latest_membership.type == 'honorary' %}
+                <p>
+                    {% blocktrans trimmed %}
+                        You're a honorary member. That means that you never
+                        have to renew your membership.
+                    {% endblocktrans %}
+                </p>
+            {% elif latest_membership.until is None %}
+                <p>
+                    {% blocktrans trimmed %}
+                        You currently have an active membership for your entire
+                        study duration. Did you graduate or stop with your
+                        studies for some other reason? Please let us know by
+                        sending an email to info@thalia.nu.
+                    {% endblocktrans %}
+                </p>
+            {% else %}
+                {% for error in form.errors.items %}
+                    {% for message in error.1 %}
+                        {% alert 'danger' message dismissible=True %}
+                    {% endfor %}
+                {% endfor %}
+                <form method="post" enctype="multipart/form-data"
+                      data-benefactor-type="{{ benefactor_type }}">
+                    {% csrf_token %}
+                    <fieldset>
+                        {% if not latest_membership.type == 'benefactor' %}
+                            {% bootstrap_field form.membership_type %}
+                            {% bootstrap_field form.length %}
+                            {% bootstrap_field form.contribution form_group_class='form-row required-field d-none' %}
+                        {% else %}
+                            <div class="form-row">
+                                <label
+                                        for="id_membership_type">{% trans 'membership type'|capfirst %}</label>
+                                <input readonly disabled
+                                       value="{% trans 'Benefactor' %}"
+                                       id="id_membership_type"
+                                       type="text" class="form-control"/>
+                            </div>
+                            <div class="form-row">
+                                <label
+                                        for="id_membership_length">{% trans 'membership length'|capfirst %}</label>
+                                <input readonly disabled
+                                       value="{% trans 'One year' %}"
+                                       type="text"
+                                       id="id_membership_length"
+                                       class="form-control"/>
+                            </div>
+                            {% bootstrap_field form.contribution %}
+                        {% endif %}
+                    </fieldset>
+                    <fieldset>
+                        {% bootstrap_field form.privacy_policy %}
+                        {% if latest_membership.type == 'benefactor' %}
+                            {% bootstrap_field form.icis_employee %}
+                        {% endif %}
+                    </fieldset>
+                    <input type="submit" value="{% trans 'send'|capfirst %}"
+                           class="btn btn-primary float-end"/>
+                </form>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
