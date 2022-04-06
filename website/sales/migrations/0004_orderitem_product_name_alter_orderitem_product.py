@@ -8,7 +8,7 @@ def populate_product_name(apps, schema_editor):
     db_alias = schema_editor.connection.alias
     items = list(OrderItem.objects.using(db_alias).all())
     for item in items:
-        item.product_name = item.product.product_name
+        item.product_name = item.product.product.name
     OrderItem.objects.using(db_alias).bulk_update(items, ['product_name'])
 
 
