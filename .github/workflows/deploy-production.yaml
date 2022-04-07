@@ -13,7 +13,7 @@ jobs:
       url: https://thalia.nu
     steps:
     - uses: actions/checkout@v3.0.0
-    - uses: cachix/install-nix-action@v16
+    - uses: cachix/install-nix-action@v17
     - uses: cachix/cachix-action@v10
       with:
         name: svthalia
