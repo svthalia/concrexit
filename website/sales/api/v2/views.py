@@ -1,3 +1,4 @@
+from django.db.models import Q
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import (
@@ -68,7 +69,9 @@ class UserOrderListView(OrderListView):
 
     def get_queryset(self):
         queryset = super(UserOrderListView, self).get_queryset()
-        return queryset.filter(payer=self.request.member)
+        return queryset.filter(
+            Q(payer=self.request.member) | Q(created_by=self.request.member)
+        )
 
 
 class UserOrderDetailView(OrderDetailView):
@@ -85,7 +88,9 @@ class UserOrderDetailView(OrderDetailView):
 
     def get_queryset(self):
         queryset = super(UserOrderDetailView, self).get_queryset()
-        return queryset.filter(payer=self.request.member)
+        return queryset.filter(
+            Q(payer=self.request.member) | Q(created_by=self.request.member)
+        )
 
     def update(self, request, *args, **kwargs):
         if not self.get_object().shift.user_orders_allowed:
