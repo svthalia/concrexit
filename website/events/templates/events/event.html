@@ -213,7 +213,7 @@
                                     {% else %}
                                         {% if not event.registration_required %}
                                             {% if event.no_registration_message %}
-                                                {{ event.no_registration_message }}
+                                                {{ event.no_registration_message | safe }}
                                             {% else %}
                                                 {% trans "No registration required" %}
                                             {% endif %}
