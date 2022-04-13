@@ -343,8 +343,24 @@ in
             "\"\"" = {
               default = !cfg.allowUnknownHost;
               locations."/".return = "444";
+              extraConfig = ''
+                access_log off;
+              '';
             };
           };
+      };
+
+      logrotate = {
+        enable = true;
+        extraConfig = ''
+          /var/log/nginx/*.log {
+            daily
+            rotate 14
+            postrotate
+              ${pkgs.util-linux}/bin/kill -USR1 $(cat /run/nginx/nginx.pid)
+            endscript
+          }
+        '';
       };
 
       # Make sure a database exists that is accessible by the concrexit user
