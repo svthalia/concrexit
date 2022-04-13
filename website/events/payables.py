@@ -1,4 +1,5 @@
 from django.template.defaultfilters import date
+from django.utils.functional import classproperty
 
 from events.models import EventRegistration
 from events.services import is_organiser
@@ -34,6 +35,14 @@ class EventRegistrationPayable(Payable):
     @property
     def tpay_allowed(self):
         return self.model.event.tpay_allowed
+
+    @classproperty
+    def immutable_after_payment(self):
+        return True
+
+    @classproperty
+    def immutable_model_fields_after_payment(self):
+        return ["member", "event", "name", "payment_amount"]
 
 
 def register():

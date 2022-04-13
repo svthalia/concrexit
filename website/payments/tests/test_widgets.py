@@ -31,6 +31,14 @@ class PaymentWidgetTest(TestCase):
             self.assertEqual(context["app_label"], "mock_app")
             self.assertEqual(context["model_name"], "mock_model")
 
+        with self.subTest("Trying to set payment to none"):
+            self.obj.payment = None
+            widget = PaymentWidget(obj=self.obj)
+            context = widget.get_context("payment", None, {})
+            self.assertEqual(context["obj"].pk, payables.get_payable(self.obj).pk)
+            self.assertEqual(context["app_label"], "mock_app")
+            self.assertEqual(context["model_name"], "mock_model")
+
         with self.subTest("With payment primary key"):
             context = widget.get_context("payment", self.payment.pk, {})
             self.assertEqual(
@@ -44,3 +52,20 @@ class PaymentWidgetTest(TestCase):
             context = widget.get_context("payment", None, {})
             self.assertNotIn("url", context)
             self.assertNotIn("payment", context)
+
+    def test_value_from_datadict(self):
+        with self.subTest("Empty value"):
+            widget = PaymentWidget()
+            value = widget.value_from_datadict([], [], None)
+            self.assertIsNone(value)
+
+        with self.subTest("With payment"):
+            widget = PaymentWidget(obj=self.obj)
+            value = widget.value_from_datadict([], [], None)
+            self.assertEqual(value, self.payment.pk)
+
+        with self.subTest("With unpaid payable"):
+            self.obj.payment = None
+            widget = PaymentWidget(obj=self.obj)
+            value = widget.value_from_datadict([], [], None)
+            self.assertIsNone(value)

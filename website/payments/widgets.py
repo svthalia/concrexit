@@ -16,21 +16,33 @@ class PaymentWidget(Widget):
 
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
-        if self.obj and not value:
+        if self.obj:
+            # Make sure to ALWAYS use committed data from the database, and never invalid data that is not saved, for example from an invalid form
+            self.obj.refresh_from_db()
             payable = payables.get_payable(self.obj)
             context["obj"] = payable
+            context["app_label"] = self.obj._meta.app_label
+            context["model_name"] = self.obj._meta.model_name
+            if payable.payment:
+                value = payable.payment.pk
+        if self.obj and not value:
             context["payable_payer"] = (
                 PaymentUser.objects.get(pk=payable.payment_payer.pk)
                 if getattr(payable, "payment_payer", None) is not None
                 else None
             )
-            context["app_label"] = self.obj._meta.app_label
-            context["model_name"] = self.obj._meta.model_name
         elif value:
             payment = Payment.objects.get(pk=value)
             context["url"] = payment.get_admin_url()
             context["payment"] = payment
         return context
+
+    def value_from_datadict(self, data, files, name):
+        if self.obj:
+            payable = payables.get_payable(self.obj)
+            if payable.payment:
+                return payable.payment.pk
+        return None
 
     class Media:
         js = ("admin/payments/js/payments.js",)

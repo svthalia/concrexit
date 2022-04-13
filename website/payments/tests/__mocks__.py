@@ -1,8 +1,12 @@
 from unittest.mock import MagicMock
 
-from django.db.models import Model
+from django.utils.functional import classproperty
 
 from payments import Payable
+
+
+class MockManager:
+    pass
 
 
 class MockModel:
@@ -12,7 +16,9 @@ class MockModel:
 
     payment = None
     pk = 1
+    test_field = ""
     _meta = Meta()
+    objects = MockManager()
 
     def __init__(
         self,
@@ -35,6 +41,9 @@ class MockModel:
         self.verbose_name_plural = self.verbose_name + "s"
 
     def save(self):
+        pass
+
+    def refresh_from_db(self):
         pass
 
 
@@ -61,3 +70,15 @@ class MockPayable(Payable):
 
     def can_manage_payment(self, member):
         return self.model.can_manage
+
+    @classproperty
+    def immutable_after_payment(self):
+        return False
+
+    @classproperty
+    def immutable_foreign_key_models(self):
+        return {}
+
+    @classproperty
+    def immutable_model_fields_after_payment(self):
+        return []

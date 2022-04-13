@@ -199,7 +199,6 @@ def revert_entry(user_id: int or None, entry: Entry) -> None:
     payment = entry.payment
     entry.status = Entry.STATUS_REVIEW
     entry.updated_at = timezone.now()
-    entry.payment = None
     entry.save()
     if payment is not None:
         payment.delete()
