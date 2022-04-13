@@ -23,7 +23,6 @@ def aprilfools(_):
 
 
 def lustrum_styling(_):
-    """Should the website be styled in lustrum styling"""
     return {
         "lustrumstyling": timezone.datetime(2022, 4, 22).date()
         <= timezone.now().date()
