@@ -312,6 +312,26 @@ in
                 alias = "${cfg.dir}/media/";
                 extraConfig = "internal;";
               };
+              locations."/apple-app-site-association" = {
+                alias = pkgs.writeText ''
+                  {
+                      "applinks": {
+                          "apps": [],
+                          "details": [
+                              {
+                                  "appID": "FRD6Y7E88Y.com.thaliapp",
+                                  "paths": [ "/pizzas/", "/events/*"]
+                              }
+                          ]
+                      }
+                  }
+                '';
+                extraConfig = "default_type application/json;";
+              };
+              locations."/.well-known/change-password" = {
+                # Implementing https://github.com/WICG/change-password-url
+                return = "301 https://$host/password_change/;";
+              };
               locations."= /maintenance.html" = {
                 alias = ../resources/maintenance.html;
                 extraConfig = "internal;";
