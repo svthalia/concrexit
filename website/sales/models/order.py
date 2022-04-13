@@ -48,6 +48,15 @@ class Order(models.Model):
         verbose_name=_("created at"), default=timezone.now
     )
 
+    created_by = models.ForeignKey(
+        Member,
+        models.SET_NULL,
+        verbose_name=_("created by"),
+        related_name="sales_orders_created",
+        blank=False,
+        null=True,
+    )
+
     shift = models.ForeignKey(
         Shift,
         verbose_name=_("shift"),
@@ -227,6 +236,12 @@ class OrderItem(models.Model):
             raise ValueError("The shift this order belongs to is locked.")
         if self.order.payment:
             raise ValueError("This order has already been paid for.")
+
+        if self.amount == 0:
+            if self.pk:
+                self.delete()
+            else:
+                return
 
         if not self.total:
             self.total = self.product.price * self.amount

@@ -106,7 +106,9 @@ class OrderSerializer(serializers.ModelSerializer):
 
     age_restricted = serializers.BooleanField(read_only=True)
 
-    order_items = OrderItemSerializer(many=True, required=False)
+    order_item_serializer_class = OrderItemSerializer
+
+    order_items = order_item_serializer_class(many=True, required=False)
 
     subtotal = serializers.DecimalField(
         max_digits=6, decimal_places=2, min_value=0, read_only=True
@@ -122,7 +124,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     payment = PaymentSerializer(read_only=True)
 
-    payer = MemberSerializer(read_only=True)
+    payer = MemberSerializer(read_only=True, detailed=False)
 
     payment_url = serializers.URLField(read_only=True)
 
@@ -138,11 +140,20 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         shift = self.context["shift"]
-        order = Order.objects.create(shift=shift)
         if "order_items" in validated_data:
             items_data = validated_data.pop("order_items")
+            order = Order.objects.create(shift=shift, **validated_data)
             for item_data in items_data:
                 OrderItem.objects.create(order=order, **item_data)
+
+            order.refresh_from_db()
+            if order.num_items == 0:
+                order.delete()  # Delete if the order has no products anymore
+                raise ValidationError("You cannot order 0 products")
+
+        else:
+            order = Order.objects.create(shift=shift, **validated_data)
+        self.is_valid(raise_exception=True)
         return order
 
     def update(self, instance, validated_data):
@@ -155,14 +166,14 @@ class OrderSerializer(serializers.ModelSerializer):
             for item_data in items_data:
                 if len(current_items) > 0:
                     item = current_items.pop(0)
-                    OrderItemSerializer(item, context={"order": instance}).update(
-                        item, item_data
-                    )
+                    self.order_item_serializer_class(
+                        item, context={"order": instance}
+                    ).update(item, item_data)
                 else:
                     # Create new order items if required
-                    OrderItemSerializer(context={"order": instance}).create(
-                        validated_data=item_data
-                    )
+                    self.order_item_serializer_class(
+                        context={"order": instance}
+                    ).create(validated_data=item_data)
 
             # Delete all order items that we have not updated
             for i in current_items:
@@ -173,6 +184,11 @@ class OrderSerializer(serializers.ModelSerializer):
         instance = Order.objects.get(
             pk=instance.pk
         )  # refresh from database to update queryable properties
+
+        if instance.num_items == 0:
+            instance.delete()  # Delete if the order has no products anymore
+            raise ValidationError("You cannot order 0 products")
+
         return instance
 
 

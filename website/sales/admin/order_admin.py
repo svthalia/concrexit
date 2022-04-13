@@ -190,6 +190,7 @@ class OrderAdmin(admin.ModelAdmin):
         "id",
         "shift",
         "created_at",
+        "created_by",
         "order_description",
         "num_items",
         "age_restricted",
@@ -204,6 +205,7 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = (
         "id",
         "created_at",
+        "created_by",
         "order_description",
         "num_items",
         "subtotal",
@@ -224,6 +226,10 @@ class OrderAdmin(admin.ModelAdmin):
             default_fields += ("shift",)
 
         return default_fields
+
+    def save_model(self, request, obj, form, change):
+        obj.created_by = request.user
+        obj.save()
 
     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
         if object_id:

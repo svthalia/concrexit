@@ -13,7 +13,7 @@ from payments.services import create_payment
 from sales import payables
 from sales.models.order import Order, OrderItem
 from sales.models.product import Product, ProductList, ProductListItem
-from sales.models.shift import Shift
+from sales.models.shift import Shift, SelfOrderPeriod
 
 
 @freeze_time("2021-01-01")
@@ -274,7 +274,7 @@ class OrderAPITest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_list_not_authorized__post(self):
-        data = {"discount": "0.5"}
+        data = {"order_items": [{"product": "beer", "amount": 4}]}
 
         response = self.client.post(
             reverse("api:v2:admin:sales:shift-orders", kwargs={"pk": self.shift.pk}),
@@ -623,6 +623,22 @@ class OrderAPITest(TestCase):
             format="json",
         )
         self.assertEqual(400, response.status_code)
+
+    def test_user_self_order(self):
+        SelfOrderPeriod.objects.create(
+            shift=self.shift,
+            start=(timezone.now() - timezone.timedelta(hours=1)),
+            end=timezone.now() + timezone.timedelta(hours=1),
+        )
+        data = {"order_items": [{"product": "beer", "amount": 4}]}
+        response = self.client.post(
+            reverse("api:v2:sales:user-order-list", kwargs={"pk": self.shift.pk}),
+            data,
+            format="json",
+        )
+        self.assertEqual(201, response.status_code)
+        order = Order.objects.get(pk=response.data["pk"])
+        self.assertEqual(order.payer, self.member)
 
 
 class ShiftAPITest(TestCase):
