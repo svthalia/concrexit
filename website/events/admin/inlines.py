@@ -6,7 +6,7 @@ from .forms import RegistrationInformationFieldForm
 from pizzas.models import FoodEvent
 
 
-class RegistrationInformationFieldInline(admin.TabularInline):
+class RegistrationInformationFieldInline(admin.StackedInline):
     """The inline for registration information fields in the Event admin."""
 
     form = RegistrationInformationFieldForm
