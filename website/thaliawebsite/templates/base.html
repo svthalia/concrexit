@@ -178,6 +178,13 @@
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item"
+                                   href="{% url 'webauth:devices' %}">
+                                    {% trans "2FA authentication"|capfirst %}
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item"
                                    href="{% url 'registrations:renew' %}">
                                     {% trans "manage membership"|capfirst %}
                                 </a>

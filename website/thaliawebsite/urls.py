@@ -131,9 +131,11 @@ urlpatterns = [
                     name="login",
                 ),
                 path("", include("django.contrib.auth.urls")),
+                path("webauth/", include("webauth.urls")),
             ]
         ),
     ),
+
     path(
         "i18n/",
         include(

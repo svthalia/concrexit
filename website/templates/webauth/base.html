@@ -1,0 +1,12 @@
+{% extends 'small_page.html' %}
+{% load i18n static %}
+
+{% block opengraph_title %}{% trans "Authenticate" %} — {{ block.super }}{% endblock %}
+
+{% block page_title %}
+    {% block title %}{% endblock %}
+{% endblock %}
+
+{% block page_content %}
+    {% block content %}{% endblock %}
+{% endblock %}

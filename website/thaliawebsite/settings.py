@@ -389,6 +389,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     # Dependencies
+    "webauth",
     "oauth2_provider",
     "corsheaders",
     "django_bootstrap5",
@@ -603,6 +604,23 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "activemembers.backends.MemberGroupBackend",
 ]
+
+WEBAUTH_RP_ID = setting(
+    development="localhost",
+    production="thalia.nu",
+    staging="staging.thalia.nu",
+)
+WEBAUTH_RP_NAME = setting(
+    development="localhost:8000",
+    production="thalia.nu",
+    staging="staging.thalia.nu",
+)
+WEBAUTH_ORIGIN = setting(
+    development="http://localhost:8000",
+    production="https://thalia.nu",
+    staging="https://staging.thalia.nu",
+)
+WEBAUTH_VERIFY_URL = "/user/webauth/verify/"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

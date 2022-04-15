@@ -21,6 +21,7 @@ import pizzas.services
 from members import services, emails
 from members.decorators import membership_required
 from members.models import EmailChange, Membership, Member, Profile
+from thaliawebsite.views import TwoFactorAuthenticationRequiredMixin
 from utils.snippets import datetime_to_lectureyear
 import events.services as event_services
 import activemembers.services as activemembers_services
@@ -198,7 +199,7 @@ class ProfileDetailView(DetailView):
 
 
 @method_decorator(login_required, "dispatch")
-class UserProfileUpdateView(SuccessMessageMixin, UpdateView):
+class UserProfileUpdateView(TwoFactorAuthenticationRequiredMixin, SuccessMessageMixin, UpdateView):
     """View that allows a user to update their profile."""
 
     template_name = "members/user/edit_profile.html"
@@ -243,7 +244,7 @@ class StatisticsView(TemplateView):
 
 
 @method_decorator(login_required, name="dispatch")
-class EmailChangeFormView(CreateView):
+class EmailChangeFormView(TwoFactorAuthenticationRequiredMixin, CreateView):
     """View that renders the email change form."""
 
     model = EmailChange
@@ -269,7 +270,7 @@ class EmailChangeFormView(CreateView):
 
 
 @method_decorator(login_required, name="dispatch")
-class EmailChangeConfirmView(View, TemplateResponseMixin):
+class EmailChangeConfirmView(TwoFactorAuthenticationRequiredMixin, View, TemplateResponseMixin):
     """View that renders an HTML template and confirms the old email address."""
 
     template_name = "members/user/email_change_confirmed.html"
@@ -286,7 +287,7 @@ class EmailChangeConfirmView(View, TemplateResponseMixin):
 
 
 @method_decorator(login_required, name="dispatch")
-class EmailChangeVerifyView(View, TemplateResponseMixin):
+class EmailChangeVerifyView(TwoFactorAuthenticationRequiredMixin, View, TemplateResponseMixin):
     """View that renders an HTML template and verifies the new email address."""
 
     template_name = "members/user/email_change_verified.html"

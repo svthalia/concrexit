@@ -21,15 +21,18 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, FormView
+from webauth.decorators import webauth_required
+from webauth.mixins import WebAuthRequiredMixin
 
 from payments import services, payables
 from payments.exceptions import PaymentError
 from payments.forms import BankAccountForm, PaymentCreateForm, BankAccountUserRevokeForm
 from payments.models import BankAccount, Payment, PaymentUser
+from thaliawebsite.views import TwoFactorAuthenticationRequiredMixin
 
 
 @method_decorator(login_required, name="dispatch")
-class BankAccountCreateView(SuccessMessageMixin, CreateView):
+class BankAccountCreateView(TwoFactorAuthenticationRequiredMixin, SuccessMessageMixin, CreateView):
     model = BankAccount
     form_class = BankAccountForm
     success_url = reverse_lazy("payments:bankaccount-list")
@@ -66,7 +69,7 @@ class BankAccountCreateView(SuccessMessageMixin, CreateView):
 
 
 @method_decorator(login_required, name="dispatch")
-class BankAccountRevokeView(SuccessMessageMixin, UpdateView):
+class BankAccountRevokeView(TwoFactorAuthenticationRequiredMixin, SuccessMessageMixin, UpdateView):
     model = BankAccount
     form_class = BankAccountUserRevokeForm
     success_url = reverse_lazy("payments:bankaccount-list")
@@ -165,7 +168,7 @@ class PaymentListView(ListView):
 
 
 @method_decorator(login_required, name="dispatch")
-class PaymentProcessView(SuccessMessageMixin, FormView):
+class PaymentProcessView(TwoFactorAuthenticationRequiredMixin, SuccessMessageMixin, FormView):
     """Defines a view that allows the user to add a Thalia Pay payment to a Payable object using a POST request.
 
     The user should be authenticated.
