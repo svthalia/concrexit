@@ -97,7 +97,9 @@ class RegistrationAdminFields(FormView):
         values = form.field_values()
         try:
             services.update_registration(
-                registration=self.registration, field_values=values
+                registration=self.registration,
+                field_values=values,
+                actor=self.request.user,
             )
             messages.success(self.request, _("Registration successfully saved."))
             if "_save" in self.request.POST:
