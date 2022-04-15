@@ -20,3 +20,11 @@ def thumbnail_sizes(_):
 def aprilfools(_):
     now = timezone.now()
     return {"APRIL_FOOLS": now.month == 4 and now.day == 1}
+
+
+def lustrum_styling(_):
+    return {
+        "lustrumstyling": timezone.datetime(2022, 4, 22).date()
+        <= timezone.now().date()
+        <= timezone.datetime(2022, 4, 29).date()
+    }
