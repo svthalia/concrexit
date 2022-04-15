@@ -22,7 +22,15 @@ class FieldsForm(forms.Form):
                 self.fields[key] = forms.CharField(required=field["required"])
 
             self.fields[key].label = field["label"]
-            self.fields[key].help_text = field["description"]
+            if not field["description"]:
+                self.fields[
+                    key
+                ].help_text = f"{_('This data will be deleted after')} {field['delete_after']:%d-%m-%Y}."
+            else:
+                self.fields[key].help_text = (
+                    field["description"]
+                    + f". {_('This data will be deleted after')} {field['delete_after']:%d-%m-%Y}."
+                )
             self.fields[key].initial = field["value"]
 
     def field_values(self):

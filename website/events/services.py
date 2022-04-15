@@ -12,6 +12,10 @@ from events.models import (
     EventRegistration,
     RegistrationInformationField,
     Event,
+    AbstractRegistrationInformation,
+    TextRegistrationInformation,
+    IntegerRegistrationInformation,
+    BooleanRegistrationInformation,
 )
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
@@ -303,6 +307,7 @@ def registration_fields(request, member=None, event=None, registration=None, nam
                 "description": field.description,
                 "value": information_field["value"],
                 "required": field.required,
+                "delete_after": field.delete_after,
             }
 
         return fields
@@ -359,11 +364,37 @@ def generate_category_statistics() -> dict:
 def execute_data_minimisation(dry_run=False):
     """Delete information about very old events."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 5))
+    event_registration_deletion_period = timezone.now().date() - timezone.timedelta(
+        days=(365 * 5)
+    )
 
-    queryset = EventRegistration.objects.filter(event__end__lte=deletion_period).filter(
+    event_registrations = EventRegistration.objects.filter(
+        event__end__lte=event_registration_deletion_period
+    ).filter(
         Q(payment__isnull=False) | Q(member__isnull=False) | ~Q(name__exact="<removed>")
     )
+
+    event_information_boolean = BooleanRegistrationInformation.objects.filter(
+        field__delete_after__lt=timezone.now().date()
+    )
+
+    event_information_integer = IntegerRegistrationInformation.objects.filter(
+        field__delete_after__lt=timezone.now().date()
+    )
+
+    event_information_text = TextRegistrationInformation.objects.filter(
+        field__delete_after__lt=timezone.now().date()
+    )
+
     if not dry_run:
-        queryset.update(payment=None, member=None, name="<removed>")
-    return queryset.all()
+        event_registrations.update(payment=None, member=None, name="<removed>")
+        event_information_boolean.delete()
+        event_information_integer.delete()
+        event_information_text.delete()
+
+    return (
+        event_registrations.all(),
+        event_information_boolean.all(),
+        event_information_integer.all(),
+        event_information_text.all(),
+    )

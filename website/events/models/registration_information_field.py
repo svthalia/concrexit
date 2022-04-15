@@ -40,6 +40,15 @@ class RegistrationInformationField(models.Model):
         _("required"),
     )
 
+    delete_after = models.DateField(
+        _("delete after"),
+        null=False,
+        blank=False,
+        help_text=_(
+            "The data entered in this field will automatically be deleted after this date for privacy purposes. Please choose a value, e.g. 1 month after the event."
+        ),
+    )
+
     def get_value_for(self, registration):
         if self.type == self.TEXT_FIELD:
             value_set = self.textregistrationinformation_set
