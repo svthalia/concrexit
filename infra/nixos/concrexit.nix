@@ -246,6 +246,7 @@ in
       sendinformationcheck.calendar = "*-10-15 06:00:00";
       revokeoldmandates.calendar = "*-*-* 03:00:00";
       revoke_staff.calendar = "*-*-* 03:00:00";
+      cleartokens.calendar = "*-*-* 03:00:00";
     };
 
     services = {
