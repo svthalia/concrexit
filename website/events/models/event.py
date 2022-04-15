@@ -151,7 +151,14 @@ class Event(models.Model):
         blank=True,
         null=True,
         help_text=(
-            format_lazy("{} {}", _("Default:"), DEFAULT_NO_REGISTRATION_MESSAGE)
+            format_lazy(
+                "{} {}. {}",
+                _("Default:"),
+                DEFAULT_NO_REGISTRATION_MESSAGE,
+                _(
+                    'This field accepts HTML tags as well, e.g. links with &lta href="https://example.com" target="_blank"&gthttps://example.com&lt/a&gt'
+                ),
+            )
         ),
     )
 
