@@ -11,7 +11,11 @@
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="theme-color" content="#E62272"/>
+    {% if lustrumstyling %}
+        <meta name="theme-color" content="#DAB34A"/>
+    {% else %}
+        <meta name="theme-color" content="#E62272"/>
+    {% endif %}
     {% if debug %}
         <link rel="icon" href="{% static "img/browser/icon-debug.png" %}">
     {% else %}
@@ -39,6 +43,43 @@
         {% compress css %}
             <link href="{% static "css/main.scss" %}" rel="stylesheet" type="text/x-scss">
         {% endcompress %}
+        {% if lustrumstyling %}
+            <style>
+            :root {
+                --primary: #dab34a;
+                --primary-hover: #f4d974;
+                --background-color: #111111;
+                --background-shade: #444444;
+                --background-shade-light: #212121;
+                --navbar-background-color: #111111;
+                --card-background: #212121;
+                --card-background-contrast: #ffffff;
+                --card-background-hover: #444444;
+                --card-background-hover-contrast: #ffffff;
+                --list-background: #212121;
+                --list-background-contrast: #ffffff;
+                --list-background-hover: #444444;
+                --list-background-hover-contrast: #ffffff;
+                --banner-background: #444444;
+                --form-background: #111111;
+                --form-background-disabled: #212121;
+                --form-border: #ffffff;
+                --form-text: #dddddd;
+                --title-color: #ffffff;
+                --sub-title-color: #f7f7f7;
+                --text-color: #dddddd;
+                --nav-link-color: #ffffff;
+                --footer-text-color: #ffffff;
+                --footer-text-color-hover: #f7f7f7;
+                --secondary: #dddddd;
+                --secondary-hover: #f7f7f7;
+                --secondary-contrast:#111111
+            }
+            body, .navbar {
+                background: radial-gradient(circle, rgba(51,51,51,1) 0%, rgba(0,0,0,1) 80%);
+            }
+            </style>
+        {% endif %}
     {% endblock %}
 
     {% block js_head %}
@@ -77,14 +118,24 @@
     <div class="container">
         <a class="navbar-brand" href="{% url 'index' %}">
             <picture>
-                <source srcset="{% static 'img/logo-dark.svg' %}" media="(prefers-color-scheme: dark)">
-                <source srcset="{% static 'img/logo.svg' %}" media="(prefers-color-scheme: light)">
-                <img
-                    src="{% static 'img/logo.svg' %}"
-                    id="logo"
-                    alt="{% trans 'Study Association Thalia' %}"
-                    height="220px"
-                >
+                {% if lustrumstyling %}
+                    <source srcset="{% static 'img/lustrum-logo.svg' %}">
+                    <img
+                        src="{% static 'img/lustrum-logo.svg' %}"
+                        id="logo"
+                        alt="{% trans 'Study Association Thalia' %}"
+                        height="220px"
+                    >
+                {% else %}
+                    <source srcset="{% static 'img/logo-dark.svg' %}" media="(prefers-color-scheme: dark)">
+                    <source srcset="{% static 'img/logo.svg' %}" media="(prefers-color-scheme: light)">
+                    <img
+                        src="{% static 'img/logo.svg' %}"
+                        id="logo"
+                        alt="{% trans 'Study Association Thalia' %}"
+                        height="220px"
+                    >
+                {% endif %}
             </picture>
         </a>
         <div class="flex-grow-1"></div>
