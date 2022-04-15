@@ -36,6 +36,9 @@
 {% block content_title %}<h1>{% blocktrans with event=event.title %}Event overview: {{ event }}{% endblocktrans %}</h1>{% endblock %}
 {% block content %}
 <div id="content-main">
+    <ul class="object-tools">
+        <li><a href="{{ event.get_absolute_url }}" class="viewsitelink">{% translate "View on site" %}</a></li>
+    </ul>
     <div class="module">
         {% with event.registrationinformationfield_set.all as fields %}
         <h2>{% trans "registrations"|capfirst %}</h2>
