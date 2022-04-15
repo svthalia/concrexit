@@ -12,7 +12,6 @@ from events.models import (
     EventRegistration,
     RegistrationInformationField,
     Event,
-    AbstractRegistrationInformation,
     TextRegistrationInformation,
     IntegerRegistrationInformation,
     BooleanRegistrationInformation,
