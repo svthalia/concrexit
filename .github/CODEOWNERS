@@ -24,3 +24,7 @@
 
 # ANYTHING WORKFLOW-RELATED
 /.github @svthalia/illuminati
+
+# NO CODEOWNERS FOR DEPENDENCY FILES, TO NOT BLOCK RENOVATE AUTOMERGE
+pyproject.toml
+.github/workflows/*.yaml
