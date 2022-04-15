@@ -44,7 +44,9 @@ class Device(models.Model):
 
     DEVICE_TYPES = (("ios", "iOS"), ("android", "Android"))
 
-    registration_id = models.TextField(verbose_name=_("registration token"))
+    registration_id = models.TextField(
+        verbose_name=_("registration token"), unique=True
+    )
     type = models.CharField(choices=DEVICE_TYPES, max_length=10)
     active = models.BooleanField(
         verbose_name=_("active"),
