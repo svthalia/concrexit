@@ -312,7 +312,7 @@ in
                 alias = "${cfg.dir}/media/";
                 extraConfig = "internal;";
               };
-              locations."/apple-app-site-association" = {
+              locations."/.well-known/apple-app-site-association" = {
                 alias = pkgs.writeText ''
                   {
                       "applinks": {
