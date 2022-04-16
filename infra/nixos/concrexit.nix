@@ -330,7 +330,7 @@ in
               };
               locations."/.well-known/change-password" = {
                 # Implementing https://github.com/WICG/change-password-url
-                return = "301 https://$host/password_change/;";
+                return = "301 https://$host/user/password_change/;";
               };
               locations."= /maintenance.html" = {
                 alias = ../resources/maintenance.html;
