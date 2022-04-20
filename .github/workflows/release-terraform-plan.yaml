@@ -10,7 +10,7 @@ jobs:
     environment:
       name: production
     steps:
-    - uses: actions/checkout@v3.0.0
+    - uses: actions/checkout@v3.0.1
     - uses: cachix/install-nix-action@v17
     - uses: cachix/cachix-action@v10
       with:
