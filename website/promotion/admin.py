@@ -49,16 +49,10 @@ class PromotionRequestAdmin(admin.ModelAdmin):
     mark_published.short_description = ("Mark requests as published")
 
     @staticmethod
-    def _change_published(request, queryset, status):
+    def _change_published(queryset, status):
         queryset.update(status=status)
 
 
 @admin.register(PromotionChannel)
 class PromotionChannelAdmin(ModelAdmin):
-    list_display = (
-        "name",
-    )
-
-    fields = (
-        "name",
-    )
+    pass

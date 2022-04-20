@@ -160,6 +160,9 @@ EDUCATION_NOTIFICATION_ADDRESS = (
 PROMO_REQUEST_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'paparazcie')}@{SITE_DOMAIN}"
 )
+PROMO_PUBLISH_DATE_TIMEDELTA = (
+    timezone.timedelta(weeks=1)
+)
 
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")

@@ -10,7 +10,4 @@ class PromotionConfig(AppConfig):
     name = "promotion"
     verbose_name = _("Promotion")
 
-    def ready(self):
-        """Import the signals when the app is ready."""
-        # pylint: disable=unused-import,import-outside-toplevel
-        #from . import signals
+

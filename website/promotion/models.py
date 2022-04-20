@@ -3,10 +3,10 @@ import datetime
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
 from tinymce.models import HTMLField
 
 from events.models import Event
+from thaliawebsite.settings import PROMO_PUBLISH_DATE_TIMEDELTA
 
 
 class PromotionChannel(models.Model):
@@ -16,7 +16,21 @@ class PromotionChannel(models.Model):
         return str(self.name)
 
 
+class UpcomingRequestManager(models.Manager):
+    def get_queryset(self, end_date):
+        start_date = end_date - PROMO_PUBLISH_DATE_TIMEDELTA
+        return super().get_queryset().filter(created_at__range=(start_date, end_date))
+
+class NewRequestManager(models.Manager):
+    def get_queryset(self, start_date):
+        end_date = start_date + PROMO_PUBLISH_DATE_TIMEDELTA
+        return super().get_queryset().filter(publish_date__range=(start_date, end_date))
+
 class PromotionRequest(models.Model):
+
+    upcoming_requests = UpcomingRequestManager()
+    new_requests = NewRequestManager()
+
     created_at = models.DateTimeField(
         verbose_name=_("created at"), auto_now_add=True, null=False, blank=False
     )
@@ -79,15 +93,6 @@ class PromotionRequest(models.Model):
         if self.event:
             return _("Promotion request for ") + str(self.event)
         return _("Promotion request ") + str(self.pk)
-    
-    def clean(self):
-        super().clean()
-        errors = {}
-        if self.publish_date is None:
-            errors.update({"publish_date": _("Publish date cannot have an empty date field")})
-        
-        if errors:
-            raise ValidationError(errors)
 
     def save(self, **kwargs):
         if not self.publish_date and self.event:
