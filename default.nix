@@ -62,7 +62,7 @@ let
   concrexit-uwsgi = writeScriptBin "concrexit-uwsgi" ''
     #! ${pkgs.runtimeShell}
     cd ${concrexit}/website
-    MANAGE_PY=1 ${concrexit-env}/bin/python ${concrexit}/website/manage.py migrate
+    MANAGE_PY=1 ${concrexit-env}/bin/python ${concrexit}/website/manage.py migrate || exit 1
 
     ${uwsgi-python}/bin/uwsgi "$@" \
       --plugins python3 \
