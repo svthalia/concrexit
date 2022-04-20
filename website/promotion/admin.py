@@ -24,27 +24,27 @@ class PromotionRequestAdmin(admin.ModelAdmin):
             return False
         return super().has_change_permission(request, obj)
     
-    def mark_not_started(self, request, queryset):
+    def mark_not_started(self, queryset):
         """Change the status of the event to published."""
-        self._change_published(request, queryset, PromotionRequest.NOT_STARTED)
+        self._change_published(queryset, PromotionRequest.NOT_STARTED)
 
     mark_not_started.short_description = ("Mark requests as not started")
 
-    def mark_started(self, request, queryset):
+    def mark_started(self, queryset):
         """Change the status of the event to published."""
-        self._change_published(request, queryset, PromotionRequest.STARTED)
+        self._change_published(queryset, PromotionRequest.STARTED)
 
     mark_started.short_description = ("Mark requests as started")
 
-    def mark_finished(self, request, queryset):
+    def mark_finished(self, queryset):
         """Change the status of the event to published."""
-        self._change_published(request, queryset, PromotionRequest.FINISHED)
+        self._change_published(queryset, PromotionRequest.FINISHED)
 
     mark_finished.short_description = ("Mark requests as finished")
 
-    def mark_published(self, request, queryset):
+    def mark_published(self, queryset):
         """Change the status of the event to published."""
-        self._change_published(request, queryset, PromotionRequest.PUBLISHED)
+        self._change_published(queryset, PromotionRequest.PUBLISHED)
 
     mark_published.short_description = ("Mark requests as published")
 
