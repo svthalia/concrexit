@@ -27,4 +27,5 @@
 
 # NO CODEOWNERS FOR DEPENDENCY FILES, TO NOT BLOCK RENOVATE AUTOMERGE
 pyproject.toml
+poetry.lock
 .github/workflows/*.yaml
