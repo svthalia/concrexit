@@ -320,7 +320,7 @@ in
                           "details": [
                               {
                                   "appID": "FRD6Y7E88Y.com.thaliapp",
-                                  "paths": [ "/pizzas/", "/events/*"]
+                                  "paths": [ "/pizzas/", "/events/", "/events/*", "/members/photos/*"]
                               }
                           ]
                       }
