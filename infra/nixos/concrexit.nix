@@ -313,19 +313,7 @@ in
                 extraConfig = "internal;";
               };
               locations."/.well-known/apple-app-site-association" = {
-                alias = pkgs.writeText ''
-                  {
-                      "applinks": {
-                          "apps": [],
-                          "details": [
-                              {
-                                  "appID": "FRD6Y7E88Y.com.thaliapp",
-                                  "paths": [ "/pizzas/", "/events/", "/events/*", "/members/photos/*"]
-                              }
-                          ]
-                      }
-                  }
-                '';
+                alias = ../resources/apple-app-site-association.json;
                 extraConfig = "default_type application/json;";
               };
               locations."/.well-known/change-password" = {
