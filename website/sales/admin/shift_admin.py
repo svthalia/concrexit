@@ -3,6 +3,7 @@ from django.contrib.admin import register
 
 from django.utils.translation import gettext_lazy as _
 
+from payments.models import Payment
 from sales.models.order import Order
 from sales.models.shift import Shift, SelfOrderPeriod
 from sales.services import is_manager
@@ -129,6 +130,7 @@ class ShiftAdmin(admin.ModelAdmin):
         "product_list",
         "managers",
         "product_sales",
+        "payment_method_sales",
         "num_orders",
         "total_revenue",
         "locked",
@@ -139,6 +141,7 @@ class ShiftAdmin(admin.ModelAdmin):
         "total_revenue",
         "num_orders",
         "product_sales",
+        "payment_method_sales",
     )
 
     def get_readonly_fields(self, request, obj=None):
@@ -214,4 +217,11 @@ class ShiftAdmin(admin.ModelAdmin):
         output = "\n".join(f"- {str(k)}: {v}x" for k, v in obj.product_sales.items())
         if obj.num_orders != obj.num_orders_paid:
             return f"{output}\n{_('This includes some orders that are unpaid.')}"
+        return output
+
+    def payment_method_sales(self, obj):
+        output = "\n".join(
+            f"- {dict(Payment.PAYMENT_TYPE)[k] if k else _('Unpaid')}: €{v:.2f}"
+            for k, v in obj.payment_method_sales.items()
+        )
         return output

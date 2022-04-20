@@ -164,6 +164,15 @@ class Shift(models.Model):
         }
 
     @property
+    def payment_method_sales(self):
+        qs = (
+            self.orders.values("payment__type")
+            .annotate(sold=Sum("order_items__total"))
+            .order_by()
+        )
+        return {item[0]: item[1] for item in qs.values_list("payment__type", "sold")}
+
+    @property
     def user_orders_allowed(self):
         return self.selforderperiod_set.filter(
             start__lte=timezone.now(), end__gt=timezone.now()
