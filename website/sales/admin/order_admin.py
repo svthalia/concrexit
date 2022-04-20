@@ -347,7 +347,23 @@ class OrderAdmin(admin.ModelAdmin):
         return super().changelist_view(request, extra_context)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        object_id
+        if object_id:
+            try:
+                obj = self.model.objects.get(pk=object_id)
+                if (
+                    obj.age_restricted
+                    and obj.payer
+                    and not services.is_adult(obj.payer)
+                ):
+                    self.message_user(
+                        request,
+                        _(
+                            "The payer for this order is under-age while the order is age restricted!"
+                        ),
+                        messages.WARNING,
+                    )
+            except self.model.DoesNotExist:
+                pass
         return super().change_view(request, object_id, form_url, extra_context)
 
     def order_description(self, obj):
