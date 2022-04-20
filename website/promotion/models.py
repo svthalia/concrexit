@@ -1,6 +1,4 @@
 """Models for the promotion requests database tables."""
-import datetime
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
@@ -42,7 +40,7 @@ class PromotionRequest(models.Model):
     )
     publish_date = models.DateField(
         verbose_name=_("Publish date"),
-        default=datetime.date.today,
+        default=timezone.now,
         null=False,
         blank=False,
     )
