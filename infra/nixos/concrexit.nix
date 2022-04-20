@@ -296,7 +296,6 @@ in
               locations."/".extraConfig = ''
                 uwsgi_pass 127.0.0.1:${toString cfg.app-port};
               '';
-              locations."/.well-known/change-password".return = "301 https://$host/password_change/";
               locations."/static/" = {
                 alias = "${pkgs.concrexit}/static/";
                 # We add not only the cache header but also the security headers again
@@ -321,7 +320,7 @@ in
                           "details": [
                               {
                                   "appID": "FRD6Y7E88Y.com.thaliapp",
-                                  "paths": [ "/pizzas/", "/events/", "/events/*", "/members/photos/", "/members/photos/*"]
+                                  "paths": [ "/pizzas/", "/events/", "/events/*", "/members/photos/*"]
                               }
                           ]
                       }
