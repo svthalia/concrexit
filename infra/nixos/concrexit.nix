@@ -312,7 +312,7 @@ in
                 alias = "${cfg.dir}/media/";
                 extraConfig = "internal;";
               };
-              locations."/.well-known/apple-app-site-association" = {
+              locations."= /.well-known/apple-app-site-association" = {
                 alias = ../resources/apple-app-site-association.json;
                 extraConfig = "default_type application/json;";
               };
