@@ -28,7 +28,7 @@ jobs:
       shell: bash
       id: commit_message
     - name: Create PR
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v4
       id: cpr
       with:
         branch: update_flake_lock_action
