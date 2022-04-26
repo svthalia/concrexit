@@ -1,6 +1,6 @@
 """These context processors can be used to expand the context provided to views."""
 from django.conf import settings
-
+from django.utils import timezone
 
 def source_commit(_):
     """Get the SOURCE_COMMIT environment variable."""
