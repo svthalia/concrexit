@@ -238,7 +238,7 @@ class RenewalFormView(FormView):
             messages.warning(
                 self.request,
                 _(
-                    "You seem to have been a member in the past, but your profile data has been minimised. Please contact the board to renew your membership."
+                    "You seem to have been a member in the past, but your profile data has been deleted. Please contact the board to renew your membership."
                 ),
             )
         context["benefactor_type"] = Membership.BENEFACTOR
