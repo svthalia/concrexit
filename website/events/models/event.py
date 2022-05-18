@@ -528,6 +528,130 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.title}: {timezone.localtime(self.start):%Y-%m-%d %H:%M}"
 
+    DEFAULT_REG_CLOSED_MESSAGE = _("You cannot register at this time")
+    DEFAULT_REG_OPEN_MESSAGE = _("You can register now")
+    DEFAULT_REG_FULL_MESSAGE = _(
+        "Registrations are full, but you can still enter the waiting list"
+    )
+    DEFAULT_REG_WAIT_MESSAGE = _("You are in the queue, position {queue_position}")
+    DEFAULT_REG_OK_MESSAGE = _("You are registered.")
+    DEFAULT_REG_NO_CANCEL_MESSAGE = _(
+        "You are registered. You cannot cancel without paying a fine of €{fine}"
+    )
+    DEFAULT_REG_NO_REREG_MESSAGE = _(
+        "You are registered. If you deregister, you cannot re-register again"
+    )
+    DEFAULT_REG_NO_CANCEL_REREG_MESSAGE = _(
+        "You are registered. You cannot deregister without paying a fine of €{fine}. You will also not be able to re-register"
+    )
+
+    registration_status_closed_msg = models.CharField(
+        _("message when registrations are closed and the user is not registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=(
+            format_lazy(
+                "{} {}",
+                _("Default:"),
+                DEFAULT_REG_CLOSED_MESSAGE,
+            )
+        ),
+    )
+    registration_status_open_msg = models.CharField(
+        _("message when registrations are open and the user is not registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=(
+            format_lazy(
+                "{} {}",
+                _("Default:"),
+                DEFAULT_REG_OPEN_MESSAGE,
+            )
+        ),
+    )
+    registration_status_full_msg = models.CharField(
+        _("message when registrations are full and the user is not registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=(
+            format_lazy(
+                "{} {}",
+                _("Default:"),
+                DEFAULT_REG_FULL_MESSAGE,
+            )
+        ),
+    )
+    registration_status_wait_msg = models.CharField(
+        _("message when user is in the queue"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=(
+            format_lazy(
+                "{} {}",
+                _("Default:"),
+                DEFAULT_REG_WAIT_MESSAGE,
+            )
+        ),
+    )
+    registration_status_ok_msg = models.CharField(
+        _("message when user is registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=(
+            format_lazy(
+                "{} {}",
+                _("Default:"),
+                DEFAULT_REG_OK_MESSAGE,
+            )
+        ),
+    )
+    registration_status_no_cancel_msg = models.CharField(
+        _("message when user is registered and cannot cancel without paying a fine"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=(
+            format_lazy(
+                "{} {}",
+                _("Default:"),
+                DEFAULT_REG_NO_CANCEL_MESSAGE,
+            )
+        ),
+    )
+    registration_status_no_rereg_msg = models.CharField(
+        _("message when user is registered and cannot re-register if they cancel"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=(
+            format_lazy(
+                "{} {}",
+                _("Default:"),
+                DEFAULT_REG_NO_REREG_MESSAGE,
+            )
+        ),
+    )
+    registration_status_no_cancel_rereg_msg = models.CharField(
+        _(
+            "message when user is registered and cannot cancel without paying a fine and would also not be able to re-register after"
+        ),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=(
+            format_lazy(
+                "{} {}",
+                _("Default:"),
+                DEFAULT_REG_NO_CANCEL_REREG_MESSAGE,
+            )
+        ),
+    )
+
     class Meta:
         ordering = ("-start",)
         permissions = (("override_organiser", "Can access events as if organizing"),)

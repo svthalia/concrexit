@@ -9,6 +9,8 @@ from events import emails
 from events.exceptions import RegistrationError
 from events.models import (
     Event,
+    categories,
+    statuses,
     EventRegistration,
     RegistrationInformationField,
     categories,
@@ -29,6 +31,36 @@ def is_user_registered(member, event):
         return None
 
     return event.registrations.filter(member=member, date_cancelled=None).exists()
+
+
+def registration_status(event: Event, registration: EventRegistration):
+    if registration:
+        if registration.queue_position:
+            return statuses.STATUS_WAITINGLIST
+        elif event.registration_allowed and event.cancellation_allowed:
+            return statuses.STATUS_REGISTERED
+        elif event.registration_allowed and not event.cancellation_allowed:
+            return statuses.STATUS_REGISTERED_NO_CANCEL
+        elif not event.registration_allowed and event.cancellation_allowed:
+            return statuses.STATUS_REGISTERED_NO_REREG
+        elif not event.registration_allowed and not event.cancellation_allowed:
+            return statuses.STATUS_REGISTERED_NO_CANCEL_REREG
+    else:
+        if not event.registration_allowed:
+            return statuses.STATUS_CLOSED
+        elif event.reached_participants_limit:
+            return statuses.STATUS_FULL
+        else:
+            return statuses.STATUS_OPEN
+
+
+def user_registration_status(member, event: Event):
+    if not member.is_authenticated:
+        # I guess this is for privacy?
+        return None
+
+    registration = event.registrations.get(member=member, date_cancelled=None)
+    return registration_status(event, registration)
 
 
 def user_registration_pending(member, event):
