@@ -18,6 +18,8 @@ from members.models import Member
 from payments.models import PaymentAmountField
 from pushnotifications.models import Category, ScheduledMessage
 
+from events.models import statuses
+
 
 class Event(models.Model):
     """Describes an event."""
@@ -528,127 +530,155 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.title}: {timezone.localtime(self.start):%Y-%m-%d %H:%M}"
 
-    DEFAULT_REG_CLOSED_MESSAGE = _("You cannot register at this time")
-    DEFAULT_REG_OPEN_MESSAGE = _("You can register now")
-    DEFAULT_REG_FULL_MESSAGE = _(
-        "Registrations are full, but you can still enter the waiting list"
-    )
-    DEFAULT_REG_WAIT_MESSAGE = _("You are in the queue, position {queue_position}")
-    DEFAULT_REG_OK_MESSAGE = _("You are registered.")
-    DEFAULT_REG_NO_CANCEL_MESSAGE = _(
-        "You are registered. You cannot cancel without paying a fine of €{fine}"
-    )
-    DEFAULT_REG_NO_REREG_MESSAGE = _(
-        "You are registered. If you deregister, you cannot re-register again"
-    )
-    DEFAULT_REG_NO_CANCEL_REREG_MESSAGE = _(
-        "You are registered. You cannot deregister without paying a fine of €{fine}. You will also not be able to re-register"
-    )
+    DEFAULT_STATUS_MESSAGE = {
+        statuses.STATUS_WILL_OPEN: _("Registration will open {regstart}"),
+        statuses.STATUS_EXPIRED: _("Registration is not possible anymore"),
+        statuses.STATUS_OPEN: _("You can register now"),
+        statuses.STATUS_FULL: _(
+            "Registrations are full, but you can join the waiting list"
+        ),
+        statuses.STATUS_WAITINGLIST: _("You are in queue position {{pos}}"),
+        statuses.STATUS_REGISTERED: _("You are registered for this event"),
+        statuses.STATUS_CANCELLED: _("Your registration for this event is cancelled"),
+        statuses.STATUS_CANCELLED_LATE: _(
+            "Your registration is cancelled after the deadline and you will pay a fine of €{{fine}}"
+        ),
+        statuses.STATUS_OPTIONAL: _("You can optionally register for this event"),
+        statuses.STATUS_OPTIONAL_REGISTERED: _(
+            "You are optionally registered for this event"
+        ),
+        statuses.STATUS_NONE: DEFAULT_NO_REGISTRATION_MESSAGE,
+        statuses.STATUS_LOGIN: _("You have to log in before you can register for this event"),
+    }
 
-    registration_status_closed_msg = models.CharField(
-        _("message when registrations are closed and the user is not registered"),
+    STATUS_MESSAGE_FIELDS = {
+        statuses.STATUS_WILL_OPEN: "registration_msg_will_open",
+        statuses.STATUS_EXPIRED: "registration_msg_expired",
+        statuses.STATUS_OPEN: "registration_msg_open",
+        statuses.STATUS_FULL: "registration_msg_full",
+        statuses.STATUS_WAITINGLIST: "registration_msg_waitinglist",
+        statuses.STATUS_REGISTERED: "registration_msg_registered",
+        statuses.STATUS_CANCELLED: "registration_msg_cancelled",
+        statuses.STATUS_CANCELLED_LATE: "registration_msg_cancelled_late",
+        statuses.STATUS_OPTIONAL: "registration_msg_optional",
+        statuses.STATUS_OPTIONAL_REGISTERED: "registration_msg_optional_registered",
+        statuses.STATUS_NONE: "no_registration_message",
+    }
+
+    registration_msg_will_open = models.CharField(
+        _(
+            "message when registrations are still closed (and the user is not registered)"
+        ),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(
-            format_lazy(
-                "{} {}",
-                _("Default:"),
-                DEFAULT_REG_CLOSED_MESSAGE,
-            )
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_WILL_OPEN],
         ),
     )
-    registration_status_open_msg = models.CharField(
+    registration_msg_expired = models.CharField(
+        _(
+            "message when the registration deadline expired and the user is not registered"
+        ),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_EXPIRED],
+        ),
+    )
+    registration_msg_open = models.CharField(
         _("message when registrations are open and the user is not registered"),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(
-            format_lazy(
-                "{} {}",
-                _("Default:"),
-                DEFAULT_REG_OPEN_MESSAGE,
-            )
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_OPEN],
         ),
     )
-    registration_status_full_msg = models.CharField(
-        _("message when registrations are full and the user is not registered"),
+    registration_msg_full = models.CharField(
+        _(
+            "message when registrations are open, but full and the user is not registered"
+        ),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(
-            format_lazy(
-                "{} {}",
-                _("Default:"),
-                DEFAULT_REG_FULL_MESSAGE,
-            )
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_FULL],
         ),
     )
-    registration_status_wait_msg = models.CharField(
-        _("message when user is in the queue"),
+    registration_msg_waitinglist = models.CharField(
+        _("message when user is on the waiting list"),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(
-            format_lazy(
-                "{} {}",
-                _("Default:"),
-                DEFAULT_REG_WAIT_MESSAGE,
-            )
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_WAITINGLIST],
         ),
     )
-    registration_status_ok_msg = models.CharField(
+    registration_msg_registered = models.CharField(
         _("message when user is registered"),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(
-            format_lazy(
-                "{} {}",
-                _("Default:"),
-                DEFAULT_REG_OK_MESSAGE,
-            )
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_REGISTERED],
         ),
     )
-    registration_status_no_cancel_msg = models.CharField(
-        _("message when user is registered and cannot cancel without paying a fine"),
+    registration_msg_cancelled = models.CharField(
+        _("message when user cancelled their registration in time"),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(
-            format_lazy(
-                "{} {}",
-                _("Default:"),
-                DEFAULT_REG_NO_CANCEL_MESSAGE,
-            )
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_CANCELLED],
         ),
     )
-    registration_status_no_rereg_msg = models.CharField(
-        _("message when user is registered and cannot re-register if they cancel"),
+    registration_msg_cancelled_late = models.CharField(
+        _("message when user cancelled their registration late and will pay a fine"),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(
-            format_lazy(
-                "{} {}",
-                _("Default:"),
-                DEFAULT_REG_NO_REREG_MESSAGE,
-            )
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_CANCELLED_LATE],
         ),
     )
-    registration_status_no_cancel_rereg_msg = models.CharField(
-        _(
-            "message when user is registered and cannot cancel without paying a fine and would also not be able to re-register after"
-        ),
+    registration_msg_optional = models.CharField(
+        _("message when registrations are optional and the user is not registered"),
         max_length=200,
         blank=True,
         null=True,
-        help_text=(
-            format_lazy(
-                "{} {}",
-                _("Default:"),
-                DEFAULT_REG_NO_CANCEL_REREG_MESSAGE,
-            )
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_OPTIONAL],
+        ),
+    )
+    registration_msg_optional_registered = models.CharField(
+        _("message when registrations are optional and the user is registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_OPTIONAL_REGISTERED],
         ),
     )
 

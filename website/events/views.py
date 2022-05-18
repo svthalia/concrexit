@@ -63,6 +63,13 @@ class EventDetail(DetailView):
         except (EventRegistration.DoesNotExist, TypeError):
             pass
 
+        registration_status = services.registration_status(
+            event, context.get("registration"), self.request.member
+        )
+        context["registration_status"] = services.registration_status_string(
+            registration_status, event, context.get("registration")
+        )
+
         context["permissions"] = services.event_permissions(self.request.member, event)
 
         context["date_now"] = timezone.now()

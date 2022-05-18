@@ -1,8 +1,10 @@
 from collections import OrderedDict
+from thaliawebsite import settings
 
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.datetime_safe import date
+from django.utils.dateformat import format
 from django.utils.translation import gettext_lazy as _
 
 from events import emails
@@ -32,35 +34,93 @@ def is_user_registered(member, event):
 
     return event.registrations.filter(member=member, date_cancelled=None).exists()
 
+def cancel_status(event: Event):
+    if event.registration_allowed and event.cancellation_allowed:
+        return statuses.CANCEL_NORMAL
+    elif event.registration_allowed and not event.cancellation_allowed:
+        return statuses.CANCEL_LATE
+    elif not event.registration_allowed and event.cancellation_allowed:
+        return statuses.CANCEL_FINAL
+    elif not event.registration_allowed and not event.cancellation_allowed:
+        return statuses.CANCEL_LATE_FINAL
 
-def registration_status(event: Event, registration: EventRegistration):
+
+def registration_status(event: Event, registration: EventRegistration, member):
+    now = timezone.now()
+
+    if not event.registration_required and not event.optional_registration_allowed:
+        return statuses.STATUS_NONE
+
+    if (not member or not member.is_authenticated):
+        if event.optional_registration_allowed:
+            return statuses.STATUS_OPTIONAL
+        else:
+            return statuses.STATUS_LOGIN
+
     if registration:
+        if registration.date_cancelled:
+            if event.optional_registration_allowed:
+                # Optional registrations are not meaningfully cancelled
+                return statuses.STATUS_OPTIONAL
+            elif registration.is_late_cancellation():
+                return statuses.STATUS_CANCELLED_LATE
+            else:
+                return statuses.STATUS_CANCELLED
+
         if registration.queue_position:
             return statuses.STATUS_WAITINGLIST
-        elif event.registration_allowed and event.cancellation_allowed:
-            return statuses.STATUS_REGISTERED
-        elif event.registration_allowed and not event.cancellation_allowed:
-            return statuses.STATUS_REGISTERED_NO_CANCEL
-        elif not event.registration_allowed and event.cancellation_allowed:
-            return statuses.STATUS_REGISTERED_NO_REREG
-        elif not event.registration_allowed and not event.cancellation_allowed:
-            return statuses.STATUS_REGISTERED_NO_CANCEL_REREG
+        elif event.optional_registration_allowed:
+            return statuses.STATUS_OPTIONAL_REGISTERED
+
+        return statuses.STATUS_REGISTERED
     else:
-        if not event.registration_allowed:
-            return statuses.STATUS_CLOSED
-        elif event.reached_participants_limit:
-            return statuses.STATUS_FULL
-        else:
+        if event.optional_registration_allowed:
+            return statuses.STATUS_OPTIONAL
+
+        elif event.registration_required:
             return statuses.STATUS_OPEN
+
+        elif not event.registration_started:
+            return statuses.STATUS_WILL_OPEN
+        elif not event.registration_allowed:
+            return statuses.STATUS_EXPIRED
+
+        elif event.reached_participants_limit():
+            return statuses.STATUS_FULL
+
+        else:
+            raise Exception("invalid/unexpected registration status")
 
 
 def user_registration_status(member, event: Event):
     if not member.is_authenticated:
-        # I guess this is for privacy?
+        if not event.registration_required and not event.optional_registrations:
+            return statuses.STATUS_NONE
+        else:
+            return statuses.STATUS_LOGIN
+
+    registration = event.registrations.get(member=member)
+    return registration_status(event, registration)
+
+
+def registration_status_string(status, event: Event, registration: EventRegistration):
+    if not status:
         return None
 
-    registration = event.registrations.get(member=member, date_cancelled=None)
-    return registration_status(event, registration)
+    status_msg = getattr(event, event.STATUS_MESSAGE_FIELDS.get(status) or "", event.DEFAULT_STATUS_MESSAGE[status])
+    if not status_msg:
+        status_msg = event.DEFAULT_STATUS_MESSAGE[status]
+
+    if registration:
+        queue_pos = registration.queue_position
+    else:
+        queue_pos = None
+
+    return status_msg.format(
+        fine=event.fine,
+        pos=queue_pos,
+        regstart=timezone.localtime(event.registration_start).strftime("%d %b, %Y, %H:%M"),
+    )
 
 
 def user_registration_pending(member, event):

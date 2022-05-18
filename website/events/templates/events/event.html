@@ -212,6 +212,7 @@
                             </td>
                             <td>
                                 <em>
+                                    <p>NEW MESSAGE: {{ registration_status }}.</p>OLD MESSAGE:
                                     {% if not request.user.is_authenticated and event.registration_required %}
                                         {% trans "You have to log in before you can register for this event." %}
                                     {% else %}
