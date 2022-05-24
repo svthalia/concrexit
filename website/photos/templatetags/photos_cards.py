@@ -54,6 +54,12 @@ def photo_card(photo):
             reverse("photos:download", args=[photo.album.slug, photo])
         )
 
+    anchor_attrs += " data-caption='{}'".format(f"{photo.num_kudos} kudos <a>+1</a>")
+
+    # anchor_attrs += " data-kudo_url={}".format(
+    #     reverse("api:v2:photos:photo-kudo", args=[photo.pk])
+    # )
+    #
     image_url = get_thumbnail_url(photo.file, settings.THUMBNAIL_SIZES["medium"])
 
     if photo.rotation > 0:
@@ -64,6 +70,7 @@ def photo_card(photo):
 
     return grid_item(
         title="",
+        meta_text=f"<p>{photo.num_kudos} kudos</p>",
         url=get_thumbnail_url(photo.file, settings.THUMBNAIL_SIZES["large"], fit=False),
         image_url=image_url,
         class_name=class_name,
