@@ -320,6 +320,20 @@ in
                 # Implementing https://github.com/WICG/change-password-url
                 return = "301 https://$host/user/password_change/;";
               };
+              locations."/.well-known/security.txt" = {
+                # Implementing https://tools.ietf.org/html/draft-foudil-securitytxt-12
+                alias = ../resources/security.txt;
+                extraConfig = "default_type text/plain;";
+              };
+              locations."/security.txt" = {
+                # Implementing https://tools.ietf.org/html/draft-foudil-securitytxt-12
+                alias = ../resources/security.txt;
+                extraConfig = "default_type text/plain;";
+              };
+              locations."/pgp-key.txt" = {
+                alias = ../resources/pgp-key.txt;
+                extraConfig = "default_type text/plain;";
+              };
               locations."= /maintenance.html" = {
                 alias = ../resources/maintenance.html;
                 extraConfig = "internal;";

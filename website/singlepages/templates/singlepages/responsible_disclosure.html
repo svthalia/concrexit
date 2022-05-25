@@ -18,8 +18,8 @@
     </p>
     <h4>{% trans "How to notify us" %}</h4>
     <ul>
-        <li>{% trans "Send us any and all reports about potential security issues to <a href='mailto:www@thalia.nu'>www@thalia.nu</a> (in either English or Dutch). You can use our PGP key to encrypt your report." %}</li>
-        <li>{% trans "Our key can be found at: <a href='https://keys.openpgp.org/search?q=A3A3+65AE+16ED+A7A0+C29C++88F1+9712+452E+8BE3+372E'>A3A3 65AE 16ED A7A0 C29C 88F1 9712 452E 8BE3 372E</a>" %}</li>
+        <li>{% trans "Send us any and all reports about potential security issues to <a href='mailto:www@thalia.nu'>www@thalia.nu</a> (in either English or Dutch)." %}</li>
+        <li>{% trans "Please also consider" %} <a href="/.well-known/security.txt" target="_blank">https://thalia.nu/.well-known/security.txt</a>.</li>
     </ul>
     <h4>{% trans "We ask you to" %}</h4>
     <ul>
@@ -58,6 +58,7 @@
     <p>{% trans "The following reports will not be taken into consideration:" %}</p>
     <ul>
         <li>{% trans "the policy of SPF / DKIM / DMARC" %}</li>
+        <li>{% trans "the policy of CSP" %}</li>
     </ul>
     <p>{% trans "Thank you for your concern but we are already aware of these issues." %}</p>
 {% endblock %}

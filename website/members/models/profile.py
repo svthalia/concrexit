@@ -265,6 +265,10 @@ class Profile(models.Model):
         default=False,
     )
 
+    @property
+    def is_minimised(self):
+        return self.address_city == "<removed>"
+
     def display_name(self):
         # pylint: disable=too-many-return-statements
         pref = self.display_name_preference

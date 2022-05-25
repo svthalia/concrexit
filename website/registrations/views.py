@@ -230,6 +230,17 @@ class RenewalFormView(FormView):
         context["was_member"] = Membership.objects.filter(
             user=self.request.member, type=Membership.MEMBER
         ).exists()
+
+        if (
+            self.request.member.latest_membership
+            and not self.request.member.latest_membership.is_active()
+        ) and self.request.member.profile.is_minimised:
+            messages.warning(
+                self.request,
+                _(
+                    "You seem to have been a member in the past, but your profile data has been deleted. Please contact the board to renew your membership."
+                ),
+            )
         context["benefactor_type"] = Membership.BENEFACTOR
         return context
 

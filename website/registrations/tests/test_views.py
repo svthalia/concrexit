@@ -651,6 +651,25 @@ class RenewalFormViewTest(TestCase):
                     context = self.view.get_context_data(form=MagicMock())
                     self.assertEqual(context["latest_renewal"], renewal)
 
+                with self.subTest("With minimised data"):
+                    with mock.patch("members.models.Profile.is_minimised") as minimised:
+                        with mock.patch(
+                            "django.contrib.messages.warning"
+                        ) as mock_messages:
+                            minimised.return_value = True
+
+                            self.view.request.member.latest_membership = MagicMock()
+                            self.view.request.member.latest_membership.is_active = (
+                                MagicMock()
+                            )
+                            self.view.request.member.latest_membership.is_active.return_value = (
+                                False
+                            )
+
+                            _ = self.view.get_context_data(form=MagicMock())
+
+                            mock_messages.assert_called_once()
+
     def test_get_form(self):
         self.view.request = self.rf.get("/")
 
