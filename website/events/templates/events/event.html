@@ -212,7 +212,8 @@
                             </td>
                             <td>
                                 <em>
-                                    <p>NEW MESSAGE: {{ registration_status }}.</p>OLD MESSAGE:
+                                    <p>NEW MESSAGE: {{ registration_status }}. {{cancel_info}}</p>
+                                    OLD MESSAGE:
                                     {% if not request.user.is_authenticated and event.registration_required %}
                                         {% trans "You have to log in before you can register for this event." %}
                                     {% else %}
@@ -237,7 +238,8 @@
                                         {% if event.after_cancel_deadline and registration.queue_position %}
                                             {% blocktrans trimmed with costs=event.fine %}
                                                 Cancellation while on the waiting list will not result in having to pay a fine.
-                                                Do note that you will be unable to re-register.{% endblocktrans %}
+                                                Do note that you will be unable to re-register.
+                                            {% endblocktrans %}
                                         {% endif %}
                                     {% endif %}
                                 </em>

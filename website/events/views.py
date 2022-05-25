@@ -69,6 +69,8 @@ class EventDetail(DetailView):
         context["registration_status"] = services.registration_status_string(
             registration_status, event, context.get("registration")
         )
+        cancel_status = services.cancel_status(event, context.get("registration"))
+        context["cancel_info"] = services.cancel_info_string(cancel_status)
 
         context["permissions"] = services.event_permissions(self.request.member, event)
 

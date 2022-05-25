@@ -537,18 +537,20 @@ class Event(models.Model):
         statuses.STATUS_FULL: _(
             "Registrations are full, but you can join the waiting list"
         ),
-        statuses.STATUS_WAITINGLIST: _("You are in queue position {{pos}}"),
+        statuses.STATUS_WAITINGLIST: _("You are in queue position {pos}"),
         statuses.STATUS_REGISTERED: _("You are registered for this event"),
         statuses.STATUS_CANCELLED: _("Your registration for this event is cancelled"),
         statuses.STATUS_CANCELLED_LATE: _(
-            "Your registration is cancelled after the deadline and you will pay a fine of €{{fine}}"
+            "Your registration is cancelled after the deadline and you will pay a fine of €{fine}"
         ),
         statuses.STATUS_OPTIONAL: _("You can optionally register for this event"),
         statuses.STATUS_OPTIONAL_REGISTERED: _(
             "You are optionally registered for this event"
         ),
         statuses.STATUS_NONE: DEFAULT_NO_REGISTRATION_MESSAGE,
-        statuses.STATUS_LOGIN: _("You have to log in before you can register for this event"),
+        statuses.STATUS_LOGIN: _(
+            "You have to log in before you can register for this event"
+        ),
     }
 
     STATUS_MESSAGE_FIELDS = {
