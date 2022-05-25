@@ -25,4 +25,6 @@ class MemberMiddleware:
         # This also avoids unnecessary queries when request.member is not used
         request.member = SimpleLazyObject(lambda: get_member(request))
 
+        print("---------------\nHost:", request.get_host())
+
         return self.get_response(request)
