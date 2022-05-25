@@ -44,7 +44,7 @@ def bleach(value):
         >>> bleach('<div class="bla"></div>')
         '<div class="bla"></div>'
         >>> bleach('<img src="https://i.redd.it/22kypw2l93gz.jpg" alt="bees">')
-        '<img alt="bees" src="https://i.redd.it/22kypw2l93gz.jpg">'
+        '<src="https://i.redd.it/22kypw2l93gz.jpg" img alt="bees">'
         >>> bleach('<iframe width="560" height="315" '
         ... 'src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" '
         ... 'frameborder="0" allowfullscreen></iframe>') == (
