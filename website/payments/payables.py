@@ -79,7 +79,7 @@ class Payables:
     def __init__(self):
         self._registry = {}
 
-    @lru_cache(maxsize=None)
+    @lru_cache(maxsize=1024)
     def _get_key(self, model):
         return f"{model._meta.app_label}_{model._meta.model_name}"
 
