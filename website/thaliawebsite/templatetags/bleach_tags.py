@@ -47,11 +47,10 @@ def bleach(value):
         '<img src="https://i.redd.it/22kypw2l93gz.jpg" alt="bees">'
         >>> bleach('<iframe width="560" height="315" '
         ... 'src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" '
-        ... 'frameborder="0" allowfullscreen></iframe>') == (
-        ...     '<iframe allowfullscreen="" frameborder="0" height="315" '
-        ...     'src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" '
-        ...     'width="560"></iframe>')
-        True
+        ... 'frameborder="0" allowfullscreen></iframe>')
+        ('<iframe allowfullscreen="" frameborder="0" height="315" '
+        'src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" '
+        'width="560"></iframe>')
         >>> bleach('<iframe src="https://clearlyreta.rded.nl/ivo/"></iframe>')
         '<iframe></iframe>'
     """
