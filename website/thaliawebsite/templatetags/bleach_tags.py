@@ -1,5 +1,6 @@
 """Bleach allows to clean up user input to make it safe to display, but allow some HTML."""
 from bleach import clean
+from bleach.css_sanitizer import CSSSanitizer
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
@@ -54,6 +55,7 @@ def bleach(value):
         >>> bleach('<iframe src="https://clearlyreta.rded.nl/ivo/"></iframe>')
         '<iframe></iframe>'
     """
+    css_sanitizer = CSSSanitizer(allowed_css_properties=["text-decoration"])
     return mark_safe(
         clean(
             value,
@@ -81,7 +83,7 @@ def bleach(value):
                 "a": ["href", "rel", "target", "title"],
                 "img": ["alt", "title", "src"],
             },
-            styles=["text-decoration"],
+            css_sanitizer=css_sanitizer,
             strip=True,
         )
     )
