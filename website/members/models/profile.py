@@ -14,7 +14,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
-from thaliawebsite.storage.backend import PublicMediaStorage
+from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
 from utils.media.services import save_image
 
@@ -221,7 +221,7 @@ class Profile(models.Model):
     photo = models.ImageField(
         verbose_name=_("Photo"),
         upload_to=_profile_image_path,
-        storage=PublicMediaStorage(),
+        storage=get_public_storage,
         null=True,
         blank=True,
     )

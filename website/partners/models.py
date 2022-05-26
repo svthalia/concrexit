@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from tinymce.models import HTMLField
 
-from thaliawebsite.storage.backend import PublicMediaStorage
+from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
 
 
@@ -21,11 +21,11 @@ class Partner(models.Model):
     company_profile = HTMLField(blank=True)
     logo = models.ImageField(
         upload_to="partners/logos/",
-        storage=PublicMediaStorage(),
+        storage=get_public_storage,
     )
     site_header = models.ImageField(
         upload_to="partners/headers/",
-        storage=PublicMediaStorage(),
+        storage=get_public_storage,
         null=True,
         blank=True,
     )
@@ -105,7 +105,7 @@ class PartnerImage(models.Model):
     )
     image = models.ImageField(
         upload_to="partners/images/",
-        storage=PublicMediaStorage(),
+        storage=get_public_storage,
     )
 
     def __str__(self):
@@ -162,7 +162,7 @@ class Vacancy(models.Model):
     company_logo = models.ImageField(
         _("company logo"),
         upload_to="partners/vacancy-logos/",
-        storage=PublicMediaStorage(),
+        storage=get_public_storage,
         null=True,
         blank=True,
     )

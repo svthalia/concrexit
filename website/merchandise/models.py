@@ -2,7 +2,7 @@
 from django.db import models
 
 from payments.models import PaymentAmountField
-from thaliawebsite.storage.backend import PublicMediaStorage
+from thaliawebsite.storage.backend import get_public_storage
 
 
 class MerchandiseItem(models.Model):
@@ -21,7 +21,7 @@ class MerchandiseItem(models.Model):
     description = models.TextField()
 
     #: Image of the merchandise item
-    image = models.ImageField(upload_to="merchandise", storage=PublicMediaStorage())
+    image = models.ImageField(upload_to="merchandise", storage=get_public_storage)
 
     def __str__(self):
         """Give the name of the merchandise item in the currently active locale.

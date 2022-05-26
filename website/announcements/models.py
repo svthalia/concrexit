@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
-from thaliawebsite.storage.backend import PublicMediaStorage
+from thaliawebsite.storage.backend import get_public_storage
 
 
 class VisibleObjectManager(Manager):
@@ -153,7 +153,7 @@ class Slide(models.Model):
         help_text=_("The content of the slide; what image to display."),
         blank=False,
         upload_to="announcements/slides/",
-        storage=PublicMediaStorage(),
+        storage=get_public_storage,
         validators=[validate_image],
     )
 
