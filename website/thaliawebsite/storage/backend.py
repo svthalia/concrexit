@@ -62,4 +62,4 @@ class PrivateFileSystemStorage(FileSystemRenameMixin, FileSystemStorage):
             "storage": f"{self.__class__.__module__}.{self.__class__.__name__}",
             "attachment": attachment,
         }
-        return f"{self.url(name)}?sig={signing.dumps(sig_info)}"
+        return f"{super().url(name)}?sig={signing.dumps(sig_info)}"

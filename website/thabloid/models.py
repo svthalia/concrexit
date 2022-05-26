@@ -81,9 +81,11 @@ class Thabloid(models.Model):
     @property
     def pages(self):
         """Return urls of pages that should be shown together."""
-        pages = self.file.storage.listdir(os.path.dirname(self.page_url()))[1]
-        count = len(pages) * 2 - 1
-        return map(lambda p: self.page_url(p[0], p[1]), pagesets(count))
+        if self.file.storage.exists(os.path.dirname(self.page_url())):
+            pages = self.file.storage.listdir(os.path.dirname(self.page_url()))[1]
+            count = len(pages) * 2 - 1
+            return map(lambda p: self.page_url(p[0], p[1]), pagesets(count))
+        return []
 
     def get_absolute_url(self):
         """Get url of Thabloid."""
