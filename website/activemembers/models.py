@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
+from thaliawebsite.storage.backend import PublicMediaStorage
 from utils.snippets import overlaps
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,8 @@ class MemberGroup(models.Model):
 
     photo = models.ImageField(
         verbose_name=_("Image"),
-        upload_to="public/committeephotos/",
+        upload_to="committeephotos/",
+        storage=PublicMediaStorage(),
         null=True,
         blank=True,
     )

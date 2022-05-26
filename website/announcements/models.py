@@ -10,6 +10,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
+from thaliawebsite.storage.backend import PublicMediaStorage
+
 
 class VisibleObjectManager(Manager):
     """Get all active members, i.e. who have a committee membership."""
@@ -150,7 +152,8 @@ class Slide(models.Model):
         verbose_name=_("Content"),
         help_text=_("The content of the slide; what image to display."),
         blank=False,
-        upload_to="public/announcements/slides/",
+        upload_to="announcements/slides/",
+        storage=PublicMediaStorage(),
         validators=[validate_image],
     )
 

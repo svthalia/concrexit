@@ -15,6 +15,7 @@ from PIL.JpegImagePlugin import JpegImageFile
 from PIL import ExifTags, Image, UnidentifiedImageError
 
 from photos.models import Photo
+from utils.media.services import save_image
 
 logger = logging.getLogger(__name__)
 
@@ -164,9 +165,9 @@ def save_photo(photo_obj):
     digest = hash_sha1.hexdigest()
     photo_obj._digest = digest
 
-    original_path = photo_obj.file.path
-    image = Image.open(original_path)
-    os.remove(original_path)
+    with photo_obj.file.open() as image_handle:
+        image = Image.open(image_handle)
+        image.load()
 
     if (
         Photo.objects.filter(album=photo_obj.album, _digest=digest)
@@ -176,7 +177,7 @@ def save_photo(photo_obj):
         photo_obj.delete()
         return False
 
-    image_path, _ext = os.path.splitext(original_path)
+    image_path, _ext = os.path.splitext(photo_obj.file.name)
     image_path = f"{image_path}.jpg"
 
     photo_obj.rotation = photo_determine_rotation(image)
@@ -185,7 +186,9 @@ def save_photo(photo_obj):
     image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
 
     logger.info("Trying to save to %s", image_path)
-    image.convert("RGB").save(image_path, "JPEG")
+
+    save_image(photo_obj.file.storage, image, image_path, "JPEG")
+
     photo_obj.original_file = image_path
     image_name, _ext = os.path.splitext(photo_obj.file.name)
     photo_obj.file.name = f"{image_name}.jpg"

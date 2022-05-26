@@ -1,3 +1,4 @@
+import io
 import logging
 import os
 
@@ -5,13 +6,17 @@ from PIL import Image
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
+from thaliawebsite.storage.backend import PublicMediaStorage
 from utils import countries
+from utils.media.services import save_image
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +33,7 @@ def _profile_image_path(_instance, _filename):
     >>> "swearword" in _profile_image_path(None, "swearword.jpg")
     False
     """
-    return f"public/avatars/{get_random_string(length=16)}"
+    return f"avatars/{get_random_string(length=16)}{os.path.splitext(_filename)[1]}"
 
 
 class Profile(models.Model):
@@ -216,6 +221,7 @@ class Profile(models.Model):
     photo = models.ImageField(
         verbose_name=_("Photo"),
         upload_to=_profile_image_path,
+        storage=PublicMediaStorage(),
         null=True,
         blank=True,
     )
@@ -329,7 +335,7 @@ class Profile(models.Model):
 
     def save(self, **kwargs):
         super().save(**kwargs)
-        storage = DefaultStorage()
+        storage = self.photo.storage
 
         if self._orig_image and not self.photo:
             storage.delete(self._orig_image)
@@ -349,8 +355,9 @@ class Profile(models.Model):
             # Create new filename to store compressed image
             image_name, _ext = os.path.splitext(original_image_name)
             image_name = storage.get_available_name(f"{image_name}.jpg")
-            with storage.open(image_name, "wb") as new_image_file:
-                image.convert("RGB").save(new_image_file, "JPEG")
+
+            save_image(storage, image, image_name, "JPEG")
+
             self.photo.name = image_name
             super().save(**kwargs)
 

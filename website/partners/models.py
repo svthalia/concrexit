@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from tinymce.models import HTMLField
 
+from thaliawebsite.storage.backend import PublicMediaStorage
 from utils import countries
 
 
@@ -18,9 +19,15 @@ class Partner(models.Model):
     slug = models.SlugField(unique=True)
     link = models.CharField(max_length=255, blank=True, validators=[URLValidator()])
     company_profile = HTMLField(blank=True)
-    logo = models.ImageField(upload_to="public/partners/logos/")
+    logo = models.ImageField(
+        upload_to="partners/logos/",
+        storage=PublicMediaStorage(),
+    )
     site_header = models.ImageField(
-        upload_to="public/partners/headers/", null=True, blank=True
+        upload_to="partners/headers/",
+        storage=PublicMediaStorage(),
+        null=True,
+        blank=True,
     )
 
     address = models.CharField(
@@ -96,7 +103,10 @@ class PartnerImage(models.Model):
     partner = models.ForeignKey(
         Partner, on_delete=models.CASCADE, related_name="images"
     )
-    image = models.ImageField(upload_to="public/partners/images/")
+    image = models.ImageField(
+        upload_to="partners/images/",
+        storage=PublicMediaStorage(),
+    )
 
     def __str__(self):
         """Return string representation of partner name."""
@@ -151,7 +161,8 @@ class Vacancy(models.Model):
     company_name = models.CharField(_("company name"), max_length=255, blank=True)
     company_logo = models.ImageField(
         _("company logo"),
-        upload_to="public/partners/vacancy-logos/",
+        upload_to="partners/vacancy-logos/",
+        storage=PublicMediaStorage(),
         null=True,
         blank=True,
     )

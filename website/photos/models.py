@@ -56,7 +56,7 @@ class Photo(models.Model):
         """Initialize Photo object and set the file if it exists."""
         super().__init__(*args, **kwargs)
         if self.file:
-            self.original_file = self.file.path
+            self.original_file = self.file.name
         else:
             self.original_file = ""
 
