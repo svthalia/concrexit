@@ -9,7 +9,6 @@ from django.db.models.functions import Now
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
-
 from thaliawebsite.storage.backend import get_public_storage
 
 

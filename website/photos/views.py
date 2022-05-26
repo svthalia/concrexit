@@ -3,8 +3,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
-from django.shortcuts import get_object_or_404, render
-from django_sendfile import sendfile
+from django.shortcuts import get_object_or_404, render, redirect
 
 from photos.models import Album, Photo
 from photos.services import (
@@ -12,6 +11,7 @@ from photos.services import (
     get_annotated_accessible_albums,
     is_album_accessible,
 )
+from utils.media.services import get_media_url
 
 COVER_FILENAME = "cover.jpg"
 
@@ -99,7 +99,7 @@ def _download(request, obj, filename):
     """
     photopath = _photo_path(obj, filename)
     photo = get_object_or_404(Photo.objects.filter(album=obj, file=photopath))
-    return sendfile(request, photo.file.path, attachment=True)
+    return redirect(get_media_url(photo.file, f'{obj.slug}-{filename}'))
 
 
 @login_required

@@ -50,7 +50,8 @@ def private_media(request, request_path):
             permanent=False,
         )
     return sendfile(
-        request, sig_info["serve_path"], attachment=sig_info.get("attachment", False)
+        request, sig_info["serve_path"], attachment=bool(sig_info.get("attachment", False)),
+            attachment_filename=sig_info.get("attachment", None),
     )
 
 

@@ -4,7 +4,7 @@ import os
 from django.conf import settings
 from django.core import signing
 from django.core.files.base import ContentFile
-from django.core.files.storage import get_storage_class
+from django.core.files.storage import get_storage_class, DefaultStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 from django.urls import reverse
@@ -23,7 +23,7 @@ def save_image(storage, image, path, format):
         content.tell,
         None,
     )
-    storage.save(path, file)
+    return storage.save(path, file)
 
 
 def get_media_url(file, attachment=False):
@@ -35,12 +35,13 @@ def get_media_url(file, attachment=False):
     :param attachment: True if the file is a forced download
     :return: the url of the media
     """
-    if not isinstance(file, ImageFieldFile) and not isinstance(file, FieldFile):
-        raise NotImplementedError()
+    storage = DefaultStorage()
+    file_name = file
+    if isinstance(file, ImageFieldFile) or isinstance(file, FieldFile):
+        storage = file.storage
+        file_name = file.name
 
-    storage = file.storage
-
-    return f"{storage.url(file.name, attachment)}"
+    return f"{storage.url(file_name, attachment)}"
 
 
 def get_thumbnail_url(file, size, fit=True):
@@ -55,14 +56,14 @@ def get_thumbnail_url(file, size, fit=True):
     :param fit: False to keep the aspect ratio, True to crop
     :return: direct media url or generate-thumbnail path
     """
-    if not isinstance(file, ImageFieldFile) and not isinstance(file, FieldFile):
-        raise NotImplementedError()
+    storage = DefaultStorage()
+    name = file
 
-    storage = file.storage
-    name = file.name
+    if isinstance(file, ImageFieldFile) or isinstance(file, FieldFile):
+        storage = file.storage
+        name = file.name
+
     is_public = isinstance(storage, get_storage_class(settings.PUBLIC_FILE_STORAGE))
-
-    query = ""
     size_fit = "{}_{}".format(size, int(fit))
 
     if name.endswith(".svg") and is_public:

@@ -8,7 +8,6 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views.generic import TemplateView, DetailView
-from django_sendfile import sendfile
 
 from documents.models import (
     AnnualDocument,
@@ -16,6 +15,7 @@ from documents.models import (
     GeneralMeeting,
     Document,
 )
+from utils.media.services import get_media_url
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -76,11 +76,6 @@ class DocumentDownloadView(DetailView):
         except ValueError as e:
             raise Http404("This document does not exist.") from e
 
-        ext = os.path.splitext(file.path)[1]
+        ext = os.path.splitext(file.name)[1]
 
-        return sendfile(
-            request,
-            file.path,
-            attachment=True,
-            attachment_filename=slugify(document.name) + ext,
-        )
+        return redirect(get_media_url(file, slugify(document.name) + ext))

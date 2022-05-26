@@ -275,8 +275,7 @@ class DownloadTest(TestCase):
             )
 
         self.photo = Photo(album=self.album)
-        self.photo.file.save(fi.name, fi)
-        save_photo(self.photo)
+        save_photo(self.photo, fi, fi.name)
 
     def test_download(self):
         self.client.force_login(self.member)
@@ -325,7 +324,7 @@ class _DownloadBaseTestCase(TestCase):
 
         self.photo = Photo(album=self.album)
         self.photo.file.save(fi.name, fi)
-        save_photo(self.photo)
+        save_photo(self.photo, fi, fi.name)
 
 
 @override_settings(SUSPEND_SIGNALS=True)

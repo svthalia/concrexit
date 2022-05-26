@@ -16,29 +16,43 @@ class S3AttachmentMixin:
         if attachment:
             params[
                 "ResponseContentDisposition"
-            ] = f'attachment; filename="{os.path.basename(name)}"'
+            ] = f'attachment; filename="{attachment}"'
 
         return super().url(name, params)
 
 
-class PublicS3Storage(S3Boto3Storage, S3AttachmentMixin):
+class S3RenameMixin:
+    def rename(self, old_name, new_name):
+        self.bucket.Object(new_name).copy_from(
+            CopySource={'Bucket': self.bucket.name, 'Key': old_name})
+        self.delete(old_name)
+
+
+class PublicS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
     location = settings.PUBLIC_MEDIA_LOCATION
-    default_acl = "public-read"
     file_overwrite = False
 
 
-class PrivateS3Storage(S3Boto3Storage, S3AttachmentMixin):
+class PrivateS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
     location = settings.PRIVATE_MEDIA_LOCATION
-    default_acl = "private"
     file_overwrite = False
 
 
-class PublicFileSystemStorage(FileSystemStorage):
+class FileSystemRenameMixin:
+    def rename(self, old_name, new_name):
+        old_name = self.path(old_name)
+        new_name = self.path(new_name)
+        os.rename(
+            old_name, new_name
+        )
+
+
+class PublicFileSystemStorage(FileSystemRenameMixin, FileSystemStorage):
     location = os.path.join(settings.MEDIA_ROOT, settings.PUBLIC_MEDIA_LOCATION)
     base_url = settings.PUBLIC_MEDIA_URL
 
 
-class PrivateFileSystemStorage(FileSystemStorage):
+class PrivateFileSystemStorage(FileSystemRenameMixin, FileSystemStorage):
     location = os.path.join(settings.MEDIA_ROOT, settings.PRIVATE_MEDIA_LOCATION)
 
     def url(self, name, attachment=False):

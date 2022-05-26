@@ -233,6 +233,7 @@ AWS_SECRET_ACCESS_KEY = from_env("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = from_env("AWS_STORAGE_BUCKET_NAME")
 AWS_DEFAULT_ACL = "private"
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+AWS_S3_SIGNATURE_VERSION = "s3v4"
 
 if AWS_STORAGE_BUCKET_NAME is not None:
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
