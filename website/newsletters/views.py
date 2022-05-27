@@ -36,9 +36,7 @@ def preview(request, pk, lang=None):
             pass
 
     # Send cached file, if it exists
-    file_path = os.path.join(
-        "newsletters", f"{pk}_{lang_code}.html"
-    )
+    file_path = os.path.join("newsletters", f"{pk}_{lang_code}.html")
     if storage.exists(file_path):
         return redirect(get_media_url(file_path))
 

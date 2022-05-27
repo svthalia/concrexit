@@ -143,7 +143,9 @@ def extract_photo(request, archive_file, photo, album):
         with extract_file(photo) as f:
             if not save_photo(photo_obj, File(f), new_filename):
                 messages.add_message(
-                    request, messages.WARNING, _("{} is duplicate.").format(photo_filename)
+                    request,
+                    messages.WARNING,
+                    _("{} is duplicate.").format(photo_filename),
                 )
     except (OSError, AttributeError, UnidentifiedImageError) as e:
         print(e)

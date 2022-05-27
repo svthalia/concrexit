@@ -24,7 +24,8 @@ class S3AttachmentMixin:
 class S3RenameMixin:
     def rename(self, old_name, new_name):
         self.bucket.Object(new_name).copy_from(
-            CopySource={'Bucket': self.bucket.name, 'Key': old_name})
+            CopySource={"Bucket": self.bucket.name, "Key": old_name}
+        )
         self.delete(old_name)
 
 
@@ -42,9 +43,7 @@ class FileSystemRenameMixin:
     def rename(self, old_name, new_name):
         old_name = self.path(old_name)
         new_name = self.path(new_name)
-        os.rename(
-            old_name, new_name
-        )
+        os.rename(old_name, new_name)
 
 
 class PublicFileSystemStorage(FileSystemRenameMixin, FileSystemStorage):

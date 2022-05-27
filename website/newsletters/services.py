@@ -19,7 +19,7 @@ def write_to_file(pk, lang, html_message):
 
     cache_dir = "newsletters"
     file_path = os.path.join(cache_dir, f"{pk}_{lang}.html")
-    f = storage.open(file_path, 'wb')
+    f = storage.open(file_path, "wb")
     f.write(html_message)
     f.close()
 

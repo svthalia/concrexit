@@ -96,9 +96,7 @@ class Thabloid(models.Model):
     def post_extract(self):
         """Save extracted pages to disk."""
         dir_name = os.path.dirname(os.path.join(temp.gettempdir(), self.page_url()))
-        pages = os.listdir(
-            dir_name
-        )
+        pages = os.listdir(dir_name)
         pages = sorted(pages)
 
         first_page = Image.open(os.path.join(dir_name, pages[0]))
@@ -177,7 +175,10 @@ class Thabloid(models.Model):
                 self.file.name = thabloid_filename(self, self.file.name)
 
                 for old_page in old.pages:
-                    new_page = old_page.replace(os.path.splitext(os.path.basename(old.file.name))[0], os.path.splitext(os.path.basename(self.file.name))[0])
+                    new_page = old_page.replace(
+                        os.path.splitext(os.path.basename(old.file.name))[0],
+                        os.path.splitext(os.path.basename(self.file.name))[0],
+                    )
                     old.file.storage.rename(old_page, new_page)
                 old.file.storage.rename(old.file.name, self.file.name)
 

@@ -311,7 +311,7 @@ class Profile(models.Model):
         if self.photo:
             self._orig_image = self.photo.name
         else:
-            self._orig_image = ""
+            self._orig_image = None
 
     def clean(self):
         super().clean()

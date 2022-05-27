@@ -199,6 +199,26 @@ class Slide(models.Model):
         default=False,
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.content:
+            self._orig_image = self.content.name
+        else:
+            self._orig_image = None
+
+    def delete(self, using=None, keep_parents=False):
+        if self.content.name:
+            self.content.delete()
+        return super().delete(using, keep_parents)
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        storage = self.content.storage
+
+        if self._orig_image and self._orig_image != self.content.name:
+            storage.delete(self._orig_image)
+            self._orig_image = None
+
     class Meta:
         ordering = ("-since",)
 

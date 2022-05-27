@@ -102,6 +102,26 @@ class MemberGroup(models.Model):
             return f"{self.contact_mailinglist.name}@{settings.SITE_DOMAIN}"
         return self.contact_email
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.photo:
+            self._orig_image = self.photo.name
+        else:
+            self._orig_image = None
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        storage = self.photo.storage
+
+        if self._orig_image and self._orig_image != self.photo.name:
+            storage.delete(self._orig_image)
+            self._orig_image = None
+
+    def delete(self, using=None, keep_parents=False):
+        if self.photo.name:
+            self.photo.delete()
+        return super().delete(using, keep_parents)
+
     def clean(self):
         if (
             self.contact_email is not None and self.contact_mailinglist is not None
