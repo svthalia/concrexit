@@ -206,10 +206,7 @@ class Event(models.Model):
         return _(
             "Cancellation isn't possible anymore without having to pay "
             "the full costs of €" + str(self.fine) + ". Also note that "
-            "you will be unable to re-register. Note: If you have any "
-            "COVID-19 symptoms you will not have to pay these fees. "
-            "Let us know via info@thalia.nu that this is this reason "
-            "for your cancellation."
+            "you will be unable to re-register."
         )
 
     @property
