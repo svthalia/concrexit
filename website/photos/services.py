@@ -5,6 +5,8 @@ import os
 import tarfile
 from zipfile import ZipInfo, is_zipfile, ZipFile
 
+from PIL import ExifTags, Image, UnidentifiedImageError
+from PIL.JpegImagePlugin import JpegImageFile
 from django.conf import settings
 from django.contrib import messages
 from django.core.files import File
@@ -14,11 +16,7 @@ from django.db.models import When, Value, BooleanField, ExpressionWrapper, Q, Ca
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 
-from PIL.JpegImagePlugin import JpegImageFile
-from PIL import ExifTags, Image, UnidentifiedImageError
-
 from photos.models import Photo
-from utils.media.services import save_image
 
 logger = logging.getLogger(__name__)
 

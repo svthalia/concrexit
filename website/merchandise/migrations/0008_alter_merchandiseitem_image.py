@@ -17,7 +17,7 @@ def forwards_func(apps, schema_editor):
         item.save()
 
     # This deletes unused images from the filesystem
-    storage = item.image.storage
+    storage = MerchandiseItem().image.storage
     files = set(storage.listdir("merchandise")[1])
     existing_images = set(map(lambda x: os.path.basename(x), existing_images))
     for file in files.difference(existing_images):

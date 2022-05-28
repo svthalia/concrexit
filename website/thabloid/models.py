@@ -4,7 +4,6 @@ import subprocess
 from itertools import zip_longest
 
 from PIL import Image
-from django.conf import settings
 from django.core.files import temp
 from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.db import models
