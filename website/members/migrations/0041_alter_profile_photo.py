@@ -18,10 +18,11 @@ def forwards_func(apps, schema_editor):
 
     # This deletes unused images from the filesystem
     storage = Profile().photo.storage
-    files = set(storage.listdir("avatars")[1])
-    existing_images = set(map(lambda x: os.path.basename(x), existing_images))
-    for file in files.difference(existing_images):
-        storage.delete(f"avatars/{file}")
+    if storage.exists("avatars"):
+        files = set(storage.listdir("avatars")[1])
+        existing_images = set(map(lambda x: os.path.basename(x), existing_images))
+        for file in files.difference(existing_images):
+            storage.delete(f"avatars/{file}")
 
 
 def reverse_func(apps, schema_editor):

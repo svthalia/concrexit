@@ -193,7 +193,7 @@ def save_photo(photo_obj, file, filename):
         content,
         None,
         image_path,
-        f"image/jpeg",
+        "image/jpeg",
         content.tell,
         None,
     )

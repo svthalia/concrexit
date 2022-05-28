@@ -289,8 +289,10 @@ class DownloadTest(TestCase):
                 ),
             )
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response["Content-Type"], "image/jpeg")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(
+            f"{settings.MEDIA_URL}{self.photo.file.name}", response.headers["Location"]
+        )
 
     def test_logged_out(self):
         response = self.client.get(
@@ -303,6 +305,7 @@ class DownloadTest(TestCase):
             )
         )
         self.assertEqual(response.status_code, 302)
+        self.assertIn("/user/login", response.headers["Location"])
 
 
 class _DownloadBaseTestCase(TestCase):
@@ -349,8 +352,11 @@ class SharedDownloadTest(_DownloadBaseTestCase):
                     ),
                 )
             )
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response["Content-Type"], "image/jpeg")
+            self.assertEqual(response.status_code, 302)
+            self.assertIn(
+                f"{settings.MEDIA_URL}{self.photo.file.name}",
+                response.headers["Location"],
+            )
 
         self.client.force_login(self.member)
 
@@ -365,5 +371,8 @@ class SharedDownloadTest(_DownloadBaseTestCase):
                     ),
                 )
             )
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response["Content-Type"], "image/jpeg")
+            self.assertEqual(response.status_code, 302)
+            self.assertIn(
+                f"{settings.MEDIA_URL}{self.photo.file.name}",
+                response.headers["Location"],
+            )

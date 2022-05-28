@@ -1,6 +1,7 @@
 import os
 
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage
 from django.template.loader import get_template
 from django.utils import translation, timezone
@@ -14,14 +15,11 @@ from pushnotifications.models import Message, Category
 
 def write_to_file(pk, lang, html_message):
     """Write newsletter to a file."""
-
     storage = DefaultStorage()
 
     cache_dir = "newsletters"
     file_path = os.path.join(cache_dir, f"{pk}_{lang}.html")
-    f = storage.open(file_path, "wb")
-    f.write(html_message)
-    f.close()
+    storage.save(file_path, ContentFile(html_message))
 
 
 def save_to_disk(newsletter):

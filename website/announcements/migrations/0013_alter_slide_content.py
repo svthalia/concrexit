@@ -18,10 +18,11 @@ def forwards_func(apps, schema_editor):
 
     # This deletes unused images from the filesystem
     storage = Slide().content.storage
-    files = set(storage.listdir("announcements/slides")[1])
-    existing_images = set(map(lambda x: os.path.basename(x), existing_images))
-    for file in files.difference(existing_images):
-        storage.delete(f"announcements/slides/{file}")
+    if storage.exists("announcements/slides"):
+        files = set(storage.listdir("announcements/slides")[1])
+        existing_images = set(map(lambda x: os.path.basename(x), existing_images))
+        for file in files.difference(existing_images):
+            storage.delete(f"announcements/slides/{file}")
 
 
 def reverse_func(apps, schema_editor):

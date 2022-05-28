@@ -6,10 +6,11 @@ import thaliawebsite.storage.backend
 
 
 def _clear_unused_files(storage, existing_images, path):
-    files = set(storage.listdir(f"partners/{path}")[1])
-    existing_images = set(map(lambda x: os.path.basename(x), existing_images))
-    for file in files.difference(existing_images):
-        storage.delete(f"partners/{path}/{file}")
+    if storage.exists(f"partners/{path}"):
+        files = set(storage.listdir(f"partners/{path}")[1])
+        existing_images = set(map(lambda x: os.path.basename(x), existing_images))
+        for file in files.difference(existing_images):
+            storage.delete(f"partners/{path}/{file}")
 
 
 def forwards_func(apps, schema_editor):

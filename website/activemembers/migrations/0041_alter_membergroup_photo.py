@@ -18,10 +18,11 @@ def forwards_func(apps, schema_editor):
 
     # This deletes unused images from the filesystem
     storage = MemberGroup().photo.storage
-    files = set(storage.listdir("committeephotos")[1])
-    existing_images = set(map(lambda x: os.path.basename(x), existing_images))
-    for file in files.difference(existing_images):
-        storage.delete(f"committeephotos/{file}")
+    if storage.exists("committeephotos"):
+        files = set(storage.listdir("committeephotos")[1])
+        existing_images = set(map(lambda x: os.path.basename(x), existing_images))
+        for file in files.difference(existing_images):
+            storage.delete(f"committeephotos/{file}")
 
 
 def reverse_func(apps, schema_editor):
