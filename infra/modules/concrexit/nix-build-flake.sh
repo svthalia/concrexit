@@ -2,8 +2,7 @@
 
 set -euo pipefail
 
-workDir=$(mktemp -d)
-trap 'rm -rf "$workDir"' EXIT
+workDir=/Users/jelle/dev/thalia/concrexit_flake
 cd $workDir
 
 jq -r '.flake_content' > flake.nix
