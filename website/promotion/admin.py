@@ -1,9 +1,11 @@
 """Registers admin interfaces for the models defined in this module."""
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
-from .models import PromotionChannel, PromotionRequest
+
 from promotion.forms import PromotionRequestForm
 from events.services import is_organiser
+
+from .models import PromotionChannel, PromotionRequest
 
 
 @admin.register(PromotionRequest)

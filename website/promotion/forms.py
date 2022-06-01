@@ -1,7 +1,7 @@
 from django import forms
-from promotion.models import PromotionRequest
 from django.utils import timezone
 
+from promotion.models import PromotionRequest
 from thaliawebsite.settings import PROMO_PUBLISH_DATE_TIMEDELTA
 
 
@@ -25,12 +25,10 @@ class PromotionRequestForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Publish date cannot be within a week from now."
             )
-        elif "publish_date" in self.changed_data:
+        if "publish_date" in self.changed_data:
             create_time_minimum = publish_date - PROMO_PUBLISH_DATE_TIMEDELTA
             if timezone.localdate() > create_time_minimum:
                 raise forms.ValidationError(
                     "Publish date cannot be within a week from now."
                 )
-            return publish_date
-        else:
-            return publish_date
+        return publish_date
