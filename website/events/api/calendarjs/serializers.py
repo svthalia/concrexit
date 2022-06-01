@@ -33,7 +33,9 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         # TODO: fetch registration using a prefetch_related/select_related/annotate
         if self.context["member"]:
             try:
-                registration = instance.eventregistration_set.get(member=self.context["member"])
+                registration = instance.eventregistration_set.get(
+                    member=self.context["member"]
+                )
             except EventRegistration.DoesNotExist:
                 registration = None
         else:

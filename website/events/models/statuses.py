@@ -32,10 +32,12 @@ STATUS_NONE = "registration-none"
 # User is not logged in so cannot register
 STATUS_LOGIN = "registration-login"
 
-CANCEL_NORMAL = "cancel-normal"             # Cancellation allowed
-CANCEL_FINAL = "cancel-final"               # Can cancel, but will not be able to re-register
-CANCEL_LATE = "cancel-late"                 # Too late, will pay fine
-CANCEL_WAITINGLIST = "cancel-waitinglist"   # Too late, but allowed because user is on waitinglist
+CANCEL_NORMAL = "cancel-normal"  # Cancellation allowed
+CANCEL_FINAL = "cancel-final"  # Can cancel, but will not be able to re-register
+CANCEL_LATE = "cancel-late"  # Too late, will pay fine
+CANCEL_WAITINGLIST = (
+    "cancel-waitinglist"  # Too late, but allowed because user is on waitinglist
+)
 
 
 def is_registered(status):

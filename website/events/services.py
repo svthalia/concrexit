@@ -4,8 +4,7 @@ from thaliawebsite import settings
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.datetime_safe import date
-from django.utils.dateformat import format
-from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.utils.formats import localize
 from django.utils.translation import gettext_lazy as _
 
 from events import emails
@@ -49,14 +48,22 @@ def cancel_status(event: Event, registration: EventRegistration):
     else:
         return statuses.CANCEL_NORMAL
 
+
 def cancel_info_string(event: Event, status):
     infos = {
         statuses.CANCEL_NORMAL: _(""),
-        statuses.CANCEL_FINAL: _("Note: if you cancel, you will not be able to re-register."),
-        statuses.CANCEL_LATE: _("Cancellation is not allowed anymore without having to pay the full costs of €{fine}. You will also not be able to re-register."),
-        statuses.CANCEL_WAITINGLIST: _("Cancellation while on the waiting list will not result in a fine. However, you will not be able to re-register."),
+        statuses.CANCEL_FINAL: _(
+            "Note: if you cancel, you will not be able to re-register."
+        ),
+        statuses.CANCEL_LATE: _(
+            "Cancellation is not allowed anymore without having to pay the full costs of €{fine}. You will also not be able to re-register."
+        ),
+        statuses.CANCEL_WAITINGLIST: _(
+            "Cancellation while on the waiting list will not result in a fine. However, you will not be able to re-register."
+        ),
     }
     return infos[status].format(fine=event.fine)
+
 
 def registration_status(event: Event, registration: EventRegistration, member):
     now = timezone.now()
@@ -100,9 +107,19 @@ def registration_status(event: Event, registration: EventRegistration, member):
         elif not event.registration_allowed:
             return statuses.STATUS_EXPIRED
 
-
         else:
             raise Exception("invalid/unexpected registration status")
+
+
+def show_cancel_status(registration_status):
+    if (
+        registration_status == statuses.STATUS_CANCELLED
+        or registration_status == statuses.STATUS_CANCELLED_LATE
+        or registration_status == statuses.STATUS_LOGIN
+    ):
+        return False
+    else:
+        return True
 
 
 def user_registration_status(member, event: Event):
@@ -113,7 +130,7 @@ def user_registration_status(member, event: Event):
             return statuses.STATUS_LOGIN
 
     registration = event.eventregistration_set.get(member=member)
-    return registration_status(event, registration)
+    return registration_status(event, registration, member)
 
 
 def registration_status_string(status, event: Event, registration: EventRegistration):
@@ -128,7 +145,7 @@ def registration_status_string(status, event: Event, registration: EventRegistra
     if not status_msg:
         status_msg = event.DEFAULT_STATUS_MESSAGE[status]
 
-    #registration = event.registrations.get(member=member, date_cancelled=None)
+    # registration = event.registrations.get(member=member, date_cancelled=None)
     if registration:
         queue_pos = registration.queue_position
     else:
@@ -137,7 +154,7 @@ def registration_status_string(status, event: Event, registration: EventRegistra
     return status_msg.format(
         fine=event.fine,
         pos=queue_pos,
-        regstart=naturaltime(event.registration_start),
+        regstart=localize(timezone.localtime(event.registration_start)),
     )
 
 

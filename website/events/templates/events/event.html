@@ -103,6 +103,7 @@
                                 <tr>
                                     <th>{% trans "registration status"|capfirst %}</th>
                                     <td>
+                                        OLD MESSAGE:
                                         {% if registration.is_registered and not registration.queue_position %}
                                             {% trans "You are registered" %}
                                         {% elif registration.is_registered and registration.queue_position %}
@@ -212,7 +213,12 @@
                             </td>
                             <td>
                                 <em>
-                                    <p>NEW MESSAGE: {{ registration_status }}. {{cancel_info}}</p>
+                                    NEW MESSAGE:
+                                    {% if show_cancel_status %}
+                                        <p>{{ registration_status }}. {{cancel_info}}</p>
+                                    {% else %}
+                                        <p>{{ registration_status }}.</p>
+                                    {% endif %}
                                     OLD MESSAGE:
                                     {% if not request.user.is_authenticated and event.registration_required %}
                                         {% trans "You have to log in before you can register for this event." %}
