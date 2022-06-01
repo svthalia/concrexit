@@ -53,7 +53,7 @@ def cancel_info_string(event: Event, status):
     infos = {
         statuses.CANCEL_NORMAL: _(""),
         statuses.CANCEL_FINAL: _("Note: if you cancel, you will not be able to re-register."),
-        statuses.CANCEL_LATE: _("Cancellation is not allowed anymore without having to pay the full costs of €{fine}."),
+        statuses.CANCEL_LATE: _("Cancellation is not allowed anymore without having to pay the full costs of €{fine}. You will also not be able to re-register."),
         statuses.CANCEL_WAITINGLIST: _("Cancellation while on the waiting list will not result in a fine. However, you will not be able to re-register."),
     }
     return infos[status].format(fine=event.fine)
