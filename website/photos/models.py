@@ -56,13 +56,19 @@ class Photo(models.Model):
         """Initialize Photo object and set the file if it exists."""
         super().__init__(*args, **kwargs)
         if self.file:
-            self.original_file = self.file.path
+            self.original_file = self.file.name
         else:
             self.original_file = ""
 
     def __str__(self):
         """Return the filename of a Photo object."""
         return os.path.basename(self.file.name)
+
+    def delete(self, using=None, keep_parents=False):
+        removed = super().delete(using, keep_parents)
+        if self.file.name:
+            self.file.delete()
+        return removed
 
     class Meta:
         """Meta class for Photo."""

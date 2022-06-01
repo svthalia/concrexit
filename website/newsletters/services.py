@@ -7,6 +7,8 @@ import requests
 from PIL import Image
 from bs4 import BeautifulSoup
 from django.conf import settings
+from django.core.files.base import ContentFile
+from django.core.files.storage import DefaultStorage
 from django.template.loader import get_template
 from django.utils import translation, timezone
 
@@ -21,14 +23,11 @@ logger = logging.getLogger(__name__)
 
 def write_to_file(pk, lang, html_message):
     """Write newsletter to a file."""
-    cache_dir = os.path.join(settings.MEDIA_ROOT, "newsletters")
-    if not os.path.isdir(cache_dir):
-        os.makedirs(cache_dir)
+    storage = DefaultStorage()
 
-    with open(
-        os.path.join(cache_dir, f"{pk}_{lang}.html"), "w+", encoding="utf-8"
-    ) as cache_file:
-        cache_file.write(html_message)
+    cache_dir = "newsletters"
+    file_path = os.path.join(cache_dir, f"{pk}_{lang}.html")
+    storage.save(file_path, ContentFile(html_message))
 
 
 def save_to_disk(newsletter):

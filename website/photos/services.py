@@ -1,18 +1,20 @@
 import hashlib
+import io
 import logging
 import os
 import tarfile
 from zipfile import ZipInfo, is_zipfile, ZipFile
 
+from PIL import ExifTags, Image, UnidentifiedImageError
+from PIL.JpegImagePlugin import JpegImageFile
 from django.conf import settings
 from django.contrib import messages
 from django.core.files import File
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import When, Value, BooleanField, ExpressionWrapper, Q, Case
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
-
-from PIL.JpegImagePlugin import JpegImageFile
-from PIL import ExifTags, Image, UnidentifiedImageError
 
 from photos.models import Photo
 
@@ -137,46 +139,43 @@ def extract_photo(request, archive_file, photo, album):
     photo_obj.album = album
     try:
         with extract_file(photo) as f:
-            photo_obj.file.save(new_filename, File(f))
-
-        if not save_photo(photo_obj):
-            messages.add_message(
-                request, messages.WARNING, _("{} is duplicate.").format(photo_filename)
-            )
-    except (OSError, AttributeError, UnidentifiedImageError):
+            if not save_photo(photo_obj, File(f), new_filename):
+                messages.add_message(
+                    request,
+                    messages.WARNING,
+                    _("{} is duplicate.").format(photo_filename),
+                )
+    except (OSError, AttributeError, UnidentifiedImageError) as e:
+        print(e)
         messages.add_message(
             request, messages.WARNING, _("Ignoring {}").format(photo_filename)
         )
-        if photo_obj.file.path:
-            os.remove(photo_obj.file.path)
-        photo_obj.delete()
 
 
-def save_photo(photo_obj):
+def save_photo(photo_obj, file, filename):
     """Convert a Photo object to a JPG image and save it.
 
     Returns True if photo is saved successfully and False if Photo is a duplicate.
     """
     hash_sha1 = hashlib.sha1()
-    for chunk in iter(lambda: photo_obj.file.read(4096), b""):
+    for chunk in iter(lambda: file.read(4096), b""):
         hash_sha1.update(chunk)
     photo_obj.file.close()
     digest = hash_sha1.hexdigest()
     photo_obj._digest = digest
 
-    original_path = photo_obj.file.path
-    image = Image.open(original_path)
-    os.remove(original_path)
+    with file.open() as image_handle:
+        image = Image.open(image_handle)
+        image.load()
 
     if (
         Photo.objects.filter(album=photo_obj.album, _digest=digest)
         .exclude(pk=photo_obj.pk)
         .exists()
     ):
-        photo_obj.delete()
         return False
 
-    image_path, _ext = os.path.splitext(original_path)
+    image_path, _ext = os.path.splitext(filename)
     image_path = f"{image_path}.jpg"
 
     photo_obj.rotation = photo_determine_rotation(image)
@@ -185,10 +184,19 @@ def save_photo(photo_obj):
     image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
 
     logger.info("Trying to save to %s", image_path)
-    image.convert("RGB").save(image_path, "JPEG")
-    photo_obj.original_file = image_path
-    image_name, _ext = os.path.splitext(photo_obj.file.name)
-    photo_obj.file.name = f"{image_name}.jpg"
+
+    buffer = io.BytesIO()
+    image.convert("RGB").save(fp=buffer, format="JPEG")
+    buff_val = buffer.getvalue()
+    content = ContentFile(buff_val)
+    photo_obj.file = InMemoryUploadedFile(
+        content,
+        None,
+        image_path,
+        "image/jpeg",
+        content.tell,
+        None,
+    )
 
     photo_obj.save()
 

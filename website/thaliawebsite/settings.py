@@ -221,9 +221,28 @@ SENDFILE_ROOT = from_env(
 )
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = "/media/"
+MEDIA_URL = "/media/private/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 MEDIA_ROOT = from_env("MEDIA_ROOT", development=os.path.join(BASE_DIR, "media"))
+
+PRIVATE_MEDIA_LOCATION = ""
+PUBLIC_MEDIA_LOCATION = "public"
+
+AWS_ACCESS_KEY_ID = from_env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = from_env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = from_env("AWS_STORAGE_BUCKET_NAME")
+AWS_DEFAULT_ACL = "private"
+AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+
+if AWS_STORAGE_BUCKET_NAME is not None:
+    DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
+    PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
+    PUBLIC_MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.eu-west-1.amazonaws.com/"
+else:
+    DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
+    PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"
+    PUBLIC_MEDIA_URL = "/media/public/"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#conn-max-age
 CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))

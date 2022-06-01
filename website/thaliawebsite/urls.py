@@ -185,6 +185,6 @@ urlpatterns = [
     ),
     path("", include("shortlinks.urls")),
 ] + static(
-    settings.MEDIA_URL + "public/",
-    document_root=os.path.join(settings.MEDIA_ROOT, "public"),
+    settings.PUBLIC_MEDIA_URL,
+    document_root=os.path.join(settings.MEDIA_ROOT, settings.PUBLIC_MEDIA_LOCATION),
 )

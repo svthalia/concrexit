@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
+from thaliawebsite.storage.backend import get_public_storage
 from utils.snippets import overlaps
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,8 @@ class MemberGroup(models.Model):
 
     photo = models.ImageField(
         verbose_name=_("Image"),
-        upload_to="public/committeephotos/",
+        upload_to="committeephotos/",
+        storage=get_public_storage,
         null=True,
         blank=True,
     )
@@ -99,6 +101,26 @@ class MemberGroup(models.Model):
         if self.contact_mailinglist:
             return f"{self.contact_mailinglist.name}@{settings.SITE_DOMAIN}"
         return self.contact_email
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.photo:
+            self._orig_image = self.photo.name
+        else:
+            self._orig_image = None
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        storage = self.photo.storage
+
+        if self._orig_image and self._orig_image != self.photo.name:
+            storage.delete(self._orig_image)
+            self._orig_image = None
+
+    def delete(self, using=None, keep_parents=False):
+        if self.photo.name:
+            self.photo.delete()
+        return super().delete(using, keep_parents)
 
     def clean(self):
         if (

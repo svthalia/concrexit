@@ -2,6 +2,7 @@
 from django.db import models
 
 from payments.models import PaymentAmountField
+from thaliawebsite.storage.backend import get_public_storage
 
 
 class MerchandiseItem(models.Model):
@@ -20,7 +21,27 @@ class MerchandiseItem(models.Model):
     description = models.TextField()
 
     #: Image of the merchandise item
-    image = models.ImageField(upload_to="public/merchandise")
+    image = models.ImageField(upload_to="merchandise", storage=get_public_storage)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.image:
+            self._orig_image = self.image.name
+        else:
+            self._orig_image = None
+
+    def delete(self, using=None, keep_parents=False):
+        if self.image.name:
+            self.image.delete()
+        return super().delete(using, keep_parents)
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        storage = self.image.storage
+
+        if self._orig_image and self._orig_image != self.image.name:
+            storage.delete(self._orig_image)
+            self._orig_image = None
 
     def __str__(self):
         """Give the name of the merchandise item in the currently active locale.

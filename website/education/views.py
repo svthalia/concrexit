@@ -6,14 +6,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
-from django_sendfile import sendfile
 
 from members.decorators import membership_required
+from utils.media.services import get_media_url
 from . import emails
 from .forms import AddExamForm, AddSummaryForm
 from .models import Category, Course, Exam, Summary
@@ -120,11 +121,9 @@ class ExamDetailView(DetailView):
         exam.download_count += 1
         exam.save()
 
-        ext = os.path.splitext(exam.file.path)[1]
+        ext = os.path.splitext(exam.file.name)[1]
         filename = f"{exam.course.name}-exam{exam.year}{ext}"
-        return sendfile(
-            request, exam.file.path, attachment=True, attachment_filename=filename
-        )
+        return redirect(get_media_url(exam.file, filename))
 
 
 @method_decorator(login_required, "dispatch")
@@ -140,11 +139,9 @@ class SummaryDetailView(DetailView):
         obj.download_count += 1
         obj.save()
 
-        ext = os.path.splitext(obj.file.path)[1]
+        ext = os.path.splitext(obj.file.name)[1]
         filename = f"{obj.course.name}-summary{obj.year}{ext}"
-        return sendfile(
-            request, obj.file.path, attachment=True, attachment_filename=filename
-        )
+        return redirect(get_media_url(obj.file, filename))
 
 
 @method_decorator(login_required, "dispatch")

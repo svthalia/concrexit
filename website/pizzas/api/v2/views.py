@@ -111,11 +111,12 @@ class FoodEventOrderDetailView(
             )
 
     def update(self, request, *args, **kwargs):
-        super().update(request, *args, **kwargs)
         instance = self.get_object()
 
         if instance.payment:
             delete_payment(instance, member=request.member, ignore_change_window=True)
+
+        super().update(request, *args, **kwargs)
 
         return Response(
             FoodOrderSerializer(instance, context=self.get_serializer_context()).data
