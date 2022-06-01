@@ -36,7 +36,7 @@ let
             inherit (old) src;
             name = "${old.pname}-${old.version}";
             sourceRoot = "${old.pname}-${old.version}/src/rust/";
-            sha256 = "sha256-kozYXkqt1Wpqyo9GYCwN08J+zV92ZWFJY/f+rulxmeQ=";
+            sha256 = "sha256-qvrxvneoBXjP96AnUPyrtfmCnZo+IriHR5HbtWQ5Gk8=";
           };
           cargoRoot = "src/rust";
           buildInputs = old.buildInputs ++ [ pkgs.libiconv ];
