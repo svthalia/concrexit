@@ -63,7 +63,7 @@
           vm = (
             import (nixpkgs + "/nixos") {
               configuration = {
-                imports = [ ./infra/nixos/concrexit.nix (nixpkgs + "/nixos/modules/profiles/qemu-guest.nix") ];
+                imports = [ ./infra/nixos/concrexit.nix (nixpkgs + "/nixos/modules/virtualisation/qemu-vm.nix") ];
 
                 nixpkgs.pkgs = pkgs;
 
