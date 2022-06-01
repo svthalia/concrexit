@@ -29,9 +29,12 @@ def validate_not_zero(value):
 
 
 class PaymentAmountField(models.DecimalField):
+    MAX_DIGITS = 8
+    DECIMAL_PLACES = 2
+
     def __init__(self, **kwargs):
-        kwargs["max_digits"] = 8
-        kwargs["decimal_places"] = 2
+        kwargs["max_digits"] = PaymentAmountField.MAX_DIGITS
+        kwargs["decimal_places"] = PaymentAmountField.DECIMAL_PLACES
         allow_zero = kwargs.pop("allow_zero", False)
         validators = kwargs.pop("validators", [])
         if not allow_zero and validate_not_zero not in validators:

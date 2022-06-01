@@ -7,6 +7,7 @@ from announcements.models import Slide
 from documents.api.v2.serializers.document import DocumentSerializer
 from documents.models import Document
 from events.models import Event
+from payments.api.v2.serializers.payment_amount import PaymentAmountSerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
 )
@@ -21,14 +22,8 @@ class EventAdminSerializer(CleanedModelSerializer):
         fields = "__all__"
 
     description = CleanedHTMLSerializer()
-    price = serializers.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-    )
-    fine = serializers.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-    )
+    price = PaymentAmountSerializer()
+    fine = PaymentAmountSerializer()
 
     def to_internal_value(self, data):
         self.fields["organiser"] = serializers.PrimaryKeyRelatedField(
@@ -79,5 +74,5 @@ class EventListAdminSerializer(serializers.ModelSerializer):
 
     description = CleanedHTMLSerializer()
     organiser = MemberGroupSerializer()
-    price = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0)
-    fine = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0)
+    price = PaymentAmountSerializer()
+    fine = PaymentAmountSerializer()
