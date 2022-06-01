@@ -1,5 +1,11 @@
+import base64
+import logging
 import os
+from io import BytesIO
 
+import requests
+from PIL import Image
+from bs4 import BeautifulSoup
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage
@@ -11,6 +17,8 @@ from members.models import Member
 from newsletters import emails
 from partners.models import Partner
 from pushnotifications.models import Message, Category
+
+logger = logging.getLogger(__name__)
 
 
 def write_to_file(pk, lang, html_message):
@@ -45,8 +53,31 @@ def save_to_disk(newsletter):
         }
 
         html_message = html_template.render(context)
+        html_message = embed_linked_html_images(html_message)
 
         write_to_file(newsletter.pk, language[0], html_message)
+
+
+def embed_linked_html_images(html_input):
+    bs = BeautifulSoup(html_input, "html.parser")
+
+    output = html_input
+    images = bs.findAll("img")
+
+    for image in images:
+        try:
+            source = image["src"]
+            response = requests.get(source)
+            image = Image.open(BytesIO(response.content))
+            buffer = BytesIO()
+            image.save(buffer, format="png")
+            base64_image = base64.b64encode(buffer.getvalue()).decode("utf-8")
+            encoded_image = "data:image/png;base64, " + base64_image
+            output = output.replace(source, encoded_image)
+        except IOError:
+            logger.warning(f"Image could not be found: {image}")
+
+    return output
 
 
 def get_agenda(start_date):

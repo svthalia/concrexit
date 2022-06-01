@@ -32,14 +32,15 @@ django-debug-toolbar = "3.4.0"
 django-admin-autocomplete-filter = "0.7.1"
 PyYAML = "6.0"
 pydocstyle = "6.1.1"
+django-bootstrap5 = "^21.3"
+django-tinymce = "^3.4.0"
+beautifulsoup4 = "^4.11.1"
+django-storages = "^1.12.3"
+boto3 = "^1.23.7"
 
 # docs requirements
 recommonmark = { version = "0.7.1", optional = true }
 sphinx = { version = "5.0.0", optional = true }
-django-bootstrap5 = "^21.3"
-django-tinymce = "^3.4.0"
-django-storages = "^1.12.3"
-boto3 = "^1.23.7"
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]
