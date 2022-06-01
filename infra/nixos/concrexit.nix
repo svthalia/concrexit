@@ -372,19 +372,6 @@ in
           };
       };
 
-      logrotate = {
-        enable = true;
-        settings = {
-          "/var/log/nginx/*.log" = {
-            frequency = "daily";
-            rotate = 14;
-            postrotate = ''
-              ${pkgs.util-linux}/bin/kill -USR1 $(cat /run/nginx/nginx.pid)
-            '';
-          };
-        };
-      };
-
       # Make sure a database exists that is accessible by the concrexit user
       postgresql = {
         enable = true;
