@@ -1,7 +1,7 @@
 from import_export import resources
 from import_export.fields import Field
 
-from .models import Payment
+from .models import Payment, BankAccount
 
 
 class PaymentResource(resources.ModelResource):
@@ -51,3 +51,37 @@ class PaymentResource(resources.ModelResource):
 
     def dehydrate_type(self, payment):
         return payment.get_type_display()
+
+
+class BankAccountResource(resources.ModelResource):
+    created_at = Field(attribute="created_at", column_name="Created")
+    name = Field(attribute="name", column_name="Name")
+    mandate_no = Field(attribute="mandate_no", column_name="Reference")
+    iban = Field(attribute="iban", column_name="IBAN")
+    bic = Field(attribute="bic", column_name="BIC")
+    valid_from = Field(attribute="valid_from", column_name="Valid from")
+    valid_until = Field(attribute="valid_until", column_name="Valid until")
+    signature = Field(attribute="signature", column_name="Signature")
+
+    class Meta:
+        model = BankAccount
+        fields = (
+            "created_at",
+            "name",
+            "mandate_no",
+            "iban",
+            "bic",
+            "valid_from",
+            "valid_until",
+            "signature",
+        )
+        export_order = (
+            "created_at",
+            "name",
+            "mandate_no",
+            "iban",
+            "bic",
+            "valid_from",
+            "valid_until",
+            "signature",
+        )
