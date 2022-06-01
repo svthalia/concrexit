@@ -5,6 +5,7 @@ from .models import PromotionChannel, PromotionRequest
 from promotion.forms import PromotionRequestForm
 from events.services import is_organiser
 
+
 @admin.register(PromotionRequest)
 class PromotionRequestAdmin(admin.ModelAdmin):
     """This manages the admin interface for the model items."""
@@ -23,30 +24,30 @@ class PromotionRequestAdmin(admin.ModelAdmin):
         if obj is not None and not is_organiser(request.member, obj.event):
             return False
         return super().has_change_permission(request, obj)
-    
+
     def mark_not_started(self, queryset):
         """Change the status of the event to published."""
         self._change_published(queryset, PromotionRequest.NOT_STARTED)
 
-    mark_not_started.short_description = ("Mark requests as not started")
+    mark_not_started.short_description = "Mark requests as not started"
 
     def mark_started(self, queryset):
         """Change the status of the event to published."""
         self._change_published(queryset, PromotionRequest.STARTED)
 
-    mark_started.short_description = ("Mark requests as started")
+    mark_started.short_description = "Mark requests as started"
 
     def mark_finished(self, queryset):
         """Change the status of the event to published."""
         self._change_published(queryset, PromotionRequest.FINISHED)
 
-    mark_finished.short_description = ("Mark requests as finished")
+    mark_finished.short_description = "Mark requests as finished"
 
     def mark_published(self, queryset):
         """Change the status of the event to published."""
         self._change_published(queryset, PromotionRequest.PUBLISHED)
 
-    mark_published.short_description = ("Mark requests as published")
+    mark_published.short_description = "Mark requests as published"
 
     @staticmethod
     def _change_published(queryset, status):

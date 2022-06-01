@@ -21,11 +21,13 @@ class UpcomingRequestManager(models.Manager):
         start_date = end_date - PROMO_PUBLISH_DATE_TIMEDELTA
         return super().get_queryset().filter(created_at__range=(start_date, end_date))
 
+
 class NewRequestManager(models.Manager):
-    def get_queryset(self, start_date):
+    def get_queryset(self):
         start_date = timezone.localtime()
         end_date = start_date + PROMO_PUBLISH_DATE_TIMEDELTA
         return super().get_queryset().filter(publish_date__range=(start_date, end_date))
+
 
 class PromotionRequest(models.Model):
 

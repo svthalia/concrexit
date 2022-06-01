@@ -9,5 +9,3 @@ class PromotionConfig(AppConfig):
 
     name = "promotion"
     verbose_name = _("Promotion")
-
-
