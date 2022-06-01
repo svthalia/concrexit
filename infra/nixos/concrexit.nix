@@ -125,7 +125,7 @@ in
     # Install the concrexit-manage command globally
     environment.systemPackages = [ pkgs.concrexit-manage ];
 
-    security.acme.email = "www@thalia.nu";
+    security.acme.defaults.email = "www@thalia.nu";
     security.acme.acceptTerms = true;
 
     nix = {
@@ -374,15 +374,15 @@ in
 
       logrotate = {
         enable = true;
-        extraConfig = ''
-          /var/log/nginx/*.log {
-            daily
-            rotate 14
-            postrotate
+        settings = {
+          "/var/log/nginx/*.log" = {
+            frequency = "daily";
+            rotate = 14;
+            postrotate = ''
               ${pkgs.util-linux}/bin/kill -USR1 $(cat /run/nginx/nginx.pid)
-            endscript
-          }
-        '';
+            '';
+          };
+        };
       };
 
       # Make sure a database exists that is accessible by the concrexit user
