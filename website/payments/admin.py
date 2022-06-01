@@ -13,11 +13,12 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
+from import_export.admin import ExportActionMixin
 
 from payments import admin_views, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
-
-from .models import BankAccount, Batch, Payment, PaymentUser
+from .models import Payment, BankAccount, Batch, PaymentUser
+from .resources import PaymentResource
 
 
 def _show_message(
@@ -34,9 +35,10 @@ def _show_message(
 
 
 @admin.register(Payment)
-class PaymentAdmin(admin.ModelAdmin):
+class PaymentAdmin(ExportActionMixin, admin.ModelAdmin):
     """Manage the payments."""
 
+    resource_class = PaymentResource
     list_display = (
         "created_at",
         "amount",

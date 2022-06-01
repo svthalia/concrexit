@@ -456,6 +456,7 @@ INSTALLED_APPS = [
     "compressor",
     "debug_toolbar",
     "admin_auto_filters",
+    "import_export",
     "django_drf_filepond",
     "django_filepond_widget",
     # Our apps

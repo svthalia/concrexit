@@ -1,7 +1,7 @@
 """Register admin pages for the models."""
 import csv
 import datetime
-
+from import_export.admin import ExportMixin
 from django.contrib import admin, messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 
 from members import services
 from members.models import EmailChange, Member
-
+from members.models import MemberEmailListResource
 from . import forms, models
 
 
@@ -101,14 +101,14 @@ class AgeListFilter(admin.SimpleListFilter):
             return queryset
 
         today = datetime.date.today()
-        eightteen_years_ago = today.replace(year=today.year - 18)
+        eighteen_years_ago = today.replace(year=today.year - 18)
 
         if self.value() == "unknown":
             return queryset.filter(profile__birthday__isnull=True)
         if self.value() == "18+":
-            return queryset.filter(profile__birthday__lte=eightteen_years_ago)
+            return queryset.filter(profile__birthday__lte=eighteen_years_ago)
         if self.value() == "18-":
-            return queryset.filter(profile__birthday__gt=eightteen_years_ago)
+            return queryset.filter(profile__birthday__gt=eighteen_years_ago)
 
         return queryset
 
@@ -142,7 +142,6 @@ class UserAdmin(BaseUserAdmin):
     actions = [
         "address_csv_export",
         "student_number_csv_export",
-        "email_csv_export",
         "minimise_data",
     ]
 
@@ -183,28 +182,6 @@ class UserAdmin(BaseUserAdmin):
                 "classes": ("collapse",),
             },
         ),
-    )
-
-    def email_csv_export(self, request, queryset):
-        response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
-                                           filename="email.csv"'
-        writer = csv.writer(response)
-        writer.writerow([_("First name"), _("Last name"), _("Email")])
-        for user in queryset:
-            writer.writerow(
-                [
-                    user.first_name,
-                    user.last_name,
-                    user.email,
-                ]
-            )
-        return response
-
-    email_csv_export.short_description = _(
-        "Download email addresses for selected users"
     )
 
     def address_csv_export(self, request, queryset):
@@ -282,7 +259,9 @@ class UserAdmin(BaseUserAdmin):
 
 
 @admin.register(models.Member)
-class MemberAdmin(UserAdmin):
+class MemberAdmin(UserAdmin, ExportMixin):
+    resource_class = MemberEmailListResource
+
     def has_module_permission(self, request):
         return False
 
