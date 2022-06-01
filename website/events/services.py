@@ -39,7 +39,7 @@ def is_user_registered(member, event):
 def cancel_status(event: Event, registration: EventRegistration):
     if event.after_cancel_deadline:
         # Deadline passed
-        if registration.queue_position:
+        if registration and registration.queue_position:
             return statuses.CANCEL_WAITINGLIST
         else:
             return statuses.CANCEL_LATE
@@ -49,14 +49,14 @@ def cancel_status(event: Event, registration: EventRegistration):
     else:
         return statuses.CANCEL_NORMAL
 
-def cancel_info_string(status):
+def cancel_info_string(event: Event, status):
     infos = {
         statuses.CANCEL_NORMAL: _(""),
         statuses.CANCEL_FINAL: _("Note: if you cancel, you will not be able to re-register."),
-        statuses.CANCEL_LATE: _("Cancelling is not allowed anymore without having to pay the full costs of €{fine}."),
-        statuses.CANCEL_WAITINGLIST: _("Cancelling while on the waiting list will not result in a fine. However, you will not be able to re-register."),
+        statuses.CANCEL_LATE: _("Cancellation is not allowed anymore without having to pay the full costs of €{fine}."),
+        statuses.CANCEL_WAITINGLIST: _("Cancellation while on the waiting list will not result in a fine. However, you will not be able to re-register."),
     }
-    return infos[status]
+    return infos[status].format(fine=event.fine)
 
 def registration_status(event: Event, registration: EventRegistration, member):
     now = timezone.now()
