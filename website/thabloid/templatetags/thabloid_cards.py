@@ -21,7 +21,7 @@ def thabloid_card(year, thabloid):
         '<i class="fas fa-download"></i>'
         "</a>"
         "</div>"
-    ).format(view_url, get_media_url(thabloid.file.path, attachment=True))
+    ).format(view_url, get_media_url(thabloid.file, attachment=True))
 
     return grid_item(
         title="{}-{}, #{}".format(thabloid.year, thabloid.year + 1, thabloid.issue),

@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from tinymce.models import HTMLField
 
+from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
 
 
@@ -18,9 +19,15 @@ class Partner(models.Model):
     slug = models.SlugField(unique=True)
     link = models.CharField(max_length=255, blank=True, validators=[URLValidator()])
     company_profile = HTMLField(blank=True)
-    logo = models.ImageField(upload_to="public/partners/logos/")
+    logo = models.ImageField(
+        upload_to="partners/logos/",
+        storage=get_public_storage,
+    )
     site_header = models.ImageField(
-        upload_to="public/partners/headers/", null=True, blank=True
+        upload_to="partners/headers/",
+        storage=get_public_storage,
+        null=True,
+        blank=True,
     )
 
     address = models.CharField(
@@ -54,6 +61,18 @@ class Partner(models.Model):
         max_length=2, choices=countries.EUROPE, verbose_name=_("Country")
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._orig_logo = self.logo.name if self.logo else None
+        self._orig_site_header = self.site_header.name if self.site_header else None
+
+    def delete(self, using=None, keep_parents=False):
+        if self.logo.name:
+            self.logo.delete()
+        if self.site_header.name:
+            self.site_header.delete()
+        return super().delete(using, keep_parents)
+
     def save(self, **kwargs):
         """Save a partner and set main/local partners."""
         if self.is_main_partner:
@@ -61,6 +80,13 @@ class Partner(models.Model):
             self._reset_main_partner()
 
         super().save(**kwargs)
+
+        if self._orig_logo and self._orig_logo != self.logo.name:
+            self.logo.storage.delete(self._orig_logo)
+            self._orig_logo = None
+        if self._orig_site_header and self._orig_site_header != self.site_header.name:
+            self.site_header.storage.delete(self._orig_site_header)
+            self._orig_site_header = None
 
     def _reset_main_partner(self):
         """Reset the main partner status.
@@ -96,7 +122,26 @@ class PartnerImage(models.Model):
     partner = models.ForeignKey(
         Partner, on_delete=models.CASCADE, related_name="images"
     )
-    image = models.ImageField(upload_to="public/partners/images/")
+    image = models.ImageField(
+        upload_to="partners/images/",
+        storage=get_public_storage,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._orig_image = self.image.name if self.image else None
+
+    def delete(self, using=None, keep_parents=False):
+        if self.image.name:
+            self.image.delete()
+        return super().delete(using, keep_parents)
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+
+        if self._orig_image and self._orig_image != self.image.name:
+            self.image.storage.delete(self._orig_image)
+            self._orig_image = None
 
     def __str__(self):
         """Return string representation of partner name."""
@@ -151,7 +196,8 @@ class Vacancy(models.Model):
     company_name = models.CharField(_("company name"), max_length=255, blank=True)
     company_logo = models.ImageField(
         _("company logo"),
-        upload_to="public/partners/vacancy-logos/",
+        upload_to="partners/vacancy-logos/",
+        storage=get_public_storage,
         null=True,
         blank=True,
     )
@@ -180,6 +226,22 @@ class Vacancy(models.Model):
         if self.partner and self.partner.is_active:
             url = reverse("partners:partner", args=(self.partner.slug,))
         return f"{url}#vacancy-{self.pk}"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._orig_logo = self.company_logo.name if self.company_logo else None
+
+    def delete(self, using=None, keep_parents=False):
+        if self.company_logo.name:
+            self.company_logo.delete()
+        return super().delete(using, keep_parents)
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+
+        if self._orig_logo and self._orig_logo != self.company_logo.name:
+            self.company_logo.storage.delete(self._orig_logo)
+            self._orig_logo = None
 
     def clean(self):
         """Validate the vacancy."""

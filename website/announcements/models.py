@@ -9,6 +9,7 @@ from django.db.models.functions import Now
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
+from thaliawebsite.storage.backend import get_public_storage
 
 
 class VisibleObjectManager(Manager):
@@ -150,7 +151,8 @@ class Slide(models.Model):
         verbose_name=_("Content"),
         help_text=_("The content of the slide; what image to display."),
         blank=False,
-        upload_to="public/announcements/slides/",
+        upload_to="announcements/slides/",
+        storage=get_public_storage,
         validators=[validate_image],
     )
 
@@ -196,6 +198,26 @@ class Slide(models.Model):
         help_text=_("Clicking the slide will open a new tab"),
         default=False,
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.content:
+            self._orig_image = self.content.name
+        else:
+            self._orig_image = None
+
+    def delete(self, using=None, keep_parents=False):
+        if self.content.name:
+            self.content.delete()
+        return super().delete(using, keep_parents)
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        storage = self.content.storage
+
+        if self._orig_image and self._orig_image != self.content.name:
+            storage.delete(self._orig_image)
+            self._orig_image = None
 
     class Meta:
         ordering = ("-since",)

@@ -275,8 +275,7 @@ class DownloadTest(TestCase):
             )
 
         self.photo = Photo(album=self.album)
-        self.photo.file.save(fi.name, fi)
-        save_photo(self.photo)
+        save_photo(self.photo, fi, fi.name)
 
     def test_download(self):
         self.client.force_login(self.member)
@@ -290,8 +289,10 @@ class DownloadTest(TestCase):
                 ),
             )
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response["Content-Type"], "image/jpeg")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(
+            f"{settings.MEDIA_URL}{self.photo.file.name}", response.headers["Location"]
+        )
 
     def test_logged_out(self):
         response = self.client.get(
@@ -304,6 +305,7 @@ class DownloadTest(TestCase):
             )
         )
         self.assertEqual(response.status_code, 302)
+        self.assertIn("/user/login", response.headers["Location"])
 
 
 class _DownloadBaseTestCase(TestCase):
@@ -325,7 +327,7 @@ class _DownloadBaseTestCase(TestCase):
 
         self.photo = Photo(album=self.album)
         self.photo.file.save(fi.name, fi)
-        save_photo(self.photo)
+        save_photo(self.photo, fi, fi.name)
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -350,8 +352,11 @@ class SharedDownloadTest(_DownloadBaseTestCase):
                     ),
                 )
             )
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response["Content-Type"], "image/jpeg")
+            self.assertEqual(response.status_code, 302)
+            self.assertIn(
+                f"{settings.MEDIA_URL}{self.photo.file.name}",
+                response.headers["Location"],
+            )
 
         self.client.force_login(self.member)
 
@@ -366,5 +371,8 @@ class SharedDownloadTest(_DownloadBaseTestCase):
                     ),
                 )
             )
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response["Content-Type"], "image/jpeg")
+            self.assertEqual(response.status_code, 302)
+            self.assertIn(
+                f"{settings.MEDIA_URL}{self.photo.file.name}",
+                response.headers["Location"],
+            )
