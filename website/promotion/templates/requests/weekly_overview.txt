@@ -1,0 +1,21 @@
+{% load i18n bleach_tags %}{% blocktrans %}Hi Paparazcie,
+
+Here is your weekly overview of promotion requests.
+{% endblocktrans %}
+{% if upcoming_requests%}{% trans "Requests to be finished:" %}{% else %}{% trans "No upcoming requests"%}{% endif %}
+{% for request in upcoming_requests%}{% if request.event %}{% trans "Event" %}: {{ request.event.title }}{% endif %}
+{% trans "Promotion channel" %}: {{ request.channel }}
+{% trans "Publish date" %}: {{ request.publish_date }}
+{% trans "Remarks" %}: {{ request.remarks|striptags }}
+
+{% endfor%}
+{% if new_requests%}{% trans "New requests:" %}{% else %}{% trans "No new requests"%}{% endif %}
+{% for request in new_requests%}{% if request.event %}{% trans "Event" %}: {{ request.event.title }}{% endif %}
+{% trans "Promotion channel" %}: {{ request.channel }}
+{% trans "Publish date" %}: {{ request.publish_date }}
+{% trans "Remarks" %}: {{ request.remarks|striptags }}
+
+{% endfor%}
+{% blocktrans %}
+Best regards,
+Study Association Thalia{% endblocktrans %}
