@@ -9,7 +9,7 @@ from import_export.admin import ExportActionMixin
 
 from . import models
 from .forms import SummaryAdminForm
-from .resources import ExamResource
+from .resources import ExamResource, SummaryResource
 
 admin.site.register(models.Category)
 
@@ -88,8 +88,8 @@ class ExamAdmin(ExportActionMixin, ModelAdmin):
 
 
 @admin.register(models.Summary)
-#TODO: import-export
-class SummaryAdmin(ModelAdmin, WithDownloadCsv):
+class SummaryAdmin(ExportActionMixin, ModelAdmin):
+    resource_class = SummaryResource
     list_display = (
         "name",
         "course",
