@@ -5,9 +5,11 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
+from import_export.admin import ExportActionMixin
 
 from . import models
 from .forms import SummaryAdminForm
+from .resources import ExamResource
 
 admin.site.register(models.Category)
 
@@ -28,6 +30,7 @@ class CourseAdmin(ModelAdmin):
 
 
 class WithDownloadCsv:
+    # TODO: import export
     def download_csv(self, request, queryset):
         opts = queryset.model._meta
         response = HttpResponse(content_type="text/csv")
@@ -47,7 +50,8 @@ class WithDownloadCsv:
 
 
 @admin.register(models.Exam)
-class ExamAdmin(ModelAdmin, WithDownloadCsv):
+class ExamAdmin(ExportActionMixin, ModelAdmin):
+    resource_class = ExamResource
     list_display = (
         "type",
         "course",
@@ -65,7 +69,7 @@ class ExamAdmin(ModelAdmin, WithDownloadCsv):
         "uploader__last_name",
         "course__name",
     )
-    actions = ["accept", "reject", "reset_download_count", "download_csv"]
+    actions = ["accept", "reject", "reset_download_count"]
 
     def accept(self, request, queryset):
         queryset.update(accepted=True)
@@ -84,6 +88,7 @@ class ExamAdmin(ModelAdmin, WithDownloadCsv):
 
 
 @admin.register(models.Summary)
+#TODO: import-export
 class SummaryAdmin(ModelAdmin, WithDownloadCsv):
     list_display = (
         "name",
