@@ -32,19 +32,7 @@ class ExamResource(resources.ModelResource):
             "language",
             "download_count",
         )
-        export_order = (
-            "exam_id",
-            "type",
-            "name",
-            "uploader",
-            "uploader_date",
-            "accepted",
-            "exam_date",
-            "file",
-            "course",
-            "language",
-            "download_count",
-        )
+        export_order = fields
 
 
 class SummaryResource(resources.ModelResource):
@@ -75,16 +63,4 @@ class SummaryResource(resources.ModelResource):
             "language",
             "download_count",
         )
-        export_order = (
-            "summary_id",
-            "name",
-            "uploader",
-            "uploader_date",
-            "year",
-            "author",
-            "course",
-            "accepted",
-            "file",
-            "language",
-            "download_count",
-        )
+        export_order = fields

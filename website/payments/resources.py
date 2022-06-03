@@ -7,10 +7,10 @@ from .models import Payment, BankAccount
 class PaymentResource(resources.ModelResource):
     created_at = Field(attribute="created_at", column_name="Created")
     amount = Field(attribute="amount", column_name="Amount")
-    type = Field(column_name="Type")
-    processed_by = Field(column_name="Processor")
-    payer_id = Field(column_name="Payer id")
-    paid_by = Field(column_name="Payer name")
+    payment_type = Field(attribute="type", column_name="Type")
+    processed_by = Field(attribute="processed_by", column_name="Processor")
+    payer_id = Field(attribute="payer_id", column_name="Payer id")
+    paid_by = Field(attribute="paid_by", column_name="Payer name")
     notes = Field(attribute="notes", column_name="Notes")
 
     class Meta:
@@ -18,21 +18,13 @@ class PaymentResource(resources.ModelResource):
         fields = (
             "created_at",
             "amount",
-            "type",
+            "payment_type",
             "processed_by",
             "payer_id",
             "paid_by",
             "notes",
         )
-        export_order = (
-            "created_at",
-            "amount",
-            "type",
-            "processed_by",
-            "payer_id",
-            "paid_by",
-            "notes",
-        )
+        export_order = fields
 
     def dehydrate_processed_by(self, payment):
         if payment.processed_by:
@@ -75,13 +67,4 @@ class BankAccountResource(resources.ModelResource):
             "valid_until",
             "signature",
         )
-        export_order = (
-            "created_at",
-            "name",
-            "mandate_no",
-            "iban",
-            "bic",
-            "valid_from",
-            "valid_until",
-            "signature",
-        )
+        export_order = fields
