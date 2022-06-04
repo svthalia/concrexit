@@ -9,43 +9,28 @@ from freezegun import freeze_time
 from activemembers.models import Committee, MemberGroupMembership
 from members.models import Member, Profile
 from sales import services
-from sales.models.product import Product, ProductList, ProductListItem
+from sales.models.product import Product, ProductList
 from sales.models.shift import Shift
 from sales.services import is_manager
 
 
 @freeze_time("2021-01-01")
 class SalesServicesTest(TestCase):
-    fixtures = ["members.json", "member_groups.json"]
+    fixtures = ["members.json", "member_groups.json", "products.json"]
 
     @classmethod
     def setUpTestData(cls):
         cls.member = Member.objects.filter(last_name="Wiggers").first()
 
-        cls.beer = Product.objects.create(name="beer", age_restricted=True)
-        cls.wine = Product.objects.create(name="wine", age_restricted=True)
-        cls.soda = Product.objects.create(name="soda", age_restricted=False)
+        cls.beer = Product.objects.get(name="beer")
+        cls.wine = Product.objects.get(name="wine")
+        cls.soda = Product.objects.get(name="soda")
 
-        cls.normal = ProductList.objects.create(
+        cls.normal = ProductList.objects.get(
             name="normal",
         )
-        cls.free = ProductList.objects.create(
+        cls.free = ProductList.objects.get(
             name="free",
-        )
-
-        cls.normal.product_items.bulk_create(
-            [
-                ProductListItem(product=cls.beer, product_list=cls.normal, price=0.50),
-                ProductListItem(product=cls.wine, product_list=cls.normal, price=0.50),
-                ProductListItem(product=cls.soda, product_list=cls.normal, price=0.00),
-            ]
-        )
-        cls.free.product_items.bulk_create(
-            [
-                ProductListItem(product=cls.beer, product_list=cls.free, price=0.00),
-                ProductListItem(product=cls.wine, product_list=cls.free, price=0.00),
-                ProductListItem(product=cls.soda, product_list=cls.free, price=0.00),
-            ]
         )
 
         cls.shift = Shift.objects.create(
