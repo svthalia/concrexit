@@ -37,3 +37,8 @@
         transform: rotate(#{$rotation}deg);
     }
 }
+
+:root {
+    --fancybox-thumbs-border-radius: 0;
+    --fancybox-accent-color: var(--primary);
+}
