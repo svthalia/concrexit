@@ -1,6 +1,10 @@
 function setNumLikes(numLikes) {
     const counter = document.querySelector('.fancybox__button--numlikes')
-    counter.innerHTML = numLikes.toString() + " likes";
+    if (numLikes === 1) {
+        counter.innerHTML = numLikes.toString() + " like";
+    } else {
+        counter.innerHTML = numLikes.toString() + " likes";
+    }
 }
 
 function updateLikes(numLikes, userLikes) {
