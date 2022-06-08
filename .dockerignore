@@ -1,0 +1,13 @@
+website/media
+website/static
+website/db.sqlite3
+infra/modules
+infra/nixos
+infra/stages
+scripts
+
+**/Dockerfile
+README.md
+
+# These files would not be copied, but increase the size of the build context
+.git

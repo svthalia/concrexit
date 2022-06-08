@@ -1,0 +1,46 @@
+version: '3'
+
+# This docker-compose file simulates a production environment
+# The website will be available at http://localhost:8000
+# Mailcatcher shos you which mails have been sent out from the
+# website, the web interface for this is available at http://localhost:1080
+
+services:
+  concrexit:
+    container_name: concrexit
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file: ./infra/docker/local/production.example.env
+    volumes:
+      - static:/static
+    depends_on:
+      postgres:
+        condition: service_healthy
+  nginx:
+    image: nginx:1.21
+    volumes:
+      - "./infra/docker/local/nginx.conf:/etc/nginx/nginx.conf"
+      - static:/static
+    ports:
+      - "8000:80"
+    depends_on:
+      - concrexit
+  postgres:
+    container_name: postgres
+    image: postgres:14.3
+    environment:
+      POSTGRES_USER: concrexit
+      POSTGRES_PASSWORD: concrexit
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U concrexit"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  mailcatcher:
+    container_name: mailcatcher
+    image: sj26/mailcatcher:v0.8.1
+    ports:
+      - "1080:1080"
+volumes:
+  static:
