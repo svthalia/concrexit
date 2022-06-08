@@ -19,11 +19,12 @@ function openThabloidFancybox(e, btn) {
     });
 }
 
-window.onload = (event) => {
+window.addEventListener('load', (event) => {
     mixitup('#thabloid-index', {
         selectors: {
             control: '.nav-link'
         }
     });
     document.querySelectorAll('#thabloid-index .thabloid-card .btn.open').forEach((btn) => btn.addEventListener("click", (e) => openThabloidFancybox(e, btn)));
-}
+});
+
