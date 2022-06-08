@@ -1,7 +1,7 @@
 """Photos app API v2 urls."""
 from django.urls import path, include
 
-from photos.api.v2.views import AlbumListView, AlbumDetailView, PhotoKudoView
+from photos.api.v2.views import AlbumListView, AlbumDetailView, PhotoLikeView
 
 app_name = "photos"
 
@@ -17,7 +17,7 @@ urlpatterns = [
                     name="album-detail",
                 ),
                 path(
-                    "photos/<int:pk>/kudos/", PhotoKudoView.as_view(), name="photo-kudo"
+                    "photos/<int:pk>/like/", PhotoLikeView.as_view(), name="photo-like"
                 ),
             ]
         ),
