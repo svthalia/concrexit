@@ -7,7 +7,7 @@ resource "aws_ebs_volume" "concrexit-postgres" {
   size              = 20
 
   tags = merge(var.tags, {
-    Name = "${var.customer}-${var.stage}-postgres",
+    Name     = "${var.customer}-${var.stage}-postgres",
     Snapshot = true
   })
 }
@@ -17,8 +17,19 @@ resource "aws_ebs_volume" "concrexit-media" {
   size              = 100
 
   tags = merge(var.tags, {
-    Name = "${var.customer}-${var.stage}-media",
+    Name     = "${var.customer}-${var.stage}-media",
     Snapshot = true
+  })
+}
+
+resource "aws_s3_bucket" "concrexit-media-bucket" {
+  bucket = "${var.customer}-${var.stage}-media"
+  acl    = "private"
+  versioning {
+    enabled = false
+  }
+  tags = merge(var.tags, {
+    Name = "${var.customer}-${var.stage}-media"
   })
 }
 
@@ -48,7 +59,8 @@ resource "aws_instance" "concrexit" {
   ami           = data.aws_ami.nixos.id
   instance_type = "t3a.small"
 
-  key_name = aws_key_pair.deployer.key_name
+  key_name             = aws_key_pair.deployer.key_name
+  iam_instance_profile = aws_iam_instance_profile.concrexit-ec2-profile.id
 
   root_block_device {
     volume_size = 50 # GiB
