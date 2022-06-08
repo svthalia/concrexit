@@ -18,8 +18,8 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "concrexit-ec2-profile" {
-  name  = "${var.customer}-${var.stage}-concrexit-ec2-profile"
-  roles = ["web_iam_role"]
+  name = "${var.customer}-${var.stage}-concrexit-ec2-profile"
+  role = aws_iam_role.concrexit-iam-role.id
 }
 
 resource "aws_iam_role_policy" "concrexit-iam-role-policy" {
