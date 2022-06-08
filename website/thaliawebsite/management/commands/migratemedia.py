@@ -44,5 +44,5 @@ class Command(BaseCommand):
 
     def _split_path_to_upload(self, full_path: str) -> str:
         media_root = settings.MEDIA_ROOT
-        upload_path = full_path.split(media_root)[-1]
+        upload_path = full_path.split(media_root)[-1][1:]
         return upload_path
