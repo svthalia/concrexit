@@ -127,13 +127,13 @@ data "external" "nix-flake-build" {
             fileSystems."/volume/concrexit_postgres" = {
               autoFormat = true;
               fsType = "ext4";
-              device = "/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_${local.postgres_volname}-ns-1";
+              device = "/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_${local.postgres_volname}";
             };
 
             fileSystems."/volume/concrexit_media" = {
               autoFormat = true;
               fsType = "ext4";
-              device = "/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_${local.media_volname}-ns-1";
+              device = "/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_${local.media_volname}";
             };
           })
         ];
