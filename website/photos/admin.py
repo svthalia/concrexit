@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 from .forms import AlbumForm
-from .models import Album, Photo, Kudo
+from .models import Album, Photo, Like
 from .services import extract_archive, save_photo
 
 
@@ -60,8 +60,8 @@ class AlbumAdmin(admin.ModelAdmin):
             )
 
 
-class KudoInline(admin.StackedInline):
-    model = Kudo
+class LikeInline(admin.StackedInline):
+    model = Like
     extra = 0
 
 
@@ -73,14 +73,14 @@ class PhotoAdmin(admin.ModelAdmin):
         "__str__",
         "album",
         "hidden",
-        "num_kudos",
+        "num_likes",
     )
     search_fields = ("file",)
     list_filter = ("album", "hidden")
     exclude = ("_digest",)
 
     inlines = [
-        KudoInline,
+        LikeInline,
     ]
 
     def save_model(self, request, obj, form, change):
