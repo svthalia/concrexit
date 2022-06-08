@@ -229,8 +229,8 @@ MEDIA_ROOT = from_env("MEDIA_ROOT", development=os.path.join(BASE_DIR, "media"))
 PRIVATE_MEDIA_LOCATION = ""
 PUBLIC_MEDIA_LOCATION = "public"
 
-AWS_ACCESS_KEY_ID = from_env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = from_env("AWS_SECRET_ACCESS_KEY")
+AWS_ACCESS_KEY_ID = from_env("AWS_ACCESS_KEY_ID", production=None)
+AWS_SECRET_ACCESS_KEY = from_env("AWS_SECRET_ACCESS_KEY", production=None)
 AWS_STORAGE_BUCKET_NAME = from_env("AWS_STORAGE_BUCKET_NAME")
 AWS_DEFAULT_ACL = "private"
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
