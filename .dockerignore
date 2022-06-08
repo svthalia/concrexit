@@ -12,3 +12,12 @@ docs
 
 # These files would not be copied, but increase the size of the build context
 .git
+.github
+.make
+.codeclimate.yml
+.coverage
+.gitattributes
+.gitignore
+.mailmap
+.pylintrc
+renovate.json
