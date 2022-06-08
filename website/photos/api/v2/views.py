@@ -1,13 +1,13 @@
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters, status
-from rest_framework.exceptions import PermissionDenied, NotFound
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from photos import services
 from photos.api.v2.serializers.album import AlbumListSerializer, AlbumSerializer
-from photos.models import Album, Photo, Kudo
+from photos.models import Album, Photo, Like
 
 
 class AlbumListView(ListAPIView):
@@ -40,7 +40,7 @@ class AlbumDetailView(RetrieveAPIView):
         return super().retrieve(request, *args, **kwargs)
 
 
-class PhotoKudoView(APIView):
+class PhotoLikeView(APIView):
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["photos:read"]
 
@@ -53,8 +53,8 @@ class PhotoKudoView(APIView):
 
         return Response(
             {
-                "kudo": photo.kudos.filter(member=request.member).exists(),
-                "num_kudos": photo.num_kudos,
+                "liked": photo.likes.filter(member=request.member).exists(),
+                "num_likes": photo.num_likes,
             },
             status=status.HTTP_200_OK,
         )
@@ -66,21 +66,50 @@ class PhotoKudoView(APIView):
         except Photo.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        _, created = Kudo.objects.get_or_create(photo=photo, member=request.member)
+        _, created = Like.objects.get_or_create(photo=photo, member=request.member)
 
         if created:
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "liked": photo.likes.filter(member=request.member).exists(),
+                    "num_likes": photo.num_likes,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {
+                "liked": photo.likes.filter(member=request.member).exists(),
+                "num_likes": photo.num_likes,
+            },
+            status=status.HTTP_200_OK,
+        )
 
     def delete(self, request, **kwargs):
         photo_id = kwargs.get("pk")
         try:
-            kudo = Kudo.objects.filter(photo__album__hidden=False).get(
-                member=request.member, photo__pk=photo_id
-            )
-        except Kudo.DoesNotExist:
+            photo = Photo.objects.filter(album__hidden=False).get(pk=photo_id)
+        except Photo.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        kudo.delete()
+        try:
+            like = Like.objects.filter(photo__album__hidden=False).get(
+                member=request.member, photo__pk=photo_id
+            )
+        except Like.DoesNotExist:
+            return Response(
+                {
+                    "liked": False,
+                    "num_likes": photo.num_likes,
+                },
+                status=status.HTTP_204_NO_CONTENT,
+            )
 
-        return Response(status=status.HTTP_202_ACCEPTED)
+        like.delete()
+
+        return Response(
+            {
+                "liked": False,
+                "num_likes": photo.num_likes,
+            },
+            status=status.HTTP_202_ACCEPTED,
+        )

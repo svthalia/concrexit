@@ -55,8 +55,8 @@ class Photo(models.Model):
         max_length=40,
     )
 
-    num_kudos = AnnotationProperty(
-        Coalesce(Count("kudos"), Value(0), output_field=IntegerField())
+    num_likes = AnnotationProperty(
+        Coalesce(Count("likes"), Value(0), output_field=IntegerField())
     )
 
     def __init__(self, *args, **kwargs):
@@ -83,9 +83,9 @@ class Photo(models.Model):
         ordering = ("file",)
 
 
-class Kudo(models.Model):
+class Like(models.Model):
     photo = models.ForeignKey(
-        Photo, null=False, blank=False, related_name="kudos", on_delete=models.CASCADE
+        Photo, null=False, blank=False, related_name="likes", on_delete=models.CASCADE
     )
     member = models.ForeignKey(
         Member, null=True, blank=False, on_delete=models.SET_NULL
@@ -93,6 +93,9 @@ class Kudo(models.Model):
 
     def __str__(self):
         return str(self.member) + " " + _("likes") + " " + str(self.photo)
+
+    class Meta:
+        unique_together = ["photo", "member"]
 
 
 class Album(models.Model):
