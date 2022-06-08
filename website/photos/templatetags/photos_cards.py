@@ -40,17 +40,17 @@ def album_card(album):
 def photo_card(photo):
     """Create a card of a photo to show on an album page."""
     class_name = "photo-card"
-    anchor_attrs = f'data-rotation="{photo.rotation}" ' f'data-fancybox="gallery"'
+    anchor_attrs = f'data-rotation="{photo.rotation}" data-fancybox="gallery"'
 
     if photo.album.shareable:
-        anchor_attrs += " data-download={}".format(
+        anchor_attrs += " data-download-src={}".format(
             reverse(
                 "photos:shared-download",
                 args=[photo.album.slug, photo.album.access_token, photo],
             )
         )
     else:
-        anchor_attrs += " data-download={}".format(
+        anchor_attrs += " data-download-src={}".format(
             reverse("photos:download", args=[photo.album.slug, photo])
         )
 

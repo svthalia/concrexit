@@ -62,12 +62,17 @@
     </div>
 {% endblock %}
 
+{% block css_head %}
+    {{ block.super }}
+    <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+
 {% block js_body %}
     {{ block.super }}
+    <script src="{% static "js/fancybox.umd.js" %}"></script>
+    <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
     {% compress js %}
-        <script type="text/javascript"
-                src="{% static 'js/mixitup.min.js' %}"></script>
-        <script type="text/javascript"
-                src="{% static 'thabloid/js/main.js' %}"></script>
+        <script type="text/javascript" src="{% static 'thabloid/js/main.js' %}"></script>
     {% endcompress %}
 {% endblock %}

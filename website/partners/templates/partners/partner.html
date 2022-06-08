@@ -92,9 +92,16 @@
     {% endif %}
 {% endblock body %}
 
+{% block css_head %}
+    {{ block.super }}
+    <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block js_body %}
     {{ block.super }}
+    <script src="{% static "js/fancybox.umd.js" %}"></script>
     {% compress js %}
         <script type="text/javascript" src="{% static 'partners/js/main.js' %}"></script>
     {% endcompress %}
 {% endblock %}
+

@@ -40,9 +40,15 @@
     </div>
 {% endblock %}
 
+{% block css_head %}
+    {{ block.super }}
+    <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block js_body %}
     {{ block.super }}
-        {% compress js %}
-            <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
-        {% endcompress %}
+    <script src="{% static "js/fancybox.umd.js" %}"></script>
+    {% compress js %}
+        <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
+    {% endcompress %}
 {% endblock %}
