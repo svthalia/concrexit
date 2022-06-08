@@ -319,7 +319,7 @@ in
               };
               locations."/.well-known/change-password" = {
                 # Implementing https://github.com/WICG/change-password-url
-                return = "301 https://$host/user/password_change/;";
+                return = "301 https://$host/user/password_change/";
               };
               locations."= /.well-known/security.txt" = {
                 # Implementing https://tools.ietf.org/html/draft-foudil-securitytxt-12
