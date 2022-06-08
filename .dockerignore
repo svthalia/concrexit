@@ -8,6 +8,7 @@ scripts
 
 **/Dockerfile
 README.md
+docs
 
 # These files would not be copied, but increase the size of the build context
 .git
