@@ -42,14 +42,13 @@
 
 {% block css_head %}
     {{ block.super }}
-    {% compress css %}
-        <link href="{% static "photos/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
-    <link href="{% static "photos/css/fancybox.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block js_body %}
     {{ block.super }}
-    <script src="{% static "photos/js/fancybox.umd.js" %}"></script>
-    <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
+    <script src="{% static "js/fancybox.umd.js" %}"></script>
+    {% compress js %}
+        <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
+    {% endcompress %}
 {% endblock %}

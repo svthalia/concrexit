@@ -1,11 +1,15 @@
-$(function () {
-    $(".partner-image-card a").fancybox({
-        buttons: [
-            "thumbs",
-            "close"
-        ],
-    });
+Fancybox.bind('[data-fancybox="gallery"]',
+    {
+        Toolbar: {
+            display: [
+                "thumbs",
+                "close",
+            ],
+        },
+    }
+);
 
+$(function () {
     var windowhash = window.location.hash;
     if (windowhash) {
         var element = $('[data-bs-target="' + windowhash + '"]');
