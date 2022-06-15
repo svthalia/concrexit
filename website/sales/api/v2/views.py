@@ -1,25 +1,23 @@
 from django.db.models import Q
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    CreateAPIView,
-    UpdateAPIView,
-    DestroyAPIView,
-)
+from rest_framework.views import APIView
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
-
-from sales.api.v2.admin.serializers.order import OrderSerializer, OrderListSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from sales.api.v2.admin.serializers.order import OrderListSerializer, OrderSerializer
 from sales.api.v2.admin.views import (
-    OrderListView,
     OrderDetailView,
+    OrderListView,
     ShiftDetailView,
     ShiftListView,
 )
+import sales.services as services
 from sales.api.v2.serializers.user_order import UserOrderSerializer
 from sales.api.v2.serializers.user_shift import UserShiftSerializer
-from sales.models.shift import SelfOrderPeriod, Shift
+from sales.models.shift import Shift
+from sales.models.order import Order
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 
@@ -111,4 +109,45 @@ class UserOrderDetailView(OrderDetailView):
             raise PermissionDenied
         if self.get_object().payment:
             raise PermissionDenied
-        return super(UserOrderDetailView, self).destroy(request, *args, **kwargs)
+
+class OrderPaymentView(APIView):
+    """
+    API endpoint that allows users to claim an order, even if user orders aren't allowed.
+
+    This is the API equivalent of `sales.views.OrderPaymentView`.
+    """
+
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
+    required_scopes = ["sales:order"]
+
+    def get_serializer_context(self):
+        return {"request": self.request, "format": self.format_kwarg, "view": self}
+
+    def get(self, request, *args, **kwargs):
+        if request.member is None:
+            raise PermissionDenied("You need to be a member to pay for an order.")
+
+        order = get_object_or_404(Order, pk=kwargs["pk"])
+        if order.payment:
+            raise PermissionDenied(detail="This order was already paid for.")
+
+        if order.payer is not None and order.payer != request.member:
+            raise PermissionDenied(detail="This order is not yours.")
+
+        order.payer = request.member
+        order.save()
+
+        if order.age_restricted and not services.is_adult(request.member):
+            raise PermissionDenied(
+                "The age restrictions on this order do not allow you to pay for this order."
+            )
+
+        serializer = UserOrderSerializer(
+            instance=order,
+            context=self.get_serializer_context(),
+        )
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+            content_type="application/json",
+        )
