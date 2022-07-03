@@ -1,12 +1,11 @@
 from django.db.models import Q
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.views import APIView
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
-from rest_framework import status
-from sales.api.v2.admin.serializers.order import OrderListSerializer, OrderSerializer
+from rest_framework.schemas.openapi import AutoSchema
+from sales.api.v2.admin.serializers.order import OrderListSerializer
 from sales.api.v2.admin.views import (
     OrderDetailView,
     OrderListView,
@@ -110,24 +109,20 @@ class UserOrderDetailView(OrderDetailView):
         if self.get_object().payment:
             raise PermissionDenied
 
-class OrderPaymentView(APIView):
-    """
-    API endpoint that allows users to claim an order, even if user orders aren't allowed.
+class OrderPaymentView(RetrieveAPIView):
+    """Claims an order to be paid by the current user."""
 
-    This is the API equivalent of `sales.views.OrderPaymentView`.
-    """
-
+    queryset = Order.objects.all()
+    serializer_class = UserOrderSerializer
+    schema = AutoSchema(operation_id_base="claimOrder")
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["sales:order"]
 
-    def get_serializer_context(self):
-        return {"request": self.request, "format": self.format_kwarg, "view": self}
-
-    def get(self, request, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         if request.member is None:
             raise PermissionDenied("You need to be a member to pay for an order.")
 
-        order = get_object_or_404(Order, pk=kwargs["pk"])
+        order = self.get_object()
         if order.payment:
             raise PermissionDenied(detail="This order was already paid for.")
 
@@ -142,12 +137,5 @@ class OrderPaymentView(APIView):
                 "The age restrictions on this order do not allow you to pay for this order."
             )
 
-        serializer = UserOrderSerializer(
-            instance=order,
-            context=self.get_serializer_context(),
-        )
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK,
-            content_type="application/json",
-        )
+        serializer = self.get_serializer(order)
+        return Response(serializer.data)
