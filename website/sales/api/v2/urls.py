@@ -1,7 +1,7 @@
 from django.urls import path
 
 from sales.api.v2.views import (
-    OrderPaymentView,
+    OrderClaimView,
     UserShiftListView,
     UserShiftDetailView,
     UserOrderListView,
@@ -11,7 +11,7 @@ from sales.api.v2.views import (
 app_name = "sales"
 
 urlpatterns = [
-    path("sales/order/<uuid:pk>/pay/", OrderPaymentView.as_view(), name="order-pay"),
+    path("sales/order/<uuid:pk>/claim/", OrderClaimView.as_view(), name="order-claim"),
     path("sales/shifts/", UserShiftListView.as_view(), name="user-shift-list"),
     path(
         "sales/shifts/<int:pk>/",

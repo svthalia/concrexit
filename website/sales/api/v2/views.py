@@ -109,7 +109,8 @@ class UserOrderDetailView(OrderDetailView):
         if self.get_object().payment:
             raise PermissionDenied
 
-class OrderPaymentView(RetrieveAPIView):
+
+class OrderClaimView(RetrieveAPIView):
     """Claims an order to be paid by the current user."""
 
     queryset = Order.objects.all()

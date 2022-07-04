@@ -634,7 +634,7 @@ class OrderAPITest(TestCase):
     def test_claim_order(self):
         with self.subTest("Claim a normal order"):
             response = self.client.get(
-                reverse("api:v2:sales:order-pay", kwargs={"pk": self.o3.pk})
+                reverse("api:v2:sales:order-claim", kwargs={"pk": self.o3.pk})
             )
             self.assertEqual(200, response.status_code)
             self.assertEqual(
@@ -649,7 +649,7 @@ class OrderAPITest(TestCase):
             self.o3.save()
 
             response = self.client.get(
-                reverse("api:v2:sales:order-pay", kwargs={"pk": self.o3.pk})
+                reverse("api:v2:sales:order-claim", kwargs={"pk": self.o3.pk})
             )
             self.assertEqual(200, response.status_code)
             self.assertEqual(
@@ -672,7 +672,7 @@ class OrderAPITest(TestCase):
             self.o3.save()
 
             response = self.client.get(
-                reverse("api:v2:sales:order-pay", kwargs={"pk": self.o3.pk})
+                reverse("api:v2:sales:order-claim", kwargs={"pk": self.o3.pk})
             )
             self.assertEqual(403, response.status_code)
             self.o3.refresh_from_db()
@@ -683,7 +683,7 @@ class OrderAPITest(TestCase):
 
         with self.subTest("Claim a paid order"):
             response = self.client.get(
-                reverse("api:v2:sales:order-pay", kwargs={"pk": self.o4.pk})
+                reverse("api:v2:sales:order-claim", kwargs={"pk": self.o4.pk})
             )
             self.assertEqual(403, response.status_code)
 
@@ -694,10 +694,9 @@ class OrderAPITest(TestCase):
             with mock.patch("sales.services.is_adult") as is_adult:
                 is_adult.return_value = False
                 response = self.client.get(
-                    reverse("api:v2:sales:order-pay", kwargs={"pk": self.o3.pk})
+                    reverse("api:v2:sales:order-claim", kwargs={"pk": self.o3.pk})
                 )
                 self.assertEqual(403, response.status_code)
-                print(response.json)
                 self.o3.refresh_from_db()
                 self.assertEqual(self.o3.payer, self.member)
 
