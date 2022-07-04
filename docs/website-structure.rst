@@ -6,7 +6,7 @@ How is the website code structured?
 
 We adhere to Django best practices, which basically consists of dividing code
 up into modules, and using consistent filenames for the different parts in these
-modules. You can read about this `here <https://djangobook.com/mdj2-django-structure/>`_.
+modules. You can read about this `here <https://masteringdjango.com/django-tutorials/mastering-django-structure/>`_.
 
 Where can I find the code for this page?
 ----------------------------------------
