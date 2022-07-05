@@ -1,19 +1,20 @@
+from unittest import mock
+
+from activemembers.models import Committee, MemberGroupMembership
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 from freezegun import freeze_time
-from rest_framework.test import APIClient
-
-from activemembers.models import Committee, MemberGroupMembership
 from members.models import Member
 from payments.models import Payment
 from payments.services import create_payment
+from rest_framework.test import APIClient
 from sales import payables
 from sales.models.order import Order, OrderItem
 from sales.models.product import Product, ProductList
-from sales.models.shift import Shift, SelfOrderPeriod
+from sales.models.shift import SelfOrderPeriod, Shift
 
 
 @freeze_time("2021-01-01")
@@ -629,6 +630,75 @@ class OrderAPITest(TestCase):
         self.assertEqual(201, response.status_code)
         order = Order.objects.get(pk=response.data["pk"])
         self.assertEqual(order.payer, self.member)
+
+    def test_claim_order(self):
+        with self.subTest("Claim a normal order"):
+            response = self.client.patch(
+                reverse("api:v2:sales:order-claim", kwargs={"pk": self.o3.pk})
+            )
+            self.assertEqual(200, response.status_code)
+            self.assertEqual(
+                Order.objects.get(pk=response.data["pk"]).payer, self.member
+            )
+
+        self.o3.payer = None
+        self.o3.save()
+
+        with self.subTest("Claim an order that is already yours"):
+            self.o3.payer = self.member
+            self.o3.save()
+
+            response = self.client.patch(
+                reverse("api:v2:sales:order-claim", kwargs={"pk": self.o3.pk})
+            )
+            self.assertEqual(200, response.status_code)
+            self.assertEqual(
+                Order.objects.get(pk=response.data["pk"]).payer, self.member
+            )
+
+        self.o3.payer = None
+        self.o3.save()
+
+        with self.subTest("Claim an order that is not yours"):
+            member = Member.objects.create(
+                username="test1",
+                first_name="Test1",
+                last_name="Example",
+                email="test1@example.org",
+                is_staff=False,
+                is_superuser=False,
+            )
+            self.o3.payer = member
+            self.o3.save()
+
+            response = self.client.patch(
+                reverse("api:v2:sales:order-claim", kwargs={"pk": self.o3.pk})
+            )
+            self.assertEqual(403, response.status_code)
+            self.o3.refresh_from_db()
+            self.assertEqual(self.o3.payer, member)
+
+        self.o3.payer = None
+        self.o3.save()
+
+        with self.subTest("Claim a paid order"):
+            response = self.client.patch(
+                reverse("api:v2:sales:order-claim", kwargs={"pk": self.o4.pk})
+            )
+            self.assertEqual(403, response.status_code)
+
+        self.o3.payer = None
+        self.o3.save()
+
+        with self.subTest("Claim an age-restricted order as a minor"):
+            with mock.patch("sales.services.is_adult") as is_adult:
+                is_adult.return_value = False
+                response = self.client.patch(
+                    reverse("api:v2:sales:order-claim", kwargs={"pk": self.o3.pk})
+                )
+                self.assertEqual(403, response.status_code)
+                self.o3.refresh_from_db()
+                self.assertEqual(self.o3.payer, self.member)
 
 
 class ShiftAPITest(TestCase):
