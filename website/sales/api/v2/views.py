@@ -1,10 +1,11 @@
 from django.db.models import Q
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
+
 from sales.api.v2.admin.serializers.order import OrderListSerializer
 from sales.api.v2.admin.views import (
     OrderDetailView,
@@ -12,7 +13,7 @@ from sales.api.v2.admin.views import (
     ShiftDetailView,
     ShiftListView,
 )
-import sales.services as services
+from sales import services
 from sales.api.v2.serializers.user_order import UserOrderSerializer
 from sales.api.v2.serializers.user_shift import UserShiftSerializer
 from sales.models.shift import Shift
@@ -110,16 +111,21 @@ class UserOrderDetailView(OrderDetailView):
             raise PermissionDenied
 
 
-class OrderClaimView(RetrieveAPIView):
+class OrderClaimView(GenericAPIView):
     """Claims an order to be paid by the current user."""
+
+    class OrderClaimViewSchema(AutoSchema):
+        def get_request_serializer(self, path, method):
+            # This endpoint does not expect any content in the request body.
+            return None
 
     queryset = Order.objects.all()
     serializer_class = UserOrderSerializer
-    schema = AutoSchema(operation_id_base="claimOrder")
+    schema = OrderClaimViewSchema(operation_id_base="claimOrder")
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["sales:order"]
 
-    def retrieve(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         if request.member is None:
             raise PermissionDenied("You need to be a member to pay for an order.")
 
