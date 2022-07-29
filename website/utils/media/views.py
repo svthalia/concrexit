@@ -81,12 +81,12 @@ def get_thumbnail(request, request_path):
         raise Http404("Media not found.")
 
     with sentry_sdk.start_span(op="thumbnails", description="Obtain modified times"):
-        original_modified_time = timezone.make_aware(timezone.datetime.min)
+        original_modified_time = timezone.datetime.min
         thumb_modified_time = original_modified_time
         # noinspection PyBroadException
         try:
-            original_modified_time = storage.get_modified_time(sig_info["name"])
-            original_modified_time = storage.get_modified_time(sig_info["name"])
+            original_modified_time = storage.modified_time(sig_info["name"])
+            thumb_modified_time = storage.modified_time(sig_info["thumb_path"])
         except:
             # One of the files probably does not exist
             pass
