@@ -1,8 +1,9 @@
 import os
 
+import sentry_sdk
 from django.conf import settings
 from django.core import signing
-from django.core.files.storage import get_storage_class, FileSystemStorage
+from django.core.files.storage import get_storage_class, FileSystemStorage, Storage
 from storages.backends.s3boto3 import S3Boto3Storage
 
 
@@ -28,13 +29,50 @@ class S3RenameMixin:
         )
         self.delete(old_name)
 
+class SentryMixin:
+    def path(self, name):
+        with sentry_sdk.start_span(op="storage", description="get path"):
+            return super().path(name)
 
-class PublicS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
+    def delete(self, name):
+        with sentry_sdk.start_span(op="storage", description="delete file"):
+            return super().delete(name)
+
+    def exists(self, name):
+        with sentry_sdk.start_span(op="storage", description="file exists"):
+            return super().exists(name)
+
+    def listdir(self, path):
+        with sentry_sdk.start_span(op="storage", description="listdir"):
+            return super().listdir(path)
+
+    def size(self, name):
+        with sentry_sdk.start_span(op="storage", description="size"):
+            return super().size(name)
+
+    def url(self, name):
+        with sentry_sdk.start_span(op="storage", description="url"):
+            return super().url(name)
+
+    def get_accessed_time(self, name):
+        with sentry_sdk.start_span(op="storage", description="get_accessed_time"):
+            return super().get_accessed_time(name)
+
+    def get_created_time(self, name):
+        with sentry_sdk.start_span(op="storage", description="get_created_time"):
+            return super().get_created_time(name)
+
+    def get_modified_time(self, name):
+        with sentry_sdk.start_span(op="storage", description="get_modified_time"):
+            return super().get_modified_time(name)
+
+
+class PublicS3Storage(SentryMixin, S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
     location = settings.PUBLIC_MEDIA_LOCATION
     file_overwrite = False
 
 
-class PrivateS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
+class PrivateS3Storage(SentryMixin, S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
     location = settings.PRIVATE_MEDIA_LOCATION
     file_overwrite = False
 
