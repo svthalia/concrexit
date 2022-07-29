@@ -1,6 +1,7 @@
 """Utility views."""
 from datetime import timedelta
 
+import sentry_sdk
 from PIL import Image, ImageOps
 from django.core import signing
 from django.core.exceptions import PermissionDenied
@@ -71,29 +72,27 @@ def get_thumbnail(request, request_path):
     """
     # Get image information from signature
     # raises PermissionDenied if bad signature
-    sig_info = _get_signature_info(request)
+    with sentry_sdk.start_span(op="thumbnails", description="Get signature info"):
+        sig_info = _get_signature_info(request)
     storage = get_storage_class(sig_info["storage"])()
 
     if not sig_info["thumb_path"].endswith(request_path):
         # 404 if the file does not exist
         raise Http404("Media not found.")
 
-    original_modified_time = timezone.make_aware(timezone.datetime.min)
-    thumb_modified_time = original_modified_time
-    # noinspection PyBroadException
-    try:
-        original_modified_time = storage.get_modified_time(
-            sig_info["name"]
-        )
-        original_modified_time = storage.get_modified_time(
-            sig_info["name"]
-        )
-    except:
-        # One of the files probably does not exist
-        pass
+    with sentry_sdk.start_span(op="thumbnails", description="Obtain modified times"):
+        original_modified_time = timezone.make_aware(timezone.datetime.min)
+        thumb_modified_time = original_modified_time
+        # noinspection PyBroadException
+        try:
+            original_modified_time = storage.get_modified_time(sig_info["name"])
+            original_modified_time = storage.get_modified_time(sig_info["name"])
+        except:
+            # One of the files probably does not exist
+            pass
 
-    if original_modified_time.timestamp() == 0:
-        raise Http404
+        if original_modified_time.timestamp() == 0:
+            raise Http404
 
     # Check if directory for thumbnail exists, if not create it
     # os.makedirs(os.path.dirname(full_thumb_path), exist_ok=True)
@@ -102,18 +101,19 @@ def get_thumbnail(request, request_path):
         storage.delete(sig_info["thumb_path"])
 
         # Create a thumbnail from the original_path, saved to thumb_path
-        with storage.open(sig_info["name"], "rb") as original_file:
-            image = Image.open(original_file)
-            format = image.format
-            size = tuple(int(dim) for dim in sig_info["size"].split("x"))
-            if not sig_info["fit"]:
-                ratio = min([a / b for a, b in zip(size, image.size)])
-                size = tuple(int(ratio * x) for x in image.size)
+        with sentry_sdk.start_span(op="thumbnails", description="Generate thumbnail image"):
+            with storage.open(sig_info["name"], "rb") as original_file:
+                image = Image.open(original_file)
+                format = image.format
+                size = tuple(int(dim) for dim in sig_info["size"].split("x"))
+                if not sig_info["fit"]:
+                    ratio = min([a / b for a, b in zip(size, image.size)])
+                    size = tuple(int(ratio * x) for x in image.size)
 
-            if size[0] != image.size[0] and size[1] != image.size[1]:
-                image = ImageOps.fit(image, size, Image.ANTIALIAS)
+                if size[0] != image.size[0] and size[1] != image.size[1]:
+                    image = ImageOps.fit(image, size, Image.ANTIALIAS)
 
-            save_image(storage, image, sig_info["thumb_path"], format)
+                save_image(storage, image, sig_info["thumb_path"], format)
 
     # Redirect to the serving url of the image
     # for public images this goes via a static file server (i.e. nginx)
