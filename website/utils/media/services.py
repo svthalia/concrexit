@@ -54,7 +54,7 @@ def get_thumbnail_url(file, size, fit=True):
     :param file: the file field
     :param size: size of the image
     :param fit: False to keep the aspect ratio, True to crop
-    :return: direct media url or generate-thumbnail path
+    :return: get-thumbnail path
     """
     storage = DefaultStorage()
     name = file
@@ -78,23 +78,10 @@ def get_thumbnail_url(file, size, fit=True):
         "storage": f"{storage.__class__.__module__}.{storage.__class__.__name__}",
     }
 
-    # Check if we need to generate, then redirect to the generating route,
-    # otherwise just return the serving file path
-    if not storage.exists(sig_info["thumb_path"]) or (
-        storage.exists(name)
-        and storage.get_modified_time(name)
-        > storage.get_modified_time(sig_info["thumb_path"])
-    ):
-        # Put all image info in signature for the generate view
-        query = f"?sig={signing.dumps(sig_info)}"
-        # We provide a URL instead of calling it as a function, so that using
-        # it means kicking off a new GET request. If we would generate all
-        # thumbnails inline, loading an album overview would have high latency.
-        return (
-            reverse(
-                "generate-thumbnail", args=[os.path.join(size_fit, sig_info["name"])]
-            )
-            + query
-        )
-
-    return storage.url(sig_info["serve_path"])
+    # We provide a URL instead of calling it as a function, so that using
+    # it means kicking off a new GET request. If we would need to check all files for the
+    # thumbnails inline, loading an album overview would have high latency.
+    return (
+        reverse("get-thumbnail", args=[os.path.join(size_fit, sig_info["name"])])
+        + f"?sig={signing.dumps(sig_info)}"
+    )

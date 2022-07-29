@@ -57,7 +57,7 @@ def private_media(request, request_path):
     )
 
 
-def generate_thumbnail(request, request_path):
+def get_thumbnail(request, request_path):
     """Generate thumbnail and redirect user to new location.
 
     The thumbnails are generated with this route. Because the

@@ -53,7 +53,7 @@ from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
 from thaliawebsite.views import TestCrashView, IndexView
-from utils.media.views import generate_thumbnail, private_media
+from utils.media.views import get_thumbnail, private_media
 from .sitemaps import StaticViewSitemap
 
 __all__ = ["urlpatterns"]
@@ -176,9 +176,9 @@ urlpatterns = [
     path("crash/", TestCrashView.as_view()),
     # Custom media paths
     re_path(
-        r"^media/generate-thumbnail/(?P<request_path>.*)",
-        generate_thumbnail,
-        name="generate-thumbnail",
+        r"^media/thumbnail/(?P<request_path>.*)",
+        get_thumbnail,
+        name="get-thumbnail",
     ),
     re_path(
         r"^media/private/(?P<request_path>.*)$", private_media, name="private-media"
