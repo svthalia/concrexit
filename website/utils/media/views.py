@@ -10,8 +10,24 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils import timezone
 from django_sendfile import sendfile
+from django.core.cache import cache
 
 from utils.media.services import save_image
+
+
+def get_thumb_modified_time(storage, path):
+    storage_value = cache.get(
+        f"thumbnails_{path}", timezone.make_aware(timezone.datetime.min)
+    )
+    if not storage_value:
+        # noinspection PyBroadException
+        try:
+            storage_value = storage.get_modified_time(path)
+            cache.set(f"thumbnails_{path}", storage_value, 24 * 60 * 60)
+        except:
+            # One of the files probably does not exist
+            pass
+    return storage_value
 
 
 def _get_signature_info(request):
@@ -78,15 +94,8 @@ def get_thumbnail(request, request_path):
         # 404 if the file does not exist
         raise Http404("Media not found.")
 
-    original_modified_time = timezone.make_aware(timezone.datetime.min)
-    thumb_modified_time = original_modified_time
-    # noinspection PyBroadException
-    try:
-        original_modified_time = storage.get_modified_time(sig_info["name"])
-        thumb_modified_time = storage.get_modified_time(sig_info["thumb_path"])
-    except:
-        # One of the files probably does not exist
-        pass
+    original_modified_time = get_thumb_modified_time(storage, sig_info["name"])
+    thumb_modified_time = get_thumb_modified_time(storage, sig_info["thumb_path"])
 
     if original_modified_time.timestamp() == 0:
         raise Http404
