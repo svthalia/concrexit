@@ -11,8 +11,24 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils import timezone
 from django_sendfile import sendfile
+from django.core.cache import cache
 
 from utils.media.services import save_image
+
+
+def get_thumb_modified_time(storage, path):
+    storage_value = cache.get(
+        f"thumbnails_{path}", timezone.make_aware(timezone.datetime.min)
+    )
+    if not storage_value:
+        # noinspection PyBroadException
+        try:
+            storage_value = storage.get_modified_time(path)
+            cache.set(f"thumbnails_{path}", storage_value, 24 * 60 * 60)
+        except:
+            # One of the files probably does not exist
+            pass
+    return storage_value
 
 
 def _get_signature_info(request):
@@ -72,8 +88,7 @@ def get_thumbnail(request, request_path):
     """
     # Get image information from signature
     # raises PermissionDenied if bad signature
-    with sentry_sdk.start_span(op="thumbnails", description="Get signature info"):
-        sig_info = _get_signature_info(request)
+    sig_info = _get_signature_info(request)
     storage = get_storage_class(sig_info["storage"])()
 
     if not sig_info["thumb_path"].endswith(request_path):
@@ -81,18 +96,11 @@ def get_thumbnail(request, request_path):
         raise Http404("Media not found.")
 
     with sentry_sdk.start_span(op="thumbnails", description="Obtain modified times"):
-        original_modified_time = timezone.datetime.min
-        thumb_modified_time = original_modified_time
-        # noinspection PyBroadException
-        try:
-            original_modified_time = storage.modified_time(sig_info["name"])
-            thumb_modified_time = storage.modified_time(sig_info["thumb_path"])
-        except:
-            # One of the files probably does not exist
-            pass
+        original_modified_time = get_thumb_modified_time(storage, sig_info["name"])
+        thumb_modified_time = get_thumb_modified_time(storage, sig_info["thumb_path"])
 
-        if original_modified_time.timestamp() == 0:
-            raise Http404
+    if original_modified_time.timestamp() == 0:
+        raise Http404
 
     # Check if directory for thumbnail exists, if not create it
     # os.makedirs(os.path.dirname(full_thumb_path), exist_ok=True)
