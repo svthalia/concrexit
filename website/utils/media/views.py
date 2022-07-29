@@ -20,11 +20,11 @@ def get_thumb_modified_time(storage, path):
     storage_value = cache.get(
         f"thumbnails_{path}", timezone.make_aware(timezone.datetime.min)
     )
-    if not storage_value:
+    if storage_value.timestamp() <= 0:
         # noinspection PyBroadException
         try:
             storage_value = storage.get_modified_time(path)
-            cache.set(f"thumbnails_{path}", storage_value, 24 * 60 * 60)
+            cache.set(f"thumbnails_{path}", storage_value, 60 * 60)
         except:
             # One of the files probably does not exist
             pass
@@ -99,7 +99,7 @@ def get_thumbnail(request, request_path):
         original_modified_time = get_thumb_modified_time(storage, sig_info["name"])
         thumb_modified_time = get_thumb_modified_time(storage, sig_info["thumb_path"])
 
-    if original_modified_time.timestamp() == 0:
+    if original_modified_time.timestamp() <= 0:
         raise Http404
 
     # Check if directory for thumbnail exists, if not create it
