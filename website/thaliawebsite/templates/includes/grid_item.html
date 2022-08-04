@@ -4,7 +4,7 @@
         <a class="d-flex" href="{{ url }}" {{ anchor_attrs|safe }}>
     {% endif %}
     <div class="image">
-        <img alt="{{ title }}" src="{{ image_url }}"/>
+        <img alt="{{ title }}" src="{{ image_url }}" loading="lazy" />
     </div>
     <div class="name">
         <span>{{ title }}</span>

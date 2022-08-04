@@ -2,16 +2,32 @@
 from datetime import timedelta
 
 from PIL import Image, ImageOps
-from django.conf import settings
 from django.core import signing
 from django.core.exceptions import PermissionDenied
 from django.core.files.storage import get_storage_class
 from django.core.signing import BadSignature
 from django.http import Http404
 from django.shortcuts import redirect
+from django.utils import timezone
 from django_sendfile import sendfile
+from django.core.cache import cache
 
 from utils.media.services import save_image
+
+
+def get_thumb_modified_time(storage, path):
+    storage_value = cache.get(
+        f"thumbnails_{path}", timezone.make_aware(timezone.datetime.min)
+    )
+    if storage_value.timestamp() <= 0:
+        # noinspection PyBroadException
+        try:
+            storage_value = storage.get_modified_time(path)
+            cache.set(f"thumbnails_{path}", storage_value, 60 * 60)
+        except:
+            # File probably does not exist
+            pass
+    return storage_value
 
 
 def _get_signature_info(request):
@@ -57,7 +73,7 @@ def private_media(request, request_path):
     )
 
 
-def generate_thumbnail(request, request_path):
+def get_thumbnail(request, request_path):
     """Generate thumbnail and redirect user to new location.
 
     The thumbnails are generated with this route. Because the
@@ -71,24 +87,23 @@ def generate_thumbnail(request, request_path):
     """
     # Get image information from signature
     # raises PermissionDenied if bad signature
-    query = ""
     sig_info = _get_signature_info(request)
     storage = get_storage_class(sig_info["storage"])()
-    is_public = sig_info["storage"] == settings.PUBLIC_FILE_STORAGE
 
     if not sig_info["thumb_path"].endswith(request_path):
         # 404 if the file does not exist
         raise Http404("Media not found.")
 
-    if not storage.exists(sig_info["name"]):
+    original_modified_time = get_thumb_modified_time(storage, sig_info["name"])
+    thumb_modified_time = get_thumb_modified_time(storage, sig_info["thumb_path"])
+
+    if original_modified_time.timestamp() <= 0:
         raise Http404
 
     # Check if directory for thumbnail exists, if not create it
     # os.makedirs(os.path.dirname(full_thumb_path), exist_ok=True)
     # Skip generating the thumbnail if it exists
-    if not storage.exists(sig_info["thumb_path"]) or storage.get_modified_time(
-        sig_info["name"]
-    ) > storage.get_modified_time(sig_info["thumb_path"]):
+    if original_modified_time > thumb_modified_time:
         storage.delete(sig_info["thumb_path"])
 
         # Create a thumbnail from the original_path, saved to thumb_path
@@ -104,6 +119,9 @@ def generate_thumbnail(request, request_path):
                 image = ImageOps.fit(image, size, Image.ANTIALIAS)
 
             save_image(storage, image, sig_info["thumb_path"], format)
+            cache.set(
+                f"thumbnails_{sig_info['thumb_path']}", original_modified_time, 60 * 60
+            )
 
     # Redirect to the serving url of the image
     # for public images this goes via a static file server (i.e. nginx)
