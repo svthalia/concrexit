@@ -479,7 +479,7 @@ python-dateutil = "*"
 
 [[package]]
 name = "django-sendfile2"
-version = "0.6.1"
+version = "0.7.0"
 description = "Abstraction to offload file uploads to web-server (e.g. Apache with mod_xsendfile) once Django has checked permissions etc."
 category = "main"
 optional = false
@@ -489,7 +489,7 @@ python-versions = "*"
 django = "*"
 
 [package.extras]
-docs = ["sphinx", "sphinx-rtd-theme"]
+docs = ["sphinx-rtd-theme", "sphinx"]
 
 [[package]]
 name = "django-storages"
@@ -1549,7 +1549,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "4bafd2f42afcd36c9a87f07368a73913a2961a884b1008483d363330c16c62d1"
+content-hash = "d0eb2eace6a552a55c4655e5d2d29c4b9de56e4bf6a421374749399f9496616f"
 
 [metadata.files]
 alabaster = [
@@ -1867,8 +1867,8 @@ django-recurrence = [
     {file = "django_recurrence-1.11.1-py3-none-any.whl", hash = "sha256:0c65f30872599b5813a9bab6952dada23c55894f28674490a753ada559f14bc5"},
 ]
 django-sendfile2 = [
-    {file = "django-sendfile2-0.6.1.tar.gz", hash = "sha256:312b4501960e6b3a3390c48a6bdcfdae2c0516efacf24bdd0c97c6f2f2d2fc30"},
-    {file = "django_sendfile2-0.6.1-py3-none-any.whl", hash = "sha256:80cba260b4b0569dfe4bb04eed807a90765c65a200747df931e70dc22b935267"},
+    {file = "django-sendfile2-0.7.0.tar.gz", hash = "sha256:d900b1557cb1ba881798728de7ed7c82bff808868f331136b867a106e73bcd1f"},
+    {file = "django_sendfile2-0.7.0-py3-none-any.whl", hash = "sha256:0ee17b4f7ce8cc7159f75fa4e5d62e7795c1217de8f1e52ee6265d4aa46dce03"},
 ]
 django-storages = [
     {file = "django-storages-1.12.3.tar.gz", hash = "sha256:a475edb2f0f04c4f7e548919a751ecd50117270833956ed5bd585c0575d2a5e7"},
