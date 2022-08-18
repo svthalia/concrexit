@@ -50,6 +50,9 @@ class PublicFileSystemStorage(FileSystemRenameMixin, FileSystemStorage):
     location = os.path.join(settings.MEDIA_ROOT, settings.PUBLIC_MEDIA_LOCATION)
     base_url = settings.PUBLIC_MEDIA_URL
 
+    def url(self, name, attachment=False):
+        return super().url(name)
+
 
 class PrivateFileSystemStorage(FileSystemRenameMixin, FileSystemStorage):
     location = os.path.join(settings.MEDIA_ROOT, settings.PRIVATE_MEDIA_LOCATION)
