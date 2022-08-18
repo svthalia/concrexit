@@ -9,6 +9,9 @@
 
 {% block page_content %}
     {% bootstrap_messages %}
+    {% if form.errors %}
+        {% bootstrap_form_errors form %}
+    {% endif %}
     <form method="post" enctype="multipart/form-data" class="col-12">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
