@@ -303,6 +303,29 @@ img {
     cursor: pointer;
     overflow: hidden;
 
+    .pulsing-background {
+        background-color: var(--background-color);
+        animation-name: color;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+
+        @keyframes color {
+            0% {
+                background-color: var(--background-color);
+            }
+            50% {
+                background-color: var(--background-shade);
+            }
+            100% {
+                background-color: var(--background-color);
+            }
+        }
+
+        img {
+            color: transparent;
+        }
+    }
+
     .ribbon-wrapper {
         width: 120px;
         height: 110px;
