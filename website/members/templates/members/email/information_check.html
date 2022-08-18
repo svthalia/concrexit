@@ -1,70 +1,57 @@
+{% extends "email/html_email.html" %}
+
 {% load i18n %}
 {% load baseurl %}
 {% load static %}
 
-<html style="background-color: #F0F0F0;">
-    <body style="background-color: #F0F0F0; border-spacing:0px; font-size:15px; font-family:Arial;">
-            <div style="background-color: white; max-width:700px; margin-left:auto; margin-right: auto;">
-                <div style="background-color:#E6227A; color:white; text-align:center; padding:20px;">
-                    <img src="{% baseurl %}{% static 'img/logo-magenta-bg-en.png' %}" style="max-width:200px;" />
-                </div>
-                <div style="padding:20px; margin-left:auto; margin-right: auto;">
-                    {% blocktrans %}Dear {{ name }}{% endblocktrans %},<br />
-                    <br />
-                    {% blocktrans trimmed %}
-                        We currently have the following information about you in our database.
-                        Via this email we'd like to ask you to check the accuracy of this data.
-                    {% endblocktrans %}
-                </div>
-                <table style="font-family:Arial; font-size:15px; margin-left:auto; margin-right: auto; padding:0 20px 0 20px; width: 100%;">
-                  <tr>
-                    <td>{% trans "username"|capfirst %}</td>
-                    <td>{{ username }}</td>
-                  </tr>
-                  <tr>
-                    <td>{% trans "name"|capfirst %}</td>
-                    <td>{{ full_name }}</td>
-                  </tr>
-                  <tr>
-                    <td>{% trans "address"|capfirst %}</td>
-                    <td>{{ address_street }}{% if address_street2 %}<br>{{ address_street2 }}{% endif %}<br>{{ address_postal_code }}<br>{{ address_city }}<br>{{ address_country }}</td>
-                  </tr>
-                  <tr>
-                    <td>{% trans "phone"|capfirst %}</td>
-                    <td>{{ phone_number }}</td>
-                  </tr>
-                  <tr>
-                    <td>{% trans "date of birth"|capfirst %}</td>
-                    <td>{{ birthday }}</td>
-                  </tr>
-                  <tr>
-                    <td>{% trans "email address"|capfirst %}</td>
-                    <td>{{ email }}</td>
-                  </tr>
-                  <tr>
-                    <td>{% trans "student number"|capfirst %}</td>
-                    <td>{{ student_number }}</td>
-                  </tr>
-                  <tr>
-                    <td>{% trans "cohort"|capfirst %}</td>
-                    <td>{{ starting_year }}</td>
-                  </tr>
-                  <tr>
-                    <td>{% trans "programme"|capfirst %}</td>
-                    <td>{{ programme}}</td>
-                  </tr>
-                </table>
-                 <div style="background-color: white; max-width:700px; margin-left:auto; margin-right: auto; padding:20px">
-                    {% blocktrans trimmed %}
-                        You can change this data by logging into the website and using the 'edit profile' page.
-                        Unable to edit the incorrect information? Then send an email: info@thalia.nu.
-                    {% endblocktrans %}
-                        <br /><br />
-                        {% trans "With kind regards" %},<br />
-                        <br />
-                        {% trans "The board of Study Association Thalia" %}<br />
-                 </div>
-            </div>
-            <p style="text-align: center;margin: 20px;"><em>{% trans "This email was automatically generated." %}</em></p>
-    </body>
-</html>
+{% block content %}
+    {% blocktrans %}Dear {{ name }}{% endblocktrans %},<br />
+    <br />
+    {% blocktrans trimmed %}
+        We currently have the following information about you in our database.
+        Via this email we'd like to ask you to check the accuracy of this data.
+    {% endblocktrans %}
+    <table style="font-family:Arial; font-size:15px; margin-left:auto; margin-right: auto; padding: 20px; width: 100%;">
+      <tr>
+        <td>{% trans "username"|capfirst %}</td>
+        <td>{{ username }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "name"|capfirst %}</td>
+        <td>{{ full_name }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "address"|capfirst %}</td>
+        <td>{{ address_street }}{% if address_street2 %}<br>{{ address_street2 }}{% endif %}<br>{{ address_postal_code }}<br>{{ address_city }}<br>{{ address_country }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "phone"|capfirst %}</td>
+        <td>{{ phone_number }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "date of birth"|capfirst %}</td>
+        <td>{{ birthday }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "email address"|capfirst %}</td>
+        <td>{{ email }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "student number"|capfirst %}</td>
+        <td>{{ student_number }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "cohort"|capfirst %}</td>
+        <td>{{ starting_year }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "programme"|capfirst %}</td>
+        <td>{{ programme}}</td>
+      </tr>
+    </table>
+
+    {% blocktrans trimmed %}
+        You can change this data by logging into the website and using the 'edit profile' page.
+        Unable to edit the incorrect information? Then send an email: info@thalia.nu.
+    {% endblocktrans %}
+{% endblock %}
