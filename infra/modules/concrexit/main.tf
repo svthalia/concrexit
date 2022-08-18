@@ -121,7 +121,7 @@ data "external" "nix-flake-build" {
               env-vars.GSUITE_DOMAIN = "${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
               env-vars.GSUITE_MEMBERS_DOMAIN = "members.${var.stage == "production" ? "thalia.nu" : "${var.webhostname}.thalia.nu"}";
               env-vars.DJANGO_ENV = "${var.stage}";
-              env-vars.AWS_STORAGE_BUCKET_NAME = "${aws_s3_bucket.concrexit-media-bucket.id}";
+              ${var.stage == "production" ? "" : "env-vars.AWS_STORAGE_BUCKET_NAME = \"${aws_s3_bucket.concrexit-media-bucket.id}\";"}
             };
 
             services.postgresql.dataDir = "/volume/concrexit_postgres/$${config.services.postgresql.package.psqlSchema}";
