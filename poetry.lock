@@ -576,7 +576,7 @@ python-dateutil = ">=2.4"
 
 [[package]]
 name = "firebase-admin"
-version = "5.2.0"
+version = "5.3.0"
 description = "Firebase Admin Python SDK"
 category = "main"
 optional = false
@@ -1548,7 +1548,7 @@ docs = ["recommonmark", "sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "1afcecf8086f621a3df5cdc96e595a9d7ce4267309353de014155d3335ac28e9"
+content-hash = "80c8336f9d12daca137def8ae06cc02e3c9dd9aeb38693844a4bfc2294c0b32e"
 
 [metadata.files]
 alabaster = [
@@ -1898,8 +1898,8 @@ faker = [
     {file = "Faker-14.1.0.tar.gz", hash = "sha256:0e00bfa1eadf1493f15662edb181222fea4847764cf3f9ff3e66ee0f95c9a644"},
 ]
 firebase-admin = [
-    {file = "firebase_admin-5.2.0-py3-none-any.whl", hash = "sha256:e6d69fb055b1c1e4dc048e0192772c978f9c826a9912d566e5a924eea449bdc1"},
-    {file = "firebase_admin-5.2.0.tar.gz", hash = "sha256:cd1a47ff43e5d83cf8d6e2c478387860c363876d9b9149b5034a13b81f8b4bda"},
+    {file = "firebase_admin-5.3.0-py3-none-any.whl", hash = "sha256:4a169cf49aae5392c6ec6fc6a2b62f86b0d8ad499dfc4d1a30fcfdc09dfe18c5"},
+    {file = "firebase_admin-5.3.0.tar.gz", hash = "sha256:05e0c12e37a613b6aeeb2a96d4259badf139f977cb2ac630fd364722ee02a74d"},
 ]
 freezegun = [
     {file = "freezegun-1.2.2-py3-none-any.whl", hash = "sha256:ea1b963b993cb9ea195adbd893a48d573fda951b0da64f60883d7e988b606c9f"},
