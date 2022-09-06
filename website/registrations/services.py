@@ -36,7 +36,7 @@ def _generate_username(registration: Registration) -> str:
     if len(username) > 150:
         username = username[:150]
 
-    return username
+    return username.lower()
 
 
 def check_unique_user(entry: Entry) -> bool:
@@ -241,7 +241,9 @@ def _create_member_from_registration(registration: Registration) -> Member:
 
     # Create user
     user = get_user_model().objects.create_user(
-        username=registration.username.lower(),
+        username=_generate_username(registration)
+        if registration.username is None
+        else registration.username.lower(),
         email=registration.email,
         password=password,
         first_name=registration.first_name,
