@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.template.defaultfilters import date as _date
-from django.urls import reverse, path
+from django.urls import reverse, path, resolve
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -233,3 +233,14 @@ class EventAdmin(DoNextModelAdmin):
             ),
         ]
         return custom_urls + urls
+
+    def get_field_queryset(self, db, db_field, request):
+        """Members without the can view as organiser permission can only assign their own groups as organiser"""
+        pk = resolve(request.path_info).kwargs["object_id"]
+        if db_field.name == "organisers" and not request.user.has_perm(
+            "override_organiser"
+        ):
+            return request.member.get_member_groups().union(
+                MemberGroup.objects.filter(event_organiser__pk=pk)
+            )
+        return super().get_field_queryset(db, db_field, request)

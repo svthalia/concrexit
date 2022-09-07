@@ -43,7 +43,9 @@ class Event(models.Model):
     end = models.DateTimeField(_("end time"))
 
     organisers = models.ManyToManyField(
-        "activemembers.MemberGroup", verbose_name=_("organisers")
+        "activemembers.MemberGroup",
+        verbose_name=_("organisers"),
+        related_name=_("event_organiser"),
     )
 
     category = models.CharField(
