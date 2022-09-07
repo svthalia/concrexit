@@ -133,7 +133,10 @@ class Album(models.Model):
         cover = None
         if self._cover is not None:
             return self._cover
-        if self.photo_set.exists():
+
+        # Not prefetched because this should be rare and is a lot of data
+        # `exists` is faster in theory, but requires everything to be fetched later anyways
+        if self.photo_set:
             random.seed(self.dirname)
             cover = random.choice(self.photo_set.all())
         return cover

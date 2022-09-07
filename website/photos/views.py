@@ -22,7 +22,7 @@ def index(request):
     keywords = request.GET.get("keywords", "").split()
 
     # Only show published albums
-    albums = Album.objects.filter(hidden=False)
+    albums = Album.objects.filter(hidden=False).select_related("_cover")
     for key in keywords:
         albums = albums.filter(**{"title__icontains": key})
 

@@ -23,7 +23,12 @@ from .models import Category, Course, Exam, Summary
 class CourseIndexView(ListView):
     """Render an overview of the courses."""
 
-    queryset = Course.objects.filter(until=None)
+    queryset = (
+        Course.objects.filter(until=None)
+        .prefetch_related("categories", "old_courses")
+        .annotate(summary_count=Count("summary"))
+        .annotate(exam_count=Count("exam"))
+    )
     template_name = "education/courses.html"
 
     def get_ordering(self) -> str:
@@ -40,8 +45,8 @@ class CourseIndexView(ListView):
                         "categories": x.categories.all(),
                         "document_count": sum(
                             [
-                                x.summary_set.filter(accepted=True).count(),
-                                x.exam_set.filter(accepted=True).count(),
+                                x.summary_count,
+                                x.exam_count,
                             ]
                             + [
                                 c.summary_set.filter(accepted=True).count()

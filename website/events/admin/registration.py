@@ -20,6 +20,8 @@ class RegistrationAdmin(DoNextModelAdmin):
 
     form = RegistrationAdminForm
 
+    list_select_related = ["event", "member"]
+
     def save_model(self, request, obj, form, change):
         if not services.is_organiser(request.member, obj.event):
             raise PermissionDenied
