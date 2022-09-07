@@ -213,40 +213,10 @@
                             </td>
                             <td>
                                 <em>
-                                    NEW MESSAGE:
                                     {% if show_cancel_status %}
                                         <p>{{ registration_status }}. {{cancel_info}}</p>
                                     {% else %}
                                         <p>{{ registration_status }}.</p>
-                                    {% endif %}
-                                    OLD MESSAGE:
-                                    {% if not request.user.is_authenticated and event.registration_required %}
-                                        {% trans "You have to log in before you can register for this event." %}
-                                    {% else %}
-                                        {% if not event.registration_required %}
-                                            {% if event.no_registration_message %}
-                                                {{ event.no_registration_message | bleach }}
-                                            {% else %}
-                                                {% trans "No registration required" %}
-                                            {% endif %}
-                                        {% elif not event.registration_started %}
-                                            {% blocktrans trimmed with datetime=event.registration_start  %}
-                                                Registration will open {{ datetime }}
-                                            {% endblocktrans %}
-                                        {% elif not event.registration_allowed %}
-                                            {% blocktrans trimmed %}
-                                                Registration is not possible anymore.
-                                            {% endblocktrans %}
-                                        {% endif %}
-                                        {% if event.after_cancel_deadline and not registration.queue_position %}
-                                            {{ event.cancel_too_late_message }}
-                                        {% endif %}
-                                        {% if event.after_cancel_deadline and registration.queue_position %}
-                                            {% blocktrans trimmed with costs=event.fine %}
-                                                Cancellation while on the waiting list will not result in having to pay a fine.
-                                                Do note that you will be unable to re-register.
-                                            {% endblocktrans %}
-                                        {% endif %}
                                     {% endif %}
                                 </em>
                             </td>
