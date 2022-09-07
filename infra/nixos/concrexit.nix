@@ -354,12 +354,12 @@ in
             };
             "pizza.${cfg.domain}" = pizzaConfig;
             "xn--vi8h.${cfg.domain}" = pizzaConfig;
-#            "alumni.${cfg.domain}" = {
-#              enableACME = cfg.ssl;
-#              addSSL = cfg.ssl;
-#              locations."/".return = "301 https://${cfg.domain}/association/alumni/";
-#              extraConfig = securityHeaders;
-#            };
+           "alumni.${cfg.domain}" = {
+             enableACME = cfg.ssl;
+             addSSL = cfg.ssl;
+             locations."/".return = "301 https://${cfg.domain}/association/alumni/";
+             extraConfig = securityHeaders;
+           };
 
             # Disallow other Host headers when this server is configured for ssl
             # (so it's not added for local testing in the VM)
