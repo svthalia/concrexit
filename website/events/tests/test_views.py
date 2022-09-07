@@ -446,7 +446,7 @@ class RegistrationTest(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].to,
-            [self.event.organiser.contact_mailinglist.name + "@thalia.nu"],
+            [self.event.organisers[0].contact_mailinglist.name + "@thalia.nu"],
         )
 
     def test_registration_cancel_after_deadline_warning(self):

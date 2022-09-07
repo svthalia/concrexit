@@ -11,7 +11,7 @@ from activemembers.models import MemberGroup
 from events import services
 from events import models
 from events.admin.filters import LectureYearFilter
-from events.admin.forms import RegistrationInformationFieldForm
+from events.admin.forms import RegistrationInformationFieldForm, EventAdminForm
 from events.admin.inlines import (
     RegistrationInformationFieldInline,
     PizzaEventInline,
@@ -30,6 +30,8 @@ from utils.admin import DoNextModelAdmin
 class EventAdmin(DoNextModelAdmin):
     """Manage the events."""
 
+    form = EventAdminForm
+
     inlines = (
         RegistrationInformationFieldInline,
         PizzaEventInline,
@@ -40,7 +42,6 @@ class EventAdmin(DoNextModelAdmin):
         "event_date",
         "registration_date",
         "num_participants",
-        "organiser",
         "category",
         "published",
         "edit_link",
@@ -51,7 +52,7 @@ class EventAdmin(DoNextModelAdmin):
     date_hierarchy = "start"
     search_fields = ("title", "description")
     prepopulated_fields = {"map_location": ("location",)}
-    filter_horizontal = ("documents",)
+    filter_horizontal = ("documents", "organisers")
 
     fieldsets = (
         (
@@ -60,7 +61,7 @@ class EventAdmin(DoNextModelAdmin):
                 "fields": (
                     "title",
                     "published",
-                    "organiser",
+                    "organisers",
                 )
             },
         ),
@@ -105,7 +106,7 @@ class EventAdmin(DoNextModelAdmin):
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
-        form.clean = lambda form: form.instance.clean_changes(form.changed_data)
+        form.request = request
         return form
 
     def overview_link(self, obj):
@@ -170,7 +171,9 @@ class EventAdmin(DoNextModelAdmin):
     @staticmethod
     def _change_published(request, queryset, published):
         if not request.user.is_superuser:
-            queryset = queryset.filter(organiser__in=request.member.get_member_groups())
+            queryset = queryset.filter(
+                organisers__in=request.member.get_member_groups()
+            )
         queryset.update(published=published)
 
     def save_formset(self, request, form, formset, change):
@@ -193,38 +196,6 @@ class EventAdmin(DoNextModelAdmin):
             ]
         )
         form.instance.save()
-
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        """Customise formfield for organiser."""
-        field = super().formfield_for_dbfield(db_field, request, **kwargs)
-        if db_field.name == "organiser":
-            # Disable add/change/delete buttons
-            field.widget.can_add_related = False
-            field.widget.can_change_related = False
-            field.widget.can_delete_related = False
-        return field
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """Customise the organiser formfield, limit the options."""
-        if db_field.name == "organiser":
-            # Use custom queryset for organiser field
-            # Only get the current active committees the user is a member of
-            if not (
-                request.user.is_superuser
-                or request.user.has_perm("events.override_organiser")
-            ):
-                kwargs["queryset"] = request.member.get_member_groups()
-            else:
-                # Hide old boards and inactive committees for new events
-                if "add" in request.path:
-                    kwargs[
-                        "queryset"
-                    ] = MemberGroup.active_objects.all() | MemberGroup.objects.filter(
-                        board=None
-                    ).exclude(
-                        until__lt=(timezone.now() - timezone.timedelta(weeks=1))
-                    )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_actions(self, request):
         actions = super().get_actions(request)

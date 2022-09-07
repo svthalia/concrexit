@@ -42,8 +42,8 @@ class Event(models.Model):
 
     end = models.DateTimeField(_("end time"))
 
-    organiser = models.ForeignKey(
-        "activemembers.MemberGroup", models.PROTECT, verbose_name=_("organiser")
+    organisers = models.ManyToManyField(
+        "activemembers.MemberGroup", verbose_name=_("organisers")
     )
 
     category = models.CharField(
@@ -421,22 +421,6 @@ class Event(models.Model):
                     errors.update(
                         {"registration_start": message, "registration_end": message}
                     )
-
-        try:
-            if (
-                self.organiser is not None
-                and self.send_cancel_email
-                and self.organiser.contact_mailinglist is None
-            ):
-                errors.update(
-                    {
-                        "send_cancel_email": _(
-                            "This organiser does not have a contact mailinglist."
-                        )
-                    }
-                )
-        except ObjectDoesNotExist:
-            pass
 
         if errors:
             raise ValidationError(errors)

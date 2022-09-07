@@ -173,7 +173,7 @@ class EventTest(TestCase):
     def test_missing_orgination_mailinglist(self):
         self.event.clean()
 
-        self.event.organiser.contact_mailinglist = None
+        self.event.organisers[0].contact_mailinglist = None
 
         with self.assertRaises(ValidationError):
             self.event.clean()

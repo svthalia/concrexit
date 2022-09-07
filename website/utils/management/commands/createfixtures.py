@@ -274,7 +274,8 @@ class Command(BaseCommand):
         event.start = _faker.date_time_between("-30d", "+120d", _current_tz)
         duration = math.ceil(random.expovariate(0.2))
         event.end = event.start + timedelta(hours=duration)
-        event.organiser = random.choice(groups)
+        event.save()
+        event.organisers.add(*random.sample(list(groups), random.randint(1, 3)))
         event.category = random.choice(EVENT_CATEGORIES)[0]
         event.fine = 5
 

@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -49,3 +50,31 @@ class RegistrationInformationFieldForm(forms.ModelForm):
         widgets = {
             "type": forms.Select,
         }
+
+
+class EventAdminForm(forms.ModelForm):
+    def clean(self):
+        super().clean()
+        self.instance.clean_changes(self.changed_data)
+
+    def clean_organisers(self):
+        if self.request.user.is_superuser or self.request.user.has_perm(
+            "events.override_organiser"
+        ):
+            return self.cleaned_data.get("organisers")
+
+        if (
+            self.request.member
+            and self.cleaned_data.get("organisers")
+            and not (
+                self.request.member.get_member_groups()
+                .filter(pk__in=self.cleaned_data.get("organisers").values_list("pk"))
+                .exists()
+            )
+        ):
+            raise ValidationError(
+                _(
+                    "An event must have at least one organiser and you cannot remove your own access."
+                )
+            )
+        return self.cleaned_data.get("organisers")
