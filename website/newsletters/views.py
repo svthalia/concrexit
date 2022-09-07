@@ -1,4 +1,5 @@
 """Views provided by the newsletters package."""
+import math
 import os
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -40,6 +41,14 @@ def preview(request, pk, lang=None):
 
     newsletter = get_object_or_404(Newsletter, pk=pk)
     events = services.get_agenda(newsletter.date) if newsletter.date else None
+    all_local_partners = Partner.objects.filter(is_local_partner=True).order_by("?")
+    local_partner_count = len(all_local_partners)
+    local_partners = []
+    for i in range(math.floor(local_partner_count/2)):
+        local_partners.append([all_local_partners[i*2], all_local_partners[i*2 + 1]])
+
+    if local_partner_count % 2 != 0:
+        local_partners.append([all_local_partners[local_partner_count-1]])
 
     return render(
         request,
@@ -48,7 +57,7 @@ def preview(request, pk, lang=None):
             "newsletter": newsletter,
             "agenda_events": events,
             "main_partner": Partner.objects.filter(is_main_partner=True).first(),
-            "local_partners": Partner.objects.filter(is_local_partner=True),
+            "local_partners": local_partners,
             "lang_code": lang_code,
         },
     )
