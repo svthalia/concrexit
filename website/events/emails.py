@@ -46,7 +46,7 @@ def notify_organiser(event, registration):
     :param event: the event
     :param registration: the registration that was cancelled
     """
-    if event.organisers.count() < 1 is None:
+    if event.organisers.count() < 1:
         return
 
     for organiser in event.organisers.all():
