@@ -57,8 +57,12 @@
                             <td>{{ event.location }}</td>
                         </tr>
                         <tr>
-                            <th>{% trans "organiser"|capfirst %}</th>
-                            <td><a href={{ event.organiser.get_absolute_url }}>{{ event.organiser }}</a></td>
+                            <th>{% trans "organisers"|capfirst %}</th>
+                            <td>
+                                {% for organiser in event.organisers.all %}
+                                    <a href={{ organiser.get_absolute_url }}>{{ organiser }}</a>{% if forloop.counter < event.organisers.count %},{% endif %}
+                                {% endfor %}
+                            </td>
                         </tr>
                         {% if event.price > 0 %}
                             <tr>
