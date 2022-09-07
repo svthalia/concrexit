@@ -1,3 +1,4 @@
+import uuid
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -200,6 +201,21 @@ class Event(models.Model):
     tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
 
     shift = models.OneToOneField("sales.Shift", models.SET_NULL, null=True, blank=True)
+
+    mark_present_url_token = models.UUIDField(
+        unique=True, default=uuid.uuid4, editable=False
+    )
+
+    @property
+    def mark_present_url(self):
+        """Return a url that a user can use to mark themselves present."""
+        return settings.BASE_URL + reverse(
+            "events:mark-present",
+            kwargs={
+                "pk": self.pk,
+                "token": self.mark_present_url_token,
+            },
+        )
 
     @property
     def cancel_too_late_message(self):
