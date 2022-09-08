@@ -1,0 +1,7 @@
+{% extends "admin/change_form_object_tools.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+  {{ block.super }}
+  <li><a target="_blank" href="{% url 'admin:events_event_mark_present_qr' pk=object_id %}">{% trans "Show presence QR code" %}</a></li>
+{% endblock %}
