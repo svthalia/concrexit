@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth.models import Permission
 from django.core import mail
 from django.test import Client, TestCase, override_settings
+from django.urls import reverse
 from django.utils import timezone
 
 from activemembers.models import Committee, MemberGroupMembership
@@ -123,6 +124,20 @@ class AdminTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertIn("View event", str(response.content))
 
+    def test_mark_present_qr_organiser_denied(self):
+        response = self.client.get("/admin/events/event/1/mark-present-qr/")
+        self.assertEqual(403, response.status_code)
+
+    def test_mark_present_qr_organiser_allowed(self):
+        MemberGroupMembership.objects.create(member=self.member, group=self.committee)
+        response = self.client.get("/admin/events/event/1/mark-present-qr/")
+        self.assertEqual(200, response.status_code)
+
+    def test_mark_present_qr_override_organiser_allowed(self):
+        self._add_override_organiser_permission()
+        response = self.client.get("/admin/events/event/1/mark-present-qr/")
+        self.assertEqual(200, response.status_code)
+
 
 @override_settings(SUSPEND_SIGNALS=True)
 class RegistrationTest(TestCase):
@@ -151,6 +166,13 @@ class RegistrationTest(TestCase):
             fine=0.00,
         )
         cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.mark_present_url = reverse(
+            "events:mark-present",
+            kwargs={
+                "pk": cls.event.pk,
+                "token": cls.event.mark_present_url_token,
+            },
+        )
 
     def setUp(self):
         self.client = Client()
@@ -459,3 +481,53 @@ class RegistrationTest(TestCase):
             response,
             "Cancellation isn't possible anymore without having to pay the full costs of",
         )
+
+    def test_mark_present_url_registered(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=1),
+        )
+
+        response = self.client.get(self.mark_present_url, follow=True)
+        self.assertContains(response, "You have been marked as present.")
+        registration.refresh_from_db()
+        self.assertTrue(registration.present)
+
+    def test_mark_present_url_not_registered(self):
+        response = self.client.get(self.mark_present_url, follow=True)
+        self.assertContains(response, "You are not registered for this event.")
+
+    def test_mark_present_url_wrong_token(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=3),
+        )
+        response = self.client.get(
+            reverse(
+                "events:mark-present",
+                kwargs={
+                    "pk": self.event.pk,
+                    "token": "11111111-2222-3333-4444-555555555555",
+                },
+            ),
+            follow=True,
+        )
+
+        self.assertContains(response, "Invalid url.")
+        self.assertFalse(registration.present)
+
+    def test_mark_present_url_past_event(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=3),
+        )
+        self.event.start = timezone.now() - datetime.timedelta(hours=2)
+        self.event.end = timezone.now() - datetime.timedelta(hours=1)
+        self.event.save()
+        response = self.client.get(self.mark_present_url, follow=True)
+
+        self.assertContains(response, "This event has already ended.")
+        self.assertFalse(registration.present)
