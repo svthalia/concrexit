@@ -10,7 +10,7 @@
           "/events/*",
           "/members/photos",
           "/members/photos/*",
-          "/sales/orders/*/pay"
+          "/sales/order/*/pay"
         ]
       }
     ]
