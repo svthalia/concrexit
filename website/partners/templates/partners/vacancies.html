@@ -73,6 +73,7 @@
 
 {% block js_body %}
     {{ block.super }}
+    <script src="{% static "js/fancybox.umd.js" %}"></script>
     {% compress js %}
         <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'partners/js/main.js' %}"></script>
