@@ -494,6 +494,19 @@ class RegistrationTest(TestCase):
         registration.refresh_from_db()
         self.assertTrue(registration.present)
 
+    def test_mark_present_url_registered(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=1),
+            present=True,
+        )
+
+        response = self.client.get(self.mark_present_url, follow=True)
+        self.assertContains(response, "You were already marked as present.")
+        registration.refresh_from_db()
+        self.assertTrue(registration.present)
+
     def test_mark_present_url_not_registered(self):
         response = self.client.get(self.mark_present_url, follow=True)
         self.assertContains(response, "You are not registered for this event.")

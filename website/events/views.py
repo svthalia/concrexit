@@ -197,14 +197,18 @@ class MarkPresentView(View):
             messages.error(request, _("Invalid url."))
         elif not request.member or not is_user_registered(request.member, event):
             messages.error(request, _("You are not registered for this event."))
-        elif event.end < timezone.now():
-            messages.error(request, _("This event has already ended."))
         else:
             registration = event.registrations.get(
                 member=request.member, date_cancelled=None
             )
-            registration.present = True
-            registration.save()
-            messages.success(request, _("You have been marked as present."))
+
+            if registration.present:
+                messages.info(request, _("You were already marked as present."))
+            elif event.end < timezone.now():
+                messages.error(request, _("This event has already ended."))
+            else:
+                registration.present = True
+                registration.save()
+                messages.success(request, _("You have been marked as present."))
 
         return redirect(event)
