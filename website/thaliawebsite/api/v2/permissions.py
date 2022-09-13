@@ -17,7 +17,7 @@ class IsAuthenticatedOrTokenHasScopeForMethod(BasePermission):
         has_scope = False
 
         if token and hasattr(token, "scope"):  # OAuth 2
-            required_scopes = view.required_scopes_per_method[request.method]
+            required_scopes = view.required_scopes_per_method.get(request.method, [])
 
             if token.is_valid(required_scopes):
                 has_scope = True
