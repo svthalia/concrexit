@@ -1,5 +1,4 @@
 """Register admin pages for the models."""
-import csv
 import datetime
 from import_export.admin import ExportMixin
 from django.contrib import admin, messages
@@ -12,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 from members import services
 from members.models import EmailChange, Member
-from members.models import MemberEmailListResource
+from .resources import UserEmailListResource, UserListResource
 from . import forms, models
 
 
@@ -135,13 +134,12 @@ class HasPermissionsFilter(admin.SimpleListFilter):
         return queryset.filter(permission_count=0)
 
 
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(ExportMixin, BaseUserAdmin):
+    resource_classes = (UserEmailListResource, UserListResource)
     form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 
     actions = [
-        "address_csv_export",
-        "student_number_csv_export",
         "minimise_data",
     ]
 
@@ -184,55 +182,6 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    def address_csv_export(self, request, queryset):
-        response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
-                                           filename="addresses.csv"'
-        writer = csv.writer(response)
-        writer.writerow(
-            [
-                _("First name"),
-                _("Last name"),
-                _("Address"),
-                _("Address line 2"),
-                _("Postal code"),
-                _("City"),
-                _("Country"),
-            ]
-        )
-        for user in queryset.exclude(profile=None):
-            writer.writerow(
-                [
-                    user.first_name,
-                    user.last_name,
-                    user.profile.address_street,
-                    user.profile.address_street2,
-                    user.profile.address_postal_code,
-                    user.profile.address_city,
-                    user.profile.get_address_country_display(),
-                ]
-            )
-        return response
-
-    address_csv_export.short_description = _("Download addresses for selected users")
-
-    def student_number_csv_export(self, request, queryset):
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = 'attachment;filename="student_numbers.csv"'
-        writer = csv.writer(response)
-        writer.writerow([_("First name"), _("Last name"), _("Student number")])
-        for user in queryset.exclude(profile=None):
-            writer.writerow(
-                [user.first_name, user.last_name, user.profile.student_number]
-            )
-        return response
-
-    student_number_csv_export.short_description = _(
-        "Download student number export for selected users"
-    )
-
     def minimise_data(self, request, queryset):
         processed = len(
             services.execute_data_minimisation(
@@ -259,9 +208,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 @admin.register(models.Member)
-class MemberAdmin(UserAdmin, ExportMixin):
-    resource_class = MemberEmailListResource
-
+class MemberAdmin(UserAdmin):
     def has_module_permission(self, request):
         return False
 

@@ -7,6 +7,7 @@ from events.models import Event
 from photos.models import Album
 
 
+#todo: maybe import-export?
 class Command(BaseCommand):
     help = """This is the second step in linking albums and events, the first step is link_album_events_write
               To execute input the csv file through stdin.

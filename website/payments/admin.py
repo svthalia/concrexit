@@ -1,5 +1,4 @@
 """Registers admin interfaces for the payments module."""
-import csv
 from collections import OrderedDict
 
 from django.contrib import admin, messages
@@ -38,7 +37,7 @@ def _show_message(
 class PaymentAdmin(ExportActionMixin, admin.ModelAdmin):
     """Manage the payments."""
 
-    resource_class = PaymentResource
+    resource_classes = (PaymentResource,)
     list_display = (
         "created_at",
         "amount",
@@ -421,7 +420,7 @@ class BatchAdmin(admin.ModelAdmin):
 class BankAccountAdmin(ExportActionMixin, admin.ModelAdmin):
     """Manage bank accounts."""
 
-    resource_class = BankAccountResource
+    resource_classes = (BankAccountResource,)
     list_display = ("iban", "owner_link", "last_used", "valid_from", "valid_until")
     fields = (
         "created_at",

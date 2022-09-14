@@ -7,10 +7,10 @@ from .models import Payment, BankAccount
 class PaymentResource(resources.ModelResource):
     created_at = Field(attribute="created_at", column_name="Created")
     amount = Field(attribute="amount", column_name="Amount")
-    payment_type = Field(attribute="type", column_name="Type")
-    processed_by = Field(attribute="processed_by", column_name="Processor")
-    payer_id = Field(attribute="payer_id", column_name="Payer id")
-    paid_by = Field(attribute="paid_by", column_name="Payer name")
+    payment_type = Field(column_name="Type")
+    processed_by = Field(column_name="Processor")
+    payer_id = Field(column_name="Payer id")
+    paid_by = Field(column_name="Payer name")
     notes = Field(attribute="notes", column_name="Notes")
 
     class Meta:

@@ -1,11 +1,9 @@
 """Registers admin interfaces for the activemembers module."""
-import csv
 import datetime
 
 from django import forms
 from django.contrib import admin, messages
 from django.db.models import Q
-from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -185,7 +183,7 @@ class ActiveMembershipsFilter(admin.SimpleListFilter):
 class MemberGroupMembershipAdmin(ExportActionMixin, admin.ModelAdmin):
     """Manage the group memberships."""
 
-    resource_class = MemberGroupMembershipResource
+    resource_classes = (MemberGroupMembershipResource,)
     form = MemberGroupMembershipForm
     list_display = ("member", "group", "since", "until", "chair", "role")
     list_filter = ("group", TypeFilter, LectureYearFilter, ActiveMembershipsFilter)

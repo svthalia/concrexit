@@ -1,6 +1,4 @@
 """This module registers admin pages for the models."""
-import csv
-
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.http import HttpResponse
@@ -31,7 +29,7 @@ class CourseAdmin(ModelAdmin):
 
 @admin.register(models.Exam)
 class ExamAdmin(ExportActionMixin, ModelAdmin):
-    resource_class = ExamResource
+    resource_classes = (ExamResource,)
     list_display = (
         "type",
         "course",
@@ -69,7 +67,7 @@ class ExamAdmin(ExportActionMixin, ModelAdmin):
 
 @admin.register(models.Summary)
 class SummaryAdmin(ExportActionMixin, ModelAdmin):
-    resource_class = SummaryResource
+    resource_classes = (SummaryResource,)
     list_display = (
         "name",
         "course",

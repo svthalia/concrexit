@@ -189,6 +189,7 @@ class EventMessage(FormView):
         return super().dispatch(request, *args, **kwargs)
 
 
+#todo: export using import-export library
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(organiser_only, name="dispatch")
 class EventRegistrationsExport(View, PermissionRequiredMixin):
