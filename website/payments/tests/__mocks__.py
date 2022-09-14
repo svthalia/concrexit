@@ -28,6 +28,7 @@ class MockModel:
         notes="mock notes",
         payment=None,
         can_manage=True,
+        paying_allowed=True,
     ) -> None:
         self.payer = payer
         self.amount = amount
@@ -35,6 +36,7 @@ class MockModel:
         self.notes = notes
         self.payment = payment
         self.can_manage = can_manage
+        self.paying_allowed = paying_allowed
 
         # Because we have to do as if this is a model sometimes
         self.verbose_name = "MockPayable"
@@ -67,6 +69,10 @@ class MockPayable(Payable):
     @property
     def payment_payer(self):
         return self.model.payer
+
+    @property
+    def paying_allowed(self):
+        return self.model.paying_allowed
 
     def can_manage_payment(self, member):
         return self.model.can_manage
