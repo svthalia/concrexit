@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('activemembers', '0040_remove_multilang_field'),
-        ('events', '0055_alter_event_no_registration_message'),
+        ('events', '0058_event_mark_present_url_token'),
     ]
 
     operations = [
