@@ -2,7 +2,7 @@ from django.utils.functional import classproperty
 
 from payments import Payable, payables
 from sales.models.order import Order, OrderItem
-from sales.services import is_manager
+from sales.services import is_manager, is_adult
 
 
 class OrderPayable(Payable):
@@ -21,6 +21,14 @@ class OrderPayable(Payable):
     @property
     def payment_payer(self):
         return self.model.payer
+
+    @property
+    def paying_allowed(self):
+        return not (
+            self.model.age_restricted
+            and self.model.payer
+            and not is_adult(self.model.payer)
+        )
 
     def can_manage_payment(self, member):
         return is_manager(member, self.model.shift) and member.has_perm(

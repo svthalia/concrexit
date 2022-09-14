@@ -56,6 +56,10 @@ class Payable:
     def tpay_allowed(self):
         return True
 
+    @property
+    def paying_allowed(self):
+        return True
+
     def can_manage_payment(self, member):
         raise NotImplementedError
 

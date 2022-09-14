@@ -69,9 +69,17 @@ class ServicesTest(TestCase):
         with self.subTest("Only allow valid payment types"):
             with self.assertRaises(PaymentError):
                 services.create_payment(
-                    MockPayable(MockModel(payer=self.member, amount=0)),
+                    MockPayable(MockModel(payer=self.member)),
                     self.member,
                     "no_payment",
+                )
+
+        with self.subTest("Do not allow creating payment when not paying_allowed"):
+            with self.assertRaises(PaymentError):
+                services.create_payment(
+                    MockPayable(MockModel(payer=self.member, paying_allowed=False)),
+                    self.member,
+                    Payment.CASH,
                 )
 
     def test_delete_payment(self):
