@@ -8,12 +8,14 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import DetailView, TemplateView, FormView
+from django.views.generic import DetailView, FormView, TemplateView
 
 from events import services
 from events.exceptions import RegistrationError
 from events.models import categories
+from events.services import is_user_registered
 from payments.models import Payment
+
 from .forms import FieldsForm
 from .models import Event, EventRegistration
 
@@ -179,3 +181,34 @@ class RegistrationView(FormView):
         except RegistrationError:
             pass
         return redirect(self.event)
+
+
+@method_decorator(login_required, name="dispatch")
+class MarkPresentView(View):
+    """A view that allows uses to mark their presence at an event using a secret token."""
+
+    def get(self, request, *args, **kwargs):
+        """Mark a user as present.
+
+        Checks if the url is correct, the event has not ended yet, and the user is registered.
+        """
+        event = get_object_or_404(Event, pk=kwargs["pk"])
+        if kwargs["token"] != event.mark_present_url_token:
+            messages.error(request, _("Invalid url."))
+        elif not request.member or not is_user_registered(request.member, event):
+            messages.error(request, _("You are not registered for this event."))
+        else:
+            registration = event.registrations.get(
+                member=request.member, date_cancelled=None
+            )
+
+            if registration.present:
+                messages.info(request, _("You were already marked as present."))
+            elif event.end < timezone.now():
+                messages.error(request, _("This event has already ended."))
+            else:
+                registration.present = True
+                registration.save()
+                messages.success(request, _("You have been marked as present."))
+
+        return redirect(event)

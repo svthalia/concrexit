@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from activemembers.models import MemberGroup
 from events import services
+from events import models
 from events.admin.filters import LectureYearFilter
 from events.admin.forms import RegistrationInformationFieldForm
 from events.admin.inlines import (
@@ -16,9 +17,13 @@ from events.admin.inlines import (
     PizzaEventInline,
     PromotionRequestInline,
 )
-from events.admin.views import EventAdminDetails, EventRegistrationsExport, EventMessage
+from events.admin.views import (
+    EventAdminDetails,
+    EventRegistrationsExport,
+    EventMessage,
+    EventMarkPresentQR,
+)
 from utils.admin import DoNextModelAdmin
-from events import models
 
 
 @admin.register(models.Event)
@@ -249,6 +254,11 @@ class EventAdmin(DoNextModelAdmin):
                 "<int:pk>/message/",
                 self.admin_site.admin_view(EventMessage.as_view(admin=self)),
                 name="events_event_message",
+            ),
+            path(
+                "<int:pk>/mark-present-qr/",
+                self.admin_site.admin_view(EventMarkPresentQR.as_view()),
+                name="events_event_mark_present_qr",
             ),
         ]
         return custom_urls + urls

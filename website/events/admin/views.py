@@ -19,9 +19,11 @@ from events import services
 from events.decorators import organiser_only
 from events.exceptions import RegistrationError
 from events.forms import FieldsForm, EventMessageForm
+from events.models import Event, EventRegistration
 from payments.models import Payment
 from pushnotifications.models import Message, Category
-from events.models import Event, EventRegistration
+
+import qrcode
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -290,4 +292,17 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
         response[
             "Content-Disposition"
         ] = f'attachment; filename="{slugify(event.title)}.csv"'
+        return response
+
+
+@method_decorator(staff_member_required, name="dispatch")
+@method_decorator(organiser_only, name="dispatch")
+class EventMarkPresentQR(View):
+    def get(self, request, *args, **kwargs):
+        event = get_object_or_404(Event, pk=kwargs["pk"])
+        image = qrcode.make(event.mark_present_url)
+
+        response = HttpResponse(content_type="image/png")
+        image.save(response, "PNG")
+
         return response
