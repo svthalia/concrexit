@@ -146,7 +146,7 @@ class ShiftAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         fields = super().get_readonly_fields(request, obj)
-        if not obj:
+        if not obj or obj.locked:
             fields += ("locked",)
         return fields
 
@@ -221,7 +221,7 @@ class ShiftAdmin(admin.ModelAdmin):
 
     def payment_method_sales(self, obj):
         output = "\n".join(
-            f"- {dict(Payment.PAYMENT_TYPE)[k] if k else _('Unpaid')}: €{v:.2f}"
+            f"- {dict(Payment.PAYMENT_TYPE)[k] if k else _('Unpaid')}: €{v or '':.2f}"
             for k, v in obj.payment_method_sales.items()
         )
         return output
