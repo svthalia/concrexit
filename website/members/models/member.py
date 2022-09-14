@@ -113,7 +113,7 @@ class Member(User):
     @property
     def latest_membership(self):
         """Get the most recent membership of this user."""
-        if not self.membership_set.exists():
+        if not self.membership_set:
             return None
         return self.membership_set.latest("since")
 

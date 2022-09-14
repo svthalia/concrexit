@@ -1,3 +1,4 @@
+from django.db.models import Q, Count, Subquery, OuterRef
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework import status
@@ -30,6 +31,11 @@ class EventListView(ListAPIView):
     serializer_class = EventSerializer
     queryset = Event.objects.filter(published=True).select_related(
         "organiser", "food_event"
+    ).prefetch_related("registrationinformationfield_set", "documents").annotate(
+        number_regs=Count(
+            "eventregistration",
+            filter=Q(eventregistration__date_cancelled=None),
+        )
     )
     filter_backends = (
         framework_filters.OrderingFilter,
@@ -82,7 +88,7 @@ class EventRegistrationsView(ListAPIView):
         if self.event:
             return EventRegistration.objects.filter(
                 event=self.event, date_cancelled=None
-            )[: self.event.max_participants]
+            ).select_related("member__profile")[: self.event.max_participants]
         return EventRegistration.objects.none()
 
     def initial(self, request, *args, **kwargs):
