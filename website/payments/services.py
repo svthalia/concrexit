@@ -55,6 +55,9 @@ def create_payment(
     if pay_type == Payment.TPAY and not payer.tpay_enabled:
         raise PaymentError(_("This user does not have Thalia Pay enabled"))
 
+    if not payable.paying_allowed:
+        raise PaymentError(_("Payment restricted"))
+
     if payable.payment is not None:
         payable.payment.amount = payable.payment_amount
         payable.payment.notes = payable.payment_notes
