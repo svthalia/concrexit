@@ -18,6 +18,10 @@ const SOURCES = {
         id: 'unpublished',
         url: '/api/calendarjs/events/unpublished/',
     },
+    unpublished_external: {
+        id: 'unpublished_external',
+        url: '/api/calendarjs/external/unpublished/',
+    },
 };
 
 function checkViewState(calendar) {
@@ -62,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const eventSources = [SOURCES.events, SOURCES.external];
     if (showUnpublished) {
         eventSources.push(SOURCES.unpublished);
+        eventSources.push(SOURCES.unpublished_external);
     }
     if (Cookies.get(BIRTHDAYS_COOKIE)) {
         eventSources.push(SOURCES.birthdays);
