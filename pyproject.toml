@@ -17,7 +17,7 @@ python-magic = "0.4.27"
 Pillow = "9.1.1"
 Django = "4.0.7"
 django-compressor = "3.1"
-psycopg2 = "2.9.3"
+psycopg2 = {version = "2.9.3", optional = true}
 bcrypt = "3.2.2"
 argon2_cffi = "21.3.0"
 firebase-admin = "5.3.0"
@@ -45,6 +45,7 @@ qrcode = {version = "^7.3.1", extras = ["pil"]}
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]
+production = ["psycopg2"]
 
 [tool.poetry.dev-dependencies]
 django-template-check = "0.4.0"
