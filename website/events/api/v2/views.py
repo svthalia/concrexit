@@ -29,12 +29,15 @@ class EventListView(ListAPIView):
     """Returns an overview of all upcoming events."""
 
     serializer_class = EventSerializer
-    queryset = Event.objects.filter(published=True).select_related(
-        "organiser", "food_event"
-    ).prefetch_related("registrationinformationfield_set", "documents").annotate(
-        number_regs=Count(
-            "eventregistration",
-            filter=Q(eventregistration__date_cancelled=None),
+    queryset = (
+        Event.objects.filter(published=True)
+        .select_related("organiser", "food_event")
+        .prefetch_related("registrationinformationfield_set", "documents")
+        .annotate(
+            number_regs=Count(
+                "eventregistration",
+                filter=Q(eventregistration__date_cancelled=None),
+            )
         )
     )
     filter_backends = (
