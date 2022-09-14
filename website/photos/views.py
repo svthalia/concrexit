@@ -121,5 +121,5 @@ def shared_download(request, slug, token, filename):
 @login_required
 def liked_photos(request):
     photos = Photo.objects.filter(likes__member=request.member, album__hidden=False)
-    context = {"album": None, "photos": photos}
+    context = {"photos": photos}
     return render(request, "photos/liked-photos.html", context)
