@@ -6,7 +6,7 @@ from members.models import Member
 
 def get_member(request):
     try:
-        return Member.objects.get(pk=request.user.pk)
+        return Member.objects.select_related("profile").get(pk=request.user.pk)
     except AttributeError:
         return None
     except Member.DoesNotExist:
