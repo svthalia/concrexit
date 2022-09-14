@@ -8,6 +8,7 @@
           "/pizzas",
           "/events",
           "/events/*",
+          "NOT /events/*/mark-present/*",
           "/members/photos",
           "/members/photos/*",
           "/sales/order/*/pay"
