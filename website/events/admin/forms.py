@@ -58,11 +58,6 @@ class EventAdminForm(forms.ModelForm):
         self.instance.clean_changes(self.changed_data)
 
     def clean_organisers(self):
-        if self.request.user.is_superuser or self.request.user.has_perm(
-            "events.override_organiser"
-        ):
-            return self.cleaned_data.get("organisers")
-
         if (
             self.request.member
             and self.cleaned_data.get("organisers")
@@ -71,10 +66,14 @@ class EventAdminForm(forms.ModelForm):
                 .filter(pk__in=self.cleaned_data.get("organisers").values_list("pk"))
                 .exists()
             )
+        ) and not (
+            self.request.user.is_superuser
+            or self.request.user.has_perm("events.override_organiser")
         ):
             raise ValidationError(
-                _(
-                    "An event must have at least one organiser and you cannot remove your own access."
-                )
+                _("You cannot remove your own access from this event.")
             )
+
+        if self.cleaned_data.get("organisers").all() == 0:
+            raise ValidationError(_("An event must have at least one organiser."))
         return self.cleaned_data.get("organisers")

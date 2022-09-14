@@ -106,7 +106,7 @@ class EventAdmin(DoNextModelAdmin):
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
-        form.request = request
+        form.clean = lambda form: form.instance.clean_changes(form.changed_data)
         return form
 
     def overview_link(self, obj):
@@ -238,7 +238,7 @@ class EventAdmin(DoNextModelAdmin):
         """Members without the can view as organiser permission can only assign their own groups as organiser."""
         pk = resolve(request.path_info).kwargs["object_id"]
         if db_field.name == "organisers" and not request.user.has_perm(
-            "override_organiser"
+            "events.override_organiser"
         ):
             return request.member.get_member_groups().union(
                 MemberGroup.objects.filter(event_organiser__pk=pk)

@@ -424,6 +424,21 @@ class Event(models.Model):
                         {"registration_start": message, "registration_end": message}
                     )
 
+        if (
+            not any(
+                organiser.contact_mailinglist is not None
+                for organiser in self.organisers.all()
+            )
+            and self.send_cancel_email
+        ):
+            errors.update(
+                {
+                    "send_cancel_email": _(
+                        "This organiser does not have a contact mailinglist."
+                    )
+                }
+            )
+
         if errors:
             raise ValidationError(errors)
 

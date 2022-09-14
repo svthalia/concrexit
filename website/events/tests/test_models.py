@@ -27,7 +27,6 @@ class EventTest(TestCase):
 
         cls.event = Event.objects.create(
             title="testevent",
-            organiser=cls.committee,
             description="desc",
             start=(timezone.now() + datetime.timedelta(hours=1)),
             end=(timezone.now() + datetime.timedelta(hours=2)),
@@ -37,6 +36,7 @@ class EventTest(TestCase):
             fine=5.00,
             optional_registrations=False,
         )
+        cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.first()
 
     def setUp(self):
@@ -173,7 +173,9 @@ class EventTest(TestCase):
     def test_missing_orgination_mailinglist(self):
         self.event.clean()
 
-        self.event.organisers[0].contact_mailinglist = None
+        organiser = self.event.organisers.first()
+        organiser.contact_mailinglist = None
+        organiser.save()
 
         with self.assertRaises(ValidationError):
             self.event.clean()
@@ -236,7 +238,6 @@ class RegistrationTest(TestCase):
     def setUpTestData(cls):
         cls.event = Event.objects.create(
             title="testevent",
-            organiser=Committee.objects.get(pk=1),
             description="desc",
             start=timezone.now(),
             end=(timezone.now() + datetime.timedelta(hours=1)),
@@ -245,6 +246,7 @@ class RegistrationTest(TestCase):
             price=0.00,
             fine=0.00,
         )
+        cls.event.organisers.add(Committee.objects.get(pk=1))
         cls.member1 = Member.objects.first()
         cls.member2 = Member.objects.all()[1]
         cls.r1 = EventRegistration.objects.create(event=cls.event, member=cls.member1)

@@ -49,17 +49,15 @@ def notify_organiser(event, registration):
     if event.organisers.count() < 1:
         return
 
-    for organiser in event.organisers.all():
-        if organiser.contact_mailinglist is None:
-            return
-        text_template = get_template("events/organiser_email.txt")
-        subject = f"Registration for {event.title} cancelled by member"
-        text_message = text_template.render(
-            {"event": event, "registration": registration}
-        )
+    text_template = get_template("events/organiser_email.txt")
+    subject = f"Registration for {event.title} cancelled by member"
+    text_message = text_template.render({"event": event, "registration": registration})
 
-        EmailMessage(
-            subject,
-            text_message,
-            to=[organiser.contact_mailinglist.name + "@thalia.nu"],
-        ).send()
+    EmailMessage(
+        subject,
+        text_message,
+        to=[
+            organiser.contact_mailinglist.name + "@thalia.nu"
+            for organiser in event.organisers.all()
+        ],
+    ).send()
