@@ -1,10 +1,6 @@
 function setNumLikes(numLikes) {
     const counter = document.querySelector('.fancybox__button--numlikes')
-    if (numLikes === 1) {
-        counter.innerHTML = numLikes.toString() + " like";
-    } else {
-        counter.innerHTML = numLikes.toString() + " likes";
-    }
+    counter.innerHTML = numLikes.toString();
 }
 
 function updateLikes(numLikes, userLikes) {
@@ -57,7 +53,7 @@ Fancybox.Plugins.Toolbar.defaults.items.numLikes = {
     class: "fancybox__button--numlikes",
     label: "numLikes",
     html:
-        '? likes',
+        '?',
     click: function (e) {
         e.preventDefault();
         toggleLike(this.fancybox.getSlide());

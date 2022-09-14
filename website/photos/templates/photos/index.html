@@ -11,14 +11,11 @@
 
 {% block page_content %}
     {% with keys=keywords|join:" " %}
-        <div class="row">
-            <p class="col-12 col-lg-6">
-                <a class="btn btn-primary btn-lg mt-2" href="{% url 'photos:liked-photos' %}">
-                    <i class="fas fa-heart me-2"></i> Photos I liked
-                </a>
-            </p>
-
-            <form class="search-form form-inline col-12 mt-4 mt-lg-0 mb-4 col-lg-6" method="get"
+        <div class="row mb-4">
+            <div class="col-12 col-lg-6">
+                {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
+            </div>
+            <form class="search-form form-inline col-12 col-lg-6 d-flex align-items-center justify-content-center" method="get"
                   action="{% url 'photos:index' %}#photos-albums">
                 <div class="input-group">
                     <input class="form-control col-12 col-md-9" style="width: available" name="keywords" type="search" value="{{ keys|default_if_none:'' }}"
@@ -26,6 +23,9 @@
                     <input id="photoalbums-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit"
                            value="{% trans "Search" %}"/>
                 </div>
+                <a href="{% url 'photos:liked-photos' %}" class="btn btn-lg btn-primary ms-2 text-center d-flex align-items-center">
+                    <i class="fas fa-heart"></i>
+                </a>
             </form>
         </div>
         {% if not albums %}

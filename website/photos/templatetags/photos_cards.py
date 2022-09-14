@@ -70,9 +70,16 @@ def photo_card(photo):
 
     return grid_item(
         title="",
-        meta_text=f"<p>{photo.num_likes} likes</p>",
+        meta_text=f"<p><i class='fas fa-heart me-2'></i>{photo.num_likes}</p>",
         url=get_thumbnail_url(photo.file, settings.THUMBNAIL_SIZES["large"], fit=False),
         image_url=image_url,
         class_name=class_name,
         anchor_attrs=anchor_attrs,
     )
+
+
+@register.inclusion_tag("includes/grid_item.html")
+def liked_photo_card(photo):
+    card = photo_card(photo)
+    card.update({"meta_text": ""})
+    return card
