@@ -31,7 +31,7 @@ class NewRequestManager(models.Manager):
 
 
 class PromotionRequest(models.Model):
-
+    objects = models.Manager()
     upcoming_requests = UpcomingRequestManager()
     new_requests = NewRequestManager()
 
