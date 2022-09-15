@@ -32,18 +32,14 @@ RUN apt-get update && \
         rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /venv /venv
-COPY . .
-COPY infra/docker/local/docker-entrypoint.sh /app/docker-entrypoint.sh
-
-VOLUME [ "/static" ]
-ENV STATIC_ROOT=/static
-
-RUN mkdir /static && \
-    MANAGE_PY=1 /venv/bin/python website/manage.py collectstatic && \
-    MANAGE_PY=1 /venv/bin/python website/manage.py compress
+COPY website /app/website
+COPY infra/docker/docker-entrypoint.sh /app/docker-entrypoint.sh
+COPY infra/docker/collect-static.sh /app/collect-static.sh
 
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
-USER appuser
 
+ENV MEDIA_ROOT="/media" \
+    STATIC_ROOT="/static"
+VOLUME [ "/media", "/static" ]
 WORKDIR /app/website
 CMD [ "/app/docker-entrypoint.sh" ]
