@@ -133,7 +133,7 @@ jobs:
             ${{ runner.os }}-poetry-
 
       - name: Install any new dependencies
-        run: poetry install
+        run: poetry install --extras "postgres"
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run tests
