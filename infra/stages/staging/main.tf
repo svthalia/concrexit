@@ -31,8 +31,6 @@ module "concrexit" {
   customer         = var.customer
   webhostname      = "staging"
   domain           = var.domain_name
-  ssh_private_key  = var.ssh_private_key
-  ssh_public_key   = var.ssh_public_key
   aws_interface_id = module.concrexit_network.aws_interface_id
   public_ipv4      = module.concrexit_network.public_ipv4
 }
