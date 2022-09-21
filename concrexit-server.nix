@@ -2,6 +2,7 @@
 let
   hostName = config.networking.hostName;
   production = hostName == "production";
+  useSSL = hostName == "production" || hostName == "staging";
 
   productionEnvFile = ./infra/docker/production/concrexit-production-public.env;
   stagingEnvFile = ./infra/docker/staging/concrexit-staging-public.env;
@@ -15,7 +16,7 @@ let
 
   staticdir = "/var/lib/concrexit/static/";
   mediadir = "/var/lib/concrexit/media/";
-  domain = "thalia.nu";
+  domain = if production then "thalia.nu" else "staging.thalia.nu";
 
   securityHeaders = ''
     # X-Frame-Options tells the browser whether you want to allow your site to be framed or not.
@@ -77,6 +78,8 @@ in
   services.openssh.enable = true;
 
   virtualisation.docker.enable = true;
+  # Needed because of: https://github.com/NixOS/nixpkgs/issues/109389
+  networking.dhcpcd.denyInterfaces = [ "veth*" ];
 
   age.secrets = {
     "concrexit-secrets.env".file = secretsFile;
@@ -224,8 +227,8 @@ in
         # Because this is used for multiple vhosts below, we just define it once
         # here as a variable
         pizzaConfig = {
-          enableACME = production;
-          addSSL = production;
+          enableACME = useSSL;
+          addSSL = useSSL;
           locations."/".return = "301 https://${domain}/pizzas";
           extraConfig = securityHeaders;
         };
@@ -233,10 +236,10 @@ in
       {
         "${domain}" = {
           # Request a certificate from letsencrypt
-          enableACME = production;
+          enableACME = useSSL;
           # Enable redirects to https
-          forceSSL = production;
-          default = !production;
+          forceSSL = useSSL;
+          default = !useSSL;
           locations."/".extraConfig = ''
             proxy_pass http://127.0.0.1:8000;
           '';
@@ -290,16 +293,16 @@ in
           '';
         };
         "www.${domain}" = {
-          enableACME = production;
-          addSSL = production;
+          enableACME = useSSL;
+          addSSL = useSSL;
           locations."/".return = "301 https://${domain}$request_uri";
           extraConfig = securityHeaders;
         };
         "pizza.${domain}" = pizzaConfig;
         "xn--vi8h.${domain}" = pizzaConfig;
         "alumni.${domain}" = {
-          enableACME = production;
-          addSSL = production;
+          enableACME = useSSL;
+          addSSL = useSSL;
           locations."/".return = "301 https://${domain}/association/alumni/";
           extraConfig = securityHeaders;
         };
@@ -307,7 +310,7 @@ in
         # Disallow other Host headers when this server is configured for ssl
         # (so it's not added for local testing in the VM)
         "\"\"" = {
-          default = production;
+          default = useSSL;
           locations."/".return = "444";
           extraConfig = ''
             access_log off;
