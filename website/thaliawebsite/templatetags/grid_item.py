@@ -12,6 +12,7 @@ def grid_item(
     ribbon=None,
     class_name="",
     anchor_attrs="",
+    show_loading_animation=True,
 ):
     return {
         "title": title,
@@ -21,4 +22,5 @@ def grid_item(
         "ribbon": ribbon,
         "class_name": class_name,
         "anchor_attrs": anchor_attrs,
+        "show_loading_animation": show_loading_animation,
     }
