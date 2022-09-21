@@ -154,6 +154,41 @@ in
     '';
   };
 
+  concrexit-timers = {
+    docker-command = ''
+      docker run --network concrexit --name concrexit -p 127.0.0.1:8000:8000 \
+        -v /var/lib/concrexit/static:/static \
+        -v /var/lib/concrexit/media:/media \
+        --env-file ${envFile} \
+        --env-file ${config.age.secrets."concrexit-secrets.env".path} \
+        --entrypoint /app/website/manage.py \
+        ${dockerImage}
+    '';
+    timers = {
+      send_scheduled_messages = {
+        every = 60 * 5;
+        description = "Send scheduled push notifications";
+      };
+      sendplannednewsletters = {
+        every = 60 * 5;
+        description = "Send planned newsletters";
+      };
+      sync_mailinglists.calendar = "*-*-* *:30:00";
+      conscribosync.calendar = "*-*-* 23:15:00";
+      clearsessions.calendar = "*-*-* 23:00:00";
+      minimiseregistrations.calendar = "*-*-01 03:00:00";
+      delete_gsuite_users.calendar = "*-*-01 03:00:00";
+      dataminimisation.calendar = "*-*-* 03:00:00";
+      sendexpirationnotification.calendar = "*-08-15 06:00:00";
+      sendmembershipnotification.calendar = "*-08-31 06:00:00";
+      sendinformationcheck.calendar = "*-10-15 06:00:00";
+      sendpromorequestoverview.calendar = "Mon *-*-* 08:00:00";
+      revokeoldmandates.calendar = "*-*-* 03:00:00";
+      revoke_staff.calendar = "*-*-* 03:00:00";
+      cleartokens.calendar = "*-*-* 03:00:00";
+    };
+  };
+
   systemd.tmpfiles.rules = [
     "d /var/lib/concrexit/ 0755 root root - -"
   ];
