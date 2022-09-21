@@ -24,7 +24,6 @@ class ServicesTest(TestCase):
         cls.committee = Committee.objects.get(pk=1)
         cls.event = Event.objects.create(
             pk=1,
-            organiser=cls.committee,
             title="testevent",
             description="desc",
             published=True,
@@ -35,6 +34,7 @@ class ServicesTest(TestCase):
             price=0.00,
             fine=0.00,
         )
+        cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.member.is_superuser = False
         cls.member.save()

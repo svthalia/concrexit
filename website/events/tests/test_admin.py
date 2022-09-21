@@ -82,7 +82,6 @@ class RegistrationInformationFieldInlineTest(TestCase):
         cls.committee = Committee.objects.get(pk=1)
         cls.event = Event.objects.create(
             pk=1,
-            organiser=cls.committee,
             title="testevent",
             description="desc",
             published=True,
@@ -93,6 +92,7 @@ class RegistrationInformationFieldInlineTest(TestCase):
             price=0.00,
             fine=0.00,
         )
+        cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.member.is_superuser = True
         cls.member.save()
@@ -148,7 +148,6 @@ class EventAdminTest(TestCase):
         cls.committee = Committee.objects.get(pk=1)
         cls.event = Event.objects.create(
             pk=1,
-            organiser=cls.committee,
             title="testevent",
             description="desc",
             published=True,
@@ -159,6 +158,7 @@ class EventAdminTest(TestCase):
             price=0.00,
             fine=0.00,
         )
+        cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
 
     def setUp(self):

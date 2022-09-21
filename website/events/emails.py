@@ -46,7 +46,7 @@ def notify_organiser(event, registration):
     :param event: the event
     :param registration: the registration that was cancelled
     """
-    if event.organiser is None or event.organiser.contact_mailinglist is None:
+    if event.organisers.count() < 1:
         return
 
     text_template = get_template("events/organiser_email.txt")
@@ -56,5 +56,8 @@ def notify_organiser(event, registration):
     EmailMessage(
         subject,
         text_message,
-        to=[event.organiser.contact_mailinglist.name + "@thalia.nu"],
+        to=[
+            organiser.contact_mailinglist.name + "@" + settings.SITE_DOMAIN
+            for organiser in event.organisers.all()
+        ],
     ).send()

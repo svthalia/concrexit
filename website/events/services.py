@@ -130,7 +130,12 @@ def is_organiser(member, event):
             return True
 
         if event:
-            return member.get_member_groups().filter(pk=event.organiser.pk).count() != 0
+            return (
+                member.get_member_groups()
+                .filter(pk__in=event.organisers.values_list("pk"))
+                .count()
+                != 0
+            )
 
     return False
 
