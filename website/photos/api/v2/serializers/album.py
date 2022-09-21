@@ -15,7 +15,15 @@ class AlbumSerializer(CleanedModelSerializer):
         """Meta class for the serializer."""
 
         model = Album
-        fields = ("slug", "title", "accessible", "shareable", "cover", "photos", "event")
+        fields = (
+            "slug",
+            "title",
+            "accessible",
+            "shareable",
+            "cover",
+            "photos",
+            "event",
+        )
 
     cover = PhotoSerializer()
     accessible = serializers.SerializerMethodField("_accessible")
