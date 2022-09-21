@@ -3,7 +3,7 @@
     {% if url %}
         <a class="d-flex" href="{{ url }}" {{ anchor_attrs|safe }}>
     {% endif %}
-    <div class="image pulsing-background">
+    <div class="image{% if show_loading_animation %} pulsing-background{% endif %}">
         <img alt="{{ title }}" src="{{ image_url }}" loading="lazy" />
     </div>
     <div class="name">
