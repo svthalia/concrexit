@@ -156,9 +156,6 @@ class Order(models.Model):
         if self.shift.start > timezone.now():
             errors.update({"shift": _("The shift hasn't started yet.")})
 
-        if self.shift.locked:
-            errors.update({"shift": _("The shift this order belongs to is locked.")})
-
         if self.discount and self.discount > self.total_amount:
             errors.update(
                 {"discount": _("Discount cannot be higher than total amount.")}
