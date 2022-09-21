@@ -27,6 +27,7 @@ def partner_card(partner):
         url=partner.get_absolute_url,
         image_url=image_url,
         class_name="partner-card contain-logo",
+        show_loading_animation=False,
     )
 
 
