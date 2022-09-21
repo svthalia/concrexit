@@ -122,7 +122,11 @@ class MembersIndex(ListView):
         else:
             memberships = Membership.objects.filter(memberships_query)
             members_query &= Q(pk__in=memberships.values("user__pk"))
-        return Member.objects.filter(members_query).order_by("first_name")
+        return (
+            Member.objects.filter(members_query)
+            .order_by("first_name")
+            .select_related("profile")
+        )
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)

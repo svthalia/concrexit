@@ -34,8 +34,12 @@ def partner(request, slug):
 def vacancies(request):
     """View to show vacancies."""
     context = {
-        "vacancies": Vacancy.objects.order_by("?"),
-        "categories": VacancyCategory.objects.all(),
+        "vacancies": list(
+            Vacancy.objects.order_by("?")
+            .select_related("partner")
+            .prefetch_related("categories")
+        ),
+        "categories": list(VacancyCategory.objects.all()),
     }
 
     return render(request, "partners/vacancies.html", context)

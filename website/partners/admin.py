@@ -62,6 +62,8 @@ class VacancyAdmin(admin.ModelAdmin):
     """Class to show vacancies in the admin."""
 
     list_display = ("title", "partner", "company_name")
+
+    list_select_related = ("partner",)
     search_fields = (
         "title",
         "partner__name",

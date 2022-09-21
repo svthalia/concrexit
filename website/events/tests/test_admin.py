@@ -214,9 +214,13 @@ class EventAdminTest(TestCase):
 
     @override_settings(LANGUAGE_CODE="en")
     def test_num_participants(self):
-        self.assertEqual(self.admin.num_participants(self.event), "0/∞")
-        self.event.max_participants = 2
-        self.assertEqual(self.admin.num_participants(self.event), "0/2")
+        request = self.rf.get("/admin/events/event/")
+        qs = self.admin.get_queryset(request)
+        event = qs.get(id=self.event.id)
+
+        self.assertEqual(self.admin.num_participants(event), "0/∞")
+        event.max_participants = 2
+        self.assertEqual(self.admin.num_participants(event), "0/2")
 
         self.event.max_participants = None
 
@@ -228,6 +232,10 @@ class EventAdminTest(TestCase):
         )
         EventRegistration.objects.create(event=self.event, name="test")
 
-        self.assertEqual(self.admin.num_participants(self.event), "1/∞")
-        self.event.max_participants = 2
-        self.assertEqual(self.admin.num_participants(self.event), "1/2")
+        request = self.rf.get("/admin/events/event/")
+        qs = self.admin.get_queryset(request)
+        event = qs.get(id=self.event.id)
+
+        self.assertEqual(self.admin.num_participants(event), "1/∞")
+        event.max_participants = 2
+        self.assertEqual(self.admin.num_participants(event), "1/2")

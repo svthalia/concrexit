@@ -83,7 +83,7 @@ class EventSerializer(CleanedModelSerializer):
         return None
 
     def _num_participants(self, instance):
-        participant_count = instance.participants.count()
+        participant_count = instance.number_regs
         if instance.max_participants and participant_count > instance.max_participants:
             return instance.max_participants
         return participant_count
