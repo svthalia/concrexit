@@ -230,7 +230,7 @@ def send_email_change_completion_message(change_request):
     :param change_request the email change request entered by the user
     """
     change_request.member.email_user(
-        "[THALIA] {_('Your email address has been changed')}",
+        f"[THALIA] {_('Your email address has been changed')}",
         loader.render_to_string(
             "members/email/email_change_completed.txt",
             {"name": change_request.member.first_name},
