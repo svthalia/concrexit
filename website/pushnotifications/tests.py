@@ -25,7 +25,6 @@ class PushNotificationsTest(TestCase):
 
         cls.event = Event.objects.create(
             title="testevent",
-            organiser=cls.committee,
             description="desc",
             start=(timezone.now() + datetime.timedelta(hours=2)),
             end=(timezone.now() + datetime.timedelta(hours=3)),
@@ -35,6 +34,7 @@ class PushNotificationsTest(TestCase):
             fine=5.00,
             published=True,
         )
+        cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.first()
 
     def test_deleting_notification_for_event_doesnt_crash(self) -> None:

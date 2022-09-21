@@ -31,7 +31,7 @@ import events.api.v2.filters as normal_filters
 
 
 class EventAdminListCreateAPIView(AdminListAPIView, AdminCreateAPIView):
-    queryset = Event.objects.prefetch_related("organiser")
+    queryset = Event.objects.prefetch_related("organisers")
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:admin"]
     filter_backends = [

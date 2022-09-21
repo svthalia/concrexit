@@ -26,7 +26,6 @@ class RegistrationApiTest(TestCase):
     def setUpTestData(cls):
         cls.event = Event.objects.create(
             pk=1,
-            organiser=Committee.objects.get(pk=1),
             title="testevent",
             description="desc",
             published=True,
@@ -37,6 +36,7 @@ class RegistrationApiTest(TestCase):
             price=13.37,
             fine=5.00,
         )
+        cls.event.organisers.add(Committee.objects.get(pk=1))
         cls.member = Member.objects.filter(last_name="Wiggers").first()
 
     def setUp(self):

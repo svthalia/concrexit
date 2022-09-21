@@ -17,6 +17,7 @@ from events.models import (
 )
 from mailinglists.models import MailingList
 from members.models import Member
+from thaliawebsite import settings
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -30,7 +31,6 @@ class AdminTest(TestCase):
         cls.committee = Committee.objects.get(pk=1)
         cls.event = Event.objects.create(
             pk=1,
-            organiser=cls.committee,
             title="testevent",
             description="desc",
             published=True,
@@ -41,6 +41,7 @@ class AdminTest(TestCase):
             price=0.00,
             fine=0.00,
         )
+        cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.permission_change_event = Permission.objects.get(
             content_type__model="event", codename="change_event"
@@ -154,7 +155,6 @@ class RegistrationTest(TestCase):
         )
         cls.event = Event.objects.create(
             pk=1,
-            organiser=cls.committee,
             title="testevent",
             description="desc",
             published=True,
@@ -165,6 +165,7 @@ class RegistrationTest(TestCase):
             price=0.00,
             fine=0.00,
         )
+        cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.mark_present_url = reverse(
             "events:mark-present",
@@ -446,7 +447,11 @@ class RegistrationTest(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].to,
-            [self.event.organiser.contact_mailinglist.name + "@thalia.nu"],
+            [
+                self.event.organisers.first().contact_mailinglist.name
+                + "@"
+                + settings.SITE_DOMAIN
+            ],
         )
 
     def test_registration_cancel_after_deadline_warning(self):
