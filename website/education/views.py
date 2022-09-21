@@ -5,6 +5,7 @@ from datetime import datetime, date
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -23,7 +24,12 @@ from .models import Category, Course, Exam, Summary
 class CourseIndexView(ListView):
     """Render an overview of the courses."""
 
-    queryset = Course.objects.filter(until=None)
+    queryset = (
+        Course.objects.filter(until=None)
+        .prefetch_related("categories", "old_courses")
+        .annotate(summary_count=Count("summary"))
+        .annotate(exam_count=Count("exam"))
+    )
     template_name = "education/courses.html"
 
     def get_ordering(self) -> str:
@@ -40,8 +46,8 @@ class CourseIndexView(ListView):
                         "categories": x.categories.all(),
                         "document_count": sum(
                             [
-                                x.summary_set.filter(accepted=True).count(),
-                                x.exam_set.filter(accepted=True).count(),
+                                x.summary_count,
+                                x.exam_count,
                             ]
                             + [
                                 c.summary_set.filter(accepted=True).count()

@@ -24,7 +24,7 @@ class MemberListView(ListAPIView):
     """Returns an overview of all members."""
 
     serializer_class = MemberListSerializer
-    queryset = Member.current_members.all()
+    queryset = Member.current_members.all().select_related("profile")
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]

@@ -37,7 +37,7 @@ class VacancyListView(ListAPIView):
     """Returns an overview of all vacancies."""
 
     serializer_class = VacancySerializer
-    queryset = Vacancy.objects.all()
+    queryset = Vacancy.objects.all().prefetch_related("categories")
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
