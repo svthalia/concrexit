@@ -11,6 +11,7 @@
         specialArgs = attrs;
         modules =
           [
+            ./timed-commands.nix
             ./concrexit-server.nix
             agenix.nixosModule
             ({ pkgs, modulesPath, ... }: {
@@ -43,6 +44,7 @@
         specialArgs = attrs;
         modules =
           [
+            ./timed-commands.nix
             ./concrexit-server.nix
             agenix.nixosModule
             ({ pkgs, modulesPath, ... }: {
