@@ -8,7 +8,7 @@ TEMPLATEFILES := $(shell find website -name '*.html')
 PORT ?= 8000
 
 ifdef CI
-	POETRY_FLAGS := $(POETRY_FLAGS) --no-interaction
+	POETRY_FLAGS := $(POETRY_FLAGS) --no-interaction --extras postgres
 	BLACK_FLAGS := $(BLACK_FLAGS) --quiet
 	DOCKER_FLAGS := $(DOCKER_FLAGS) --quiet
 endif
