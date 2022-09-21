@@ -17,6 +17,7 @@ from events.models import (
 )
 from mailinglists.models import MailingList
 from members.models import Member
+from thaliawebsite import settings
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -446,7 +447,11 @@ class RegistrationTest(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].to,
-            [self.event.organisers.first().contact_mailinglist.name + "@thalia.nu"],
+            [
+                self.event.organisers.first().contact_mailinglist.name
+                + "@"
+                + settings.SITE_DOMAIN
+            ],
         )
 
     def test_registration_cancel_after_deadline_warning(self):

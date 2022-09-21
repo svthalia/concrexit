@@ -57,7 +57,7 @@ def notify_organiser(event, registration):
         subject,
         text_message,
         to=[
-            organiser.contact_mailinglist.name + "@thalia.nu"
+            organiser.contact_mailinglist.name + "@" + settings.SITE_DOMAIN
             for organiser in event.organisers.all()
         ],
     ).send()
