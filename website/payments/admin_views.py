@@ -118,7 +118,7 @@ class BatchProcessAdminView(View):
         return redirect("admin:payments_batch_change", kwargs["pk"])
 
 
-#todo: export using import-export library
+# todo: export using import-export library
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(
     permission_required("payments.process_batches"),
