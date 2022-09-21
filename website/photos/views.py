@@ -116,3 +116,10 @@ def shared_download(request, slug, token, filename):
     obj = get_object_or_404(Album, slug=slug)
     check_shared_album_token(obj, token)
     return _download(request, obj, filename)
+
+
+@login_required
+def liked_photos(request):
+    photos = Photo.objects.filter(likes__member=request.member, album__hidden=False)
+    context = {"photos": photos}
+    return render(request, "photos/liked-photos.html", context)

@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 from .forms import AlbumForm
-from .models import Album, Photo
+from .models import Album, Photo, Like
 from .services import extract_archive, save_photo
 
 
@@ -60,14 +60,28 @@ class AlbumAdmin(admin.ModelAdmin):
             )
 
 
+class LikeInline(admin.StackedInline):
+    model = Like
+    extra = 0
+
+
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
     """Model for Photo admin page."""
 
-    list_display = ("__str__", "album", "hidden")
+    list_display = (
+        "__str__",
+        "album",
+        "hidden",
+        "num_likes",
+    )
     search_fields = ("file",)
     list_filter = ("album", "hidden")
     exclude = ("_digest",)
+
+    inlines = [
+        LikeInline,
+    ]
 
     def save_model(self, request, obj, form, change):
         """Save new Photo."""

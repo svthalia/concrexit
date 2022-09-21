@@ -6,10 +6,13 @@ import random
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Count, Value, IntegerField
+from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+from queryable_properties.properties import AnnotationProperty
 
 from members.models import Member
 from events.models import Event
@@ -52,6 +55,10 @@ class Photo(models.Model):
         max_length=40,
     )
 
+    num_likes = AnnotationProperty(
+        Coalesce(Count("likes"), Value(0), output_field=IntegerField())
+    )
+
     def __init__(self, *args, **kwargs):
         """Initialize Photo object and set the file if it exists."""
         super().__init__(*args, **kwargs)
@@ -74,6 +81,21 @@ class Photo(models.Model):
         """Meta class for Photo."""
 
         ordering = ("file",)
+
+
+class Like(models.Model):
+    photo = models.ForeignKey(
+        Photo, null=False, blank=False, related_name="likes", on_delete=models.CASCADE
+    )
+    member = models.ForeignKey(
+        Member, null=True, blank=False, on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        return str(self.member) + " " + _("likes") + " " + str(self.photo)
+
+    class Meta:
+        unique_together = ["photo", "member"]
 
 
 class Album(models.Model):

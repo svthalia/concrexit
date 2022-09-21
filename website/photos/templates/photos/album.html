@@ -42,6 +42,9 @@
 
 {% block css_head %}
     {{ block.super }}
+    {% compress css %}
+        <link href="{% static "photos/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
+    {% endcompress %}
     <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 

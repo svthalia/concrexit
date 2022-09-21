@@ -42,3 +42,14 @@
     --fancybox-thumbs-border-radius: 0;
     --fancybox-accent-color: var(--primary);
 }
+
+.fancybox__button--like.liked {
+    color: var(--primary);
+}
+
+.fancybox__button--like.liked:hover {
+    color: var(--primary-hover);
+}
+.fancybox__button--like:hover {
+    color: var(--primary-contrast-hover);
+}
