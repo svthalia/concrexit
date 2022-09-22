@@ -19,7 +19,7 @@ from sales.services import is_manager
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    extra = 0
+    extra = 1
 
     fields = ("product", "product_name", "amount", "total")
     readonly_fields = ("product_name",)
@@ -211,7 +211,6 @@ class OrderAdmin(admin.ModelAdmin):
         "num_items",
         "subtotal",
         "total_amount",
-        "payment",
         "age_restricted",
         "payment_url",
     )
