@@ -12,7 +12,7 @@ from django.urls import reverse
 
 def save_image(storage, image, path, format):
     buffer = io.BytesIO()
-    image.convert("RGB").save(fp=buffer, format=format)
+    image.convert("RGB" if format == "JPEG" else "RGBA").save(fp=buffer, format=format)
     buff_val = buffer.getvalue()
     content = ContentFile(buff_val)
     file = InMemoryUploadedFile(
