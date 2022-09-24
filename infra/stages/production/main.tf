@@ -53,3 +53,18 @@ module "concrexit_dns" {
   public_ipv4 = module.concrexit_network.public_ipv4
   public_ipv6 = module.concrexit_network.public_ipv6
 }
+
+module "concrexit_cdn" {
+  source    = "../../modules/concrexit_cdn"
+  zone_name = var.domain_name
+  webdomain = "cdn.${var.domain_name}"
+  stage     = "production"
+  customer  = var.customer
+  tags = {
+    "Category"    = "concrexit",
+    "Owner"       = "technicie",
+    "Environment" = "production",
+    "Terraform"   = true
+  }
+  media_bucket_id = module.concrexit.media_bucket_id
+}
