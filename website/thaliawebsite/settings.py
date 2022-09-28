@@ -260,6 +260,9 @@ SESSION_COOKIE_SECURE = setting(development=False, production=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-secure
 CSRF_COOKIE_SECURE = setting(development=False, production=True)
 
+# https://docs.djangoproject.com/en/dev/ref/settings/#std-setting-SECURE_PROXY_SSL_HEADER
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
