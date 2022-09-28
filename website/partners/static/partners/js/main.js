@@ -10,9 +10,9 @@ Fancybox.bind('[data-fancybox="gallery"]',
 );
 
 $(function () {
-    var windowhash = window.location.hash;
+    const windowhash = window.location.hash;
     if (windowhash) {
-        var element = $('[data-bs-target="' + windowhash + '"]');
+        const element = $('[data-bs-target="' + windowhash + '"]');
         element.click();
         $([document.documentElement, document.body]).scrollTop(element.offset().top);
     }
@@ -23,8 +23,8 @@ $(function () {
 
     $('.external-vacancy').click(function (e) {
         e.preventDefault();
-        var href = $(e.target).attr('href');
-        var element = $('[data-bs-target="' + href + '"]');
+        const href = $(e.target).attr('href');
+        const element = $('[data-bs-target="' + href + '"]');
         element.click();
         $([document.documentElement, document.body]).scrollTop(element.offset().top);
     });
