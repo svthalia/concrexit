@@ -68,4 +68,5 @@ module "concrexit_cdn" {
     "Terraform"   = true
   }
   media_bucket_id = module.concrexit.media_bucket_id
+  cloudfront_public_key = var.cloudfront_public_key
 }

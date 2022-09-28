@@ -237,7 +237,7 @@ AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 
 if AWS_STORAGE_BUCKET_NAME is not None:
-    AWS_CLOUDFRONT_KEY = base64.b64decode(
+    AWS_CLOUDFRONT_KEY = base64.urlsafe_b64decode(
         os.environ.get("AWS_CLOUDFRONT_KEY", None)
     ).decode("utf-8")
     AWS_CLOUDFRONT_KEY_ID = os.environ.get("AWS_CLOUDFRONT_KEY_ID", None)

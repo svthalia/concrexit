@@ -67,7 +67,6 @@ resource "aws_instance" "concrexit" {
   ami           = data.aws_ami.nixos.id
   instance_type = "t3a.small"
 
-  key_name             = aws_key_pair.deployer.key_name
   iam_instance_profile = aws_iam_instance_profile.concrexit-ec2-profile.id
 
   root_block_device {
@@ -82,11 +81,6 @@ resource "aws_instance" "concrexit" {
   tags = merge(var.tags, {
     Name = "${var.customer}-${var.stage}-nixos-concrexit"
   })
-}
-
-resource "aws_key_pair" "deployer" {
-  key_name   = "${var.customer}-${var.stage}-concrexit-deployer-key"
-  public_key = var.ssh_public_key
 }
 
 locals {

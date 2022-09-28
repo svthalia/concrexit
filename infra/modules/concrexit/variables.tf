@@ -30,11 +30,3 @@ variable "aws_interface_id" {
 variable "public_ipv4" {
   type = string
 }
-
-variable "ssh_private_key" {
-  type = string
-}
-
-variable "ssh_public_key" {
-  type = string
-}

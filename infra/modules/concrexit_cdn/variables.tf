@@ -27,3 +27,9 @@ variable "webdomain" {
   description = "The web domain that points to the cdn"
   type        = string
 }
+
+variable "cloudfront_public_key" {
+    description = "AWS CloudFront public key"
+    type        = string
+}
+

@@ -98,18 +98,8 @@ resource "aws_cloudfront_key_group" "this" {
 }
 
 resource "aws_cloudfront_public_key" "this" {
-  name        = "${var.customer}-${var.stage}-concrexit-public-key"
-  encoded_key = <<EOF
------BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4J+YTxK7HK00NLslBw7a
-apw8w1g4p6Kg7toFVrZRHf+5+0UKl7ZE4MRyHnzva2J6UIjh5GzTUfkOKtivzehi
-5xvgLf8L6Z0R3u3gAf2NGhGocR6rNW2Gq5orFPDXycpPKGyQNlQAX97smPrdP4UC
-Z86fonPdR7j2yq5sIdyDFJmTdTiFmQVheW6WDCR6PCroOPW0aVRorTCw3M/y7aj7
-VpK+v/kt338/k/dZuxQK3jF9cXqJLMzMmHMqHPZGcqNDbokHV8z8shJVxAEBDgtg
-hkDBCYwGCcvryFzI27SqPRS3mVlFMJ75MAnhnUaLzcbrTHvUjGzoT9P16fFJV08a
-8wIDAQAB
------END PUBLIC KEY-----
-EOF
+  name        = "${var.customer}-${var.stage}-concrexit-key"
+  encoded_key = var.cloudfront_public_key
 }
 
 data "aws_iam_policy_document" "s3_policy" {

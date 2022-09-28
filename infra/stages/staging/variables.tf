@@ -21,3 +21,8 @@ variable "aws_region" {
   type        = string
   default     = "eu-west-1"
 }
+
+variable "cloudfront_public_key" {
+    description = "AWS CloudFront public key"
+    type        = string
+}
