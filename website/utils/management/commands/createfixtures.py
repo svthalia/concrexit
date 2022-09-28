@@ -528,8 +528,6 @@ class Command(BaseCommand):
         self.stdout.write("Creating an event registration")
         registration = EventRegistration()
 
-        raise
-
         eligible = Member.objects.filter(registration_member_choices_limit())
         registration.member = eligible.order_by("?")[0]
 
