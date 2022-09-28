@@ -112,7 +112,7 @@ class Shift(models.Model):
         Sum(
             Coalesce("orders__payment__amount", Value(0.00)),
             filter=Q(
-                orders__payment__isnull=False,
+                orders__payment__isnull=False, # or the order is free
             ),
             output_field=PaymentAmountField(allow_zero=True),
         )
