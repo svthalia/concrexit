@@ -43,13 +43,13 @@ class EventSerializer(CleanedModelSerializer):
             "maps_url",
             "user_permissions",
             "user_registration",
-            "organiser",
+            "organisers",
             "slide",
             "documents",
         )
 
     description = CleanedHTMLSerializer()
-    organiser = MemberGroupSerializer()
+    organisers = MemberGroupSerializer(many=True)
     user_registration = serializers.SerializerMethodField("_user_registration")
     num_participants = serializers.SerializerMethodField("_num_participants")
     maps_url = serializers.SerializerMethodField("_maps_url")

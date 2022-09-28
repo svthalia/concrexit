@@ -31,8 +31,15 @@ class EventListView(ListAPIView):
     serializer_class = EventSerializer
     queryset = (
         Event.objects.filter(published=True)
-        .select_related("organiser", "food_event")
-        .prefetch_related("registrationinformationfield_set", "documents")
+        .select_related("food_event")
+        .prefetch_related(
+            "registrationinformationfield_set",
+            "documents",
+            "organisers",
+            "organisers__board",
+            "organisers__committee",
+            "organisers__society",
+        )
         .annotate(
             number_regs=Count(
                 "eventregistration",
@@ -57,7 +64,12 @@ class EventDetailView(RetrieveAPIView):
     """Returns details of an event."""
 
     serializer_class = EventSerializer
-    queryset = Event.objects.filter(published=True)
+    queryset = Event.objects.filter(published=True).annotate(
+        number_regs=Count(
+            "eventregistration",
+            filter=Q(eventregistration__date_cancelled=None),
+        )
+    )
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
 

@@ -26,7 +26,7 @@ class EventAdminSerializer(CleanedModelSerializer):
     fine = PaymentAmountSerializer()
 
     def to_internal_value(self, data):
-        self.fields["organiser"] = serializers.PrimaryKeyRelatedField(
+        self.fields["organisers"] = serializers.PrimaryKeyRelatedField(
             queryset=MemberGroup.active_objects.all()
         )
         self.fields["slide"] = serializers.PrimaryKeyRelatedField(
@@ -38,7 +38,7 @@ class EventAdminSerializer(CleanedModelSerializer):
         return super().to_internal_value(data)
 
     def to_representation(self, instance):
-        self.fields["organiser"] = MemberGroupSerializer(read_only=True)
+        self.fields["organisers"] = MemberGroupSerializer(many=True, read_only=True)
         self.fields["slide"] = SlideSerializer(read_only=True)
         self.fields["documents"] = DocumentSerializer(many=True, read_only=True)
         return super().to_representation(instance)
@@ -68,11 +68,11 @@ class EventListAdminSerializer(serializers.ModelSerializer):
             "max_participants",
             "has_fields",
             "tpay_allowed",
-            "organiser",
+            "organisers",
             "slide",
         )
 
     description = CleanedHTMLSerializer()
-    organiser = MemberGroupSerializer()
+    organisers = MemberGroupSerializer(many=True)
     price = PaymentAmountSerializer()
     fine = PaymentAmountSerializer()
