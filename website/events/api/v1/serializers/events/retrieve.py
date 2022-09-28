@@ -24,7 +24,7 @@ class EventRetrieveSerializer(CleanedModelSerializer):
             "caption",
             "start",
             "end",
-            "organiser",
+            "organisers",
             "category",
             "registration_start",
             "registration_end",
