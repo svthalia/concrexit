@@ -151,8 +151,8 @@ jobs:
           name: coverage-html
           path: covhtml
 
-  fixture-tests:
-    name: Fixture Tests
+  run-fixtures:
+    name: Run fixtures
     runs-on: ubuntu-latest
     services:
       postgres:
