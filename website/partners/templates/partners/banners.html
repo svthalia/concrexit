@@ -6,8 +6,13 @@
                 <div class="banner col-6 col-md-4 col-lg-3">
                     <a href="{% url "partners:partner" partner.slug %}">
                         <img class="image text-hide"
-                             alt="Logo {{ partner.name }}"
-                             src="{% thumbnail partner.logo thumb_size fit=False %}"/>
+                            alt="Logo {{ partner.name }}"
+
+                            {% if partner.alternate_logo %}
+                            src="{% thumbnail partner.alternate_logo thumb_size fit=False %}"
+                            {% else %}
+                            src="{% thumbnail partner.logo thumb_size fit=False %}"
+                            {% endif %}/>
                     </a>
                 </div>
             {% endfor %}
