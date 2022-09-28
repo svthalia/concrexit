@@ -151,6 +151,47 @@ jobs:
           name: coverage-html
           path: covhtml
 
+  run-fixtures:
+    name: Run fixtures
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: thalia
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+    env:
+      DJANGO_ENV: testing
+    steps:
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Restore any cached Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install any new dependencies
+        run: poetry install --extras "postgres"
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Run create fixtures
+        run: make fixtures
+
   documentation-tests:
     name: Documentation Tests
     runs-on: ubuntu-latest

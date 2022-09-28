@@ -21,7 +21,12 @@ from activemembers.models import (
 )
 from documents.models import Document
 from education.models import Course, Category
-from events.models import Event, EventRegistration, EVENT_CATEGORIES
+from events.models import (
+    Event,
+    EventRegistration,
+    EVENT_CATEGORIES,
+    registration_member_choices_limit,
+)
 from members.models import Profile, Member, Membership
 from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
 from partners.models import Partner, Vacancy, VacancyCategory
@@ -523,7 +528,8 @@ class Command(BaseCommand):
         self.stdout.write("Creating an event registration")
         registration = EventRegistration()
 
-        registration.member = Member.objects.order_by("?")[0]
+        eligible = Member.objects.filter(registration_member_choices_limit())
+        registration.member = eligible.order_by("?")[0]
 
         possible_event = (
             event_to_register_for
