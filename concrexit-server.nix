@@ -220,7 +220,6 @@ in
           'upstream_response_time=$upstream_response_time '
           'upstream_connect_time=$upstream_connect_time '
           'upstream_header_time=$upstream_header_time';
-      proxy_set_header X-Forwarded-Proto $scheme;
     '';
 
     virtualHosts =
