@@ -237,9 +237,15 @@ AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 
 if AWS_STORAGE_BUCKET_NAME is not None:
+    AWS_CLOUDFRONT_KEY = base64.urlsafe_b64decode(
+        os.environ.get("AWS_CLOUDFRONT_KEY", None)
+    ).decode("utf-8")
+    AWS_CLOUDFRONT_KEY_ID = os.environ.get("AWS_CLOUDFRONT_KEY_ID", None)
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_CLOUDFRONT_DOMAIN", None)
+
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
     PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
-    PUBLIC_MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.eu-west-1.amazonaws.com/"
+    PUBLIC_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
 else:
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
     PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"

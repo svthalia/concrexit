@@ -24,13 +24,21 @@ resource "aws_ebs_volume" "concrexit-media" {
 
 resource "aws_s3_bucket" "concrexit-media-bucket" {
   bucket = "${var.customer}-${var.stage}-media"
-  acl    = "private"
-  versioning {
-    enabled = false
-  }
   tags = merge(var.tags, {
     Name = "${var.customer}-${var.stage}-media"
   })
+}
+
+resource "aws_s3_bucket_acl" "example_bucket_acl" {
+  bucket = aws_s3_bucket.concrexit-media-bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.concrexit-media-bucket.id
+  versioning_configuration {
+    status = "Disabled"
+  }
 }
 
 resource "aws_volume_attachment" "postgres-att" {
@@ -59,7 +67,6 @@ resource "aws_instance" "concrexit" {
   ami           = data.aws_ami.nixos.id
   instance_type = "t3a.small"
 
-  key_name             = aws_key_pair.deployer.key_name
   iam_instance_profile = aws_iam_instance_profile.concrexit-ec2-profile.id
 
   root_block_device {
@@ -76,24 +83,7 @@ resource "aws_instance" "concrexit" {
   })
 }
 
-resource "aws_key_pair" "deployer" {
-  key_name   = "${var.customer}-${var.stage}-concrexit-deployer-key"
-  public_key = var.ssh_public_key
-}
-
 locals {
   postgres_volname = replace(aws_volume_attachment.postgres-att.volume_id, "-", "")
   media_volname    = replace(aws_volume_attachment.media-att.volume_id, "-", "")
-}
-
-output "public_ipv6" {
-  value = aws_instance.concrexit.ipv6_addresses[0]
-}
-
-output "postgres_volname" {
-  value = local.postgres_volname
-}
-
-output "media_volname" {
-  value = local.media_volname
 }
