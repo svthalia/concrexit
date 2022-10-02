@@ -45,11 +45,13 @@ def send_newsletter(newsletter):
     all_local_partners = Partner.objects.filter(is_local_partner=True).order_by("?")
     local_partner_count = len(all_local_partners)
     local_partners = []
-    for i in range(math.floor(local_partner_count/2)):
-        local_partners.append([all_local_partners[i*2], all_local_partners[i*2 + 1]])
+    for i in range(math.floor(local_partner_count / 2)):
+        local_partners.append(
+            [all_local_partners[i * 2], all_local_partners[i * 2 + 1]]
+        )
 
     if local_partner_count % 2 != 0:
-        local_partners.append([all_local_partners[local_partner_count-1]])
+        local_partners.append([all_local_partners[local_partner_count - 1]])
 
     with mail.get_connection() as connection:
         language = ("en", "English")
