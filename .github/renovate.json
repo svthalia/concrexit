@@ -11,14 +11,14 @@
     "enabled": true
   },
   "docker": {
-    "enabled": false
+    "enabled": true
   },
   "github-actions": {
     "enabled": true
   },
   "packageRules": [
     {
-      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     }
   ],
