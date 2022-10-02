@@ -10,7 +10,6 @@
 {% block section_tags %}id="payments-account-overview"{% endblock %}
 
 {% block page_content %}
-    {% bootstrap_messages %}
     {% for error in form.errors.items %}
         {% for message in error.1 %}
             {% alert 'danger' message dismissible=True %}
