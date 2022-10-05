@@ -82,8 +82,11 @@ class EventAdminForm(forms.ModelForm):
             )
             and self.fields["send_cancel_email"]
         ):
-            raise ValidationError(_("One of the organisers does not have a contact mailinglist so sending a cancellation email is impossible."))
-
+            raise ValidationError(
+                _(
+                    "One of the organisers does not have a contact mailinglist so sending a cancellation email is impossible."
+                )
+            )
 
         if self.cleaned_data.get("organisers").all() == 0:
             raise ValidationError(_("An event must have at least one organiser."))
