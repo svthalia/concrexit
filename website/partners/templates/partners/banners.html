@@ -7,7 +7,8 @@
                     <a href="{% url "partners:partner" partner.slug %}">
                         <img class="image text-hide"
                              alt="Logo {{ partner.name }}"
-                             src="{% thumbnail partner.logo thumb_size fit=False %}"/>
+                             src="{% if partner.alternate_logo %}{% thumbnail partner.alternate_logo thumb_size fit=False %}{% else %}{% thumbnail partner.logo thumb_size fit=False %}{% endif %}"
+                        />
                     </a>
                 </div>
             {% endfor %}
