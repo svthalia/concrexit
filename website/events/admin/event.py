@@ -251,7 +251,7 @@ class EventAdmin(DoNextModelAdmin):
         if pk == None:
             # I guess we are creating an event here; just call super() I think?
             return super().get_field_queryset(db, db_field, request)
-        
+
         if db_field.name == "organisers" and not request.user.has_perm(
             "events.override_organiser"
         ):
