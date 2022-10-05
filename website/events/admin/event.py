@@ -248,14 +248,13 @@ class EventAdmin(DoNextModelAdmin):
     def get_field_queryset(self, db, db_field, request):
         """Members without the 'can view as organiser' permission can only assign their own groups as organiser."""
         pk = resolve(request.path_info).kwargs.get("object_id")
-        if pk == None:
-            # I guess we are creating an event here; just call super() I think?
-            return super().get_field_queryset(db, db_field, request)
-
         if db_field.name == "organisers" and not request.user.has_perm(
             "events.override_organiser"
         ):
-            return request.member.get_member_groups().union(
-                MemberGroup.objects.filter(event_organiser__pk=pk)
-            )
+            if pk is None:
+                return request.member.get_member_groups()
+            else:
+                return request.member.get_member_groups().union(
+                    MemberGroup.objects.filter(event_organiser__pk=pk)
+                )
         return super().get_field_queryset(db, db_field, request)
