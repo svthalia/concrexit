@@ -102,8 +102,7 @@ class Shift(models.Model):
 
     total_revenue = AggregateProperty(
         Sum(
-            Coalesce("orders__order_items__total", Value(0.00))
-            - Coalesce("orders__discount", Value(0.00)),
+            Coalesce("orders___total_amount", Value(0.00)),
             output_field=PaymentAmountField(allow_zero=True),
         )
     )
@@ -111,9 +110,6 @@ class Shift(models.Model):
     total_revenue_paid = AggregateProperty(
         Sum(
             Coalesce("orders__payment__amount", Value(0.00)),
-            filter=Q(
-                orders__payment__isnull=False,  # or the order is free
-            ),
             output_field=PaymentAmountField(allow_zero=True),
         )
     )
@@ -127,8 +123,9 @@ class Shift(models.Model):
     num_orders_paid = AggregateProperty(
         Count(
             "orders",
-            filter=Q(
-                orders__payment__isnull=False,
+            filter=Q(orders___is_free=True)
+            | Q(
+                orders__payment__isnull=False,  # or the order is free
             ),
         )
     )

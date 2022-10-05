@@ -378,7 +378,7 @@ class ShiftTest(TestCase):
 
     def test_shift_statistics(self):
         self.assertEqual(self.shift.total_revenue, 0)
-        self.assertEqual(self.shift.total_revenue_paid, None)
+        self.assertEqual(self.shift.total_revenue_paid, 0)
 
         self.assertEqual(self.shift.num_orders, 0)
         self.assertEqual(self.shift.num_orders_paid, 0)

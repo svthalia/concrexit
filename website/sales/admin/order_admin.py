@@ -176,7 +176,7 @@ class OrderAdmin(admin.ModelAdmin):
         "order_description",
         "num_items",
         "discount",
-        "total_amount",
+        "_total_amount",
         "paid",
         "payer",
     )
@@ -211,6 +211,8 @@ class OrderAdmin(admin.ModelAdmin):
         "num_items",
         "subtotal",
         "total_amount",
+        "_total_amount",
+        "_is_free",
         "age_restricted",
         "payment_url",
     )
