@@ -10,7 +10,6 @@
 {% block section_tags %}id="payments-account-overview"{% endblock %}
 
 {% block page_content %}
-    {% bootstrap_messages %}
     {% if tpay_balance and tpay_balance != 0 %}
          <h5 class="mb-4">
             {% trans "Your current Thalia Pay balance is" %}: € {{ tpay_balance|floatformat:2 }}
