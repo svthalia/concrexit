@@ -19,10 +19,22 @@ class Partner(models.Model):
     slug = models.SlugField(unique=True)
     link = models.CharField(max_length=255, blank=True, validators=[URLValidator()])
     company_profile = HTMLField(blank=True)
+
     logo = models.ImageField(
         upload_to="partners/logos/",
         storage=get_public_storage,
     )
+
+    alternate_logo = models.ImageField(
+        upload_to="partners/logos/",
+        storage=get_public_storage,
+        blank=True,
+        null=True,
+        help_text=_(
+            "If set, this logo will be shown on the frontpage banner. Please use files with proper transparency."
+        ),
+    )
+
     site_header = models.ImageField(
         upload_to="partners/headers/",
         storage=get_public_storage,
