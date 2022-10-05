@@ -7,7 +7,6 @@
 {% block page_title %}{% blocktrans with title=event.title %}Registration for {{ title }}{% endblocktrans %}{% endblock %}
 
 {% block page_content %}
-    {% bootstrap_messages %}
     <form method="post" class="col-12">
         {% csrf_token %}
         {% for field in form %}
