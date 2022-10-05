@@ -8,7 +8,6 @@
 {% block page_title %}{% trans "edit profile"|capfirst %}{% endblock %}
 
 {% block page_content %}
-    {% bootstrap_messages %}
     {% if form.errors %}
         {% trans "Please check your profile for errors." as error_text %}
         {% alert 'danger' error_text dismissible=True %}
