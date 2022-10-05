@@ -30,7 +30,9 @@ class Partner(models.Model):
         storage=get_public_storage,
         blank=True,
         null=True,
-        help_text=_("If set, this logo will be shown on the frontpage banner. Please use files with proper transparency."),
+        help_text=_(
+            "If set, this logo will be shown on the frontpage banner. Please use files with proper transparency."
+        ),
     )
 
     site_header = models.ImageField(
