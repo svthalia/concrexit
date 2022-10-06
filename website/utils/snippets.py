@@ -203,20 +203,24 @@ def overlaps(check, others, can_equal=True):
     return False
 
 
-def send_email(to: str, subject: str, body_template: str, context: dict) -> None:
+def send_email(
+    to: str, subject: str, txt_template: str, context: dict, html_template = None
+) -> None:
     """Easily send an email with the right subject and a body template.
 
     :param to: where should the email go?
     :param subject: what is the email about?
-    :param body_template: what is the content of the email?
-    :param context: add some context to the body
+    :param txt_template: txt template to use
+    :param context: context to render the template
+    :param html_template: html template to use
     """
-    mail.EmailMessage(
-        f"[THALIA] {subject}",
-        loader.render_to_string(body_template, context),
-        settings.DEFAULT_FROM_EMAIL,
-        [to],
-    ).send()
+    mail.send_mail(
+        subject=f"[THALIA] {subject}",
+        message=loader.render_to_string(txt_template, context),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[to],
+        html_message=loader.render_to_string(html_template, context) if html_template else None,
+    )
 
 
 def minimise_logentries_data(dry_run=False):
