@@ -1,62 +1,68 @@
 ################################################################################
 # Makefile README
 #
-# This Makefile abstracts some commonly used commands which you normally would
-# have to do in a specific order. It makes it easier to get started, because
-# with `make` you probably only have to remember `make run`.
+# This file abstracts some commonly used commands used to work on concrexit.  It
+# also helps with commands you normally have to run in a specific order. This is
+# useful to get started, because now you probably only have to remember make run
 #
-# The problem is that while it's nice to have some magic make commands, you
-# should probably also know what those commands are doing. Because when you ever
-# get stuck, you can then figure out how you got there by checking the commands.
+# The problem is that, while it's nice to have some magic make commands, you can
+# get yourself stuck without knowing what you just did via make. By reading this
+# explanation I hope you will get such a good knowledge of make and the commands
+# it runs for you that you will be able to continue on your own.
 #
-# The `make` command line tool works by reading this very Makefile, and then
-# executing the recipy you specified. When you type `make run`, make looks in
-# this Makefile for the `run` recipe (the line that starts with run:). And works
-# from there. If you don't specify anything after `make` on the command line, it
-# will run the first recipe it finds (in this file it's help). Or you can
-# specify the default with `.DEFAULT: help`
+# The `make` command line tool works by reading this Makefile you're reading now
+# and then executing the recipe you specified. When you execute `make run`, make
+# looks in this Makefile for the `run` recipe and works from there. If you don't
+# specify anything after `make` on the command line,  it will look for the first
+# recipe it finds. In this Makefile the default and first recipe is `help`. What
+# is also possible is to place the default recipe you want somewhere else and to
+# then explicitely specify it with .DEFAULT:
 #
-# Make recipes are called that because just like a cooking recipe they have
-# certain steps, and prerequisites or dependencies. The dependencies are
-# specified after the colon (:). For example in the `run` recipe, we can see
-# that it requires .make/deps to have been done first. The steps to execute this
-# part of the recipe are then specified in the indented block.
+# Make recipes are called recipes because programmers sometimes like comparisons
+# with cooking.  To be fair though,  just like with cooking recipies there is an
+# important order to the steps you have to take.  And this ordering comes from a
+# directed acyclic graph (DAG).  Nodes on the DAG are recipes and the edges from
+# the graph specify a dependency between them.  In a Makefile the recipies start
+# with a name and a colon and after the colon you write the dependencies for the
+# recipe. For example in the `fmt` recipe, we can see that it requires .make/fmt
+# to have been done first. The steps to execute this part of the recipe are then
+# specified in the indented block.
 #
 # Make is mainly meant for creating new files, but in this Makefile we only have
-# one good example of that. Namely the recipe for creating the website/db.sqlite3
-# file. It depends on the dependencies being installed and the migration files.
-# Depending on other files (the migration files in this case). Means that this
-# step will only be rerun if the migration files have changed. Make checks this
-# by looking at the file modification time.
+# one good example of that.  It's the recipe for creating the website/db.sqlite3
+# file.  It depends on the dependencies being installed and the migration files.
+# Depending on other files---in this case it's migrations---means that this step
+# will only be rerun if those other files have changed. Make looks at the change
+# times or modification times of these files for this.
 #
 # Because only rerunning steps when needed is very useful, we abuse this feature
-# of make by having sentinel files. All the files in the .make directory are
-# sentinel files. They are empty files, which only serve the purpose of saving
-# the modification time of when the recipe last ran. An example of this kind
-# of recipe is deps. Deps says it has a dependency on the .make/deps file.
-# This means that our poetry dependencies are installed whenever the poetry.lock
-# changes, but afterwards we don't need to run `poetry install` anymore when we
-# just want to start the webserver.
+# by having sentinel files.  All the files in the .make directory are sentinels.
+# These are empty files, which only serve the purpose of saving the modification
+# time from when the recipe last ran.  A good example of a recipe that uses such
+# a sentinel file is the deps recipe. You can see below in this file that it has
+# a dependency on the .make/deps file. It also has a dependency on the pyproject
+# and poetry.lock files.This means it will only rerun the recipe if one of those
+# files changes.
 #
 # Besides make recipies which specify a file or sentinel file, we have some make
-# recipies which should just always execute a bunch of commands. These are more
+# recipies which should just always execute a bunch of commands.  These are more
 # like scripts than recipies. In this Makefile there are a whole bunch of these,
-# some of which are just a nice name for a sentinel file, like `deps`, and some
-# of which are just a simple script, like `clean`. In make these recipies which
-# don't create a file should be indicated by being declared `.PHONY`. You can see
-# this declaration at the bottom of this file. This just means make shouldn't
-# look for a `clean` file in the root of the repository whenever it executes the
-# `clean` recipe.
+# some of which are just a nice name for a sentinel file,  like `deps`, and some
+# of which are just a simple script, like `clean`.  In make these recipies which
+# don't create a file should be indicated by being declared .PHONY:. You can see
+# see this declaration at the bottom of this file. What this means is  that make
+# should not look for a file called clean in the root of the repository whenever
+# it executes the `clean` recipe.
 #
 # It's not a super big deal if you forget to specify a recipe as `PHONY`, as the
-# make tool will rerun a recipe like `clean` anyways whenever no file called
-# `clean` is seen. But it's nice to specify PHONY targets anyways, just for the
-# information of the reader, or in case a `clean` file might be created some day.
+# make tool will rerun that recipe whenever no file called `clean` is seen.  But
+# it's nice to specify PHONY targets anyways,  as information for the reader, or
+# in case a file called clean might be created some day.
 #
 # This has been the introduction of this Makefile. The rest of the Makefile will
 # be littered with comments that explain more parts of the file. And if you want
-# to learn more about Makefiles in general you can read the GNU make manual, or
-# some of these blog posts:
+# to learn more about all of this make stuff, you can read the manual or some of
+# the blog posts that inspired me to make this Makefile:
 #
 # The Unreasonable Effectiveness of Makefiles:
 # https://matt-rickard.com/the-unreasonable-effectiveness-of-makefiles
