@@ -761,6 +761,14 @@ TINYMCE_DEFAULT_CONFIG = {
     "remove_script_host": False,
     "autoresize_bottom_margin": 50,
 }
+TINYMCE_EXTRA_MEDIA = {
+    "css": {
+        "all": [
+            "css/tinymce.css",
+        ],
+    },
+}
+
 
 BOOTSTRAP5 = {"required_css_class": "required-field"}
 
