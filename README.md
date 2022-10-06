@@ -19,18 +19,6 @@ Getting started
 4. `make run` to run a testing server
 5. Go to the user you created and complete the profile and add a membership for full access
 
-### If you have Nix (OS)
-
-There are only two steps you need if you have [Nix installed](https://nixos.org/download.html#nix-quick-install):
-
-```bash
-nix develop
-make run
-```
-
-You can speed up the process of entering the development shell by [installing Cachix](https://github.com/cachix/cachix#installation)
-and setting up the svthalia cache: `cachix use svthalia`.
-
 Testing and linting
 -------------------
 
@@ -45,9 +33,9 @@ You can run all the tests with `make test`, afterwards you can check the coverag
 poetry
 ------
 
-Install poetry per the [poetry documentation][poetry install]. Make sure you install at least version 1.x.x.
+Install poetry per the [poetry documentation][poetry install]. Make sure you install at least version 1.2.x.
 
-[poetry install]: https://github.com/sdispater/poetry#installation
+[poetry install]: https://python-poetry.org/docs/#installation
 
 Pillow dependencies
 -------------------
