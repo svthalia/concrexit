@@ -96,7 +96,7 @@ class Shift(models.Model):
                 | Q(order_items__isnull=True)
             ).delete()
 
-        return super(Shift, self).save(force_insert, force_update, using, update_fields)
+        return super().save(force_insert, force_update, using, update_fields)
 
     active = RangeCheckProperty("start", "end", timezone.now)
 

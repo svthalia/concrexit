@@ -94,7 +94,7 @@ class OrderListView(AdminListAPIView, AdminCreateAPIView):
         if shift.locked:
             raise PermissionDenied
 
-        return super(OrderListView, self).create(request, args, kwargs)
+        return super().create(request, args, kwargs)
 
     def perform_create(self, serializer):
         serializer.save(created_by_id=self.request.member.pk)
@@ -119,7 +119,7 @@ class OrderListView(AdminListAPIView, AdminCreateAPIView):
         return queryset
 
     def get_serializer_context(self):
-        context = super(OrderListView, self).get_serializer_context()
+        context = super().get_serializer_context()
         pk = self.kwargs.get("pk")
         if pk:
             shift = get_object_or_404(Shift, pk=self.kwargs.get("pk"))

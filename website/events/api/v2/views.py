@@ -90,7 +90,7 @@ class EventRegistrationsView(ListAPIView):
     )
 
     def __init__(self):
-        super(EventRegistrationsView, self).__init__()
+        super().__init__()
         self.event = None
 
     def get_serializer_class(self):

@@ -165,7 +165,7 @@ class Order(models.Model):
         if self.payment and not self.payer:
             self.payer = self.payment.paid_by
 
-        return super(Order, self).save(force_insert, force_update, using, update_fields)
+        return super().save(force_insert, force_update, using, update_fields)
 
     def clean(self):
         super().clean()
@@ -264,7 +264,7 @@ class OrderItem(models.Model):
         if self.product:
             self.product_name = self.product.product_name
 
-        super(OrderItem, self).save(force_insert, force_update, using, update_fields)
+        return super().save(force_insert, force_update, using, update_fields)
 
         self.order.save()
 

@@ -58,7 +58,7 @@ class UserOrderListView(OrderListView):
         shift = Shift.objects.get(pk=kwargs["pk"])
         if not shift.user_orders_allowed:
             raise PermissionDenied
-        return super(UserOrderListView, self).create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         serializer.save(
@@ -66,7 +66,7 @@ class UserOrderListView(OrderListView):
         )
 
     def get_queryset(self):
-        queryset = super(UserOrderListView, self).get_queryset()
+        queryset = super().get_queryset()
         return queryset.filter(
             Q(payer=self.request.member) | Q(created_by=self.request.member)
         )
@@ -85,7 +85,7 @@ class UserOrderDetailView(OrderDetailView):
     }
 
     def get_queryset(self):
-        queryset = super(UserOrderDetailView, self).get_queryset()
+        queryset = super().get_queryset()
         return queryset.filter(
             Q(payer=self.request.member) | Q(created_by=self.request.member)
         )
@@ -95,14 +95,14 @@ class UserOrderDetailView(OrderDetailView):
             raise PermissionDenied
         if self.get_object().payment:
             raise PermissionDenied
-        return super(UserOrderDetailView, self).update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         if not self.get_object().shift.user_orders_allowed:
             raise PermissionDenied
         if self.get_object().payment:
             raise PermissionDenied
-        return super(UserOrderDetailView, self).partial_update(request, *args, **kwargs)
+        return super().partial_update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         if not self.get_object().shift.user_orders_allowed:
