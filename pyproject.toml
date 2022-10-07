@@ -57,6 +57,7 @@ isort = "5.10.1"
 black = "22.10.0"
 pylint = "2.15.3"
 pylint-django = "2.5.3"
+pre-commit = "2.20.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
@@ -121,7 +122,7 @@ ignore = "migrations"
 jobs = 4
 
 load-plugins = [
-    "pylint_django", 
+    "pylint_django",
     "pylint.extensions.docstyle",
     "pylint.extensions.for_any_all",
     "pylint.extensions.check_elif",
@@ -132,16 +133,17 @@ django-settings-module = "thaliawebsite.settings"
 
 [tool.pylint.format]
 expected-line-ending-format = "LF"
+max-line-length = "88"
 
 [tool.pylint."messages control"]
 disable = [
-    "raw-checker-failed", 
-    "bad-inline-option", 
-    "locally-disabled", 
-    "file-ignored", 
-    "suppressed-message", 
-    "useless-suppression", 
-    "deprecated-pragma", 
+    "raw-checker-failed",
+    "bad-inline-option",
+    "locally-disabled",
+    "file-ignored",
+    "suppressed-message",
+    "useless-suppression",
+    "deprecated-pragma",
     "use-symbolic-message-instead",
     "missing-module-docstring",
     "missing-class-docstring",
@@ -179,5 +181,5 @@ disable = [
 # should appear only once). See also the "--disable" option for examples.
 enable = [
     "c-extension-no-member",
-    "super-with-arguments",    
+    "super-with-arguments",
 ]
