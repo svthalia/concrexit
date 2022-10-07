@@ -322,7 +322,7 @@ class Batch(models.Model):
     end_date.short_description = _("last payment in batch")
 
     def total_amount(self) -> Decimal:
-        return sum([payment.amount for payment in self.payments_set.all()])
+        return sum(payment.amount for payment in self.payments_set.all())
 
     total_amount.admin_order_field = "total amount"
     total_amount.short_description = _("total amount")

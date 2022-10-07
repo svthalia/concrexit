@@ -556,7 +556,7 @@ class Command(BaseCommand):
 
         possible_events = list(
             filter(
-                lambda e: e.registrations.count() > 0,
+                lambda e: e.registrations.exists(),
                 Event.objects.filter(price__gt=0).order_by("?"),
             )
         )
@@ -565,7 +565,7 @@ class Command(BaseCommand):
             self.create_event()
             possible_events = list(
                 filter(
-                    lambda e: e.registrations.count() > 0,
+                    lambda e: e.registrations.exists(),
                     Event.objects.filter(price__gt=0).order_by("?"),
                 )
             )
@@ -657,7 +657,7 @@ class Command(BaseCommand):
             "photoalbum",
         ]
 
-        if all([not options[opt] for opt in opts]):
+        if all(not options[opt] for opt in opts):
             self.stdout.write(
                 "Use ./manage.py help createfixtures to find out"
                 " how to call this command"

@@ -95,15 +95,13 @@ class EventRegistration(models.Model):
     def phone_number(self):
         if self.member:
             return self.member.profile.phone_number
-        else:
-            return self.alt_phone_number
+        return self.alt_phone_number
 
     @property
     def email(self):
         if self.member:
             return self.member.email
-        else:
-            return self.alt_email
+        return self.alt_email
 
     @property
     def information_fields(self):

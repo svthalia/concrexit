@@ -272,15 +272,12 @@ class OrderAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         if not request.member:
             return False
-        elif not request.member.has_perm("sales.override_manager"):
-            if (
-                Shift.objects.filter(
-                    start__lte=timezone.now(),
-                    locked=False,
-                    managers__in=request.member.get_member_groups(),
-                ).count()
-                == 0
-            ):
+        if not request.member.has_perm("sales.override_manager"):
+            if not Shift.objects.filter(
+                start__lte=timezone.now(),
+                locked=False,
+                managers__in=request.member.get_member_groups(),
+            ).exists():
                 return False
         return super().has_view_permission(request)
 

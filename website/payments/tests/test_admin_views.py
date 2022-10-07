@@ -332,14 +332,14 @@ class BatchExportAdminViewTest(TestCase):
     def test_post(self):
         self._give_user_permissions()
 
-        self.user2 = Member.objects.create(
+        user2 = Member.objects.create(
             username="test2",
             first_name="Test2",
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(user=self.user2)
-        self.user2 = PaymentUser.objects.get(pk=self.user2.pk)
+        Profile.objects.create(user=user2)
+        user2 = PaymentUser.objects.get(pk=user2.pk)
 
         BankAccount.objects.create(
             last_used=timezone.now(),
@@ -352,7 +352,7 @@ class BatchExportAdminViewTest(TestCase):
         )
         BankAccount.objects.create(
             last_used=timezone.now(),
-            owner=self.user2,
+            owner=user2,
             iban="NL02ABNA0123456789",
             mandate_no="1",
             valid_from=timezone.now(),
@@ -368,12 +368,8 @@ class BatchExportAdminViewTest(TestCase):
                 Payment(
                     amount=2, paid_by=self.user, type=Payment.TPAY, batch=self.batch
                 ),
-                Payment(
-                    amount=4, paid_by=self.user2, type=Payment.TPAY, batch=self.batch
-                ),
-                Payment(
-                    amount=2, paid_by=self.user2, type=Payment.TPAY, batch=self.batch
-                ),
+                Payment(amount=4, paid_by=user2, type=Payment.TPAY, batch=self.batch),
+                Payment(amount=2, paid_by=user2, type=Payment.TPAY, batch=self.batch),
             ]
         )
 
@@ -433,14 +429,14 @@ class BatchTopicExportAdminViewTest(TestCase):
     def test_post(self):
         self._give_user_permissions()
 
-        self.user2 = Member.objects.create(
+        user2 = Member.objects.create(
             username="test2",
             first_name="Test2",
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(user=self.user2)
-        self.user2 = PaymentUser.objects.get(pk=self.user2.pk)
+        Profile.objects.create(user=user2)
+        user2 = PaymentUser.objects.get(pk=user2.pk)
 
         BankAccount.objects.create(
             last_used=timezone.now(),
@@ -451,7 +447,7 @@ class BatchTopicExportAdminViewTest(TestCase):
         )
         BankAccount.objects.create(
             last_used=timezone.now(),
-            owner=self.user2,
+            owner=user2,
             iban="NL02ABNA0123456789",
             mandate_no="1",
             valid_from=timezone.now(),
@@ -475,14 +471,14 @@ class BatchTopicExportAdminViewTest(TestCase):
                 ),
                 Payment(
                     amount=4,
-                    paid_by=self.user2,
+                    paid_by=user2,
                     type=Payment.TPAY,
                     batch=self.batch,
                     topic="test1",
                 ),
                 Payment(
                     amount=2,
-                    paid_by=self.user2,
+                    paid_by=user2,
                     type=Payment.TPAY,
                     batch=self.batch,
                     topic="test2",

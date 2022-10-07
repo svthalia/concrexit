@@ -119,7 +119,9 @@ class PayableDetailView(RetrieveAPIView):
             )
             payable.model.save()
         except PaymentError as e:
-            raise ValidationError(detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]})
+            raise ValidationError(
+                detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]}
+            ) from e
 
         return Response(
             PayableSerializer(payable, context=self.get_serializer_context()).data,

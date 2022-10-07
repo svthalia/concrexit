@@ -249,7 +249,7 @@ class OrderItem(models.Model):
             if self.pk:
                 self.delete()
             else:
-                return
+                return None
 
         if not self.total:
             self.total = self.product.price * self.amount

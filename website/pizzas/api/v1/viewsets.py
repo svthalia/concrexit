@@ -50,7 +50,7 @@ class OrderViewset(ModelViewSet):
         event = FoodEvent.current()
         if can_change_order(self.request.member, event):
             return FoodOrder.objects.filter(food_event=event)
-        if self.action == "update" or self.action == "destroy":
+        if self.action in ("update", "destroy"):
             if not event or event.has_ended:
                 return FoodOrder.objects.none()
 

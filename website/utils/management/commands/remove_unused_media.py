@@ -33,8 +33,7 @@ def remove_empty_dirs(path=None):
     if all(list(map(remove_empty_dirs, listdir))):
         os.rmdir(path)
         return True
-    else:
-        return False
+    return False
 
 
 def _get_used_thabloid_pages(storage, path):

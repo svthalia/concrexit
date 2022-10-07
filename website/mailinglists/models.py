@@ -121,7 +121,7 @@ class MailingList(models.Model):
         """Validate the mailing list."""
         super().clean()
         if (
-            ListAlias.objects.filter(alias=self.name).count() > 0
+            ListAlias.objects.filter(alias=self.name).exists()
             or self.name in get_automatic_mailinglists()
         ):
             raise ValidationError(
@@ -189,7 +189,7 @@ class ListAlias(models.Model):
         """Validate the alias."""
         super().clean()
         if (
-            MailingList.objects.filter(name=self.alias).count() > 0
+            MailingList.objects.filter(name=self.alias).exists()
             or self.alias in get_automatic_mailinglists()
         ):
             raise ValidationError(

@@ -152,7 +152,7 @@ class OrderAdminTest(TestCase):
             self.assertEqual(200, response.status_code)
 
     def test_change_list_view_rendering_correctly(self) -> None:
-        response = self.client.get(f"/admin/sales/order/")
+        response = self.client.get("/admin/sales/order/")
         self.assertEqual(200, response.status_code)
 
     def test_view_permissions(self):
@@ -524,7 +524,7 @@ class ShiftAdminTest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_change_list_view_rendering_correctly(self) -> None:
-        response = self.client.get(f"/admin/sales/shift/")
+        response = self.client.get("/admin/sales/shift/")
         self.assertEqual(200, response.status_code)
 
     def test_view_permissions(self):

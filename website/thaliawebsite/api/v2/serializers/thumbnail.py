@@ -47,5 +47,5 @@ class ThumbnailSerializer(FileField):
 
     def to_internal_value(self, data):
         if data == "":
-            return
+            return None
         return super().to_internal_value(data)

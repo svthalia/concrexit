@@ -279,7 +279,7 @@ class MemberGroupMembership(models.Model):
             until__lte=self.since,
             until__gte=self.since - datetime.timedelta(days=1),
         )
-        if qs.count() >= 1:  # should only be one; should be unique
+        if qs.exists():  # should only be one; should be unique
             return qs.first().initial_connected_membership
         return self
 
@@ -296,7 +296,7 @@ class MemberGroupMembership(models.Model):
                 since__lte=self.until,
                 since__gte=self.until + datetime.timedelta(days=1),
             )
-            if qs.count() >= 1:  # should only be one; should be unique
+            if qs.exists():  # should only be one; should be unique
                 return qs.last().latest_connected_membership
         return self
 
@@ -360,11 +360,9 @@ class MemberGroupMembership(models.Model):
 
     def save(self, **kwargs):
         super().save(**kwargs)
-        self.member.is_staff = (
-            self.member.membergroupmembership_set.exclude(
-                until__lte=timezone.now().date()
-            ).count()
-        ) >= 1
+        self.member.is_staff = self.member.membergroupmembership_set.exclude(
+            until__lte=timezone.now().date()
+        ).exists()
         self.member.save()
 
     def __str__(self):

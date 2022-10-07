@@ -24,13 +24,11 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         if self.context["member"] and instance.member_registration:
             if services.user_registration_pending(self.context["member"], instance):
                 return ["regular-event-pending-registration"]
-            else:
-                return ["regular-event-has-registration"]
-        elif (not instance.registration_required) or instance.registration_allowed:
+            return ["regular-event-has-registration"]
+        if (not instance.registration_required) or instance.registration_allowed:
             return ["regular-event-registration-open"]
-        else:
-            # I think this handles the case that registration is needed, but not yet possible
-            return ["regular-event-registration-closed"]
+        # I think this handles the case that registration is needed, but not yet possible
+        return ["regular-event-registration-closed"]
 
     def _registration_info(self, instance: Event):
         # If registered in some way
@@ -44,33 +42,31 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
                     queue_pos=queue_pos
                 )
             # Actually registered
-            else:
-                return _("You are registered for this event")
+            return _("You are registered for this event")
         # Optional registration possible
-        elif instance.optional_registration_allowed:
+        if instance.optional_registration_allowed:
             return _("Registering for this event is optional")
         # No places left
-        elif (
+        if (
             instance.max_participants is not None
             and instance.max_participants <= instance.number_regs
         ):
             return _("You can put yourself on the waiting list for this event")
         # Registration still possible
-        elif instance.registration_allowed:
+        if instance.registration_allowed:
             return _("You can register for this event")
         # Not registration time yet
-        elif instance.registration_end:
+        if instance.registration_end:
             now = timezone.now()
             if instance.registration_end < now:
                 return _("Registrations have been closed")
-            elif instance.registration_start <= now + timedelta(days=2):
+            if instance.registration_start <= now + timedelta(days=2):
                 return _("Registrations open {at_time}").format(
                     at_time=naturaltime(instance.registration_start)
                 )
-            else:
-                return _("Registrations open {date}").format(
-                    date=date(instance.registration_start)
-                )
+            return _("Registrations open {date}").format(
+                date=date(instance.registration_start)
+            )
 
 
 class UnpublishedEventsCalenderJSSerializer(CalenderJSSerializer):

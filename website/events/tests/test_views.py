@@ -499,7 +499,7 @@ class RegistrationTest(TestCase):
         registration.refresh_from_db()
         self.assertTrue(registration.present)
 
-    def test_mark_present_url_registered(self):
+    def test_mark_present_url_already_present(self):
         registration = EventRegistration.objects.create(
             event=self.event,
             member=self.member,

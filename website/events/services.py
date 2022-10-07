@@ -28,7 +28,7 @@ def is_user_registered(member, event):
     if not member.is_authenticated:
         return None
 
-    return event.registrations.filter(member=member, date_cancelled=None).count() > 0
+    return event.registrations.filter(member=member, date_cancelled=None).exists()
 
 
 def user_registration_pending(member, event):
@@ -58,12 +58,9 @@ def is_user_present(member, event):
     if not event.registration_required or not member.is_authenticated:
         return None
 
-    return (
-        event.registrations.filter(
-            member=member, date_cancelled=None, present=True
-        ).count()
-        > 0
-    )
+    return event.registrations.filter(
+        member=member, date_cancelled=None, present=True
+    ).exists()
 
 
 def event_permissions(member, event, name=None):
@@ -133,8 +130,7 @@ def is_organiser(member, event):
             return (
                 member.get_member_groups()
                 .filter(pk__in=event.organisers.values_list("pk"))
-                .count()
-                != 0
+                .exists()
             )
 
     return False

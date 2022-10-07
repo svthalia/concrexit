@@ -113,7 +113,7 @@ def get_thumbnail(request, request_path):
             format = image.format
             size = tuple(int(dim) for dim in sig_info["size"].split("x"))
             if not sig_info["fit"]:
-                ratio = min([a / b for a, b in zip(size, image.size)])
+                ratio = min(a / b for a, b in zip(size, image.size))
                 size = tuple(int(ratio * x) for x in image.size)
 
             if size[0] != image.size[0] and size[1] != image.size[1]:

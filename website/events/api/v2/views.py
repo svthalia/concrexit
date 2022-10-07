@@ -234,7 +234,7 @@ class EventRegistrationFieldsView(APIView):
                 status=status.HTTP_200_OK,
             )
         except RegistrationError as e:
-            raise ValidationError(e)
+            raise ValidationError(e) from e
 
     def patch(self, request, *args, **kwargs):
         try:
@@ -249,7 +249,7 @@ class EventRegistrationFieldsView(APIView):
                 status=status.HTTP_200_OK,
             )
         except RegistrationError as e:
-            raise ValidationError(e)
+            raise ValidationError(e) from e
 
 
 class ExternalEventListView(ListAPIView):

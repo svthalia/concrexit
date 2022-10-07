@@ -61,7 +61,7 @@ class PaymentViewset(ListModelMixin, RetrieveModelMixin, GenericViewSet):
             )
             payable.model.save()
         except PaymentError as e:
-            raise ValidationError(detail=str(e))
+            raise ValidationError(detail=str(e)) from e
 
         headers = {
             "Location": reverse(

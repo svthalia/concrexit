@@ -46,7 +46,7 @@ def notify_organiser(event, registration):
     :param event: the event
     :param registration: the registration that was cancelled
     """
-    if event.organisers.count() < 1:
+    if not event.organisers.exists():
         return
 
     text_template = get_template("events/organiser_email.txt")

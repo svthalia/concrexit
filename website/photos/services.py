@@ -59,12 +59,9 @@ def is_album_accessible(request, album):
     if request.member and request.member.current_membership is None:
         # This user is currently not a member, so need to check if he/she
         # can view this album by checking the membership
-        return (
-            request.member.membership_set.filter(
-                Q(since__lte=album.date) & Q(until__gte=album.date)
-            ).count()
-            > 0
-        )
+        return request.member.membership_set.filter(
+            Q(since__lte=album.date) & Q(until__gte=album.date)
+        ).exists()
     return False
 
 

@@ -18,7 +18,7 @@ class CleanedModelSerializer(serializers.ModelSerializer):
         try:
             return super().create(validated_data)
         except ValidationError as e:
-            raise DRFValidationError(e)
+            raise DRFValidationError(e) from e
 
     def update(self, instance, validated_data, **kwargs):
         """Override the default implementation of DRF's ModelSerializer.
@@ -43,7 +43,7 @@ class CleanedModelSerializer(serializers.ModelSerializer):
         try:
             instance.clean()
         except ValidationError as e:
-            raise DRFValidationError(e)
+            raise DRFValidationError(e) from e
 
         instance.save()
 

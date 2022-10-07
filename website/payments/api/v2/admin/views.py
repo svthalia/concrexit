@@ -136,7 +136,7 @@ class PayableDetailView(APIView):
             )
             payable.model.save()
         except PaymentError as e:
-            raise PermissionDenied(detail=str(e))
+            raise PermissionDenied(detail=str(e)) from e
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -157,7 +157,9 @@ class PayableDetailView(APIView):
             )
             payable.model.save()
         except PaymentError as e:
-            raise ValidationError(detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]})
+            raise ValidationError(
+                detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]}
+            ) from e
 
         return Response(
             PayableAdminSerializer(payable, context=self.get_serializer_context()).data,

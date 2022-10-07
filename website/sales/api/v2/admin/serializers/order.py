@@ -70,7 +70,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         try:
             super().update(instance, validated_data)
         except ValueError as e:
-            raise ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [e]})
+            raise ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [e]}) from e
         return instance
 
 

@@ -37,7 +37,7 @@ def get_media_url(file, attachment=False):
     """
     storage = DefaultStorage()
     file_name = file
-    if isinstance(file, ImageFieldFile) or isinstance(file, FieldFile):
+    if isinstance(file, (ImageFieldFile, FieldFile)):
         storage = file.storage
         file_name = file.name
 
@@ -59,7 +59,7 @@ def get_thumbnail_url(file, size, fit=True):
     storage = DefaultStorage()
     name = file
 
-    if isinstance(file, ImageFieldFile) or isinstance(file, FieldFile):
+    if isinstance(file, (ImageFieldFile, FieldFile)):
         storage = file.storage
         name = file.name
 
