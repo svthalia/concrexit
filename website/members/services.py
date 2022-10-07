@@ -1,7 +1,7 @@
 """Services defined in the members package."""
+from collections.abc import Callable
 from datetime import date, datetime
 from typing import Any
-from collections.abc import Callable
 
 from django.conf import settings
 from django.db.models import Count, Q

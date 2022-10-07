@@ -33,7 +33,7 @@ class Command(BaseCommand):
         How to use this script:
         Send this output to a csv file.
         Edit this csv file such that albums and events that should be linked are next to each other
-        If an album is next to an empty cell, it will not be linked 
+        If an album is next to an empty cell, it will not be linked
         Don't change a cells' contents itself
         When you are done, input the file into the command link_album_events_read"""
 
