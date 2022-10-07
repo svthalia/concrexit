@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
+
 from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership

@@ -8,11 +8,11 @@ from django.utils import timezone
 
 from activemembers.models import Committee, MemberGroupMembership
 from events.models import (
+    BooleanRegistrationInformation,
     Event,
     EventRegistration,
-    RegistrationInformationField,
-    BooleanRegistrationInformation,
     IntegerRegistrationInformation,
+    RegistrationInformationField,
     TextRegistrationInformation,
 )
 from mailinglists.models import MailingList

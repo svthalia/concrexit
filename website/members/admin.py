@@ -1,16 +1,18 @@
 """Register admin pages for the models."""
 import csv
 import datetime
+
 from django.contrib import admin, messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.db.models import Q, Count
+from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members import services
 from members.models import EmailChange, Member
+
 from . import forms, models
 
 

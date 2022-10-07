@@ -4,6 +4,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.template.defaultfilters import date
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from rest_framework.reverse import reverse
 
 from events import services

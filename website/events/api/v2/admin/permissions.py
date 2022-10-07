@@ -1,8 +1,9 @@
 from django.db.models import QuerySet
+
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import BasePermission
 
-from events.models import EventRegistration, Event
+from events.models import Event, EventRegistration
 from events.services import is_organiser
 
 

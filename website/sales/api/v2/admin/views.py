@@ -1,21 +1,22 @@
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework import filters as framework_filters, exceptions
+from rest_framework import exceptions
+from rest_framework import filters as framework_filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import DjangoModelPermissions
 
 from sales.api.v2 import filters
 from sales.api.v2.admin.permissions import IsManager
-from sales.api.v2.admin.serializers.order import OrderSerializer, OrderListSerializer
+from sales.api.v2.admin.serializers.order import OrderListSerializer, OrderSerializer
 from sales.api.v2.admin.serializers.shift import ShiftSerializer
 from sales.models.order import Order
 from sales.models.shift import Shift
 from thaliawebsite.api.v2.admin import (
     AdminCreateAPIView,
+    AdminDestroyAPIView,
     AdminListAPIView,
     AdminRetrieveAPIView,
     AdminUpdateAPIView,
-    AdminDestroyAPIView,
 )
 
 

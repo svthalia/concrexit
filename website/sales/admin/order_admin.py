@@ -1,14 +1,14 @@
 from functools import partial
 
-from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin, messages
-from django.contrib.admin import register, SimpleListFilter
+from django.contrib.admin import SimpleListFilter, register
 from django.forms import Field
 from django.http import HttpRequest
 from django.urls import resolve
 from django.utils import timezone
-
 from django.utils.translation import gettext_lazy as _
+
+from admin_auto_filters.filters import AutocompleteFilter
 
 from payments.widgets import PaymentWidget
 from sales import services

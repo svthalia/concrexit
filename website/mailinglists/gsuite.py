@@ -6,6 +6,7 @@ from typing import List
 
 from django.conf import settings
 from django.utils.datastructures import ImmutableList
+
 from googleapiclient.errors import HttpError
 
 from mailinglists.models import MailingList

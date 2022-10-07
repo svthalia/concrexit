@@ -3,16 +3,17 @@ import datetime
 from typing import Union
 
 from django.conf import settings
-from django.db.models import QuerySet, Q, Sum, Model
+from django.db.models import Model, Q, QuerySet, Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
 from utils.snippets import send_email
+
 from .exceptions import PaymentError
-from .models import Payment, BankAccount, PaymentUser
-from .payables import payables, Payable
+from .models import BankAccount, Payment, PaymentUser
+from .payables import Payable, payables
 
 
 def create_payment(

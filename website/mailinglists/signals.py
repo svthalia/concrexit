@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from django.db.models.signals import pre_save
+
 from googleapiclient.errors import HttpError
 
 from mailinglists.gsuite import GSuiteSyncService

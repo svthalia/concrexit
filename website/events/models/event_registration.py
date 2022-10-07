@@ -1,14 +1,16 @@
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q, F, Count
-from django.db.models.functions import NullIf, Greatest
+from django.db.models import Count, F, Q
+from django.db.models.functions import Greatest, NullIf
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from queryable_properties.properties import AnnotationProperty
+
 from queryable_properties.managers import QueryablePropertiesManager
+from queryable_properties.properties import AnnotationProperty
 
 from payments.models import PaymentAmountField
+
 from .event import Event
 
 

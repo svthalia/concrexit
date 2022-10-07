@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from photos.models import Photo, Album
+from photos.models import Album, Photo
 from photos.validators import ArchiveFileTypeValidator
 
 

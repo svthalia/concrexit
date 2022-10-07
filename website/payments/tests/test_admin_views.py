@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import Mock, MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.apps import apps
 from django.contrib.admin.utils import model_ngettext
@@ -8,11 +8,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from freezegun import freeze_time
 
 from members.models import Member, Profile
 from payments import admin_views, payables
-from payments.models import Payment, Batch, BankAccount, PaymentUser
+from payments.models import BankAccount, Batch, Payment, PaymentUser
 from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 

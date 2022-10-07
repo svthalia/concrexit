@@ -1,4 +1,5 @@
 from django.db.models import Q
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView
@@ -6,6 +7,7 @@ from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
 
+from sales import services
 from sales.api.v2.admin.serializers.order import OrderListSerializer
 from sales.api.v2.admin.views import (
     OrderDetailView,
@@ -13,11 +15,10 @@ from sales.api.v2.admin.views import (
     ShiftDetailView,
     ShiftListView,
 )
-from sales import services
 from sales.api.v2.serializers.user_order import UserOrderSerializer
 from sales.api.v2.serializers.user_shift import UserShiftSerializer
-from sales.models.shift import Shift
 from sales.models.order import Order
+from sales.models.shift import Shift
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 

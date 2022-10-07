@@ -4,11 +4,11 @@ from django.views.generic import RedirectView
 
 from partners.api.v2.views import (
     PartnerDetailView,
-    VacancyListView,
-    VacancyDetailView,
+    PartnerListView,
     VacancyCategoryListView,
+    VacancyDetailView,
+    VacancyListView,
 )
-from partners.api.v2.views import PartnerListView
 
 app_name = "partners"
 

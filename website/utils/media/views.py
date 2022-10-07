@@ -1,16 +1,17 @@
 """Utility views."""
 from datetime import timedelta
 
-from PIL import Image, ImageOps
 from django.core import signing
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.files.storage import get_storage_class
 from django.core.signing import BadSignature
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils import timezone
+
 from django_sendfile import sendfile
-from django.core.cache import cache
+from PIL import Image, ImageOps
 
 from utils.media.services import save_image
 

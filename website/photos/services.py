@@ -3,18 +3,19 @@ import io
 import logging
 import os
 import tarfile
-from zipfile import ZipInfo, is_zipfile, ZipFile
+from zipfile import ZipFile, ZipInfo, is_zipfile
 
-from PIL import ExifTags, Image, UnidentifiedImageError
-from PIL.JpegImagePlugin import JpegImageFile
 from django.conf import settings
 from django.contrib import messages
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db.models import When, Value, BooleanField, ExpressionWrapper, Q, Case
+from django.db.models import BooleanField, Case, ExpressionWrapper, Q, Value, When
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+
+from PIL import ExifTags, Image, UnidentifiedImageError
+from PIL.JpegImagePlugin import JpegImageFile
 
 from photos.models import Photo
 

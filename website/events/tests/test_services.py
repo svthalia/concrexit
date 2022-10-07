@@ -1,10 +1,11 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from unittest import mock
 
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.http import HttpRequest
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership

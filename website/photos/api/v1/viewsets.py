@@ -1,7 +1,7 @@
-from rest_framework import permissions, filters
+from rest_framework import filters, permissions
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from photos import services
 from photos.api.v1 import serializers

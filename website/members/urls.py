@@ -1,15 +1,15 @@
 """The routes defined by the members package."""
-from django.urls import path, include
+from django.urls import include, path
 from django.views.generic import RedirectView
 
 from members.views import (
-    MembersIndex,
-    StatisticsView,
-    ProfileDetailView,
-    UserProfileUpdateView,
+    EmailChangeConfirmView,
     EmailChangeFormView,
     EmailChangeVerifyView,
-    EmailChangeConfirmView,
+    MembersIndex,
+    ProfileDetailView,
+    StatisticsView,
+    UserProfileUpdateView,
 )
 
 app_name = "members"

@@ -1,10 +1,11 @@
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
 from members.models import Member, Membership
 from registrations import forms
-from registrations.models import Entry, Renewal, Reference
+from registrations.models import Entry, Reference, Renewal
 
 
 class MemberRegistrationFormTest(TestCase):

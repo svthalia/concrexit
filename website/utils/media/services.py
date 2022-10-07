@@ -4,7 +4,7 @@ import os
 from django.conf import settings
 from django.core import signing
 from django.core.files.base import ContentFile
-from django.core.files.storage import get_storage_class, DefaultStorage
+from django.core.files.storage import DefaultStorage, get_storage_class
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 from django.urls import reverse

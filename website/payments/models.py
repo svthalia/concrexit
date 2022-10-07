@@ -7,16 +7,17 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import DEFERRED, Q, Sum, BooleanField
-from django.db.models.expressions import Case, When, Value, Exists, OuterRef
+from django.db.models import DEFERRED, BooleanField, Q, Sum
+from django.db.models.expressions import Case, Exists, OuterRef, Value, When
 from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
-from localflavor.generic.models import IBANField, BICField
+from localflavor.generic.models import BICField, IBANField
 from queryable_properties.managers import QueryablePropertiesManager
-from queryable_properties.properties import queryable_property, AggregateProperty
+from queryable_properties.properties import AggregateProperty, queryable_property
 
 from members.models import Member
 

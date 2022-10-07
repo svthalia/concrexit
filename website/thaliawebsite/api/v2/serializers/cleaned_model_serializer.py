@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError
+
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.utils import model_meta
-from rest_framework.exceptions import ValidationError as DRFValidationError
 
 
 class CleanedModelSerializer(serializers.ModelSerializer):

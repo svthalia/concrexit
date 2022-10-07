@@ -2,12 +2,12 @@
 from django.urls import path
 
 from pizzas.api.v2.admin.views import (
-    FoodEventAdminListView,
     FoodEventAdminDetailView,
-    FoodOrderAdminDetailView,
+    FoodEventAdminListView,
     FoodEventOrdersAdminListView,
-    ProductsAdminListView,
+    FoodOrderAdminDetailView,
     ProductAdminDetailAPIView,
+    ProductsAdminListView,
 )
 
 app_name = "food"

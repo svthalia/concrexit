@@ -1,9 +1,10 @@
 """DRF serializers defined by the announcements package."""
 from django.conf import settings
+
 from rest_framework import serializers
 
 from announcements.models import Slide
-from thaliawebsite.api.v2.serializers import ThumbnailSerializer, CleanedHTMLSerializer
+from thaliawebsite.api.v2.serializers import CleanedHTMLSerializer, ThumbnailSerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
 )

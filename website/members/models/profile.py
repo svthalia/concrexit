@@ -1,7 +1,6 @@
 import logging
 import os
 
-from PIL import Image
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -9,6 +8,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+
+from PIL import Image
 
 from thaliawebsite.storage.backend import get_public_storage
 from utils import countries

@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand
 
-from utils.snippets import minimise_logentries_data
-from members import services as members_services
 from events import services as events_services
+from members import services as members_services
 from payments import services as payments_services
 from pizzas import services as pizzas_services
 from sales import services as sales_services
+from utils.snippets import minimise_logentries_data
 
 
 class Command(BaseCommand):

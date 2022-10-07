@@ -1,11 +1,10 @@
 import os
-
 from datetime import date
 
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from django.conf import settings
 
 from members.models import Member, Membership
 from photos.models import Album, Photo

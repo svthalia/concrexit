@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from django.test import TestCase
 
-from members.models import Member, Profile, Membership
+from members.models import Member, Membership, Profile
 from members.views import MembersIndex
 
 

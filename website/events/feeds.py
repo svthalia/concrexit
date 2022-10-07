@@ -4,6 +4,7 @@ from django.db.models.query_utils import Q
 from django.urls import reverse
 from django.utils.translation import activate
 from django.utils.translation import gettext as _
+
 from django_ical.views import ICalFeed
 
 from events.models import Event, FeedToken

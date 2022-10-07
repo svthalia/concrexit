@@ -1,16 +1,18 @@
 from unittest import mock
 
-from activemembers.models import Committee, MemberGroupMembership
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+
 from freezegun import freeze_time
+from rest_framework.test import APIClient
+
+from activemembers.models import Committee, MemberGroupMembership
 from members.models import Member
 from payments.models import Payment
 from payments.services import create_payment
-from rest_framework.test import APIClient
 from sales import payables
 from sales.models.order import Order, OrderItem
 from sales.models.product import Product, ProductList

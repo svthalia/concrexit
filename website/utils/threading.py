@@ -1,5 +1,5 @@
-import threading
 import subprocess
+import threading
 
 
 def PopenAndCall(onExit, *popenArgs, **popenKWArgs):

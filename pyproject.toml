@@ -53,6 +53,7 @@ factory_boy = "3.2.1"
 pydenticon = "0.3.1"
 Faker = "15.1.1"
 coverage = {extras = ["toml"], version = "^6.0.0"}
+isort = "5.10.1"
 black = "22.10.0"
 pylint = "2.13.9"
 pylint-django = "2.5.3"
@@ -71,6 +72,41 @@ fail_under = 65.0
 [tool.black]
 exclude = '(/(\.eggs|\.git|\.tox)/|migrations)'
 
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+[tool.isort]
+profile = "black"
+skip_glob = ["*/migrations/*"]
+sections = [
+    "FUTURE",
+    "STDLIB",
+    "DJANGO",
+    "THIRDPARTY",
+    "FIRSTPARTY",
+    "LOCALFOLDER",
+]
+
+known_django = ["django"]
+known_first_party = [
+    "website",
+    "activemembers",
+    "announcements",
+    "documents",
+    "education",
+    "events",
+    "mailinglists",
+    "members",
+    "merchandise",
+    "newsletters",
+    "partners",
+    "payments",
+    "photos",
+    "pizzas",
+    "promotion",
+    "pushnotifications",
+    "registrations",
+    "sales",
+    "shortlinks",
+    "singlepages",
+    "thabloid",
+    "thaliawebsite",
+    "utils",
+]

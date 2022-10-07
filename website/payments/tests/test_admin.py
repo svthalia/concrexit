@@ -1,6 +1,6 @@
 from decimal import Decimal
 from unittest import mock
-from unittest.mock import Mock, MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.contrib import messages
 from django.contrib.admin import AdminSite
@@ -10,22 +10,23 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpRequest
 from django.test import (
-    TestCase,
-    SimpleTestCase,
     Client,
     RequestFactory,
+    SimpleTestCase,
+    TestCase,
     override_settings,
 )
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from freezegun import freeze_time
 
 from members.models import Member, Profile
 from payments import admin
-from payments.admin import ValidAccountFilter, BankAccountInline, PaymentInline
+from payments.admin import BankAccountInline, PaymentInline, ValidAccountFilter
 from payments.forms import BatchPaymentInlineAdminForm
-from payments.models import Payment, BankAccount, Batch, PaymentUser
+from payments.models import BankAccount, Batch, Payment, PaymentUser
 
 
 class GlobalAdminTest(SimpleTestCase):

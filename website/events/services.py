@@ -8,10 +8,10 @@ from django.utils.translation import gettext_lazy as _
 from events import emails
 from events.exceptions import RegistrationError
 from events.models import (
-    categories,
+    Event,
     EventRegistration,
     RegistrationInformationField,
-    Event,
+    categories,
 )
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment

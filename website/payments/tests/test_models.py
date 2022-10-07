@@ -5,17 +5,12 @@ from unittest.mock import PropertyMock, patch
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
-from payments import services, Payable
-from payments.models import (
-    Payment,
-    BankAccount,
-    Batch,
-    PaymentUser,
-    validate_not_zero,
-)
-from payments.tests.__mocks__ import MockPayable, MockModel
+from payments import Payable, services
+from payments.models import BankAccount, Batch, Payment, PaymentUser, validate_not_zero
+from payments.tests.__mocks__ import MockModel, MockPayable
 
 
 class PayableTest(TestCase):

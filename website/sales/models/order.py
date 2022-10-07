@@ -4,23 +4,16 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import (
-    Sum,
-    Value,
-    F,
-    Q,
-    IntegerField,
-    BooleanField,
-    Count,
-)
+from django.db.models import BooleanField, Count, F, IntegerField, Q, Sum, Value
 from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
-from members.models import uuid, Member
+from members.models import Member, uuid
 from payments.models import Payment, PaymentAmountField
 from sales.models.product import ProductListItem
 from sales.models.shift import Shift

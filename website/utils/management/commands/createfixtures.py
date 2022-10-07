@@ -4,7 +4,7 @@
 import math
 import random
 import string
-from datetime import date, timedelta, datetime
+from datetime import date, datetime, timedelta
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
@@ -15,20 +15,20 @@ from django.utils.text import slugify
 from activemembers.models import (
     Board,
     Committee,
+    MemberGroup,
     MemberGroupMembership,
     Society,
-    MemberGroup,
 )
 from documents.models import Document
-from education.models import Course, Category
+from education.models import Category, Course
 from events.models import (
+    EVENT_CATEGORIES,
     Event,
     EventRegistration,
-    EVENT_CATEGORIES,
     registration_member_choices_limit,
 )
-from members.models import Profile, Member, Membership
-from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
+from members.models import Member, Membership, Profile
+from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
 from partners.models import Partner, Vacancy, VacancyCategory
 from payments.models import Payment
 from payments.services import create_payment

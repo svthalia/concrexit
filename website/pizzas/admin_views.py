@@ -5,9 +5,9 @@ from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
+from payments.models import Payment
 from pizzas.decorators import organiser_only
 from pizzas.models import FoodEvent, FoodOrder
-from payments.models import Payment
 
 
 @method_decorator(organiser_only, name="dispatch")

@@ -10,14 +10,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.template.defaultfilters import floatformat
-from django.test import Client, TestCase, RequestFactory, override_settings
+from django.test import Client, RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from members.models import Membership, Profile, Member
+from members.models import Member, Membership, Profile
 from registrations import views
-from registrations.models import Entry, Registration, Renewal, Reference
+from registrations.models import Entry, Reference, Registration, Renewal
 from registrations.views import RenewalFormView
 
 

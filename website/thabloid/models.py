@@ -3,12 +3,13 @@ import shutil
 import subprocess
 from itertools import zip_longest
 
-from PIL import Image
 from django.core.files import temp
-from django.core.validators import MinValueValidator, FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+
+from PIL import Image
 
 from utils.media.services import save_image
 from utils.threading import PopenAndCall

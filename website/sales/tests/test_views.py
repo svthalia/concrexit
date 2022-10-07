@@ -9,7 +9,7 @@ from freezegun import freeze_time
 from members.models import Member
 from payments.models import Payment
 from payments.services import create_payment
-from sales.models.order import OrderItem, Order
+from sales.models.order import Order, OrderItem
 from sales.models.product import Product, ProductList
 from sales.models.shift import Shift
 

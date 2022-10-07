@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core import mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from django.utils import translation, timezone
+from django.utils import timezone, translation
 from django.utils.timezone import make_aware
 
 from newsletters import services

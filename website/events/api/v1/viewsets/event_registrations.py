@@ -1,4 +1,4 @@
-from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response

@@ -2,13 +2,13 @@
 from django.urls import path
 
 from events.api.v2.views import (
-    EventListView,
     EventDetailView,
-    EventRegistrationsView,
+    EventListView,
     EventRegistrationDetailView,
     EventRegistrationFieldsView,
-    ExternalEventListView,
+    EventRegistrationsView,
     ExternalEventDetailView,
+    ExternalEventListView,
 )
 
 app_name = "events"

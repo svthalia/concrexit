@@ -11,7 +11,8 @@ from django.core import mail
 from django.template import loader
 from django.template.defaultfilters import urlencode
 from django.templatetags.static import static
-from django.utils import timezone, dateparse
+from django.utils import dateparse, timezone
+
 from rest_framework.exceptions import ParseError
 
 

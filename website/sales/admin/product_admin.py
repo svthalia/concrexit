@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import register
 
-from sales.models.product import Product, ProductListItem, ProductList
+from sales.models.product import Product, ProductList, ProductListItem
 
 
 @register(Product)

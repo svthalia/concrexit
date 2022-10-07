@@ -3,8 +3,8 @@ import logging
 
 from django.conf import settings
 
-from utils.snippets import send_email
 from promotion.models import PromotionRequest
+from utils.snippets import send_email
 
 logger = logging.getLogger(__name__)
 

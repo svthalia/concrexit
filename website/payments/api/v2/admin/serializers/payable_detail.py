@@ -1,4 +1,4 @@
-from rest_framework.fields import CharField, ListField, DecimalField
+from rest_framework.fields import CharField, DecimalField, ListField
 from rest_framework.serializers import Serializer
 
 from members.api.v2.serializers.member import MemberSerializer

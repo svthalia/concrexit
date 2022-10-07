@@ -4,11 +4,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from payments import (
-    payables,
     NotRegistered,
-    prevent_saving,
-    PaymentError,
     Payable,
+    PaymentError,
+    payables,
+    prevent_saving,
     prevent_saving_related,
 )
 from payments.models import Payment

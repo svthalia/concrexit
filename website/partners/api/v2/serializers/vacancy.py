@@ -1,8 +1,9 @@
 from partners.models import Vacancy
-from .vacancy_category import VacancyCategorySerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
 )
+
+from .vacancy_category import VacancyCategorySerializer
 
 
 class VacancySerializer(CleanedModelSerializer):

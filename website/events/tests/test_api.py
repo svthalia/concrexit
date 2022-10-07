@@ -2,15 +2,16 @@ import datetime
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from rest_framework.test import APIClient
 
 from activemembers.models import Committee
 from events.models import (
+    BooleanRegistrationInformation,
     Event,
     EventRegistration,
-    RegistrationInformationField,
-    BooleanRegistrationInformation,
     IntegerRegistrationInformation,
+    RegistrationInformationField,
     TextRegistrationInformation,
 )
 from members.models import Member

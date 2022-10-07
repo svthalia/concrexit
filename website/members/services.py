@@ -1,13 +1,13 @@
 """Services defined in the members package."""
 from datetime import date, datetime
-from typing import Callable, List, Dict, Any
+from typing import Any, Callable, Dict, List
 
 from django.conf import settings
-from django.db.models import Q, Count
+from django.db.models import Count, Q
 from django.utils import timezone
 
 from members import emails
-from members.models import Membership, Member
+from members.models import Member, Membership
 from utils.snippets import datetime_to_lectureyear
 
 

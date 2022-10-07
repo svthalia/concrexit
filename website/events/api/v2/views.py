@@ -1,13 +1,14 @@
-from django.db.models import Q, Count
+from django.db.models import Count, Q
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import (
+    DestroyAPIView,
     ListAPIView,
     RetrieveAPIView,
     get_object_or_404,
-    DestroyAPIView,
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView

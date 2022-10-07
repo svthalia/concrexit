@@ -8,20 +8,21 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.http import Http404
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import FormView, CreateView
+from django.views.generic import CreateView, FormView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
 from members.decorators import membership_required
 from members.models import Membership
+
 from . import emails, forms, services
-from .models import Entry, Registration, Renewal, Reference
+from .models import Entry, Reference, Registration, Renewal
 
 
 class BecomeAMemberView(TemplateView):

@@ -1,11 +1,12 @@
 import warnings
 
 from django.http import HttpRequest
+
 from oauth2_provider.scopes import get_scopes_backend
 from rest_framework import exceptions
 from rest_framework.request import Request
 from rest_framework.reverse import reverse
-from rest_framework.schemas.openapi import SchemaGenerator, AutoSchema
+from rest_framework.schemas.openapi import AutoSchema, SchemaGenerator
 from rest_framework.schemas.utils import is_list_view
 
 

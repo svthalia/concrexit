@@ -2,9 +2,9 @@
 from django.urls import path
 
 from payments.api.v2.admin.views import (
-    PaymentListCreateView,
-    PaymentDetailView,
     PayableDetailView,
+    PaymentDetailView,
+    PaymentListCreateView,
 )
 
 app_name = "payments"

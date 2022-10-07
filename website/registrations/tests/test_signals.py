@@ -3,10 +3,10 @@ from unittest import mock
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from members.models import Membership, Member
+from members.models import Member, Membership
 from payments.models import Payment
 from payments.services import create_payment
-from registrations.models import Registration, Entry
+from registrations.models import Entry, Registration
 
 
 @override_settings(THALIA_PAY_ENABLED_PAYMENT_METHOD=True)

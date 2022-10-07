@@ -4,11 +4,12 @@ from unittest.mock import MagicMock
 
 from django.conf import settings
 from django.test import TestCase, override_settings
+
 from googleapiclient.errors import HttpError
 from httplib2 import Response
 
 from mailinglists.gsuite import GSuiteSyncService
-from mailinglists.models import MailingList, ListAlias, VerbatimAddress
+from mailinglists.models import ListAlias, MailingList, VerbatimAddress
 
 
 def assert_not_called_with(self, *args, **kwargs):

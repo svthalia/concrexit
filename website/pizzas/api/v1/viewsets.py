@@ -1,15 +1,16 @@
 from django.db import IntegrityError
+
 from rest_framework import permissions
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError, NotFound, PermissionDenied
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from payments.api.v1.fields import PaymentTypeField
-from payments.services import delete_payment, create_payment
-from pizzas.models import Product, FoodEvent, FoodOrder
+from payments.services import create_payment, delete_payment
+from pizzas.models import FoodEvent, FoodOrder, Product
 from pizzas.services import can_change_order
 
 from . import serializers

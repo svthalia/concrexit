@@ -1,10 +1,11 @@
 from django.core import mail
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
 from members import emails
-from members.models import Member, Profile, Membership
+from members.models import Member, Membership, Profile
 
 
 @override_settings(SUSPEND_SIGNALS=True)

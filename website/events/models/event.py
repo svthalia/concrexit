@@ -1,20 +1,22 @@
 import uuid
+
 from django.conf import settings
 from django.core import validators
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models, router
 from django.db.models.deletion import Collector
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
+
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
 from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
 from payments.models import PaymentAmountField
-from pushnotifications.models import ScheduledMessage, Category
+from pushnotifications.models import Category, ScheduledMessage
 
 
 class Event(models.Model):
