@@ -96,7 +96,7 @@ class Member(User):
     active_members = ActiveMemberManager()
 
     def __str__(self):
-        return "{} ({})".format(self.get_full_name(), self.username)
+        return f"{self.get_full_name()} ({self.username})"
 
     @property
     def current_membership(self):

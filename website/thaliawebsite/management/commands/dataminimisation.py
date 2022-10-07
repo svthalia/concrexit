@@ -23,24 +23,24 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         processed = members_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
-            self.stdout.write("Removed data for {}".format(p))
+            self.stdout.write(f"Removed data for {p}")
 
         processed = events_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
-            self.stdout.write("Removed registration information for {}".format(p))
+            self.stdout.write(f"Removed registration information for {p}")
 
         processed = payments_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
-            self.stdout.write("Removed payments information for {}".format(p))
+            self.stdout.write(f"Removed payments information for {p}")
 
         processed = pizzas_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
-            self.stdout.write("Removed food events information for {}".format(p))
+            self.stdout.write(f"Removed food events information for {p}")
 
         processed = sales_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
-            self.stdout.write("Removed sales orders for {}".format(p))
+            self.stdout.write(f"Removed sales orders for {p}")
 
         processed = minimise_logentries_data(options["dry-run"])
         for p in processed:
-            self.stdout.write("Removed user from logentries for {}".format(p))
+            self.stdout.write(f"Removed user from logentries for {p}")

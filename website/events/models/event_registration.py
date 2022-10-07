@@ -233,8 +233,8 @@ class EventRegistration(models.Model):
 
     def __str__(self):
         if self.member:
-            return "{}: {}".format(self.member.get_full_name(), self.event)
-        return "{}: {}".format(self.name, self.event)
+            return f"{self.member.get_full_name()}: {self.event}"
+        return f"{self.name}: {self.event}"
 
     class Meta:
         verbose_name = _("Registration")

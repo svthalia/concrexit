@@ -13,18 +13,18 @@ def thabloid_card(year, thabloid):
     view_url = reverse("thabloid:pages", args=[thabloid.year, thabloid.issue])
     buttons = (
         '<div class="text-center mt-2">'
-        '<a href="{}" class="btn btn-secondary d-inline-flex open me-1">'
+        f'<a href="{view_url}" class="btn btn-secondary d-inline-flex open me-1">'
         '<i class="fas fa-book-open"></i>'
         "</a>"
-        '<a href="{}" download '
+        f'<a href="{get_media_url(thabloid.file, attachment=True)}" download '
         'class="btn btn-secondary d-inline-flex download ms-1">'
         '<i class="fas fa-download"></i>'
         "</a>"
         "</div>"
-    ).format(view_url, get_media_url(thabloid.file, attachment=True))
+    )
 
     return grid_item(
-        title="{}-{}, #{}".format(thabloid.year, thabloid.year + 1, thabloid.issue),
+        title=f"{thabloid.year}-{thabloid.year+1}, #{thabloid.issue}",
         meta_text=buttons,
         url=None,
         image_url=get_thumbnail_url(thabloid.cover, "255x360"),

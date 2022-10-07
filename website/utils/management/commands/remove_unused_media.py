@@ -51,10 +51,10 @@ def get_used_media(storage):
 
     for field in get_file_fields():
         is_null = {
-            "%s__isnull" % field.name: True,
+            f"{field.name}__isnull": True,
         }
         is_empty = {
-            "%s" % field.name: "",
+            f"{field.name}": "",
         }
 
         if type(field.storage) != type(storage):

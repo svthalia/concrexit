@@ -229,9 +229,12 @@ class BatchTopicDescriptionAdminView(View):
             .order_by("topic")
         )
 
-        description = f"Batch {batch.id} - {batch.processing_date if batch.processing_date else timezone.now().date()}:\n"
+        date = batch.processing_date if batch.processing_date else timezone.now().date()
+        description = f"Batch {batch.id} - {date}:\n"
         for row in topic_rows:
-            description += f"- {row['topic']} ({row['count']}x) [{timezone.localtime(row['min_date']).date()} -- {timezone.localtime(row['max_date']).date()}], total €{row['total']:.2f}\n"
+            min_date = timezone.localtime(row["min_date"]).date()
+            max_date = timezone.localtime(row["max_date"]).date()
+            description += f"- {row['topic']} ({row['count']}x) [{min_date} -- {max_date}], total €{row['total']:.2f}\n"
         description += f"\n{batch.description}"
 
         context["batch"] = batch

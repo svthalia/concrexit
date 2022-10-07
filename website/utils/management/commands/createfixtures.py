@@ -42,7 +42,7 @@ try:
     from pydenticon import Generator as IconGenerator
 except ImportError as error:
     raise Exception(
-        "Have you installed the dev-requirements? Failed importing {}".format(error)
+        f"Have you installed the dev-requirements? Failed importing {error}"
     ) from error
 
 _faker = FakerFactory.create("nl_NL")
@@ -70,7 +70,7 @@ class _ProfileFactory(factory.Factory):
     address_city = factory.LazyAttribute(lambda x: _faker.city())
     address_country = random.choice(["NL", "DE", "BE"])
 
-    phone_number = "+31{}".format(_faker.numerify(text="##########"))
+    phone_number = f"+31{_faker.numerify(text='##########')}"
 
 
 def get_event_to_register_for(member):
@@ -157,10 +157,10 @@ class Command(BaseCommand):
 
         board = Board()
 
-        board.name = "Board {}-{}".format(lecture_year, lecture_year + 1)
+        board.name = f"Board {lecture_year}-{lecture_year+1}"
         while Board.objects.filter(name=board.name).exists():
             lecture_year = lecture_year - 1
-            board.name = "Board {}-{}".format(lecture_year, lecture_year + 1)
+            board.name = f"Board {lecture_year}-{lecture_year+1}"
 
         board.description = _faker.paragraph()
 
@@ -327,7 +327,7 @@ class Command(BaseCommand):
         partner = Partner()
 
         partner.is_active = random.random() < 0.75
-        partner.name = "{} {}".format(_faker.company(), _faker.company_suffix())
+        partner.name = f"{_faker.company()} {_faker.company_suffix()}"
         partner.slug = _faker.slug()
         partner.link = _faker.uri()
 
@@ -423,9 +423,7 @@ class Command(BaseCommand):
         if random.random() < 0.75:
             vacancy.partner = random.choice(partners)
         else:
-            vacancy.company_name = "{} {}".format(
-                _faker.company(), _faker.company_suffix()
-            )
+            vacancy.company_name = f"{_faker.company()} {_faker.company_suffix()}"
             igen = IconGenerator(5, 5)  # 5x5 blocks
             icon = igen.generate(
                 vacancy.company_name,
@@ -458,9 +456,7 @@ class Command(BaseCommand):
         doc.name = _faker.text(max_nb_chars=30)
         doc.category = random.choice([c[0] for c in Document.DOCUMENT_CATEGORIES])
         doc.members_only = random.random() < 0.75
-        doc.file.save(
-            "{}.txt".format(doc.name), ContentFile(_faker.text(max_nb_chars=120))
-        )
+        doc.file.save(f"{doc.name}.txt", ContentFile(_faker.text(max_nb_chars=120)))
         doc.save()
 
     def create_newsletter(self):

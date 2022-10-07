@@ -80,7 +80,7 @@ class RegistrationInformationField(models.Model):
         field_value.save()
 
     def __str__(self):
-        return "{} ({})".format(self.name, dict(self.FIELD_TYPES)[self.type])
+        return f"{self.name} ({dict(self.FIELD_TYPES)[self.type]})"
 
     class Meta:
         order_with_respect_to = "event"
@@ -94,7 +94,7 @@ class AbstractRegistrationInformation(models.Model):
     changed = models.DateTimeField(_("last changed"), auto_now=True)
 
     def __str__(self):
-        return "{} - {}: {}".format(self.registration, self.field, self.value)
+        return f"{self.registration} - {self.field}: {self.value}"
 
     class Meta:
         abstract = True

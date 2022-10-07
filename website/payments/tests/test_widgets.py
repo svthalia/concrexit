@@ -43,7 +43,7 @@ class PaymentWidgetTest(TestCase):
             context = widget.get_context("payment", self.payment.pk, {})
             self.assertEqual(
                 context["url"],
-                "/admin/payments/payment/{}/change/".format(self.payment.pk),
+                f"/admin/payments/payment/{self.payment.pk}/change/",
             )
             self.assertEqual(context["payment"], self.payment)
 

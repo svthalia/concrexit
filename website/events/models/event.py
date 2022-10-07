@@ -453,15 +453,14 @@ class Event(models.Model):
                 if registration_reminder_time > timezone.now():
                     registration_reminder.title = "Event registration"
                     registration_reminder.body = (
-                        "Registration for '{}' " "starts in 1 hour".format(self.title)
+                        f"Registration for '{self.title}' starts in 1 hour"
                     )
                     registration_reminder.category = Category.objects.get(
                         key=Category.EVENT
                     )
                     registration_reminder.time = registration_reminder_time
                     registration_reminder.url = (
-                        f"{settings.BASE_URL}"
-                        f'{reverse("events:event", args=[self.id])}'
+                        f"{settings.BASE_URL}{reverse('events:event', args=[self.id])}"
                     )
 
                     registration_reminder.save()
@@ -525,9 +524,7 @@ class Event(models.Model):
         return collector.delete()
 
     def __str__(self):
-        return "{}: {}".format(
-            self.title, timezone.localtime(self.start).strftime("%Y-%m-%d %H:%M")
-        )
+        return f"{self.title}: {timezone.localtime(self.start):%Y-%m-%d %H:%M}"
 
     class Meta:
         ordering = ("-start",)

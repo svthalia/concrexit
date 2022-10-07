@@ -64,7 +64,7 @@ def get_thumbnail_url(file, size, fit=True):
         name = file.name
 
     is_public = isinstance(storage, get_storage_class(settings.PUBLIC_FILE_STORAGE))
-    size_fit = "{}_{}".format(size, int(fit))
+    size_fit = f"{size}_{int(fit)}"
 
     if name.endswith(".svg") and is_public:
         return storage.url(name)

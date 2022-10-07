@@ -165,8 +165,7 @@ class Album(models.Model):
 
     def __str__(self):
         """Get string representation of Album."""
-        date = self.date.strftime("%Y-%m-%d")
-        return f"{date} {self.title}"
+        return f"{self.date:%Y-%m-%d} {self.title}"
 
     def get_absolute_url(self):
         """Get url of Album."""

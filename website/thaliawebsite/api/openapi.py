@@ -73,8 +73,8 @@ class OAuthAutoSchema(AutoSchema):
             return view.get_serializer()
         except exceptions.APIException:
             warnings.warn(
-                "{}.get_serializer() raised an exception during "
-                "schema generation. Serializer fields will not be "
-                "generated for {} {}.".format(view.__class__.__name__, method, path)
+                f"{view.__class__.__name__}.get_serializer() raised an "
+                "exception during schema generation. Serializer fields "
+                f"will not be generated for {method} {path}."
             )
             return None

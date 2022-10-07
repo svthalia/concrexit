@@ -97,7 +97,7 @@ class ExternalEventCalendarJSSerializer(CalenderJSSerializer):
         model = ExternalEvent
 
     def _title(self, instance):
-        return "{} ({})".format(instance.title, instance.organiser)
+        return f"{instance.title} ({instance.organiser})"
 
     def _class_names(self, instance):
         """Return the color of the background."""

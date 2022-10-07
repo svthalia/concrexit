@@ -75,7 +75,7 @@ class PaymentTest(TestCase):
         """Tests that the right admin url is returned."""
         self.assertEqual(
             self.payment.get_admin_url(),
-            "/admin/payments/payment/{}/change/".format(self.payment.pk),
+            f"/admin/payments/payment/{self.payment.pk}/change/",
         )
 
     def test_add_payment_from_processed_batch_to_new_batch(self) -> None:

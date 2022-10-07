@@ -7,7 +7,6 @@ from django.test import TestCase, override_settings
 from googleapiclient.errors import HttpError
 from httplib2 import Response
 
-from mailinglists import gsuite
 from mailinglists.gsuite import GSuiteSyncService
 from mailinglists.models import MailingList, ListAlias, VerbatimAddress
 
@@ -18,8 +17,7 @@ def assert_not_called_with(self, *args, **kwargs):
     except AssertionError:
         return
     raise AssertionError(
-        "Expected %s to not have been called."
-        % self._format_mock_call_signature(args, kwargs)
+        f"Expected {self._format_mock_call_signature(args, kwargs)} to not have been called."
     )
 
 

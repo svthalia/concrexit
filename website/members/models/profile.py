@@ -284,14 +284,12 @@ class Profile(models.Model):
             return self.user.first_name
         if pref == "initials":
             if self.initials:
-                return "{} {}".format(self.initials, self.user.last_name)
+                return f"{self.initials} {self.user.last_name}"
             return self.user.last_name
         if pref == "fullnick" and self.nickname is not None:
-            return "{} '{}' {}".format(
-                self.user.first_name, self.nickname, self.user.last_name
-            )
+            return f"{self.user.first_name} '{self.nickname}' {self.user.last_name}"
         if pref == "nicklast" and self.nickname is not None:
-            return "'{}' {}".format(self.nickname, self.user.last_name)
+            return f"'{self.nickname}' {self.user.last_name}"
         return self.user.get_full_name() or self.user.username
 
     display_name.short_description = _("Display name")
@@ -302,7 +300,7 @@ class Profile(models.Model):
             return f"'{self.nickname}'"
         if pref == "initials":
             if self.initials:
-                return "{} {}".format(self.initials, self.user.last_name)
+                return f"{self.initials} {self.user.last_name}"
             return self.user.last_name
         return self.user.first_name
 

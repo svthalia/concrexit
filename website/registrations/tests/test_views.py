@@ -84,13 +84,12 @@ class EntryAdminViewTest(TestCase):
         self.client.force_login(self.user)
 
     def test_permissions(self):
-        url = "/registration/admin/process/{}/".format(self.entry1.pk)
+        url = f"/registration/admin/process/{self.entry1.pk}/"
         response = self.client.post(url)
         self.assertRedirects(response, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
-        url = "/registration/admin/process/{}/".format(self.entry1.pk)
         response = self.client.post(url)
         self.assertRedirects(
             response, f"/admin/registrations/registration/{self.entry1.pk}/change/"

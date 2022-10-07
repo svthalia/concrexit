@@ -169,7 +169,7 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
 
         if self.information_fields:
             for key, field in self.information_fields.items():
-                key = "fields[{}]".format(key)
+                key = f"fields[{key}]"
                 field_type = field["type"]
 
                 if field_type == RegistrationInformationField.BOOLEAN_FIELD:
