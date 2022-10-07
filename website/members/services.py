@@ -1,6 +1,7 @@
 """Services defined in the members package."""
 from datetime import date, datetime
-from typing import Any, Callable, Dict, List
+from typing import Any
+from collections.abc import Callable
 
 from django.conf import settings
 from django.db.models import Count, Q
@@ -13,7 +14,7 @@ from utils.snippets import datetime_to_lectureyear
 
 def _member_group_memberships(
     member: Member, condition: Callable[[Membership], bool]
-) -> Dict[str, Any]:
+) -> dict[str, dict[str, Any]]:
     """Determine the group membership of a user based on a condition.
 
     :return: Object with group memberships
@@ -60,7 +61,7 @@ def _member_group_memberships(
     return data
 
 
-def member_achievements(member) -> List:
+def member_achievements(member) -> list:
     """Derive a list of achievements of a member.
 
     Committee and board memberships + mentorships
@@ -89,7 +90,7 @@ def member_achievements(member) -> List:
     return sorted(achievements.values(), key=lambda x: x["earliest"])
 
 
-def member_societies(member) -> List:
+def member_societies(member) -> list:
     """Derive a list of societies a member was part of."""
     societies = _member_group_memberships(
         member, lambda membership: (hasattr(membership.group, "society"))
@@ -97,7 +98,7 @@ def member_societies(member) -> List:
     return sorted(societies.values(), key=lambda x: x["earliest"])
 
 
-def gen_stats_member_type() -> Dict:
+def gen_stats_member_type() -> dict[str, list]:
     """Generate statistics about membership types."""
     data = {
         "labels": [],
@@ -118,7 +119,7 @@ def gen_stats_member_type() -> Dict:
     return data
 
 
-def gen_stats_year() -> Dict:
+def gen_stats_year() -> dict[str, list]:
     """Generate statistics on how many members (and other membership types) there were in each cohort."""
     years = range(2015, datetime_to_lectureyear(date.today()))
 
@@ -144,7 +145,7 @@ def gen_stats_year() -> Dict:
     return data
 
 
-def gen_stats_active_members() -> Dict:
+def gen_stats_active_members() -> dict[str, list]:
     """Generate statistics about active members."""
     return {
         "labels": ["Active Members", "Non-active Members"],
@@ -196,7 +197,7 @@ def process_email_change(change_request) -> None:
     emails.send_email_change_completion_message(change_request)
 
 
-def execute_data_minimisation(dry_run=False, members=None) -> List[Member]:
+def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
     """Clean the profiles of members/users of whom the last membership ended at least 31 days ago.
 
     :param dry_run: does not really remove data if True

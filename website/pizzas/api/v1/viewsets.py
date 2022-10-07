@@ -82,19 +82,18 @@ class OrderViewset(ModelViewSet):
         try:
             if serializer.validated_data.get("name"):
                 serializer.save(food_event=FoodEvent.current())
-            else:
-                if can_change_order(self.request.member, FoodEvent.current()):
-                    order = serializer.save(food_event=FoodEvent.current())
-                    if "payment" in serializer.validated_data:
-                        payment_type = serializer.validated_data["payment"]["type"]
-                    else:
-                        payment_type = PaymentTypeField.NO_PAYMENT
-
-                    self._update_payment(order, payment_type, self.request.user)
+            elif can_change_order(self.request.member, FoodEvent.current()):
+                order = serializer.save(food_event=FoodEvent.current())
+                if "payment" in serializer.validated_data:
+                    payment_type = serializer.validated_data["payment"]["type"]
                 else:
-                    serializer.save(
-                        member=self.request.member, food_event=FoodEvent.current()
-                    )
+                    payment_type = PaymentTypeField.NO_PAYMENT
+
+                self._update_payment(order, payment_type, self.request.user)
+            else:
+                serializer.save(
+                    member=self.request.member, food_event=FoodEvent.current()
+                )
         except IntegrityError as e:
             raise ValidationError(
                 "Something went wrong when saving the order" + str(e)

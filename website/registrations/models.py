@@ -139,14 +139,13 @@ class Entry(models.Model):
 
         if self.membership_type == Membership.BENEFACTOR:
             self.length = self.MEMBERSHIP_YEAR
+        elif self.membership_upgrade_discount_applies:
+            self.contribution = (
+                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
+                - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
+            )
         else:
-            if self.membership_upgrade_discount_applies:
-                self.contribution = (
-                    settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
-                    - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
-                )
-            else:
-                self.contribution = settings.MEMBERSHIP_PRICES[self.length]
+            self.contribution = settings.MEMBERSHIP_PRICES[self.length]
 
         super().save(force_insert, force_update, using, update_fields)
 
