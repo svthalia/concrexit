@@ -1,4 +1,3 @@
-import io
 import logging
 import os
 
@@ -6,9 +5,6 @@ from PIL import Image
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile
-from django.core.files.storage import DefaultStorage
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string

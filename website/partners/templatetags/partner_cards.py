@@ -5,7 +5,6 @@ from django.template.defaultfilters import striptags, truncatechars
 from thaliawebsite.templatetags.bleach_tags import bleach
 from thaliawebsite.templatetags.grid_item import grid_item
 from utils.media.services import get_thumbnail_url
-from partners.models import Vacancy
 
 register = template.Library()
 

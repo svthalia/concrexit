@@ -1,10 +1,6 @@
 from django import template
-from django.utils import timezone
-from django.utils.translation import gettext as _
 
 from education.models import Summary
-from events import services
-from events.models import Event
 
 register = template.Library()
 

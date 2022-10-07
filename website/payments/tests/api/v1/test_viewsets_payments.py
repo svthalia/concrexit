@@ -2,7 +2,7 @@ from unittest import mock
 from unittest.mock import MagicMock, Mock
 
 from django.apps import apps
-from django.test import TestCase, override_settings, Client
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from freezegun import freeze_time
 from rest_framework.test import APIClient

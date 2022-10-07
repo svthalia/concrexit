@@ -7,11 +7,10 @@ from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership
 from members.models import Member
-from payments import PaymentError
 from payments.models import Payment
 from payments.services import create_payment
 from sales.models.order import Order, OrderItem
-from sales.models.product import Product, ProductList, ProductListItem
+from sales.models.product import Product, ProductList
 from sales.models.shift import Shift
 from sales.services import is_manager
 

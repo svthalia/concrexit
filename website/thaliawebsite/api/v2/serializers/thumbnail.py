@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.templatetags.static import static
-from rest_framework import serializers
 from rest_framework.fields import FileField
 
 from thaliawebsite.api.services import create_image_thumbnail_dict

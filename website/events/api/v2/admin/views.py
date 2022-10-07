@@ -1,7 +1,7 @@
 from django.http import Http404
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import status
-from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,7 +17,6 @@ from events.api.v2.admin.serializers.event import (
 from events.api.v2.admin.serializers.event_registration import (
     EventRegistrationAdminSerializer,
 )
-from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
 from thaliawebsite.api.v2.admin.views import (
     AdminListAPIView,

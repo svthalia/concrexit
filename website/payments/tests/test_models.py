@@ -1,5 +1,4 @@
 import datetime
-import decimal
 from decimal import Decimal
 from unittest.mock import PropertyMock, patch
 
@@ -14,7 +13,6 @@ from payments.models import (
     BankAccount,
     Batch,
     PaymentUser,
-    BlacklistedPaymentUser,
     validate_not_zero,
 )
 from payments.tests.__mocks__ import MockPayable, MockModel

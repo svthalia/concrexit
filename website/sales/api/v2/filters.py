@@ -1,6 +1,5 @@
 from distutils.util import strtobool
 
-from django.utils import timezone
 from rest_framework import filters
 
 from utils.snippets import extract_date_range

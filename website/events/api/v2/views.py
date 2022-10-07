@@ -1,4 +1,4 @@
-from django.db.models import Q, Count, Subquery, OuterRef
+from django.db.models import Q, Count
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework import status
@@ -20,7 +20,6 @@ from events.api.v2.serializers.external_event import ExternalEventSerializer
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
 from events.models.external_event import ExternalEvent
-from events.services import event_permissions
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
 

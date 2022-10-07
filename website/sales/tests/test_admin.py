@@ -17,7 +17,7 @@ from sales import payables
 from sales.admin.order_admin import OrderAdmin
 from sales.admin.shift_admin import ShiftAdmin
 from sales.models.order import Order, OrderItem
-from sales.models.product import Product, ProductListItem, ProductList
+from sales.models.product import Product, ProductList
 from sales.models.shift import Shift
 
 

@@ -1,5 +1,5 @@
 from unittest import mock
-from datetime import timedelta, date
+from datetime import date
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
