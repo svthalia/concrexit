@@ -34,15 +34,15 @@ class ThumbnailSerializer(FileField):
             "fit_large": fit_large,
         }
 
-    def to_representation(self, instance):
+    def to_representation(self, value):
         placeholder = self.placeholder
-        if not instance and placeholder:
+        if not value and placeholder:
             placeholder = self.context["request"].build_absolute_uri(
                 static(self.placeholder)
             )
 
         return create_image_thumbnail_dict(
-            self.context["request"], instance, placeholder, **self.options
+            self.context["request"], value, placeholder, **self.options
         )
 
     def to_internal_value(self, data):

@@ -1,8 +1,6 @@
-from distutils.util import strtobool
-
 from rest_framework import filters
 
-from utils.snippets import extract_date_range
+from utils.snippets import extract_date_range, strtobool
 
 
 class ShiftActiveFilter(filters.BaseFilterBackend):

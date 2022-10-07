@@ -55,7 +55,7 @@ def get_used_media(storage):
             f"{field.name}": "",
         }
 
-        if type(field.storage) != type(storage):
+        if not isinstance(field.storage, type(storage)):
             continue
 
         for value in (

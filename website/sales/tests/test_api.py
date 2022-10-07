@@ -30,6 +30,15 @@ class OrderAPITest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        """Create the following test data:
+
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o4: a paid order with 2 beer and 2 wine
+        """
         payables.register()
 
         cls.member = Member.objects.filter(last_name="Wiggers").first()
@@ -100,15 +109,6 @@ class OrderAPITest(TestCase):
             cls.o5, processed_by=cls.member, pay_type=Payment.CASH
         )
         cls.o5.save()
-
-        """
-        o0: an empty order
-        o1: an unpaid order of 2 beer
-        o2: an order of 2 soda that doesn't need a payment
-        o3: an unpaid order with 2 beer and 2 wine
-        o4: a paid order with 2 wine
-        o4: a paid order with 2 beer and 2 wine
-        """
 
         cls.cie = Committee.objects.get(pk=1)
         MemberGroupMembership.objects.create(group=cls.cie, member=cls.member)
@@ -713,6 +713,15 @@ class ShiftAPITest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        """Create the following test data:
+
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o4: a paid order with 2 beer and 2 wine
+        """
         cls.member = Member.objects.filter(last_name="Wiggers").first()
 
         cls.beer = Product.objects.get(name="beer")
@@ -787,15 +796,6 @@ class ShiftAPITest(TestCase):
             cls.o5, processed_by=cls.member, pay_type=Payment.CASH
         )
         cls.o5.save()
-
-        """
-        o0: an empty order
-        o1: an unpaid order of 2 beer
-        o2: an order of 2 soda that doesn't need a payment
-        o3: an unpaid order with 2 beer and 2 wine
-        o4: a paid order with 2 wine
-        o4: a paid order with 2 beer and 2 wine
-        """
 
         cls.cie = Committee.objects.get(pk=1)
         MemberGroupMembership.objects.create(group=cls.cie, member=cls.member)

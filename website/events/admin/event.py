@@ -3,12 +3,11 @@
 from django.contrib import admin
 from django.db.models import Count, Q
 from django.template.defaultfilters import date as _date
-from django.urls import path, resolve, reverse
+from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from activemembers.models import MemberGroup
 from events import models, services
 from events.admin.filters import LectureYearFilter
 from events.admin.forms import EventAdminForm, RegistrationInformationFieldForm

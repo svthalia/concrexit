@@ -27,6 +27,16 @@ class OrderAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
+        """Create the following test data:
+
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o5: a paid order with 2 beer and 2 wine
+        o6: an unpaid order of 2 soda that does need a payment (custom)
+        """
         payables.register()
 
         cls.user = Member.objects.filter(last_name="Wiggers").first()
@@ -104,16 +114,6 @@ class OrderAdminTest(TestCase):
             amount=2,
             total=1,
         )
-
-        """
-        o0: an empty order
-        o1: an unpaid order of 2 beer
-        o2: an order of 2 soda that doesn't need a payment
-        o3: an unpaid order with 2 beer and 2 wine
-        o4: a paid order with 2 wine
-        o5: a paid order with 2 beer and 2 wine
-        o6: an unpaid order of 2 soda that does need a payment (custom)
-        """
 
         cls.cie = Committee.objects.get(pk=1)
         MemberGroupMembership.objects.create(group=cls.cie, member=cls.user)
@@ -400,6 +400,16 @@ class ShiftAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
+        """Create the following test data:
+
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o5: a paid order with 2 beer and 2 wine
+        o6: an unpaid order of 2 soda that does need a payment (custom)
+        """
         payables.register()
 
         cls.user = Member.objects.filter(last_name="Wiggers").first()
@@ -477,16 +487,6 @@ class ShiftAdminTest(TestCase):
             amount=2,
             total=1,
         )
-
-        """
-        o0: an empty order
-        o1: an unpaid order of 2 beer
-        o2: an order of 2 soda that doesn't need a payment
-        o3: an unpaid order with 2 beer and 2 wine
-        o4: a paid order with 2 wine
-        o5: a paid order with 2 beer and 2 wine
-        o6: an unpaid order of 2 soda that does need a payment (custom)
-        """
 
         cls.cie = Committee.objects.get(pk=1)
         MemberGroupMembership.objects.create(group=cls.cie, member=cls.user)

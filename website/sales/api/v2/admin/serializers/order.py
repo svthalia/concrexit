@@ -20,7 +20,7 @@ class ProductNameRelatedField(serializers.SlugRelatedField):
         return ProductListItem.objects.filter(product_list=shift.product_list)
 
     def to_internal_value(self, data):
-        if type(data) is ProductListItem:
+        if isinstance(data, ProductListItem):
             return data
 
         queryset = self.get_queryset()
@@ -32,6 +32,7 @@ class ProductNameRelatedField(serializers.SlugRelatedField):
             )
         except (TypeError, ValueError):
             self.fail("invalid")
+        return None
 
     def to_representation(self, obj):
         return obj.product.name

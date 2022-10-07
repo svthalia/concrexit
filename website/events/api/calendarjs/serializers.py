@@ -37,7 +37,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
                 self.context["member"], instance
             )
             # In waiting list
-            if type(queue_pos) is int:
+            if isinstance(queue_pos, int):
                 return _("In waiting list at position {queue_pos}").format(
                     queue_pos=queue_pos
                 )
@@ -67,6 +67,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
             return _("Registrations open {date}").format(
                 date=date(instance.registration_start)
             )
+        return None
 
 
 class UnpublishedEventsCalenderJSSerializer(CalenderJSSerializer):

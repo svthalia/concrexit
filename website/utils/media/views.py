@@ -25,7 +25,7 @@ def get_thumb_modified_time(storage, path):
         try:
             storage_value = storage.get_modified_time(path)
             cache.set(f"thumbnails_{path}", storage_value, 60 * 60)
-        except:
+        except:  # pylint: disable=bare-except
             # File probably does not exist
             pass
     return storage_value

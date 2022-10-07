@@ -36,7 +36,7 @@ def user_registration_pending(member, event):
 
     :param member: the user
     :param event: the event
-    :return: None if registration is not required or no member else True/False
+    :return: None if not authenticated, else False or the queue position
     """
     if not event.registration_required:
         return False

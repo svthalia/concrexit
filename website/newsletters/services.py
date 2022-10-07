@@ -68,7 +68,7 @@ def embed_linked_html_images(html_input):
     for image in images:
         try:
             source = image["src"]
-            response = requests.get(source)
+            response = requests.get(source, timeout=30.0)
             image = Image.open(BytesIO(response.content))
             buffer = BytesIO()
             image.save(buffer, format="png")
