@@ -158,7 +158,7 @@ run: .make/deps website/db.sqlite3 ## Run a local webserver on PORT
 # this recipe is run again.
 .make/deps: .make poetry.lock pyproject.toml .pre-commit-config.yaml
 	poetry install $(POETRY_FLAGS)
-	pre-commit install
+	poetry run pre-commit install
 	@touch .make/deps
 
 # Nice name for the sentinel file
