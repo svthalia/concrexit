@@ -173,6 +173,8 @@ disable = [
     "too-many-return-statements",
     "consider-using-ternary",
     "consider-using-any-or-all",
+    "unsupported-binary-operation",
+    "docstring-first-line-empty",
 ]
 
 # Enable the message, report, category or checker with the given id(s). You can
