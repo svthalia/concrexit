@@ -253,7 +253,7 @@ class OrderAdmin(admin.ModelAdmin):
         elif not request.member.has_perm("sales.override_manager"):
             queryset = queryset.filter(
                 shift__managers__in=request.member.get_member_groups()
-            ).distinct()
+            )
 
         queryset = queryset.select_properties(
             "total_amount", "subtotal", "num_items", "age_restricted"
@@ -335,7 +335,7 @@ class OrderAdmin(admin.ModelAdmin):
             elif not request.member.has_perm("sales.override_manager"):
                 field.queryset = field.queryset.filter(
                     managers__in=request.member.get_member_groups()
-                )
+                ).distinct()
         return field
 
     def changelist_view(self, request, extra_context=None):
