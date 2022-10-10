@@ -202,11 +202,23 @@ def send_tpay_batch_processing_emails(batch):
 def execute_data_minimisation(dry_run=False):
     """Anonymizes payments older than 7 years."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 7))
+    payment_deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 7))
+    bankaccount_deletion_period = timezone.now() - datetime.timedelta(days=(31 * 13))
 
-    queryset = Payment.objects.filter(created_at__lte=deletion_period).exclude(
-        paid_by__isnull=True
+    queryset_payments = Payment.objects.filter(
+        created_at__lte=payment_deletion_period
+    ).exclude(paid_by__isnull=True)
+
+    queryset_bankaccounts = BankAccount.objects.filter(
+        Q(owner__paid_payment_set__type=Payment.TPAY),
+        Q(owner__paid_payment_set__batch__isnull=True)
+        | Q(owner__paid_payment_set__batch__processed=False)
+        | Q(
+            owner__paid_payment_set__batch__processing_date__gt=bankaccount_deletion_period
+        ),
     )
+
     if not dry_run:
-        queryset.update(paid_by=None, processed_by=None)
-    return queryset
+        queryset_payments.update(paid_by=None, processed_by=None)
+        queryset_bankaccounts.delete()
+    return queryset_payments
