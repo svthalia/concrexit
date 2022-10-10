@@ -1,4 +1,4 @@
-Thalia Website 
+Thalia Website
 ==============
 
 [![Linting and Testing](https://github.com/svthalia/concrexit/workflows/Linting%20and%20Testing/badge.svg)](https://github.com/svthalia/concrexit/actions)
@@ -93,3 +93,15 @@ The continuous integration checks if the latest Python modules are included in t
 To update these files run `make apidocs`
 
 To render the docs to HTML run `make docs`
+
+For admins
+----------
+
+It's possible for admins to push to the `master` branch, but this must only be
+done with care. As such, a pre-push git hook is available which asks for confirmation
+whenever a push to `master` is done. All admins should have this hook installed!
+
+To install the git hook:
+```bash
+mv scripts/pre-push-hook ./git/hooks/pre-push
+```
