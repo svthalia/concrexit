@@ -28,5 +28,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(embed_images_html, lambda *args: None)
+        migrations.RunPython(embed_images_html, migrations.RunPython.noop),
     ]
