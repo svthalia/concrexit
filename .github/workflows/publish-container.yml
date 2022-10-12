@@ -55,4 +55,4 @@ jobs:
           echo "${{ secrets.STAGING_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
       - name: Restart the container on the staging server, loading the latest version
-        run: ssh -i ~/.ssh/id_ed25519 deploy@staging.thalia.nu -- systemctl restart concrexit
+        run: ssh -i ~/.ssh/id_ed25519 deploy@staging.thalia.nu -- systemctl restart concrexit.service
