@@ -170,16 +170,6 @@ class EventTest(TestCase):
         self.event.cancel_deadline = None
         self.assertFalse(self.event.registration_allowed)
 
-    def test_missing_orgination_mailinglist(self):
-        self.event.clean()
-
-        organiser = self.event.organisers.first()
-        organiser.contact_mailinglist = None
-        organiser.save()
-
-        with self.assertRaises(ValidationError):
-            self.event.clean()
-
     def test_cancellation_allowed(self):
         with self.subTest("Open"):
             self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
