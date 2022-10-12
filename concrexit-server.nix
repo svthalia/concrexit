@@ -118,36 +118,24 @@ in
     '';
   };
 
-  systemd.services.concrexit-static = {
-    wantedBy = [ "multi-user.target" ];
-    requires = [ "docker.service" ];
-    after = [ "docker.service" ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-
-    path = with pkgs; [ docker ];
-    script = ''
-      docker pull ${dockerImage}
-      docker run --rm --network concrexit --name concrexit-static \
-        -v /var/lib/concrexit/static:/static \
-        --env-file ${envFile} \
-        --env-file ${config.age.secrets."concrexit-secrets.env".path} \
-        ${dockerImage} /app/collect-static.sh
-    '';
-  };
-
   systemd.services.concrexit = {
     wantedBy = [ "multi-user.target" ];
-    requires = [ "postgres.service" "concrexit-static.service" ];
-    after = [ "postgres.service" "concrexit-static.service" ];
+    requires = [ "postgres.service" ];
+    after = [ "postgres.service" ];
 
     path = with pkgs; [ docker ];
     script = ''
       docker rm concrexit || true
-      docker pull ${dockerImage}
+      out=$(docker pull ${dockerImage} | tee >(cat >&2))
+
+      if [[ $out != *"up to date"* ]]; then
+        docker run --rm --network concrexit --name concrexit-static \
+          -v /var/lib/concrexit/static:/static \
+          --env-file ${envFile} \
+          --env-file ${config.age.secrets."concrexit-secrets.env".path} \
+          ${dockerImage} /app/collect-static.sh
+      fi
+
       docker run --network concrexit --name concrexit -p 127.0.0.1:8000:8000 \
         -v /var/lib/concrexit/static:/static \
         -v /var/lib/concrexit/media:/media \
