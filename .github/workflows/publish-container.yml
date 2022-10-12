@@ -39,3 +39,20 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  restart-container-on-staging:
+    runs-on: ubuntu-latest
+    needs: build-and-push-image
+    if: ${{ github.ref == 'refs/heads/main' }}
+    environment:
+      name: staging
+      url: https://staging.thalia.nu
+    steps:
+      - name: Setup ssh
+        run: |
+          mkdir ~/.ssh
+          echo "staging.thalia.nu ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDjVJ61+ssPRzK7o0yBnyZq8grO3fMU9oMoLcEDmo0s9Cj2t18IjzcvWcd4R55b3GDD4qp/OnkK/6WCLwdaAuVAnRfZPS/gi1sIJhuA0R1M0OyMDTR6IcXrtkTupnYRm7r/pAhuy/1KmoVAqzm8Psjoj4721c1OB36EoG7CIOSxzVJ6JX0ltUPw82UPXbrVQ/7LkafT1qaZnKo5VkZTwHAA7Pq2vRiusp71iPBott0O4N3Dez8Qi3zObGaK+8njdApbqxyosRPWBI3pGHCsypoPSmlIEGqSKUshZU4yiT9FGpa+yoSedgvz2Zvl+cEbAg17SZyAuAa61op/9ALwCeXCnOkyFFobuzNVz3as5Vlbn176syOGFZyEz83steXS7eD3qF3TDEfmb4/+AG7fEJvGHCAgD7s8X/Oqm7QqKWZ+ktvwwA0YTr+1HQgAbUUdwpZ6Lpv8I9sRSqjiTNy+knUCH0HFdO144pU9DMo4MzwkMsLlEaKoKuVgY7to601YvdB93YGtJvoJkR6Rtp0IFqo9bJz7CTrawW95mYSotjPYKsnDQtQ126f0cTYaYeidsaYHHhyrh7fHfZYsIOtpbibaLXwpqhIcgijn+bXK4X80Yq9E2wLXnz8EalopWjWwApezjV1+ZSOGjC5QH9g+lpRgLiYfHhE6Gt1ZgRw+DWZ6OQ==" >> ~/.ssh/known_hosts
+          echo "staging.thalia.nu ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAt1XMYl4R9kUuxrgXCD1Qnp97bED4mMn92BhISgTU+C" >> ~/.ssh/known_hosts
+          echo "${{ secrets.STAGING_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+      - name: Restart the container on the staging server, loading the latest version
+        run: ssh -i ~/.ssh/id_ed25519 deploy@staging.thalia.nu -- systemctl restart concrexit

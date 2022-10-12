@@ -73,6 +73,16 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEblHIN5uaooHczkiqbXa6V7H7bfhgGTVLKA0sUggBkP wouter@wouterdoeland.nl"
     ];
   };
+  users.groups.deploy = { };
+  users.users.deploy = {
+    isSystemUser = true;
+    group = "deploy";
+    description = "Used by GitHub Actions to ssh into this server and restart the concrexit server";
+    useDefaultShell = true;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINtIM7VeZokOHEZj4tegfRr+zP/SL98uRhpJvgX/myhw GITHUB_STAGING_DEPLOY_KEY"
+    ];
+  };
 
   # Enable the SSH server, this also opens port 22 automatically
   services.openssh.enable = true;
