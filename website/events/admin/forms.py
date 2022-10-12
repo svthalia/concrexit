@@ -74,6 +74,20 @@ class EventAdminForm(forms.ModelForm):
                 _("You cannot remove your own access from this event.")
             )
 
+        if (
+            self.cleaned_data.get("organisers")
+            and not any(
+                organiser.contact_mailinglist is not None
+                for organiser in self.cleaned_data["organisers"]
+            )
+            and self.fields["send_cancel_email"]
+        ):
+            raise ValidationError(
+                _(
+                    "One of the organisers does not have a contact mailinglist so sending a cancellation email is impossible."
+                )
+            )
+
         if self.cleaned_data.get("organisers").all() == 0:
             raise ValidationError(_("An event must have at least one organiser."))
         return self.cleaned_data.get("organisers")
