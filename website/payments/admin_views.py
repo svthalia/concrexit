@@ -83,38 +83,6 @@ class PaymentAdminView(View):
         return redirect("admin:payments_payment_change", result.pk)
 
 
-@method_decorator(staff_member_required, name="dispatch")
-@method_decorator(
-    permission_required("payments.process_batches"),
-    name="dispatch",
-)
-class BatchProcessAdminView(View):
-    """View that processes a batch."""
-
-    def post(self, request, *args, **kwargs):
-        batch = Batch.objects.get(pk=kwargs["pk"])
-
-        if "next" in request.POST and not url_has_allowed_host_and_scheme(
-            request.POST.get("next"), allowed_hosts={request.get_host()}
-        ):
-            raise DisallowedRedirect
-
-        if batch.processed:
-            messages.error(
-                request, _("{} already processed.").format(model_ngettext(batch, 1))
-            )
-        else:
-            services.process_batch(batch)
-            messages.success(
-                request,
-                _("Successfully processed {}.").format(model_ngettext(batch, 1)),
-            )
-
-        if "next" in request.POST:
-            return redirect(request.POST["next"])
-
-        return redirect("admin:payments_batch_change", kwargs["pk"])
-
 
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(

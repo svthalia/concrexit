@@ -13,6 +13,8 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
+from django_easy_admin_object_actions.admin import ObjectActionsMixin
+from django_easy_admin_object_actions.decorators import object_action
 
 from payments import services, admin_views
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
@@ -326,7 +328,7 @@ class PaymentsInline(admin.TabularInline):
 
 
 @admin.register(Batch)
-class BatchAdmin(admin.ModelAdmin):
+class BatchAdmin(ObjectActionsMixin, admin.ModelAdmin):
     """Manage payment batches."""
 
     inlines = (PaymentsInline,)
@@ -388,11 +390,6 @@ class BatchAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path(
-                "<int:pk>/process/",
-                self.admin_site.admin_view(admin_views.BatchProcessAdminView.as_view()),
-                name="payments_batch_process",
-            ),
-            path(
                 "<int:pk>/export/",
                 self.admin_site.admin_view(admin_views.BatchExportAdminView.as_view()),
                 name="payments_batch_export",
@@ -448,6 +445,23 @@ class BatchAdmin(admin.ModelAdmin):
 
         extra_context["batch"] = obj
         return super().changeform_view(request, object_id, form_url, extra_context)
+
+    @object_action(
+        label=_("Process"),
+        parameter_name="_process",
+        permissions="payments.process_batches",
+        condition=lambda _, obj: not obj.processed,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Processed"),
+        perform_after_saving=True,
+    )
+    def process_batch_obj(self, request, obj):
+        """Process the selected batches."""
+        if obj:
+            services.process_batch(obj)
+            messages.success(request, _("Batch processed."))
+
+    object_actions_after_fieldsets = ("process_batch_obj",)
 
 
 @admin.register(BankAccount)

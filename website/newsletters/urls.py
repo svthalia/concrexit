@@ -12,7 +12,6 @@ urlpatterns = [
             [
                 path("<int:pk>/", views.preview, name="preview"),
                 path("<int:pk>/<str:lang>/", views.preview, name="preview-localised"),
-                path("admin/send/<int:pk>/", views.admin_send, name="admin-send"),
             ]
         ),
     )

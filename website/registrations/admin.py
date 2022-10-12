@@ -4,10 +4,14 @@ from functools import partial
 from django.contrib import admin, messages
 from django.contrib.admin.utils import model_ngettext
 from django.forms import Field
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
+from django_easy_admin_object_actions.admin import ObjectActionsMixin
+from django_easy_admin_object_actions.decorators import object_action
 
 from payments.widgets import PaymentWidget
 from . import services
+from .emails import send_registration_email_confirmation
 from .forms import RegistrationAdminForm
 from .models import Entry, Registration, Renewal, Reference
 
@@ -30,7 +34,7 @@ def _show_message(model_admin, request, n, message, error):
 
 
 @admin.register(Registration)
-class RegistrationAdmin(admin.ModelAdmin):
+class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
     """Manage the registrations."""
 
     list_display = (
@@ -153,36 +157,6 @@ class RegistrationAdmin(admin.ModelAdmin):
             )
         return field
 
-    def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
-        """Render the change formview.
-
-        Only allow when the entry has not been processed yet
-        """
-        obj = None
-        can_review = False
-        can_resend = False
-        can_revert = False
-        if object_id is not None and request.user.has_perm(
-            "registrations.review_entries"
-        ):
-            obj = Entry.objects.get(id=object_id)
-            can_review = obj.status == Entry.STATUS_REVIEW
-            can_revert = obj.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]
-            try:
-                can_resend = obj.registration.status == Entry.STATUS_CONFIRM
-            except Registration.DoesNotExist:
-                pass
-        return super().changeform_view(
-            request,
-            object_id,
-            form_url,
-            {
-                "entry": obj,
-                "can_review": can_review,
-                "can_resend": can_resend,
-                "can_revert": can_revert,
-            },
-        )
 
     def get_readonly_fields(self, request, obj=None):
         if obj is None or obj.status not in (
@@ -243,13 +217,67 @@ class RegistrationAdmin(admin.ModelAdmin):
             else super().has_change_permission(request, obj)
         )
 
-    def save_model(self, request, obj, form, change):
-        if obj.status not in (
-            Entry.STATUS_REJECTED,
-            Entry.STATUS_ACCEPTED,
-            Entry.STATUS_COMPLETED,
-        ):
-            super().save_model(request, obj, form, change)
+
+    @object_action(
+        label=_("Resend email confirmation"),
+        parameter_name="_resendemail",
+        permissions="registrations.review_entries",
+        condition=lambda _, obj: obj.status == Entry.STATUS_CONFIRM,
+        log_message=_("Confirmation email resent"),
+    )
+    def resend_confirmation_email(self, _, obj):
+        """Resend the confirmation email."""
+        if obj:
+            send_registration_email_confirmation(obj)
+            self.message_user(
+                _, _("Confirmation email successfully resent."), messages.SUCCESS
+            )
+            return redirect("admin:registrations_registration_change", obj.pk)
+
+    @object_action(
+        label=_("Accept"),
+        parameter_name="_accept",
+        permissions="registrations.review_entries",
+        extra_classes="accept",
+        condition=lambda _, obj: obj.status == Entry.STATUS_REVIEW,
+        log_message=_("Accepted"),
+        perform_after_saving=True,
+    )
+    def accept(self, request, obj):
+        """Approve the entry."""
+        if obj:
+            services.accept_entries(request.user.pk, Entry.objects.filter(pk=obj.pk))
+            return redirect("admin:registrations_registration_change", obj.pk)
+
+    @object_action(
+        label=_("Reject"),
+        parameter_name="_reject",
+        permissions="registrations.review_entries",
+        extra_classes="reject",
+        condition=lambda _, obj: obj.status == Entry.STATUS_REVIEW,
+        log_message=_("Rejected"),
+        perform_after_saving=True,
+    )
+    def reject(self, request, obj):
+        if obj:
+            services.reject_entries(request.user.pk, Entry.objects.filter(pk=obj.pk))
+            return redirect("admin:registrations_registration_change", obj.pk)
+
+    @object_action(
+        label=_("Revert"),
+        parameter_name="_revert",
+        permissions="registrations.review_entries",
+        condition=lambda _, obj: obj.status in (Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED),
+        log_message=_("Reverted"),
+        perform_after_saving=True,
+    )
+    def revert(self, request, obj):
+        """Reverse the review status."""
+        if obj:
+            services.revert_entry(request.user.pk, obj)
+            return redirect("admin:registrations_registration_change", obj.pk)
+
+    object_actions_after_related_objects = ["resend_confirmation_email", "reject", "accept", "revert"]
 
 
 @admin.register(Renewal)

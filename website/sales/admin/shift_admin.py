@@ -1,7 +1,10 @@
 from django.contrib import admin, messages
 from django.contrib.admin import register
+from django.shortcuts import redirect
 
 from django.utils.translation import gettext_lazy as _
+from django_easy_admin_object_actions.admin import ObjectActionsMixin
+from django_easy_admin_object_actions.decorators import object_action
 
 from payments.models import Payment
 from sales.models.order import Order
@@ -94,7 +97,7 @@ class OrderInline(admin.TabularInline):
 
 
 @register(Shift)
-class ShiftAdmin(admin.ModelAdmin):
+class ShiftAdmin(ObjectActionsMixin, admin.ModelAdmin):
     inlines = [
         SelfOrderPeriodInline,
         OrderInline,
@@ -142,13 +145,8 @@ class ShiftAdmin(admin.ModelAdmin):
         "num_orders",
         "product_sales",
         "payment_method_sales",
+        "locked",
     )
-
-    def get_readonly_fields(self, request, obj=None):
-        fields = super().get_readonly_fields(request, obj)
-        if not obj or obj.locked:
-            fields += ("locked",)
-        return fields
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -225,3 +223,21 @@ class ShiftAdmin(admin.ModelAdmin):
             for k, v in obj.payment_method_sales.items()
         )
         return output
+
+    @object_action(
+        label=_("Lock shift"),
+        parameter_name="_lock",
+        confirmation=_("Are you sure you want to lock this shift? Locking a shift will prevent orders being changed or created for this shift. This will also clean up all unpaid orders in this shift." ),
+        permissions="sales.change_shift",
+        condition=lambda _, obj: not obj.locked,
+        log_message=_("Locked shift"),
+    )
+    def lock_shift(self, _, obj):
+        if obj:
+            obj.locked = True
+        obj.save()
+        return redirect("admin:sales_shift_change", obj.id)
+
+    object_actions_after_related_objects = [
+        "lock_shift"
+    ]

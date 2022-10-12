@@ -427,6 +427,7 @@ INSTALLED_APPS = [
     "compressor",
     "debug_toolbar",
     "admin_auto_filters",
+    "django_easy_admin_object_actions",
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/

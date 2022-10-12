@@ -42,6 +42,7 @@ gunicorn = "^20.1.0"
 recommonmark = { version = "0.7.1", optional = true }
 sphinx = { version = "5.2.3", optional = true }
 qrcode = {version = "^7.3.1", extras = ["pil"]}
+django-easy-admin-object-actions = "^1.0.0a1"
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]

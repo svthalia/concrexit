@@ -1,7 +1,10 @@
 """The admin interfaces registered by the pushnotifications package."""
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
+from django_easy_admin_object_actions.admin import ObjectActionsMixin
+from django_easy_admin_object_actions.decorators import object_action
 
 from pushnotifications import models
 from pushnotifications.models import Message
@@ -65,7 +68,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Message)
-class MessageAdmin(ModelAdmin):
+class MessageAdmin(ObjectActionsMixin, ModelAdmin):
     """Manage normal messages."""
 
     list_display = ("title", "body", "category", "url", "sent", "success", "failure")
@@ -107,9 +110,20 @@ class MessageAdmin(ModelAdmin):
             )
         return super().get_readonly_fields(request, obj)
 
-    def change_view(self, request, object_id, form_url="", **kwargs):
-        obj = Message.objects.filter(id=object_id)[0]
-        return super().change_view(request, object_id, form_url, {"message": obj})
+    @object_action(
+        label=_("Send"),
+        parameter_name="_send",
+        condition=lambda _, obj: not obj.sent,
+        log_message=_("Sent"),
+        perform_after_saving=True,
+    )
+    def send(self, request, obj):
+        """Reverse the review status."""
+        if obj:
+            obj.send()
+            return redirect("admin:registrations_registration_change", obj.pk)
+
+    object_actions_after_related_objects = ["send",]
 
 
 @admin.register(models.ScheduledMessage)
