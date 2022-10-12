@@ -536,11 +536,16 @@ class Command(BaseCommand):
             if event_to_register_for
             else get_event_to_register_for(registration.member)
         )
-        while not possible_event:
+
+        if not possible_event:
             self.stdout.write("No possible events to register for")
             self.stdout.write("Creating a new event")
             self.create_event()
             possible_event = get_event_to_register_for(registration.member)
+
+        if not possible_event:
+            self.stdout.write("Could not create event")
+            return
 
         registration.event = possible_event
 
@@ -559,7 +564,7 @@ class Command(BaseCommand):
                 Event.objects.filter(price__gt=0).order_by("?"),
             )
         )
-        while len(possible_events) == 0:
+        if len(possible_events) == 0:
             print("No event where can be payed could be found, creating a new event")
             self.create_event()
             possible_events = list(
@@ -568,6 +573,10 @@ class Command(BaseCommand):
                     Event.objects.filter(price__gt=0).order_by("?"),
                 )
             )
+
+        if len(possible_events) == 0:
+            print("Could not create the event for an unexpected reason.")
+            return
 
         event = possible_events[0]
         if len(event.registrations) == 0:
