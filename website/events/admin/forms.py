@@ -66,9 +66,12 @@ class EventAdminForm(forms.ModelForm):
             )
             and self.cleaned_data["send_cancel_email"]
         ):
-            self.add_error("organisers", _(
+            self.add_error(
+                "organisers",
+                _(
                     "One of the organisers does not have a contact mailinglist so sending a cancellation email is impossible."
-                ))
+                ),
+            )
             return False
 
         return True
