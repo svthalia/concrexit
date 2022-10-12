@@ -147,7 +147,7 @@ in
 
   concrexit-timers = {
     docker-command = ''
-      docker run --network concrexit --name concrexit -p 127.0.0.1:8000:8000 \
+      docker run --network concrexit --rm -p 127.0.0.1:8000:8000 \
         -v /var/lib/concrexit/static:/static \
         -v /var/lib/concrexit/media:/media \
         --env-file ${envFile} \
