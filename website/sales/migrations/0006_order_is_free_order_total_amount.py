@@ -8,8 +8,7 @@ def set_is_free_and_total_amount_fields(apps, schema_editor):
     """Sets the fields."""
     Order = apps.get_model('sales', 'Order')
     for o in Order.objects.all():
-        o._total_amount = o.total_amount
-        o._is_free = o.total_amount == 0
+        o._total_amount = sum(o.order_items.values_list('total', flat=True)) - (o.discount or 0)
         o.save()
 
 
