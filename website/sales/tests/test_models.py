@@ -226,7 +226,7 @@ class OrderTest(TestCase):
 
         order.discount = 0.5
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PaymentError):
             order.save()
 
         with self.assertRaises(ValueError):

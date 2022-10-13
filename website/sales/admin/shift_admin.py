@@ -211,7 +211,7 @@ class ShiftAdmin(admin.ModelAdmin):
     def total_revenue(self, obj):
         if obj.total_revenue and obj.total_revenue != obj.total_revenue_paid:
             return f"€{obj.total_revenue:.2f} (€{obj.total_revenue-obj.total_revenue_paid:.2f} {_('unpaid')})"
-        return f"€{obj.total_revenue:.2f}"
+        return f"€{obj.total_revenue or 0:.2f}"
 
     def product_sales(self, obj):
         output = "\n".join(f"- {str(k)}: {v}x" for k, v in obj.product_sales.items())
