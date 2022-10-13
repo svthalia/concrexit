@@ -245,17 +245,3 @@ class EventAdmin(DoNextModelAdmin):
             ),
         ]
         return custom_urls + urls
-
-    def get_field_queryset(self, db, db_field, request):
-        """Members without the 'can view as organiser' permission can only assign their own groups as organiser."""
-        pk = resolve(request.path_info).kwargs.get("object_id")
-        if db_field.name == "organisers" and not request.user.has_perm(
-            "events.override_organiser"
-        ):
-            if pk is None:
-                return request.member.get_member_groups()
-            else:
-                return request.member.get_member_groups().union(
-                    MemberGroup.objects.filter(event_organiser__pk=pk)
-                )
-        return super().get_field_queryset(db, db_field, request)

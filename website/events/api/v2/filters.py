@@ -72,7 +72,7 @@ class OrganiserFilter(filters.BaseFilterBackend):
         organiser = request.query_params.get("organiser", None)
 
         if organiser:
-            queryset = queryset.filter(organiser_id=int(organiser))
+            queryset = queryset.filter(organisers__in=[organiser])
 
         return queryset
 
