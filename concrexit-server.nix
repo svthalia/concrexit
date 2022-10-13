@@ -183,8 +183,8 @@ in
         -v /var/lib/concrexit/media:/media \
         --env-file ${envFile} \
         --env-file ${config.age.secrets."concrexit-secrets.env".path} \
-        --entrypoint /app/website/manage.py \
-        ${dockerImage}
+        --entrypoint /venv/bin/python \
+        ${dockerImage} /app/website/manage.py
     '';
     timers = {
       send_scheduled_messages = {
