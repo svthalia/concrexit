@@ -56,6 +56,8 @@ def private_media(request, request_path):
         or not sig_info["serve_path"] == request_path
     ):
         # 404 if the file does not exist
+        print("Storage found:", storage.exists(sig_info["serve_path"]))
+        print("Sig info correct:", sig_info["serve_path"] == request_path)
         raise Http404("Media not found.")
 
     # Serve the file, or redirect to a signed bucket url in the case of S3
