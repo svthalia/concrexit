@@ -18,6 +18,10 @@ let
   mediadir = "/var/lib/concrexit/media/";
   domain = if production then "thalia.nu" else "staging.thalia.nu";
 
+  deployKeys = if production then [ ] else [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINtIM7VeZokOHEZj4tegfRr+zP/SL98uRhpJvgX/myhw GITHUB_STAGING_DEPLOY_KEY"
+  ];
+
   securityHeaders = ''
     # X-Frame-Options tells the browser whether you want to allow your site to be framed or not.
     # By preventing a browser from framing your site you can defend against attacks like clickjacking.
@@ -72,6 +76,33 @@ in
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEblHIN5uaooHczkiqbXa6V7H7bfhgGTVLKA0sUggBkP wouter@wouterdoeland.nl"
     ];
+  };
+
+  # Automatic deployment settings
+  security.polkit = {
+    enable = true;
+    # Allow the deploy user to restart concrexit
+    # From: https://wiki.archlinux.org/title/Polkit#Allow_management_of_individual_systemd_units_by_regular_users
+    extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.freedesktop.systemd1.manage-units") {
+          if (action.lookup("unit") == "concrexit.service") {
+            var verb = action.lookup("verb");
+            if (verb == "restart") {
+                return polkit.Result.YES;
+            }
+          }
+        }
+      });
+    '';
+  };
+  users.groups.deploy = { };
+  users.users.deploy = {
+    isSystemUser = true;
+    group = "deploy";
+    description = "Used by GitHub Actions to ssh into this server and restart the concrexit server";
+    useDefaultShell = true;
+    openssh.authorizedKeys.keys = deployKeys;
   };
 
   # Enable the SSH server, this also opens port 22 automatically
