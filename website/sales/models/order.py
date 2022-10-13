@@ -149,7 +149,7 @@ class Order(models.Model):
             raise ValueError("The shift hasn't started yet.")
 
         try:
-            self._total_amount = (self.subtotal or 0) - Decimal(self.discount or 0)
+            self._total_amount = self.total_amount
         except self.DoesNotExist:
             self._total_amount = 0
 
