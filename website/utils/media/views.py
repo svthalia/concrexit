@@ -51,6 +51,9 @@ def private_media(request, request_path):
     sig_info = _get_signature_info(request)
     storage = get_storage_class(sig_info["storage"])()
 
+    print("Request path:", request_path)
+    print("Storage path:", sig_info["serve_path"])
+
     if (
         not storage.exists(sig_info["serve_path"])
         or not sig_info["serve_path"] == request_path
