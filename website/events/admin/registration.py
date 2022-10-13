@@ -87,7 +87,9 @@ class RegistrationAdmin(DoNextModelAdmin):
                 or request.user.has_perm("events.override_organiser")
             ):
                 kwargs["queryset"] = kwargs["queryset"].filter(
-                    organiser__in=request.member.get_member_groups()
+                    organisers__in=list(
+                        request.member.get_member_groups().values_list("id", flat=True)
+                    )
                 )
         elif db_field.name == "member":
             # Filter the queryset to current members only
