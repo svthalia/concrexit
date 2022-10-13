@@ -143,13 +143,16 @@ class Order(models.Model):
     ):
         if self.shift.locked and (
             self._total_amount != 0 or (self._total_amount == 0 and not self._is_free)
-        ):
+        ):  # Fallback for initializing _total_amount during migration
             raise ValueError("The shift this order belongs to is locked.")
         if self.shift.start > timezone.now():
             raise ValueError("The shift hasn't started yet.")
 
         try:
-            self._total_amount = self.total_amount
+            if hasattr(
+                self, "total_amount"
+            ):  # Fallback if the annotation is not available during migrations
+                self._total_amount = self.total_amount
         except self.DoesNotExist:
             self._total_amount = 0
 
