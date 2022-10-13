@@ -12,7 +12,7 @@ let
   stagingSecrets = ./infra/secrets/concrexit-staging.env.age;
   secretsFile = if production then productionSecrets else stagingSecrets;
 
-  dockerImage = "ghcr.io/svthalia/concrexit:${if production then "latest" else "master"}";
+  dockerImage = "ghcr.io/svthalia/concrexit:${if production then "release-43" else "master"}";
 
   staticdir = "/var/lib/concrexit/static/";
   mediadir = "/var/lib/concrexit/media/";
