@@ -5,16 +5,18 @@ from django.db.models import (
     Q,
     Count,
 )
-from django.db.models.expressions import RawSQL
+from django.db.models.expressions import Value
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import (
     RangeCheckProperty,
-    queryable_property,
+    AggregateProperty,
 )
 
 from activemembers.models import MemberGroup
+from payments.models import PaymentAmountField
 from sales.models.product import ProductList
 
 
@@ -98,57 +100,35 @@ class Shift(models.Model):
 
     active = RangeCheckProperty("start", "end", timezone.now)
 
-    @queryable_property(annotation_based=True)
-    @classmethod
-    def total_revenue(cls):
-        return RawSQL(
-            """(SELECT CAST(COALESCE(SUM("__orders"."total__"), 0) AS NUMERIC) AS "shift_revenue__"
-                FROM (
-                    SELECT "sales_order"."id", "sales_order"."shift_id", "sales_order"."discount", "sales_order"."payment_id", CAST(SUM("sales_orderitem"."total") AS NUMERIC) AS "subtotal__", CAST((SUM("sales_orderitem"."total") - COALESCE("sales_order"."discount", 0)) AS NUMERIC) AS "total__", SUM("sales_orderitem"."amount") AS "num_items__"
-                    FROM "sales_order" LEFT JOIN "sales_orderitem" ON "sales_orderitem"."order_id" = "sales_order"."id"
-                    GROUP BY "sales_order"."id", "sales_order"."shift_id", "sales_order"."discount"
-                    ) AS "__orders"
-                WHERE "__orders"."shift_id"="sales_shift"."id"
-                )""",
-            [],
+    total_revenue = AggregateProperty(
+        Sum(
+            Coalesce("orders___total_amount", Value(0.00)),
+            output_field=PaymentAmountField(allow_zero=True),
         )
+    )
 
-    @queryable_property(annotation_based=True)
-    @classmethod
-    def total_revenue_paid(cls):
-        return RawSQL(
-            """(SELECT CAST(COALESCE(SUM("__orders"."total__"), 0) AS NUMERIC) AS "shift_revenue__"
-                FROM (
-                    SELECT "sales_order"."id", "sales_order"."shift_id", "sales_order"."discount", "sales_order"."payment_id", CAST(SUM("sales_orderitem"."total") AS NUMERIC) AS "subtotal__", CAST((SUM("sales_orderitem"."total") - COALESCE("sales_order"."discount", 0)) AS NUMERIC) AS "total__", SUM("sales_orderitem"."amount") AS "num_items__"
-                    FROM "sales_order" LEFT JOIN "sales_orderitem" ON "sales_orderitem"."order_id" = "sales_order"."id"
-                    GROUP BY "sales_order"."id", "sales_order"."shift_id", "sales_order"."discount"
-                    ) AS "__orders"
-                WHERE "__orders"."shift_id"="sales_shift"."id"
-                AND ("__orders"."payment_id" IS NOT NULL OR ("__orders"."payment_id" IS NULL AND "__orders"."total__"=0))
-                )""",
-            [],
+    total_revenue_paid = AggregateProperty(
+        Sum(
+            Coalesce("orders__payment__amount", Value(0.00)),
+            output_field=PaymentAmountField(allow_zero=True),
         )
+    )
 
-    @queryable_property(annotation_based=True)
-    @classmethod
-    def num_orders(cls):
-        return Count("orders")
-
-    @queryable_property(annotation_based=True)
-    @classmethod
-    def num_orders_paid(cls):
-        return RawSQL(
-            """(SELECT COUNT(*) AS "num_orders__"
-                FROM (
-                    SELECT "sales_order"."id", "sales_order"."shift_id", "sales_order"."discount", "sales_order"."payment_id", CAST(SUM("sales_orderitem"."total") AS NUMERIC) AS "subtotal__", CAST((SUM("sales_orderitem"."total") - COALESCE("sales_order"."discount", 0)) AS NUMERIC) AS "total__", SUM("sales_orderitem"."amount") AS "num_items__"
-                    FROM "sales_order" LEFT JOIN "sales_orderitem" ON "sales_orderitem"."order_id" = "sales_order"."id"
-                    GROUP BY "sales_order"."id", "sales_order"."shift_id", "sales_order"."discount"
-                    ) AS "__orders"
-                WHERE "__orders"."shift_id"="sales_shift"."id"
-                AND ("__orders"."payment_id" IS NOT NULL OR ("__orders"."payment_id" IS NULL AND "__orders"."total__"=0))
-                )""",
-            [],
+    num_orders = AggregateProperty(
+        Count(
+            "orders",
         )
+    )
+
+    num_orders_paid = AggregateProperty(
+        Count(
+            "orders",
+            filter=Q(orders___is_free=True)
+            | Q(
+                orders__payment__isnull=False,  # or the order is free
+            ),
+        )
+    )
 
     @property
     def product_sales(self):
