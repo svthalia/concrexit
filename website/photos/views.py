@@ -1,10 +1,15 @@
 import os
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import FormView
+from django.utils.translation import gettext_lazy as _
 
+from photos.forms import ReferenceFaceUploadForm
 from photos.models import Album, Photo
 from photos.services import (
     check_shared_album_token,
@@ -123,3 +128,29 @@ def liked_photos(request):
     photos = Photo.objects.filter(likes__member=request.member, album__hidden=False)
     context = {"photos": photos}
     return render(request, "photos/liked-photos.html", context)
+
+
+@login_required
+def your_photos(request):
+    photos = Photo.objects.filter(
+        face_encodings__matches__member__exact=request.member, album__hidden=False
+    )
+    context = {
+        "photos": photos,
+        "unprocessed_reference_faces": request.member.reference_faces.filter(
+            encoding__isnull=True
+        ).exists(),
+        "has_reference_faces": request.member.reference_faces.exists(),
+    }
+    return render(request, "photos/your-photos.html", context)
+
+
+class ReferenceFaceUploadView(FormView):
+    template_name = "photos/reference-face-upload.html"
+    form_class = ReferenceFaceUploadForm
+    success_url = reverse_lazy("photos:your-photos")
+
+    def form_valid(self, form):
+        form.save(self.request.member)
+        messages.success(self.request, _("Your reference face has been uploaded."))
+        return super().form_valid(form)

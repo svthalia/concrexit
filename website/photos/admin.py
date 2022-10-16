@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 from .forms import AlbumForm
-from .models import Album, Photo, Like
+from .models import Album, Photo, Like, FaceEncoding, ReferenceFace
 from .services import extract_archive, save_photo
 
 
@@ -65,6 +65,13 @@ class LikeInline(admin.StackedInline):
     extra = 0
 
 
+class EncodingInline(admin.TabularInline):
+    model = FaceEncoding
+    extra = 0
+    fields = ("encoding",)
+    readonly_fields = ("encoding",)
+
+
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
     """Model for Photo admin page."""
@@ -74,12 +81,15 @@ class PhotoAdmin(admin.ModelAdmin):
         "album",
         "hidden",
         "num_likes",
+        "face_recognition_processed",
+        "num_faces",
     )
     search_fields = ("file",)
     list_filter = ("album", "hidden")
     exclude = ("_digest",)
 
     inlines = [
+        EncodingInline,
         LikeInline,
     ]
 
@@ -99,3 +109,15 @@ class PhotoAdmin(admin.ModelAdmin):
             messages.add_message(
                 request, messages.ERROR, _("This photo already exists in the album.")
             )
+
+
+@admin.register(ReferenceFace)
+class ReferenceFaceAdmin(admin.ModelAdmin):
+    """Model for ReferenceFace admin page."""
+
+    list_display = ("member",)
+    readonly_fields = (
+        "encoding",
+        "matches",
+    )
+    autocomplete_fields = ("member",)
