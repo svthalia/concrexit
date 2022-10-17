@@ -574,7 +574,7 @@ python-dateutil = ">=2.4"
 
 [[package]]
 name = "firebase-admin"
-version = "6.0.0"
+version = "6.0.1"
 description = "Firebase Admin Python SDK"
 category = "main"
 optional = false
@@ -586,6 +586,7 @@ google-api-core = {version = ">=1.22.1,<3.0.0dev", extras = ["grpc"], markers = 
 google-api-python-client = ">=1.7.8"
 google-cloud-firestore = {version = ">=2.1.0", markers = "platform_python_implementation != \"PyPy\""}
 google-cloud-storage = ">=1.37.1"
+pyjwt = {version = ">=2.5.0", extras = ["crypto"]}
 
 [[package]]
 name = "freezegun"
@@ -1102,6 +1103,24 @@ python-versions = ">=3.6"
 plugins = ["importlib-metadata"]
 
 [[package]]
+name = "pyjwt"
+version = "2.5.0"
+description = "JSON Web Token implementation in Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+cryptography = {version = ">=3.3.1", optional = true, markers = "extra == \"crypto\""}
+types-cryptography = {version = ">=3.3.21", optional = true, markers = "extra == \"crypto\""}
+
+[package.extras]
+crypto = ["cryptography (>=3.3.1)", "types-cryptography (>=3.3.21)"]
+dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.3.1)", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "types-cryptography (>=3.3.21)", "zope.interface"]
+docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
+tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
+
+[[package]]
 name = "pylint"
 version = "2.13.9"
 description = "python code static checker"
@@ -1503,6 +1522,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "types-cryptography"
+version = "3.3.23.1"
+description = "Typing stubs for cryptography"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.3.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1574,7 +1601,7 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c087085a69d32774cce615b115d92d248da53f773769b6b8c94b6b863c3bdb1c"
+content-hash = "07a70ae134be9b711fc16354880f0abedf3b1035c4fb4b13d75bbdf74f3f7668"
 
 [metadata.files]
 alabaster = [
@@ -1948,8 +1975,8 @@ faker = [
     {file = "Faker-15.1.1.tar.gz", hash = "sha256:a741b77f484215c3aab2604100669657189548f440fcb2ed0f8b7ee21c385629"},
 ]
 firebase-admin = [
-    {file = "firebase_admin-6.0.0-py3-none-any.whl", hash = "sha256:bf62498cac973433dd1042cb9adb26c19ce2ebef699ecdd21279e1442262e774"},
-    {file = "firebase_admin-6.0.0.tar.gz", hash = "sha256:7a610ab8e3f1c9c5344827f1a578ae26181c3121eb3223d16b17b11996c81f97"},
+    {file = "firebase_admin-6.0.1-py3-none-any.whl", hash = "sha256:1f903d8c9e353af8027c3c237696d98f8e77ad4e38025528be0c522dee037317"},
+    {file = "firebase_admin-6.0.1.tar.gz", hash = "sha256:7de3fc7b8bf7722cd8d127f7162d060c7ffd270e69794bcec2cc1d571fb80b45"},
 ]
 freezegun = [
     {file = "freezegun-1.2.2-py3-none-any.whl", hash = "sha256:ea1b963b993cb9ea195adbd893a48d573fda951b0da64f60883d7e988b606c9f"},
@@ -2438,6 +2465,10 @@ pygments = [
     {file = "Pygments-2.13.0-py3-none-any.whl", hash = "sha256:f643f331ab57ba3c9d89212ee4a2dabc6e94f117cf4eefde99a0574720d14c42"},
     {file = "Pygments-2.13.0.tar.gz", hash = "sha256:56a8508ae95f98e2b9bdf93a6be5ae3f7d8af858b43e02c5a2ff083726be40c1"},
 ]
+pyjwt = [
+    {file = "PyJWT-2.5.0-py3-none-any.whl", hash = "sha256:8d82e7087868e94dd8d7d418e5088ce64f7daab4b36db654cbaedb46f9d1ca80"},
+    {file = "PyJWT-2.5.0.tar.gz", hash = "sha256:e77ab89480905d86998442ac5788f35333fa85f65047a534adc38edf3c88fc3b"},
+]
 pylint = [
     {file = "pylint-2.13.9-py3-none-any.whl", hash = "sha256:705c620d388035bdd9ff8b44c5bcdd235bfb49d276d488dd2c8ff1736aa42526"},
     {file = "pylint-2.13.9.tar.gz", hash = "sha256:095567c96e19e6f57b5b907e67d265ff535e588fe26b12b5ebe1fc5645b2c731"},
@@ -2634,6 +2665,10 @@ tinycss2 = [
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+types-cryptography = [
+    {file = "types-cryptography-3.3.23.1.tar.gz", hash = "sha256:f108e7a7161eedd9fe391e1a8ae5a98d40c1da2f0418bc0812a9119990272314"},
+    {file = "types_cryptography-3.3.23.1-py3-none-any.whl", hash = "sha256:b9f8aa93d9e4d7ff920961cdce3dc7cca479946890924d68356b66f15f4f35e3"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.3.0-py3-none-any.whl", hash = "sha256:25642c956049920a5aa49edcdd6ab1e06d7e5d467fc00e0506c44ac86fbfca02"},
