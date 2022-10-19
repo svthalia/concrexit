@@ -219,7 +219,9 @@ def execute_data_minimisation(dry_run=False):
         Q(
             owner__paid_payment_set__type=Payment.TPAY
         ),  # are used for Thalia Pay payments, AND
-        Q(owner__paid_payment_set__batch__isnull=True)  # have a payment that is in no batch, OR
+        Q(
+            owner__paid_payment_set__batch__isnull=True
+        )  # have a payment that is in no batch, OR
         | Q(
             owner__paid_payment_set__batch__processed=False
         )  # have an unprocessed batch, OR
