@@ -212,7 +212,7 @@ def execute_data_minimisation(dry_run=False):
     # Delete bank accounts that are not valid anymore, and have not been used in the last 13 months
     # (13 months is the required time we need to keep the mandates for)
     queryset_bankaccounts = BankAccount.objects.all()
-    queryset_bankaccounts = queryset_bankaccounts.exclude(
+    queryset_bankaccounts = queryset_bankaccounts.filter(
         valid_until__lt=timezone.now()
     )  # Keep valid bank accounts
     queryset_bankaccounts = queryset_bankaccounts.exclude(  # Also keep bank accounts that
