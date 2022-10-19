@@ -315,14 +315,14 @@ graph = ["objgraph (>=1.7.2)"]
 
 [[package]]
 name = "django"
-version = "4.0.7"
+version = "4.1.2"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
 python-versions = ">=3.8"
 
 [package.dependencies]
-asgiref = ">=3.4.1,<4"
+asgiref = ">=3.5.2,<4"
 sqlparse = ">=0.2.2"
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
@@ -449,14 +449,14 @@ python-stdnum = ">=1.6"
 
 [[package]]
 name = "django-oauth-toolkit"
-version = "2.1.0"
+version = "2.2.0"
 description = "OAuth2 Provider for Django"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-django = ">=2.2,<=4.1"
+django = ">=2.2,<4.0.0 || >4.0.0"
 jwcrypto = ">=0.8.0"
 oauthlib = ">=3.1.0"
 requests = ">=2.13.0"
@@ -574,7 +574,7 @@ doc = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "faker"
-version = "15.0.0"
+version = "15.1.1"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
@@ -585,11 +585,11 @@ python-dateutil = ">=2.4"
 
 [[package]]
 name = "firebase-admin"
-version = "5.4.0"
+version = "6.0.1"
 description = "Firebase Admin Python SDK"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 cachecontrol = ">=0.12.6"
@@ -597,6 +597,7 @@ google-api-core = {version = ">=1.22.1,<3.0.0dev", extras = ["grpc"], markers = 
 google-api-python-client = ">=1.7.8"
 google-cloud-firestore = {version = ">=2.1.0", markers = "platform_python_implementation != \"PyPy\""}
 google-cloud-storage = ">=1.37.1"
+pyjwt = {version = ">=2.5.0", extras = ["crypto"]}
 
 [[package]]
 name = "freezegun"
@@ -632,7 +633,7 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0dev)"]
 
 [[package]]
 name = "google-api-python-client"
-version = "2.64.0"
+version = "2.65.0"
 description = "Google API Client Library for Python"
 category = "main"
 optional = false
@@ -1113,6 +1114,24 @@ python-versions = ">=3.6"
 plugins = ["importlib-metadata"]
 
 [[package]]
+name = "pyjwt"
+version = "2.5.0"
+description = "JSON Web Token implementation in Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+cryptography = {version = ">=3.3.1", optional = true, markers = "extra == \"crypto\""}
+types-cryptography = {version = ">=3.3.21", optional = true, markers = "extra == \"crypto\""}
+
+[package.extras]
+crypto = ["cryptography (>=3.3.1)", "types-cryptography (>=3.3.21)"]
+dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.3.1)", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "types-cryptography (>=3.3.21)", "zope.interface"]
+docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
+tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
+
+[[package]]
 name = "pylint"
 version = "2.13.9"
 description = "python code static checker"
@@ -1381,7 +1400,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "sphinx"
-version = "5.2.3"
+version = "5.3.0"
 description = "Python documentation generator"
 category = "main"
 optional = true
@@ -1512,6 +1531,14 @@ description = "A lil' TOML parser"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
+
+[[package]]
+name = "types-cryptography"
+version = "3.3.23.1"
+description = "Typing stubs for cryptography"
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "typing-extensions"
@@ -1876,8 +1903,8 @@ dill = [
     {file = "dill-0.3.5.1.tar.gz", hash = "sha256:d75e41f3eff1eee599d738e76ba8f4ad98ea229db8b085318aa2b3333a208c86"},
 ]
 django = [
-    {file = "Django-4.0.7-py3-none-any.whl", hash = "sha256:41bd65a9e5f8a89cdbfa7a7bba45cd7431ae89e750af82dea8a35fd1a7ecbe66"},
-    {file = "Django-4.0.7.tar.gz", hash = "sha256:9c6d5ad36be798e562ddcaa6b17b1c3ff2d3c4f529a47432b69fb9a30f847461"},
+    {file = "Django-4.1.2-py3-none-any.whl", hash = "sha256:26dc24f99c8956374a054bcbf58aab8dc0cad2e6ac82b0fe036b752c00eee793"},
+    {file = "Django-4.1.2.tar.gz", hash = "sha256:b8d843714810ab88d59344507d4447be8b2cf12a49031363b6eed9f1b9b2280f"},
 ]
 django-admin-autocomplete-filter = [
     {file = "django-admin-autocomplete-filter-0.7.1.tar.gz", hash = "sha256:5a8c9a7016e03104627b80b40811dcc567f26759971e4407f933951546367ba0"},
@@ -1920,7 +1947,8 @@ django-localflavor = [
     {file = "django_localflavor-3.1-py3-none-any.whl", hash = "sha256:6593865dc671333b3edc88e729e6d384d00b6db7891ef5d3a65db831a40050d2"},
 ]
 django-oauth-toolkit = [
-    {file = "django_oauth_toolkit-2.1.0-py3-none-any.whl", hash = "sha256:642598d7462e92232a237faa399f9a2361aae1177e15f710b93559d111e12aef"},
+    {file = "django-oauth-toolkit-2.2.0.tar.gz", hash = "sha256:46890decb24a34e2a5382debeaf7752e50d90b7a11716cf2a9fd067097ec0963"},
+    {file = "django_oauth_toolkit-2.2.0-py3-none-any.whl", hash = "sha256:abd85c74af525a62365ec2049113e73a2ff8b46ef906e7104a7ba968ef02a11d"},
 ]
 django-queryable-properties = [
     {file = "django-queryable-properties-1.8.3.tar.gz", hash = "sha256:ededecd103998885b2ef3d4d5a04a3d29f79b3b3c086df89448efb4b3459d7ef"},
@@ -1959,12 +1987,12 @@ factory-boy = [
     {file = "factory_boy-3.2.1.tar.gz", hash = "sha256:a98d277b0c047c75eb6e4ab8508a7f81fb03d2cb21986f627913546ef7a2a55e"},
 ]
 faker = [
-    {file = "Faker-15.0.0-py3-none-any.whl", hash = "sha256:84c83f0ac1a2c8ecabd784c501aa0ef1d082d4aee52c3d797d586081c166434c"},
-    {file = "Faker-15.0.0.tar.gz", hash = "sha256:245fc7d23470dc57164bd9a59b7b1126e16289ffcf813d88a6c8e9b8a37ea3fb"},
+    {file = "Faker-15.1.1-py3-none-any.whl", hash = "sha256:096c15e136adb365db24d8c3964fe26bfc68fe060c9385071a339f8c14e09c8a"},
+    {file = "Faker-15.1.1.tar.gz", hash = "sha256:a741b77f484215c3aab2604100669657189548f440fcb2ed0f8b7ee21c385629"},
 ]
 firebase-admin = [
-    {file = "firebase_admin-5.4.0-py3-none-any.whl", hash = "sha256:fb8afe0e071e8818e57c8c904f8d5e751fcb843b7e3922d5310ec013992781ea"},
-    {file = "firebase_admin-5.4.0.tar.gz", hash = "sha256:6cb6037ac2c9aedfc78e38b38c0c3e43603351d29f2e35ee8bc253064e49cbb8"},
+    {file = "firebase_admin-6.0.1-py3-none-any.whl", hash = "sha256:1f903d8c9e353af8027c3c237696d98f8e77ad4e38025528be0c522dee037317"},
+    {file = "firebase_admin-6.0.1.tar.gz", hash = "sha256:7de3fc7b8bf7722cd8d127f7162d060c7ffd270e69794bcec2cc1d571fb80b45"},
 ]
 freezegun = [
     {file = "freezegun-1.2.2-py3-none-any.whl", hash = "sha256:ea1b963b993cb9ea195adbd893a48d573fda951b0da64f60883d7e988b606c9f"},
@@ -1975,8 +2003,8 @@ google-api-core = [
     {file = "google_api_core-2.10.2-py3-none-any.whl", hash = "sha256:34f24bd1d5f72a8c4519773d99ca6bf080a6c4e041b4e9f024fe230191dda62e"},
 ]
 google-api-python-client = [
-    {file = "google-api-python-client-2.64.0.tar.gz", hash = "sha256:0dc4c967a5c795e981af01340f1bd22173a986534de968b5456cb208ed6775a6"},
-    {file = "google_api_python_client-2.64.0-py2.py3-none-any.whl", hash = "sha256:90545cd71969f8bcf15a6362c2a8c44c38b94ec35a88cfd60cf2c0df68a5eb74"},
+    {file = "google-api-python-client-2.65.0.tar.gz", hash = "sha256:b8a0ca8454ad57bc65199044717d3d214197ae1e2d666426bbcd4021b36762e0"},
+    {file = "google_api_python_client-2.65.0-py2.py3-none-any.whl", hash = "sha256:2c6611530308b3f931dcf1360713aa3a20cf465d0bf2bac65f2ec99e8c9860de"},
 ]
 google-auth = [
     {file = "google-auth-2.13.0.tar.gz", hash = "sha256:9352dd6394093169157e6971526bab9a2799244d68a94a4a609f0dd751ef6f5e"},
@@ -2475,6 +2503,10 @@ pygments = [
     {file = "Pygments-2.13.0-py3-none-any.whl", hash = "sha256:f643f331ab57ba3c9d89212ee4a2dabc6e94f117cf4eefde99a0574720d14c42"},
     {file = "Pygments-2.13.0.tar.gz", hash = "sha256:56a8508ae95f98e2b9bdf93a6be5ae3f7d8af858b43e02c5a2ff083726be40c1"},
 ]
+pyjwt = [
+    {file = "PyJWT-2.5.0-py3-none-any.whl", hash = "sha256:8d82e7087868e94dd8d7d418e5088ce64f7daab4b36db654cbaedb46f9d1ca80"},
+    {file = "PyJWT-2.5.0.tar.gz", hash = "sha256:e77ab89480905d86998442ac5788f35333fa85f65047a534adc38edf3c88fc3b"},
+]
 pylint = [
     {file = "pylint-2.13.9-py3-none-any.whl", hash = "sha256:705c620d388035bdd9ff8b44c5bcdd235bfb49d276d488dd2c8ff1736aa42526"},
     {file = "pylint-2.13.9.tar.gz", hash = "sha256:095567c96e19e6f57b5b907e67d265ff535e588fe26b12b5ebe1fc5645b2c731"},
@@ -2633,8 +2665,8 @@ soupsieve = [
     {file = "soupsieve-2.3.2.post1.tar.gz", hash = "sha256:fc53893b3da2c33de295667a0e19f078c14bf86544af307354de5fcf12a3f30d"},
 ]
 sphinx = [
-    {file = "Sphinx-5.2.3.tar.gz", hash = "sha256:5b10cb1022dac8c035f75767799c39217a05fc0fe2d6fe5597560d38e44f0363"},
-    {file = "sphinx-5.2.3-py3-none-any.whl", hash = "sha256:7abf6fabd7b58d0727b7317d5e2650ef68765bbe0ccb63c8795fa8683477eaa2"},
+    {file = "Sphinx-5.3.0.tar.gz", hash = "sha256:51026de0a9ff9fc13c05d74913ad66047e104f56a129ff73e174eb5c3ee794b5"},
+    {file = "sphinx-5.3.0-py3-none-any.whl", hash = "sha256:060ca5c9f7ba57a08a1219e547b269fadf125ae25b06b9fa7f66768efb652d6d"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.2.tar.gz", hash = "sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58"},
@@ -2671,6 +2703,10 @@ tinycss2 = [
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+types-cryptography = [
+    {file = "types-cryptography-3.3.23.1.tar.gz", hash = "sha256:f108e7a7161eedd9fe391e1a8ae5a98d40c1da2f0418bc0812a9119990272314"},
+    {file = "types_cryptography-3.3.23.1-py3-none-any.whl", hash = "sha256:b9f8aa93d9e4d7ff920961cdce3dc7cca479946890924d68356b66f15f4f35e3"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},

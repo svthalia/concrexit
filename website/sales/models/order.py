@@ -129,18 +129,36 @@ class Order(models.Model):
         Coalesce(Sum("order_items__amount"), Value(0), output_field=IntegerField())
     )
 
+    _is_free = models.BooleanField(
+        verbose_name=_("is free"),
+        default=False,
+    )
+    _total_amount = PaymentAmountField(
+        allow_zero=True,
+        verbose_name=_("total amount"),
+    )
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
-        if self.shift.locked:
+        if self.shift.locked and (
+            self._total_amount != 0 or (self._total_amount == 0 and not self._is_free)
+        ):  # Fallback for initializing _total_amount during migration
             raise ValueError("The shift this order belongs to is locked.")
         if self.shift.start > timezone.now():
             raise ValueError("The shift hasn't started yet.")
-        if (
-            self.payment
-            and self.subtotal - Decimal(self.discount or 0) != self.payment.amount
-        ):
-            # We cannot use self.total_amount as it is a requires a database query and hence will not use any updated values
+
+        try:
+            if hasattr(
+                self, "total_amount"
+            ):  # Fallback if the annotation is not available during migrations
+                self._total_amount = self.total_amount
+        except self.DoesNotExist:
+            self._total_amount = 0
+
+        self._is_free = bool(self._total_amount == 0)
+
+        if self.payment and self._total_amount != self.payment.amount:
             raise ValueError(
                 "The payment amount does not match the order total amount."
             )
@@ -246,9 +264,9 @@ class OrderItem(models.Model):
         if self.product:
             self.product_name = self.product.product_name
 
-        return super(OrderItem, self).save(
-            force_insert, force_update, using, update_fields
-        )
+        super(OrderItem, self).save(force_insert, force_update, using, update_fields)
+
+        self.order.save()
 
     def clean(self):
         super().clean()
@@ -265,3 +283,7 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.amount}x {self.product_name}"
+
+    def delete(self, using=None, keep_parents=False):
+        super().delete(using, keep_parents)
+        self.order.save()

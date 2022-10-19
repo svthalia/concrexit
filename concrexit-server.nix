@@ -12,11 +12,15 @@ let
   stagingSecrets = ./infra/secrets/concrexit-staging.env.age;
   secretsFile = if production then productionSecrets else stagingSecrets;
 
-  dockerImage = "ghcr.io/svthalia/concrexit:${if production then "latest" else "master"}";
+  dockerImage = "ghcr.io/svthalia/concrexit:${if production then "release-43" else "master"}";
 
   staticdir = "/var/lib/concrexit/static/";
   mediadir = "/var/lib/concrexit/media/";
   domain = if production then "thalia.nu" else "staging.thalia.nu";
+
+  deployKeys = if production then [ ] else [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINtIM7VeZokOHEZj4tegfRr+zP/SL98uRhpJvgX/myhw GITHUB_STAGING_DEPLOY_KEY"
+  ];
 
   securityHeaders = ''
     # X-Frame-Options tells the browser whether you want to allow your site to be framed or not.
@@ -74,6 +78,33 @@ in
     ];
   };
 
+  # Automatic deployment settings
+  security.polkit = {
+    enable = true;
+    # Allow the deploy user to restart concrexit
+    # From: https://wiki.archlinux.org/title/Polkit#Allow_management_of_individual_systemd_units_by_regular_users
+    extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.freedesktop.systemd1.manage-units") {
+          if (action.lookup("unit") == "concrexit.service") {
+            var verb = action.lookup("verb");
+            if (verb == "restart") {
+                return polkit.Result.YES;
+            }
+          }
+        }
+      });
+    '';
+  };
+  users.groups.deploy = { };
+  users.users.deploy = {
+    isSystemUser = true;
+    group = "deploy";
+    description = "Used by GitHub Actions to ssh into this server and restart the concrexit server";
+    useDefaultShell = true;
+    openssh.authorizedKeys.keys = deployKeys;
+  };
+
   # Enable the SSH server, this also opens port 22 automatically
   services.openssh.enable = true;
 
@@ -118,36 +149,24 @@ in
     '';
   };
 
-  systemd.services.concrexit-static = {
-    wantedBy = [ "multi-user.target" ];
-    requires = [ "docker.service" ];
-    after = [ "docker.service" ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-
-    path = with pkgs; [ docker ];
-    script = ''
-      docker pull ${dockerImage}
-      docker run --rm --network concrexit --name concrexit-static \
-        -v /var/lib/concrexit/static:/static \
-        --env-file ${envFile} \
-        --env-file ${config.age.secrets."concrexit-secrets.env".path} \
-        ${dockerImage} /app/collect-static.sh
-    '';
-  };
-
   systemd.services.concrexit = {
     wantedBy = [ "multi-user.target" ];
-    requires = [ "postgres.service" "concrexit-static.service" ];
-    after = [ "postgres.service" "concrexit-static.service" ];
+    requires = [ "postgres.service" ];
+    after = [ "postgres.service" ];
 
     path = with pkgs; [ docker ];
     script = ''
       docker rm concrexit || true
-      docker pull ${dockerImage}
+      out=$(docker pull ${dockerImage} | tee >(cat >&2))
+
+      if [[ $out != *"up to date"* ]]; then
+        docker run --rm --network concrexit --name concrexit-static \
+          -v /var/lib/concrexit/static:/static \
+          --env-file ${envFile} \
+          --env-file ${config.age.secrets."concrexit-secrets.env".path} \
+          ${dockerImage} /app/collect-static.sh
+      fi
+
       docker run --network concrexit --name concrexit -p 127.0.0.1:8000:8000 \
         -v /var/lib/concrexit/static:/static \
         -v /var/lib/concrexit/media:/media \
@@ -159,13 +178,13 @@ in
 
   concrexit-timers = {
     docker-command = ''
-      docker run --network concrexit --name concrexit -p 127.0.0.1:8000:8000 \
+      docker run --network concrexit --rm \
         -v /var/lib/concrexit/static:/static \
         -v /var/lib/concrexit/media:/media \
         --env-file ${envFile} \
         --env-file ${config.age.secrets."concrexit-secrets.env".path} \
-        --entrypoint /app/website/manage.py \
-        ${dockerImage}
+        --entrypoint /venv/bin/python \
+        ${dockerImage} /app/website/manage.py \
     '';
     timers = {
       send_scheduled_messages = {
