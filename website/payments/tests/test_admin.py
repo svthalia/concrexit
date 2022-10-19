@@ -932,7 +932,7 @@ class PaymentUserAdminTest(TestCase):
             )
             .values_list("pk", flat=True)
             .all(),
-            ["3", "4", "2", "1"],
+            [3, 4, 2, 1],
             ordered=False,
         )
         filter_false = admin.ThaliaPayAllowedFilter(
@@ -963,7 +963,7 @@ class PaymentUserAdminTest(TestCase):
             filter_true.queryset(None, PaymentUser.objects)
             .values_list("pk", flat=True)
             .all(),
-            ["2", "1"],
+            [2, 1],
             ordered=False,
         )
         filter_false = admin.ThaliaPayEnabledFilter(
@@ -973,7 +973,7 @@ class PaymentUserAdminTest(TestCase):
             filter_false.queryset(None, PaymentUser.objects)
             .values_list("pk", flat=True)
             .all(),
-            ["3", "4"],
+            [3, 4],
             ordered=False,
         )
 
@@ -998,7 +998,7 @@ class PaymentUserAdminTest(TestCase):
             )
             .values_list("pk", flat=True)
             .all(),
-            ["3", "4", "2", "1"],
+            [3, 4, 2, 1],
             ordered=False,
         )
         filter_false = admin.ThaliaPayBalanceFilter(
@@ -1022,7 +1022,7 @@ class PaymentUserAdminTest(TestCase):
             )
             .values_list("pk", flat=True)
             .all(),
-            ["1", "2", "3", "4"],
+            [1, 2, 3, 4],
             ordered=False,
         )
         filter_false = admin.ThaliaPayBalanceFilter(
