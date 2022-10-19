@@ -541,7 +541,7 @@ class Command(BaseCommand):
 
         if not possible_event:
             self.stdout.write("Could not create event")
-            return
+            return None
 
         registration.event = possible_event
 

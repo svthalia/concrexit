@@ -249,7 +249,7 @@ class OrderItem(models.Model):
             if self.pk:
                 self.delete()
             else:
-                return None
+                return
 
         if not self.total:
             self.total = self.product.price * self.amount
@@ -257,7 +257,7 @@ class OrderItem(models.Model):
         if self.product:
             self.product_name = self.product.product_name
 
-        return super().save(force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
         self.order.save()
 
