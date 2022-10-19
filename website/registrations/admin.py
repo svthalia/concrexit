@@ -157,7 +157,6 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
             )
         return field
 
-
     def get_readonly_fields(self, request, obj=None):
         if obj is None or obj.status not in (
             Entry.STATUS_REJECTED,
@@ -217,11 +216,10 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
             else super().has_change_permission(request, obj)
         )
 
-
     @object_action(
         label=_("Resend email confirmation"),
         parameter_name="_resendemail",
-        permissions="registrations.review_entries",
+        permission="registrations.review_entries",
         condition=lambda _, obj: obj.status == Entry.STATUS_CONFIRM,
         log_message=_("Confirmation email resent"),
     )
@@ -237,7 +235,7 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
     @object_action(
         label=_("Accept"),
         parameter_name="_accept",
-        permissions="registrations.review_entries",
+        permission="registrations.review_entries",
         extra_classes="accept",
         condition=lambda _, obj: obj.status == Entry.STATUS_REVIEW,
         log_message=_("Accepted"),
@@ -252,7 +250,7 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
     @object_action(
         label=_("Reject"),
         parameter_name="_reject",
-        permissions="registrations.review_entries",
+        permission="registrations.review_entries",
         extra_classes="reject",
         condition=lambda _, obj: obj.status == Entry.STATUS_REVIEW,
         log_message=_("Rejected"),
@@ -266,8 +264,9 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
     @object_action(
         label=_("Revert"),
         parameter_name="_revert",
-        permissions="registrations.review_entries",
-        condition=lambda _, obj: obj.status in (Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED),
+        permission="registrations.review_entries",
+        condition=lambda _, obj: obj.status
+        in (Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED),
         log_message=_("Reverted"),
         perform_after_saving=True,
     )
@@ -277,7 +276,12 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
             services.revert_entry(request.user.pk, obj)
             return redirect("admin:registrations_registration_change", obj.pk)
 
-    object_actions_after_related_objects = ["resend_confirmation_email", "reject", "accept", "revert"]
+    object_actions_after_related_objects = [
+        "resend_confirmation_email",
+        "reject",
+        "accept",
+        "revert",
+    ]
 
 
 @admin.register(Renewal)

@@ -8,6 +8,8 @@ from django.db.models import Q, Count
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django_easy_admin_object_actions.admin import ObjectActionsMixin
+from django_easy_admin_object_actions.decorators import object_action
 
 from members import services
 from members.models import EmailChange, Member
@@ -133,7 +135,7 @@ class HasPermissionsFilter(admin.SimpleListFilter):
         return queryset.filter(permission_count=0)
 
 
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(ObjectActionsMixin, BaseUserAdmin):
     form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 
@@ -204,6 +206,20 @@ class UserAdmin(BaseUserAdmin):
     email_csv_export.short_description = _(
         "Download email addresses for selected users"
     )
+
+    @object_action(
+        label=_("Minimise data"),
+        parameter_name="_minimisedata",
+        permission="users.change_user",
+        log_message=_("Minimised data"),
+    )
+    def minimise_data_object_action(self, request, obj):
+        if obj:
+            services.execute_data_minimisation(
+                dry_run=False, members=Member.objects.get(pk=obj.pk)
+            )
+
+    object_actions_after_related_objects = ["minimise_data_object_action"]
 
     def address_csv_export(self, request, queryset):
         response = HttpResponse(content_type="text/csv")

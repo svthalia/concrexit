@@ -1,5 +1,5 @@
 """The admin interfaces registered by the pushnotifications package."""
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
@@ -36,7 +36,7 @@ class MessageSentFilter(admin.SimpleListFilter):
 
 
 @admin.register(models.Device)
-class DeviceAdmin(admin.ModelAdmin):
+class DeviceAdmin(ObjectActionsMixin, admin.ModelAdmin):
     """Manage the devices."""
 
     list_display = ("name", "type", "active", "date_created")
@@ -49,6 +49,45 @@ class DeviceAdmin(admin.ModelAdmin):
         "user__first_name",
         "user__last_name",
     )
+
+    readonly_fields = ("active",)
+
+    @object_action(
+        label=_("Disable"),
+        parameter_name="_disable",
+        permission="pushnotifications.change_device",
+        condition=lambda _, obj: obj.active,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Disabled"),
+        perform_after_saving=True,
+    )
+    def disable_object_action(self, request, obj):
+        if obj:
+            obj.active = False
+            obj.save()
+            messages.success(request, _("Disabled device."))
+            return redirect("admin:pushnotifications_device_change", obj.pk)
+
+    @object_action(
+        label=_("Enable"),
+        parameter_name="_enable",
+        permission="pushnotifications.change_device",
+        condition=lambda _, obj: not obj.active,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Disabled"),
+        perform_after_saving=True,
+    )
+    def enable_object_action(self, request, obj):
+        if obj:
+            obj.active = True
+            obj.save()
+            messages.success(request, _("Enabled device."))
+            return redirect("admin:pushnotifications_device_change", obj.pk)
+
+    object_actions_after_related_objects = [
+        "disable_object_action",
+        "enable_object_action",
+    ]
 
     def enable(self, request, queryset):
         queryset.update(active=True)
@@ -123,7 +162,9 @@ class MessageAdmin(ObjectActionsMixin, ModelAdmin):
             obj.send()
             return redirect("admin:registrations_registration_change", obj.pk)
 
-    object_actions_after_related_objects = ["send",]
+    object_actions_after_related_objects = [
+        "send",
+    ]
 
 
 @admin.register(models.ScheduledMessage)

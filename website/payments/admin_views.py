@@ -83,7 +83,6 @@ class PaymentAdminView(View):
         return redirect("admin:payments_payment_change", result.pk)
 
 
-
 @method_decorator(staff_member_required, name="dispatch")
 @method_decorator(
     permission_required("payments.process_batches"),

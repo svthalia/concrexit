@@ -88,7 +88,7 @@ class ExamAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
     @object_action(
         label=_("Accept"),
         parameter_name="_accept",
-        permissions="education.change_exam",
+        permission="education.change_exam",
         condition=lambda _, obj: not obj.accepted == True,
         log_message=_("Accepted"),
         perform_after_saving=True,
@@ -102,7 +102,7 @@ class ExamAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
     @object_action(
         label=_("Reject"),
         parameter_name="_reject",
-        permissions="education.change_exam",
+        permission="education.change_exam",
         condition=lambda _, obj: not obj.accepted or obj.accepted == True,
         log_message=_("Rejected"),
         perform_after_saving=True,
@@ -116,7 +116,7 @@ class ExamAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
     @object_action(
         label=_("Reset download count"),
         parameter_name="_resetdownloadcount",
-        permissions="education.change_exam",
+        permission="education.change_exam",
         condition=lambda _, obj: obj.download_count != 0,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Reset download count to 0"),
@@ -127,7 +127,11 @@ class ExamAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
             obj.save()
             return redirect("admin:education_exam_change", obj.pk)
 
-    object_actions_after_related_objects = ["reset_download_count_obj", "reject_obj", "accept_obj"]
+    object_actions_after_related_objects = [
+        "reset_download_count_obj",
+        "reject_obj",
+        "accept_obj",
+    ]
 
 
 @admin.register(models.Summary)
@@ -167,10 +171,11 @@ class SummaryAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
     reset_download_count.short_description = _(
         "Reset the marked summaries download count"
     )
+
     @object_action(
         label=_("Accept"),
         parameter_name="_accept",
-        permissions="education.change_summary",
+        permission="education.change_summary",
         condition=lambda _, obj: not obj.accepted == True,
         log_message=_("Accepted"),
         perform_after_saving=True,
@@ -184,7 +189,7 @@ class SummaryAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
     @object_action(
         label=_("Reject"),
         parameter_name="_reject",
-        permissions="education.change_summary",
+        permission="education.change_summary",
         condition=lambda _, obj: not obj.accepted or obj.accepted == True,
         log_message=_("Rejected"),
         perform_after_saving=True,
@@ -198,7 +203,7 @@ class SummaryAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
     @object_action(
         label=_("Reset download count"),
         parameter_name="_resetdownloadcount",
-        permissions="education.change_summary",
+        permission="education.change_summary",
         condition=lambda _, obj: obj.download_count != 0,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Reset download count to 0"),
@@ -209,5 +214,8 @@ class SummaryAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
             obj.save()
             return redirect("admin:education_summary_change", obj.pk)
 
-    object_actions_after_related_objects = ["reset_download_count_obj", "reject_obj", "accept_obj"]
-
+    object_actions_after_related_objects = [
+        "reset_download_count_obj",
+        "reject_obj",
+        "accept_obj",
+    ]

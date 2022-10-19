@@ -84,7 +84,7 @@ class NewsletterAdmin(ObjectActionsMixin, ModelAdmin):
     @object_action(
         label=_("Send"),
         parameter_name="_send",
-        permissions="newsletters.send_newsletter",
+        permission="newsletters.send_newsletter",
         condition=lambda _, obj: not obj.sent,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Sent"),
@@ -106,5 +106,7 @@ class NewsletterAdmin(ObjectActionsMixin, ModelAdmin):
         if obj:
             return redirect("newsletters:preview", obj.pk)
 
-    object_actions_after_related_objects = ["show_preview", "send",]
-
+    object_actions_after_related_objects = [
+        "show_preview",
+        "send",
+    ]

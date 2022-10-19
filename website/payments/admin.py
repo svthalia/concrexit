@@ -8,6 +8,7 @@ from django.contrib.admin.utils import model_ngettext
 from django.db.models import QuerySet
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpRequest
+from django.shortcuts import redirect
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
@@ -449,7 +450,7 @@ class BatchAdmin(ObjectActionsMixin, admin.ModelAdmin):
     @object_action(
         label=_("Process"),
         parameter_name="_process",
-        permissions="payments.process_batches",
+        permission="payments.process_batches",
         condition=lambda _, obj: not obj.processed,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Processed"),
@@ -465,7 +466,7 @@ class BatchAdmin(ObjectActionsMixin, admin.ModelAdmin):
 
 
 @admin.register(BankAccount)
-class BankAccountAdmin(admin.ModelAdmin):
+class BankAccountAdmin(ObjectActionsMixin, admin.ModelAdmin):
     """Manage bank accounts."""
 
     list_display = ("iban", "owner_link", "last_used", "valid_from", "valid_until")
@@ -508,6 +509,41 @@ class BankAccountAdmin(admin.ModelAdmin):
         return obj.can_be_revoked
 
     can_be_revoked.boolean = True
+
+    @object_action(
+        label=_("Revoke"),
+        parameter_name="_revoke",
+        permission="payments.change_bankaccount",
+        condition=lambda _, obj: obj.can_be_revoked,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Revoked"),
+        perform_after_saving=True,
+    )
+    def revoke(self, request, obj):
+        """Process the selected batches."""
+        if obj:
+            obj.valid_until = timezone.now().date()
+            obj.save()
+            messages.success(request, _("Revoked bank account."))
+
+    @object_action(
+        label=_("Update last used"),
+        parameter_name="_updatelastused",
+        permission="payments.change_bankaccount",
+        log_message=_("Last used updated"),
+        perform_after_saving=True,
+    )
+    def update_last_used(self, request, obj):
+        """Process the selected batches."""
+        if obj:
+            obj.last_used = timezone.now().date()
+            obj.save()
+            messages.success(request, _("Update last used date."))
+
+    object_actions_after_fieldsets = (
+        "revoke",
+        "update_last_used",
+    )
 
     def set_last_used(self, request: HttpRequest, queryset: QuerySet) -> None:
         """Set the last used date of selected accounts."""
@@ -650,7 +686,7 @@ class ThaliaPayBalanceFilter(admin.SimpleListFilter):
 
 
 @admin.register(PaymentUser)
-class PaymentUserAdmin(admin.ModelAdmin):
+class PaymentUserAdmin(ObjectActionsMixin, admin.ModelAdmin):
     list_display = (
         "__str__",
         "email",
@@ -729,6 +765,39 @@ class PaymentUserAdmin(admin.ModelAdmin):
     user_link.short_description = _("user")
 
     actions = ["disallow_thalia_pay", "allow_thalia_pay"]
+
+    @object_action(
+        label=_("Disallow Thalia Pay"),
+        parameter_name="_disallow_tpay",
+        permission="payments.change_paymentuser",
+        condition=lambda _, obj: obj.tpay_allowed,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Disallowed Thalia Pay"),
+    )
+    def disallow_thalia_pay_object_action(self, request, obj):
+        if obj:
+            obj.disallow_tpay()
+            messages.success(request, _("Disallowed Thalia Pay."))
+            return redirect("admin:payments_paymentuser_change", obj.pk)
+
+    @object_action(
+        label=_("Allow Thalia Pay"),
+        parameter_name="_allow_tpay",
+        permission="payments.change_paymentuser",
+        condition=lambda _, obj: not obj.tpay_allowed,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Allowed Thalia Pay"),
+    )
+    def allow_thalia_pay_object_action(self, request, obj):
+        if obj:
+            obj.allow_tpay()
+            messages.success(request, _("Disallowed Thalia Pay."))
+            return redirect("admin:payments_paymentuser_change", obj.pk)
+
+    object_actions_after_related_objects = [
+        "disallow_thalia_pay_object_action",
+        "allow_thalia_pay_object_action",
+    ]
 
     def disallow_thalia_pay(self, request, queryset):
         count = 0
