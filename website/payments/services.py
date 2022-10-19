@@ -209,12 +209,22 @@ def execute_data_minimisation(dry_run=False):
         created_at__lte=payment_deletion_period
     ).exclude(paid_by__isnull=True)
 
-    queryset_bankaccounts = BankAccount.objects.filter(
-        Q(owner__paid_payment_set__type=Payment.TPAY),
-        Q(owner__paid_payment_set__batch__isnull=True)
-        | Q(owner__paid_payment_set__batch__processed=False)
+    # Delete bank accounts that are not valid anymore, and have not been used in the last 13 months
+    # (13 months is the required time we need to keep the mandates for)
+    queryset_bankaccounts = BankAccount.objects.all()
+    queryset_bankaccounts = queryset_bankaccounts.exclude(
+        valid_until__lt=timezone.now()
+    )  # Keep valid bank accounts
+    queryset_bankaccounts = queryset_bankaccounts.exclude(  # Also keep bank accounts that
+        Q(
+            owner__paid_payment_set__type=Payment.TPAY
+        ),  # are used for Thalia Pay payments, AND
+        Q(owner__paid_payment_set__batch__isnull=True)  # have no batch, OR
         | Q(
-            owner__paid_payment_set__batch__processing_date__gt=bankaccount_deletion_period
+            owner__paid_payment_set__batch__processed=False
+        )  # have an unprocessed batch, OR
+        | Q(
+            owner__paid_payment_set__batch__processing_date__gt=bankaccount_deletion_period  # or have a processed batch that is not older than 13 months
         ),
     )
 
