@@ -1,11 +1,10 @@
 from django.contrib import admin, messages
 from django.contrib.admin import register
-
 from django.utils.translation import gettext_lazy as _
 
 from payments.models import Payment
 from sales.models.order import Order
-from sales.models.shift import Shift, SelfOrderPeriod
+from sales.models.shift import SelfOrderPeriod, Shift
 from sales.services import is_manager
 
 

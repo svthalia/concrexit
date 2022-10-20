@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from members.models import Member
 from payments.widgets import PaymentWidget
 from registrations import admin, payables
-from registrations.models import Entry, Registration, Renewal, Reference
+from registrations.models import Entry, Reference, Registration, Renewal
 
 
 def _get_mock_request(perms=None):

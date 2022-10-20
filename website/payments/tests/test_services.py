@@ -1,14 +1,15 @@
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
-from payments import services, payables
+from payments import payables, services
 from payments.exceptions import PaymentError
-from payments.models import BankAccount, Payment, Batch, PaymentUser
-from payments.tests.__mocks__ import MockPayable, MockModel
+from payments.models import BankAccount, Batch, Payment, PaymentUser
+from payments.tests.__mocks__ import MockModel, MockPayable
 
 
 @freeze_time("2019-01-01")

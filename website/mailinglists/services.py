@@ -4,10 +4,10 @@ from django.conf import settings
 from django.utils import timezone
 
 from activemembers.models import (
-    MemberGroupMembership,
-    Mentorship,
     Board,
     Committee,
+    MemberGroupMembership,
+    Mentorship,
     Society,
 )
 from members.models import Member, Membership

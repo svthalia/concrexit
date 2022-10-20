@@ -1,4 +1,4 @@
-from .member import *
-from .profile import *
-from .membership import *
 from .email_change import *
+from .member import *
+from .membership import *
+from .profile import *

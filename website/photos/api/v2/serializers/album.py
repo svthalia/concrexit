@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from photos import services
-from photos.api.v2.serializers.photo import PhotoSerializer, PhotoListSerializer
+from photos.api.v2.serializers.photo import PhotoListSerializer, PhotoSerializer
 from photos.models import Album
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,

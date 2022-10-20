@@ -36,7 +36,7 @@ def annual_document_card(doc_type, document):
     for t, n in AnnualDocument.SUBCATEGORIES:
         if t == doc_type:
             name = n
-    url = "#{}".format(doc_type)
+    url = f"#{doc_type}"
     image_url = static("documents/images/placeholder.png")
     if document:
         url = document.get_absolute_url()

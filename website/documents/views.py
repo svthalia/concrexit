@@ -7,13 +7,13 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.text import slugify
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import DetailView, TemplateView
 
 from documents.models import (
     AnnualDocument,
     AssociationDocument,
-    GeneralMeeting,
     Document,
+    GeneralMeeting,
 )
 from utils.media.services import get_media_url
 from utils.snippets import datetime_to_lectureyear

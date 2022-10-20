@@ -1,4 +1,5 @@
 from django.db.models import Q
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView
@@ -6,6 +7,7 @@ from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
 
+from sales import services
 from sales.api.v2.admin.serializers.order import OrderListSerializer
 from sales.api.v2.admin.views import (
     OrderDetailView,
@@ -13,11 +15,10 @@ from sales.api.v2.admin.views import (
     ShiftDetailView,
     ShiftListView,
 )
-from sales import services
 from sales.api.v2.serializers.user_order import UserOrderSerializer
 from sales.api.v2.serializers.user_shift import UserShiftSerializer
-from sales.models.shift import Shift
 from sales.models.order import Order
+from sales.models.shift import Shift
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 
@@ -58,7 +59,7 @@ class UserOrderListView(OrderListView):
         shift = Shift.objects.get(pk=kwargs["pk"])
         if not shift.user_orders_allowed:
             raise PermissionDenied
-        return super(UserOrderListView, self).create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         serializer.save(
@@ -66,7 +67,7 @@ class UserOrderListView(OrderListView):
         )
 
     def get_queryset(self):
-        queryset = super(UserOrderListView, self).get_queryset()
+        queryset = super().get_queryset()
         return queryset.filter(
             Q(payer=self.request.member) | Q(created_by=self.request.member)
         )
@@ -85,7 +86,7 @@ class UserOrderDetailView(OrderDetailView):
     }
 
     def get_queryset(self):
-        queryset = super(UserOrderDetailView, self).get_queryset()
+        queryset = super().get_queryset()
         return queryset.filter(
             Q(payer=self.request.member) | Q(created_by=self.request.member)
         )
@@ -95,14 +96,14 @@ class UserOrderDetailView(OrderDetailView):
             raise PermissionDenied
         if self.get_object().payment:
             raise PermissionDenied
-        return super(UserOrderDetailView, self).update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         if not self.get_object().shift.user_orders_allowed:
             raise PermissionDenied
         if self.get_object().payment:
             raise PermissionDenied
-        return super(UserOrderDetailView, self).partial_update(request, *args, **kwargs)
+        return super().partial_update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         if not self.get_object().shift.user_orders_allowed:

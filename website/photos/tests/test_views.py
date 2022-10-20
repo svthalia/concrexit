@@ -1,11 +1,10 @@
 import os
-
 from datetime import date
 
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from django.conf import settings
 
 from members.models import Member, Membership
 from photos.models import Album, Photo
@@ -32,9 +31,9 @@ class AlbumIndexTest(TestCase):
 
         for i in range(12):
             Album.objects.create(
-                title="test_album_a%d" % i,
+                title=f"test_album_a{i}",
                 date=date(year=2018, month=9, day=5),
-                slug="test_album_a%d" % i,
+                slug=f"test_album_a{i}",
             )
 
         with self.subTest(album_objects__count=Album.objects.count()):
@@ -45,9 +44,9 @@ class AlbumIndexTest(TestCase):
 
         for i in range(12):
             Album.objects.create(
-                title="test_album_b%d" % i,
+                title=f"test_album_b{i}",
                 date=date(year=2018, month=9, day=5),
-                slug="test_album_b%d" % i,
+                slug=f"test_album_b{i}",
             )
 
         with self.subTest(album_objects__count=Album.objects.count()):
@@ -58,9 +57,9 @@ class AlbumIndexTest(TestCase):
 
         for i in range(72):
             Album.objects.create(
-                title="test_album_c%d" % i,
+                title=f"test_album_c{i}",
                 date=date(year=2018, month=9, day=5),
-                slug="test_album_c%d" % i,
+                slug=f"test_album_c{i}",
             )
 
         with self.subTest(album_objects__count=Album.objects.count()):
@@ -102,7 +101,7 @@ class AlbumIndexTest(TestCase):
         for (count, keywords) in [(3, ""), (2, "1"), (1, "12"), (1, "3")]:
             with self.subTest(keywords=keywords):
                 response = self.client.get(
-                    reverse("photos:index") + "?keywords={}".format(keywords)
+                    reverse("photos:index") + f"?keywords={keywords}"
                 )
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(len(response.context["albums"]), count)
@@ -111,9 +110,9 @@ class AlbumIndexTest(TestCase):
     def test_many_pages(self):
         for i in range(120):
             Album.objects.create(
-                title="test_album_%d" % i,
+                title=f"test_album_{i}",
                 date=date(year=2018, month=9, day=5),
-                slug="test_album_%d" % i,
+                slug=f"test_album_{i}",
             )
 
         with self.subTest(page=1):
@@ -168,7 +167,7 @@ class AlbumTest(TestCase):
                 "rb",
             ) as f:
                 fi = SimpleUploadedFile(
-                    name="photo{}.png".format(i),
+                    name=f"photo{i}.png",
                     content=f.read(),
                     content_type="image/png",
                 )
@@ -228,7 +227,7 @@ class SharedAlbumTest(TestCase):
                 "rb",
             ) as f:
                 fi = SimpleUploadedFile(
-                    name="photo{}.png".format(i),
+                    name=f"photo{i}.png",
                     content=f.read(),
                     content_type="image/png",
                 )

@@ -6,7 +6,7 @@ from partners.api.v2 import filters
 from partners.api.v2.serializers import VacancyCategorySerializer
 from partners.api.v2.serializers.partner import PartnerSerializer
 from partners.api.v2.serializers.vacancy import VacancySerializer
-from partners.models import Vacancy, Partner, VacancyCategory
+from partners.models import Partner, Vacancy, VacancyCategory
 
 
 class PartnerListView(ListAPIView):

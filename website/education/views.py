@@ -1,6 +1,6 @@
 """Views provided by the education package."""
 import os
-from datetime import datetime, date
+from datetime import date, datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
@@ -12,10 +12,11 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView, DetailView, CreateView, TemplateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from members.decorators import membership_required
 from utils.media.services import get_media_url
+
 from . import emails
 from .forms import AddExamForm, AddSummaryForm
 from .models import Category, Course, Exam, Summary

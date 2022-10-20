@@ -1,21 +1,22 @@
 from django.utils.translation import get_language_from_request
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
+    CreateAPIView,
     ListAPIView,
     RetrieveAPIView,
-    CreateAPIView,
     UpdateAPIView,
 )
 
 from pushnotifications.api.v2.filters import CategoryFilter
 from pushnotifications.api.v2.permissions import IsAuthenticatedOwnerOrReadOnly
 from pushnotifications.api.v2.serializers import (
+    CategorySerializer,
     DeviceSerializer,
     MessageSerializer,
-    CategorySerializer,
 )
-from pushnotifications.models import Device, Category, Message
+from pushnotifications.models import Category, Device, Message
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 

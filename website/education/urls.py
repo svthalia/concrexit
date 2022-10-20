@@ -4,13 +4,13 @@ from django.urls import path
 from django.views.generic.base import RedirectView
 
 from education.views import (
-    StudentParticipantView,
     BookInfoView,
-    CourseIndexView,
     CourseDetailView,
+    CourseIndexView,
     ExamCreateView,
-    SummaryCreateView,
     ExamDetailView,
+    StudentParticipantView,
+    SummaryCreateView,
     SummaryDetailView,
 )
 

@@ -3,8 +3,8 @@ from django.urls import path
 
 from events.api.calendarjs.views import (
     CalendarJSEventListView,
-    CalendarJSUnpublishedEventListView,
     CalendarJSExternalEventListView,
+    CalendarJSUnpublishedEventListView,
 )
 
 app_name = "events"

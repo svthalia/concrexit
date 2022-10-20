@@ -2,10 +2,10 @@
 from django.urls import path
 
 from events.api.v2.admin.views import (
-    EventAdminListCreateAPIView,
     EventAdminDetailAPIView,
-    EventRegistrationAdminFieldsView,
+    EventAdminListCreateAPIView,
     EventRegistrationAdminDetailView,
+    EventRegistrationAdminFieldsView,
     EventRegistrationAdminListView,
 )
 

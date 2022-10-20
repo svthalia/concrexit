@@ -37,13 +37,13 @@ def membergroup_member_card(membership):
         ribbon = _("Chair")
 
     if "since" in membership and not membership["is_board"]:
-        since_text = "{}: ?".format(_("Member since"))
+        since_text = "Member since: ?"
         if membership["since"].year > 1970:
-            since_text = f"{_('Member since')}: {membership['since'].year}"
+            since_text = f"Member since: {membership['since'].year}"
         meta_text += f'<p class="px-1"><em>{since_text}</em></p>'
 
     if "until" in membership and membership["until"] and membership["is_board"]:
-        until_text = f"{_('until')} {membership['until']}"
+        until_text = f"until {membership['until']}"
         meta_text += f'<p class="px-1"><em>{until_text}</em></p>'
 
     return member_card(member=membership["member"], meta_text=meta_text, ribbon=ribbon)

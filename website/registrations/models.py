@@ -4,14 +4,15 @@ import uuid
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import validators
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.template.defaultfilters import floatformat
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
-from localflavor.generic.models import IBANField, BICField
+from localflavor.generic.models import BICField, IBANField
 
 from members.models import Membership, Profile
 from payments.models import PaymentAmountField
@@ -138,14 +139,13 @@ class Entry(models.Model):
 
         if self.membership_type == Membership.BENEFACTOR:
             self.length = self.MEMBERSHIP_YEAR
+        elif self.membership_upgrade_discount_applies:
+            self.contribution = (
+                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
+                - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
+            )
         else:
-            if self.membership_upgrade_discount_applies:
-                self.contribution = (
-                    settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
-                    - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
-                )
-            else:
-                self.contribution = settings.MEMBERSHIP_PRICES[self.length]
+            self.contribution = settings.MEMBERSHIP_PRICES[self.length]
 
         super().save(force_insert, force_update, using, update_fields)
 

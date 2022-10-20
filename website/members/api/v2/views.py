@@ -1,22 +1,19 @@
 """API views of the activemembers app."""
 
-from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from django.shortcuts import get_object_or_404
+
+from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
-)
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 
 from members.api.v2 import filters
-from thaliawebsite.api.openapi import OAuthAutoSchema
 from members.api.v2.serializers.member import (
-    MemberSerializer,
-    MemberListSerializer,
     MemberCurrentSerializer,
+    MemberListSerializer,
+    MemberSerializer,
 )
 from members.models import Member
+from thaliawebsite.api.openapi import OAuthAutoSchema
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 

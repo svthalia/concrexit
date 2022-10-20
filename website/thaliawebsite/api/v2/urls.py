@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.urls import path, include
+from django.urls import include, path
+
 from rest_framework.schemas import get_schema_view
 
 from thaliawebsite.api.openapi import OAuthSchemaGenerator

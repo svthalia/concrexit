@@ -96,7 +96,7 @@ class Member(User):
     active_members = ActiveMemberManager()
 
     def __str__(self):
-        return "{} ({})".format(self.get_full_name(), self.username)
+        return f"{self.get_full_name()} ({self.username})"
 
     @property
     def current_membership(self):
@@ -126,11 +126,11 @@ class Member(User):
 
     def has_been_member(self):
         """Has this user ever been a member?."""
-        return self.membership_set.filter(type="member").count() > 0
+        return self.membership_set.filter(type="member").exists()
 
     def has_been_honorary_member(self):
         """Has this user ever been an honorary member?."""
-        return self.membership_set.filter(type="honorary").count() > 0
+        return self.membership_set.filter(type="honorary").exists()
 
     def has_active_membership(self):
         """Is this member currently active.
@@ -164,9 +164,9 @@ class Member(User):
             return False
 
         return (
-            self.profile.event_permissions == "all"
-            or self.profile.event_permissions == "no_drinks"
-        ) and self.current_membership is not None
+            self.profile.event_permissions in ("all", "no_drinks")
+            and self.current_membership is not None
+        )
 
     def get_member_groups(self):
         """Get the groups this user is a member of."""

@@ -7,9 +7,10 @@ from django.forms import Field
 from django.utils.translation import gettext_lazy as _
 
 from payments.widgets import PaymentWidget
+
 from . import services
 from .forms import RegistrationAdminForm
-from .models import Entry, Registration, Renewal, Reference
+from .models import Entry, Reference, Registration, Renewal
 
 
 class ReferenceInline(admin.StackedInline):

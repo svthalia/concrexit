@@ -1,10 +1,10 @@
 from django.urls import path
 
 from sales.api.v2.admin.views import (
-    ShiftListView,
-    ShiftDetailView,
-    OrderListView,
     OrderDetailView,
+    OrderListView,
+    ShiftDetailView,
+    ShiftListView,
 )
 
 app_name = "sales"

@@ -1,10 +1,11 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from unittest import mock
 
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.http import HttpRequest
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership
@@ -331,9 +332,9 @@ class ServicesTest(TestCase):
         )
 
         fields = [
-            ("info_field_{}".format(field1.id), None),
-            ("info_field_{}".format(field2.id), None),
-            ("info_field_{}".format(field3.id), None),
+            (f"info_field_{field1.id}", None),
+            (f"info_field_{field2.id}", None),
+            (f"info_field_{field3.id}", None),
         ]
 
         services.update_registration(self.member, self.event, field_values=fields)
@@ -343,9 +344,9 @@ class ServicesTest(TestCase):
         self.assertEqual(field3.get_value_for(registration), "")
 
         fields = [
-            ("info_field_{}".format(field1.id), 2),
-            ("info_field_{}".format(field2.id), True),
-            ("info_field_{}".format(field3.id), "text"),
+            (f"info_field_{field1.id}", 2),
+            (f"info_field_{field2.id}", True),
+            (f"info_field_{field3.id}", "text"),
         ]
 
         services.update_registration(self.member, self.event, field_values=fields)
@@ -400,9 +401,9 @@ class ServicesTest(TestCase):
         )
 
         fields = [
-            ("info_field_{}".format(field1.id), None),
-            ("info_field_{}".format(field2.id), None),
-            ("info_field_{}".format(field3.id), None),
+            (f"info_field_{field1.id}", None),
+            (f"info_field_{field2.id}", None),
+            (f"info_field_{field3.id}", None),
         ]
 
         services.update_registration(name="test", event=self.event, field_values=fields)
@@ -412,9 +413,9 @@ class ServicesTest(TestCase):
         self.assertEqual(field3.get_value_for(registration), "")
 
         fields = [
-            ("info_field_{}".format(field1.id), 2),
-            ("info_field_{}".format(field2.id), True),
-            ("info_field_{}".format(field3.id), "text"),
+            (f"info_field_{field1.id}", 2),
+            (f"info_field_{field2.id}", True),
+            (f"info_field_{field3.id}", "text"),
         ]
 
         services.update_registration(name="test", event=self.event, field_values=fields)

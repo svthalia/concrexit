@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import Mock, MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.apps import apps
 from django.contrib.admin.utils import model_ngettext
@@ -8,11 +8,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from freezegun import freeze_time
 
 from members.models import Member, Profile
 from payments import admin_views, payables
-from payments.models import Payment, Batch, BankAccount, PaymentUser
+from payments.models import BankAccount, Batch, Payment, PaymentUser
 from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 
@@ -62,7 +63,7 @@ class PaymentAdminViewTest(TestCase):
                 "type": "cash_payment",
             },
         )
-        self.assertRedirects(response, "/admin/login/?next=%s" % url)
+        self.assertRedirects(response, f"/admin/login/?next={url}")
 
     @mock.patch("django.contrib.messages.error")
     @mock.patch("django.contrib.messages.success")
@@ -321,7 +322,7 @@ class BatchExportAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/export/"
         response = self.client.post(url)
-        self.assertRedirects(response, "/admin/login/?next=%s" % url)
+        self.assertRedirects(response, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
@@ -331,14 +332,14 @@ class BatchExportAdminViewTest(TestCase):
     def test_post(self):
         self._give_user_permissions()
 
-        self.user2 = Member.objects.create(
+        user2 = Member.objects.create(
             username="test2",
             first_name="Test2",
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(user=self.user2)
-        self.user2 = PaymentUser.objects.get(pk=self.user2.pk)
+        Profile.objects.create(user=user2)
+        user2 = PaymentUser.objects.get(pk=user2.pk)
 
         BankAccount.objects.create(
             last_used=timezone.now(),
@@ -351,7 +352,7 @@ class BatchExportAdminViewTest(TestCase):
         )
         BankAccount.objects.create(
             last_used=timezone.now(),
-            owner=self.user2,
+            owner=user2,
             iban="NL02ABNA0123456789",
             mandate_no="1",
             valid_from=timezone.now(),
@@ -367,12 +368,8 @@ class BatchExportAdminViewTest(TestCase):
                 Payment(
                     amount=2, paid_by=self.user, type=Payment.TPAY, batch=self.batch
                 ),
-                Payment(
-                    amount=4, paid_by=self.user2, type=Payment.TPAY, batch=self.batch
-                ),
-                Payment(
-                    amount=2, paid_by=self.user2, type=Payment.TPAY, batch=self.batch
-                ),
+                Payment(amount=4, paid_by=user2, type=Payment.TPAY, batch=self.batch),
+                Payment(amount=2, paid_by=user2, type=Payment.TPAY, batch=self.batch),
             ]
         )
 
@@ -422,7 +419,7 @@ class BatchTopicExportAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/export-topic/"
         response = self.client.post(url)
-        self.assertRedirects(response, "/admin/login/?next=%s" % url)
+        self.assertRedirects(response, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
@@ -432,14 +429,14 @@ class BatchTopicExportAdminViewTest(TestCase):
     def test_post(self):
         self._give_user_permissions()
 
-        self.user2 = Member.objects.create(
+        user2 = Member.objects.create(
             username="test2",
             first_name="Test2",
             last_name="Example",
             email="test1@example.org",
         )
-        Profile.objects.create(user=self.user2)
-        self.user2 = PaymentUser.objects.get(pk=self.user2.pk)
+        Profile.objects.create(user=user2)
+        user2 = PaymentUser.objects.get(pk=user2.pk)
 
         BankAccount.objects.create(
             last_used=timezone.now(),
@@ -450,7 +447,7 @@ class BatchTopicExportAdminViewTest(TestCase):
         )
         BankAccount.objects.create(
             last_used=timezone.now(),
-            owner=self.user2,
+            owner=user2,
             iban="NL02ABNA0123456789",
             mandate_no="1",
             valid_from=timezone.now(),
@@ -474,14 +471,14 @@ class BatchTopicExportAdminViewTest(TestCase):
                 ),
                 Payment(
                     amount=4,
-                    paid_by=self.user2,
+                    paid_by=user2,
                     type=Payment.TPAY,
                     batch=self.batch,
                     topic="test1",
                 ),
                 Payment(
                     amount=2,
-                    paid_by=self.user2,
+                    paid_by=user2,
                     type=Payment.TPAY,
                     batch=self.batch,
                     topic="test2",
@@ -536,7 +533,7 @@ class BatchTopicDescriptionAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/topic-description/"
         response = self.client.post(url)
-        self.assertRedirects(response, "/admin/login/?next=%s" % url)
+        self.assertRedirects(response, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 

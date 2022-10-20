@@ -1,12 +1,12 @@
 """Pushnotifications app API v2 urls."""
-from django.urls import path, include
+from django.urls import include, path
 
 from pushnotifications.api.v2.views import (
+    CategoryListView,
     DeviceDetailView,
     DeviceListView,
     MessageDetailView,
     MessageListView,
-    CategoryListView,
 )
 
 app_name = "pushnotifications"

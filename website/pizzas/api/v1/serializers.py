@@ -2,12 +2,13 @@ from typing import Any
 
 from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from payments.api.v1.fields import PaymentTypeField
 from payments.models import Payment
-from pizzas.models import Product, FoodEvent, FoodOrder
+from pizzas.models import FoodEvent, FoodOrder, Product
 from pizzas.services import can_change_order
 from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 

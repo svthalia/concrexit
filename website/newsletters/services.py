@@ -3,20 +3,21 @@ import logging
 import os
 from io import BytesIO
 
-import requests
-from PIL import Image
-from bs4 import BeautifulSoup
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage
 from django.template.loader import get_template
-from django.utils import translation, timezone
+from django.utils import timezone, translation
+
+import requests
+from bs4 import BeautifulSoup
+from PIL import Image
 
 from events.models import Event
 from members.models import Member
 from newsletters import emails
 from partners.models import Partner
-from pushnotifications.models import Message, Category
+from pushnotifications.models import Category, Message
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +68,7 @@ def embed_linked_html_images(html_input):
     for image in images:
         try:
             source = image["src"]
-            response = requests.get(source)
+            response = requests.get(source, timeout=30.0)
             image = Image.open(BytesIO(response.content))
             buffer = BytesIO()
             image.save(buffer, format="png")

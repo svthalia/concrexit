@@ -11,24 +11,24 @@ from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView, DetailView, UpdateView, CreateView
-from django.views.generic.base import TemplateResponseMixin, View, TemplateView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic.base import TemplateResponseMixin, TemplateView, View
+
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
-import pizzas.services
-from members import services, emails
-from members.decorators import membership_required
-from members.models import EmailChange, Membership, Member, Profile
-from utils.snippets import datetime_to_lectureyear
-import events.services as event_services
 import activemembers.services as activemembers_services
+import events.services as event_services
+import pizzas.services
+from members import emails, services
+from members.decorators import membership_required
+from members.models import EmailChange, Member, Membership, Profile
+from utils.snippets import datetime_to_lectureyear
 
 from . import models
 from .forms import ProfileForm
-from .services import member_achievements
-from .services import member_societies
+from .services import member_achievements, member_societies
 
 
 class ObtainThaliaAuthToken(ObtainAuthToken):

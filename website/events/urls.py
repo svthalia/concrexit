@@ -1,15 +1,15 @@
 """Routes defined by the events package."""
-from django.urls import path, include
+from django.urls import include, path
 
 from events.feeds import EventFeed
 from events.views import (
-    EventIndex,
-    EventDetail,
-    EventRegisterView,
-    RegistrationView,
-    EventCancelView,
     AlumniEventsView,
+    EventCancelView,
+    EventDetail,
+    EventIndex,
+    EventRegisterView,
     MarkPresentView,
+    RegistrationView,
 )
 
 app_name = "events"

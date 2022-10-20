@@ -1,11 +1,7 @@
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.test import (
-    TestCase,
-    Client,
-    RequestFactory,
-)
+from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
@@ -17,7 +13,7 @@ from sales import payables
 from sales.admin.order_admin import OrderAdmin
 from sales.admin.shift_admin import ShiftAdmin
 from sales.models.order import Order, OrderItem
-from sales.models.product import Product, ProductListItem, ProductList
+from sales.models.product import Product, ProductList
 from sales.models.shift import Shift
 
 
@@ -31,6 +27,16 @@ class OrderAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
+        """Create the following test data:
+
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o5: a paid order with 2 beer and 2 wine
+        o6: an unpaid order of 2 soda that does need a payment (custom)
+        """
         payables.register()
 
         cls.user = Member.objects.filter(last_name="Wiggers").first()
@@ -109,16 +115,6 @@ class OrderAdminTest(TestCase):
             total=1,
         )
 
-        """
-        o0: an empty order
-        o1: an unpaid order of 2 beer
-        o2: an order of 2 soda that doesn't need a payment
-        o3: an unpaid order with 2 beer and 2 wine
-        o4: a paid order with 2 wine
-        o5: a paid order with 2 beer and 2 wine
-        o6: an unpaid order of 2 soda that does need a payment (custom)
-        """
-
         cls.cie = Committee.objects.get(pk=1)
         MemberGroupMembership.objects.create(group=cls.cie, member=cls.user)
         content_type = ContentType.objects.get_for_model(Order)
@@ -156,7 +152,7 @@ class OrderAdminTest(TestCase):
             self.assertEqual(200, response.status_code)
 
     def test_change_list_view_rendering_correctly(self) -> None:
-        response = self.client.get(f"/admin/sales/order/")
+        response = self.client.get("/admin/sales/order/")
         self.assertEqual(200, response.status_code)
 
     def test_view_permissions(self):
@@ -404,6 +400,16 @@ class ShiftAdminTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
+        """Create the following test data:
+
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o5: a paid order with 2 beer and 2 wine
+        o6: an unpaid order of 2 soda that does need a payment (custom)
+        """
         payables.register()
 
         cls.user = Member.objects.filter(last_name="Wiggers").first()
@@ -482,16 +488,6 @@ class ShiftAdminTest(TestCase):
             total=1,
         )
 
-        """
-        o0: an empty order
-        o1: an unpaid order of 2 beer
-        o2: an order of 2 soda that doesn't need a payment
-        o3: an unpaid order with 2 beer and 2 wine
-        o4: a paid order with 2 wine
-        o5: a paid order with 2 beer and 2 wine
-        o6: an unpaid order of 2 soda that does need a payment (custom)
-        """
-
         cls.cie = Committee.objects.get(pk=1)
         MemberGroupMembership.objects.create(group=cls.cie, member=cls.user)
         content_type = ContentType.objects.get_for_model(Shift)
@@ -528,7 +524,7 @@ class ShiftAdminTest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_change_list_view_rendering_correctly(self) -> None:
-        response = self.client.get(f"/admin/sales/shift/")
+        response = self.client.get("/admin/sales/shift/")
         self.assertEqual(200, response.status_code)
 
     def test_view_permissions(self):

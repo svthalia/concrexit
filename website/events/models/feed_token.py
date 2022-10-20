@@ -20,4 +20,4 @@ class FeedToken(models.Model):
             return None
 
     def __str__(self):
-        return "{} ({})".format(self.member.get_full_name(), self.token)
+        return f"{self.member.get_full_name()} ({self.token})"

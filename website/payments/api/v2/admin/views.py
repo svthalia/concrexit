@@ -1,9 +1,10 @@
-import rest_framework.filters as framework_filters
 from django.apps import apps
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+
+import rest_framework.filters as framework_filters
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework import status, serializers
+from rest_framework import serializers, status
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAdminUser
@@ -11,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 
-from payments import services, payables, NotRegistered
+from payments import NotRegistered, payables, services
 from payments.api.v2 import filters
 from payments.api.v2.admin.serializers.payable_create import (
     PayableCreateAdminSerializer,
@@ -24,10 +25,10 @@ from payments.api.v2.admin.serializers.payment import (
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
 from thaliawebsite.api.v2.admin import (
-    AdminListAPIView,
     AdminCreateAPIView,
-    AdminRetrieveAPIView,
     AdminDestroyAPIView,
+    AdminListAPIView,
+    AdminRetrieveAPIView,
 )
 
 
@@ -135,7 +136,7 @@ class PayableDetailView(APIView):
             )
             payable.model.save()
         except PaymentError as e:
-            raise PermissionDenied(detail=str(e))
+            raise PermissionDenied(detail=str(e)) from e
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -156,7 +157,9 @@ class PayableDetailView(APIView):
             )
             payable.model.save()
         except PaymentError as e:
-            raise ValidationError(detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]})
+            raise ValidationError(
+                detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]}
+            ) from e
 
         return Response(
             PayableAdminSerializer(payable, context=self.get_serializer_context()).data,

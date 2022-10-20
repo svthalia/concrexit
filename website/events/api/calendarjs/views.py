@@ -1,14 +1,14 @@
-from django.db.models import Q, Count, OuterRef, Subquery
+from django.db.models import Count, OuterRef, Q, Subquery
 
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 
+from events.api.calendarjs.permissions import UnpublishedEventPermissions
 from events.api.calendarjs.serializers import (
     EventsCalenderJSSerializer,
-    UnpublishedEventsCalenderJSSerializer,
     ExternalEventCalendarJSSerializer,
+    UnpublishedEventsCalenderJSSerializer,
 )
-from events.api.calendarjs.permissions import UnpublishedEventPermissions
 from events.api.v2 import filters
 from events.models import Event, EventRegistration
 from events.models.external_event import ExternalEvent

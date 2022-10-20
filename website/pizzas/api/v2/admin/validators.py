@@ -1,4 +1,5 @@
 from django.utils.translation import gettext_lazy as _
+
 from rest_framework.exceptions import ValidationError
 
 
@@ -25,7 +26,6 @@ class MutuallyExclusiveValidator:
                 if source not in attrs:
                     attrs[source] = getattr(serializer.instance, source)
 
-        obj = serializer.instance
         field_present = False
         for field in self.fields:
             if field in attrs and attrs[field] is not None:

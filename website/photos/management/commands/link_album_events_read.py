@@ -1,10 +1,10 @@
+import csv
+import sys
+
 from django.core.management.base import BaseCommand
 
 from events.models import Event
 from photos.models import Album
-
-import csv
-import sys
 
 
 class Command(BaseCommand):

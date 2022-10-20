@@ -1,14 +1,14 @@
 """DRF viewsets defined by the members package."""
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework import permissions
-from rest_framework import viewsets, filters, mixins
+from rest_framework import filters, mixins, permissions, viewsets
 
 from members.models import Member
+
 from .serializers import (
     MemberListSerializer,
-    ProfileRetrieveSerializer,
     ProfileEditSerializer,
+    ProfileRetrieveSerializer,
 )
 
 

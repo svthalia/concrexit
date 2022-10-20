@@ -46,7 +46,7 @@ with lib;
       (name: value: {
         description = if value.description != null then value.description else "Runs the ${name} concrexit management command";
         after = [ "concrexit.service" ];
-        
+
         path = with pkgs; [ docker ];
         script = ''
           ${cfg.docker-command} ${name}
