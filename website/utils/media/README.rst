@@ -12,7 +12,7 @@ Media types
 We differentiate between two types of media: public and private. Public means
 that the files can be served without any kind of authentication. Requests for
 private files have to be checked by Django first before we offload serving
-the file using [django-sendfile2](https://github.com/moggers87/django-sendfile2). 
+the file using [django-sendfile2](https://github.com/moggers87/django-sendfile2).
 
 Public
 ------

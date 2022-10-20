@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from activemembers.models import Committee, MemberGroupMembership, Board
+from activemembers.models import Board, Committee, MemberGroupMembership
 from mailinglists.models import MailingList
 from members.models import Member
 

@@ -1,4 +1,5 @@
 from django import template
+
 from events.templatetags.frontpage_events import render_frontpage_events
 
 register = template.Library()

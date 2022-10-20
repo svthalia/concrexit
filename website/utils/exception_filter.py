@@ -3,7 +3,6 @@ import logging
 
 from django.views.debug import SafeExceptionReporterFilter
 
-
 __LOGGER = logging.getLogger(__name__)
 
 

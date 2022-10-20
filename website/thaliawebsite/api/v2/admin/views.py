@@ -1,11 +1,12 @@
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
+
 from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
     ListAPIView,
     RetrieveAPIView,
-    CreateAPIView,
     UpdateAPIView,
-    DestroyAPIView,
 )
 from rest_framework.permissions import IsAdminUser
 

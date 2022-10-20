@@ -25,7 +25,7 @@ Testing and linting
 You can use [`pyenv`](https://github.com/pyenv/pyenv) (on Unix systems) to test in different python
 environments.
 
-All code has to be run through [`black`](https://github.com/psf/black) before being committed. To black the code before committing run `make fmt` one the base directory of this project.
+All code has to be run through [isort](https://github.com/PyCQA/isort) and [`black`](https://github.com/psf/black) before being committed. To isort and black the code before committing run `make fmt` one the base directory of this project. We also use [pre-commit](https://pre-commit.com) to make sure you don't forget about this. Pre-commit is automatically installed by `make`.
 If you want to integrate `black` with your editor look in the [`black` docs](https://black.readthedocs.io/en/stable/editor_integration.html). On linux you can find the black executable in `~/.cache/poety/virtualenvs/<your env>/bin/black`.
 
 You can run all the tests with `make test`, afterwards you can check the coverage with `make coverage`.

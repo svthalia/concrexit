@@ -1,15 +1,16 @@
 from django.db import IntegrityError
+
 from rest_framework import permissions
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError, NotFound, PermissionDenied
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from payments.api.v1.fields import PaymentTypeField
-from payments.services import delete_payment, create_payment
-from pizzas.models import Product, FoodEvent, FoodOrder
+from payments.services import create_payment, delete_payment
+from pizzas.models import FoodEvent, FoodOrder, Product
 from pizzas.services import can_change_order
 
 from . import serializers
@@ -49,7 +50,7 @@ class OrderViewset(ModelViewSet):
         event = FoodEvent.current()
         if can_change_order(self.request.member, event):
             return FoodOrder.objects.filter(food_event=event)
-        if self.action == "update" or self.action == "destroy":
+        if self.action in ("update", "destroy"):
             if not event or event.has_ended:
                 return FoodOrder.objects.none()
 
@@ -81,19 +82,18 @@ class OrderViewset(ModelViewSet):
         try:
             if serializer.validated_data.get("name"):
                 serializer.save(food_event=FoodEvent.current())
-            else:
-                if can_change_order(self.request.member, FoodEvent.current()):
-                    order = serializer.save(food_event=FoodEvent.current())
-                    if "payment" in serializer.validated_data:
-                        payment_type = serializer.validated_data["payment"]["type"]
-                    else:
-                        payment_type = PaymentTypeField.NO_PAYMENT
-
-                    self._update_payment(order, payment_type, self.request.user)
+            elif can_change_order(self.request.member, FoodEvent.current()):
+                order = serializer.save(food_event=FoodEvent.current())
+                if "payment" in serializer.validated_data:
+                    payment_type = serializer.validated_data["payment"]["type"]
                 else:
-                    serializer.save(
-                        member=self.request.member, food_event=FoodEvent.current()
-                    )
+                    payment_type = PaymentTypeField.NO_PAYMENT
+
+                self._update_payment(order, payment_type, self.request.user)
+            else:
+                serializer.save(
+                    member=self.request.member, food_event=FoodEvent.current()
+                )
         except IntegrityError as e:
             raise ValidationError(
                 "Something went wrong when saving the order" + str(e)

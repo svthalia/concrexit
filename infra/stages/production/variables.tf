@@ -26,4 +26,3 @@ variable "cloudfront_public_key" {
     description = "AWS CloudFront public key"
     type        = string
 }
-

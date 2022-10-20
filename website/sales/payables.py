@@ -2,7 +2,7 @@ from django.utils.functional import classproperty
 
 from payments import Payable, payables
 from sales.models.order import Order, OrderItem
-from sales.services import is_manager, is_adult
+from sales.services import is_adult, is_manager
 
 
 class OrderPayable(Payable):

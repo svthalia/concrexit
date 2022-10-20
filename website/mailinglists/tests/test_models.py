@@ -2,7 +2,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 
-from mailinglists.models import MailingList, ListAlias
+from mailinglists.models import ListAlias, MailingList
 
 
 @override_settings(SUSPEND_SIGNALS=True)

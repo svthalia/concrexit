@@ -1,11 +1,12 @@
 import warnings
 
 from django.http import HttpRequest
+
 from oauth2_provider.scopes import get_scopes_backend
 from rest_framework import exceptions
 from rest_framework.request import Request
 from rest_framework.reverse import reverse
-from rest_framework.schemas.openapi import SchemaGenerator, AutoSchema
+from rest_framework.schemas.openapi import AutoSchema, SchemaGenerator
 from rest_framework.schemas.utils import is_list_view
 
 
@@ -73,8 +74,8 @@ class OAuthAutoSchema(AutoSchema):
             return view.get_serializer()
         except exceptions.APIException:
             warnings.warn(
-                "{}.get_serializer() raised an exception during "
-                "schema generation. Serializer fields will not be "
-                "generated for {} {}.".format(view.__class__.__name__, method, path)
+                f"{view.__class__.__name__}.get_serializer() raised an "
+                "exception during schema generation. Serializer fields "
+                f"will not be generated for {method} {path}."
             )
             return None

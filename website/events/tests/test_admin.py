@@ -4,13 +4,14 @@ from unittest import mock
 from django.contrib.admin import AdminSite
 from django.core.exceptions import DisallowedRedirect
 from django.http import HttpResponseRedirect
-from django.test import TestCase, RequestFactory, override_settings
+from django.test import RequestFactory, TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
 from activemembers.models import Committee, MemberGroupMembership
-from events.admin import RegistrationInformationFieldInline, EventAdmin
-from events.models import Event, RegistrationInformationField, EventRegistration
+from events.admin import EventAdmin, RegistrationInformationFieldInline
+from events.models import Event, EventRegistration, RegistrationInformationField
 from members.models import Member
 from utils.admin import DoNextModelAdmin
 
@@ -173,7 +174,7 @@ class EventAdminTest(TestCase):
         """
         self.assertEqual(
             self.admin.overview_link(self.event),
-            '<a href="/admin/events/event/1/details/">' "testevent</a>",
+            '<a href="/admin/events/event/1/details/">testevent</a>',
         )
 
     @mock.patch("utils.admin.DoNextModelAdmin.has_change_permission")

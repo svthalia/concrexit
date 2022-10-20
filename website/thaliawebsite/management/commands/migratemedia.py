@@ -1,9 +1,9 @@
-from django.core.files.base import ContentFile
-from django.core.management.base import BaseCommand
-from django.conf import settings
-
 import logging
 import os
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
 import boto3
 from botocore.exceptions import ClientError
 

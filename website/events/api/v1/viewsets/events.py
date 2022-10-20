@@ -1,22 +1,20 @@
 from django.utils import timezone
-from rest_framework import viewsets, filters
+
+from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import (
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-)
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
 from events import services
 from events.api.v1.serializers import (
-    EventRetrieveSerializer,
     EventListSerializer,
-    EventRegistrationSerializer,
     EventRegistrationAdminListSerializer,
     EventRegistrationListSerializer,
+    EventRegistrationSerializer,
+    EventRetrieveSerializer,
 )
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration

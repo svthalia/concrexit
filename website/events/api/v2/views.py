@@ -1,13 +1,14 @@
-from django.db.models import Q, Count, Subquery, OuterRef
+from django.db.models import Count, Q
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import (
+    DestroyAPIView,
     ListAPIView,
     RetrieveAPIView,
     get_object_or_404,
-    DestroyAPIView,
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -20,7 +21,6 @@ from events.api.v2.serializers.external_event import ExternalEventSerializer
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
 from events.models.external_event import ExternalEvent
-from events.services import event_permissions
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
 
@@ -91,7 +91,7 @@ class EventRegistrationsView(ListAPIView):
     )
 
     def __init__(self):
-        super(EventRegistrationsView, self).__init__()
+        super().__init__()
         self.event = None
 
     def get_serializer_class(self):
@@ -234,7 +234,7 @@ class EventRegistrationFieldsView(APIView):
                 status=status.HTTP_200_OK,
             )
         except RegistrationError as e:
-            raise ValidationError(e)
+            raise ValidationError(e) from e
 
     def patch(self, request, *args, **kwargs):
         try:
@@ -249,7 +249,7 @@ class EventRegistrationFieldsView(APIView):
                 status=status.HTTP_200_OK,
             )
         except RegistrationError as e:
-            raise ValidationError(e)
+            raise ValidationError(e) from e
 
 
 class ExternalEventListView(ListAPIView):

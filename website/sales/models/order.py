@@ -4,23 +4,16 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import (
-    Sum,
-    Value,
-    F,
-    Q,
-    IntegerField,
-    BooleanField,
-    Count,
-)
+from django.db.models import BooleanField, Count, F, IntegerField, Q, Sum, Value
 from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
-from members.models import uuid, Member
+from members.models import Member, uuid
 from payments.models import Payment, PaymentAmountField
 from sales.models.product import ProductListItem
 from sales.models.shift import Shift
@@ -165,7 +158,7 @@ class Order(models.Model):
         if self.payment and not self.payer:
             self.payer = self.payment.paid_by
 
-        return super(Order, self).save(force_insert, force_update, using, update_fields)
+        return super().save(force_insert, force_update, using, update_fields)
 
     def clean(self):
         super().clean()
@@ -264,7 +257,7 @@ class OrderItem(models.Model):
         if self.product:
             self.product_name = self.product.product_name
 
-        super(OrderItem, self).save(force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
         self.order.save()
 

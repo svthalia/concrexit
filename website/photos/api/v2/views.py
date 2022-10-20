@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from photos import services
 from photos.api.v2.serializers.album import AlbumListSerializer, AlbumSerializer
-from photos.models import Album, Photo, Like
+from photos.models import Album, Like, Photo
 
 
 class AlbumListView(ListAPIView):

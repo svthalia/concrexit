@@ -1,7 +1,8 @@
 from rest_framework import viewsets
 
-from .serializers import SlideSerializer
 from announcements.models import Slide
+
+from .serializers import SlideSerializer
 
 
 class SlideViewset(viewsets.ReadOnlyModelViewSet):

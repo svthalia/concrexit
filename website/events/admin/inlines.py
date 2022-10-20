@@ -1,9 +1,10 @@
 from django.contrib import admin
 
 from events import models
-from promotion.models import PromotionRequest
-from .forms import RegistrationInformationFieldForm
 from pizzas.models import FoodEvent
+from promotion.models import PromotionRequest
+
+from .forms import RegistrationInformationFieldForm
 
 
 class RegistrationInformationFieldInline(admin.TabularInline):

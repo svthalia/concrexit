@@ -8,10 +8,10 @@ from django.utils.translation import gettext_lazy as _
 from events import emails
 from events.exceptions import RegistrationError
 from events.models import (
-    categories,
+    Event,
     EventRegistration,
     RegistrationInformationField,
-    Event,
+    categories,
 )
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
@@ -28,7 +28,7 @@ def is_user_registered(member, event):
     if not member.is_authenticated:
         return None
 
-    return event.registrations.filter(member=member, date_cancelled=None).count() > 0
+    return event.registrations.filter(member=member, date_cancelled=None).exists()
 
 
 def user_registration_pending(member, event):
@@ -36,7 +36,7 @@ def user_registration_pending(member, event):
 
     :param member: the user
     :param event: the event
-    :return: None if registration is not required or no member else True/False
+    :return: None if not authenticated, else False or the queue position
     """
     if not event.registration_required:
         return False
@@ -58,12 +58,9 @@ def is_user_present(member, event):
     if not event.registration_required or not member.is_authenticated:
         return None
 
-    return (
-        event.registrations.filter(
-            member=member, date_cancelled=None, present=True
-        ).count()
-        > 0
-    )
+    return event.registrations.filter(
+        member=member, date_cancelled=None, present=True
+    ).exists()
 
 
 def event_permissions(member, event, name=None):
@@ -133,8 +130,7 @@ def is_organiser(member, event):
             return (
                 member.get_member_groups()
                 .filter(pk__in=event.organisers.values_list("pk"))
-                .count()
-                != 0
+                .exists()
             )
 
     return False

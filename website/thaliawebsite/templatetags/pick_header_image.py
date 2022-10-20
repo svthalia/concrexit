@@ -7,7 +7,6 @@ from django import template
 from django.conf import settings
 from django.contrib.staticfiles import finders
 
-
 register = template.Library()
 BANNERDIR = "img/headers"
 

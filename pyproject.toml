@@ -53,9 +53,15 @@ factory_boy = "3.2.1"
 pydenticon = "0.3.1"
 Faker = "15.1.1"
 coverage = {extras = ["toml"], version = "^6.0.0"}
+isort = "5.10.1"
 black = "22.10.0"
-pylint = "2.13.9"
+pylint = "2.15.3"
 pylint-django = "2.5.3"
+pre-commit = "2.20.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
 
 [tool.coverage.run]
 branch = true
@@ -71,6 +77,111 @@ fail_under = 65.0
 [tool.black]
 exclude = '(/(\.eggs|\.git|\.tox)/|migrations)'
 
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+[tool.isort]
+profile = "black"
+skip_glob = ["*/migrations/*"]
+sections = [
+    "FUTURE",
+    "STDLIB",
+    "DJANGO",
+    "THIRDPARTY",
+    "FIRSTPARTY",
+    "LOCALFOLDER",
+]
+
+known_django = ["django"]
+known_first_party = [
+    "website",
+    "activemembers",
+    "announcements",
+    "documents",
+    "education",
+    "events",
+    "mailinglists",
+    "members",
+    "merchandise",
+    "newsletters",
+    "partners",
+    "payments",
+    "photos",
+    "pizzas",
+    "promotion",
+    "pushnotifications",
+    "registrations",
+    "sales",
+    "shortlinks",
+    "singlepages",
+    "thabloid",
+    "thaliawebsite",
+    "utils",
+]
+
+[tool.pylint.main]
+ignore = "migrations"
+
+jobs = 4
+
+load-plugins = [
+    "pylint_django",
+    "pylint.extensions.docstyle",
+    "pylint.extensions.for_any_all",
+    "pylint.extensions.check_elif",
+    "pylint.extensions.empty_comment",
+    "pylint.extensions.typing",
+]
+django-settings-module = "thaliawebsite.settings"
+
+[tool.pylint.format]
+expected-line-ending-format = "LF"
+max-line-length = "88"
+
+[tool.pylint."messages control"]
+disable = [
+    "raw-checker-failed",
+    "bad-inline-option",
+    "locally-disabled",
+    "file-ignored",
+    "suppressed-message",
+    "useless-suppression",
+    "deprecated-pragma",
+    "use-symbolic-message-instead",
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "too-few-public-methods",
+    "too-many-ancestors",
+    "no-member",
+    "redefined-outer-name",
+    "unused-argument",
+    "protected-access",
+    "arguments-differ",
+    "invalid-name",
+    "line-too-long",
+    "abstract-method",
+    "attribute-defined-outside-init",
+    "logging-fstring-interpolation",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-public-methods",
+    "unused-variable",
+    "redefined-builtin",
+    "too-many-lines",
+    "too-many-statements",
+    "too-many-instance-attributes",
+    "too-many-branches",
+    "too-many-public-methods",
+    "too-many-return-statements",
+    "consider-using-ternary",
+    "consider-using-any-or-all",
+    "unsupported-binary-operation",
+    "docstring-first-line-empty",
+]
+
+# Enable the message, report, category or checker with the given id(s). You can
+# either give multiple identifier separated by comma (,) or put this option
+# multiple time (only on the command line, not in the configuration file where it
+# should appear only once). See also the "--disable" option for examples.
+enable = [
+    "c-extension-no-member",
+    "super-with-arguments",
+]

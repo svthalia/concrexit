@@ -22,4 +22,4 @@ class CurrentRequestObjectDefault:
         return self.model.objects.get(**{self.model_field: val})
 
     def __repr__(self):
-        return "%s()" % self.__class__.__name__
+        return f"{self.__class__.__name__}()"

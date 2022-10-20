@@ -4,7 +4,7 @@ import os
 from django.conf import settings
 from django.core import signing
 from django.core.files.base import ContentFile
-from django.core.files.storage import get_storage_class, DefaultStorage
+from django.core.files.storage import DefaultStorage, get_storage_class
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 from django.urls import reverse
@@ -37,7 +37,7 @@ def get_media_url(file, attachment=False):
     """
     storage = DefaultStorage()
     file_name = file
-    if isinstance(file, ImageFieldFile) or isinstance(file, FieldFile):
+    if isinstance(file, (ImageFieldFile, FieldFile)):
         storage = file.storage
         file_name = file.name
 
@@ -59,12 +59,12 @@ def get_thumbnail_url(file, size, fit=True):
     storage = DefaultStorage()
     name = file
 
-    if isinstance(file, ImageFieldFile) or isinstance(file, FieldFile):
+    if isinstance(file, (ImageFieldFile, FieldFile)):
         storage = file.storage
         name = file.name
 
     is_public = isinstance(storage, get_storage_class(settings.PUBLIC_FILE_STORAGE))
-    size_fit = "{}_{}".format(size, int(fit))
+    size_fit = f"{size}_{int(fit)}"
 
     if name.endswith(".svg") and is_public:
         return storage.url(name)

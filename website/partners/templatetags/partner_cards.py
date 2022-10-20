@@ -5,7 +5,6 @@ from django.template.defaultfilters import striptags, truncatechars
 from thaliawebsite.templatetags.bleach_tags import bleach
 from thaliawebsite.templatetags.grid_item import grid_item
 from utils.media.services import get_thumbnail_url
-from partners.models import Vacancy
 
 register = template.Library()
 
@@ -23,7 +22,7 @@ def partner_card(partner):
 
     return grid_item(
         title=partner.name,
-        meta_text='<p class="px-2 d-none d-md-block">{}</p>'.format(meta_text),
+        meta_text=f'<p class="px-2 d-none d-md-block">{meta_text}</p>',
         url=partner.get_absolute_url,
         image_url=image_url,
         class_name="partner-card contain-logo",
@@ -57,11 +56,11 @@ def vacancy_card(vacancy):
 
     description = truncatechars(bleach(striptags(vacancy.description)), 300)
     extra_class = "external-vacancy"
-    url = "#vacancy-{}".format(vacancy.id)
+    url = f"#vacancy-{vacancy.id}"
     keywords = vacancy.keywords.split(",")
     location = vacancy.location
     if vacancy.partner and vacancy.partner.is_active:
-        url = "{}#vacancy-{}".format(vacancy.partner.get_absolute_url(), vacancy.id)
+        url = f"{vacancy.partner.get_absolute_url()}#vacancy-{vacancy.id}"
         extra_class = ""
 
     return {

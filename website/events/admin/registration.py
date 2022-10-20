@@ -7,11 +7,12 @@ from django.forms import Field
 from django.urls import path
 
 import events.admin.views as admin_views
-from events import services, models
-from .forms import RegistrationAdminForm
+from events import models, services
 from members.models import Member
 from payments.widgets import PaymentWidget
 from utils.admin import DoNextModelAdmin
+
+from .forms import RegistrationAdminForm
 
 
 @admin.register(models.EventRegistration)

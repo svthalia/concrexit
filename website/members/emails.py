@@ -1,13 +1,13 @@
 """The emails defined by the members package."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
 from django.core import mail
+from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.template.defaultfilters import floatformat
+from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _

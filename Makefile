@@ -153,12 +153,12 @@ help:
 run: .make/deps website/db.sqlite3 ## Run a local webserver on PORT
 	poetry run website/manage.py runserver $(PORT)
 
-# Sentinel file remembers if this recipe was run after poetry.lock and
-# pyproject.toml where changed. If those files are changed again, this recipe
-# is run again.
-.make/deps: .make poetry.lock pyproject.toml
+# Sentinel file remembers if this recipe was run after poetry.lock, pyproject.toml 
+# and .pre-commit-config.yaml where changed. If those files are changed again, 
+# this recipe is run again.
+.make/deps: .make poetry.lock pyproject.toml .pre-commit-config.yaml
 	poetry install $(POETRY_FLAGS)
-# Update the modification time of the .make/deps file, or create it.
+	poetry run pre-commit install
 	@touch .make/deps
 
 # Nice name for the sentinel file
@@ -182,19 +182,23 @@ superuser: .make/deps website/db.sqlite3 ## Create a superuser for your local co
 fixtures: .make/deps website/db.sqlite3 ## Create dummy database entries
 	poetry run website/manage.py createfixtures -a
 
-.make/fmt: .make .make/deps $(PYTHONFILES)
 # The BLACK_FLAGS variable from above is used here to optionally add some extra
 # flags to the black command.
+.make/fmt: .make .make/deps $(PYTHONFILES)
+	poetry run isort website
 	poetry run black $(BLACK_FLAGS) website
 	@touch .make/fmt
 
 fmt: .make/fmt ## Format python code with black
 
+isortcheck: .make/deps $(PYTHONFILES) ## Check if python imports are sorted
+	poetry run isort --check website
+
 blackcheck: .make/deps $(PYTHONFILES) ## Check if everything is formatted correctly
 	poetry run black $(BLACK_FLAGS) --check website
 
 .make/pylint: .make .make/deps $(PYTHONFILES)
-	DJANGO_SETTINGS_MODULE=thaliawebsite.settings poetry run pylint website/**/*.py
+	poetry run pylint website
 	@touch .make/pylint
 
 pylint: .make/pylint ## Check python code with pylint
@@ -264,7 +268,7 @@ lint: blackcheck pylint pydocstyle ## Run all linters
 
 test: check templatecheck migrationcheck tests ## Run every kind of test
 
-ci: blackcheck  pydocstyle coverage doctest docs apidocscheck ## Do all the checks the GitHub Actions CI does
+ci: isortcheck blackcheck pydocstyle coverage doctest docs apidocscheck ## Do all the checks the GitHub Actions CI does
 
 # Sometimes you don't want make to do the whole modification time checking thing
 # so this cleans up the whole repository and allows you to start over from

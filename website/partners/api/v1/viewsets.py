@@ -1,10 +1,12 @@
 from django.utils import timezone
-from rest_framework import viewsets, filters
+
+from rest_framework import filters, viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from events.models.external_event import ExternalEvent
 from partners.models import Partner
-from .serializers import PartnerSerializer, PartnerEventSerializer
+
+from .serializers import PartnerEventSerializer, PartnerSerializer
 
 
 class PartnerViewset(viewsets.ReadOnlyModelViewSet):

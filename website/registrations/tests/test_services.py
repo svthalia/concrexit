@@ -6,11 +6,12 @@ from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
 from members.models import Member, Membership
-from payments.models import Payment, BankAccount
-from registrations import services, payables
+from payments.models import BankAccount, Payment
+from registrations import payables, services
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
 

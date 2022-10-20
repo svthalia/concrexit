@@ -1,4 +1,5 @@
 from django.template import Library
+
 from events.models import FeedToken
 
 register = Library()

@@ -1,20 +1,14 @@
 """API views of the activemembers app."""
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-)
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from activemembers.api.v2 import filters
 from activemembers.api.v2.serializers.member_group import (
-    MemberGroupSerializer,
     MemberGroupListSerializer,
+    MemberGroupSerializer,
 )
-from activemembers.models import (
-    MemberGroupMembership,
-    MemberGroup,
-)
+from activemembers.models import MemberGroup, MemberGroupMembership
 
 
 class MemberGroupListView(ListAPIView):
