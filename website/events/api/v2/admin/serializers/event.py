@@ -24,6 +24,7 @@ class EventAdminSerializer(CleanedModelSerializer):
     description = CleanedHTMLSerializer()
     price = PaymentAmountSerializer()
     fine = PaymentAmountSerializer()
+    mark_present_url = serializers.ReadOnlyField()
 
     def to_internal_value(self, data):
         self.fields["organisers"] = serializers.PrimaryKeyRelatedField(

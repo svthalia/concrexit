@@ -1,4 +1,5 @@
 from django.db.models import Count, Q
+from django.utils import timezone
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
@@ -21,6 +22,7 @@ from events.api.v2.serializers.external_event import ExternalEventSerializer
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
 from events.models.external_event import ExternalEvent
+from events.services import is_user_registered
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
 
@@ -275,3 +277,39 @@ class ExternalEventDetailView(RetrieveAPIView):
     queryset = ExternalEvent.objects.filter(published=True)
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
+
+
+class MarkPresentAPIView(APIView):
+    """A view that allows uses to mark their presence at an event using a secret token."""
+
+    def patch(self, request, *args, **kwargs):
+        """Mark a user as present.
+
+        Checks if the url is correct, the event has not ended yet, and the user is registered.
+        """
+        event = get_object_or_404(Event, pk=kwargs["pk"])
+        if kwargs["token"] != event.mark_present_url_token:
+            raise PermissionDenied(detail="Invalid url.")
+        elif not request.member or not is_user_registered(request.member, event):
+            raise PermissionDenied(detail="You are not registered for this event.")
+        else:
+            registration = event.registrations.get(
+                member=request.member, date_cancelled=None
+            )
+
+            if registration.present:
+                return Response(
+                    data={"detail": "You were already marked as present."},
+                    status=status.HTTP_200_OK,
+                )
+            elif event.end < timezone.now():
+                raise PermissionDenied(
+                    detail="This event has already ended.",
+                )
+            else:
+                registration.present = True
+                registration.save()
+                return Response(
+                    data={"detail": "You have been marked as present."},
+                    status=status.HTTP_200_OK,
+                )
