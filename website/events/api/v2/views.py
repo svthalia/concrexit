@@ -290,26 +290,27 @@ class MarkPresentAPIView(APIView):
         event = get_object_or_404(Event, pk=kwargs["pk"])
         if kwargs["token"] != event.mark_present_url_token:
             raise PermissionDenied(detail="Invalid url.")
-        elif not request.member or not is_user_registered(request.member, event):
+
+        if not request.member or not is_user_registered(request.member, event):
             raise PermissionDenied(detail="You are not registered for this event.")
-        else:
-            registration = event.registrations.get(
-                member=request.member, date_cancelled=None
+
+        registration = event.registrations.get(
+            member=request.member, date_cancelled=None
+        )
+
+        if registration.present:
+            return Response(
+                data={"detail": "You were already marked as present."},
+                status=status.HTTP_200_OK,
+            )
+        if event.end < timezone.now():
+            raise PermissionDenied(
+                detail="This event has already ended.",
             )
 
-            if registration.present:
-                return Response(
-                    data={"detail": "You were already marked as present."},
-                    status=status.HTTP_200_OK,
-                )
-            elif event.end < timezone.now():
-                raise PermissionDenied(
-                    detail="This event has already ended.",
-                )
-            else:
-                registration.present = True
-                registration.save()
-                return Response(
-                    data={"detail": "You have been marked as present."},
-                    status=status.HTTP_200_OK,
-                )
+        registration.present = True
+        registration.save()
+        return Response(
+            data={"detail": "You have been marked as present."},
+            status=status.HTTP_200_OK,
+        )
