@@ -44,6 +44,7 @@ class ProfileInline(admin.StackedInline):
         "profile_description",
         "website",
         "photo",
+        "photo_permissions",
         "emergency_contact",
         "emergency_contact_phone_number",
         "event_permissions",

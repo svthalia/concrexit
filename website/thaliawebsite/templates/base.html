@@ -108,6 +108,15 @@
                 {% endblocktrans %}
             </p>
         </div>
+    {% elif request.member and request.member.profile.photo_permissions != "No" or request.member.profile.photo_permissions != "Yes" %}
+        <div class="announcement">
+            <p>
+                {% blocktrans trimmed %}
+                You have not yet told us whether you consent to your photos being shared on social media. Go to
+                <a href="https://thalia.nu/user/edit-profile/">edit profile</a> to select your preference.
+                {% endblocktrans %}
+            </p>
+        </div>
     {% elif request.user and request.user.profile and not request.user.profile.photo %}
         <div class="announcement">
             <p>
