@@ -430,6 +430,7 @@ class RegistrationApiTest(TestCase):
         self.assertContains(response, "This event has already ended.", status_code=403)
         self.assertFalse(registration.present)
 
+
 @override_settings(SUSPEND_SIGNALS=True)
 class CalendarjsTest(TestCase):
     """Tests for CalendarJS/Fullcalendar view."""
@@ -505,3 +506,44 @@ class CalendarjsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["title"], "extevent (Technicie)")
+
+
+@override_settings(SUSPEND_SIGNALS=True)
+class EventApiV2Test(TestCase):
+    """Tests for registration view."""
+
+    fixtures = ["members.json", "member_groups.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.create(
+            pk=1,
+            title="testevent",
+            description="desc",
+            published=True,
+            start=(timezone.now() + datetime.timedelta(hours=1)),
+            end=(timezone.now() + datetime.timedelta(hours=2)),
+            location="test location",
+            map_location="test map location",
+            price=13.37,
+            fine=5.00,
+        )
+        cls.event.organisers.add(Committee.objects.get(pk=1))
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+        cls.mark_present_api_url = reverse(
+            "api:v2:events:mark-present",
+            kwargs={
+                "pk": cls.event.pk,
+                "token": cls.event.mark_present_url_token,
+            },
+        )
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.force_login(self.member)
+
+    def test_event_list(self):
+        response = self.client.get("/api/v2/events/", format="json")
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["title"], "testevent")
