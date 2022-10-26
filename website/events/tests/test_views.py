@@ -591,8 +591,8 @@ class EventPageTest(TestCase):
         self.client.force_login(self.member)
 
     def test_list_page(self):
-        # TODO: we should probably test the calendar itself too
-        #       but that requires setting up browser automation
+        # note: this does not test the calendar itself!
+        # but we test the API so it should work
         response = self.client.get("/events/")
         self.assertEqual(response.status_code, 200)
 
