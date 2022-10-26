@@ -549,3 +549,54 @@ class RegistrationTest(TestCase):
 
         self.assertContains(response, "This event has already ended.")
         self.assertFalse(registration.present)
+
+
+@override_settings(SUSPEND_SIGNALS=True)
+class EventPageTest(TestCase):
+    """Tests for event list page"""
+
+    fixtures = ["members.json", "member_groups.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.mailinglist = MailingList.objects.create(name="testmail")
+        cls.committee = Committee.objects.create(
+            name="committee",
+            contact_mailinglist=cls.mailinglist,
+        )
+        cls.event = Event.objects.create(
+            pk=1,
+            title="testevent",
+            description="desc",
+            published=True,
+            start=(timezone.now() + datetime.timedelta(hours=1)),
+            end=(timezone.now() + datetime.timedelta(hours=2)),
+            location="test location",
+            map_location="test map location",
+            price=0.00,
+            fine=0.00,
+        )
+        cls.event.organisers.add(cls.committee)
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+        cls.mark_present_url = reverse(
+            "events:mark-present",
+            kwargs={
+                "pk": cls.event.pk,
+                "token": cls.event.mark_present_url_token,
+            },
+        )
+
+    def setUp(self):
+        self.client = Client()
+        self.client.force_login(self.member)
+
+    def test_list_page(self):
+        # TODO: we should probably test the calendar itself too
+        #       but that requires setting up browser automation
+        response = self.client.get("/events/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_event_page(self):
+        response = self.client.get("/events/1/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "testevent")
