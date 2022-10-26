@@ -2,9 +2,14 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.shortcuts import redirect
+from django.utils.translation import gettext_lazy as _
+
+from django_easy_admin_object_actions.admin import ObjectActionsMixin
+from django_easy_admin_object_actions.decorators import object_action
 
 from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
 
+from . import services
 from .forms import NewsletterEventForm
 
 
@@ -30,7 +35,7 @@ class NewsletterEventInline(admin.StackedInline):
 
 
 @admin.register(Newsletter)
-class NewsletterAdmin(ModelAdmin):
+class NewsletterAdmin(ObjectActionsMixin, ModelAdmin):
     """Manage the newsletters."""
 
     #: available fields in the admin overview list
@@ -76,3 +81,30 @@ class NewsletterAdmin(ModelAdmin):
         actions = super().get_actions(request)
         del actions["delete_selected"]
         return actions
+
+    @object_action(
+        label=_("Send"),
+        permission="newsletters.send_newsletter",
+        condition=lambda _, obj: not obj.sent,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Sent"),
+        perform_after_saving=True,
+    )
+    def send(self, request, obj):
+        """Reverse the review status."""
+        services.send_newsletter(obj)
+        return redirect("admin:newsletters_newsletter_changelist")
+
+    @object_action(
+        label=_("Show preview"),
+        perform_after_saving=True,
+        include_in_queryset_actions=False,
+    )
+    def preview(self, request, obj):
+        """Reverse the review status."""
+        return redirect("newsletters:preview", obj.pk)
+
+    object_actions_after_related_objects = [
+        "preview",
+        "send",
+    ]

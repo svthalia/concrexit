@@ -1,0 +1,13 @@
+.accept {
+    background-color: #23ba28;
+}
+.accept:hover,.accept:active {
+    background-color: #22a434;
+}
+
+.reject {
+    background-color: #ba2121;
+}
+.reject:hover,.reject:active {
+    background-color: #a41515;
+}

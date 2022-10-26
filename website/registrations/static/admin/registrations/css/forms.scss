@@ -1,35 +1,13 @@
-.submit-row a {
-    &.default {
-        text-transform: uppercase;
-    }
-
-    &.button {
-        float: right;
-        padding: 10px 15px;
-        line-height: 15px;
-        margin: 0 0 0 8px;
+.accept {
+    background-color: #23ba28;
+    &:hover, &:active {
+        background-color: #22a434;
     }
 }
 
-.registrations-row a.button {
-    &.accept {
-        background-color: #23ba28;
-        &:hover, &:active {
-            background-color: #22a434;
-        }
-    }
-
-    &.reject {
-        background-color: #ba2121;
-        &:hover, &:active {
-            background-color: #a41515;
-        }
-    }
-
-    &.process {
-        background-color: #79aec8;
-        &:hover, &:active {
-            background-color: #609ab6;
-        }
+.reject {
+    background-color: #ba2121;
+    &:hover, &:active {
+        background-color: #a41515;
     }
 }

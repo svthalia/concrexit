@@ -1,9 +1,0 @@
-#registrations-form {
-    .required-field {
-        label::after {
-            content: '*';
-            margin-left: 2px;
-            color: var(--text-color);
-        }
-    }
-}

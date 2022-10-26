@@ -13,6 +13,8 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
+from django_easy_admin_object_actions.admin import ObjectActionsMixin
+from django_easy_admin_object_actions.decorators import object_action
 
 from payments import admin_views, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
@@ -327,7 +329,7 @@ class PaymentsInline(admin.TabularInline):
 
 
 @admin.register(Batch)
-class BatchAdmin(admin.ModelAdmin):
+class BatchAdmin(ObjectActionsMixin, admin.ModelAdmin):
     """Manage payment batches."""
 
     inlines = (PaymentsInline,)
@@ -389,11 +391,6 @@ class BatchAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path(
-                "<int:pk>/process/",
-                self.admin_site.admin_view(admin_views.BatchProcessAdminView.as_view()),
-                name="payments_batch_process",
-            ),
-            path(
                 "<int:pk>/export/",
                 self.admin_site.admin_view(admin_views.BatchExportAdminView.as_view()),
                 name="payments_batch_export",
@@ -450,9 +447,26 @@ class BatchAdmin(admin.ModelAdmin):
         extra_context["batch"] = obj
         return super().changeform_view(request, object_id, form_url, extra_context)
 
+    @object_action(
+        label=_("Process"),
+        parameter_name="_process",
+        permission="payments.process_batches",
+        condition=lambda _, obj: not obj.processed,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Processed"),
+        perform_after_saving=True,
+    )
+    def process_batch_obj(self, request, obj):
+        """Process the selected batches."""
+        if obj:
+            services.process_batch(obj)
+            messages.success(request, _("Batch processed."))
+
+    object_actions_after_fieldsets = ("process_batch_obj",)
+
 
 @admin.register(BankAccount)
-class BankAccountAdmin(admin.ModelAdmin):
+class BankAccountAdmin(ObjectActionsMixin, admin.ModelAdmin):
     """Manage bank accounts."""
 
     list_display = ("iban", "owner_link", "last_used", "valid_from", "valid_until")
@@ -495,6 +509,41 @@ class BankAccountAdmin(admin.ModelAdmin):
         return obj.can_be_revoked
 
     can_be_revoked.boolean = True
+
+    @object_action(
+        label=_("Revoke"),
+        permission="payments.change_bankaccount",
+        condition=lambda _, obj: obj.can_be_revoked,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Revoked"),
+        perform_after_saving=True,
+    )
+    def revoke(self, request, obj):
+        """Process the selected batches."""
+        if obj.valid_until != timezone.now().date():
+            obj.valid_until = timezone.now().date()
+            obj.save()
+            messages.success(request, _("Revoked bank account."))
+            return True
+
+    @object_action(
+        label=_("Update last used"),
+        permission="payments.change_bankaccount",
+        log_message=_("Last used updated"),
+        perform_after_saving=True,
+    )
+    def update_last_used(self, request, obj):
+        """Process the selected batches."""
+        if obj.last_used != timezone.now().date():
+            obj.last_used = timezone.now().date()
+            obj.save()
+            messages.success(request, _("Update last used date."))
+            return True
+
+    object_actions_after_fieldsets = (
+        "revoke",
+        "update_last_used",
+    )
 
     def set_last_used(self, request: HttpRequest, queryset: QuerySet) -> None:
         """Set the last used date of selected accounts."""
@@ -637,7 +686,7 @@ class ThaliaPayBalanceFilter(admin.SimpleListFilter):
 
 
 @admin.register(PaymentUser)
-class PaymentUserAdmin(admin.ModelAdmin):
+class PaymentUserAdmin(ObjectActionsMixin, admin.ModelAdmin):
     list_display = (
         "__str__",
         "email",
@@ -715,9 +764,42 @@ class PaymentUserAdmin(admin.ModelAdmin):
     user_link.admin_order_field = "user"
     user_link.short_description = _("user")
 
-    actions = ["disallow_thalia_pay", "allow_thalia_pay"]
+    actions = ["disallow_thalia_pay_queryset", "allow_thalia_pay_queryset"]
 
-    def disallow_thalia_pay(self, request, queryset):
+    @object_action(
+        label=_("Disallow Thalia Pay"),
+        permission="payments.change_paymentuser",
+        condition=lambda _, obj: obj.tpay_allowed,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Disallowed Thalia Pay"),
+        include_in_queryset_actions=False,
+    )
+    def disallow_thalia_pay(self, request, obj):
+        if obj.tpay_allowed:
+            obj.disallow_tpay()
+            messages.success(request, _("Disallowed Thalia Pay."))
+            return True
+
+    @object_action(
+        label=_("Allow Thalia Pay"),
+        permission="payments.change_paymentuser",
+        condition=lambda _, obj: not obj.tpay_allowed,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Allowed Thalia Pay"),
+        include_in_queryset_actions=False,
+    )
+    def allow_thalia_pay(self, request, obj):
+        if not obj.tpay_allowed:
+            obj.allow_tpay()
+            messages.success(request, _("Disallowed Thalia Pay."))
+            return True
+
+    object_actions_after_related_objects = [
+        "disallow_thalia_pay",
+        "allow_thalia_pay",
+    ]
+
+    def disallow_thalia_pay_queryset(self, request, queryset):
         count = 0
         for x in queryset:
             changed = x.disallow_tpay()
@@ -727,9 +809,11 @@ class PaymentUserAdmin(admin.ModelAdmin):
             _(f"Succesfully disallowed Thalia Pay for {count} users."),
         )
 
-    disallow_thalia_pay.short_description = _("Disallow Thalia Pay for selected users")
+    disallow_thalia_pay_queryset.short_description = _(
+        "Disallow Thalia Pay for selected users"
+    )
 
-    def allow_thalia_pay(self, request, queryset):
+    def allow_thalia_pay_queryset(self, request, queryset):
         count = 0
         for x in queryset:
             changed = x.allow_tpay()
@@ -739,7 +823,9 @@ class PaymentUserAdmin(admin.ModelAdmin):
             _(f"Succesfully allowed Thalia Pay for {count} users."),
         )
 
-    allow_thalia_pay.short_description = _("Allow Thalia Pay for selected users")
+    allow_thalia_pay_queryset.short_description = _(
+        "Allow Thalia Pay for selected users"
+    )
 
     def has_add_permission(self, request, obj=None):
         return False

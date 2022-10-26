@@ -1,7 +1,10 @@
 """The admin interfaces registered by the pushnotifications package."""
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
+from django_easy_admin_object_actions.admin import ObjectActionsMixin
+from django_easy_admin_object_actions.decorators import object_action
 
 from pushnotifications import models
 from pushnotifications.models import Message
@@ -33,7 +36,7 @@ class MessageSentFilter(admin.SimpleListFilter):
 
 
 @admin.register(models.Device)
-class DeviceAdmin(admin.ModelAdmin):
+class DeviceAdmin(ObjectActionsMixin, admin.ModelAdmin):
     """Manage the devices."""
 
     list_display = ("name", "type", "active", "date_created")
@@ -46,6 +49,41 @@ class DeviceAdmin(admin.ModelAdmin):
         "user__first_name",
         "user__last_name",
     )
+
+    readonly_fields = ("active",)
+
+    @object_action(
+        label=_("Disable"),
+        permission="pushnotifications.change_device",
+        condition=lambda _, obj: obj.active,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Disabled"),
+        perform_after_saving=True,
+    )
+    def disable_object_action(self, request, obj):
+        obj.active = False
+        obj.save()
+        messages.success(request, _("Disabled device."))
+        return redirect("admin:pushnotifications_device_change", obj.pk)
+
+    @object_action(
+        label=_("Enable"),
+        permission="pushnotifications.change_device",
+        condition=lambda _, obj: not obj.active,
+        display_as_disabled_if_condition_not_met=True,
+        log_message=_("Disabled"),
+        perform_after_saving=True,
+    )
+    def enable_object_action(self, request, obj):
+        obj.active = True
+        obj.save()
+        messages.success(request, _("Enabled device."))
+        return redirect("admin:pushnotifications_device_change", obj.pk)
+
+    object_actions_after_related_objects = [
+        "disable_object_action",
+        "enable_object_action",
+    ]
 
     def enable(self, request, queryset):
         queryset.update(active=True)
@@ -65,7 +103,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Message)
-class MessageAdmin(ModelAdmin):
+class MessageAdmin(ObjectActionsMixin, ModelAdmin):
     """Manage normal messages."""
 
     list_display = ("title", "body", "category", "url", "sent", "success", "failure")
@@ -107,9 +145,20 @@ class MessageAdmin(ModelAdmin):
             )
         return super().get_readonly_fields(request, obj)
 
-    def change_view(self, request, object_id, form_url="", **kwargs):
-        obj = Message.objects.filter(id=object_id)[0]
-        return super().change_view(request, object_id, form_url, {"message": obj})
+    @object_action(
+        label=_("Send"),
+        condition=lambda _, obj: not obj.sent,
+        log_message=_("Sent"),
+        perform_after_saving=True,
+    )
+    def send(self, request, obj):
+        """Reverse the review status."""
+        obj.send()
+        return True
+
+    object_actions_after_related_objects = [
+        "send",
+    ]
 
 
 @admin.register(models.ScheduledMessage)
