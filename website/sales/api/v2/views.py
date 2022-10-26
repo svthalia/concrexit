@@ -128,7 +128,9 @@ class OrderClaimView(GenericAPIView):
 
     def patch(self, request, *args, **kwargs):
         if request.member is None:
-            raise PermissionDenied("You need to be a member to pay for an order.")
+            raise PermissionDenied(
+                detail="You need to be a member to pay for an order."
+            )
 
         order = self.get_object()
         if order.payment:
