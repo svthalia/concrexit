@@ -1,6 +1,7 @@
 import datetime
 
 from django.test import TestCase, override_settings
+from django.urls import reverse
 from django.utils import timezone
 
 from rest_framework.test import APIClient
@@ -39,6 +40,14 @@ class RegistrationApiTest(TestCase):
         )
         cls.event.organisers.add(Committee.objects.get(pk=1))
         cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+        cls.mark_present_api_url = reverse(
+            "api:v2:events:mark-present",
+            kwargs={
+                "pk": cls.event.pk,
+                "token": cls.event.mark_present_url_token,
+            },
+        )
 
     def setUp(self):
         self.client = APIClient()
@@ -354,3 +363,68 @@ class RegistrationApiTest(TestCase):
         reg2.refresh_from_db()
         self.assertEqual(reg2.payment.type, "cash_payment")
         self.assertFalse(reg2.present)
+
+    def test_mark_present_url_registered(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=1),
+        )
+
+        response = self.client.patch(self.mark_present_api_url, follow=True)
+        self.assertContains(response, "You have been marked as present.")
+        registration.refresh_from_db()
+        self.assertTrue(registration.present)
+
+    def test_mark_present_url_already_present(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=1),
+            present=True,
+        )
+
+        response = self.client.patch(self.mark_present_api_url, follow=True)
+        self.assertContains(response, "You were already marked as present.")
+        registration.refresh_from_db()
+        self.assertTrue(registration.present)
+
+    def test_mark_present_url_not_registered(self):
+        response = self.client.patch(self.mark_present_api_url, follow=True)
+        self.assertContains(
+            response, "You are not registered for this event.", status_code=403
+        )
+
+    def test_mark_present_url_wrong_token(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=3),
+        )
+        response = self.client.patch(
+            reverse(
+                "api:v2:events:mark-present",
+                kwargs={
+                    "pk": self.event.pk,
+                    "token": "11111111-2222-3333-4444-555555555555",
+                },
+            ),
+            follow=True,
+        )
+
+        self.assertContains(response, "Invalid url.", status_code=403)
+        self.assertFalse(registration.present)
+
+    def test_mark_present_url_past_event(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=3),
+        )
+        self.event.start = timezone.now() - datetime.timedelta(hours=2)
+        self.event.end = timezone.now() - datetime.timedelta(hours=1)
+        self.event.save()
+        response = self.client.patch(self.mark_present_api_url, follow=True)
+
+        self.assertContains(response, "This event has already ended.", status_code=403)
+        self.assertFalse(registration.present)
