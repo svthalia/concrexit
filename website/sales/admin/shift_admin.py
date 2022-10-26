@@ -226,7 +226,6 @@ class ShiftAdmin(ObjectActionsMixin, admin.ModelAdmin):
 
     @object_action(
         label=_("Lock shift"),
-        parameter_name="_lock",
         confirmation=_(
             "Are you sure you want to lock this shift? Locking a shift will prevent orders being changed or created for this shift. This will also clean up all unpaid orders in this shift."
         ),
@@ -235,9 +234,7 @@ class ShiftAdmin(ObjectActionsMixin, admin.ModelAdmin):
         log_message=_("Locked shift"),
     )
     def lock_shift(self, _, obj):
-        if obj:
-            obj.locked = True
+        obj.locked = True
         obj.save()
-        return redirect("admin:sales_shift_change", obj.id)
 
     object_actions_after_related_objects = ["lock_shift"]

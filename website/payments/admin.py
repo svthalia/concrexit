@@ -512,7 +512,6 @@ class BankAccountAdmin(ObjectActionsMixin, admin.ModelAdmin):
 
     @object_action(
         label=_("Revoke"),
-        parameter_name="_revoke",
         permission="payments.change_bankaccount",
         condition=lambda _, obj: obj.can_be_revoked,
         display_as_disabled_if_condition_not_met=True,
@@ -521,24 +520,25 @@ class BankAccountAdmin(ObjectActionsMixin, admin.ModelAdmin):
     )
     def revoke(self, request, obj):
         """Process the selected batches."""
-        if obj:
+        if obj.valid_until != timezone.now().date():
             obj.valid_until = timezone.now().date()
             obj.save()
             messages.success(request, _("Revoked bank account."))
+            return True
 
     @object_action(
         label=_("Update last used"),
-        parameter_name="_updatelastused",
         permission="payments.change_bankaccount",
         log_message=_("Last used updated"),
         perform_after_saving=True,
     )
     def update_last_used(self, request, obj):
         """Process the selected batches."""
-        if obj:
+        if obj.last_used != timezone.now().date():
             obj.last_used = timezone.now().date()
             obj.save()
             messages.success(request, _("Update last used date."))
+            return True
 
     object_actions_after_fieldsets = (
         "revoke",
@@ -764,42 +764,42 @@ class PaymentUserAdmin(ObjectActionsMixin, admin.ModelAdmin):
     user_link.admin_order_field = "user"
     user_link.short_description = _("user")
 
-    actions = ["disallow_thalia_pay", "allow_thalia_pay"]
+    actions = ["disallow_thalia_pay_queryset", "allow_thalia_pay_queryset"]
 
     @object_action(
         label=_("Disallow Thalia Pay"),
-        parameter_name="_disallow_tpay",
         permission="payments.change_paymentuser",
         condition=lambda _, obj: obj.tpay_allowed,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Disallowed Thalia Pay"),
+        include_in_queryset_actions=False,
     )
-    def disallow_thalia_pay_object_action(self, request, obj):
-        if obj:
+    def disallow_thalia_pay(self, request, obj):
+        if obj.tpay_allowed:
             obj.disallow_tpay()
             messages.success(request, _("Disallowed Thalia Pay."))
-            return redirect("admin:payments_paymentuser_change", obj.pk)
+            return True
 
     @object_action(
         label=_("Allow Thalia Pay"),
-        parameter_name="_allow_tpay",
         permission="payments.change_paymentuser",
         condition=lambda _, obj: not obj.tpay_allowed,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Allowed Thalia Pay"),
+        include_in_queryset_actions=False,
     )
-    def allow_thalia_pay_object_action(self, request, obj):
-        if obj:
+    def allow_thalia_pay(self, request, obj):
+        if not obj.tpay_allowed:
             obj.allow_tpay()
             messages.success(request, _("Disallowed Thalia Pay."))
-            return redirect("admin:payments_paymentuser_change", obj.pk)
+            return True
 
     object_actions_after_related_objects = [
-        "disallow_thalia_pay_object_action",
-        "allow_thalia_pay_object_action",
+        "disallow_thalia_pay",
+        "allow_thalia_pay",
     ]
 
-    def disallow_thalia_pay(self, request, queryset):
+    def disallow_thalia_pay_queryset(self, request, queryset):
         count = 0
         for x in queryset:
             changed = x.disallow_tpay()
@@ -809,9 +809,11 @@ class PaymentUserAdmin(ObjectActionsMixin, admin.ModelAdmin):
             _(f"Succesfully disallowed Thalia Pay for {count} users."),
         )
 
-    disallow_thalia_pay.short_description = _("Disallow Thalia Pay for selected users")
+    disallow_thalia_pay_queryset.short_description = _(
+        "Disallow Thalia Pay for selected users"
+    )
 
-    def allow_thalia_pay(self, request, queryset):
+    def allow_thalia_pay_queryset(self, request, queryset):
         count = 0
         for x in queryset:
             changed = x.allow_tpay()
@@ -821,7 +823,9 @@ class PaymentUserAdmin(ObjectActionsMixin, admin.ModelAdmin):
             _(f"Succesfully allowed Thalia Pay for {count} users."),
         )
 
-    allow_thalia_pay.short_description = _("Allow Thalia Pay for selected users")
+    allow_thalia_pay_queryset.short_description = _(
+        "Allow Thalia Pay for selected users"
+    )
 
     def has_add_permission(self, request, obj=None):
         return False

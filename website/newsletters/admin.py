@@ -83,7 +83,6 @@ class NewsletterAdmin(ObjectActionsMixin, ModelAdmin):
 
     @object_action(
         label=_("Send"),
-        parameter_name="_send",
         permission="newsletters.send_newsletter",
         condition=lambda _, obj: not obj.sent,
         display_as_disabled_if_condition_not_met=True,
@@ -92,21 +91,19 @@ class NewsletterAdmin(ObjectActionsMixin, ModelAdmin):
     )
     def send(self, request, obj):
         """Reverse the review status."""
-        if obj:
-            services.send_newsletter(obj)
-            return redirect("admin:newsletters_newsletter_changelist")
+        services.send_newsletter(obj)
+        return redirect("admin:newsletters_newsletter_changelist")
 
     @object_action(
         label=_("Show preview"),
-        parameter_name="_preview",
         perform_after_saving=True,
+        include_in_queryset_actions=False,
     )
-    def show_preview(self, request, obj):
+    def preview(self, request, obj):
         """Reverse the review status."""
-        if obj:
-            return redirect("newsletters:preview", obj.pk)
+        return redirect("newsletters:preview", obj.pk)
 
     object_actions_after_related_objects = [
-        "show_preview",
+        "preview",
         "send",
     ]

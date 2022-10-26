@@ -4,7 +4,6 @@ import csv
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.http import HttpResponse
-from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django_easy_admin_object_actions.admin import ObjectActionsMixin
 from django_easy_admin_object_actions.decorators import object_action
@@ -68,69 +67,48 @@ class ExamAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
         "uploader__last_name",
         "course__name",
     )
-    actions = ["accept", "reject", "reset_download_count", "download_csv"]
-
-    def accept(self, request, queryset):
-        queryset.update(accepted=True)
-
-    accept.short_description = _("Mark exams as accepted")
-
-    def reject(self, request, queryset):
-        queryset.update(accepted=False)
-
-    reject.short_description = _("Mark exams as rejected")
-
-    def reset_download_count(self, request, queryset):
-        queryset.update(download_count=0)
-
-    reset_download_count.short_description = _("Reset the marked exams download count")
+    actions = ["download_csv"]
 
     @object_action(
         label=_("Accept"),
-        parameter_name="_accept",
         permission="education.change_exam",
         condition=lambda _, obj: not obj.accepted == True,
         log_message=_("Accepted"),
         perform_after_saving=True,
     )
-    def accept_obj(self, request, obj):
-        if obj:
-            obj.accepted = True
-            obj.save()
-            return redirect("admin:education_exam_change", obj.pk)
+    def accept(self, request, obj):
+        obj.accepted = True
+        obj.save()
+        return True
 
     @object_action(
         label=_("Reject"),
-        parameter_name="_reject",
         permission="education.change_exam",
         condition=lambda _, obj: not obj.accepted or obj.accepted == True,
         log_message=_("Rejected"),
         perform_after_saving=True,
     )
-    def reject_obj(self, request, obj):
-        if obj:
-            obj.accepted = False
-            obj.save()
-            return redirect("admin:education_exam_change", obj.pk)
+    def reject(self, request, obj):
+        obj.accepted = False
+        obj.save()
+        return True
 
     @object_action(
         label=_("Reset download count"),
-        parameter_name="_resetdownloadcount",
         permission="education.change_exam",
         condition=lambda _, obj: obj.download_count != 0,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Reset download count to 0"),
     )
-    def reset_download_count_obj(self, request, obj):
-        if obj:
-            obj.download_count = 0
-            obj.save()
-            return redirect("admin:education_exam_change", obj.pk)
+    def reset_download_count(self, request, obj):
+        obj.download_count = 0
+        obj.save()
+        return True
 
     object_actions_after_related_objects = [
-        "reset_download_count_obj",
-        "reject_obj",
-        "accept_obj",
+        "reset_download_count",
+        "reject",
+        "accept",
     ]
 
 
@@ -152,70 +130,47 @@ class SummaryAdmin(ObjectActionsMixin, ModelAdmin, WithDownloadCsv):
         "uploader__last_name",
         "course__name",
     )
-    actions = ["accept", "reject", "reset_download_count", "download_csv"]
+    actions = ["download_csv"]
     form = SummaryAdminForm
-
-    def accept(self, request, queryset):
-        queryset.update(accepted=True)
-
-    accept.short_description = _("Mark summaries as accepted")
-
-    def reject(self, request, queryset):
-        queryset.update(accepted=False)
-
-    reject.short_description = _("Mark summaries as rejected")
-
-    def reset_download_count(self, request, queryset):
-        queryset.update(download_count=0)
-
-    reset_download_count.short_description = _(
-        "Reset the marked summaries download count"
-    )
 
     @object_action(
         label=_("Accept"),
-        parameter_name="_accept",
         permission="education.change_summary",
         condition=lambda _, obj: not obj.accepted == True,
         log_message=_("Accepted"),
         perform_after_saving=True,
     )
-    def accept_obj(self, request, obj):
-        if obj:
-            obj.accepted = True
-            obj.save()
-            return redirect("admin:education_summary_change", obj.pk)
+    def accept(self, request, obj):
+        obj.accepted = True
+        obj.save()
+        return True
 
     @object_action(
         label=_("Reject"),
-        parameter_name="_reject",
         permission="education.change_summary",
         condition=lambda _, obj: not obj.accepted or obj.accepted == True,
         log_message=_("Rejected"),
         perform_after_saving=True,
     )
-    def reject_obj(self, request, obj):
-        if obj:
-            obj.accepted = False
-            obj.save()
-            return redirect("admin:education_summary_change", obj.pk)
+    def reject(self, request, obj):
+        obj.accepted = False
+        obj.save()
+        return True
 
     @object_action(
         label=_("Reset download count"),
-        parameter_name="_resetdownloadcount",
         permission="education.change_summary",
         condition=lambda _, obj: obj.download_count != 0,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Reset download count to 0"),
     )
-    def reset_download_count_obj(self, request, obj):
-        if obj:
-            obj.download_count = 0
-            obj.save()
-            return redirect("admin:education_summary_change", obj.pk)
+    def reset_download_count(self, request, obj):
+        obj.download_count = 0
+        obj.save()
+        return True
 
     object_actions_after_related_objects = [
-        "reset_download_count_obj",
-        "reject_obj",
-        "accept_obj",
+        "reset_download_count",
+        "reject",
+        "accept",
     ]

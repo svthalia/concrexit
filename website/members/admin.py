@@ -209,15 +209,14 @@ class UserAdmin(ObjectActionsMixin, BaseUserAdmin):
 
     @object_action(
         label=_("Minimise data"),
-        parameter_name="_minimisedata",
         permission="users.change_user",
         log_message=_("Minimised data"),
     )
     def minimise_data_object_action(self, request, obj):
-        if obj:
-            services.execute_data_minimisation(
-                dry_run=False, members=Member.objects.get(pk=obj.pk)
-            )
+        services.execute_data_minimisation(
+            dry_run=False, members=Member.objects.get(pk=obj.pk)
+        )
+        return True
 
     object_actions_after_related_objects = ["minimise_data_object_action"]
 

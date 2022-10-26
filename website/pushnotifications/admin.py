@@ -54,7 +54,6 @@ class DeviceAdmin(ObjectActionsMixin, admin.ModelAdmin):
 
     @object_action(
         label=_("Disable"),
-        parameter_name="_disable",
         permission="pushnotifications.change_device",
         condition=lambda _, obj: obj.active,
         display_as_disabled_if_condition_not_met=True,
@@ -62,15 +61,13 @@ class DeviceAdmin(ObjectActionsMixin, admin.ModelAdmin):
         perform_after_saving=True,
     )
     def disable_object_action(self, request, obj):
-        if obj:
-            obj.active = False
-            obj.save()
-            messages.success(request, _("Disabled device."))
-            return redirect("admin:pushnotifications_device_change", obj.pk)
+        obj.active = False
+        obj.save()
+        messages.success(request, _("Disabled device."))
+        return redirect("admin:pushnotifications_device_change", obj.pk)
 
     @object_action(
         label=_("Enable"),
-        parameter_name="_enable",
         permission="pushnotifications.change_device",
         condition=lambda _, obj: not obj.active,
         display_as_disabled_if_condition_not_met=True,
@@ -78,11 +75,10 @@ class DeviceAdmin(ObjectActionsMixin, admin.ModelAdmin):
         perform_after_saving=True,
     )
     def enable_object_action(self, request, obj):
-        if obj:
-            obj.active = True
-            obj.save()
-            messages.success(request, _("Enabled device."))
-            return redirect("admin:pushnotifications_device_change", obj.pk)
+        obj.active = True
+        obj.save()
+        messages.success(request, _("Enabled device."))
+        return redirect("admin:pushnotifications_device_change", obj.pk)
 
     object_actions_after_related_objects = [
         "disable_object_action",
@@ -151,16 +147,14 @@ class MessageAdmin(ObjectActionsMixin, ModelAdmin):
 
     @object_action(
         label=_("Send"),
-        parameter_name="_send",
         condition=lambda _, obj: not obj.sent,
         log_message=_("Sent"),
         perform_after_saving=True,
     )
     def send(self, request, obj):
         """Reverse the review status."""
-        if obj:
-            obj.send()
-            return redirect("admin:registrations_registration_change", obj.pk)
+        obj.send()
+        return True
 
     object_actions_after_related_objects = [
         "send",

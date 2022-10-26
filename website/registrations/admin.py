@@ -218,23 +218,20 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
 
     @object_action(
         label=_("Resend email confirmation"),
-        parameter_name="_resendemail",
         permission="registrations.review_entries",
         condition=lambda _, obj: obj.status == Entry.STATUS_CONFIRM,
         log_message=_("Confirmation email resent"),
     )
     def resend_confirmation_email(self, _, obj):
         """Resend the confirmation email."""
-        if obj:
-            send_registration_email_confirmation(obj)
-            self.message_user(
-                _, _("Confirmation email successfully resent."), messages.SUCCESS
-            )
-            return redirect("admin:registrations_registration_change", obj.pk)
+        send_registration_email_confirmation(obj)
+        self.message_user(
+            _, _("Confirmation email successfully resent."), messages.SUCCESS
+        )
+        return True
 
     @object_action(
         label=_("Accept"),
-        parameter_name="_accept",
         permission="registrations.review_entries",
         extra_classes="accept",
         condition=lambda _, obj: obj.status == Entry.STATUS_REVIEW,
@@ -243,13 +240,11 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
     )
     def accept(self, request, obj):
         """Approve the entry."""
-        if obj:
-            services.accept_entries(request.user.pk, Entry.objects.filter(pk=obj.pk))
-            return redirect("admin:registrations_registration_change", obj.pk)
+        services.accept_entries(request.user.pk, Entry.objects.filter(pk=obj.pk))
+        return True
 
     @object_action(
         label=_("Reject"),
-        parameter_name="_reject",
         permission="registrations.review_entries",
         extra_classes="reject",
         condition=lambda _, obj: obj.status == Entry.STATUS_REVIEW,
@@ -257,13 +252,11 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
         perform_after_saving=True,
     )
     def reject(self, request, obj):
-        if obj:
-            services.reject_entries(request.user.pk, Entry.objects.filter(pk=obj.pk))
-            return redirect("admin:registrations_registration_change", obj.pk)
+        services.reject_entries(request.user.pk, Entry.objects.filter(pk=obj.pk))
+        return True
 
     @object_action(
         label=_("Revert"),
-        parameter_name="_revert",
         permission="registrations.review_entries",
         condition=lambda _, obj: obj.status
         in (Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED),
@@ -272,9 +265,8 @@ class RegistrationAdmin(ObjectActionsMixin, admin.ModelAdmin):
     )
     def revert(self, request, obj):
         """Reverse the review status."""
-        if obj:
-            services.revert_entry(request.user.pk, obj)
-            return redirect("admin:registrations_registration_change", obj.pk)
+        services.revert_entry(request.user.pk, obj)
+        return True
 
     object_actions_after_related_objects = [
         "resend_confirmation_email",
