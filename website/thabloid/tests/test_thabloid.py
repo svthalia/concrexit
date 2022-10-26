@@ -1,11 +1,11 @@
+import os.path
 import shutil
 import tempfile
-import os.path
 
+from django.conf import settings
 from django.core.files import File
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.conf import settings
 
 from thabloid.models import Thabloid
 

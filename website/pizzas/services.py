@@ -1,7 +1,8 @@
 from django.utils import timezone
 
 from events.services import is_organiser
-from .models import Product, FoodOrder
+
+from .models import FoodOrder, Product
 
 
 def gen_stats_pizza_orders() -> dict:

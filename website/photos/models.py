@@ -6,17 +6,18 @@ import random
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Count, Value, IntegerField
+from django.db.models import Count, IntegerField, Value
 from django.db.models.functions import Coalesce
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+
 from queryable_properties.properties import AnnotationProperty
 
-from members.models import Member
 from events.models import Event
-from pushnotifications.models import ScheduledMessage, Category
+from members.models import Member
+from pushnotifications.models import Category, ScheduledMessage
 
 COVER_FILENAME = "cover.jpg"
 
@@ -165,8 +166,7 @@ class Album(models.Model):
 
     def __str__(self):
         """Get string representation of Album."""
-        date = self.date.strftime("%Y-%m-%d")
-        return f"{date} {self.title}"
+        return f"{self.date:%Y-%m-%d} {self.title}"
 
     def get_absolute_url(self):
         """Get url of Album."""

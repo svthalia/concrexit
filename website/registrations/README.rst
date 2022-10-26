@@ -96,4 +96,3 @@ Backend
         - During a lecture year the until date will be the 31 August of the lecture year + 1. Thus is you process payments in November 2016 that means the memberships will end on 31 August 2017
         - For payments processed in August the lecture year will be increased by 1. So if you process payments in August 2017 that means the memberships will end on 31 August 2018.
     - If this is a Renewal model then the Payment confirmation sent
-

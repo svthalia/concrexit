@@ -1,14 +1,14 @@
 from functools import partial
 
-from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin, messages
-from django.contrib.admin import register, SimpleListFilter
+from django.contrib.admin import SimpleListFilter, register
 from django.forms import Field
 from django.http import HttpRequest
 from django.urls import resolve
 from django.utils import timezone
-
 from django.utils.translation import gettext_lazy as _
+
+from admin_auto_filters.filters import AutocompleteFilter
 
 from payments.widgets import PaymentWidget
 from sales import services
@@ -272,15 +272,12 @@ class OrderAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         if not request.member:
             return False
-        elif not request.member.has_perm("sales.override_manager"):
-            if (
-                Shift.objects.filter(
-                    start__lte=timezone.now(),
-                    locked=False,
-                    managers__in=request.member.get_member_groups(),
-                ).count()
-                == 0
-            ):
+        if not request.member.has_perm("sales.override_manager"):
+            if not Shift.objects.filter(
+                start__lte=timezone.now(),
+                locked=False,
+                managers__in=request.member.get_member_groups(),
+            ).exists():
                 return False
         return super().has_view_permission(request)
 

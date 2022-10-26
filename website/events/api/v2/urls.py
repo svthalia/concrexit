@@ -2,13 +2,14 @@
 from django.urls import path
 
 from events.api.v2.views import (
-    EventListView,
     EventDetailView,
-    EventRegistrationsView,
+    EventListView,
     EventRegistrationDetailView,
     EventRegistrationFieldsView,
-    ExternalEventListView,
+    EventRegistrationsView,
     ExternalEventDetailView,
+    ExternalEventListView,
+    MarkPresentAPIView,
 )
 
 app_name = "events"
@@ -34,6 +35,11 @@ urlpatterns = [
         "events/<int:event_id>/registrations/<int:registration_id>/fields/",
         EventRegistrationFieldsView.as_view(),
         name="event-registration-fields",
+    ),
+    path(
+        "events/<int:pk>/mark-present/<uuid:token>/",
+        MarkPresentAPIView.as_view(),
+        name="mark-present",
     ),
     path(
         "events/external/", ExternalEventListView.as_view(), name="external-events-list"

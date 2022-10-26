@@ -2,13 +2,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from payments.exceptions import PaymentError
 from payments.services import delete_payment
-from .models import FoodOrder, FoodEvent, Product
+
+from .models import FoodEvent, FoodOrder, Product
 
 
 @login_required

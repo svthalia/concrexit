@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render
 from django.db.models import Max
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
 
 from utils.media.services import get_media_url
+
 from .models import Thabloid
 
 

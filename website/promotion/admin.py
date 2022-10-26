@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django_easy_admin_object_actions.admin import ObjectActionsMixin
 from django_easy_admin_object_actions.decorators import object_action
 
-from promotion.forms import PromotionRequestForm
 from events.services import is_organiser
+from promotion.forms import PromotionRequestForm
 
 from .models import PromotionChannel, PromotionRequest
 

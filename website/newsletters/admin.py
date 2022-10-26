@@ -8,6 +8,7 @@ from django_easy_admin_object_actions.admin import ObjectActionsMixin
 from django_easy_admin_object_actions.decorators import object_action
 
 from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
+
 from . import services
 from .forms import NewsletterEventForm
 

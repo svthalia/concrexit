@@ -1,23 +1,16 @@
 import datetime
-import decimal
 from decimal import Decimal
 from unittest.mock import PropertyMock, patch
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone
+
 from freezegun import freeze_time
 
-from payments import services, Payable
-from payments.models import (
-    Payment,
-    BankAccount,
-    Batch,
-    PaymentUser,
-    BlacklistedPaymentUser,
-    validate_not_zero,
-)
-from payments.tests.__mocks__ import MockPayable, MockModel
+from payments import Payable, services
+from payments.models import BankAccount, Batch, Payment, PaymentUser, validate_not_zero
+from payments.tests.__mocks__ import MockModel, MockPayable
 
 
 class PayableTest(TestCase):
@@ -75,7 +68,7 @@ class PaymentTest(TestCase):
         """Tests that the right admin url is returned."""
         self.assertEqual(
             self.payment.get_admin_url(),
-            "/admin/payments/payment/{}/change/".format(self.payment.pk),
+            f"/admin/payments/payment/{self.payment.pk}/change/",
         )
 
     def test_add_payment_from_processed_batch_to_new_batch(self) -> None:

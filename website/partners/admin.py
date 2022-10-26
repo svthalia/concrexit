@@ -1,12 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from partners.models import (
-    Partner,
-    PartnerImage,
-    Vacancy,
-    VacancyCategory,
-)
+from partners.models import Partner, PartnerImage, Vacancy, VacancyCategory
 
 
 class PartnerImageInline(admin.StackedInline):

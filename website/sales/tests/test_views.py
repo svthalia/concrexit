@@ -9,8 +9,8 @@ from freezegun import freeze_time
 from members.models import Member
 from payments.models import Payment
 from payments.services import create_payment
-from sales.models.order import OrderItem, Order
-from sales.models.product import Product, ProductList, ProductListItem
+from sales.models.order import Order, OrderItem
+from sales.models.product import Product, ProductList
 from sales.models.shift import Shift
 
 
@@ -26,6 +26,16 @@ class SalesOrderPaymentView(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        """Create the following test data:
+
+        o0: an empty order
+        o1: an unpaid order of 2 beer
+        o2: an order of 2 soda that doesn't need a payment
+        o3: an unpaid order with 2 beer and 2 wine
+        o4: a paid order with 2 wine
+        o5: a paid order with 2 beer and 2 wine
+        o6: an unpaid order of 2 soda that does need a payment (custom)
+        """
         cls.member = Member.objects.filter(last_name="Wiggers").first()
 
         cls.beer = Product.objects.get(name="beer")
@@ -101,16 +111,6 @@ class SalesOrderPaymentView(TestCase):
             amount=2,
             total=1,
         )
-
-        """
-        o0: an empty order
-        o1: an unpaid order of 2 beer
-        o2: an order of 2 soda that doesn't need a payment
-        o3: an unpaid order with 2 beer and 2 wine
-        o4: a paid order with 2 wine
-        o5: a paid order with 2 beer and 2 wine
-        o6: an unpaid order of 2 soda that does need a payment (custom)
-        """
 
     def setUp(self):
         self.client = Client()

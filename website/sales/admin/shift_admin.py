@@ -1,6 +1,5 @@
 from django.contrib import admin, messages
 from django.contrib.admin import register
-from django.shortcuts import redirect
 
 from django.utils.translation import gettext_lazy as _
 from django_easy_admin_object_actions.admin import ObjectActionsMixin
@@ -8,7 +7,7 @@ from django_easy_admin_object_actions.decorators import object_action
 
 from payments.models import Payment
 from sales.models.order import Order
-from sales.models.shift import Shift, SelfOrderPeriod
+from sales.models.shift import SelfOrderPeriod, Shift
 from sales.services import is_manager
 
 

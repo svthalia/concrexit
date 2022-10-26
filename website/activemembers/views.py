@@ -3,10 +3,11 @@ import datetime
 from django.db.models import QuerySet
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
 
 from utils.snippets import datetime_to_lectureyear
-from .models import Board, MemberGroupMembership, Committee, Society
+
+from .models import Board, Committee, MemberGroupMembership, Society
 
 
 class _MemberGroupDetailView(DetailView):

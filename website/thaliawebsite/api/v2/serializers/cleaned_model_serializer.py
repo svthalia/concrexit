@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError
+
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.utils import model_meta
-from rest_framework.exceptions import ValidationError as DRFValidationError
 
 
 class CleanedModelSerializer(serializers.ModelSerializer):
@@ -17,7 +18,7 @@ class CleanedModelSerializer(serializers.ModelSerializer):
         try:
             return super().create(validated_data)
         except ValidationError as e:
-            raise DRFValidationError(e)
+            raise DRFValidationError(e) from e
 
     def update(self, instance, validated_data, **kwargs):
         """Override the default implementation of DRF's ModelSerializer.
@@ -42,7 +43,7 @@ class CleanedModelSerializer(serializers.ModelSerializer):
         try:
             instance.clean()
         except ValidationError as e:
-            raise DRFValidationError(e)
+            raise DRFValidationError(e) from e
 
         instance.save()
 

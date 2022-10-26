@@ -10,20 +10,20 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
-from django.utils.translation import pgettext_lazy
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 from django.views import View
 from django.views.generic import DetailView, FormView
+
+import qrcode
 
 from events import services
 from events.decorators import organiser_only
 from events.exceptions import RegistrationError
-from events.forms import FieldsForm, EventMessageForm
+from events.forms import EventMessageForm, FieldsForm
 from events.models import Event, EventRegistration
 from payments.models import Payment
-from pushnotifications.models import Message, Category
-
-import qrcode
+from pushnotifications.models import Category, Message
 
 
 @method_decorator(staff_member_required, name="dispatch")

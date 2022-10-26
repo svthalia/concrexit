@@ -1,4 +1,4 @@
-from rest_framework.fields import DecimalField, BooleanField
+from rest_framework.fields import BooleanField, DecimalField
 from rest_framework.serializers import Serializer
 
 

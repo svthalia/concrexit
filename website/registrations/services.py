@@ -3,15 +3,15 @@ import string
 import unicodedata
 from typing import Union
 
-from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
 from django.db.models import Q, QuerySet
 from django.utils import timezone
 
 import members
-from members.models import Membership, Profile, Member
-from payments.models import BankAccount, PaymentUser, Payment
+from members.models import Member, Membership, Profile
+from payments.models import BankAccount, Payment, PaymentUser
 from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal

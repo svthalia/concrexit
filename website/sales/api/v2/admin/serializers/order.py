@@ -1,5 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.encoding import smart_str
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.settings import api_settings
@@ -19,7 +20,7 @@ class ProductNameRelatedField(serializers.SlugRelatedField):
         return ProductListItem.objects.filter(product_list=shift.product_list)
 
     def to_internal_value(self, data):
-        if type(data) is ProductListItem:
+        if isinstance(data, ProductListItem):
             return data
 
         queryset = self.get_queryset()
@@ -31,6 +32,7 @@ class ProductNameRelatedField(serializers.SlugRelatedField):
             )
         except (TypeError, ValueError):
             self.fail("invalid")
+        return None
 
     def to_representation(self, obj):
         return obj.product.name
@@ -69,7 +71,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         try:
             super().update(instance, validated_data)
         except ValueError as e:
-            raise ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [e]})
+            raise ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [e]}) from e
         return instance
 
 

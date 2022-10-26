@@ -1,4 +1,5 @@
 from django.utils.html import strip_spaces_between_tags
+
 from rest_framework import serializers
 
 from thaliawebsite.templatetags.bleach_tags import bleach

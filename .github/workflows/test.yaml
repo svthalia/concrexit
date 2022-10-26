@@ -35,6 +35,9 @@ jobs:
         run: poetry install
         if: steps.cache.outputs.cache-hit != 'true'
 
+      - name: Run isort
+        run: make isortcheck
+
       - name: Run black
         run: make blackcheck
 

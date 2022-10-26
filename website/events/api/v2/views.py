@@ -1,13 +1,15 @@
-from django.db.models import Q, Count, Subquery, OuterRef
+from django.db.models import Count, Q
+from django.utils import timezone
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import (
+    DestroyAPIView,
     ListAPIView,
     RetrieveAPIView,
     get_object_or_404,
-    DestroyAPIView,
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -20,7 +22,7 @@ from events.api.v2.serializers.external_event import ExternalEventSerializer
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
 from events.models.external_event import ExternalEvent
-from events.services import event_permissions
+from events.services import is_user_registered
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
 
@@ -91,7 +93,7 @@ class EventRegistrationsView(ListAPIView):
     )
 
     def __init__(self):
-        super(EventRegistrationsView, self).__init__()
+        super().__init__()
         self.event = None
 
     def get_serializer_class(self):
@@ -234,7 +236,7 @@ class EventRegistrationFieldsView(APIView):
                 status=status.HTTP_200_OK,
             )
         except RegistrationError as e:
-            raise ValidationError(e)
+            raise ValidationError(e) from e
 
     def patch(self, request, *args, **kwargs):
         try:
@@ -249,7 +251,7 @@ class EventRegistrationFieldsView(APIView):
                 status=status.HTTP_200_OK,
             )
         except RegistrationError as e:
-            raise ValidationError(e)
+            raise ValidationError(e) from e
 
 
 class ExternalEventListView(ListAPIView):
@@ -275,3 +277,40 @@ class ExternalEventDetailView(RetrieveAPIView):
     queryset = ExternalEvent.objects.filter(published=True)
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
+
+
+class MarkPresentAPIView(APIView):
+    """A view that allows uses to mark their presence at an event using a secret token."""
+
+    def patch(self, request, *args, **kwargs):
+        """Mark a user as present.
+
+        Checks if the url is correct, the event has not ended yet, and the user is registered.
+        """
+        event = get_object_or_404(Event, pk=kwargs["pk"])
+        if kwargs["token"] != event.mark_present_url_token:
+            raise PermissionDenied(detail="Invalid url.")
+
+        if not request.member or not is_user_registered(request.member, event):
+            raise PermissionDenied(detail="You are not registered for this event.")
+
+        registration = event.registrations.get(
+            member=request.member, date_cancelled=None
+        )
+
+        if registration.present:
+            return Response(
+                data={"detail": "You were already marked as present."},
+                status=status.HTTP_200_OK,
+            )
+        if event.end < timezone.now():
+            raise PermissionDenied(
+                detail="This event has already ended.",
+            )
+
+        registration.present = True
+        registration.save()
+        return Response(
+            data={"detail": "You have been marked as present."},
+            status=status.HTTP_200_OK,
+        )

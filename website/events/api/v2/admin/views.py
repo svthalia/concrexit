@@ -1,33 +1,33 @@
 from django.http import Http404
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
+from rest_framework import filters as framework_filters
 from rest_framework import status
-from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import filters as framework_filters
 
+import events.api.v2.filters as normal_filters
 from events import services
 from events.api.v2.admin import filters
 from events.api.v2.admin.permissions import IsOrganiser
 from events.api.v2.admin.serializers.event import (
-    EventListAdminSerializer,
     EventAdminSerializer,
+    EventListAdminSerializer,
 )
 from events.api.v2.admin.serializers.event_registration import (
     EventRegistrationAdminSerializer,
 )
-from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration
 from thaliawebsite.api.v2.admin.views import (
-    AdminListAPIView,
-    AdminRetrieveAPIView,
     AdminCreateAPIView,
-    AdminUpdateAPIView,
     AdminDestroyAPIView,
+    AdminListAPIView,
     AdminPermissionsMixin,
+    AdminRetrieveAPIView,
+    AdminUpdateAPIView,
 )
-import events.api.v2.filters as normal_filters
 
 
 class EventAdminListCreateAPIView(AdminListAPIView, AdminCreateAPIView):

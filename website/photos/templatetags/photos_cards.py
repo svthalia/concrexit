@@ -20,7 +20,7 @@ def album_card(album):
             album.cover.file, settings.THUMBNAIL_SIZES["medium"]
         )
         if album.cover.rotation > 0:
-            class_name += " rotate{}".format(album.cover.rotation)
+            class_name += f" rotate{album.cover.rotation}"
 
     url = album.get_absolute_url
     if not album.accessible:
@@ -29,7 +29,7 @@ def album_card(album):
 
     return grid_item(
         title=album.title,
-        meta_text="<p>{}</p>".format(date(album.date, "Y-m-d")),
+        meta_text=f'<p>{date(album.date, "Y-m-d")}</p>',
         url=url,
         image_url=image_url,
         class_name=class_name,
@@ -43,27 +43,24 @@ def photo_card(photo):
     anchor_attrs = f'data-rotation="{photo.rotation}" data-fancybox="gallery"'
 
     if photo.album.shareable:
-        anchor_attrs += " data-download-src={}".format(
-            reverse(
-                "photos:shared-download",
-                args=[photo.album.slug, photo.album.access_token, photo],
-            )
+        url = reverse(
+            "photos:shared-download",
+            args=[photo.album.slug, photo.album.access_token, photo],
         )
+        anchor_attrs += f" data-download-src={url}"
     else:
-        anchor_attrs += " data-download-src={}".format(
-            reverse("photos:download", args=[photo.album.slug, photo])
-        )
+        url = reverse("photos:download", args=[photo.album.slug, photo])
+        anchor_attrs += f" data-download-src={url}"
 
-    anchor_attrs += " data-numLikes='{}'".format(photo.num_likes)
-
-    anchor_attrs += " data-likeUrl={}".format(
-        reverse("api:v2:photos:photo-like", args=[photo.pk])
+    anchor_attrs += f" data-numLikes='{photo.num_likes}'"
+    anchor_attrs += (
+        f" data-likeUrl={reverse('api:v2:photos:photo-like', args=[photo.pk])}"
     )
 
     image_url = get_thumbnail_url(photo.file, settings.THUMBNAIL_SIZES["medium"])
 
     if photo.rotation > 0:
-        class_name += " rotate{}".format(photo.rotation)
+        class_name += f" rotate{photo.rotation}"
         anchor_attrs += (
             f" data-options=" f'\'{{"slideClass": "rotate{photo.rotation}"}}\''
         )

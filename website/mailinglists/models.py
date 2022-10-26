@@ -5,7 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from activemembers.models import MemberGroup, Board
+from activemembers.models import Board, MemberGroup
 from mailinglists.services import get_member_email_addresses
 from members.models import Member
 from utils.snippets import datetime_to_lectureyear
@@ -121,7 +121,7 @@ class MailingList(models.Model):
         """Validate the mailing list."""
         super().clean()
         if (
-            ListAlias.objects.filter(alias=self.name).count() > 0
+            ListAlias.objects.filter(alias=self.name).exists()
             or self.name in get_automatic_mailinglists()
         ):
             raise ValidationError(
@@ -189,7 +189,7 @@ class ListAlias(models.Model):
         """Validate the alias."""
         super().clean()
         if (
-            MailingList.objects.filter(name=self.alias).count() > 0
+            MailingList.objects.filter(name=self.alias).exists()
             or self.alias in get_automatic_mailinglists()
         ):
             raise ValidationError(

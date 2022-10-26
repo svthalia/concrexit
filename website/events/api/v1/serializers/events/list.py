@@ -1,6 +1,7 @@
 from html import unescape
 
 from django.utils.html import strip_tags
+
 from rest_framework import serializers
 
 from announcements.api.v1.serializers import SlideSerializer

@@ -10,10 +10,11 @@ from django_easy_admin_object_actions.admin import ObjectActionsMixin
 from django_easy_admin_object_actions.decorators import object_action
 
 from payments.widgets import PaymentWidget
+
 from . import services
 from .emails import send_registration_email_confirmation
 from .forms import RegistrationAdminForm
-from .models import Entry, Registration, Renewal, Reference
+from .models import Entry, Reference, Registration, Renewal
 
 
 class ReferenceInline(admin.StackedInline):

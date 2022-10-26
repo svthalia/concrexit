@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import MagicMock, Mock, ANY, patch, PropertyMock
+from unittest.mock import ANY, MagicMock, Mock, PropertyMock, patch
 
 from django.apps import apps
 from django.contrib.auth import get_user_model

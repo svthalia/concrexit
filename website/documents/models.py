@@ -1,4 +1,4 @@
-from django.core.validators import MinValueValidator, FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone

@@ -1,6 +1,6 @@
-from distutils.util import strtobool
-
 from rest_framework import filters
+
+from utils.snippets import strtobool
 
 
 class PublishedFilter(filters.BaseFilterBackend):

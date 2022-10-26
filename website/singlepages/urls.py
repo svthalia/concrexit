@@ -1,15 +1,15 @@
 """Defines the routes provided in this package."""
-from django.urls import path, include
+from django.urls import include, path
 
 from .views import (
-    ResponsibleDisclosureView,
-    PrivacyPolicyView,
-    EventTermsView,
-    SiblingAssociationsView,
     BecomeActiveView,
-    StyleGuideView,
     ContactView,
+    EventTermsView,
+    PrivacyPolicyView,
+    ResponsibleDisclosureView,
+    SiblingAssociationsView,
     StudentWellBeingView,
+    StyleGuideView,
 )
 
 app_name = "singlepages"

@@ -1,10 +1,10 @@
-from rest_framework import serializers, fields
+from rest_framework import fields, serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from members.api.v2.serializers.member import MemberSerializer
 from payments.api.v2.serializers import PaymentSerializer
 from pizzas.api.v2.serializers.product import ProductSerializer
-from pizzas.models import FoodOrder, FoodEvent
+from pizzas.models import FoodEvent, FoodOrder
 from thaliawebsite.api.v2.fields import (
     CurrentMemberDefault,
     CurrentRequestObjectDefault,

@@ -2,7 +2,7 @@ from django.template.defaultfilters import date
 from django.utils.functional import classproperty
 
 from payments.payables import Payable, payables
-from registrations.models import Renewal, Registration, Entry
+from registrations.models import Entry, Registration, Renewal
 
 
 class EntryPayable(Payable):

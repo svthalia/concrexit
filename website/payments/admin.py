@@ -7,8 +7,7 @@ from django.contrib.admin import ModelAdmin
 from django.contrib.admin.utils import model_ngettext
 from django.db.models import QuerySet
 from django.db.models.query_utils import Q
-from django.http import HttpResponse, HttpRequest
-from django.shortcuts import redirect
+from django.http import HttpRequest, HttpResponse
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
@@ -17,9 +16,10 @@ from django.utils.translation import gettext_lazy as _
 from django_easy_admin_object_actions.admin import ObjectActionsMixin
 from django_easy_admin_object_actions.decorators import object_action
 
-from payments import services, admin_views
+from payments import admin_views, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
-from .models import Payment, BankAccount, Batch, PaymentUser
+
+from .models import BankAccount, Batch, Payment, PaymentUser
 
 
 def _show_message(

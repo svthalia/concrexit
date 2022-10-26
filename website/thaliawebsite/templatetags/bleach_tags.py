@@ -1,9 +1,10 @@
 """Bleach allows to clean up user input to make it safe to display, but allow some HTML."""
-from bleach import clean
-from bleach.css_sanitizer import CSSSanitizer
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
+
+from bleach import clean
+from bleach.css_sanitizer import CSSSanitizer
 
 register = template.Library()
 

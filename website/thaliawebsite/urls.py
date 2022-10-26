@@ -25,7 +25,6 @@ Examples:
 
 import os.path
 
-import debug_toolbar
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
@@ -34,10 +33,12 @@ from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
+
+import debug_toolbar
 from oauth2_provider.urls import base_urlpatterns
 from oauth2_provider.views import (
-    AuthorizedTokensListView,
     AuthorizedTokenDeleteView,
+    AuthorizedTokensListView,
     ConnectDiscoveryInfoView,
     JwksInfoView,
     UserInfoView,
@@ -52,8 +53,9 @@ from partners.sitemaps import sitemap as partners_sitemap
 from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
-from thaliawebsite.views import TestCrashView, IndexView
+from thaliawebsite.views import IndexView, TestCrashView
 from utils.media.views import get_thumbnail, private_media
+
 from .sitemaps import StaticViewSitemap
 
 __all__ = ["urlpatterns"]
