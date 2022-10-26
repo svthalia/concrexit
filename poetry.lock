@@ -1706,7 +1706,7 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2f875e933817a8222c764dce65f31e01491f06ae6f26659b940dd09f0ace162d"
+content-hash = "439a5037efaa6c9a98f4c307957a4ec3cc0c6571370e73b6c1e9b12bcdb380ae"
 
 [metadata.files]
 alabaster = [
