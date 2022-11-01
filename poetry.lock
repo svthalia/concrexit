@@ -581,7 +581,7 @@ doc = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "faker"
-version = "15.1.1"
+version = "15.1.2"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
@@ -1704,7 +1704,7 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "7d7fb5db1640141022c8da7d3ba36fce3a6624e6e30685876841b687d4314174"
+content-hash = "e1d1193b92a83af456cd89e3f4f82b110b6deb04cebe687ec9905e68956b9e68"
 
 [metadata.files]
 alabaster = [
@@ -2083,8 +2083,8 @@ factory-boy = [
     {file = "factory_boy-3.2.1.tar.gz", hash = "sha256:a98d277b0c047c75eb6e4ab8508a7f81fb03d2cb21986f627913546ef7a2a55e"},
 ]
 faker = [
-    {file = "Faker-15.1.1-py3-none-any.whl", hash = "sha256:096c15e136adb365db24d8c3964fe26bfc68fe060c9385071a339f8c14e09c8a"},
-    {file = "Faker-15.1.1.tar.gz", hash = "sha256:a741b77f484215c3aab2604100669657189548f440fcb2ed0f8b7ee21c385629"},
+    {file = "Faker-15.1.2-py3-none-any.whl", hash = "sha256:37c8bfcbd9e0e99cebcd22e70dcf895ff92fb46aa8a32c7772df0c1f1f32ea48"},
+    {file = "Faker-15.1.2.tar.gz", hash = "sha256:39c4e7915813923829675488cafef07ddf11cf59ecbaac518f53dd8e7b0df5cf"},
 ]
 filelock = [
     {file = "filelock-3.8.0-py3-none-any.whl", hash = "sha256:617eb4e5eedc82fc5f47b6d61e4d11cb837c56cb4544e39081099fa17ad109d4"},
