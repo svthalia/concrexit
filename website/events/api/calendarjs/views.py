@@ -48,9 +48,9 @@ class CalendarJSEventListView(ListAPIView):
                     to_attr="member_registration",
                     queryset=EventRegistration.objects.filter(
                         member=self.request.member
-                    ),
+                    ).select_properties("queue_position"),
                 )
-            )
+            ).select_properties("participant_count")
         return events
 
 

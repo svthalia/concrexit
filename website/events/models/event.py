@@ -4,12 +4,15 @@ from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models, router
+from django.db.models import Count, Q
 from django.db.models.deletion import Collector
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 
+from queryable_properties.managers import QueryablePropertiesManager
+from queryable_properties.properties import AggregateProperty
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
@@ -22,6 +25,8 @@ from pushnotifications.models import Category, ScheduledMessage
 
 class Event(models.Model):
     """Describes an event."""
+
+    objects = QueryablePropertiesManager()
 
     DEFAULT_NO_REGISTRATION_MESSAGE = _("No registration required")
 
@@ -250,12 +255,18 @@ class Event(models.Model):
     def has_fields(self):
         return self.registrationinformationfield_set.count() > 0
 
+    participant_count = AggregateProperty(
+        Count(
+            "eventregistration",
+            filter=~Q(eventregistration__date_cancelled__lt=timezone.now()),
+        )
+    )
+
     def reached_participants_limit(self):
         """Is this event up to capacity?."""
         return (
             self.max_participants is not None
-            and self.max_participants
-            <= self.eventregistration_set.filter(date_cancelled=None).count()
+            and self.max_participants <= self.participant_count
         )
 
     @property
