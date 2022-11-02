@@ -48,7 +48,7 @@ def is_registered(status):
 def calendarjs_class_name(status):
     if status == STATUS_WAITINGLIST:
         return "regular-event-pending-registration"
-    if status in [STATUS_OPTIONAL_REGISTERED or STATUS_REGISTERED]:
+    if status in [STATUS_OPTIONAL_REGISTERED, STATUS_REGISTERED]:
         return "regular-event-has-registration"
     if status in [
         STATUS_CANCELLED,

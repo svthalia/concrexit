@@ -1,4 +1,4 @@
-from django.db.models import Count, OuterRef, Q, Subquery
+from django.db.models import Count, Prefetch, Q
 
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
@@ -18,7 +18,6 @@ from utils.snippets import extract_date_range
 class CalendarJSEventListView(ListAPIView):
     """Define a custom route that outputs the correctly formatted events information for CalendarJS, published events only."""
 
-    queryset = Event.objects.filter(published=True)
     serializer_class = EventsCalenderJSSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = None
@@ -43,11 +42,13 @@ class CalendarJSEventListView(ListAPIView):
             )
         )
         if self.request.member:
-            events = events.annotate(
-                member_registration=Subquery(
-                    EventRegistration.objects.filter(
-                        event=OuterRef("id"), member=self.request.member
-                    ).values("member")
+            events = events.prefetch_related(
+                Prefetch(
+                    "eventregistration_set",
+                    to_attr="member_registration",
+                    queryset=EventRegistration.objects.filter(
+                        member=self.request.member
+                    ),
                 )
             )
         return events
