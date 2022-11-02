@@ -1,6 +1,6 @@
 """Services defined in the members package."""
 from collections.abc import Callable
-from datetime import date, datetime
+from datetime import date
 from typing import Any
 
 from django.conf import settings
@@ -229,14 +229,15 @@ def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
             profile = member.profile
             profile.student_number = None
             profile.phone_number = None
-            profile.address_street = "<removed> 1"
+            profile.address_street = None
             profile.address_street2 = None
-            profile.address_postal_code = "<removed>"
-            profile.address_city = "<removed>"
-            profile.address_country = "NL"
-            profile.birthday = datetime(1900, 1, 1)
+            profile.address_postal_code = None
+            profile.address_city = None
+            profile.address_country = None
+            profile.birthday = None
             profile.emergency_contact_phone_number = None
             profile.emergency_contact = None
+            profile.is_minimized = True
             if not dry_run:
                 profile.save()
 
