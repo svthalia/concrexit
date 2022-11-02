@@ -11,7 +11,7 @@ from photos.models import Photo
 
 @login_required
 def your_photos(request):
-    photos = Photo.objects.filter(
+    photos = Photo.objects.prefetch_related("album").filter(
         face_recognition_photo__encodings__matches__member__exact=request.member,
         album__hidden=False,
     )
