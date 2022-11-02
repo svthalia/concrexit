@@ -56,7 +56,7 @@ class Photo(models.Model):
     )
 
     num_likes = AnnotationProperty(
-        Coalesce(Count("likes"), Value(0), output__field=IntegerField())
+        Coalesce(Count("likes"), Value(0), output_field=IntegerField())
     )
 
     def __init__(self, *args, **kwargs):
