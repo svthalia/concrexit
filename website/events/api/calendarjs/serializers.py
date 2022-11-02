@@ -1,9 +1,3 @@
-from datetime import timedelta
-
-from django.template.defaultfilters import date
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-
 from rest_framework.reverse import reverse
 
 from events import services
@@ -36,7 +30,6 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         return [statuses.calendarjs_class_name(status)]
 
     def _registration_info(self, instance):
-        # TODO: fetch registration using a prefetch_related/select_related/annotate
         if self.context["member"]:
             try:
                 registration = instance.eventregistration_set.get(

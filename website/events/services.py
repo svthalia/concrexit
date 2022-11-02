@@ -17,7 +17,6 @@ from events.models import (
 )
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
-from thaliawebsite import settings
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -39,13 +38,11 @@ def cancel_status(event: Event, registration: EventRegistration):
         # Deadline passed
         if registration and registration.queue_position:
             return statuses.CANCEL_WAITINGLIST
-        else:
-            return statuses.CANCEL_LATE
+        return statuses.CANCEL_LATE
 
     if not event.registration_allowed and not event.optional_registrations:
         return statuses.CANCEL_FINAL
-    else:
-        return statuses.CANCEL_NORMAL
+    return statuses.CANCEL_NORMAL
 
 
 def cancel_info_string(event: Event, status):
@@ -73,63 +70,54 @@ def registration_status(event: Event, registration: EventRegistration, member):
     if not member or not member.is_authenticated:
         if event.optional_registration_allowed:
             return statuses.STATUS_OPTIONAL
-        else:
-            return statuses.STATUS_LOGIN
+        return statuses.STATUS_LOGIN
 
     if registration:
         if registration.date_cancelled:
             if event.optional_registration_allowed:
                 # Optional registrations are not meaningfully cancelled
                 return statuses.STATUS_OPTIONAL
-            elif registration.is_late_cancellation():
+            if registration.is_late_cancellation():
                 return statuses.STATUS_CANCELLED_LATE
-            else:
-                if event.registration_allowed:
-                    return statuses.STATUS_CANCELLED
-                else:
-                    return statuses.STATUS_CANCELLED_FINAL
+            if event.registration_allowed:
+                return statuses.STATUS_CANCELLED
+            return statuses.STATUS_CANCELLED_FINAL
 
         if registration.queue_position:
             return statuses.STATUS_WAITINGLIST
-        elif event.optional_registration_allowed:
+        if event.optional_registration_allowed:
             return statuses.STATUS_OPTIONAL_REGISTERED
 
         return statuses.STATUS_REGISTERED
-    else:
-        if event.optional_registration_allowed:
-            return statuses.STATUS_OPTIONAL
+    if event.optional_registration_allowed:
+        return statuses.STATUS_OPTIONAL
 
-        elif event.reached_participants_limit():
-            return statuses.STATUS_FULL
-        elif event.registration_allowed:
-            return statuses.STATUS_OPEN
+    if event.reached_participants_limit():
+        return statuses.STATUS_FULL
+    if event.registration_allowed:
+        return statuses.STATUS_OPEN
 
-        elif not event.registration_started:
-            return statuses.STATUS_WILL_OPEN
-        elif not event.registration_allowed:
-            return statuses.STATUS_EXPIRED
+    if not event.registration_started:
+        return statuses.STATUS_WILL_OPEN
+    if not event.registration_allowed:
+        return statuses.STATUS_EXPIRED
 
-        else:
-            raise Exception("invalid/unexpected registration status")
+    raise Exception("invalid/unexpected registration status")
 
 
 def show_cancel_status(registration_status):
-    if (
-        registration_status == statuses.STATUS_CANCELLED
-        or registration_status == statuses.STATUS_CANCELLED_LATE
-        or registration_status == statuses.STATUS_LOGIN
-    ):
-        return False
-    else:
-        return True
+    return registration_status not in [
+        statuses.STATUS_CANCELLED,
+        statuses.STATUS_CANCELLED_LATE,
+        statuses.STATUS_LOGIN,
+    ]
 
 
 def user_registration_status(member, event: Event):
     if not member.is_authenticated:
         if not event.registration_required and not event.optional_registrations:
             return statuses.STATUS_NONE
-        else:
-            return statuses.STATUS_LOGIN
+        return statuses.STATUS_LOGIN
 
     registration = event.eventregistration_set.get(member=member)
     return registration_status(event, registration, member)

@@ -42,18 +42,15 @@ CANCEL_WAITINGLIST = (
 
 
 def is_registered(status):
-    if status in [STATUS_REGISTERED, STATUS_OPTIONAL_REGISTERED, STATUS_WAITINGLIST]:
-        return True
-    else:
-        return False
+    return status in [STATUS_REGISTERED, STATUS_OPTIONAL_REGISTERED, STATUS_WAITINGLIST]
 
 
 def calendarjs_class_name(status):
     if status == STATUS_WAITINGLIST:
         return "regular-event-pending-registration"
-    elif status in [STATUS_OPTIONAL_REGISTERED or STATUS_REGISTERED]:
+    if status in [STATUS_OPTIONAL_REGISTERED or STATUS_REGISTERED]:
         return "regular-event-has-registration"
-    elif status in [
+    if status in [
         STATUS_CANCELLED,
         STATUS_OPEN,
         STATUS_FULL,
@@ -61,5 +58,4 @@ def calendarjs_class_name(status):
         STATUS_NONE,
     ]:
         return "regular-event-registration-open"
-    else:
-        return "regular-event-registration-closed"
+    return "regular-event-registration-closed"
