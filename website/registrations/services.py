@@ -68,123 +68,117 @@ def check_unique_user(entry: Entry) -> bool:
     return True
 
 
-def confirm_entry(queryset: QuerySet) -> int:
+def confirm_entry(entry: Entry):
     """Confirm all entries in the queryset.
 
-    :param queryset: queryset of entries
-    :type queryset: Queryset[Entry]
+    :param entry: entry
+    :type entry: Entry
     :return: number of updated rows
     :rtype: integer
     """
-    queryset = queryset.filter(status=Entry.STATUS_CONFIRM)
-    rows_updated = queryset.update(
-        status=Entry.STATUS_REVIEW, updated_at=timezone.now()
-    )
-    return rows_updated
+
+    if entry.status != Entry.STATUS_REVIEW:
+        return
+    entry.updated_at = timezone.now()
+    entry.status = Entry.STATUS_CONFIRMED
+    entry.save()
 
 
-def reject_entries(user_id: int, queryset: QuerySet) -> int:
+def reject_entry(user_id: int, entry: Entry):
     """Reject all entries in the queryset.
 
-    :param user_id: Id of the user executing this action
-    :param queryset: queryset of entries
-    :type queryset: Queryset[Entry]
+    :param user_id: id of the user executing this action
+    :param entry: entry
+    :type entry: Entry
     :return: number of updated rows
     :rtype: integer
     """
-    queryset = queryset.filter(status=Entry.STATUS_REVIEW)
-    entries = list(queryset.all())
-    rows_updated = queryset.update(
-        status=Entry.STATUS_REJECTED, updated_at=timezone.now()
-    )
+    if entry.status != Entry.STATUS_REVIEW:
+        return
 
-    for entry in entries:
-        log_obj = None
+    entry.updated_at = timezone.now()
+    entry.status = Entry.STATUS_REJECTED
+    entry.save()
 
+    log_obj = None
+
+    try:
+        emails.send_registration_rejected_message(entry.registration)
+        log_obj = entry.registration
+    except Registration.DoesNotExist:
         try:
-            emails.send_registration_rejected_message(entry.registration)
-            log_obj = entry.registration
-        except Registration.DoesNotExist:
-            try:
-                emails.send_renewal_rejected_message(entry.renewal)
-                log_obj = entry.renewal
-            except Renewal.DoesNotExist:
-                pass
+            emails.send_renewal_rejected_message(entry.renewal)
+            log_obj = entry.renewal
+        except Renewal.DoesNotExist:
+            pass
 
-        if log_obj:
-            LogEntry.objects.log_action(
-                user_id=user_id,
-                content_type_id=get_content_type_for_model(log_obj).pk,
-                object_id=log_obj.pk,
-                object_repr=str(log_obj),
-                action_flag=CHANGE,
-                change_message="Changed status to rejected",
-            )
-
-    return rows_updated
+    if log_obj:
+        LogEntry.objects.log_action(
+            user_id=user_id,
+            content_type_id=get_content_type_for_model(log_obj).pk,
+            object_id=log_obj.pk,
+            object_repr=str(log_obj),
+            action_flag=CHANGE,
+            change_message="Changed status to rejected",
+        )
 
 
-def accept_entries(user_id: int, queryset: QuerySet) -> int:
+def accept_entry(user_id: int, entry: Entry):
     """Accept all entries in the queryset.
 
-    :param user_id: Id of the user executing this action
-    :param queryset: queryset of entries
-    :type queryset: Queryset[Entry]
+    :param user_id: id of the user executing this action
+    :param entry: entry
+    :type entry: Entry
     :return: number of updated rows
     :rtype: integer
     """
-    queryset = queryset.filter(status=Entry.STATUS_REVIEW)
-    entries = queryset.all()
-    updated_entries = []
+    if entry.status != Entry.STATUS_REVIEW:
+        return
 
-    for entry in entries:
-        # Check if the user is unique
-        if not check_unique_user(entry):
-            # User is not unique, do not proceed
-            continue
+    # Check if the user is unique
+    if not check_unique_user(entry):
+        # User is not unique, do not proceed
+        return
 
-        entry.status = Entry.STATUS_ACCEPTED
-        entry.updated_at = timezone.now()
+    entry.status = Entry.STATUS_ACCEPTED
+    entry.updated_at = timezone.now()
 
-        log_obj = None
+    log_obj = None
 
+    try:
+        if entry.registration.username is None:
+            entry.registration.username = _generate_username(entry.registration)
+            entry.registration.save()
+
+        if entry.registration.direct_debit:
+            member = _create_member_from_registration(entry.registration)
+            membership = _create_membership_from_entry(entry.registration, member)
+            entry.membership = membership
+            entry.status = Entry.STATUS_COMPLETED
+            entry.payment = create_payment(entry, member, Payment.TPAY)
+        else:
+            emails.send_registration_accepted_message(entry.registration)
+
+        log_obj = entry.registration
+
+    except Registration.DoesNotExist:
         try:
-            if entry.registration.username is None:
-                entry.registration.username = _generate_username(entry.registration)
-                entry.registration.save()
+            emails.send_renewal_accepted_message(entry.renewal)
+            log_obj = entry.renewal
+        except Renewal.DoesNotExist:
+            pass
 
-            if entry.registration.direct_debit:
-                member = _create_member_from_registration(entry.registration)
-                membership = _create_membership_from_entry(entry.registration, member)
-                entry.membership = membership
-                entry.status = Entry.STATUS_COMPLETED
-                entry.payment = create_payment(entry, member, Payment.TPAY)
-            else:
-                emails.send_registration_accepted_message(entry.registration)
+    if log_obj:
+        LogEntry.objects.log_action(
+            user_id=user_id,
+            content_type_id=get_content_type_for_model(log_obj).pk,
+            object_id=log_obj.pk,
+            object_repr=str(log_obj),
+            action_flag=CHANGE,
+            change_message="Change status to approved",
+        )
 
-            log_obj = entry.registration
-
-        except Registration.DoesNotExist:
-            try:
-                emails.send_renewal_accepted_message(entry.renewal)
-                log_obj = entry.renewal
-            except Renewal.DoesNotExist:
-                pass
-
-        if log_obj:
-            LogEntry.objects.log_action(
-                user_id=user_id,
-                content_type_id=get_content_type_for_model(log_obj).pk,
-                object_id=log_obj.pk,
-                object_repr=str(log_obj),
-                action_flag=CHANGE,
-                change_message="Change status to approved",
-            )
-
-        entry.save()
-        updated_entries.append(entry.pk)
-
-    return len(updated_entries)
+    entry.save()
 
 
 def revert_entry(user_id: int or None, entry: Entry) -> None:

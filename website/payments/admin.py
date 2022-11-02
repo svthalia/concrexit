@@ -449,7 +449,6 @@ class BatchAdmin(ObjectActionsMixin, admin.ModelAdmin):
 
     @object_action(
         label=_("Process"),
-        parameter_name="_process",
         permission="payments.process_batches",
         condition=lambda _, obj: not obj.processed,
         display_as_disabled_if_condition_not_met=True,
@@ -458,9 +457,9 @@ class BatchAdmin(ObjectActionsMixin, admin.ModelAdmin):
     )
     def process_batch_obj(self, request, obj):
         """Process the selected batches."""
-        if obj:
-            services.process_batch(obj)
-            messages.success(request, _("Batch processed."))
+        services.process_batch(obj)
+        messages.success(request, _("Batch processed."))
+        return True
 
     object_actions_after_fieldsets = ("process_batch_obj",)
 
@@ -490,7 +489,6 @@ class BankAccountAdmin(ObjectActionsMixin, admin.ModelAdmin):
     )
     search_fields = ("owner__username", "owner__first_name", "owner__last_name", "iban")
     autocomplete_fields = ("owner",)
-    actions = ["set_last_used"]
     form = BankAccountAdminForm
 
     def owner_link(self, obj: BankAccount) -> str:
@@ -544,20 +542,6 @@ class BankAccountAdmin(ObjectActionsMixin, admin.ModelAdmin):
         "revoke",
         "update_last_used",
     )
-
-    def set_last_used(self, request: HttpRequest, queryset: QuerySet) -> None:
-        """Set the last used date of selected accounts."""
-        if request.user.has_perm("payments.change_bankaccount"):
-            updated = services.update_last_used(queryset)
-            _show_message(
-                self,
-                request,
-                updated,
-                message=_("Successfully updated %(count)d %(items)s."),
-                error=_("The selected account(s) could not be updated."),
-            )
-
-    set_last_used.short_description = _("Update the last used date")
 
     def export_csv(self, request: HttpRequest, queryset: QuerySet) -> HttpResponse:
         response = HttpResponse(content_type="text/csv")
@@ -764,15 +748,12 @@ class PaymentUserAdmin(ObjectActionsMixin, admin.ModelAdmin):
     user_link.admin_order_field = "user"
     user_link.short_description = _("user")
 
-    actions = ["disallow_thalia_pay_queryset", "allow_thalia_pay_queryset"]
-
     @object_action(
         label=_("Disallow Thalia Pay"),
         permission="payments.change_paymentuser",
         condition=lambda _, obj: obj.tpay_allowed,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Disallowed Thalia Pay"),
-        include_in_queryset_actions=False,
     )
     def disallow_thalia_pay(self, request, obj):
         if obj.tpay_allowed:
@@ -786,7 +767,6 @@ class PaymentUserAdmin(ObjectActionsMixin, admin.ModelAdmin):
         condition=lambda _, obj: not obj.tpay_allowed,
         display_as_disabled_if_condition_not_met=True,
         log_message=_("Allowed Thalia Pay"),
-        include_in_queryset_actions=False,
     )
     def allow_thalia_pay(self, request, obj):
         if not obj.tpay_allowed:
@@ -798,34 +778,6 @@ class PaymentUserAdmin(ObjectActionsMixin, admin.ModelAdmin):
         "disallow_thalia_pay",
         "allow_thalia_pay",
     ]
-
-    def disallow_thalia_pay_queryset(self, request, queryset):
-        count = 0
-        for x in queryset:
-            changed = x.disallow_tpay()
-            count += 1 if changed else 0
-        messages.success(
-            request,
-            _(f"Succesfully disallowed Thalia Pay for {count} users."),
-        )
-
-    disallow_thalia_pay_queryset.short_description = _(
-        "Disallow Thalia Pay for selected users"
-    )
-
-    def allow_thalia_pay_queryset(self, request, queryset):
-        count = 0
-        for x in queryset:
-            changed = x.allow_tpay()
-            count += 1 if changed else 0
-        messages.success(
-            request,
-            _(f"Succesfully allowed Thalia Pay for {count} users."),
-        )
-
-    allow_thalia_pay_queryset.short_description = _(
-        "Allow Thalia Pay for selected users"
-    )
 
     def has_add_permission(self, request, obj=None):
         return False
