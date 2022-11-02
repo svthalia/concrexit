@@ -12,11 +12,10 @@ The latest Thalia Website built on Django.
 
 0. Get at least Python 3.9 and install [poetry](https://python-poetry.org/docs/#installation), the Pillow requirements and Thabloid dependencies as per below.
 1. Clone this repository
-2. `make superuser` to create the first user (note that this user won't be a member!) while in the cloned folder. This will install all dependencies (in a separate virtual environment)
+2. `make member` to create the first member while in the cloned folder. This will also install all dependencies (in a separate virtual environment)
 3. `make fixtures` to generate a bunch of test data
 4. `make run` to run a testing server. Now you are able to visit your local concrexit at http://127.0.0.1:8000
-5. Go to the user you created in the admin (http://127.0.0.1:8000/admin) and complete the profile and add a membership for full access. To do this, go to the 'Users' section of the admin and find yourself in the list. Then add the necessary information.
-6. Open the code in your favorite Python IDE (VSCode or Pycharm both work great)
+5. Open the code in your favorite Python IDE (VSCode or Pycharm both work great)
 
 Optional, but recommended: follow the tutorial! It can be found by going to the Wiki (top of the GitHub page) and then clicking on "Your first contribution" or by clicking [here](https://github.com/svthalia/concrexit/wiki/your-first-contribution).
 
