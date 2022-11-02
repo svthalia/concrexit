@@ -20,6 +20,7 @@ STATUS_REGISTERED = "registration-registered"
 
 # User cancelled their registration; if LATE they missed the deadline and need to pay the fine
 STATUS_CANCELLED = "registration-cancelled"
+STATUS_CANCELLED_FINAL = "registration-cancelled-final"
 STATUS_CANCELLED_LATE = "registration-cancelled-late"
 
 # Registering is optional; no or yes registration
@@ -41,11 +42,24 @@ CANCEL_WAITINGLIST = (
 
 
 def is_registered(status):
-    if (
-        status == STATUS_REGISTERED
-        or status == STATUS_OPTIONAL_REGISTERED
-        or status == STATUS_WAITINGLIST
-    ):
+    if status in [STATUS_REGISTERED, STATUS_OPTIONAL_REGISTERED, STATUS_WAITINGLIST]:
         return True
     else:
         return False
+
+
+def calendarjs_class_name(status):
+    if status == STATUS_WAITINGLIST:
+        return "regular-event-pending-registration"
+    elif status in [STATUS_OPTIONAL_REGISTERED or STATUS_REGISTERED]:
+        return "regular-event-has-registration"
+    elif status in [
+        STATUS_CANCELLED,
+        STATUS_OPEN,
+        STATUS_FULL,
+        STATUS_OPTIONAL,
+        STATUS_NONE,
+    ]:
+        return "regular-event-registration-open"
+    else:
+        return "regular-event-registration-closed"

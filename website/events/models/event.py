@@ -538,7 +538,12 @@ class Event(models.Model):
         ),
         statuses.STATUS_WAITINGLIST: _("You are in queue position {pos}"),
         statuses.STATUS_REGISTERED: _("You are registered for this event"),
-        statuses.STATUS_CANCELLED: _("Your registration for this event is cancelled"),
+        statuses.STATUS_CANCELLED: _(
+            "Your registration for this event is cancelled. You may still re-register."
+        ),
+        statuses.STATUS_CANCELLED_FINAL: _(
+            "Your registration for this event is cancelled. Note that you cannot re-register."
+        ),
         statuses.STATUS_CANCELLED_LATE: _(
             "Your registration is cancelled after the deadline and you will pay a fine of €{fine}"
         ),
@@ -559,6 +564,7 @@ class Event(models.Model):
         statuses.STATUS_FULL: "registration_msg_full",
         statuses.STATUS_WAITINGLIST: "registration_msg_waitinglist",
         statuses.STATUS_REGISTERED: "registration_msg_registered",
+        statuses.STATUS_CANCELLED_FINAL: "registration_msg_cancelled_final",
         statuses.STATUS_CANCELLED: "registration_msg_cancelled",
         statuses.STATUS_CANCELLED_LATE: "registration_msg_cancelled_late",
         statuses.STATUS_OPTIONAL: "registration_msg_optional",
@@ -647,6 +653,19 @@ class Event(models.Model):
             "{} {}",
             _("Default:"),
             DEFAULT_STATUS_MESSAGE[statuses.STATUS_CANCELLED],
+        ),
+    )
+    registration_msg_cancelled_final = models.CharField(
+        _(
+            "message when user cancelled their registration in time and cannot re-register"
+        ),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[statuses.STATUS_CANCELLED_FINAL],
         ),
     )
     registration_msg_cancelled_late = models.CharField(

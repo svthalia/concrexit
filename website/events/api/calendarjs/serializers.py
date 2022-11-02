@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse
 
 from events import services
-from events.models import Event, EventRegistration
+from events.models import Event, EventRegistration, statuses
 from events.models.external_event import ExternalEvent
 from thaliawebsite.api.calendarjs.serializers import CalenderJSSerializer
 
@@ -20,14 +20,20 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         return reverse("events:event", kwargs={"pk": instance.id})
 
     def _class_names(self, instance):
-        if self.context["member"] and instance.member_registration:
-            if services.user_registration_pending(self.context["member"], instance):
-                return ["regular-event-pending-registration"]
-            return ["regular-event-has-registration"]
-        if (not instance.registration_required) or instance.registration_allowed:
-            return ["regular-event-registration-open"]
-        # I think this handles the case that registration is needed, but not yet possible
-        return ["regular-event-registration-closed"]
+        if self.context["member"]:
+            try:
+                registration = instance.eventregistration_set.get(
+                    member=self.context["member"]
+                )
+            except EventRegistration.DoesNotExist:
+                registration = None
+        else:
+            registration = None
+
+        status = services.registration_status(
+            instance, registration, self.context["member"]
+        )
+        return [statuses.calendarjs_class_name(status)]
 
     def _registration_info(self, instance):
         # TODO: fetch registration using a prefetch_related/select_related/annotate

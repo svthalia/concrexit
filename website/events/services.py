@@ -84,7 +84,10 @@ def registration_status(event: Event, registration: EventRegistration, member):
             elif registration.is_late_cancellation():
                 return statuses.STATUS_CANCELLED_LATE
             else:
-                return statuses.STATUS_CANCELLED
+                if event.registration_allowed:
+                    return statuses.STATUS_CANCELLED
+                else:
+                    return statuses.STATUS_CANCELLED_FINAL
 
         if registration.queue_position:
             return statuses.STATUS_WAITINGLIST
