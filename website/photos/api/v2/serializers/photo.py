@@ -1,3 +1,5 @@
+from rest_framework import serializers
+
 from photos.models import Photo
 from thaliawebsite.api.v2.serializers import ThumbnailSerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
@@ -27,4 +29,19 @@ class PhotoListSerializer(PhotoSerializer):
         """Meta class for the serializer."""
 
         model = Photo
-        fields = ("pk", "rotation", "hidden", "file")
+        fields = (
+            "pk",
+            "rotation",
+            "hidden",
+            "file",
+            "num_likes",
+            "liked",
+        )
+
+    liked = serializers.SerializerMethodField("_liked")
+
+    def _liked(self, instance):
+        return (
+            self.context["request"].member
+            and instance.likes.filter(member=self.context["request"].member).exists()
+        )
