@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from thaliawebsite import settings
 
 from django.db.models import Q
 from django.utils import timezone
@@ -11,14 +10,14 @@ from events import emails
 from events.exceptions import RegistrationError
 from events.models import (
     Event,
-    categories,
-    statuses,
     EventRegistration,
     RegistrationInformationField,
     categories,
+    statuses,
 )
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
+from thaliawebsite import settings
 from utils.snippets import datetime_to_lectureyear
 
 
