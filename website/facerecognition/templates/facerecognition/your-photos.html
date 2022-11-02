@@ -18,7 +18,7 @@
                     Upload a reference photo of yourself and we'll look for other photos you're appearing on. Note that for the best result, this reference photo should only contain your face.
                 {% endblocktrans %}
             </p>
-            <a href="{% url "photos:reference-faces-upload" %}"
+            <a href="{% url "photos:facerecognition:reference-faces-upload" %}"
                class="btn btn-primary"
                data-bs-toggle="tooltip"
                data-bs-placement="baseline"
@@ -35,8 +35,7 @@
         {% if has_unprocessed_reference_faces %}
             {% trans "Not all your reference photos have been processed yet. Come back later." as info_text %}
             {% alert 'info' info_text dismissible=False %}
-        {% endif %}
-        {% if has_reference_faces  and not unprocessed_reference_faces and not photos %}
+        {% elif has_reference_faces  and not unprocessed_reference_faces and not photos %}
             {% trans "You haven't been recognized on any photos (yet)" as info_text %}
             {% alert 'info' info_text dismissible=False %}
         {% else %}

@@ -9,7 +9,7 @@ from PIL import Image
 
 
 def process_encodings():
-    url = f"http://127.0.0.1:8000/api/v2/photos/face-recognition/unprocessed/"
+    url = f"http://127.0.0.1:8000/api/v2/photos/facerecognition/unprocessed/"
 
     session = requests.Session()
     # session.headers.update({"Authorization": f"Bearer {key}"}
@@ -34,7 +34,7 @@ def process_response(results):
 
 
 def push_encoding(pk, obj_type, data):
-    url = f"http://127.0.0.1:8000/api/v2/photos/face-recognition/{obj_type}/{pk}/"
+    url = f"http://127.0.0.1:8000/api/v2/photos/facerecognition/encodings/{obj_type}/{pk}/"
     session = requests.Session()
     # session.headers.update({"Authorization": f"Bearer {key}"}
     response = session.post(url, data=data)

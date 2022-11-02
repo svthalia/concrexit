@@ -5,8 +5,6 @@ from photos.api.v2.views import (
     AlbumListView,
     AlbumDetailView,
     PhotoLikeView,
-    UnprocessedFaceRecognitionView,
-    FaceEncodingPostView,
 )
 
 app_name = "photos"
@@ -17,6 +15,7 @@ urlpatterns = [
         include(
             [
                 path("albums/", AlbumListView.as_view(), name="album-list"),
+                path("facerecognition/", include("facerecognition.api.v2.urls")),
                 path(
                     "albums/<slug:slug>/",
                     AlbumDetailView.as_view(),
@@ -24,20 +23,6 @@ urlpatterns = [
                 ),
                 path(
                     "photos/<int:pk>/like/", PhotoLikeView.as_view(), name="photo-like"
-                ),
-                # path(
-                #     "photos/<int:pk>/on-photo/", PersonOnPhotoView.as_view(),
-                #     name="person-on-photo"
-                # ),
-                path(
-                    "face-recognition/unprocessed/",
-                    UnprocessedFaceRecognitionView.as_view(),
-                    name="face-recognition-unprocessed",
-                ),
-                path(
-                    "face-recognition/<str:type>/<int:pk>/",
-                    FaceEncodingPostView.as_view(),
-                    name="face-encoding-post",
                 ),
             ]
         ),

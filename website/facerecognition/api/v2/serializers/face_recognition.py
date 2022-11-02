@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from photos.models import ReferenceFace, Photo
+from facerecognition.models import ReferenceFace
+from photos.models import Photo
 from thaliawebsite.api.v2.serializers import ThumbnailSerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,

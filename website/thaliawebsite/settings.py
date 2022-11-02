@@ -454,6 +454,7 @@ INSTALLED_APPS = [
     "singlepages.apps.SinglepagesConfig",
     "shortlinks.apps.ShortLinkConfig",
     "sales.apps.SalesConfig",
+    "facerecognition.apps.FaceRecognitionConfig",
 ]
 
 MIDDLEWARE = [

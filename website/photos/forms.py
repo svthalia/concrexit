@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from photos.models import Photo, Album, ReferenceFace
+from photos.models import Photo, Album
 from photos.validators import ArchiveFileTypeValidator
 
 
@@ -37,23 +37,3 @@ class AlbumForm(forms.ModelForm):
             "shareable",
             "_cover",
         )
-
-
-class ReferenceFaceUploadForm(forms.ModelForm):
-    """Class for a reference face submission form."""
-
-    class Meta:
-        """Meta class for ReferenceFaceUploadForm."""
-
-        model = ReferenceFace
-        fields = ("file",)
-
-    def save(self, member=None, commit=True):
-        """Save the user encoding."""
-        if not member:
-            raise forms.ValidationError("Member must be specified")
-        instance = super().save(commit=False)
-        instance.member = member
-        if commit:
-            instance.save()
-        return instance
