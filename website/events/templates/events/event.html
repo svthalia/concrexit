@@ -99,25 +99,6 @@
                                     </td>
                                 </tr>
                             {% endif %}
-                            {% if registration %}
-                                <tr>
-                                    <th>{% trans "registration status"|capfirst %}</th>
-                                    <td>
-                                        OLD MESSAGE:
-                                        {% if registration.is_registered and not registration.queue_position %}
-                                            {% trans "You are registered" %}
-                                        {% elif registration.is_registered and registration.queue_position %}
-                                            {% blocktrans trimmed with pos=registration.queue_position %}
-                                                Waiting list position {{ pos }}
-                                            {% endblocktrans %}
-                                        {% elif not registration.is_registered and registration.is_late_cancellation %}
-                                            {% trans "Your registration is cancelled after the cancellation deadline" %}
-                                        {% else %}
-                                            {% trans "Your registration is cancelled" %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endif %}
                             {% if registration.is_invited %}
                                 {% if event.start < date_now %}
                                     <tr>
