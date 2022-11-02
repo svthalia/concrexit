@@ -1,5 +1,4 @@
-Thalia Website
-==============
+# Thalia Website
 
 [![Linting and Testing](https://github.com/svthalia/concrexit/workflows/Linting%20and%20Testing/badge.svg)](https://github.com/svthalia/concrexit/actions)
 [![coverage](https://img.shields.io/badge/coverage-view-important)](https://thalia-coverage.s3.amazonaws.com/master/index.html)
@@ -9,44 +8,37 @@ Thalia Website
 
 The latest Thalia Website built on Django.
 
-Getting started
----------------
+## Getting started
 
-0. Get at least Python 3.9 and install poetry and the Pillow requirements as per below.
+0. Get at least Python 3.9 and install [poetry](https://python-poetry.org/docs/#installation), the Pillow requirements and Thabloid dependencies as per below.
 1. Clone this repository
-2. `make superuser` to create the first user (note that this user won't be a member!)
+2. `make superuser` to create the first user (note that this user won't be a member!) while in the cloned folder. This will install all dependencies (in a separate virtual environment)
 3. `make fixtures` to generate a bunch of test data
-4. `make run` to run a testing server
-5. Go to the user you created and complete the profile and add a membership for full access
+4. `make run` to run a testing server. Now you are able to visit your local concrexit at http://127.0.0.1:8000
+5. Go to the user you created in the admin (http://127.0.0.1:8000/admin) and complete the profile and add a membership for full access. To do this, go to the 'Users' section of the admin and find yourself in the list. Then add the necessary information.
+6. Open the code in your favorite Python IDE (VSCode or Pycharm both work great)
 
-Testing and linting
--------------------
+Optional, but recommended: follow the tutorial! It can be found by going to the Wiki (top of the GitHub page) and then clicking on "Your first contribution" or by clicking [here](https://github.com/svthalia/concrexit/wiki/your-first-contribution).
 
-You can use [`pyenv`](https://github.com/pyenv/pyenv) (on Unix systems) to test in different python
-environments.
+## When working on an issue
 
-All code has to be run through [isort](https://github.com/PyCQA/isort) and [`black`](https://github.com/psf/black) before being committed. To isort and black the code before committing run `make fmt` one the base directory of this project. We also use [pre-commit](https://pre-commit.com) to make sure you don't forget about this. Pre-commit is automatically installed by `make`.
-If you want to integrate `black` with your editor look in the [`black` docs](https://black.readthedocs.io/en/stable/editor_integration.html). On linux you can find the black executable in `~/.cache/poety/virtualenvs/<your env>/bin/black`.
+- Make sure you are not working on the main branch but on a separate branch.
+- Assign the issue to yourself on GitHub.
+- Make sure not just to read the issue but also the conversation below the issue.
 
-You can run all the tests with `make test`, afterwards you can check the coverage with `make coverage`.
+## Native dependencies
 
-poetry
-------
+Pillow dependencies are used for the thumbnail generation. The website will give lots of errors and work weirdly if you don't install these native dependencies.
 
-Install poetry per the [poetry documentation][poetry install]. Make sure you install at least version 1.2.x.
+The Thabloid dependencies are less important. If you don't intall them, the only thing that doesn't work is creating Thabloid cover images.
 
-[poetry install]: https://python-poetry.org/docs/#installation
+### Pillow dependencies
 
-Pillow dependencies
--------------------
+For Ubuntu, use:
 
-For Ubuntu 18.04, use:
-
-    apt-get install python3-dev gettext gcc build-essential libtiff5-dev libjpeg-turbo8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
-
-Or try:
-
-    apt-get build-dep python3-pil
+```bash
+apt-get install python3-dev gettext gcc build-essential libtiff5-dev libjpeg-turbo8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+```
 
 For other operating systems, see the [Pillow Documentation][pillow-install].
 
@@ -56,46 +48,34 @@ For other operating systems, see the [Pillow Documentation][pillow-install].
 
 On macOS you will also need to install `libmagic`, using the brew package manager by running `brew install libmagic`.
 
-Thabloid dependencies
----------------------
+### Thabloid dependencies
 
 To be able to generate JPGs from PDFs, we need ghostscript:
 
-    apt-get install ghostscript
+```bash
+apt-get install ghostscript
+```
 
 Or for macOS:
 
-    brew install ghostscript
+```bash
+brew install ghostscript
+```
 
-Language
-------------------
+## Language
 
 Make sure to use British English.
 
-Settings
-------------------
+## Testing and linting
 
-The settings of our project are located in `website/thaliawebsite/settings`.
-This is a Python module that loads the included settings files based on the environment you are running in.
+If you're just starting to work on the website, this isn't very relevant. Linting and formatting is automaticallly done by the pre-commit hook which is installed from the `make` command stuff. If you want to know what linting we use, read on:
 
-- If `DJANGO_PRODUCTION` is set in the environment `production.py` will be included
-- If `GITHUB_ACTIONS` is set in the environment `testing.py` will be included
-- If `localsettings.py` exists it will be included, you can use this to override settings on your local development server without the risk of committing secrets.
+All code has to be run through [isort](https://github.com/PyCQA/isort) and [`black`](https://github.com/psf/black) before being committed. To isort and black the code before committing run `make fmt` one the base directory of this project. We also use [pre-commit](https://pre-commit.com) to make sure you don't forget about this. Pre-commit is automatically installed by `make`.
+If you want to integrate `black` with your editor look in the [`black` docs](https://black.readthedocs.io/en/stable/editor_integration.html). On linux you can find the black executable in `~/.cache/poety/virtualenvs/<your env>/bin/black`.
 
-`settings.py` contains the default included settings.
+You can run all the tests with `make test`, afterwards you can check the coverage with `make coverage`.
 
-Documentation
-------------------
-
-The documentation for our code is located inside the files and is combined using [Sphinx](https://www.sphinx-doc.org/en/master/) into an HTML output.
-The continuous integration checks if the latest Python modules are included in the Sphinx files located in the `docs` folder
-
-To update these files run `make apidocs`
-
-To render the docs to HTML run `make docs`
-
-For admins
-----------
+## For admins
 
 It's possible for admins to push to the `master` branch, but this must only be
 done with care. As such, a pre-push git hook is available which asks for confirmation
