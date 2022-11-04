@@ -1,4 +1,4 @@
-from django.db.models import Count, Q
+from django.db.models import Prefetch
 from django.utils import timezone
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
@@ -31,24 +31,6 @@ class EventListView(ListAPIView):
     """Returns an overview of all upcoming events."""
 
     serializer_class = EventSerializer
-    queryset = (
-        Event.objects.filter(published=True)
-        .select_related("food_event")
-        .prefetch_related(
-            "registrationinformationfield_set",
-            "documents",
-            "organisers",
-            "organisers__board",
-            "organisers__committee",
-            "organisers__society",
-        )
-        .annotate(
-            number_regs=Count(
-                "eventregistration",
-                filter=Q(eventregistration__date_cancelled=None),
-            )
-        )
-    )
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
@@ -61,17 +43,38 @@ class EventListView(ListAPIView):
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
 
+    def get_queryset(self):
+        events = (
+            Event.objects.filter(published=True)
+            .select_related("food_event")
+            .select_properties("participant_count")
+            .prefetch_related(
+                "registrationinformationfield_set",
+                "documents",
+                "organisers",
+                "organisers__board",
+                "organisers__committee",
+                "organisers__society",
+            )
+        )
+        if self.request.member:
+            events = events.prefetch_related(
+                Prefetch(
+                    "eventregistration_set",
+                    to_attr="member_registration",
+                    queryset=EventRegistration.objects.filter(
+                        member=self.request.member
+                    ).select_properties("queue_position"),
+                )
+            )
+        return events
+
 
 class EventDetailView(RetrieveAPIView):
     """Returns details of an event."""
 
     serializer_class = EventSerializer
-    queryset = Event.objects.filter(published=True).annotate(
-        number_regs=Count(
-            "eventregistration",
-            filter=Q(eventregistration__date_cancelled=None),
-        )
-    )
+    queryset = Event.objects.filter(published=True)
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
 

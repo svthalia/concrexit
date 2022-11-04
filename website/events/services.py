@@ -180,12 +180,13 @@ def is_user_present(member, event):
     ).exists()
 
 
-def event_permissions(member, event, name=None):
+def event_permissions(member, event, name=None, registration_prefetch=False):
     """Return a dictionary with the available event permissions of the user.
 
     :param member: the user
     :param event: the event
     :param name: the name of a non member registration
+    :param registration_prefetch: if the registrations for the member are already prefetched into an attribute "member_registration"
     :return: the permission dictionary
     """
     perms = {
@@ -200,12 +201,16 @@ def event_permissions(member, event, name=None):
         return perms
 
     registration = None
-    try:
-        registration = EventRegistration.objects.get(
-            event=event, member=member, name=name
-        )
-    except EventRegistration.DoesNotExist:
-        pass
+    if registration_prefetch:
+        if len(event.member_registration) > 0:
+            registration = event.member_registration[-1]
+    else:
+        try:
+            registration = EventRegistration.objects.get(
+                event=event, member=member, name=name
+            )
+        except EventRegistration.DoesNotExist:
+            pass
 
     perms["create_registration"] = (
         (registration is None or registration.date_cancelled is not None)

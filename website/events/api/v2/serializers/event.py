@@ -5,7 +5,7 @@ from announcements.api.v2.serializers import SlideSerializer
 from documents.api.v2.serializers.document import DocumentSerializer
 from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
-from events.models import Event, EventRegistration
+from events.models import Event
 from payments.api.v2.serializers.payment_amount import PaymentAmountSerializer
 from thaliawebsite.api.v2.serializers import CleanedHTMLSerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
@@ -59,35 +59,33 @@ class EventSerializer(CleanedModelSerializer):
     documents = DocumentSerializer(many=True)
     user_permissions = serializers.SerializerMethodField("_user_permissions")
 
-    def _user_registration(self, instance):
-        try:
-            if self.context["request"].member:
-                reg = instance.eventregistration_set.get(
-                    member=self.context["request"].member
-                )
-                return EventRegistrationSerializer(
-                    reg,
-                    context=self.context,
-                    fields=(
-                        "pk",
-                        "present",
-                        "queue_position",
-                        "is_cancelled",
-                        "is_late_cancellation",
-                        "date",
-                        "payment",
-                    ),
-                ).data
-        except EventRegistration.DoesNotExist:
-            pass
+    def _user_registration(self, instance: Event):
+        if self.context["request"].member and len(instance.member_registration) > 0:
+            registration = instance.member_registration[-1]
+            return EventRegistrationSerializer(
+                registration,
+                context=self.context,
+                fields=(
+                    "pk",
+                    "present",
+                    "queue_position",
+                    "is_cancelled",
+                    "is_late_cancellation",
+                    "date",
+                    "payment",
+                ),
+            ).data
         return None
 
-    def _num_participants(self, instance):
-        return instance.participants.count()
+    def _num_participants(self, instance: Event):
+        if instance.max_participants:
+            return min(instance.participant_count, instance.max_participants)
+        else:
+            return instance.participant_count
 
     def _user_permissions(self, instance):
         member = self.context["request"].member
-        return services.event_permissions(member, instance)
+        return services.event_permissions(member, instance, registration_prefetch=True)
 
     def _maps_url(self, instance):
         return create_google_maps_url(instance.map_location, zoom=13, size="450x250")

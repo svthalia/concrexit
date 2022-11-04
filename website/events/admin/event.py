@@ -1,7 +1,6 @@
 """Registers admin interfaces for the event model."""
 
 from django.contrib import admin
-from django.db.models import Count, Q
 from django.template.defaultfilters import date as _date
 from django.urls import path, reverse
 from django.utils import timezone
