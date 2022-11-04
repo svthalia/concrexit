@@ -45,7 +45,13 @@ def cancel_status(event: Event, registration: EventRegistration):
     return statuses.CANCEL_NORMAL
 
 
-def cancel_info_string(event: Event, status):
+def cancel_info_string(event: Event, cancel_status, reg_status):
+    if reg_status not in [
+        statuses.STATUS_OPEN,
+        statuses.STATUS_WAITINGLIST,
+        statuses.STATUS_REGISTERED,
+    ]:
+        return ""
     infos = {
         statuses.CANCEL_NORMAL: _(""),
         statuses.CANCEL_FINAL: _(

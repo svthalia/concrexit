@@ -37,6 +37,7 @@ class EventSerializer(CleanedModelSerializer):
             "num_participants",
             "max_participants",
             "no_registration_message",
+            "registration_status",
             "cancel_too_late_message",
             "has_fields",
             "food_event",
@@ -53,6 +54,7 @@ class EventSerializer(CleanedModelSerializer):
     user_registration = serializers.SerializerMethodField("_user_registration")
     num_participants = serializers.SerializerMethodField("_num_participants")
     maps_url = serializers.SerializerMethodField("_maps_url")
+    registration_status = serializers.SerializerMethodField("_registration_status")
     price = PaymentAmountSerializer()
     fine = PaymentAmountSerializer()
     slide = SlideSerializer()
@@ -76,6 +78,22 @@ class EventSerializer(CleanedModelSerializer):
                 ),
             ).data
         return None
+
+    def _registration_status(self, instance: Event):
+        if self.context["request"].member and len(instance.member_registration) > 0:
+            registration = instance.member_registration[-1]
+        else:
+            registration = None
+        status = services.registration_status(
+            instance, registration, self.context["request"].member
+        )
+        cancel_status = services.cancel_status(instance, registration)
+
+        status_str = services.registration_status_string(status, instance, registration)
+        cancel_str = services.cancel_info_string(instance, cancel_status)
+        if services.show_cancel_status(status) and cancel_str != "":
+            return "{}. {}".format(status_str, cancel_str)
+        return "{}.".format(status_str)
 
     def _num_participants(self, instance: Event):
         if instance.max_participants:

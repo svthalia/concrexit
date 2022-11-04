@@ -74,9 +74,22 @@ class EventDetailView(RetrieveAPIView):
     """Returns details of an event."""
 
     serializer_class = EventSerializer
-    queryset = Event.objects.filter(published=True)
     permission_classes = [IsAuthenticatedOrTokenHasScope]
     required_scopes = ["events:read"]
+
+    def get_queryset(self):
+        events = Event.objects.filter(published=True)
+        if self.request.member:
+            events = events.prefetch_related(
+                Prefetch(
+                    "eventregistration_set",
+                    to_attr="member_registration",
+                    queryset=EventRegistration.objects.filter(
+                        member=self.request.member
+                    ).select_properties("queue_position"),
+                )
+            )
+        return events
 
 
 class EventRegistrationsView(ListAPIView):
