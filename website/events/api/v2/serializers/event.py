@@ -90,7 +90,7 @@ class EventSerializer(CleanedModelSerializer):
         cancel_status = services.cancel_status(instance, registration)
 
         status_str = services.registration_status_string(status, instance, registration)
-        cancel_str = services.cancel_info_string(instance, cancel_status)
+        cancel_str = services.cancel_info_string(instance, cancel_status, status)
         if services.show_cancel_status(status) and cancel_str != "":
             return "{}. {}".format(status_str, cancel_str)
         return "{}.".format(status_str)

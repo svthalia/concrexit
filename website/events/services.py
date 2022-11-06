@@ -64,7 +64,7 @@ def cancel_info_string(event: Event, cancel_status, reg_status):
             "Cancellation while on the waiting list will not result in a fine. However, you will not be able to re-register."
         ),
     }
-    return infos[status].format(fine=event.fine)
+    return infos[cancel_status].format(fine=event.fine)
 
 
 def registration_status(event: Event, registration: EventRegistration, member):
