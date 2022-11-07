@@ -51,7 +51,7 @@ postgres = ["psycopg2"]
 django-template-check = "0.4.0"
 factory_boy = "3.2.1"
 pydenticon = "0.3.1"
-Faker = "15.2.0"
+Faker = "15.3.1"
 coverage = {extras = ["toml"], version = "^6.0.0"}
 isort = "5.10.1"
 black = "22.10.0"
