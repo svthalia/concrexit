@@ -219,9 +219,3 @@ class BookInfoView(TemplateView):
         ):
             return super().dispatch(request, *args, **kwargs)
         raise PermissionDenied
-
-
-class StudentParticipantView(TemplateView):
-    """Renders a page with information about student information."""
-
-    template_name = "education/student_participation.html"

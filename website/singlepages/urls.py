@@ -8,6 +8,7 @@ from .views import (
     PrivacyPolicyView,
     ResponsibleDisclosureView,
     SiblingAssociationsView,
+    StudentParticipantView,
     StudentWellBeingView,
     StyleGuideView,
 )
@@ -46,6 +47,11 @@ urlpatterns = [
                     "student-well-being/",
                     StudentWellBeingView.as_view(),
                     name="student-well-being",
+                ),
+                path(
+                    "student-participation/",
+                    StudentParticipantView.as_view(),
+                    name="student-participation",
                 ),
             ]
         ),
