@@ -16,7 +16,7 @@ from queryable_properties.properties import AggregateProperty
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
-from events.models import statuses
+from events.models import status
 from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
 from payments.models import PaymentAmountField
@@ -541,46 +541,46 @@ class Event(models.Model):
         return f"{self.title}: {timezone.localtime(self.start):%Y-%m-%d %H:%M}"
 
     DEFAULT_STATUS_MESSAGE = {
-        statuses.STATUS_WILL_OPEN: _("Registration will open {regstart}."),
-        statuses.STATUS_EXPIRED: _("Registration is not possible anymore."),
-        statuses.STATUS_OPEN: _("You can register now."),
-        statuses.STATUS_FULL: _(
+        status.STATUS_WILL_OPEN: _("Registration will open {regstart}."),
+        status.STATUS_EXPIRED: _("Registration is not possible anymore."),
+        status.STATUS_OPEN: _("You can register now."),
+        status.STATUS_FULL: _(
             "Registrations are full, but you can join the waiting list."
         ),
-        statuses.STATUS_WAITINGLIST: _("You are in queue position {pos}."),
-        statuses.STATUS_REGISTERED: _("You are registered for this event."),
-        statuses.STATUS_CANCELLED: _(
+        status.STATUS_WAITINGLIST: _("You are in queue position {pos}."),
+        status.STATUS_REGISTERED: _("You are registered for this event."),
+        status.STATUS_CANCELLED: _(
             "Your registration for this event is cancelled. You may still re-register."
         ),
-        statuses.STATUS_CANCELLED_FINAL: _(
+        status.STATUS_CANCELLED_FINAL: _(
             "Your registration for this event is cancelled. Note that you cannot re-register."
         ),
-        statuses.STATUS_CANCELLED_LATE: _(
+        status.STATUS_CANCELLED_LATE: _(
             "Your registration is cancelled after the deadline and you will pay a fine of €{fine}."
         ),
-        statuses.STATUS_OPTIONAL: _("You can optionally register for this event."),
-        statuses.STATUS_OPTIONAL_REGISTERED: _(
+        status.STATUS_OPTIONAL: _("You can optionally register for this event."),
+        status.STATUS_OPTIONAL_REGISTERED: _(
             "You are optionally registered for this event."
         ),
-        statuses.STATUS_NONE: DEFAULT_NO_REGISTRATION_MESSAGE,
-        statuses.STATUS_LOGIN: _(
+        status.STATUS_NONE: DEFAULT_NO_REGISTRATION_MESSAGE,
+        status.STATUS_LOGIN: _(
             "You have to log in before you can register for this event."
         ),
     }
 
     STATUS_MESSAGE_FIELDS = {
-        statuses.STATUS_WILL_OPEN: "registration_msg_will_open",
-        statuses.STATUS_EXPIRED: "registration_msg_expired",
-        statuses.STATUS_OPEN: "registration_msg_open",
-        statuses.STATUS_FULL: "registration_msg_full",
-        statuses.STATUS_WAITINGLIST: "registration_msg_waitinglist",
-        statuses.STATUS_REGISTERED: "registration_msg_registered",
-        statuses.STATUS_CANCELLED_FINAL: "registration_msg_cancelled_final",
-        statuses.STATUS_CANCELLED: "registration_msg_cancelled",
-        statuses.STATUS_CANCELLED_LATE: "registration_msg_cancelled_late",
-        statuses.STATUS_OPTIONAL: "registration_msg_optional",
-        statuses.STATUS_OPTIONAL_REGISTERED: "registration_msg_optional_registered",
-        statuses.STATUS_NONE: "no_registration_message",
+        status.STATUS_WILL_OPEN: "registration_msg_will_open",
+        status.STATUS_EXPIRED: "registration_msg_expired",
+        status.STATUS_OPEN: "registration_msg_open",
+        status.STATUS_FULL: "registration_msg_full",
+        status.STATUS_WAITINGLIST: "registration_msg_waitinglist",
+        status.STATUS_REGISTERED: "registration_msg_registered",
+        status.STATUS_CANCELLED_FINAL: "registration_msg_cancelled_final",
+        status.STATUS_CANCELLED: "registration_msg_cancelled",
+        status.STATUS_CANCELLED_LATE: "registration_msg_cancelled_late",
+        status.STATUS_OPTIONAL: "registration_msg_optional",
+        status.STATUS_OPTIONAL_REGISTERED: "registration_msg_optional_registered",
+        status.STATUS_NONE: "no_registration_message",
     }
 
     registration_msg_will_open = models.CharField(
@@ -593,7 +593,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_WILL_OPEN],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_WILL_OPEN],
         ),
     )
     registration_msg_expired = models.CharField(
@@ -606,7 +606,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_EXPIRED],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_EXPIRED],
         ),
     )
     registration_msg_open = models.CharField(
@@ -617,7 +617,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_OPEN],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_OPEN],
         ),
     )
     registration_msg_full = models.CharField(
@@ -630,7 +630,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_FULL],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_FULL],
         ),
     )
     registration_msg_waitinglist = models.CharField(
@@ -641,7 +641,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_WAITINGLIST],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_WAITINGLIST],
         ),
     )
     registration_msg_registered = models.CharField(
@@ -652,7 +652,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_REGISTERED],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_REGISTERED],
         ),
     )
     registration_msg_cancelled = models.CharField(
@@ -663,7 +663,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_CANCELLED],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_CANCELLED],
         ),
     )
     registration_msg_cancelled_final = models.CharField(
@@ -676,7 +676,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_CANCELLED_FINAL],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_CANCELLED_FINAL],
         ),
     )
     registration_msg_cancelled_late = models.CharField(
@@ -687,7 +687,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_CANCELLED_LATE],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_CANCELLED_LATE],
         ),
     )
     registration_msg_optional = models.CharField(
@@ -698,7 +698,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_OPTIONAL],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_OPTIONAL],
         ),
     )
     registration_msg_optional_registered = models.CharField(
@@ -709,7 +709,7 @@ class Event(models.Model):
         help_text=format_lazy(
             "{} {}",
             _("Default:"),
-            DEFAULT_STATUS_MESSAGE[statuses.STATUS_OPTIONAL_REGISTERED],
+            DEFAULT_STATUS_MESSAGE[status.STATUS_OPTIONAL_REGISTERED],
         ),
     )
 

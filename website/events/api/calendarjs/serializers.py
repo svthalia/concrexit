@@ -1,7 +1,7 @@
 from rest_framework.reverse import reverse
 
 from events import services
-from events.models import Event, statuses
+from events.models import Event, status
 from events.models.external_event import ExternalEvent
 from thaliawebsite.api.calendarjs.serializers import CalenderJSSerializer
 
@@ -18,10 +18,10 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
             registration = instance.member_registration[-1]
         else:
             registration = None
-        status = services.registration_status(
+        reg_status = services.registration_status(
             instance, registration, self.context["member"]
         )
-        return [statuses.calendarjs_class_name(status)]
+        return [status.calendarjs_class_name(reg_status)]
 
     def _registration_info(self, instance):
         if self.context["member"] and len(instance.member_registration) > 0:

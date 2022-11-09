@@ -13,7 +13,7 @@ from events.models import (
     EventRegistration,
     RegistrationInformationField,
     categories,
-    statuses,
+    status,
 )
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
@@ -37,30 +37,30 @@ def cancel_status(event: Event, registration: EventRegistration):
     if event.after_cancel_deadline:
         # Deadline passed
         if registration and registration.queue_position:
-            return statuses.CANCEL_WAITINGLIST
-        return statuses.CANCEL_LATE
+            return status.CANCEL_WAITINGLIST
+        return status.CANCEL_LATE
 
     if not event.registration_allowed and not event.optional_registrations:
-        return statuses.CANCEL_FINAL
-    return statuses.CANCEL_NORMAL
+        return status.CANCEL_FINAL
+    return status.CANCEL_NORMAL
 
 
 def cancel_info_string(event: Event, cancel_status, reg_status):
     if reg_status not in [
-        statuses.STATUS_OPEN,
-        statuses.STATUS_WAITINGLIST,
-        statuses.STATUS_REGISTERED,
+        status.STATUS_OPEN,
+        status.STATUS_WAITINGLIST,
+        status.STATUS_REGISTERED,
     ]:
         return ""
     infos = {
-        statuses.CANCEL_NORMAL: _(""),
-        statuses.CANCEL_FINAL: _(
+        status.CANCEL_NORMAL: _(""),
+        status.CANCEL_FINAL: _(
             "Note: if you cancel, you will not be able to re-register."
         ),
-        statuses.CANCEL_LATE: _(
+        status.CANCEL_LATE: _(
             "Cancellation is not allowed anymore without having to pay the full costs of €{fine}. You will also not be able to re-register."
         ),
-        statuses.CANCEL_WAITINGLIST: _(
+        status.CANCEL_WAITINGLIST: _(
             "Cancellation while on the waiting list will not result in a fine. However, you will not be able to re-register."
         ),
     }
@@ -71,59 +71,59 @@ def registration_status(event: Event, registration: EventRegistration, member):
     now = timezone.now()
 
     if not event.registration_required and not event.optional_registration_allowed:
-        return statuses.STATUS_NONE
+        return status.STATUS_NONE
 
     if not member or not member.is_authenticated:
         if event.optional_registration_allowed:
-            return statuses.STATUS_OPTIONAL
-        return statuses.STATUS_LOGIN
+            return status.STATUS_OPTIONAL
+        return status.STATUS_LOGIN
 
     if registration:
         if registration.date_cancelled:
             if event.optional_registration_allowed:
                 # Optional registrations are not meaningfully cancelled
-                return statuses.STATUS_OPTIONAL
+                return status.STATUS_OPTIONAL
             if registration.is_late_cancellation():
-                return statuses.STATUS_CANCELLED_LATE
+                return status.STATUS_CANCELLED_LATE
             if event.registration_allowed:
-                return statuses.STATUS_CANCELLED
-            return statuses.STATUS_CANCELLED_FINAL
+                return status.STATUS_CANCELLED
+            return status.STATUS_CANCELLED_FINAL
 
         if registration.queue_position:
-            return statuses.STATUS_WAITINGLIST
+            return status.STATUS_WAITINGLIST
         if event.optional_registration_allowed:
-            return statuses.STATUS_OPTIONAL_REGISTERED
+            return status.STATUS_OPTIONAL_REGISTERED
 
-        return statuses.STATUS_REGISTERED
+        return status.STATUS_REGISTERED
     if event.optional_registration_allowed:
-        return statuses.STATUS_OPTIONAL
+        return status.STATUS_OPTIONAL
 
     if event.reached_participants_limit():
-        return statuses.STATUS_FULL
+        return status.STATUS_FULL
     if event.registration_allowed:
-        return statuses.STATUS_OPEN
+        return status.STATUS_OPEN
 
     if not event.registration_started:
-        return statuses.STATUS_WILL_OPEN
+        return status.STATUS_WILL_OPEN
     if not event.registration_allowed:
-        return statuses.STATUS_EXPIRED
+        return status.STATUS_EXPIRED
 
     raise Exception("invalid/unexpected registration status")
 
 
 def show_cancel_status(registration_status):
     return registration_status not in [
-        statuses.STATUS_CANCELLED,
-        statuses.STATUS_CANCELLED_LATE,
-        statuses.STATUS_LOGIN,
+        status.STATUS_CANCELLED,
+        status.STATUS_CANCELLED_LATE,
+        status.STATUS_LOGIN,
     ]
 
 
 def user_registration_status(member, event: Event):
     if not member.is_authenticated:
         if not event.registration_required and not event.optional_registrations:
-            return statuses.STATUS_NONE
-        return statuses.STATUS_LOGIN
+            return status.STATUS_NONE
+        return status.STATUS_LOGIN
 
     registration = event.eventregistration_set.get(member=member)
     return registration_status(event, registration, member)
