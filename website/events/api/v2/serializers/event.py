@@ -92,8 +92,8 @@ class EventSerializer(CleanedModelSerializer):
         status_str = services.registration_status_string(status, instance, registration)
         cancel_str = services.cancel_info_string(instance, cancel_status, status)
         if services.show_cancel_status(status) and cancel_str != "":
-            return f"{status_str}. {cancel_str}"
-        return f"{status_str}."
+            return f"{status_str} {cancel_str}"
+        return f"{status_str}"
 
     def _num_participants(self, instance: Event):
         if instance.max_participants:
