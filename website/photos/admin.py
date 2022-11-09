@@ -2,6 +2,8 @@ from django.contrib import admin, messages
 from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
+from django_filepond_widget.fields import FilePondFile
+
 from .forms import AlbumForm
 from .models import Album, Like, Photo
 from .services import extract_archive, save_photo
@@ -51,6 +53,8 @@ class AlbumAdmin(admin.ModelAdmin):
         archive = form.cleaned_data.get("album_archive", None)
         if archive is not None:
             extract_archive(request, obj, archive)
+            if isinstance(archive, FilePondFile):
+                archive.remove()
 
             messages.add_message(
                 request,
