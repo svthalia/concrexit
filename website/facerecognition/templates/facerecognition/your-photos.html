@@ -15,25 +15,25 @@
         <div class="col-md-12">
             <p>
                 {% blocktrans %}
-                    Upload a reference photo of yourself and we'll look for other photos you're appearing on. Note that for the best result, this reference photo should only contain your face.
+                    Your face is detected based on references faces that you uploaded.
                 {% endblocktrans %}
             </p>
-            <a href="{% url "photos:facerecognition:reference-faces-upload" %}"
+            <a href="{% url "photos:facerecognition:reference-faces" %}"
                class="btn btn-primary"
                data-bs-toggle="tooltip"
                data-bs-placement="baseline"
             >
-                {% trans "Upload reference faces" %}
+                {% trans "Your reference faces" %}
             </a>
         </div>
     </div>
     <div class="row mt-4">
         {% if not has_reference_faces %}
-            {% trans "You need to upload at least one reference photo in order for face recogniction to work." as info_text %}
+            {% trans "You need to upload at least one reference face in order for face recogniction to work." as info_text %}
             {% alert 'info' info_text dismissible=False %}
         {% endif %}
         {% if has_unprocessed_reference_faces %}
-            {% trans "Not all your reference photos have been processed yet. Come back later." as info_text %}
+            {% trans "Not all your reference faced have been processed yet. Come back later." as info_text %}
             {% alert 'info' info_text dismissible=False %}
         {% elif has_reference_faces  and not unprocessed_reference_faces and not photos %}
             {% trans "You haven't been recognized on any photos (yet)" as info_text %}

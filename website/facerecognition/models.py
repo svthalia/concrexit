@@ -207,7 +207,8 @@ class FaceEncoding(models.Model):
             if reference_face.encoding not in matches:
                 self.matches.remove(reference_face)
         for encoding in matches.all():
-            self.matches.add(encoding.reference_face)
+            if hasattr(encoding, "reference_face"):
+                self.matches.add(encoding.reference_face)
 
 
 def face_recognition_distance_function(encoding):
@@ -232,7 +233,7 @@ def reference_face_uploadto(instance, filename):
 class ReferenceFace(models.Model):
     member = models.ForeignKey(
         Member,
-        verbose_name=_("Member"),
+        verbose_name=_("member"),
         on_delete=models.CASCADE,
         related_name="reference_faces",
     )
@@ -242,10 +243,17 @@ class ReferenceFace(models.Model):
         blank=True,
         on_delete=models.CASCADE,
         related_name="reference_face",
+        verbose_name=_("encoding"),
     )
     file = models.ImageField(_("file"), upload_to=reference_face_uploadto)
 
-    matches = models.ManyToManyField(FaceEncoding, related_name="matches")
+    marked_for_deletion_at = models.DateTimeField(
+        _("marked for deletion at"), null=True, blank=True
+    )
+
+    matches = models.ManyToManyField(
+        FaceEncoding, related_name="matches", verbose_name=_("matches")
+    )
 
     def match_photos(self):
         if not self.encoding:
@@ -273,10 +281,9 @@ class ReferenceFace(models.Model):
         return str(self.file)
 
     def delete(self, using=None, keep_parents=False):
-        removed = super().delete(using, keep_parents)
         if self.file.name:
             self.file.delete()
-        return removed
+        return super().delete(using, keep_parents)
 
     class Meta:
         verbose_name = _("Reference face")

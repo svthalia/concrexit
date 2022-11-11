@@ -30,5 +30,6 @@ class ReferenceFaceAdmin(admin.ModelAdmin):
     readonly_fields = (
         "encoding",
         "matches",
+        "marked_for_deletion_at",
     )
     autocomplete_fields = ("member",)

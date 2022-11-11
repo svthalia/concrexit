@@ -1,0 +1,53 @@
+{% extends 'small_page.html' %}
+{% load i18n fieldtype django_bootstrap5 alert grid_item thumbnail %}
+
+{% block title %}{% trans "Your reference faces" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Your reference faces" %} —
+    {{ block.super }}{% endblock %}
+
+{% block page_title %}{% trans "Your reference faces" %}{% endblock %}
+
+{% block page_content %}
+    <p>
+        {% blocktrans %}
+            Upload a reference photo of yourself and we'll look for other photos you're appearing on. Note that for the best result, this reference photo should only contain your face.
+        {% endblocktrans %}
+    </p>
+    <ul>
+        <li>Face recognition is intended to be used for <em>your own</em> faces only.</li>
+        <li>You can have a maximum of {{ reference_faces_limit }} reference faces uploaded.</li>
+        <li>You can only search for faces for the period that you've been a member.</li>
+        <li>After you have uploaded a reference face, you can not just delete it. We will store your reference face for
+            {{ reference_face_storage_period_after_delete }} more days after you deleted them. This allows us to monitor if you actually searched for photos of others.</li>
+    </ul>
+    <div class="my-4">
+        <a href="{% url "photos:facerecognition:your-photos" %}"
+           class="btn btn-primary"
+           data-bs-toggle="tooltip"
+           data-bs-placement="baseline"
+        >
+            {% trans "Back to your photos" %}
+        </a>
+        <a href="{% url "photos:facerecognition:reference-faces-upload" %}"
+           class="btn btn-primary{% if reference_faces_limit_reached %} disabled{% endif %}"
+           data-bs-toggle="tooltip"
+           data-bs-placement="baseline"
+        >
+            {% trans "Upload new reference face" %}
+        </a>
+    </div>
+    <div class="row mt-3">
+    {% if not object_list %}
+            {% trans "You don't have any reference faces uploaded." as info_text %}
+            {% alert 'info' info_text dismissible=False %}
+    {% else %}
+        {% for obj in object_list %}
+            <div class="col-4">
+                {% url "photos:facerecognition:reference-faces-delete" obj.pk as url %}
+                {% thumbnail obj.file THUMBNAIL_SIZE_SMALL as thumb %}
+                {% grid_item title="" url=url image_url=thumb %}
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% endblock %}

@@ -1,4 +1,3 @@
-import base64
 import json
 from io import BytesIO
 
@@ -6,51 +5,78 @@ import face_recognition
 import numpy as np
 import requests
 from PIL import Image
+from oauthlib.oauth2 import BackendApplicationClient, TokenExpiredError
+from requests_oauthlib import OAuth2Session
 
 
-def process_encodings():
-    url = f"http://127.0.0.1:8000/api/v2/photos/facerecognition/unprocessed/"
+class PhotoEncodingProcessor:
+    def build_session(self):
+        client = BackendApplicationClient(client_id=self.client_id)
+        oauth = OAuth2Session(client=client)
+        token = oauth.fetch_token(
+            token_url=self.token_url,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+        )
+        return OAuth2Session(self.client_id, token=token)
 
-    session = requests.Session()
-    # session.headers.update({"Authorization": f"Bearer {key}"}
-    response = session.get(url)
+    def __init__(self, base_url, client_id, client_secret):
+        self.base_url = base_url
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.token_url = f"{base_url}/user/oauth/token/"
+        self.session = self.build_session()
 
-    if response.status_code != 200:
-        print("Error")
-        return
+    def process_encodings(self):
+        url = f"{self.base_url}/api/v2/photos/facerecognition/unprocessed/"
 
-    while response.json()["results"]:
-        process_response(response.json()["results"])
-        response = session.get(url)
+        try:
+            response = self.session.get(url)
+        except TokenExpiredError:
+            self.session.refresh_token(self.token_url)
+            response = self.session.get(url)
 
+        if response.status_code != 200:
+            raise Exception("Error: received HTTP {}".format(response.status_code))
 
-def process_response(results):
-    for result in results:
-        image_file = requests.get(result["file"]["full"]).content
-        encodings = get_encoding(image_file)
-        encoding_data = [list(encoding) for encoding in encodings]
-        data = {"encodings": json.dumps(encoding_data)}
-        push_encoding(result["pk"], result["type"], data)
+        while response.json()["results"]:
+            self.process_response(response.json()["results"])
+            response = self.session.get(url)
 
+    def process_response(self, results):
+        for result in results:
+            image_file = requests.get(result["file"]["full"]).content
+            encodings = self.get_encoding(image_file)
+            encoding_data = [list(encoding) for encoding in encodings]
+            data = {"encodings": json.dumps(encoding_data)}
+            self.push_encoding(result["pk"], result["type"], data)
 
-def push_encoding(pk, obj_type, data):
-    url = f"http://127.0.0.1:8000/api/v2/photos/facerecognition/encodings/{obj_type}/{pk}/"
-    session = requests.Session()
-    # session.headers.update({"Authorization": f"Bearer {key}"}
-    response = session.post(url, data=data)
-    if response.status_code not in {200, 201}:
-        print("Error")
-        return
-    print(data)
+    def push_encoding(self, pk, obj_type, data):
+        url = (
+            f"{self.base_url}/api/v2/photos/facerecognition/encodings/{obj_type}/{pk}/"
+        )
+        try:
+            response = self.session.post(url, data=data)
+        except TokenExpiredError:
+            self.session.refresh_token(self.token_url)
+            response = self.session.post(url, data=data)
 
+        if response.status_code not in {200, 201}:
+            print("Error")
+            return
+        print(data)
 
-def get_encoding(image_file):
-    img = Image.open(BytesIO(image_file))
-    img = img.convert("RGB")
-    img.thumbnail((500, 500))
-    encodings = face_recognition.face_encodings(np.array(img))
-    return encodings
+    def get_encoding(self, image_file):
+        img = Image.open(BytesIO(image_file))
+        img = img.convert("RGB")
+        img.thumbnail((500, 500))
+        encodings = face_recognition.face_encodings(np.array(img))
+        return encodings
 
 
 if __name__ == "__main__":
-    process_encodings()
+    base_url = "http://127.0.0.1:8000"
+    client_id = "ql2BaF7Wo9KGvJKUjdOciiAkbTX7SC9e4pmXfTN6"
+    client_secret = "DMu1fX3GjIcGg5vlbBt2i4FJsa7ZAHFmIOcvXjTXNR73poD7Jg2DxsujJK4aQBFen8G7xLQXqBJ522Uqb9G6mAUPfYNFQvpB1lHZeo1QNedmofTODR8USD4hdsUYUKl6"
+    processor = PhotoEncodingProcessor(base_url, client_id, client_secret)
+    processor.process_encodings()

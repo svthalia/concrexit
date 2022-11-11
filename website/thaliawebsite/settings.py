@@ -780,3 +780,7 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
+
+
+FACE_DETECTION_MAX_NUM_REFERENCE_FACES = 2
+FACE_DETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180

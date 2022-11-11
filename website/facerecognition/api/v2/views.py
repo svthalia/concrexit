@@ -1,3 +1,4 @@
+from oauth2_provider.views.mixins import ClientProtectedResourceMixin
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -12,17 +13,19 @@ from facerecognition.models import ReferenceFace, FaceEncoding, FaceRecognitionP
 from photos.models import Photo
 
 
-class UnprocessedFaceRecognitionView(GenericAPIView):
+class UnprocessedFaceRecognitionView(ClientProtectedResourceMixin, GenericAPIView):
     serializer_class = PhotoFaceEncodingSerializer
     page_size = 10
 
-    def unprocessed_photos_queryset(self):
+    @staticmethod
+    def unprocessed_photos_queryset():
         return Photo.objects.filter(
             face_recognition_photo__isnull=True,
             album__hidden=False,
         )
 
-    def unprocessed_reference_faces_queryset(self):
+    @staticmethod
+    def unprocessed_reference_faces_queryset():
         return ReferenceFace.objects.filter(
             encoding__isnull=True,
         )
@@ -55,7 +58,7 @@ class UnprocessedFaceRecognitionView(GenericAPIView):
         )
 
 
-class FaceEncodingPostView(APIView):
+class FaceEncodingPostView(ClientProtectedResourceMixin, APIView):
     def post(self, request, **kwargs):
         obj_type = kwargs.get("type")
         pk = kwargs.get("pk")

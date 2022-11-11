@@ -6,6 +6,7 @@ from events import services as events_services
 from payments import services as payments_services
 from pizzas import services as pizzas_services
 from sales import services as sales_services
+from facerecognition import services as facerecognition_services
 
 
 class Command(BaseCommand):
@@ -44,3 +45,9 @@ class Command(BaseCommand):
         processed = minimise_logentries_data(options["dry-run"])
         for p in processed:
             self.stdout.write("Removed user from logentries for {}".format(p))
+
+        processed = facerecognition_services.execute_data_minimisation(
+            options["dry-run"]
+        )
+        for p in processed:
+            self.stdout.write("Removed reference faces: {}".format(p))

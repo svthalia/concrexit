@@ -1,0 +1,30 @@
+{% extends 'small_page.html' %}
+{% load i18n fieldtype django_bootstrap5 alert thumbnail grid_item %}
+
+{% block title %}{% trans "Delete reference face" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Delete reference face" %} —
+    {{ block.super }}{% endblock %}
+
+{% block page_title %}{% trans "Delete reference face" %}{% endblock %}
+
+{% block page_content %}
+    {% if form.errors %}
+        {% bootstrap_form_errors form %}
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="col-12">
+        <p>Are you sure you want to delete this reference face? </p>
+        <p><em>We will store your reference face for {{ reference_face_storage_period_after_delete }} more days after you removed them. This allows us to monitor if you actually searched for photos of others.</em></p>
+            <div class="col-4">
+            {% thumbnail object.file THUMBNAIL_SIZE_SMALL as thumb %}
+            {% grid_item title="" image_url=thumb %}
+        </div>
+        {% csrf_token %}
+        {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+        {% bootstrap_form form %}
+        <div class="form-row">
+            <input type="submit" value="{% trans "delete"|capfirst %}" class="btn btn-primary mt-3 float-start">
+        </div>
+    </form>
+{% endblock %}
