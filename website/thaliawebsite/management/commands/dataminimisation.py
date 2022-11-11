@@ -51,4 +51,4 @@ class Command(BaseCommand):
             options["dry-run"]
         )
         for p in processed:
-            self.stdout.write("Removed reference faces: {}".format(p))
+            self.stdout.write(f"Removed reference faces: {p}")

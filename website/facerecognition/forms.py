@@ -13,7 +13,7 @@ class ReferenceFaceUploadForm(forms.ModelForm):
         model = ReferenceFace
         fields = ("file",)
 
-    def save(self, member=None, commit=True):
+    def save(self, commit=True, member=None):
         """Save the user encoding."""
         if not member:
             raise forms.ValidationError("Member must be specified")

@@ -73,7 +73,9 @@ class FaceEncodingPostView(ClientProtectedResourceMixin, APIView):
         obj = obj_class.objects.get(pk=pk)
 
         encoding_data = json.loads(request.data.get("encodings"))
-        if encoding_data is None:  # TODO more sanity checks
+        if encoding_data is None or (
+            len(encoding_data) > 0 and any(len(enc) != 128 for enc in encoding_data)
+        ):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if obj_type == "photo":
@@ -83,7 +85,9 @@ class FaceEncodingPostView(ClientProtectedResourceMixin, APIView):
                 FaceEncoding.objects.create(photo=processed_photo, encoding=encoding)
 
         elif obj_type == "reference_face":
-            obj.encoding = FaceEncoding.objects.create(encoding=encoding_data[0])
+            obj.encoding = FaceEncoding.objects.create(
+                encoding=encoding_data[0]
+            )  # We only support one encoding per reference face, so we take the first one
             obj.save()
 
         return Response(status=status.HTTP_200_OK)

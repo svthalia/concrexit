@@ -3,7 +3,6 @@ from io import BytesIO
 
 import face_recognition
 import numpy as np
-import requests
 from oauthlib.oauth2 import BackendApplicationClient, TokenExpiredError
 from PIL import Image
 from requests_oauthlib import OAuth2Session
@@ -37,7 +36,7 @@ class PhotoEncodingProcessor:
             response = self.session.get(url)
 
         if response.status_code != 200:
-            raise Exception("Error: received HTTP {}".format(response.status_code))
+            raise Exception(f"Error: received HTTP {response.status_code}")
 
         while response.json()["results"]:
             self.process_response(response.json()["results"])
@@ -45,7 +44,7 @@ class PhotoEncodingProcessor:
 
     def process_response(self, results):
         for result in results:
-            image_file = requests.get(result["file"]["full"]).content
+            image_file = self.session.get(result["file"]["full"]).content
             encodings = self.get_encoding(image_file)
             encoding_data = [list(encoding) for encoding in encodings]
             data = {"encodings": json.dumps(encoding_data)}

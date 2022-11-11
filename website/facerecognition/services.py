@@ -7,7 +7,7 @@ from thaliawebsite import settings
 
 
 def execute_data_minimisation(dry_run=False):
-    """Execute the data minimisation process"""
+    """Execute the data minimisation process."""
     delete_period_marked_for_deletion = timezone.now() - timezone.timedelta(
         days=settings.FACE_DETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS
     )
