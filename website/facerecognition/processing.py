@@ -4,8 +4,8 @@ from io import BytesIO
 import face_recognition
 import numpy as np
 import requests
-from PIL import Image
 from oauthlib.oauth2 import BackendApplicationClient, TokenExpiredError
+from PIL import Image
 from requests_oauthlib import OAuth2Session
 
 

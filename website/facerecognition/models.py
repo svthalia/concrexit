@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Count, IntegerField, Value
 from django.db.models.functions import Coalesce
 from django.utils.translation import gettext_lazy as _
+
 from queryable_properties.properties import AnnotationProperty
 
 from members.models import Member

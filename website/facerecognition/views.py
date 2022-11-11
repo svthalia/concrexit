@@ -3,14 +3,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, ListView, DeleteView
+from django.views.generic import DeleteView, FormView, ListView
 
 from facerecognition.forms import ReferenceFaceUploadForm
 from facerecognition.models import ReferenceFace
+
 from photos.models import Photo
 
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from facerecognition.models import ReferenceFace, FaceRecognitionPhoto, FaceEncoding
+from facerecognition.models import FaceEncoding, FaceRecognitionPhoto, ReferenceFace
 
 
 class EncodingInline(admin.TabularInline):

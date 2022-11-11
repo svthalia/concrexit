@@ -2,8 +2,8 @@
 from django.urls import path
 
 from facerecognition.api.v2.views import (
-    UnprocessedFaceRecognitionView,
     FaceEncodingPostView,
+    UnprocessedFaceRecognitionView,
 )
 
 app_name = "photos"

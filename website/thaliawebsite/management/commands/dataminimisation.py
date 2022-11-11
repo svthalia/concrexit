@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 
-from events import services as events_services
 from facerecognition import services as facerecognition_services
+
+from events import services as events_services
 from members import services as members_services
 from payments import services as payments_services
 from pizzas import services as pizzas_services

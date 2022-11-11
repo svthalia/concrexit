@@ -1,3 +1,8 @@
+from facerecognition.api.v2.serializers.face_recognition import (
+    PhotoFaceEncodingSerializer,
+    ReferenceFaceEncodingSerializer,
+)
+from facerecognition.models import FaceEncoding, FaceRecognitionPhoto, ReferenceFace
 from oauth2_provider.views.mixins import ClientProtectedResourceMixin
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
@@ -5,11 +10,6 @@ from rest_framework.response import Response
 from rest_framework.utils import json
 from rest_framework.views import APIView
 
-from facerecognition.api.v2.serializers.face_recognition import (
-    PhotoFaceEncodingSerializer,
-    ReferenceFaceEncodingSerializer,
-)
-from facerecognition.models import ReferenceFace, FaceEncoding, FaceRecognitionPhoto
 from photos.models import Photo
 
 

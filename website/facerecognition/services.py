@@ -2,6 +2,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from facerecognition.models import ReferenceFace
+
 from thaliawebsite import settings
 
 
