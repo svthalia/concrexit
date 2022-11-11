@@ -28,7 +28,7 @@ services:
       - concrexit
   postgres:
     container_name: postgres
-    image: postgres:15.0
+    image: postgres:15.1
     environment:
       POSTGRES_USER: concrexit
       POSTGRES_PASSWORD: concrexit
