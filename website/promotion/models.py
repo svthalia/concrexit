@@ -1,9 +1,9 @@
 """Models for the promotion requests database tables."""
-from tinymce.models import HTMLField
-
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+from tinymce.models import HTMLField
 
 from events.models import Event
 from thaliawebsite.settings import PROMO_PUBLISH_DATE_TIMEDELTA

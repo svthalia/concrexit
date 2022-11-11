@@ -1,18 +1,21 @@
 import datetime
 
 from django.test import TestCase, override_settings
+from django.urls import reverse
 from django.utils import timezone
+
 from rest_framework.test import APIClient
 
 from activemembers.models import Committee
 from events.models import (
+    BooleanRegistrationInformation,
     Event,
     EventRegistration,
-    RegistrationInformationField,
-    BooleanRegistrationInformation,
     IntegerRegistrationInformation,
+    RegistrationInformationField,
     TextRegistrationInformation,
 )
+from events.models.external_event import ExternalEvent
 from members.models import Member
 
 
@@ -38,6 +41,14 @@ class RegistrationApiTest(TestCase):
         )
         cls.event.organisers.add(Committee.objects.get(pk=1))
         cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+        cls.mark_present_api_url = reverse(
+            "api:v2:events:mark-present",
+            kwargs={
+                "pk": cls.event.pk,
+                "token": cls.event.mark_present_url_token,
+            },
+        )
 
     def setUp(self):
         self.client = APIClient()
@@ -86,9 +97,7 @@ class RegistrationApiTest(TestCase):
         self.event.cancel_deadline = timezone.now() + datetime.timedelta(hours=1)
         self.event.save()
         reg = EventRegistration.objects.create(event=self.event, member=self.member)
-        response = self.client.delete(
-            "/api/v1/registrations/{}/".format(reg.pk), follow=True
-        )
+        response = self.client.delete(f"/api/v1/registrations/{reg.pk}/", follow=True)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(self.event.participants.count(), 0)
 
@@ -234,7 +243,7 @@ class RegistrationApiTest(TestCase):
 
         # as if there is a csrf token
         response = self.client.get(
-            "/api/v1/registrations/{}/".format(registration.pk), follow=True
+            f"/api/v1/registrations/{registration.pk}/", follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["member"], self.member.pk)
@@ -295,7 +304,7 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(field3.get_value_for(registration), None)
 
         response = self.client.patch(
-            "/api/v1/registrations/{}/".format(registration.pk),
+            f"/api/v1/registrations/{registration.pk}/",
             {
                 "fields[info_field_1]": True,
                 "fields[info_field_2]": 1337,
@@ -322,7 +331,7 @@ class RegistrationApiTest(TestCase):
         self.member.save()
 
         response = self.client.patch(
-            "/api/v1/registrations/{}/".format(reg0.pk),
+            f"/api/v1/registrations/{reg0.pk}/",
             {"csrf": "random", "present": True, "payment": "cash_payment"},
             follow=True,
         )
@@ -333,7 +342,7 @@ class RegistrationApiTest(TestCase):
         self.assertTrue(reg0.present)
 
         response = self.client.patch(
-            "/api/v1/registrations/{}/".format(reg1.pk),
+            f"/api/v1/registrations/{reg1.pk}/",
             {"csrf": "random", "present": True, "payment": "card_payment"},
             follow=True,
         )
@@ -345,7 +354,7 @@ class RegistrationApiTest(TestCase):
         self.assertTrue(reg1.present)
 
         response = self.client.patch(
-            "/api/v1/registrations/{}/".format(reg2.pk),
+            f"/api/v1/registrations/{reg2.pk}/",
             {"csrf": "random", "present": False, "payment": "cash_payment"},
             follow=True,
         )
@@ -355,3 +364,186 @@ class RegistrationApiTest(TestCase):
         reg2.refresh_from_db()
         self.assertEqual(reg2.payment.type, "cash_payment")
         self.assertFalse(reg2.present)
+
+    def test_mark_present_url_registered(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=1),
+        )
+
+        response = self.client.patch(self.mark_present_api_url, follow=True)
+        self.assertContains(response, "You have been marked as present.")
+        registration.refresh_from_db()
+        self.assertTrue(registration.present)
+
+    def test_mark_present_url_already_present(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=1),
+            present=True,
+        )
+
+        response = self.client.patch(self.mark_present_api_url, follow=True)
+        self.assertContains(response, "You were already marked as present.")
+        registration.refresh_from_db()
+        self.assertTrue(registration.present)
+
+    def test_mark_present_url_not_registered(self):
+        response = self.client.patch(self.mark_present_api_url, follow=True)
+        self.assertContains(
+            response, "You are not registered for this event.", status_code=403
+        )
+
+    def test_mark_present_url_wrong_token(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=3),
+        )
+        response = self.client.patch(
+            reverse(
+                "api:v2:events:mark-present",
+                kwargs={
+                    "pk": self.event.pk,
+                    "token": "11111111-2222-3333-4444-555555555555",
+                },
+            ),
+            follow=True,
+        )
+
+        self.assertContains(response, "Invalid url.", status_code=403)
+        self.assertFalse(registration.present)
+
+    def test_mark_present_url_past_event(self):
+        registration = EventRegistration.objects.create(
+            event=self.event,
+            member=self.member,
+            date=timezone.now() - datetime.timedelta(hours=3),
+        )
+        self.event.start = timezone.now() - datetime.timedelta(hours=2)
+        self.event.end = timezone.now() - datetime.timedelta(hours=1)
+        self.event.save()
+        response = self.client.patch(self.mark_present_api_url, follow=True)
+
+        self.assertContains(response, "This event has already ended.", status_code=403)
+        self.assertFalse(registration.present)
+
+
+@override_settings(SUSPEND_SIGNALS=True)
+class CalendarjsTest(TestCase):
+    """Tests for CalendarJS/Fullcalendar view."""
+
+    fixtures = ["members.json", "member_groups.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.create(
+            pk=1,
+            title="testevent",
+            description="desc",
+            published=True,
+            start=timezone.make_aware(datetime.datetime(2010, 1, 1, 20, 0, 0)),
+            end=timezone.make_aware(datetime.datetime(2010, 1, 1, 22, 0, 0)),
+            location="test location",
+            map_location="test map location",
+            price=13.37,
+            fine=5.00,
+        )
+        cls.unpubEvent = Event.objects.create(
+            pk=2,
+            title="secretevent",
+            description="desc",
+            published=False,
+            start=timezone.make_aware(datetime.datetime(2010, 1, 1, 20, 0, 0)),
+            end=timezone.make_aware(datetime.datetime(2010, 1, 1, 22, 0, 0)),
+            location="fake location",
+            map_location="fake map location",
+            price=6.66,
+            fine=5.00,
+        )
+        cls.extEvent = ExternalEvent.objects.create(
+            pk=3,
+            organiser="Technicie",
+            title="extevent",
+            description="desc",
+            published=True,
+            start=timezone.make_aware(datetime.datetime(2010, 1, 1, 20, 0, 0)),
+            end=timezone.make_aware(datetime.datetime(2010, 1, 1, 22, 0, 0)),
+            location="partner location",
+        )
+        cls.event.organisers.add(Committee.objects.get(pk=1))
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.force_login(self.member)
+
+    def test_event_list(self):
+        response = self.client.get(
+            "/api/calendarjs/events/?start=2010-01-01T00%3A00%3A00%2B01%3A00&end=2011-01-01T00%3A00%3A00%2B01%3A00",
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["title"], "testevent")
+
+    def test_unpub_event_list(self):
+        response = self.client.get(
+            "/api/calendarjs/events/unpublished/?start=2010-01-01T00%3A00%3A00%2B01%3A00&end=2011-01-01T00%3A00%3A00%2B01%3A00",
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["title"], "secretevent")
+
+    def test_external_event_list(self):
+        response = self.client.get(
+            "/api/calendarjs/external/?start=2010-01-01T00%3A00%3A00%2B01%3A00&end=2011-01-01T00%3A00%3A00%2B01%3A00",
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["title"], "extevent (Technicie)")
+
+
+@override_settings(SUSPEND_SIGNALS=True)
+class EventApiV2Test(TestCase):
+    """Tests for registration view."""
+
+    fixtures = ["members.json", "member_groups.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.event = Event.objects.create(
+            pk=1,
+            title="testevent",
+            description="desc",
+            published=True,
+            start=(timezone.now() + datetime.timedelta(hours=1)),
+            end=(timezone.now() + datetime.timedelta(hours=2)),
+            location="test location",
+            map_location="test map location",
+            price=13.37,
+            fine=5.00,
+        )
+        cls.event.organisers.add(Committee.objects.get(pk=1))
+        cls.member = Member.objects.filter(last_name="Wiggers").first()
+
+        cls.mark_present_api_url = reverse(
+            "api:v2:events:mark-present",
+            kwargs={
+                "pk": cls.event.pk,
+                "token": cls.event.mark_present_url_token,
+            },
+        )
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.force_login(self.member)
+
+    def test_event_list(self):
+        response = self.client.get("/api/v2/events/", format="json")
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["title"], "testevent")

@@ -9,4 +9,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         revoked = revoke_staff_permission_for_users_in_no_commitee()
         for member in revoked:
-            self.stdout.write("Revoked staff permissions for {}".format(member))
+            self.stdout.write(f"Revoked staff permissions for {member}")

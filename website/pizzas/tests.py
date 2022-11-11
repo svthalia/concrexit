@@ -1,7 +1,7 @@
 """Tests for the pizza functionality."""
 import datetime
 
-from django.contrib.auth.models import Permission, ContentType
+from django.contrib.auth.models import ContentType, Permission
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone, translation
@@ -9,10 +9,10 @@ from django.utils import timezone, translation
 from freezegun import freeze_time
 
 from activemembers.models import Committee
-from members.models import Member
 from events.models import Event
-from pizzas.models import FoodEvent, FoodOrder
+from members.models import Member
 from pizzas import services
+from pizzas.models import FoodEvent, FoodOrder
 
 
 @freeze_time("2018-03-21")

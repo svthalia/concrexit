@@ -16,8 +16,7 @@ def is_manager(member, shift):
             or (
                 member.get_member_groups()
                 .filter(pk__in=shift.managers.values_list("pk"))
-                .count()
-                != 0
+                .exists()
             )
         )
     return False

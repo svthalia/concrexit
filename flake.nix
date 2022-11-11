@@ -16,7 +16,7 @@
             agenix.nixosModule
             ({ pkgs, modulesPath, ... }: {
               imports = [ "${modulesPath}/virtualisation/amazon-image.nix" ];
-              
+
               networking.hostName = "production";
 
               fileSystems."/var/lib/concrexit/media" = {

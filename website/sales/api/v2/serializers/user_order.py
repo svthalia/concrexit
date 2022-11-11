@@ -1,7 +1,7 @@
 from sales.api.v2.admin.serializers.order import (
-    ProductNameRelatedField,
     OrderItemSerializer,
     OrderSerializer,
+    ProductNameRelatedField,
 )
 from sales.models.product import ProductListItem
 

@@ -1,5 +1,4 @@
 import os
-import re
 
 from django.apps import apps
 from django.conf import settings
@@ -34,8 +33,7 @@ def remove_empty_dirs(path=None):
     if all(list(map(remove_empty_dirs, listdir))):
         os.rmdir(path)
         return True
-    else:
-        return False
+    return False
 
 
 def _get_used_thabloid_pages(storage, path):
@@ -51,13 +49,13 @@ def get_used_media(storage):
 
     for field in get_file_fields():
         is_null = {
-            "%s__isnull" % field.name: True,
+            f"{field.name}__isnull": True,
         }
         is_empty = {
-            "%s" % field.name: "",
+            f"{field.name}": "",
         }
 
-        if type(field.storage) != type(storage):
+        if not isinstance(field.storage, type(storage)):
             continue
 
         for value in (

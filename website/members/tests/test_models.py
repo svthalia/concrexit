@@ -1,11 +1,11 @@
-from datetime import datetime
 import doctest
+from datetime import datetime
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from members import models
-from members.models import Profile, Member
+from members.models import Member, Profile
 
 
 def load_tests(loader, tests, ignore):

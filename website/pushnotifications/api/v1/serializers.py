@@ -1,6 +1,6 @@
 from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
 
-from pushnotifications.models import Device, Category, Message
+from pushnotifications.models import Category, Device, Message
 from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 

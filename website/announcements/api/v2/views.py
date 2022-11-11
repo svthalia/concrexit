@@ -1,13 +1,10 @@
 """API v2 views of the announcements app."""
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-)
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
-from announcements.api.v2.serializers import SlideSerializer, FrontpageArticleSerializer
-from announcements.models import Slide, FrontpageArticle
+from announcements.api.v2.serializers import FrontpageArticleSerializer, SlideSerializer
+from announcements.models import FrontpageArticle, Slide
 
 
 class AnnouncementsAPIViewMixin:

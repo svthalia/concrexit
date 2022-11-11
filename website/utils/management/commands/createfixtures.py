@@ -4,7 +4,7 @@
 import math
 import random
 import string
-from datetime import date, timedelta, datetime
+from datetime import date, datetime, timedelta
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
@@ -15,20 +15,20 @@ from django.utils.text import slugify
 from activemembers.models import (
     Board,
     Committee,
+    MemberGroup,
     MemberGroupMembership,
     Society,
-    MemberGroup,
 )
 from documents.models import Document
-from education.models import Course, Category
+from education.models import Category, Course
 from events.models import (
+    EVENT_CATEGORIES,
     Event,
     EventRegistration,
-    EVENT_CATEGORIES,
     registration_member_choices_limit,
 )
-from members.models import Profile, Member, Membership
-from newsletters.models import NewsletterItem, NewsletterEvent, Newsletter
+from members.models import Member, Membership, Profile
+from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
 from partners.models import Partner, Vacancy, VacancyCategory
 from payments.models import Payment
 from payments.services import create_payment
@@ -42,7 +42,7 @@ try:
     from pydenticon import Generator as IconGenerator
 except ImportError as error:
     raise Exception(
-        "Have you installed the dev-requirements? Failed importing {}".format(error)
+        f"Have you installed the dev-requirements? Failed importing {error}"
     ) from error
 
 _faker = FakerFactory.create("nl_NL")
@@ -70,7 +70,7 @@ class _ProfileFactory(factory.Factory):
     address_city = factory.LazyAttribute(lambda x: _faker.city())
     address_country = random.choice(["NL", "DE", "BE"])
 
-    phone_number = "+31{}".format(_faker.numerify(text="##########"))
+    phone_number = f"+31{_faker.numerify(text='##########')}"
 
 
 def get_event_to_register_for(member):
@@ -157,10 +157,10 @@ class Command(BaseCommand):
 
         board = Board()
 
-        board.name = "Board {}-{}".format(lecture_year, lecture_year + 1)
+        board.name = f"Board {lecture_year}-{lecture_year+1}"
         while Board.objects.filter(name=board.name).exists():
             lecture_year = lecture_year - 1
-            board.name = "Board {}-{}".format(lecture_year, lecture_year + 1)
+            board.name = f"Board {lecture_year}-{lecture_year+1}"
 
         board.description = _faker.paragraph()
 
@@ -327,7 +327,7 @@ class Command(BaseCommand):
         partner = Partner()
 
         partner.is_active = random.random() < 0.75
-        partner.name = "{} {}".format(_faker.company(), _faker.company_suffix())
+        partner.name = f"{_faker.company()} {_faker.company_suffix()}"
         partner.slug = _faker.slug()
         partner.link = _faker.uri()
 
@@ -423,9 +423,7 @@ class Command(BaseCommand):
         if random.random() < 0.75:
             vacancy.partner = random.choice(partners)
         else:
-            vacancy.company_name = "{} {}".format(
-                _faker.company(), _faker.company_suffix()
-            )
+            vacancy.company_name = f"{_faker.company()} {_faker.company_suffix()}"
             igen = IconGenerator(5, 5)  # 5x5 blocks
             icon = igen.generate(
                 vacancy.company_name,
@@ -458,9 +456,7 @@ class Command(BaseCommand):
         doc.name = _faker.text(max_nb_chars=30)
         doc.category = random.choice([c[0] for c in Document.DOCUMENT_CATEGORIES])
         doc.members_only = random.random() < 0.75
-        doc.file.save(
-            "{}.txt".format(doc.name), ContentFile(_faker.text(max_nb_chars=120))
-        )
+        doc.file.save(f"{doc.name}.txt", ContentFile(_faker.text(max_nb_chars=120)))
         doc.save()
 
     def create_newsletter(self):
@@ -545,7 +541,7 @@ class Command(BaseCommand):
 
         if not possible_event:
             self.stdout.write("Could not create event")
-            return
+            return None
 
         registration.event = possible_event
 
@@ -560,7 +556,7 @@ class Command(BaseCommand):
 
         possible_events = list(
             filter(
-                lambda e: e.registrations.count() > 0,
+                lambda e: e.registrations.exists(),
                 Event.objects.filter(price__gt=0).order_by("?"),
             )
         )
@@ -569,7 +565,7 @@ class Command(BaseCommand):
             self.create_event()
             possible_events = list(
                 filter(
-                    lambda e: e.registrations.count() > 0,
+                    lambda e: e.registrations.exists(),
                     Event.objects.filter(price__gt=0).order_by("?"),
                 )
             )
@@ -661,7 +657,7 @@ class Command(BaseCommand):
             "photoalbum",
         ]
 
-        if all([not options[opt] for opt in opts]):
+        if all(not options[opt] for opt in opts):
             self.stdout.write(
                 "Use ./manage.py help createfixtures to find out"
                 " how to call this command"

@@ -1,19 +1,13 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import (
-    Sum,
-    Q,
-    Count,
-)
+from django.db.models import Count, Q, Sum
 from django.db.models.expressions import Value
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from queryable_properties.managers import QueryablePropertiesManager
-from queryable_properties.properties import (
-    RangeCheckProperty,
-    AggregateProperty,
-)
+from queryable_properties.properties import AggregateProperty, RangeCheckProperty
 
 from activemembers.models import MemberGroup
 from payments.models import PaymentAmountField
@@ -96,7 +90,7 @@ class Shift(models.Model):
                 | Q(order_items__isnull=True)
             ).delete()
 
-        return super(Shift, self).save(force_insert, force_update, using, update_fields)
+        return super().save(force_insert, force_update, using, update_fields)
 
     active = RangeCheckProperty("start", "end", timezone.now)
 

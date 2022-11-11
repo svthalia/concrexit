@@ -11,7 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from members.models import Membership
 from payments.widgets import SignatureWidget
 from registrations import services
-from .models import Registration, Renewal, Reference
+
+from .models import Reference, Registration, Renewal
 
 
 class BaseRegistrationForm(forms.ModelForm):

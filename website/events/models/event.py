@@ -1,20 +1,22 @@
 import uuid
+
 from django.conf import settings
 from django.core import validators
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models, router
 from django.db.models.deletion import Collector
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
+
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
 from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
 from payments.models import PaymentAmountField
-from pushnotifications.models import ScheduledMessage, Category
+from pushnotifications.models import Category, ScheduledMessage
 
 
 class Event(models.Model):
@@ -453,15 +455,14 @@ class Event(models.Model):
                 if registration_reminder_time > timezone.now():
                     registration_reminder.title = "Event registration"
                     registration_reminder.body = (
-                        "Registration for '{}' " "starts in 1 hour".format(self.title)
+                        f"Registration for '{self.title}' starts in 1 hour"
                     )
                     registration_reminder.category = Category.objects.get(
                         key=Category.EVENT
                     )
                     registration_reminder.time = registration_reminder_time
                     registration_reminder.url = (
-                        f"{settings.BASE_URL}"
-                        f'{reverse("events:event", args=[self.id])}'
+                        f"{settings.BASE_URL}{reverse('events:event', args=[self.id])}"
                     )
 
                     registration_reminder.save()
@@ -525,9 +526,7 @@ class Event(models.Model):
         return collector.delete()
 
     def __str__(self):
-        return "{}: {}".format(
-            self.title, timezone.localtime(self.start).strftime("%Y-%m-%d %H:%M")
-        )
+        return f"{self.title}: {timezone.localtime(self.start):%Y-%m-%d %H:%M}"
 
     class Meta:
         ordering = ("-start",)

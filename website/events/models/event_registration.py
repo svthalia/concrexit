@@ -1,14 +1,16 @@
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q, F, Count
-from django.db.models.functions import NullIf, Greatest
+from django.db.models import Count, F, Q
+from django.db.models.functions import Greatest, NullIf
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from queryable_properties.properties import AnnotationProperty
+
 from queryable_properties.managers import QueryablePropertiesManager
+from queryable_properties.properties import AnnotationProperty
 
 from payments.models import PaymentAmountField
+
 from .event import Event
 
 
@@ -93,15 +95,13 @@ class EventRegistration(models.Model):
     def phone_number(self):
         if self.member:
             return self.member.profile.phone_number
-        else:
-            return self.alt_phone_number
+        return self.alt_phone_number
 
     @property
     def email(self):
         if self.member:
             return self.member.email
-        else:
-            return self.alt_email
+        return self.alt_email
 
     @property
     def information_fields(self):
@@ -233,8 +233,8 @@ class EventRegistration(models.Model):
 
     def __str__(self):
         if self.member:
-            return "{}: {}".format(self.member.get_full_name(), self.event)
-        return "{}: {}".format(self.name, self.event)
+            return f"{self.member.get_full_name()}: {self.event}"
+        return f"{self.name}: {self.event}"
 
     class Meta:
         verbose_name = _("Registration")

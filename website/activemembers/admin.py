@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from activemembers import models
-from activemembers.forms import MemberGroupMembershipForm, MemberGroupForm
+from activemembers.forms import MemberGroupForm, MemberGroupMembershipForm
 from utils.snippets import datetime_to_lectureyear
 
 

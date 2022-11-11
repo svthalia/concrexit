@@ -4,7 +4,7 @@ from functools import partial
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.forms import Field
-from django.urls import reverse, path
+from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
@@ -13,7 +13,8 @@ from events.services import is_organiser
 from payments.widgets import PaymentWidget
 from pizzas import admin_views
 from utils.admin import DoNextModelAdmin
-from .models import FoodOrder, FoodEvent, Product
+
+from .models import FoodEvent, FoodOrder, Product
 
 
 @admin.register(Product)

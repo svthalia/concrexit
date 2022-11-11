@@ -10,14 +10,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.template.defaultfilters import floatformat
-from django.test import Client, TestCase, RequestFactory, override_settings
+from django.test import Client, RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from members.models import Membership, Profile, Member
+from members.models import Member, Membership, Profile
 from registrations import views
-from registrations.models import Entry, Registration, Renewal, Reference
+from registrations.models import Entry, Reference, Registration, Renewal
 from registrations.views import RenewalFormView
 
 
@@ -84,13 +84,12 @@ class EntryAdminViewTest(TestCase):
         self.client.force_login(self.user)
 
     def test_permissions(self):
-        url = "/registration/admin/process/{}/".format(self.entry1.pk)
+        url = f"/registration/admin/process/{self.entry1.pk}/"
         response = self.client.post(url)
         self.assertRedirects(response, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
-        url = "/registration/admin/process/{}/".format(self.entry1.pk)
         response = self.client.post(url)
         self.assertRedirects(
             response, f"/admin/registrations/registration/{self.entry1.pk}/change/"

@@ -2,8 +2,8 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from promotion.forms import PromotionRequestForm
 from events.services import is_organiser
+from promotion.forms import PromotionRequestForm
 
 from .models import PromotionChannel, PromotionRequest
 

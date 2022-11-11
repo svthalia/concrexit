@@ -1,5 +1,5 @@
 """The routes defined by the documents package."""
-from django.urls import path, include
+from django.urls import include, path
 
 from . import views
 

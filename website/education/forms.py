@@ -2,16 +2,17 @@
 import datetime
 
 from django.forms import (
+    CharField,
     ChoiceField,
     ModelChoiceField,
     ModelForm,
     TypedChoiceField,
-    CharField,
 )
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from utils.snippets import datetime_to_lectureyear
+
 from .models import Course, Exam, Summary
 
 

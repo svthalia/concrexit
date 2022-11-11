@@ -3,16 +3,17 @@ import datetime
 from typing import Union
 
 from django.conf import settings
-from django.db.models import QuerySet, Q, Sum, Model
+from django.db.models import Model, Q, QuerySet, Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
 from utils.snippets import send_email
+
 from .exceptions import PaymentError
-from .models import Payment, BankAccount, PaymentUser
-from .payables import payables, Payable
+from .models import BankAccount, Payment, PaymentUser
+from .payables import Payable, payables
 
 
 def create_payment(
@@ -163,7 +164,7 @@ def derive_next_mandate_no(member) -> str:
         .filter(mandate_no__regex=BankAccount.MANDATE_NO_DEFAULT_REGEX)
     )
     new_mandate_no = 1 + max(
-        [int(account.mandate_no.split("-")[1]) for account in accounts], default=0
+        (int(account.mandate_no.split("-")[1]) for account in accounts), default=0
     )
     return f"{member.pk}-{new_mandate_no}"
 
@@ -209,12 +210,24 @@ def execute_data_minimisation(dry_run=False):
         created_at__lte=payment_deletion_period
     ).exclude(paid_by__isnull=True)
 
-    queryset_bankaccounts = BankAccount.objects.filter(
-        Q(owner__paid_payment_set__type=Payment.TPAY),
-        Q(owner__paid_payment_set__batch__isnull=True)
-        | Q(owner__paid_payment_set__batch__processed=False)
+    # Delete bank accounts that are not valid anymore, and have not been used in the last 13 months
+    # (13 months is the required time we need to keep the mandates for)
+    queryset_bankaccounts = BankAccount.objects.all()
+    queryset_bankaccounts = queryset_bankaccounts.filter(
+        valid_until__lt=timezone.now()
+    )  # Keep valid bank accounts
+    queryset_bankaccounts = queryset_bankaccounts.exclude(  # Also keep bank accounts that
+        Q(
+            owner__paid_payment_set__type=Payment.TPAY
+        ),  # are used for Thalia Pay payments, AND
+        Q(
+            owner__paid_payment_set__batch__isnull=True
+        )  # have a payment that is in no batch, OR
         | Q(
-            owner__paid_payment_set__batch__processing_date__gt=bankaccount_deletion_period
+            owner__paid_payment_set__batch__processed=False
+        )  # have an unprocessed batch, OR
+        | Q(
+            owner__paid_payment_set__batch__processing_date__gt=bankaccount_deletion_period  # or have a processed batch that is not older than 13 months
         ),
     )
 

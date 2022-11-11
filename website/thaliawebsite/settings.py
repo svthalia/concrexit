@@ -7,10 +7,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
-import logging
-
 import base64
 import json
+import logging
 import os
 
 from django.core.management.commands import makemessages
@@ -339,7 +338,7 @@ if FIREBASE_CREDENTIALS != "{}":
 FIREBASE_CREDENTIALS = json.loads(FIREBASE_CREDENTIALS)
 
 if FIREBASE_CREDENTIALS != {}:
-    from firebase_admin import initialize_app, credentials
+    from firebase_admin import credentials, initialize_app
 
     try:
         initialize_app(credential=credentials.Certificate(FIREBASE_CREDENTIALS))

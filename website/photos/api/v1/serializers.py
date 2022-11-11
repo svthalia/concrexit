@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from thaliawebsite.api.services import create_image_thumbnail_dict
 from photos import services
-from photos.models import Photo, Album
+from photos.models import Album, Photo
+from thaliawebsite.api.services import create_image_thumbnail_dict
 from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 

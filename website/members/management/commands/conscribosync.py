@@ -4,11 +4,13 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import date
 from django.utils import translation
+
 from requests import HTTPError
 
 from members.models import Member
 from utils.conscribo.api import ConscriboApi
-from utils.conscribo.objects import Command as ApiCommand, ResultException
+from utils.conscribo.objects import Command as ApiCommand
+from utils.conscribo.objects import ResultException
 
 logger = logging.getLogger(__name__)
 

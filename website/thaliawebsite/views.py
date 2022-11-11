@@ -1,10 +1,7 @@
 """General views for the website."""
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import (
-    HttpResponseForbidden,
-    HttpResponse,
-)
+from django.http import HttpResponse, HttpResponseForbidden
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.base import View

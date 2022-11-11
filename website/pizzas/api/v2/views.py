@@ -1,27 +1,27 @@
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
+from rest_framework import filters as framework_filters
+from rest_framework import status
 from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    get_object_or_404,
     CreateAPIView,
     DestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
     UpdateAPIView,
+    get_object_or_404,
 )
-
-from rest_framework import filters as framework_filters, status
 from rest_framework.response import Response
 
 from payments.exceptions import PaymentError
 from payments.services import delete_payment
 from pizzas.api.v2 import filters
 from pizzas.api.v2.serializers import (
-    ProductSerializer,
+    FoodOrderCreateSerializer,
     FoodOrderSerializer,
     FoodOrderUpdateSerializer,
-    FoodOrderCreateSerializer,
+    ProductSerializer,
 )
 from pizzas.api.v2.serializers.food_event import FoodEventSerializer
-from pizzas.models import FoodEvent, Product, FoodOrder
+from pizzas.models import FoodEvent, FoodOrder, Product
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 

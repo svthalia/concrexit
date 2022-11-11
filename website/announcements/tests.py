@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
-from django.test import TestCase, RequestFactory, override_settings
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
 from announcements.views import close_announcement

@@ -3,7 +3,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 
 from photos.models import Album, Photo
 from photos.services import (

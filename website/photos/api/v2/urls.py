@@ -1,11 +1,7 @@
 """Photos app API v2 urls."""
-from django.urls import path, include
+from django.urls import include, path
 
-from photos.api.v2.views import (
-    AlbumListView,
-    AlbumDetailView,
-    PhotoLikeView,
-)
+from photos.api.v2.views import AlbumDetailView, AlbumListView, PhotoLikeView
 
 app_name = "photos"
 

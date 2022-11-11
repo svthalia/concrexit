@@ -39,7 +39,7 @@ def create_models_test_class(classname):
         str_function_is_overwritten_for.__name__ = name
         return str_function_is_overwritten_for
 
-    tests = dict()
+    tests = {}
     # django keeps track of the models it knows of, and we can request that
     # here by default these are only the models implemented by the project
     for model in apps.get_models():

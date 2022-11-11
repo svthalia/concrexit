@@ -7,13 +7,13 @@ from pizzas.api.v2.admin.permissions import IsOrganiser
 from pizzas.api.v2.admin.serializers.food_event import FoodEventAdminSerializer
 from pizzas.api.v2.admin.serializers.order import FoodOrderAdminSerializer
 from pizzas.api.v2.admin.serializers.product import ProductAdminSerializer
-from pizzas.models import Product, FoodEvent, FoodOrder
+from pizzas.models import FoodEvent, FoodOrder, Product
 from thaliawebsite.api.v2.admin import (
-    AdminListAPIView,
     AdminCreateAPIView,
+    AdminDestroyAPIView,
+    AdminListAPIView,
     AdminRetrieveAPIView,
     AdminUpdateAPIView,
-    AdminDestroyAPIView,
 )
 
 

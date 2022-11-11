@@ -4,6 +4,7 @@ from django.contrib.admin import ModelAdmin
 from django.shortcuts import redirect
 
 from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
+
 from .forms import NewsletterEventForm
 
 

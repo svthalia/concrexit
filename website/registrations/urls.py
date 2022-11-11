@@ -1,15 +1,15 @@
 """The routes defined by the registrations package."""
-from django.urls import path, include
+from django.urls import include, path
 from django.views.generic import TemplateView
 
 from .views import (
     BecomeAMemberView,
+    BenefactorRegistrationFormView,
     ConfirmEmailView,
     EntryAdminView,
     MemberRegistrationFormView,
-    RenewalFormView,
-    BenefactorRegistrationFormView,
     ReferenceCreateView,
+    RenewalFormView,
 )
 
 app_name = "registrations"

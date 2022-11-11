@@ -11,9 +11,9 @@ def render_frontpage_vacancies():
     vacancies = []
 
     for vacancy in Vacancy.objects.order_by("?")[:6]:
-        url = "{}#vacancy-{}".format(reverse("partners:vacancies"), vacancy.id)
+        url = f"{reverse('partners:vacancies')}#vacancy-{vacancy.id}"
         if vacancy.partner and vacancy.partner.is_active:
-            url = "{}#vacancy-{}".format(vacancy.partner.get_absolute_url(), vacancy.id)
+            url = f"{vacancy.partner.get_absolute_url()}#vacancy-{vacancy.id}"
 
         vacancies.append(
             {

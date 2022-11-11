@@ -1,16 +1,16 @@
 """The models defined by the pizzas package."""
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from events.models import Event
 import members
+from events.models import Event
 from members.models import Member
 from payments.models import Payment, PaymentAmountField
 from payments.services import delete_payment
-from pushnotifications.models import ScheduledMessage, Category
+from pushnotifications.models import Category, ScheduledMessage
 
 
 class CurrentEventManager(models.Manager):

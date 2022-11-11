@@ -1,12 +1,13 @@
+from datetime import date
 from unittest import mock
-from datetime import timedelta, date
+
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from freezegun import freeze_time
 
 from members import services
-from members.models import Member, Membership, Profile, EmailChange
+from members.models import EmailChange, Member, Membership, Profile
 from members.services import gen_stats_year
 
 

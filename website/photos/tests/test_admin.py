@@ -1,6 +1,5 @@
-import os
 import datetime
-
+import os
 from io import BytesIO
 from zipfile import ZipFile
 
@@ -93,7 +92,7 @@ class AlbumUploadTest(TestCase):
 
         pk = Album.objects.first().pk
         self.client.post(
-            "/admin/photos/album/{}/change/".format(pk),
+            f"/admin/photos/album/{pk}/change/",
             {
                 "title": "test album",
                 "date": "2017-04-12",
@@ -126,7 +125,7 @@ class AlbumUploadTest(TestCase):
         )
         pk = Album.objects.first().pk
         self.client.post(
-            "/admin/photos/album/{}/change/".format(pk),
+            f"/admin/photos/album/{pk}/change/",
             {
                 "title": "test album",
                 "date": "2017-04-12",

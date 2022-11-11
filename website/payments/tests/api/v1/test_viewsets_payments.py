@@ -2,16 +2,17 @@ from unittest import mock
 from unittest.mock import MagicMock, Mock
 
 from django.apps import apps
-from django.test import TestCase, override_settings, Client
+from django.test import TestCase, override_settings
 from django.urls import reverse
+
 from freezegun import freeze_time
 from rest_framework.test import APIClient
 
 from members.models import Member
 from payments import payables
 from payments.exceptions import PaymentError
-from payments.models import BankAccount, PaymentUser, Payment
-from payments.tests.__mocks__ import MockPayable, MockModel
+from payments.models import BankAccount, Payment, PaymentUser
+from payments.tests.__mocks__ import MockModel, MockPayable
 
 
 @freeze_time("2020-09-01")

@@ -41,7 +41,7 @@ class LectureYearFilter(admin.SimpleListFilter):
     parameter_name = "lecture_year"
 
     def lookups(self, request, model_admin):
-        if AnnualDocument.objects.count() > 0:
+        if AnnualDocument.objects.exists():
             first_year = AnnualDocument.objects.order_by("year").first().year
             last_year = AnnualDocument.objects.order_by("year").last().year
 

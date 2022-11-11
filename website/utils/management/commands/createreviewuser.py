@@ -8,7 +8,7 @@ try:
     from faker import Factory as FakerFactory
 except ImportError as error:
     raise Exception(
-        "Have you installed the dev-requirements? Failed importing {}".format(error)
+        f"Have you installed the dev-requirements? Failed importing {error}"
     ) from error
 
 _faker = FakerFactory.create("nl_NL")

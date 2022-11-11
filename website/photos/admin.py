@@ -1,10 +1,9 @@
-from django.contrib import admin
-from django.contrib import messages
+from django.contrib import admin, messages
 from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 from .forms import AlbumForm
-from .models import Album, Photo, Like
+from .models import Album, Like, Photo
 from .services import extract_archive, save_photo
 
 

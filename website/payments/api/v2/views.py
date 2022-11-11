@@ -1,17 +1,14 @@
-import rest_framework.filters as framework_filters
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from rest_framework import status, serializers
+
+import rest_framework.filters as framework_filters
+from rest_framework import serializers, status
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    get_object_or_404,
-)
+from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
-from payments import services, payables, NotRegistered
+from payments import NotRegistered, payables, services
 from payments.api.v2 import filters
 from payments.api.v2.serializers import PaymentSerializer
 from payments.api.v2.serializers.payable_detail import PayableSerializer
@@ -122,7 +119,9 @@ class PayableDetailView(RetrieveAPIView):
             )
             payable.model.save()
         except PaymentError as e:
-            raise ValidationError(detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]})
+            raise ValidationError(
+                detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]}
+            ) from e
 
         return Response(
             PayableSerializer(payable, context=self.get_serializer_context()).data,

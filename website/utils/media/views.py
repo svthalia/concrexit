@@ -1,16 +1,17 @@
 """Utility views."""
 from datetime import timedelta
 
-from PIL import Image, ImageOps
 from django.core import signing
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.files.storage import get_storage_class
 from django.core.signing import BadSignature
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils import timezone
+
 from django_sendfile import sendfile
-from django.core.cache import cache
+from PIL import Image, ImageOps
 
 from utils.media.services import save_image
 
@@ -24,7 +25,7 @@ def get_thumb_modified_time(storage, path):
         try:
             storage_value = storage.get_modified_time(path)
             cache.set(f"thumbnails_{path}", storage_value, 60 * 60)
-        except:
+        except:  # pylint: disable=bare-except
             # File probably does not exist
             pass
     return storage_value
@@ -112,7 +113,7 @@ def get_thumbnail(request, request_path):
             format = image.format
             size = tuple(int(dim) for dim in sig_info["size"].split("x"))
             if not sig_info["fit"]:
-                ratio = min([a / b for a, b in zip(size, image.size)])
+                ratio = min(a / b for a, b in zip(size, image.size))
                 size = tuple(int(ratio * x) for x in image.size)
 
             if size[0] != image.size[0] and size[1] != image.size[1]:

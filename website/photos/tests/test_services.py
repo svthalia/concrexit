@@ -1,19 +1,18 @@
 import os
 
-from PIL import Image
-
-from django.test import Client, TestCase, RequestFactory, override_settings
-from django.utils.datetime_safe import datetime
 from django.conf import settings
+from django.test import Client, RequestFactory, TestCase, override_settings
+from django.utils.datetime_safe import datetime
 
 from freezegun import freeze_time
+from PIL import Image
 
 from members.models import Member, Membership
 from photos.models import Album
 from photos.services import (
+    get_annotated_accessible_albums,
     is_album_accessible,
     photo_determine_rotation,
-    get_annotated_accessible_albums,
 )
 
 

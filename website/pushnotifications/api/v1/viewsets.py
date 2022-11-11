@@ -1,15 +1,13 @@
 from django.utils.translation import get_language_from_request
-from rest_framework import permissions, viewsets, filters
+
+from rest_framework import filters, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from pushnotifications.models import Category, Device, Message
+
 from .permissions import IsOwner
-from .serializers import (
-    DeviceSerializer,
-    CategorySerializer,
-    MessageSerializer,
-)
-from pushnotifications.models import Device, Category, Message
+from .serializers import CategorySerializer, DeviceSerializer, MessageSerializer
 
 
 class DeviceViewSet(viewsets.ModelViewSet):
