@@ -48,11 +48,14 @@ except ImportError as error:
 _faker = FakerFactory.create("nl_NL")
 _pizza_name_faker = FakerFactory.create("it_IT")
 _current_tz = timezone.get_current_timezone()
+_last_number = 0
 
 
 def _generate_title():
+    global _last_number
     words = _faker.words(random.randint(1, 3))
-    return " ".join([word.capitalize() for word in words])
+    _last_number += 1
+    return " ".join([word.capitalize() for word in words]) + str(_last_number)
 
 
 class _ProfileFactory(factory.Factory):
@@ -322,13 +325,15 @@ class Command(BaseCommand):
         event.save()
 
     def create_partner(self):
+        global _last_number
         """Create a new random partner."""
         self.stdout.write("Creating a partner")
         partner = Partner()
 
         partner.is_active = random.random() < 0.75
         partner.name = f"{_faker.company()} {_faker.company_suffix()}"
-        partner.slug = _faker.slug()
+        _last_number += 1
+        partner.slug = _faker.slug() + str(_last_number)
         partner.link = _faker.uri()
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
@@ -360,6 +365,7 @@ class Command(BaseCommand):
         product.save()
 
     def create_user(self):
+        global _last_number
         """Create a new random user."""
         self.stdout.write("Creating a user")
 
@@ -367,8 +373,11 @@ class Command(BaseCommand):
         fakeprofile["password"] = "".join(
             random.choice(string.ascii_uppercase + string.digits) for _ in range(16)
         )
+        _last_number += 1
         user = get_user_model().objects.create_user(
-            fakeprofile["username"], fakeprofile["mail"], fakeprofile["password"]
+            fakeprofile["username"] + str(_last_number),
+            fakeprofile["mail"],
+            fakeprofile["password"],
         )
         user.first_name = fakeprofile["name"].split()[0]
         user.last_name = " ".join(fakeprofile["name"].split()[1:])
