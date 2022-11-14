@@ -4,7 +4,7 @@ data "aws_s3_bucket" "media_bucket" {
 
 module "cloudfront" {
   source  = "terraform-aws-modules/cloudfront/aws"
-  version = "3.0.1"
+  version = "3.0.2"
 
   aliases = [var.webdomain]
 
