@@ -10,6 +10,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils import timezone
 
+import sentry_sdk
 from django_sendfile import sendfile
 from PIL import Image, ImageOps
 
@@ -61,7 +62,11 @@ def private_media(request, request_path):
 
     # Serve the file, or redirect to a signed bucket url in the case of S3
     if hasattr(storage, "bucket"):
-        serve_url = storage.url(sig_info["serve_path"])
+        serve_path = sig_info["serve_path"]
+        serve_url = cache.get(f"private_media_url_{serve_path}", None)
+        if serve_url is None:
+            serve_url = storage.url(sig_info["serve_path"])
+            cache.set(f"private_media_url_{serve_path}", serve_url, 60 * 60)
         return redirect(
             f"{serve_url}",
             permanent=False,
@@ -105,6 +110,10 @@ def get_thumbnail(request, request_path):
     # os.makedirs(os.path.dirname(full_thumb_path), exist_ok=True)
     # Skip generating the thumbnail if it exists
     if original_modified_time > thumb_modified_time:
+        # with sentry_sdk.start_span(
+        #     op="generate_new_thumbnail",
+        #     description="Loads or downloads the full media file, generates a thumbnail locally using Pillow and stores or uploads the thumbnail",
+        # ) as span:
         storage.delete(sig_info["thumb_path"])
 
         # Create a thumbnail from the original_path, saved to thumb_path
@@ -121,10 +130,21 @@ def get_thumbnail(request, request_path):
 
             save_image(storage, image, sig_info["thumb_path"], format)
             cache.set(
-                f"thumbnails_{sig_info['thumb_path']}", original_modified_time, 60 * 60
+                f"thumbnails_{sig_info['thumb_path']}",
+                original_modified_time,
+                60 * 60,
             )
 
     # Redirect to the serving url of the image
     # for public images this goes via a static file server (i.e. nginx)
     # for private images this is a call to private_media
-    return redirect(storage.url(sig_info["thumb_path"]))
+    # with sentry_sdk.start_span(
+    #     op="generate_thumbnail_url",
+    #     description="Signs the url with the specified storage backend, either local file or s3",
+    # ) as span:
+    thumb_path = sig_info["thumb_path"]
+    url = cache.get(f"thumbnails_url_{thumb_path}", None)
+    if url is None:
+        url = storage.url(sig_info["thumb_path"])
+        cache.set(f"thumbnails_url_{thumb_path}", url, 60 * 60)
+    return redirect(url)
